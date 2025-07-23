@@ -3,9 +3,13 @@
 namespace MPM\Transaction\Export;
 
 use App\Services\AbstractExportService;
+use Illuminate\Support\Collection;
 
 class TransactionExportService extends AbstractExportService {
-    private $transactionData;
+    /**
+     * @var Collection<int, mixed>
+     */
+    private Collection $transactionData;
 
     public function writeTransactionData(): void {
         $this->setActivatedSheet('Sheet1');
@@ -42,6 +46,9 @@ class TransactionExportService extends AbstractExportService {
         });
     }
 
+     /**
+     * @param Collection<int,  mixed> $transactionData
+     */
     public function setTransactionData($transactionData): void {
         $this->transactionData = $transactionData;
     }

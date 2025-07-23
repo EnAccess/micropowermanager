@@ -8,7 +8,7 @@ use App\Models\MailSettings;
 use App\Services\MailSettingsService;
 
 class MailSettingsController extends Controller {
-    private $mailSettingsService;
+    private MailSettingsService $mailSettingsService;
 
     public function __construct(
         MailSettingsService $mailSettingsService,

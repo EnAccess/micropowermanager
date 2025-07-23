@@ -10,7 +10,7 @@ use App\Services\UserService;
 use Illuminate\Http\Response;
 
 class UserPasswordController extends Controller {
-    private $userService;
+    private UserService $userService;
 
     public function __construct(UserService $userService) {
         $this->userService = $userService;
@@ -38,7 +38,7 @@ class UserPasswordController extends Controller {
         );
     }
 
-    public function update(User $user, UserChangePasswordRequest $changePasswordRequest) {
+    public function update(User $user, UserChangePasswordRequest $changePasswordRequest): ApiResource {
         return new ApiResource($this->userService->update($user, $changePasswordRequest->all()));
     }
 }

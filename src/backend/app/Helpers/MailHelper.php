@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Exceptions\MailNotSentException;
+use App\Models\MailSettings;
 use Illuminate\Support\Facades\Log;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -13,7 +14,7 @@ class MailHelper implements MailHelperInterface {
      */
     private $mailer;
 
-    private $mailSettings;
+    private MailSettings $mailSettings;
 
     public function __construct(PHPMailer $mailer) {
         $this->mailer = $mailer;

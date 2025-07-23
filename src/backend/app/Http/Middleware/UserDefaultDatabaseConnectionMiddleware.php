@@ -23,7 +23,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         private ApiResolverMap $apiResolverMap,
     ) {}
 
-    public function handle(Request $request, \Closure $next) {
+    public function handle(Request $request, \Closure $next): mixed {
         // skip middleware for excluded routes
         if ($this->isExcludedRoute($request)) {
             return $next($request);
@@ -45,7 +45,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         return $this->resolveRoute($request, $next);
     }
 
-    private function resolveRoute(Request $request, \Closure $next) {
+    private function resolveRoute(Request $request, \Closure $next): mixed {
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));

@@ -36,7 +36,7 @@ class AssetTypeController extends Controller {
      * @return ApiResource
      */
     public function store(AssetTypeCreateRequest $request): ApiResource {
-        $appliance = $this->applianceTypeService->createApplianceType($request->validated());
+        $appliance = $this->applianceTypeService->createApplianceType($request);
 
         return new ApiResource($appliance);
     }
@@ -50,7 +50,7 @@ class AssetTypeController extends Controller {
      * @return ApiResource
      */
     public function update(AssetTypeUpdateRequest $request, AssetType $assetType): ApiResource {
-        $appliance = $this->applianceTypeService->updateApplianceType($request->validated(), $assetType);
+        $appliance = $this->applianceTypeService->updateApplianceType($request, $assetType);
 
         return new ApiResource($appliance);
     }
@@ -65,8 +65,8 @@ class AssetTypeController extends Controller {
      * @throws \Exception
      */
     public function destroy(AssetType $assetType): ApiResource {
-        return new ApiResource(
-            $this->applianceTypeService->deleteApplianceType($assetType)
-        );
+        $this->applianceTypeService->deleteApplianceType($assetType);
+
+        return new ApiResource(['message' => 'Asset type deleted successfully']);
     }
 }

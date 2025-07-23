@@ -6,7 +6,7 @@ use App\Http\Resources\ApiResource;
 use App\Services\SmsVariableDefaultValueService;
 
 class SmsVariableDefaultValueController extends Controller {
-    private $smsVariableDefaultSValueService;
+    private SmsVariableDefaultValueService $smsVariableDefaultSValueService;
 
     public function __construct(SmsVariableDefaultValueService $smsVariableDefaultSValueService) {
         $this->smsVariableDefaultSValueService = $smsVariableDefaultSValueService;

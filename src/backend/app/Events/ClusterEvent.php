@@ -32,9 +32,9 @@ class ClusterEvent {
      *
      * @param Cluster $cluster
      * @param string  $type
-     * @param         $data
+     * @param array<string, mixed> $data
      */
-    public function __construct(Cluster $cluster, string $type, $data) {
+    public function __construct(Cluster $cluster, string $type, array $data) {
         Log::debug('cluster event created');
         $this->cluster = $cluster;
         $this->type = $type;

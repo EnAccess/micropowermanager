@@ -15,7 +15,7 @@ class ClusterRevenueAnalysisController extends Controller {
         private ConnectionTypeService $connectionTypeService,
     ) {}
 
-    public function show($clusterId, Request $request): ApiResource {
+    public function show(int $clusterId, Request $request): ApiResource {
         /**
          * !!!!
          * To group revenue by city -> connection type

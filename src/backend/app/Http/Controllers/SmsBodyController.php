@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
+use App\Models\SmsBody;
 use App\Services\SmsBodyService;
 use Illuminate\Http\Request;
 
 class SmsBodyController extends Controller {
-    private $smsBodyService;
+    private SmsBodyService $smsBodyService;
 
     public function __construct(SmsBodyService $smsBodyService) {
         $this->smsBodyService = $smsBodyService;

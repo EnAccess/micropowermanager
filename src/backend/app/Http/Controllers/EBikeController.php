@@ -27,7 +27,7 @@ class EBikeController extends Controller {
         return ApiResource::make($this->eBikeService->getAll($limit));
     }
 
-    public function store(StoreEBikeRequest $request) {
+    public function store(StoreEBikeRequest $request): ApiResource {
         $eBikeData = $request->all();
         $deviceData = [
             'device_serial' => $eBikeData['serial_number'],

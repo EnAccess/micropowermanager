@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\DatabaseProxy;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 abstract class AbstractDashboardCacheDataService {
@@ -35,7 +36,7 @@ abstract class AbstractDashboardCacheDataService {
     public function getDataById(int|string $id): ?array {
         $cachedData = Cache::get(self::cacheKeyGenerator());
 
-        return $cachedData ? collect($cachedData)->filter(function ($data) use ($id) {
+        return $cachedData ? collect($cachedData)->filter(function (array $data) use ($id): bool {
             return $data['id'] == $id;
         })->first() : [];
     }
@@ -48,7 +49,7 @@ abstract class AbstractDashboardCacheDataService {
         return $this->cacheDataKey.'-'.$companyId;
     }
 
-    protected function reformatPeriod($period): string {
+    protected function reformatPeriod(string $period): string {
         return substr_replace($period, '-', 4, 0);
     }
 }

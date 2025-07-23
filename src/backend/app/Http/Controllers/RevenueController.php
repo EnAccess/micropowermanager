@@ -28,7 +28,7 @@ class RevenueController extends Controller {
         private Target $target,
     ) {}
 
-    public function ticketData($id): ApiResource {
+    public function ticketData(int $id): ApiResource {
         $begin = date_create('2018-08-01');
         $end = date_create();
         $end->add(new \DateInterval('P1D'));
@@ -65,7 +65,7 @@ class RevenueController extends Controller {
         return ApiResource::make($result);
     }
 
-    public function trending($id, Request $request): ApiResource {
+    public function trending(int $id, Request $request): ApiResource {
         // the array which holds the final response
         $startDate = $request->input('startDate') ?? date('Y-01-01');
         $end = $request->input('endDate') ?? date('Y-m-d');
@@ -235,7 +235,7 @@ class RevenueController extends Controller {
         );
     }
 
-    private function reformatPeriod($period): string {
+    private function reformatPeriod(string $period): string {
         return substr_replace($period, '-', 4, 0);
     }
 }

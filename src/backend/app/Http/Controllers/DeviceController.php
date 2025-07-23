@@ -11,7 +11,7 @@ use MPM\Device\DeviceService;
 class DeviceController extends Controller {
     public function __construct(private DeviceService $deviceService) {}
 
-    public function index() {
+    public function index(): ApiResource {
         return ApiResource::make($this->deviceService->getAll());
     }
 

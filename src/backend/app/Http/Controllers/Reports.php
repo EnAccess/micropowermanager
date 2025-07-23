@@ -30,10 +30,19 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  * @group Export
  */
 class Reports {
+    /** @var array<string, array{energy: int, access_rate: int, unit: float}> */
     private array $totalSold = [];
+
+    /** @var array<string, string> */
     private array $connectionTypeCells = [];
+
     private string|int $lastIndex;
-    private array $subConnectionRows;
+
+    /** @var array<string, int> */
+    private array $subConnectionRows = [];
+
+    /** @var array<string, array{connection_id: int, connections: int, energy_per_month: float, revenue: float, average_revenue_per_customer: float}> */
+    private array $monthlyTargetData = [];
 
     public function __construct(
         private Spreadsheet $spreadsheet,
@@ -132,7 +141,7 @@ class Reports {
         $this->totalSold = [];
     }
 
-    public function generateWithJob($startDate, $endDate, $reportType): void {
+    public function generateWithJob(string $startDate, string $endDate, string $reportType): void {
         try {
             $cities = $this->city->newQuery()->get();
             foreach ($cities as $city) {
@@ -232,9 +241,9 @@ class Reports {
     }
 
     /**
-     * @param Worksheet  $sheet
-     * @param string     $dateRange
-     * @param Collection $transactions
+     * @param Worksheet                  $sheet
+     * @param string                     $dateRange
+     * @param Collection<int,Transaction> $transactions
      *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -242,7 +251,7 @@ class Reports {
     public function generateXls(
         Worksheet $sheet,
         string $dateRange,
-        $transactions,
+        Collection $transactions,
     ): void {
         $this->addStaticText($sheet, $dateRange);
 
@@ -269,7 +278,7 @@ class Reports {
      *
      * @throws CustomerGroupNotFound
      */
-    private function addTransactions(Worksheet $sheet, $transactions, $addPurchaseBreakDown = true): void {
+    private function addTransactions(Worksheet $sheet, Collection $transactions, bool $addPurchaseBreakDown = true): void {
         $sheetIndex = 0;
         $balance = 0;
 
@@ -343,35 +352,36 @@ class Reports {
     /**
      * Add the breakdown of the transaction amount into the right place on the spreadsheet.
      *
-     * @param Worksheet $sheet
-     * @param           $paymentHistories
-     * @param int       $index
-     * @param string    $connectionGroupName
-     * @param           $tariff
+     * @param Worksheet             $sheet
+     * @param Collection<int,mixed> $paymentHistories
+     * @param int                   $index
+     * @param string                $connectionGroupName
+     * @param mixed                 $tariff
      *
      * @throws CustomerGroupNotFound
      */
     private function purchaseBreakDown(
         Worksheet $sheet,
-        $paymentHistories,
+        Collection $paymentHistories,
         int $index,
         string $connectionGroupName,
-        $tariff,
+        mixed $tariff,
     ): void {
         $column = $this->getConnectionGroupColumn($connectionGroupName);
+        /** @var array<string, float> */
         $soldAmount = [];
-        $unit = 0;
+        $unit = 0.0;
         foreach ($paymentHistories as $paymentHistory) {
             $sheet->setCellValue($column.$index, $paymentHistory->amount);
 
             if ($paymentHistory->payment_type === 'access_rate' || $paymentHistory->payment_type === 'access rate') {
                 $nextCol = $column;
                 $sheet->setCellValue(++$nextCol.$index, $paymentHistory->amount);
-                $soldAmount['access_rate'] = $paymentHistory->amount;
+                $soldAmount['access_rate'] = (float) $paymentHistory->amount;
             } else {
-                $soldAmount['energy'] = $paymentHistory->amount;
-                if ($tariff->price != 0) {
-                    $unit += $paymentHistory->amount / ($tariff->price / 100);
+                $soldAmount['energy'] = (float) $paymentHistory->amount;
+                if ($tariff?->price != 0) {
+                    $unit += (float) $paymentHistory->amount / ($tariff->price / 100);
                 }
             }
         }
@@ -412,7 +422,7 @@ class Reports {
      */
     private function addConnectionGroupsToXLS(
         Worksheet $sheet,
-        $connectionGroups,
+        Collection $connectionGroups,
         string $startingColumn,
         int $startingRow,
     ): void {
@@ -453,17 +463,22 @@ class Reports {
         }
     }
 
-    private function addSoldTotal(string $connectionGroupName, array $amount, $unit = null): void {
+    /**
+     * @param string                       $connectionGroupName
+     * @param array<string, float>         $amount
+     * @param float|null                   $unit
+     */
+    private function addSoldTotal(string $connectionGroupName, array $amount, ?float $unit = null): void {
         if (!array_key_exists($connectionGroupName, $this->totalSold)) {
             $this->totalSold[$connectionGroupName] = [
                 'energy' => 0,
                 'access_rate' => 0,
-                'unit' => 0,
+                'unit' => 0.0,
             ];
         }
 
         if ($unit !== null) {
-            $this->totalSold[$connectionGroupName]['unit'] += (float) $unit;
+            $this->totalSold[$connectionGroupName]['unit'] += $unit;
         }
         foreach ($amount as $type => $soldAmount) {
             $this->totalSold[$connectionGroupName][$type] += (int) $soldAmount;
@@ -511,36 +526,31 @@ class Reports {
     }
 
     /**
-     * @return \Generator
-     *
-     * @psalm-return Generator<int, mixed, mixed, void>
+     * @return Generator<int, string, mixed, void>
      */
-    private function excelColumnRange(string $lower, string $upper): \Generator {
+    private function excelColumnRange(string $lower, string $upper): Generator {
         ++$upper;
         for ($i = $lower; $i !== $upper; ++$i) {
             yield $i;
         }
     }
 
-    // holds the connection group and its data for the target
-    private $monthlyTargetData = [];
-
     /**
-     * @param int $cityId
-     * @param     $cityName
-     * @param     $startDate
-     * @param     $endDate
-     * @param     $reportType
+     * @param int    $cityId
+     * @param string $cityName
+     * @param string $startDate
+     * @param string $endDate
+     * @param string $reportType
      *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function generateReportForCity(
         int $cityId,
-        $cityName,
-        $startDate,
+        string $cityName,
+        string $startDate,
         string $endDate,
-        $reportType,
+        string $reportType,
     ): void {
         $this->initSheet();
 
@@ -638,10 +648,6 @@ class Reports {
 
     /**
      * Total number of customer groups until given date.
-     *
-     * @param string $date
-     *
-     * @return void
      */
     private function getCustomerGroupCountPerMonth(string $date): void {
         $connectionGroupsCount = Meter::query()
@@ -654,22 +660,25 @@ class Reports {
             $this->monthlyTargetData[$connectionGroupCount->connectionGroup->name] = [
                 'connection_id' => $connectionGroupCount->connectionGroup->id,
                 'connections' => $connectionGroupCount->total ?? 0,
-                'energy_per_month' => 0,
-                'revenue' => 0,
+                'energy_per_month' => 0.0,
+                'revenue' => 0.0,
                 'average_revenue_per_customer' => 0.0,
             ];
         }
     }
 
+    /**
+     * @param array{0: string, 1: string} $dates
+     */
     private function getCustomerGroupEnergyUsagePerMonth(array $dates): void {
         foreach ($this->monthlyTargetData as $connectionName => $targetData) {
             $customerGroupRevenue = $this->sumOfTransactions($targetData['connection_id'], $dates);
             foreach ($customerGroupRevenue as $groupRevenue) {
-                $this->monthlyTargetData[$connectionName]['revenue'] += $groupRevenue['revenue'];
+                $this->monthlyTargetData[$connectionName]['revenue'] += (float) $groupRevenue['revenue'];
 
-                $energyRevenue = $groupRevenue['total'];
+                $energyRevenue = (float) $groupRevenue['total'];
 
-                $tariffPrice = $groupRevenue['tariff_price'];
+                $tariffPrice = (float) $groupRevenue['tariff_price'];
 
                 if (!$tariffPrice) {
                     continue;
@@ -688,7 +697,12 @@ class Reports {
         }
     }
 
-    public function sumOfTransactions($connectionGroupId, array $dateRange): array {
+    /**
+     * @param mixed                       $connectionGroupId
+     * @param array{0: string, 1: string} $dateRange
+     * @return array<int, array{connection_group_id: mixed, meter: string, revenue: float, tariff_price: float, total: float}>
+     */
+    public function sumOfTransactions(mixed $connectionGroupId, array $dateRange): array {
         return Transaction::query()
             ->selectRaw('
         meters.connection_group_id,
@@ -715,7 +729,7 @@ class Reports {
 
     private function addTargetsToXls(Worksheet $sheet): void {
         foreach ($this->monthlyTargetData as $subConnection => $monthlyTargetData) {
-            $row = $this->subConnectionRows[$subConnection];
+            $row = $this->subConnectionRows[$subConnection] ?? null;
             if (!$row) {
                 continue;
             }

@@ -108,7 +108,7 @@ class MeterController extends Controller {
      *
      * @return JsonResponse
      */
-    public function destroy($meterId): JsonResponse {
+    public function destroy(int $meterId): JsonResponse {
         $this->meterService->getById($meterId);
 
         return response()->json(null, 204);

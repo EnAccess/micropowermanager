@@ -236,7 +236,7 @@ class SmsController extends Controller {
         }
     }
 
-    public function updateForFailed($uuid): void {
+    public function updateForFailed(string $uuid): void {
         try {
             Log::warning('Sending Sms failed on AndroidGateway', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
@@ -253,7 +253,7 @@ class SmsController extends Controller {
         }
     }
 
-    public function updateForSent($uuid): void {
+    public function updateForSent(string $uuid): void {
         try {
             Log::warning('Sms has sent successfully', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
@@ -270,7 +270,7 @@ class SmsController extends Controller {
         }
     }
 
-    public function show($person_id): ApiResource {
+    public function show(int $person_id): ApiResource {
         $personAddresses = $this->person::with(
             [
                 'addresses' => function ($q) {
@@ -286,13 +286,13 @@ class SmsController extends Controller {
         return new ApiResource($smses);
     }
 
-    public function byPhone($phone): ApiResource {
+    public function byPhone(string $phone): ApiResource {
         $smses = $this->sms->where('receiver', $phone)->get();
 
         return new ApiResource($smses);
     }
 
-    public function search($search) {
+    public function search(string $search): \Illuminate\Http\Resources\Json\AnonymousResourceCollection {
         // search in people
         $list = $this->person::with('addresses')
             ->whereHas(

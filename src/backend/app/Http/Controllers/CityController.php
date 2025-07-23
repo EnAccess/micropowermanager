@@ -22,7 +22,7 @@ class CityController extends Controller {
         return ApiResource::make($this->cityService->getAll($limit));
     }
 
-    public function show($cityId, Request $request): ApiResource {
+    public function show(int $cityId, Request $request): ApiResource {
         $relation = $request->get('relation');
 
         if ($relation) {
@@ -32,7 +32,7 @@ class CityController extends Controller {
         return ApiResource::make($this->cityService->getById($cityId));
     }
 
-    public function update($cityId, CityRequest $request): ApiResource {
+    public function update(int $cityId, CityRequest $request): ApiResource {
         $city = $this->cityService->getById($cityId);
         $cityData = $request->only(['name', 'mini_grid_id', 'cluster_id', 'country_id']);
 

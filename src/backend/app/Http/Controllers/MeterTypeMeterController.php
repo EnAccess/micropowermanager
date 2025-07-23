@@ -18,11 +18,11 @@ class MeterTypeMeterController extends Controller {
      * @responseFile responses/metertypes/metertypes.meter.list.json
      *
      * @param Request $request
-     * @param         $meterTypeId
+     * @param int     $meterTypeId
      *
      * @return ApiResource
      */
-    public function show(Request $request, $meterTypeId) {
+    public function show(Request $request, int $meterTypeId) {
         return ApiResource::make($this->meterTypeMeterService->getByIdWithMeters($meterTypeId));
     }
 }

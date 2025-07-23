@@ -118,7 +118,7 @@ class ClusterRevenueService {
      * @param Collection<int, Cluster> $clusters
      * @param string                   $startDate
      * @param string                   $endDate
-     * @param array                    $periods
+     * @param array<int, mixed>        $periods
      * @param string                   $period
      *
      * @return array

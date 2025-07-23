@@ -92,7 +92,10 @@ class PersonService implements IBaseService {
         return $person;
     }
 
-    public function livingInCluster(int $clusterId) {
+     /**
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function livingInCluster(int $clusterId): \Illuminate\Database\Query\Builder {
         return $this->person->livingInClusterQuery($clusterId);
     }
 

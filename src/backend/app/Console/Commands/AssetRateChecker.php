@@ -81,8 +81,11 @@ class AssetRateChecker extends AbstractSharedCommand {
         $smsService->sendSms($assetRate->toArray(), SmsTypes::APPLIANCE_RATE, SmsConfigs::class);
     }
 
-    private function sendReminders($dueAssetRates, $smsType) {
-        $dueAssetRates->each(function ($dueAssetRate) use ($smsType) {
+    /**
+     * @param Collection<int, AssetRate> $dueAssetRates
+     */
+    private function sendReminders(Collection $dueAssetRates, int $smsType): void {
+        $dueAssetRates->each(function (AssetRate $dueAssetRate) use ($smsType) {
             $this->sendReminderSms($dueAssetRate);
             if ($smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE) {
                 $dueAssetRate->remind = 1;
@@ -92,7 +95,7 @@ class AssetRateChecker extends AbstractSharedCommand {
         });
     }
 
-    private function createReminderTicket(AssetRate $assetRate, $overDue = false): void {
+    private function createReminderTicket(AssetRate $assetRate, bool $overDue = false): void {
         $currency = $this->mainSettingsService->getAll()->first()->currency;
         // create ticket for customer service
         $creator = $this->user->newQuery()->firstOrCreate([
@@ -122,7 +125,10 @@ class AssetRateChecker extends AbstractSharedCommand {
         );
     }
 
-    private function getApplianceRemindRates(): SupportCollection|Collection {
+    /**
+     * @return Collection<int, SmsApplianceRemindRate>
+     */
+    private function getApplianceRemindRates(): Collection {
         return $this->smsApplianceRemindRateService->getApplianceRemindRates();
     }
 }

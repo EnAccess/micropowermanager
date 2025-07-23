@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class DatabaseProxyService implements IBaseService {
     public function __construct(private DatabaseProxy $databaseProxy) {}
 
-    public function getById($id): DatabaseProxy {
+    public function getById(int $id): DatabaseProxy {
         throw new \Exception('Method getById() not yet implemented.');
     }
 

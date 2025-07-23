@@ -83,7 +83,7 @@ class ApplianceInstallmentPayer {
         return $device->person;
     }
 
-    private function getInstallments($customer): Collection {
+    private function getInstallments(mixed $customer): Collection {
         $loans = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
 
         return $this->applianceRateService->getByLoanIdsForDueDate($loans->toArray());

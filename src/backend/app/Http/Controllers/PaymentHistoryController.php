@@ -18,7 +18,7 @@ class PaymentHistoryController {
     /**
      * @var PaymentHistory
      */
-    private $history;
+    private PaymentHistory $history;
 
     /**
      * PaymentHistoryController constructor.
@@ -42,9 +42,9 @@ class PaymentHistoryController {
      * @param null   $limit
      * @param string $order
      *
-     * @return array
+     * @return array<string, array<string, mixed>>
      */
-    public function show(int $payerId, string $period, $limit = null, $order = 'ASC') {
+    public function show(int $payerId, string $period, $limit = null, $order = 'ASC'): array {
         $period = strtoupper($period);
         switch ($period) {
             case 'D':
@@ -76,13 +76,13 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      *
-     * @param $personId
+     * @param Person $person
      *
      * @return ApiResource
      *
      * @throws \Exception
      */
-    public function getPaymentPeriod(Person $person) {
+    public function getPaymentPeriod(Person $person): ApiResource {
         $payments = $person->payments()->latest()->take(10)->get();
 
         $difference = 'no data available';
@@ -106,7 +106,7 @@ class PaymentHistoryController {
      * @param int      $personId
      * @param int|null $year
      *
-     * @return array
+     * @return array<int, float>
      **/
     public function byYear(int $personId, ?int $year = null): array {
         $year = $year ?? (int) date('Y');
@@ -129,7 +129,7 @@ class PaymentHistoryController {
      *
      * @return ApiResource
      */
-    public function debts($personId) {
+    public function debts(int $personId): ApiResource {
         $accessRateDebt = 0;
         $meters = Device::query()->with('device')
             ->whereHasMorph(
@@ -181,9 +181,10 @@ class PaymentHistoryController {
     }
 
     /**
-     * @return array[]
+     * @param mixed $payments
+     * @return array<string, array<string, mixed>>
      *
-     * @psalm-return array<array-key, array>
+     * @psalm-return array<string, array<string, mixed>>
      */
     public function preparePaymentFlow($payments): array {
         $flowList = [];

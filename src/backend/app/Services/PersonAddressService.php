@@ -19,7 +19,7 @@ class PersonAddressService implements IAssignationService {
         return $this->person;
     }
 
-    public function getPersonAddresses($person) {
+    public function getPersonAddresses($person): mixed {
         return $person->addresses()->with('city', 'geo')->orderBy('is_primary', 'DESC')->paginate(5);
     }
 

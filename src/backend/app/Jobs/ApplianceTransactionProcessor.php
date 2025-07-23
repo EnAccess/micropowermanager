@@ -21,7 +21,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
     /**
      * @throws TransactionNotInitializedException
      */
-    public function executeJob() {
+    public function executeJob(): void {
         $this->initializeTransaction();
         $container = $this->initializeTransactionDataContainer();
 
@@ -35,7 +35,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
         }
     }
 
-    private function initializeTransaction() {
+    private function initializeTransaction(): void {
         $this->transaction = Transaction::query()->find($this->transactionId);
         $this->transaction->type = 'deferred_payment';
         $this->transaction->save();

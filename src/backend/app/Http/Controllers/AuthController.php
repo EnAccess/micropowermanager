@@ -26,7 +26,7 @@ class AuthController extends Controller {
      * @bodyParam email string required
      * @bodyParam password string required
      */
-    public function login() {
+    public function login(): JsonResponse {
         $credentials = request(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {
@@ -41,7 +41,7 @@ class AuthController extends Controller {
      *
      * @return JsonResponse
      */
-    public function me() {
+    public function me(): JsonResponse {
         return response()->json(auth('api')->user());
     }
 
@@ -50,7 +50,7 @@ class AuthController extends Controller {
      *
      * @return JsonResponse
      */
-    public function logout() {
+    public function logout(): JsonResponse {
         auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
@@ -77,7 +77,7 @@ class AuthController extends Controller {
      *
      * @return JsonResponse
      */
-    protected function respondWithToken($token) {
+    protected function respondWithToken($token): JsonResponse {
         /** @var JWTGuard $guard */
         $guard = auth()->guard('api');
 

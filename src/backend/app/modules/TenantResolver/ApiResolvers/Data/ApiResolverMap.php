@@ -49,10 +49,17 @@ class ApiResolverMap {
         self::VODACOM_MOBILE_MONEY => VodacomMobileMoneyApiResolver::class,
     ];
 
+    /**
+     * @return array<int, string>
+     */
     public function getResolvableApis(): array {
         return self::RESOLVABLE_APIS;
     }
 
+    /**
+     * @param string $api
+     * @return class-string
+     */
     public function getApiResolver(string $api): string {
         return self::API_RESOLVER[$api];
     }

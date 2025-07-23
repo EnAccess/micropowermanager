@@ -17,7 +17,7 @@ class DeviceService implements IBaseService, IAssociative {
         private Device $device,
     ) {}
 
-    public function make($deviceData): Device {
+    public function make(mixed $deviceData): Device {
         $result = $this->device->newQuery()->make([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
@@ -26,7 +26,7 @@ class DeviceService implements IBaseService, IAssociative {
         return $result;
     }
 
-    public function getBySerialNumber($serialNumber): ?Device {
+    public function getBySerialNumber(string $serialNumber): ?Device {
         $result = $this->device->newQuery()
             ->with(['address.geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)

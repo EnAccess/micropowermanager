@@ -13,7 +13,10 @@ class AgentDashboardRevenueController extends Controller {
         private AgentBalanceHistoryService $agentBalanceHistoryService,
     ) {}
 
-    public function show(Request $request, Response $response) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function show(Request $request, Response $response): array {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return $this->agentBalanceHistoryService->getAgentRevenuesWeekly($agent);

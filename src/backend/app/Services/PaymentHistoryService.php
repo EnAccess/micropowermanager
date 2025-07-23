@@ -8,6 +8,7 @@ use App\Services\Interfaces\IAssociative;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @implements IAssociative<PaymentHistory>
@@ -17,11 +18,17 @@ class PaymentHistoryService implements IAssociative {
         private PaymentHistory $paymentHistory,
     ) {}
 
+    /**
+     * @param array<int> $customerIds
+     * @param CarbonImmutable $startDate
+     * @param CarbonImmutable $endDate
+     * @return Collection<int, PaymentHistory>
+     */
     public function findPayingCustomersInRange(
         array $customerIds,
         CarbonImmutable $startDate,
         CarbonImmutable $endDate,
-    ) {
+    ): Collection {
         return $this->paymentHistory->findCustomersPaidInRange($customerIds, $startDate, $endDate);
     }
 

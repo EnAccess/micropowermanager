@@ -6,13 +6,13 @@ use App\Models\AssetRate;
 
 class AssetRateReminder extends SmsBodyParser {
     protected $variables = ['appliance_type_name', 'remaining', 'due_date'];
-    protected $reminderData;
+    protected mixed $reminderData;
 
     public function __construct(AssetRate $reminderData) {
         $this->reminderData = $reminderData;
     }
 
-    protected function getVariableValue($variable): mixed {
+    protected function getVariableValue(string $variable): mixed {
         switch ($variable) {
             case 'appliance_type_name':
                 $variable = $this->reminderData->assetPerson->assetType->name;

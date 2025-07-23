@@ -3,12 +3,13 @@
 namespace MPM\OutstandingDebts;
 
 use App\Helpers\MailHelper;
+use App\Models\AssetRate;
 use App\Models\User;
 use App\Services\AbstractExportService;
 use App\Services\ApplianceRateService;
 use App\Services\UserService;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class OutstandingDebtsExportService extends AbstractExportService {
     public function __construct(
@@ -18,6 +19,9 @@ class OutstandingDebtsExportService extends AbstractExportService {
         private MailHelper $mailHelper,
     ) {}
 
+    /**
+     * @var Collection<int, AssetRate>
+     */
     private Collection $outstandingDebtsData;
 
     public function writeOutstandingDebtsData(): void {
@@ -37,7 +41,7 @@ class OutstandingDebtsExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->outstandingDebtsData->map(function ($applianceRate) {
+        $this->exportingData = $this->outstandingDebtsData->map(function (AssetRate $applianceRate): array {
             return [
                 $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
                 $applianceRate->assetPerson->asset->name,
@@ -48,7 +52,10 @@ class OutstandingDebtsExportService extends AbstractExportService {
         });
     }
 
-    public function setOutstandingDebtsData($outstandingDebtsData): void {
+    /**
+     * @param Collection<int, AssetRate> $outstandingDebtsData
+     */
+    public function setOutstandingDebtsData(Collection $outstandingDebtsData): void {
         $this->outstandingDebtsData = $outstandingDebtsData;
     }
 
@@ -59,6 +66,7 @@ class OutstandingDebtsExportService extends AbstractExportService {
     public function createReport(CarbonImmutable $toDate): string {
         $currency = $this->applianceRateService->getCurrencyFromMainSettings();
 
+        /** @var Collection<int, AssetRate> $data */
         $data = $this->applianceService->queryOutstandingDebtsByApplianceRates($toDate)->get();
         $this->createSpreadSheetFromTemplate($this->getTemplatePath());
         $this->setCurrency($currency);

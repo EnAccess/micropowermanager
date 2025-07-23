@@ -10,7 +10,7 @@ use App\Services\AgentBalanceHistoryService;
 use Illuminate\Http\Request;
 
 class AgentBalanceHistoryController extends Controller {
-    private $agentBalanceHistoryService;
+    private AgentBalanceHistoryService $agentBalanceHistoryService;
 
     public function __construct(AgentBalanceHistoryService $agentBalanceHistoryService) {
         $this->agentBalanceHistoryService = $agentBalanceHistoryService;
@@ -26,12 +26,10 @@ class AgentBalanceHistoryController extends Controller {
      */
     public function store(Agent $agent, CreateAgentBalanceHistoryRequest $request): ApiResource {
         $agentBalanceHistory = $this->agentBalanceHistoryService->create(
-            $agent,
-            $request->only(
-                [
-                    'amount',
-                ]
-            )
+           array_merge(
+        ['agent_id' => $agent->id],
+        $request->only(['amount'])
+    )
         );
 
         return new ApiResource($agentBalanceHistory);

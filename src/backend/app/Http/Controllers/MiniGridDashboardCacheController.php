@@ -13,10 +13,15 @@ class MiniGridDashboardCacheController extends Controller {
         return ApiResource::make($this->miniGridDashboardCacheDataService->getData());
     }
 
-    public function show($miniGridId): ApiResource {
+    public function show(int $miniGridId): ApiResource {
         return ApiResource::make($this->miniGridDashboardCacheDataService->getDataById($miniGridId));
     }
 
+    /**
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array<string, mixed>
+     */
     public function update(Request $request): array {
         $fromDate = $request->query('from');
         $toDate = $request->query('to');

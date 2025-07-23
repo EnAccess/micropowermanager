@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class SubConnectionTypeController extends Controller {
     public function __construct(private SubConnectionTypeService $subConnectionTypeService) {}
 
-    public function index(Request $request, $connectionTypeId = null): ApiResource {
+    public function index(Request $request, ?int $connectionTypeId = null): ApiResource {
         $limit = $request->get('limit');
 
         if ($connectionTypeId !== null) {

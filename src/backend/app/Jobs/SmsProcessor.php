@@ -33,7 +33,7 @@ class SmsProcessor extends AbstractJob {
      *
      * @return void
      */
-    public function executeJob() {
+    public function executeJob(): void {
         try {
             $this->smsSender->sendSms();
         } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {

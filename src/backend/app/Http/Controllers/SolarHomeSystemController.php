@@ -24,7 +24,7 @@ class SolarHomeSystemController extends Controller {
         return ApiResource::make($this->solarHomeSystemService->getAll($limit));
     }
 
-    public function store(StoreSolarHomeSystemRequest $request) {
+    public function store(StoreSolarHomeSystemRequest $request): ApiResource {
         $solarHomeSystemData = $request->all();
         $deviceData = [
             'device_serial' => $solarHomeSystemData['serial_number'],
@@ -48,11 +48,11 @@ class SolarHomeSystemController extends Controller {
         return ApiResource::make($this->solarHomeSystemService->search($term, $paginate));
     }
 
-    public function show($id): ApiResource {
+    public function show(int $id): ApiResource {
         return ApiResource::make($this->solarHomeSystemService->getById($id));
     }
 
-    public function transactions($id): ApiResource {
+    public function transactions(int $id): ApiResource {
         $shs = $this->solarHomeSystemService->getById($id);
         $paginate = request('paginate') ?? 15;
 

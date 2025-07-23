@@ -16,13 +16,19 @@ class SmsLoadBalancer extends AbstractJob {
     use Queueable;
     use SerializesModels;
 
-    public $timeout = 600;
-    public $tries = 250;
-    public $gateways;
+    public int $timeout = 600;
+    public int $tries = 250;
+    public mixed $gateways;
 
-    public $smsBody;
+    /**
+     * @var array<mixed>
+     */
+    public array $smsBody;
 
-    public function __construct($smsBody) {
+    /**
+     * @param array<mixed> $smsBody
+     */
+    public function __construct(array $smsBody) {
         $this->smsBody = $smsBody;
         parent::__construct(get_class($this));
     }
@@ -39,7 +45,11 @@ class SmsLoadBalancer extends AbstractJob {
         );
     }
 
-    private function sendSms($data): string {
+    /**
+     * @param array<mixed> $data
+     */
+    private function sendSms(array $data): string {
+        /** @var \Illuminate\Support\Collection<int, mixed> $smsCollection */
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);
         $httpClient = new Client();

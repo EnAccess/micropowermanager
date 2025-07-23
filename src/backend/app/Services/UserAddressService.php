@@ -14,7 +14,12 @@ class UserAddressService {
         $this->user = $user;
     }
 
-    public function create(User $user, $data) {
+    /**
+     * @param User $user
+     * @param array<string, mixed> $data
+     * @return Address
+     */
+    public function create(User $user, array $data): Address {
         $address = $this->address->newQuery()->create([
             'email' => $data['email'] ?? '',
             'phone' => $data['phone'] ?? '',
@@ -26,10 +31,15 @@ class UserAddressService {
         $address->owner()->associate($user);
         $address->save();
 
-        return $address->with(['city']);
+        return $address->load(['city']); // Fixed: use load() instead of with() on existing model
     }
 
-    public function update(User $user, $data): User {
+    /**
+     * @param User $user
+     * @param array<string, mixed> $data
+     * @return User
+     */
+    public function update(User $user, array $data): User {
         $user->name = $data['name'];
         $user->update();
         $address = $user->address()->first();

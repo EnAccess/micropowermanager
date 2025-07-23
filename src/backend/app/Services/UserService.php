@@ -97,7 +97,7 @@ class UserService {
             ->paginate();
     }
 
-    public function get($id): User {
+    public function get(int $id): User {
         /** @var User $user */
         $user = User::with(['addressDetails'])
             ->where('id', '=', $id)
@@ -106,6 +106,9 @@ class UserService {
         return $user;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function resetAdminPassword(): array {
         /** @var User $user */
         $user = $this->buildQuery()->first();

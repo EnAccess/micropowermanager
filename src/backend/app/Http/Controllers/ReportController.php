@@ -5,22 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController {
     /**
      * @var Report
      */
-    private $report;
+    private Report $report;
 
     public function __construct(Report $report) {
         $this->report = $report;
     }
 
-    public function download($id) {
+    public function download(int $id): ?BinaryFileResponse {
         if (!$id) {
-            return;
+            return null;
         }
         $report = $this->report->find($id);
+
+        if (!$report) {
+            return null;
+        }
 
         return response()->download(explode('*', $report->path)[0]);
     }
@@ -39,16 +46,25 @@ class ReportController {
         return new ApiResource($reports);
     }
 
-    private function getWeeklyReports($startDate, $endDate) {
+    /**
+     * @return LengthAwarePaginator<Report>
+     */
+    private function getWeeklyReports(?string $startDate, ?string $endDate): LengthAwarePaginator {
         return $this->report->where('type', 'weekly')->paginate(15);
     }
 
-    private function getMonthlyReports($startDate, $endDate) {
+    /**
+     * @return LengthAwarePaginator<Report>
+     */
+    private function getMonthlyReports(?string $startDate, ?string $endDate): LengthAwarePaginator {
         return $this->report->where('type', 'monthly')
             ->paginate(15);
     }
 
-    private function getAllReports($startDate, $endDate) {
+    /**
+     * @return LengthAwarePaginator<Report>
+     */
+    private function getAllReports(?string $startDate, ?string $endDate): LengthAwarePaginator {
         return $this->report->paginate(15);
     }
 }

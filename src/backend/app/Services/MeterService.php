@@ -7,6 +7,7 @@ use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection as SupportCollection;
 
 /**
  * @implements IBaseService<Meter>
@@ -105,15 +106,17 @@ class MeterService implements IBaseService {
         return $meter->delete();
     }
 
-    public function getAll(?int $limit = null, $inUse = true): LengthAwarePaginator {
-        if (isset($inUse)) {
-            return $this->meter->newQuery()->with(['meterType', 'tariff'])->where(
-                'in_use',
-                $inUse
-            )->paginate($limit);
+    /**
+     * @return LengthAwarePaginator<Meter>
+     */
+    public function getAll(?int $limit = null, ?bool $inUse = null): LengthAwarePaginator {
+        $query = $this->meter->newQuery()->with(['meterType', 'tariff']);
+
+        if ($inUse !== null) {
+            $query->where('in_use', $inUse);
         }
 
-        return $this->meter->newQuery()->with(['meterType', 'tariff'])->paginate($limit);
+        return $query->paginate($limit);
     }
 
     public function update($meter, array $meterData): Meter {
@@ -123,7 +126,10 @@ class MeterService implements IBaseService {
         return $meter;
     }
 
-    public function getNumberOfConnectionTypes(): Collection|array {
+    /**
+     * @return SupportCollection<int, object{connection_type_id: int, total: int}>
+     */
+    public function getNumberOfConnectionTypes(): SupportCollection {
         return $this->meter->newQuery()->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
             ->select('connection_type_id', DB::raw('count(*) as total'))
             ->groupBy('connection_type_id')

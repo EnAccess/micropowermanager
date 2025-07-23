@@ -15,6 +15,7 @@ interface ISettingsService {
 
     /**
      * @param T $model
+     * @param array<string, mixed> $data
      *
      * @return T
      */
