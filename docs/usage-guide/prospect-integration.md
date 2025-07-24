@@ -64,12 +64,12 @@ After project creation, you'll be redirected to the project page where you can c
 ### Step 5: Select API Push Data Source
 
 1. Choose **API Push** from the available data source options
-1. You'll find this under the **"Other"** category in the datasources list
-1. Provide a descriptive name like `Test API Push Import`
+2. You'll find this under the **"Other"** category in the datasources list
+3. Provide a descriptive name like `Test API Push Import`
 
 <!-- ![Data Source Selection](images/datasource-selection.png) -->
 
-1. Click **Next** to continue
+4. Click **Next** to continue
 
 ### Step 6: Choose Connection Type
 
