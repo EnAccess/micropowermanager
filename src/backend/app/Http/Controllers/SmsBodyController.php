@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\SmsBody;
 use App\Services\SmsBodyService;
 use Illuminate\Http\Request;
 

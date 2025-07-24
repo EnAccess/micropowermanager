@@ -15,8 +15,9 @@ class UserAddressService {
     }
 
     /**
-     * @param User $user
+     * @param User                 $user
      * @param array<string, mixed> $data
+     *
      * @return Address
      */
     public function create(User $user, array $data): Address {
@@ -31,12 +32,13 @@ class UserAddressService {
         $address->owner()->associate($user);
         $address->save();
 
-        return $address->load(['city']); // Fixed: use load() instead of with() on existing model
+        return $address->load(['city']);
     }
 
     /**
-     * @param User $user
+     * @param User                 $user
      * @param array<string, mixed> $data
+     *
      * @return User
      */
     public function update(User $user, array $data): User {

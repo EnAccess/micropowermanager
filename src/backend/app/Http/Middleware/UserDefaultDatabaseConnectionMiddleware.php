@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use MPM\TenantResolver\ApiCompanyResolverService;
 use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -23,7 +24,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         private ApiResolverMap $apiResolverMap,
     ) {}
 
-    public function handle(Request $request, \Closure $next): mixed {
+    public function handle(Request $request, \Closure $next): SymfonyResponse {
         // skip middleware for excluded routes
         if ($this->isExcludedRoute($request)) {
             return $next($request);
@@ -45,7 +46,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         return $this->resolveRoute($request, $next);
     }
 
-    private function resolveRoute(Request $request, \Closure $next): mixed {
+    private function resolveRoute(Request $request, \Closure $next): SymfonyResponse {
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));

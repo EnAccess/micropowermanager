@@ -10,8 +10,6 @@ use Illuminate\Validation\ValidationException;
 class TariffCreateRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool {
         return true;
@@ -37,7 +35,7 @@ class TariffCreateRequest extends FormRequest {
         ];
     }
 
-    protected function failedValidation(Validator $validator) {
+    protected function failedValidation(Validator $validator): void {
         $response = new JsonResponse(
             [
                 'data' => [],

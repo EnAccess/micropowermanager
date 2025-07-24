@@ -20,6 +20,8 @@ class GomeLongMeterServiceProvider extends ServiceProvider {
             // removed the following line since it is not needed
             // $this->commands([InstallPackage::class,GomeLongMeterDataSynchronizer::class]);
             $this->commands([InstallPackage::class]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
         $this->app->booted(function ($app) {
             // $app->make(Schedule::class)->command('gome-long-meter:dataSync')->withoutOverlapping(50)

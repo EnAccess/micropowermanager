@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
  * @extends BaseModel
+ *
  * @use HasFactory<\Database\Factories\AgentChargeFactory>
  */
 class AgentCharge extends BaseModel {

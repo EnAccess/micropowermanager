@@ -91,7 +91,7 @@ class MeterTariffController extends Controller {
     }
 
     /**
-     * @param     $meterTariffId
+     * @param int $meterTariffId
      * @param int $changeId
      *
      * @return ApiResource

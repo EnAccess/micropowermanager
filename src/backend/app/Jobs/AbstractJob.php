@@ -19,7 +19,6 @@ abstract class AbstractJob implements ShouldQueue {
 
     protected int $companyId;
     protected CompanyJob $companyJob;
-
     public ?string $parentId = null;
 
     abstract public function executeJob(): void;
@@ -40,8 +39,9 @@ abstract class AbstractJob implements ShouldQueue {
 
     public function handle(): void {
         $this->setJobUuid($this->job->uuid());
+
         $databaseProxyManager = app()->make(DatabaseProxyManagerService::class);
-        $databaseProxyManager->runForCompany($this->companyId, function () {
+        $databaseProxyManager->runForCompany($this->companyId, function (): void {
             $this->executeJob();
         });
 

@@ -71,6 +71,7 @@ class MeterGeographicalInformationController extends Controller {
      * @bodyParam points string. Comma seperated latitude and longitude. Example 1,2
      *
      * @param Request $request
+     *
      * @return ApiResource
      */
     public function update(Request $request): ApiResource {

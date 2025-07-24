@@ -3,9 +3,10 @@
 namespace App\Services;
 
 use App\Models\AssetType;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class ApplianceTypeService {
     private AssetType $assetType;
@@ -26,21 +27,21 @@ class ApplianceTypeService {
         return $this->assetType->newQuery()->get();
     }
 
-    public function createApplianceType(Request $request): AssetType {
+    public function createApplianceType(array $data): AssetType {
         return $this->assetType::query()
             ->create(
-                $request->only(['name', 'price'])
+                Arr::only($data, ['name', 'price'])
             );
     }
 
-    public function updateApplianceType(Request $request, AssetType $appliance): AssetType {
-        $appliance->update($request->only(['name', 'price']));
+    public function updateApplianceType(array $data, AssetType $appliance): AssetType {
+        $appliance->update(Arr::only($data, ['name', 'price']));
         $appliance->fresh();
 
         return $appliance;
     }
 
-    public function deleteApplianceType(AssetType $applianceType): void {
-        $applianceType->delete();
+    public function deleteApplianceType(AssetType $applianceType): ?bool {
+        return $applianceType->delete();
     }
 }

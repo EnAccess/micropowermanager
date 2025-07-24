@@ -16,9 +16,8 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider {
             $this->publishConfigFiles();
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
-            $this->commands([InstallPackage::class]);
         }
-
+        $this->commands([InstallPackage::class]);
         Relation::morphMap(
             [
                 WaveComTransaction::RELATION_NAME => WaveComTransaction::class,

@@ -30,8 +30,8 @@ class ClusterEvent {
     /**
      * Create a new event instance.
      *
-     * @param Cluster $cluster
-     * @param string  $type
+     * @param Cluster              $cluster
+     * @param string               $type
      * @param array<string, mixed> $data
      */
     public function __construct(Cluster $cluster, string $type, array $data) {

@@ -58,6 +58,7 @@ class ApiResolverMap {
 
     /**
      * @param string $api
+     *
      * @return class-string
      */
     public function getApiResolver(string $api): string {

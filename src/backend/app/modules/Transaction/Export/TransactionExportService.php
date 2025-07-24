@@ -46,7 +46,7 @@ class TransactionExportService extends AbstractExportService {
         });
     }
 
-     /**
+    /**
      * @param Collection<int,  mixed> $transactionData
      */
     public function setTransactionData($transactionData): void {

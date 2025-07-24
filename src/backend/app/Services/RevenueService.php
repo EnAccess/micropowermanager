@@ -5,6 +5,7 @@ namespace App\Services;
 class RevenueService {
     /**
      * @param iterable<object> $targetData
+     *
      * @return array<string, array{
      *     new_connections: int,
      *     revenue: float,

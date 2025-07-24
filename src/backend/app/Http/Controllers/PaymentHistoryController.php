@@ -107,7 +107,7 @@ class PaymentHistoryController {
      * @param int|null $year
      *
      * @return array<int, float>
-     **/
+     */
     public function byYear(int $personId, ?int $year = null): array {
         $year = $year ?? (int) date('Y');
         $payments = $this->history->getPaymentFlow('person', $personId, $year);
@@ -182,11 +182,12 @@ class PaymentHistoryController {
 
     /**
      * @param mixed $payments
+     *
      * @return array<string, array<string, mixed>>
      *
      * @psalm-return array<string, array<string, mixed>>
      */
-    public function preparePaymentFlow($payments): array {
+    public function preparePaymentFlow(array $payments): array {
         $flowList = [];
         foreach ($payments as $payment) {
             $flowList[$payment['aperiod']][$payment['payment_type']] = $payment['amount'];

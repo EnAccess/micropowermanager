@@ -19,9 +19,10 @@ class PaymentHistoryService implements IAssociative {
     ) {}
 
     /**
-     * @param array<int> $customerIds
+     * @param array<int>      $customerIds
      * @param CarbonImmutable $startDate
      * @param CarbonImmutable $endDate
+     *
      * @return Collection<int, PaymentHistory>
      */
     public function findPayingCustomersInRange(

@@ -51,6 +51,7 @@ class DeviceService implements IBaseService, IAssociative {
     }
 
     /**
+     * @param Device               $device
      * @param array<string, mixed> $deviceData
      */
     public function update($device, array $deviceData): Device {

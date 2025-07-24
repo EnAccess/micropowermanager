@@ -6,7 +6,7 @@ use App\Sms\SmsTypes;
 
 abstract class SmsConfigsCore {
     /**
-     * @var array<int, string> $smsTypes
+     * @var array<int, string>
      */
     public array $smsTypes = [
         SmsTypes::TRANSACTION_CONFIRMATION => 'App\Sms\Senders\TransactionConfirmation',

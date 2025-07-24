@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
@@ -49,7 +50,7 @@ class SmsLoadBalancer extends AbstractJob {
      * @param array<mixed> $data
      */
     private function sendSms(array $data): string {
-        /** @var \Illuminate\Support\Collection<int, mixed> $smsCollection */
+        /** @var Collection<int, mixed> $smsCollection */
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);
         $httpClient = new Client();

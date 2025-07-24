@@ -13,7 +13,6 @@ use App\Models\Report;
 use App\Models\Target;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
-use Generator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -241,8 +240,8 @@ class Reports {
     }
 
     /**
-     * @param Worksheet                  $sheet
-     * @param string                     $dateRange
+     * @param Worksheet                   $sheet
+     * @param string                      $dateRange
      * @param Collection<int,Transaction> $transactions
      *
      * @throws CustomerGroupNotFound
@@ -464,9 +463,9 @@ class Reports {
     }
 
     /**
-     * @param string                       $connectionGroupName
-     * @param array<string, float>         $amount
-     * @param float|null                   $unit
+     * @param string               $connectionGroupName
+     * @param array<string, float> $amount
+     * @param float|null           $unit
      */
     private function addSoldTotal(string $connectionGroupName, array $amount, ?float $unit = null): void {
         if (!array_key_exists($connectionGroupName, $this->totalSold)) {
@@ -526,9 +525,9 @@ class Reports {
     }
 
     /**
-     * @return Generator<int, string, mixed, void>
+     * @return \Generator<int, string, mixed, void>
      */
-    private function excelColumnRange(string $lower, string $upper): Generator {
+    private function excelColumnRange(string $lower, string $upper): \Generator {
         ++$upper;
         for ($i = $lower; $i !== $upper; ++$i) {
             yield $i;
@@ -700,6 +699,7 @@ class Reports {
     /**
      * @param mixed                       $connectionGroupId
      * @param array{0: string, 1: string} $dateRange
+     *
      * @return array<int, array{connection_group_id: mixed, meter: string, revenue: float, tariff_price: float, total: float}>
      */
     public function sumOfTransactions(mixed $connectionGroupId, array $dateRange): array {
@@ -740,7 +740,7 @@ class Reports {
         }
     }
 
-    private function addStoredTargets(Worksheet $sheet, int $cityId, $endDate): void {
+    private function addStoredTargets(Worksheet $sheet, int $cityId, string $endDate): void {
         $targetData = $this->target::with('subTargets.connectionType')
             ->where('target_date', '>', $endDate)
             ->where('owner_type', 'mini-grid')

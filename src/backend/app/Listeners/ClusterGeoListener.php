@@ -47,7 +47,7 @@ class ClusterGeoListener {
     /**
      * Creates a json file which has the same name as the cluster.
      *
-     * @param Cluster $cluster
+     * @param Cluster              $cluster
      * @param array<string, mixed> $data
      */
     private function storeData(Cluster $cluster, array $data): void {

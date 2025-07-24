@@ -7,9 +7,9 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 class MailHelperMock implements MailHelperInterface {
     /**
-     * @param string $to
-     * @param string $title
-     * @param string $body
+     * @param string      $to
+     * @param string      $title
+     * @param string      $body
      * @param string|null $attachment
      *
      * @throws MailNotSentException
@@ -27,7 +27,7 @@ class MailHelperMock implements MailHelperInterface {
         string $title,
         string $templatePath,
         ?array $variables = null,
-        ?string $attachmentPath = null
+        ?string $attachmentPath = null,
     ): void {
         return;
     }

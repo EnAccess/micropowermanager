@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
-use App\Models\Device;
-use App\Models\PaymentHistory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 

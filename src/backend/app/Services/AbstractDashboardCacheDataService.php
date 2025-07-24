@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\DatabaseProxy;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 abstract class AbstractDashboardCacheDataService {

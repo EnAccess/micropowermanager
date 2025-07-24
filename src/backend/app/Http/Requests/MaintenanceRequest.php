@@ -24,7 +24,7 @@ class MaintenanceRequest extends FormRequest {
             'title' => 'sometimes|string',
             'name' => 'required|min:3',
             'surname' => 'required|min:3',
-            'birth_date' => 'sometimes|date_format:"Y-m-d',
+            'birth_date' => 'sometimes|date_format:"Y-m-d"',
             'sex' => 'sometimes|in:male,female',
             'education' => 'sometimes|min:3',
             'city_id' => 'sometimes|exists:tenant.cities,id',

@@ -6,3 +6,4 @@ data:
   APP_ENV: production
   APP_DEBUG: "false"
   MPM_LOAD_DEMO_DATA: "false"
+  TRUSTEDPROXY_PROXIES: 35.191.0.0/16,130.211.0.0/22

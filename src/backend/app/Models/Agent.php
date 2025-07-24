@@ -52,8 +52,6 @@ class Agent extends Authenticatable implements JWTSubject {
     protected $guarded = [];
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
      * @var array<int, string>
      */
     protected $hidden = [
@@ -70,9 +68,7 @@ class Agent extends Authenticatable implements JWTSubject {
     }
 
     /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
+     * @return int|string|null
      */
     public function getJWTIdentifier() {
         return $this->getKey();

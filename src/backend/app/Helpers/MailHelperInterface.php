@@ -25,6 +25,6 @@ interface MailHelperInterface {
         string $title,
         string $templatePath,
         ?array $variables = null,
-        ?string $attachmentPath = null
+        ?string $attachmentPath = null,
     ): void;
 }

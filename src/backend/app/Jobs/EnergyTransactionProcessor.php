@@ -88,7 +88,6 @@ class EnergyTransactionProcessor extends AbstractJob {
 
     private function payAccessRateIfExists(TransactionDataContainer $transactionData): TransactionDataContainer {
         if ($transactionData->transaction->amount > 0) {
-            // pay if necessary access rate
             $accessRatePayer = resolve('AccessRatePayer');
             $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();

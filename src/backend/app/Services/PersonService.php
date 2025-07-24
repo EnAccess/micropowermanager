@@ -92,7 +92,7 @@ class PersonService implements IBaseService {
         return $person;
     }
 
-     /**
+    /**
      * @return \Illuminate\Database\Query\Builder
      */
     public function livingInCluster(int $clusterId): \Illuminate\Database\Query\Builder {
