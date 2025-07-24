@@ -27,7 +27,7 @@ class PaymentProcessTests extends TestCase {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
-        ProcessPayment::dispatchNow($transaction->id);
+        ProcessPayment::dispatchSync($transaction->id);
         Queue::assertPushed(EnergyTransactionProcessor::class);
     }
 
@@ -35,7 +35,7 @@ class PaymentProcessTests extends TestCase {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
-        EnergyTransactionProcessor::dispatchNow($transaction);
+        EnergyTransactionProcessor::dispatchSync($transaction);
         Queue::assertPushed(TokenProcessor::class);
     }
 
@@ -44,7 +44,7 @@ class PaymentProcessTests extends TestCase {
         $this->initializeData();
         $transaction = $this->initializeTransaction();
         $transactionData = TransactionDataContainer::initialize($transaction);
-        TokenProcessor::dispatchNow($transactionData);
+        TokenProcessor::dispatchSync($transactionData);
         $tokensCount = Token::query()->get()->count();
         $this->assertEquals(1, $tokensCount);
         $mesombPaymentCount = PaymentHistory::query()
