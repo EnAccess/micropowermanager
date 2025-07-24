@@ -21,10 +21,10 @@ Prospect is a data analytics platform that allows you to import, analyze, and vi
 
 ### Step 1: Access Prospect Platform
 
-1. Navigate to the Prospect demo platform: `https://demo.prospect.energy/`
+1. Navigate to the Prospect demo platform: [https://demo.prospect.energy/](https://demo.prospect.energy/)
 2. Login using your provided email and password credentials
 
-![Prospect Login Page](images/prospect-login.png)
+![Prospect Login Page](images/prospect-login-page.png)
 
 ### Step 2: Navigate to Data Import
 
@@ -32,7 +32,7 @@ Prospect is a data analytics platform that allows you to import, analyze, and vi
 2. Navigate to the **Data** section in the main menu
 3. Select **Import** from the dropdown options
 
-![Prospect Dashboard](images/prospect-dashboard.png)
+![Prospect Dashboard](images/prospect-data-import.png)
 
 ## Project Setup
 
@@ -41,13 +41,13 @@ Prospect is a data analytics platform that allows you to import, analyze, and vi
 1. You'll see a page listing all existing projects with an option to create a new one
 2. Click the **"NEW PROJECT"** button to start creating a project
 
-![Projects List Page](images/projects-list.png)
+<!-- ![Projects List Page](images/projects-list.png) -->
 
 3. Provide the following information:
    - **Project Name**: Enter a descriptive name for your project
    - **Description**: Add relevant details about the project scope
 
-![New Project Creation](images/new-project-form.png)
+<!-- ![New Project Creation](images/new-project-form.png) -->
 
 4. Click **Create** to proceed
 
@@ -57,7 +57,7 @@ After project creation, you'll be redirected to the project page where you can c
 
 1. Click on the **"Create Datasource"** link to begin configuration
 
-![Project Page](images/project-page.png)
+<!-- ![Project Page](images/project-page.png) -->
 
 ## Data Source Configuration
 
@@ -67,7 +67,7 @@ After project creation, you'll be redirected to the project page where you can c
 2. You'll find this under the **"Other"** category in the datasources list
 3. Provide a descriptive name like `Test API Push Import`
 
-![Data Source Selection](images/datasource-selection.png)
+<!-- ![Data Source Selection](images/datasource-selection.png) -->
 
 4. Click **Next** to continue
 
@@ -81,7 +81,7 @@ Select the appropriate connection type based on the data you want to sync:
 
 For this guide, we'll select **Installations**.
 
-![Connection Type Selection](images/connection-type.png)
+<!-- ![Connection Type Selection](images/connection-type.png) -->
 
 ### Step 7: API Configuration Details
 
@@ -91,7 +91,7 @@ After selecting your connection type, you'll see the API configuration page with
 - **Documentation Link**: Access to full API documentation
 - **Authorization Details**: Bearer token for authentication
 
-![API Configuration](images/api-configuration.png)
+<!-- ![API Configuration](images/api-configuration.png) -->
 
 **Key Information Displayed:**
 - POST URL: `https://demo.prospect.energy/api/in/installations`
@@ -108,7 +108,7 @@ After selecting your connection type, you'll see the API configuration page with
    - **Organization**: Your organization details
    - **Secret**: API authentication token
 
-![Data Source Activation](images/datasource-activation.png)
+<!-- ![Data Source Activation](images/datasource-activation.png) -->
 
 ## Testing the Integration
 
@@ -191,7 +191,7 @@ Use the following JSON structure for your installation data:
 2. Verify the response indicates successful data import
 3. Check the Prospect platform to confirm data appears correctly
 
-![API Testing in Postman](images/postman-test.png)
+<!-- ![API Testing in Postman](images/postman-test.png) -->
 
 ## Data Field Descriptions
 
@@ -248,7 +248,7 @@ Use the following JSON structure for your installation data:
 2. Click on any project to view its associated data sources
 3. Monitor data source status and manage configurations as needed
 
-![Project Management](images/project-management.png)
+<!-- ![Project Management](images/project-management.png) -->
 
 ## Troubleshooting
 
