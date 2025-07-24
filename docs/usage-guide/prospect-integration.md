@@ -76,7 +76,7 @@ After project creation, you'll be redirected to the project page where you can c
 Select the appropriate connection type based on the data you want to sync:
 
 - **Installations** - For device installation data
-- **Agents** - For agent/merchant information  
+- **Agents** - For agent/merchant information
 - **Customers** - For customer profiles
 
 For this guide, we'll select **Installations**.
@@ -94,6 +94,7 @@ After selecting your connection type, you'll see the API configuration page with
 <!-- ![API Configuration](images/api-configuration.png) -->
 
 **Key Information Displayed:**
+
 - POST URL: `https://demo.prospect.energy/api/in/installations`
 - Authorization Header: `Bearer 99b90db993b83c303e4f7511977a8d46`
 - API Documentation: `https://demo.prospect.energy/api-docs/index.html`
@@ -117,9 +118,10 @@ After selecting your connection type, you'll see the API configuration page with
 Use an API client like Postman or cURL to test the data import:
 
 **Request Configuration:**
+
 - **Method**: POST
 - **URL**: `https://demo.prospect.energy/api/v1/in/installations`
-- **Headers**: 
+- **Headers**:
   - `Authorization: Bearer 99b90db993b83c303e4f7511977a8d46`
   - `Content-Type: application/json`
 
@@ -196,11 +198,13 @@ Use the following JSON structure for your installation data:
 ## Data Field Descriptions
 
 ### Customer & Agent Information
+
 - `customer_external_id`: Unique identifier for the customer
 - `seller_agent_external_id`: ID of the selling agent
 - `installer_agent_external_id`: ID of the installation agent
 
 ### Device Specifications
+
 - `device_external_id`: Unique device identifier
 - `product_common_id`: Product model/type identifier
 - `battery_capacity_wh`: Battery capacity in watt-hours
@@ -212,12 +216,14 @@ Use the following JSON structure for your installation data:
 - `firmware_version`: Current firmware version
 
 ### Usage Information
+
 - `usage_category`: Primary usage type (e.g., household, commercial)
 - `usage_sub_category`: Specific use case (e.g., farmer, clinic)
 - `device_category`: Device type (e.g., solar_home_system)
 - `primary_use`: Main application (e.g., cooking, lighting)
 
 ### Payment Plan Details
+
 - `payment_plan_cash_price`: Full cash price
 - `payment_plan_amount_financed_principal`: Principal amount financed
 - `payment_plan_amount_financed_interest`: Interest amount
@@ -228,6 +234,7 @@ Use the following JSON structure for your installation data:
 - `payment_plan_category`: Payment type (e.g., paygo, loan)
 
 ### Important Dates
+
 - `purchase_date`: Date of purchase
 - `installation_date`: Date of installation
 - `paid_off_date`: Date fully paid (if applicable)
@@ -235,8 +242,9 @@ Use the following JSON structure for your installation data:
 - `write_off_date`: Date of write-off (if applicable)
 
 ### Location Data
+
 - `latitude`: GPS latitude coordinate
-- `longitude`: GPS longitude coordinate  
+- `longitude`: GPS longitude coordinate
 - `country`: Country code
 - `location_area_1` through `location_area_5`: Hierarchical location data
 
@@ -284,6 +292,7 @@ For complete API reference and additional endpoints, visit:
 ## Support
 
 For technical support or questions regarding Prospect integration:
+
 - Review the API documentation
 - Check the Prospect platform help resources
 - Contact your system administrator for access-related issues
