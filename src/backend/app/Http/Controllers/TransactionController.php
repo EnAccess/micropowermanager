@@ -36,9 +36,7 @@ class TransactionController extends Controller {
         event(new TransactionSavedEvent($transactionProvider));
 
         if (isset($transaction->id)) {
-            ProcessPayment::dispatch($transaction->id)
-                ->allOnConnection('redis')
-                ->onQueue(config('services.queues.payment'));
+            ProcessPayment::dispatch($transaction->id);
         }
     }
 }

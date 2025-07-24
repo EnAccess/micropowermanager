@@ -31,15 +31,13 @@ Route::group(
                 TransactionDataContainer::initialize(Transaction::find($id)),
                 $recreate,
                 1
-            )->allOnConnection('redis')->onQueue(
-                config('services.queues.token')
             );
         })->where('id', '[0-9]+')->name('jobs.token');
 
         Route::get('energy/{id}', function () {
             $id = request('id');
             $transaction = Transaction::find($id);
-            EnergyTransactionProcessor::dispatch($transaction)->allOnConnection('redis')->onQueue('energy_payment');
+            EnergyTransactionProcessor::dispatch($transaction);
         });
     }
 );

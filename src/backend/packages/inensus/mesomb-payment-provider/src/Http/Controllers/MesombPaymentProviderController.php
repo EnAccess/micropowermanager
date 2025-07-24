@@ -16,14 +16,7 @@ class MesombPaymentProviderController extends Controller {
         // fire TransactionSavedEvent to confirm the transaction
         event(new TransactionSavedEvent($transactionProvider));
 
-        if (config('app.env') === 'production') {// production queue
-            $queue = 'payment';
-        } elseif (config('app.env') === 'demo') {
-            $queue = 'staging_payment';
-        } else { // local queue‚
-            $queue = 'local_payment';
-        }
-        ProcessPayment::dispatch($transaction->id)->allOnConnection('redis')->onQueue($queue);
+        ProcessPayment::dispatch($transaction->id);
 
         return new MesombTransactionProcessingResource($transaction->originalTransaction()->first());
     }

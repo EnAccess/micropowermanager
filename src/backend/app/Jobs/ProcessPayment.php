@@ -25,6 +25,9 @@ class ProcessPayment extends AbstractJob {
      * @param int $transactionId
      */
     public function __construct(int $transactionId) {
+        $this->onConnection('redis');
+        $this->onQueue('payment');
+
         $this->transactionId = $transactionId;
 
         parent::__construct(get_class($this));

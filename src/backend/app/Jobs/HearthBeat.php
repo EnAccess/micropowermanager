@@ -20,7 +20,11 @@ class HearthBeat implements ShouldQueue {
      *
      * @return void
      */
-    public function __construct() {}
+    public function __construct(
+    ) {
+        $this->onConnection('redis');
+        // $this->onQueue('default');
+    }
 
     /**
      * Execute the job.

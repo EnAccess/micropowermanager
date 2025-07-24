@@ -1,12 +1,12 @@
 <?php
 
 $queues = [
-    env('QUEUE_PAYMENT', 'payment'),
-    env('QUEUE_ENERGY', 'energy_payment'),
-    env('QUEUE_TOKEN', 'token'),
-    env('QUEUE_SMS', 'sms'),
-    env('QUEUE_REPORT', 'report_generator'),
-    env('QUEUE_MISC', 'misc'),
+    'payment',
+    'sms_gateway',
+    'sms',
+    'token',
+    'transaction_appliance',
+    'transaction_energy',
 ];
 
 return [
@@ -83,22 +83,14 @@ return [
             'supervisor-1' => [
                 'connection' => 'redis',
                 'queue' => $queues,
-                'balance' => 'simple',
-                'processes' => 10,
-                'tries' => 3,
-            ],
-        ],
-        'staging' => [
-            'supervisor-1' => [
-                'connection' => 'redis',
-                'queue' => $queues,
-                'balance' => 'simple',
-                'processes' => 10,
+                'balance' => 'auto',
+                'minProcesses' => 1,
+                'maxProcesses' => 10,
                 'tries' => 3,
             ],
         ],
 
-        'development' => [
+        'demo' => [
             'supervisor-1' => [
                 'connection' => 'redis',
                 'queue' => $queues,
@@ -109,7 +101,7 @@ return [
             ],
         ],
 
-        'local' => [
+        'development' => [
             'supervisor-1' => [
                 'connection' => 'redis',
                 'queue' => $queues,
