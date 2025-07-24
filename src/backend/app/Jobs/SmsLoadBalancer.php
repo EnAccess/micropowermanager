@@ -24,6 +24,9 @@ class SmsLoadBalancer extends AbstractJob {
     public array $smsBody;
 
     public function __construct(array $smsBody) {
+        $this->onConnection('redis');
+        $this->onQueue('sms_gateway');
+
         $this->smsBody = $smsBody;
         parent::__construct(get_class($this));
     }

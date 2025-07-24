@@ -55,9 +55,7 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService {
 
             TransactionDataContainer::initialize($baseTransaction);
 
-            ProcessPayment::dispatch($transaction->getId())
-                ->allOnConnection('redis')
-                ->onQueue(config('services.queues.payment'));
+            ProcessPayment::dispatch($transaction->getId());
         }
 
         return $skippedTransactions;
