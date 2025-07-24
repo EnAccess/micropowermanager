@@ -98,6 +98,13 @@ class UserDefaultDatabaseConnectionMiddleware {
         $path = $request->path();
         $method = $request->method();
 
+        if (Str::startsWith($path, [
+            'horizon',
+            'laravel-erd',
+        ])) {
+            return true;
+        }
+
         if ($method === 'GET') {
             return in_array($path, [
                 'api/micro-star-meters/test',
@@ -110,13 +117,6 @@ class UserDefaultDatabaseConnectionMiddleware {
 
         if ($method === 'POST') {
             return $path === 'api/companies';
-        }
-
-        if (Str::startsWith($path, [
-            'horizon',
-            'laravel-erd',
-        ])) {
-            return true;
         }
 
         return false;
