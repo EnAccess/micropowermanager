@@ -39,17 +39,17 @@ Prospect is a data analytics platform that allows you to import, analyze, and vi
 ### Step 3: Create a New Project
 
 1. You'll see a page listing all existing projects with an option to create a new one
-2. Click the **"NEW PROJECT"** button to start creating a project
+1. Click the **"NEW PROJECT"** button to start creating a project
 
 <!-- ![Projects List Page](images/projects-list.png) -->
 
-3. Provide the following information:
+1. Provide the following information:
    - **Project Name**: Enter a descriptive name for your project
    - **Description**: Add relevant details about the project scope
 
 <!-- ![New Project Creation](images/new-project-form.png) -->
 
-4. Click **Create** to proceed
+1. Click **Create** to proceed
 
 ### Step 4: Configure Data Source
 
@@ -64,12 +64,12 @@ After project creation, you'll be redirected to the project page where you can c
 ### Step 5: Select API Push Data Source
 
 1. Choose **API Push** from the available data source options
-2. You'll find this under the **"Other"** category in the datasources list
-3. Provide a descriptive name like `Test API Push Import`
+1. You'll find this under the **"Other"** category in the datasources list
+1. Provide a descriptive name like `Test API Push Import`
 
 <!-- ![Data Source Selection](images/datasource-selection.png) -->
 
-4. Click **Next** to continue
+1. Click **Next** to continue
 
 ### Step 6: Choose Connection Type
 
@@ -102,8 +102,8 @@ After selecting your connection type, you'll see the API configuration page with
 ### Step 8: Activate Data Source
 
 1. Click **Next** to proceed to activation
-2. Check the activation checkbox to enable the data source
-3. Review the data source configuration:
+1. Check the activation checkbox to enable the data source
+1. Review the data source configuration:
    - **State**: Active/Inactive status
    - **Data Category**: installations
    - **Organization**: Your organization details
