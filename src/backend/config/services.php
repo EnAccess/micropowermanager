@@ -27,14 +27,6 @@ return [
         ],
         'callback' => 'https://cloud.micropowermanager.com/api/sms-android-callback/%s/confirm/',
     ],
-    'queues' => [
-        'payment' => env('QUEUE_PAYMENT', 'payment'),
-        'energy' => env('QUEUE_ENERGY', 'energy_payment'),
-        'token' => env('QUEUE_TOKEN', 'token'),
-        'sms' => env('QUEUE_SMS', 'sms'),
-        'report' => env('QUEUE_REPORT', 'report_generator'),
-        'misc' => env('QUEUE_MISC', 'misc'),
-    ],
     'payment' => [
         'data-stream' => 'placeholder-url',
         'maintenance' => 'placeholder-url',
