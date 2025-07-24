@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $payer_type
  * @property int    $payer_id
  * @property int    $transaction_id
+ * @property-read \App\Models\AssetRate $paidFor
  *
  * @phpstan-type PaymentFlowData array{amount: int, payment_type: string, aperiod: string}
  * @phpstan-type PaymentMonthData array{amount: int, month: int}

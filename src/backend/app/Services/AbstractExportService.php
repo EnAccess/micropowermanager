@@ -19,6 +19,7 @@ abstract class AbstractExportService {
     protected IReader $reader;
     protected Worksheet $worksheet;
     protected Spreadsheet $spreadsheet;
+    /** @var Collection<int, mixed> */
     protected Collection $exportingData;
     protected string $currency;
     protected string $timeZone;
@@ -79,7 +80,7 @@ abstract class AbstractExportService {
         return $decimal ? "$whole.$decimal" : $whole;
     }
 
-    public function convertUtcDateToTimezone($utcDate): string {
+    public function convertUtcDateToTimezone(string|\DateTimeInterface|null $utcDate): string {
         // Create a DateTime object with the UTC-based date
         $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
 
@@ -119,6 +120,9 @@ abstract class AbstractExportService {
         }
     }
 
+    /**
+     * @param array<int, string> $headers
+     */
     public function saveCsv(array $headers = []): string {
         $uuid = Str::uuid()->toString();
         $filePath = storage_path('appliance/'.$this->getPrefix().'-'.$uuid.'.csv');

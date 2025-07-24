@@ -111,7 +111,7 @@ class MeterTariffController extends Controller {
     /**
      * Display a list of meters which using a particular tariff.
      *
-     * @param $meterTariffId
+     * @param int $meterTariffId
      *
      * @return ApiResource
      */

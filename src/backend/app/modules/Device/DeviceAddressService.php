@@ -37,6 +37,8 @@ class DeviceAddressService implements IAssignationService {
     }
 
     /**
+     * @param array{lat: float|string, lon: float|string} $addressData
+     *
      * @return Address
      */
     public function updateDeviceAddress(Address $deviceAddress, array $addressData): Address {

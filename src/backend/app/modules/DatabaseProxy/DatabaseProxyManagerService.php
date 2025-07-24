@@ -21,7 +21,7 @@ class DatabaseProxyManagerService {
         return $this->databaseProxy->findByEmail($email);
     }
 
-    public function runForCompany(int $companyId, callable $callable) {
+    public function runForCompany(int $companyId, callable $callable): mixed {
         $database = $this->companyDatabase->findByCompanyId($companyId);
         $this->buildDatabaseConnection($database->getDatabaseName());
 

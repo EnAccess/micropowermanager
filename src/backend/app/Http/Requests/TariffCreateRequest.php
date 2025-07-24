@@ -18,7 +18,7 @@ class TariffCreateRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, array<int, string>|string>
+     * @return array<string, string>
      */
     public function rules(): array {
         return [

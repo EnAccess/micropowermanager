@@ -14,7 +14,7 @@ class EnergyTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
     protected const TYPE = 'energy';
 
-    public function __construct(private int|string $transactionId) {
+    public function __construct(private int $transactionId) {
         $this->afterCommit = true;
         parent::__construct(get_class($this));
     }

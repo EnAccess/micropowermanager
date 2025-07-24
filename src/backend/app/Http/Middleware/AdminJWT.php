@@ -3,10 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class AdminJWT {
-    public function handle(Request $request, \Closure $next): Response {
+    public function handle(Request $request, \Closure $next): mixed {
         return $next($request);
     }
 }

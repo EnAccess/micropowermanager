@@ -36,6 +36,9 @@ class Token extends BaseModel {
         'device_id',
     ];
 
+    /**
+     * @return BelongsTo<Device, $this>
+     */
     public function device(): BelongsTo {
         return $this->belongsTo(Device::class);
     }
@@ -52,10 +55,16 @@ class Token extends BaseModel {
         return 'Token: '.$this->token;
     }
 
+    /**
+     * @return BelongsTo<Transaction, $this>
+     */
     public function transaction(): BelongsTo {
         return $this->belongsTo(Transaction::class);
     }
 
+    /**
+     * @return MorphOne<PaymentHistory, $this>
+     */
     public function paymentHistories(): MorphOne {
         return $this->morphOne(PaymentHistory::class, 'paid_for');
     }

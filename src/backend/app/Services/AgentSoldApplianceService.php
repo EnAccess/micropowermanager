@@ -122,7 +122,10 @@ class AgentSoldApplianceService implements IBaseService {
         }
     }
 
-    public function list($agentId) {
+    /**
+     * @return LengthAwarePaginator<AssetPerson>
+     */
+    public function list(int $agentId): LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates', 'asset.assetType'])
             ->whereHasMorph(
                 'creator',

@@ -14,7 +14,8 @@ interface ISettingsService {
     public function get(): ?Model;
 
     /**
-     * @param T $model
+     * @param T                    $model
+     * @param array<string, mixed> $data
      *
      * @return T
      */

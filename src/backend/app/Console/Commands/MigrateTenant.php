@@ -6,7 +6,7 @@ class MigrateTenant extends AbstractSharedCommand {
     protected $signature = 'migrate-tenant {--company-id=} {--force}';
     protected $description = 'Run the database migrations on provided tenant database(s)';
 
-    public function handle() {
+    public function handle(): void {
         $this->call('optimize:clear');
 
         $options = [

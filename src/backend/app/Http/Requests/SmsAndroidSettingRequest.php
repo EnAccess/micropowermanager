@@ -8,7 +8,7 @@ class SmsAndroidSettingRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function rules(): array {
         return [

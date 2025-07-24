@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -17,6 +18,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class TariffPricingComponent extends BaseModel {
     protected $guarded = [];
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function owner(): MorphTo {
         return $this->morphTo();
     }

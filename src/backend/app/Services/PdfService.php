@@ -12,7 +12,7 @@ class PdfService {
         $this->pdf = $pdf;
     }
 
-    public function generatePdfFromView(string $view, $dataToInject): string {
+    public function generatePdfFromView(string $view, mixed $dataToInject): string {
         $this->pdf->loadView($view, ['data' => $dataToInject]);
 
         $filePath = Storage::path('non-paying').time().'.pdf';

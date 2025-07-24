@@ -32,7 +32,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int    $company_id
  */
 class Agent extends Authenticatable implements JWTSubject {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<Agent>> */
+    /** @use HasFactory<\Database\Factories\AgentFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'agent';
@@ -77,9 +77,7 @@ class Agent extends Authenticatable implements JWTSubject {
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *
-     * @return array
-     *
-     * @psalm-return array{companyId: mixed}
+     * @return array<string, mixed>
      */
     public function getJWTCustomClaims(): array {
         return [
@@ -123,9 +121,9 @@ class Agent extends Authenticatable implements JWTSubject {
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @return MorphMany<Address, $this>
      */
-    public function addressDetails() {
+    public function addressDetails(): MorphMany {
         return $this->addresses()->with('city');
     }
 

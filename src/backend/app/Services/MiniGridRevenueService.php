@@ -6,6 +6,7 @@ use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use MPM\Device\MiniGridDeviceService;
 
 class MiniGridRevenueService {
     public function __construct(
@@ -20,7 +21,7 @@ class MiniGridRevenueService {
         int $miniGridId,
         ?string $startDate,
         ?string $endDate,
-        $miniGridDeviceService,
+        MiniGridDeviceService $miniGridDeviceService,
     ): Collection {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
@@ -46,7 +47,7 @@ class MiniGridRevenueService {
         int $miniGridId,
         ?string $startDate,
         ?string $endDate,
-        $miniGridDeviceService,
+        MeterService|MiniGridDeviceService $miniGridDeviceService,
     ): array {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');

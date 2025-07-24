@@ -53,7 +53,7 @@ class AccessRatePaymentService implements IBaseService {
         return $this->accessRatePayment->newQuery()->get();
     }
 
-    public function getAccessRatePaymentByMeter($meter): ?AccessRatePayment {
+    public function getAccessRatePaymentByMeter(mixed $meter): ?AccessRatePayment {
         return $meter->accessRatePayment()->first();
     }
 }

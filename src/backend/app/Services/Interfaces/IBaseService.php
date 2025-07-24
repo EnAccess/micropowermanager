@@ -17,7 +17,6 @@ interface IBaseService {
 
     /**
      * @param array<string, mixed> $data
-     *
      * @return T
      */
     public function create(array $data): Model;
@@ -25,7 +24,6 @@ interface IBaseService {
     /**
      * @param T                    $model
      * @param array<string, mixed> $data
-     *
      * @return T
      */
     public function update(Model $model, array $data): Model;
@@ -34,7 +32,7 @@ interface IBaseService {
     public function delete(Model $model): ?bool;
 
     /**
-     * @return Collection|LengthAwarePaginator
+     * @return Collection<int, T>|LengthAwarePaginator<T>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator;
 }

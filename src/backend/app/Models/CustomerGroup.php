@@ -9,10 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CustomerGroup extends BaseModel {
+    /**
+     * @return BelongsTo<MeterTariff, $this>
+     */
     public function tariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class);
     }
 
+    /**
+     * @return HasMany<Person, $this>
+     */
     public function customers(): HasMany {
         return $this->hasMany(Person::class);
     }

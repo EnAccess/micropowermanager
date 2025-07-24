@@ -15,6 +15,7 @@ class UserAddressService {
     }
 
     /**
+     * @param User                 $user
      * @param array<string, mixed> $data
      *
      * @return Address
@@ -35,7 +36,10 @@ class UserAddressService {
     }
 
     /**
+     * @param User                 $user
      * @param array<string, mixed> $data
+     *
+     * @return User
      */
     public function update(User $user, array $data): User {
         $user->name = $data['name'];
