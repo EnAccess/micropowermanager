@@ -21,6 +21,7 @@ class ThirdPartyTransaction extends BaseModel implements PaymentProviderTransact
      * @return MorphTo<BaseModel, $this>
      */
     public function manufacturerTransaction(): MorphTo {
+        /** @var MorphTo<BaseModel, $this> */
         return $this->morphTo();
     }
 

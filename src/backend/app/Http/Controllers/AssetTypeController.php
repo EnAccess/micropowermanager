@@ -36,7 +36,7 @@ class AssetTypeController extends Controller {
      * @return ApiResource
      */
     public function store(AssetTypeCreateRequest $request): ApiResource {
-        $appliance = $this->applianceTypeService->createApplianceType($request);
+        $appliance = $this->applianceTypeService->createApplianceType($request->validated());
 
         return new ApiResource($appliance);
     }
@@ -50,7 +50,7 @@ class AssetTypeController extends Controller {
      * @return ApiResource
      */
     public function update(AssetTypeUpdateRequest $request, AssetType $assetType): ApiResource {
-        $appliance = $this->applianceTypeService->updateApplianceType($request, $assetType);
+        $appliance = $this->applianceTypeService->updateApplianceType($request->validated(), $assetType);
 
         return new ApiResource($appliance);
     }

@@ -130,7 +130,8 @@ class MeterService implements IBaseService {
      * @return SupportCollection<int, object{connection_type_id: int, total: int}>
      */
     public function getNumberOfConnectionTypes(): SupportCollection {
-        return $this->meter->newQuery()->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
+        return DB::table('meters')
+            ->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
             ->select('connection_type_id', DB::raw('count(*) as total'))
             ->groupBy('connection_type_id')
             ->get();

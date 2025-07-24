@@ -181,11 +181,9 @@ class PaymentHistoryController {
     }
 
     /**
-     * @param mixed $payments
+     * @param array<mixed> $payments
      *
      * @return array<string, array<string, mixed>>
-     *
-     * @psalm-return array<string, array<string, mixed>>
      */
     public function preparePaymentFlow(array $payments): array {
         $flowList = [];

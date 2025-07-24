@@ -121,7 +121,7 @@ class ClusterRevenueService {
      * @param array<int, mixed>        $periods
      * @param string                   $period
      *
-     * @return array
+     * @return array<int, ClusterData>
      */
     public function getPeriodicRevenueForClustersOld(
         Collection $clusters,
@@ -284,9 +284,10 @@ class ClusterRevenueService {
     }
 
     /**
+     * @return array<int, MiniGridData>
      * @throws \Exception
      */
-    public function getMonthlyMiniGridBasedRevenueById(int $clusterId) {
+    public function getMonthlyMiniGridBasedRevenueById(int $clusterId): array {
         $startDate = date('Y-01-01');
         $endDate = date('Y-m-t');
         $period = 'monthly';
@@ -318,6 +319,7 @@ class ClusterRevenueService {
     }
 
     /**
+     * @return array<int, MiniGridData>
      * @throws \Exception
      */
     public function getMiniGridBasedRevenueById(
@@ -325,7 +327,7 @@ class ClusterRevenueService {
         string $startDate,
         string $endDate,
         string $period,
-    ) {
+    ): array {
         $clusterMiniGrids = $this->cluster->newQuery()->with('miniGrids')->find($clusterId);
         $miniGrids = $clusterMiniGrids->miniGrids;
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, ['revenue' => 0]);
