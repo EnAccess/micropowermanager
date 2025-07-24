@@ -127,7 +127,7 @@ class MeterService implements IBaseService {
     }
 
     /**
-     * @return SupportCollection<int, object{connection_type_id: int, total: int}>
+     * @return SupportCollection<int, \stdClass>
      */
     public function getNumberOfConnectionTypes(): SupportCollection {
         return DB::table('meters')

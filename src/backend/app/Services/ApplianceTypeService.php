@@ -27,6 +27,9 @@ class ApplianceTypeService {
         return $this->assetType->newQuery()->get();
     }
 
+    /**
+     * @param array{name?: string, price?: float|int} $data
+     */
     public function createApplianceType(array $data): AssetType {
         return $this->assetType::query()
             ->create(
@@ -34,6 +37,9 @@ class ApplianceTypeService {
             );
     }
 
+    /**
+     * @param array{name?: string, price?: float|int} $data
+     */
     public function updateApplianceType(array $data, AssetType $appliance): AssetType {
         $appliance->update(Arr::only($data, ['name', 'price']));
         $appliance->fresh();

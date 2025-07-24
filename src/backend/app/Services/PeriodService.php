@@ -10,7 +10,7 @@ class PeriodService {
      * @param                   $initialData
      * @param (int|int[])[]|int $initialData
      *
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws \Exception
      */

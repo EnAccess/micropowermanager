@@ -69,7 +69,7 @@ class User extends Authenticatable implements JWTSubject {
      *
      * @return mixed
      */
-    public function getJWTIdentifier() {
+    public function getJWTIdentifier(): mixed {
         return $this->getKey();
     }
 
@@ -99,7 +99,7 @@ class User extends Authenticatable implements JWTSubject {
     }
 
     /**
-     * @return HasMany<AgentBalanceHistory, User>
+     * @return HasMany<AgentBalanceHistory, $this>
      */
     public function balanceHistory(): HasMany {
         return $this->hasMany(AgentBalanceHistory::class);
