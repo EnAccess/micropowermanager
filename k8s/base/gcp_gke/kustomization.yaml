@@ -5,6 +5,7 @@ resources:
   - configmaps.yaml
   - redis.yaml
   - deployments.yaml
+  - mpm-storage-pvc.yaml
   - services.yaml
   - ingress.yaml
   - egress-nat-policy.yaml
