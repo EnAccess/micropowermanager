@@ -28,7 +28,7 @@ spec:
               subPath: ""
             - name: logs-data
               mountPath: /var/www/html/storage/logs
-              subPath: "logs"
+              subPath: logs
       volumes:
         - name: storage-data
           persistentVolumeClaim:
