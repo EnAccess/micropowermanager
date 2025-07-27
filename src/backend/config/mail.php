@@ -73,6 +73,10 @@ return [
         'array' => [
             'transport' => 'array',
         ],
+
+        'stdout' => [
+            'transport' => 'array',
+        ],
     ],
 
     /*

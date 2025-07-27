@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
-use App\Helpers\MailHelperMock;
+use App\Helpers\MailHelperStdout;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
@@ -94,8 +94,8 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register(): void {
-        if ($this->app->environment('development') || $this->app->environment('local')) {
-            $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
+        if ($this->app->environment('development') || $this->app->environment('local') || $this->app->environment('testing')) {
+            $this->app->singleton(MailHelperInterface::class, MailHelperStdout::class);
         } else {
             $this->app->singleton(MailHelperInterface::class, MailHelper::class);
         }

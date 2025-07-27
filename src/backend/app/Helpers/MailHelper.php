@@ -42,15 +42,15 @@ class MailHelper implements MailHelperInterface {
     }
 
     /**
-     * @param       $to
-     * @param       $title
-     * @param       $body
-     * @param mixed $attachment
+     * @param             $to
+     * @param             $title
+     * @param             $body
+     * @param string|null $attachment
      *
      * @throws MailNotSentException
      * @throws PHPMailerException
      */
-    public function sendPlain($to, $title, $body, $attachment = null): void {
+    public function sendPlain($to, $title, $body, ?string $attachment = null): void {
         if (config('app.env') != 'production') {
             Log::warning('Sending Email is only supported in `production` mode. Running `'.config('app.env').'`');
 
