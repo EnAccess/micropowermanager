@@ -6,7 +6,7 @@ abstract class SmsBodyParser {
     /** @var array<int, string> */
     protected $variables;
 
-    public function parseSms($body): string {
+    public function parseSms(mixed $body): string {
         foreach ($this->variables as $variable) {
             $body = str_replace('['.$variable.']', $this->getVariableValue($variable), $body);
         }

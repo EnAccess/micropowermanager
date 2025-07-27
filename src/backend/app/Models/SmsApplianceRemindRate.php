@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SmsApplianceRemindRate extends BaseModel {
     protected $table = 'sms_appliance_remind_rates';
 
+    /**
+     * @return BelongsTo<Asset, $this>
+     */
     public function appliance(): BelongsTo {
         return $this->belongsTo(Asset::class, 'appliance_id', 'id');
     }

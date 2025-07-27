@@ -37,9 +37,10 @@ use Inensus\Ticket\Models\Ticket;
  * @property string $name
  * @property string $surname
  * @property mixed  $birth_date
- * @property string $sex         TODO: replace with gender
+ * @property string $sex                  TODO: replace with gender
  * @property int    $nationality
  * @property int    $is_customer
+ * @property mixed  $agent_sold_appliance
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     use HasFactory;

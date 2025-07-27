@@ -9,11 +9,11 @@ class PersonMeterService {
         private Person $person,
     ) {}
 
-    public function getPersonMeters(int $personId) {
+    public function getPersonMeters(int $personId): Person {
         return $this->person->newQuery()->with(['devices.device', 'devices.device.tariff'])->find($personId);
     }
 
-    public function getPersonMetersGeographicalInformation(int $personId) {
+    public function getPersonMetersGeographicalInformation(int $personId): Person {
         return $this->person->newQuery()->with(['devices.device', 'devices.address.geo'])->find($personId);
     }
 }

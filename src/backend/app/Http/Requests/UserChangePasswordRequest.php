@@ -10,16 +10,16 @@ class UserChangePasswordRequest extends FormRequest {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, mixed>
+     * @return array<string, string|array<int, string>>
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'password' => 'required|min:5|max:15',
             'confirm_password' => 'required|same:password',

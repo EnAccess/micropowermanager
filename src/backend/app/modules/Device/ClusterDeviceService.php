@@ -15,6 +15,9 @@ class ClusterDeviceService {
             ->count();
     }
 
+    /**
+     * @return Collection<int, Device>
+     */
     public function getByClusterId(int $clusterId): Collection {
         return $this->device->newQuery()
             ->with('device')
@@ -22,6 +25,9 @@ class ClusterDeviceService {
             ->get();
     }
 
+    /**
+     * @return Collection<int, Device>
+     */
     public function getMetersByClusterId(int $clusterId): Collection {
         return $this->device->newQuery()
             ->whereHasMorph(

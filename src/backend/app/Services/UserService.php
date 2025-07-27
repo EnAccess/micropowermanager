@@ -107,7 +107,7 @@ class UserService {
     }
 
     /**
-     * @return array{email: string, password: string}
+     * @return array<string, mixed>
      */
     public function resetAdminPassword(): array {
         /** @var User $user */

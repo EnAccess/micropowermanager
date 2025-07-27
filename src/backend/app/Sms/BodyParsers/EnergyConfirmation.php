@@ -6,13 +6,14 @@ use App\Models\PaymentHistory;
 
 class EnergyConfirmation extends SmsBodyParser {
     protected $variables = ['meter', 'token', 'energy', 'amount'];
-    protected $paymentHistory;
+    protected PaymentHistory $paymentHistory;
 
     public function __construct(PaymentHistory $paymentHistory) {
         $this->paymentHistory = $paymentHistory;
     }
 
-    protected function getVariableValue($variable): mixed {
+    protected function getVariableValue(mixed $variable): mixed {
+        /** @var mixed $token */
         $token = $this->paymentHistory->paidFor()->first();
         $transaction = $this->paymentHistory->transaction()->first();
         switch ($variable) {

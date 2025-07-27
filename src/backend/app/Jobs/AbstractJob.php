@@ -21,14 +21,8 @@ abstract class AbstractJob implements ShouldQueue {
     protected CompanyJob $companyJob;
     public ?string $parentId = null;
 
-    /**
-     * Execute the job logic. Child classes must implement this.
-     */
     abstract public function executeJob(): void;
 
-    /**
-     * AbstractJob constructor.
-     */
     public function __construct(string $jobName) {
         $this->afterCommit = true;
         $this->companyId = app()->make(UserService::class)->getCompanyId();

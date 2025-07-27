@@ -81,7 +81,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<AgentSoldAppliance>
+     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<AgentSoldAppliance>|LengthAwarePaginator<AssetPerson>
      */
     public function getAll(
         ?int $limit = null,
@@ -122,7 +122,10 @@ class AgentSoldApplianceService implements IBaseService {
         }
     }
 
-    public function list($agentId) {
+    /**
+     * @return LengthAwarePaginator<AssetPerson>
+     */
+    public function list(int $agentId): LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates', 'asset.assetType'])
             ->whereHasMorph(
                 'creator',

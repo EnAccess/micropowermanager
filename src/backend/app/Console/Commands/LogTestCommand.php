@@ -9,7 +9,7 @@ class LogTestCommand extends Command {
     protected $signature = 'log:test';
     protected $description = 'Generate test log messages with different levels';
 
-    public function handle() {
+    public function handle(): void {
         $this->info('Generating log messages...');
 
         Log::debug('This is a DEBUG message');

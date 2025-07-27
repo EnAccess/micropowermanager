@@ -11,7 +11,7 @@ class MeterTypeResource extends JsonResource {
      *
      * @param Request $request
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($request) {
         return parent::toArray($request);

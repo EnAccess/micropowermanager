@@ -13,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * Class AssetPerson.
  *
- * @property int $asset_type_id
- * @property int $person_id
- * @property int $total_cost
- * @property int $down_payment
- * @property int $rate_count
+ * @property int            $asset_type_id
+ * @property int            $person_id
+ * @property int            $total_cost
+ * @property int            $down_payment
+ * @property int            $rate_count
+ * @property AssetType|null $assetType
  */
 class AssetPerson extends BaseModel {
     /** @var array<string, string> */
