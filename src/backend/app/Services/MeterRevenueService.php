@@ -70,7 +70,7 @@ class MeterRevenueService {
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction\Transaction>
+     * @return \Illuminate\Database\Eloquent\Collection<int, Transaction>
      */
     public function getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
         string $cityIds,

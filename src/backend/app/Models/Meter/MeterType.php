@@ -3,9 +3,9 @@
 namespace App\Models\Meter;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\Meter\MeterTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Database\Factories\Meter\MeterTypeFactory;
 
 /**
  * @property int    $id
@@ -19,15 +19,14 @@ class MeterType extends BaseModel {
     /** @use HasFactory<MeterTypeFactory> */
     use HasFactory;
 
-    /** @var array<string, string> */
-    public static array $rules = [
+    public static $rules = [
         'online' => 'required',
         'phase' => 'required',
         'max_current' => 'required',
     ];
 
     /**
-     * @return HasMany<Meter, MeterType>
+     * @return HasMany<Meter, $this>
      */
     public function meters(): HasMany {
         return $this->hasMany(Meter::class);

@@ -351,11 +351,11 @@ class Reports {
     /**
      * Add the breakdown of the transaction amount into the right place on the spreadsheet.
      *
-     * @param Worksheet             $sheet
-     * @param Collection<int,mixed> $paymentHistories
-     * @param int                   $index
-     * @param string                $connectionGroupName
-     * @param mixed                 $tariff
+     * @param Worksheet                       $sheet
+     * @param Collection<int, PaymentHistory> $paymentHistories
+     * @param int                             $index
+     * @param string                          $connectionGroupName
+     * @param mixed                           $tariff
      *
      * @throws CustomerGroupNotFound
      */

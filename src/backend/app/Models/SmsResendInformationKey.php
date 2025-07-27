@@ -6,8 +6,7 @@ use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SmsResendInformationKey extends BaseModel
-{
+class SmsResendInformationKey extends BaseModel {
     /** @use HasFactory<Factory<SmsResendInformationKey>> */
     use HasFactory;
 

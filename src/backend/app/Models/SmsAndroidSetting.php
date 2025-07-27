@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * @property int $id
+ *
  * @use HasFactory<\Database\Factories\SmsAndroidSettingFactory>
  */
 class SmsAndroidSetting extends BaseModel {

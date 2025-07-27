@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Inensus\Ticket\Models\Ticket;
 
-/**
- * @extends BaseModel
- */
 class MaintenanceUsers extends BaseModel {
     /** @use HasFactory<\Database\Factories\MaintenanceUsersFactory> */
     use HasFactory;

@@ -81,7 +81,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<AgentSoldAppliance>
+     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<AgentSoldAppliance>|LengthAwarePaginator<AssetPerson>
      */
     public function getAll(
         ?int $limit = null,

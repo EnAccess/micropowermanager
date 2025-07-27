@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property string|null $tail_tag
  * @property string|null $installation_command
+ *
  * @use HasFactory<\Database\Factories\MpmPluginFactory>
  */
 class MpmPlugin extends BaseModelCentral {

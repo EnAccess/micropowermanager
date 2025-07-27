@@ -21,7 +21,7 @@ class MiniGridRevenueService {
         int $miniGridId,
         ?string $startDate,
         ?string $endDate,
-        MiniGridDeviceService $miniGridDeviceService,
+        MeterService|MiniGridDeviceService $miniGridDeviceService,
     ): Collection {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');

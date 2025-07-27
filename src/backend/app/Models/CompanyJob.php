@@ -11,7 +11,8 @@ class CompanyJob extends BaseModelCentral {
     public const STATUS_FAILED = -1;
 
     /**
-     * Has one company
+     * Has one company.
+     *
      * @return BelongsTo<Company, $this>
      */
     public function company(): BelongsTo {

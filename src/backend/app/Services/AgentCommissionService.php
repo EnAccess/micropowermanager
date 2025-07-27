@@ -34,7 +34,7 @@ class AgentCommissionService implements IBaseService {
         return $this->agentCommission->newQuery()->find($id);
     }
 
-     /**
+    /**
      * @return Collection<int, AgentCommission>|LengthAwarePaginator<AgentCommission>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {

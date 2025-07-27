@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 interface IAssociative {
     /**
      * @param array<string, mixed> $data
+     *
      * @return T
      */
     public function make(array $data): Model;

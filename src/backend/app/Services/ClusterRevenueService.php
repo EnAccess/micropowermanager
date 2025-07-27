@@ -118,7 +118,7 @@ class ClusterRevenueService {
      * @param Collection<int, Cluster> $clusters
      * @param string                   $startDate
      * @param string                   $endDate
-     * @param array<int, mixed>        $periods
+     * @param array<string, mixed>     $periods
      * @param string                   $period
      *
      * @return array<int, ClusterData>
@@ -285,6 +285,7 @@ class ClusterRevenueService {
 
     /**
      * @return array<int, MiniGridData>
+     *
      * @throws \Exception
      */
     public function getMonthlyMiniGridBasedRevenueById(int $clusterId): array {
@@ -315,11 +316,12 @@ class ClusterRevenueService {
             $miniGrids[$miniGridIndex]['totalRevenue'] = $totalRevenue;
         }
 
-        return $miniGrids;
+        return $miniGrids->toArray();
     }
 
     /**
      * @return array<int, MiniGridData>
+     *
      * @throws \Exception
      */
     public function getMiniGridBasedRevenueById(
@@ -355,7 +357,7 @@ class ClusterRevenueService {
             $miniGrids[$miniGridIndex]['totalRevenue'] = $totalRevenue;
         }
 
-        return $miniGrids;
+        return $miniGrids->toArray();
     }
 
     /**
