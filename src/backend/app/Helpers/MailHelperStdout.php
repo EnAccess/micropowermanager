@@ -16,7 +16,7 @@ class MailHelperStdout implements MailHelperInterface {
      * @throws MailNotSentException
      * @throws PHPMailerException
      */
-    public function sendPlain($to, $title, $body, $attachment = null): void {
+    public function sendPlain($to, $title, $body, ?string $attachment = null): void {
         $this->outputEmail($to, $title, $body, $attachment);
     }
 
