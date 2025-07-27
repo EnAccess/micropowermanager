@@ -42,9 +42,9 @@ class MailHelper implements MailHelperInterface {
     }
 
     /**
-     * @param       $to
-     * @param       $title
-     * @param       $body
+     * @param             $to
+     * @param             $title
+     * @param             $body
      * @param string|null $attachment
      *
      * @throws MailNotSentException
