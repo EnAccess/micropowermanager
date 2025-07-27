@@ -104,7 +104,7 @@ export default {
     async saveUser() {
       let validator = await this.$validator.validateAll()
       this.firstStepClicked = true
-      if (!this.phone.valid) return 
+      if (!this.phone.valid) return
 
       if (validator) {
         this.loading = true

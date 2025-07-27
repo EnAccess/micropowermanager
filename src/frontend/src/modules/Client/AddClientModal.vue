@@ -283,7 +283,7 @@ export default {
   },
   methods: {
     async save() {
-      this.firstStepClicked = true  
+      this.firstStepClicked = true
       const validator = await this.$validator.validateAll("customer-add-form")
       if (!validator) return
 
