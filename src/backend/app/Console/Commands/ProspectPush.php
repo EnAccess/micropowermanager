@@ -22,9 +22,6 @@ class ProspectPush extends AbstractSharedCommand
      */
     protected $description = 'Push installation data to Prospect';
 
-    private const PROSPECT_API_URL = 'https://demo.prospect.energy/api/v1/in/installations';
-    private const PROSPECT_API_TOKEN = '';
-
     /**
      * Create a new command instance.
      *
@@ -56,8 +53,8 @@ class ProspectPush extends AbstractSharedCommand
             return;
         }
 
-        $response = Http::withToken(self::PROSPECT_API_TOKEN)
-            ->post(self::PROSPECT_API_URL, $jsonData);
+        $response = Http::withToken(env('PROSPECT_API_TOKEN'))
+            ->post(env('PROSPECT_API_URL'), $jsonData);
 
         if($response->successful()) {
             $this->info("Data pushed to Prospect successfully.");
