@@ -23,7 +23,7 @@ class ProspectPush extends AbstractSharedCommand
     protected $description = 'Push installation data to Prospect';
 
     private const PROSPECT_API_URL = 'https://demo.prospect.energy/api/v1/in/installations';
-    private const PROSPECT_API_TOKEN = '99b90db993b83c303e4f7511977a8d46';
+    private const PROSPECT_API_TOKEN = '';
 
     /**
      * Create a new command instance.
