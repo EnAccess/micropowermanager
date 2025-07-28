@@ -66,11 +66,10 @@ After project creation, you'll be redirected to the project page where you can c
 1. Choose **API Push** from the available data source options
 2. You'll find this under the **"Other"** category in the datasources list
 3. Provide a descriptive name like `Test API Push Import`
+4. Click **Next** to continue
 
 ![Data Source Selection](images/prospect-datasource-selection.png)
 ![Data Source Selection Other](images/propsect-datasource-selection-other.png)
-
-4. Click **Next** to continue
 
 ### Step 6: Choose Connection Type
 
