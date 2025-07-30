@@ -15,7 +15,7 @@ class ConnectionTypeController extends Controller {
         return ApiResource::make($this->connectionTypeService->getAll($limit));
     }
 
-    public function show($connectionTypeId, Request $request): ApiResource {
+    public function show(int $connectionTypeId, Request $request): ApiResource {
         $meterCountRelation = $request->input('meter_count');
 
         if ($meterCountRelation) {
@@ -31,7 +31,7 @@ class ConnectionTypeController extends Controller {
         return ApiResource::make($this->connectionTypeService->create($connectionTypeData));
     }
 
-    public function update($connectionTypeId, Request $request): ApiResource {
+    public function update(int $connectionTypeId, Request $request): ApiResource {
         $connectionTypeData = $request->all();
         $connectionType = $this->connectionTypeService->getById($connectionTypeId);
 

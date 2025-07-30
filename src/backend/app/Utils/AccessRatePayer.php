@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Events\PaymentSuccessEvent;
 use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Transaction\Transaction;
@@ -18,7 +19,7 @@ class AccessRatePayer {
         $this->debtAmount = self::MINIMUM_AMOUNT;
     }
 
-    public function initialize(TransactionDataContainer $container) {
+    public function initialize(TransactionDataContainer $container): void {
         $meter = $container->device->device;
         $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($meter);
 
@@ -31,7 +32,7 @@ class AccessRatePayer {
         $this->transaction = $container->transaction;
     }
 
-    public function pay() {
+    public function pay(): TransactionDataContainer {
         $meter = $this->transactionData->device->device;
         $owner = $this->transactionData->device->person;
         if ($this->debtAmount > self::MINIMUM_AMOUNT) { // there is unpaid amount
@@ -45,22 +46,21 @@ class AccessRatePayer {
 
             $this->accessRatePaymentService->update($this->accessRatePayment, ['debt' => $this->debtAmount]);
             $this->transactionData->accessRateDebt = $this->debtAmount;
-            // add payment history for the client
-            event('payment.successful', [
-                'amount' => $this->debtAmount,
-                'paymentService' => $this->transactionData->transaction->original_transaction_type,
-                'paymentType' => 'access rate',
-                'sender' => $this->transactionData->transaction->sender,
-                'paidFor' => method_exists($meter, 'accessRate') ? $meter->accessRate() : null,
-                'payer' => $owner,
-                'transaction' => $this->transactionData->transaction,
-            ]);
+            event(new PaymentSuccessEvent(
+                amount: $this->debtAmount,
+                paymentService: $this->transactionData->transaction->original_transaction_type,
+                paymentType: 'access rate',
+                sender: $this->transactionData->transaction->sender,
+                paidFor: method_exists($meter, 'accessRate') ? $meter->accessRate() : null,
+                payer: $owner,
+                transaction: $this->transactionData->transaction,
+            ));
         }
 
         return $this->transactionData;
     }
 
-    public function consumeAmount() {
+    public function consumeAmount(): int {
         $this->transaction->amount = (int) ($this->transaction->amount - $this->debtAmount);
 
         return $this->transaction->amount;

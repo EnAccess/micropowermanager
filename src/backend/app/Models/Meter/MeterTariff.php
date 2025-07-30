@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class MeterTariff extends BaseModel {
     use SoftDeletes;
+
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
 
     public const RELATION_NAME = 'meter_tariff';
@@ -35,32 +37,39 @@ class MeterTariff extends BaseModel {
     protected $table = 'meter_tariffs';
     protected $guarded = [];
 
+    /** @return HasMany<Meter, $this> */
     public function meters(): HasMany {
         return $this->hasMany(Meter::class, 'tariff_id');
     }
 
-    public function metersCount() {
+    /** @return HasMany<Meter, $this> */
+    public function metersCount(): HasMany {
         return $this->meters()
             ->selectRaw('tariff_id, count(*) as aggregate')
             ->groupBy('tariff_id');
     }
 
+    /** @return HasMany<CustomerGroup, $this> */
     public function customerGroups(): HasMany {
         return $this->hasMany(CustomerGroup::class, 'tariff_id');
     }
 
+    /** @return HasOne<AccessRate, $this> */
     public function accessRate(): HasOne {
         return $this->hasOne(AccessRate::class, 'tariff_id');
     }
 
+    /** @return MorphMany<TariffPricingComponent, $this> */
     public function pricingComponent(): MorphMany {
         return $this->morphMany(TariffPricingComponent::class, 'owner');
     }
 
+    /** @return HasOne<SocialTariff, $this> */
     public function socialTariff(): HasOne {
         return $this->hasOne(SocialTariff::class, 'tariff_id');
     }
 
+    /** @return HasMany<TimeOfUsage, $this> */
     public function tou(): HasMany {
         return $this->hasMany(TimeOfUsage::class, 'tariff_id');
     }

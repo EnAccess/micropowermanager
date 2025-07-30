@@ -19,7 +19,7 @@ export class AppliancePaymentService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message[0]
+      const errorMessage = e.response.data.message[0]
       return new ErrorHandler(errorMessage, "http")
     }
   }

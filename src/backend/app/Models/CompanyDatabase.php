@@ -13,16 +13,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int    $company_id;
  */
 class CompanyDatabase extends BaseModelCentral {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
 
     public const TABLE_NAME = 'company_databases';
     public const COL_DATABASE_NAME = 'database_name';
     public const COL_COMPANY_ID = 'company_id';
 
+    /** @return BelongsTo<Company, $this> */
     public function company(): BelongsTo {
         return $this->belongsTo(Company::class);
     }
 
+    /** @return HasMany<DatabaseProxy, $this> */
     public function databaseProxies(): HasMany {
         return $this->hasMany(DatabaseProxy::class);
     }

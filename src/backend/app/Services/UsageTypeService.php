@@ -15,7 +15,14 @@ class UsageTypeService implements IBaseService {
         private UsageType $usageType,
     ) {}
 
+    /**
+     * @return Collection<int, UsageType>|LengthAwarePaginator<UsageType>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
+        if ($limit) {
+            return $this->usageType->newQuery()->paginate($limit);
+        }
+
         return $this->usageType->newQuery()->get();
     }
 
@@ -23,6 +30,9 @@ class UsageTypeService implements IBaseService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): UsageType {
         throw new \Exception('Method create() not yet implemented.');
     }

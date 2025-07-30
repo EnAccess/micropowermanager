@@ -11,6 +11,7 @@
  * |.
  */
 
+use App\Events\TransactionSuccessfulEvent;
 use App\Http\Controllers\HomeController;
 use App\Jobs\EnergyTransactionProcessor;
 use App\Jobs\TokenProcessor;
@@ -57,7 +58,7 @@ Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
         $transaction = Transaction::find($id);
 
         // fire event which confirms the transaction
-        event('transaction.successfull', [$transaction]);
+        event(new TransactionSuccessfulEvent($transaction));
     })->where('id', '[0-9]+');
 });
 

@@ -58,7 +58,7 @@ export class ManufacturerService {
 
       return this.list
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

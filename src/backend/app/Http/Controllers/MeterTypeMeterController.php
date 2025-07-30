@@ -22,7 +22,7 @@ class MeterTypeMeterController extends Controller {
      *
      * @return ApiResource
      */
-    public function show(Request $request, $meterTypeId) {
+    public function show(Request $request, int $meterTypeId) {
         return ApiResource::make($this->meterTypeMeterService->getByIdWithMeters($meterTypeId));
     }
 }

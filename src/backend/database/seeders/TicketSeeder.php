@@ -169,6 +169,7 @@ class TicketSeeder extends Seeder {
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
         $ticketUser = (new TicketUserFactory())->create();
         $randomMaintenanceUser = MaintenanceUsers::inRandomOrder()->first();
+        $randomUser = User::inRandomOrder()->first();
         $randomPerson = Person::inRandomOrder()->where('is_customer', 1)->first();
         $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
@@ -186,7 +187,7 @@ class TicketSeeder extends Seeder {
         ]);
 
         if ($randomCategory->out_source) {
-            $ticket->assigned_id = null;
+            $ticket->assigned_id = $randomUser->id;
             $ticket->owner_id = $randomMaintenanceUser->id;
             $ticket->owner_type = 'maintenance_user';
             $ticket->save();

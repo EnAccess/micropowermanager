@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\SmsStoredEvent;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsResendInformationKeyService;
 use App\Services\SmsService;
@@ -10,9 +11,9 @@ use App\Sms\SmsTypes;
 use Illuminate\Support\Facades\Log;
 
 class SmsListener {
-    private $smsResendInformationKeyService;
-    private $transaction;
-    private $smsService;
+    private SmsResendInformationKeyService $smsResendInformationKeyService;
+    private Transaction $transaction;
+    private SmsService $smsService;
 
     public function __construct(
         SmsResendInformationKeyService $smsResendInformationKeyService,
@@ -24,7 +25,7 @@ class SmsListener {
         $this->smsService = $smsService;
     }
 
-    public function onSmsStored($sender, $message) {
+    public function onSmsStored(string $sender, string $message): void {
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first();
 
         if (!$resendInformationKey) {
@@ -39,14 +40,14 @@ class SmsListener {
                 $transaction = $this->transaction->newQuery()->with('paymentHistories', 'device.person')
                     ->where('message', $meterSerial)->latest()->firstOrFail();
 
-                $this->smsService->sendSms($transaction, SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
+                $this->smsService->sendSms($transaction->toArray(), SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
             } catch (\Exception $ex) {
                 Log::error('Sms resend failed to '.$sender, ['message : ' => $ex->getMessage()]);
             }
         }
     }
 
-    public function handle($sender, $message) {
-        $this->onSmsStored($sender, $message);
+    public function handle(SmsStoredEvent $event): void {
+        $this->onSmsStored($event->sender, $event->message);
     }
 }

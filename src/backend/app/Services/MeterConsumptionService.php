@@ -15,7 +15,10 @@ class MeterConsumptionService implements IBaseService {
         private MeterConsumption $meterConsumption,
     ) {}
 
-    public function getByMeter(Meter $meter, $start, $end): Collection|array {
+    /**
+     * @return Collection<int, MeterConsumption>
+     */
+    public function getByMeter(Meter $meter, string $start, string $end): Collection {
         return $this->meterConsumption->newQuery()
             ->where('meter_id', $meter->id)->whereBetween(
                 'reading_date',
@@ -27,10 +30,16 @@ class MeterConsumptionService implements IBaseService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): MeterConsumption {
         throw new \Exception('Method create() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): MeterConsumption {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -39,6 +48,9 @@ class MeterConsumptionService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, MeterConsumption>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

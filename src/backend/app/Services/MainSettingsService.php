@@ -9,6 +9,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Crypt;
 
 /**
+ * @phpstan-type MainSettingsData array{
+ *     name?: string,
+ *     value?: string,
+ *     description?: string,
+ *     protected_page_password?: string,
+ *     is_active?: bool,
+ *     created_at?: string,
+ *     updated_at?: string
+ * }
+ *
  * @implements IBaseService<MainSettings>
  */
 // FIXME: Should this not be a ISettingsService?
@@ -21,6 +31,9 @@ class MainSettingsService implements IBaseService {
         return $this->mainSettings->newQuery()->findOrFail($id);
     }
 
+    /**
+     * @param MainSettingsData $data
+     */
     public function create(array $data): MainSettings {
         if (isset($data['protected_page_password'])) {
             $data['protected_page_password'] = Crypt::encrypt($data['protected_page_password']);
@@ -44,6 +57,9 @@ class MainSettingsService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, MainSettings>|LengthAwarePaginator<MainSettings>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->mainSettings->newQuery()->get();
     }

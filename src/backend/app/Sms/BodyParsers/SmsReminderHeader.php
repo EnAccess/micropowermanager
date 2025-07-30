@@ -5,14 +5,16 @@ namespace App\Sms\BodyParsers;
 use App\Models\AssetRate;
 
 class SmsReminderHeader extends SmsBodyParser {
+    /** @var array<int, string> */
     protected $variables = ['name', 'surname'];
-    protected $reminderData;
+
+    protected AssetRate $reminderData;
 
     public function __construct(AssetRate $reminderData) {
         $this->reminderData = $reminderData;
     }
 
-    protected function getVariableValue($variable): mixed {
+    protected function getVariableValue(string $variable): mixed {
         $person = $this->reminderData->assetPerson->person;
         switch ($variable) {
             case 'name':

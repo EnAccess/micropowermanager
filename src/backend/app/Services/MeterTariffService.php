@@ -23,10 +23,16 @@ class MeterTariffService implements IBaseService {
             ->findOrFail($meterTariffId);
     }
 
+    /**
+     * @param array<string, mixed> $meterTariffData
+     */
     public function create(array $meterTariffData): MeterTariff {
         return $this->meterTariff->newQuery()->create($meterTariffData);
     }
 
+    /**
+     * @param array<string, mixed> $meterTariffData
+     */
     public function update($meterTariff, array $meterTariffData): MeterTariff {
         $meterTariff->update(
             $meterTariffData
@@ -40,6 +46,9 @@ class MeterTariffService implements IBaseService {
         return $meterTariff->delete();
     }
 
+    /**
+     * @return Collection<int, MeterTariff>|LengthAwarePaginator<MeterTariff>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->meterTariff->newQuery()
@@ -52,18 +61,21 @@ class MeterTariffService implements IBaseService {
             ->get();
     }
 
-    public function getCountById($meterTariffId): array {
+    /**
+     * @return array<string, int>
+     */
+    public function getCountById(int $meterTariffId): array {
         $count = $this->meter->newQuery()->where('tariff_id', $meterTariffId)->count();
 
         return ['count' => $count];
     }
 
-    public function changeMetersTariff($meterTariffIdFrom, $meterTariffIdTo) {
+    public function changeMetersTariff(int $meterTariffIdFrom, int $meterTariffIdTo): int {
         return $this->meter->newQuery()->where('tariff_id', $meterTariffIdFrom)
             ->update(['tariff_id' => $meterTariffIdTo]);
     }
 
-    public function changeMeterTariff($meterSerial, $tariffId): Meter {
+    public function changeMeterTariff(string $meterSerial, int $tariffId): Meter {
         $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->firstOrFail();
         $meter->tariff_id = $tariffId;
         $meter->update();

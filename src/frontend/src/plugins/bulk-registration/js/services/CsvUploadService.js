@@ -41,11 +41,11 @@ export class CsvUploadService {
     } catch (error) {
       if (error.response) {
         if (error.response.status && error.response.status === 422) {
-          const errorMessage = error.response.data.data.message.csv[0]
+          const errorMessage = error.response.data.message.csv[0]
 
           return new ErrorHandler(errorMessage, "http", 422)
         }
-        const errorMessage = error.response.data.data.message
+        const errorMessage = error.response.data.message
 
         return new ErrorHandler(errorMessage, "http", 400)
       } else {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewLogEvent;
 use App\Http\Requests\MeterRequest;
 use App\Http\Requests\UpdateMeterRequest;
 use App\Http\Resources\ApiResource;
@@ -107,7 +108,7 @@ class MeterController extends Controller {
      *
      * @return JsonResponse
      */
-    public function destroy($meterId): JsonResponse {
+    public function destroy(int $meterId): JsonResponse {
         $this->meterService->getById($meterId);
 
         return response()->json(null, 204);
@@ -118,13 +119,11 @@ class MeterController extends Controller {
         $previousDataOfMeter = json_encode($meter->toArray());
         $updatedMeter = $this->meterService->update($meter, $request->validated());
         $updatedDataOfMeter = json_encode($updatedMeter->toArray());
-        event('new.log', [
-            'logData' => [
-                'user_id' => $creatorId,
-                'affected' => $meter,
-                'action' => "Meter infos updated from: $previousDataOfMeter to $updatedDataOfMeter",
-            ],
-        ]);
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $meter,
+            'action' => "Meter infos updated from: $previousDataOfMeter to $updatedDataOfMeter",
+        ]));
 
         return ApiResource::make($updatedMeter);
     }

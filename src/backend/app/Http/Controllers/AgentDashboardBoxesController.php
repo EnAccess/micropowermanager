@@ -15,7 +15,7 @@ class AgentDashboardBoxesController extends Controller {
         private AgentReceiptService $agentReceiptService,
     ) {}
 
-    public function show(Request $request, Response $response) {
+    public function show(Request $request, Response $response): Response {
         $agent = $this->agentService->getByAuthenticatedUser();
         $lastReceipt = $this->agentReceiptService->getLastReceipt($agent->id);
         $average = $this->agentBalanceHistoryService->getTransactionAverage($agent, $lastReceipt);

@@ -2,6 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Events\PaymentSuccessEvent;
+use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSuccessfulEvent;
+use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
@@ -57,10 +61,10 @@ class TokenProcessor extends AbstractJob {
             'No Api is registered for '.$this->transactionContainer->manufacturer->name,
             ['message' => $e->getMessage()]
         );
-        event('transaction.failed', [$this->transactionContainer->transaction, $e->getMessage()]);
+        event(new TransactionFailedEvent($this->transactionContainer->transaction, $e->getMessage()));
     }
 
-    private function handleExistingToken() {
+    private function handleExistingToken(): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
         if ($token !== null && $this->reCreate === true) {
@@ -71,7 +75,7 @@ class TokenProcessor extends AbstractJob {
         return $token;
     }
 
-    private function generateToken($api): void {
+    private function generateToken(IManufacturerAPI $api): void {
         try {
             $tokenData = $api->chargeDevice($this->transactionContainer);
         } catch (\Exception $e) {
@@ -97,10 +101,10 @@ class TokenProcessor extends AbstractJob {
 
         $this->handleRollbackInFailure();
 
-        event('transaction.failed', [
+        event(new TransactionFailedEvent(
             $this->transactionContainer->transaction,
             'Manufacturer Api did not succeed after 3 times with the following error: '.$e->getMessage(),
-        ]);
+        ));
     }
 
     private function retryTokenGeneration(): void {
@@ -112,6 +116,9 @@ class TokenProcessor extends AbstractJob {
         )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
     }
 
+    /**
+     * @param array<string, mixed> $tokenData
+     */
     private function saveToken(array $tokenData): void {
         $token = Token::query()->make($tokenData);
         $token->device_id = $this->transactionContainer->device->id;
@@ -121,23 +128,23 @@ class TokenProcessor extends AbstractJob {
         $this->handlePaymentEvents($token);
     }
 
-    private function handlePaymentEvents($token): void {
+    private function handlePaymentEvents(Token $token): void {
         $owner = $this->transactionContainer->device->person;
 
-        event('payment.successful', [
-            'amount' => $this->transactionContainer->transaction->amount,
-            'paymentService' => $this->transactionContainer->transaction->original_transaction_type,
-            'paymentType' => 'energy',
-            'sender' => $this->transactionContainer->transaction->sender,
-            'paidFor' => $token,
-            'payer' => $owner,
-            'transaction' => $this->transactionContainer->transaction,
-        ]);
+        event(new PaymentSuccessEvent(
+            amount: $this->transactionContainer->transaction->amount,
+            paymentService: $this->transactionContainer->transaction->original_transaction_type,
+            paymentType: 'energy',
+            sender: $this->transactionContainer->transaction->sender,
+            paidFor: $token,
+            payer: $owner,
+            transaction: $this->transactionContainer->transaction,
+        ));
 
-        event('transaction.successful', [$this->transactionContainer->transaction]);
+        event(new TransactionSuccessfulEvent($this->transactionContainer->transaction));
     }
 
-    private function handleRollbackInFailure() {
+    private function handleRollbackInFailure(): void {
         $paidRates = $this->transactionContainer->paidRates;
         collect($paidRates)->map(function ($paidRate) {
             $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);

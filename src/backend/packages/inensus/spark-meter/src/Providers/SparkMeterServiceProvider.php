@@ -34,6 +34,8 @@ class SparkMeterServiceProvider extends ServiceProvider {
                 SparkMeterSmsNotifier::class,
                 UpdateSparkMeterPackage::class,
             ]);
+        } else {
+            $this->commands([InstallSparkMeterPackage::class]);
         }
         $this->app->booted(function ($app) {
             $app->make(Schedule::class)->command('spark-meter:dataSync')->withoutOverlapping(50)

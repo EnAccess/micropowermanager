@@ -11,7 +11,7 @@ class MiniGridDeviceController extends Controller {
         private MiniGridDeviceService $miniGridDeviceService,
     ) {}
 
-    public function index(Request $request, $miniGridId): ApiResource {
+    public function index(Request $request, int $miniGridId): ApiResource {
         return ApiResource::make($this->miniGridDeviceService->getDevicesByMiniGridId($miniGridId));
     }
 }

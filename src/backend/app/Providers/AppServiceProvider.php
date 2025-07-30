@@ -38,9 +38,12 @@ use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
+use MPM\User\Events\UserCreatedEvent;
+use MPM\User\UserListener;
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -104,5 +107,13 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);
         $this->app->bind('AccessRatePayer', AccessRatePayer::class);
+
+        // Register custom MPM Events
+
+        // MPM\User namespace
+        Event::listen(
+            UserCreatedEvent::class,
+            UserListener::class
+        );
     }
 }

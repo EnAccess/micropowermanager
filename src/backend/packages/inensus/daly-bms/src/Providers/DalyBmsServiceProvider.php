@@ -22,6 +22,8 @@ class DalyBmsServiceProvider extends ServiceProvider {
                 SyncBikes::class,
                 CheckPayments::class,
             ]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
 
         $this->app->booted(function ($app) {

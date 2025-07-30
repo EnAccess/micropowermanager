@@ -28,14 +28,23 @@ class AssetRate extends BaseModel {
         'remind',
     ];
 
+    /**
+     * @return BelongsTo<AssetPerson, $this>
+     */
     public function assetPerson(): BelongsTo {
         return $this->belongsTo(AssetPerson::class);
     }
 
+    /**
+     * @return MorphMany<Log, $this>
+     */
     public function logs(): MorphMany {
         return $this->morphMany(Log::class, 'affected');
     }
 
+    /**
+     * @return MorphOne<PaymentHistory, $this>
+     */
     public function paymentHistory(): MorphOne {
         return $this->morphOne(PaymentHistory::class, 'paid_for');
     }

@@ -2,6 +2,7 @@
 
 namespace Inensus\BulkRegistration\Helpers;
 
+use App\Events\AccessRatePaymentInitialize;
 use App\Models\Address\Address;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -68,7 +69,7 @@ class CsvDataProcessor {
                         $row['meter_id'] = $meter->id;
                         $this->checkRecordWasRecentlyCreated($meter, 'meter');
                         // initializes a new Access Rate Payment for the next Period
-                        event('accessRatePayment.initialize', $meter);
+                        event(new AccessRatePaymentInitialize($meter));
                         $geographicalInformationService =
                             app()->make($this->reflections['GeographicalInformationService']);
                         $geographicalInformationService->resolveCsvDataFromComingRow($row, $meter);

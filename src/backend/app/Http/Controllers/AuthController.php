@@ -26,7 +26,7 @@ class AuthController extends Controller {
      * @bodyParam email string required
      * @bodyParam password string required
      */
-    public function login() {
+    public function login(): JsonResponse {
         $credentials = request(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {

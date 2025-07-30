@@ -35,6 +35,6 @@ class ApiHelpers {
     }
 
     public function makeHash($data) {
-        return md5(implode($data, ''));
+        return md5(implode('', $data));
     }
 }

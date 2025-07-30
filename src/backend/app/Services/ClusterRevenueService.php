@@ -8,6 +8,15 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @phpstan-type DatePeriod array{0: string, 1: string}
+ * @phpstan-type RevenueData array{period: string, revenue: float, week?: int}
+ * @phpstan-type ClusterData array{id: int, name: string, period: array<string, mixed>, totalRevenue: float}
+ * @phpstan-type MiniGridData array{id: int, name: string, period: array<string, mixed>, totalRevenue: float}
+ * @phpstan-type RevenueAnalysis array<string, array<string, mixed>>
+ * @phpstan-type DateRange array{startDate: string, endDate: string}
+ * @phpstan-type DateRangeArray array{0: string, 1: string}
+ */
 class ClusterRevenueService {
     public function __construct(
         private PeriodService $periodService,
@@ -16,12 +25,9 @@ class ClusterRevenueService {
     ) {}
 
     /**
-     * @param int                         $clusterId
-     * @param array{0: string, 1: string} $period
-     * @param int|null                    $connectionType
-     * @param int|null                    $miniGridId
+     * @param DatePeriod $period
      *
-     * @return Collection<int, Transaction>
+     * @return Collection<int, Transaction>|array<RevenueData>
      */
     public function getTransactionsForMonthlyPeriodById(
         int $clusterId,
@@ -69,9 +75,14 @@ class ClusterRevenueService {
             ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\')'))->get();
     }
 
+    /**
+     * @param DatePeriod $period
+     *
+     * @return Collection<int, Transaction>
+     */
     public function getTransactionsForWeeklyPeriod(int $clusterId, array $period, ?int $connectionType = null): Collection {
         return $this->transaction->newQuery()
-            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue')
+            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue, WEEKOFYEAR(created_at) as week')
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType) {
@@ -103,8 +114,17 @@ class ClusterRevenueService {
             ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\'),WEEKOFYEAR(created_at)'))->get();
     }
 
+    /**
+     * @param Collection<int, Cluster> $clusters
+     * @param string                   $startDate
+     * @param string                   $endDate
+     * @param array                    $periods
+     * @param string                   $period
+     *
+     * @return array
+     */
     public function getPeriodicRevenueForClustersOld(
-        array $clusters,
+        Collection $clusters,
         string $startDate,
         string $endDate,
         array $periods,
@@ -132,9 +152,15 @@ class ClusterRevenueService {
             $clusters[$clusterIndex]['totalRevenue'] = $totalRevenue;
         }
 
-        return $clusters;
+        return $clusters->toArray();
     }
 
+    /**
+     * @param array<string, mixed> $periodsMonthly
+     * @param array<string, mixed> $periodsWeekly
+     *
+     * @return array{periodWeekly: array<string, mixed>, period: array<string, mixed>, totalRevenue: float}
+     */
     public function getPeriodicRevenueForCluster(
         Cluster $cluster,
         string $startDate,
@@ -166,6 +192,11 @@ class ClusterRevenueService {
         ];
     }
 
+    /**
+     * @param iterable<object> $connectionTypes
+     *
+     * @return RevenueAnalysis
+     */
     public function getRevenueAnalysisForConnectionTypesByCluser(
         string $startDate,
         string $endDate,
@@ -214,6 +245,11 @@ class ClusterRevenueService {
         return $revenueAnalysis;
     }
 
+    /**
+     * @param iterable<object> $connectionTypes
+     *
+     * @return RevenueAnalysis
+     */
     public function getMonthlyRevenueAnalysisForConnectionTypesById(
         int $clusterId,
         iterable $connectionTypes,
@@ -320,6 +356,9 @@ class ClusterRevenueService {
         return $miniGrids;
     }
 
+    /**
+     * @return DateRange
+     */
     public function setDatesForRequest(string $startDate, ?string $endDate): array {
         if (!$startDate) {
             $start = new \DateTime();
@@ -335,6 +374,9 @@ class ClusterRevenueService {
         return ['startDate' => $startDate, 'endDate' => $endDate];
     }
 
+    /**
+     * @return DateRangeArray
+     */
     public function setDateRangeForRequest(string $startDate, string $endDate): array {
         $dateRange = [];
         if ($startDate && $endDate) {

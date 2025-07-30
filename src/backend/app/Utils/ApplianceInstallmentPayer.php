@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetPerson;
@@ -82,7 +83,10 @@ class ApplianceInstallmentPayer {
         return $device->person;
     }
 
-    private function getInstallments($customer): Collection {
+    /**
+     * @return Collection<int, mixed>
+     */
+    private function getInstallments(Person $customer): Collection {
         $loans = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
 
         return $this->applianceRateService->getByLoanIdsForDueDate($loans->toArray());
@@ -91,19 +95,18 @@ class ApplianceInstallmentPayer {
     /**
      * @param Collection<int, mixed> $installments
      */
-    private function pay(Collection $installments, mixed $customer): void {
+    private function pay(Collection $installments, Person $customer): void {
         $installments->map(function ($installment) use ($customer) {
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
-                // add payment history for the installment
-                event('payment.successful', [
-                    'amount' => $this->transaction->amount,
-                    'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'installment',
-                    'sender' => $this->transaction->sender,
-                    'paidFor' => $installment,
-                    'payer' => $customer,
-                    'transaction' => $this->transaction,
-                ]);
+                event(new PaymentSuccessEvent(
+                    amount: $this->transaction->amount,
+                    paymentService: $this->transaction->original_transaction_type,
+                    paymentType: 'installment',
+                    sender: $this->transaction->sender,
+                    paidFor: $installment,
+                    payer: $customer,
+                    transaction: $this->transaction,
+                ));
                 $installment->remaining -= $this->transaction->amount;
                 $installment->update();
                 $installment->save();
@@ -116,16 +119,15 @@ class ApplianceInstallmentPayer {
 
                 return false;
             } else {
-                // add payment history for the loan
-                event('payment.successful', [
-                    'amount' => $installment->remaining,
-                    'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'installment',
-                    'sender' => $this->transaction->sender,
-                    'paidFor' => $installment,
-                    'payer' => $customer,
-                    'transaction' => $this->transaction,
-                ]);
+                event(new PaymentSuccessEvent(
+                    amount: $installment->remaining,
+                    paymentService: $this->transaction->original_transaction_type,
+                    paymentType: 'installment',
+                    sender: $this->transaction->sender,
+                    paidFor: $installment,
+                    payer: $customer,
+                    transaction: $this->transaction,
+                ));
                 $this->paidRates[] = [
                     'asset_rate_id' => $installment->id,
                     'paid' => $installment->remaining,

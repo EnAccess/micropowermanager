@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
@@ -12,7 +14,7 @@ class EnergyTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
     protected const TYPE = 'energy';
 
-    public function __construct(private $transactionId) {
+    public function __construct(private int|string $transactionId) {
         $this->afterCommit = true;
         parent::__construct(get_class($this));
     }
@@ -24,7 +26,7 @@ class EnergyTransactionProcessor extends AbstractJob {
      *
      * @throws TransactionNotInitializedException
      */
-    public function executeJob() {
+    public function executeJob(): void {
         $this->initializeTransaction();
         $container = $this->initializeTransactionDataContainer();
 
@@ -40,11 +42,11 @@ class EnergyTransactionProcessor extends AbstractJob {
             }
         } catch (\Exception $e) {
             Log::info('Transaction failed.: '.$e->getMessage());
-            event('transaction.failed', [$this->transaction, $e->getMessage()]);
+            event(new TransactionFailedEvent($this->transaction, $e->getMessage()));
         }
     }
 
-    private function initializeTransaction() {
+    private function initializeTransaction(): void {
         $this->transaction = Transaction::query()->find($this->transactionId);
         $this->transaction->type = 'energy';
         $this->transaction->save();
@@ -54,7 +56,7 @@ class EnergyTransactionProcessor extends AbstractJob {
         try {
             return TransactionDataContainer::initialize($this->transaction);
         } catch (\Exception $e) {
-            event('transaction.failed', [$this->transaction, $e->getMessage()]);
+            event(new TransactionFailedEvent($this->transaction, $e->getMessage()));
             throw new TransactionNotInitializedException($e->getMessage());
         }
     }
@@ -86,7 +88,6 @@ class EnergyTransactionProcessor extends AbstractJob {
 
     private function payAccessRateIfExists(TransactionDataContainer $transactionData): TransactionDataContainer {
         if ($transactionData->transaction->amount > 0) {
-            // pay if necessary access rate
             $accessRatePayer = resolve('AccessRatePayer');
             $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();
@@ -96,7 +97,7 @@ class EnergyTransactionProcessor extends AbstractJob {
     }
 
     private function completeTransactionWithNotification(TransactionDataContainer $transactionData): void {
-        event('transaction.successful', [$transactionData->transaction]);
+        event(new TransactionSuccessfulEvent($transactionData->transaction));
     }
 
     private function processToken(TransactionDataContainer $transactionData): void {
@@ -108,7 +109,7 @@ class EnergyTransactionProcessor extends AbstractJob {
             ->onQueue(config('services.queues.token'));
     }
 
-    private function getTariffMinimumPurchaseAmount($transactionData) {
+    private function getTariffMinimumPurchaseAmount(TransactionDataContainer $transactionData): float {
         return $transactionData->tariff->minimum_purchase_amount;
     }
 }

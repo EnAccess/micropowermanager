@@ -29,7 +29,7 @@ class MeterGeographicalInformationController extends Controller {
      *
      * @responseFile responses/meters/meters.geo.list.json
      */
-    public function index($miniGridId): ApiResource {
+    public function index(?int $miniGridId): ApiResource {
         $cityIds = $this->cityService->getCityIdsByMiniGridId($miniGridId);
         // we can get city id only by address
         if ($miniGridId === null) {

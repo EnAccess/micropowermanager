@@ -11,7 +11,7 @@ class ClusterMiniGridRevenueController extends Controller {
         private ClusterRevenueService $clusterRevenueService,
     ) {}
 
-    public function show($clusterId, Request $request): ApiResource {
+    public function show(int $clusterId, Request $request): ApiResource {
         $startDate = $request->input('startDate') ?? date('Y-01-01');
         $endDate = $request->input('endDate') ?? date('Y-m-t');
         $period = $request->input('period') ?? 'monthly';

@@ -57,7 +57,7 @@ export class MeterDetailService {
 
       return this.fromJson(data.data)
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -78,7 +78,7 @@ export class MeterDetailService {
         }
       })
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -94,7 +94,7 @@ export class MeterDetailService {
         return new ErrorHandler(error, "http", status)
       return data.data
     } catch (e) {
-      return new ErrorHandler(e.response.data.data.message, "http")
+      return new ErrorHandler(e.response.data.message, "http")
     }
   }
 }

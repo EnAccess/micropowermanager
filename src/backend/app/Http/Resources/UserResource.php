@@ -11,9 +11,9 @@ class UserResource extends JsonResource {
      *
      * @param Request $request
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function toArray($request) {
+    public function toArray($request): array {
         return parent::toArray($request);
     }
 }

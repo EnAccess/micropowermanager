@@ -16,14 +16,14 @@ class AgentSoldApplianceController extends Controller {
         private AgentService $agentService,
     ) {}
 
-    public function index(Request $request) {
+    public function index(Request $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentSoldApplianceService->getAll($limit, $agent->id, null, self::FOR_APP));
     }
 
-    public function show($customerId, Request $request): ApiResource {
+    public function show(int $customerId, Request $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return ApiResource::make($this->agentSoldApplianceService->getByCustomerId($agent->id, $customerId));

@@ -38,6 +38,8 @@ class SteamaMeterServiceProvider extends ServiceProvider {
                 UpdatePackage::class,
                 ReadHourlyMeterReadings::class,
             ]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
         $this->app->booted(function ($app) {
             $app->make(Schedule::class)->command('steama-meter:dataSync')->withoutOverlapping(50)

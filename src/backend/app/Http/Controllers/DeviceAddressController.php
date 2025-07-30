@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewLogEvent;
 use App\Http\Resources\ApiResource;
 use Illuminate\Http\Request;
 use MPM\Device\DeviceAddressService;
@@ -13,7 +14,7 @@ class DeviceAddressController extends Controller {
         private DeviceService $deviceService,
     ) {}
 
-    public function update(Request $request) {
+    public function update(Request $request): ApiResource {
         $creatorId = auth('api')->user()->id;
         $devices = $request->all();
         foreach ($devices as $deviceData) {
@@ -24,13 +25,11 @@ class DeviceAddressController extends Controller {
             $this->deviceAddressService->updateDeviceAddress($deviceAddress, $deviceData);
             $updatedDevice = $this->deviceService->getBySerialNumber($serialNumber);
             $updatedDataOfDevice = json_encode($updatedDevice->toArray());
-            event('new.log', [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $device,
-                    'action' => "Device infos updated from: $previousDataOfDevice to $updatedDataOfDevice",
-                ],
-            ]);
+            event(new NewLogEvent([
+                'user_id' => $creatorId,
+                'affected' => $device,
+                'action' => "Device infos updated from: $previousDataOfDevice to $updatedDataOfDevice",
+            ]));
         }
 
         return ApiResource::make($devices);

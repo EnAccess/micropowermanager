@@ -24,10 +24,16 @@ class ProtectedPageService implements IBaseService {
         return $this->protectedPage->find($id);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): ProtectedPage {
         return $this->protectedPage->create($data);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update(Model $model, array $data): ProtectedPage {
         /* @var ProtectedPage $model */
         $model->update($data);
@@ -39,6 +45,9 @@ class ProtectedPageService implements IBaseService {
         return $model->delete();
     }
 
+    /**
+     * @return Collection<int, ProtectedPage>|LengthAwarePaginator<ProtectedPage>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->protectedPage->all();
     }

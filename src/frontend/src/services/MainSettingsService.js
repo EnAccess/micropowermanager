@@ -30,7 +30,7 @@ export class MainSettingsService {
       this.mainSettings.protectedPagePassword = null
       return this.mainSettings
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       throw new ErrorHandler(errorMessage, "http")
     }
   }
@@ -47,7 +47,7 @@ export class MainSettingsService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       throw new ErrorHandler(errorMessage, "http")
     }
   }

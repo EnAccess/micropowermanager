@@ -19,6 +19,8 @@ class SwiftaServiceProvider extends ServiceProvider {
             $this->publishConfigFiles();
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class, UpdatePackage::class, TransactionStatusChecker::class]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
         Relation::morphMap(
             [

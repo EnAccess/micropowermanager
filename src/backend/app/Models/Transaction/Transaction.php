@@ -39,32 +39,52 @@ class Transaction extends BaseModel {
 
     /**
      * Get the payment provider-specific transaction linked to this system transaction.
+     *
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
      */
     public function originalTransaction(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return HasOne<Token, $this>
+     */
     public function token(): HasOne {
         return $this->hasOne(Token::class);
     }
 
+    /**
+     * @return MorphOne<Sms, $this>
+     */
     public function sms(): MorphOne {
         return $this->morphOne(Sms::class, 'trigger');
     }
 
+    /**
+     * @return HasMany<PaymentHistory, $this>
+     */
     public function paymentHistories(): HasMany {
         return $this->hasMany(PaymentHistory::class);
     }
 
+    /**
+     * @return HasOne<Device, $this>
+     */
     public function device(): HasOne {
         return $this->hasOne(Device::class, 'device_serial', 'message');
     }
 
+    /**
+     * @return HasOne<AssetPerson, $this>
+     */
     public function appliance(): HasOne {
         return $this->hasOne(AssetPerson::class, 'device_serial', 'message');
     }
 
-    public function periodTargetAlternative($cityId, $startDate, $endDate) {
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function periodTargetAlternative(int $cityId, string $startDate, string $endDate): array {
         $sql = <<<SQL
             SELECT
                 SUM(transactions.amount) AS revenue,
@@ -133,7 +153,7 @@ class Transaction extends BaseModel {
         return $this->id;
     }
 
-    public function setType(string $type) {
+    public function setType(string $type): void {
         $this->type = $type;
     }
 

@@ -2,12 +2,16 @@
 
 namespace Inensus\MesombPaymentProvider\Providers;
 
+use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSuccessfulEvent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Inensus\MesombPaymentProvider\Listeners\TransactionListener;
+use Inensus\MesombPaymentProvider\Listeners\TransactionFailedListener;
+use Inensus\MesombPaymentProvider\Listeners\TransactionSuccessfulListener;
 
 class EventServiceProvider extends ServiceProvider {
     protected $subscribe = [
-        //   TransactionListener::class
+        // TransactionFailedEvent::class => [TransactionFailedListener::class],
+        // TransactionSuccessfulEvent::class => [TransactionSuccessfulListener::class],
     ];
 
     /**

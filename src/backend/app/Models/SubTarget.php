@@ -16,17 +16,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $new_connections
  */
 class SubTarget extends BaseModel {
+    /** @use HasFactory<\Database\Factories\SubTargetFactory> */
     use HasFactory;
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo<Target, $this>
      */
     public function target(): BelongsTo {
         return $this->belongsTo(Target::class);
     }
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo<ConnectionGroup, $this>
      */
     public function connectionType(): BelongsTo {
         return $this->belongsTo(ConnectionGroup::class, 'connection_id');

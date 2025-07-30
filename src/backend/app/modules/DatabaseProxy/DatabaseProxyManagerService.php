@@ -28,6 +28,9 @@ class DatabaseProxyManagerService {
         return $callable();
     }
 
+    /**
+     * @return Builder<CompanyDatabase>
+     */
     public function queryAllConnections(): Builder {
         return $this->companyDatabase->newQuery();
     }

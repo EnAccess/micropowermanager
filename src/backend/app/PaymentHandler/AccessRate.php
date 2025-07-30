@@ -2,6 +2,7 @@
 
 namespace App\PaymentHandler;
 
+use App\Events\PaymentSuccessEvent;
 use App\Exceptions\AccessRates\NoAccessRateFound;
 use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRate as AccessRateModel;
@@ -108,19 +109,15 @@ class AccessRate {
             }
             $nonStaticGateway->updatePayment($accessRatePayment, $debt_amount, $satisfied);
             $transactionData->accessRateDebt = $debt_amount;
-            // add payment history for the client
-            event(
-                'payment.successful',
-                [
-                    'amount' => $debt_amount,
-                    'paymentService' => $transactionData->transaction->original_transaction_type,
-                    'paymentType' => 'access rate',
-                    'sender' => $transactionData->transaction->sender,
-                    'paidFor' => $transactionData->meter->accessRate(),
-                    'payer' => $transactionData->meter->device->person,
-                    'transaction' => $transactionData->transaction,
-                ]
-            );
+            event(new PaymentSuccessEvent(
+                amount: $debt_amount,
+                paymentService: $transactionData->transaction->original_transaction_type,
+                paymentType: 'access rate',
+                sender: $transactionData->transaction->sender,
+                paidFor: $transactionData->meter->accessRate(),
+                payer: $transactionData->meter->device->person,
+                transaction: $transactionData->transaction,
+            ));
         }
 
         return $transactionData;

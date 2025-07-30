@@ -19,10 +19,16 @@ class TokenService implements IBaseService {
         return $this->token->newQuery()->find($id);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): Token {
         return $this->token->newQuery()->create($data);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): Token {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -31,6 +37,9 @@ class TokenService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, Token>|LengthAwarePaginator<Token>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->token->newQuery()->paginate($limit);

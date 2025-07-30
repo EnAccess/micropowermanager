@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AgentSoldApplianceWebController extends Controller {
     public function __construct(private AgentSoldApplianceService $agentSoldApplianceService) {}
 
-    public function index($agentId, Request $request): ApiResource {
+    public function index(int $agentId, Request $request): ApiResource {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentSoldApplianceService->getAll($limit, $agentId));

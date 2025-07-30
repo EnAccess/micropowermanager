@@ -42,7 +42,7 @@ export class ConnectionGroupService {
         return new ErrorHandler(error, "http", status)
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -55,7 +55,7 @@ export class ConnectionGroupService {
       this.list = data.data
       return this.connectionGroups
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -70,7 +70,7 @@ export class ConnectionGroupService {
       this.resetConnectionGroup()
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

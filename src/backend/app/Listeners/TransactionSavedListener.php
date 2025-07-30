@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\TransactionSavedEvent;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class TransactionSavedListener {
@@ -10,7 +11,7 @@ class TransactionSavedListener {
         $transactionProvider->confirm();
     }
 
-    public function handle(ITransactionProvider $transactionProvider): void {
-        $this->onTransactionSaved($transactionProvider);
+    public function handle(TransactionSavedEvent $event): void {
+        $this->onTransactionSaved($event->transactionProvider);
     }
 }

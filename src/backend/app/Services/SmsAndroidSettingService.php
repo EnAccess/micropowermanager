@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\SmsAndroidSetting;
+use Illuminate\Database\Eloquent\Collection;
 
 class SmsAndroidSettingService {
     private string $fireBaseKey;
@@ -13,11 +14,17 @@ class SmsAndroidSettingService {
         private UserService $userService,
     ) {}
 
-    public function getSmsAndroidSetting() {
+    /**
+     * @return Collection<int, SmsAndroidSetting>
+     */
+    public function getSmsAndroidSetting(): Collection {
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
-    public function createSmsAndroidSetting($androidPhoneToken) {
+    /**
+     * @return Collection<int, SmsAndroidSetting>
+     */
+    public function createSmsAndroidSetting(string $androidPhoneToken): Collection {
         $this->fireBaseKey = config('services.sms.android.key');
         $this->callbackUrl = config('services.sms.callback').$this->userService->getCompanyId();
 
@@ -31,7 +38,10 @@ class SmsAndroidSettingService {
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
-    public function updateSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting, $androidPhoneToken) {
+    /**
+     * @return Collection<int, SmsAndroidSetting>
+     */
+    public function updateSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting, string $androidPhoneToken): Collection {
         $this->fireBaseKey = config('services.sms.android.key');
         $this->callbackUrl = config('services.sms.android.callback_url').$this->userService->getCompanyId();
 
@@ -44,7 +54,10 @@ class SmsAndroidSettingService {
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
-    public function deleteSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting) {
+    /**
+     * @return Collection<int, SmsAndroidSetting>
+     */
+    public function deleteSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting): Collection {
         $smsAndroidSetting->delete();
 
         return $this->smsAndroidSetting->newQuery()->get();

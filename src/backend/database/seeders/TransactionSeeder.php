@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Events\PaymentSuccessEvent;
+use App\Events\TransactionFailedEvent;
 use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
@@ -31,16 +33,11 @@ class TransactionSeeder extends Seeder {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
-    private $meterTransactionTypes = [
+    private $transactionTypes = [
         SwiftaTransaction::class,
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
         AgentTransaction::class,
-    ];
-
-    private $shsTransactionTypes = [
-        SunKingTransaction::class,
-        AngazaTransaction::class,
     ];
 
     private $amount = 1000;
@@ -67,12 +64,24 @@ class TransactionSeeder extends Seeder {
         }
     }
 
-    private function getTransactionTypeRandomlyFromTransactionTypes($deviceModel) {
+    private function getTransactionTypeRandomlyFromTransactionTypes() {
+        return $this->transactionTypes[array_rand($this->transactionTypes)];
+    }
+
+    private function getManufacturerTransactionFromDeviceType($deviceModel): CalinTransaction|AngazaTransaction|SunKingTransaction {
         if ($deviceModel instanceof Meter) {
-            return $this->meterTransactionTypes[array_rand($this->meterTransactionTypes)];
-        } elseif ($deviceModel instanceof SolarHomeSystem) {
-            return $this->shsTransactionTypes[array_rand($this->shsTransactionTypes)];
+            return CalinTransaction::create();
         }
+
+        if ($deviceModel instanceof SolarHomeSystem) {
+            $transactionClass = collect([
+                AngazaTransaction::class,
+                SunKingTransaction::class,
+            ])->random();
+
+            return $transactionClass::create();
+        }
+
         throw new \Exception('Unsupported device type for transaction');
     }
 
@@ -115,7 +124,7 @@ class TransactionSeeder extends Seeder {
             $amount = 300;
         }
 
-        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes($deviceModel);
+        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes();
         $transactionType = app()->make($randomTransactionType);
 
         // Get device serial based on device type
@@ -148,7 +157,7 @@ class TransactionSeeder extends Seeder {
         $subTransaction = null;
 
         // FIXME: What is this?
-        $manufacturerTransaction = CalinTransaction::query()->create([]);
+        $manufacturerTransaction = $this->getManufacturerTransactionFromDeviceType($deviceModel);
 
         if ($transactionType instanceof AgentTransaction) {
             $city = $randomDevice->person->addresses()->first()->city()->first();
@@ -240,7 +249,7 @@ class TransactionSeeder extends Seeder {
             // create an object for the token job
             $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
-            event('transaction.failed', [$transaction, $exception->getMessage()]);
+            event(new TransactionFailedEvent($transaction, $exception->getMessage()));
             throw $exception;
         }
 
@@ -293,19 +302,15 @@ class TransactionSeeder extends Seeder {
             $token->save();
             $transactionData->token = $token;
 
-            // payment event
-            event(
-                'payment.successful',
-                [
-                    'amount' => $transactionData->transaction->amount,
-                    'paymentService' => $transactionData->transaction->original_transaction_type,
-                    'paymentType' => 'energy',
-                    'sender' => $transactionData->transaction->sender,
-                    'paidFor' => $token,
-                    'payer' => $transactionData->device->person,
-                    'transaction' => $transactionData->transaction,
-                ]
-            );
+            event(new PaymentSuccessEvent(
+                amount: $transactionData->transaction->amount,
+                paymentService: $transactionData->transaction->original_transaction_type,
+                paymentType: 'energy',
+                sender: $transactionData->transaction->sender,
+                paidFor: $token,
+                payer: $transactionData->device->person,
+                transaction: $transactionData->transaction,
+            ));
         }
     }
 }

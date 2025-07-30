@@ -13,7 +13,7 @@ use MPM\Target\TargetAssignable;
 class TargetService {
     public function __construct(private Target $target) {}
 
-    public function getById($targetId): Target {
+    public function getById(int $targetId): Target {
         /** @var Target $model */
         $model = $this->target->newQuery()->with(['subTargets', 'city'])->find($targetId);
 
@@ -35,6 +35,9 @@ class TargetService {
         return $target;
     }
 
+    /**
+     * @return Collection<int, Target>|LengthAwarePaginator<Target>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->orderBy(
@@ -49,7 +52,12 @@ class TargetService {
         )->get();
     }
 
-    public function getTakenSlots($targetDate): Collection {
+    /**
+     * @param array<string> $targetDate
+     *
+     * @return Collection<int, Target>
+     */
+    public function getTakenSlots(array $targetDate): Collection {
         return $this->target->newQuery()->whereBetween('target_date', $targetDate)->get();
     }
 }

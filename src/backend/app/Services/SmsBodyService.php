@@ -3,23 +3,32 @@
 namespace App\Services;
 
 use App\Models\SmsBody;
+use Illuminate\Database\Eloquent\Collection;
 
 class SmsBodyService {
-    private $smsBody;
+    private SmsBody $smsBody;
 
     public function __construct(SmsBody $smsBody) {
         $this->smsBody = $smsBody;
     }
 
-    public function getSmsBodyByReference($reference) {
+    public function getSmsBodyByReference(string $reference): SmsBody {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
     }
 
-    public function getSmsBodies() {
+    /**
+     * @return Collection<int, SmsBody>
+     */
+    public function getSmsBodies(): Collection {
         return $this->smsBody->newQuery()->get();
     }
 
-    public function updateSmsBodies($smsBodiesData) {
+    /**
+     * @param array<int, array<string, mixed>> $smsBodiesData
+     *
+     * @return Collection<int, SmsBody>
+     */
+    public function updateSmsBodies(array $smsBodiesData): Collection {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData[0])->each(function ($smsBody) use ($smsBodies) {
             $smsBodies->filter(function ($body) use ($smsBody) {
@@ -32,7 +41,10 @@ class SmsBodyService {
         return $smsBodies;
     }
 
-    public function getNullBodies() {
+    /**
+     * @return Collection<int, SmsBody>
+     */
+    public function getNullBodies(): Collection {
         return $this->smsBody->newQuery()->whereNull('body')->get();
     }
 }

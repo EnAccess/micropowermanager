@@ -14,6 +14,9 @@ class TimeOfUsageService implements IBaseService {
         private TimeOfUsage $timeOfUsage,
     ) {}
 
+    /**
+     * @param array<string, mixed> $timeOfUsageData
+     */
     public function create(array $timeOfUsageData): TimeOfUsage {
         return $this->timeOfUsage->newQuery()->create($timeOfUsageData);
     }
@@ -22,6 +25,9 @@ class TimeOfUsageService implements IBaseService {
         return $this->timeOfUsage->newQuery()->find($timeOfUsageId);
     }
 
+    /**
+     * @param array<string, mixed> $timeOfUsageData
+     */
     public function update($timeOfUsage, array $timeOfUsageData): TimeOfUsage {
         $timeOfUsage->update($timeOfUsageData);
         $timeOfUsage->fresh();
@@ -33,6 +39,9 @@ class TimeOfUsageService implements IBaseService {
         return $timeOfUsage->delete();
     }
 
+    /**
+     * @return Collection<int, TimeOfUsage>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

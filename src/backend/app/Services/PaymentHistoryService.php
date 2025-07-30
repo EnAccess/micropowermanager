@@ -32,6 +32,9 @@ class PaymentHistoryService implements IAssociative {
             ->first();
     }
 
+    /**
+     * @return LengthAwarePaginator<PaymentHistory>
+     */
     public function getBySerialNumber(string $serialNumber, int $paginate): LengthAwarePaginator {
         return $this->paymentHistory->newQuery()->with(['transaction', 'paidFor'])
             ->whereHas(
@@ -42,6 +45,9 @@ class PaymentHistoryService implements IAssociative {
             )->latest()->paginate($paginate);
     }
 
+    /**
+     * @param array<string, mixed> $paymentHistoryData
+     */
     public function make(array $paymentHistoryData): PaymentHistory {
         return $this->paymentHistory->newQuery()->make($paymentHistoryData);
     }

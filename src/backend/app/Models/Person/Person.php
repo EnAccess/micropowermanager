@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Inensus\Ticket\Models\Ticket;
@@ -41,8 +42,8 @@ use Inensus\Ticket\Models\Ticket;
  * @property int    $is_customer
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
-    use SoftDeletes;
     use HasFactory;
+    use SoftDeletes;
 
     public const RELATION_NAME = 'person';
 
@@ -54,10 +55,14 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
         'additional_json' => 'array',
     ];
 
+    /** @var array<string, string> */
     protected $dispatchesEvents = [
         'deleting' => PersonDeleting::class,
     ];
 
+    /**
+     * @return MorphMany<Ticket, $this>
+     */
     public function tickets(): MorphMany {
         return $this->morphMany(Ticket::class, 'owner');
     }
@@ -67,52 +72,73 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return MorphMany
+     * @return MorphMany<Address, $this>
      */
     public function addresses(): HasOneOrMany {
         return $this->morphMany(Address::class, 'owner');
     }
 
+    /**
+     * @return BelongsTo<Country, $this>
+     */
     public function citizenship(): BelongsTo {
         return $this->belongsTo(Country::class, 'nationality', 'id');
     }
 
+    /**
+     * @return HasMany<Device, $this>
+     */
     public function devices(): HasMany {
         return $this->hasMany(Device::class);
     }
 
     /**
-     * @return MorphMany
+     * @return MorphMany<Roles, $this>
      */
     public function roleOwner(): HasOneOrMany {
         return $this->morphMany(Roles::class, 'role_owner');
     }
 
+    /**
+     * @return MorphMany<PaymentHistory, $this>
+     */
     public function payments(): MorphMany {
         return $this->morphMany(PaymentHistory::class, 'payer');
     }
 
+    /**
+     * @return BelongsTo<CustomerGroup, $this>
+     */
     public function customerGroup(): BelongsTo {
         return $this->belongsTo(CustomerGroup::class);
     }
 
+    /**
+     * @return HasOne<Agent, $this>
+     */
     public function agent(): HasOne {
         return $this->hasOne(Agent::class);
     }
 
+    /**
+     * @return HasOne<AgentSoldAppliance, $this>
+     */
     public function agentSoldAppliance(): HasOne {
         return $this->hasOne(AgentSoldAppliance::class);
     }
 
+    /**
+     * @return HasMany<AssetPerson, $this>
+     */
     public function assetPerson(): HasMany {
         return $this->HasMany(AssetPerson::class, 'person_id', 'id');
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return sprintf('%s %s', $this->name, $this->surname);
     }
 
-    public function livingInClusterQuery(int $clusterId) {
+    public function livingInClusterQuery(int $clusterId): Builder {
         return DB::connection('tenant')->table($this->getTable())
             ->select('people.id')
             ->leftJoin('addresses', function (JoinClause $q) {
@@ -144,6 +170,9 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
         return Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
     }
 
+    /**
+     * @return HasOne<PaymentHistory, $this>
+     */
     public function latestPayment(): HasOne {
         return $this->hasOne(PaymentHistory::class, 'payer_id')->latestOfMany('created_at');
     }

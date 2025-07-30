@@ -14,6 +14,8 @@ class VodacomMobileMoneyServiceProvider extends ServiceProvider {
             $this->publishConfigFiles();
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
     }
 

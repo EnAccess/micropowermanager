@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\NewLogEvent;
+use App\Events\PaymentSuccessEvent;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
 use App\Misc\TransactionDataContainer;
@@ -76,31 +78,23 @@ class AppliancePaymentService {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
         $currency = $mainSettings->currency ?? '€';
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $appliancePerson,
-                    'action' => $amount.' '.$currency.' of payment is made ',
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $appliancePerson,
+            'action' => $amount.' '.$currency.' of payment is made ',
+        ]));
     }
 
     public function createPaymentHistory(float $amount, AssetPerson $buyer, AssetRate $applianceRate, Transaction $transaction): void {
-        event(
-            'payment.successful',
-            [
-                'amount' => $amount,
-                'paymentService' => 'web',
-                'paymentType' => 'installment',
-                'sender' => $transaction->sender,
-                'paidFor' => $applianceRate,
-                'payer' => $buyer,
-                'transaction' => $transaction,
-            ]
-        );
+        event(new PaymentSuccessEvent(
+            amount: (int) $amount,
+            paymentService: 'web',
+            paymentType: 'installment',
+            sender: $transaction->sender,
+            paidFor: $applianceRate,
+            payer: $buyer->person,
+            transaction: $transaction,
+        ));
     }
 
     private function validateAmount(AssetPerson $applianceDetail, float $amount): void {

@@ -33,7 +33,12 @@ class TransactionAdvancedController extends Controller {
         ));
     }
 
-    public function compare($period): array {
+    /**
+     * @param int $period
+     *
+     * @return array<string, mixed>
+     */
+    public function compare(int $period): array {
         $comparisonPeriod = $this->transactionService->determinePeriod($period);
         // get transactions for both current and previous periods
         $transactions = $this->transactionService->getByComparisonPeriod($comparisonPeriod);

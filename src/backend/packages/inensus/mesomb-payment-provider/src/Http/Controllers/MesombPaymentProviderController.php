@@ -2,6 +2,7 @@
 
 namespace Inensus\MesombPaymentProvider\Http\Controllers;
 
+use App\Events\TransactionSavedEvent;
 use App\Jobs\ProcessPayment;
 use Illuminate\Routing\Controller;
 use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
@@ -12,8 +13,8 @@ class MesombPaymentProviderController extends Controller {
         $transactionProvider->saveTransaction();
         // store common data
         $transaction = $transactionProvider->saveCommonData();
-        // fire transaction.saved -> confirms the transaction
-        event('transaction.saved', $transactionProvider);
+        // fire TransactionSavedEvent to confirm the transaction
+        event(new TransactionSavedEvent($transactionProvider));
 
         if (config('app.env') === 'production') {// production queue
             $queue = 'payment';
