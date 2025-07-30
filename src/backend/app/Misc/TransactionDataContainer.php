@@ -21,6 +21,7 @@ class TransactionDataContainer {
     public ?MeterTariff $tariff;
     public Manufacturer $manufacturer;
     public Token $token;
+    /** @var array<int, array<string, float|int>> */
     public array $paidRates;
     public float $chargedEnergy;
     public float $amount;
