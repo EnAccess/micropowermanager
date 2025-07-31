@@ -15,7 +15,8 @@ class ProspectPush extends AbstractSharedCommand
      */
     protected $signature = 'prospect:push
                             {--file= : JSON file path containing data to push}
-                            {--customer-id= : Single customer external ID to push}
+                            {--database : Load data from database}
+                            {--limit= : Limit number of records when loading from database}
                             {--test : Mark data as test data}
                             {--dry-run : Show what would be sent without actually sending}';
 
@@ -90,7 +91,7 @@ class ProspectPush extends AbstractSharedCommand
     private function prepareData(): array {
         if ($this->option('file')) {
             return $this->loadDataFromFile();
-        } elseif ($this->option('customer-id')) {
+        } elseif ($this->option('database')) {
             return $this->loadDataFromDatabase();
         } else {
             return $this->getDefaultTestData();
@@ -117,7 +118,11 @@ class ProspectPush extends AbstractSharedCommand
     private function loadDataFromDatabase(): array {
         // TODO: Query your database for installation data
 
-        $this->info("Loading data from database...");
+        $this->info("Loading installation data from database...");
+
+        $limit = $this->option('limit') ? (int) $this->option('limit') : null;
+        $isTest = $this->option('test') ?? false;
+
 
         return [];
     }
