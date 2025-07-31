@@ -24,7 +24,7 @@ class CityRequest extends FormRequest {
             'name' => 'required',
             'mini_grid_id' => 'required',
             'cluster_id' => 'required',
-            'country_id' => 'required|integer|exists:countries,id',
+            'country_id' => 'required|integer|exists:tenant.countries,id',
         ];
     }
 }
