@@ -30,6 +30,7 @@ class TicketService implements IAssociative {
                 'category_id' => $categoryId,
                 'due_date' => $dueDate,
                 'assigned_id' => $assignedId,
+                'status' => 0,
             ]
         );
 
@@ -101,6 +102,8 @@ class TicketService implements IAssociative {
         if ($assignedId) {
             $query->where('assigned_id', $assignedId);
         }
+
+        $query->orderBy('created_at', 'desc');
 
         if ($limit) {
             $tickets = $query->paginate($limit);

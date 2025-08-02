@@ -29,6 +29,7 @@ class TicketCustomerController extends Controller {
     public function store(UserTicketCreateRequest $request): TicketResource {
         $ticketData = $request->getMappedArray();
         $user = auth('api')->user();
+        $ticketData['status'] = 0;
         $ticket = $this->ticketService->make($ticketData);
         $this->userTicketService->setAssigned($ticket);
         $this->userTicketService->setAssignee($user);
