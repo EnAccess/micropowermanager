@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $sender_id
  */
 class Sms extends BaseModel {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
 
     public const DIRECTION_INCOMING = 0;
@@ -32,10 +33,16 @@ class Sms extends BaseModel {
     public const STATUS_DELIVERED = 2;
     public const STATUS_FAILED = -1;
 
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function trigger(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return BelongsTo<Address, $this>
+     */
     public function address(): BelongsTo {
         return $this->belongsTo(Address::class, 'receiver', 'phone');
     }

@@ -87,12 +87,12 @@ class AgentTransactionService implements IAgentTransactionService
     /**
      * @param array<string, mixed> $data
      */
-    public function update($model, array $data): AgentTransaction
+    public function update(AgentTransaction $model, array $data): AgentTransaction
     {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
+    public function delete(AgentTransaction $model): ?bool
     {
         throw new \Exception('Method delete() not yet implemented.');
     }

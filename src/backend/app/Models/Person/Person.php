@@ -43,6 +43,7 @@ use Inensus\Ticket\Models\Ticket;
  * @property mixed  $agent_sold_appliance
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
+     /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
     use SoftDeletes;
 

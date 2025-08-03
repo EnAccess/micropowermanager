@@ -123,7 +123,7 @@ class AccessRate {
         return $transactionData;
     }
 
-    public function updatePayment($accessRatePayment, int $paidAmount, bool $satisfied = false): void {
+    public function updatePayment(AccessRatePayment $accessRatePayment, int $paidAmount, bool $satisfied = false): void {
         $accessRatePayment->debt = $satisfied === true ? 0 : $accessRatePayment->debt - $paidAmount;
         $accessRatePayment->save();
     }

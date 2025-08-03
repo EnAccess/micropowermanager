@@ -29,7 +29,7 @@ interface IAgentTransactionService
     /**
      * @param array<string, mixed> $data
      */
-    public function update($model, array $data): AgentTransaction;
+    public function update(AgentTransaction $model, array $data): AgentTransaction;
 
-    public function delete($model): ?bool;
+    public function delete(AgentTransaction $model): ?bool;
 }
