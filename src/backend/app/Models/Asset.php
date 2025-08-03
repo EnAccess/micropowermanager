@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory>
  */
 class Asset extends BaseModel {
+    /** @use HasFactory<\Database\Factories\AssetFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'appliance';

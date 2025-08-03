@@ -16,6 +16,9 @@ class DatabaseProxy extends BaseModelCentral {
     public const COL_COMPANY_ID = 'fk_company_id';
     public const COL_EMAIL = 'email';
 
+    /**
+     * @return Builder<DatabaseProxy>
+     */
     private function buildQuery(?int $companyId = null): Builder {
         $query = $this->newQuery();
 
@@ -49,10 +52,16 @@ class DatabaseProxy extends BaseModelCentral {
         return $this->fk_company_id;
     }
 
+    /**
+     * @return BelongsTo<Company, $this>
+     */
     public function company(): BelongsTo {
         return $this->belongsTo(Company::class, 'fk_company_id');
     }
 
+    /**
+     * @return BelongsTo<CompanyDatabase, $this>
+     */
     public function companyDatabase(): BelongsTo {
         return $this->belongsTo(CompanyDatabase::class, 'fk_company_database_id');
     }

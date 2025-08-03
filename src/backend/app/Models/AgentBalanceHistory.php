@@ -15,17 +15,28 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property float  $revenue
  */
 class AgentBalanceHistory extends BaseModel {
+    /** @use HasFactory<\Database\Factories\AgentBalanceHistoryFactory> */
     use HasFactory;
+
     protected $guarded = [];
 
-    public function agent(): void {
-        $this->belongsTo(Agent::class);
+    /**
+     * @return BelongsTo<Agent, $this>
+     */
+    public function agent(): BelongsTo {
+        return $this->belongsTo(Agent::class);
     }
 
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function trigger(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return BelongsTo<Transaction, $this>
+     */
     public function transaction(): BelongsTo {
         return $this->belongsTo(Transaction::class);
     }

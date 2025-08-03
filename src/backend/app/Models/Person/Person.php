@@ -74,7 +74,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return MorphMany<Address, $this>
+     * @return HasOneOrMany<Address, $this, \Illuminate\Database\Eloquent\Collection<int, Address>>
      */
     public function addresses(): HasOneOrMany {
         return $this->morphMany(Address::class, 'owner');

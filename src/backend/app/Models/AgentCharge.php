@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @use HasFactory<\Database\Factories\AgentChargeFactory>
  */
 class AgentCharge extends BaseModel {
+    /** @use HasFactory<\Database\Factories\AgentChargeFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'agent_charge';

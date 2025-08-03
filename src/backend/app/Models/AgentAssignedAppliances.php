@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @extends HasFactory<\Database\Factories\AgentAssignedAppliancesFactory>
- */
 class AgentAssignedAppliances extends BaseModel {
     /** @use HasFactory<\Database\Factories\AgentAssignedAppliancesFactory> */
     use HasFactory;
