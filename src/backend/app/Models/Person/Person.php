@@ -97,7 +97,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /**
      * @return MorphMany<Roles, $this>
      */
-    public function roleOwner(): HasOneOrMany {
+    public function roleOwner(): MorphMany {
         return $this->morphMany(Roles::class, 'role_owner');
     }
 
