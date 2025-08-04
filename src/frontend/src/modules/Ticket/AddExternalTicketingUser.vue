@@ -37,6 +37,7 @@
                 enabledCountryCode="true"
                 v-model="ticketUserService.newUser.phone"
                 @validate="validatePhone"
+                @input="onPhoneInput"
               ></vue-tel-input>
               <span
                 v-if="!phone.valid && firstStepClicked"
@@ -86,6 +87,7 @@ export default {
       phone: {
         valid: true,
       },
+      firstStepClicked: false,
     }
   },
   mounted() {
@@ -96,8 +98,14 @@ export default {
     validatePhone(phone) {
       this.phone = phone
     },
+    onPhoneInput(_, phone) {
+      this.phone = phone
+    },
     async saveUser() {
       let validator = await this.$validator.validateAll()
+      this.firstStepClicked = true
+      if (!this.phone.valid) return
+
       if (validator) {
         this.loading = true
         try {
