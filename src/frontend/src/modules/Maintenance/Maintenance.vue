@@ -56,7 +56,7 @@
                     id="employee"
                     :name="$tc('words.employee')"
                     v-validate="'required'"
-                    v-model="maintenanceData.assigned"
+                    v-model="selectAssigned"
                   >
                     <md-option value="" disabled selected>
                       -- {{ $tc("words.select") }} --
@@ -139,7 +139,7 @@
                     }"
                     :name="$tc('phrases.dueDate')"
                     md-immediately
-                    v-model="maintenanceData.dueDate"
+                    v-model="selectedDue"
                     v-validate="'required'"
                     :md-close-on-blur="false"
                   >
@@ -216,6 +216,7 @@ export default {
       maintenanceService: new MaintenanceService(),
       smsService: new SmsService(),
       selectedDue: null,
+      selectAssigned: null,
       loading: false,
     }
   },
@@ -223,9 +224,14 @@ export default {
     selectedDue: function (date) {
       this.dueDateSelected(date)
     },
+    selectAssigned: function (employee_id) {
+      this.maintenanceData.assigned = this.employees.find(
+        (employee) => employee.id === employee_id,
+      )
+    },
   },
   created() {
-    this.maintenanceData = this.maintenanceService.personData
+    this.maintenanceData = this.maintenanceService.maintenanceData
     this.maintenanceData.creator =
       this.$store.getters["auth/authenticationService"].authenticateUser.id
   },
@@ -261,6 +267,8 @@ export default {
         return
       }
       this.maintenanceService.setDueDate(date)
+      this.maintenanceData.dueDate =
+        this.maintenanceService.maintenanceData.dueDate
     },
     async submitMaintainForm() {
       let validator = await this.$validator.validateAll()
