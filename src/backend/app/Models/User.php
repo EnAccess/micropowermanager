@@ -69,7 +69,7 @@ class User extends Authenticatable implements JWTSubject {
      *
      * @return mixed
      */
-    public function getJWTIdentifier() {
+    public function getJWTIdentifier(): mixed {
         return $this->getKey();
     }
 
@@ -84,22 +84,37 @@ class User extends Authenticatable implements JWTSubject {
         ];
     }
 
+    /**
+     * @return MorphOne<Address, $this>
+     */
     public function address(): MorphOne {
         return $this->morphOne(Address::class, 'owner');
     }
 
+    /**
+     * @return MorphOne<Address, $this>
+     */
     public function addressDetails(): MorphOne {
         return $this->address()->with('city');
     }
 
+    /**
+     * @return HasMany<AgentBalanceHistory, $this>
+     */
     public function balanceHistory(): HasMany {
         return $this->hasMany(AgentBalanceHistory::class);
     }
 
+    /**
+     * @return HasMany<AgentAssignedAppliances, $this>
+     */
     public function assignedAppliance(): HasMany {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
 
+    /**
+     * @return BelongsTo<Company, $this>
+     */
     public function company(): BelongsTo {
         return $this->BelongsTo(Company::class, 'company_id');
     }
@@ -120,6 +135,9 @@ class User extends Authenticatable implements JWTSubject {
         return $this->email;
     }
 
+    /**
+     * @return HasOne<TicketUser, $this>
+     */
     public function relationTicketUser(): HasOne {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);
     }

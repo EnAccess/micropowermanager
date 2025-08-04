@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AgentPerformanceMetricsRequest extends FormRequest {
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function rules(): array {
         return [
@@ -17,7 +17,7 @@ class AgentPerformanceMetricsRequest extends FormRequest {
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array<string, mixed>
      */
     public function getValidatedData(): array {
         $data = $this->validated();

@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
-use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
@@ -72,7 +71,7 @@ class TokenProcessor extends AbstractJob {
         return $token;
     }
 
-    private function generateToken(IManufacturerAPI $api): void {
+    private function generateToken(mixed $api): void {
         try {
             $tokenData = $api->chargeDevice($this->transactionContainer);
         } catch (\Exception $e) {

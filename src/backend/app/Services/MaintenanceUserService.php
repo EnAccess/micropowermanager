@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Collection;
  *     created_at?: string,
  *     updated_at?: string
  * }
+ *
+ * @implements IBaseService<MaintenanceUsers>
  */
 class MaintenanceUserService implements IBaseService {
     public function __construct(
@@ -48,6 +50,9 @@ class MaintenanceUserService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, MaintenanceUsers>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

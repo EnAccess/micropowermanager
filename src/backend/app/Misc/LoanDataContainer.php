@@ -18,6 +18,9 @@ class LoanDataContainer {
     private ?Person $meterOwner;
     private Transaction $transaction;
 
+    /**
+     * @var array<int, array{asset_type_name: string, paid: float}>
+     */
     public array $paid_rates = [];
 
     public function initialize(Transaction $transaction): void {
@@ -25,7 +28,7 @@ class LoanDataContainer {
         $this->meterOwner = $this->getMeterOwner($transaction->message);
     }
 
-    public function loanCost() {
+    public function loanCost(): float {
         if (!$this->meterOwner) {
             throw new MeterNotFound('loan data container');
         }
@@ -77,13 +80,13 @@ class LoanDataContainer {
     }
 
     /**
-     * @param $owner
+     * @param Person $owner
      *
      * @return Collection<int, AssetRate>
      *
      * @psalm-return Collection<int, AssetRate>
      */
-    private function getCustomerDueRates($owner): Collection {
+    private function getCustomerDueRates(Person $owner): Collection {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
 
         return AssetRate::with('assetPerson.device')

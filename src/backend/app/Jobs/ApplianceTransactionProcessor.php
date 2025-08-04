@@ -38,7 +38,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
         }
     }
 
-    private function initializeTransaction() {
+    private function initializeTransaction(): void {
         $this->transaction = Transaction::query()->find($this->transactionId);
         $this->transaction->type = 'deferred_payment';
         $this->transaction->save();

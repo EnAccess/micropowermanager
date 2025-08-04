@@ -7,8 +7,7 @@ use App\Models\AssetRate;
 class SmsReminderHeader extends SmsBodyParser {
     /** @var array<int, string> */
     protected $variables = ['name', 'surname'];
-
-    protected AssetRate $reminderData;
+    protected mixed $reminderData;
 
     public function __construct(AssetRate $reminderData) {
         $this->reminderData = $reminderData;
