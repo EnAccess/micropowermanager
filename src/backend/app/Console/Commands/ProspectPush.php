@@ -92,11 +92,13 @@ class ProspectPush extends AbstractSharedCommand
     private function prepareData(): array {
         if ($this->option('file')) {
             return $this->loadDataFromFile();
-        } elseif ($this->option('database')) {
-            return $this->loadDataFromDatabase();
-        } else {
-            return $this->getDefaultTestData();
         }
+
+        if ($this->option('database')) {
+            return $this->loadDataFromDatabase();
+        }
+
+        return $this->getDefaultTestData();
     }
 
     private function loadDataFromFile(): array {
@@ -240,11 +242,6 @@ class ProspectPush extends AbstractSharedCommand
                 "location_area_4" => null,
                 "location_area_5" => null,
             ];
-
-            // Remove null values to keep the payload clean
-            $installation = array_filter($installation, function($value) {
-                return $value !== null;
-            });
 
             $installations[] = $installation;
         }

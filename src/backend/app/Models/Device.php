@@ -71,12 +71,12 @@ class Device extends BaseModel {
      */
     public function appliance(): HasOneThrough {
         return $this->hasOneThrough(
-            Asset::class,       // Final model we want (Asset)
-            AssetPerson::class, // Intermediate model (AssetPerson)
-            'device_serial',    // Foreign key on AssetPerson table that points to Device.device_serial
-            'id',              // Foreign key on Asset table that points to AssetPerson.asset_id
-            'device_serial',    // Local key on Device table
-            'asset_id'         // Local key on AssetPerson table
+            Asset::class,
+            AssetPerson::class,
+            'device_serial',
+            'id',
+            'device_serial',
+            'asset_id'
         );
     }
 }
