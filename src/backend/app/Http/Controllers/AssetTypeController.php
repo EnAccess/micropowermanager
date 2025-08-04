@@ -65,8 +65,8 @@ class AssetTypeController extends Controller {
      * @throws \Exception
      */
     public function destroy(AssetType $assetType): ApiResource {
-        return new ApiResource(
-            $this->applianceTypeService->deleteApplianceType($assetType)
-        );
+        $this->applianceTypeService->deleteApplianceType($assetType);
+
+        return new ApiResource(['message' => 'Asset type deleted successfully']);
     }
 }

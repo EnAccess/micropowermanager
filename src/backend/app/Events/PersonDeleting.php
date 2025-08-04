@@ -13,7 +13,7 @@ class PersonDeleting {
     use InteractsWithSockets;
     use SerializesModels;
 
-    private $person;
+    private Person $person;
 
     /**
      * Create a new event instance.

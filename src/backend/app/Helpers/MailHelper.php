@@ -13,7 +13,7 @@ class MailHelper implements MailHelperInterface {
      */
     private $mailer;
 
-    private $mailSettings;
+    private array $mailSettings;
 
     public function __construct(PHPMailer $mailer) {
         $this->mailer = $mailer;

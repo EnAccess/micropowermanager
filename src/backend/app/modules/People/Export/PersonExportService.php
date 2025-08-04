@@ -2,10 +2,13 @@
 
 namespace App\People\Export;
 
+use App\Models\Person\Person;
 use App\Services\AbstractExportService;
+use Illuminate\Support\Collection;
 
 class PersonExportService extends AbstractExportService {
-    private $peopleData;
+    /** @var Collection<int, Person> */
+    private Collection $peopleData;
 
     public function writePeopleData(): void {
         $this->setActivatedSheet('Sheet1');
@@ -29,7 +32,7 @@ class PersonExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->peopleData->map(function ($person) {
+        $this->exportingData = $this->peopleData->map(function (Person $person): array {
             $primaryAddress = $person->addresses->first();
             $device = $person->devices->first();
             $agent = optional($person->agent_sold_appliance?->assigned_appliance?->agent);
@@ -49,7 +52,10 @@ class PersonExportService extends AbstractExportService {
         });
     }
 
-    public function setPeopleData($peopleData): void {
+    /**
+     * @param Collection<int, Person> $peopleData
+     */
+    public function setPeopleData(Collection $peopleData): void {
         $this->peopleData = $peopleData;
     }
 

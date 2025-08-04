@@ -18,14 +18,12 @@ class ReportController {
         $this->report = $report;
     }
 
-    // $id could be int or string (depending on route config), adjust as needed
-    public function download(int|string $id): ?BinaryFileResponse {
+    public function download(int $id): ?BinaryFileResponse {
         if (!$id) {
             return null;
         }
         $report = $this->report->find($id);
 
-        // If report not found, return null or some fallback response?
         if (!$report) {
             return null;
         }
@@ -58,7 +56,8 @@ class ReportController {
      * @return LengthAwarePaginator<Report>
      */
     private function getMonthlyReports(?string $startDate, ?string $endDate): LengthAwarePaginator {
-        return $this->report->where('type', 'monthly')->paginate(15);
+        return $this->report->where('type', 'monthly')
+            ->paginate(15);
     }
 
     /**

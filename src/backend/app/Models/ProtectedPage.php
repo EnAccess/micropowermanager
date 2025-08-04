@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ProtectedPage extends BaseModelCentral {
     use HasFactory;
 
+    /** @var string */
     protected $table = 'protected_pages';
 }

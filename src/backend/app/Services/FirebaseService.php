@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 
 class FirebaseService {
-    public function sendNotify($firebaseToken, $body): string {
+    public function sendNotify(string $firebaseToken, mixed $body): string {
         try {
             $httpClient = new Client();
             $request = $httpClient->post(

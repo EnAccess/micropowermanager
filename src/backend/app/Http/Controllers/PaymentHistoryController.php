@@ -18,7 +18,7 @@ class PaymentHistoryController {
     /**
      * @var PaymentHistory
      */
-    private $history;
+    private PaymentHistory $history;
 
     /**
      * PaymentHistoryController constructor.
@@ -42,7 +42,7 @@ class PaymentHistoryController {
      * @param null   $limit
      * @param string $order
      *
-     * @return array<string, array<string, float|int>>
+     * @return array<string, array<string, mixed>>
      */
     public function show(int $payerId, string $period, $limit = null, $order = 'ASC'): array {
         $period = strtoupper($period);
@@ -76,13 +76,13 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      *
-     * @param $personId
+     * @param Person $person
      *
      * @return ApiResource
      *
      * @throws \Exception
      */
-    public function getPaymentPeriod(Person $person) {
+    public function getPaymentPeriod(Person $person): ApiResource {
         $payments = $person->payments()->latest()->take(10)->get();
 
         $difference = 'no data available';
@@ -129,7 +129,7 @@ class PaymentHistoryController {
      *
      * @return ApiResource
      */
-    public function debts($personId) {
+    public function debts(int $personId): ApiResource {
         $accessRateDebt = 0;
         $meters = Device::query()->with('device')
             ->whereHasMorph(
@@ -181,9 +181,9 @@ class PaymentHistoryController {
     }
 
     /**
-     * @param array<int, array{aperiod: string, payment_type: string, amount: float|int}> $payments
+     * @param array<mixed> $payments
      *
-     * @return array<string, array<string, float|int>>
+     * @return array<string, array<string, mixed>>
      */
     public function preparePaymentFlow(array $payments): array {
         $flowList = [];

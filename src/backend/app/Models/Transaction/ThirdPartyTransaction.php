@@ -10,14 +10,26 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class ThirdPartyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'third_party_transaction';
 
+    /**
+     * @return MorphOne<Transaction, $this>
+     */
     public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
+    /**
+     * @return MorphTo<BaseModel, $this>
+     */
     public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
+        /** @var MorphTo<BaseModel, $this> $relation */
+        $relation = $this->morphTo();
+
+        return $relation;
     }
 
+    /**
+     * @return MorphMany<TransactionConflicts, $this>
+     */
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }

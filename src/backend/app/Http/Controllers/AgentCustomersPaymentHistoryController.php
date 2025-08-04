@@ -11,6 +11,9 @@ class AgentCustomersPaymentHistoryController extends Controller {
         private AgentCustomersPaymentHistoryService $agentCustomersPaymentHistoryService,
     ) {}
 
+    /**
+     * @return array<mixed>
+     */
     public function show(int $customerId, string $period, ?int $limit = null, string $order = 'ASC'): array {
         return $this->agentCustomersPaymentHistoryService->getPaymentFlowByCustomerId(
             $period,
@@ -20,6 +23,9 @@ class AgentCustomersPaymentHistoryController extends Controller {
         );
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function index(string $period, ?int $limit = null, string $order = 'ASC'): array {
         $agent = $this->agentService->getByAuthenticatedUser();
 

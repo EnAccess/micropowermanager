@@ -14,7 +14,7 @@ class AddressController extends Controller {
         return ApiResource::make($this->addressService->getAll());
     }
 
-    public function show($id): ApiResource {
+    public function show(int $id): ApiResource {
         return ApiResource::make($this->addressService->getById($id));
     }
 }

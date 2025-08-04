@@ -69,6 +69,9 @@ class MeterRevenueService {
             ->get()->toArray();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, Transaction>
+     */
     public function getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
         string $cityIds,
         int $connectionId,

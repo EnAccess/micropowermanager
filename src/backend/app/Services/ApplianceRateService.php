@@ -59,6 +59,8 @@ class ApplianceRateService {
     }
 
     /**
+     * @param int[] $loanIds
+     *
      * @return Collection<int, AssetRate>
      */
     public function getByLoanIdsForDueDate(array $loanIds): Collection {

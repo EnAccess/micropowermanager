@@ -11,7 +11,7 @@ class CreateAgentChargeRequest extends FormRequest {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
@@ -20,7 +20,7 @@ class CreateAgentChargeRequest extends FormRequest {
      *
      * @return array<string, mixed>
      */
-    public function rules() {
+    public function rules(): array {
         // TODO: Change on UI.  user_id is not required.
         $sessionService = app()->make(SessionService::class);
         $database = $sessionService->getAuthenticatedUserDatabaseName();

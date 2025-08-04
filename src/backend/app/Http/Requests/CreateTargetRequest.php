@@ -9,7 +9,7 @@ class CreateTargetRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function rules(): array {
         return [
@@ -29,7 +29,7 @@ class CreateTargetRequest extends FormRequest {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<int, mixed>
      */
     public function getData(): array {
         return $this->input('data');

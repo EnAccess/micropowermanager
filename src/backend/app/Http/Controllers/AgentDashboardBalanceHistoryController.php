@@ -15,6 +15,9 @@ class AgentDashboardBalanceHistoryController extends Controller {
         private AgentReceiptService $agentReceiptService,
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function show(Request $request, Response $response): array {
         $agent = $this->agentService->getByAuthenticatedUser();
         $lastReceiptDate = $this->agentReceiptService->getLastReceiptDate($agent);

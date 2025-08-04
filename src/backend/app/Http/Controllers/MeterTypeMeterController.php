@@ -18,7 +18,7 @@ class MeterTypeMeterController extends Controller {
      * @responseFile responses/metertypes/metertypes.meter.list.json
      *
      * @param Request $request
-     * @param         $meterTypeId
+     * @param int     $meterTypeId
      *
      * @return ApiResource
      */

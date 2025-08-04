@@ -3,6 +3,9 @@
 namespace App\Helpers;
 
 class PowerConverter {
+    /**
+     * @var array<string, int>
+     */
     private static $powerUnits = [
         'W' => 1,
         'kW' => 1000,
@@ -15,7 +18,7 @@ class PowerConverter {
     /**
      * @param int|string $power
      */
-    public static function convert($power, $powerUnit, string $expectedUnit = 'Wh') {
+    public static function convert(int|string $power, string $powerUnit, string $expectedUnit = 'Wh'): float|int {
         return $power * self::$powerUnits[$powerUnit] / self::$powerUnits[$expectedUnit];
     }
 }
