@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $mobile_device_id
  * @property int    $status
  * @property string $sender
+ * @implements PaymentProviderTransactionInterface<AgentTransaction>
  */
 class AgentTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'agent_transaction';

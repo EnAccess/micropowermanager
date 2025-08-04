@@ -4,6 +4,7 @@ namespace App\Models\Transaction;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Interface PaymentProviderTransactionInterface.
@@ -16,10 +17,11 @@ use Illuminate\Database\Eloquent\Builder;
  *   which represents how the transaction enables or interacts with manufacturer-specific devices.
  *
  * Implementations are expected to support querying and persistence.
+ * @template TModel of Model
  */
 interface PaymentProviderTransactionInterface {
     /**
-     * @return MorphOne
+     * @return MorphOne<Transaction, TModel>
      */
     public function transaction();
 
@@ -29,7 +31,7 @@ interface PaymentProviderTransactionInterface {
     public function manufacturerTransaction();
 
     /**
-     * @return Builder
+     * @return Builder<TModel>
      */
     public function newQuery();
 
