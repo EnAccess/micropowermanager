@@ -32,6 +32,10 @@ class AddressesService implements IBaseService, IAssociative {
         ]);
     }
 
+    /**
+     * @template T of \Illuminate\Database\Eloquent\Model
+     * @param HasAddressesInterface<T> $owner
+     */
     public function assignAddressToOwner(HasAddressesInterface $owner, Address $address): Address|bool {
         return $owner->addresses()->save($address);
     }
