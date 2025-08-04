@@ -99,19 +99,6 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 | `PUSHER_APP_SECRET`  | **Required** (If Pusher is used) | Pusher App secret.                    |
 | `PUSHER_APP_CLUSTER` | **Required** (If Pusher is used) | Pusher App cluster. For example `eu`. |
 
-### Queue
-
-| Environment Variable | Default            | Description                         |
-| -------------------- | ------------------ | ----------------------------------- |
-| `QUEUE_DRIVER`       | `sync`             | Recommended to set to `database`.   |
-| `QUEUE_PAYMENT`      | `payment`          | Name of the payment queue.          |
-| `QUEUE_ENERGY`       | `energy_payment`   | Name of the energy payment queue.   |
-| `QUEUE_TOKEN`        | `token`            | Name of the token queue.            |
-| `QUEUE_SMS`          | `sms`              | Name of the SMS queue.              |
-| `QUEUE_HISTORY`      | `history`          | Name of the History queue.          |
-| `QUEUE_REPORT`       | `report_generator` | Name of the Report Generator queue. |
-| `QUEUE_MISC`         | `misc`             | Name of the miscellaneous queue.    |
-
 ### Basic setup
 
 #### Logging
