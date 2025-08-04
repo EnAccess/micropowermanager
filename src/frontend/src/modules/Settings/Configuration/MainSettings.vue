@@ -178,7 +178,7 @@ export default {
       countryListService: new CountryService(),
       usageTypeListService: new UsageTypeListService(),
       currencyList: [],
-      languagesList: ["en", "fr", "bu"],
+      languagesList: ["ar", "bu", "en", "fr"],
       countryList: [],
       progress: false,
     }
