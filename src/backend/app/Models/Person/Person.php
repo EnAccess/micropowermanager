@@ -42,6 +42,7 @@ use Inensus\Ticket\Models\Ticket;
  * @property int    $nationality
  * @property int    $is_customer
  * @property mixed  $agent_sold_appliance
+
  * @implements HasAddressesInterface<Person>
  */
 
