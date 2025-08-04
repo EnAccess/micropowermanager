@@ -7,8 +7,7 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-interface IAgentTransactionService
-{
+interface IAgentTransactionService {
     /**
      * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
      */

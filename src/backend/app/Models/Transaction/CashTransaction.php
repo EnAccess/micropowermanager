@@ -4,6 +4,7 @@ namespace App\Models\Transaction;
 
 use App\Models\Base\BaseModel;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -26,14 +27,17 @@ class CashTransaction extends BaseModel implements PaymentProviderTransactionInt
     }
 
     /**
-     * @return MorphOne<Transaction, $this>
+     * @phpstan-return MorphOne<Transaction, Model&PaymentProviderTransactionInterface>
      */
     public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
+        /** @var MorphOne<Transaction, Model&PaymentProviderTransactionInterface> $relation */
+        $relation = $this->morphOne(Transaction::class, 'original_transaction');
+
+        return $relation;
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();

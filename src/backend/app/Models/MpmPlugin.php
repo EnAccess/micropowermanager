@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @use HasFactory<\Database\Factories\MpmPluginFactory>
  */
 class MpmPlugin extends BaseModelCentral {
-     /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
 
     public const SPARK_METER = 1;

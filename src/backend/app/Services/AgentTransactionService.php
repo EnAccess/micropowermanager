@@ -9,8 +9,7 @@ use App\Services\Interfaces\IAgentTransactionService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class AgentTransactionService implements IAgentTransactionService
-{
+class AgentTransactionService implements IAgentTransactionService {
     public function __construct(
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
@@ -71,29 +70,25 @@ class AgentTransactionService implements IAgentTransactionService
         return $transactions;
     }
 
-    public function getById(int $id): AgentTransaction
-    {
+    public function getById(int $id): AgentTransaction {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
     /**
      * @param array<string, mixed> $transactionData
      */
-    public function create(array $transactionData): AgentTransaction
-    {
+    public function create(array $transactionData): AgentTransaction {
         return $this->agentTransaction->newQuery()->create($transactionData);
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    public function update(AgentTransaction $model, array $data): AgentTransaction
-    {
+    public function update(AgentTransaction $model, array $data): AgentTransaction {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete(AgentTransaction $model): ?bool
-    {
+    public function delete(AgentTransaction $model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

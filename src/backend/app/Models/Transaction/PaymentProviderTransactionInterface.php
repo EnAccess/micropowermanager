@@ -2,9 +2,9 @@
 
 namespace App\Models\Transaction;
 
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
  * Interface PaymentProviderTransactionInterface.
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 interface PaymentProviderTransactionInterface {
     /**
-     * @return MorphOne
+     * @return MorphOne<Transaction, Model&PaymentProviderTransactionInterface>
      */
     public function transaction();
 
@@ -30,12 +30,13 @@ interface PaymentProviderTransactionInterface {
     public function manufacturerTransaction();
 
     /**
-     * @return Builder
+     * @return Builder<Model&PaymentProviderTransactionInterface>
      */
     public function newQuery();
 
     /**
      * @param array<string, mixed> $options
+     *
      * @return bool
      */
     public function save(array $options = []);
