@@ -17,11 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  *   which represents how the transaction enables or interacts with manufacturer-specific devices.
  *
  * Implementations are expected to support querying and persistence.
- * @template TModel of Model
  */
 interface PaymentProviderTransactionInterface {
     /**
-     * @return MorphOne<Transaction, TModel>
+     * @return MorphOne
      */
     public function transaction();
 
@@ -31,7 +30,7 @@ interface PaymentProviderTransactionInterface {
     public function manufacturerTransaction();
 
     /**
-     * @return Builder<TModel>
+     * @return Builder
      */
     public function newQuery();
 
