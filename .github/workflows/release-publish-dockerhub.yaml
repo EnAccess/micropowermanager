@@ -24,6 +24,9 @@ jobs:
           - id: micropowermanager-scheduler
             repo: enaccess/micropowermanager-scheduler
             dockerfile: ./docker/DockerfileSchedulerProd
+          - id: micropowermanager-queue-worker
+            repo: enaccess/micropowermanager-queue-worker
+            dockerfile: ./docker/DockerfileQueueWorkerProd
         platform:
           - id: amd64
             arch: linux/amd64
@@ -117,6 +120,9 @@ jobs:
           - id: micropowermanager-scheduler
             repo: enaccess/micropowermanager-scheduler
             dockerfile: ./docker/DockerfileSchedulerProd
+          - id: micropowermanager-queue-worker
+            repo: enaccess/micropowermanager-queue-worker
+            dockerfile: ./docker/DockerfileQueueWorkerProd
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
