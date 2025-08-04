@@ -19,6 +19,7 @@ class MeterType extends BaseModel {
     /** @use HasFactory<MeterTypeFactory> */
     use HasFactory;
 
+    /** @var array<string, string> */
     public static $rules = [
         'online' => 'required',
         'phase' => 'required',

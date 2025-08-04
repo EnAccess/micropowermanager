@@ -5,14 +5,11 @@ namespace App\Services;
 use App\Models\Device;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
-use App\Services\Interfaces\IBaseService;
+use App\Services\Interfaces\IAgentTransactionService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @implements IBaseService<AgentTransaction>
- */
-class AgentTransactionService implements IBaseService {
+class AgentTransactionService implements IAgentTransactionService {
     public function __construct(
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
@@ -87,11 +84,11 @@ class AgentTransactionService implements IBaseService {
     /**
      * @param array<string, mixed> $data
      */
-    public function update($model, array $data): AgentTransaction {
+    public function update(AgentTransaction $model, array $data): AgentTransaction {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool {
+    public function delete(AgentTransaction $model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

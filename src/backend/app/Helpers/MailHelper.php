@@ -13,6 +13,9 @@ class MailHelper implements MailHelperInterface {
      */
     private $mailer;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $mailSettings;
 
     public function __construct(PHPMailer $mailer) {

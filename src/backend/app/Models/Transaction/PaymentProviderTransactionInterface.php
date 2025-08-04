@@ -2,6 +2,10 @@
 
 namespace App\Models\Transaction;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+
 /**
  * Interface PaymentProviderTransactionInterface.
  *
@@ -16,40 +20,28 @@ namespace App\Models\Transaction;
  */
 interface PaymentProviderTransactionInterface {
     /**
-     * Get the general-purpose system transaction associated with this provider transaction.
-     *
-     * This relationship is polymorphic and links the provider-specific transaction
-     * to the core `Transaction` model used by the application.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     * @return MorphOne<Transaction, Model&PaymentProviderTransactionInterface>
      */
     public function transaction();
 
     /**
-     * Get the manufacturer-specific transaction abstraction associated with this transaction.
-     *
-     * This represents how the payment transaction is used to enable or interact
-     * with hardware or systems from a specific manufacturer.
-     *
      * @return ManufacturerTransactionInterface
      */
     public function manufacturerTransaction();
 
     /**
-     * Create a new Eloquent query builder instance for payment provider transactions.
+     * @return Builder<Model&PaymentProviderTransactionInterface>
      */
     public function newQuery();
 
     /**
-     * Persist the payment provider transaction.
+     * @param array<string, mixed> $options
      *
-     * @return bool indicates whether the save operation was successful
+     * @return bool
      */
     public function save(array $options = []);
 
     /**
-     * Get the name of the transaction type (used for morph map or identification).
-     *
      * @return string
      */
     public static function getTransactionName(): string;

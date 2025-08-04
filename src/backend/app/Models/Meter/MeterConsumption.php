@@ -18,6 +18,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class MeterConsumption extends BaseModel {
     protected $table = 'meter_consumptions';
 
+    /**
+     * @return BelongsTo<Meter, $this>
+     */
     public function meter(): BelongsTo {
         return $this->belongsTo(Meter::class);
     }

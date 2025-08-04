@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * @use HasFactory<\Database\Factories\SmsAndroidSettingFactory>
  */
 class SmsAndroidSetting extends BaseModel {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
     protected $table = 'sms_android_settings';
 

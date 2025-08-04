@@ -2,8 +2,15 @@
 
 namespace App\Models\Address;
 
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @template T of Model
+ */
 interface HasAddressesInterface {
-    public function addresses(): HasOneOrMany;
+    /**
+     * @return MorphMany<Address, T>
+     */
+    public function addresses(): MorphMany;
 }
