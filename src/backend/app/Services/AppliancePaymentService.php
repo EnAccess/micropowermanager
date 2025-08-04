@@ -155,6 +155,9 @@ class AppliancePaymentService {
         $token->save();
     }
 
+    /**
+     * @param Collection<int, AssetRate> $installments
+     */
     public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {
         try {
             $secondInstallment = $installments[1];

@@ -19,10 +19,16 @@ class SmsLoadBalancer extends AbstractJob {
 
     public int $timeout = 600;
     public int $tries = 250;
-    public $gateways;
+    public mixed $gateways;
 
+    /**
+     * @var array<mixed>
+     */
     public array $smsBody;
 
+    /**
+     * @param array<mixed> $smsBody
+     */
     public function __construct(array $smsBody) {
         $this->smsBody = $smsBody;
         parent::__construct(get_class($this));
@@ -41,11 +47,9 @@ class SmsLoadBalancer extends AbstractJob {
     }
 
     /**
-     * @param array $data
-     *
-     * @return string
+     * @param array<mixed> $data
      */
-    private function sendSms($data): string {
+    private function sendSms(array $data): string {
         /** @var Collection<int, mixed> $smsCollection */
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);

@@ -10,7 +10,7 @@ class CreateAgentReceiptRequest extends FormRequest {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
@@ -19,7 +19,7 @@ class CreateAgentReceiptRequest extends FormRequest {
      *
      * @return array<string, mixed>
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'agent_id' => 'required',
             'amount' => 'required',

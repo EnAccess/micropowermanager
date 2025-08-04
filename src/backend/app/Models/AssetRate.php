@@ -49,7 +49,10 @@ class AssetRate extends BaseModel {
         return $this->morphOne(PaymentHistory::class, 'paid_for');
     }
 
+    /**
+     * @return HasOneThrough<AssetType, AssetPerson, $this>
+     */
     public function asset(): HasOneThrough {
-        return $this->HasOneThrough(AssetType::class, AssetPerson::class, 'asset_type_id', 'id');
+        return $this->hasOneThrough(AssetType::class, AssetPerson::class, 'id', 'asset_type_id', 'asset_person_id', 'id');
     }
 }

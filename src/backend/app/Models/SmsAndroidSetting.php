@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * @property int $id
+ *
+ * @use HasFactory<\Database\Factories\SmsAndroidSettingFactory>
  */
 class SmsAndroidSetting extends BaseModel {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
     protected $table = 'sms_android_settings';
 
-    public static function getResponsible() {
+    public static function getResponsible(): ?self {
         $smsAndroidSettings = SmsAndroidSetting::all();
         if ($smsAndroidSettings->count()) {
             try {

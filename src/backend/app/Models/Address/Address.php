@@ -22,23 +22,34 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string      $owner_type
  */
 class Address extends BaseModel {
+    /** @use HasFactory<\Database\Factories\Address\AddressFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'address';
     protected $hidden = ['owner_id', 'owner_type'];
+
+    /** @var array<string, string> */
     public static $rules = [
         'city_id' => 'required|exists:cities,id',
     ];
 
+    /**
+     * @return BelongsTo<City, $this>
+     */
     public function city(): BelongsTo {
         return $this->belongsTo(City::class);
     }
 
-    // client & company
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function owner(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return MorphOne<GeographicalInformation, $this>
+     */
     public function geo(): MorphOne {
         return $this->morphOne(GeographicalInformation::class, 'owner');
     }

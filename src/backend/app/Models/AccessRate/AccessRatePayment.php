@@ -15,10 +15,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int       $debt
  */
 class AccessRatePayment extends BaseModel {
+    /**
+     * @return BelongsTo<Meter, $this>
+     */
     public function meter(): BelongsTo {
         return $this->belongsTo(Meter::class);
     }
 
+    /**
+     * @return BelongsTo<AccessRate, $this>
+     */
     public function accessRate(): BelongsTo {
         return $this->belongsTo(AccessRate::class);
     }

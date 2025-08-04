@@ -8,6 +8,9 @@ use App\Models\Log;
 class LogListener {
     public function __construct(private Log $log) {}
 
+    /**
+     * @param array{user_id: int, affected: \Illuminate\Database\Eloquent\Model, action: string} $logData
+     */
     public function storeLog(array $logData): void {
         $this->log->user_id = $logData['user_id'];
         $this->log->affected()->associate($logData['affected']);

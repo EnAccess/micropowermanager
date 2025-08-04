@@ -33,11 +33,12 @@ abstract class AbstractDashboardCacheDataService {
      * @return array<string, mixed>|null
      */
     public function getDataById(int|string $id): ?array {
+        /** @var array<int, array<string, mixed>>|null $cachedData */
         $cachedData = Cache::get(self::cacheKeyGenerator());
 
         return $cachedData ? collect($cachedData)->filter(function (array $data) use ($id): bool {
             return $data['id'] == $id;
-        })->first() : [];
+        })->first() : null;
     }
 
     protected function cacheKeyGenerator(): string {

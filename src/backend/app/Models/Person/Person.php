@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
@@ -37,11 +36,15 @@ use Inensus\Ticket\Models\Ticket;
  * @property string $name
  * @property string $surname
  * @property mixed  $birth_date
- * @property string $sex         TODO: replace with gender
+ * @property string $sex                  TODO: replace with gender
  * @property int    $nationality
  * @property int    $is_customer
+ * @property mixed  $agent_sold_appliance
+ *
+ * @implements HasAddressesInterface<Person>
  */
-class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
+class Person extends BaseModel implements HasAddressesInterface /* <Person> */ , RoleInterface {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
     use SoftDeletes;
 
@@ -72,10 +75,13 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return MorphMany<Address, $this>
+     * @return MorphMany<Address, self>
      */
-    public function addresses(): HasOneOrMany {
-        return $this->morphMany(Address::class, 'owner');
+    public function addresses(): MorphMany {
+        /** @var MorphMany<Address, self> $relation */
+        $relation = $this->morphMany(Address::class, 'owner');
+
+        return $relation;
     }
 
     /**
@@ -95,7 +101,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /**
      * @return MorphMany<Roles, $this>
      */
-    public function roleOwner(): HasOneOrMany {
+    public function roleOwner(): MorphMany {
         return $this->morphMany(Roles::class, 'role_owner');
     }
 

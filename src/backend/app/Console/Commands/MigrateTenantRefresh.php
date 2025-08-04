@@ -6,7 +6,7 @@ class MigrateTenantRefresh extends AbstractSharedCommand {
     protected $signature = 'migrate-tenant:refresh {--company-id=}';
     protected $description = 'Reset and re-run all migrations on provided tenant database(s)';
 
-    public function handle() {
+    public function handle(): void {
         $this->call('optimize:clear');
         $this->call('migrate:refresh', [
             '--database' => 'tenant',

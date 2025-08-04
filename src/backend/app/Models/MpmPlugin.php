@@ -4,12 +4,16 @@ namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string|null $tail_tag
  * @property string|null $installation_command
+ *
+ * @use HasFactory<\Database\Factories\MpmPluginFactory>
  */
 class MpmPlugin extends BaseModelCentral {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
 
     public const SPARK_METER = 1;
@@ -35,7 +39,10 @@ class MpmPlugin extends BaseModelCentral {
 
     protected $table = 'mpm_plugins';
 
-    public function plugins() {
+    /**
+     * @return HasMany<Plugins, $this>
+     */
+    public function plugins(): HasMany {
         return $this->hasMany(Plugins::class);
     }
 }

@@ -100,6 +100,7 @@
                       enabledCountryCode="true"
                       v-model="agentService.agent.phone"
                       @validate="validatePhone"
+                      @input="onPhoneInput"
                     ></vue-tel-input>
                     <span
                       v-if="!phone.valid && firstStepClicked"
@@ -318,6 +319,7 @@ export default {
       phone: {
         valid: true,
       },
+      firstStepClicked: false,
     }
   },
 
@@ -359,7 +361,9 @@ export default {
       this.selectedMiniGridId = miniGridId
     },
     async saveAgent() {
+      this.firstStepClicked = true
       let validator = await this.$validator.validateAll()
+      if (!this.phone.valid) return
       if (validator) {
         this.loading = true
         try {
@@ -376,6 +380,9 @@ export default {
       }
     },
     validatePhone(phone) {
+      this.phone = phone
+    },
+    onPhoneInput(_, phone) {
       this.phone = phone
     },
     hide() {

@@ -62,7 +62,11 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * @throws TransactionAmountNotEnoughException
      */
     public function imitateTransactionForValidation(array $transactionData): void {
-        $this->paymentAggregatorTransaction = $this->paymentAggregatorTransaction->newQuery()->make($transactionData);
+        /** @var PaymentProviderTransactionInterface $newTransaction */
+        $newTransaction = $this->paymentAggregatorTransaction->newQuery()->make($transactionData);
+
+        $this->paymentAggregatorTransaction = $newTransaction;
+
         $this->transaction = $this->transaction->newQuery()->make([
             'amount' => $transactionData['amount'],
             'sender' => $this->payerPhoneNumber,

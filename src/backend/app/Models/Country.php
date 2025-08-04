@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $country_name
  * **/
 class Country extends BaseModel {
+    /** @use HasFactory<\Database\Factories\CountryFactory> */
     use HasFactory;
 
     /**
@@ -23,6 +24,9 @@ class Country extends BaseModel {
         return 'country_code';
     }
 
+    /**
+     * @return HasMany<City, $this>
+     */
     public function cities(): HasMany {
         return $this->hasMany(City::class);
     }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Transaction\Transaction;
+use Illuminate\Support\Collection;
 
 class TransactionProviderService {
     /**
@@ -10,11 +11,12 @@ class TransactionProviderService {
      */
     public function __construct() {}
 
-    public function getTransactionProviders() {
-        $types = Transaction::whereHas('originalTransaction')
+    /**
+     * @return Collection<int, string>
+     */
+    public function getTransactionProviders(): Collection {
+        return Transaction::whereHas('originalTransaction')
             ->distinct()
             ->pluck('original_transaction_type');
-
-        return $types;
     }
 }
