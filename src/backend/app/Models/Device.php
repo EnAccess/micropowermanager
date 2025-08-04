@@ -7,7 +7,9 @@ use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -51,9 +53,30 @@ class Device extends BaseModel {
     }
 
     /**
-     * @return HasOne<Asset, $this>
+     * @return HasMany<Token, $this>
      */
-    public function appliance(): HasOne {
-        return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
+    public function tokens(): HasMany {
+        return $this->hasMany(Token::class, 'device_id', 'id');
+    }
+
+    /**
+     * @return HasOne<AssetPerson, $this>
+     */
+    public function assetPerson(): HasOne {
+        return $this->hasOne(AssetPerson::class, 'device_serial', 'device_serial');
+    }
+
+    /**
+     * @return HasOneThrough<Asset, AssetPerson, $this>
+     */
+    public function appliance(): HasOneThrough {
+        return $this->hasOneThrough(
+            Asset::class,       // Final model we want (Asset)
+            AssetPerson::class, // Intermediate model (AssetPerson)
+            'device_serial',    // Foreign key on AssetPerson table that points to Device.device_serial
+            'id',              // Foreign key on Asset table that points to AssetPerson.asset_id
+            'device_serial',    // Local key on Device table
+            'asset_id'         // Local key on AssetPerson table
+        );
     }
 }

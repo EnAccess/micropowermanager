@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Device;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -116,15 +117,141 @@ class ProspectPush extends AbstractSharedCommand
     }
 
     private function loadDataFromDatabase(): array {
-        // TODO: Query your database for installation data
-
         $this->info("Loading installation data from database...");
 
         $limit = $this->option('limit') ? (int) $this->option('limit') : null;
         $isTest = $this->option('test') ?? false;
 
+        // Query devices with all necessary relationships
+        $query = Device::query()->with([
+            'device',
+            'person.addresses.geo',
+            'person.addresses.city.country',
+            'tokens.transaction',
+            'appliance',
+            'assetPerson',
+        ]);
 
-        return [];
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        $devices = $query->get();
+
+        $installations = [];
+
+        foreach ($devices as $device) {
+            $deviceData = $device->device;
+
+            if (!$deviceData) {
+                continue;
+            }
+
+            // Load manufacturer relationship dynamically
+            $deviceData->load('manufacturer');
+
+            $person = $device->person;
+            $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?? $person->addresses->first();
+            $assetPerson = $device->assetPerson;
+
+            // Extract coordinates from geographical information
+            $latitude = null;
+            $longitude = null;
+
+            if ($primaryAddress && $primaryAddress->geo && $primaryAddress->geo->points) {
+                $coordinates = explode(',', $primaryAddress->geo->points);
+                if (count($coordinates) >= 2) {
+                    $latitude = (float) trim($coordinates[0]);
+                    $longitude = (float) trim($coordinates[1]);
+                }
+            }
+
+            // Determine device category
+            $deviceCategory = match ($device->device_type) {
+                'meter' => 'meter',
+                'solar_home_system' => 'solar_home_system',
+                default => 'other'
+            };
+
+            // Build installation data
+            $installation = [
+                // Required fields
+                "customer_external_id" => (string) $person->id,
+                "manufacturer" => $deviceData->manufacturer->name ?? 'Unknown',
+                "serial_number" => $deviceData->serial_number,
+
+                // Optional device information
+                "device_external_id" => (string) $device->id,
+                "device_category" => $deviceCategory,
+                "is_test" => $isTest,
+
+                // Location information
+                "latitude" => $latitude,
+                "longitude" => $longitude,
+                "country" => $primaryAddress?->city?->country?->country_code ?? null,
+                "location_area_1" => $primaryAddress?->city?->country?->country_name ?? null,
+                "location_area_2" => $primaryAddress?->city?->name ?? null,
+                "site_name" => $primaryAddress?->street ?? null,
+
+                // Customer information
+                "usage_category" => "household", // Default assumption
+                "primary_use" => null, // Could be determined from device type or customer data
+
+                // Device technical specifications (if available)
+                "firmware_version" => null,
+                "model" => null,
+                "rated_power_w" => null,
+                "pv_power_w" => null,
+                "battery_capacity_wh" => null,
+                "dc_input_source" => $deviceCategory === 'solar_home_system' ? 'solar' : null,
+
+                // Payment plan information (from AssetPerson if available)
+                "payment_plan_category" => "paygo",
+                "payment_plan_currency" => null,
+                "payment_plan_cash_price" => $assetPerson?->total_cost ?? null,
+                "payment_plan_amount_down_payment" => $assetPerson?->down_payment ?? null,
+                "payment_plan_number_of_installments" => $assetPerson?->rate_count ?? null,
+                "payment_plan_installment_amount" => null,
+
+                // Important dates
+                "installation_date" => $device->created_at?->format('Y-m-d'),
+                "purchase_date" => $device->created_at?->format('Y-m-d'),
+
+                // Additional fields that could be populated based on available data
+                "seller_agent_external_id" => null,
+                "installer_agent_external_id" => null,
+                "product_common_id" => null,
+                "parent_external_id" => null,
+                "account_external_id" => null,
+                "usage_sub_category" => null,
+                "ac_input_source" => null,
+                "payment_plan_amount_financed_principal" => null,
+                "payment_plan_amount_financed_interest" => null,
+                "payment_plan_amount_financed_total" => null,
+                "payment_plan_installment_period_days" => null,
+                "payment_plan_days_financed" => null,
+                "payment_plan_days_down_payment" => null,
+                "repossession_date" => null,
+                "paid_off_date" => null,
+                "repossession_category" => null,
+                "write_off_date" => null,
+                "write_off_reason" => null,
+                "location_area_3" => null,
+                "location_area_4" => null,
+                "location_area_5" => null,
+            ];
+
+            // Remove null values to keep the payload clean
+            $installation = array_filter($installation, function($value) {
+                return $value !== null;
+            });
+
+            $installations[] = $installation;
+        }
+
+        $this->info("Loaded " . count($installations) . " installation(s) from database");
+
+        return $installations;
     }
 
     private function getDefaultTestData(): array {
