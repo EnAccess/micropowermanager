@@ -26,7 +26,11 @@
                 </div>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('customer-add-form.title'),
+                  }"
+                >
                   <label for="title">
                     {{ $tc("words.title") }}
                   </label>
@@ -34,6 +38,7 @@
                     type="text"
                     name="title"
                     id="title"
+                    v-validate="'required'"
                     v-model="personService.person.title"
                   />
                   <span class="md-error">
@@ -135,7 +140,7 @@
                   <md-input
                     type="text"
                     name="email"
-                    v-validate="'email'"
+                    v-validate="'required|email'"
                     id="email"
                     v-model="personService.person.address.email"
                   />
