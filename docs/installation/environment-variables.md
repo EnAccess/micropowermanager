@@ -145,9 +145,10 @@ Find below a reference of configurations which are required if the corresponding
 
 For detailed information see [SunKing Developer Documentation](https://sunking.com/)
 
-| Environment Variable | Default                            | Description                                                                      |
-| -------------------- | ---------------------------------- | -------------------------------------------------------------------------------- |
-| `SUNKING_API_URL`    | **Required** (when plugin is used) | SunKing API URL. For example `https://dev.assetcontrol.central.glp apps.com/v2`. |
+| Environment Variable       | Default                                                                              | Description                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `SUNKING_AUTH_DEFAULT_URL` | `https://auth.central.glpapps.com/auth/realms/glp-dev/protocol/openid-connect/token` | Default authorisation URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager. |
+| `SUNKING_API_DEFAULT_URL`  | `https://dev.assetcontrol.central.glpapps.com/v2`                                    | Default API URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager.           |
 
 #### WaveMoney
 
