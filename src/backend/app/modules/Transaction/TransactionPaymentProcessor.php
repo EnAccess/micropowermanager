@@ -15,11 +15,6 @@ class TransactionPaymentProcessor {
         SolarHomeSystem::RELATION_NAME => ApplianceTransactionProcessor::class,
         EBike::RELATION_NAME => ApplianceTransactionProcessor::class,
     ];
-    protected const QUEUE_BY_DEVICE_TYPE = [
-        Meter::RELATION_NAME => 'energy',
-        SolarHomeSystem::RELATION_NAME => 'payment',
-        EBike::RELATION_NAME => 'payment',
-    ];
 
     public static function process(int $transactionId): void {
         $transactionService = app()->make(TransactionService::class);
@@ -28,15 +23,12 @@ class TransactionPaymentProcessor {
         $deviceService = app()->make(DeviceService::class);
         $device = $deviceService->getBySerialNumber($serialNumber);
         $deviceType = $device->device_type;
-        $processorClass = self::PROCESSORS_BY_DEVICE_TYPE[$deviceType];
 
-        // Instantiate the processor class
+        // select the correct processor and instantiate the processor class
+        $processorClass = self::PROCESSORS_BY_DEVICE_TYPE[$deviceType];
         $processor = new $processorClass($transactionId);
 
-        $queue = self::QUEUE_BY_DEVICE_TYPE[$deviceType];
         // Dispatch the job
-        $processor::dispatch($transactionId)
-            ->allOnConnection('redis')
-            ->onQueue(config("services.queues.$queue"));
+        $processor::dispatch($transactionId);
     }
 }
