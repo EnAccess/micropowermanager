@@ -12,9 +12,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Psr\Log\LogLevel;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -42,23 +41,22 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->report(function (Throwable $e) {
-            Log::critical(get_class($e), [
-                'message' => $e->getMessage(),
-                'trace' => array_slice($e->getTrace(), 0, 10),
-            ]);
-        });
+        // JWTExceptions happen quite frequently.
+        // User token might expire, web scraper trying to access unauthrized areas, etc...
+        // Lowering the LogLevel here to not spam our logging.
+        $exceptions->level(JWTException::class, LogLevel::INFO);
 
-        $exceptions->render(function (JWTException $e, Request $request) {
+        $exceptions->render(function (JWTException $e) {
             return response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401);
         });
-        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+
+        $exceptions->render(function (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'model not found '.implode(' ', $e->getIds()),
+                'message' => 'Model not found '.implode(' ', $e->getIds()),
                 'status_code' => 404,
             ]);
         });
-        $exceptions->render(function (ValidationException $e, Request $request) {
+        $exceptions->render(function (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors(),
