@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 use App\Exceptions\MailNotSentException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -52,7 +54,13 @@ class MailHelper implements MailHelperInterface {
      */
     public function sendPlain($to, $title, $body, $attachment = null): void {
         if (config('app.env') != 'production') {
-            Log::warning('Sending Email is only supported in `production` mode. Running `'.config('app.env').'`');
+            Mail::raw($body, function ($message) use ($to, $title, $attachment) {
+                $message->to($to)->subject($title);
+
+                if ($attachment) {
+                    $message->attach($attachment);
+                }
+            });
 
             return;
         }
@@ -78,7 +86,15 @@ class MailHelper implements MailHelperInterface {
 
     public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void {
         if (config('app.env') != 'production') {
-            Log::warning('Sending Email is only supported in `production` mode. Running `'.config('app.env').'`');
+            $html = View::make($templatePath, array_merge($variables ?? [], ['title' => $title]))->render();
+
+            Mail::html($html, function ($message) use ($to, $title, $attachmentPath) {
+                $message->to($to)->subject($title);
+
+                if ($attachmentPath) {
+                    $message->attach($attachmentPath);
+                }
+            });
 
             return;
         }
