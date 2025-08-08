@@ -135,16 +135,28 @@
                 </div>
 
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-datepicker
-                    name="birthDate"
-                    md-immediately
-                    v-model="agentService.agent.birthday"
-                    :md-close-on-blur="false"
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has('birthDate'),
+                    }"
                   >
-                    <label for="birth-date">
-                      {{ $tc("words.birthday") }} :
-                    </label>
-                  </md-datepicker>
+                    <md-datepicker
+                      id="birth-date"
+                      name="birthDate"
+                      md-immediately
+                      v-model="agentService.agent.birthday"
+                      v-validate="'required|date_format:YYYY-MM-DD'"
+                      :data-vv-as="$tc('words.birthday')"
+                      :md-close-on-blur="false"
+                    >
+                      <label for="birth-date">
+                        {{ $tc("words.birthday") }} :
+                      </label>
+                    </md-datepicker>
+                    <span class="md-error">
+                      {{ errors.first("birthDate") }}
+                    </span>
+                  </md-field>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
