@@ -98,7 +98,7 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register(): void {
-        if ($this->app->environment('development') || $this->app->environment('local')) {
+        if ($this->app->environment('testing')) {
             $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
         } else {
             $this->app->singleton(MailHelperInterface::class, MailHelper::class);
