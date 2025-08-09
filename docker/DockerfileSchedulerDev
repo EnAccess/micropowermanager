@@ -59,6 +59,9 @@ RUN touch /var/log/cron.log
 # get MicroPowerManager source code and addition files
 VOLUME ["/var/www/html"]
 
+# indicate storage directory to persist data
+VOLUME ["/var/www/html/storage"]
+
 COPY docker/entrypoint-scheduler.sh /usr/local/bin/entrypoint-scheduler-dev.sh
 RUN chmod +x /usr/local/bin/entrypoint-scheduler-dev.sh
 

@@ -53,6 +53,9 @@ RUN a2enmod rewrite
 # get MicroPowerManager source code and addition files
 VOLUME ["/var/www/html"]
 
+# indicate storage directory to persist data
+VOLUME ["/var/www/html/storage"]
+
 COPY docker/entrypoint-backend.sh /usr/local/bin/entrypoint-backend-dev.sh
 RUN chmod +x /usr/local/bin/entrypoint-backend-dev.sh
 

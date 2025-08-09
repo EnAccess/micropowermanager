@@ -62,6 +62,9 @@ RUN touch /etc/supervisor/logs/horizon/err.log
 # get MicroPowerManager source code and addition files
 VOLUME ["/var/www/html"]
 
+# indicate storage directory to persist data
+VOLUME ["/var/www/html/storage"]
+
 COPY docker/entrypoint-queue-worker.sh /usr/local/bin/entrypoint-queue-worker-dev.sh
 RUN chmod +x /usr/local/bin/entrypoint-queue-worker-dev.sh
 
