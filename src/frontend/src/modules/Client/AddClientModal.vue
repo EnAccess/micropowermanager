@@ -89,21 +89,40 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-datepicker
-                  name="birthDate"
-                  md-immediately
-                  v-model="personService.person.birthDate"
-                  :md-close-on-blur="false"
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('customer-add-form.birthDate'),
+                  }"
                 >
-                  <label for="birth-date">{{ $tc("words.birthday") }} :</label>
-                </md-datepicker>
+                  <md-datepicker
+                    id="birth-date"
+                    name="birthDate"
+                    md-immediately
+                    v-model="personService.person.birthDate"
+                    v-validate="'required|date_format:YYYY-MM-DD'"
+                    :data-vv-as="$tc('words.birthday')"
+                    :md-close-on-blur="false"
+                  >
+                    <label for="birth-date">
+                      {{ $tc("words.birthday") }} :
+                    </label>
+                  </md-datepicker>
+                  <span class="md-error">
+                    {{ errors.first("customer-add-form.birthDate") }}
+                  </span>
+                </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('customer-add-form.gender'),
+                  }"
+                >
                   <label for="gender">{{ $tc("words.gender") }} :</label>
                   <md-select
                     name="gender"
                     id="gender"
+                    v-validate="'required'"
                     v-model="personService.person.gender"
                   >
                     <md-option value="male">
@@ -113,6 +132,9 @@
                       {{ $tc("words.female") }}
                     </md-option>
                   </md-select>
+                  <span class="md-error">
+                    {{ errors.first("customer-add-form.gender") }}
+                  </span>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
