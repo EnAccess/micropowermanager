@@ -17,6 +17,8 @@ images:
     newTag: 0.0.48
   - name: enaccess/micropowermanager-scheduler:latest
     newTag: 0.0.48
+  - name: enaccess/micropowermanager-queue-worker:latest
+    newTag: 0.0.48
 
 patches:
   - path: configmap-cloud-backend.yaml
