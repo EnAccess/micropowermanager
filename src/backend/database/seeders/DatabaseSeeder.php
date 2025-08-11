@@ -32,7 +32,6 @@ class DatabaseSeeder extends Seeder {
                 SubConnectionTypeSeeder::class,
                 SmsSeeder::class,
                 TargetSeeder::class,
-                PluginsSeeder::class,
                 AgentApplianceSalesSeeder::class,
             ]);
         } else {
