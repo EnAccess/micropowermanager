@@ -67,5 +67,9 @@ RUN chmod -R 775 /var/www/html/storage
 COPY docker/entrypoint-queue-worker.sh /usr/local/bin/entrypoint-queue-worker-prod.sh
 RUN chmod +x /usr/local/bin/entrypoint-queue-worker-prod.sh
 
+# install MicroPowerManager
+WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
+
 # define entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint-queue-worker-prod.sh"]
