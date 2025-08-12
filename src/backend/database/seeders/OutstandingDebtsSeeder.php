@@ -341,8 +341,6 @@ class OutstandingDebtsSeeder extends Seeder {
      * Create historical payment transactions to simulate customer payment history.
      */
     private function createHistoricalPaymentTransactions($assetPersons, User $demoUser): void {
-        $this->command->info('Creating historical payment transactions...');
-
         $historicalTransactionCount = 0;
         $maxHistoricalTransactions = 30;
 
@@ -377,9 +375,7 @@ class OutstandingDebtsSeeder extends Seeder {
             $historicalDate = Carbon::now()->subMonths($monthsAgo);
 
             // Get sender information
-            $sender = $assetPerson->person->phone ??
-                     $assetPerson->person->email ??
-                     'Customer-'.$assetPerson->person->id;
+            $sender = $assetPerson->person->phone ?? $assetPerson->person->email ?? 'Customer-'.$assetPerson->person->id;
 
             // Create a random payment amount (simulating what was paid historically)
             $paymentAmount = rand(5000, 25000); // Random amount between 5-25 units
@@ -468,9 +464,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 'manufacturer_transaction_type' => null,
             ]);
 
-            $sender = $assetPerson->person->phone ??
-                     $assetPerson->person->email ??
-                     'Customer-'.$assetPerson->person->id;
+            $sender = $assetPerson->person->phone ?? $assetPerson->person->email ?? 'Customer-'.$assetPerson->person->id;
 
             $transaction = new Transaction([
                 'amount' => $paymentAmount,
@@ -520,9 +514,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 'manufacturer_transaction_type' => null,
             ]);
 
-            $sender = $assetPerson->person->phone ??
-                     $assetPerson->person->email ??
-                     'Customer-'.$assetPerson->person->id;
+            $sender = $assetPerson->person->phone ?? $assetPerson->person->email ?? 'Customer-'.$assetPerson->person->id;
 
             $transaction = new Transaction([
                 'amount' => $paymentAmount,
