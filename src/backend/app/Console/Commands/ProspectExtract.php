@@ -104,19 +104,13 @@ class ProspectExtract extends AbstractSharedCommand
             $deviceData->load('manufacturer');
 
             $person = $device->person;
-            $primaryAddress = null;
             $assetPerson = $device->assetPerson;
-
-            if ($person && $person->addresses) {
-                $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?? $person->addresses->first();
-            }
 
             // Create meaningful customer identifier
             $customerIdentifier = $person ? trim($person->name . ' ' . $person->surname) : 'Unknown Customer';
 
-
             $primaryAddress = null;
-            if ($person && $person->addresses) {
+            if ($person) {
                 $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?? $person->addresses->first();
             }
 
@@ -223,7 +217,7 @@ class ProspectExtract extends AbstractSharedCommand
                 ? Company::find($companyId)
                 : Company::first();
 
-            $companyName = $company ?? $company->name;
+            $companyName = $company->name;
             return $this->cleanCompanyName($companyName);
         } catch (\Exception $e) {
             return 'Unknown tenant';
@@ -235,6 +229,9 @@ class ProspectExtract extends AbstractSharedCommand
         return strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $companyName));
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $data
+     */
     private function writeCsvFile(array $data, string $fileName): string
     {
         $headers = array_keys($data[0]);
@@ -246,6 +243,10 @@ class ProspectExtract extends AbstractSharedCommand
         return Storage::disk('local')->path($filePath);
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $data
+     * @param array<int, string> $headers
+     */
     private function arrayToCsv(array $data, array $headers): string
     {
         $output = fopen('php://temp', 'r+');
