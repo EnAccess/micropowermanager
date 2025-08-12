@@ -324,7 +324,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 ++$transactionCount;
 
                 // Sometimes create full payment transactions
-                if (rand(0, 3) === 0) { // 25% chance
+                if (rand(0, 3) === 0) {
                     $this->createFullPaymentTransaction($assetPerson, $rate, $demoUser);
                     ++$transactionCount;
                 }
@@ -344,7 +344,7 @@ class OutstandingDebtsSeeder extends Seeder {
         $this->command->info('Creating historical payment transactions...');
 
         $historicalTransactionCount = 0;
-        $maxHistoricalTransactions = 30; // Limit historical transactions
+        $maxHistoricalTransactions = 30;
 
         foreach ($assetPersons as $assetPerson) {
             if ($historicalTransactionCount >= $maxHistoricalTransactions) {
@@ -441,7 +441,6 @@ class OutstandingDebtsSeeder extends Seeder {
                 transaction: $transaction,
             ));
 
-            $this->command->line("Created historical payment: {$paymentAmount} for AssetPerson {$assetPerson->id} (Date: {$historicalDate->format('Y-m-d')})");
         } catch (\Exception $e) {
             $this->command->warn('Failed to create historical payment transaction: '.$e->getMessage());
         }
