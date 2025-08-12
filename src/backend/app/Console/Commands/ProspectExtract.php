@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Models\Device;
 use Illuminate\Database\Eloquent\Model;
 use App\Console\Commands\AbstractSharedCommand;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Company;
 
 class ProspectExtract extends AbstractSharedCommand
 {
@@ -47,11 +49,15 @@ class ProspectExtract extends AbstractSharedCommand
             $count = count($data);
             $this->info('Successfully extracted ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
 
-            // For now, just show the count - CSV generation will come next
-            $this->line('Data extracted successfully. CSV generation will be implemented next.');
+            $this->info('Generating CSV file with extracted data...');
+
+            $fileName = $this->generateFileName();
+            $filePath = $this->writeCsvFile($data, $fileName);
+
+            $this->info('CSV file: ' . $fileName);
+            $this->info('File path: ' . $filePath);
 
             return 0;
-
         } catch (\Exception $e) {
             $this->error('Error during extraction: ' . $e->getMessage());
             return 1;
@@ -200,5 +206,63 @@ class ProspectExtract extends AbstractSharedCommand
         $this->info('Loaded ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
 
         return $installations;
+    }
+
+    private function generateFileName(): string
+    {
+        $companyId = $this->option('company-id');
+        $tenantName = $this->getCompanyName($companyId);
+        $timestamp = now()->format('Y-m-d\TH-i-s');
+        return "prospect_{$tenantName}_{$timestamp}.csv";
+    }
+
+    private function getCompanyName(?string $companyId): string
+    {
+        try {
+            $company = $companyId
+                ? Company::find($companyId)
+                : Company::first();
+
+            $companyName = $company ?? $company->name;
+            return $this->cleanCompanyName($companyName);
+        } catch (\Exception $e) {
+            return 'Unknown tenant';
+        }
+    }
+
+    private function cleanCompanyName(string $companyName): string
+    {
+        return strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $companyName));
+    }
+
+    private function writeCsvFile(array $data, string $fileName): string
+    {
+        $headers = array_keys($data[0]);
+        $csvContent = $this->arrayToCsv($data, $headers);
+
+        $filePath = 'prospects/' . $fileName;
+        Storage::disk('local')->put($filePath, $csvContent);
+
+        return Storage::disk('local')->path($filePath);
+    }
+
+    private function arrayToCsv(array $data, array $headers): string
+    {
+        $output = fopen('php://temp', 'r+');
+        fputcsv($output, $headers);
+
+        foreach ($data as $row) {
+            $csvRow = [];
+            foreach ($headers as $header) {
+                $csvRow[] = $row[$header] ?? '';
+            }
+            fputcsv($output, $csvRow);
+        }
+
+        rewind($output);
+        $csvContent = stream_get_contents($output);
+        fclose($output);
+
+        return $csvContent;
     }
 }
