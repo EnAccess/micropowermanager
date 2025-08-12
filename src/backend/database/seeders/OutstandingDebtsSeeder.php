@@ -440,7 +440,6 @@ class OutstandingDebtsSeeder extends Seeder {
                 payer: $assetPerson->person,
                 transaction: $transaction,
             ));
-
         } catch (\Exception $e) {
             $this->command->warn('Failed to create historical payment transaction: '.$e->getMessage());
         }
