@@ -2,11 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Events\PaymentSuccessEvent;
 use App\Models\Asset;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\AssetType;
 use App\Models\Person\Person;
+use App\Models\Transaction\CashTransaction;
+use App\Models\Transaction\Transaction;
+use App\Models\User;
 use App\Services\ApplianceRateService;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -41,6 +45,9 @@ class OutstandingDebtsSeeder extends Seeder {
 
         // Create AssetPerson records with outstanding debts
         $this->createAssetPersonWithOutstandingDebts($customers, $assets);
+
+        // Generate payment transactions to simulate ApplianceInstallmentPayer
+        $this->generatePaymentTransactions();
 
         $this->command->info('OutstandingDebts demo data created successfully!');
     }
@@ -270,6 +277,281 @@ class OutstandingDebtsSeeder extends Seeder {
                 'due_date' => $dueDate->format('Y-m-d'),
                 'remind' => $shouldBeOverdue ? rand(1, 2) : 0,
             ]);
+        }
+    }
+
+    /**
+     * Generate payment transactions to simulate ApplianceInstallmentPayer functionality.
+     */
+    private function generatePaymentTransactions(): void {
+        $this->command->info('Generating payment transactions for outstanding debts...');
+
+        // Get all AssetPerson records with outstanding debts
+        $assetPersons = AssetPerson::whereHas('rates', function ($query) {
+            $query->where('remaining', '>', 0);
+        })->with(['rates', 'person'])->get();
+
+        if ($assetPersons->isEmpty()) {
+            $this->command->warn('No AssetPerson records with outstanding debts found. Skipping payment transaction generation.');
+
+            return;
+        }
+
+        $this->command->info("Found {$assetPersons->count()} AssetPerson records with outstanding debts.");
+
+        $demoUser = User::first();
+
+        $transactionCount = 0;
+        $maxTransactions = min(50, $assetPersons->count() * 2);
+
+        $this->command->info("Will generate up to {$maxTransactions} payment transactions.");
+
+        foreach ($assetPersons as $assetPerson) {
+            if ($transactionCount >= $maxTransactions) {
+                break;
+            }
+
+            $outstandingRates = $assetPerson->rates()->where('remaining', '>', 0)->get();
+            $this->command->line("AssetPerson {$assetPerson->id} has {$outstandingRates->count()} outstanding rates.");
+
+            foreach ($outstandingRates as $rate) {
+                if ($transactionCount >= $maxTransactions) {
+                    break;
+                }
+
+                // Create partial payment transactions (simulating customer payments)
+                $this->createPartialPaymentTransaction($assetPerson, $rate, $demoUser);
+                ++$transactionCount;
+
+                // Sometimes create full payment transactions
+                if (rand(0, 3) === 0) { // 25% chance
+                    $this->createFullPaymentTransaction($assetPerson, $rate, $demoUser);
+                    ++$transactionCount;
+                }
+            }
+        }
+
+        // Create historical payment transactions to simulate payment history
+        $this->createHistoricalPaymentTransactions($assetPersons, $demoUser);
+
+        $this->command->info("Generated {$transactionCount} payment transactions for outstanding debts.");
+    }
+
+    /**
+     * Create historical payment transactions to simulate customer payment history.
+     */
+    private function createHistoricalPaymentTransactions($assetPersons, User $demoUser): void {
+        $this->command->info('Creating historical payment transactions...');
+
+        $historicalTransactionCount = 0;
+        $maxHistoricalTransactions = 30; // Limit historical transactions
+
+        foreach ($assetPersons as $assetPerson) {
+            if ($historicalTransactionCount >= $maxHistoricalTransactions) {
+                break;
+            }
+
+            // Create 1-3 historical payments per asset person
+            $historicalPayments = rand(1, 3);
+
+            for ($i = 0; $i < $historicalPayments; ++$i) {
+                if ($historicalTransactionCount >= $maxHistoricalTransactions) {
+                    break;
+                }
+
+                $this->createHistoricalPaymentTransaction($assetPerson, $demoUser, $i);
+                ++$historicalTransactionCount;
+            }
+        }
+
+        $this->command->info("Created {$historicalTransactionCount} historical payment transactions.");
+    }
+
+    /**
+     * Create a historical payment transaction.
+     */
+    private function createHistoricalPaymentTransaction(AssetPerson $assetPerson, User $demoUser, int $paymentIndex): void {
+        try {
+            // Calculate a historical date (1-12 months ago)
+            $monthsAgo = rand(1, 12);
+            $historicalDate = Carbon::now()->subMonths($monthsAgo);
+
+            // Get sender information
+            $sender = $assetPerson->person->phone ??
+                     $assetPerson->person->email ??
+                     'Customer-'.$assetPerson->person->id;
+
+            // Create a random payment amount (simulating what was paid historically)
+            $paymentAmount = rand(5000, 25000); // Random amount between 5-25 units
+
+            // Create cash transaction
+            $cashTransaction = CashTransaction::create([
+                'user_id' => $demoUser->id,
+                'status' => 1, // Success
+                'manufacturer_transaction_id' => null,
+                'manufacturer_transaction_type' => null,
+                'created_at' => $historicalDate,
+                'updated_at' => $historicalDate,
+            ]);
+
+            // Create main transaction using proper polymorphic relationship
+            $transaction = new Transaction([
+                'amount' => $paymentAmount,
+                'type' => 'deferred_payment',
+                'sender' => $sender,
+                'message' => $assetPerson->device_serial,
+                'created_at' => $historicalDate,
+                'updated_at' => $historicalDate,
+            ]);
+
+            // Associate the cash transaction using Laravel's polymorphic relationship
+            $transaction->originalTransaction()->associate($cashTransaction);
+            $transaction->save();
+
+            // Find a rate that would have been due around this time
+            $dueDate = Carbon::parse($assetPerson->first_payment_date)->addMonths($paymentIndex + 1);
+
+            // Create a historical AssetRate record if it doesn't exist
+            $historicalRate = AssetRate::where('asset_person_id', $assetPerson->id)
+                ->where('due_date', $dueDate->format('Y-m-d'))
+                ->first();
+
+            if (!$historicalRate) {
+                // Create a historical rate record
+                $monthlyRate = floor($assetPerson->total_cost / $assetPerson->rate_count);
+                $historicalRate = AssetRate::create([
+                    'asset_person_id' => $assetPerson->id,
+                    'rate_cost' => $monthlyRate,
+                    'remaining' => 0, // This was paid historically
+                    'due_date' => $dueDate->format('Y-m-d'),
+                    'remind' => 0,
+                    'created_at' => $historicalDate,
+                    'updated_at' => $historicalDate,
+                ]);
+            }
+
+            // Dispatch PaymentSuccessEvent to create payment history
+            event(new PaymentSuccessEvent(
+                amount: $paymentAmount,
+                paymentService: 'cash_transaction',
+                paymentType: 'installment',
+                sender: $sender,
+                paidFor: $historicalRate,
+                payer: $assetPerson->person,
+                transaction: $transaction,
+            ));
+
+            $this->command->line("Created historical payment: {$paymentAmount} for AssetPerson {$assetPerson->id} (Date: {$historicalDate->format('Y-m-d')})");
+        } catch (\Exception $e) {
+            $this->command->warn('Failed to create historical payment transaction: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Create a partial payment transaction for an overdue rate.
+     */
+    private function createPartialPaymentTransaction(AssetPerson $assetPerson, AssetRate $rate, User $demoUser): void {
+        // Calculate payment amount (partial payment)
+        $paymentAmount = min(
+            rand(floor($rate->remaining * 0.3), floor($rate->remaining * 0.7)), // 30-70% of remaining
+            $rate->remaining
+        );
+
+        if ($paymentAmount <= 0) {
+            return;
+        }
+
+        try {
+            // Create cash transaction (simulating cash payment)
+            $cashTransaction = CashTransaction::create([
+                'user_id' => $demoUser->id,
+                'status' => 1, // Success
+                'manufacturer_transaction_id' => null,
+                'manufacturer_transaction_type' => null,
+            ]);
+
+            $sender = $assetPerson->person->phone ??
+                     $assetPerson->person->email ??
+                     'Customer-'.$assetPerson->person->id;
+
+            $transaction = new Transaction([
+                'amount' => $paymentAmount,
+                'type' => 'deferred_payment',
+                'sender' => $sender,
+                'message' => $assetPerson->device_serial,
+            ]);
+
+            $transaction->originalTransaction()->associate($cashTransaction);
+            $transaction->save();
+
+            // Update the rate remaining amount
+            $rate->remaining -= $paymentAmount;
+            $rate->save();
+
+            // Dispatch PaymentSuccessEvent to create payment history
+            event(new PaymentSuccessEvent(
+                amount: $paymentAmount,
+                paymentService: 'cash_transaction',
+                paymentType: 'installment',
+                sender: $sender,
+                paidFor: $rate,
+                payer: $assetPerson->person,
+                transaction: $transaction,
+            ));
+        } catch (\Exception $e) {
+            $this->command->warn('Failed to create partial payment transaction: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Create a full payment transaction for an overdue rate.
+     */
+    private function createFullPaymentTransaction(AssetPerson $assetPerson, AssetRate $rate, User $demoUser): void {
+        if ($rate->remaining <= 0) {
+            return;
+        }
+
+        $paymentAmount = $rate->remaining;
+
+        try {
+            // Create cash transaction (simulating cash payment)
+            $cashTransaction = CashTransaction::create([
+                'user_id' => $demoUser->id,
+                'status' => 1, // Success
+                'manufacturer_transaction_id' => null,
+                'manufacturer_transaction_type' => null,
+            ]);
+
+            $sender = $assetPerson->person->phone ??
+                     $assetPerson->person->email ??
+                     'Customer-'.$assetPerson->person->id;
+
+            $transaction = new Transaction([
+                'amount' => $paymentAmount,
+                'type' => 'deferred_payment',
+                'sender' => $sender,
+                'message' => $assetPerson->device_serial,
+            ]);
+
+            $transaction->originalTransaction()->associate($cashTransaction);
+            $transaction->save();
+
+            // Update the rate remaining amount (fully paid)
+            $rate->remaining = 0;
+            $rate->save();
+
+            // Dispatch PaymentSuccessEvent to create payment history
+            event(new PaymentSuccessEvent(
+                amount: $paymentAmount,
+                paymentService: 'cash_transaction',
+                paymentType: 'installment',
+                sender: $sender,
+                paidFor: $rate,
+                payer: $assetPerson->person,
+                transaction: $transaction,
+            ));
+        } catch (\Exception $e) {
+            $this->command->warn('Failed to create full payment transaction: '.$e->getMessage());
         }
     }
 }
