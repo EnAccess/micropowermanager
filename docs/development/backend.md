@@ -81,6 +81,14 @@ $person->save();
 > The schema of the central database is massive.
 > In `erd-editor` you can use `Right Click => Automatic Table Placement` to get nicer overview.
 
+### Cluster, MiniGrid, Village relations
+
+![Transaction abstractions](images/cluster_minigrid_village.excalidraw.svg)
+
+### Connection Groups and Types
+
+![Transaction abstractions](images/connection_groups_types.excalidraw.svg)
+
 ### Transactions abstractions
 
 To model real world transactions and their implications in MicroPowerManager different abstractions are used.
