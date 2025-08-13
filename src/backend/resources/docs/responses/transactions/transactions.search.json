@@ -1,0 +1,59 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 116705,
+            "original_transaction_id": 106713,
+            "original_transaction_type": "mobile_money_transaction",
+            "amount": 3500,
+            "type": "energy",
+            "sender": "111111111111",
+            "message": "3452452343,",
+            "created_at": "2020-03-26 10:16:00",
+            "updated_at": "2020-03-26 10:16:01",
+            "original_transaction": {
+                "id": 106713,
+                "conversation_id": "7FDSGJHK40D",
+                "originator_conversation_id": "438flfsda23fs",
+                "mpesa_receipt": "13DEXKFHWJ",
+                "transaction_date": "2020-03-26 13:15:59",
+                "transaction_id": "243423423_3152",
+                "status": 1,
+                "created_at": "2020-03-26 10:16:00",
+                "updated_at": "2020-03-26 10:16:05"
+            }
+        },
+        {
+            "id": 104821,
+            "original_transaction_id": 96449,
+            "original_transaction_type": "mobile_money_transaction",
+            "amount": 3500,
+            "type": "energy",
+            "sender": "111111111111",
+            "message": "3452452343,",
+            "created_at": "2020-03-10 11:01:27",
+            "updated_at": "2020-03-10 11:01:28",
+            "original_transaction": {
+                "id": 96449,
+                "conversation_id": "355523GFEFFGDW3",
+                "originator_conversation_id": "47ckwdsui43788fdsbhj3",
+                "mpesa_receipt": "123TZGDF123ESD6",
+                "transaction_date": "2020-03-10 14:01:26",
+                "transaction_id": "12386468_7895",
+                "status": 1,
+                "created_at": "2020-03-10 11:01:27",
+                "updated_at": "2020-03-10 11:01:30"
+            }
+        }
+    ],
+    "first_page_url": "http:\/\/localhost:8000\/api\/transactions\/advanced?page=1",
+    "from": 1,
+    "last_page": 1,
+    "last_page_url": "http:\/\/localhost:8000\/api\/transactions\/advanced?page=1",
+    "next_page_url": null,
+    "path": "http:\/\/localhost:8000\/api\/transactions\/advanced",
+    "per_page": 15,
+    "prev_page_url": null,
+    "to": 5,
+    "total": 5
+}

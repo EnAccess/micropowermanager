@@ -1,0 +1,91 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 1,
+            "title": null,
+            "education": null,
+            "name": "John",
+            "surname": "Doe",
+            "birth_date": "1970-01-01",
+            "sex": null,
+            "nationality": null,
+            "created_at": "2018-06-22 11:49:57",
+            "updated_at": "2020-03-31 09:59:08",
+            "customer_group_id": null,
+            "is_customer": 1,
+            "deleted_at": null,
+            "addresses": [
+                {
+                    "id": 5,
+                    "is_primary": 1,
+                    "email": "",
+                    "phone": "+11111",
+                    "street": "-",
+                    "city_id": 1,
+                    "geo_id": null,
+                    "created_at": "2018-06-22 11:49:57",
+                    "updated_at": "2020-03-24 13:02:02",
+                    "city": {
+                        "id": 1,
+                        "name": "Some Village",
+                        "country_id": 215,
+                        "created_at": "2018-06-22 08:14:10",
+                        "updated_at": "2019-06-21 14:07:28",
+                        "cluster_id": 10,
+                        "mini_grid_id": 1
+                    }
+                },
+                {
+                    "id": 209,
+                    "is_primary": 0,
+                    "email": "",
+                    "phone": "+11111111",
+                    "street": "",
+                    "city_id": 1,
+                    "geo_id": null,
+                    "created_at": "2018-11-15 08:57:47",
+                    "updated_at": "2020-03-24 13:01:57",
+                    "city": {
+                        "id": 1,
+                        "name": "Some Village",
+                        "country_id": 215,
+                        "created_at": "2018-06-22 08:14:10",
+                        "updated_at": "2019-06-21 14:07:28",
+                        "cluster_id": 10,
+                        "mini_grid_id": 1
+                    }
+                }
+            ],
+            "meters": [
+                {
+                    "id": 1,
+                    "connection_type_id": 1,
+                    "created_at": "2018-06-22 11:59:46",
+                    "updated_at": "2018-12-17 14:20:23",
+                    "connection_group_id": 1,
+                    "meter": {
+                        "id": 1,
+                        "serial_number": "1231321231",
+                        "meter_type_id": 1,
+                        "in_use": 1,
+                        "manufacturer_id": 1,
+                        "created_at": "2018-06-22 11:50:09",
+                        "updated_at": "2018-12-17 14:20:23",
+                        "deleted_at": null
+                    }
+                }
+            ]
+        }
+    ],
+    "first_page_url": "http:\/\/localhost:8000\/api\/people\/search?page=1",
+    "from": 1,
+    "last_page": 1,
+    "last_page_url": "http:\/\/localhost:8000\/api\/people\/search?page=1",
+    "next_page_url": null,
+    "path": "http:\/\/localhost:8000\/api\/people\/search",
+    "per_page": 15,
+    "prev_page_url": null,
+    "to": 1,
+    "total": 1
+}
