@@ -19,7 +19,7 @@ services:
     volumes:
       - ./src/backend:/var/www/html
       - backend_php_vendor:/var/www/html/vendor
-      - ./src/backend/storage:/var/www/html/storage
+      - backend_php_storage:/var/www/html/storage
     healthcheck:
       test: [CMD, curl, -f, http://localhost/up]
       start_period: 60s
@@ -55,7 +55,7 @@ services:
     volumes:
       - ./src/backend:/var/www/html
       - scheduler_php_vendor:/var/www/html/vendor
-      - ./src/backend/storage:/var/www/html/storage
+      - scheduler_php_storage:/var/www/html/storage
 
   queue-worker-dev:
     container_name: queue-worker-dev
@@ -74,7 +74,7 @@ services:
     volumes:
       - ./src/backend:/var/www/html
       - queue_worker_php_vendor:/var/www/html/vendor
-      - ./src/backend/storage:/var/www/html/storage
+      - queue_worker_php_storage:/var/www/html/storage
 
   redis:
     container_name: redis
@@ -107,5 +107,8 @@ volumes:
   # conditions between different containers and local filesystem.
   frontend_node_modules:
   backend_php_vendor:
+  backend_php_storage:
   scheduler_php_vendor:
+  scheduler_php_storage:
   queue_worker_php_vendor:
+  queue_worker_php_storage:
