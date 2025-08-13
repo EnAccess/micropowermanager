@@ -54,7 +54,7 @@ class TransactionExportService extends AbstractExportService {
     }
 
     public function getTemplatePath(): string {
-        return storage_path('transaction/export_transactions_template.xlsx');
+        return resource_path('templates/export_transactions_template.xlsx');
     }
 
     public function getPrefix(): string {

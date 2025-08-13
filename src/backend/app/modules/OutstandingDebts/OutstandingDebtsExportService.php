@@ -60,7 +60,7 @@ class OutstandingDebtsExportService extends AbstractExportService {
     }
 
     public function getTemplatePath(): string {
-        return storage_path('appliance/export_outstanding_debts_template.xlsx');
+        return resource_path('templates/export_outstanding_debts_template.xlsx');
     }
 
     public function createReport(CarbonImmutable $toDate): string {
