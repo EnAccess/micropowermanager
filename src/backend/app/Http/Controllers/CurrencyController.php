@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CurrencyController extends Controller {
     public function index(): ApiResource {
-        $currency = Storage::disk('local')->get('currency.json');
+        $currency = file_get_contents(resource_path('data/currency.json'));
         $currency = json_decode($currency, true);
 
         return new ApiResource($currency);
