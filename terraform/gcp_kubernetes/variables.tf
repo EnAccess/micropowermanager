@@ -70,7 +70,7 @@ variable "db_tier" {
 variable "db_enabled_public_ip" {
   description = "Determines whether the database instance should be accessible via public IP. Note: Authorization is still required even when using public IP, for example using `db_authorized_networks`. See https://cloud.google.com/sql/docs/mysql/connect-overview"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "db_authorized_networks" {
