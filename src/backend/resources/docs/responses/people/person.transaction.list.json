@@ -1,0 +1,41 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 79474,
+            "amount": 10000,
+            "payment_service": "xyt_transaction",
+            "sender": "255769644521",
+            "payment_type": "installment",
+            "paid_for_type": "asset_loan",
+            "paid_for_id": 1,
+            "payer_type": "person",
+            "payer_id": 1,
+            "transaction_id": 86064,
+            "created_at": "2020-02-11 12:19:58",
+            "updated_at": "2020-02-11 12:19:58",
+            "transaction": {
+                "id": 86064,
+                "original_transaction_id": 80277,
+                "original_transaction_type": "xyt_transaction",
+                "amount": 10000,
+                "type": "energy",
+                "sender": "111111111",
+                "message": "123123123",
+                "created_at": "2020-02-11 12:19:56",
+                "updated_at": "2020-02-11 12:19:57",
+                "token": null
+            }
+        }
+    ],
+    "first_page_url": "http:\/\/localhost:8000\/api\/people\/1\/transactions?page=1",
+    "from": 1,
+    "last_page": 1,
+    "last_page_url": "http:\/\/localhost:8000\/api\/people\/1\/transactions?page=1",
+    "next_page_url": null,
+    "path": "http:\/\/localhost:8000\/api\/people\/1\/transactions",
+    "per_page": 7,
+    "prev_page_url": null,
+    "to": 6,
+    "total": 6
+}

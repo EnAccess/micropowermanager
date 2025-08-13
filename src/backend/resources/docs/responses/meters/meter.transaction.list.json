@@ -1,0 +1,49 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 27024,
+            "amount": 24500,
+            "payment_service": "mobile_provider_transaction",
+            "sender": "11111111",
+            "payment_type": "energy",
+            "paid_for_type": "token",
+            "paid_for_id": 26578,
+            "payer_type": "person",
+            "payer_id": 3,
+            "transaction_id": 29608,
+            "created_at": "2019-10-09 05:17:17",
+            "updated_at": "2019-10-09 05:17:17",
+            "transaction": {
+                "id": 29608,
+                "original_transaction_id": 27905,
+                "original_transaction_type": "mobile_provider_transaction",
+                "amount": 24500,
+                "type": "energy",
+                "sender": "11111111",
+                "message": "123123123",
+                "created_at": "2019-10-09 05:17:15",
+                "updated_at": "2019-10-09 05:17:16"
+            },
+            "paid_for": {
+                "id": 26578,
+                "transaction_id": 29608,
+                "meter_id": 3,
+                "token": "564118566033243372179",
+                "energy": 32.7,
+                "created_at": "2019-10-09 05:17:17",
+                "updated_at": "2019-10-09 05:17:17"
+            }
+        }
+    ],
+    "first_page_url": "http://localhost:8000/api/meters/47000268822/transactions?page=1",
+    "from": 1,
+    "last_page": 13,
+    "last_page_url": "http://localhost:8000/api/meters/47000268822/transactions?page=13",
+    "next_page_url": "http://localhost:8000/api/meters/47000268822/transactions?page=2",
+    "path": "http://localhost:8000/api/meters/47000268822/transactions",
+    "per_page": 5,
+    "prev_page_url": null,
+    "to": 5,
+    "total": 63
+}

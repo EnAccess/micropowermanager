@@ -1,0 +1,88 @@
+{
+    "data": {
+        "id": 116705,
+        "original_transaction_id": 106713,
+        "original_transaction_type": "mobile_money_provider_transaction",
+        "amount": 3500,
+        "type": "energy",
+        "sender": "32424543523523",
+        "message": "24325436475643",
+        "created_at": "2020-03-26 10:16:00",
+        "updated_at": "2020-03-26 10:16:01",
+        "token": {
+            "id": 107078,
+            "transaction_id": 116705,
+            "meter_id": 4846,
+            "token": "64368569223996495744",
+            "energy": 1,
+            "created_at": "2020-03-26 10:16:04",
+            "updated_at": "2020-03-26 10:16:04",
+            "meter": {
+                "id": 4846,
+                "serial_number": "24325436475643",
+                "meter_type_id": 1,
+                "in_use": 1,
+                "manufacturer_id": 1,
+                "created_at": "2019-11-07 13:28:17",
+                "updated_at": "2019-11-07 13:28:17",
+                "deleted_at": null,
+                "meter_parameter": {
+                    "id": 4727,
+                    "connection_type_id": 1,
+                    "created_at": "2019-11-07 13:28:17",
+                    "updated_at": "2019-11-07 13:28:17",
+                    "connection_group_id": 23
+                },
+                "meter_type": {
+                    "id": 1,
+                    "online": 0,
+                    "phase": 1,
+                    "max_current": 10,
+                    "created_at": "2018-06-22 08:15:12",
+                    "updated_at": "2018-06-22 08:15:12"
+                }
+            }
+        },
+        "original_transaction": {
+            "id": 106713,
+            "conversation_id": "7SDFA6WE6GS4",
+            "originator_conversation_id": "456wer4fs564w65",
+            "mpesa_receipt": "12F3A1FEW3",
+            "transaction_date": "2020-03-26 13:15:59",
+            "transaction_id": "128156_34243",
+            "status": 1,
+            "created_at": "2020-03-26 10:16:00",
+            "updated_at": "2020-03-26 10:16:05",
+            "conflicts": []
+        },
+        "sms": {
+            "id": 149604,
+            "receiver": "+32424543523523",
+            "trigger_type": "transaction",
+            "trigger_id": 116705,
+            "body": "Meter: {24325436475643}, Token for 1kWh. 64368569223996495744.  Service Charge: 0 EUR.  VAT 18% \\t63 EUR  \\n\n  Total \\t 2870",
+            "status": 0,
+            "uuid": "98635408-a3ef-400b-b9db-68b5c6727f41",
+            "direction": 1,
+            "sender_id": null,
+            "created_at": "2020-03-26 10:16:06",
+            "updated_at": "2020-03-26 10:16:06"
+        },
+        "payment_histories": [
+            {
+                "id": 109389,
+                "amount": 3500,
+                "payment_service": "mobile_money_provider_transaction",
+                "sender": "32424543523523",
+                "payment_type": "energy",
+                "paid_for_type": "token",
+                "paid_for_id": 107078,
+                "payer_type": "person",
+                "payer_id": 4890,
+                "transaction_id": 116705,
+                "created_at": "2020-03-26 10:16:04",
+                "updated_at": "2020-03-26 10:16:04"
+            }
+        ]
+    }
+}

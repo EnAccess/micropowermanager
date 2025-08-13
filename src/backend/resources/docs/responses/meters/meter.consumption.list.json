@@ -1,0 +1,24 @@
+{
+    "data": [
+        {
+            "id": 7,
+            "meter_id": 165,
+            "total_consumption": 64.31,
+            "consumption": 64.31,
+            "credit_on_meter": 0.81,
+            "reading_date": "2018-10-03",
+            "created_at": "2018-11-26 14:27:39",
+            "updated_at": "2018-11-26 14:27:39"
+        },
+        {
+            "id": 13,
+            "meter_id": 165,
+            "total_consumption": 67.58,
+            "consumption": 3.269999999999996,
+            "credit_on_meter": 6.82,
+            "reading_date": "2018-10-04",
+            "created_at": "2018-11-26 14:28:55",
+            "updated_at": "2018-11-26 14:28:55"
+        }
+    ]
+}

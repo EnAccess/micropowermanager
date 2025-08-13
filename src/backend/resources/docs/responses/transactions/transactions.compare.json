@@ -1,0 +1,37 @@
+{
+    "success": true,
+    "current": {
+        "total": 634,
+        "amount": "1655045",
+        "confirmed": 605,
+        "confirmedPercentage": 95.42586750788644,
+        "cancelled": 29,
+        "cancelledPercentage": 4.574132492113565
+    },
+    "past": {
+        "total": 789,
+        "amount": "1572390",
+        "confirmed": 754,
+        "confirmedPercentage": 95.56400506970849,
+        "cancelled": 35,
+        "cancelledPercentage": 4.435994930291508
+    },
+    "analytics": {
+        "totalPercentage": {
+            "percentage": -19.65,
+            "color": "red"
+        },
+        "confirmationPercentage": {
+            "percentage": -0.14,
+            "color": "red"
+        },
+        "cancelationPercentage": {
+            "percentage": 0.14,
+            "color": "red"
+        },
+        "amountPercentage": {
+            "percentage": 5.26,
+            "color": "green"
+        }
+    }
+}

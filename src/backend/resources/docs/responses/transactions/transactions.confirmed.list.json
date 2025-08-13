@@ -1,0 +1,61 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 94361,
+            "original_transaction_id": 87483,
+            "original_transaction_type": "mobile_money_1_transaction",
+            "amount": 150,
+            "type": "energy",
+            "sender": "3213123213",
+            "message": "435344124",
+            "created_at": "2020-02-24 14:50:56",
+            "updated_at": "2020-02-24 14:50:56",
+            "original_mobile_money_1": null,
+            "original_mobile_money_1": {
+                "id": 87483,
+                "conversation_id": "2343423",
+                "originator_conversation_id": "43432423",
+                "mpesa_receipt": "432423",
+                "transaction_date": "2020-02-24 17:50:55",
+                "transaction_id": "423423432",
+                "status": 1,
+                "created_at": "2020-02-24 14:50:56",
+                "updated_at": "2020-02-24 14:50:59"
+            }
+        },
+        {
+            "id": 94108,
+            "original_transaction_id": 87254,
+            "original_transaction_type": "mobile_money_2_transaction",
+            "amount": 5000,
+            "type": "energy",
+            "sender": "34324324",
+            "message": "5467465432",
+            "created_at": "2020-02-24 07:47:04",
+            "updated_at": "2020-02-24 07:47:04",
+            "original_mobile_money_1": null,
+            "original_mobile_money_2": {
+                "id": 87254,
+                "conversation_id": "78SDFA456A",
+                "originator_conversation_id": "48w45d6f4w98456ds",
+                "mpesa_receipt": "489EWSDF498AWEDS45",
+                "transaction_date": "2020-02-24 10:47:03",
+                "transaction_id": "456464144564_423",
+                "status": 1,
+                "created_at": "2020-02-24 07:47:04",
+                "updated_at": "2020-02-24 07:47:06"
+            }
+        }
+    ],
+    "first_page_url": "http:\/\/localhost:8000\/api\/transactions\/cancelled?page=1",
+    "from": 1,
+    "last_page": 521,
+    "last_page_url": "http:\/\/localhost:8000\/api\/transactions\/cancelled?page=521",
+    "next_page_url": "http:\/\/localhost:8000\/api\/transactions\/cancelled?page=2",
+    "path": "http:\/\/localhost:8000\/api\/transactions\/cancelled",
+    "per_page": 15,
+    "prev_page_url": null,
+    "to": 15,
+    "total": 7809
+}

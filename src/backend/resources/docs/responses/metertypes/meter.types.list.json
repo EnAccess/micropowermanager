@@ -1,0 +1,36 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "online": 0,
+            "phase": 1,
+            "max_current": 10,
+            "created_at": "2018-06-22 08:15:12",
+            "updated_at": "2018-06-22 08:15:12"
+        },
+        {
+            "id": 2,
+            "online": 0,
+            "phase": 3,
+            "max_current": 20,
+            "created_at": "2018-07-27 10:25:15",
+            "updated_at": "2018-07-27 10:25:15"
+        },
+        {
+            "id": 3,
+            "online": 1,
+            "phase": 1,
+            "max_current": 10,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 4,
+            "online": 1,
+            "phase": 3,
+            "max_current": 20,
+            "created_at": null,
+            "updated_at": null
+        }
+    ]
+}
