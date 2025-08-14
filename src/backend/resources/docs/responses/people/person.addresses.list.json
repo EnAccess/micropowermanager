@@ -1,0 +1,57 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 5,
+            "is_primary": 1,
+            "email": "",
+            "phone": "+111111",
+            "street": "-",
+            "city_id": 1,
+            "geo_id": null,
+            "created_at": "2018-06-22 11:49:57",
+            "updated_at": "2020-03-24 13:02:02",
+            "city": {
+                "id": 1,
+                "name": "Some Village",
+                "country_id": 1,
+                "created_at": "2018-06-22 08:14:10",
+                "updated_at": "2019-06-21 14:07:28",
+                "cluster_id": 1,
+                "mini_grid_id": 1
+            },
+            "geo": null
+        },
+        {
+            "id": 209,
+            "is_primary": 0,
+            "email": "",
+            "phone": "+11111111111",
+            "street": "",
+            "city_id": 1,
+            "geo_id": null,
+            "created_at": "2018-11-15 08:57:47",
+            "updated_at": "2020-03-24 13:01:57",
+            "city": {
+                "id": 1,
+                "name": "Some Village",
+                "country_id": 1,
+                "created_at": "2018-06-22 08:14:10",
+                "updated_at": "2019-06-21 14:07:28",
+                "cluster_id": 1,
+                "mini_grid_id": 1
+            },
+            "geo": null
+        }
+    ],
+    "first_page_url": "http:\/\/localhost:8000\/api\/people\/1\/addresses?page=1",
+    "from": 1,
+    "last_page": 1,
+    "last_page_url": "http:\/\/localhost:8000\/api\/people\/1\/addresses?page=1",
+    "next_page_url": null,
+    "path": "http:\/\/localhost:8000\/api\/people\/1\/addresses",
+    "per_page": 5,
+    "prev_page_url": null,
+    "to": 2,
+    "total": 2
+}

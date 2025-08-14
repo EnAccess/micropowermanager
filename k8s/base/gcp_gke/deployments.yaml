@@ -23,6 +23,14 @@ spec:
                 name: mpm-configmap-backend
             - secretRef:
                 name: mpm-secret-backend
+          volumeMounts:
+            - name: storage_data
+              mountPath: /var/www/html/storage
+              subPath: ""
+      volumes:
+        - name: storage_data
+          persistentVolumeClaim:
+            claimName: storage-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -74,6 +82,14 @@ spec:
                 name: mpm-configmap-backend
             - secretRef:
                 name: mpm-secret-backend
+          volumeMounts:
+            - name: storage_data
+              mountPath: /var/www/html/storage
+              subPath: ""
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: storage-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -99,3 +115,11 @@ spec:
                 name: mpm-configmap-backend
             - secretRef:
                 name: mpm-secret-backend
+          volumeMounts:
+            - name: storage_data
+              mountPath: /var/www/html/storage
+              subPath: ""
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: storage-pvc

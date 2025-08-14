@@ -22,3 +22,11 @@ spec:
                 name: mpm-configmap-backend
             - secretRef:
                 name: mpm-secret-backend
+          volumeMounts:
+            - name: storage_data
+              mountPath: /var/www/html/storage
+              subPath: ""
+      volumes:
+        - name: storage_data
+          persistentVolumeClaim:
+            claimName: mpm-storage-pvc

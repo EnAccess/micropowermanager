@@ -1,0 +1,59 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 94372,
+            "original_transaction_id": 87491,
+            "original_transaction_type": "mobile_money_providertransaction",
+            "amount": 500,
+            "type": "energy",
+            "sender": "4324432424314",
+            "message": "64654123213",
+            "created_at": "2020-02-24 15:03:16",
+            "updated_at": "2020-02-24 15:03:17",
+            "original_transaction": {
+                "id": 87491,
+                "conversation_id": "43534HFH2WIDFA",
+                "originator_conversation_id": "aew4322fsjkln32m,fds",
+                "mpesa_receipt": "54XI1EDF89QL",
+                "transaction_date": "2020-02-24 18:03:15",
+                "transaction_id": "324432_324",
+                "status": 1,
+                "created_at": "2020-02-24 15:03:16",
+                "updated_at": "2020-02-24 15:03:22"
+            }
+        },
+        {
+            "id": 94371,
+            "original_transaction_id": 87490,
+            "original_transaction_type": "mobile_money_providertransaction",
+            "amount": 5000,
+            "type": "energy",
+            "sender": "11111111",
+            "message": "12312323123",
+            "created_at": "2020-02-24 14:59:35",
+            "updated_at": "2020-02-24 14:59:38",
+            "original_transaction": {
+                "id": 87490,
+                "conversation_id": "543FEEG674",
+                "originator_conversation_id": "46c8032hjfgvdh48f93fdz9",
+                "mpesa_receipt": "5438844FDGBHHH654",
+                "transaction_date": "2020-02-24 17:59:34",
+                "transaction_id": "423423_12223",
+                "status": 1,
+                "created_at": "2020-02-24 14:59:35",
+                "updated_at": "2020-02-24 14:59:43"
+            }
+        }
+    ],
+    "first_page_url": "http:\/\/mpmanager.loca\/api\/transactions?page=1",
+    "from": 1,
+    "last_page": 6292,
+    "last_page_url": "http:\/\/mpmanager.loca\/api\/transactions?page=6292",
+    "next_page_url": "http:\/\/mpmanager.loca\/api\/transactions?page=2",
+    "path": "http:\/\/mpmanager.loca\/api\/transactions",
+    "per_page": 15,
+    "prev_page_url": null,
+    "to": 15,
+    "total": 94372
+}

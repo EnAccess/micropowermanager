@@ -60,7 +60,7 @@ class PersonExportService extends AbstractExportService {
     }
 
     public function getTemplatePath(): string {
-        return storage_path('people/export_people_template.xlsx');
+        return resource_path('templates/export_people_template.xlsx');
     }
 
     public function getPrefix(): string {
