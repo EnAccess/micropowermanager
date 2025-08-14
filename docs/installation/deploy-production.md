@@ -213,7 +213,6 @@ Deploy a VPN IPSec Gateway
    ```
 
    This exposes
-
    - Port `8443`, `8000`: The backend of MicroPowerManager
    - Port `8001`: The frontend of MicroPowerManager
 
