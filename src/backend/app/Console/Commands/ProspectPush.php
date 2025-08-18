@@ -2,8 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Device;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -15,9 +13,7 @@ class ProspectPush extends AbstractSharedCommand {
      * @var string
      */
     protected $signature = 'prospect:push
-                            {--file= : JSON file path containing data to push}
-                            {--database : Load data from database}
-                            {--limit= : Limit number of records when loading from database}
+                            {--file= : CSV file path containing data to push}
                             {--test : Mark data as test data}
                             {--dry-run : Show what would be sent without actually sending}';
 
@@ -26,7 +22,7 @@ class ProspectPush extends AbstractSharedCommand {
      *
      * @var string
      */
-    protected $description = 'Push installation data to Prospect';
+    protected $description = 'Push installation data to Prospect from CSV file';
 
     /**
      * Create a new command instance.
@@ -44,11 +40,10 @@ class ProspectPush extends AbstractSharedCommand {
      */
     public function handle(): void {
         try {
-            $data = $this->prepareData();
+            $data = $this->loadCsvData();
 
             if (empty($data)) {
                 $this->error('No data to push to Prospect.');
-
                 return;
             }
 
@@ -57,7 +52,6 @@ class ProspectPush extends AbstractSharedCommand {
             if ($this->option('dry-run')) {
                 $this->info('DRY RUN - would send the following data:');
                 $this->line(json_encode($payload, JSON_PRETTY_PRINT));
-
                 return;
             }
 
@@ -90,243 +84,113 @@ class ProspectPush extends AbstractSharedCommand {
     }
 
     /**
+     * Load data from CSV file
+     *
      * @return array<int, array<string, mixed>>
      */
-    private function prepareData(): array {
-        if ($this->option('file')) {
-            return $this->loadDataFromFile();
+    private function loadCsvData(): array {
+        $filePath = $this->option('file') ?? $this->getLatestCsvFile();
+
+        if (!file_exists($filePath)) {
+            throw new \Exception("CSV file not found: {$filePath}");
         }
 
-        if ($this->option('database')) {
-            return $this->loadDataFromDatabase();
+        $this->info("Loading data from: " . basename($filePath));
+
+        $csvContent = file_get_contents($filePath);
+        $lines = str_getcsv($csvContent, "\n");
+
+        if (empty($lines)) {
+            throw new \Exception('CSV file is empty');
         }
 
-        return $this->getDefaultTestData();
-    }
+        // Get headers from first line
+        $headers = str_getcsv(array_shift($lines));
+        $headers = array_map('trim', $headers);
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function loadDataFromFile(): array {
-        $filePath = $this->option('file');
+        $data = [];
+        $isTest = $this->option('test');
 
-        if (!$filePath || !file_exists($filePath)) {
-            throw new \Exception("File not found: {$filePath}");
-        }
+        foreach ($lines as $lineNumber => $line) {
+            if (empty(trim($line))) continue; // Skip empty lines
 
-        $content = file_get_contents($filePath);
-        $jsonData = json_decode($content, true);
+            $row = str_getcsv($line);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('Invalid JSON in file: '.json_last_error_msg());
-        }
-
-        return isset($jsonData['data']) ? $jsonData['data'] : [$jsonData];
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function loadDataFromDatabase(): array {
-        $this->info('Loading installation data from database...');
-
-        $limit = $this->option('limit') ? (int) $this->option('limit') : null;
-        $isTest = (bool) $this->option('test');
-
-        // Query devices with all necessary relationships
-        $query = Device::query()->with([
-            'device',
-            'person.addresses.geo',
-            'person.addresses.city.country',
-            'tokens.transaction',
-            'appliance',
-            'assetPerson',
-        ]);
-
-        if ($limit) {
-            $query->limit($limit);
-        }
-
-        $devices = $query->get();
-
-        $installations = [];
-
-        foreach ($devices as $device) {
-            $deviceData = $device->device;
-
-            if (!$deviceData instanceof Model) {
+            if (count($row) !== count($headers)) {
+                $this->warn("Skipping line " . ($lineNumber + 2) . ": column count mismatch");
                 continue;
             }
 
-            // Load manufacturer relationship dynamically
-            $deviceData->load('manufacturer');
+            $record = array_combine($headers, $row);
 
-            $person = $device->person;
-            $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?? $person->addresses->first();
-            $assetPerson = $device->assetPerson;
+            $record = array_map(function($value) {
+                $value = trim($value);
+                return $value === '' ? null : $value;
+            }, $record);
 
-            // Extract coordinates from geographical information
-            $latitude = null;
-            $longitude = null;
-
-            if ($primaryAddress && $primaryAddress->geo && $primaryAddress->geo->points) {
-                $coordinates = explode(',', $primaryAddress->geo->points);
-                if (count($coordinates) >= 2) {
-                    $latitude = (float) trim($coordinates[0]);
-                    $longitude = (float) trim($coordinates[1]);
-                }
+            if ($isTest) {
+                $record['is_test'] = true;
             }
 
-            // Determine device category
-            $deviceCategory = match ($device->device_type) {
-                'meter' => 'meter',
-                'solar_home_system' => 'solar_home_system',
-                default => 'other',
-            };
+            // Skip records without required fields
+            if (empty($record['customer_external_id']) || empty($record['serial_number'])) {
+                $this->warn("Skipping record: missing customer_external_id or serial_number");
+                continue;
+            }
 
-            // Build installation data
-            $installation = [
-                // Required fields
-                'customer_external_id' => (string) $person->id,
-                'manufacturer' => $deviceData->manufacturer->name ?? 'Unknown',
-                'serial_number' => $deviceData->serial_number ?? '',
-
-                // Optional device information
-                'device_external_id' => (string) $device->id,
-                'device_category' => $deviceCategory,
-                'is_test' => $isTest,
-
-                // Location information
-                'latitude' => $latitude,
-                'longitude' => $longitude,
-                'country' => $primaryAddress?->city?->country?->country_code ?? null,
-                'location_area_1' => $primaryAddress?->city?->country?->country_name ?? null,
-                'location_area_2' => $primaryAddress?->city?->name ?? null,
-                'site_name' => $primaryAddress?->street ?? null,
-
-                // Customer information
-                'usage_category' => 'household', // Default assumption
-                'primary_use' => null, // Could be determined from device type or customer data
-
-                // Device technical specifications (if available)
-                'firmware_version' => null,
-                'model' => null,
-                'rated_power_w' => null,
-                'pv_power_w' => null,
-                'battery_capacity_wh' => null,
-                'dc_input_source' => $deviceCategory === 'solar_home_system' ? 'solar' : null,
-
-                // Payment plan information (from AssetPerson if available)
-                'payment_plan_category' => 'paygo',
-                'payment_plan_currency' => null,
-                'payment_plan_cash_price' => $assetPerson?->total_cost ?? null,
-                'payment_plan_amount_down_payment' => $assetPerson?->down_payment ?? null,
-                'payment_plan_number_of_installments' => $assetPerson?->rate_count ?? null,
-                'payment_plan_installment_amount' => null,
-
-                // Important dates
-                'installation_date' => $device->created_at->format('Y-m-d'),
-                'purchase_date' => $device->created_at->format('Y-m-d'),
-
-                // Additional fields that could be populated based on available data
-                'seller_agent_external_id' => null,
-                'installer_agent_external_id' => null,
-                'product_common_id' => null,
-                'parent_external_id' => null,
-                'account_external_id' => null,
-                'usage_sub_category' => null,
-                'ac_input_source' => null,
-                'payment_plan_amount_financed_principal' => null,
-                'payment_plan_amount_financed_interest' => null,
-                'payment_plan_amount_financed_total' => null,
-                'payment_plan_installment_period_days' => null,
-                'payment_plan_days_financed' => null,
-                'payment_plan_days_down_payment' => null,
-                'repossession_date' => null,
-                'paid_off_date' => null,
-                'repossession_category' => null,
-                'write_off_date' => null,
-                'write_off_reason' => null,
-                'location_area_3' => null,
-                'location_area_4' => null,
-                'location_area_5' => null,
-            ];
-
-            $installations[] = $installation;
+            $data[] = $record;
         }
 
-        $this->info('Loaded '.count($installations).' installation(s) from database');
+        $this->info('Loaded ' . count($data) . ' records from CSV');
 
-        return $installations;
+        return $data;
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * Get the latest CSV file from common directories
+     *
+     * @return string
      */
-    private function getDefaultTestData(): array {
-        $isTest = (bool) $this->option('test');
-
-        return [
-            [
-                'customer_external_id' => 'SMU 12 Chinsanka',
-                'seller_agent_external_id' => 'SMU 12 Chinsanka',
-                'installer_agent_external_id' => 'SMU 12 Chinsanka',
-                'product_common_id' => 'Verasol',
-                'device_external_id' => '1',
-                'parent_external_id' => '1',
-                'account_external_id' => '1',
-                'battery_capacity_wh' => 500,
-                'usage_category' => 'household',
-                'usage_sub_category' => 'farmer',
-                'device_category' => 'solar_home_system',
-                'ac_input_source' => 'generator, grid, wind turbine etc..',
-                'dc_input_source' => 'solar',
-                'firmware_version' => '1.2-rc3',
-                'manufacturer' => 'HOP',
-                'model' => 'DTZ1737',
-                'primary_use' => 'cooking',
-                'rated_power_w' => 30,
-                'pv_power_w' => 50,
-                'serial_number' => 'A1233754345JL',
-                'site_name' => 'Hospital Name, Grid Name, etc',
-                'payment_plan_amount_financed_principal' => 1500,
-                'payment_plan_amount_financed_interest' => 1500,
-                'payment_plan_amount_financed_total' => 1500,
-                'payment_plan_amount_down_payment' => 1500,
-                'payment_plan_cash_price' => 20000,
-                'payment_plan_currency' => 'ZMW',
-                'payment_plan_installment_amount' => 25000,
-                'payment_plan_number_of_installments' => 365,
-                'payment_plan_installment_period_days' => 180,
-                'payment_plan_days_financed' => 3650,
-                'payment_plan_days_down_payment' => 30,
-                'payment_plan_category' => 'paygo',
-                'purchase_date' => '2022-01-01',
-                'installation_date' => '2022-01-01',
-                'repossession_date' => '2022-01-01',
-                'paid_off_date' => '2022-01-01',
-                'repossession_category' => 'swap',
-                'write_off_date' => '2022-01-01',
-                'write_off_reason' => 'Return',
-                'is_test' => $isTest,
-                'latitude' => 37.775,
-                'longitude' => -122.419,
-                'country' => 'UG',
-                'location_area_1' => 'Northern',
-                'location_area_2' => 'Agago',
-                'location_area_3' => 'Arum',
-                'location_area_4' => 'Alela',
-                'location_area_5' => 'Bila',
-            ],
+    private function getLatestCsvFile(): string {
+        $searchPaths = [
+            storage_path('app/prospects/'),
+            storage_path('app/'),
+            base_path('prospects/'),
+            base_path(),
         ];
+
+        $latestFile = null;
+        $latestTime = 0;
+
+        foreach ($searchPaths as $path) {
+            if (!is_dir($path)) continue;
+
+            $files = glob($path . '*.csv');
+            foreach ($files as $file) {
+                $fileTime = filemtime($file);
+                if ($fileTime > $latestTime) {
+                    $latestTime = $fileTime;
+                    $latestFile = $file;
+                }
+            }
+        }
+
+        if (!$latestFile) {
+            throw new \Exception('No CSV file specified and no CSV files found');
+        }
+
+        $this->info("Auto-detected latest CSV: " . basename($latestFile));
+        return $latestFile;
     }
 
     /**
+     * Send data to Prospect API
+     *
      * @param array<string, mixed> $payload
      */
     private function sendToProspect(array $payload): Response {
         return Http::withHeaders([
-            'Authorization' => 'Bearer '.env('PROSPECT_API_TOKEN'),
+            'Authorization' => 'Bearer ' . env('PROSPECT_API_TOKEN'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ])->timeout(30)->post(env('PROSPECT_API_URL'), $payload);
