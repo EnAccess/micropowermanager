@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\Device;
+use App\Models\CompanyDatabase;
 use Illuminate\Database\Eloquent\Model;
 use App\Console\Commands\AbstractSharedCommand;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Company;
 
 class ProspectExtract extends AbstractSharedCommand
 {
@@ -205,29 +205,32 @@ class ProspectExtract extends AbstractSharedCommand
     private function generateFileName(): string
     {
         $companyId = $this->option('company-id');
-        $tenantName = $this->getCompanyName($companyId);
-        $timestamp = now()->format('Y-m-d\TH-i-s');
-        return "prospect_{$tenantName}_{$timestamp}.csv";
+        $companyDatabase = $this->getCompanyDatabase($companyId);
+        $timestamp = now()->toISOString();
+        return "prospect_{$timestamp}.csv";
     }
 
-    private function getCompanyName(?string $companyId): string
+    private function getCompanyDatabase(?string $companyId): CompanyDatabase
     {
         try {
-            $company = $companyId
-                ? Company::find($companyId)
-                : Company::first();
+            if ($companyId) {
+                return app(CompanyDatabase::class)->findByCompanyId((int) $companyId);
+            }
 
-            $companyName = $company->name;
-            return $this->cleanCompanyName($companyName);
+            // If no company ID provided, get the first company database
+            return app(CompanyDatabase::class)->newQuery()->first();
         } catch (\Exception $e) {
-            return 'Unknown tenant';
+            throw new \Exception('Unable to find company database: ' . $e->getMessage());
         }
     }
 
-    private function cleanCompanyName(string $companyName): string
+    private function getCompanyDatabaseName(?string $companyId): string
     {
-        return strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $companyName));
+        $companyDatabase = $this->getCompanyDatabase($companyId);
+        return $companyDatabase->getDatabaseName();
     }
+
+
 
     /**
      * @param array<int, array<string, mixed>> $data
@@ -237,7 +240,10 @@ class ProspectExtract extends AbstractSharedCommand
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
-        $filePath = 'prospects/' . $fileName;
+        $companyId = $this->option('company-id');
+        $companyDatabaseName = $this->getCompanyDatabaseName($companyId);
+
+        $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
         Storage::disk('local')->put($filePath, $csvContent);
 
         return Storage::disk('local')->path($filePath);
