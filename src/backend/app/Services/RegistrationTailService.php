@@ -53,9 +53,6 @@ class RegistrationTailService implements IBaseService {
         return $this->registrationTail->newQuery()->get();
     }
 
-    /**
-     * @param int|null $limit
-     */
     public function getFirst(): RegistrationTail {
         return $this->registrationTail->newQuery()->firstOr(function () {
             return $this->registrationTail->create(['tail' => json_encode([])]);
