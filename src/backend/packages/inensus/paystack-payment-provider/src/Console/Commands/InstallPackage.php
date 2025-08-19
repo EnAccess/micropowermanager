@@ -1,0 +1,56 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Inensus\PaystackPaymentProvider\Console\Commands;
+
+use Illuminate\Console\Command;
+use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
+
+class InstallPackage extends Command {
+    protected $signature = 'paystack-payment-provider:install';
+    protected $description = 'Install Paystack Payment Provider Package';
+
+    public function __construct(
+        private PaystackCredentialService $credentialService,
+    ) {
+        parent::__construct();
+    }
+
+    public function handle(): int {
+        $this->info('Installing Paystack Payment Provider Package...');
+        $this->createCredentials();
+        $this->info('Paystack Payment Provider Package installed successfully!');
+        return 0;
+    }
+
+    private function createCredentials(): void {
+        if (!$this->credentialService->hasCredentials()) {
+            $this->credentialService->createCredentials();
+            $this->info('Paystack credentials created.');
+        } else {
+            $this->info('Paystack credentials already exist.');
+        }
+    }
+
+    private function publishMigrations(): void {
+        $this->call('vendor:publish', [
+            '--provider' => 'Inensus\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider',
+            '--tag' => 'migrations',
+        ]);
+    }
+
+    private function createDatabaseTables(): void {
+        $this->call('migrate', [
+            '--path' => 'vendor/inensus/paystack-payment-provider/database/migrations',
+        ]);
+    }
+
+    private function createPluginRecord(): void {
+        $this->call('plugin:add', [
+            'name' => 'Paystack Payment Provider',
+            'composer_name' => 'inensus/paystack-payment-provider',
+            'description' => 'Paystack Payment Provider integration for MicroPowerManager',
+        ]);
+    }
+}

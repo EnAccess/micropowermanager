@@ -42,6 +42,7 @@ import AfricasTalking from "@/plugins/africas-talking/js/modules/Overview/Creden
 import Snackbar from "@/shared/Snackbar.vue"
 import ChintMeter from "@/plugins/chint-meter/js/modules/Overview/Credential"
 import Prospect from "@/plugins/prospect/js/modules/Overview/Credential"
+import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 
 Vue.component("default", Default)
 Vue.component("Spark-Meter", Spark)
@@ -70,6 +71,7 @@ Vue.component("Africas-Talking", AfricasTalking)
 Vue.component("Snackbar", Snackbar)
 Vue.component("Chint-Meter", ChintMeter)
 Vue.component("Prospect", Prospect)
+Vue.component("Paystack", Paystack)
 
 const unauthorizedPaths = [
   "login",
