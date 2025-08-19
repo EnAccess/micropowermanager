@@ -127,10 +127,10 @@ class MeterService implements IBaseService {
     }
 
     /**
-     * @return SupportCollection<int, \stdClass>
+     * @return Collection<int, Meter>
      */
-    public function getNumberOfConnectionTypes(): SupportCollection {
-        return DB::table('meters')
+    public function getNumberOfConnectionTypes(): Collection {
+        return $this->meter->newQuery()
             ->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
             ->select('connection_type_id', DB::raw('count(*) as total'))
             ->groupBy('connection_type_id')
