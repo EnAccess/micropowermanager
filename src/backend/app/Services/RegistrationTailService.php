@@ -56,8 +56,10 @@ class RegistrationTailService implements IBaseService {
     /**
      * @param int|null $limit
      */
-    public function getFirst($limit = null): RegistrationTail {
-        return $this->registrationTail->newQuery()->firstOrCreate();
+    public function getFirst(): RegistrationTail {
+        return $this->registrationTail->newQuery()->firstOr(function () {
+            return $this->registrationTail->create(['tail' => []]);
+        });
     }
 
     public function addMpmPluginToRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
