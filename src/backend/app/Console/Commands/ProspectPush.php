@@ -103,8 +103,8 @@ class ProspectPush extends AbstractSharedCommand {
         $csvContent = file_get_contents($filePath);
         $lines = str_getcsv($csvContent, "\n");
 
-        if (empty($lines)) {
-            throw new \Exception('CSV file is empty');
+        if (count($lines) === 1 && trim($lines[0]) === '') {
+            throw new \Exception('CSV file is empty or contains no data');
         }
 
         // Get headers from first line
