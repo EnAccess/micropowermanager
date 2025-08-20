@@ -204,8 +204,6 @@ class ProspectExtract extends AbstractSharedCommand
 
     private function generateFileName(): string
     {
-        $companyId = $this->option('company-id');
-        $companyDatabase = $this->getCompanyDatabase($companyId);
         $timestamp = now()->toISOString();
         return "prospect_{$timestamp}.csv";
     }
@@ -217,20 +215,11 @@ class ProspectExtract extends AbstractSharedCommand
                 return app(CompanyDatabase::class)->findByCompanyId((int) $companyId);
             }
 
-            // If no company ID provided, get the first company database
             return app(CompanyDatabase::class)->newQuery()->first();
         } catch (\Exception $e) {
             throw new \Exception('Unable to find company database: ' . $e->getMessage());
         }
     }
-
-    private function getCompanyDatabaseName(?string $companyId): string
-    {
-        $companyDatabase = $this->getCompanyDatabase($companyId);
-        return $companyDatabase->getDatabaseName();
-    }
-
-
 
     /**
      * @param array<int, array<string, mixed>> $data
@@ -241,7 +230,8 @@ class ProspectExtract extends AbstractSharedCommand
         $csvContent = $this->arrayToCsv($data, $headers);
 
         $companyId = $this->option('company-id');
-        $companyDatabaseName = $this->getCompanyDatabaseName($companyId);
+        $companyDatabase = $this->getCompanyDatabase($companyId);
+        $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
         Storage::disk('local')->put($filePath, $csvContent);

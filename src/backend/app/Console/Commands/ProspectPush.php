@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\CompanyDatabase;
 
 class ProspectPush extends AbstractSharedCommand {
     /**
@@ -14,6 +15,7 @@ class ProspectPush extends AbstractSharedCommand {
      */
     protected $signature = 'prospect:push
                             {--file= : CSV file path containing data to push}
+                            {--company-id= : The tenant ID to run the command for (defaults to current tenant)}
                             {--test : Mark data as test data}
                             {--dry-run : Show what would be sent without actually sending}';
 
@@ -153,7 +155,8 @@ class ProspectPush extends AbstractSharedCommand {
      */
     private function getLatestCsvFile(): string {
         // Get the company database to determine the correct prospect folder path
-        $companyDatabase = $this->getCompanyDatabase();
+        $companyId = $this->option('company-id');
+        $companyDatabase = $this->getCompanyDatabase($companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $prospectPath = storage_path("app/prospect/{$companyDatabaseName}/");
@@ -193,15 +196,14 @@ class ProspectPush extends AbstractSharedCommand {
      *
      * @return \App\Models\CompanyDatabase
      */
-    private function getCompanyDatabase(): \App\Models\CompanyDatabase
+    private function getCompanyDatabase(?string $companyId): CompanyDatabase
     {
         try {
-            // Get the first company database (similar to ProspectExtract)
-            $companyDatabase = app(\App\Models\CompanyDatabase::class)->newQuery()->first();
-            if (!$companyDatabase) {
-                throw new \Exception('No company database found');
+            if ($companyId) {
+                return app(CompanyDatabase::class)->findByCompanyId((int) $companyId);
             }
-            return $companyDatabase;
+
+            return app(CompanyDatabase::class)->newQuery()->first();
         } catch (\Exception $e) {
             throw new \Exception('Unable to find company database: ' . $e->getMessage());
         }
