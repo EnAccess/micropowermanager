@@ -39,7 +39,6 @@ use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
@@ -87,22 +86,6 @@ class AppServiceProvider extends ServiceProvider {
                 EBike::RELATION_NAME => EBike::class,
             ]
         );
-
-        // Ensure required storage subdirectories exist during app startup
-        $requiredStorageDirectories = [
-            storage_path('logs'),
-            storage_path('app'),
-            storage_path('app/certs/companies'),
-            storage_path('app/public'),
-            storage_path('outsourcing'),
-            storage_path('appliance'),
-        ];
-
-        foreach ($requiredStorageDirectories as $directory) {
-            if (!File::isDirectory($directory)) {
-                File::makeDirectory($directory, 0775, true);
-            }
-        }
     }
 
     /**
