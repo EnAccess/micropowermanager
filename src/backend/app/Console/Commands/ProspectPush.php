@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\CompanyDatabase;
 
 class ProspectPush extends AbstractSharedCommand {
     /**
@@ -189,24 +188,6 @@ class ProspectPush extends AbstractSharedCommand {
 
         $this->info("Auto-detected latest CSV: " . basename($latestFile));
         return $latestFile;
-    }
-
-    /**
-     * Get the company database
-     *
-     * @return \App\Models\CompanyDatabase
-     */
-    private function getCompanyDatabase(?string $companyId): CompanyDatabase
-    {
-        try {
-            if ($companyId) {
-                return app(CompanyDatabase::class)->findByCompanyId((int) $companyId);
-            }
-
-            return app(CompanyDatabase::class)->newQuery()->first();
-        } catch (\Exception $e) {
-            throw new \Exception('Unable to find company database: ' . $e->getMessage());
-        }
     }
 
     /**

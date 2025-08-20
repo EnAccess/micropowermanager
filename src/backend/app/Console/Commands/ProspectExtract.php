@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Device;
-use App\Models\CompanyDatabase;
 use Illuminate\Database\Eloquent\Model;
 use App\Console\Commands\AbstractSharedCommand;
 use Illuminate\Support\Facades\Storage;
@@ -206,19 +205,6 @@ class ProspectExtract extends AbstractSharedCommand
     {
         $timestamp = now()->toISOString();
         return "prospect_{$timestamp}.csv";
-    }
-
-    private function getCompanyDatabase(?string $companyId): CompanyDatabase
-    {
-        try {
-            if ($companyId) {
-                return app(CompanyDatabase::class)->findByCompanyId((int) $companyId);
-            }
-
-            return app(CompanyDatabase::class)->newQuery()->first();
-        } catch (\Exception $e) {
-            throw new \Exception('Unable to find company database: ' . $e->getMessage());
-        }
     }
 
     /**
