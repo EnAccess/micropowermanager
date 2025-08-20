@@ -112,7 +112,7 @@ class ProspectPush extends AbstractSharedCommand {
         $isTest = $this->option('test');
 
         foreach ($lines as $lineNumber => $line) {
-            if (empty(trim($line))) continue; // Skip empty lines
+            if (empty(trim($line))) continue;
 
             $row = str_getcsv($line);
 
@@ -147,40 +147,64 @@ class ProspectPush extends AbstractSharedCommand {
     }
 
     /**
-     * Get the latest CSV file from common directories
+     * Get the latest CSV file from prospect folder
      *
      * @return string
      */
     private function getLatestCsvFile(): string {
-        $searchPaths = [
-            storage_path('app/prospects/'),
-            storage_path('app/'),
-            base_path('prospects/'),
-            base_path(),
-        ];
+        // Get the company database to determine the correct prospect folder path
+        $companyDatabase = $this->getCompanyDatabase();
+        $companyDatabaseName = $companyDatabase->getDatabaseName();
 
+        $prospectPath = storage_path("app/prospect/{$companyDatabaseName}/");
+
+        if (!is_dir($prospectPath)) {
+            throw new \Exception("Prospect folder not found: {$prospectPath}");
+        }
+
+        $files = glob($prospectPath . '*.csv');
+
+        if (empty($files)) {
+            throw new \Exception("No CSV files found in prospect folder: {$prospectPath}");
+        }
+
+        // Find the latest file by modification time
         $latestFile = null;
         $latestTime = 0;
 
-        foreach ($searchPaths as $path) {
-            if (!is_dir($path)) continue;
-
-            $files = glob($path . '*.csv');
-            foreach ($files as $file) {
-                $fileTime = filemtime($file);
-                if ($fileTime > $latestTime) {
-                    $latestTime = $fileTime;
-                    $latestFile = $file;
-                }
+        foreach ($files as $file) {
+            $fileTime = filemtime($file);
+            if ($fileTime > $latestTime) {
+                $latestTime = $fileTime;
+                $latestFile = $file;
             }
         }
 
         if (!$latestFile) {
-            throw new \Exception('No CSV file specified and no CSV files found');
+            throw new \Exception('No CSV file found in prospect folder');
         }
 
         $this->info("Auto-detected latest CSV: " . basename($latestFile));
         return $latestFile;
+    }
+
+    /**
+     * Get the company database
+     *
+     * @return \App\Models\CompanyDatabase
+     */
+    private function getCompanyDatabase(): \App\Models\CompanyDatabase
+    {
+        try {
+            // Get the first company database (similar to ProspectExtract)
+            $companyDatabase = app(\App\Models\CompanyDatabase::class)->newQuery()->first();
+            if (!$companyDatabase) {
+                throw new \Exception('No company database found');
+            }
+            return $companyDatabase;
+        } catch (\Exception $e) {
+            throw new \Exception('Unable to find company database: ' . $e->getMessage());
+        }
     }
 
     /**
