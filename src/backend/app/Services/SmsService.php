@@ -79,7 +79,7 @@ class SmsService {
                 $sender->setCallback($smsAndroidSettings->callback, $uuid);
             }
             $this->associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId);
-            SmsProcessor::dispatch($sender)->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+            SmsProcessor::dispatch($sender);
         } catch (
             SmsTypeNotFoundException|
             SmsAndroidSettingNotExistingException|

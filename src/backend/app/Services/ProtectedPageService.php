@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Crypt;
 class ProtectedPageService implements IBaseService {
     public function __construct(private ProtectedPage $protectedPage) {}
 
-    public function compareProtectedPagePassword(MainSettings $mainSettings, string $password): bool {
+    public function compareProtectedPagePassword(MainSettings $mainSettings, ?string $password): bool {
         return Crypt::decrypt($mainSettings->protected_page_password) === $password;
     }
 

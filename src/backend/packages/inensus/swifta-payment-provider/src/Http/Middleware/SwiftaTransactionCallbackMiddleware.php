@@ -20,9 +20,7 @@ class SwiftaTransactionCallbackMiddleware {
             $request->attributes->add(['transaction' => $transaction]);
             $request->attributes->add(['reference' => $transactionReference]);
 
-            ProcessPayment::dispatch($transaction->id)
-                ->allOnConnection('redis')
-                ->onQueue(config('services.queues.payment'));
+            ProcessPayment::dispatch($transaction->id);
         } catch (\Exception $exception) {
             $response = collect([
                 'success' => 0,

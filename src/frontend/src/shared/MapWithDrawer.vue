@@ -276,14 +276,10 @@ export default {
       //create map
       this.map = L.map("map").setView([-2.500381, 32.88906], 6)
       //set tile
-      this.tileLayer = L.tileLayer(
-        //'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png',
-        "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
-        {
-          maxZoom: 18,
-          attribution: ' <span style="cursor:pointer">&copy; MpManager</span>',
-        },
-      )
+      this.tileLayer = L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution: ' <span style="cursor:pointer">&copy; MpManager</span>',
+      })
 
       this.tileLayer.addTo(this.map)
 

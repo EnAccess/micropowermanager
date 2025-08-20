@@ -99,19 +99,6 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 | `PUSHER_APP_SECRET`  | **Required** (If Pusher is used) | Pusher App secret.                    |
 | `PUSHER_APP_CLUSTER` | **Required** (If Pusher is used) | Pusher App cluster. For example `eu`. |
 
-### Queue
-
-| Environment Variable | Default            | Description                         |
-| -------------------- | ------------------ | ----------------------------------- |
-| `QUEUE_DRIVER`       | `sync`             | Recommended to set to `database`.   |
-| `QUEUE_PAYMENT`      | `payment`          | Name of the payment queue.          |
-| `QUEUE_ENERGY`       | `energy_payment`   | Name of the energy payment queue.   |
-| `QUEUE_TOKEN`        | `token`            | Name of the token queue.            |
-| `QUEUE_SMS`          | `sms`              | Name of the SMS queue.              |
-| `QUEUE_HISTORY`      | `history`          | Name of the History queue.          |
-| `QUEUE_REPORT`       | `report_generator` | Name of the Report Generator queue. |
-| `QUEUE_MISC`         | `misc`             | Name of the miscellaneous queue.    |
-
 ### Basic setup
 
 #### Logging
@@ -158,9 +145,10 @@ Find below a reference of configurations which are required if the corresponding
 
 For detailed information see [SunKing Developer Documentation](https://sunking.com/)
 
-| Environment Variable | Default                            | Description                                                                      |
-| -------------------- | ---------------------------------- | -------------------------------------------------------------------------------- |
-| `SUNKING_API_URL`    | **Required** (when plugin is used) | SunKing API URL. For example `https://dev.assetcontrol.central.glp apps.com/v2`. |
+| Environment Variable       | Default                                                                              | Description                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `SUNKING_AUTH_DEFAULT_URL` | `https://auth.central.glpapps.com/auth/realms/glp-dev/protocol/openid-connect/token` | Default authorisation URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager. |
+| `SUNKING_API_DEFAULT_URL`  | `https://dev.assetcontrol.central.glpapps.com/v2`                                    | Default API URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager.           |
 
 #### WaveMoney
 

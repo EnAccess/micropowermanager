@@ -30,7 +30,12 @@ class CalinSmartCredentialService {
     }
 
     public function updateCredentials($data) {
-        $credential = $this->credential->newQuery()->find($data['id']);
+        $credential = $this->credential->newQuery()->find($data['id'] ?? null);
+
+        if (!$credential) {
+            $credential = $this->createCredentials();
+        }
+
         $credential->update([
             'company_name' => $data['company_name'],
             'user_name' => $data['user_name'],

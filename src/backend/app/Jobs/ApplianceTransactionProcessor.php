@@ -14,6 +14,9 @@ class ApplianceTransactionProcessor extends AbstractJob {
     protected const TYPE = 'deferred_payment';
 
     public function __construct(private int $transactionId) {
+        $this->onConnection('redis');
+        $this->onQueue('transaction_appliance');
+
         $this->afterCommit = true;
         parent::__construct(get_class($this));
     }
@@ -73,8 +76,6 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $kWhToBeCharged = 0.0;
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 
-        TokenProcessor::dispatch($transactionData)
-            ->allOnConnection('redis')
-            ->onQueue(config('services.queues.token'));
+        TokenProcessor::dispatch($transactionData);
     }
 }

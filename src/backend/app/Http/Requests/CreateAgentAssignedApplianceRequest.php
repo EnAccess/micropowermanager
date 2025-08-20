@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentAssignedApplianceRequest extends FormRequest {
@@ -21,9 +20,6 @@ class CreateAgentAssignedApplianceRequest extends FormRequest {
      * @return array<string, mixed>
      */
     public function rules(): array {
-        $sessionService = app()->make(SessionService::class);
-        $database = $sessionService->getAuthenticatedUserDatabaseName();
-
         return [
             'agent_id' => 'required',
             'user_id' => 'required',

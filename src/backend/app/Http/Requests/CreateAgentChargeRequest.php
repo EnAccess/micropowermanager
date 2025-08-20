@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentChargeRequest extends FormRequest {
@@ -22,8 +21,6 @@ class CreateAgentChargeRequest extends FormRequest {
      */
     public function rules(): array {
         // TODO: Change on UI.  user_id is not required.
-        $sessionService = app()->make(SessionService::class);
-        $database = $sessionService->getAuthenticatedUserDatabaseName();
 
         return [
             'agent_id' => 'required',

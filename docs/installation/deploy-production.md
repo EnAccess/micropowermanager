@@ -6,7 +6,7 @@ order: 2
 
 > [!INFO]
 > This page covers **deployment** related information for MicroPowerManager.
-> An installation of MicroPowerManager can be customised using environment variables which is explained in detail [here](environment-variables.md).
+> An installation of MicroPowerManager can be customised using environment variables which is explained in detail in the [environment variables section](environment-variables.md).
 
 The MicroPowerManager is distributed as pre-compile Docker images via [DockerHub](https://hub.docker.com/u/enaccess).
 

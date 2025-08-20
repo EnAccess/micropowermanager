@@ -14,25 +14,22 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
+const MAX_TRIES = 3;
+
 class TokenProcessor extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    private TransactionDataContainer $transactionContainer;
-    private bool $reCreate;
-    private int $counter;
-    private const MAX_TRIES = 3;
-
     public function __construct(
-        TransactionDataContainer $container,
-        bool $reCreate = false,
-        int $counter = self::MAX_TRIES,
+        private TransactionDataContainer $transactionContainer,
+        private bool $reCreate = false,
+        private int $counter = MAX_TRIES,
     ) {
-        $this->transactionContainer = $container;
-        $this->reCreate = $reCreate;
-        $this->counter = $counter;
+        $this->onConnection('redis');
+        $this->onQueue('token');
+
         parent::__construct(static::class);
     }
 
@@ -87,7 +84,7 @@ class TokenProcessor extends AbstractJob {
     }
 
     private function handleTokenGenerationFailure(\Exception $e): void {
-        if (self::MAX_TRIES > $this->counter) {
+        if (MAX_TRIES > $this->counter) {
             $this->retryTokenGeneration();
 
             return;

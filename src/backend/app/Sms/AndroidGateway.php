@@ -39,6 +39,6 @@ class AndroidGateway implements ISmsProvider {
             'message' => $body,
             'callback' => $callbackWithoutProtocolRoot,
             'setting' => $smsAndroidSetting,
-        ])->onConnection('redis')->onQueue('sms_gateway');
+        ]);
     }
 }
