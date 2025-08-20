@@ -15,6 +15,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Jobs\ProspectPushJob;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -69,7 +70,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00');
         $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
         $schedule->command('sms:resend-rejected 5')->everyMinute();
-        $schedule->command('prospect:push')->everyTwoMinutes();
+        // $schedule->command('prospect:push')->everyTwoMinutes();
+        $schedule->job(new ProspectPushJob())->everyMinute();
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
         $schedule->command('asset-rate:check')->dailyAt('00:00');
         // will run on the last day of the month
