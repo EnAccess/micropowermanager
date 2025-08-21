@@ -23,6 +23,7 @@ class TokenProcessor extends AbstractJob {
     use SerializesModels;
 
     public function __construct(
+        int $companyId,
         private TransactionDataContainer $transactionContainer,
         private bool $reCreate = false,
         private int $counter = MAX_TRIES,
@@ -30,7 +31,7 @@ class TokenProcessor extends AbstractJob {
         $this->onConnection('redis');
         $this->onQueue('token');
 
-        parent::__construct(static::class);
+        parent::__construct($companyId);
     }
 
     public function executeJob(): void {
@@ -106,6 +107,7 @@ class TokenProcessor extends AbstractJob {
     private function retryTokenGeneration(): void {
         ++$this->counter;
         self::dispatch(
+            $this->companyId,
             $this->transactionContainer,
             false,
             $this->counter

@@ -28,7 +28,7 @@ class SmsProcessor extends AbstractJob {
         $this->onConnection('redis');
         $this->onQueue('sms');
 
-        parent::__construct(get_class($this));
+        parent::__construct();
     }
 
     /**
