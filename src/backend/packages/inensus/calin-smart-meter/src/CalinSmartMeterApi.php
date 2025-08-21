@@ -4,10 +4,8 @@ namespace Inensus\CalinSmartMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use App\Models\Token;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Inensus\CalinSmartMeter\Exceptions\CalinSmartCreadentialsNotFoundException;
