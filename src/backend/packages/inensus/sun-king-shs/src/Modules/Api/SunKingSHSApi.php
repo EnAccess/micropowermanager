@@ -111,7 +111,7 @@ class SunKingSHSApi implements IManufacturerAPI {
         return $transactionContainer->applianceInstallmentsFullFilled;
     }
 
-    public function clearDevice(Device $device) {
+    public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

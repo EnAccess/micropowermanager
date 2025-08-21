@@ -2,6 +2,7 @@
 
 namespace Inensus\KelinMeter;
 
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
@@ -114,5 +115,7 @@ class KelinMeterApi implements IManufacturerAPI {
         }
     }
 
-    public function clearDevice(Device $device) {}
+    public function clearDevice(Device $device): ?array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
 }

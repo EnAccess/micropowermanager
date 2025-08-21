@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter;
 
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
@@ -108,5 +109,7 @@ class SteamaMeterApi implements IManufacturerAPI {
         }
     }
 
-    public function clearDevice(Device $device): void {}
+    public function clearDevice(Device $device): ?array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
 }

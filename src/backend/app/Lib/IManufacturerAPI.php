@@ -13,5 +13,5 @@ interface IManufacturerAPI {
      */
     public function chargeDevice(TransactionDataContainer $transactionContainer): array;
 
-    public function clearDevice(Device $device): void;
+    public function clearDevice(Device $device): ?array;
 }

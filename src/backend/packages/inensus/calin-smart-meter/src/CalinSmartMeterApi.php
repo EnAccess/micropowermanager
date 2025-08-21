@@ -75,11 +75,11 @@ class CalinSmartMeterApi implements IManufacturerAPI {
     /**
      * @param Meter $meter
      *
-     * @throws GuzzleException
-     *
      * @psalm-return array{result_code: mixed}
+     *
+     * @throws GuzzleException
      */
-    public function clearDevice(Device $device) {
+    public function clearDevice(Device $device): ?array {
         $meter = $device->device;
         $root = '/Maintenance_ClearCredit/';
         try {
