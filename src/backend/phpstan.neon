@@ -9,11 +9,11 @@ parameters:
         - config/
 #        - database
 #        - packages
-#        - public
-#        - resources
-#        - routes
-#        - storage
-#        - stubs
+        - public
+        - resources
+        - routes
+        - storage
+        - stubs
 #        - tests
 
     # Level 9 is the highest level
