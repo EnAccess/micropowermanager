@@ -83,11 +83,11 @@ class AngazaSHSApi implements IManufacturerAPI {
     /**
      * @param Device $device
      *
-     * @return void
+     * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function clearDevice(Device $device) {
+    public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

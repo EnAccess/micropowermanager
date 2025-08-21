@@ -2,6 +2,7 @@
 
 namespace Inensus\StronMeter;
 
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
@@ -94,7 +95,15 @@ class StronMeterApi implements IManufacturerAPI {
         ];
     }
 
-    public function clearDevice(Device $device) {
+    /**
+     * @param Device $device
+     *
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
         // TODO: Implement clearDevice() method.
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }
