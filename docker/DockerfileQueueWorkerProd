@@ -43,9 +43,9 @@ RUN mv composer.phar /usr/local/bin/composer
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_connephpct_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    echo xdebug.remote_connect_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
+    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 # configure PHP
 COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
@@ -61,8 +61,6 @@ RUN touch /etc/supervisor/logs/horizon/err.log
 
 # get MicroPowerManager source code and addition files
 COPY src/backend /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 775 /var/www/html/storage
 
 # indicate storage directory to persist data
 VOLUME ["/var/www/html/storage"]

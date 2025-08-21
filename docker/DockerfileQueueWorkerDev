@@ -43,9 +43,9 @@ RUN mv composer.phar /usr/local/bin/composer
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_connephpct_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    echo xdebug.remote_connect_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
+    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 # configure PHP
 COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
@@ -74,10 +74,10 @@ RUN chmod +x /usr/local/bin/entrypoint-queue-worker-dev.sh
 # but instead run `composer install` at runtime by adding it to the entrypoint script.
 # This way, we will ensure that local changes are exposed in the container and
 # benefit from hot-reloading.
-RUN sed -i '1a\
+RUN sed -i '/^# DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)$/a\
 echo "Installing MicroPowerManager in development mode..."\n\
 cd /var/www/html\n\
-composer install' /usr/local/bin/entrypoint-queue-worker-dev.sh
+composer install\n' /usr/local/bin/entrypoint-queue-worker-dev.sh
 
 # define entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint-queue-worker-dev.sh"]
