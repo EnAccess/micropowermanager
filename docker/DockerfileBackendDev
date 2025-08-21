@@ -53,6 +53,9 @@ RUN a2enmod rewrite
 # get MicroPowerManager source code and addition files
 VOLUME ["/var/www/html"]
 
+# indicate storage directory to persist data
+VOLUME ["/var/www/html/storage"]
+
 COPY docker/entrypoint-backend.sh /usr/local/bin/entrypoint-backend-dev.sh
 RUN chmod +x /usr/local/bin/entrypoint-backend-dev.sh
 
@@ -65,6 +68,9 @@ RUN chmod +x /usr/local/bin/entrypoint-backend-dev.sh
 RUN sed -i '1a\
 echo "Installing MicroPowerManager in development mode..."\n\
 cd /var/www/html\n\
+echo "Setting up storage permissions..."\n\
+chown -R www-data:www-data /var/www/html/storage\n\
+chmod -R 775 /var/www/html/storage\n\
 composer install' /usr/local/bin/entrypoint-backend-dev.sh
 
 # define entrypoint

@@ -8,6 +8,7 @@ use App\Exceptions\Export\SpreadSheetNotCreatedException;
 use App\Exceptions\Export\SpreadSheetNotSavedException;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -110,6 +111,7 @@ abstract class AbstractExportService {
         try {
             $uuid = Str::uuid()->toString();
             $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.xlsx';
+            $this->createDirectoryIfNotExists(storage_path('appliance'));
             $this->setRecentlyCreatedSpreadSheetId($uuid);
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
             $writer->save($fileName);
@@ -126,6 +128,7 @@ abstract class AbstractExportService {
     public function saveCsv(array $headers = []): string {
         $uuid = Str::uuid()->toString();
         $filePath = storage_path('appliance/'.$this->getPrefix().'-'.$uuid.'.csv');
+        $this->createDirectoryIfNotExists(storage_path('appliance'));
 
         try {
             $handle = fopen($filePath, 'w');
@@ -158,6 +161,12 @@ abstract class AbstractExportService {
                 'message' => $e->getMessage(),
             ]);
             throw new CsvNotSavedException($e->getMessage());
+        }
+    }
+
+    public function createDirectoryIfNotExists(string $path): void {
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0775, true);
         }
     }
 }

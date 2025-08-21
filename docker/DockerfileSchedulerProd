@@ -61,6 +61,9 @@ COPY src/backend /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage
 
+# indicate storage directory to persist data
+VOLUME ["/var/www/html/storage"]
+
 COPY docker/entrypoint-scheduler.sh /usr/local/bin/entrypoint-scheduler-prod.sh
 RUN chmod +x /usr/local/bin/entrypoint-scheduler-prod.sh
 
