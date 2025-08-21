@@ -60,6 +60,13 @@ class GomeLongMeterApi implements IManufacturerAPI {
         }
     }
 
+    /**
+     * @param Device $device
+     *
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
     public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }

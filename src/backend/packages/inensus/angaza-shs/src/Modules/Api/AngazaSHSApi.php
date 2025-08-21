@@ -83,7 +83,7 @@ class AngazaSHSApi implements IManufacturerAPI {
     /**
      * @param Device $device
      *
-     * @return ?array
+     * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException
      */

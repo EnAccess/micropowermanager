@@ -73,11 +73,11 @@ class CalinSmartMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Meter $meter
+     * @param Device $device
      *
-     * @psalm-return array{result_code: mixed}
+     * @return array<string,mixed>|null
      *
-     * @throws GuzzleException
+     * @throws CalinSmartCreadentialsNotFoundException
      */
     public function clearDevice(Device $device): ?array {
         $meter = $device->device;
