@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 return new class extends Migration {
     /**
@@ -11,7 +10,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        $country = Storage::disk('local')->get('countries.json');
+        $country = file_get_contents(resource_path('data/countries.json'));
         $countries = json_decode($country, true);
 
         if (is_array($countries)) {

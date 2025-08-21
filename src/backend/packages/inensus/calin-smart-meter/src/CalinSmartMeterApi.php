@@ -4,10 +4,8 @@ namespace Inensus\CalinSmartMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use App\Models\Token;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Inensus\CalinSmartMeter\Exceptions\CalinSmartCreadentialsNotFoundException;
@@ -73,13 +71,13 @@ class CalinSmartMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Meter $meter
+     * @param Device $device
      *
-     * @throws GuzzleException
+     * @return array<string,mixed>|null
      *
-     * @psalm-return array{result_code: mixed}
+     * @throws CalinSmartCreadentialsNotFoundException
      */
-    public function clearDevice(Device $device) {
+    public function clearDevice(Device $device): ?array {
         $meter = $device->device;
         $root = '/Maintenance_ClearCredit/';
         try {

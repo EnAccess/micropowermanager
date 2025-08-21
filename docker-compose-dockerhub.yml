@@ -15,6 +15,8 @@ services:
     ports:
       - 8000:80
       - 8443:443
+    volumes:
+      - backend_php_storage:/var/www/html/storage
     healthcheck:
       test: [CMD, curl, -f, http://localhost/up]
       start_period: 60s
@@ -42,6 +44,8 @@ services:
     links:
       - mysql:db
       - redis:redis
+    volumes:
+      - scheduler_php_storage:/var/www/html/storage
 
   worker:
     container_name: worker
@@ -57,6 +61,8 @@ services:
     links:
       - mysql:db
       - redis:redis
+    volumes:
+      - queue_worker_php_storage:/var/www/html/storage
 
   redis:
     container_name: redis
@@ -84,3 +90,6 @@ services:
 volumes:
   mysql_data:
   redis_data:
+  queue_worker_php_storage:
+  scheduler_php_storage:
+  backend_php_storage:

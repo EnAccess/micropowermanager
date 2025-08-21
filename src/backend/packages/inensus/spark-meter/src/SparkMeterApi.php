@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter;
 
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
@@ -132,7 +133,15 @@ class SparkMeterApi implements IManufacturerAPI {
         }
     }
 
-    public function clearDevice(Device $device) {
+    /**
+     * @param Device $device
+     *
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
         // TODO: Implement clearDevice() method.
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }
