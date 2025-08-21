@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Company;
+use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -21,9 +22,14 @@ abstract class AbstractJob implements ShouldQueue {
 
     abstract public function executeJob(): void;
 
-    public function __construct(int $companyId) {
+    public function __construct(?int $companyId = null) {
         $this->afterCommit = true;
-        $this->companyId = $companyId;
+
+        if ($companyId !== null) {
+            $this->companyId = $companyId;
+        } else {
+            $this->companyId = app()->make(UserService::class)->getCompanyId();
+        }
     }
 
     public function handle(): void {
@@ -42,6 +48,13 @@ abstract class AbstractJob implements ShouldQueue {
         }
     }
 
+    /**
+     * Dispatch the job for all tenants.
+     *
+     * @param mixed ...$args
+     *
+     * @return void
+     */
     public static function dispatchForAllTenants(...$args): void {
         foreach (Company::pluck('id') as $companyId) {
             static::dispatch($companyId, ...$args);

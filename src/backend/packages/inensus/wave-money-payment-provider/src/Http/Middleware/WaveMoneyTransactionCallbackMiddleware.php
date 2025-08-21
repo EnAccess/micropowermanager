@@ -36,7 +36,9 @@ class WaveMoneyTransactionCallbackMiddleware {
             if ($status === WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY) {
                 // we process the transaction in the background
                 $transaction = $waveMoneyTransaction->transaction()->first();
-                ProcessPayment::dispatch($transaction->id);
+                $owner = $transaction->device->person;
+                $companyId = $owner->company_id;
+                ProcessPayment::dispatch($companyId, $transaction->id);
             }
         } catch (\Exception $exception) {
             Log::critical('WaveMoney transaction callback called with wrong orderId '.$callbackData->getOrderId());
