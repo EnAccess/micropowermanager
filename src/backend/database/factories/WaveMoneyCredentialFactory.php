@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 
+/** @extends Factory<WaveMoneyCredential> */
 class WaveMoneyCredentialFactory extends Factory {
     protected $model = WaveMoneyCredential::class;
 

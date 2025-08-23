@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\CalinMeter\Models\CalinCredential;
 
+/** @extends Factory<CalinCredential> */
 class CalinCredentialFactory extends Factory {
     protected $model = CalinCredential::class;
 

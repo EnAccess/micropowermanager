@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\SmsVariableDefaultValue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<SmsVariableDefaultValue> */
 class SmsVariableDefaultValueFactory extends Factory {
     protected $model = SmsVariableDefaultValue::class;
 

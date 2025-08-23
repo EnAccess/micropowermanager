@@ -6,6 +6,7 @@ use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 
+/** @extends Factory<Company> */
 class CompanyFactory extends Factory {
     protected $model = Company::class;
 

@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\BulkRegistration\Models\CsvData;
 
+/** @extends Factory<CsvData> */
 class CsvDataFactory extends Factory {
     protected $model = CsvData::class;
 

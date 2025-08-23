@@ -6,6 +6,7 @@ use App\Models\AgentAssignedAppliances;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AgentAssignedAppliances> */
 class AgentAssignedAppliancesFactory extends Factory {
     protected $model = AgentAssignedAppliances::class;
 

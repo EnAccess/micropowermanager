@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\TimeOfUsage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<TimeOfUsage> */
 class TimeOfUsageFactory extends Factory {
     protected $model = TimeOfUsage::class;
 

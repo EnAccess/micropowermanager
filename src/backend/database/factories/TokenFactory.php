@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Token;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Token> */
 class TokenFactory extends Factory {
     protected $model = Token::class;
 

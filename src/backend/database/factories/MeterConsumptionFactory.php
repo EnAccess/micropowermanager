@@ -6,6 +6,7 @@ use App\Models\Meter\MeterConsumption;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<MeterConsumption> */
 class MeterConsumptionFactory extends Factory {
     protected $model = MeterConsumption::class;
 

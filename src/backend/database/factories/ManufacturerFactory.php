@@ -6,6 +6,7 @@ use App\Models\Manufacturer;
 use Doctrine\Inflector\InflectorFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Manufacturer> */
 class ManufacturerFactory extends Factory {
     protected $model = Manufacturer::class;
 

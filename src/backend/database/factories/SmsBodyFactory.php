@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\SmsBody;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<SmsBody> */
 class SmsBodyFactory extends Factory {
     protected $model = SmsBody::class;
 

@@ -6,6 +6,7 @@ use App\Models\City;
 use Faker\Provider\en_NG\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<City> */
 class CityFactory extends Factory {
     protected $model = City::class;
 

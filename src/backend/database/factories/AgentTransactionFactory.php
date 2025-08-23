@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Transaction\AgentTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AgentTransaction> */
 class AgentTransactionFactory extends Factory {
     protected $model = AgentTransaction::class;
 

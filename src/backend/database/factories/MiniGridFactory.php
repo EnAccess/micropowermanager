@@ -6,6 +6,7 @@ use App\Models\MiniGrid;
 use Faker\Provider\en_NG\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<MiniGrid> */
 class MiniGridFactory extends Factory {
     protected $model = MiniGrid::class;
 

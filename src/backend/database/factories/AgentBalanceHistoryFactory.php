@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\AgentBalanceHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AgentBalanceHistory> */
 class AgentBalanceHistoryFactory extends Factory {
     protected $model = AgentBalanceHistory::class;
 

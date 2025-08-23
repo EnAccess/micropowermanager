@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\AgentReceipt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AgentReceipt> */
 class AgentReceiptFactory extends Factory {
     protected $model = AgentReceipt::class;
 

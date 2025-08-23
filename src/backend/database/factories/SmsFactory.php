@@ -6,6 +6,7 @@ use App\Models\Sms;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/** @extends Factory<Sms> */
 class SmsFactory extends Factory {
     protected $model = Sms::class;
 

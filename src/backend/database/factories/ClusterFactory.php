@@ -6,6 +6,7 @@ use App\Models\Cluster;
 use Faker\Provider\en_NG\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Cluster> */
 class ClusterFactory extends Factory {
     protected $model = Cluster::class;
 

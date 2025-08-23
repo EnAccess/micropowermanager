@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\SmsAndroidSetting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<SmsAndroidSetting> */
 class SmsAndroidSettingFactory extends Factory {
     protected $model = SmsAndroidSetting::class;
 

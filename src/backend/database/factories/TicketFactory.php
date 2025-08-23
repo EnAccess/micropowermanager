@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\Ticket;
 
+/** @extends Factory<Ticket> */
 class TicketFactory extends Factory {
     protected $model = Ticket::class;
 

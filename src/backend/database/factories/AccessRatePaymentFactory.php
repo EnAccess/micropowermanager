@@ -6,6 +6,7 @@ use App\Models\AccessRate\AccessRatePayment;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AccessRatePayment> */
 class AccessRatePaymentFactory extends Factory {
     protected $model = AccessRatePayment::class;
 
