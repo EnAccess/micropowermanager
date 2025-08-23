@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::connection('tenant')->hasTable('vodacom_mobile_money_transactions')) {
             Schema::connection('tenant')->create('vodacom_mobile_money_transactions', static function (Blueprint $table) {
@@ -19,6 +24,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::connection('tenant')->dropIfExists('vodacom_mobile_money_transactions');
     }
