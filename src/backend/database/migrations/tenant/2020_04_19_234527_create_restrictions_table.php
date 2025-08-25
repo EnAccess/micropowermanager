@@ -31,7 +31,7 @@ return new class extends Migration {
         Schema::connection('tenant')->dropIfExists('restrictions');
     }
 
-    public function addDefault() {
+    public function addDefault(): void {
         $timeStamp = Carbon\Carbon::now();
 
         DB::table('restrictions')->insert([
