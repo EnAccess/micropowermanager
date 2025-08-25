@@ -27,6 +27,7 @@ class TicketCommentService {
 
     // store a comment if the sender is an maintenance guy  and responds with sms to an open ticket.
     public function storeComment($sender, $message) {
+        /** @var Person */
         $person = $this->person::with([
             'addresses',
             'tickets' => static function ($q) {
@@ -44,7 +45,7 @@ class TicketCommentService {
 
         if ($person && !$person->tickets->isEmpty()) {
             $ticketUser = $this->ticketUserService->findByPhone($sender);
-            $this->createComment($person->tickets[0]->ticket_id, 'Sms Comment'.$message, $ticketUser->getId());
+            $this->createComment($person->tickets[0]->id, 'Sms Comment'.$message, $ticketUser->getId());
         }
     }
 }

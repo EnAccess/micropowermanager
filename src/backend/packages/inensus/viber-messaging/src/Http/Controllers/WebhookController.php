@@ -77,7 +77,7 @@ class WebhookController extends Controller {
                     return;
                 }
 
-                $person = $meter->device()->person;
+                $person = $meter->device->person;
 
                 if ($person) {
                     $data = [

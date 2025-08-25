@@ -17,6 +17,7 @@ use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
 use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,16 +32,17 @@ use Inensus\Ticket\Models\Ticket;
 /**
  * Class Person.
  *
- * @property int    $id
- * @property string $title
- * @property string $education
- * @property string $name
- * @property string $surname
- * @property mixed  $birth_date
- * @property string $sex                  TODO: replace with gender
- * @property int    $nationality
- * @property int    $is_customer
- * @property mixed  $agent_sold_appliance
+ * @property int                     $id
+ * @property string                  $title
+ * @property string                  $education
+ * @property string                  $name
+ * @property string                  $surname
+ * @property mixed                   $birth_date
+ * @property string                  $sex                  TODO: replace with gender
+ * @property int                     $nationality
+ * @property int                     $is_customer
+ * @property Collection<int, Ticket> $tickets
+ * @property mixed                   $agent_sold_appliance
  *
  * @implements HasAddressesInterface<Person>
  */

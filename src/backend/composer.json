@@ -109,6 +109,6 @@
     "larastan": "phpstan analyse --memory-limit=2G --no-progress",
     "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=7",
     "larastan-no-cache": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress",
-    "larastan-packages": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=1 packages/"
+    "larastan-packages": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=2 packages/"
   }
 }

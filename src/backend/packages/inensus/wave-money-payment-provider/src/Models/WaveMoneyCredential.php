@@ -5,12 +5,12 @@ namespace Inensus\WaveMoneyPaymentProvider\Models;
 use App\Models\Base\BaseModel;
 
 /**
- * @property string merchant_id
- * @property string secret_key
- * @property string callback_url
- * @property string payment_url
- * @property string result_url
- * @property string merchant_name
+ * @property string $merchant_id
+ * @property string $secret_key
+ * @property string $callback_url
+ * @property string $payment_url
+ * @property string $result_url
+ * @property string $merchant_name
  */
 class WaveMoneyCredential extends BaseModel {
     protected $table = 'wave_money_credentials';
