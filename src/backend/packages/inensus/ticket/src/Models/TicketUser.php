@@ -2,6 +2,8 @@
 
 namespace Inensus\Ticket\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 /**
  * Class UserModel.
  *
@@ -11,6 +13,9 @@ namespace Inensus\Ticket\Models;
  * @property int    $id
  */
 class TicketUser extends BaseModel {
+    /** @use HasFactory<\Database\Factories\TicketUserFactory> */
+    use HasFactory;
+
     public const TABLE_NAME = 'ticket_users';
     public const COL_USER_ID = 'user_id';
     protected $table = self::TABLE_NAME;
