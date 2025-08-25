@@ -19,10 +19,19 @@
     >
       <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-100">
-          <span class="download-debts-span">
-            You can download customers' outstanding debts from
-            <a style="cursor: pointer" @click="exportDebts">here</a>
-          </span>
+          <div class="export-buttons-container">
+            <span class="download-debts-span">
+              You can download customers' outstanding debts from
+              <a style="cursor: pointer" @click="exportDebts">here</a>
+            </span>
+            <md-button
+              class="md-raised md-primary export-csv-button"
+              @click="exportCustomers"
+            >
+              <md-icon>download</md-icon>
+              {{ $tc("words.download") }} CSV
+            </md-button>
+          </div>
         </div>
         <div class="md-layout-item md-size-100">
           <md-table md-card style="margin-left: 0">
@@ -103,6 +112,7 @@ import { notify } from "@/mixins/notify"
 import i18n from "../../i18n"
 import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService"
+import { CustomerExportService } from "@/services/CustomerExportService"
 
 const debounce = require("debounce")
 
@@ -126,6 +136,7 @@ export default {
       showAddClient: false,
       key: 0,
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
+      customerExportService: new CustomerExportService(),
     }
   },
   watch: {
@@ -234,6 +245,28 @@ export default {
         )
       }
     },
+    async exportCustomers() {
+      try {
+        const data = {
+          format: "csv",
+        }
+        const response = await this.customerExportService.exportCustomers(data)
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+        const contentDisposition = response.headers["content-disposition"]
+        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        a.download = fileNameMatch ? fileNameMatch[1] : "export_customers.csv"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+        this.alertNotify("success", "Customers exported successfully!")
+      } catch (e) {
+        this.alertNotify("error", "Error occurred while exporting customers")
+      }
+    },
   },
 }
 </script>
@@ -250,11 +283,20 @@ export default {
   max-width: calc(100vw - 125px);
 }
 
+.export-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+
 .download-debts-span {
-  float: right;
-  margin-right: 1rem;
-  min-height: 2rem;
   font-size: medium;
   font-weight: 500;
+}
+
+.export-csv-button {
+  margin-left: auto;
 }
 </style>
