@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use Database\Factories\Inensus\Ticket\Models\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int    $out_source
  */
 class TicketCategory extends BaseModel {
-    /** @use HasFactory<\Database\Factories\TicketFactory> */
+    /** @use HasFactory<TicketFactory> */
     use HasFactory;
 
     protected $table = 'ticket_categories';

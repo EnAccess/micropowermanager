@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use Database\Factories\Inensus\Ticket\Models\TicketUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int    $id
  */
 class TicketUser extends BaseModel {
-    /** @use HasFactory<\Database\Factories\TicketUserFactory> */
+    /** @use HasFactory<TicketUserFactory> */
     use HasFactory;
 
     public const TABLE_NAME = 'ticket_users';

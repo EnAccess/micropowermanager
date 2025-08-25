@@ -3,6 +3,7 @@
 namespace Inensus\Ticket\Models;
 
 use Carbon\Carbon;
+use Database\Factories\Inensus\Ticket\Models\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\DB;
  * @property int    $category_id
  */
 class Ticket extends BaseModel {
-    /** @use HasFactory<\Database\Factories\TicketFactory> */
+    /** @use HasFactory<TicketFactory> */
     use HasFactory;
 
     protected $table = 'tickets';
