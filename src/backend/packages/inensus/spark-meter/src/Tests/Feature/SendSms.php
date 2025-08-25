@@ -20,7 +20,6 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SmSmsBody;
 use Inensus\SparkMeter\Models\SmSmsFeedbackWord;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SendSms extends TestCase {
     use RefreshDatabase;

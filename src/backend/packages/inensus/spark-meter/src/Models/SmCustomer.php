@@ -3,7 +3,6 @@
 namespace Inensus\SparkMeter\Models;
 
 use App\Models\Person\Person;
-use Illuminate\Database\Eloquent\Factories\BelongsToRelationship;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SmCustomer extends BaseModel {

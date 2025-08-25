@@ -10,7 +10,6 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class InstallPackage extends Command {
     protected $signature = 'swifta-payment-provider:install';

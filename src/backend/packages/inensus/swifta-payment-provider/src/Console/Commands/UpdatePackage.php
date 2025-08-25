@@ -8,7 +8,6 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UpdatePackage extends Command {
     protected $signature = 'swifta-payment-provider:update';

@@ -16,7 +16,6 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ValidationTests extends TestCase {
     use RefreshDatabase;

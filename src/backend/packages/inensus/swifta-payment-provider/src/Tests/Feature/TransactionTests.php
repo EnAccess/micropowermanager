@@ -11,13 +11,11 @@ use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TransactionTests extends TestCase {
     use RefreshDatabase;

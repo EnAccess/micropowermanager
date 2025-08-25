@@ -2,7 +2,6 @@
 
 namespace Inensus\KelinMeter\Providers;
 
-use App\Models\Transaction\Transaction;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
@@ -20,9 +19,6 @@ use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 use Inensus\KelinMeter\Models\KelinTransaction;
-use Inensus\KelinMeter\Services\KelinCredentialService;
-use Inensus\KelinMeter\Services\KelinCustomerService;
-use Inensus\KelinMeter\Services\KelinMeterService;
 
 class KelinMeterServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem) {
