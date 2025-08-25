@@ -2,96 +2,87 @@
 order: 5
 ---
 
-# Plugins
+# Plugin Development Guide
 
-Plugins are additional components developed as separate packages to enhance our product.
-This separation helps keep the main codebase clean.
-Each plugin should reside in its own folder under the `src/frontend/src/plugins` directory.
-Additionally, each plugin should have its own backend code, which will be explained in the backend section.
+This guide will walk you through the process of creating and
+integrating a plugin for MicroPowerManager (MPM).
 
-```sh
-src/frontend
-├── src
-│   ├── plugins
-│   │   ├── newPlugin
-```
+## Overview
 
-In the backend section, you'll find instructions on how to create a plugin.
+Plugins are modular components that extend MPM's functionality.
+Each plugin consists of:
 
-## Install Plugins
+- Backend package (`src/backend/packages/inensus/{plugin-name}`)
+- Frontend module (`src/frontend/src/plugins/{plugin-name}`)
 
-We have a custom plugin creator command that generates a template.
-Use the following command to create a new plugin:
+## Quick Start
 
-```bash
-docker exec -it backend-dev bash
-php artisan micropowermanager:new-package {package-name}
-```
+1. **Prerequisites**
+   - Running MPM development environment
+   - Docker installed and running
+   - Basic knowledge of Laravel and Vue.js
 
-This command creates a plugin template in the `src/backend/packages/inensus` folder.
-Upon creation, you can proceed with plugin development.
-You can check other plugins for reference.
-Additionally, this command will create UI folders for the newly created plugin.
-Move the created UI folder to the `src/frontend/src/plugins` folder.
+2. **Create Plugin Template**
 
-## Plugin Integration Process
+   ```bash
+   # Access the backend container
+   docker exec -it backend-dev bash
+   
+   # Generate plugin template
+   php artisan micropowermanager:new-package {plugin-name}
+   ```
 
-### Backend Integration
+   This command:
+   - Creates backend package in `src/backend/packages/inensus/{plugin-name}`
+   - Generates frontend module template
+   - Sets up basic file structure
 
-To make your plugin discoverable and properly integrated with MPM, follow these steps:
+3. **Post-Creation Setup**
+   - Move the generated UI folder to `src/frontend/src/plugins/{plugin-name}`
+   - Review generated code structure
+   - Follow integration steps below
 
-#### 1. Register Your Plugin's Installation Command
+4. **Example Plugins**
+   Check existing plugins for reference:
+   - Payment providers (e.g., Calin, Vodacom)
+   - Meter manufacturers (e.g., Stima, Spark)
+   - Feature plugins (e.g., Asset Management)
 
-Add your plugin's installation command class to the core application's console kernel:
+## Integration Steps
 
-```php
-// src/backend/app/Console/Kernel.php
+Follow these steps in order to integrate your plugin with MPM:
 
-use Inensus\YourPlugin\Console\Commands\InstallYourPluginPackage;
+### Step 1: Backend Integration
 
-class Kernel extends ConsoleKernel {
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
-    protected $commands = [
-        Commands\AddMeterAddress::class,
-        InstallYourPluginPackage::class,
-        // ...other commands
-    ];
-    // ...
-}
-```
+The backend integration process involves several key steps to
+ make your plugin discoverable and functional within MPM.
 
-#### 2. Register Your Plugin's Service Provider
+#### 1.1 Register Service Provider
 
-Add your plugin's service provider to the core application's configuration:
+Add your plugin's service provider to the application's service providers definition:
 
 ```php
-// src/backend/config/app.php
-
-<?php
+// src/backend/bootstrap/providers
 
 return [
-    // rest of app configuration
-    // ...
     /*
-    * Laravel Framework Service Providers...
+    * Application Service Providers...
     */
-    'providers' => [
-        // ...other providers
-        Inensus\YourPlugin\Providers\YourPluginServiceProvider::class,
-    ]
+    App\Providers\AppServiceProvider::class,
+
+    // ...other providers
+    Inensus\YourPlugin\Providers\YourPluginServiceProvider::class,
 ];
+
 ```
 
-#### 3. Register Custom HTTP Route Resolver
+#### 1.2 Register API Routes (Optional)
 
-If your plugin requires API endpoints, register your custom route resolver:
+If your plugin needs to handle API requests (e.g., webhooks, custom endpoints),
+register your route resolver:
 
 ```php
-// src/backend/app/modules/Sharding/ApiResolvers/Data/ApiResolvers
+// src/backend/app/modules/TenantResolver/ApiResolvers/Data/ApiResolvers
 
 class ApiResolverMap {
     // ...other API constants
@@ -117,9 +108,9 @@ class ApiResolverMap {
 }
 ```
 
-#### 4. Register Plugin in MPM Plugins Model
+#### 1.3 Register Plugin in Core
 
-Add your plugin to the MPM plugins model:
+Add your plugin to the MPM plugins model to make it discoverable by the system:
 
 ```php
 // src/backend/app/Models/MpmPlugin.php
@@ -144,9 +135,13 @@ class MpmPlugin extends BaseModelCore {
 }
 ```
 
-#### 5. Create Required Migrations
+#### 1.4 Database Setup
 
-##### a. Protected Page Migration
+Your plugin will need several database migrations to integrate with MPM:
+
+##### a. Register Plugin Pages
+
+First, register your plugin's pages to make them accessible:
 
 Create a migration to register your plugin's overview page:
 
@@ -184,17 +179,39 @@ return new class extends Migration {
 };
 ```
 
-##### b. Plugin Models Migration
+##### b. Create and Publish Plugin Tables
 
-Create tenant migrations for your plugin's models using:
+Next, create the database tables should be created in the package `database/migrations`
+folder as stubs to be pulished:
 
 ```bash
-php artisan make:migration-tenant
+src
+└── backend
+    └── packages
+        └── inensus
+            └── your_plugin_example
+                └── database
+                    └── migrations
+                        └── create_custom_tables.php.stub
+
 ```
 
-Make sure to create stub files for these migrations in your plugin's `database/migrations/` directory.
+The generated migrations and other assets will be stored in your plugin's directory.
+To make them available to the core application,
+publish them using Laravel's vendor:publish command:
 
-##### c. Register Plugin in MPM Plugins Table
+```bash
+# Publish migrations
+php artisan vendor:publish 
+--provider="Inensus\YourPlugin\Providers\YourPluginServiceProvider" --tag="migrations"
+
+# You can also publish other assets like config files, views, etc.
+# Just add the appropriate tags in your ServiceProvider
+```
+
+##### c. Register Plugin in System
+
+Finally, add your plugin to MPM's plugin registry:
 
 Create a migration to add your plugin to the `mpm_plugins` table:
 
@@ -217,7 +234,8 @@ return new class extends Migration {
             [
                 'id' => MpmPlugin::YOUR_PLUGIN,
                 'name' => 'YourPlugin',
-                'description' => 'This plugin developed for [describe your plugin functionality].',
+                'description' => 'This plugin developed for 
+                [describe your plugin functionality].',
                 'tail_tag' => 'Your Plugin',
                 'installation_command' => 'your-plugin:install',
                 'root_class' => 'YourPlugin',
@@ -240,9 +258,17 @@ return new class extends Migration {
 };
 ```
 
-#### 6. Implement Installation Command
+#### 1.5 Create Installation Command
 
-Create an installation command for your plugin:
+Create a command that will handle your plugin's installation process.
+This command should:
+
+- Publish plugin assets (migrations, configs, views) using vendor:publish
+- Run necessary migrations
+- Set up initial configuration
+- Register required services
+
+The installation command typically runs after publishing assets:
 
 ```php
 <?php
@@ -270,9 +296,9 @@ class InstallPackage extends Command {
 }
 ```
 
-#### 7. Register Plugin in Composer.json
+#### 1.6 Configure Autoloading
 
-Add your plugin to the `autoload-dev` section in composer.json:
+Add your plugin's namespace to composer's autoload configuration:
 
 ```json
 "autoload-dev": {
@@ -282,9 +308,17 @@ Add your plugin to the `autoload-dev` section in composer.json:
 }
 ```
 
-### Frontend Integration
+After adding the autoload entry, run:
 
-#### 1. Register Plugin Routes
+```bash
+composer dump-autoload
+```
+
+### Step 2: Frontend Integration
+
+The frontend integration makes your plugin visible and accessible in the MPM interface.
+
+#### 2.1 Add Plugin Routes
 
 Add your plugin's routes to the exported routes:
 
@@ -323,9 +357,9 @@ export const exportedRoutes = [
 ]
 ```
 
-#### 2. Mount Plugin Components
+#### 2.2 Register Components
 
-Register your Vue components in the main app:
+Register your plugin's Vue components in the main app:
 
 ```js
 // src/frontend/src/main.js
@@ -333,23 +367,41 @@ Register your Vue components in the main app:
 import YourPlugin from "@/plugins/your-plugin/js/modules/Overview/Component"
 
 Vue.component("Your-Plugin", YourPlugin)
-
-// ...
-
-/*eslint-disable */
-const app = new Vue({
-  el: "#app",
-  // ...
-})
 ```
 
-## Plugin Development Best Practices
+### Step 3: Testing Your Plugin
 
-1. Keep your plugin self-contained as much as possible
-2. Follow the established directory structure for consistency
-3. Use the MPM core services when appropriate to maintain integration
-4. Thoroughly test your plugin's functionality before integration
-5. Document your plugin's features and configuration requirements
-6. Use proper versioning for your plugin package
+1. Install the plugin:
 
-Remember to check existing plugins for reference implementations that might help guide your development.
+   ```bash
+   php artisan your-plugin:install
+   ```
+
+2. Verify database setup:
+   - Check migrations ran successfully
+   - Verify tables were created
+   - Ensure plugin is registered in `mpm_plugins`
+
+3. Check frontend integration:
+   - Plugin appears in sidebar
+   - Routes are accessible
+   - Components render correctly
+
+## Best Practices
+
+1. **Code Organization**
+   - Keep your plugin self-contained as much as possible
+   - Follow the established directory structure for consistency
+   - Use the MPM core services when appropriate to maintain integration
+
+2. **Testing**
+   - Test all features thoroughly
+   - Verify database operations
+   - Check frontend functionality
+
+3. Document your plugin's features and configuration requirements
+
+4. Use proper versioning for your plugin package
+
+Remember to check existing plugins for reference implementations
+that might help guide your development.
