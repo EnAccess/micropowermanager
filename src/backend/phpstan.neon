@@ -7,7 +7,7 @@ parameters:
         - app/
         - bootstrap/
         - config/
-#        - database
+        - database
 #        - packages
         - public
         - resources
