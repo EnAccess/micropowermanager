@@ -195,6 +195,15 @@
           button-icon="filter_list"
         >
           <div>
+            <div class="export-button-container">
+              <md-button
+                class="md-raised md-primary export-csv-button"
+                @click="exportTransactions"
+              >
+                <md-icon>download</md-icon>
+                {{ $tc("words.download") }} CSV
+              </md-button>
+            </div>
             <md-table style="width: 100%" md-card>
               <md-table-row>
                 <md-table-head>
@@ -359,6 +368,7 @@ import Widget from "@/shared/Widget.vue"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction"
 import Box from "@/shared/Box"
 import { TransactionService } from "@/services/TransactionService"
+import { TransactionExportService } from "@/services/TransactionExportService"
 
 import airtelLogo from "@/assets/icons/airtel.png"
 import vodacomLogo from "@/assets/icons/vodacom.png"
@@ -377,6 +387,7 @@ export default {
   data() {
     return {
       transactionService: new TransactionService(),
+      transactionExportService: new TransactionExportService(),
       period: "Yesterday",
       filter: [],
       loading: false,
@@ -474,6 +485,31 @@ export default {
         await this.transactionService.getTransactions()
       } catch (e) {
         this.alertNotify("error", e.message)
+      }
+    },
+    async exportTransactions() {
+      try {
+        const data = {
+          format: "csv",
+        }
+        const response =
+          await this.transactionExportService.exportTransactions(data)
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+        const contentDisposition = response.headers["content-disposition"]
+        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        a.download = fileNameMatch
+          ? fileNameMatch[1]
+          : "export_transactions.csv"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+        this.alertNotify("success", "Transactions exported successfully!")
+      } catch (e) {
+        this.alertNotify("error", "Error occurred while exporting transactions")
       }
     },
     async loadAnalytics() {
@@ -602,5 +638,16 @@ span {
   .summary {
     display: none;
   }
+}
+
+.export-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+
+.export-csv-button {
+  margin-left: auto;
 }
 </style>
