@@ -27,7 +27,7 @@ Each plugin consists of:
    ```bash
    # Access the backend container
    docker exec -it backend-dev bash
-   
+
    # Generate plugin template
    php artisan micropowermanager:new-package {plugin-name}
    ```
@@ -55,7 +55,7 @@ Follow these steps in order to integrate your plugin with MPM:
 ### Step 1: Backend Integration
 
 The backend integration process involves several key steps to
- make your plugin discoverable and functional within MPM.
+make your plugin discoverable and functional within MPM.
 
 #### 1.1 Register Service Provider
 
@@ -202,7 +202,7 @@ publish them using Laravel's vendor:publish command:
 
 ```bash
 # Publish migrations
-php artisan vendor:publish 
+php artisan vendor:publish
 --provider="Inensus\YourPlugin\Providers\YourPluginServiceProvider" --tag="migrations"
 
 # You can also publish other assets like config files, views, etc.
@@ -234,7 +234,7 @@ return new class extends Migration {
             [
                 'id' => MpmPlugin::YOUR_PLUGIN,
                 'name' => 'YourPlugin',
-                'description' => 'This plugin developed for 
+                'description' => 'This plugin developed for
                 [describe your plugin functionality].',
                 'tail_tag' => 'Your Plugin',
                 'installation_command' => 'your-plugin:install',
