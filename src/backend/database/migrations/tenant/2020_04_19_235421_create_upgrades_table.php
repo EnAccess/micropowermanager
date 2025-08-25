@@ -32,7 +32,7 @@ return new class extends Migration {
     }
 
     // TODO : add to seeders
-    public function addDefault() {
+    public function addDefault(): void {
         DB::table('upgrades')->insert([
             'restriction_id' => 1,
             'cost' => 36000,

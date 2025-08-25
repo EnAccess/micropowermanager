@@ -4,11 +4,12 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
+use Database\Factories\ManufacturerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Manufacturer extends BaseModel {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<ManufacturerFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'manufacturer';

@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\SmsBody;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<SmsBody> */
 class SmsBodyFactory extends Factory {
     protected $model = SmsBody::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'reference' => 'test ref',
             'title' => 'Test title',
@@ -23,14 +24,5 @@ class SmsBodyFactory extends Factory {
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween($this->faker->dateTimeThisYear(), 'now'),
         ];
-    }
-
-    /**
-     * Define the specific data for seeding.
-     *
-     * @return static
-     */
-    public function withCustomData($data) {
-        return $this->state($data);
     }
 }

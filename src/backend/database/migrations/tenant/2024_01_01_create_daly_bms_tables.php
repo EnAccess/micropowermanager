@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::hasTable('daly_bms_api_credentials')) {
             Schema::create('daly_bms_api_credentials', static function (Blueprint $table) {
@@ -25,6 +30,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::dropIfExists('daly_bms_api_credentials');
         Schema::dropIfExists('daly_bms_transactions');

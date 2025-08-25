@@ -16,6 +16,7 @@ use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
 use Carbon\Carbon;
+use Database\Factories\Person\PersonFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -44,7 +45,7 @@ use Inensus\Ticket\Models\Ticket;
  * @implements HasAddressesInterface<Person>
  */
 class Person extends BaseModel implements HasAddressesInterface /* <Person> */ , RoleInterface {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
 

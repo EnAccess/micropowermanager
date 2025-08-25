@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::connection('tenant')->hasTable('angaza_api_credentials')) {
             Schema::connection('tenant')->create('angaza_api_credentials', static function (Blueprint $table) {
@@ -23,6 +28,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::connection('tenant')->dropIfExists('angaza_api_credentials');
         Schema::connection('tenant')->dropIfExists('angaza_transactions');

@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\Target;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Target> */
 class TargetFactory extends Factory {
     protected $model = Target::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         $ownerType = $this->faker->randomElement(['mini-grid', 'cluster']);
 
         return [

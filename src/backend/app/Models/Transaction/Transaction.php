@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $type
  * @property string $sender
  * @property string $message
+ * @property Device $device
  * @property string $original_transaction_type
  */
 class Transaction extends BaseModel {

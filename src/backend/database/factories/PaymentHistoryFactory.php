@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\PaymentHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<PaymentHistory> */
 class PaymentHistoryFactory extends Factory {
     protected $model = PaymentHistory::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'id' => 1,
             'transaction_id' => 1,

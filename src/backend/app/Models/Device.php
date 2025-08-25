@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property int            $connection_group_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property Device         $device
- * @property Manufacturer   $manufacturer
+ * @property int                         $connection_group_id
+ * @property \Carbon\Carbon              $created_at
+ * @property \Carbon\Carbon              $updated_at
+ * @property Meter|SolarHomeSystem|EBike $device
+ * @property string                      $device_type
+ * @property Manufacturer                $manufacturer
  */
 class Device extends BaseModel {
     /** @use HasFactory<\Database\Factories\DeviceFactory> */
@@ -30,9 +32,11 @@ class Device extends BaseModel {
     // `id` is this device's... well... id, which it can be referenced with in the `device` table
     // `device_id` is the `id` in the target table depending on type. For example `meter` or `solar_home_system`.
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Meter|SolarHomeSystem|EBike, $this>
      */
     public function device(): MorphTo {
+        // https://github.com/larastan/larastan/issues/1223
+        // @phpstan-ignore return.type
         return $this->morphTo();
     }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
+use Database\Factories\CompanyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $protected_page_password DEPRECATED: Use MainSettings.protected_page_password instead
  */
 class Company extends BaseModelCentral {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<CompanyFactory> */
     use HasFactory;
 
     public const COL_ID = 'id';

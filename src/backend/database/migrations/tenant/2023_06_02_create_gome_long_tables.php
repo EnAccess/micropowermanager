@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Schema;
 // Despite the migration's name, this migration was actually created on Feb 6h
 // Name should be 2023-02-06 not 2023-06-02...
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::hasTable('gome_long_api_credentials')) {
             Schema::create('gome_long_api_credentials', static function (Blueprint $table) {
@@ -36,6 +41,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::dropIfExists('gome_long_api_credentials');
         Schema::dropIfExists('gome_long_transactions');

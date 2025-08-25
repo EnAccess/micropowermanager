@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\SolarHomeSystem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<SolarHomeSystem> */
 class SolarHomeSystemFactory extends Factory {
     protected $model = SolarHomeSystem::class;
 

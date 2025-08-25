@@ -6,6 +6,7 @@ use App\Models\MainSettings as MainSettingsAlias;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<MainSettingsAlias> */
 class MainSettingsFactory extends Factory {
     protected $model = MainSettingsAlias::class;
 

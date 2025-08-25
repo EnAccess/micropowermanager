@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::hasTable('sm_api_credentials')) {
             Schema::connection('tenant')->create('sm_api_credentials', static function (Blueprint $table) {
@@ -192,6 +197,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::connection('tenant')->dropIfExists('sm_api_credentials');
         Schema::connection('tenant')->dropIfExists('sm_customers');

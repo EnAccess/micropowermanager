@@ -35,6 +35,9 @@ class CustomerSeeder extends Seeder {
                         ->for($village)
                         ->has(
                             GeographicalInformation::factory()
+                                // Remove this after Laravel 12 upgrade, see
+                                // https://github.com/larastan/larastan/issues/2307
+                                // @phpstan-ignore-next-line
                                 ->state(function (array $attributes, Address $address) {
                                     return ['points' => $address->city->location->points];
                                 })

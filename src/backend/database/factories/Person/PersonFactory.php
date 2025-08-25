@@ -5,15 +5,14 @@ namespace Database\Factories\Person;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Person> */
 class PersonFactory extends Factory {
     protected $model = Person::class;
 
     /**
      * Indicate that the person is a customer.
-     *
-     * @return Factory
      */
-    public function isCustomer() {
+    public function isCustomer(): static {
         return $this->state(function (array $attributes) {
             return [
                 'is_customer' => true,
@@ -23,10 +22,8 @@ class PersonFactory extends Factory {
 
     /**
      * Indicate that the person is an Agent.
-     *
-     * @return Factory
      */
-    public function isAgent($village_name = 'Demo') {
+    public function isAgent(string $village_name = 'Demo'): static {
         return $this->state(function (array $attributes) use ($village_name) {
             return [
                 'is_customer' => false,
@@ -38,10 +35,8 @@ class PersonFactory extends Factory {
 
     /**
      * Indicate that the person is an non-Agent, Maintenance User.
-     *
-     * @return Factory
      */
-    public function isMaintenanceUser($village_name = 'Demo') {
+    public function isMaintenanceUser(string $village_name = 'Demo'): static {
         return $this->state(function (array $attributes) use ($village_name) {
             return [
                 'is_customer' => false,
@@ -54,7 +49,7 @@ class PersonFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function definition(): array {
         $sex = fake()->randomKey(['male', 'female']);

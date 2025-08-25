@@ -6,15 +6,16 @@ use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 
+/** @extends Factory<Company> */
 class CompanyFactory extends Factory {
     protected $model = Company::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'name' => $this->faker->company,
             'phone' => $this->faker->phoneNumber,

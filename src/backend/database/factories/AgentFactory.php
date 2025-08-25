@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\Agent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Agent> */
 class AgentFactory extends Factory {
     protected $model = Agent::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'password' => '123456',
             'email' => $this->faker->unique()->safeEmail,
