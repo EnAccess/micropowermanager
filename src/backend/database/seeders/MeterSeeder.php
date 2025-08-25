@@ -134,7 +134,7 @@ class MeterSeeder extends Seeder {
                 ->for(MeterType::all()->random())
                 ->for(Manufacturer::all()->random())
                 ->for(MeterTariff::all()->random(), 'tariff')
-                ->create();
+                ->createOne();
 
             // Assign the Meter to the customer by creating a device
             $device = Device::factory()
@@ -145,6 +145,9 @@ class MeterSeeder extends Seeder {
                         ->for($person->addresses->first()->city)
                         ->has(
                             GeographicalInformation::factory()
+                                // Remove this after Laravel 12 upgrade, see
+                                // https://github.com/larastan/larastan/issues/2307
+                                // @phpstan-ignore-next-line
                                 ->state(function (array $attributes, Address $address) {
                                     /** @var Device $device */
                                     $device = $address->owner()->first();
@@ -155,7 +158,7 @@ class MeterSeeder extends Seeder {
                             'geo'
                         )
                 )
-                ->create([
+                ->createOne([
                     'device_serial' => $meter->serial_number,
                 ]);
         }
