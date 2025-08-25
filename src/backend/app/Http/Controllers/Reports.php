@@ -305,7 +305,7 @@ class Reports {
             }
             $sheet->setCellValue('K'.$sheetIndex, $balance);
 
-            if ($transaction->device->device->device_type === Meter::RELATION_NAME) {
+            if ($transaction->device->device_type === Meter::RELATION_NAME) {
                 $tariff = null;
                 $connectionType = null;
                 $connectionGroupName = null;
@@ -584,15 +584,13 @@ class Reports {
 
         // Then load only if device model has the relationship
         foreach ($transactions as $transaction) {
-            $deviceModel = $transaction->device?->device;
+            $deviceModel = $transaction->device->device;
 
-            if ($deviceModel) {
-                if (method_exists($deviceModel, 'tariff')) {
-                    $deviceModel->loadMissing('tariff');
-                }
-                if (method_exists($deviceModel, 'connectionType')) {
-                    $deviceModel->loadMissing('connectionType');
-                }
+            if (method_exists($deviceModel, 'tariff')) {
+                $deviceModel->loadMissing('tariff');
+            }
+            if (method_exists($deviceModel, 'connectionType')) {
+                $deviceModel->loadMissing('connectionType');
             }
         }
 

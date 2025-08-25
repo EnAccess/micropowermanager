@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Carbon\Carbon              $created_at
  * @property \Carbon\Carbon              $updated_at
  * @property Meter|SolarHomeSystem|EBike $device
+ * @property string                      $device_type
  * @property Manufacturer                $manufacturer
  */
 class Device extends BaseModel {
@@ -34,6 +35,8 @@ class Device extends BaseModel {
      * @return MorphTo<Meter|SolarHomeSystem|EBike, $this>
      */
     public function device(): MorphTo {
+        // https://github.com/larastan/larastan/issues/1223
+        // @phpstan-ignore return.type
         return $this->morphTo();
     }
 

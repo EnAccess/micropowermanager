@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MeterTariff extends BaseModel {
     use SoftDeletes;
 
-    /** @use HasFactory<MeterTariff> */
+    /** @use HasFactory<\Database\Factories\Meter\MeterTariffFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'meter_tariff';
