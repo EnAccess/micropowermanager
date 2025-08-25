@@ -19,8 +19,9 @@ class SwiftaTransactionCallbackMiddleware {
             $this->swiftaTransactionService->checkAmountIsSame($amount, $transaction);
             $request->attributes->add(['transaction' => $transaction]);
             $request->attributes->add(['reference' => $transactionReference]);
-
-            ProcessPayment::dispatch($transaction->id);
+            $owner = $transaction->device->person;
+            $companyId = $owner->company_id;
+            ProcessPayment::dispatch($companyId, $transaction->id);
         } catch (\Exception $exception) {
             $response = collect([
                 'success' => 0,
