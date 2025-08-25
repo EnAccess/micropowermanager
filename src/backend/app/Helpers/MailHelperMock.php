@@ -3,7 +3,6 @@
 namespace App\Helpers;
 
 use App\Exceptions\MailNotSentException;
-use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 class MailHelperMock implements MailHelperInterface {
     /**
@@ -13,7 +12,6 @@ class MailHelperMock implements MailHelperInterface {
      * @param string|null $attachment
      *
      * @throws MailNotSentException
-     * @throws PHPMailerException
      */
     public function sendPlain(string $to, string $title, string $body, ?string $attachment = null): void {
         return;

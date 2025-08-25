@@ -6,7 +6,7 @@
 <body>
     <b>Forgot password</b>
     <p>
-        Dear {{$userName}}, your password was reseted to {{$password}}. Please don't forget to change it later.
+        Dear {{$userName}}, your password was reset to {{$password}}. Please don't forget to change it later.
     </p>
     <p>MicroPowerManager</p>
 
