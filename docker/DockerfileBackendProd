@@ -52,8 +52,6 @@ RUN a2enmod rewrite
 
 # get MicroPowerManager source code and addition files
 COPY src/backend /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 775 /var/www/html/storage
 
 # indicate storage directory to persist data
 VOLUME ["/var/www/html/storage"]
