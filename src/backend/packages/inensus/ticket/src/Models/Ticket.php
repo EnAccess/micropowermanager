@@ -2,12 +2,26 @@
 
 namespace Inensus\Ticket\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property int    $id
+ * @property string $creator_type
+ * @property int    $creator_id
+ * @property int    $assigned_id
+ * @property string $owner_type
+ * @property int    $owner_id
+ * @property int    $status
+ * @property Carbon $due_date
+ * @property string $title
+ * @property string $content
+ * @property int    $category_id
+ */
 class Ticket extends BaseModel {
     protected $table = 'tickets';
 

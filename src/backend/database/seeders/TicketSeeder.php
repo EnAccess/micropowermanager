@@ -8,6 +8,7 @@ use App\Models\MaintenanceUsers;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\User;
+use Database\Factories\Inensus\Ticket\Models\TicketCategoryFactory;
 use Database\Factories\TicketFactory;
 use Database\Factories\TicketOutsourceFactory;
 use Database\Factories\TicketUserFactory;
@@ -24,7 +25,7 @@ class TicketSeeder extends Seeder {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
-    private $amount = 100;
+    private int $amount = 100;
 
     /**
      * Run the database seeds.
@@ -119,6 +120,9 @@ class TicketSeeder extends Seeder {
                         ->for($village)
                         ->has(
                             GeographicalInformation::factory()
+                                // Remove this after Laravel 12 upgrade, see
+                                // https://github.com/larastan/larastan/issues/2307
+                                // @phpstan-ignore-next-line
                                 ->state(function (array $attributes, Address $address) {
                                     return ['points' => $address->city->location->points];
                                 })
@@ -162,19 +166,24 @@ class TicketSeeder extends Seeder {
         }
     }
 
-    private function generateTicket() {
-        $randomCategory = TicketCategory::factory()->create();
+    private function generateTicket(): void {
+        // $randomCategory = TicketCategory::factory()->createOne();
+        $randomCategory = (new TicketCategoryFactory())->createOne();
         $fakeSentence = $this->generateFakeSentence();
+        /** @var User $randomCreator */
         $randomCreator = User::inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
-        $ticketUser = (new TicketUserFactory())->create();
+        $ticketUser = (new TicketUserFactory())->createOne();
+        /** @var MaintenanceUsers $randomMaintenanceUser */
         $randomMaintenanceUser = MaintenanceUsers::inRandomOrder()->first();
+        /** @var User $randomUser */
         $randomUser = User::inRandomOrder()->first();
+        /** @var Person $randomPerson */
         $randomPerson = Person::inRandomOrder()->where('is_customer', 1)->first();
         $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
 
-        $ticket = (new TicketFactory())->make([
+        $ticket = (new TicketFactory())->makeOne([
             'creator_type' => 'admin',
             'creator_id' => $randomCreator->id,
             'status' => $status,
@@ -212,7 +221,7 @@ class TicketSeeder extends Seeder {
         }
     }
 
-    private function generateFakeSentence($minWords = 5, $maxWords = 15) {
+    private function generateFakeSentence(int $minWords = 5, int $maxWords = 15): string {
         $loremIpsum =
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
         $words = explode(' ', $loremIpsum);

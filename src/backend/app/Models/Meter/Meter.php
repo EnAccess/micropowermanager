@@ -20,11 +20,12 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
  * @property int         $id
- * @property MeterTariff $tariff
+ * @property string      $serial_number
  * @property bool        $in_use
+ * @property MeterTariff $tariff
  */
 class Meter extends BaseModel {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<\Database\Factories\Meter\MeterFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'meter';
