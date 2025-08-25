@@ -5,6 +5,7 @@ namespace Database\Factories\Meter;
 use App\Models\Meter\MeterTariff;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<MeterTariffFactory> */
 class MeterTariffFactory extends Factory {
     protected $model = MeterTariff::class;
 

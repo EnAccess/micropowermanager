@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
+use Database\Factories\CompanyDatabaseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int    $company_id;
  */
 class CompanyDatabase extends BaseModelCentral {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<CompanyDatabaseFactory> */
     use HasFactory;
 
     public const TABLE_NAME = 'company_databases';
