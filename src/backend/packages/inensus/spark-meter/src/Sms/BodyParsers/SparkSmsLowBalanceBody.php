@@ -13,7 +13,7 @@ class SparkSmsLowBalanceBody extends SmsBodyParser {
         $this->sparkCustomer = $sparkCustomer;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue(string $variable): mixed {
         switch ($variable) {
             case 'low_balance_limit':
                 $variable = $this->sparkCustomer->low_balance_limit;

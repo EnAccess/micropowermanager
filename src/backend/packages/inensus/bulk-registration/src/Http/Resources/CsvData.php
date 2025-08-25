@@ -3,7 +3,11 @@
 namespace Inensus\BulkRegistration\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\BulkRegistration\Models\CsvData as CsvDataModel;
 
+/**
+ * @mixin CsvDataModel
+ */
 class CsvData extends JsonResource {
     public function toArray($request) {
         return [
@@ -13,8 +17,8 @@ class CsvData extends JsonResource {
                 'attributes' => [
                     'created_person_id' => $this->user_id,
                     'csv_filename' => $this->csv_filename,
-                    'recently_created_records' => $this->recently_created_records,
-                    'alert' => $this->alert,
+                    'recently_created_records' => $this->recently_created_records ?? '',
+                    'alert' => $this->alert ?? '',
                 ],
             ],
         ];

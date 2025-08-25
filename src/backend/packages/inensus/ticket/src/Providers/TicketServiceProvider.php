@@ -13,14 +13,14 @@ class TicketServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/tickets.php',
             'tickets'
         );
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/tickets.php' => config_path('tickets.php'),
         ], 'config');

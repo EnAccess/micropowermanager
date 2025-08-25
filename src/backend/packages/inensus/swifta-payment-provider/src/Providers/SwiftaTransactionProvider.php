@@ -89,6 +89,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
 
     public function getMessage(): string {
         // TODO: Implement getMessage() method.
+        throw new \BadMethodCallException('Method getMessage() not yet implemented.');
     }
 
     public function getAmount(): int {
@@ -101,5 +102,6 @@ class SwiftaTransactionProvider implements ITransactionProvider {
 
     public function saveCommonData(): Model {
         // TODO: Implement getSender() method.
+        throw new \BadMethodCallException('Method saveCommonData() not yet implemented.');
     }
 }

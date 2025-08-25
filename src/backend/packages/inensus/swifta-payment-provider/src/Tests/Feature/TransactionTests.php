@@ -12,6 +12,7 @@ use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -20,6 +21,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TransactionTests extends TestCase {
     use RefreshDatabase;
+    use InteractsWithAuthentication;
 
     public function testWithNonExistingTransaction() {
         $data = [
@@ -151,14 +153,5 @@ class TransactionTests extends TestCase {
         ]);
         $address->owner()->associate($p);
         $address->save();
-    }
-
-    public function actingAs($user, $driver = null) {
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

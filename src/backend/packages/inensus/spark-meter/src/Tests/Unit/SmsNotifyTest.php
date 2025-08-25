@@ -188,12 +188,12 @@ class SmsNotifyTest extends TestCase {
         $this->addSmsSettings();
         $this->addSmsBodies();
         // create person
-        factory(MainSettings::class)->create();
+        MainSettings::factory()->createOne();
 
         // create person
-        factory(Person::class)->create();
+        Person::factory()->createOne();
         // create meter-tariff
-        factory(MeterTariff::class)->create();
+        MeterTariff::factory()->createOne();
 
         // create meter-type
         MeterType::query()->create([
@@ -277,7 +277,7 @@ class SmsNotifyTest extends TestCase {
     }
 
     private function initializeAdminData() {
-        $user = factory(User::class)->create();
+        $user = User::factory()->createOne();
         $address = Address::query()->make([
             'phone' => '+905494322161',
             'is_primary' => 1,

@@ -142,6 +142,10 @@ class WebhookController extends Controller {
         return "$meterSerialNumber has already registered with MicroPowerManager.";
     }
 
+    private function setNotRegisteredMessage() {
+        return 'Not registered with MicroPowerManager.';
+    }
+
     private function setNoTransactionMessage($meterSerial) {
         return "No transaction found for meter serial: $meterSerial";
     }

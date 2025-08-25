@@ -12,6 +12,7 @@ use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Models\SmsBody;
 use App\Models\User;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SparkMeter\Models\SmCustomer;
@@ -23,13 +24,14 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SendSms extends TestCase {
     use RefreshDatabase;
+    use InteractsWithAuthentication;
 
     /** @test */
     public function isMeterResetFeedbackSend() {
         Queue::fake();
         $this->withoutExceptionHandling();
         $person = $this->initializeData()['customer'];
-        $user = factory(User::class)->create();
+        $user = User::factory()->createOne();
 
         $data = [
             'sender' => $person->addresses[0]->phone,
@@ -46,7 +48,7 @@ class SendSms extends TestCase {
         Queue::fake();
         $this->withoutExceptionHandling();
         $person = $this->initializeData()['customer'];
-        $user = factory(User::class)->create();
+        $user = User::factory()->createOne();
         $data = [
             'sender' => $person->addresses[0]->phone,
             'message' => 'Balance',
@@ -57,23 +59,15 @@ class SendSms extends TestCase {
         $this->assertEquals(2, $smsCount);
     }
 
-    public function actingAs($user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
-    }
-
     private function initializeData() {
         $this->addSmsBodies();
         $this->addFeedBackKeys();
-        factory(MainSettings::class)->create();
+        MainSettings::factory()->createOne();
 
         // create person
-        factory(Person::class)->create();
+        Person::factory()->createOne();
         // create meter-tariff
-        factory(MeterTariff::class)->create();
+        MeterTariff::factory()->createOne();
 
         // create meter-type
         MeterType::query()->create([

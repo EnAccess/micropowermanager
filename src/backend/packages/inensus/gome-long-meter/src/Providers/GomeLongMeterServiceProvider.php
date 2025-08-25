@@ -29,26 +29,26 @@ class GomeLongMeterServiceProvider extends ServiceProvider {
         });
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/gome-long-meter.php', 'gome-long-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('GomeLongMeterApi', GomeLongMeterApi::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/gome-long-meter.php' => config_path('gome-long-meter.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/gome-long-meter'),
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_gome_long_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');

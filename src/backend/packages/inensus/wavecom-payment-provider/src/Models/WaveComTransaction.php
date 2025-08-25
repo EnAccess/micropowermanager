@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $sender
  * @property string $message
  * @property int    $amount
+ * @property int    $status
  */
 class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     protected $table = 'wavecom_transactions';

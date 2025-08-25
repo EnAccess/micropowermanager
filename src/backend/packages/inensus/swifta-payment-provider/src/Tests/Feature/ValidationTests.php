@@ -12,6 +12,7 @@ use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
@@ -19,6 +20,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ValidationTests extends TestCase {
     use RefreshDatabase;
+    use InteractsWithAuthentication;
 
     public function testOnlyAuthenticatedSwiftaUserSendsTransaction() {
         $data = [
@@ -27,12 +29,13 @@ class ValidationTests extends TestCase {
             'cipher' => '549401e2bd56c9bee49737d16ccf58b1',
             'timestamp' => '1123123',
         ];
+        // Create a "wrong" user
         $user = User::query()->create([
             'name' => 'test',
             'password' => '123456',
             'email' => 'test',
         ]);
-        $response = $this->actingAsWrong($user)->post('/api/swifta/validation', $data)->assertStatus(401);
+        $response = $this->actingAs($user)->post('/api/swifta/validation', $data)->assertStatus(401);
         $response->assertJson([
             'success' => 0,
             'message' => 'Authentication field.',
@@ -202,23 +205,5 @@ class ValidationTests extends TestCase {
         ]);
         $address->owner()->associate($p);
         $address->save();
-    }
-
-    public function actingAsWrong($user, $driver = null) {
-        $customClaims = ['usr' => 'swifta-token-wrong', 'exp' => Carbon::now()->addYears(1)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
-    }
-
-    public function actingAs($user, $driver = null) {
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }
