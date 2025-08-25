@@ -99,12 +99,12 @@ class LoanDataContainer {
     /**
      * @param string $serialNumber
      *
-     * @return Person|null
+     * @return Person
      *
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer
      */
-    private function getMeterOwner(string $serialNumber): ?Person {
+    private function getMeterOwner(string $serialNumber): Person {
         try {
             /** @var Meter $meter */
             $meter = Meter::with('device.person')

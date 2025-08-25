@@ -77,7 +77,7 @@ class WebhookController extends Controller {
                     return;
                 }
 
-                $person = $meter->device()->person;
+                $person = $meter->device->person;
 
                 if ($person) {
                     $data = [
@@ -140,6 +140,10 @@ class WebhookController extends Controller {
 
     private function setAlreadyRegisteredMessage($meterSerialNumber) {
         return "$meterSerialNumber has already registered with MicroPowerManager.";
+    }
+
+    private function setNotRegisteredMessage() {
+        return 'Not registered with MicroPowerManager.';
     }
 
     private function setNoTransactionMessage($meterSerial) {

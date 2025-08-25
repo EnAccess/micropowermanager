@@ -21,7 +21,7 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/bulk-registration.php',
             'bulk-registration'
@@ -33,13 +33,13 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
              });*/
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/bulk-registration.php' => config_path('bulk-registration.php'),
         ], 'configurations');
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/bulk-registration'
@@ -47,7 +47,7 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_bulk_registration_tables.php' => $this->getMigrationFileName($filesystem),
         ], 'migrations');

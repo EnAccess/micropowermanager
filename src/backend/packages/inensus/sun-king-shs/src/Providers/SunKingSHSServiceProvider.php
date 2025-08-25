@@ -21,26 +21,26 @@ class SunKingSHSServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/sun-king-shs.php', 'sun-king-shs');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('SunKingSHSApi', SunKingSHSApi::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/sun-king-shs.php' => config_path('sun-king-shs.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/sun-king-shs'),
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_sun_king_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_sun_king_tables.php'),
             __DIR__.'/../../database/migrations/add_sun_king_transactions_table_fields.php.stub' => $this->getMigrationFileName($filesystem, 'add_sun_king_transactions_table_fields.php'),

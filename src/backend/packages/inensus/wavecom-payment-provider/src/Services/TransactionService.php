@@ -18,8 +18,9 @@ use ParseCsv\Csv;
 class TransactionService extends AbstractPaymentAggregatorTransactionService {
     public function __construct(private Csv $csv) {}
 
+    /** @return array<string> */
     public function createTransactionsFromFile(UploadedFile $file): array {
-        $this->csv->auto($file);
+        $this->csv->auto($file->get());
 
         $skippedTransactions = [];
 
@@ -67,7 +68,8 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService {
         $transaction->save();
     }
 
-    private function validateTransaction(array $transaction) {
+    /** @param array<string, mixed> $transaction */
+    private function validateTransaction(array $transaction): void {
         $rules = [
             'transaction_id' => 'required',
             'sender' => 'required',

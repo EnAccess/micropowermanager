@@ -28,8 +28,6 @@ class VodacomTransactionService {
     /**
      * Check the status of a transaction.
      *
-     * @param string $referenceId
-     *
      * @return array
      */
     public function transactionEnquiryStatus(array $data): array {

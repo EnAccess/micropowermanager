@@ -6,11 +6,14 @@ use App\Sms\Senders\SmsConfigsCore;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
 class SparkSmsConfig extends SmsConfigsCore {
-    public $smsTypes = [
+    /**
+     * @var array<int, string>
+     */
+    public array $smsTypes = [
         SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER => 'Inensus\SparkMeter\Sms\Senders\LowBalanceLimitNotifier',
         SparkSmsTypes::BALANCE_FEEDBACK => 'Inensus\SparkMeter\Sms\Senders\BalanceFeedback',
         SparkSmsTypes::METER_RESET_FEEDBACK => 'Inensus\SparkMeter\Sms\Senders\MeterResetFeedback',
     ];
-    public $bodyParsersPath = 'Inensus\\SparkMeter\\Sms\\BodyParsers\\';
-    public $servicePath = 'Inensus\SparkMeter\Services\SmSmsBodyService';
+    public string $bodyParsersPath = 'Inensus\\SparkMeter\\Sms\\BodyParsers\\';
+    public string $servicePath = 'Inensus\SparkMeter\Services\SmSmsBodyService';
 }

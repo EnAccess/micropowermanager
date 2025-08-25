@@ -7,7 +7,7 @@ use App\Models\Manufacturer;
 class ManufacturerService {
     public function __construct(private Manufacturer $manufacturer) {}
 
-    public function register() {
+    public function register(): void {
         $api = $this->manufacturer->newQuery()->where('api_name', 'DalyBmsApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([

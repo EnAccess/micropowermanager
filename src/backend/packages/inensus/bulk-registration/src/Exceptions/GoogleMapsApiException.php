@@ -2,7 +2,7 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
-class GoogleMapsApiException extends Exception {
+class GoogleMapsApiException extends \Exception {
     public function render($request) {
         return response()->json([
             'errors' => [

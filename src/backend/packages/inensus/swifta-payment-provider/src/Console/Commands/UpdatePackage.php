@@ -8,7 +8,6 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UpdatePackage extends Command {
     protected $signature = 'swifta-payment-provider:update';
@@ -90,9 +89,13 @@ class UpdatePackage extends Command {
             'email' => 'swifta-user',
         ]);
 
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $payload = JWTAuth::setToken($token)->getPayload();
+        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        $guard = auth('api');
+
+        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];
+        $token = $guard->claims($customClaims)->login($user);
+        $payload = $guard->payload();
+
         $expirationTime = $payload['exp'];
         $this->authentication->newQuery()->updateOrCreate(['id' => 1], [
             'token' => $token,

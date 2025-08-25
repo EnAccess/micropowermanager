@@ -3,7 +3,11 @@
 namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\KelinMeter\Models\KelinMeter as KelinMeterData;
 
+/**
+ * @mixin KelinMeterData
+ */
 class KelinMeterResource extends JsonResource {
     public function toArray($request) {
         return [

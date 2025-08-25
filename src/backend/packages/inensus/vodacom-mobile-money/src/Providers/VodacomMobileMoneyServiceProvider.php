@@ -19,19 +19,19 @@ class VodacomMobileMoneyServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/vodacom-mobile-money.php', 'vodacom-mobile-money');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/vodacom-mobile-money.php' => config_path('vodacom-mobile-money.php'),
         ]);
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_vodacom_mobile_money_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');

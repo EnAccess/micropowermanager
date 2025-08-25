@@ -31,7 +31,7 @@ class CsvDataService {
 
         $csvData = $this->csvData->newQuery()->create([
             'csv_filename' => $request->file('csv')->getClientOriginalName(),
-            'user_id' => auth()->user()->id,
+            'user_id' => auth('api')->user()->id,
             'csv_data' => json_encode(array_values($parsedCsvData), true),
         ]);
         $csvData['recently_created_records'] = $recentlyCreatedRecords;

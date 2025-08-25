@@ -65,26 +65,26 @@ class SteamaMeterServiceProvider extends ServiceProvider {
         );
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/steama-meter.php', 'steama');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('SteamaMeterApi', SteamaMeterApi::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/steama-meter.php' => config_path('steama-meter.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/steama-meter'),
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_steama_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');

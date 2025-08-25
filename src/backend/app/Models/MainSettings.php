@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class MainSettings.
@@ -16,4 +17,7 @@ use App\Models\Base\BaseModel;
  * @property float  $vat_energy
  * @property float  $vat_appliance
  * */
-class MainSettings extends BaseModel {}
+class MainSettings extends BaseModel {
+    /** @use HasFactory<\Database\Factories\MainSettingsFactory> */
+    use HasFactory;
+}

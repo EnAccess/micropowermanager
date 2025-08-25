@@ -4,6 +4,9 @@ namespace App\Models\Transaction;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Inensus\MesombPaymentProvider\Models\MesombTransaction;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 /**
  * Interface ManufacturerTransactionInterface.
@@ -19,18 +22,18 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * These should be exposed through custom methods or attributes on the implementing model.
  */
 interface ManufacturerTransactionInterface {
-    /** @return MorphOne<Model, Model> */
+    /** @return MorphOne<AgentTransaction, Model> */
     public function agentTransaction(): MorphOne;
 
-    /** @return MorphOne<Model, Model> */
+    /** @return MorphOne<ThirdPartyTransaction, Model> */
     public function thirdPartyTransaction(): MorphOne;
 
-    /** @return MorphOne<Model, Model> */
+    /** @return MorphOne<SwiftaTransaction, Model> */
     public function swiftaTransaction(): MorphOne;
 
-    /** @return MorphOne<Model, Model> */
+    /** @return MorphOne<MesombTransaction, Model> */
     public function mesombTransaction(): MorphOne;
 
-    /** @return MorphOne<Model, Model> */
+    /** @return MorphOne<WaveMoneyTransaction, Model> */
     public function waveMoneyTransaction(): MorphOne;
 }

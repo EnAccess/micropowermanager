@@ -45,11 +45,11 @@ class PaymentProcessTests extends TestCase {
         $transaction = $this->initializeTransaction();
         $transactionData = TransactionDataContainer::initialize($transaction);
         TokenProcessor::dispatchSync($transactionData);
-        $tokensCount = Token::query()->get()->count();
+        $tokensCount = Token::query()->count();
         $this->assertEquals(1, $tokensCount);
         $mesombPaymentCount = PaymentHistory::query()
             ->where('payment_service', 'mesomb_transaction')
-            ->where('payment_type', 'energy')->get()->count();
+            ->where('payment_type', 'energy')->count();
         $this->assertEquals(1, $mesombPaymentCount);
     }
 

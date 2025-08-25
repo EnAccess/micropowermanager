@@ -8,15 +8,15 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 
 /**
- * @property int id
- * @property int amount
- * @property string currency
- * @property string order_id
- * @property string reference_id
- * @property string status
- * @property string external_transaction_id
- * @property int customer_id
- * @property string|null meter_serial
+ * @property int         $id
+ * @property int         $amount
+ * @property string      $currency
+ * @property string      $order_id
+ * @property string      $reference_id
+ * @property string      $status
+ * @property string      $external_transaction_id
+ * @property int         $customer_id
+ * @property string|null $meter_serial
  */
 class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'wave_money_transaction';
