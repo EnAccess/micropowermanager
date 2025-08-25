@@ -2,8 +2,6 @@
 
 namespace App\Models\Transaction;
 
-use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\ThirdPartyTransaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
