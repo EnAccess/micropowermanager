@@ -17,7 +17,7 @@ class CalinCredentialFactory extends Factory {
     public function definition(): array {
         return [
             'api_url' => 'http://api.calinhost.com/api',
-            'user_id' => 'Inensus'.$this->faker->randomNumber(100),
+            'user_id' => 'Inensus'.$this->faker->randomNumber(3),
             'api_key' => '123123',
         ];
     }

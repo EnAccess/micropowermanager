@@ -16,13 +16,13 @@ class SubTargetFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'target_id' => $this->faker->randomNumber(10),
-            'connection_id' => $this->faker->randomNumber(10),
-            'revenue' => $this->faker->randomNumber(10),
-            'new_connections' => $this->faker->randomNumber(10),
-            'connected_power' => $this->faker->randomNumber(10),
-            'energy_per_month' => $this->faker->randomNumber(10),
-            'average_revenue_per_month' => $this->faker->randomNumber(10),
+            'target_id' => $this->faker->randomNumber(2),
+            'connection_id' => $this->faker->randomNumber(2),
+            'revenue' => $this->faker->randomNumber(2),
+            'new_connections' => $this->faker->randomNumber(2),
+            'connected_power' => $this->faker->randomNumber(2),
+            'energy_per_month' => $this->faker->randomNumber(2),
+            'average_revenue_per_month' => $this->faker->randomNumber(2),
         ];
     }
 }
