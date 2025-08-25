@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class SmsVariableDefaultValueFactory extends Factory {
     protected $model = SmsVariableDefaultValue::class;
 
-    protected $variables = [
+    /** @var array<string, mixed> */
+    protected array $variables = [
         'name' => ['Herbert', 'John', 'Maria', 'Sarah', 'Michael'],
         'surname' => ['Kale', 'Smith', 'Johnson', 'Brown', 'Davis'],
         'amount' => ['1000', '1500', '2000', '2500', '3000'],
@@ -27,9 +28,9 @@ class SmsVariableDefaultValueFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         $variable = $this->faker->randomElement(array_keys($this->variables));
 
         return [

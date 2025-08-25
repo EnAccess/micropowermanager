@@ -13,9 +13,9 @@ class SmsFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         // Generate realistic Tanzanian names
         $firstNames = ['Ambidwile', 'Samiha', 'Tatu', 'Sharifa', 'Manica', 'Seghen', 'Bamba',
             'Bora', 'Hadiya', 'Fahima', 'Asiya', 'Asha', 'Adla', 'Hiba', 'Malika'];

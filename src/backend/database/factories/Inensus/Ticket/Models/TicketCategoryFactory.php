@@ -12,9 +12,9 @@ class TicketCategoryFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'label_name' => $this->faker->word,
             'label_color' => $this->faker->colorName,

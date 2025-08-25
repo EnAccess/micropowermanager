@@ -12,9 +12,9 @@ class TimeOfUsageFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'tariff_id' => 1,
             'start' => '00:00',

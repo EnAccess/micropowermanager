@@ -13,9 +13,9 @@ class AccessRatePaymentFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'debt' => 0,
             'due_date' => Carbon::now()->addDays(7),

@@ -12,11 +12,11 @@ class WaveMoneyCredentialFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function definition() {
         return [
-            'merchant_id' => 'MERCHANT ID '.$this->faker->randomNumber(1, 100),
+            'merchant_id' => 'MERCHANT ID '.$this->faker->randomNumber(100),
             'merchant_name' => 'Demo Merchant',
             'secret_key' => '123123',
             'callback_url' => 'https://staging.micropowermanager.com/api/wave-money/wave-money-transaction/callback/11',

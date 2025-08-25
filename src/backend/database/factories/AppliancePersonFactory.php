@@ -12,9 +12,9 @@ class AppliancePersonFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'person_id' => $this->faker->numberBetween(1, 10),
             'first_payment_date' => $this->faker->date(),

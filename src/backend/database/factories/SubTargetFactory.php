@@ -12,17 +12,17 @@ class SubTargetFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
-            'target_id' => $this->faker->randomNumber(1, 10),
-            'connection_id' => $this->faker->randomNumber(1, 10),
-            'revenue' => $this->faker->randomNumber(1, 10),
-            'new_connections' => $this->faker->randomNumber(1, 10),
-            'connected_power' => $this->faker->randomNumber(1, 10),
-            'energy_per_month' => $this->faker->randomNumber(1, 10),
-            'average_revenue_per_month' => $this->faker->randomNumber(1, 10),
+            'target_id' => $this->faker->randomNumber(10),
+            'connection_id' => $this->faker->randomNumber(10),
+            'revenue' => $this->faker->randomNumber(10),
+            'new_connections' => $this->faker->randomNumber(10),
+            'connected_power' => $this->faker->randomNumber(10),
+            'energy_per_month' => $this->faker->randomNumber(10),
+            'average_revenue_per_month' => $this->faker->randomNumber(10),
         ];
     }
 }

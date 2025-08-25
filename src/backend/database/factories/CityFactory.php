@@ -19,9 +19,9 @@ class CityFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'name' => $this->faker->city,
             'country_id' => 1,

@@ -12,9 +12,9 @@ class TicketOutsourceFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'ticket_id' => $this->faker->numberBetween(1, 10),
             'amount' => $this->faker->numberBetween(1, 10),

@@ -12,12 +12,12 @@ class CalinCredentialFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'api_url' => 'http://api.calinhost.com/api',
-            'user_id' => 'Inensus'.$this->faker->randomNumber(1, 100),
+            'user_id' => 'Inensus'.$this->faker->randomNumber(100),
             'api_key' => '123123',
         ];
     }

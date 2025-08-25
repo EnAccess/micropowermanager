@@ -12,9 +12,9 @@ class TokenFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'transaction_id' => $this->faker->randomNumber(3),
             'token' => $this->generateToken(),

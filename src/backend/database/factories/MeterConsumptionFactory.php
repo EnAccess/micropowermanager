@@ -13,9 +13,9 @@ class MeterConsumptionFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'meter_id' => 1,
             'total_consumption' => $this->faker->randomFloat(2, 0, 100),

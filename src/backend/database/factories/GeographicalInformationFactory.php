@@ -24,10 +24,8 @@ class GeographicalInformationFactory extends Factory {
 
     /**
      * Randomize the location points by approx 1km.
-     *
-     * @return Factory
      */
-    public function randomizePointsInVillage() {
+    public function randomizePointsInVillage(): static {
         return $this->state(function (array $attributes) {
             return [
                 'points' => $this->add_random_offset_to_coordinates($attributes['points'], 1000),
@@ -37,10 +35,8 @@ class GeographicalInformationFactory extends Factory {
 
     /**
      * Randomize the location points by approx 10m.
-     *
-     * @return Factory
      */
-    public function randomizePointsInHousehold() {
+    public function randomizePointsInHousehold(): static {
         return $this->state(function (array $attributes) {
             return [
                 'points' => $this->add_random_offset_to_coordinates($attributes['points'], 10),
@@ -48,7 +44,12 @@ class GeographicalInformationFactory extends Factory {
         });
     }
 
-    public function definition() {
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array {
         return [
             'points' => '0.000000,0.000000',
         ];

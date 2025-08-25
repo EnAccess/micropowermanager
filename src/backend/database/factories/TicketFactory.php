@@ -12,9 +12,9 @@ class TicketFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'creator_id' => $this->faker->numberBetween(1, 10),
             'creator_type' => $this->faker->randomElement(['user', 'agent']),

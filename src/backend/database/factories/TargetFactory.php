@@ -12,9 +12,9 @@ class TargetFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         $ownerType = $this->faker->randomElement(['mini-grid', 'cluster']);
 
         return [

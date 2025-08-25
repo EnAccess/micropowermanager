@@ -13,10 +13,8 @@ class UserFactory extends Factory {
 
     /**
      * Indicate that the user is a cluster admin.
-     *
-     * @return Factory
      */
-    public function clusterAdmin() {
+    public function clusterAdmin(): static {
         return $this->state(function (array $attributes) {
             return [
                 'name' => 'Cluster Admin',
@@ -24,7 +22,12 @@ class UserFactory extends Factory {
         });
     }
 
-    public function definition() {
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array {
         return [
             'name' => $this->faker->name,
             'company_id' => DemoCompany::DEMO_COMPANY_ID,

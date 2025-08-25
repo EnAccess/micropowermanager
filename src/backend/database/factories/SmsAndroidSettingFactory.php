@@ -12,9 +12,9 @@ class SmsAndroidSettingFactory extends Factory {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'url' => $this->faker->url, // Generates a random URL
             'token' => $this->faker->regexify('[A-Za-z0-9_-]{64}'), // Mimics a token format

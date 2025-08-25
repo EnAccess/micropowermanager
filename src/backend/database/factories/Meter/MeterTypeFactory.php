@@ -5,16 +5,14 @@ namespace Database\Factories\Meter;
 use App\Models\Meter\MeterType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<MeterTypeFactory> */
+/** @extends Factory<MeterType> */
 class MeterTypeFactory extends Factory {
     protected $model = MeterType::class;
 
     /**
      * Indicate that the Meter type is for online meters that provide telemetry.
-     *
-     * @return Factory
      */
-    public function isOnline() {
+    public function isOnline(): static {
         return $this->state(function (array $attributes) {
             return [
                 'online' => 1,
@@ -22,6 +20,11 @@ class MeterTypeFactory extends Factory {
         });
     }
 
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array {
         return [
             'online' => 0,
