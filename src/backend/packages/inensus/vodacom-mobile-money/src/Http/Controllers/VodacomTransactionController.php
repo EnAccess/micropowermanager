@@ -3,7 +3,6 @@
 namespace Inensus\VodacomMobileMoney\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inensus\VodacomMobileMoney\Http\Requests\VodacomTransactionEnquiryStatusRequest;
 use Inensus\VodacomMobileMoney\Http\Requests\VodacomTransactionProcessRequest;
 use Inensus\VodacomMobileMoney\Http\Requests\VodacomTransactionValidationRequest;

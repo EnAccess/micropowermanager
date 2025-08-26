@@ -2,7 +2,6 @@
 
 namespace Inensus\BulkRegistration\Services;
 
-use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use App\Models\MiniGrid;

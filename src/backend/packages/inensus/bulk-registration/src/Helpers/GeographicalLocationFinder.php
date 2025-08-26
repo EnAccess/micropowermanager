@@ -2,7 +2,6 @@
 
 namespace Inensus\BulkRegistration\Helpers;
 
-use App\Models\Address\Address;
 use Spatie\Geocoder\Geocoder;
 
 class GeographicalLocationFinder {

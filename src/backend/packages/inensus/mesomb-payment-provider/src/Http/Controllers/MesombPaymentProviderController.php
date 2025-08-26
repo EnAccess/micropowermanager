@@ -6,7 +6,6 @@ use App\Events\TransactionSavedEvent;
 use App\Jobs\ProcessPayment;
 use Illuminate\Routing\Controller;
 use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
-use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\MesombPaymentProvider\Providers\MesombTransactionProvider;
 
 class MesombPaymentProviderController extends Controller {
