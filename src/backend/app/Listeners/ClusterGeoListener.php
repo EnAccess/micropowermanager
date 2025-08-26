@@ -59,7 +59,7 @@ class ClusterGeoListener {
      *
      * @param $data
      *
-     * @return array
+     * @return array<mixed>
      *
      * @throws GeoFormatException
      */
