@@ -6,6 +6,8 @@ use App\Models\Base\BaseModel;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int         $id
@@ -77,11 +79,11 @@ class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransacti
         $this->amount = $amount;
     }
 
-    public function transaction() {
+    public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
-    public function manufacturerTransaction() {
+    public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
     }
 

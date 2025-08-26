@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  *
  * @property string $points
  * @property Model  $owner
- * @property strinf $owner_type
+ * @property string $owner_type
  */
 class GeographicalInformation extends BaseModel {
     /** @use HasFactory<\Database\Factories\GeographicalInformationFactory> */

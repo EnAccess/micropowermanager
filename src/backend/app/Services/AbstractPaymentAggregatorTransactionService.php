@@ -10,7 +10,11 @@ use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
+use Illuminate\Database\Eloquent\Model;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 abstract class AbstractPaymentAggregatorTransactionService {
     private const MINIMUM_TRANSACTION_AMOUNT = 0;
@@ -24,7 +28,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private PaymentProviderTransactionInterface $paymentAggregatorTransaction,
+        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction $paymentAggregatorTransaction,
     ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
@@ -62,7 +66,6 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * @throws TransactionAmountNotEnoughException
      */
     public function imitateTransactionForValidation(array $transactionData): void {
-        /** @var PaymentProviderTransactionInterface $newTransaction */
         $newTransaction = $this->paymentAggregatorTransaction->newQuery()->make($transactionData);
 
         $this->paymentAggregatorTransaction = $newTransaction;
@@ -80,7 +83,6 @@ abstract class AbstractPaymentAggregatorTransactionService {
 
     public function saveTransaction(): void {
         $this->paymentAggregatorTransaction->save();
-        /** @var \Illuminate\Database\Eloquent\Model $paymentAggregatorTransaction */
         $paymentAggregatorTransaction = $this->paymentAggregatorTransaction;
         $this->transaction->originalTransaction()->associate($paymentAggregatorTransaction)->save();
     }
@@ -146,7 +148,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         return $this->minimumPurchaseAmount;
     }
 
-    public function getPaymentAggregatorTransaction(): PaymentProviderTransactionInterface {
+    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
         return $this->paymentAggregatorTransaction;
     }
 }

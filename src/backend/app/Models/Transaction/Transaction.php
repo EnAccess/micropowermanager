@@ -30,20 +30,14 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * The `originalTransaction()` method links this system-level transaction to the
  * payment provider-specific transaction.
  *
- * @property int    $id
- * @property int    $amount
- * @property string $type
- * @property string $sender
- * @property string $message
- * @property Device $device
- * @property string $original_transaction_type
- * @property AgentTransaction|
- *           CashTransaction|
- *           ThirdPartyTransaction|
- *           MesombTransaction|
- *           SwiftaTransaction|
- *           WaveComTransaction|
- *           WaveMoneyTransaction $originalTransaction
+ * @property int                                                                                                                                $id
+ * @property int                                                                                                                                $amount
+ * @property string                                                                                                                             $type
+ * @property string                                                                                                                             $sender
+ * @property string                                                                                                                             $message
+ * @property Device                                                                                                                             $device
+ * @property string                                                                                                                             $original_transaction_type
+ * @property AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction $originalTransaction
  */
 class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
@@ -55,7 +49,10 @@ class Transaction extends BaseModel {
      * @return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this>
      */
     public function originalTransaction(): MorphTo {
-        return $this->morphTo();
+        /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this> $relation */
+        $relation = $this->morphTo();
+
+        return $relation;
     }
 
     /**
