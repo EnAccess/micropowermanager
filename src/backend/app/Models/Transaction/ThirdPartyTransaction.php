@@ -3,7 +3,6 @@
 namespace App\Models\Transaction;
 
 use App\Models\Base\BaseModel;
-use App\Models\Transaction\ManufacturerTransactionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
