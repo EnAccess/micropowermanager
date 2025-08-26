@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use App\Models\Device;
 use Illuminate\Database\Eloquent\Model;
+use App\Console\Commands\AbstractSharedCommand;
 use Illuminate\Support\Facades\Storage;
 
-class ProspectExtract extends AbstractSharedCommand {
+class ProspectExtract extends AbstractSharedCommand
+{
     /**
      * The name and signature of the console command.
      *
@@ -29,7 +31,8 @@ class ProspectExtract extends AbstractSharedCommand {
      *
      * @return int
      */
-    public function handle(): int {
+    public function handle(): int
+    {
         try {
             $this->info('Starting Prospect data extraction...');
 
@@ -37,35 +40,34 @@ class ProspectExtract extends AbstractSharedCommand {
 
             if (empty($data)) {
                 $this->error('No data found to extract.');
-
                 return 1;
             }
 
             $count = count($data);
-            $this->info('Successfully extracted '.$count.' '.($count === 1 ? 'installation' : 'installations').' from database');
+            $this->info('Successfully extracted ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
 
             $this->info('Generating CSV file with extracted data...');
 
             $fileName = $this->generateFileName();
             $filePath = $this->writeCsvFile($data, $fileName);
 
-            $this->info('CSV file: '.$fileName);
-            $this->info('File path: '.$filePath);
+            $this->info('CSV file: ' . $fileName);
+            $this->info('File path: ' . $filePath);
 
             return 0;
         } catch (\Exception $e) {
-            $this->error('Error during extraction: '.$e->getMessage());
-
+            $this->error('Error during extraction: ' . $e->getMessage());
             return 1;
         }
     }
 
     /**
-     * Extract data from database.
+     * Extract data from database
      *
      * @return array<int, array<string, mixed>>
      */
-    private function extractDataFromDatabase(): array {
+    private function extractDataFromDatabase(): array
+    {
         $this->info('Loading installation data from database...');
 
         $limit = $this->option('limit') ? (int) $this->option('limit') : null;
@@ -102,7 +104,7 @@ class ProspectExtract extends AbstractSharedCommand {
             $assetPerson = $device->assetPerson;
 
             // Create meaningful customer identifier
-            $customerIdentifier = $person ? trim($person->name.' '.$person->surname) : 'Unknown Customer';
+            $customerIdentifier = $person ? trim($person->name . ' ' . $person->surname) : 'Unknown Customer';
 
             $primaryAddress = null;
             if ($person) {
@@ -191,21 +193,22 @@ class ProspectExtract extends AbstractSharedCommand {
         }
 
         $count = count($installations);
-        $this->info('Loaded '.$count.' '.($count === 1 ? 'installation' : 'installations').' from database');
+        $this->info('Loaded ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
 
         return $installations;
     }
 
-    private function generateFileName(): string {
+    private function generateFileName(): string
+    {
         $timestamp = now()->toISOString();
-
         return "prospect_{$timestamp}.csv";
     }
 
     /**
      * @param array<int, array<string, mixed>> $data
      */
-    private function writeCsvFile(array $data, string $fileName): string {
+    private function writeCsvFile(array $data, string $fileName): string
+    {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
@@ -221,9 +224,10 @@ class ProspectExtract extends AbstractSharedCommand {
 
     /**
      * @param array<int, array<string, mixed>> $data
-     * @param array<int, string>               $headers
+     * @param array<int, string> $headers
      */
-    private function arrayToCsv(array $data, array $headers): string {
+    private function arrayToCsv(array $data, array $headers): string
+    {
         $output = fopen('php://temp', 'r+');
         fputcsv($output, $headers);
 
