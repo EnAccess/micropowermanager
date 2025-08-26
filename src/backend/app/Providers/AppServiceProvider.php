@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
