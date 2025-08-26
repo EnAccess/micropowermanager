@@ -7,19 +7,19 @@ use App\Models\Asset;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\AssetType;
+use App\Models\Device;
 use App\Models\Person\Person;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
-use App\Services\ApplianceRateService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class OutstandingDebtsSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
-        private ApplianceRateService $applianceRateService,
     ) {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
@@ -44,7 +44,7 @@ class OutstandingDebtsSeeder extends Seeder {
         }
 
         // Create AssetPerson records with outstanding debts
-        $this->createAssetPersonWithOutstandingDebts($customers, $assets);
+        $this->createAssetPersonWithOutstandingDebts($assets);
 
         // Generate payment transactions to simulate ApplianceInstallmentPayer
         $this->generatePaymentTransactions();
@@ -52,9 +52,12 @@ class OutstandingDebtsSeeder extends Seeder {
         $this->command->info('OutstandingDebts demo data created successfully!');
     }
 
-    private function createAssetPersonWithOutstandingDebts($customers, $assets): void {
+    /**
+     * @param Collection<int, Asset> $assets
+     */
+    private function createAssetPersonWithOutstandingDebts(Collection $assets): void {
         // Get existing devices (meters and SHS) that have customers
-        $devices = \App\Models\Device::whereHasMorph('device', [\App\Models\Meter\Meter::class, \App\Models\SolarHomeSystem::class])
+        $devices = Device::whereHasMorph('device', [Meter::class, SolarHomeSystem::class])
             ->whereHas('person', function ($query) {
                 $query->where('is_customer', true);
             })
@@ -73,6 +76,7 @@ class OutstandingDebtsSeeder extends Seeder {
         for ($i = 0; $i < $count; ++$i) {
             $device = $devices->random();
             $customer = $device->person;
+            /** @var Asset $asset */
             $asset = $assets->random();
 
             // Create different scenarios for demo
@@ -99,7 +103,7 @@ class OutstandingDebtsSeeder extends Seeder {
         }
     }
 
-    private function createRecentPurchaseScenario($customer, $asset, $device): void {
+    private function createRecentPurchaseScenario(Person $customer, Asset $asset, Device $device): void {
         $assetPerson = AssetPerson::create([
             'asset_id' => $asset->id,
             'person_id' => $customer->id,
@@ -115,7 +119,7 @@ class OutstandingDebtsSeeder extends Seeder {
         $this->createAssetRatesWithRecentOverdue($assetPerson);
     }
 
-    private function createLongTermDebtScenario($customer, $asset, $device): void {
+    private function createLongTermDebtScenario(Person $customer, Asset $asset, Device $device): void {
         $assetPerson = AssetPerson::create([
             'asset_id' => $asset->id,
             'person_id' => $customer->id,
@@ -131,7 +135,7 @@ class OutstandingDebtsSeeder extends Seeder {
         $this->createAssetRatesWithLongTermDebt($assetPerson);
     }
 
-    private function createPartialPaymentScenario($customer, $asset, $device): void {
+    private function createPartialPaymentScenario(Person $customer, Asset $asset, Device $device): void {
         $assetPerson = AssetPerson::create([
             'asset_id' => $asset->id,
             'person_id' => $customer->id,
@@ -147,7 +151,7 @@ class OutstandingDebtsSeeder extends Seeder {
         $this->createAssetRatesWithPartialPayments($assetPerson);
     }
 
-    private function createAlmostPaidScenario($customer, $asset, $device): void {
+    private function createAlmostPaidScenario(Person $customer, Asset $asset, Device $device): void {
         $assetPerson = AssetPerson::create([
             'asset_id' => $asset->id,
             'person_id' => $customer->id,
@@ -339,8 +343,11 @@ class OutstandingDebtsSeeder extends Seeder {
 
     /**
      * Create historical payment transactions to simulate customer payment history.
+     *
+     * @param Collection<int, AssetPerson> $assetPersons
+     * @param User                         $demoUser
      */
-    private function createHistoricalPaymentTransactions($assetPersons, User $demoUser): void {
+    private function createHistoricalPaymentTransactions(Collection $assetPersons, User $demoUser): void {
         $historicalTransactionCount = 0;
         $maxHistoricalTransactions = 30;
 
@@ -447,7 +454,7 @@ class OutstandingDebtsSeeder extends Seeder {
     private function createPartialPaymentTransaction(AssetPerson $assetPerson, AssetRate $rate, User $demoUser): void {
         // Calculate payment amount (partial payment)
         $paymentAmount = min(
-            rand(floor($rate->remaining * 0.3), floor($rate->remaining * 0.7)), // 30-70% of remaining
+            rand((int) floor($rate->remaining * 0.3), (int) floor($rate->remaining * 0.7)), // 30-70% of remaining
             $rate->remaining
         );
 
