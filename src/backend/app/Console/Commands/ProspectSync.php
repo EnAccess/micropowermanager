@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class ProspectSync extends AbstractSharedCommand
-{
+class ProspectSync extends AbstractSharedCommand {
     /**
      * The name and signature of the console command.
      *
@@ -31,8 +30,7 @@ class ProspectSync extends AbstractSharedCommand
      *
      * @return int
      */
-    public function handle(): int
-    {
+    public function handle(): int {
         try {
             $this->info('Starting Prospect data extraction and push process...');
 
@@ -42,64 +40,66 @@ class ProspectSync extends AbstractSharedCommand
 
             if (empty($data)) {
                 $this->error('No data found to extract.');
+
                 return 1;
             }
 
             $count = count($data);
-            $this->info('Successfully extracted ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
+            $this->info('Successfully extracted '.$count.' '.($count === 1 ? 'installation' : 'installations').' from database');
 
             // Step 2: Generate CSV file
             $this->info('Step 2: Generating CSV file with extracted data...');
             $fileName = $this->generateFileName();
             $filePath = $this->writeCsvFile($data, $fileName);
 
-            $this->info('CSV file: ' . $fileName);
-            $this->info('File path: ' . $filePath);
+            $this->info('CSV file: '.$fileName);
+            $this->info('File path: '.$filePath);
 
             // Step 3: Push data to Prospect
             $this->info('Step 3: Pushing data to Prospect...');
 
-            $this->info('Pushing ' . $count . ' installation(s) to Prospect...');
+            $this->info('Pushing '.$count.' installation(s) to Prospect...');
 
             $response = $this->sendToProspect(['data' => $data]);
 
             if ($response->successful()) {
                 $this->info('Successfully pushed data to Prospect');
-                $this->line('Response: ' . $response->body());
+                $this->line('Response: '.$response->body());
                 Log::info('Prospect extract and push successful', [
                     'count' => $count,
                     'response' => $response->json(),
                 ]);
             } else {
                 $this->error('Failed to push data to Prospect');
-                $this->error('Status: ' . $response->body());
+                $this->error('Status: '.$response->body());
                 Log::error('Prospect extract and push failed', [
                     'status' => $response->status(),
                     'response' => $response->body(),
                     'data_count' => $count,
                 ]);
+
                 return 1;
             }
 
             $this->info('Prospect sync process completed successfully!');
-            return 0;
 
+            return 0;
         } catch (\Exception $e) {
-            $this->error('Error during extract and push process: ' . $e->getMessage());
+            $this->error('Error during extract and push process: '.$e->getMessage());
             Log::error('Prospect extract and push exception', [
                 'error' => $e->getMessage(),
             ]);
+
             return 1;
         }
     }
 
     /**
-     * Extract data from database
+     * Extract data from database.
      *
      * @return array<int, array<string, mixed>>
      */
-    private function extractDataFromDatabase(): array
-    {
+    private function extractDataFromDatabase(): array {
         $this->info('Loading installation data from database...');
 
         // Query devices with all necessary relationships
@@ -129,7 +129,7 @@ class ProspectSync extends AbstractSharedCommand
             $assetPerson = $device->assetPerson;
 
             // Create meaningful customer identifier
-            $customerIdentifier = $person ? trim($person->name . ' ' . $person->surname) : 'Unknown Customer';
+            $customerIdentifier = $person ? trim($person->name.' '.$person->surname) : 'Unknown Customer';
 
             $primaryAddress = null;
             if ($person) {
@@ -218,31 +218,31 @@ class ProspectSync extends AbstractSharedCommand
         }
 
         $count = count($installations);
-        $this->info('Loaded ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
+        $this->info('Loaded '.$count.' '.($count === 1 ? 'installation' : 'installations').' from database');
 
         return $installations;
     }
 
     /**
-     * Generate filename for CSV
+     * Generate filename for CSV.
      *
      * @return string
      */
-    private function generateFileName(): string
-    {
+    private function generateFileName(): string {
         $timestamp = now()->toISOString();
+
         return "prospect_{$timestamp}.csv";
     }
 
     /**
-     * Write data to CSV file
+     * Write data to CSV file.
      *
      * @param array<int, array<string, mixed>> $data
-     * @param string $fileName
+     * @param string                           $fileName
+     *
      * @return string
      */
-    private function writeCsvFile(array $data, string $fileName): string
-    {
+    private function writeCsvFile(array $data, string $fileName): string {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
@@ -257,14 +257,14 @@ class ProspectSync extends AbstractSharedCommand
     }
 
     /**
-     * Convert array to CSV format
+     * Convert array to CSV format.
      *
      * @param array<int, array<string, mixed>> $data
-     * @param array<int, string> $headers
+     * @param array<int, string>               $headers
+     *
      * @return string
      */
-    private function arrayToCsv(array $data, array $headers): string
-    {
+    private function arrayToCsv(array $data, array $headers): string {
         $output = fopen('php://temp', 'r+');
         fputcsv($output, $headers);
 
@@ -284,15 +284,15 @@ class ProspectSync extends AbstractSharedCommand
     }
 
     /**
-     * Send data to Prospect API
+     * Send data to Prospect API.
      *
      * @param array<string, mixed> $payload
+     *
      * @return Response
      */
-    private function sendToProspect(array $payload): Response
-    {
+    private function sendToProspect(array $payload): Response {
         return Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('PROSPECT_API_TOKEN'),
+            'Authorization' => 'Bearer '.env('PROSPECT_API_TOKEN'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ])->timeout(30)->post(env('PROSPECT_API_URL'), $payload);

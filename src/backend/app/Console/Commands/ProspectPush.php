@@ -45,6 +45,7 @@ class ProspectPush extends AbstractSharedCommand {
 
             if (empty($data)) {
                 $this->error('No data to push to Prospect.');
+
                 return;
             }
 
@@ -53,6 +54,7 @@ class ProspectPush extends AbstractSharedCommand {
             if ($this->option('dry-run')) {
                 $this->info('DRY RUN - would send the following data:');
                 $this->line(json_encode($payload, JSON_PRETTY_PRINT));
+
                 return;
             }
 
@@ -85,7 +87,7 @@ class ProspectPush extends AbstractSharedCommand {
     }
 
     /**
-     * Load data from CSV file
+     * Load data from CSV file.
      *
      * @return array<int, array<string, mixed>>
      */
@@ -96,7 +98,7 @@ class ProspectPush extends AbstractSharedCommand {
             throw new \Exception("CSV file not found: {$filePath}");
         }
 
-        $this->info("Loading data from: " . basename($filePath));
+        $this->info('Loading data from: '.basename($filePath));
 
         $csvContent = file_get_contents($filePath);
         $lines = str_getcsv($csvContent, "\n");
@@ -113,19 +115,22 @@ class ProspectPush extends AbstractSharedCommand {
         $isTest = $this->option('test');
 
         foreach ($lines as $lineNumber => $line) {
-            if (empty(trim($line))) continue;
+            if (empty(trim($line))) {
+                continue;
+            }
 
             $row = str_getcsv($line);
 
             if (count($row) !== count($headers)) {
-                $this->warn("Skipping line " . ($lineNumber + 2) . ": column count mismatch");
+                $this->warn('Skipping line '.($lineNumber + 2).': column count mismatch');
                 continue;
             }
 
             $record = array_combine($headers, $row);
 
-            $record = array_map(function($value) {
+            $record = array_map(function ($value) {
                 $value = trim($value);
+
                 return $value === '' ? null : $value;
             }, $record);
 
@@ -135,20 +140,20 @@ class ProspectPush extends AbstractSharedCommand {
 
             // Skip records without required fields
             if (empty($record['customer_external_id']) || empty($record['serial_number'])) {
-                $this->warn("Skipping record: missing customer_external_id or serial_number");
+                $this->warn('Skipping record: missing customer_external_id or serial_number');
                 continue;
             }
 
             $data[] = $record;
         }
 
-        $this->info('Loaded ' . count($data) . ' records from CSV');
+        $this->info('Loaded '.count($data).' records from CSV');
 
         return $data;
     }
 
     /**
-     * Get the latest CSV file from prospect folder
+     * Get the latest CSV file from prospect folder.
      *
      * @return string
      */
@@ -164,7 +169,7 @@ class ProspectPush extends AbstractSharedCommand {
             throw new \Exception("Prospect folder not found: {$prospectPath}");
         }
 
-        $files = glob($prospectPath . '*.csv');
+        $files = glob($prospectPath.'*.csv');
 
         if (empty($files)) {
             throw new \Exception("No CSV files found in prospect folder: {$prospectPath}");
@@ -186,18 +191,19 @@ class ProspectPush extends AbstractSharedCommand {
             throw new \Exception('No CSV file found in prospect folder');
         }
 
-        $this->info("Auto-detected latest CSV: " . basename($latestFile));
+        $this->info('Auto-detected latest CSV: '.basename($latestFile));
+
         return $latestFile;
     }
 
     /**
-     * Send data to Prospect API
+     * Send data to Prospect API.
      *
      * @param array<string, mixed> $payload
      */
     private function sendToProspect(array $payload): Response {
         return Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('PROSPECT_API_TOKEN'),
+            'Authorization' => 'Bearer '.env('PROSPECT_API_TOKEN'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ])->timeout(30)->post(env('PROSPECT_API_URL'), $payload);
