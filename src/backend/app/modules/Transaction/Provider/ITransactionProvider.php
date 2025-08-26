@@ -4,7 +4,6 @@ namespace MPM\Transaction\Provider;
 
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 
 interface ITransactionProvider {

@@ -56,7 +56,10 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService {
 
             TransactionDataContainer::initialize($baseTransaction);
 
-            ProcessPayment::dispatch($transaction->getId());
+            $owner = $baseTransaction->device->person;
+            $companyId = $owner->company_id;
+
+            ProcessPayment::dispatch($companyId, $baseTransaction->id);
         }
 
         return $skippedTransactions;

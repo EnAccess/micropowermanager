@@ -18,7 +18,9 @@ class MesombPaymentProviderController extends Controller {
         // fire TransactionSavedEvent to confirm the transaction
         event(new TransactionSavedEvent($transactionProvider));
 
-        ProcessPayment::dispatch($transaction->id);
+        $owner = $transaction->device->person;
+        $companyId = $owner->company_id;
+        ProcessPayment::dispatch($companyId, $transaction->id);
 
         return new MesombTransactionProcessingResource($transaction->originalTransaction()->first());
     }

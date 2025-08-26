@@ -36,7 +36,11 @@ class TransactionController extends Controller {
         event(new TransactionSavedEvent($transactionProvider));
 
         if (isset($transaction->id)) {
-            ProcessPayment::dispatch($transaction->id);
+            $owner = $transactionProvider->getTransaction()->device->person;
+            $companyId = $owner->company_id ?? null;
+            if ($companyId) {
+                ProcessPayment::dispatch($companyId, $transaction->id);
+            }
         }
     }
 }

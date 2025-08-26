@@ -27,7 +27,9 @@ Route::group(
         Route::get('/token/{id}/{recreate?}', static function () {
             $id = request('id');
             $recreate = (bool) request('recreate');
+            $companyId = auth('agent_api')->user()->company_id;
             TokenProcessor::dispatch(
+                $companyId,
                 TransactionDataContainer::initialize(Transaction::find($id)),
                 $recreate,
                 1
@@ -37,7 +39,8 @@ Route::group(
         Route::get('energy/{id}', function () {
             $id = request('id');
             $transaction = Transaction::find($id);
-            EnergyTransactionProcessor::dispatch($transaction->id);
+            $companyId = auth('agent_api')->user()->company_id;
+            EnergyTransactionProcessor::dispatch($companyId, $transaction->id);
         });
     }
 );

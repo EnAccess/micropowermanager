@@ -16,7 +16,7 @@ class TransactionPaymentProcessor {
         EBike::RELATION_NAME => ApplianceTransactionProcessor::class,
     ];
 
-    public static function process(int $transactionId): void {
+    public static function process(int $companyId, int $transactionId): void {
         $transactionService = app()->make(TransactionService::class);
         $transaction = $transactionService->getById($transactionId);
         $serialNumber = $transaction->message;
@@ -26,9 +26,8 @@ class TransactionPaymentProcessor {
 
         // select the correct processor and instantiate the processor class
         $processorClass = self::PROCESSORS_BY_DEVICE_TYPE[$deviceType];
-        $processor = new $processorClass($transactionId);
 
         // Dispatch the job
-        $processor::dispatch($transactionId);
+        $processorClass::dispatch($companyId, $transactionId);
     }
 }
