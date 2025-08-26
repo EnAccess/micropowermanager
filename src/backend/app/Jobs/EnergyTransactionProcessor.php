@@ -14,12 +14,13 @@ class EnergyTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
     protected const TYPE = 'energy';
 
-    public function __construct(private int $transactionId) {
+    public function __construct(int $companyId, private int $transactionId) {
         $this->onConnection('redis');
         $this->onQueue('transaction_energy');
 
+        $this->companyId = $companyId;
         $this->afterCommit = true;
-        parent::__construct(get_class($this));
+        parent::__construct($companyId);
     }
 
     /**
@@ -107,7 +108,7 @@ class EnergyTransactionProcessor extends AbstractJob {
         $kWhToBeCharged = 0.0;
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 
-        TokenProcessor::dispatch($transactionData);
+        TokenProcessor::dispatch($this->companyId, $transactionData);
     }
 
     private function getTariffMinimumPurchaseAmount(TransactionDataContainer $transactionData): float {

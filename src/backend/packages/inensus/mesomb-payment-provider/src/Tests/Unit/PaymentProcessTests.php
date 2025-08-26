@@ -27,7 +27,8 @@ class PaymentProcessTests extends TestCase {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
-        ProcessPayment::dispatchSync($transaction->id);
+        $companyId = 1;
+        ProcessPayment::dispatchSync($companyId, $transaction->id);
         Queue::assertPushed(EnergyTransactionProcessor::class);
     }
 
@@ -35,7 +36,8 @@ class PaymentProcessTests extends TestCase {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
-        EnergyTransactionProcessor::dispatchSync($transaction);
+        $companyId = 1;
+        EnergyTransactionProcessor::dispatchSync($companyId, $transaction->id);
         Queue::assertPushed(TokenProcessor::class);
     }
 
