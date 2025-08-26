@@ -50,13 +50,9 @@ class PaystackApiResolver implements ApiResolverInterface {
         /** @var \Tymon\JWTAuth\JWTGuard $guard */
         $guard = auth('api');
 
-        if (!$guard->check()) {
-            throw ValidationException::withMessages(['authentication' => 'JWT token required for Paystack API access']);
-        }
-
         $companyId = $guard->payload()->get('companyId');
-        if (!$companyId) {
-            throw ValidationException::withMessages(['companyId' => 'failed to parse company identifier from JWT token']);
+        if (!is_numeric($companyId)) {
+            throw ValidationException::withMessages(['authentication' => 'JWT token required for Paystack API access']);
         }
 
         return (int) $companyId;
