@@ -6,9 +6,10 @@ use App\Events\TransactionSavedEvent;
 use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\TransactionService;
-use Illuminate\Support\Facades\Log;
+
 
 class TransactionController extends Controller {
     public function __construct(

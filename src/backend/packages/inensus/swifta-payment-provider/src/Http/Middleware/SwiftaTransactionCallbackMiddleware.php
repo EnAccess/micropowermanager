@@ -5,8 +5,8 @@ namespace Inensus\SwiftaPaymentProvider\Http\Middleware;
 use App\Jobs\ProcessPayment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use Illuminate\Support\Facades\Log;
+use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
 class SwiftaTransactionCallbackMiddleware {
     public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}

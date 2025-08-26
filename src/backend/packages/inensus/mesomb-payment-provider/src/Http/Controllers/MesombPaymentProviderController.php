@@ -6,8 +6,8 @@ use App\Events\TransactionSavedEvent;
 use App\Jobs\ProcessPayment;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
 use Illuminate\Support\Facades\Log;
+use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
 
 class MesombPaymentProviderController extends Controller {
     public function store(Request $request) {
