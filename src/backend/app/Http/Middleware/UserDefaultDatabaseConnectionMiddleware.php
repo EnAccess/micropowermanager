@@ -75,7 +75,8 @@ class UserDefaultDatabaseConnectionMiddleware {
             }
         }
 
-        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request) {
+        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request, $companyId) {
+            $request->attributes->add(['companyId' => $companyId]);
             return $next($request);
         });
     }

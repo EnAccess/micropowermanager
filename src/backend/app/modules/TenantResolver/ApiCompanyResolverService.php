@@ -24,7 +24,11 @@ class ApiCompanyResolverService {
 
         $resolver = $this->startResolver($api->first());
 
-        return $resolver->resolveCompanyId($request);
+        $companyId = $resolver->resolveCompanyId($request);
+        // store company id in request attributes
+        $request->attributes->add(['companyId' => $companyId]);
+
+        return $companyId;
     }
 
     private function startResolver(string $api): ApiResolverInterface {
