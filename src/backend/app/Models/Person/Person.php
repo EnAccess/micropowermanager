@@ -43,6 +43,7 @@ use Inensus\Ticket\Models\Ticket;
  * @property int                     $is_customer
  * @property Collection<int, Ticket> $tickets
  * @property mixed                   $agent_sold_appliance
+ * @property Collection<int, Device> $devices
  *
  * @implements HasAddressesInterface<Person>
  */

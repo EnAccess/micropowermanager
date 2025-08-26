@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler {
      */
     public function render($request, \Throwable $exception) {
         if ($exception instanceof CouldNotGeocode) {
-            new GoogleMapsApiException(json_encode($exception->errors()));
+            new GoogleMapsApiException(json_encode($exception->getMessage()));
         }
 
         return parent::render($request, $exception);

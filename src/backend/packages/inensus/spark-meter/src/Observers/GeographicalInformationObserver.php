@@ -2,8 +2,10 @@
 
 namespace Inensus\SparkMeter\Observers;
 
+use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
+use App\Models\Meter\Meter;
 use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Services\PluginsService;
@@ -25,13 +27,13 @@ class GeographicalInformationObserver {
             return;
         }
 
-        if ($geographicalInformation->owner_type === 'address') {
+        if ($geographicalInformation->owner instanceof Address) {
             $address = $geographicalInformation->owner;
 
-            if ($address && $address->owner_type === 'device') {
+            if ($address && $address->owner instanceof Device) {
                 $device = $address->owner;
 
-                if ($device && $device->device_type === 'meter') {
+                if ($device && $device->device_type instanceof Meter) {
                     $this->updateSparkMetaCustomerInformation($device, $geographicalInformation);
                 }
             }

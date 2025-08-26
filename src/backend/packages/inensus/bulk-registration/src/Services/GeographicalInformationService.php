@@ -2,6 +2,7 @@
 
 namespace Inensus\BulkRegistration\Services;
 
+use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use App\Models\MiniGrid;
@@ -35,6 +36,7 @@ class GeographicalInformationService {
 
     private function createMiniGridRelatedGeographicalInformation($ownerModel) {
         $miniGridId = $ownerModel->id;
+        /** @var GeographicalInformation */
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])
             ->whereHasMorph(
                 'owner',
@@ -43,12 +45,16 @@ class GeographicalInformationService {
                     $q->where('id', $miniGridId);
                 }
             )->first();
+
         if ($geographicalInformation->points !== '') {
             return false;
         }
-        $geographicalLocationFinder = app()->make(GeographicalLocationFinder::class);
-        $geographicalCoordinatesResult = $geographicalLocationFinder->getCoordinatesGivenAddress($geographicalInformation->owner->name);
-        $geographicalInformation->points = $geographicalCoordinatesResult['lat'].','.$geographicalCoordinatesResult['lng'];
+        if ($geographicalInformation->owner instanceof MiniGrid) {
+            /** @var GeographicalLocationFinder */
+            $geographicalLocationFinder = app()->make(GeographicalLocationFinder::class);
+            $geographicalCoordinatesResult = $geographicalLocationFinder->getCoordinatesGivenAddress($geographicalInformation->owner->name);
+            $geographicalInformation->points = $geographicalCoordinatesResult['lat'].','.$geographicalCoordinatesResult['lng'];
+        }
 
         return $geographicalInformation->save();
     }

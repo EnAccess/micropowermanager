@@ -52,7 +52,7 @@ class ApiRequests {
                 [
                     'headers' => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer '.$credentials->getApiKey(),
+                        'Authorization' => 'Bearer '.$credentials->getAccessToken(),
                     ],
                 ]
             );

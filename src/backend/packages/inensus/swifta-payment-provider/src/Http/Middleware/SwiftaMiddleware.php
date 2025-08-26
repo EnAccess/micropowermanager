@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Log;
 
 class SwiftaMiddleware {
     public function handle(Request $request, \Closure $next) {
-        if (auth()->payload()->get('usr') !== 'swifta-token') {
+        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        $guard = auth();
+
+        if ($guard->payload()->get('usr') !== 'swifta-token') {
             $data = collect([
                 'success' => 0,
                 'message' => 'Authentication field.',

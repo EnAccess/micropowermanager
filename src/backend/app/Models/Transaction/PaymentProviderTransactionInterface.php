@@ -25,7 +25,7 @@ interface PaymentProviderTransactionInterface {
     public function transaction();
 
     /**
-     * @return ManufacturerTransactionInterface
+     * @return Model&ManufacturerTransactionInterface
      */
     public function manufacturerTransaction();
 

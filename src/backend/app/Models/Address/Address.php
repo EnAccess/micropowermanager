@@ -6,6 +6,7 @@ use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int         $is_primary
  * @property int         $owner_id
  * @property string      $owner_type
+ * @property Model       $owner
  */
 class Address extends BaseModel {
     /** @use HasFactory<\Database\Factories\Address\AddressFactory> */
@@ -41,7 +43,7 @@ class Address extends BaseModel {
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function owner(): MorphTo {
         return $this->morphTo();

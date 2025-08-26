@@ -52,7 +52,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         $this->transaction = $this->mesombTransactionService->assignIncomingDataToTransaction($this->validData);
     }
 
-    public function saveCommonData(): Model {
+    public function saveCommonData(): Transaction {
         return $this->mesombTransactionService->associateMesombTransactionWithTransaction(
             $this->mesombTransaction,
             $this->transaction

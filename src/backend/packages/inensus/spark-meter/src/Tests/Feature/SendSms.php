@@ -91,8 +91,10 @@ class SendSms extends TestCase {
         ]);
 
         // associate meter with a person
+        /** @var Person */
         $p = Person::query()->first();
-        $p->meters()->create([
+        /** @var Meter */
+        $m = Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,
             'connection_type_id' => 1,
