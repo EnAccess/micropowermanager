@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MPM\User;
 
-use App\Helpers\MailHelperInterface;
+use App\Helpers\MailHelper;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
@@ -17,7 +17,7 @@ class UserListener {
         private CompanyDatabaseService $companyDatabaseService,
         private TicketUserService $ticketUserService,
         private CompanyService $companyService,
-        private MailHelperInterface $mailHelper,
+        private MailHelper $mailHelper,
     ) {}
 
     public function handle(UserCreatedEvent $event): void {
