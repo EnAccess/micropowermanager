@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\TransactionService;
 
-
 class TransactionController extends Controller {
     public function __construct(
         private TransactionService $transactionService,
