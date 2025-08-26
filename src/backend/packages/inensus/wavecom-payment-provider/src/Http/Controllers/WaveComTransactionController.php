@@ -14,7 +14,8 @@ class WaveComTransactionController extends Controller {
 
     public function uploadTransaction(UploadTransactionRequest $request): ApiResource {
         $file = $request->getFile();
-        $result = $this->transactionService->createTransactionsFromFile($file);
+        $companyId = $request->attributes->get('companyId') ?? null;
+        $result = $this->transactionService->createTransactionsFromFile($file, $companyId);
 
         $response['result'] = 'success';
         if (\count($result) > 0) {

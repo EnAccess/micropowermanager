@@ -8,6 +8,7 @@ use App\Jobs\ProcessPayment;
 use Illuminate\Http\Request;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\TransactionService;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller {
     public function __construct(
@@ -36,10 +37,11 @@ class TransactionController extends Controller {
         event(new TransactionSavedEvent($transactionProvider));
 
         if (isset($transaction->id)) {
-            $owner = $transactionProvider->getTransaction()->device->person;
-            $companyId = $owner->company_id ?? null;
-            if ($companyId) {
+            $companyId = $request->attributes->get('companyId') ?? null;
+            if ($companyId !== null) {
                 ProcessPayment::dispatch($companyId, $transaction->id);
+            } else {
+                Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
             }
         }
     }
