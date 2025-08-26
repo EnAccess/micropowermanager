@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Inensus\WavecomPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
+use App\Models\Transaction\ManufacturerTransactionInterface;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -19,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $message
  * @property int    $amount
  * @property int    $status
+ *
+ * @implements PaymentProviderTransactionInterface<WaveComTransaction>
  */
 class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     protected $table = 'wavecom_transactions';
@@ -58,12 +62,24 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
         $this->amount = $amount;
     }
 
+    /**
+     * @return MorphOne<Transaction, WaveComTransaction>
+     */
     public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
+        /** @var MorphOne<Transaction, WaveComTransaction> */
+        $relation = $this->morphOne(Transaction::class, 'original_transaction');
+
+        return $relation;
     }
 
+    /**
+     * @return MorphTo<Model&ManufacturerTransactionInterface, WaveComTransaction>
+     */
     public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
+        /** @var MorphTo<Model&ManufacturerTransactionInterface, WaveComTransaction> */
+        $relation = $this->morphTo();
+
+        return $relation;
     }
 
     public function conflicts(): MorphMany {
