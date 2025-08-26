@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\View;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class MailHelper implements MailHelperInterface {
-
     /**
      * @param string      $to
      * @param string      $title

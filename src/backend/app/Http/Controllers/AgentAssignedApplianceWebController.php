@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentAssignedApplianceRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
 use App\Services\AgentAssignedApplianceService;
 use Illuminate\Http\Request;
 
