@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\AssetPerson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AssetPerson> */
 class AppliancePersonFactory extends Factory {
     protected $model = AssetPerson::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'person_id' => $this->faker->numberBetween(1, 10),
             'first_payment_date' => $this->faker->date(),

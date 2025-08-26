@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('solars', function (Blueprint $table) {
-            $table->renameColumn('storage_file_name', 'storage_folder')->change();
+            $table->renameColumn('storage_file_name', 'storage_folder');
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration {
      */
     public function down() {
         Schema::connection('tenant')->table('solars', function (Blueprint $table) {
-            $table->renameColumn('storage_folder', 'storage_file_name')->change();
+            $table->renameColumn('storage_folder', 'storage_file_name');
         });
     }
 };

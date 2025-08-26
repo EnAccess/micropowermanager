@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\AgentReceipt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AgentReceipt> */
 class AgentReceiptFactory extends Factory {
     protected $model = AgentReceipt::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'user_id' => $this->faker->numberBetween(1, 10),
             'agent_id' => $this->faker->numberBetween(1, 10),

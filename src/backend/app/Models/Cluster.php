@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\ClusterFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,7 +23,7 @@ use MPM\Target\TargetAssignable;
  * @property float  $revenue
  */
 class Cluster extends BaseModel implements TargetAssignable {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<ClusterFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'cluster';

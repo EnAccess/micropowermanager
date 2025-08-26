@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\AgentBalanceHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AgentBalanceHistory> */
 class AgentBalanceHistoryFactory extends Factory {
     protected $model = AgentBalanceHistory::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'agent_id' => $this->faker->numberBetween(1, 10),
             'amount' => $this->faker->randomFloat(2, 1, 100),

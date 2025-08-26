@@ -44,7 +44,7 @@ return new class extends Migration {
         });
 
         Schema::connection('tenant')->table('solars', function (Blueprint $table) {
-            $table->renameColumn('storage_file_name', 'storage_folder')->change();
+            $table->renameColumn('storage_file_name', 'storage_folder');
         });
     }
 };

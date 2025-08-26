@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::hasTable('wave_money_transactions')) {
             Schema::connection('tenant')->create('wave_money_transactions', static function (Blueprint $table) {
@@ -35,6 +40,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::connection('tenant')->dropIfExists('wave_money_transactions');
         Schema::connection('tenant')->dropIfExists('wave_money_credentials');

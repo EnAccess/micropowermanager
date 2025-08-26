@@ -37,7 +37,7 @@ Route::group(
         Route::get('energy/{id}', function () {
             $id = request('id');
             $transaction = Transaction::find($id);
-            EnergyTransactionProcessor::dispatch($transaction);
+            EnergyTransactionProcessor::dispatch($transaction->id);
         });
     }
 );

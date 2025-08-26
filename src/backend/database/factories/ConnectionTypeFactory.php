@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\ConnectionType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<ConnectionType> */
 class ConnectionTypeFactory extends Factory {
     protected $model = ConnectionType::class;
 

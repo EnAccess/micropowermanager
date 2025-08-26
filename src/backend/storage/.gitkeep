@@ -1,0 +1,5 @@
+# This folder stores runtime generated files.
+# See: https://laravel.com/docs/12.x/structure#the-storage-directory
+#
+# No version controlled files should be added here, as this directory
+# will be replace with a volume mount at runtime.

@@ -27,6 +27,7 @@
     "pusher/pusher-php-server": "^7.0",
     "spatie/geocoder": "^3.14",
     "spatie/laravel-backup": "^8.1",
+    "spatie/laravel-permission": "^6.21",
     "tymon/jwt-auth": "^2.2"
   },
   "require-dev": {
@@ -106,6 +107,7 @@
     "php-cs-fixer-check": "php-cs-fixer check --diff",
     "php-cs-fixer-version": "php-cs-fixer --version",
     "larastan": "phpstan analyse --memory-limit=2G --no-progress",
+    "larastan-no-cache": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress",
     "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=7"
   }
 }

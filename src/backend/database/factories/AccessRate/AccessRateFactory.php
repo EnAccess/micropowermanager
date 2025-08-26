@@ -5,6 +5,7 @@ namespace Database\Factories\AccessRate;
 use App\Models\AccessRate\AccessRate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AccessRate> */
 class AccessRateFactory extends Factory {
     protected $model = AccessRate::class;
 

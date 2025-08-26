@@ -2,6 +2,9 @@
 
 namespace Inensus\Ticket\Models;
 
+use Database\Factories\Inensus\Ticket\Models\TicketOutsourceReportFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 /**
  * Class OutsourceReport.
  *
@@ -10,5 +13,8 @@ namespace Inensus\Ticket\Models;
  * @property string $path
  */
 class TicketOutsourceReport extends BaseModel {
+    /** @use HasFactory<TicketOutsourceReportFactory> */
+    use HasFactory;
+
     protected $table = 'ticket_outsource_reports';
 }

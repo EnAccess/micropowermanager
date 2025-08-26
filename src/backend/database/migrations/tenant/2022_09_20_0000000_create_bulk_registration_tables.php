@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::connection('tenant')->hasTable('bulk_registration_csv_datas')) {
             Schema::connection('tenant')->create('bulk_registration_csv_datas', function (Blueprint $table) {
@@ -17,6 +22,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::connection('tenant')->dropIfExists('bulk_registration_csv_datas');
     }

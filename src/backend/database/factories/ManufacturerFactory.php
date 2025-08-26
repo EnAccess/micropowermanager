@@ -6,15 +6,14 @@ use App\Models\Manufacturer;
 use Doctrine\Inflector\InflectorFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Manufacturer> */
 class ManufacturerFactory extends Factory {
     protected $model = Manufacturer::class;
 
     /**
      * Indicate that the manufacturer is for meter devices.
-     *
-     * @return Factory
      */
-    public function isMeterManufacturer() {
+    public function isMeterManufacturer(): static {
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'meter',
@@ -24,10 +23,8 @@ class ManufacturerFactory extends Factory {
 
     /**
      * Indicate that the manufacturer is for SHS devices.
-     *
-     * @return Factory
      */
-    public function isShsManufacturer() {
+    public function isShsManufacturer(): static {
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'shs',

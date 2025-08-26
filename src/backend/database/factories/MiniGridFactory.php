@@ -3,26 +3,30 @@
 namespace Database\Factories;
 
 use App\Models\MiniGrid;
-use Faker\Provider\en_NG\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<MiniGrid> */
 class MiniGridFactory extends Factory {
     protected $model = MiniGrid::class;
 
     public function __construct(
     ) {
         parent::__construct(...func_get_args());
-        $this->faker->addProvider(new Address($this->faker));
+        $this->faker->addProvider(new \Faker\Provider\en_NG\Address($this->faker));
     }
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
+        // @phpstan-ignore-next-line varTag.unresolvableType
+        /** @var \Faker\Generator&\Faker\Provider\en_NG\Address */
+        $faker = $this->faker;
+
         return [
-            'name' => 'MiniGrid '.$this->faker->region,
+            'name' => 'MiniGrid '.$faker->region(),
         ];
     }
 }
