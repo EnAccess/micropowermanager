@@ -2,11 +2,7 @@
 
 namespace App\Models\Transaction;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Inensus\MesombPaymentProvider\Models\MesombTransaction;
-use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 /**
  * Interface ManufacturerTransactionInterface.
@@ -22,18 +18,53 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * These should be exposed through custom methods or attributes on the implementing model.
  */
 interface ManufacturerTransactionInterface {
-    /** @return MorphOne<AgentTransaction, Model> */
+    /**
+     * Get the agent transaction relationship.
+     */
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
     public function agentTransaction(): MorphOne;
 
-    /** @return MorphOne<ThirdPartyTransaction, Model> */
+    /**
+     * Get the third party transaction relationship.
+     */
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
     public function thirdPartyTransaction(): MorphOne;
 
-    /** @return MorphOne<SwiftaTransaction, Model> */
+    /**
+     * Get the Swifta transaction relationship.
+     */
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
     public function swiftaTransaction(): MorphOne;
 
-    /** @return MorphOne<MesombTransaction, Model> */
+    /**
+     * Get the Mesomb transaction relationship.
+     */
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
     public function mesombTransaction(): MorphOne;
 
-    /** @return MorphOne<WaveMoneyTransaction, Model> */
+    /**
+     * Get the WaveMoney transaction relationship.
+     */
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
     public function waveMoneyTransaction(): MorphOne;
 }
