@@ -195,6 +195,15 @@
           button-icon="filter_list"
         >
           <div>
+            <div class="export-button-container">
+              <md-button
+                class="md-raised md-primary export-csv-button"
+                @click="showExportModal = true"
+              >
+                <md-icon>download</md-icon>
+                {{ $tc("phrases.exportTransactions") }}
+              </md-button>
+            </div>
             <md-table style="width: 100%" md-card>
               <md-table-row>
                 <md-table-head>
@@ -348,6 +357,111 @@
         </widget>
       </div>
     </div>
+
+    <!-- Export Modal -->
+    <md-dialog :md-active.sync="showExportModal" class="export-dialog">
+      <md-dialog-title>{{ $tc("phrases.exportTransactions") }}</md-dialog-title>
+
+      <md-dialog-content>
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-50">
+            <md-field>
+              <label>{{ $tc("words.currency") }}</label>
+              <md-select v-model="exportFilters.currency">
+                <md-option value="TSZ">TSZ</md-option>
+                <md-option value="USD">USD</md-option>
+                <md-option value="EUR">EUR</md-option>
+                <md-option value="NGN">NGN</md-option>
+                <md-option value="FCFA">FCFA</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-50">
+            <md-field>
+              <label>{{ $tc("words.timeZone") }}</label>
+              <md-select v-model="exportFilters.timeZone">
+                <md-option value="UTC">UTC</md-option>
+                <md-option value="Africa/Lagos">Africa/Lagos</md-option>
+                <md-option value="Africa/Douala">Africa/Douala</md-option>
+                <md-option value="Africa/Dar_es_Salaam">
+                  Africa/Dar_es_Salaam
+                </md-option>
+                <md-option value="Europe/Berlin">Europe/Berlin</md-option>
+              </md-select>
+            </md-field>
+          </div>
+        </div>
+
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.deviceType") }}</label>
+              <md-select v-model="exportFilters.deviceType">
+                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="meter">{{ $tc("words.meter") }}</md-option>
+                <md-option value="appliance">
+                  {{ $tc("words.appliance") }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.provider") }}</label>
+              <md-select v-model="exportFilters.provider">
+                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="vodacom_transaction">Vodacom</md-option>
+                <md-option value="airtel_transaction">Airtel</md-option>
+                <md-option value="wave_money_transaction">Wave Money</md-option>
+                <md-option value="agent_transaction">Agent</md-option>
+                <md-option value="cash_transaction">Cash</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.status") }}</label>
+              <md-select v-model="exportFilters.status">
+                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option :value="1">{{ $tc("words.confirm", 2) }}</md-option>
+                <md-option :value="0">{{ $tc("words.process", 3) }}</md-option>
+                <md-option :value="-1">{{ $tc("words.reject", 2) }}</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.format") }}</label>
+              <md-select v-model="exportFilters.format">
+                <md-option value="csv">CSV</md-option>
+                <md-option value="xlsx">Excel</md-option>
+              </md-select>
+            </md-field>
+          </div>
+        </div>
+
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-100">
+            <md-field>
+              <label>{{ $tc("words.serialNumber") }}</label>
+              <md-input
+                v-model="exportFilters.serialNumber"
+                placeholder="Enter device serial number"
+              ></md-input>
+            </md-field>
+          </div>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button @click="showExportModal = false">
+          {{ $tc("words.cancel") }}
+        </md-button>
+        <md-button class="md-primary" @click="exportTransactions">
+          {{ $tc("words.export") }}
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -359,6 +473,8 @@ import Widget from "@/shared/Widget.vue"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction"
 import Box from "@/shared/Box"
 import { TransactionService } from "@/services/TransactionService"
+import { TransactionExportService } from "@/services/TransactionExportService"
+import { MainSettingsService } from "@/services/MainSettingsService"
 
 import airtelLogo from "@/assets/icons/airtel.png"
 import vodacomLogo from "@/assets/icons/vodacom.png"
@@ -377,6 +493,8 @@ export default {
   data() {
     return {
       transactionService: new TransactionService(),
+      transactionExportService: new TransactionExportService(),
+      mainSettingsService: new MainSettingsService(),
       period: "Yesterday",
       filter: [],
       loading: false,
@@ -387,12 +505,22 @@ export default {
       analyticsPeriod: null,
       showFilter: false,
       showBoxes: true,
+      showExportModal: false,
       analyticsPeriods: [
         "Yesterday",
         "Same day last week",
         "Past 7 days",
         "Past 30 days",
       ],
+      exportFilters: {
+        format: "csv",
+        currency: "TSZ",
+        timeZone: "UTC",
+        deviceType: null,
+        provider: null,
+        status: null,
+        serialNumber: null,
+      },
       airtelLogo: airtelLogo,
       vodacomLogo: vodacomLogo,
       thirdPartyLogo: thirdPartyLogo,
@@ -407,6 +535,7 @@ export default {
     this.checkRouteChanges()
     this.loadAnalytics()
     this.getPeriod()
+    this.loadMainSettings()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("transactionFilterClosed", this.closeFilter)
   },
@@ -469,11 +598,63 @@ export default {
     transactionDetail(id) {
       this.$router.push({ path: "/transactions/" + id })
     },
+    async loadMainSettings() {
+      try {
+        const settings = await this.mainSettingsService.list()
+        this.exportFilters.currency = settings.currency || "TSZ"
+        this.exportFilters.timeZone = "UTC" // Default timezone
+      } catch (e) {
+        console.error("Failed to load main settings:", e)
+      }
+    },
     async getTransactions() {
       try {
         await this.transactionService.getTransactions()
       } catch (e) {
         this.alertNotify("error", e.message)
+      }
+    },
+    async exportTransactions() {
+      try {
+        const data = {
+          format: this.exportFilters.format,
+          currency: this.exportFilters.currency,
+          timeZone: this.exportFilters.timeZone,
+        }
+
+        // Add optional filters if they are set
+        if (this.exportFilters.deviceType) {
+          data.deviceType = this.exportFilters.deviceType
+        }
+        if (this.exportFilters.provider) {
+          data.provider = this.exportFilters.provider
+        }
+        if (this.exportFilters.status !== null) {
+          data.status = this.exportFilters.status
+        }
+        if (this.exportFilters.serialNumber) {
+          data.serial_number = this.exportFilters.serialNumber
+        }
+
+        const response =
+          await this.transactionExportService.exportTransactions(data)
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+        const contentDisposition = response.headers["content-disposition"]
+        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        a.download = fileNameMatch
+          ? fileNameMatch[1]
+          : "export_transactions.csv"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+        this.alertNotify("success", "Transactions exported successfully!")
+        this.showExportModal = false
+      } catch (e) {
+        this.alertNotify("error", "Error occurred while exporting transactions")
       }
     },
     async loadAnalytics() {
@@ -602,5 +783,24 @@ span {
   .summary {
     display: none;
   }
+}
+
+.export-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+
+.export-csv-button {
+  margin-left: auto;
+}
+
+.export-dialog {
+  min-width: 600px;
+}
+
+.export-dialog .md-dialog-content {
+  padding: 20px;
 }
 </style>
