@@ -9,13 +9,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class ProspectSync extends AbstractJob
-{
+class ProspectSync extends AbstractJob {
     /**
      * Create a new job instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct(get_class($this));
 
         // Force Redis queue connection
@@ -26,8 +24,7 @@ class ProspectSync extends AbstractJob
     /**
      * Execute the job.
      */
-    public function executeJob(): void
-    {
+    public function executeJob(): void {
         try {
             Log::info('Starting Prospect data extraction and push process...');
 
@@ -37,23 +34,24 @@ class ProspectSync extends AbstractJob
 
             if (empty($data)) {
                 Log::warning('No data found to extract.');
+
                 return;
             }
 
             $count = count($data);
-            Log::info('Successfully extracted ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
+            Log::info('Successfully extracted '.$count.' '.($count === 1 ? 'installation' : 'installations').' from database');
 
             // Step 2: Generate CSV file
             Log::info('Step 2: Generating CSV file with extracted data...');
             $fileName = $this->generateFileName();
             $filePath = $this->writeCsvFile($data, $fileName);
 
-            Log::info('CSV file: ' . $fileName);
-            Log::info('File path: ' . $filePath);
+            Log::info('CSV file: '.$fileName);
+            Log::info('File path: '.$filePath);
 
             // Step 3: Push data to Prospect
             Log::info('Step 3: Pushing data to Prospect...');
-            Log::info('Pushing ' . $count . ' installation(s) to Prospect...');
+            Log::info('Pushing '.$count.' installation(s) to Prospect...');
 
             $response = $this->sendToProspect(['data' => $data]);
 
@@ -68,12 +66,12 @@ class ProspectSync extends AbstractJob
                     'response' => $response->body(),
                     'data_count' => $count,
                 ]);
-                throw new \Exception('Failed to push data to Prospect: ' . $response->body());
+                throw new \Exception('Failed to push data to Prospect: '.$response->body());
             }
 
             Log::info('Prospect sync process completed successfully!');
         } catch (\Exception $e) {
-            Log::error('Error during extract and push process: ' . $e->getMessage(), [
+            Log::error('Error during extract and push process: '.$e->getMessage(), [
                 'error' => $e->getMessage(),
             ]);
             throw $e;
@@ -85,8 +83,7 @@ class ProspectSync extends AbstractJob
      *
      * @return array<int, array<string, mixed>>
      */
-    private function extractDataFromDatabase(): array
-    {
+    private function extractDataFromDatabase(): array {
         Log::info('Loading installation data from database...');
 
         // Query devices with all necessary relationships
@@ -116,7 +113,7 @@ class ProspectSync extends AbstractJob
             $assetPerson = $device->assetPerson;
 
             // Create meaningful customer identifier
-            $customerIdentifier = $person ? trim($person->name . ' ' . $person->surname) : 'Unknown Customer';
+            $customerIdentifier = $person ? trim($person->name.' '.$person->surname) : 'Unknown Customer';
 
             $primaryAddress = null;
             if ($person) {
@@ -205,7 +202,7 @@ class ProspectSync extends AbstractJob
         }
 
         $count = count($installations);
-        Log::info('Loaded ' . $count . ' ' . ($count === 1 ? 'installation' : 'installations') . ' from database');
+        Log::info('Loaded '.$count.' '.($count === 1 ? 'installation' : 'installations').' from database');
 
         return $installations;
     }
@@ -215,8 +212,7 @@ class ProspectSync extends AbstractJob
      *
      * @return string
      */
-    private function generateFileName(): string
-    {
+    private function generateFileName(): string {
         $timestamp = now()->toISOString();
 
         return "prospect_{$timestamp}.csv";
@@ -230,8 +226,7 @@ class ProspectSync extends AbstractJob
      *
      * @return string
      */
-    private function writeCsvFile(array $data, string $fileName): string
-    {
+    private function writeCsvFile(array $data, string $fileName): string {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
@@ -253,8 +248,7 @@ class ProspectSync extends AbstractJob
      *
      * @return string
      */
-    private function arrayToCsv(array $data, array $headers): string
-    {
+    private function arrayToCsv(array $data, array $headers): string {
         $output = fopen('php://temp', 'r+');
         fputcsv($output, $headers);
 
@@ -280,10 +274,9 @@ class ProspectSync extends AbstractJob
      *
      * @return Response
      */
-    private function sendToProspect(array $payload): Response
-    {
+    private function sendToProspect(array $payload): Response {
         return Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('PROSPECT_API_TOKEN'),
+            'Authorization' => 'Bearer '.env('PROSPECT_API_TOKEN'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ])->timeout(30)->post(env('PROSPECT_API_URL'), $payload);

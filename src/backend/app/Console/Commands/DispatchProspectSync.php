@@ -4,8 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\ProspectSync;
 
-class DispatchProspectSync extends AbstractSharedCommand
-{
+class DispatchProspectSync extends AbstractSharedCommand {
     /**
      * The name and signature of the console command.
      *
@@ -26,8 +25,7 @@ class DispatchProspectSync extends AbstractSharedCommand
      *
      * @return int
      */
-    public function handle(): int
-    {
+    public function handle(): int {
         try {
             $this->info('Dispatching Prospect sync job...');
 
@@ -38,7 +36,7 @@ class DispatchProspectSync extends AbstractSharedCommand
 
             return 0;
         } catch (\Exception $e) {
-            $this->error('Error dispatching Prospect sync job: ' . $e->getMessage());
+            $this->error('Error dispatching Prospect sync job: '.$e->getMessage());
 
             return 1;
         }
