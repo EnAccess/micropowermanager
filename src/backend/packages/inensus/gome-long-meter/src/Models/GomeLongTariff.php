@@ -13,7 +13,7 @@ class GomeLongTariff extends BaseModel {
         return $this->belongsTo(MeterTariff::class, 'mpm_tariff_id');
     }
 
-    public function getTariffId(): int {
+    public function getTariffId(): string {
         return $this->tariff_id;
     }
 }
