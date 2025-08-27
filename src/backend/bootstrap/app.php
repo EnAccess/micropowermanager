@@ -74,5 +74,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');
         $schedule->command('prospect:sync')->dailyAt('00:00');
+        $schedule->command('prospect:sync:dispatch')->dailyAt('00:00');
     })
     ->create();
