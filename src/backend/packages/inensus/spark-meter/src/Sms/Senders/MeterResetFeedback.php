@@ -10,20 +10,21 @@ use Inensus\SparkMeter\Sms\BodyParsers\SparkSmsMeterResetFailedFeedbackBody;
 use Inensus\SparkMeter\Sms\BodyParsers\SparkSmsMeterResetFeedbackBody;
 
 class MeterResetFeedback extends SmsSender {
-    protected $data;
-    public $body = '';
-    protected $references = [
+    protected mixed $data;
+    public string $body = '';
+    /** @var array<string, string>|null */
+    protected ?array $references = [
         'header' => 'SparkSmsMeterResetFeedbackHeader',
         'body' => 'SparkSmsMeterResetFeedbackBody',
         'footer' => 'SparkSmsMeterResetFeedbackFooter',
     ];
 
-    public function prepareBody() {
+    public function prepareBody(): void {
         if (!is_array($this->data)) {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('SparkSmsMeterResetFeedbackBody');
             } catch (ModelNotFoundException $exception) {
-                $exception = new MissingSmsReferencesException('SparkSmsMeterResetFeedback SMS body 
+                $exception = new MissingSmsReferencesException('SparkSmsMeterResetFeedback SMS body
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
 
@@ -41,7 +42,7 @@ class MeterResetFeedback extends SmsSender {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('SparkSmsMeterResetFailedFeedbackBody');
             } catch (ModelNotFoundException $exception) {
-                $exception = new MissingSmsReferencesException('SparkSmsMeterResetFailedFeedback SMS body 
+                $exception = new MissingSmsReferencesException('SparkSmsMeterResetFailedFeedback SMS body
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
 

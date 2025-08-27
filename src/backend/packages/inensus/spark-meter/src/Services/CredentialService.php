@@ -2,7 +2,7 @@
 
 namespace Inensus\SparkMeter\Services;
 
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmCredential;
@@ -46,8 +46,8 @@ class CredentialService {
             $result = $this->sparkMeterApiRequests->getFromKoios($this->rootUrl);
             $smCredentials->is_authenticated = true;
             $this->organizationService->createOrganization($result['organizations'][0]);
-        } catch (GuzzleException $gException) {
-            if ($gException->getResponse()->getStatusCode() === 401) {
+        } catch (ClientException $cException) {
+            if ($cException->getResponse()->getStatusCode() === 401) {
                 $smCredentials->is_authenticated = false;
             } else {
                 $smCredentials->is_authenticated = null;

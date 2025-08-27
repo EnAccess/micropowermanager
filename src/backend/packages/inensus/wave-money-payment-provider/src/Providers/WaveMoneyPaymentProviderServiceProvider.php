@@ -28,7 +28,7 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider {
         );
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/wave-money-payment-provider.php',
             'wave-money-payment-provider'
@@ -38,14 +38,14 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider {
         $this->app->singleton('WaveMoneyPaymentProvider', WaveMoneyTransactionProvider::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.
             '/../../config/wave-money-payment-provider-integration.php' => config_path('wave-money-payment-provider.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/wave-money-payment-provider'
@@ -53,7 +53,7 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider {
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_viber_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');

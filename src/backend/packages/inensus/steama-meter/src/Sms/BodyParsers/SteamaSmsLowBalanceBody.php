@@ -13,7 +13,7 @@ class SteamaSmsLowBalanceBody extends SmsBodyParser {
         $this->steamaCustomer = $steamaCustomer;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue(string $variable): mixed {
         switch ($variable) {
             case 'low_balance_warning':
                 $variable = $this->steamaCustomer->low_balance_warning;

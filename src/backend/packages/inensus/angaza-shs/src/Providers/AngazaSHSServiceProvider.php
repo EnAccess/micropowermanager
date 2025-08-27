@@ -21,26 +21,26 @@ class AngazaSHSServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/angaza-shs.php', 'angaza-shs');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('AngazaSHSApi', AngazaSHSApi::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/angaza-shs.php' => config_path('angaza-shs.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/angaza-shs'),
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_angaza_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_angaza_tables.php'),
             __DIR__.'/../../database/migrations/add_angaza_transactions_table_fields.php.stub' => $this->getMigrationFileName($filesystem, 'add_angaza_transactions_table_fields.php'),

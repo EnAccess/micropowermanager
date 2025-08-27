@@ -12,11 +12,11 @@ class SparkMeterRouteServiceProvider extends ServiceProvider {
         parent::boot();
     }
 
-    public function map() {
+    public function map(): void {
         $this->mapApiRoutes();
     }
 
-    protected function mapApiRoutes() {
+    protected function mapApiRoutes(): void {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)

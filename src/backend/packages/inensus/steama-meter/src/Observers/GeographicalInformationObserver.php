@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Observers;
 
+use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
@@ -32,12 +33,12 @@ class GeographicalInformationObserver {
     }
 
     public function updated(GeographicalInformation $geographicalInformation) {
-        if ($geographicalInformation->owner_type === 'address') {
+        if ($geographicalInformation->owner instanceof Address) {
             $address = $geographicalInformation->owner;
-            if ($address && $address->owner_type === 'device') {
+            if ($address && $address->owner instanceof Device) {
                 $device = $address->owner;
 
-                if ($device && $device->device_type === 'meter') {
+                if ($device && $device->device instanceof Device) {
                     $this->updateSteamaMeterGeolocation($device, $geographicalInformation);
                 }
             }
@@ -47,7 +48,7 @@ class GeographicalInformationObserver {
     /**
      * Update Steama meter geolocation information.
      *
-     * @param mixed                   $device
+     * @param Device                  $device
      * @param GeographicalInformation $geographicalInformation
      *
      * @return void

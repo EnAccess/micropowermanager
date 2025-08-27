@@ -20,13 +20,10 @@ class AgentTransaction extends BaseModel implements PaymentProviderTransactionIn
     public const RELATION_NAME = 'agent_transaction';
 
     /**
-     * @phpstan-return MorphOne<Transaction, Model&PaymentProviderTransactionInterface>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, Model&PaymentProviderTransactionInterface> $relation */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**

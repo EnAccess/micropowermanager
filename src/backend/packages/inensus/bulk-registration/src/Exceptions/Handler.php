@@ -9,15 +9,14 @@ class Handler extends ExceptionHandler {
     /**
      * A list of the exception types that are not reported.
      *
-     * @var array
+     * @var array<int, class-string<\Throwable>>
      */
-    protected $dontReport = [
-    ];
+    protected $dontReport = [];
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $dontFlash = [
         'password',
@@ -49,7 +48,7 @@ class Handler extends ExceptionHandler {
      */
     public function render($request, \Throwable $exception) {
         if ($exception instanceof CouldNotGeocode) {
-            new GoogleMapsApiException(json_encode($exception->errors()));
+            new GoogleMapsApiException(json_encode($exception->getMessage()));
         }
 
         return parent::render($request, $exception);

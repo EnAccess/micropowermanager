@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
+use Inensus\MesombPaymentProvider\Providers\MesombTransactionProvider;
 
 class MesombPaymentProviderController extends Controller {
     public function store(Request $request) {
+        /** @var MesombTransactionProvider */
         $transactionProvider = resolve('MesombPaymentProvider');
         $transactionProvider->saveTransaction();
         // store common data

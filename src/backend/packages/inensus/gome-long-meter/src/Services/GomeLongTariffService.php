@@ -23,7 +23,7 @@ class GomeLongTariffService {
         private MainSettings $mainSettings,
     ) {}
 
-    public function getByMpmTariffId($mpmTariffId) {
+    public function getByMpmTariffId($mpmTariffId): GomeLongTariff {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
@@ -85,6 +85,7 @@ class GomeLongTariffService {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
+            // FIXME: Is this correct here or a development leftover?
             if ($gomeLongTariff) {
                 return true;
             }

@@ -2,7 +2,7 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaCredential;
@@ -54,8 +54,8 @@ class SteamaCredentialService {
                 'authentication_token' => $result['token'],
                 'is_authenticated' => true,
             ]);
-        } catch (GuzzleException $gException) {
-            if ($gException->getResponse()->getStatusCode() === 400) {
+        } catch (ClientException $cException) {
+            if ($cException->getResponse()->getStatusCode() === 400) {
                 $credential->is_authenticated = false;
                 $credential->authentication_token = null;
             } else {

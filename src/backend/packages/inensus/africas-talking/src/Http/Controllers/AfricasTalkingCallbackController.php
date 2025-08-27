@@ -25,6 +25,7 @@ class AfricasTalkingCallbackController extends Controller {
         $message = $data['text'];
         $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
         $sender = $address ? $address->owner : null;
+        // @phpstan-ignore property.notFound
         $senderId = $sender ? $sender->id : null;
 
         $smsData = [

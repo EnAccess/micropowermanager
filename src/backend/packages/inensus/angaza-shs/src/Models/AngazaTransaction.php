@@ -14,22 +14,27 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 class AngazaTransaction extends BaseModel implements ManufacturerTransactionInterface {
     protected $table = 'angaza_transactions';
 
+    /** @return MorphOne<AgentTransaction, $this> */
     public function agentTransaction(): MorphOne {
         return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
     }
 
+    /** @return MorphOne<ThirdPartyTransaction, $this> */
     public function thirdPartyTransaction(): MorphOne {
         return $this->morphOne(ThirdPartyTransaction::class, 'manufacturer_transaction');
     }
 
+    /** @return MorphOne<MesombTransaction, $this> */
     public function mesombTransaction(): MorphOne {
         return $this->morphOne(MesombTransaction::class, 'manufacturer_transaction');
     }
 
+    /** @return MorphOne<SwiftaTransaction, $this> */
     public function swiftaTransaction(): MorphOne {
         return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
     }
 
+    /** @return MorphOne<WaveMoneyTransaction, $this> */
     public function waveMoneyTransaction(): MorphOne {
         return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');
     }

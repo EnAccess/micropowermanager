@@ -75,12 +75,12 @@ class CsvDataProcessor {
                         $geographicalInformationService->resolveCsvDataFromComingRow($row, $meter);
 
                         $address = new Address();
+                        /** @var Address $address */
                         $address = $address->newQuery()->create([
                             'city_id' => $city->id,
                         ]);
                         $address->owner()->associate($meter);
-
-                        $address->geo()->associate($meter->device->person->addresses()->first()->geo());
+                        $address->geo()->save($meter->device->address->geo()->first());
                         $address->save();
                     }
                 }

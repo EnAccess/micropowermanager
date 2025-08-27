@@ -3,7 +3,6 @@
 namespace Inensus\VodacomMobileMoney\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inensus\VodacomMobileMoney\Http\Requests\VodacomTransactionEnquiryStatusRequest;
 use Inensus\VodacomMobileMoney\Http\Requests\VodacomTransactionProcessRequest;
 use Inensus\VodacomMobileMoney\Http\Requests\VodacomTransactionValidationRequest;
@@ -47,9 +46,9 @@ class VodacomTransactionController extends Controller {
      *   }
      * }
      *
-     * @param Request $request
+     * @param VodacomTransactionValidationRequest $request
      *
-     * @return VodacomResource
+     * @return VodacomTransactionResource
      */
     public function validateTransaction(VodacomTransactionValidationRequest $request): VodacomTransactionResource {
         $validatedData = $request->validated();
@@ -87,9 +86,9 @@ class VodacomTransactionController extends Controller {
      *   }
      * }
      *
-     * @param Request $request
+     * @param VodacomTransactionProcessRequest $request
      *
-     * @return VodacomResource
+     * @return VodacomTransactionResource
      */
     public function processTransaction(VodacomTransactionProcessRequest $request): VodacomTransactionResource {
         $validatedData = $request->validated();
@@ -128,9 +127,9 @@ class VodacomTransactionController extends Controller {
      *   }
      * }
      *
-     * @param Request $request
+     * @param VodacomTransactionEnquiryStatusRequest $request
      *
-     * @return VodacomResource
+     * @return VodacomTransactionResource
      */
     public function transactionEnquiryStatus(VodacomTransactionEnquiryStatusRequest $request): VodacomTransactionResource {
         $validatedData = $request->validated();

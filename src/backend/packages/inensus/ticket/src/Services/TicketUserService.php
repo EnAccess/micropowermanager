@@ -25,9 +25,15 @@ class TicketUserService implements IBaseService {
         }
 
         if ($limit) {
+            // This is returning `User` model rather than `TicketUser`.
+            // Not sure why this is the case, but not touching it right now.
+            // @phpstan-ignore return.type
             return $ticketUsers->paginate($limit);
         }
 
+        // This is returning `User` model rather than `TicketUser`.
+        // Not sure why this is the case, but not touching it right now.
+        // @phpstan-ignore return.type
         return $ticketUsers->get();
     }
 

@@ -18,6 +18,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SparkMeter\Models\SmCustomer;
@@ -44,6 +45,7 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
+        /** @var Collection<int, SmCustomer> */
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
@@ -54,6 +56,7 @@ class SmsNotifyTest extends TestCase {
             Carbon::now()->subMinutes($lowBalanceMin)
         )->get();
 
+        /** @var Collection<int, SmSmsNotifiedCustomer> */
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
@@ -66,7 +69,7 @@ class SmsNotifyTest extends TestCase {
             if ($notifiedCustomer) {
                 return true;
             }
-            if ($customer->account_balance > $customer->low_balance_warning) {
+            if ($customer->credit_balance > $customer->low_balance_limit) {
                 return true;
             }
             if (
@@ -188,12 +191,12 @@ class SmsNotifyTest extends TestCase {
         $this->addSmsSettings();
         $this->addSmsBodies();
         // create person
-        factory(MainSettings::class)->create();
+        MainSettings::factory()->createOne();
 
         // create person
-        factory(Person::class)->create();
+        Person::factory()->createOne();
         // create meter-tariff
-        factory(MeterTariff::class)->create();
+        MeterTariff::factory()->createOne();
 
         // create meter-type
         MeterType::query()->create([
@@ -218,8 +221,10 @@ class SmsNotifyTest extends TestCase {
         ]);
 
         // associate meter with a person
+        /** @var Person */
         $p = Person::query()->first();
-        $p->meters()->create([
+        /** @var Meter */
+        $m = Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,
             'connection_type_id' => 1,
@@ -277,7 +282,7 @@ class SmsNotifyTest extends TestCase {
     }
 
     private function initializeAdminData() {
-        $user = factory(User::class)->create();
+        $user = User::factory()->createOne();
         $address = Address::query()->make([
             'phone' => '+905494322161',
             'is_primary' => 1,

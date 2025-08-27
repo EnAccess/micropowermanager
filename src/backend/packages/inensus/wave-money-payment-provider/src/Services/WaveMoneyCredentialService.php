@@ -12,7 +12,7 @@ class WaveMoneyCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): WaveMoneyCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'merchant_id' => null,
             'secret_key' => null,
@@ -23,11 +23,11 @@ class WaveMoneyCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): WaveMoneyCredential {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials($data): WaveMoneyCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

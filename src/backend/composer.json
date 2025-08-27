@@ -107,7 +107,8 @@
     "php-cs-fixer-check": "php-cs-fixer check --diff",
     "php-cs-fixer-version": "php-cs-fixer --version",
     "larastan": "phpstan analyse --memory-limit=2G --no-progress",
+    "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=7",
     "larastan-no-cache": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress",
-    "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=7"
+    "larastan-packages": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=3 packages/"
   }
 }

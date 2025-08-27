@@ -22,6 +22,6 @@ class TicketingUserExternalRequest extends FormRequest {
     }
 
     public function getPhone(): string {
-        return (int) $this->input('phone');
+        return $this->input('phone');
     }
 }

@@ -39,6 +39,10 @@ jobs:
         run: composer larastan
         working-directory: ./src/backend
 
+      - name: Run PHPStan/Larastan (Packages)
+        run: composer larastan-packages
+        working-directory: ./src/backend
+
       - name: Run PHPStan/Larastan (next level)
         run: composer larastan-next
         working-directory: ./src/backend

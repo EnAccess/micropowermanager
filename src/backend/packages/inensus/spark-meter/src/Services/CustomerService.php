@@ -228,12 +228,14 @@ class CustomerService implements ISynchronizeService {
             $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
 
             $sparkCity = $site->mpmMiniGrid->cities[0];
+
             $address = new Address();
+            /** @var Address $address */
             $address = $address->newQuery()->create([
                 'city_id' => request()->input('city_id') ?? $sparkCity->id,
             ]);
             $address->owner()->associate($meter);
-            $address->geo()->associate($meter->device->person->addresses()->first()->geo()->first());
+            $address->geo()->save($meter->device->address->geo()->first());
             $address->save();
             DB::connection('tenant')->commit();
 

@@ -14,15 +14,9 @@ class OutputJob implements ShouldQueue {
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    /**
-     * @var integert
-     */
-    protected $val;
 
-    /**
-     * @var string
-     */
-    protected $queue_name;
+    protected int $val;
+    protected string $queue_name;
 
     public function __construct(string $queue_name, int $val) {
         $this->queue_name = $queue_name;

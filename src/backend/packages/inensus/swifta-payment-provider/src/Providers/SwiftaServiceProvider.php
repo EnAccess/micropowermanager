@@ -31,20 +31,20 @@ class SwiftaServiceProvider extends ServiceProvider {
             ->appendOutputTo(storage_path('logs/cron.log'));
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/swifta-payment-provider.php', 'swifta-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('SwiftaPaymentProvider', SwiftaTransactionProvider::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/swifta-payment-provider.php' => config_path('swifta-payment-provider.php'),
         ], 'configurations');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_swifta_payment_provider_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');

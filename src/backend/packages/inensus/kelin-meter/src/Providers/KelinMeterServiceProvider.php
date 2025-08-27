@@ -2,7 +2,6 @@
 
 namespace Inensus\KelinMeter\Providers;
 
-use App\Models\Transaction\Transaction;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
@@ -20,9 +19,6 @@ use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 use Inensus\KelinMeter\Models\KelinTransaction;
-use Inensus\KelinMeter\Services\KelinCredentialService;
-use Inensus\KelinMeter\Services\KelinCustomerService;
-use Inensus\KelinMeter\Services\KelinMeterService;
 
 class KelinMeterServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem) {
@@ -60,31 +56,26 @@ class KelinMeterServiceProvider extends ServiceProvider {
         );
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/kelin-meter.php', 'kelin-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('KelinMeterApi', function ($app) {
             return new KelinMeterApi(
-                $app->make(KelinCustomer::class),
                 $app->make(KelinMeter::class),
-                $app->make(KelinMeterService::class),
-                $app->make(KelinCredentialService::class),
-                $app->make(KelinCustomerService::class),
-                $app->make(KelinTransaction::class),
-                $app->make(Transaction::class),
+                $app->make(KelinCustomer::class),
                 $app->make(KelinMeterApiClient::class),
             );
         });
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/kelin-meter.php' => config_path('kelin-meter.php'),
         ], 'configurations');
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/kelin-meter'
@@ -92,7 +83,7 @@ class KelinMeterServiceProvider extends ServiceProvider {
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_kelin_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');

@@ -2,7 +2,7 @@
 
 namespace Inensus\StronMeter\Services;
 
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
 use Inensus\StronMeter\Http\Requests\StronMeterApiRequests;
 use Inensus\StronMeter\Models\StronCredential;
@@ -58,8 +58,8 @@ class StronCredentialService {
                 'api_token' => $result,
                 'is_authenticated' => true,
             ]);
-        } catch (GuzzleException $gException) {
-            if ($gException->getResponse()->getStatusCode() === 400) {
+        } catch (ClientException $cException) {
+            if ($cException->getResponse()->getStatusCode() === 400) {
                 $credential->is_authenticated = false;
                 $credential->api_token = null;
             } else {
