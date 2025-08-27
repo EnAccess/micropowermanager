@@ -46,7 +46,8 @@ class PaymentProcessTests extends TestCase {
         $this->initializeData();
         $transaction = $this->initializeTransaction();
         $transactionData = TransactionDataContainer::initialize($transaction);
-        TokenProcessor::dispatchSync($transactionData);
+        $companyId = 1;
+        TokenProcessor::dispatchSync($companyId, $transactionData);
         $tokensCount = Token::query()->count();
         $this->assertEquals(1, $tokensCount);
         $mesombPaymentCount = PaymentHistory::query()

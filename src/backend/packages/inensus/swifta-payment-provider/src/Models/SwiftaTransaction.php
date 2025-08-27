@@ -13,6 +13,12 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
+ * @property string                                 $transaction_reference
+ * @property Model&ManufacturerTransactionInterface $manufacturerTransaction
+ * @property int                                    $status
+ * @property float                                  $amount
+ * @property string                                 $cipher
+ *
  * @implements PaymentProviderTransactionInterface<SwiftaTransaction>
  */
 class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionInterface {
@@ -24,7 +30,7 @@ class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionI
 
     protected $table = 'swifta_transactions';
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->amount;
     }
 

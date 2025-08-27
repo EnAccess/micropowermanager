@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string      $currency
  * @property string      $order_id
  * @property string      $reference_id
- * @property string      $status
+ * @property int         $status
  * @property string      $external_transaction_id
  * @property int         $customer_id
  * @property string|null $meter_serial
@@ -79,7 +79,7 @@ class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransacti
         $this->meter_serial = $meterSerialNumber;
     }
 
-    public function setAmount(float $amount) {
+    public function setAmount(int $amount) {
         $this->amount = $amount;
     }
 
