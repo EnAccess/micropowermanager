@@ -12,31 +12,22 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-/**
- * @implements PaymentProviderTransactionInterface<MesombTransaction>
- */
 class MesombTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     protected $table = 'mesomb_transactions';
     public const RELATION_NAME = 'mesomb_transactions';
 
     /**
-     * @return MorphOne<Transaction, MesombTransaction>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, MesombTransaction> */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, MesombTransaction>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<Model&ManufacturerTransactionInterface, MesombTransaction> */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $this->morphTo();
     }
 
     public function conflicts(): MorphMany {

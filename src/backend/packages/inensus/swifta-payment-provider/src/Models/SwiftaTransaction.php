@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int                                    $status
  * @property float                                  $amount
  * @property string                                 $cipher
- *
- * @implements PaymentProviderTransactionInterface<SwiftaTransaction>
  */
 class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'swifta_transaction';
@@ -35,23 +33,17 @@ class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionI
     }
 
     /**
-     * @return MorphOne<Transaction, SwiftaTransaction>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, SwiftaTransaction> */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, SwiftaTransaction>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<Model&ManufacturerTransactionInterface, SwiftaTransaction> */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $relation = $this->morphTo();
     }
 
     public function conflicts(): MorphMany {

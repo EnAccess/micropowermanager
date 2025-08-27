@@ -18,18 +18,26 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  *   which represents how the transaction enables or interacts with manufacturer-specific devices.
  *
  * Implementations are expected to support querying and persistence.
- *
- * @template TPaymentProviderTransaction of Model
  */
 interface PaymentProviderTransactionInterface {
     /**
-     * @return MorphOne<Transaction, TPaymentProviderTransaction>
+     * Get the base transaction relationship.
      */
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
     public function transaction(): MorphOne;
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, TPaymentProviderTransaction>
+     * Get the corresponding manufacturer transaction relationship.
      */
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
     public function manufacturerTransaction(): MorphTo;
 
     /**

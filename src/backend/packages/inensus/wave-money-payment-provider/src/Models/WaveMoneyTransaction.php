@@ -21,8 +21,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string      $external_transaction_id
  * @property int         $customer_id
  * @property string|null $meter_serial
- *
- * @implements PaymentProviderTransactionInterface<WaveMoneyTransaction>
  */
 class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'wave_money_transaction';
@@ -84,23 +82,17 @@ class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransacti
     }
 
     /**
-     * @return MorphOne<Transaction, WaveMoneyTransaction>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, WaveMoneyTransaction> */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, WaveMoneyTransaction>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<Model&ManufacturerTransactionInterface, WaveMoneyTransaction> */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $this->morphTo();
     }
 
     public function conflicts() {

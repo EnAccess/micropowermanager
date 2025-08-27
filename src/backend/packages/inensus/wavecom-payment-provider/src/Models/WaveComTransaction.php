@@ -21,8 +21,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $message
  * @property int    $amount
  * @property int    $status
- *
- * @implements PaymentProviderTransactionInterface<WaveComTransaction>
  */
 class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     protected $table = 'wavecom_transactions';
@@ -63,23 +61,17 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
     }
 
     /**
-     * @return MorphOne<Transaction, WaveComTransaction>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, WaveComTransaction> */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, WaveComTransaction>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<Model&ManufacturerTransactionInterface, WaveComTransaction> */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $this->morphTo();
     }
 
     public function conflicts(): MorphMany {

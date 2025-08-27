@@ -8,30 +8,21 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-/**
- * @implements PaymentProviderTransactionInterface<ThirdPartyTransaction>
- */
 class ThirdPartyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'third_party_transaction';
 
     /**
-     * @return MorphOne<Transaction, ThirdPartyTransaction>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, ThirdPartyTransaction> */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, ThirdPartyTransaction>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<Model&ManufacturerTransactionInterface, ThirdPartyTransaction> */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $this->morphTo();
     }
 
     /**

@@ -15,8 +15,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $status
  * @property int    $manufacturer_transaction_id
  * @property string $manufacturer_transaction_type
- *
- * @implements PaymentProviderTransactionInterface<CashTransaction>
  */
 class CashTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'cash_transaction';
@@ -29,23 +27,17 @@ class CashTransaction extends BaseModel implements PaymentProviderTransactionInt
     }
 
     /**
-     * @return MorphOne<Transaction, CashTransaction>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, CashTransaction> */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, CashTransaction>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<Model&ManufacturerTransactionInterface, CashTransaction> */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $this->morphTo();
     }
 
     /**

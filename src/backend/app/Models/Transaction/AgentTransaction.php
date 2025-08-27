@@ -15,30 +15,22 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $mobile_device_id
  * @property int    $status
  * @property string $sender
- *
- * @implements PaymentProviderTransactionInterface<AgentTransaction>
  */
 class AgentTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'agent_transaction';
 
     /**
-     * @return MorphOne<Transaction, AgentTransaction>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, AgentTransaction> */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<Model&ManufacturerTransactionInterface, AgentTransaction>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<Model&ManufacturerTransactionInterface, AgentTransaction> */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $this->morphTo();
     }
 
     /**
