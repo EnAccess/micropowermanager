@@ -178,7 +178,7 @@ export default {
       try {
         await this.credentialService.getCredential()
       } catch (error) {
-        this.alertError("Failed to get credential")
+        this.alertNotify("error", "Failed to get credential")
       }
     },
     async submitCredentialForm() {
@@ -190,10 +190,11 @@ export default {
       this.loading = true
       try {
         await this.credentialService.updateCredential()
-        this.alertSuccess("Credential updated successfully")
+        this.alertNotify("success", "Credential updated successfully")
         EventBus.$emit("credential-updated")
+        EventBus.$emit("Paystack Payment Provider")
       } catch (error) {
-        this.alertError("Failed to update credential")
+        this.alertNotify("error", "Failed to update credential")
       } finally {
         this.loading = false
       }

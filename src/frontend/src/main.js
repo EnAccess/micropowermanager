@@ -29,6 +29,7 @@ import SunKing from "@/plugins/sun-king-shs/js/modules/Overview/Credential"
 import WaveMoney from "@/plugins/wave-money-payment-provider/js/modules/Overview/Credential"
 import GomeLong from "@/plugins/gome-long-meter/js/modules/Overview/Credential"
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/js/modules/Component"
+import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component"
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail"
 import AirtelTransactionDetail from "@/modules/Transactions/AirtelTransactionDetail"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail"
@@ -67,6 +68,7 @@ Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
+Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
 Vue.component("Africas-Talking", AfricasTalking)
 Vue.component("Snackbar", Snackbar)
 Vue.component("Chint-Meter", ChintMeter)

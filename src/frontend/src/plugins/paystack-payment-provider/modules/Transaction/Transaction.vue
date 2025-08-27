@@ -6,7 +6,7 @@
       >
         <md-card>
           <md-card-header>
-            <div class="md-title">{{ $tc("phrases.transactions") }}</div>
+            <div class="md-title">{{ $tc("menu.subMenu.Transactions") }}</div>
           </md-card-header>
           <md-card-content>
             <div class="md-layout md-gutter">
@@ -200,7 +200,7 @@ export default {
         const response = await this.transactionService.getTransactions()
         this.transactions = response.data || []
       } catch (error) {
-        this.alertError("Failed to fetch transactions")
+        this.alertNotify("error", "Failed to fetch transactions")
         console.error("Error fetching transactions:", error)
       } finally {
         this.loading = false
@@ -211,16 +211,16 @@ export default {
     },
     async verifyTransaction(transaction) {
       if (!transaction.paystack_reference) {
-        this.alertError("No Paystack reference found for this transaction")
+        this.alertNotify("error", "No Paystack reference found for this transaction")
         return
       }
 
       try {
         await this.transactionService.verifyTransaction(transaction.paystack_reference)
-        this.alertSuccess("Transaction verified successfully")
+        this.alertNotify("success", "Transaction verified successfully")
         await this.getTransactions()
       } catch (error) {
-        this.alertError("Failed to verify transaction")
+        this.alertNotify("error", "Failed to verify transaction")
         console.error("Error verifying transaction:", error)
       }
     },
