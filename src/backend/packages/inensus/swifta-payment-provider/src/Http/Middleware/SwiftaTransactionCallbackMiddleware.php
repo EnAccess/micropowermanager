@@ -5,6 +5,7 @@ namespace Inensus\SwiftaPaymentProvider\Http\Middleware;
 use App\Jobs\ProcessPayment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
 class SwiftaTransactionCallbackMiddleware {
@@ -19,9 +20,12 @@ class SwiftaTransactionCallbackMiddleware {
             $this->swiftaTransactionService->checkAmountIsSame($amount, $transaction);
             $request->attributes->add(['transaction' => $transaction]);
             $request->attributes->add(['reference' => $transactionReference]);
-            $owner = $transaction->device->person;
-            $companyId = $owner->company_id;
-            ProcessPayment::dispatch($companyId, $transaction->id);
+            $companyId = $request->attributes->get('companyId') ?? null;
+            if ($companyId !== null) {
+                ProcessPayment::dispatch($companyId, $transaction->id);
+            } else {
+                Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
+            }
         } catch (\Exception $exception) {
             $response = collect([
                 'success' => 0,
