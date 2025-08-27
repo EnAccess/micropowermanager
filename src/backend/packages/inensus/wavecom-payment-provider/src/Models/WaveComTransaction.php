@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Inensus\WavecomPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Transaction\ManufacturerTransactionInterface;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
