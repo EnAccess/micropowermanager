@@ -36,7 +36,7 @@ class WaveComTransactionProvider implements ITransactionProvider {
 
         // only send confirmation sms
         if ($requestType) {
-            $this->smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $this->smsService->sendSms($transaction->toArray(), SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::error('wavecom transaction is been cancelled');
         }

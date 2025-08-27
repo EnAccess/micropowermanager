@@ -10,6 +10,7 @@ use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -18,7 +19,7 @@ use ParseCsv\Csv;
 class TransactionService extends AbstractPaymentAggregatorTransactionService {
     public function __construct(private Csv $csv) {}
 
-    public function createTransactionsFromFile(UploadedFile $file): array {
+    public function createTransactionsFromFile(UploadedFile $file, ?int $companyId = null): array {
         $this->csv->auto($file);
 
         $skippedTransactions = [];
@@ -55,10 +56,11 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService {
 
             TransactionDataContainer::initialize($baseTransaction);
 
-            $owner = $baseTransaction->device->person;
-            $companyId = $owner->company_id;
-
-            ProcessPayment::dispatch($companyId, $baseTransaction->id);
+            if ($companyId !== null) {
+                ProcessPayment::dispatch($companyId, $baseTransaction->id);
+            } else {
+                Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$baseTransaction->id);
+            }
         }
 
         return $skippedTransactions;

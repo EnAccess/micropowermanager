@@ -4,11 +4,13 @@ namespace Inensus\MesombPaymentProvider\Http\Controllers;
 
 use App\Events\TransactionSavedEvent;
 use App\Jobs\ProcessPayment;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
 
 class MesombPaymentProviderController extends Controller {
-    public function store() {
+    public function store(Request $request) {
         $transactionProvider = resolve('MesombPaymentProvider');
         $transactionProvider->saveTransaction();
         // store common data
@@ -16,9 +18,12 @@ class MesombPaymentProviderController extends Controller {
         // fire TransactionSavedEvent to confirm the transaction
         event(new TransactionSavedEvent($transactionProvider));
 
-        $owner = $transaction->device->person;
-        $companyId = $owner->company_id;
-        ProcessPayment::dispatch($companyId, $transaction->id);
+        $companyId = $request->attributes->get('companyId') ?? null;
+        if ($companyId !== null) {
+            ProcessPayment::dispatch($companyId, $transaction->id);
+        } else {
+            Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
+        }
 
         return new MesombTransactionProcessingResource($transaction->originalTransaction()->first());
     }
