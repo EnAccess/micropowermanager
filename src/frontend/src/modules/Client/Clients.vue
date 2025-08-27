@@ -26,10 +26,10 @@
             </span>
             <md-button
               class="md-raised md-primary export-csv-button"
-              @click="exportCustomers"
+              @click="showExportModal = true"
             >
               <md-icon>download</md-icon>
-              {{ $tc("words.download") }} CSV
+              {{ $tc("phrases.exportCustomers") }}
             </md-button>
           </div>
         </div>
@@ -98,6 +98,87 @@
       @hideAddCustomer="() => (showAddClient = false)"
       :key="key"
     />
+
+    <!-- Export Modal -->
+    <md-dialog :md-active.sync="showExportModal" class="export-dialog">
+      <md-dialog-title>{{ $tc("phrases.exportCustomers") }}</md-dialog-title>
+
+      <md-dialog-content>
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-50">
+            <md-field>
+              <label>{{ $tc("words.currency") }}</label>
+              <md-select v-model="exportFilters.currency">
+                <md-option value="TSZ">TSZ</md-option>
+                <md-option value="USD">USD</md-option>
+                <md-option value="EUR">EUR</md-option>
+                <md-option value="NGN">NGN</md-option>
+                <md-option value="FCFA">FCFA</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-50">
+            <md-field>
+              <label>{{ $tc("words.timeZone") }}</label>
+              <md-select v-model="exportFilters.timeZone">
+                <md-option value="UTC">UTC</md-option>
+                <md-option value="Africa/Lagos">Africa/Lagos</md-option>
+                <md-option value="Africa/Douala">Africa/Douala</md-option>
+                <md-option value="Africa/Dar_es_Salaam">
+                  Africa/Dar_es_Salaam
+                </md-option>
+                <md-option value="Europe/Berlin">Europe/Berlin</md-option>
+              </md-select>
+            </md-field>
+          </div>
+        </div>
+
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-33">
+            <md-field>
+              <label>{{ $tc("words.status") }}</label>
+              <md-select v-model="exportFilters.isActive">
+                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option :value="true">{{ $tc("words.active") }}</md-option>
+                <md-option :value="false">
+                  {{ $tc("words.inactive") }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-33">
+            <md-field>
+              <label>{{ $tc("words.deviceType") }}</label>
+              <md-select v-model="exportFilters.deviceType">
+                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="meter">{{ $tc("words.meter") }}</md-option>
+                <md-option value="appliance">
+                  {{ $tc("words.appliance") }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-33">
+            <md-field>
+              <label>{{ $tc("words.format") }}</label>
+              <md-select v-model="exportFilters.format">
+                <md-option value="csv">CSV</md-option>
+                <md-option value="xlsx">Excel</md-option>
+              </md-select>
+            </md-field>
+          </div>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button @click="showExportModal = false">
+          {{ $tc("words.cancel") }}
+        </md-button>
+        <md-button class="md-primary" @click="exportCustomers">
+          {{ $tc("words.export") }}
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -113,6 +194,7 @@ import i18n from "../../i18n"
 import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService"
 import { CustomerExportService } from "@/services/CustomerExportService"
+import { MainSettingsService } from "@/services/MainSettingsService"
 
 const debounce = require("debounce")
 
@@ -137,6 +219,16 @@ export default {
       key: 0,
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
       customerExportService: new CustomerExportService(),
+      mainSettingsService: new MainSettingsService(),
+      showExportModal: false,
+      exportFilters: {
+        format: "csv",
+        currency: "TSZ",
+        timeZone: "UTC",
+        isActive: null,
+        city: null,
+        deviceType: null,
+      },
     }
   },
   watch: {
@@ -151,6 +243,7 @@ export default {
 
   mounted() {
     this.getClientList()
+    this.loadMainSettings()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("searching", this.searching)
     EventBus.$on("end_searching", this.endSearching)
@@ -245,11 +338,34 @@ export default {
         )
       }
     },
+    async loadMainSettings() {
+      try {
+        const settings = await this.mainSettingsService.list()
+        this.exportFilters.currency = settings.currency || "TSZ"
+        this.exportFilters.timeZone = "UTC" // Default timezone
+      } catch (e) {
+        console.error("Failed to load main settings:", e)
+      }
+    },
     async exportCustomers() {
       try {
         const data = {
-          format: "csv",
+          format: this.exportFilters.format,
+          currency: this.exportFilters.currency,
+          timeZone: this.exportFilters.timeZone,
         }
+
+        // Add optional filters if they are set
+        if (this.exportFilters.isActive !== null) {
+          data.isActive = this.exportFilters.isActive
+        }
+        if (this.exportFilters.city) {
+          data.city = this.exportFilters.city
+        }
+        if (this.exportFilters.deviceType) {
+          data.deviceType = this.exportFilters.deviceType
+        }
+
         const response = await this.customerExportService.exportCustomers(data)
         const blob = new Blob([response.data])
         const downloadUrl = window.URL.createObjectURL(blob)
@@ -263,6 +379,7 @@ export default {
         a.remove()
         window.URL.revokeObjectURL(downloadUrl)
         this.alertNotify("success", "Customers exported successfully!")
+        this.showExportModal = false
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting customers")
       }
@@ -298,5 +415,13 @@ export default {
 
 .export-csv-button {
   margin-left: auto;
+}
+
+.export-dialog {
+  min-width: 600px;
+}
+
+.export-dialog .md-dialog-content {
+  padding: 20px;
 }
 </style>
