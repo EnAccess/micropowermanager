@@ -87,7 +87,7 @@ spec:
               mountPath: /var/www/html/storage
               subPath: ""
       volumes:
-        - name: storage-data
+        - name: storage_data
           persistentVolumeClaim:
             claimName: storage-pvc
 ---
@@ -120,6 +120,6 @@ spec:
               mountPath: /var/www/html/storage
               subPath: ""
       volumes:
-        - name: storage-data
+        - name: storage_data
           persistentVolumeClaim:
             claimName: storage-pvc
