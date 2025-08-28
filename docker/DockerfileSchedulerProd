@@ -3,6 +3,7 @@ FROM php:8.2-cli
 # install basic apt packages
 RUN apt-get update && apt-get install -y \
     git \
+    gosu \
     libfreetype6-dev \
     libjpeg-dev \
     libssl-dev \

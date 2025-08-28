@@ -13,7 +13,7 @@ If you prefer to install dependencies manually or need to add additional package
 1. Enter the Docker container named "laravel":
 
    ```bash
-   docker exec -it backend-dev bash
+   docker exec -it -u www-data backend-dev bash
    ```
 
 2. Run the following command to install dependencies, replacing {package-name} with the actual name of the package:

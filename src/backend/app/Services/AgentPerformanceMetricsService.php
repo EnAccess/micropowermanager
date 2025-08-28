@@ -17,7 +17,7 @@ class AgentPerformanceMetricsService {
      *     period: array<string, array{agent_commissions: float, appliance_sales: int}>
      * }
      */
-    public function getMetrics(?string $startDate = null, ?string $endDate = null, string $interval = 'monthly'): array {
+    public function getMetrics(?string $startDate = null, ?string $endDate = null, ?string $interval = 'monthly'): array {
         $startDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->subMonths(3)->startOfDay();
         $endDate = $endDate ? Carbon::parse($endDate) : Carbon::now()->endOfDay();
 
@@ -39,15 +39,16 @@ class AgentPerformanceMetricsService {
         $topAgents = DB::connection('tenant')
             ->table('asset_people')
             ->selectRaw('
-                agents.name AS agent,
+                people.name AS agent,
                 COUNT(DISTINCT asset_people.person_id) AS customers,
                 SUM(agents.commission_revenue) AS commission,
                 COUNT(asset_people.id) AS sales
             ')
             ->leftJoin('agents', 'asset_people.creator_id', '=', 'agents.id')
+            ->leftJoin('people', 'agents.person_id', '=', 'people.id')
             ->where('creator_type', 'agent')
             ->whereBetween('asset_people.created_at', [$startDate, $endDate])
-            ->groupBy('agents.id', 'agents.name')
+            ->groupBy('agents.id', 'people.name')
             ->orderByDesc('sales')
             ->limit(5)
             ->get();
