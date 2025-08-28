@@ -6,6 +6,9 @@ use App\Models\Base\BaseModel;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int id
@@ -53,6 +56,14 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
         return $this->reference_id;
     }
 
+    public function getMeterSerial(): string {
+        return $this->serial_id;
+    }
+
+    public function getCustomerId(): int {
+        return $this->customer_id;
+    }
+
     public function getId(): int {
         return $this->id;
     }
@@ -78,11 +89,15 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
     }
 
     public function setMeterSerial(string $meterSerialNumber): void {
-        $this->meter_serial = $meterSerialNumber;
+        $this->serial_id = $meterSerialNumber;
     }
 
     public function setAmount(float $amount): void {
         $this->amount = $amount;
+    }
+
+    public function setCurrency(string $currency): void {
+        $this->currency = $currency;
     }
 
     public function setPaystackReference(string $reference): void {
@@ -97,15 +112,15 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
         $this->metadata = $metadata;
     }
 
-    public function transaction() {
+    public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
-    public function manufacturerTransaction() {
+    public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
     }
 
-    public function conflicts() {
+    public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 

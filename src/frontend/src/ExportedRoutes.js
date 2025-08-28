@@ -51,6 +51,7 @@ import Maintenance from "./pages/Maintenance/index.vue"
 import ApplianceList from "./pages/Appliance/index.vue"
 import AgentCommissionTypeList from "./pages/Agent/Commission/index.vue"
 import AgentDetail from "./pages/Agent/_id.vue"
+import AgentCreatePayment from "./modules/Agent/CreatePayment.vue"
 import SoldApplianceDetail from "./pages/Client/Appliance/_id.vue"
 
 // Former plugins
@@ -814,6 +815,19 @@ export const exportedRoutes = [
           {
             path: ":id",
             component: AgentDetail,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agents",
+                link: "/agents",
+                target: "id",
+              },
+            },
+          },
+          {
+            path: ":id/create-payment",
+            component: AgentCreatePayment,
             meta: {
               layout: "default",
               breadcrumb: {

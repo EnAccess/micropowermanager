@@ -9,7 +9,7 @@ use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Modules\Api\RequestMethod;
 
 class InitializeTransactionResource extends AbstractApiResource {
-    public const RESPONSE_SUCCESS = 'success';
+    public const RESPONSE_SUCCESS = true;
     public const RESPONSE_KEY_STATUS = 'status';
     public const RESPONSE_KEY_REFERENCE = 'data.reference';
     public const RESPONSE_KEY_AUTHORIZATION_URL = 'data.authorization_url';
@@ -24,9 +24,9 @@ class InitializeTransactionResource extends AbstractApiResource {
     }
 
     public function getBodyData(): array {
-        return [
-            'email' => 'customer@example.com', // This should come from customer data
-            'amount' => $this->paystackTransaction->getAmount() * 100, // Paystack expects amount in kobo (smallest currency unit)
+        $bodyData = [
+            'email' => config('paystack-payment-provider.merchant_email'), // MPM merchant email from config
+            'amount' => (int) ($this->paystackTransaction->getAmount() * 100), // Paystack expects amount in kobo (smallest currency unit) as integer
             'reference' => $this->paystackTransaction->getReferenceId(),
             'callback_url' => $this->paystackCredential->getCallbackUrl(),
             'currency' => $this->paystackTransaction->getCurrency(),
@@ -36,6 +36,19 @@ class InitializeTransactionResource extends AbstractApiResource {
                 'customer_id' => $this->paystackTransaction->getCustomerId(),
             ],
         ];
+
+        // Validate critical fields before sending to Paystack
+        if (empty($bodyData['email'])) {
+            throw new \InvalidArgumentException('Email is required for Paystack transaction');
+        }
+        if ($bodyData['amount'] <= 0) {
+            throw new \InvalidArgumentException('Amount must be greater than 0');
+        }
+        if (empty($bodyData['reference'])) {
+            throw new \InvalidArgumentException('Reference is required for Paystack transaction');
+        }
+
+        return $bodyData;
     }
 
     public function getHeaders(): array {
@@ -48,8 +61,8 @@ class InitializeTransactionResource extends AbstractApiResource {
 
     public function getPaymentUri(): string {
         $baseUrl = $this->paystackCredential->isLive()
-            ? 'https://api.paystack.co'
-            : 'https://api.paystack.co';
+            ? config('paystack-payment-provider.paystack_api_url')
+            : config('paystack-payment-provider.paystack_api_url');
 
         return $baseUrl.'/transaction/initialize';
     }

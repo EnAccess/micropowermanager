@@ -17,6 +17,6 @@ Route::prefix('paystack')->group(function () {
     Route::put('/transactions/{id}', [PaystackController::class, 'updateTransaction']);
     Route::delete('/transactions/{id}', [PaystackController::class, 'deleteTransaction']);
 
-    // Webhook
-    Route::post('/webhook', [PaystackController::class, 'webhookCallback']);
+    // Webhook with company ID
+    Route::post('/webhook/{companyId}', [PaystackController::class, 'webhookCallback']);
 });

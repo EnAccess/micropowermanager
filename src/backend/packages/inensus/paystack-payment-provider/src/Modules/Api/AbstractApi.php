@@ -12,7 +12,7 @@ abstract class AbstractApi {
     public function __construct(private Client $client) {}
 
     public function doRequest(AbstractApiResource $resource): AbstractApiResource {
-        if ($resource->getRequestMethod() === RequestMethod::POST) {
+        if ($resource->getRequestMethod() === RequestMethod::POST->value) {
             $response = $this->client->post($resource->getPaymentUri(), [
                 'json' => $resource->getBodyData(),
                 'headers' => $resource->getHeaders(),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Inensus\PaystackPaymentProvider\Modules\Api;
 
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Modules\Api\Exceptions\PaystackApiException;
 use Inensus\PaystackPaymentProvider\Modules\Api\Resources\InitializeTransactionResource;
@@ -21,9 +22,25 @@ class PaystackApiService {
         $credential = $this->credentialService->getCredentials();
         $transactionResource = new InitializeTransactionResource($credential, $transaction);
 
+        // Log the outgoing request details
+        Log::info('Paystack Transaction Initialize Request', [
+            'url' => $transactionResource->getPaymentUri(),
+            'method' => $transactionResource->getRequestMethod(),
+            'headers' => $this->sanitizeHeaders($transactionResource->getHeaders()),
+            'body' => $transactionResource->getBodyData(),
+            'transaction_reference' => $transaction->getReferenceId(),
+            'transaction_amount' => $transaction->getAmount(),
+        ]);
+
         try {
             $response = $this->api->doRequest($transactionResource);
             $body = $response->getBodyAsArray();
+
+            // Log the response details
+            Log::info('Paystack Transaction Initialize Response', [
+                'body' => $body,
+                'transaction_reference' => $transaction->getReferenceId(),
+            ]);
 
             if ($body['status'] === InitializeTransactionResource::RESPONSE_SUCCESS) {
                 $reference = $body['data']['reference'] ?? '';
@@ -33,6 +50,12 @@ class PaystackApiService {
                 $transaction->setPaymentUrl($authorizationUrl);
                 $transaction->save();
 
+                Log::info('Paystack Transaction Initialize Success', [
+                    'reference' => $reference,
+                    'authorization_url' => $authorizationUrl,
+                    'transaction_reference' => $transaction->getReferenceId(),
+                ]);
+
                 return [
                     'redirectionUrl' => $authorizationUrl,
                     'reference' => $reference,
@@ -40,12 +63,24 @@ class PaystackApiService {
                 ];
             }
 
+            Log::warning('Paystack Transaction Initialize Failed', [
+                'response_body' => $body,
+                'transaction_reference' => $transaction->getReferenceId(),
+            ]);
+
             return [
                 'redirectionUrl' => null,
                 'reference' => null,
-                'error' => 'Failed to initialize transaction',
+                'error' => 'Failed to initialize transaction: ' . ($body['message'] ?? 'Unknown error'),
             ];
         } catch (GuzzleException|PaystackApiException $exception) {
+            Log::error('Paystack Transaction Initialize Exception', [
+                'exception_message' => $exception->getMessage(),
+                'exception_code' => $exception->getCode(),
+                'transaction_reference' => $transaction->getReferenceId(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             $transaction->setStatus(PaystackTransaction::STATUS_FAILED);
             $transaction->save();
 
@@ -93,5 +128,16 @@ class PaystackApiService {
                 'error' => $exception->getMessage(),
             ];
         }
+    }
+
+    /**
+     * Sanitize headers to remove sensitive information from logs
+     */
+    private function sanitizeHeaders(array $headers): array {
+        $sanitized = $headers;
+        if (isset($sanitized['Authorization'])) {
+            $sanitized['Authorization'] = 'Bearer ****';
+        }
+        return $sanitized;
     }
 }

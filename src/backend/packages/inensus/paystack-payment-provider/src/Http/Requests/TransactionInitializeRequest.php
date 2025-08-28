@@ -6,6 +6,7 @@ namespace Inensus\PaystackPaymentProvider\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
+use Ramsey\Uuid\Uuid;
 
 class TransactionInitializeRequest extends FormRequest {
     public function authorize(): bool {
@@ -28,6 +29,9 @@ class TransactionInitializeRequest extends FormRequest {
         $transaction->setCustomerId($this->input('customer_id'));
         $transaction->setCurrency($this->input('currency', 'NGN'));
         $transaction->setStatus(PaystackTransaction::STATUS_REQUESTED);
+        
+        $transaction->setOrderId(Uuid::uuid4()->toString());
+        $transaction->setReferenceId(Uuid::uuid4()->toString());
 
         return $transaction;
     }

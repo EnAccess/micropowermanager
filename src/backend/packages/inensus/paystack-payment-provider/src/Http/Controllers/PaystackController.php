@@ -21,12 +21,12 @@ class PaystackController extends Controller {
     ) {}
 
     public function startTransaction(TransactionInitializeRequest $request): PaystackResource {
-        $transaction = $request->get('paystackTransaction');
+        $transaction = $request->getPaystackTransaction();
 
         return PaystackResource::make($this->apiService->initializeTransaction($transaction));
     }
 
-    public function webhookCallback(Request $request) {
+    public function webhookCallback(Request $request, int $companyId) {
         // Verify webhook signature
         if (!$this->webhookService->verifyWebhook($request)) {
             return response()->json(['error' => 'Invalid webhook signature'], 401);

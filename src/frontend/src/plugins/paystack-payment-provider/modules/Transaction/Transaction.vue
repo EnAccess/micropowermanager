@@ -10,34 +10,34 @@
           </md-card-header>
           <md-card-content>
             <div class="md-layout md-gutter">
-              <div
-                class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-              >
-                <md-table
-                  v-model="selected"
-                  md-sort="created_at"
-                  md-sort-order="desc"
-                  md-card
-                  md-fixed-header
-                >
-                  <md-table-toolbar>
-                    <h1 class="md-title">
-                      {{ $tc("phrases.paystackTransactions") }}
-                    </h1>
-                    <div class="md-toolbar-section-end">
-                      <md-button
-                        class="md-icon-button"
-                        @click="refreshTransactions"
-                      >
-                        <md-icon>refresh</md-icon>
-                      </md-button>
-                    </div>
-                  </md-table-toolbar>
+              <div class="md-layout-item md-size-100">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                  <h3>{{ $tc("phrases.paystackTransactions") }}</h3>
+                  <md-button
+                    class="md-icon-button"
+                    @click="refreshTransactions"
+                  >
+                    <md-icon>refresh</md-icon>
+                  </md-button>
+                </div>
+                
+                <md-table style="width: 100%">
+
+                  <md-table-row>
+                    <md-table-head md-sort-by="id">ID</md-table-head>
+                    <md-table-head md-sort-by="order_id">Order ID</md-table-head>
+                    <md-table-head md-sort-by="amount">Amount</md-table-head>
+                    <md-table-head md-sort-by="status">Status</md-table-head>
+                    <md-table-head md-sort-by="customer_id">Customer ID</md-table-head>
+                    <md-table-head md-sort-by="serial_id">Serial ID</md-table-head>
+                    <md-table-head md-sort-by="equipment_type">Equipment Type</md-table-head>
+                    <md-table-head md-sort-by="created_at">Created</md-table-head>
+                    <md-table-head>Actions</md-table-head>
+                  </md-table-row>
 
                   <md-table-row
-                    slot="md-table-row"
-                    slot-scope="{ item }"
-                    md-selectable="single"
+                    v-for="item in transactions"
+                    :key="item.id"
                   >
                     <md-table-cell md-label="ID" md-sort-by="id">
                       {{ item.id }}
@@ -184,7 +184,6 @@ export default {
     return {
       transactionService: new TransactionService(),
       transactions: [],
-      selected: [],
       loading: false,
       showTransactionDialog: false,
       selectedTransaction: null,
@@ -198,7 +197,7 @@ export default {
       this.loading = true
       try {
         const response = await this.transactionService.getTransactions()
-        this.transactions = response.data || []
+        this.transactions = response.data?.data || []
       } catch (error) {
         this.alertNotify("error", "Failed to fetch transactions")
         console.error("Error fetching transactions:", error)
@@ -260,7 +259,7 @@ export default {
       return new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: currency || "NGN",
-      }).format(amount / 100)
+      }).format(amount)
     },
     formatDate(dateString) {
       if (!dateString) return "N/A"

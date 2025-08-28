@@ -8,7 +8,7 @@ use Inensus\PaystackPaymentProvider\Models\PaystackCredential;
 use Inensus\PaystackPaymentProvider\Modules\Api\RequestMethod;
 
 class VerifyTransactionResource extends AbstractApiResource {
-    public const RESPONSE_SUCCESS = 'success';
+    public const RESPONSE_SUCCESS = true;
     public const RESPONSE_KEY_STATUS = 'status';
     public const RESPONSE_KEY_DATA = 'data';
     public const RESPONSE_KEY_REFERENCE = 'data.reference';

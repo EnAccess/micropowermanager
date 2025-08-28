@@ -14,36 +14,31 @@ class PaystackApiResolver implements ApiResolverInterface {
     ) {}
 
     public function resolveCompanyId(Request $request): int {
-        // For webhook callbacks, try to get company ID from transaction reference
-        if ($request->isMethod('POST') && $request->path() === 'api/paystack/webhook') {
-            return $this->resolveFromWebhook($request);
+        // For webhook callbacks, get company ID from URL segments
+        if ($request->isMethod('POST') && str_contains($request->path(), 'api/paystack/webhook')) {
+            return $this->resolveFromWebhookUrl($request);
         }
 
         // For other Paystack API calls, try to get from JWT token
         return $this->resolveFromJWT($request);
     }
 
-    private function resolveFromWebhook(Request $request): int {
-        $payload = $request->all();
-        $data = $payload['data'] ?? [];
-        $reference = $data['reference'] ?? null;
-
-        if (!$reference) {
-            throw ValidationException::withMessages(['webhook' => 'failed to parse reference from Paystack webhook']);
+    private function resolveFromWebhookUrl(Request $request): int {
+        $segments = $request->segments();
+        
+        // Expected URL: api/paystack/webhook/{companyId}
+        // Segments: [0=api, 1=paystack, 2=webhook, 3=companyId]
+        if (count($segments) !== 4) {
+            throw ValidationException::withMessages(['webhook' => 'failed to parse company identifier from Paystack webhook URL']);
         }
 
-        $transaction = $this->transactionService->getByPaystackReference($reference);
-        if (!$transaction) {
-            throw ValidationException::withMessages(['webhook' => 'transaction not found for reference: '.$reference]);
+        $companyId = $segments[3];
+        
+        if (!is_numeric($companyId)) {
+            throw ValidationException::withMessages(['webhook' => 'invalid company ID in Paystack webhook URL']);
         }
 
-        // Get company ID from the transaction's metadata or order_id
-        $companyId = $this->getCompanyIdFromTransaction($transaction);
-        if (!$companyId) {
-            throw ValidationException::withMessages(['webhook' => 'failed to determine company from transaction']);
-        }
-
-        return $companyId;
+        return (int) $companyId;
     }
 
     private function resolveFromJWT(Request $request): int {
@@ -56,33 +51,5 @@ class PaystackApiResolver implements ApiResolverInterface {
         }
 
         return (int) $companyId;
-    }
-
-    private function getCompanyIdFromTransaction($transaction): ?int {
-        // Try to get company ID from transaction metadata
-        $metadata = $transaction->metadata;
-        if (is_array($metadata) && isset($metadata['company_id'])) {
-            return (int) $metadata['company_id'];
-        }
-
-        // Try to get from order_id format (assuming format: companyId_orderDetails)
-        $orderId = $transaction->getOrderId();
-        if (preg_match('/^(\d+)_/', $orderId, $matches)) {
-            return (int) $matches[1];
-        }
-
-        // Try to get from reference_id format
-        $referenceId = $transaction->getReferenceId();
-        if (preg_match('/^(\d+)_/', $referenceId, $matches)) {
-            return (int) $matches[1];
-        }
-
-        // As a fallback, try to get from the database connection name
-        $connection = $transaction->getConnectionName();
-        if (preg_match('/tenant_(\d+)/', $connection, $matches)) {
-            return (int) $matches[1];
-        }
-
-        return null;
     }
 }
