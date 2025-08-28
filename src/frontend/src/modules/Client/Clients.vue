@@ -20,17 +20,48 @@
       <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-100">
           <div class="export-buttons-container">
-            <span class="download-debts-span">
-              You can download customers' outstanding debts from
-              <a style="cursor: pointer" @click="exportDebts">here</a>
-            </span>
-            <md-button
-              class="md-raised md-primary export-csv-button"
-              @click="showExportModal = true"
-            >
-              <md-icon>download</md-icon>
-              {{ $tc("phrases.exportCustomers") }}
-            </md-button>
+            <div class="filter-section">
+              <md-field>
+                <label>
+                  {{ $tc("words.agent") }} ({{ agentService.list.length }}
+                  agents loaded)
+                </label>
+                <md-select v-model="selectedAgentId" @input="filterByAgent">
+                  <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                  <md-option
+                    v-for="agent in agentService.list"
+                    :key="agent.id"
+                    :value="agent.id"
+                  >
+                    {{
+                      agent.person
+                        ? `${agent.person.name} ${agent.person.surname}`
+                        : agent.email
+                    }}
+                  </md-option>
+                </md-select>
+              </md-field>
+              <!-- Debug info -->
+              <div
+                v-if="agentService.list.length === 0"
+                style="color: red; font-size: 12px"
+              >
+                No agents loaded. Check console for errors.
+              </div>
+            </div>
+            <div class="export-section">
+              <span class="download-debts-span">
+                You can download customers' outstanding debts from
+                <a style="cursor: pointer" @click="exportDebts">here</a>
+              </span>
+              <md-button
+                class="md-raised md-primary export-csv-button"
+                @click="showExportModal = true"
+              >
+                <md-icon>download</md-icon>
+                {{ $tc("phrases.exportCustomers") }}
+              </md-button>
+            </div>
           </div>
         </div>
         <div class="md-layout-item md-size-100">
@@ -50,6 +81,9 @@
               </md-table-head>
               <md-table-head>
                 {{ $tc("words.device") }}
+              </md-table-head>
+              <md-table-head>
+                {{ $tc("words.agent") }}
               </md-table-head>
               <md-table-head>
                 {{ $tc("phrases.lastUpdate") }}
@@ -83,6 +117,9 @@
               </md-table-cell>
               <md-table-cell v-if="client.devices.length === 0">
                 -
+              </md-table-cell>
+              <md-table-cell>
+                {{ getAgentName(client) }}
               </md-table-cell>
               <md-table-cell class="hidden-xs">
                 {{ timeForTimeZone(client.lastUpdate) }}
@@ -195,6 +232,7 @@ import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService"
 import { CustomerExportService } from "@/services/CustomerExportService"
 import { MainSettingsService } from "@/services/MainSettingsService"
+import { AgentService } from "@/services/AgentService"
 
 const debounce = require("debounce")
 
@@ -220,7 +258,9 @@ export default {
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
       customerExportService: new CustomerExportService(),
       mainSettingsService: new MainSettingsService(),
+      agentService: new AgentService(),
       showExportModal: false,
+      selectedAgentId: null,
       exportFilters: {
         format: "csv",
         currency: "TSZ",
@@ -244,6 +284,7 @@ export default {
   mounted() {
     this.getClientList()
     this.loadMainSettings()
+    this.loadAgents()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("searching", this.searching)
     EventBus.$on("end_searching", this.endSearching)
@@ -276,10 +317,18 @@ export default {
       this.$router.push({ path: "/people/" + id })
     },
     getClientList(pageNumber = 1) {
+      const params = this.searching ? { term: this.searchTerm } : {}
+      if (this.selectedAgentId) {
+        params.agent_id = this.selectedAgentId
+      }
+
       this.paginator
-        .loadPage(pageNumber, this.searching ? { term: this.searchTerm } : {})
+        .loadPage(pageNumber, params)
         .then((response) => {
-          this.tmpClientList = this.clientList = response.data
+          this.people.updateList(response.data)
+        })
+        .catch((error) => {
+          console.error("Error loading client list:", error)
         })
     },
     deviceList(devices) {
@@ -347,6 +396,15 @@ export default {
         console.error("Failed to load main settings:", e)
       }
     },
+    async loadAgents() {
+      try {
+        const response = await this.agentService.repository.list()
+        const agents = response.data.data || response.data
+        this.agentService.updateList(agents)
+      } catch (e) {
+        console.error("Failed to load agents:", e)
+      }
+    },
     async exportCustomers() {
       try {
         const data = {
@@ -364,6 +422,9 @@ export default {
         }
         if (this.exportFilters.deviceType) {
           data.deviceType = this.exportFilters.deviceType
+        }
+        if (this.selectedAgentId) {
+          data.agent = this.selectedAgentId
         }
 
         const response = await this.customerExportService.exportCustomers(data)
@@ -383,6 +444,27 @@ export default {
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting customers")
       }
+    },
+    filterByAgent() {
+      this.getClientList()
+    },
+    getAgentName(client) {
+      if (
+        client.agent_sold_appliance &&
+        client.agent_sold_appliance.assigned_appliance &&
+        client.agent_sold_appliance.assigned_appliance.agent
+      ) {
+        const agentId = client.agent_sold_appliance.assigned_appliance.agent.id
+        // Find the agent in our loaded agent list
+        const agent = this.agentService.list.find((a) => a.id === agentId)
+        if (agent) {
+          const agentName = agent.person
+            ? `${agent.person.name} ${agent.person.surname}`
+            : agent.email || "-"
+          return agentName
+        }
+      }
+      return "-"
     },
   },
 }
@@ -406,6 +488,17 @@ export default {
   align-items: center;
   margin-bottom: 1rem;
   padding: 0 1rem;
+}
+
+.filter-section {
+  flex: 1;
+  max-width: 300px;
+}
+
+.export-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .download-debts-span {
