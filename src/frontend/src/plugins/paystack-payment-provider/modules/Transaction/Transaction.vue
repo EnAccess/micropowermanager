@@ -37,7 +37,7 @@
           <md-table-cell md-label="Serial ID" md-sort-by="serial_id">
             {{ item.serial_id }}
           </md-table-cell>
-          <md-table-cell md-label="Equipment Type" md-sort-by="device_type">
+          <md-table-cell md-label="Device Type" md-sort-by="device_type">
             {{ item.device_type }}
           </md-table-cell>
           <md-table-cell md-label="Created" md-sort-by="created_at">
