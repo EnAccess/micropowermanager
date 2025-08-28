@@ -18,7 +18,6 @@ Each plugin consists of:
 ## Quick Start
 
 1. **Prerequisites**
-
    - Running MPM development environment
    - Docker installed and running
    - Basic knowledge of Laravel and Vue.js
@@ -34,13 +33,11 @@ Each plugin consists of:
    ```
 
    This command:
-
    - Creates backend package in `src/backend/packages/inensus/{plugin-name}`
    - Generates frontend module template
    - Sets up basic file structure
 
 3. **Post-Creation Setup**
-
    - Move the generated UI folder to `src/frontend/src/plugins/{plugin-name}`
    - Review generated code structure
    - Follow integration steps below
