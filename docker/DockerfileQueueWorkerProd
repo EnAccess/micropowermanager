@@ -73,4 +73,5 @@ WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
 # define entrypoint
+USER www-data
 ENTRYPOINT ["/usr/local/bin/entrypoint-queue-worker-prod.sh"]

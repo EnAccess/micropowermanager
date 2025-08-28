@@ -80,4 +80,5 @@ cd /var/www/html\n\
 composer install\n' /usr/local/bin/entrypoint-queue-worker-dev.sh
 
 # define entrypoint
+USER www-data
 ENTRYPOINT ["/usr/local/bin/entrypoint-queue-worker-dev.sh"]

@@ -71,6 +71,7 @@ cd /var/www/html\n\
 composer install\n' /usr/local/bin/entrypoint-backend-dev.sh
 
 # define entrypoint
+USER www-data
 ENTRYPOINT ["/usr/local/bin/entrypoint-backend-dev.sh"]
 
 EXPOSE 80
