@@ -38,7 +38,7 @@ This ensures that the user gains access to and interacts with data exclusive to 
   To create a migration file for the central database use the following command:
 
   ```bash
-  docker exec -it backend-dev bash
+  docker exec -it -u www-data backend-dev bash
   php artisan make:migration {migration-name}
   ```
 
@@ -48,7 +48,7 @@ This ensures that the user gains access to and interacts with data exclusive to 
   To create a migration file for tenant database(s) use the following command:
 
   ```bash
-  docker exec -it backend-dev bash
+  docker exec -it -u www-data backend-dev bash
   php artisan make:migration-tenant {migration-name}
   ```
 
@@ -58,7 +58,7 @@ This ensures that the user gains access to and interacts with data exclusive to 
   To migrate the central database, use the following command:
 
   ```bash
-  docker exec -it backend-dev bash
+  docker exec -it -u www-data backend-dev bash
   php artisan migrate
   ```
 
@@ -66,6 +66,6 @@ This ensures that the user gains access to and interacts with data exclusive to 
   To igrate the database for a specific company using the following command:
 
   ```bash
-  docker exec -it backend-dev bash
+  docker exec -it -u www-data backend-dev bash
   php artisan migrate-tenant {company_id} {--force}
   ```

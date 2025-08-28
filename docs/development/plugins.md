@@ -26,7 +26,7 @@ Each plugin consists of:
 
    ```bash
    # Access the backend container
-   docker exec -it backend-dev bash
+   docker exec -it -u www-data backend-dev bash
 
    # Generate plugin template
    php artisan micropowermanager:new-package {plugin-name}
@@ -378,6 +378,7 @@ Vue.component("Your-Plugin", YourPlugin)
    ```
 
 2. Verify database setup:
+
    - Check migrations ran successfully
    - Verify tables were created
    - Ensure plugin is registered in `mpm_plugins`
@@ -390,11 +391,13 @@ Vue.component("Your-Plugin", YourPlugin)
 ## Best Practices
 
 1. **Code Organization**
+
    - Keep your plugin self-contained as much as possible
    - Follow the established directory structure for consistency
    - Use the MPM core services when appropriate to maintain integration
 
 2. **Testing**
+
    - Test all features thoroughly
    - Verify database operations
    - Check frontend functionality

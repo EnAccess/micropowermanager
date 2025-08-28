@@ -3,6 +3,7 @@ FROM php:8.2-apache
 # install basic apt packages
 RUN apt-get update && apt-get install -y \
     git \
+    gosu \
     libfreetype6-dev \
     libjpeg-dev \
     libssl-dev \
@@ -68,10 +69,9 @@ RUN chmod +x /usr/local/bin/entrypoint-backend-dev.sh
 RUN sed -i '/^# DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)$/a\
 echo "Installing MicroPowerManager in development mode..."\n\
 cd /var/www/html\n\
-composer install\n' /usr/local/bin/entrypoint-backend-dev.sh
+gosu www-data composer install\n' /usr/local/bin/entrypoint-backend-dev.sh
 
 # define entrypoint
-USER www-data
 ENTRYPOINT ["/usr/local/bin/entrypoint-backend-dev.sh"]
 
 EXPOSE 80

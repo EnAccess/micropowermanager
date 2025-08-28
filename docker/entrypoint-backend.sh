@@ -9,15 +9,15 @@ chmod -R 775 /var/www/html/storage
 cd /var/www/html
 
 echo "Running MicroPowerManager central migrations..."
-php artisan migrate --force
+gosu www-data php artisan migrate --force
 echo "Running MicroPowerManager tenant migrations..."
-php artisan migrate-tenant --force
+gosu www-data php artisan migrate-tenant --force
 
 # Check if MPM_LOAD_DEMO_DATA is set and not empty or false-y,
 # only then load the demo data.
 if [ -n "$MPM_LOAD_DEMO_DATA" ] && [ "$MPM_LOAD_DEMO_DATA" != "0" ] && [ "$MPM_LOAD_DEMO_DATA" != "false" ]; then
   echo "MPM_LOAD_DEMO_DATA is set. Seeding database with Demo data."
-  php artisan db:seed
+  gosu www-data php artisan db:seed
 fi
 
 echo "Executing command: $@"

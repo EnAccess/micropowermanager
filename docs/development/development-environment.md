@@ -75,7 +75,7 @@ When working with Laravel it can be helpful to have access to Laravel's CLI tool
 To access `artisan` in MicroPowerManager development environment, run
 
 ```sh
-docker exec -it backend-dev bash
+docker exec -it -u www-data backend-dev bash
 php artisan --help
 ```
 
@@ -89,7 +89,7 @@ php artisan --help
 If you wish reset the Demo data setup to the default setup, run:
 
 ```sh
-docker exec -it backend-dev bash
+docker exec -it -u www-data backend-dev bash
 php artisan migrate-tenant:drop-demo-company
 php artisan migrate:fresh --seed
 ```
