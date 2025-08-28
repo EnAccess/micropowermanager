@@ -19,7 +19,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string status
  * @property string external_transaction_id
  * @property int customer_id
- * @property string|null meter_serial
+ * @property string|null serial_id
+ * @property string|null device_type
  * @property string|null paystack_reference
  * @property string|null payment_url
  * @property array|null metadata
@@ -56,9 +57,10 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
         return $this->reference_id;
     }
 
-    public function getMeterSerial(): string {
+    public function getDeviceSerial(): string {
         return $this->serial_id;
     }
+
 
     public function getCustomerId(): int {
         return $this->customer_id;
@@ -66,6 +68,10 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
 
     public function getId(): int {
         return $this->id;
+    }
+
+    public function getDeviceType(): string {
+        return $this->device_type;
     }
 
     public function setStatus(int $status): void {
@@ -88,8 +94,12 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
         $this->customer_id = $customerId;
     }
 
-    public function setMeterSerial(string $meterSerialNumber): void {
-        $this->serial_id = $meterSerialNumber;
+    public function setDeviceType(string $deviceType): void {
+        $this->device_type = $deviceType;
+    }
+
+    public function setDeviceSerial(string $deviceSerialNumber): void {
+        $this->serial_id = $deviceSerialNumber;
     }
 
     public function setAmount(float $amount): void {

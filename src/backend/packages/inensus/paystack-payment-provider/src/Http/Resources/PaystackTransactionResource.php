@@ -18,7 +18,7 @@ class PaystackTransactionResource extends JsonResource {
             'external_transaction_id' => $this->external_transaction_id,
             'customer_id' => $this->customer_id,
             'serial_id' => $this->serial_id,
-            'equipment_type' => $this->equipment_type,
+            'device_type' => $this->device_type,
             'paystack_reference' => $this->paystack_reference,
             'payment_url' => $this->payment_url,
             'metadata' => $this->metadata,

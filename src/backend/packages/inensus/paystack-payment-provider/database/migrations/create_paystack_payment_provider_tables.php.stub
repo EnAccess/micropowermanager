@@ -37,7 +37,7 @@ return new class extends Migration {
                 $table->string('external_transaction_id')->nullable();
                 $table->unsignedBigInteger('customer_id');
                 $table->string('serial_id')->nullable();
-                $table->string('equipment_type')->nullable();
+                $table->string('device_type')->nullable();
                 $table->string('paystack_reference')->nullable()->unique();
                 $table->text('payment_url')->nullable();
                 $table->json('metadata')->nullable();
@@ -45,7 +45,7 @@ return new class extends Migration {
                 $table->timestamps();
                 $table->index('customer_id');
                 $table->index('serial_id');
-                $table->index('equipment_type');
+                $table->index('device_type');
                 $table->index('status');
                 $table->index('paystack_reference');
                 $table->index('external_transaction_id');

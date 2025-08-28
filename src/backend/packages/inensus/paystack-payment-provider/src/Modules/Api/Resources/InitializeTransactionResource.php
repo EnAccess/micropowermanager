@@ -32,7 +32,7 @@ class InitializeTransactionResource extends AbstractApiResource {
             'currency' => $this->paystackTransaction->getCurrency(),
             'metadata' => [
                 'order_id' => $this->paystackTransaction->getOrderId(),
-                'meter_serial' => $this->paystackTransaction->getMeterSerial(),
+                'serial_id' => $this->paystackTransaction->getDeviceSerial(),
                 'customer_id' => $this->paystackTransaction->getCustomerId(),
             ],
         ];

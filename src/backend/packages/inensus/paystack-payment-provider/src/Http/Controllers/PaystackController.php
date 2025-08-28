@@ -49,7 +49,8 @@ class PaystackController extends Controller {
     }
 
     public function getTransactions(Request $request) {
-        $transactions = $this->transactionService->getAll();
+        $perPage = (int)($request->input('per_page', 15));
+        $transactions = $this->transactionService->getAll($perPage);
 
         return PaystackTransactionResource::collection($transactions);
     }

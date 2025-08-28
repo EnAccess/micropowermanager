@@ -1,10 +1,20 @@
 import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
+import { Paginator } from "@/Helpers/Paginator"
 
 const resource = `${baseUrl}/api/paystack`
 
 export class TransactionService {
   constructor() {
+    this.list = []
+    this.paginator = new Paginator(`/api/paystack/transactions`)
+  }
+
+  updateList(data) {
+    this.list = []
+    if (Array.isArray(data)) {
+      this.list = data
+    }
   }
 
   async getTransactions() {

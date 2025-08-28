@@ -16,20 +16,21 @@ class TransactionInitializeRequest extends FormRequest {
     public function rules(): array {
         return [
             'amount' => 'required|numeric|min:0',
-            'meter_serial' => 'required|string',
+            'device_serial' => 'required|string',
             'customer_id' => 'required|integer',
-            'currency' => 'string|in:NGN,USD,GHS,KES,ZAR',
+            'currency' => 'string|in:NGN,GHS,KES',
+            'device_type' => 'string|in:meter,solar_home_system',
         ];
     }
 
     public function getPaystackTransaction(): PaystackTransaction {
         $transaction = new PaystackTransaction();
         $transaction->setAmount($this->input('amount'));
-        $transaction->setMeterSerial($this->input('meter_serial'));
+        $transaction->setDeviceSerial($this->input('device_serial'));
         $transaction->setCustomerId($this->input('customer_id'));
         $transaction->setCurrency($this->input('currency', 'NGN'));
         $transaction->setStatus(PaystackTransaction::STATUS_REQUESTED);
-        
+        $transaction->setDeviceType($this->input('device_type'));
         $transaction->setOrderId(Uuid::uuid4()->toString());
         $transaction->setReferenceId(Uuid::uuid4()->toString());
 

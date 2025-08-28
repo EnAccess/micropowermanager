@@ -1,98 +1,60 @@
 <template>
   <div>
-    <div class="md-layout md-gutter">
-      <div
-        class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-      >
-        <md-card>
-          <md-card-header>
-            <div class="md-title">{{ $tc("menu.subMenu.Transactions") }}</div>
-          </md-card-header>
-          <md-card-content>
-            <div class="md-layout md-gutter">
-              <div class="md-layout-item md-size-100">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                  <h3>{{ $tc("phrases.paystackTransactions") }}</h3>
-                  <md-button
-                    class="md-icon-button"
-                    @click="refreshTransactions"
-                  >
-                    <md-icon>refresh</md-icon>
-                  </md-button>
-                </div>
-                
-                <md-table style="width: 100%">
+    <widget id="paystack-transactions" :title="title" :paginator="transactionService.paginator" :subscriber="subscriber"
+      color="green">
+      <md-table style="width: 100%">
 
-                  <md-table-row>
-                    <md-table-head md-sort-by="id">ID</md-table-head>
-                    <md-table-head md-sort-by="order_id">Order ID</md-table-head>
-                    <md-table-head md-sort-by="amount">Amount</md-table-head>
-                    <md-table-head md-sort-by="status">Status</md-table-head>
-                    <md-table-head md-sort-by="customer_id">Customer ID</md-table-head>
-                    <md-table-head md-sort-by="serial_id">Serial ID</md-table-head>
-                    <md-table-head md-sort-by="equipment_type">Equipment Type</md-table-head>
-                    <md-table-head md-sort-by="created_at">Created</md-table-head>
-                    <md-table-head>Actions</md-table-head>
-                  </md-table-row>
+        <md-table-row>
+          <md-table-head md-sort-by="id">ID</md-table-head>
+          <md-table-head md-sort-by="order_id">Order ID</md-table-head>
+          <md-table-head md-sort-by="amount">Amount</md-table-head>
+          <md-table-head md-sort-by="status">Status</md-table-head>
+          <md-table-head md-sort-by="customer_id">Customer ID</md-table-head>
+          <md-table-head md-sort-by="serial_id">Serial ID</md-table-head>
+          <md-table-head md-sort-by="device_type">Device Type</md-table-head>
+          <md-table-head md-sort-by="created_at">Created</md-table-head>
+          <md-table-head>Actions</md-table-head>
+        </md-table-row>
 
-                  <md-table-row
-                    v-for="item in transactions"
-                    :key="item.id"
-                  >
-                    <md-table-cell md-label="ID" md-sort-by="id">
-                      {{ item.id }}
-                    </md-table-cell>
-                    <md-table-cell md-label="Order ID" md-sort-by="order_id">
-                      {{ item.order_id }}
-                    </md-table-cell>
-                    <md-table-cell md-label="Amount" md-sort-by="amount">
-                      {{ formatAmount(item.amount, item.currency) }}
-                    </md-table-cell>
-                    <md-table-cell md-label="Status" md-sort-by="status">
-                      <md-chip
-                        :class="getStatusClass(item.status)"
-                        md-label=""
-                      >
-                        {{ getStatusText(item.status) }}
-                      </md-chip>
-                    </md-table-cell>
-                    <md-table-cell md-label="Customer ID" md-sort-by="customer_id">
-                      {{ item.customer_id }}
-                    </md-table-cell>
-                    <md-table-cell md-label="Serial ID" md-sort-by="serial_id">
-                      {{ item.serial_id }}
-                    </md-table-cell>
-                    <md-table-cell md-label="Equipment Type" md-sort-by="equipment_type">
-                      {{ item.equipment_type }}
-                    </md-table-cell>
-                    <md-table-cell md-label="Created" md-sort-by="created_at">
-                      {{ formatDate(item.created_at) }}
-                    </md-table-cell>
-                    <md-table-cell md-label="Actions">
-                      <md-button
-                        class="md-icon-button md-primary"
-                        @click="viewTransaction(item)"
-                        title="View Details"
-                      >
-                        <md-icon>visibility</md-icon>
-                      </md-button>
-                      <md-button
-                        v-if="item.status === 0"
-                        class="md-icon-button md-accent"
-                        @click="verifyTransaction(item)"
-                        title="Verify Transaction"
-                      >
-                        <md-icon>check_circle</md-icon>
-                      </md-button>
-                    </md-table-cell>
-                  </md-table-row>
-                </md-table>
-              </div>
-            </div>
-          </md-card-content>
-        </md-card>
-      </div>
-    </div>
+        <md-table-row v-for="item in transactionService.list" :key="item.id">
+          <md-table-cell md-label="ID" md-sort-by="id">
+            {{ item.id }}
+          </md-table-cell>
+          <md-table-cell md-label="Order ID" md-sort-by="order_id">
+            {{ item.order_id }}
+          </md-table-cell>
+          <md-table-cell md-label="Amount" md-sort-by="amount">
+            {{ formatAmount(item.amount, item.currency) }}
+          </md-table-cell>
+          <md-table-cell md-label="Status" md-sort-by="status">
+            <md-chip :class="getStatusClass(item.status)" md-label="">
+              {{ getStatusText(item.status) }}
+            </md-chip>
+          </md-table-cell>
+          <md-table-cell md-label="Customer ID" md-sort-by="customer_id">
+            {{ item.customer_id }}
+          </md-table-cell>
+          <md-table-cell md-label="Serial ID" md-sort-by="serial_id">
+            {{ item.serial_id }}
+          </md-table-cell>
+          <md-table-cell md-label="Equipment Type" md-sort-by="device_type">
+            {{ item.device_type }}
+          </md-table-cell>
+          <md-table-cell md-label="Created" md-sort-by="created_at">
+            {{ formatDate(item.created_at) }}
+          </md-table-cell>
+          <md-table-cell md-label="Actions">
+            <md-button class="md-icon-button md-primary" @click="viewTransaction(item)" title="View Details">
+              <md-icon>visibility</md-icon>
+            </md-button>
+            <md-button v-if="item.status === 0" class="md-icon-button md-accent" @click="verifyTransaction(item)"
+              title="Verify Transaction">
+              <md-icon>check_circle</md-icon>
+            </md-button>
+          </md-table-cell>
+        </md-table-row>
+      </md-table>
+    </widget>
 
     <!-- Transaction Details Dialog -->
     <md-dialog :md-active.sync="showTransactionDialog" class="transaction-dialog">
@@ -135,7 +97,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Equipment Type:</span>
-            <span class="detail-value">{{ selectedTransaction.equipment_type }}</span>
+            <span class="detail-value">{{ selectedTransaction.device_type }}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Paystack Reference:</span>
@@ -175,38 +137,38 @@
 
 <script>
 import { TransactionService } from "../../services/TransactionService"
+import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Transaction",
   mixins: [notify],
+  components: { Widget },
   data() {
     return {
       transactionService: new TransactionService(),
-      transactions: [],
-      loading: false,
+      subscriber: "paystack-transactions",
+      title: "Paystack Transactions",
       showTransactionDialog: false,
       selectedTransaction: null,
     }
   },
   mounted() {
-    this.getTransactions()
+    EventBus.$on("pageLoaded", this.reloadList)
+  },
+  beforeDestroy() {
+    EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
-    async getTransactions() {
-      this.loading = true
-      try {
-        const response = await this.transactionService.getTransactions()
-        this.transactions = response.data?.data || []
-      } catch (error) {
-        this.alertNotify("error", "Failed to fetch transactions")
-        console.error("Error fetching transactions:", error)
-      } finally {
-        this.loading = false
-      }
-    },
-    async refreshTransactions() {
-      await this.getTransactions()
+    reloadList(subscriber, data) {
+      if (subscriber !== this.subscriber) return
+      this.transactionService.updateList(data)
+      EventBus.$emit(
+        "widgetContentLoaded",
+        this.subscriber,
+        this.transactionService.list.length,
+      )
     },
     async verifyTransaction(transaction) {
       if (!transaction.paystack_reference) {
@@ -217,7 +179,7 @@ export default {
       try {
         await this.transactionService.verifyTransaction(transaction.paystack_reference)
         this.alertNotify("success", "Transaction verified successfully")
-        await this.getTransactions()
+        EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
       } catch (error) {
         this.alertNotify("error", "Failed to verify transaction")
         console.error("Error verifying transaction:", error)
