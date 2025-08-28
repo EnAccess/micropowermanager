@@ -22,8 +22,11 @@
           <div class="export-buttons-container">
             <div class="filter-section">
               <md-field>
-                <label>{{ $tc("words.agent") }}</label>
-                <md-select v-model="selectedAgentId" @change="filterByAgent">
+                <label>
+                  {{ $tc("words.agent") }} ({{ agentService.list.length }}
+                  agents loaded)
+                </label>
+                <md-select v-model="selectedAgentId" @input="filterByAgent">
                   <md-option :value="null">{{ $tc("words.all") }}</md-option>
                   <md-option
                     v-for="agent in agentService.list"
@@ -33,11 +36,18 @@
                     {{
                       agent.person
                         ? `${agent.person.name} ${agent.person.surname}`
-                        : agent.name
+                        : agent.email
                     }}
                   </md-option>
                 </md-select>
               </md-field>
+              <!-- Debug info -->
+              <div
+                v-if="agentService.list.length === 0"
+                style="color: red; font-size: 12px"
+              >
+                No agents loaded. Check console for errors.
+              </div>
             </div>
             <div class="export-section">
               <span class="download-debts-span">
@@ -309,12 +319,17 @@ export default {
     getClientList(pageNumber = 1) {
       const params = this.searching ? { term: this.searchTerm } : {}
       if (this.selectedAgentId) {
-        params.agentId = this.selectedAgentId
+        params.agent_id = this.selectedAgentId
       }
 
-      this.paginator.loadPage(pageNumber, params).then((response) => {
-        this.tmpClientList = this.clientList = response.data
-      })
+      this.paginator
+        .loadPage(pageNumber, params)
+        .then((response) => {
+          this.people.updateList(response.data)
+        })
+        .catch((error) => {
+          console.error("Error loading client list:", error)
+        })
     },
     deviceList(devices) {
       return devices.reduce((acc, curr, index, arr) => {
@@ -384,7 +399,8 @@ export default {
     async loadAgents() {
       try {
         const response = await this.agentService.repository.list()
-        this.agentService.list = response.data.data || response.data
+        const agents = response.data.data || response.data
+        this.agentService.updateList(agents)
       } catch (e) {
         console.error("Failed to load agents:", e)
       }
@@ -438,10 +454,15 @@ export default {
         client.agent_sold_appliance.assigned_appliance &&
         client.agent_sold_appliance.assigned_appliance.agent
       ) {
-        const agent = client.agent_sold_appliance.assigned_appliance.agent
-        return agent.person
-          ? `${agent.person.name} ${agent.person.surname}`
-          : agent.name || "-"
+        const agentId = client.agent_sold_appliance.assigned_appliance.agent.id
+        // Find the agent in our loaded agent list
+        const agent = this.agentService.list.find((a) => a.id === agentId)
+        if (agent) {
+          const agentName = agent.person
+            ? `${agent.person.name} ${agent.person.surname}`
+            : agent.email || "-"
+          return agentName
+        }
       }
       return "-"
     },
