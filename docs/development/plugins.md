@@ -26,7 +26,7 @@ Each plugin consists of:
 
    ```bash
    # Access the backend container
-   docker exec -it backend-dev bash
+   docker exec -it -u www-data backend-dev bash
 
    # Generate plugin template
    php artisan micropowermanager:new-package {plugin-name}
