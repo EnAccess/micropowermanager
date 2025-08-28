@@ -20,17 +20,38 @@
       <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-100">
           <div class="export-buttons-container">
-            <span class="download-debts-span">
-              You can download customers' outstanding debts from
-              <a style="cursor: pointer" @click="exportDebts">here</a>
-            </span>
-            <md-button
-              class="md-raised md-primary export-csv-button"
-              @click="showExportModal = true"
-            >
-              <md-icon>download</md-icon>
-              {{ $tc("phrases.exportCustomers") }}
-            </md-button>
+            <div class="filter-section">
+              <md-field>
+                <label>{{ $tc("words.agent") }}</label>
+                <md-select v-model="selectedAgentId" @change="filterByAgent">
+                  <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                  <md-option
+                    v-for="agent in agentService.list"
+                    :key="agent.id"
+                    :value="agent.id"
+                  >
+                    {{
+                      agent.person
+                        ? `${agent.person.name} ${agent.person.surname}`
+                        : agent.name
+                    }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
+            <div class="export-section">
+              <span class="download-debts-span">
+                You can download customers' outstanding debts from
+                <a style="cursor: pointer" @click="exportDebts">here</a>
+              </span>
+              <md-button
+                class="md-raised md-primary export-csv-button"
+                @click="showExportModal = true"
+              >
+                <md-icon>download</md-icon>
+                {{ $tc("phrases.exportCustomers") }}
+              </md-button>
+            </div>
           </div>
         </div>
         <div class="md-layout-item md-size-100">
@@ -50,6 +71,9 @@
               </md-table-head>
               <md-table-head>
                 {{ $tc("words.device") }}
+              </md-table-head>
+              <md-table-head>
+                {{ $tc("words.agent") }}
               </md-table-head>
               <md-table-head>
                 {{ $tc("phrases.lastUpdate") }}
@@ -83,6 +107,9 @@
               </md-table-cell>
               <md-table-cell v-if="client.devices.length === 0">
                 -
+              </md-table-cell>
+              <md-table-cell>
+                {{ getAgentName(client) }}
               </md-table-cell>
               <md-table-cell class="hidden-xs">
                 {{ timeForTimeZone(client.lastUpdate) }}
@@ -195,6 +222,7 @@ import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService"
 import { CustomerExportService } from "@/services/CustomerExportService"
 import { MainSettingsService } from "@/services/MainSettingsService"
+import { AgentService } from "@/services/AgentService"
 
 const debounce = require("debounce")
 
@@ -220,7 +248,9 @@ export default {
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
       customerExportService: new CustomerExportService(),
       mainSettingsService: new MainSettingsService(),
+      agentService: new AgentService(),
       showExportModal: false,
+      selectedAgentId: null,
       exportFilters: {
         format: "csv",
         currency: "TSZ",
@@ -244,6 +274,7 @@ export default {
   mounted() {
     this.getClientList()
     this.loadMainSettings()
+    this.loadAgents()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("searching", this.searching)
     EventBus.$on("end_searching", this.endSearching)
@@ -276,11 +307,14 @@ export default {
       this.$router.push({ path: "/people/" + id })
     },
     getClientList(pageNumber = 1) {
-      this.paginator
-        .loadPage(pageNumber, this.searching ? { term: this.searchTerm } : {})
-        .then((response) => {
-          this.tmpClientList = this.clientList = response.data
-        })
+      const params = this.searching ? { term: this.searchTerm } : {}
+      if (this.selectedAgentId) {
+        params.agentId = this.selectedAgentId
+      }
+
+      this.paginator.loadPage(pageNumber, params).then((response) => {
+        this.tmpClientList = this.clientList = response.data
+      })
     },
     deviceList(devices) {
       return devices.reduce((acc, curr, index, arr) => {
@@ -347,6 +381,14 @@ export default {
         console.error("Failed to load main settings:", e)
       }
     },
+    async loadAgents() {
+      try {
+        const response = await this.agentService.repository.list()
+        this.agentService.list = response.data.data || response.data
+      } catch (e) {
+        console.error("Failed to load agents:", e)
+      }
+    },
     async exportCustomers() {
       try {
         const data = {
@@ -364,6 +406,9 @@ export default {
         }
         if (this.exportFilters.deviceType) {
           data.deviceType = this.exportFilters.deviceType
+        }
+        if (this.selectedAgentId) {
+          data.agent = this.selectedAgentId
         }
 
         const response = await this.customerExportService.exportCustomers(data)
@@ -383,6 +428,22 @@ export default {
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting customers")
       }
+    },
+    filterByAgent() {
+      this.getClientList()
+    },
+    getAgentName(client) {
+      if (
+        client.agent_sold_appliance &&
+        client.agent_sold_appliance.assigned_appliance &&
+        client.agent_sold_appliance.assigned_appliance.agent
+      ) {
+        const agent = client.agent_sold_appliance.assigned_appliance.agent
+        return agent.person
+          ? `${agent.person.name} ${agent.person.surname}`
+          : agent.name || "-"
+      }
+      return "-"
     },
   },
 }
@@ -406,6 +467,17 @@ export default {
   align-items: center;
   margin-bottom: 1rem;
   padding: 0 1rem;
+}
+
+.filter-section {
+  flex: 1;
+  max-width: 300px;
+}
+
+.export-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .download-debts-span {
