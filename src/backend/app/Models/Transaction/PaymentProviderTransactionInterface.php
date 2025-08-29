@@ -5,6 +5,7 @@ namespace App\Models\Transaction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * Interface PaymentProviderTransactionInterface.
@@ -20,17 +21,27 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 interface PaymentProviderTransactionInterface {
     /**
-     * @return MorphOne<Transaction, Model&PaymentProviderTransactionInterface>
+     * Get the base transaction relationship.
      */
-    public function transaction();
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
+    public function transaction(): MorphOne;
 
     /**
-     * @return ManufacturerTransactionInterface
+     * Get the corresponding manufacturer transaction relationship.
      */
-    public function manufacturerTransaction();
+    // Laravel relations return templates of the special type
+    // $this(TDeclaringModel). It seems impossible to write a
+    // non-generic return type at interface level that fullfils
+    // this behaviour.
+    // @phpstan-ignore missingType.generics
+    public function manufacturerTransaction(): MorphTo;
 
     /**
-     * @return Builder<Model&PaymentProviderTransactionInterface>
+     * @return Builder<Model>
      */
     public function newQuery();
 

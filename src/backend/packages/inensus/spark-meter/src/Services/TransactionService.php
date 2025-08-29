@@ -353,7 +353,9 @@ class TransactionService {
     private function createTransaction($transaction, $thirdPartyTransaction, $meter) {
         $transaction = $this->transaction->newQuery()->make([
             'amount' => (int) $transaction['amount'],
-            'sender' => $sparkCustomer->mpmPerson->addresses[0]->phone ?? '-',
+            // FIXME: Variable $sparkCustomer on left side of ?? is never defined.
+            // 'sender' => $sparkCustomer->mpmPerson->addresses[0]->phone ?? '-',
+            'sender' => '-',
             'message' => $meter->serial_number,
             'type' => 'energy',
             'created_at' => $transaction['created'],

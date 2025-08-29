@@ -40,7 +40,10 @@ class MesomTransactionService {
         ]);
     }
 
-    public function associateMesombTransactionWithTransaction($mesombTransaction, $transaction) {
+    public function associateMesombTransactionWithTransaction(
+        MesombTransaction $mesombTransaction,
+        Transaction $transaction,
+    ): Transaction {
         return $mesombTransaction->transaction()->save($transaction);
     }
 }

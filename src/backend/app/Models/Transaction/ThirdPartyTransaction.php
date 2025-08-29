@@ -12,23 +12,17 @@ class ThirdPartyTransaction extends BaseModel implements PaymentProviderTransact
     public const RELATION_NAME = 'third_party_transaction';
 
     /**
-     * @phpstan-return MorphOne<Transaction, Model&PaymentProviderTransactionInterface>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, Model&PaymentProviderTransactionInterface> $relation */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**
-     * @return MorphTo<BaseModel, $this>
+     * @return MorphTo<Model, $this>
      */
     public function manufacturerTransaction(): MorphTo {
-        /** @var MorphTo<BaseModel, $this> $relation */
-        $relation = $this->morphTo();
-
-        return $relation;
+        return $this->morphTo();
     }
 
     /**

@@ -13,7 +13,8 @@ class UploadTransactionRequest extends FormRequest {
         return $this->file(self::TRANSACTION_FILE);
     }
 
-    public function rules() {
+    /** @return array<string, string> */
+    public function rules(): array {
         return [self::TRANSACTION_FILE => 'required|mimes:csv,txt'];
     }
 }

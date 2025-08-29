@@ -36,13 +36,13 @@ class WaveComTransactionProvider implements ITransactionProvider {
 
         // only send confirmation sms
         if ($requestType) {
-            $this->smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $this->smsService->sendSms($transaction->toArray(), SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::error('wavecom transaction is been cancelled');
         }
     }
 
-    public function validateRequest($request): void {
+    public function validateRequest(Transaction|WaveComTransaction $request): void {
         // no need as the transaction initialized by uploading a separate file
     }
 
@@ -64,6 +64,7 @@ class WaveComTransactionProvider implements ITransactionProvider {
 
     public function saveCommonData(): Model {
         // TODO: Implement saveCommonData() method.
+        throw new \BadMethodCallException('Method saveCommonData() not yet implemented.');
     }
 
     public function init($transaction): void {

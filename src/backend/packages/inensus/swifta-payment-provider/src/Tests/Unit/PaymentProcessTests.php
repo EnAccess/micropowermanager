@@ -27,7 +27,8 @@ class PaymentProcessTests extends TestCase {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
-        ProcessPayment::dispatchSync($transaction->id);
+        $companyId = 1;
+        ProcessPayment::dispatchSync($companyId, $transaction->id);
         Queue::assertPushed(EnergyTransactionProcessor::class);
     }
 
@@ -35,7 +36,8 @@ class PaymentProcessTests extends TestCase {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
-        EnergyTransactionProcessor::dispatchSync($transaction);
+        $companyId = 1;
+        EnergyTransactionProcessor::dispatchSync($companyId, $transaction->id);
         Queue::assertPushed(TokenProcessor::class);
     }
 
@@ -44,12 +46,13 @@ class PaymentProcessTests extends TestCase {
         $this->initializeData();
         $transaction = $this->initializeTransaction();
         $transactionData = TransactionDataContainer::initialize($transaction);
-        TokenProcessor::dispatchSync($transactionData);
-        $tokensCount = Token::query()->get()->count();
+        $companyId = 1;
+        TokenProcessor::dispatchSync($companyId, $transactionData);
+        $tokensCount = Token::query()->count();
         $this->assertEquals(1, $tokensCount);
         $mesombPaymentCount = PaymentHistory::query()
             ->where('payment_service', 'mesomb_transaction')
-            ->where('payment_type', 'energy')->get()->count();
+            ->where('payment_type', 'energy')->count();
         $this->assertEquals(1, $mesombPaymentCount);
     }
 

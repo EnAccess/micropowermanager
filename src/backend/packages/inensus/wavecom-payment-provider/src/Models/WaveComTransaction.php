@@ -8,6 +8,7 @@ use App\Models\Base\BaseModel;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $sender
  * @property string $message
  * @property int    $amount
+ * @property int    $status
  */
 class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     protected $table = 'wavecom_transactions';
@@ -57,10 +59,16 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
         $this->amount = $amount;
     }
 
+    /**
+     * @return MorphOne<Transaction, $this>
+     */
     public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
     }

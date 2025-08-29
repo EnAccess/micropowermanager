@@ -17,6 +17,8 @@ class WaveMoneyTransactionCallbackMiddleware {
     public function handle(Request $request, \Closure $next) {
         $mapper = new TransactionCallbackRequestMapper();
         $callbackData = $mapper->getMappedObject($request);
+        $companyId = $request->attributes->get('companyId') ?? null;
+
         try {
             $waveMoneyTransaction = $this->transactionService->getByOrderId($callbackData->getOrderId());
 
@@ -36,7 +38,11 @@ class WaveMoneyTransactionCallbackMiddleware {
             if ($status === WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY) {
                 // we process the transaction in the background
                 $transaction = $waveMoneyTransaction->transaction()->first();
-                ProcessPayment::dispatch($transaction->id);
+                if ($companyId !== null) {
+                    ProcessPayment::dispatch($companyId, $transaction->id);
+                } else {
+                    Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
+                }
             }
         } catch (\Exception $exception) {
             Log::critical('WaveMoney transaction callback called with wrong orderId '.$callbackData->getOrderId());

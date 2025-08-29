@@ -3,7 +3,11 @@
 namespace Inensus\MesombPaymentProvider\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\MesombPaymentProvider\Models\MesombTransaction as MesombTransactionData;
 
+/**
+ * @mixin MesombTransactionData
+ */
 class MesombTransactionProcessingResource extends JsonResource {
     /**
      * Transform the resource into an array.

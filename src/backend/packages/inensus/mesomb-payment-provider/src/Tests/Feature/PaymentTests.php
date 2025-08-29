@@ -83,7 +83,7 @@ class PaymentTests extends TestCase {
             'errors' => [
                 'code' => 422,
                 'title' => 'Mesomp Payment Failed.',
-                'detail' => 'Each payer must have if and only if connected meter with one phone number. Registered meter count is '.Meter::query()->get()->count(),
+                'detail' => 'Each payer must have if and only if connected meter with one phone number. Registered meter count is '.Meter::query()->count(),
             ],
         ]);
     }

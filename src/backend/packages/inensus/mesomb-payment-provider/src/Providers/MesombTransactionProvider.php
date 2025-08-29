@@ -52,7 +52,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         $this->transaction = $this->mesombTransactionService->assignIncomingDataToTransaction($this->validData);
     }
 
-    public function saveCommonData(): Model {
+    public function saveCommonData(): Transaction {
         return $this->mesombTransactionService->associateMesombTransactionWithTransaction(
             $this->mesombTransaction,
             $this->transaction
@@ -123,17 +123,21 @@ class MesombTransactionProvider implements ITransactionProvider {
 
     public function getTransaction(): Transaction {
         // TODO: Implement getTransaction() method.
+        throw new \BadMethodCallException('Method getTransaction() not yet implemented.');
     }
 
     public function getMessage(): string {
         // TODO: Implement getMessage() method.
+        throw new \BadMethodCallException('Method getMessage() not yet implemented.');
     }
 
     public function getAmount(): int {
         // TODO: Implement getAmount() method.
+        throw new \BadMethodCallException('Method getAmount() not yet implemented.');
     }
 
     public function getSender(): string {
         // TODO: Implement getSender() method.
+        throw new \BadMethodCallException('Method getSender() not yet implemented.');
     }
 }

@@ -270,11 +270,12 @@ class KelinMeterService implements ISynchronizeService {
 
                 $city = $kelinCustomerAddress->addresses[0]->city()->first() ?? null;
                 $address = new Address();
+                /** @var Address $address */
                 $address = $address->newQuery()->create([
                     'city_id' => $city ? $city->id : 1,
                 ]);
                 $address->owner()->associate($meter);
-                $address->geo()->associate($meter->device->person->addresses()->first()->geo);
+                $address->geo()->save($meter->device->address->geo()->first());
                 $address->save();
             }
             DB::connection('tenant')->commit();

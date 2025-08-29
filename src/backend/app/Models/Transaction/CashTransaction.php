@@ -27,13 +27,10 @@ class CashTransaction extends BaseModel implements PaymentProviderTransactionInt
     }
 
     /**
-     * @phpstan-return MorphOne<Transaction, Model&PaymentProviderTransactionInterface>
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
-        /** @var MorphOne<Transaction, Model&PaymentProviderTransactionInterface> $relation */
-        $relation = $this->morphOne(Transaction::class, 'original_transaction');
-
-        return $relation;
+        return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
     /**

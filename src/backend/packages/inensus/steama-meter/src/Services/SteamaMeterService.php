@@ -152,6 +152,7 @@ class SteamaMeterService implements ISynchronizeService {
         try {
             DB::connection('tenant')->beginTransaction();
             $meterSerial = $stmMeter['reference'];
+            /** @var Meter */
             $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->first();
             $stmCustomer = $this->customer->newQuery()->with('mpmPerson')->where(
                 'customer_id',
@@ -204,12 +205,14 @@ class SteamaMeterService implements ISynchronizeService {
                 $cityName = $stmCustomerAddress->addresses[0]->city->name;
 
                 $steamaCity = $this->city->newQuery()->with('miniGrid')->where('name', $cityName)->first();
+
                 $address = new Address();
+                /** @var Address $address */
                 $address = $address->newQuery()->create([
                     'city_id' => request()->input('city_id') ?? $steamaCity->id,
                 ]);
                 $address->owner()->associate($meter);
-                $address->geo()->save($meter?->geo()->first());
+                $address->geo()->save($meter->device->address->geo()->first());
                 $address->save();
             }
             DB::connection('tenant')->commit();

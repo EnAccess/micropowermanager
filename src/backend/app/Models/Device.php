@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Carbon\Carbon              $created_at
  * @property \Carbon\Carbon              $updated_at
  * @property Meter|SolarHomeSystem|EBike $device
+ * @property Person                      $person
+ * @property Address                     $address
  * @property string                      $device_type
  * @property Manufacturer                $manufacturer
  */

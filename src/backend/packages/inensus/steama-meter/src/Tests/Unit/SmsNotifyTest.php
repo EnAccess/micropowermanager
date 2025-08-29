@@ -191,12 +191,12 @@ class SmsNotifyTest extends TestCase {
         $this->addSmsSettings();
         $this->addSmsBodies();
         // create person
-        factory(MainSettings::class)->create();
+        MainSettings::factory()->create();
 
         // create person
-        factory(Person::class)->create();
+        Person::factory()->create();
         // create meter-tariff
-        factory(MeterTariff::class)->create();
+        MeterTariff::factory()->create();
 
         // create meter-type
         MeterType::query()->create([
@@ -221,8 +221,10 @@ class SmsNotifyTest extends TestCase {
         ]);
 
         // associate meter with a person
+        /** @var Person */
         $p = Person::query()->first();
-        $p->meters()->create([
+        /** @var Meter */
+        $m = Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,
             'connection_type_id' => 1,
@@ -232,7 +234,7 @@ class SmsNotifyTest extends TestCase {
             'meter_id' => 'Test_Meter',
             'customer_id' => $p->id,
             'bit_harvester_id' => 1,
-            'mpm_meter_id' => $p->meters[0]->id,
+            'mpm_meter_id' => $m->id,
             'hash' => 'xxxx',
         ]);
         // associate address with a person
@@ -290,7 +292,7 @@ class SmsNotifyTest extends TestCase {
     }
 
     private function initializeAdminData() {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $address = Address::query()->make([
             'phone' => '+905396398161',
             'is_primary' => 1,

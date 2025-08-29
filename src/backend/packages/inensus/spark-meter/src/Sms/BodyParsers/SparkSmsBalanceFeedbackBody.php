@@ -13,7 +13,7 @@ class SparkSmsBalanceFeedbackBody extends SmsBodyParser {
         $this->sparkCustomer = $sparkCustomer;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue(string $variable): mixed {
         switch ($variable) {
             case 'credit_balance':
                 $variable = $this->sparkCustomer->credit_balance;

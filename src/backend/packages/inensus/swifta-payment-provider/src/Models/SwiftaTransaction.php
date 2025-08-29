@@ -3,13 +3,22 @@
 namespace Inensus\SwiftaPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
+use App\Models\Transaction\ManufacturerTransactionInterface;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property string                                 $transaction_reference
+ * @property Model&ManufacturerTransactionInterface $manufacturerTransaction
+ * @property int                                    $status
+ * @property float                                  $amount
+ * @property string                                 $cipher
+ */
 class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'swifta_transaction';
     public const STATUS_SUCCESS = 1;
@@ -19,19 +28,22 @@ class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionI
 
     protected $table = 'swifta_transactions';
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->amount;
     }
 
     /**
-     * @return MorphOne
+     * @return MorphOne<Transaction, $this>
      */
     public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
+        return $relation = $this->morphTo();
     }
 
     public function conflicts(): MorphMany {

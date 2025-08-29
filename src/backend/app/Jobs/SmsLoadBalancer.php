@@ -34,7 +34,7 @@ class SmsLoadBalancer extends AbstractJob {
         $this->onQueue('sms_gateway');
 
         $this->smsBody = $smsBody;
-        parent::__construct(get_class($this));
+        parent::__construct();
     }
 
     public function executeJob(): void {
