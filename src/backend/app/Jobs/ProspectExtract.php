@@ -12,7 +12,7 @@ class ProspectExtract extends AbstractJob {
      * Create a new job instance.
      */
     public function __construct() {
-        parent::__construct(get_class($this));
+        parent::__construct();
 
         $this->onConnection('redis');
         $this->onQueue('prospect_extract');

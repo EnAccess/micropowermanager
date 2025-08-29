@@ -12,7 +12,7 @@ class ProspectPush extends AbstractSharedCommand {
      */
     protected $signature = 'prospect:push
                             {--file= : CSV file path containing data to push}
-                            {--company-id= : The tenant ID to run the command for (defaults to current tenant)}';
+                            {--company-id= : The company ID to run the command for (defaults to all companies if not specified)}';
 
     /**
      * The console command description.
@@ -37,15 +37,19 @@ class ProspectPush extends AbstractSharedCommand {
      */
     public function handle(): int {
         try {
-            $this->info('Dispatching Prospect push job...');
-
-            // Get command options
+            $companyId = $this->option('company-id');
             $filePath = $this->option('file');
 
-            // Dispatch the job with options
-            ProspectPushJob::dispatch($filePath);
+            if ($companyId) {
+                $this->info("Dispatching Prospect push job for company ID: {$companyId}");
+                ProspectPushJob::dispatch((int) $companyId, $filePath);
+                $this->info('Prospect push job has been dispatched successfully!');
+            } else {
+                $this->info('Dispatching Prospect push job for all companies...');
+                ProspectPushJob::dispatchForAllTenants($filePath);
+                $this->info('Prospect push jobs have been dispatched for all companies!');
+            }
 
-            $this->info('Prospect push job has been dispatched successfully!');
             $this->info('Check the logs for job execution details.');
 
             return 0;

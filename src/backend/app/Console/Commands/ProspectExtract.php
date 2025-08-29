@@ -11,7 +11,7 @@ class ProspectExtract extends AbstractSharedCommand {
      * @var string
      */
     protected $signature = 'prospect:extract
-                            {--company-id= : The tenant ID to run the command for (defaults to current tenant)}';
+                            {--company-id= : The company ID to run the command for (defaults to all companies if not specified)}';
 
     /**
      * The console command description.
@@ -21,17 +21,33 @@ class ProspectExtract extends AbstractSharedCommand {
     protected $description = 'Extract installation data from database for Prospect';
 
     /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      *
      * @return int
      */
     public function handle(): int {
         try {
-            $this->info('Dispatching Prospect data extraction job...');
+            $companyId = $this->option('company-id');
 
-            ProspectExtractJob::dispatch();
+            if ($companyId) {
+                $this->info("Dispatching Prospect data extraction job for company ID: {$companyId}");
+                ProspectExtractJob::dispatch((int) $companyId);
+                $this->info('Prospect data extraction job has been dispatched successfully!');
+            } else {
+                $this->info('Dispatching Prospect data extraction job for all companies...');
+                ProspectExtractJob::dispatchForAllTenants();
+                $this->info('Prospect data extraction jobs have been dispatched for all companies!');
+            }
 
-            $this->info('Prospect data extraction job has been dispatched successfully!');
             $this->info('Check the logs for job execution details.');
 
             return 0;
