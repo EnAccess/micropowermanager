@@ -8,17 +8,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ProspectExtract extends AbstractJob {
-    private ?int $limit;
-    private bool $isTest;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(?int $limit = null, bool $isTest = false) {
+    public function __construct() {
         parent::__construct(get_class($this));
-
-        $this->limit = $limit;
-        $this->isTest = $isTest;
 
         $this->onConnection('redis');
         $this->onQueue('prospect_extract');
@@ -75,10 +69,6 @@ class ProspectExtract extends AbstractJob {
             'appliance',
             'assetPerson',
         ]);
-
-        if ($this->limit) {
-            $query->limit($this->limit);
-        }
 
         $devices = $query->get();
 
@@ -171,7 +161,7 @@ class ProspectExtract extends AbstractJob {
                 'write_off_date' => null,
                 'write_off_reason' => null,
 
-                'is_test' => $this->isTest,
+                'is_test' => false,
                 'latitude' => $latitude,
                 'longitude' => $longitude,
                 'country' => $primaryAddress?->city?->country?->country_code ?? null,
