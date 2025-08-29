@@ -73,5 +73,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('asset-rate:check')->dailyAt('00:00');
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');
+        $schedule->command('prospect:extract')->everyMinute();
+        $schedule->command('prospect:push')->everyMinute();
     })
     ->create();
