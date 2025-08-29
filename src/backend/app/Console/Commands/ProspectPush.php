@@ -54,7 +54,7 @@ class ProspectPush extends AbstractSharedCommand {
 
             return 0;
         } catch (\Exception $e) {
-            $this->error('Error dispatching job: ' . $e->getMessage());
+            $this->error('Error dispatching job: '.$e->getMessage());
 
             return 1;
         }

@@ -11,7 +11,7 @@ class ProspectPush extends AbstractJob {
      * Create a new job instance.
      */
     public function __construct(
-        private ?string $filePath = null
+        private ?string $filePath = null,
     ) {
         parent::__construct();
 
@@ -30,12 +30,13 @@ class ProspectPush extends AbstractJob {
 
             if (empty($data)) {
                 Log::warning('No data to push to Prospect.');
+
                 return;
             }
 
             $payload = ['data' => $data];
 
-            Log::info('Pushing ' . count($data) . ' installation(s) to Prospect...');
+            Log::info('Pushing '.count($data).' installation(s) to Prospect...');
 
             $response = $this->sendToProspect($payload);
 
@@ -50,12 +51,12 @@ class ProspectPush extends AbstractJob {
                     'response' => $response->body(),
                     'data_count' => count($data),
                 ]);
-                throw new \Exception('Prospect API request failed with status: ' . $response->status());
+                throw new \Exception('Prospect API request failed with status: '.$response->status());
             }
 
             Log::info('Prospect push job completed successfully!');
         } catch (\Exception $e) {
-            Log::error('Error during Prospect push job: ' . $e->getMessage(), [
+            Log::error('Error during Prospect push job: '.$e->getMessage(), [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -75,7 +76,7 @@ class ProspectPush extends AbstractJob {
             throw new \Exception("CSV file not found: {$filePath}");
         }
 
-        Log::info('Loading data from: ' . basename($filePath));
+        Log::info('Loading data from: '.basename($filePath));
 
         $csvContent = file_get_contents($filePath);
         $lines = str_getcsv($csvContent, "\n");
@@ -102,7 +103,7 @@ class ProspectPush extends AbstractJob {
             $row = str_getcsv($line);
 
             if (count($row) !== count($headers)) {
-                Log::warning('Skipping line ' . ($lineNumber + 2) . ': column count mismatch');
+                Log::warning('Skipping line '.($lineNumber + 2).': column count mismatch');
                 continue;
             }
 
@@ -110,6 +111,7 @@ class ProspectPush extends AbstractJob {
 
             $record = array_map(function ($value) {
                 $value = trim($value);
+
                 return $value === '' ? null : $value;
             }, $record);
 
@@ -122,7 +124,7 @@ class ProspectPush extends AbstractJob {
             $data[] = $record;
         }
 
-        Log::info('Loaded ' . count($data) . ' records from CSV');
+        Log::info('Loaded '.count($data).' records from CSV');
 
         return $data;
     }
@@ -143,7 +145,7 @@ class ProspectPush extends AbstractJob {
             throw new \Exception("Prospect folder not found: {$prospectPath}");
         }
 
-        $files = glob($prospectPath . '*.csv');
+        $files = glob($prospectPath.'*.csv');
 
         if (empty($files)) {
             throw new \Exception("No CSV files found in prospect folder: {$prospectPath}");
@@ -165,7 +167,7 @@ class ProspectPush extends AbstractJob {
             throw new \Exception('No CSV file found in prospect folder');
         }
 
-        Log::info('Auto-detected latest CSV: ' . basename($latestFile));
+        Log::info('Auto-detected latest CSV: '.basename($latestFile));
 
         return $latestFile;
     }
@@ -177,7 +179,7 @@ class ProspectPush extends AbstractJob {
      */
     private function sendToProspect(array $payload): Response {
         return Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('PROSPECT_API_TOKEN'),
+            'Authorization' => 'Bearer '.env('PROSPECT_API_TOKEN'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ])->timeout(30)->post(env('PROSPECT_API_URL'), $payload);

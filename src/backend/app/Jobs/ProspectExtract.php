@@ -29,6 +29,7 @@ class ProspectExtract extends AbstractJob {
 
             if (empty($data)) {
                 Log::warning('No data found to extract.');
+
                 return;
             }
 
