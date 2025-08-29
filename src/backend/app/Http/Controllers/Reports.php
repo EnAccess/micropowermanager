@@ -305,31 +305,35 @@ class Reports {
             }
             $sheet->setCellValue('K'.$sheetIndex, $balance);
 
-            if ($transaction->device->device_type === Meter::RELATION_NAME) {
+            if ($transaction->device->device instanceof Meter) {
                 $tariff = null;
                 $connectionType = null;
                 $connectionGroupName = null;
 
-                $deviceModel = $transaction->device->device;
-                if (method_exists($deviceModel, 'tariff')) {
-                    $tariff = $deviceModel->tariff()->first();
+                $meter = $transaction->device->device;
+
+                if (method_exists($meter, 'tariff')) {
+                    $tariff = $meter->tariff()->first();
                 }
 
-                if (method_exists($deviceModel, 'connectionType')) {
-                    $connectionType = $deviceModel->connectionType()->first();
+                if (method_exists($meter, 'connectionType')) {
+                    $connectionType = $meter->connectionType()->first();
                 }
-                $sheet->setCellValue(
-                    'J'.$sheetIndex,
-                    $tariff->name.'-'.
-                    $connectionType->name
-                );
 
-                if (method_exists($deviceModel, 'connectionGroup')) {
-                    $connectionGroupName = $deviceModel->connectionGroup()->first()->name;
+                if ($tariff and $connectionType) {
+                    $sheet->setCellValue(
+                        'J'.$sheetIndex,
+                        $tariff->name.'-'.
+                        $connectionType->name
+                    );
+                }
+
+                if (method_exists($meter, 'connectionGroup')) {
+                    $connectionGroupName = $meter->connectionGroup()->first()->name;
                 }
 
                 $paymentHistories = $this->paymentHistory
-                    ->selectRaw('id, sum(amount) as amount, payment_type ')
+                    ->selectRaw('sum(amount) as amount, payment_type ')
                     ->whereIn('transaction_id', explode(',', $transaction->getAttribute('transaction_ids')))
                     ->groupBy('payment_type')
                     ->get();
@@ -558,11 +562,7 @@ class Reports {
         $sheet = $this->spreadsheet->getActiveSheet();
         $sheet->setTitle('graphs'.$startDate.'-'.$endDate);
 
-        $transactions = $this->transaction::with([
-            'device.device' => function ($query) {
-                $query->select('id'); // Only load necessary fields for MorphTo
-            },
-        ])
+        $transactions = $this->transaction::with('device.device')
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
                 'device.address',
