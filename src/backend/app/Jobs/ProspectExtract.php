@@ -11,8 +11,8 @@ class ProspectExtract extends AbstractJob {
     /**
      * Create a new job instance.
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct(?int $companyId = null) {
+        parent::__construct($companyId);
 
         $this->onConnection('redis');
         $this->onQueue('prospect_extract');
@@ -129,9 +129,9 @@ class ProspectExtract extends AbstractJob {
                 'usage_sub_category' => null,
                 'device_category' => $deviceCategory,
                 'ac_input_source' => null,
-                'dc_input_source' => $deviceCategory === 'solar_home_system' ? 'solar' : null,
+                'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
                 'firmware_version' => null,
-                'manufacturer' => $deviceData->manufacturer->name ?? 'Unknown',
+                'manufacturer' => ($deviceData->manufacturer !== null) ? $deviceData->manufacturer->name : 'Unknown',
                 'model' => null,
                 'primary_use' => null,
                 'rated_power_w' => null,

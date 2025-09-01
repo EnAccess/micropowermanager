@@ -11,9 +11,10 @@ class ProspectPush extends AbstractJob {
      * Create a new job instance.
      */
     public function __construct(
+        ?int $companyId = null,
         private ?string $filePath = null,
     ) {
-        parent::__construct();
+        parent::__construct($companyId);
 
         $this->onConnection('redis');
         $this->onQueue('prospect_push');
