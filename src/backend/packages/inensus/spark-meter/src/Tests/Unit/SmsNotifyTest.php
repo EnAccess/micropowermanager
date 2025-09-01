@@ -73,7 +73,8 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                $customer->mpmPerson->addresses->isEmpty()
+                || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
@@ -128,7 +129,8 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$notifyCustomer->mpmPerson->addresses || $notifyCustomer->mpmPerson->addresses[0]->phone === null
+                $notifyCustomer->mpmPerson->addresses->isEmpty()
+                || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                 || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;

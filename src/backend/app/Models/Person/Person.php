@@ -32,18 +32,19 @@ use Inensus\Ticket\Models\Ticket;
 /**
  * Class Person.
  *
- * @property int                     $id
- * @property string                  $title
- * @property string                  $education
- * @property string                  $name
- * @property string                  $surname
- * @property mixed                   $birth_date
- * @property string                  $sex                  TODO: replace with gender
- * @property int                     $nationality
- * @property int                     $is_customer
- * @property Collection<int, Ticket> $tickets
- * @property mixed                   $agent_sold_appliance
- * @property Collection<int, Device> $devices
+ * @property int                      $id
+ * @property string                   $title
+ * @property string                   $education
+ * @property string                   $name
+ * @property string                   $surname
+ * @property mixed                    $birth_date
+ * @property string                   $sex                  TODO: replace with gender
+ * @property int                      $nationality
+ * @property int                      $is_customer
+ * @property Collection<int, Ticket>  $tickets
+ * @property mixed                    $agent_sold_appliance
+ * @property Collection<int, Device>  $devices
+ * @property Collection<int, Address> $addresses
  *
  * @implements HasAddressesInterface<Person>
  */

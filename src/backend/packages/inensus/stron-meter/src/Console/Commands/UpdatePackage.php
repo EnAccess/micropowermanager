@@ -12,7 +12,6 @@ class UpdatePackage extends Command {
     protected $description = 'Update StronMeter Package';
 
     public function __construct(
-        private StronCredentialService $credentialService,
         private Filesystem $filesystem,
     ) {
         parent::__construct();

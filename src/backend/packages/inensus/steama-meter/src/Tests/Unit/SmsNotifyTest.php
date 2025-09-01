@@ -45,6 +45,7 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, SteamaCustomer> */
         $customers = SteamaCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
@@ -59,6 +60,7 @@ class SmsNotifyTest extends TestCase {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ) {
+            /** @var ?SteamaSmsNotifiedCustomer */
             $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
                 'customer_id',
                 $customer->customer_id
@@ -67,11 +69,13 @@ class SmsNotifyTest extends TestCase {
             if ($notifiedCustomer) {
                 return true;
             }
+
             if ($customer->account_balance > $customer->low_balance_warning) {
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                $customer->mpmPerson->addresses->isEmpty()
+                || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
@@ -126,7 +130,8 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$notifyCustomer->mpmPerson->addresses || $notifyCustomer->mpmPerson->addresses[0]->phone === null
+                $notifyCustomer->mpmPerson->addresses->isEmpty()
+                || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                 || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;

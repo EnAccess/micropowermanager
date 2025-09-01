@@ -8,22 +8,11 @@ use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 
 class PersonObserver {
-    private $customerService;
-    private $apiHelpers;
-    private $person;
-    private $kelinCustomer;
-
     public function __construct(
-        KelinCustomerService $customerService,
-        ApiHelpers $apiHelpers,
-        Person $person,
-        KelinCustomer $kelinCustomer,
-    ) {
-        $this->customerService = $customerService;
-        $this->apiHelpers = $apiHelpers;
-        $this->person = $person;
-        $this->kelinCustomer = $kelinCustomer;
-    }
+        private ApiHelpers $apiHelpers,
+        private Person $person,
+        private KelinCustomer $kelinCustomer,
+    ) {}
 
     public function updated(Person $person) {
         $kelinCustomer = $this->kelinCustomer->newQuery()->where('mpm_customer_id', $person->id)->first();

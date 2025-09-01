@@ -12,7 +12,6 @@ class UpdatePackage extends Command {
     protected $description = 'Update ViberMessaging Package';
 
     public function __construct(
-        private ViberCredentialService $credentialService,
         private Filesystem $filesystem,
     ) {
         parent::__construct();

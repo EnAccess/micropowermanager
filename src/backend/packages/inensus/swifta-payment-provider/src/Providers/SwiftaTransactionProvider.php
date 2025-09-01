@@ -14,7 +14,7 @@ use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class SwiftaTransactionProvider implements ITransactionProvider {
-    private $validData = [];
+    private array $validData = [];
 
     public function __construct(
         private SwiftaTransaction $swiftaTransaction,
@@ -72,6 +72,10 @@ class SwiftaTransactionProvider implements ITransactionProvider {
 
     public function setValidData($swiftaTransactionData) {
         $this->validData = $swiftaTransactionData;
+    }
+
+    public function getValidData() {
+        return $this->validData;
     }
 
     public function getSubTransaction() {

@@ -21,15 +21,9 @@ class InstallSparkMeterPackage extends Command {
 
     public function __construct(
         private InsertSparkMeterApi $insertSparkMeterApi,
-        private MeterModelService $meterModelService,
         private CredentialService $credentialService,
         private CustomerService $customerService,
         private SiteService $siteService,
-        private SmSmsSettingService $smsSettingService,
-        private SmSyncSettingService $syncSettingService,
-        private SmSmsBodyService $smsBodyService,
-        private SmSmsVariableDefaultValueService $defaultValueService,
-        private SmSmsFeedbackWordService $smSmsFeedbackWordService,
         private PackageInstallationService $packageInstallationService,
     ) {
         parent::__construct();
@@ -52,35 +46,5 @@ class InstallSparkMeterPackage extends Command {
             $this->warn('Spark Meter package needs least one Connection Group and one Connection Type.');
             $this->warn('Before you get Customers from Spark Meter please check them in #Connection# section.');
         }
-    }
-
-    private function publishMigrations() {
-        $this->info('Copying migrations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    private function createDatabaseTables() {
-        $this->info('Creating database tables\n');
-        $this->call('migrate');
-    }
-
-    private function publishVueFiles() {
-        $this->info('Copying vue files\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
-            '--tag' => 'vue-components',
-            '--force' => true,
-        ]);
-    }
-
-    private function createPluginRecord() {
-        $this->call('plugin:add', [
-            'name' => 'SparkMeter',
-            'composer_name' => 'inensus/spark-meter',
-            'description' => 'Spark meters integration package for MicroPowerManager',
-        ]);
     }
 }

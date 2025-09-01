@@ -27,7 +27,6 @@ class SteamaTransactionsService implements ISynchronizeService {
     private $rootUrl = '/transactions';
     private $transaction;
     private $token;
-    private $steamaCustomer;
     private $steamaSyncSettingService;
     private $steamaSyncActionService;
 
@@ -43,7 +42,6 @@ class SteamaTransactionsService implements ISynchronizeService {
         SteamaMeter $steamaMeter,
         ThirdPartyTransaction $thirdPartyTransaction,
         Token $token,
-        SteamaCustomer $steamaCustomer,
         SteamaSyncSettingService $steamaSyncSettingService,
         StemaSyncActionService $steamaSyncActionService,
     ) {
@@ -58,7 +56,6 @@ class SteamaTransactionsService implements ISynchronizeService {
         $this->steamaMeter = $steamaMeter;
         $this->thirdPartyTransaction = $thirdPartyTransaction;
         $this->token = $token;
-        $this->steamaCustomer = $steamaCustomer;
         $this->steamaSyncSettingService = $steamaSyncSettingService;
         $this->steamaSyncActionService = $steamaSyncActionService;
     }

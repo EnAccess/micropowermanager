@@ -23,33 +23,4 @@ class InstallPackage extends Command {
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
-
-    private function publishMigrations() {
-        $this->info('Copying migrations\n');
-        $this->call('vendor:publish', [
-            '--provider' => 'qq',
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    private function createDatabaseTables() {
-        $this->info('Creating database tables\n');
-        $this->call('migrate');
-    }
-
-    private function publishVueFiles() {
-        $this->info('Copying vue files\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\CalinMeter\Providers\CalinMeterServiceProvider",
-            '--tag' => 'vue-components',
-        ]);
-    }
-
-    private function createPluginRecord() {
-        $this->call('plugin:add', [
-            'name' => 'CalinMeter',
-            'composer_name' => 'inensus/calin-meter',
-            'description' => 'CalinMeter integration package for MicroPowerManager',
-        ]);
-    }
 }
