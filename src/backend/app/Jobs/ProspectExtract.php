@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Device;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -210,6 +211,14 @@ class ProspectExtract extends AbstractJob {
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
+
+        $directory = "prospect/{$companyDatabaseName}";
+        $fullDirectoryPath = storage_path("app/{$directory}");
+
+        if (!File::isDirectory($fullDirectoryPath)) {
+            File::makeDirectory($fullDirectoryPath, 0775, true);
+        }
+
         Storage::disk('local')->put($filePath, $csvContent);
 
         return Storage::disk('local')->path($filePath);
