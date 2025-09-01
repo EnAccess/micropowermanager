@@ -7,7 +7,6 @@ use App\Helpers\MailHelperInterface;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use MPM\User\Events\UserCreatedEvent;
 
