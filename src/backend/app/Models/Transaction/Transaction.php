@@ -49,7 +49,10 @@ class Transaction extends BaseModel {
      * @return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this>
      */
     public function originalTransaction(): MorphTo {
-        return $this->morphTo();
+        /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this> $relation */
+        $relation = $this->morphTo();
+
+        return $relation;
     }
 
     /**

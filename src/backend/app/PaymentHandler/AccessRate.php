@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class AccessRate {
     private ?AccessRateModel $accessRate = null;
-    private Meter $meter;
+    private ?Meter $meter;
 
     /**
      * AccessRatePayment constructor.
