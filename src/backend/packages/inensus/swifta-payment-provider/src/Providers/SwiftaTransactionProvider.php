@@ -45,6 +45,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
     }
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
+        /** @var SwiftaTransaction */
         $swiftaTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $updateData = [
@@ -52,7 +53,11 @@ class SwiftaTransactionProvider implements ITransactionProvider {
             ];
             $this->swiftaTransactionService->update($swiftaTransaction, $updateData);
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
         } else {
             Log::error('swifta transaction is been cancelled');
         }

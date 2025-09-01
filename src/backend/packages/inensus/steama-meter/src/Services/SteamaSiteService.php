@@ -138,7 +138,7 @@ class SteamaSiteService implements ISynchronizeService {
             return $site;
         });
 
-        $siteSyncStatus = $sitesCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $siteSyncStatus = $sitesCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($siteSyncStatus) {
             return $returnData ? ['data' => $sitesCollection, 'result' => false] : ['result' => false];
         }

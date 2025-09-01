@@ -82,7 +82,11 @@ class SmsNotifyTest extends TestCase {
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer, SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SteamaSmsConfig::class);
+            $smsService->sendSms(
+                $customer->toArray(),
+                SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
+                SteamaSmsConfig::class
+            );
             SteamaSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
                 'notify_type' => 'low_balance',
@@ -138,7 +142,11 @@ class SmsNotifyTest extends TestCase {
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($steamaTransaction->thirdPartyTransaction->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $steamaTransaction->thirdPartyTransaction->transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
             SteamaSmsNotifiedCustomer::query()->create([
                 'customer_id' => $notifyCustomer->customer_id,
                 'notify_type' => 'transaction',

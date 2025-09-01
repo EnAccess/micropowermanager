@@ -138,7 +138,7 @@ class SteamaMeterService implements ISynchronizeService {
 
             return $meter;
         });
-        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($meterSyncStatus) {
             return $returnData ? ['data' => $metersCollection, 'result' => false] : ['result' => false];
         }

@@ -192,7 +192,7 @@ class SteamaCustomerService implements ISynchronizeService {
 
             return $customer;
         });
-        $customerSyncStatus = $customersCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $customerSyncStatus = $customersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($customerSyncStatus) {
             return $returnData ? ['data' => $customersCollection, 'result' => false] : ['result' => false];
         }

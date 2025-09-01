@@ -81,7 +81,7 @@ class SmsNotifyTest extends TestCase {
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer, SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
+            $smsService->sendSms($customer->toArray(), SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
@@ -137,7 +137,11 @@ class SmsNotifyTest extends TestCase {
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($sparkTransaction->thirdPartyTransaction->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $sparkTransaction->thirdPartyTransaction->transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $notifyCustomer->customer_id,

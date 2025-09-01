@@ -28,7 +28,7 @@ class CsvDataService {
         $csvData = $this->csvData->newQuery()->create([
             'csv_filename' => $request->file('csv')->getClientOriginalName(),
             'user_id' => auth('api')->user()->id,
-            'csv_data' => json_encode(array_values($parsedCsvData), true),
+            'csv_data' => json_encode(array_values($parsedCsvData), 1),
         ]);
         $csvData['recently_created_records'] = $recentlyCreatedRecords;
         $csvData['alert'] = $message;

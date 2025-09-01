@@ -438,7 +438,7 @@ class CustomerService implements ISynchronizeService {
                 return $customer;
             });
 
-            $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', 1)->count();
+            $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', [1])->count();
 
             if ($customerSyncStatus) {
                 $returnData ? array_push($returnArray, [
@@ -509,7 +509,7 @@ class CustomerService implements ISynchronizeService {
 
             return $customer;
         });
-        $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', 1)->count();
+        $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', [1])->count();
         if ($customerSyncStatus) {
             return ['result' => false, 'message' => 'customers are not updated for site '.$siteId];
         } else {

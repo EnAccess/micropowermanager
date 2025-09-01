@@ -168,7 +168,7 @@ class SteamaAgentService implements ISynchronizeService {
 
             return $agent;
         });
-        $agentSyncStatus = $agentsCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $agentSyncStatus = $agentsCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($agentSyncStatus) {
             return $returnData ? ['data' => $agentsCollection, 'result' => false] : ['result' => false];
         }
