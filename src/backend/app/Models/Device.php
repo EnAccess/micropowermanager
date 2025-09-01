@@ -6,8 +6,10 @@ use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
+use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -61,5 +63,12 @@ class Device extends BaseModel {
      */
     public function appliance(): HasOne {
         return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
+    }
+
+    /**
+     * @return HasMany<Transaction, $this>
+     */
+    public function transactions(): HasMany {
+        return $this->hasMany(Transaction::class, 'message', 'device_serial');
     }
 }
