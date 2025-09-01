@@ -30,8 +30,7 @@ class UserService {
             $companyId = $payload?->get('companyId');
         }
 
-        /** @var User $user */
-        $user = $this->buildQuery()->newQuery()->create([
+        $user = $this->user->newQuery()->create([
             'name' => $userData['name'],
             'password' => $userData['password'],
             'email' => $userData['email'],
@@ -59,8 +58,7 @@ class UserService {
             $newPassword = time();
         }
 
-        /** @var User $user */
-        $user = $this->buildQuery()->where('email', $email)->firstOrFail();
+        $user = $this->user->newQuery()->where('email', $email)->firstOrFail();
 
         if ($user == null) {
             return null;
@@ -81,7 +79,6 @@ class UserService {
             return null;
         }
 
-        /** @var User|null $user */
         $user = $user->fresh()->with(['addressDetails'])->first();
 
         return $user;
@@ -91,14 +88,13 @@ class UserService {
      * @return LengthAwarePaginator<User>
      */
     public function list(): LengthAwarePaginator {
-        return $this->buildQuery()
+        return $this->user->newQuery()
             ->select('id', 'name', 'email')
             ->with(['addressDetails'])
             ->paginate();
     }
 
     public function get(int $id): User {
-        /** @var User $user */
         $user = User::with(['addressDetails'])
             ->where('id', '=', $id)
             ->firstOrFail();
@@ -110,8 +106,7 @@ class UserService {
      * @return array<string, mixed>
      */
     public function resetAdminPassword(): array {
-        /** @var User $user */
-        $user = $this->buildQuery()->first();
+        $user = $this->user->newQuery()->first();
         $randomPassword = str_random(8);
         $user->update(['password' => $randomPassword]);
         $user->save();
@@ -122,16 +117,8 @@ class UserService {
         return $admin;
     }
 
-    /**
-     * @return Builder<User>
-     */
-    private function buildQuery(): Builder {
-        return $this->user->newQuery();
-    }
-
     public function getCompanyId(): int {
-        /** @var User $user */
-        $user = $this->buildQuery()
+        $user = $this->user->newQuery()
             ->select(User::COL_COMPANY_ID)
             ->first();
 

@@ -82,10 +82,7 @@ class Person extends BaseModel implements HasAddressesInterface /* <Person> */ ,
      * @return MorphMany<Address, self>
      */
     public function addresses(): MorphMany {
-        /** @var MorphMany<Address, self> $relation */
-        $relation = $this->morphMany(Address::class, 'owner');
-
-        return $relation;
+        return $this->morphMany(Address::class, 'owner');
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Exceptions\Export;
 
 class CsvNotSavedException extends \Exception {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $message = 'CSV file could not be saved.';
 }

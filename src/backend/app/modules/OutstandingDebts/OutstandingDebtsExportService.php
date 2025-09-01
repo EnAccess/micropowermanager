@@ -66,7 +66,6 @@ class OutstandingDebtsExportService extends AbstractExportService {
     public function createReport(CarbonImmutable $toDate): string {
         $currency = $this->applianceRateService->getCurrencyFromMainSettings();
 
-        /** @var Collection<int, AssetRate> $data */
         $data = $this->applianceService->queryOutstandingDebtsByApplianceRates($toDate)->get();
         $this->createSpreadSheetFromTemplate($this->getTemplatePath());
         $this->setCurrency($currency);

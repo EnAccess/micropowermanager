@@ -35,7 +35,6 @@ class GeographicalInformationService {
 
     private function createMiniGridRelatedGeographicalInformation($ownerModel) {
         $miniGridId = $ownerModel->id;
-        /** @var GeographicalInformation */
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])
             ->whereHasMorph(
                 'owner',

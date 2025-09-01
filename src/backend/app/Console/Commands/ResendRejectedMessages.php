@@ -10,15 +10,11 @@ use Illuminate\Support\Facades\Log;
 class ResendRejectedMessages extends AbstractSharedCommand {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
     protected $signature = 'sms:resend-rejected {amount}';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected $description = 'Takes unsent messages from the sms table and send them via the registered SMS-Provide';
 

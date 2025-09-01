@@ -75,7 +75,6 @@ class CsvDataProcessor {
                         $geographicalInformationService->resolveCsvDataFromComingRow($row, $meter);
 
                         $address = new Address();
-                        /** @var Address $address */
                         $address = $address->newQuery()->create([
                             'city_id' => $city->id,
                         ]);

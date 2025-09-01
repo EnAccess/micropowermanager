@@ -45,7 +45,6 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
-        /** @var Collection<int, SmCustomer> */
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
@@ -56,7 +55,6 @@ class SmsNotifyTest extends TestCase {
             Carbon::now()->subMinutes($lowBalanceMin)
         )->get();
 
-        /** @var Collection<int, SmSmsNotifiedCustomer> */
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
@@ -221,9 +219,7 @@ class SmsNotifyTest extends TestCase {
         ]);
 
         // associate meter with a person
-        /** @var Person */
         $p = Person::query()->first();
-        /** @var Meter */
         $m = Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,

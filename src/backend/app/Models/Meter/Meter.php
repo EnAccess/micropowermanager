@@ -101,7 +101,6 @@ class Meter extends BaseModel {
     }
 
     public function findBySerialNumber(string $meterSerialNumber): ?self {
-        /** @var Meter|null $result */
         $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
 
         return $result;
