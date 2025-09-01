@@ -6,6 +6,7 @@ use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
+use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -84,5 +85,12 @@ class Device extends BaseModel {
             'device_serial',
             'asset_id'
         );
+    }
+
+    /**
+     * @return HasMany<Transaction, $this>
+     */
+    public function transactions(): HasMany {
+        return $this->hasMany(Transaction::class, 'message', 'device_serial');
     }
 }
