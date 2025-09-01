@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Services;
 
 use App\Models\City;
-use App\Models\ConnectionType;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
 use Illuminate\Support\Facades\App;

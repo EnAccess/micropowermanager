@@ -2,8 +2,6 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-use Inensus\SteamaMeter\Helpers\ApiHelpers;
-
 class PackageInstallationService {
     public function __construct(
         private SteamaSmsSettingService $smsSettingService,

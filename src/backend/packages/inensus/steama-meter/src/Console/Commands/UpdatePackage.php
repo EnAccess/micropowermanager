@@ -5,19 +5,7 @@ namespace Inensus\SteamaMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\SteamaMeter\Helpers\ApiHelpers;
 use Inensus\SteamaMeter\Services\PackageInstallationService;
-use Inensus\SteamaMeter\Services\SteamaAgentService;
-use Inensus\SteamaMeter\Services\SteamaCredentialService;
-use Inensus\SteamaMeter\Services\SteamaSiteLevelPaymentPlanTypeService;
-use Inensus\SteamaMeter\Services\SteamaSiteService;
-use Inensus\SteamaMeter\Services\SteamaSmsBodyService;
-use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
-use Inensus\SteamaMeter\Services\SteamaSmsSettingService;
-use Inensus\SteamaMeter\Services\SteamaSmsVariableDefaultValueService;
-use Inensus\SteamaMeter\Services\SteamaSyncSettingService;
-use Inensus\SteamaMeter\Services\SteamaTariffService;
-use Inensus\SteamaMeter\Services\SteamaUserTypeService;
 
 class UpdatePackage extends Command {
     protected $signature = 'steama-meter:update';

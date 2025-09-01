@@ -2,7 +2,6 @@
 
 namespace Inensus\ViberMessaging\Services;
 
-use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Inensus\ViberMessaging\Models\ViberContact;

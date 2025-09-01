@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;

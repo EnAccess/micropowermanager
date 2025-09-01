@@ -5,7 +5,6 @@ namespace Inensus\KelinMeter\Observers;
 use App\Models\Person\Person;
 use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Models\KelinCustomer;
-use Inensus\KelinMeter\Services\KelinCustomerService;
 
 class PersonObserver {
     public function __construct(

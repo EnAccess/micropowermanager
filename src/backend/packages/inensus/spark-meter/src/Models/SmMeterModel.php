@@ -3,7 +3,6 @@
 namespace Inensus\SparkMeter\Models;
 
 use App\Models\Meter\MeterType;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SmMeterModel extends BaseModel {

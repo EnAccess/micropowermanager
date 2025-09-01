@@ -3,9 +3,6 @@
 namespace Inensus\WaveMoneyPaymentProvider\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\DB;
-use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
 
 class UpdatePackage extends Command {
     protected $signature = 'wave-money-payment-provider:update';

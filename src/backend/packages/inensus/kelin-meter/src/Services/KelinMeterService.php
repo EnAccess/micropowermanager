@@ -3,7 +3,6 @@
 namespace Inensus\KelinMeter\Services;
 
 use App\Models\Address\Address;
-use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;

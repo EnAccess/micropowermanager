@@ -5,7 +5,6 @@ namespace Inensus\ViberMessaging\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\ViberMessaging\Services\ViberCredentialService;
 
 class UpdatePackage extends Command {
     protected $signature = 'viber-messaging:update';
