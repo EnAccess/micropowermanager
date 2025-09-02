@@ -19,7 +19,6 @@ class TicketCommentService {
             'ticket_user_id' => $ticketUserId,
         ];
 
-        /** @var TicketComment $comment */
         $comment = $this->ticketComment->newQuery()->create($commentData);
 
         return $comment;

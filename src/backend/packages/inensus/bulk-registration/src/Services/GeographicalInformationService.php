@@ -48,7 +48,6 @@ class GeographicalInformationService {
             return false;
         }
         if ($geographicalInformation->owner instanceof MiniGrid) {
-            /** @var GeographicalLocationFinder */
             $geographicalLocationFinder = app()->make(GeographicalLocationFinder::class);
             $geographicalCoordinatesResult = $geographicalLocationFinder->getCoordinatesGivenAddress($geographicalInformation->owner->name);
             $geographicalInformation->points = $geographicalCoordinatesResult['lat'].','.$geographicalCoordinatesResult['lng'];

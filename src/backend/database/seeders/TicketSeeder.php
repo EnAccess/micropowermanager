@@ -168,16 +168,12 @@ class TicketSeeder extends Seeder {
     private function generateTicket(): void {
         $randomCategory = TicketCategory::factory()->createOne();
         $fakeSentence = $this->generateFakeSentence();
-        /** @var User $randomCreator */
-        $randomCreator = User::inRandomOrder()->first();
+        $randomCreator = User::query()->inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
         $ticketUser = TicketUser::factory()->createOne();
-        /** @var MaintenanceUsers $randomMaintenanceUser */
-        $randomMaintenanceUser = MaintenanceUsers::inRandomOrder()->first();
-        /** @var User $randomUser */
-        $randomUser = User::inRandomOrder()->first();
-        /** @var Person $randomPerson */
-        $randomPerson = Person::inRandomOrder()->where('is_customer', 1)->first();
+        $randomMaintenanceUser = MaintenanceUsers::query()->inRandomOrder()->first();
+        $randomUser = User::query()->inRandomOrder()->first();
+        $randomPerson = Person::query()->inRandomOrder()->where('is_customer', 1)->first();
         $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
 

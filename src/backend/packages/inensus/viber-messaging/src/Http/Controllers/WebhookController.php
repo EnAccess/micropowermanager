@@ -56,7 +56,6 @@ class WebhookController extends Controller {
                     return;
                 }
 
-                /** @var ?Meter */
                 $meter = Meter::query()->where('serial_number', $meterSerialNumber)->first();
 
                 if (!$meter) {
