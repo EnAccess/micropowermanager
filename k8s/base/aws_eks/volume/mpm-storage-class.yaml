@@ -5,4 +5,4 @@ metadata:
 provisioner: ebs.csi.aws.com
 volumeBindingMode: WaitForFirstConsumer
 parameters:
-  type: gp2 # AWS EBS storage class (https://aws.amazon.com/ebs/general-purpose/)
+  type: gp2  # AWS EBS storage class (https://aws.amazon.com/ebs/general-purpose/)
