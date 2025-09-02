@@ -4,10 +4,11 @@ namespace Inensus\SwiftaPaymentProvider\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
 
 class SwiftaTransactionMiddleware {
     public function handle(Request $request, \Closure $next) {
-        $transactionProvider = resolve('SwiftaPaymentProvider');
+        $transactionProvider = resolve(SwiftaTransactionProvider::class);
 
         try {
             $transactionProvider->validateRequest($request);

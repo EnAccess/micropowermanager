@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPayerMustHaveOnlyOneConnectedMeterException;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPaymentPhoneNumberNotFoundException;
 use Inensus\MesombPaymentProvider\Exceptions\MesombStatusFailedException;
+use Inensus\MesombPaymentProvider\Providers\MesombTransactionProvider;
 
 class MesombTransactionRequest {
     public function handle(Request $request, \Closure $next) {
-        $transactionProvider = resolve('MesombPaymentProvider');
+        $transactionProvider = resolve(MesombTransactionProvider::class);
         try {
             $transactionProvider->validateRequest($request);
         } catch (MesombStatusFailedException $exception) {

@@ -29,7 +29,8 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/wavecom-payment-provider.php', 'wavecom-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('WaveComPaymentProvider', WaveComTransactionProvider::class);
+        $this->app->bind(WaveComTransactionProvider::class);
+        $this->app->alias(WaveComTransactionProvider::class, 'WaveComPaymentProvider');
     }
 
     public function publishConfigFiles(): void {

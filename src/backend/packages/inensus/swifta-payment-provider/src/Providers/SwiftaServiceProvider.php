@@ -35,7 +35,8 @@ class SwiftaServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/swifta-payment-provider.php', 'swifta-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SwiftaPaymentProvider', SwiftaTransactionProvider::class);
+        $this->app->bind(SwiftaTransactionProvider::class);
+        $this->app->alias(SwiftaTransactionProvider::class, 'SwiftPaymentProvider');
     }
 
     public function publishConfigFiles(): void {
