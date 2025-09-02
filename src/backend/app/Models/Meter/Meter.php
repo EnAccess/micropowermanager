@@ -19,11 +19,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * @property int         $id
- * @property string      $serial_number
- * @property bool        $in_use
- * @property Device      $device
- * @property MeterTariff $tariff
+ * @property int          $id
+ * @property string       $serial_number
+ * @property bool         $in_use
+ * @property Device       $device
+ * @property Manufacturer $manufacturer
+ * @property MeterTariff  $tariff
  */
 class Meter extends BaseModel {
     /** @use HasFactory<\Database\Factories\Meter\MeterFactory> */
