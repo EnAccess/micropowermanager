@@ -57,7 +57,8 @@ class SparkMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/spark-meter-integration.php', 'spark');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SparkMeterApi', SparkMeterApi::class);
+        $this->app->bind(SparkMeterApi::class);
+        $this->app->alias(SparkMeterApi::class, 'SparkMeterApi');
     }
 
     public function publishVueFiles(): void {

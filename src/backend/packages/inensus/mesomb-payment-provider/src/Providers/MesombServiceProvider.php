@@ -29,7 +29,8 @@ class MesombServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/mesomb-payment-provider.php', 'mesomb-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->singleton('MesombPaymentProvider', MesombTransactionProvider::class);
+        $this->app->singleton(MesombTransactionProvider::class);
+        $this->app->alias(MesombTransactionProvider::class, 'MesombPaymentProvider');
     }
 
     public function publishConfigFiles(): void {

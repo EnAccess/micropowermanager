@@ -33,7 +33,8 @@ class GomeLongMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/gome-long-meter.php', 'gome-long-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('GomeLongMeterApi', GomeLongMeterApi::class);
+        $this->app->bind(GomeLongMeterApi::class);
+        $this->app->alias(GomeLongMeterApi::class, 'GomeLongMeterApi');
     }
 
     public function publishConfigFiles(): void {

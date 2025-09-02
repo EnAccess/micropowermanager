@@ -18,7 +18,6 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SparkMeter\Models\SmCustomer;
@@ -45,7 +44,6 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
-        /** @var Collection<int, SmCustomer> */
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
@@ -56,7 +54,6 @@ class SmsNotifyTest extends TestCase {
             Carbon::now()->subMinutes($lowBalanceMin)
         )->get();
 
-        /** @var Collection<int, SmSmsNotifiedCustomer> */
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
@@ -227,9 +224,7 @@ class SmsNotifyTest extends TestCase {
         ]);
 
         // associate meter with a person
-        /** @var Person */
         $p = Person::query()->first();
-        /** @var Meter */
         $m = Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,

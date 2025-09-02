@@ -26,7 +26,8 @@ class StronMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/stron-meter.php', 'stron-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('StronMeterApi', StronMeterApi::class);
+        $this->app->bind(StronMeterApi::class);
+        $this->app->alias(StronMeterApi::class, 'StronMeterApi');
     }
 
     public function publishConfigFiles(): void {

@@ -4,8 +4,11 @@ namespace MPM\Transaction\Provider;
 
 use App\Models\Transaction\AgentTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
+use Inensus\WavecomPaymentProvider\Providers\WaveComTransactionProvider;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 
 class TransactionAdapter {
     /**
@@ -15,23 +18,22 @@ class TransactionAdapter {
      */
     public static function getTransaction($transactionProvider): ?ITransactionProvider {
         if ($transactionProvider instanceof AgentTransaction) {
-            $baseTransaction = resolve('AgentPaymentProvider');
+            $baseTransaction = resolve(AgentTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;
         } elseif ($transactionProvider instanceof WaveMoneyTransaction) {
-            $baseTransaction = resolve('WaveMoneyPaymentProvider');
+            $baseTransaction = resolve(WaveMoneyTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;
         } elseif ($transactionProvider instanceof SwiftaTransaction) {
-            $baseTransaction = resolve('SwiftaPaymentProvider');
+            $baseTransaction = resolve(SwiftaTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;
         } elseif ($transactionProvider instanceof WaveComTransaction) {
-            /** @var ITransactionProvider $baseTransaction */
-            $baseTransaction = resolve('WaveComPaymentProvider');
+            $baseTransaction = resolve(WaveComTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;

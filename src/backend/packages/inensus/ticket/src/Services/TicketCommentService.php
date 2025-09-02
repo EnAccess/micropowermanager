@@ -19,7 +19,6 @@ class TicketCommentService {
             'ticket_user_id' => $ticketUserId,
         ];
 
-        /** @var TicketComment $comment */
         $comment = $this->ticketComment->newQuery()->create($commentData);
 
         return $comment;
@@ -27,7 +26,6 @@ class TicketCommentService {
 
     // store a comment if the sender is an maintenance guy  and responds with sms to an open ticket.
     public function storeComment($sender, $message) {
-        /** @var ?Person */
         $person = $this->person::with([
             'addresses',
             'tickets' => static function ($q) {

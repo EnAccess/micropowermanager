@@ -34,9 +34,7 @@ class TransactionDataContainer {
     public bool $applianceInstallmentsFullFilled;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {
-        /** @var TransactionDataContainer $container */
         $container = app()->make(TransactionDataContainer::class);
-        /** @var DeviceService $deviceService */
         $deviceService = app()->make(DeviceService::class);
 
         // Initialize base properties
@@ -54,7 +52,6 @@ class TransactionDataContainer {
             $container->device = $deviceService->getBySerialNumber($transaction->message);
 
             // Get the associated device model (Meter or SHS)
-            /** @var Meter|SolarHomeSystem $deviceModel */
             $deviceModel = $container->device->device;
             $container->manufacturer = $deviceModel->manufacturer ?? null;
 

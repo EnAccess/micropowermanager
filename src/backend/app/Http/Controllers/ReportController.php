@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController {
-    /**
-     * @var Report
-     */
     private Report $report;
 
     public function __construct(Report $report) {

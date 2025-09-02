@@ -69,7 +69,8 @@ class SteamaMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/steama-meter.php', 'steama');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SteamaMeterApi', SteamaMeterApi::class);
+        $this->app->bind(SteamaMeterApi::class);
+        $this->app->alias(SteamaMeterApi::class, 'SteamaMeterApi');
     }
 
     public function publishConfigFiles(): void {

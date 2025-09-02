@@ -45,10 +45,8 @@ use Inensus\Ticket\Models\Ticket;
  * @property mixed                    $agent_sold_appliance
  * @property Collection<int, Device>  $devices
  * @property Collection<int, Address> $addresses
- *
- * @implements HasAddressesInterface<Person>
  */
-class Person extends BaseModel implements HasAddressesInterface /* <Person> */ , RoleInterface {
+class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -80,13 +78,10 @@ class Person extends BaseModel implements HasAddressesInterface /* <Person> */ ,
     }
 
     /**
-     * @return MorphMany<Address, self>
+     * @return MorphMany<Address, $this>
      */
     public function addresses(): MorphMany {
-        /** @var MorphMany<Address, self> $relation */
-        $relation = $this->morphMany(Address::class, 'owner');
-
-        return $relation;
+        return $this->morphMany(Address::class, 'owner');
     }
 
     /**

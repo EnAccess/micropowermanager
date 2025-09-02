@@ -24,7 +24,8 @@ class AfricasTalkingServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/africas-talking.php', 'africas-talking');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('AfricasTalkingGateway', AfricasTalkingGateway::class);
+        $this->app->bind(AfricasTalkingGateway::class);
+        $this->app->alias(AfricasTalkingGateway::class, 'AfricasTalkingGateway');
     }
 
     public function publishConfigFiles(): void {

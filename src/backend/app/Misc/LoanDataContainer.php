@@ -106,7 +106,6 @@ class LoanDataContainer {
      */
     private function getMeterOwner(string $serialNumber): Person {
         try {
-            /** @var Meter $meter */
             $meter = Meter::with('device.person')
                 ->where('serial_number', $serialNumber)
                 ->firstOrFail();

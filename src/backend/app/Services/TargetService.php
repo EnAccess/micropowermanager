@@ -14,14 +14,10 @@ class TargetService {
     public function __construct(private Target $target) {}
 
     public function getById(int $targetId): Target {
-        /** @var Target $model */
-        $model = $this->target->newQuery()->with(['subTargets', 'city'])->find($targetId);
-
-        return $model;
+        return $this->target->newQuery()->with(['subTargets', 'city'])->find($targetId);
     }
 
     public function create(CarbonImmutable $period, string $targetForType, TargetAssignable $targetOwner): Target {
-        /** @var Target $target */
         $target = $this->target->newQuery()->make([
             'target_date' => $period->format('Y-m-d'),
             'type' => $targetForType,

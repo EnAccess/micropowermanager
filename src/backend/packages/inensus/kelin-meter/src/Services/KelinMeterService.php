@@ -266,7 +266,6 @@ class KelinMeterService implements ISynchronizeService {
 
                 $city = $kelinCustomerAddress->addresses[0]->city()->first() ?? null;
                 $address = new Address();
-                /** @var Address $address */
                 $address = $address->newQuery()->create([
                     'city_id' => $city ? $city->id : 1,
                 ]);
