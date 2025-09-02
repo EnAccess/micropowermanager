@@ -37,7 +37,9 @@ use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
+use Illuminate\Contracts\Foundation\Application as FoundationApplication;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -100,13 +102,14 @@ class AppServiceProvider extends ServiceProvider {
             $this->app->singleton(MailHelperInterface::class, MailHelper::class);
         }
 
-        $this->app->singleton('AndroidGateway', AndroidGateway::class);
-        $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
-        $this->app->singleton('AgentPaymentProvider', AgentTransactionProvider::class);
-        $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
-        $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
-        $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);
-        $this->app->bind('AccessRatePayer', AccessRatePayer::class);
+        $this->app->singleton(AndroidGateway::class);
+        $this->app->singleton(LoanDataContainer::class);
+        $this->app->singleton(AgentTransactionProvider::class);
+
+        $this->app->bind(MinimumPurchaseAmountValidator::class);
+        $this->app->bind(TariffPriceCalculator::class);
+        $this->app->bind(ApplianceInstallmentPayer::class);
+        $this->app->bind(AccessRatePayer::class);
 
         // Register custom MPM Events
 

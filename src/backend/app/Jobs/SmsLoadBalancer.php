@@ -53,7 +53,6 @@ class SmsLoadBalancer extends AbstractJob {
      * @param array<mixed> $data
      */
     private function sendSms(array $data): string {
-        /** @var Collection<int, mixed> $smsCollection */
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);
         $httpClient = new Client();

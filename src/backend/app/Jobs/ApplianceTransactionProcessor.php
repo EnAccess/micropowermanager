@@ -7,6 +7,7 @@ use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
+use App\Utils\ApplianceInstallmentPayer;
 use Illuminate\Support\Facades\Log;
 
 class ApplianceTransactionProcessor extends AbstractJob {
@@ -62,7 +63,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
     }
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {
-        $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
+        $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($container);
         $applianceInstallmentPayer->payInstallmentsForDevice($container);
         $container->paidRates = $applianceInstallmentPayer->paidRates;

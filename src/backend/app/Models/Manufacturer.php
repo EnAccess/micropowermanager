@@ -8,6 +8,9 @@ use Database\Factories\ManufacturerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property class-string $api_name
+ */
 class Manufacturer extends BaseModel {
     /** @use HasFactory<ManufacturerFactory> */
     use HasFactory;

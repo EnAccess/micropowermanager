@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Sms;
 use App\Models\SmsAndroidSetting;
+use App\Sms\AndroidGateway;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -42,7 +43,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
                 $sms->gateway_id = $smsAndroidSettings->getId();
                 $sms->save();
 
-                resolve('AndroidGateway')
+                resolve(AndroidGateway::class)
                     ->sendSms(
                         $sms->receiver,
                         $sms->body,

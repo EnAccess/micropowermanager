@@ -15,7 +15,7 @@ class TransactionAdapter {
      */
     public static function getTransaction($transactionProvider): ?ITransactionProvider {
         if ($transactionProvider instanceof AgentTransaction) {
-            $baseTransaction = resolve('AgentPaymentProvider');
+            $baseTransaction = resolve(AgentTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;
