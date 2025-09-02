@@ -3,7 +3,6 @@
 namespace Inensus\KelinMeter\Services;
 
 use App\Models\Address\Address;
-use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;
@@ -35,7 +34,6 @@ class KelinMeterService implements ISynchronizeService {
     private $connectionGroup;
     private $connectionType;
     private $meterTariff;
-    private $city;
     private $earlyRegisteredMeters;
 
     public function __construct(
@@ -50,7 +48,6 @@ class KelinMeterService implements ISynchronizeService {
         ConnectionGroup $connectionGroup,
         ConnectionType $connectionType,
         MeterTariff $meterTariff,
-        City $city,
     ) {
         $this->meter = $meter;
         $this->kelinMeter = $kelinMeter;
@@ -64,7 +61,6 @@ class KelinMeterService implements ISynchronizeService {
         $this->connectionGroup = $connectionGroup;
         $this->connectionType = $connectionType;
         $this->meterTariff = $meterTariff;
-        $this->city = $city;
     }
 
     public function getMeters($request) {
@@ -185,7 +181,7 @@ class KelinMeterService implements ISynchronizeService {
                 return $meter;
             }
         });
-        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($meterSyncStatus) {
             return $returnData ? ['data' => $metersCollection, 'result' => false] : ['result' => false];
         }

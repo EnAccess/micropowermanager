@@ -3,8 +3,6 @@
 namespace Inensus\SparkMeter\Services;
 
 use App\Models\Address\Address;
-use App\Models\City;
-use App\Models\Cluster;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;
@@ -26,59 +24,24 @@ use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Models\SyncStatus;
 
 class CustomerService implements ISynchronizeService {
-    private $sparkMeterApiRequests;
     private $rootUrl = '/customer/';
-    private $smTableEncryption;
-    private $person;
-    private $smCustomer;
-    private $smMeterModel;
-    private $smTariff;
-    private $smSite;
-    private $meter;
-    private $manufacturer;
-    private $connectionType;
-    private $connectionGroup;
-    private $city;
-    private $cluster;
-    private $smSyncSettingService;
-    private $smSyncActionService;
-    private $smSmsNotifiedCustomerService;
 
     public function __construct(
-        SparkMeterApiRequests $sparkMeterApiRequests,
-        SmTableEncryption $smTableEncryption,
-        Person $person,
-        SmCustomer $smCustomer,
-        SmMeterModel $smMeterModel,
-        SmTariff $smTariff,
-        SmSite $smSite,
-        Meter $meter,
-        Manufacturer $manufacturer,
-        ConnectionType $connectionType,
-        ConnectionGroup $connectionGroup,
-        City $city,
-        Cluster $cluster,
-        SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService,
-        SmSmsNotifiedCustomerService $smSmsNotifiedCustomerService,
-    ) {
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
-        $this->smTableEncryption = $smTableEncryption;
-        $this->person = $person;
-        $this->smCustomer = $smCustomer;
-        $this->meter = $meter;
-        $this->manufacturer = $manufacturer;
-        $this->smMeterModel = $smMeterModel;
-        $this->smTariff = $smTariff;
-        $this->connectionType = $connectionType;
-        $this->connectionGroup = $connectionGroup;
-        $this->city = $city;
-        $this->smSite = $smSite;
-        $this->cluster = $cluster;
-        $this->smSyncSettingService = $smSyncSettingService;
-        $this->smSyncActionService = $smSyncActionService;
-        $this->smSmsNotifiedCustomerService = $smSmsNotifiedCustomerService;
-    }
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private SmTableEncryption $smTableEncryption,
+        private Person $person,
+        private SmCustomer $smCustomer,
+        private SmMeterModel $smMeterModel,
+        private SmTariff $smTariff,
+        private SmSite $smSite,
+        private Meter $meter,
+        private Manufacturer $manufacturer,
+        private ConnectionType $connectionType,
+        private ConnectionGroup $connectionGroup,
+        private SmSyncSettingService $smSyncSettingService,
+        private SmSyncActionService $smSyncActionService,
+        private SmSmsNotifiedCustomerService $smSmsNotifiedCustomerService,
+    ) {}
 
     public function createCustomer($meterInfo, $siteId) {
         $params = [
@@ -138,7 +101,7 @@ class CustomerService implements ISynchronizeService {
 
     public function getSmCustomerByCustomerId($customerId) {
         return $this->smCustomer->newQuery()->with([
-            'mpmPerson.meters.meter',
+            'mpmPerson.devices.device',
             'mpmPerson.addresses',
         ])->where('customer_id', $customerId)->first();
     }
@@ -179,7 +142,7 @@ class CustomerService implements ISynchronizeService {
                 if ($geoLocation === null) {
                     $geoLocation = new GeographicalInformation();
                 }
-                $person = $this->person->newQuery()->whereHas('meters', static function ($q) use ($meter) {
+                $person = $this->person->newQuery()->whereHas('devices.device', static function ($q) use ($meter) {
                     return $q->where('id', $meter->id);
                 })->first();
             }
@@ -207,7 +170,7 @@ class CustomerService implements ISynchronizeService {
             $connectionType = $this->connectionType->newQuery()->first();
             $connectionGroup = $this->connectionGroup->newQuery()->first();
 
-            $meter->device()->associate($person);
+            $meter->device()->save($person);
             $currentTariffName = $customer['meters'][0]['current_tariff_name'];
 
             $smTariff = $this->smTariff->newQuery()->with('mpmTariff')->whereHas(
@@ -474,7 +437,7 @@ class CustomerService implements ISynchronizeService {
                 return $customer;
             });
 
-            $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', 1)->count();
+            $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', [1])->count();
 
             if ($customerSyncStatus) {
                 $returnData ? array_push($returnArray, [
@@ -545,7 +508,7 @@ class CustomerService implements ISynchronizeService {
 
             return $customer;
         });
-        $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', 1)->count();
+        $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', [1])->count();
         if ($customerSyncStatus) {
             return ['result' => false, 'message' => 'customers are not updated for site '.$siteId];
         } else {
@@ -564,7 +527,7 @@ class CustomerService implements ISynchronizeService {
     }
 
     public function getSparkCustomerWithPhone($phoneNumber) {
-        $person = $this->person::with(['addresses'])
+        $person = $this->person->newQuery()->with(['addresses'])
             ->whereHas(
                 'addresses',
                 static function ($q) use ($phoneNumber) {
@@ -572,7 +535,7 @@ class CustomerService implements ISynchronizeService {
                 }
             )->first();
 
-        return $this->smCustomer->newQuery()->with(['site', 'mpmPerson.meters.meter'])->where(
+        return $this->smCustomer->newQuery()->with(['site', 'mpmPerson.devices.device'])->where(
             'mpm_customer_id',
             $person->id
         )->first();

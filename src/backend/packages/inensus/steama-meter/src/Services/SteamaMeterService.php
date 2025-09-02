@@ -8,7 +8,6 @@ use App\Models\ConnectionGroup;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +32,6 @@ class SteamaMeterService implements ISynchronizeService {
         private SteamaCustomer $customer,
         private Manufacturer $manufacturer,
         private ConnectionGroup $connectionGroup,
-        private MeterTariff $meterTariff,
         private City $city,
         private MeterType $meterType,
         private SteamaMeterType $stmMeterType,
@@ -140,7 +138,7 @@ class SteamaMeterService implements ISynchronizeService {
 
             return $meter;
         });
-        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($meterSyncStatus) {
             return $returnData ? ['data' => $metersCollection, 'result' => false] : ['result' => false];
         }
@@ -157,7 +155,7 @@ class SteamaMeterService implements ISynchronizeService {
                 'customer_id',
                 $stmMeter['customer']
             )->first();
-            if ($meter === null) {
+            if (!$meter) {
                 $meter = new Meter();
                 $geoLocation = new GeographicalInformation();
             } else {
