@@ -4,8 +4,8 @@ metadata:
   name: storage-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  storageClassName: standard-rwo  # GCP standard storage class
+  storageClassName: standard-rwo # GCP standard storage class
