@@ -25,7 +25,8 @@ class ChintMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/chint-meter.php', 'chint-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('ChintMeterApi', ChintMeterApi::class);
+        $this->app->bind(ChintMeterApi::class);
+        $this->app->alias(ChintMeterApi::class, 'ChintMeterApi');
     }
 
     public function publishConfigFiles(): void {

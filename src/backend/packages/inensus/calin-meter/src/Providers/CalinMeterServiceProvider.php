@@ -33,7 +33,8 @@ class CalinMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/calin-meter.php', 'calin-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('CalinMeterApi', CalinMeterApi::class);
+        $this->app->bind(CalinMeterApi::class);
+        $this->app->alias(CalinMeterApi::class, 'CalinMeterApi');
     }
 
     public function publishConfigFiles(): void {

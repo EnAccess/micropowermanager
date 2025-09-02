@@ -36,7 +36,8 @@ class DalyBmsServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/daly-bms.php', 'daly-bms.php');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('DalyBmsApi', DalyBmsApi::class);
+        $this->app->bind(DalyBmsApi::class);
+        $this->app->alias(DalyBmsApi::class, 'DalyBmsApi');
     }
 
     public function publishConfigFiles(): void {

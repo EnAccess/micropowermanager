@@ -26,7 +26,8 @@ class MicroStarMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/micro-star-meter.php', 'micro-star-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('MicroStarMeterApi', MicroStarMeterApi::class);
+        $this->app->bind(MicroStarMeterApi::class);
+        $this->app->alias(MicroStarMeterApi::class, 'MicroStarMeterApi');
     }
 
     public function publishConfigFiles(): void {

@@ -25,7 +25,8 @@ class AngazaSHSServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/angaza-shs.php', 'angaza-shs');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('AngazaSHSApi', AngazaSHSApi::class);
+        $this->app->bind(AngazaSHSApi::class);
+        $this->app->alias(AngazaSHSApi::class, 'AngazaSHSApi');
     }
 
     public function publishConfigFiles(): void {

@@ -25,7 +25,8 @@ class SunKingSHSServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/sun-king-shs.php', 'sun-king-shs');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SunKingSHSApi', SunKingSHSApi::class);
+        $this->app->bind(SunKingSHSApi::class);
+        $this->app->alias(SunKingSHSApi::class, 'SunKingSHSApi');
     }
 
     public function publishConfigFiles(): void {
