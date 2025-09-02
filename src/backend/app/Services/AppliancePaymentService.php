@@ -135,7 +135,7 @@ class AppliancePaymentService {
             throw new ModelNotFoundException("No device found with $deviceSerial");
         }
 
-        $manufacturer = $device->device->manufacturer;
+        $manufacturer = $device->manufacturer;
         $installments = $applianceDetail->rates;
         // Use this because we do not want to get down payment as installment
         $secondInstallment = $applianceDetail->rates[1];
