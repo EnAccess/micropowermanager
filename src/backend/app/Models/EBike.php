@@ -6,6 +6,10 @@ use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * @property Device       $device
+ * @property Manufacturer $manufacturer
+ */
 class EBike extends BaseModel {
     public const RELATION_NAME = 'e_bike';
     protected $table = 'e_bikes';
