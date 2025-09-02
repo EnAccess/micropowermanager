@@ -12,6 +12,8 @@ import ClusterDetailPage from "./pages/Dashboard/Cluster/_id.vue"
 // MiniGridOverviewPage just redirects to MiniGridDetailPage for first Mini-Grid
 import MiniGridOverviewPage from "./pages/Dashboard/MiniGrid/index.vue"
 import MiniGridDetailPage from "./pages/Dashboard/MiniGrid/_id.vue"
+import AgentDashboardPage from "./pages/Dashboard/Agents/index.vue"
+import AgentPerformanceDashboardPage from "./pages/Dashboard/AgentPerformance/index.vue"
 import AddCluster from "./pages/Location/Cluster/New/index.vue"
 import AddVillage from "./pages/Location/Village/New/index.vue"
 import AddMiniGrid from "./pages/Location/MiniGrid/New/index.vue"
@@ -347,6 +349,62 @@ export const exportedRoutes = [
                 name: "Mini-Grid",
                 link: "/dashboards/mini-grid",
                 target: "id",
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "dashboards/agents",
+        component: ChildRouteWrapper,
+        meta: {
+          sidebar: {
+            enabled: true,
+            name: "Agents",
+          },
+        },
+        children: [
+          {
+            path: "",
+            component: AgentDashboardPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agents",
+                link: "/dashboards/agents",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Agents",
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "dashboards/agent-performance",
+        component: ChildRouteWrapper,
+        meta: {
+          sidebar: {
+            enabled: true,
+            name: "Agent Performance",
+          },
+        },
+        children: [
+          {
+            path: "",
+            component: AgentPerformanceDashboardPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agent Performance",
+                link: "/dashboards/agent-performance",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Agent Performance",
               },
             },
           },
