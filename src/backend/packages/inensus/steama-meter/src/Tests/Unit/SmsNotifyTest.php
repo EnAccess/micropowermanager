@@ -45,6 +45,7 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, SteamaCustomer> */
         $customers = SteamaCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
@@ -59,6 +60,7 @@ class SmsNotifyTest extends TestCase {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ) {
+            /** @var ?SteamaSmsNotifiedCustomer */
             $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
                 'customer_id',
                 $customer->customer_id
@@ -67,18 +69,24 @@ class SmsNotifyTest extends TestCase {
             if ($notifiedCustomer) {
                 return true;
             }
+
             if ($customer->account_balance > $customer->low_balance_warning) {
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                $customer->mpmPerson->addresses->isEmpty()
+                || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer, SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SteamaSmsConfig::class);
+            $smsService->sendSms(
+                $customer->toArray(),
+                SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
+                SteamaSmsConfig::class
+            );
             SteamaSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
                 'notify_type' => 'low_balance',
@@ -126,14 +134,19 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$notifyCustomer->mpmPerson->addresses || $notifyCustomer->mpmPerson->addresses[0]->phone === null
+                $notifyCustomer->mpmPerson->addresses->isEmpty()
+                || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                 || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($steamaTransaction->thirdPartyTransaction->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $steamaTransaction->thirdPartyTransaction->transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
             SteamaSmsNotifiedCustomer::query()->create([
                 'customer_id' => $notifyCustomer->customer_id,
                 'notify_type' => 'transaction',

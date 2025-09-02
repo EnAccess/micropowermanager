@@ -40,7 +40,7 @@ class VodacomMobileMoneyServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_vodacom_mobile_money_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_vodacom_mobile_money_tables.php')[0];

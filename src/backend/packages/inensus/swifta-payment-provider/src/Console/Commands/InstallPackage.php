@@ -32,35 +32,6 @@ class InstallPackage extends Command {
         $this->info('Package installed successfully..');
     }
 
-    private function publishConfigurations() {
-        $this->info('Copying configurations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => 'configurations',
-        ]);
-    }
-
-    private function publishMigrations() {
-        $this->info('Copying migrations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    private function createDatabaseTables() {
-        $this->info('Creating database tables\n');
-        $this->call('migrate');
-    }
-
-    private function createPluginRecord() {
-        $this->call('plugin:add', [
-            'name' => 'SwiftaPaymentProvider',
-            'composer_name' => 'inensus/swifta-payment-provider',
-            'description' => 'SwiftaPaymentProvider integration package for MicroPowerManager',
-        ]);
-    }
-
     private function generateAuthenticationToken() {
         $password = $this->generateRandomNumber();
         $companyId = app()->make(UserService::class)->getCompanyId();

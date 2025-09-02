@@ -73,14 +73,15 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                $customer->mpmPerson->addresses->isEmpty()
+                || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer, SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
+            $smsService->sendSms($customer->toArray(), SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
@@ -128,14 +129,19 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$notifyCustomer->mpmPerson->addresses || $notifyCustomer->mpmPerson->addresses[0]->phone === null
+                $notifyCustomer->mpmPerson->addresses->isEmpty()
+                || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                 || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($sparkTransaction->thirdPartyTransaction->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $sparkTransaction->thirdPartyTransaction->transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $notifyCustomer->customer_id,

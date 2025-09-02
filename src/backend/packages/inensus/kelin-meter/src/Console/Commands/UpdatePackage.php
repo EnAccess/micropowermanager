@@ -5,8 +5,6 @@ namespace Inensus\KelinMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\KelinMeter\Helpers\ApiHelpers;
-use Inensus\KelinMeter\Services\KelinCredentialService;
 use Inensus\KelinMeter\Services\PackageInstallationService;
 
 class UpdatePackage extends Command {
@@ -14,8 +12,6 @@ class UpdatePackage extends Command {
     protected $description = 'Update Kelin Meter Package';
 
     public function __construct(
-        private KelinCredentialService $credentialService,
-        private ApiHelpers $apiHelpers,
         private PackageInstallationService $packageInstallationService,
         private Filesystem $filesystem,
     ) {

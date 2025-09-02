@@ -3,7 +3,6 @@
 namespace Inensus\SparkMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -24,28 +23,14 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
     protected $signature = 'spark-meter:smsNotifier';
     protected $description = 'Notifies customers on payments and low balance limits for SparkMeters';
 
-    private $smsSettingsService;
-    private $sms;
-    private $smTransactionService;
-    private $smSmsNotifiedCustomerService;
-    private $smCustomerService;
-    private $smsService;
-
     public function __construct(
-        SmSmsSettingService $smsSettingService,
-        Sms $sms,
-        TransactionService $smTransactionsService,
-        SmSmsNotifiedCustomerService $smSmsNotifiedCustomerService,
-        CustomerService $smCustomerService,
-        SmsService $smsService,
+        private SmSmsSettingService $smsSettingsService,
+        private TransactionService $smTransactionService,
+        private SmSmsNotifiedCustomerService $smSmsNotifiedCustomerService,
+        private CustomerService $smCustomerService,
+        private SmsService $smsService,
     ) {
         parent::__construct();
-        $this->smsSettingsService = $smsSettingService;
-        $this->sms = $sms;
-        $this->smTransactionService = $smTransactionsService;
-        $this->smSmsNotifiedCustomerService = $smSmsNotifiedCustomerService;
-        $this->smCustomerService = $smCustomerService;
-        $this->smsService = $smsService;
     }
 
     private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
