@@ -101,14 +101,22 @@ class AppServiceProvider extends ServiceProvider {
             $this->app->singleton(MailHelperInterface::class, MailHelper::class);
         }
 
+        // Aliases here added for backwards-compatibility
         $this->app->singleton(AndroidGateway::class);
+        $this->app->alias(AndroidGateway::class, 'AndroidGateway');
         $this->app->singleton(LoanDataContainer::class);
+        $this->app->alias(LoanDataContainer::class, 'LoanDataContainerProvider');
         $this->app->singleton(AgentTransactionProvider::class);
+        $this->app->alias(AgentTransactionProvider::class, 'AgentPaymentProvider');
 
         $this->app->bind(MinimumPurchaseAmountValidator::class);
+        $this->app->alias(MinimumPurchaseAmountValidator::class, 'MinimumPurchaseAmountValidator');
         $this->app->bind(TariffPriceCalculator::class);
+        $this->app->alias(TariffPriceCalculator::class, 'TariffPriceCalculator');
         $this->app->bind(ApplianceInstallmentPayer::class);
+        $this->app->alias(ApplianceInstallmentPayer::class, 'ApplianceInstallmentPayer');
         $this->app->bind(AccessRatePayer::class);
+        $this->app->alias(AccessRatePayer::class, 'AccessRatePayer');
 
         // Register custom MPM Events
 
