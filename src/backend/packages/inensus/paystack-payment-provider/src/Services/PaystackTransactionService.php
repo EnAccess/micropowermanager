@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Modules\Transaction;
+namespace Inensus\PaystackPaymentProvider\Services;
 
+use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
@@ -89,7 +91,16 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
     }
 
     public function create(array $paystackTransactionData): PaystackTransaction {
-        return $this->paystackTransaction->newQuery()->create($paystackTransactionData);
+        /** @var PaystackTransaction $paystackTransaction */
+        $paystackTransaction = $this->paystackTransaction->newQuery()->create($paystackTransactionData);
+        $paystackTransaction->transaction()->create([
+            'amount' => $paystackTransaction->getAmount(),
+            'sender' => $paystackTransaction->getCustomerId(),
+            'message' => $paystackTransaction->getSerialId(),
+            'type' => 'energy',
+        ]);
+        return $paystackTransaction;
+
     }
 
     public function delete($paystackTransaction): ?bool {
@@ -114,11 +125,10 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         return $this->getMeterSerialNumber();
     }
 
-    public function processSuccessfulPayment(PaystackTransaction $transaction): void {
-        // This method will be called when a payment is successful
-        // It should integrate with MPM's payment processing system
-        // For now, we'll just mark it as completed
-        $transaction->setStatus(PaystackTransaction::STATUS_COMPLETED);
+    public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
+        $id = $transaction->transaction->id;
+        ProcessPayment::dispatch($companyId, $id);
+        $transaction->setStatus(PaystackTransaction::STATUS_SUCCESS);
         $transaction->save();
     }
 }

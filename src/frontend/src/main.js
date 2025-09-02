@@ -36,6 +36,7 @@ import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDet
 import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail"
 import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail"
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail"
+import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
 import Angaza from "@/plugins/angaza-shs/js/modules/Overview/Credential"
 import DalyBms from "@/plugins/daly-bms/js/modules/Overview/Credential"
@@ -65,6 +66,7 @@ Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
 Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
 Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
+Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)

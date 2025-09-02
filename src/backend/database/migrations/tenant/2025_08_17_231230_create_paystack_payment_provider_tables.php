@@ -21,7 +21,6 @@ return new class extends Migration {
                 $table->enum('environment', ['test', 'live'])->default('test');
                 $table->timestamps();
 
-                // Add indexes for better performance
                 $table->index('environment');
             });
         }
@@ -39,6 +38,8 @@ return new class extends Migration {
                 $table->string('serial_id')->nullable();
                 $table->string('device_type')->nullable();
                 $table->string('paystack_reference')->nullable()->unique();
+                $table->string('manufacturer_transaction_type')->nullable();
+                $table->integer('manufacturer_transaction_id')->nullable();
                 $table->text('payment_url')->nullable();
                 $table->json('metadata')->nullable();
                 $table->integer('attempts')->default(0);

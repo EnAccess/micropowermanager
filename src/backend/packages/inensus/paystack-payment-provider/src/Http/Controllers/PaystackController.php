@@ -10,8 +10,9 @@ use Inensus\PaystackPaymentProvider\Http\Requests\TransactionInitializeRequest;
 use Inensus\PaystackPaymentProvider\Http\Resources\PaystackResource;
 use Inensus\PaystackPaymentProvider\Http\Resources\PaystackTransactionResource;
 use Inensus\PaystackPaymentProvider\Modules\Api\PaystackApiService;
-use Inensus\PaystackPaymentProvider\Modules\Transaction\PaystackTransactionService;
+use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 use Inensus\PaystackPaymentProvider\Services\PaystackWebhookService;
+use Illuminate\Support\Facades\Log;
 
 class PaystackController extends Controller {
     public function __construct(
@@ -27,13 +28,22 @@ class PaystackController extends Controller {
     }
 
     public function webhookCallback(Request $request, int $companyId) {
-        // Verify webhook signature
-        if (!$this->webhookService->verifyWebhook($request)) {
-            return response()->json(['error' => 'Invalid webhook signature'], 401);
-        }
 
-        // Process the webhook
-        $this->webhookService->processWebhook($request);
+        try {
+            // Verify webhook signature
+            if (!$this->webhookService->verifyWebhook($request)) {
+                return response()->json(['error' => 'Invalid webhook signature'], 401);
+            }
+            Log::info('PaystackWebhookService: Request', ['request' => $request->all()]);
+            // Process the webhook
+            $this->webhookService->processWebhook($request, $companyId);
+        } catch (\Exception $e) {
+            Log::info('PaystackWebhookService: Failed to verify webhook', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
         return response()->json(['status' => 'success']);
     }

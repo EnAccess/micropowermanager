@@ -408,6 +408,11 @@
     "transactionCancelled": "Transaction cancelled",
     "transactionId": "Transaction ID",
     "transactionIdentifier": "Transaction Identifier",
+    "externalTransactionId": "External Transaction ID",
+    "paystackReference": "Paystack Reference",
+    "deviceSerial": "Device Serial",
+    "paymentUrl": "Payment URL",
+    "viewPaymentLink": "View Payment Link",
     "transactionNotify": "There is not enough data to compare",
     "transactionProcessing": "Transaction Processing",
     "transactionReference": "Transaction Reference",
@@ -423,6 +428,7 @@
     "villageReportsWeekly": "Weekly Village Reports",
     "waveComTransaction": "WaveCom Transaction",
     "waveMoneyTransaction": "Wave Money Transaction",
+    "paystackTransaction": "Paystack Transaction",
     "wholeVillage": "Whole Village",
     "writeMessage": "Write a message...",
     "wrongPassword": "Wrong password",
@@ -641,6 +647,7 @@
     "weekly": "Weekly",
     "yearly": "Yearly",
     "yes": "Yes",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "reference": "Reference"
   }
 }

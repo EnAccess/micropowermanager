@@ -19,6 +19,7 @@ use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 
 /**
  * General purpose system Transaction.
@@ -43,7 +44,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property      Carbon|null                                                                                                                        $updated_at
  * @property-read AssetPerson|null                                                                                                                   $appliance
  * @property-read Device|null                                                                                                                        $device
- * @property-read AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction $originalTransaction
+ * @property-read AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction $originalTransaction
  * @property-read Collection<int, PaymentHistory>                                                                                                    $paymentHistories
  * @property-read Sms|null                                                                                                                           $sms
  * @property-read Token|null                                                                                                                         $token
@@ -55,10 +56,14 @@ class Transaction extends BaseModel {
     /**
      * Get the payment provider-specific transaction linked to this system transaction.
      *
-     * @return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this>
+     * @phpstan-return MorphTo<
+     *  AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|
+     *  SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction,
+     * $this
+     * >
      */
     public function originalTransaction(): MorphTo {
-        /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this> $relation */
+        /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction, $this> $relation */
         $relation = $this->morphTo();
 
         return $relation;

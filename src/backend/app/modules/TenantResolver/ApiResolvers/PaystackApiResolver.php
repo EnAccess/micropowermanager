@@ -6,11 +6,9 @@ namespace MPM\TenantResolver\ApiResolvers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Inensus\PaystackPaymentProvider\Modules\Transaction\PaystackTransactionService;
 
 class PaystackApiResolver implements ApiResolverInterface {
     public function __construct(
-        private PaystackTransactionService $transactionService,
     ) {}
 
     public function resolveCompanyId(Request $request): int {

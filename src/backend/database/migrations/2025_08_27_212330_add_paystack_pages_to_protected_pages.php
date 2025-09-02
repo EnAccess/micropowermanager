@@ -23,7 +23,7 @@ return new class extends Migration {
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => '/paystack/transaction',
+                'name' => '/paystack/transactions',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -39,7 +39,7 @@ return new class extends Migration {
         DB::table('protected_pages')->whereIn('name', [
             '/paystack/overview',
             '/paystack/credential',
-            '/paystack/transaction',
+            '/paystack/transactions',
         ])->delete();
     }
 };

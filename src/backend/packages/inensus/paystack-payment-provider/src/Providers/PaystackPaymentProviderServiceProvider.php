@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\PaystackPaymentProvider\Console\Commands\InstallPackage;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
-use Inensus\PaystackPaymentProvider\Modules\Transaction\PaystackTransactionService;
+use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
 use Inensus\PaystackPaymentProvider\Services\PaystackWebhookService;
 
@@ -40,6 +40,7 @@ class PaystackPaymentProviderServiceProvider extends ServiceProvider {
         $this->app->singleton(PaystackCredentialService::class);
         $this->app->singleton(PaystackWebhookService::class);
         $this->app->singleton(PaystackTransactionService::class);
+        $this->app->singleton('PaystackPaymentProvider', PaystackTransactionProvider::class);
     }
 
     public function register() {

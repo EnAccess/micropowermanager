@@ -3,8 +3,9 @@
 namespace Inensus\PaystackPaymentProvider\Services;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
-use Inensus\PaystackPaymentProvider\Modules\Transaction\PaystackTransactionService;
+use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 
 class PaystackWebhookService {
     public function __construct(
@@ -31,35 +32,46 @@ class PaystackWebhookService {
         return hash_equals($expectedSignature, $signature);
     }
 
-    public function processWebhook(Request $request): void {
+    public function processWebhook(Request $request, int $companyId): void {
         $payload = $request->all();
         $event = $payload['event'] ?? null;
         $data = $payload['data'] ?? [];
 
         if ($event === 'charge.success') {
-            $this->handleSuccessfulPayment($data);
+            $this->handleSuccessfulPayment($data, $companyId);
         } elseif ($event === 'charge.failed') {
             $this->handleFailedPayment($data);
         }
     }
 
-    private function handleSuccessfulPayment(array $data): void {
-        $reference = $data['reference'] ?? null;
-        if (!$reference) {
-            return;
+    private function handleSuccessfulPayment(array $data, int $companyId): void {
+        try {
+            $reference = $data['reference'] ?? null;
+            if (!$reference) {
+                return;
+            }
+
+            $paystackTransaction = $this->transactionService->getByPaystackReference($reference);
+            if (!$paystackTransaction) {
+                return;
+            }
+
+            $paystackTransaction->setExternalTransactionId($data['id'] ?? '');
+
+            $paystackTransaction->transaction()->create([
+                'amount' => $paystackTransaction->getAmount(),
+                'sender' => $paystackTransaction->getCustomerId(),
+                'message' => $paystackTransaction->getDeviceSerial(),
+                'type' => 'energy',
+            ]);
+            $paystackTransaction->save();
+            // Process the successful payment in MPM
+            $this->transactionService->processSuccessfulPayment($companyId, $paystackTransaction);
+        } catch (\Exception $e) {
+            Log::error('PaystackWebhookService: Failed to process payment', [
+                'error' => $e->getMessage(),
+            ]);
         }
-
-        $transaction = $this->transactionService->getByPaystackReference($reference);
-        if (!$transaction) {
-            return;
-        }
-
-        $transaction->setStatus(PaystackTransaction::STATUS_SUCCESS);
-        $transaction->setExternalTransactionId($data['id'] ?? '');
-        $transaction->save();
-
-        // Process the successful payment in MPM
-        $this->transactionService->processSuccessfulPayment($transaction);
     }
 
     private function handleFailedPayment(array $data): void {
@@ -68,12 +80,12 @@ class PaystackWebhookService {
             return;
         }
 
-        $transaction = $this->transactionService->getByPaystackReference($reference);
-        if (!$transaction) {
+        $paystackTransaction = $this->transactionService->getByPaystackReference($reference);
+        if (!$paystackTransaction) {
             return;
         }
 
-        $transaction->setStatus(PaystackTransaction::STATUS_FAILED);
-        $transaction->save();
+        $paystackTransaction->setStatus(PaystackTransaction::STATUS_FAILED);
+        $paystackTransaction->save();
     }
 }
