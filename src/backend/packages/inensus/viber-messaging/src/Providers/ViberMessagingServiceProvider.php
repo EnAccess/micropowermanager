@@ -26,7 +26,8 @@ class ViberMessagingServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/viber-messaging.php', 'viber-messaging');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('ViberGateway', ViberGateway::class);
+        $this->app->bind(ViberGateway::class);
+        $this->app->bind(ViberGateway::class, 'ViberGateway');
     }
 
     public function publishConfigFiles(): void {

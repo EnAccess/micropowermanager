@@ -9,9 +9,12 @@ use App\Models\Plugins;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
 use App\Services\PluginsService;
+use App\Sms\AndroidGateway;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Inensus\AfricasTalking\AfricasTalkingGateway;
 use Inensus\ViberMessaging\Services\ViberContactService;
+use Inensus\ViberMessaging\ViberGateway;
 
 abstract class SmsSender {
     public const VIBER_GATEWAY = 'ViberGateway';
@@ -54,7 +57,7 @@ abstract class SmsSender {
 
         switch ($gateway) {
             case self::VIBER_GATEWAY:
-                resolve(self::VIBER_GATEWAY)
+                resolve(ViberGateway::class)
                     ->sendSms(
                         $this->body,
                         $this->viberIdOfReceiver,
@@ -63,7 +66,7 @@ abstract class SmsSender {
                 break;
 
             case self::AFRICAS_TALKING_GATEWAY:
-                resolve(self::AFRICAS_TALKING_GATEWAY)
+                resolve(AfricasTalkingGateway::class)
                     ->sendSms(
                         $this->body,
                         $this->receiver,
@@ -72,7 +75,7 @@ abstract class SmsSender {
                 break;
 
             default:
-                resolve(self::DEFAULT_GATEWAY)
+                resolve(AndroidGateway::class)
                     ->sendSms(
                         $this->receiver,
                         $this->body,
