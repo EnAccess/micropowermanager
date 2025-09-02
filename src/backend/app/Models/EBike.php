@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
+ * @property int          $id
+ * @property string       $serial_number
  * @property Device       $device
  * @property Manufacturer $manufacturer
  */
