@@ -37,7 +37,6 @@ use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
-use Illuminate\Contracts\Foundation\Application as FoundationApplication;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Event;

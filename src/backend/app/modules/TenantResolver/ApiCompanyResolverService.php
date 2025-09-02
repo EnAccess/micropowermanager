@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MPM\TenantResolver;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use MPM\TenantResolver\ApiResolvers\ApiResolverInterface;
