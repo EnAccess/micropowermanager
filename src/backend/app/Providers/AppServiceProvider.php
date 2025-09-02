@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Helpers\MailHelper;
-use App\Helpers\MailHelperInterface;
-use App\Helpers\MailHelperMock;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
@@ -94,12 +91,6 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register(): void {
-        if ($this->app->environment('development') || $this->app->environment('local')) {
-            $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
-        } else {
-            $this->app->singleton(MailHelperInterface::class, MailHelper::class);
-        }
-
         $this->app->singleton('AndroidGateway', AndroidGateway::class);
         $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
         $this->app->singleton('AgentPaymentProvider', AgentTransactionProvider::class);
