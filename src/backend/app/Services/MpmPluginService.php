@@ -19,7 +19,6 @@ class MpmPluginService implements IBaseService {
      * @param int|string $id
      */
     public function getById($id): MpmPlugin {
-        /** @var MpmPlugin $result */
         $result = $this->mpmPlugin->newQuery()->findOrFail($id);
 
         return $result;

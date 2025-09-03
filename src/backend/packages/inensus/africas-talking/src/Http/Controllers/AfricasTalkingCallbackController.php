@@ -8,12 +8,10 @@ use App\Services\AddressesService;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Inensus\AfricasTalking\Services\AfricasTalkingCredentialService;
 use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
 
 class AfricasTalkingCallbackController extends Controller {
     public function __construct(
-        private AfricasTalkingCredentialService $credentialService,
         private AfricasTalkingMessageService $messageService,
         private SmsService $smsService,
         private AddressesService $addressesService,

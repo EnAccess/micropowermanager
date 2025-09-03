@@ -40,10 +40,10 @@ class SocialTariffService implements IBaseService {
      * @param SocialTariffData $socialTariffData
      */
     public function update(Model $socialTariff, array $socialTariffData): SocialTariff {
+        // Parameter types must be compatible (contravariant).
         /* @var SocialTariff $socialTariff */
         $socialTariff->update($socialTariffData);
 
-        /** @var SocialTariff $freshTariff */
         $freshTariff = $socialTariff->fresh();
 
         return $freshTariff;

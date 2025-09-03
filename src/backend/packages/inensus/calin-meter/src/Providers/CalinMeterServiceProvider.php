@@ -33,7 +33,8 @@ class CalinMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/calin-meter.php', 'calin-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('CalinMeterApi', CalinMeterApi::class);
+        $this->app->bind(CalinMeterApi::class);
+        $this->app->alias(CalinMeterApi::class, 'CalinMeterApi');
     }
 
     public function publishConfigFiles(): void {
@@ -57,7 +58,7 @@ class CalinMeterServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_calin_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_calin_tables.php')[0];

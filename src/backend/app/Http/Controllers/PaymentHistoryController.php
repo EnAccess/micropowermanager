@@ -15,15 +15,10 @@ use Carbon\CarbonInterval;
  * Class PaymentHistoryController
  */
 class PaymentHistoryController {
-    /**
-     * @var PaymentHistory
-     */
     private PaymentHistory $history;
 
     /**
      * PaymentHistoryController constructor.
-     *
-     * @param PaymentHistory $history
      */
     public function __construct(PaymentHistory $history) {
         $this->history = $history;

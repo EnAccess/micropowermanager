@@ -228,7 +228,7 @@ class SiteService implements ISynchronizeService {
 
             return $site;
         });
-        $siteSyncStatus = $sitesCollection->whereNotIn('syncStatus', 1)->count();
+        $siteSyncStatus = $sitesCollection->whereNotIn('syncStatus', [1])->count();
         if ($siteSyncStatus) {
             return $returnData ? ['data' => $sitesCollection, 'result' => false] : ['result' => false];
         }

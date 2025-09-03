@@ -16,25 +16,4 @@ class InstallPackage extends Command {
         $this->info('Installing MesombPaymentProvider Integration Package\n');
         $this->info('Package installed successfully..');
     }
-
-    private function publishMigrations() {
-        $this->info('Copying migrations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\MesombPaymentProvider\Providers\MesombServiceProvider",
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    private function createDatabaseTables() {
-        $this->info('Creating database tables\n');
-        $this->call('migrate');
-    }
-
-    private function createPluginRecord() {
-        $this->call('plugin:add', [
-            'name' => 'MesombPaymentProvider',
-            'composer_name' => 'inensus/mesomb-payment-provider',
-            'description' => 'MesombPaymentProvider integration package for MicroPowerManager',
-        ]);
-    }
 }

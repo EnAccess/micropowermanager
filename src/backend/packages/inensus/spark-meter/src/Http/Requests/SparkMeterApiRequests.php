@@ -10,25 +10,12 @@ use Inensus\SparkMeter\Models\SmCredential;
 use Inensus\SparkMeter\Models\SmSite;
 
 class SparkMeterApiRequests {
-    private $client;
-    private $resultStatusChecker;
-    private $credential;
-    private $site;
-    private $smCredentail;
-
     public function __construct(
-        Client $httpClient,
-        ResultStatusChecker $resultStatusChecker,
-        SmCredential $credential,
-        SmSite $site,
-        SmCredential $smCredential,
-    ) {
-        $this->client = $httpClient;
-        $this->resultStatusChecker = $resultStatusChecker;
-        $this->credential = $credential;
-        $this->site = $site;
-        $this->smCredentail = $smCredential;
-    }
+        private Client $client,
+        private ResultStatusChecker $resultStatusChecker,
+        private SmSite $site,
+        private SmCredential $smCredentail, // FIXME: typo
+    ) {}
 
     public function get($url, $siteId) {
         $smSite = $this->getThunderCloudInformation($siteId);

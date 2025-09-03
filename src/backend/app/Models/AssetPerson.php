@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Events\AssetPersonCreated;
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -13,12 +14,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * Class AssetPerson.
  *
- * @property int            $asset_type_id
- * @property int            $person_id
- * @property int            $total_cost
- * @property int            $down_payment
- * @property int            $rate_count
- * @property AssetType|null $assetType
+ * @property int                        $asset_type_id
+ * @property int                        $person_id
+ * @property int                        $total_cost
+ * @property int                        $down_payment
+ * @property int                        $rate_count
+ * @property AssetType|null             $assetType
+ * @property Collection<int, AssetRate> $rates
  */
 class AssetPerson extends BaseModel {
     /** @var array<string, string> */

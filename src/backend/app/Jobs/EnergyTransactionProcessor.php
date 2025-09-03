@@ -8,6 +8,9 @@ use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
+use App\Utils\AccessRatePayer;
+use App\Utils\ApplianceInstallmentPayer;
+use App\Utils\MinimumPurchaseAmountValidator;
 use Illuminate\Support\Facades\Log;
 
 class EnergyTransactionProcessor extends AbstractJob {
@@ -69,7 +72,7 @@ class EnergyTransactionProcessor extends AbstractJob {
         $minimumPurchaseAmount = $this->getTariffMinimumPurchaseAmount($transactionData);
 
         if ($minimumPurchaseAmount > 0) {
-            $validator = resolve('MinimumPurchaseAmountValidator');
+            $validator = resolve(MinimumPurchaseAmountValidator::class);
             try {
                 if (!$validator->validate($transactionData, $minimumPurchaseAmount)) {
                     throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->device->device_serial}");
@@ -81,7 +84,7 @@ class EnergyTransactionProcessor extends AbstractJob {
     }
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {
-        $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
+        $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($container);
         $container->transaction->amount = $applianceInstallmentPayer->payInstallments();
         $container->totalAmount = $container->transaction->amount;
@@ -92,7 +95,7 @@ class EnergyTransactionProcessor extends AbstractJob {
 
     private function payAccessRateIfExists(TransactionDataContainer $transactionData): TransactionDataContainer {
         if ($transactionData->transaction->amount > 0) {
-            $accessRatePayer = resolve('AccessRatePayer');
+            $accessRatePayer = resolve(AccessRatePayer::class);
             $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();
         }

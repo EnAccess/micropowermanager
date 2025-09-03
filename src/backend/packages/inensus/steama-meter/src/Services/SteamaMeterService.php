@@ -8,7 +8,6 @@ use App\Models\ConnectionGroup;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +32,6 @@ class SteamaMeterService implements ISynchronizeService {
         private SteamaCustomer $customer,
         private Manufacturer $manufacturer,
         private ConnectionGroup $connectionGroup,
-        private MeterTariff $meterTariff,
         private City $city,
         private MeterType $meterType,
         private SteamaMeterType $stmMeterType,
@@ -140,7 +138,7 @@ class SteamaMeterService implements ISynchronizeService {
 
             return $meter;
         });
-        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($meterSyncStatus) {
             return $returnData ? ['data' => $metersCollection, 'result' => false] : ['result' => false];
         }
@@ -152,13 +150,12 @@ class SteamaMeterService implements ISynchronizeService {
         try {
             DB::connection('tenant')->beginTransaction();
             $meterSerial = $stmMeter['reference'];
-            /** @var Meter */
             $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->first();
             $stmCustomer = $this->customer->newQuery()->with('mpmPerson')->where(
                 'customer_id',
                 $stmMeter['customer']
             )->first();
-            if ($meter === null) {
+            if (!$meter) {
                 $meter = new Meter();
                 $geoLocation = new GeographicalInformation();
             } else {
@@ -207,7 +204,6 @@ class SteamaMeterService implements ISynchronizeService {
                 $steamaCity = $this->city->newQuery()->with('miniGrid')->where('name', $cityName)->first();
 
                 $address = new Address();
-                /** @var Address $address */
                 $address = $address->newQuery()->create([
                     'city_id' => request()->input('city_id') ?? $steamaCity->id,
                 ]);

@@ -8,6 +8,9 @@ use Database\Factories\ManufacturerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property string $api_name Name of manufacturer that is registed as alias in the Laravel service container. Can be used with `resolve('api_name')`
+ */
 class Manufacturer extends BaseModel {
     /** @use HasFactory<ManufacturerFactory> */
     use HasFactory;

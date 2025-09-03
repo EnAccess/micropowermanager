@@ -60,13 +60,14 @@ class KelinMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/kelin-meter.php', 'kelin-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('KelinMeterApi', function ($app) {
+        $this->app->bind(KelinMeterApi::class, function ($app) {
             return new KelinMeterApi(
                 $app->make(KelinMeter::class),
                 $app->make(KelinCustomer::class),
                 $app->make(KelinMeterApiClient::class),
             );
         });
+        $this->app->alias('KelinMeterApi', KelinMeterApi::class);
     }
 
     public function publishConfigFiles(): void {
@@ -92,7 +93,7 @@ class KelinMeterServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_kelin_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_kelin_tables.php')[0];

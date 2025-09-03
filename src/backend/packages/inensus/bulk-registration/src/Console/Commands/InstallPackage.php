@@ -22,43 +22,4 @@ class InstallPackage extends Command {
 
         $this->info('Package installed successfully..');
     }
-
-    private function publishConfigurations() {
-        $this->info('Copying configurations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
-            '--tag' => 'configurations',
-        ]);
-    }
-
-    private function publishMigrations() {
-        $this->info('Copying migrations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    private function createDatabaseTables() {
-        $this->info('Creating database tables\n');
-        $this->call('migrate');
-    }
-
-    private function publishVueFiles() {
-        $this->info('Copying vue files\n');
-
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
-            '--tag' => 'vue-components',
-            '--force' => true,
-        ]);
-    }
-
-    private function createPluginRecord() {
-        $this->call('plugin:add', [
-            'name' => 'BulkRegistration',
-            'composer_name' => 'inensus/bulk-registration',
-            'description' => 'BulkRegistration integration package for MicroPowerManager',
-        ]);
-    }
 }
