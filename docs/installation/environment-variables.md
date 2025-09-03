@@ -136,6 +136,19 @@ These configure instance level email sent to tenants, for example signup confirm
 | `MAIL_SMTP_DEFAULT_MESSAGE` | `Please do not reply to this email`            | Default message body of emails.                                                                                                                                             |
 | `MAIL_SMTP_DEBUG_LEVEL`     | `0`                                            | Debug level used in [PHPMailer](https://github.com/PHPMailer/PHPMailer/blob/master/src/SMTP.php#L116-L126). `0` No output, `4` Noisy, low-level data output, rarely needed. |
 
+#### Laravel Horizon and Horizon Dashboard
+
+MicroPowerManager internally uses [Laravel Horizon](https://laravel.com/docs/12.x/horizon) to manage it's queue workers.
+
+By default Horizon Dashboard will not be accessible in non-development environments.
+Configure the below environment variables to enable HTTP Basic Auth.
+Only if both `HORIZON_BASIC_AUTH_USERNAME` and `HORIZON_BASIC_AUTH_PASSWORD` are set, HTTP Basic Auth is enabled.
+
+| Environment Variable          | Default | Description                                      |
+| ----------------------------- | ------- | ------------------------------------------------ |
+| `HORIZON_BASIC_AUTH_USERNAME` | `null`  | HTTP Basic Auth Username for Horizon Dashboard.  |
+| `HORIZON_BASIC_AUTH_PASSWORD` | `null`  | HTTP Basic Auth Username for Horizon Dashboard.. |
+
 ### MPM Plugins
 
 Certain MicroPowerManager plugins require configuration before they can be used.

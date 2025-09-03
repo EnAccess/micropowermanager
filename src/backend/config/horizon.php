@@ -112,4 +112,23 @@ return [
             ],
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Horizon Basic Auth
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the Horizon dashboard will be protected using simple
+    | HTTP Basic Authentication. This is automatically disabled in the
+    | "development" environment.
+    |
+    | Note: Basic Auth is a lightweight protection method — it does not
+    | include features like hashing, rate limiting, or detailed logging.
+    | It’s sufficient for internal tools like MicroPowerManager Horizon.
+    |
+    */
+    'http_basic_auth' => [
+        'username' => env('HORIZON_BASIC_AUTH_USERNAME'),
+        'password' => env('HORIZON_BASIC_AUTH_PASSWORD'),
+    ],
 ];
