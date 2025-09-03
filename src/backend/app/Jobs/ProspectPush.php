@@ -30,7 +30,7 @@ class ProspectPush extends AbstractJob {
             $data = $this->loadCsvData();
 
             if (empty($data)) {
-                Log::warning('No data to push to Prospect.');
+                Log::info('No data to push to Prospect. This may be because no CSV files have been created yet by the extract job.');
 
                 return;
             }
@@ -71,7 +71,12 @@ class ProspectPush extends AbstractJob {
      * @return array<int, array<string, mixed>>
      */
     private function loadCsvData(): array {
-        $filePath = $this->filePath ?? $this->getLatestCsvFile();
+        try {
+            $filePath = $this->filePath ?? $this->getLatestCsvFile();
+        } catch (\Exception $e) {
+            Log::info('No CSV files available for Prospect push: ' . $e->getMessage());
+            return [];
+        }
 
         if (!file_exists($filePath)) {
             throw new \Exception("CSV file not found: {$filePath}");
@@ -149,6 +154,7 @@ class ProspectPush extends AbstractJob {
         $files = glob($prospectPath.'*.csv');
 
         if (empty($files)) {
+            Log::info("No CSV files found in prospect folder: {$prospectPath}");
             throw new \Exception("No CSV files found in prospect folder: {$prospectPath}");
         }
 
