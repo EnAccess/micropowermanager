@@ -24,7 +24,7 @@ class ApplianceTypeService extends CreatorService {
 
         $appliances = collect($applianceTypes)->map(function ($type) use ($columnApplianceTypes) {
             $applianceIndex = strpos($columnApplianceTypes, $type);
-            if ($applianceIndex >= 0) {
+            if ($applianceIndex !== false) {
                 return [
                     'name' => $type,
                     'price' => 0,

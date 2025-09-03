@@ -14,14 +14,8 @@ class ClusterEvent {
     use InteractsWithSockets;
     use SerializesModels;
 
-    /**
-     * @var Cluster
-     */
-    public $cluster;
-    /**
-     * @var string
-     */
-    public $type;
+    public Cluster $cluster;
+    public string $type;
     /**
      * @var mixed contains geo coordinates array or external url to fetch
      */

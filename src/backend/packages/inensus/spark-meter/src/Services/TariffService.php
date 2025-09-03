@@ -416,7 +416,7 @@ class TariffService implements ISynchronizeService {
 
                 return $tariff;
             });
-            $tariffSyncStatus = $sparkTariffsCollection->whereNotIn('syncStatus', 1)->count();
+            $tariffSyncStatus = $sparkTariffsCollection->whereNotIn('syncStatus', [1])->count();
 
             if ($tariffSyncStatus) {
                 $returnData ? array_push($returnArray, [
@@ -479,7 +479,7 @@ class TariffService implements ISynchronizeService {
 
             return $tariff;
         });
-        $tariffSyncStatus = $sparkTariffsCollection->whereNotIn('syncStatus', 1)->count();
+        $tariffSyncStatus = $sparkTariffsCollection->whereNotIn('syncStatus', [1])->count();
 
         if ($tariffSyncStatus) {
             return ['result' => false, 'message' => 'tariffs are not updated for site '.$siteId];

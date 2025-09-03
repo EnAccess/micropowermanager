@@ -69,7 +69,8 @@ class SteamaMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/steama-meter.php', 'steama');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SteamaMeterApi', SteamaMeterApi::class);
+        $this->app->bind(SteamaMeterApi::class);
+        $this->app->alias(SteamaMeterApi::class, 'SteamaMeterApi');
     }
 
     public function publishConfigFiles(): void {
@@ -93,7 +94,7 @@ class SteamaMeterServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_steama_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_steama_tables.php')[0];

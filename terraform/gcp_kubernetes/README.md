@@ -23,6 +23,7 @@ A few manual steps have to be configured prior to using this Terraform module.
    compute.googleapis.com
    servicenetworking.googleapis.com
    iap.googleapis.com
+   file.googleapis.com
    ```
 
    Future

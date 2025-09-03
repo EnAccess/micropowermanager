@@ -16,7 +16,6 @@ class ResendInformation extends SmsBodyParser {
         /** @var mixed $token */
         $token = $this->paymentHistory->paidFor()->first();
 
-        /** @var mixed $transaction */
         $transaction = $this->paymentHistory->transaction()->first();
         switch ($variable) {
             case 'meter':

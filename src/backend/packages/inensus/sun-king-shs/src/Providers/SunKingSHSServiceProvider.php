@@ -25,7 +25,8 @@ class SunKingSHSServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/sun-king-shs.php', 'sun-king-shs');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SunKingSHSApi', SunKingSHSApi::class);
+        $this->app->bind(SunKingSHSApi::class);
+        $this->app->alias(SunKingSHSApi::class, 'SunKingSHSApi');
     }
 
     public function publishConfigFiles(): void {
@@ -50,7 +51,7 @@ class SunKingSHSServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem, string $migrationName): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem, $migrationName) {
                 if (count($filesystem->glob($path.'*_'.$migrationName))) {
                     $file = $filesystem->glob($path.'*_'.$migrationName)[0];

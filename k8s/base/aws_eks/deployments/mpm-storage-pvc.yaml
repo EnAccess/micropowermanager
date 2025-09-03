@@ -4,8 +4,8 @@ metadata:
   name: mpm-storage-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  storageClassName: gp2  # AWS EBS storage class
+  storageClassName: gp2 # AWS EBS storage class

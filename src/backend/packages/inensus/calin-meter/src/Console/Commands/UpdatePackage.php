@@ -5,16 +5,12 @@ namespace Inensus\CalinMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\CalinMeter\Helpers\ApiHelpers;
-use Inensus\CalinMeter\Services\CalinCredentialService;
 
 class UpdatePackage extends Command {
     protected $signature = 'calin-meter:update';
     protected $description = 'Update CalinMeter Package';
 
     public function __construct(
-        private ApiHelpers $apiHelpers,
-        private CalinCredentialService $credentialService,
         private Filesystem $filesystem,
     ) {
         parent::__construct();

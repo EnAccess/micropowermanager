@@ -6,7 +6,6 @@ use App\Console\Commands\AbstractSharedCommand;
 use App\Events\NewLogEvent;
 use App\Models\AssetRate;
 use App\Models\User;
-use App\Services\SmsApplianceRemindRateService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
@@ -23,7 +22,6 @@ class CheckPayments extends AbstractSharedCommand {
 
     public function __construct(
         private AssetRate $assetRate,
-        private SmsApplianceRemindRateService $smsApplianceRemindRateService,
         private DalyBmsApi $dalyBmsApi,
         private EBikeService $eBikeService,
         private User $user,

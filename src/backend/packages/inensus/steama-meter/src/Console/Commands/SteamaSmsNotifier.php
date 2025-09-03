@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -24,28 +23,14 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
     protected $signature = 'steama-meter:smsNotifier';
     protected $description = 'Notifies customers on payments and low balance limits for SteamaCoMeters';
 
-    private $smsSettingsService;
-    private $sms;
-    private $steamaTransactionService;
-    private $steamaSmsNotifiedCustomerService;
-    private $steamaCustomerService;
-    private $smsService;
-
     public function __construct(
-        SteamaSmsSettingService $smsSettingService,
-        Sms $sms,
-        SteamaTransactionsService $steamaTransactionsService,
-        SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
-        SteamaCustomerService $steamaCustomerService,
-        SmsService $smsService,
+        private SteamaSmsSettingService $smsSettingsService,
+        private SteamaTransactionsService $steamaTransactionService,
+        private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
+        private SteamaCustomerService $steamaCustomerService,
+        private SmsService $smsService,
     ) {
         parent::__construct();
-        $this->smsSettingsService = $smsSettingService;
-        $this->sms = $sms;
-        $this->steamaTransactionService = $steamaTransactionsService;
-        $this->steamaSmsNotifiedCustomerService = $steamaSmsNotifiedCustomerService;
-        $this->steamaCustomerService = $steamaCustomerService;
-        $this->smsService = $smsService;
     }
 
     private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
