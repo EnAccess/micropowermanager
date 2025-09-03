@@ -17,6 +17,7 @@
     "laravel/framework": "^11",
     "laravel/helpers": "^1.2",
     "laravel/horizon": "^5.0",
+    "laravel/slack-notification-channel": "^3.6",
     "laravel/tinker": "^2.8",
     "laravel/ui": "^4.0",
     "lcobucci/jwt": "^4.3",

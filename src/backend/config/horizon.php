@@ -131,4 +131,17 @@ return [
         'username' => env('HORIZON_BASIC_AUTH_USERNAME'),
         'password' => env('HORIZON_BASIC_AUTH_PASSWORD'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Horizon Notifications
+    |--------------------------------------------------------------------------
+    |
+    | Configure to enable Horizon notifications to be sent to Slack. For example
+    | when a queue has a Long Wait Detected event.
+    |
+    */
+    'notifications' => [
+        'slack_webhook_url' => env('HORIZON_SLACK_WEBHOOK_URL'),
+    ],
 ];

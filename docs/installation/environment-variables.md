@@ -112,12 +112,12 @@ Set of environment variables that can be used to configure logging and logging p
 
 Slack
 
-| Environment Variable    | Default                                 | Description                                                                                                                                                                 |
-| ----------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LOG_SLACK_LEVEL`       | `critical`                              | The log level sent to Slack. URL                                                                                                                                            |
-| `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack Logging) | Slack Webhook URL. This require a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `LOG_SLACK_WEBHOOK_URL` is provided Slack logging will be enabled. |
-| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook Username                                                                                                                                                      |
-| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook Emoji                                                                                                                                                         |
+| Environment Variable    | Default                                 | Description                                                                                                                                                                              |
+| ----------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LOG_SLACK_LEVEL`       | `critical`                              | The log level sent to Slack. URL                                                                                                                                                         |
+| `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack Logging) | Slack Webhook URL for logging. This requires a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `LOG_SLACK_WEBHOOK_URL` is provided Slack logging will be enabled. |
+| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook Username                                                                                                                                                                   |
+| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook Emoji                                                                                                                                                                      |
 
 #### Email
 
@@ -148,6 +148,12 @@ Only if both `HORIZON_BASIC_AUTH_USERNAME` and `HORIZON_BASIC_AUTH_PASSWORD` are
 | ----------------------------- | ------- | ------------------------------------------------ |
 | `HORIZON_BASIC_AUTH_USERNAME` | `null`  | HTTP Basic Auth Username for Horizon Dashboard.  |
 | `HORIZON_BASIC_AUTH_PASSWORD` | `null`  | HTTP Basic Auth Username for Horizon Dashboard.. |
+
+Configure Horizon notifications
+
+| Environment Variable        | Default | Description                                                                                                                                                                                                                                                                            |
+| --------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HORIZON_SLACK_WEBHOOK_URL` | `null`  | Slack Webhook URL for Horizon notifications. This requires a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `HORIZON_SLACK_WEBHOOK_URL` is provided Horizon Slack notifications will be enabled. **Note:** Can be the same webhook as `LOG_SLACK_WEBHOOK_URL`. |
 
 ### MPM Plugins
 
