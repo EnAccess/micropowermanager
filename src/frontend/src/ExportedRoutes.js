@@ -354,34 +354,7 @@ export const exportedRoutes = [
           },
         ],
       },
-      {
-        path: "dashboards/agents",
-        component: ChildRouteWrapper,
-        meta: {
-          sidebar: {
-            enabled: true,
-            name: "Agents",
-          },
-        },
-        children: [
-          {
-            path: "",
-            component: AgentDashboardPage,
-            meta: {
-              layout: "default",
-              breadcrumb: {
-                level: "base",
-                name: "Agents",
-                link: "/dashboards/agents",
-              },
-              sidebar: {
-                enabled: true,
-                name: "Agents",
-              },
-            },
-          },
-        ],
-      },
+
       {
         path: "dashboards/agent-performance",
         component: ChildRouteWrapper,
@@ -771,15 +744,24 @@ export const exportedRoutes = [
           layout: "default",
           sidebar: {
             enabled: true,
-            name: "List",
+            name: "Overview",
           },
         },
         children: [
           {
             path: "",
-            component: AgentList,
+            component: AgentDashboardPage,
             meta: {
               layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agents",
+                link: "/agents",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Overview",
+              },
             },
           },
           {
