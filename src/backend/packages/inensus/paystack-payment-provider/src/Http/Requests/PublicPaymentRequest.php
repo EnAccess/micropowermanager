@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Inensus\PaystackPaymentProvider\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
+use Ramsey\Uuid\Uuid;
+
+class PublicPaymentRequest extends FormRequest {
+    public function authorize(): bool {
+        return true; // Public endpoint, no authentication required
+    }
+
+    public function rules(): array {
+        return [
+            'meter_serial' => [
+                'required',
+                'string',
+                'min:3',
+                'max:50',
+            ],
+            'amount' => [
+                'required',
+                'numeric',
+                'min:1',
+                'max:1000000', // Maximum amount limit
+            ],
+            'currency' => [
+                'required',
+                'string',
+                'in:NGN,GHS,KES,ZAR',
+            ],
+        ];
+    }
+
+    public function messages(): array {
+        return [
+            'meter_serial.required' => 'Meter serial number is required',
+            'meter_serial.min' => 'Meter serial number must be at least 3 characters',
+            'meter_serial.max' => 'Meter serial number must not exceed 50 characters',
+            'amount.required' => 'Payment amount is required',
+            'amount.numeric' => 'Payment amount must be a valid number',
+            'amount.min' => 'Payment amount must be at least 1',
+            'amount.max' => 'Payment amount cannot exceed 1,000,000',
+            'currency.required' => 'Currency is required',
+            'currency.in' => 'Currency must be one of: NGN, GHS, KES, ZAR',
+        ];
+    }
+
+    public function getPaystackTransaction(): PaystackTransaction {
+        $validated = $this->validated();
+        
+        return new PaystackTransaction([
+            'amount' => $validated['amount'],
+            'currency' => $validated['currency'],
+            'serial_id' => $validated['meter_serial'],
+            'device_type' => 'meter',
+            'customer_id' => 0, // Public payment
+            'order_id' => Uuid::uuid4()->toString(),
+            'reference_id' => Uuid::uuid4()->toString(),
+            'status' => PaystackTransaction::STATUS_REQUESTED,
+        ]);
+    }
+}

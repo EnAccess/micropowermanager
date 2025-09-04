@@ -11,16 +11,18 @@ use Inensus\PaystackPaymentProvider\Modules\Api\Exceptions\PaystackApiException;
 use Inensus\PaystackPaymentProvider\Modules\Api\Resources\InitializeTransactionResource;
 use Inensus\PaystackPaymentProvider\Modules\Api\Resources\VerifyTransactionResource;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
+use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 
 class PaystackApiService {
     public function __construct(
         private PaystackApi $api,
         private PaystackCredentialService $credentialService,
+        private PaystackCompanyHashService $hashService,
     ) {}
 
-    public function initializeTransaction(PaystackTransaction $transaction): array {
+    public function initializeTransaction(PaystackTransaction $transaction, ?int $companyId = null): array {
         $credential = $this->credentialService->getCredentials();
-        $transactionResource = new InitializeTransactionResource($credential, $transaction);
+        $transactionResource = new InitializeTransactionResource($credential, $transaction, $this->hashService, $companyId);
 
         // Log the outgoing request details
         Log::info('Paystack Transaction Initialize Request', [

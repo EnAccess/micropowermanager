@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Ramsey\Uuid\Uuid;
+use App\Services\PersonService;
 
 /**
  * @implements IBaseService<PaystackTransaction>
@@ -93,10 +94,15 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
     public function create(array $paystackTransactionData): PaystackTransaction {
         /** @var PaystackTransaction $paystackTransaction */
         $paystackTransaction = $this->paystackTransaction->newQuery()->create($paystackTransactionData);
+        
+        // Get customer's phone number for sender field
+        $customerPhone = $this->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
+        $sender = $customerPhone ?: "";
+        
         $paystackTransaction->transaction()->create([
             'amount' => $paystackTransaction->getAmount(),
-            'sender' => $paystackTransaction->getCustomerId(),
-            'message' => $paystackTransaction->getSerialId(),
+            'sender' => $sender,
+            'message' => $paystackTransaction->getDeviceSerial(),
             'type' => 'energy',
         ]);
         return $paystackTransaction;
@@ -130,5 +136,72 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         ProcessPayment::dispatch($companyId, $id);
         $transaction->setStatus(PaystackTransaction::STATUS_SUCCESS);
         $transaction->save();
+    }
+
+    public function createPublicTransaction(array $transactionData): PaystackTransaction {
+        // Create Paystack transaction without customer association
+        $transactionData['status'] = PaystackTransaction::STATUS_REQUESTED;
+        $transactionData['metadata'] = [
+            'serial_id' => $transactionData['serial_id'],
+            'customer_id' => $transactionData['customer_id'],
+            'public_payment' => true,
+        ];
+
+        // Add agent_id to metadata if provided
+        if (isset($transactionData['agent_id']) && $transactionData['agent_id']) {
+            $transactionData['metadata']['agent_id'] = $transactionData['agent_id'];
+        }
+
+
+        return $this->paystackTransaction->newQuery()->create($transactionData);
+    }
+
+    public function validateMeterSerial(string $serialId): bool {
+        // Check if meter exists and is active
+        $meter = $this->meter->newQuery()
+            ->where('serial_number', $serialId)
+            ->where('in_use', 1)
+            ->first();
+
+        return $meter !== null;
+    }
+
+    public function validatePaymentOwner(string $serialId, float $amount): void {
+        // For public payments, we only validate that the meter exists
+        if (!$this->validateMeterSerial($serialId)) {
+            throw new \Exception('Invalid meter serial number');
+        }
+
+        // Additional validation can be added here (e.g., amount limits)
+        if ($amount <= 0) {
+            throw new \Exception('Invalid payment amount');
+        }
+    }
+
+    public function getCustomerIdByMeterSerial(string $serialId): ?int {
+        // Find the meter by serial number and get the associated customer ID
+        $meter = $this->meter->newQuery()
+            ->where('serial_number', $serialId)
+            ->where('in_use', 1)
+            ->first();
+
+        if (!$meter) {
+            return null;
+        }
+
+        // Return the customer ID associated with the meter
+        $person = $meter->device->person->id;
+        return $person;
+    }
+
+    public function getCustomerPhoneByCustomerId(int $customerId): ?string {
+        // Get the customer's phone number by customer ID
+        try {
+        $personService = app()->make(PersonService::class);
+            $person = $personService->getById($customerId);
+            return $person->addresses->first()->phone;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

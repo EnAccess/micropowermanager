@@ -93,6 +93,8 @@ import WaveMoneyPayment from "./plugins/wave-money-payment-provider/js/modules/P
 import PaystackOverview from "./plugins/paystack-payment-provider/modules/Overview/Overview.vue"
 import PaystackCredential from "./plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 import PaystackTransaction from "./plugins/paystack-payment-provider/modules/Transaction/Transaction.vue"
+import PaystackPublicPayment from "./plugins/paystack-payment-provider/modules/Payment/PublicPaymentForm.vue"
+import PaystackPublicResult from "./plugins/paystack-payment-provider/modules/Payment/PublicPaymentResult.vue"
 import MicroStarMeterOverview from "./plugins/micro-star-meter/js/modules/Overview/Overview"
 import SwiftaOverview from "./plugins/swifta-payment-provider/js/modules/Overview/Overview"
 import SunKingShsOverview from "./plugins/sun-king-shs/js/modules/Overview/Overview"
@@ -1348,6 +1350,22 @@ export const exportedRoutes = [
           header: LoginHeader,
           footer: LoginFooter,
         },
+      },
+    ],
+  },
+  {
+    path: "/paystack/public",
+    component: ChildRouteWrapper,
+    children: [
+      {
+        path: "payment/:companyHash/:companyId",
+        component: PaystackPublicPayment,
+        name: "/paystack/public/payment",
+      },
+      {
+        path: "result/:companyHash/:companyId",
+        name: "/paystack/public/result",
+        component: PaystackPublicResult,
       },
     ],
   },

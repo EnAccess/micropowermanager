@@ -58,9 +58,13 @@ class PaystackWebhookService {
 
             $paystackTransaction->setExternalTransactionId($data['id'] ?? '');
 
+            // Get customer's phone number for sender field
+            $customerPhone = $this->transactionService->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
+            $sender = $customerPhone ?: "";
+            
             $paystackTransaction->transaction()->create([
                 'amount' => $paystackTransaction->getAmount(),
-                'sender' => $paystackTransaction->getCustomerId(),
+                'sender' => $sender,
                 'message' => $paystackTransaction->getDeviceSerial(),
                 'type' => 'energy',
             ]);

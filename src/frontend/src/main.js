@@ -86,6 +86,8 @@ const unauthorizedPaths = [
   "register",
   "/wave-money/payment",
   "/wave-money/result",
+  "/paystack/public/payment",
+  "/paystack/public/result",
 ]
 
 router.beforeEach((to, from, next) => {

@@ -53,6 +53,10 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
         return $this->order_id;
     }
 
+    public function getMetadata(): array {
+        return $this->metadata;
+    }
+
     public function getReferenceId(): string {
         return $this->reference_id;
     }
@@ -72,6 +76,10 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
 
     public function getDeviceType(): string {
         return $this->device_type;
+    }
+
+    public function getStatus(): int {
+        return $this->status;
     }
 
     public function setStatus(int $status): void {

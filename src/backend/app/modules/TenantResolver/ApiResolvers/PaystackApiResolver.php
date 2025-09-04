@@ -17,6 +17,11 @@ class PaystackApiResolver implements ApiResolverInterface {
             return $this->resolveFromWebhookUrl($request);
         }
 
+        // For public payment pages, get company ID from URL segments
+        if (str_contains($request->path(), 'api/paystack/public')) {
+            return $this->resolveFromPublicUrl($request);
+        }
+
         // For other Paystack API calls, try to get from JWT token
         return $this->resolveFromJWT($request);
     }
@@ -34,6 +39,24 @@ class PaystackApiResolver implements ApiResolverInterface {
         
         if (!is_numeric($companyId)) {
             throw ValidationException::withMessages(['webhook' => 'invalid company ID in Paystack webhook URL']);
+        }
+
+        return (int) $companyId;
+    }
+
+    private function resolveFromPublicUrl(Request $request): int {
+        $segments = $request->segments();
+        
+        // Expected URL: api/paystack/public/{type}/{companyHash}/{companyId}
+        // Segments: [0=api, 1=paystack, 2=public, 3=type, 4=companyHash, 5=companyId]
+        if (count($segments) < 6) {
+            throw ValidationException::withMessages(['public_url' => 'Invalid public payment URL format']);
+        }
+
+        $companyId = $segments[5];
+        
+        if (!is_numeric($companyId)) {
+            throw ValidationException::withMessages(['public_url' => 'Invalid company ID in public payment URL']);
         }
 
         return (int) $companyId;

@@ -13,6 +13,7 @@ use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
 use Inensus\PaystackPaymentProvider\Services\PaystackWebhookService;
+use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 
 class PaystackPaymentProviderServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem): void {
@@ -40,6 +41,7 @@ class PaystackPaymentProviderServiceProvider extends ServiceProvider {
         $this->app->singleton(PaystackCredentialService::class);
         $this->app->singleton(PaystackWebhookService::class);
         $this->app->singleton(PaystackTransactionService::class);
+        $this->app->singleton(PaystackCompanyHashService::class);
         $this->app->singleton('PaystackPaymentProvider', PaystackTransactionProvider::class);
     }
 

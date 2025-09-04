@@ -34,7 +34,7 @@ return new class extends Migration {
                 $table->string('reference_id')->unique();
                 $table->integer('status')->default(0);
                 $table->string('external_transaction_id')->nullable();
-                $table->unsignedBigInteger('customer_id');
+                $table->integer('customer_id');
                 $table->string('serial_id')->nullable();
                 $table->string('device_type')->nullable();
                 $table->string('paystack_reference')->nullable()->unique();
@@ -52,10 +52,6 @@ return new class extends Migration {
                 $table->index('external_transaction_id');
                 $table->index('order_id');
                 $table->index('reference_id');
-
-                if (Schema::connection('tenant')->hasTable('customers')) {
-                    $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-                }
             });
         }
     }

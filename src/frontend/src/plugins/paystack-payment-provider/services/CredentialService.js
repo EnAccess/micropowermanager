@@ -88,4 +88,27 @@ export class CredentialService {
       throw error;
     }
   }
+
+  async getPublicUrls() {
+    try {
+      const response = await Client.get(`${resource}/public-urls`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching public URLs:", error);
+      throw error;
+    }
+  }
+
+  async generateAgentPaymentUrl(customerId = null, agentId = null) {
+    try {
+      const response = await Client.post(`${resource}/agent-payment-url`, {
+        customer_id: customerId,
+        agent_id: agentId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error generating agent payment URL:", error);
+      throw error;
+    }
+  }
 }
