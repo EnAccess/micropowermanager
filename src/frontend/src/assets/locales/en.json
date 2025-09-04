@@ -173,6 +173,7 @@
     "energyCommission": "Energy Commission (sample 0.1)",
     "expireSession": "Session is about to expire",
     "expireSessionLabel": "If you want to extend your session for the next 60(sixty) minutes, please confirm this window. | Your session expires in {expires_in} seconds.",
+    "exportAllCustomers": "Export All Customers",
     "exportCustomers": "Export Customers",
     "exportTransactions": "Export Transactions",
     "financeOverview": "Finance Overview (Period:{period})",

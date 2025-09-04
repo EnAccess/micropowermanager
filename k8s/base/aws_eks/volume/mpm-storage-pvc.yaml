@@ -8,4 +8,5 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: gp2 # AWS EBS storage class
+  storageClassName: mpm-storage-class
+  volumeMode: Filesystem
