@@ -14,6 +14,7 @@ class AgentPerformanceMetricsController extends Controller {
         $endDate = $request->query('end_date');
         $period = $request->query('period');
         $metrics = $this->agentMetricsService->getMetrics($startDate, $endDate, $period);
+
         return AgentPerformanceMetricsResource::make($metrics);
     }
 }

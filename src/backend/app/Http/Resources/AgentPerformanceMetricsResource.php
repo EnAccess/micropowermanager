@@ -5,8 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AgentPerformanceMetricsResource extends JsonResource
-{
+class AgentPerformanceMetricsResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -14,8 +13,7 @@ class AgentPerformanceMetricsResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray($request): array
-    {
+    public function toArray($request): array {
         return [
             'metrics' => $this->resource['metrics'],
             'top_agents' => $this->resource['top_agents'],
@@ -26,23 +24,23 @@ class AgentPerformanceMetricsResource extends JsonResource
     /**
      * Customize the response for the resource.
      *
-     * @param Request $request
+     * @param Request                       $request
      * @param \Illuminate\Http\JsonResponse $response
+     *
      * @return void
      */
-    public function withResponse($request, $response): void
-    {
+    public function withResponse($request, $response): void {
         $data = $response->getData(true);
-        
+
         $responseData = [
             'data' => [
                 'metrics' => $data['data']['metrics'] ?? null,
                 'top_agents' => $data['data']['top_agents'] ?? [],
                 'period' => $this->resource['period'],
             ],
-            'status' => 'success'
+            'status' => 'success',
         ];
-        
+
         $response->setData($responseData);
     }
 
@@ -53,8 +51,7 @@ class AgentPerformanceMetricsResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function with($request): array
-    {
+    public function with($request): array {
         return [
             'status' => 'success',
         ];
