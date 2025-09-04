@@ -12,7 +12,7 @@ class AgentPerformanceMetricsRequest extends FormRequest {
         return [
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'period' => 'nullable|in:weekly,monthly',
+            'period' => 'nullable|in:daily,weekly,monthly,yearly',
         ];
     }
 

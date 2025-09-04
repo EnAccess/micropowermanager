@@ -9,6 +9,7 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use App\Utils\MinimumPurchaseAmountValidator;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -92,7 +93,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
             throw new \Exception($e->getMessage());
         }
 
-        $validator = resolve('MinimumPurchaseAmountValidator');
+        $validator = resolve(MinimumPurchaseAmountValidator::class);
 
         try {
             if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {

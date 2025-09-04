@@ -29,7 +29,8 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/wavecom-payment-provider.php', 'wavecom-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('WaveComPaymentProvider', WaveComTransactionProvider::class);
+        $this->app->bind(WaveComTransactionProvider::class);
+        $this->app->alias(WaveComTransactionProvider::class, 'WaveComPaymentProvider');
     }
 
     public function publishConfigFiles(): void {
@@ -62,7 +63,7 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_wavecom_tables.php'))) {
                     $file = $filesystem->glob($path.'*_wavecom_tables.php')[0];

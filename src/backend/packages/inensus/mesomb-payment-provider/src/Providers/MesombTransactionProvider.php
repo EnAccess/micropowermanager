@@ -65,7 +65,7 @@ class MesombTransactionProvider implements ITransactionProvider {
             $this->mesombTransaction->status = 1;
             $this->mesombTransaction->save();
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms($transaction->toArray(), SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::critical('mesomb transaction is been cancelled');
             $this->mesombTransaction->status = -1;

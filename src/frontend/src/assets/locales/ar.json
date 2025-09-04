@@ -180,6 +180,7 @@
     "energyCommission": "عمولة الطاقة (عينة 0.1)",
     "expireSession": "ستنتهي صلاحية الجلسة قريبًا",
     "expireSessionLabel": "إذا كنت ترغب في تمديد جلستك لمدة 60 (ستين) دقيقة، يرجى تأكيد هذه الرسالة ‎ |‎ ثانية ‏ {expires_in} ‏ تنتهي صلاحية جلستك خلال.",
+    "exportAllCustomers": "تصدير جميع الحرفاء",
     "exportCustomers": "تصدير الحرفاء",
     "exportTransactions": "تصدير المعاملات",
     "financeOverview": "‏{period} ‏ ملخّص مالي: الفترة",

@@ -8,10 +8,7 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class MailHelper implements MailHelperInterface {
-    /**
-     * @var PHPMailer
-     */
-    private $mailer;
+    private PHPMailer $mailer;
 
     /**
      * @var array<string, mixed>

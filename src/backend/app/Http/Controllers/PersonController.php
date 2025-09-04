@@ -100,7 +100,6 @@ class PersonController extends Controller {
                 }
             }
 
-            /** @var Person $person */
             $address = $this->addressService->make($addressData);
             $this->personAddressService->setAssignee($person);
             $this->personAddressService->setAssigned($address);

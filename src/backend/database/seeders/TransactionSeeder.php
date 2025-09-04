@@ -11,6 +11,7 @@ use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Utils\AccessRatePayer;
+use App\Utils\ApplianceInstallmentPayer;
 use Database\Factories\AgentTransactionFactory;
 use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
@@ -259,14 +260,13 @@ class TransactionSeeder extends Seeder {
         // only process access rate for meter devices
         if ($deviceModel instanceof Meter) {
             // pay access rate
-            /** @var AccessRatePayer $accessRatePayer */
-            $accessRatePayer = resolve('AccessRatePayer');
+            $accessRatePayer = resolve(AccessRatePayer::class);
             $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();
         }
 
         // pay appliance installments
-        $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
+        $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($transactionData);
         $transactionData->transaction->amount = $applianceInstallmentPayer->payInstallments();
         $transactionData->totalAmount = $transactionData->transaction->amount;

@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Person                      $person
  * @property Address                     $address
  * @property string                      $device_type
- * @property Manufacturer                $manufacturer
  */
 class Device extends BaseModel {
     /** @use HasFactory<\Database\Factories\DeviceFactory> */

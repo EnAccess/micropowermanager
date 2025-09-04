@@ -79,6 +79,9 @@ class WebhookController extends Controller {
 
                 $person = $meter->device->person;
 
+                // We should review this logic.
+                // Simply silencing Larastan for now to not break anything.
+                // @phpstan-ignore if.alwaysTrue
                 if ($person) {
                     $data = [
                         'person_id' => $person->id,
@@ -112,7 +115,11 @@ class WebhookController extends Controller {
                     return;
                 }
                 try {
-                    $this->smsService->sendSms($transaction, SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
+                    $this->smsService->sendSms(
+                        $transaction->toArray(),
+                        SmsTypes::RESEND_INFORMATION,
+                        SmsConfigs::class
+                    );
                 } catch (\Exception $ex) {
                     Log::error('Resend transaction information message not send to customer', ['error' => $ex->getMessage()]);
 

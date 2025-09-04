@@ -35,6 +35,7 @@ class ProtectedPageService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function update(Model $model, array $data): ProtectedPage {
+        // Parameter types must be compatible (contravariant).
         /* @var ProtectedPage $model */
         $model->update($data);
 

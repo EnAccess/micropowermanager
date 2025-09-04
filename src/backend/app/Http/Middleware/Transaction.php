@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Exceptions\PaymentProviderNotIdentified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use MPM\Transaction\Provider\AgentTransactionProvider;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class Transaction {
@@ -20,7 +21,7 @@ class Transaction {
 
     private function determineSender(Request $request): ITransactionProvider {
         if (preg_match('/\/agent/', $request->url()) && auth('agent_api')->user()) {
-            return resolve('AgentPaymentProvider');
+            return resolve(AgentTransactionProvider::class);
         } else {
             Log::warning(
                 'Unknown IP Sent Transaction',

@@ -5,40 +5,22 @@ namespace Inensus\SteamaMeter\Observers;
 use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
-use App\Models\Meter\Meter;
-use App\Models\Person\Person;
-use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 use Inensus\SteamaMeter\Services\SteamaMeterService;
 
 class GeographicalInformationObserver {
-    private $stmMeterService;
-    private $stmMeter;
-    private $person;
-    private $stmCustomer;
-    private $meter;
-
     public function __construct(
-        SteamaMeterService $stmMeterService,
-        SteamaMeter $stmMeter,
-        Person $person,
-        SteamaCustomer $steamaCustomer,
-        Meter $meter,
-    ) {
-        $this->stmMeterService = $stmMeterService;
-        $this->stmMeter = $stmMeter;
-        $this->person = $person;
-        $this->stmCustomer = $steamaCustomer;
-        $this->meter = $meter;
-    }
+        private SteamaMeterService $stmMeterService,
+        private SteamaMeter $stmMeter,
+    ) {}
 
     public function updated(GeographicalInformation $geographicalInformation) {
         if ($geographicalInformation->owner instanceof Address) {
             $address = $geographicalInformation->owner;
-            if ($address && $address->owner instanceof Device) {
+            if ($address->owner instanceof Device) {
                 $device = $address->owner;
 
-                if ($device && $device->device instanceof Device) {
+                if ($device instanceof Device) {
                     $this->updateSteamaMeterGeolocation($device, $geographicalInformation);
                 }
             }

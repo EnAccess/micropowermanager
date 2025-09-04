@@ -8,15 +8,11 @@ use Inensus\BulkRegistration\Helpers\CsvFileParser;
 use Inensus\BulkRegistration\Models\CsvData;
 
 class CsvDataService {
-    private $csvData;
-    private $csvDataProcessor;
-    private $csvFileParser;
-
-    public function __construct(CsvData $csvData, CsvFileParser $csvFileParser, CsvDataProcessor $csvDataProcessor) {
-        $this->csvData = $csvData;
-        $this->csvDataProcessor = $csvDataProcessor;
-        $this->csvFileParser = $csvFileParser;
-    }
+    public function __construct(
+        private CsvData $csvData,
+        private CsvFileParser $csvFileParser,
+        private CsvDataProcessor $csvDataProcessor,
+    ) {}
 
     public function create($request) {
         $path = $request->file('csv');
@@ -32,7 +28,7 @@ class CsvDataService {
         $csvData = $this->csvData->newQuery()->create([
             'csv_filename' => $request->file('csv')->getClientOriginalName(),
             'user_id' => auth('api')->user()->id,
-            'csv_data' => json_encode(array_values($parsedCsvData), true),
+            'csv_data' => json_encode(array_values($parsedCsvData), 1),
         ]);
         $csvData['recently_created_records'] = $recentlyCreatedRecords;
         $csvData['alert'] = $message;

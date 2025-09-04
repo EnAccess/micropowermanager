@@ -24,33 +24,4 @@ class InstallPackage extends Command {
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
-
-    private function publishMigrations() {
-        $this->info('Copying migrations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider",
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    private function createDatabaseTables() {
-        $this->info('Creating database tables\n');
-        $this->call('migrate');
-    }
-
-    private function publishVueFiles() {
-        $this->info('Copying vue files\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider",
-            '--tag' => 'vue-components',
-        ]);
-    }
-
-    private function createPluginRecord() {
-        $this->call('plugin:add', [
-            'name' => 'SunKingSHS',
-            'composer_name' => 'inensus/sun-king-shs',
-            'description' => 'SunKingSHS integration package for MicroPowerManager',
-        ]);
-    }
 }

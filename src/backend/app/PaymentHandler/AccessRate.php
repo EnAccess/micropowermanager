@@ -11,14 +11,8 @@ use App\Models\Meter\Meter;
 use Carbon\Carbon;
 
 class AccessRate {
-    /**
-     * @var AccessRateModel
-     */
     private ?AccessRateModel $accessRate = null;
-    /**
-     * @var Meter
-     */
-    private $meter;
+    private ?Meter $meter;
 
     /**
      * AccessRatePayment constructor.
@@ -26,10 +20,6 @@ class AccessRate {
     public function __construct() {}
 
     /**
-     * @param Meter $meter
-     *
-     * @return AccessRate
-     *
      * @throws NoAccessRateFound
      */
     public static function withMeter(Meter $meter): AccessRate {

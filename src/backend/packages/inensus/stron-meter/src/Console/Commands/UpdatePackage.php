@@ -5,14 +5,12 @@ namespace Inensus\StronMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\StronMeter\Services\StronCredentialService;
 
 class UpdatePackage extends Command {
     protected $signature = 'stron-meter:update';
     protected $description = 'Update StronMeter Package';
 
     public function __construct(
-        private StronCredentialService $credentialService,
         private Filesystem $filesystem,
     ) {
         parent::__construct();

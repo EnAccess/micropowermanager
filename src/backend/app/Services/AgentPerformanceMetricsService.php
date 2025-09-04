@@ -54,7 +54,12 @@ class AgentPerformanceMetricsService {
             ->get();
 
         // Periodic metrics
-        $groupFormat = $interval === 'weekly' ? '%x-W%v' : '%Y-%m';
+        $groupFormat = match ($interval) {
+            'daily' => '%Y-%m-%d',
+            'weekly' => '%x-W%v',
+            'yearly' => '%Y',
+            default => '%Y-%m', // monthly
+        };
 
         $periodicData = DB::connection('tenant')
             ->table('asset_people')

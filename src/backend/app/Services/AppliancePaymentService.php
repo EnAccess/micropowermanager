@@ -65,7 +65,6 @@ class AppliancePaymentService {
     }
 
     public function updateRateRemaining(int $id, float $amount): AssetRate {
-        /** @var AssetRate $applianceRate */
         $applianceRate = AssetRate::query()->findOrFail($id);
         $applianceRate->remaining -= (int) $amount; // Cast to int to match property type
         $applianceRate->update();
@@ -75,7 +74,6 @@ class AppliancePaymentService {
     }
 
     public function createPaymentLog(AssetPerson $appliancePerson, float $amount, int $creatorId): void {
-        /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
         $currency = $mainSettings->currency ?? '€';
         event(new NewLogEvent([

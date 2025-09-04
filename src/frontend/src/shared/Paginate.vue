@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="paginator && paginator.totalPage > 1"
+    v-if="paginator && paginator.totalEntries > 0"
     class="md-layout md-gutter md-size-100 pagination-area"
   >
     <div class="md-layout-item md-size-25 pagination-entry">
@@ -125,7 +125,7 @@ export default {
       total: 0,
       currentPage: 0,
       totalPages: 0,
-      paginator: this.paginatorReference,
+      paginator: null,
       term: {},
       threeDots: false,
       perPage: 15,
@@ -145,6 +145,13 @@ export default {
   watch: {
     $route() {
       this.loadPage(this.currentPage)
+    },
+    paginatorReference: {
+      handler(newPaginator) {
+        this.paginator = newPaginator
+      },
+      deep: true,
+      immediate: true,
     },
   },
   methods: {

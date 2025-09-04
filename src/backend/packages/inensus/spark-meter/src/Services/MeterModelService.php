@@ -145,7 +145,7 @@ class MeterModelService implements ISynchronizeService {
                 return $meterModel;
             });
 
-            $meterModelSyncStatus = $sparkMeterModelsCollection->whereNotIn('syncStatus', 1)->count();
+            $meterModelSyncStatus = $sparkMeterModelsCollection->whereNotIn('syncStatus', [1])->count();
 
             if ($meterModelSyncStatus) {
                 $returnData ? array_push($returnArray, [
@@ -205,7 +205,7 @@ class MeterModelService implements ISynchronizeService {
             return $meterModel;
         });
 
-        $meterModelSyncStatus = $sparkMeterModelsCollection->whereNotIn('syncStatus', 1)->count();
+        $meterModelSyncStatus = $sparkMeterModelsCollection->whereNotIn('syncStatus', [1])->count();
 
         if ($meterModelSyncStatus) {
             return ['result' => false, 'message' => 'meter models are not updated for site '.$siteId];

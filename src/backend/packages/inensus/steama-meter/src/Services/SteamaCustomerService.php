@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Services;
 
 use App\Models\City;
-use App\Models\ConnectionType;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
 use Illuminate\Support\Facades\App;
@@ -36,7 +35,6 @@ class SteamaCustomerService implements ISynchronizeService {
     private $minimumTopUpPaymentPlan;
     private $perKwhPaymentPlan;
     private $userType;
-    private $connectionType;
     private $steamaSite;
     private $bitharvesterService;
     private $stmSite;
@@ -57,7 +55,6 @@ class SteamaCustomerService implements ISynchronizeService {
         SteamaMinimumTopUpRequirementsPaymentPlan $minimumTopUpPaymentPlan,
         SteamaPerKwhPaymentPlan $perKwhPaymentPlan,
         SteamaUserType $userType,
-        ConnectionType $connectionType,
         SteamaSite $steamaSite,
         SteamaBitharvesterService $bitharvesterService,
         SteamaSite $stmSite,
@@ -77,7 +74,6 @@ class SteamaCustomerService implements ISynchronizeService {
         $this->minimumTopUpPaymentPlan = $minimumTopUpPaymentPlan;
         $this->perKwhPaymentPlan = $perKwhPaymentPlan;
         $this->userType = $userType;
-        $this->connectionType = $connectionType;
         $this->steamaSite = $steamaSite;
         $this->bitharvesterService = $bitharvesterService;
         $this->stmSite = $stmSite;
@@ -195,7 +191,7 @@ class SteamaCustomerService implements ISynchronizeService {
 
             return $customer;
         });
-        $customerSyncStatus = $customersCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $customerSyncStatus = $customersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($customerSyncStatus) {
             return $returnData ? ['data' => $customersCollection, 'result' => false] : ['result' => false];
         }
@@ -467,7 +463,7 @@ class SteamaCustomerService implements ISynchronizeService {
             'plan_fee' => floatval($fee),
             'plan_duration' => $duration,
             'energy_allotment' => floatval($limit),
-            'top_ups_enabled' => $topUpEnabled === 1,
+            'top_ups_enabled' => (bool) $topUpEnabled,
         ]);
         $customerBasisPlan->paymentPlan()->associate($subscriptionPlan);
         $customerBasisPlan->save();

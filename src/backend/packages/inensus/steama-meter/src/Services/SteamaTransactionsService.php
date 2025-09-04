@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
-use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 use Inensus\SteamaMeter\Models\SteamaTransaction;
 
@@ -27,7 +26,6 @@ class SteamaTransactionsService implements ISynchronizeService {
     private $rootUrl = '/transactions';
     private $transaction;
     private $token;
-    private $steamaCustomer;
     private $steamaSyncSettingService;
     private $steamaSyncActionService;
 
@@ -43,7 +41,6 @@ class SteamaTransactionsService implements ISynchronizeService {
         SteamaMeter $steamaMeter,
         ThirdPartyTransaction $thirdPartyTransaction,
         Token $token,
-        SteamaCustomer $steamaCustomer,
         SteamaSyncSettingService $steamaSyncSettingService,
         StemaSyncActionService $steamaSyncActionService,
     ) {
@@ -58,7 +55,6 @@ class SteamaTransactionsService implements ISynchronizeService {
         $this->steamaMeter = $steamaMeter;
         $this->thirdPartyTransaction = $thirdPartyTransaction;
         $this->token = $token;
-        $this->steamaCustomer = $steamaCustomer;
         $this->steamaSyncSettingService = $steamaSyncSettingService;
         $this->steamaSyncActionService = $steamaSyncActionService;
     }

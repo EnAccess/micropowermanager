@@ -1,0 +1,20 @@
+meta {
+  name: Get Horizon Dashboard
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{mpm_backend_url}}/horizon/dashboard
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: horizon
+  password: 123123
+}
+
+assert {
+  res.status: eq 200
+}

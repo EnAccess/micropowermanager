@@ -36,7 +36,8 @@ class DalyBmsServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/daly-bms.php', 'daly-bms.php');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('DalyBmsApi', DalyBmsApi::class);
+        $this->app->bind(DalyBmsApi::class);
+        $this->app->alias(DalyBmsApi::class, 'DalyBmsApi');
     }
 
     public function publishConfigFiles(): void {
@@ -54,7 +55,7 @@ class DalyBmsServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_daly_bms_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_daly_bms_tables.php')[0];

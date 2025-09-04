@@ -10,6 +10,7 @@ use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionCallbackRequestMap
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Data\TransactionCallbackData;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
+use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 
 class WaveMoneyTransactionCallbackMiddleware {
     public function __construct(private WaveMoneyTransactionService $transactionService) {}
@@ -29,7 +30,7 @@ class WaveMoneyTransactionCallbackMiddleware {
                 // we set the transaction status as completed by wave money, but we don't process it yet
                 $status = WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY;
             }
-            $transactionProvider = resolve('WaveMoneyPaymentProvider');
+            $transactionProvider = resolve(WaveMoneyTransactionProvider::class);
             $transactionProvider->init($waveMoneyTransaction);
 
             $request->attributes->add(['waveMoneyTransaction' => $waveMoneyTransaction]);

@@ -2,7 +2,6 @@
 
 namespace Inensus\ViberMessaging\Services;
 
-use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Inensus\ViberMessaging\Models\ViberContact;
@@ -13,7 +12,6 @@ use Inensus\ViberMessaging\Models\ViberContact;
 class ViberContactService implements IBaseService {
     public function __construct(
         private ViberContact $viberContact,
-        private Person $person,
     ) {}
 
     public function createContact($personId, $viberId) {

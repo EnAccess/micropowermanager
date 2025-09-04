@@ -24,7 +24,6 @@ class SteamaAgentService implements ISynchronizeService {
     private $apiHelpers;
     private $rootUrl = '/agents';
     private $person;
-    private $addressService;
     private $site;
     private $address;
     private $steamaSyncSettingService;
@@ -37,7 +36,6 @@ class SteamaAgentService implements ISynchronizeService {
         ApiHelpers $apiHelpers,
         Agent $agent,
         Person $person,
-        AddressesService $addressService,
         SteamaSite $site,
         Address $address,
         SteamaSyncSettingService $steamaSyncSettingService,
@@ -49,7 +47,6 @@ class SteamaAgentService implements ISynchronizeService {
         $this->apiHelpers = $apiHelpers;
         $this->agent = $agent;
         $this->person = $person;
-        $this->addressService = $addressService;
         $this->site = $site;
         $this->address = $address;
         $this->steamaSyncSettingService = $steamaSyncSettingService;
@@ -171,7 +168,7 @@ class SteamaAgentService implements ISynchronizeService {
 
             return $agent;
         });
-        $agentSyncStatus = $agentsCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $agentSyncStatus = $agentsCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($agentSyncStatus) {
             return $returnData ? ['data' => $agentsCollection, 'result' => false] : ['result' => false];
         }

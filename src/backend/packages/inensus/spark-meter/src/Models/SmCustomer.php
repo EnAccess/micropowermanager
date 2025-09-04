@@ -6,8 +6,9 @@ use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property float $credit_balance
- * @property float $low_balance_limit
+ * @property float  $credit_balance
+ * @property float  $low_balance_limit
+ * @property Person $mpmPerson
  */
 class SmCustomer extends BaseModel {
     protected $table = 'sm_customers';

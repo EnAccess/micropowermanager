@@ -58,7 +58,6 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     private function sumTotalPaymentsAndTotalRemainingAmount(AssetPerson $appliance): AssetPerson {
-        /** @var SupportCollection<int, mixed> $rates */
         $rates = collect($appliance->rates);
         $appliance['totalRemainingAmount'] = 0;
         $appliance['totalPayments'] = 0;

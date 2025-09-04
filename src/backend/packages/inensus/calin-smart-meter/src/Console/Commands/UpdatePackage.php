@@ -5,14 +5,12 @@ namespace Inensus\CalinSmartMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\CalinSmartMeter\Services\CalinSmartCredentialService;
 
 class UpdatePackage extends Command {
     protected $signature = 'calin-smart-meter:update';
     protected $description = 'Update CalinSmartMeter Package';
 
     public function __construct(
-        private CalinSmartCredentialService $credentialService,
         private Filesystem $filesystem,
     ) {
         parent::__construct();

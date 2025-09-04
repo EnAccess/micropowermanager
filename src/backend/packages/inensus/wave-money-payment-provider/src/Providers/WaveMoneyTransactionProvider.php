@@ -46,13 +46,18 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
         if ($requestType) {
+            /** @var WaveMoneyTransaction */
             $waveMoneyTransaction = $transaction->originalTransaction()->first();
             $updateData = [
                 'status' => WaveMoneyTransaction::STATUS_SUCCESS,
             ];
             $this->waveMoneyTransactionService->update($waveMoneyTransaction, $updateData);
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
         } else {
             Log::critical(
                 'WaveMoney transaction is been cancelled from MicroPowerManager.',

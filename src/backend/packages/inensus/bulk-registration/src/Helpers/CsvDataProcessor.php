@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\Log;
 
 class CsvDataProcessor {
     public const CONNECTION_GROUP = 1;
-    private $geographicalLocationFinder;
     private $reflections;
     private $recentlyCreatedRecords;
 
-    public function __construct(GeographicalLocationFinder $geographicalLocationFinder) {
-        $this->geographicalLocationFinder = $geographicalLocationFinder;
+    public function __construct() {
         $this->reflections = config('bulk-registration.reflections');
         $this->recentlyCreatedRecords = [
             'cluster' => 0,
@@ -75,7 +73,6 @@ class CsvDataProcessor {
                         $geographicalInformationService->resolveCsvDataFromComingRow($row, $meter);
 
                         $address = new Address();
-                        /** @var Address $address */
                         $address = $address->newQuery()->create([
                             'city_id' => $city->id,
                         ]);

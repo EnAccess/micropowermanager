@@ -28,7 +28,6 @@ class CompanyDatabaseService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function create(array $data): CompanyDatabase {
-        /** @var CompanyDatabase $company_database */
         $company_database = $this->companyDatabase->newQuery()->create($data);
         $database_name = $company_database->database_name;
         $company_id = $company_database->company_id;
@@ -74,11 +73,8 @@ class CompanyDatabaseService implements IBaseService {
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase {
-        /** @var CompanyDatabase $result */
-        $result = $this->companyDatabase->newQuery()
+        return $this->companyDatabase->newQuery()
             ->where(CompanyDatabase::COL_COMPANY_ID, '=', $companyId)
             ->firstOrFail();
-
-        return $result;
     }
 }

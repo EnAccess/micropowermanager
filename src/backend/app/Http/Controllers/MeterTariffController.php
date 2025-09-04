@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\MeterTariffService;
+use App\Utils\TariffPriceCalculator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -60,7 +61,7 @@ class MeterTariffController extends Controller {
         $meterTariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);
         $newTariff = $this->meterTariffService->create($meterTariffData);
 
-        $calculator = resolve('TariffPriceCalculator');
+        $calculator = resolve(TariffPriceCalculator::class);
         $calculator->calculateTotalPrice($newTariff, $request);
 
         return ApiResource::make($this->meterTariffService->getById($newTariff->id))->response()->setStatusCode(201);
@@ -78,7 +79,7 @@ class MeterTariffController extends Controller {
         ];
 
         $meterTariff = $this->meterTariffService->update($meterTariff, $meterTariffData);
-        $calculator = resolve('TariffPriceCalculator');
+        $calculator = resolve(TariffPriceCalculator::class);
         $calculator->calculateTotalPrice($meterTariff, $request);
 
         return ApiResource::make($meterTariff);

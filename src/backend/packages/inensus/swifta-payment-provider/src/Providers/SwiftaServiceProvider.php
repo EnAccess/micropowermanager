@@ -35,7 +35,8 @@ class SwiftaServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/swifta-payment-provider.php', 'swifta-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SwiftaPaymentProvider', SwiftaTransactionProvider::class);
+        $this->app->bind(SwiftaTransactionProvider::class);
+        $this->app->alias(SwiftaTransactionProvider::class, 'SwiftPaymentProvider');
     }
 
     public function publishConfigFiles(): void {
@@ -53,7 +54,7 @@ class SwiftaServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_swifta_payment_provider_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_swifta_payment_provider_tables.php')[0];

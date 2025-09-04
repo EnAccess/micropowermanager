@@ -26,7 +26,8 @@ class MicroStarMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/micro-star-meter.php', 'micro-star-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('MicroStarMeterApi', MicroStarMeterApi::class);
+        $this->app->bind(MicroStarMeterApi::class);
+        $this->app->alias(MicroStarMeterApi::class, 'MicroStarMeterApi');
     }
 
     public function publishConfigFiles(): void {
@@ -50,7 +51,7 @@ class MicroStarMeterServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_micro_star_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_micro_star_tables.php')[0];

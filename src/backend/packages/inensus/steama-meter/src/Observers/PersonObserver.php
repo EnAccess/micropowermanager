@@ -3,35 +3,15 @@
 namespace Inensus\SteamaMeter\Observers;
 
 use App\Models\Person\Person;
-use Inensus\SteamaMeter\Helpers\ApiHelpers;
-use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
-use Inensus\SteamaMeter\Services\SteamaMeterService;
 
 class PersonObserver {
-    private $apiHelpers;
-    private $stmCustomerService;
-    private $stmMeterService;
-    private $stmCustomer;
-    private $person;
-    private $steamaApi;
-
     public function __construct(
-        ApiHelpers $apiHelpers,
-        SteamaMeterService $stmMeterService,
-        SteamaCustomerService $stmCustomerService,
-        Person $person,
-        SteamaCustomer $steamaCustomer,
-        SteamaMeterApiClient $steamaApi,
-    ) {
-        $this->apiHelpers = $apiHelpers;
-        $this->stmCustomerService = $stmCustomerService;
-        $this->stmMeterService = $stmMeterService;
-        $this->person = $person;
-        $this->stmCustomer = $steamaCustomer;
-        $this->steamaApi = $steamaApi;
-    }
+        private SteamaCustomerService $stmCustomerService,
+        private Person $person,
+        private SteamaCustomer $stmCustomer,
+    ) {}
 
     public function updated(Person $person) {
         $stmCustomer = $this->stmCustomer->newQuery()->with('site')->where('mpm_customer_id', $person->id)->first();
@@ -39,9 +19,9 @@ class PersonObserver {
         if ($stmCustomer) {
             $personId = $person->id;
             $customer = $this->person->newQuery()->with([
-                'meters.tariff',
-                'meters.geo',
-                'meters.meter',
+                'devices.device.tariff',
+                'devices.device.geo',
+                'devices.device.meter',
                 'addresses' => function ($q) {
                     return $q->where('is_primary', 1);
                 },

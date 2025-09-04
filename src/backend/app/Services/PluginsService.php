@@ -15,10 +15,7 @@ class PluginsService {
      * @param array<string, mixed> $pluginData
      */
     public function create(array $pluginData): Plugins {
-        /** @var Plugins $plugin */
-        $plugin = $this->plugin->newQuery()->create($pluginData);
-
-        return $plugin;
+        return $this->plugin->newQuery()->create($pluginData);
     }
 
     /**

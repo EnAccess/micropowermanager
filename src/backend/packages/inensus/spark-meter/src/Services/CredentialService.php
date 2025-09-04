@@ -8,24 +8,16 @@ use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmCredential;
 
 class CredentialService {
-    private $sparkMeterApiRequests;
-    private $smCredential;
-    private $smTableEncryption;
     private $rootUrl = '/organizations';
-    private $organizationService;
 
     public function __construct(
-        SparkMeterApiRequests $sparkMeterApiRequests,
-        SmCredential $smCredential,
-        OrganizationService $organizationService,
-    ) {
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
-        $this->smCredential = $smCredential;
-        $this->organizationService = $organizationService;
-    }
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private SmCredential $smCredential,
+        private OrganizationService $organizationService,
+    ) {}
 
     public function getCredentials() {
-        return $this->smCredential->newQuery()->latest()->take(1)->get()->first();
+        return $this->smCredential->newQuery()->latest()->take(1)->first();
     }
 
     public function createSmCredentials() {

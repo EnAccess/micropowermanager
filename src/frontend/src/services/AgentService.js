@@ -58,11 +58,12 @@ export class AgentService {
     return {
       id: data.id,
       personId: data.person_id,
-      miniGrid: data.mini_grid.name,
+      miniGrid: data.mini_grid?.name,
       deviceId: data.device_id,
       name: data.name,
       email: data.email,
       balance: data.balance,
+      person: data.person, // Include the person object for name/surname
     }
   }
   updateList(data) {

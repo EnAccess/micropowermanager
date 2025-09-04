@@ -35,7 +35,8 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider {
         );
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->singleton('WaveMoneyPaymentProvider', WaveMoneyTransactionProvider::class);
+        $this->app->singleton(WaveMoneyTransactionProvider::class);
+        $this->app->alias(WaveMoneyTransactionProvider::class, 'WaveMoneyPaymentProvider');
     }
 
     public function publishConfigFiles(): void {
@@ -62,7 +63,7 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_wave_money_payment_provider_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_wave_money_payment_provider_tables.php')[0];

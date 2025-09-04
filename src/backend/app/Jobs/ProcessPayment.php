@@ -14,15 +14,10 @@ class ProcessPayment extends AbstractJob {
     use Queueable;
     use SerializesModels;
 
-    /**
-     * @var int
-     */
-    protected $transactionId;
+    protected int $transactionId;
 
     /**
      * Create a new job instance.
-     *
-     * @param int $transactionId
      */
     public function __construct(int $companyId, int $transactionId) {
         $this->onConnection('redis');

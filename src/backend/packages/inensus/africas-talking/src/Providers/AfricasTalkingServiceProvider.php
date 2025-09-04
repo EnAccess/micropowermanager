@@ -24,7 +24,8 @@ class AfricasTalkingServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/africas-talking.php', 'africas-talking');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('AfricasTalkingGateway', AfricasTalkingGateway::class);
+        $this->app->bind(AfricasTalkingGateway::class);
+        $this->app->alias(AfricasTalkingGateway::class, 'AfricasTalkingGateway');
     }
 
     public function publishConfigFiles(): void {
@@ -42,7 +43,7 @@ class AfricasTalkingServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_africas_talking_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_africas_talking_tables.php')[0];

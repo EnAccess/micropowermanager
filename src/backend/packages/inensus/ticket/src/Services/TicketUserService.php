@@ -54,7 +54,6 @@ class TicketUserService implements IBaseService {
     }
 
     public function findByPhone(string $phone): TicketUser {
-        /** @var TicketUser $result */
         $result = $this->ticketUser->newQuery()->where('phone', '=', $phone)
             ->firstOrFail();
 
@@ -63,7 +62,6 @@ class TicketUserService implements IBaseService {
 
     public function findOrCreateByUser(User $user): TicketUser {
         try {
-            /** @var TicketUser $result */
             $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->getId())
                 ->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {

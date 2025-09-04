@@ -129,7 +129,7 @@ class SmSalesAccoutService implements ISynchronizeService {
                 return $salesAccount;
             });
 
-            $salesAccountsSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+            $salesAccountsSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
             if ($salesAccountsSyncStatus) {
                 $returnData ? array_push($returnArray, [
                     'site_id' => $site->site_id,
@@ -175,7 +175,7 @@ class SmSalesAccoutService implements ISynchronizeService {
             return $salesAccount;
         });
 
-        $salesAccountSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', 1)->count();
+        $salesAccountSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', [1])->count();
 
         if ($salesAccountSyncStatus) {
             return ['result' => false, 'message' => 'sales accounts are not updated for site '.$siteId];
