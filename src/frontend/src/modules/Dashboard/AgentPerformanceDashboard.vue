@@ -6,8 +6,11 @@
       </h3>
       <div class="period-selector">
         <md-field>
-          <label>{{ $tc("words.period") }}</label>
-          <md-select v-model="selectedPeriod" @input="loadAgentPerformanceData">
+          <md-select
+            v-model="selectedPeriod"
+            @input="loadAgentPerformanceData"
+            placeholder="Period"
+          >
             <md-option value="daily">{{ $tc("words.daily") }}</md-option>
             <md-option value="weekly">{{ $tc("words.weekly") }}</md-option>
             <md-option value="monthly">{{ $tc("words.monthly") }}</md-option>
@@ -78,7 +81,9 @@
         </div>
 
         <!-- Top Performing Agents Table -->
-        <div class="md-layout-item md-size-50">
+        <div
+          class="md-layout-item md-size-40 md-medium-size-50 md-small-size-100"
+        >
           <widget :title="$tc('phrases.topPerformingAgents')" id="top-agents">
             <md-table md-card style="margin-left: 0">
               <md-table-row>
@@ -105,26 +110,32 @@
         </div>
 
         <!-- Performance Charts -->
-        <div class="md-layout-item md-size-50">
+        <div
+          class="md-layout-item md-size-60 md-medium-size-50 md-small-size-100"
+        >
           <widget
             :title="$tc('phrases.performanceTrends')"
             id="performance-charts"
           >
-            <div class="md-layout md-gutter" style="padding: 10px">
-              <chart-card
-                type="LineChart"
-                :header-text="$tc('phrases.commissionTrends')"
-                :chartData="commissionChartData"
-                :chartOptions="chartOptions"
-                :extendable="true"
-              />
-              <chart-card
-                type="LineChart"
-                :header-text="$tc('phrases.salesTrends')"
-                :chartData="salesChartData"
-                :chartOptions="chartOptions"
-                :extendable="true"
-              />
+            <div class="charts-container">
+              <div class="chart-item">
+                <chart-card
+                  type="LineChart"
+                  :header-text="$tc('phrases.commissionTrends')"
+                  :chartData="commissionChartData"
+                  :chartOptions="chartOptions"
+                  :extendable="true"
+                />
+              </div>
+              <div class="chart-item">
+                <chart-card
+                  type="LineChart"
+                  :header-text="$tc('phrases.salesTrends')"
+                  :chartData="salesChartData"
+                  :chartOptions="chartOptions"
+                  :extendable="true"
+                />
+              </div>
             </div>
           </widget>
         </div>
@@ -238,24 +249,99 @@ export default {
 <style lang="scss" scoped>
 .period-selector {
   margin-right: 1rem;
-  min-width: 150px;
+  min-width: 120px;
+  max-width: 150px;
+  flex-shrink: 0;
+}
+
+.period-selector .md-field {
+  margin: 0;
+  padding: 0;
+  min-height: auto;
+}
+
+.period-selector .md-field .md-input {
+  margin: 0;
+  padding: 4px 0;
+  font-size: 14px;
+  min-height: 32px;
+  line-height: 1.2;
+}
+
+.period-selector .md-field .md-input:before,
+.period-selector .md-field .md-input:after {
+  display: none;
+}
+
+.period-selector .md-field .md-select {
+  padding: 0;
+  margin: 0;
 }
 
 .md-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+  min-height: 48px;
+  padding: 8px 16px;
 }
 
 .md-toolbar .md-title {
   flex: 1;
+  margin: 0;
 }
 
 .md-toolbar .period-selector {
   margin: 0 1rem;
+  position: relative;
+  z-index: 2;
 }
 
 .md-toolbar .md-button {
   margin-left: auto;
+  flex-shrink: 0;
+}
+
+.md-select-menu {
+  z-index: 1000;
+}
+
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 400px;
+}
+
+.chart-item {
+  flex: 1;
+  min-height: 200px;
+}
+
+.chart-item .md-layout-item.md-size-100 {
+  height: 100%;
+  min-height: 400px;
+}
+
+.chart-item .chart-card {
+  height: 100%;
+  min-height: 400px;
+}
+
+.chart-item .chart-card .md-card-content {
+  height: calc(100% - 60px);
+  min-height: 340px;
+}
+
+.chart-item .chart-card .md-card-content > div {
+  height: 100%;
+}
+
+.chart-item .chart-card .md-card-content .gchart {
+  height: 100% !important;
+  min-height: 340px !important;
 }
 </style>
