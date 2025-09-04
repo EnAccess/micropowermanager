@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Carbon\Carbon              $created_at
  * @property \Carbon\Carbon              $updated_at
  * @property Meter|SolarHomeSystem|EBike $device
- * @property Person                      $person
+ * @property Person|null                 $person
  * @property Address                     $address
  * @property string                      $device_type
  */
@@ -58,10 +59,31 @@ class Device extends BaseModel {
     }
 
     /**
-     * @return HasOne<Asset, $this>
+     * @return HasMany<Token, $this>
      */
-    public function appliance(): HasOne {
-        return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
+    public function tokens(): HasMany {
+        return $this->hasMany(Token::class, 'device_id', 'id');
+    }
+
+    /**
+     * @return HasOne<AssetPerson, $this>
+     */
+    public function assetPerson(): HasOne {
+        return $this->hasOne(AssetPerson::class, 'device_serial', 'device_serial');
+    }
+
+    /**
+     * @return HasOneThrough<Asset, AssetPerson, $this>
+     */
+    public function appliance(): HasOneThrough {
+        return $this->hasOneThrough(
+            Asset::class,
+            AssetPerson::class,
+            'device_serial',
+            'id',
+            'device_serial',
+            'asset_id'
+        );
     }
 
     /**
