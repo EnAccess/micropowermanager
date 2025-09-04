@@ -48,7 +48,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider {
             }
 
             return $_SERVER['PHP_AUTH_USER'] === $horizon_username
-                && $_SERVER['PHP_AUTH_USER'] === $horizon_password;
+                && $_SERVER['PHP_AUTH_PW'] === $horizon_password;
         });
     }
 }
