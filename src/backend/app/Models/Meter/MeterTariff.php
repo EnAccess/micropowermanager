@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Tariff.
  *
+ * @property int        $id
  * @property string     $name
  * @property int        $price       (100 times the price. Allows to play with .00 decimals)
  * @property int        $total_price (100 times the price. Allows to play with .00 decimals)
