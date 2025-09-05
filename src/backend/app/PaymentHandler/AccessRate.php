@@ -12,7 +12,9 @@ use Carbon\Carbon;
 
 class AccessRate {
     private ?AccessRateModel $accessRate = null;
-    private ?Meter $meter;
+    // FIXME: Check if $meter can be removed here
+    // @phpstan-ignore property.onlyWritten
+    private Meter $meter;
 
     /**
      * AccessRatePayment constructor.
@@ -44,7 +46,7 @@ class AccessRate {
      */
     public function initializeAccessRatePayment(): AccessRatePayment {
         if ($this->accessRate === null) {
-            throw new NoAccessRateFound(sprintf('%s %s', 'Access Rate is not set', $this->meter === null ? 'Meter is not set' : ''));
+            throw new NoAccessRateFound('Access Rate is not set');
         }
         // get current date and add AccessRate.period days
         $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period);

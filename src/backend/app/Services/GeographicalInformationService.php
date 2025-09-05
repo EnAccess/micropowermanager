@@ -40,7 +40,7 @@ class GeographicalInformationService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return Collection<int, GeographicalInformation>|LengthAwarePaginator<GeographicalInformation>
+     * @return Collection<int, GeographicalInformation>|LengthAwarePaginator<int, GeographicalInformation>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->geographicalInformation->newQuery()->get();

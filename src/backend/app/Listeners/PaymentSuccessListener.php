@@ -61,6 +61,7 @@ class PaymentSuccessListener {
                 $paymentHistory->paid_for_type = Asset::class;
                 $paymentHistory->paid_for_id = $paidFor->id;
                 break;
+                // @phpstan-ignore instanceof.alwaysTrue
             case $paidFor instanceof Token:
                 $paymentHistory->paid_for_type = Token::class;
                 $paymentHistory->paid_for_id = $paidFor->id;

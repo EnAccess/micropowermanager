@@ -11,7 +11,7 @@ class EBikeTransactionService {
     public function __construct(private Transaction $transaction) {}
 
     /**
-     * @return LengthAwarePaginator<Transaction>|Collection<int, Transaction>
+     * @return LengthAwarePaginator<int, Transaction>|Collection<int, Transaction>
      */
     public function search(
         ?string $serialNumber = null,

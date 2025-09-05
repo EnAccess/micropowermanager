@@ -152,7 +152,7 @@ class RevenueController extends Controller {
                     'average_revenue_per_month' => '-',
                 ];
             }
-        } elseif ($targets !== null && $targetType === 'mini-grid' && isset($targets->subTargets)) {
+        } elseif ($targetType === 'mini-grid' && isset($targets->subTargets)) {
             foreach ($targets->subTargets as $subTarget) {
                 $formattedTarget[$subTarget->connectionType->name] = [
                     'new_connections' => $subTarget->new_connections,

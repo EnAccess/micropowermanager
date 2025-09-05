@@ -43,7 +43,7 @@ class MpmPluginService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, MpmPlugin>|LengthAwarePaginator<MpmPlugin>
+     * @return Collection<int, MpmPlugin>|LengthAwarePaginator<int, MpmPlugin>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

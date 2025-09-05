@@ -44,7 +44,7 @@ class MiniGridService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, MiniGrid>|LengthAwarePaginator<MiniGrid>
+     * @return Collection<int, MiniGrid>|LengthAwarePaginator<int, MiniGrid>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         $query = $this->miniGrid->newQuery()->with(['location']);

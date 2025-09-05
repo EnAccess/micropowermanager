@@ -17,7 +17,7 @@ class AgentTransactionService implements IAgentTransactionService {
     ) {}
 
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getAll(
         ?int $limit = null,
@@ -46,7 +46,7 @@ class AgentTransactionService implements IAgentTransactionService {
     }
 
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
