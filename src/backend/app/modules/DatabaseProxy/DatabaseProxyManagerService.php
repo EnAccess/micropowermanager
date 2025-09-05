@@ -40,15 +40,15 @@ class DatabaseProxyManagerService {
     }
 
     private function buildDatabaseConnection(string $databaseName): void {
-        $databaseConnections = config()->get('database.connections');
+        $databaseConnections = config('database.connections');
         $databaseConnections['tenant'] = [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
+            'host' => $databaseConnections['micro_power_manager']['host'],
+            'port' => $databaseConnections['micro_power_manager']['port'],
             'database' => $databaseName,
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
+            'username' => $databaseConnections['micro_power_manager']['username'],
+            'password' => $databaseConnections['micro_power_manager']['password'],
+            'unix_socket' => $databaseConnections['micro_power_manager']['unix_socket'],
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',

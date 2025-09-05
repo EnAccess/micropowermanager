@@ -14,7 +14,7 @@ class SolarHomeSystemService implements IBaseService {
     public function __construct(private SolarHomeSystem $solarHomeSystem) {}
 
     /**
-     * @return Collection<int, SolarHomeSystem>|LengthAwarePaginator<SolarHomeSystem>
+     * @return Collection<int, SolarHomeSystem>|LengthAwarePaginator<int, SolarHomeSystem>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
@@ -40,7 +40,7 @@ class SolarHomeSystemService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<SolarHomeSystem>
+     * @return LengthAwarePaginator<int, SolarHomeSystem>
      */
     public function search(int $term, int $paginate): LengthAwarePaginator {
         return $this->solarHomeSystem->newQuery()

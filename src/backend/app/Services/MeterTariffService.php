@@ -47,7 +47,7 @@ class MeterTariffService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, MeterTariff>|LengthAwarePaginator<MeterTariff>
+     * @return Collection<int, MeterTariff>|LengthAwarePaginator<int, MeterTariff>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

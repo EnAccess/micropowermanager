@@ -58,7 +58,7 @@ class AddressesService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return Collection<int, Address>|LengthAwarePaginator<Address>
+     * @return Collection<int, Address>|LengthAwarePaginator<int, Address>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

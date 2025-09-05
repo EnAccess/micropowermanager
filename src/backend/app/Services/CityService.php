@@ -57,7 +57,7 @@ class CityService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, City>|LengthAwarePaginator<City>
+     * @return Collection<int, City>|LengthAwarePaginator<int, City>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

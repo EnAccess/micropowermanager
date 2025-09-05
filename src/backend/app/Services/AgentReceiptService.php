@@ -17,7 +17,7 @@ class AgentReceiptService implements IBaseService {
     ) {}
 
     /**
-     * @return Collection<int, AgentReceipt>|LengthAwarePaginator<AgentReceipt>
+     * @return Collection<int, AgentReceipt>|LengthAwarePaginator<int, AgentReceipt>
      */
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentReceipt->newQuery()

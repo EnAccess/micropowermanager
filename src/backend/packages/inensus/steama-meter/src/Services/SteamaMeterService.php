@@ -195,7 +195,7 @@ class SteamaMeterService implements ISynchronizeService {
                 $tariff = $this->tariff->newQuery()->with('mpmTariff')->first();
                 $meter->tariff()->associate($tariff->mpmTariff);
                 $meter->save();
-                $stmCustomerAddress = $stmCustomer->mpmPerson()->newQuery()->with('addresses.city')
+                $stmCustomerAddress = $stmCustomer->mpmPerson->newQuery()->with('addresses.city')
                     ->whereHas('addresses', function ($q) {
                         return $q->where('is_primary', 1);
                     })->first();

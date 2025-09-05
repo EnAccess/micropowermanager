@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property Person $mpmPerson
+ * @property Person         $mpmPerson
+ * @property SteamaUserType $userType
  */
 class SteamaCustomer extends BaseModel {
     protected $table = 'steama_customers';

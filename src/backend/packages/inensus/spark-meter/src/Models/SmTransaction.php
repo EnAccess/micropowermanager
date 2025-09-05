@@ -11,15 +11,23 @@ use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
+/**
+ * @property Transaction           $mpmTransaction
+ * @property AgentTransaction      $agentTransaction
+ * @property ThirdPartyTransaction $thirdPartyTransaction
+ * @property MesombTransaction     $mesombTransaction
+ * @property SwiftaTransaction     $swiftaTransaction
+ * @property WaveMoneyTransaction  $waveMoneyTransaction
+ */
 class SmTransaction extends BaseModel implements ManufacturerTransactionInterface {
     protected $table = 'sm_transactions';
 
-    public function mpmTransaction() {
-        return $this->belongsTo(Transaction::class, 'mpm_transaction_id');
-    }
-
     public function site() {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
+    }
+
+    public function mpmTransaction() {
+        return $this->belongsTo(Transaction::class, 'mpm_transaction_id');
     }
 
     public function agentTransaction(): MorphOne {

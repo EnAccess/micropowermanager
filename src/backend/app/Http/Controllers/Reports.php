@@ -35,7 +35,7 @@ class Reports {
     /** @var array<string, string> */
     private array $connectionTypeCells = [];
 
-    private string|int $lastIndex;
+    private int $lastIndex;
 
     /** @var array<string, int> */
     private array $subConnectionRows = [];
@@ -312,13 +312,8 @@ class Reports {
 
                 $meter = $transaction->device->device;
 
-                if (method_exists($meter, 'tariff')) {
-                    $tariff = $meter->tariff()->first();
-                }
-
-                if (method_exists($meter, 'connectionType')) {
-                    $connectionType = $meter->connectionType()->first();
-                }
+                $tariff = $meter->tariff()->first();
+                $connectionType = $meter->connectionType()->first();
 
                 if ($tariff and $connectionType) {
                     $sheet->setCellValue(
@@ -328,9 +323,7 @@ class Reports {
                     );
                 }
 
-                if (method_exists($meter, 'connectionGroup')) {
-                    $connectionGroupName = $meter->connectionGroup()->first()->name;
-                }
+                $connectionGroupName = $meter->connectionGroup()->first()->name;
 
                 $paymentHistories = $this->paymentHistory
                     ->selectRaw('sum(amount) as amount, payment_type ')
@@ -444,7 +437,7 @@ class Reports {
 
             $meters = $connectionGroup->meters()->get();
 
-            if ($meters !== null) {
+            if (!$meters->isEmpty()) {
                 foreach ($meters as $meter) {
                     // store column to get them later when payments are placed
                     $accessRate = $meter->tariff->accessRate()->first();
@@ -684,7 +677,7 @@ class Reports {
                     continue;
                 }
                 $tariffPrice /= 100;
-                if ($energyRevenue !== 0) {
+                if ($energyRevenue != 0) {
                     $this->monthlyTargetData[$connectionName]['energy_per_month'] += $energyRevenue / $tariffPrice;
                 }
                 $this->monthlyTargetData[$connectionName]['average_revenue_per_customer']

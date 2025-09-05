@@ -22,7 +22,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     ) {}
 
     /**
-     * @return Collection<int, AgentBalanceHistory>|LengthAwarePaginator<AgentBalanceHistory>
+     * @return Collection<int, AgentBalanceHistory>|LengthAwarePaginator<int, AgentBalanceHistory>
      */
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentBalanceHistory->newQuery()

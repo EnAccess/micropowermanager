@@ -41,7 +41,7 @@ class AccessRatePaymentService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AccessRatePayment>|LengthAwarePaginator<AccessRatePayment>
+     * @return Collection<int, AccessRatePayment>|LengthAwarePaginator<int, AccessRatePayment>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         $query = $this->accessRatePayment->newQuery();

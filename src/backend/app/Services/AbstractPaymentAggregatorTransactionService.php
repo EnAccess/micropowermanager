@@ -36,9 +36,6 @@ abstract class AbstractPaymentAggregatorTransactionService {
         }
 
         $meterTariff = $meter->tariff;
-        if (!($meterTariff instanceof \App\Models\Meter\MeterTariff)) {
-            throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
-        }
 
         $customerId = $meter->device->person->id;
 

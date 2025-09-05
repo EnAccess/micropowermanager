@@ -16,7 +16,7 @@ class EBikeService implements IBaseService {
     ) {}
 
     /**
-     * @return Collection<int, EBike>|LengthAwarePaginator<EBike>
+     * @return Collection<int, EBike>|LengthAwarePaginator<int, EBike>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
@@ -38,7 +38,7 @@ class EBikeService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<EBike>
+     * @return LengthAwarePaginator<int, EBike>
      */
     public function search(string $term, int $paginate): LengthAwarePaginator {
         return $this->eBike->newQuery()

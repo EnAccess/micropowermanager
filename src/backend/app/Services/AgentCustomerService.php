@@ -10,7 +10,7 @@ class AgentCustomerService {
     public function __construct(private Person $person) {}
 
     /**
-     * @return LengthAwarePaginator<Person>
+     * @return LengthAwarePaginator<int, Person>
      */
     public function list(Agent $agent): LengthAwarePaginator {
         $miniGridId = $agent->mini_grid_id;
@@ -28,7 +28,7 @@ class AgentCustomerService {
     }
 
     /**
-     * @return LengthAwarePaginator<Person>
+     * @return LengthAwarePaginator<int, Person>
      */
     public function search(string $searchTerm, int $limit, Agent $agent): LengthAwarePaginator {
         return $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(

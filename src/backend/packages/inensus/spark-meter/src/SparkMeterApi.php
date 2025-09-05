@@ -90,7 +90,7 @@ class SparkMeterApi implements IManufacturerAPI {
                     ['Body :' => json_encode($postParams), 'message :' => $e->getMessage()]
                 );
             }
-            if (isset($result['error']) && $result['error'] !== false && $result['error'] !== null) {
+            if (isset($result['error']) && $result['error'] !== false) {
                 throw new SparkAPIResponseException($result['error']);
             } else {
                 $transactionInformation = $this->sparkMeterApiRequests->getInfo(

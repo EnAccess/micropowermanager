@@ -11,7 +11,7 @@ class AssetService {
     public function __construct(private Asset $asset) {}
 
     /**
-     * @return LengthAwarePaginator<Asset>|Collection<int, Asset>
+     * @return LengthAwarePaginator<int, Asset>|Collection<int, Asset>
      */
     public function getAssets(Request $request): LengthAwarePaginator|Collection {
         $perPage = $request->get('per_page');

@@ -35,7 +35,7 @@ class AgentCommissionService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentCommission>|LengthAwarePaginator<AgentCommission>
+     * @return Collection<int, AgentCommission>|LengthAwarePaginator<int, AgentCommission>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

@@ -29,7 +29,7 @@ class MeterService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<Meter>
+     * @return LengthAwarePaginator<int, Meter>
      */
     public function search(string $term, int $paginate): LengthAwarePaginator {
         return $this->meter->newQuery()->with(['meterType', 'tariff'])
@@ -106,7 +106,7 @@ class MeterService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<Meter>
+     * @return LengthAwarePaginator<int, Meter>
      */
     public function getAll(?int $limit = null, ?bool $inUse = null): LengthAwarePaginator {
         $query = $this->meter->newQuery()->with(['meterType', 'tariff']);

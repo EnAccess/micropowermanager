@@ -6,6 +6,9 @@ use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property KelinCustomer $kelinCustomer
+ */
 class KelinMeter extends BaseModel {
     protected $table = 'kelin_meters';
 

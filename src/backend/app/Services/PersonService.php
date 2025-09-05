@@ -54,7 +54,7 @@ class PersonService implements IBaseService {
      * @param string                          $searchTerm could either phone, name or surname
      * @param Request|array<mixed>|int|string $paginate
      *
-     * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<Person>
+     * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
     public function searchPerson($searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
@@ -74,7 +74,7 @@ class PersonService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<mixed>
+     * @return LengthAwarePaginator<int, mixed>
      */
     public function getPersonTransactions(Person $person): LengthAwarePaginator {
         return $person->payments()->with('transaction.token')->latest()->paginate(7);
@@ -171,7 +171,7 @@ class PersonService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<Person>
+     * @return LengthAwarePaginator<int, Person>
      */
     public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
         $query = $this->person->newQuery()->with([

@@ -56,6 +56,7 @@ abstract class AbstractSharedCommand extends Command {
                     $input,
                     $output
                 ) {
+                    // @phpstan-ignore instanceof.alwaysTrue
                     if ($companyDatabase instanceof CompanyDatabase) {
                         $this->runForCompany(
                             $databaseProxyManagerService,

@@ -9,12 +9,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface IAgentTransactionService {
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getAll(?int $limit = null, ?int $agentId = null, bool $forApp = false): Collection|LengthAwarePaginator;
 
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator;
 

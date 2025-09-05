@@ -41,7 +41,7 @@ class PaymentHistoryService implements IAssociative {
     }
 
     /**
-     * @return LengthAwarePaginator<PaymentHistory>
+     * @return LengthAwarePaginator<int, PaymentHistory>
      */
     public function getBySerialNumber(string $serialNumber, int $paginate): LengthAwarePaginator {
         return $this->paymentHistory->newQuery()->with(['transaction', 'paidFor'])

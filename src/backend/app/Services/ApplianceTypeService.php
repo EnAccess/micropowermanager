@@ -16,7 +16,7 @@ class ApplianceTypeService {
     }
 
     /**
-     * @return LengthAwarePaginator<AssetType>|Collection<int, AssetType>
+     * @return LengthAwarePaginator<int, AssetType>|Collection<int, AssetType>
      */
     public function getApplianceTypes(Request $request): LengthAwarePaginator|Collection {
         $perPage = $request->get('per_page');

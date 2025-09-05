@@ -47,7 +47,7 @@ class ConnectionTypeService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, ConnectionType>|LengthAwarePaginator<ConnectionType>
+     * @return Collection<int, ConnectionType>|LengthAwarePaginator<int, ConnectionType>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

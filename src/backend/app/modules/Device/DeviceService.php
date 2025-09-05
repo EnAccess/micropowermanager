@@ -66,7 +66,7 @@ class DeviceService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return Collection<int, Device>|LengthAwarePaginator<Device>
+     * @return Collection<int, Device>|LengthAwarePaginator<int, Device>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

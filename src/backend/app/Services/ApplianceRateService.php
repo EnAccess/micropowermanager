@@ -21,7 +21,7 @@ class ApplianceRateService {
     public function getCurrencyFromMainSettings(): string {
         $mainSettings = $this->mainSettings->newQuery()->first();
 
-        return $mainSettings?->currency ?? '€';
+        return $mainSettings->currency ?? '€';
     }
 
     public function updateApplianceRateCost(AssetRate $applianceRate, int $creatorId, int $cost, int $newCost): AssetRate {

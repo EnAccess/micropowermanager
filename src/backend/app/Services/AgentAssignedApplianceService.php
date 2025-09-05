@@ -43,7 +43,7 @@ class AgentAssignedApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentAssignedAppliances>|LengthAwarePaginator<AgentAssignedAppliances>
+     * @return Collection<int, AgentAssignedAppliances>|LengthAwarePaginator<int, AgentAssignedAppliances>
      */
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentAssignedAppliance->newQuery();

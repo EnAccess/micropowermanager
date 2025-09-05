@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoanDataContainer {
-    private ?Person $meterOwner;
+    private Person $meterOwner;
     private Transaction $transaction;
 
     /**
@@ -29,9 +29,6 @@ class LoanDataContainer {
     }
 
     public function loanCost(): float {
-        if (!$this->meterOwner) {
-            throw new MeterNotFound('loan data container');
-        }
         $loans = $this->getCustomerDueRates($this->meterOwner);
 
         foreach ($loans as $loan) {

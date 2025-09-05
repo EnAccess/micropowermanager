@@ -13,7 +13,7 @@ class AccessRatePayer {
     private AccessRatePayment $accessRatePayment;
     private TransactionDataContainer $transactionData;
     private Transaction $transaction;
-    private float $debtAmount;
+    private int $debtAmount;
 
     public function __construct(private AccessRatePaymentService $accessRatePaymentService) {
         $this->debtAmount = self::MINIMUM_AMOUNT;

@@ -11,9 +11,6 @@ class MailHelperMock implements MailHelperInterface {
      * @param string      $title
      * @param string      $body
      * @param string|null $attachment
-     *
-     * @throws MailNotSentException
-     * @throws PHPMailerException
      */
     public function sendPlain(string $to, string $title, string $body, ?string $attachment = null): void {
         return;
