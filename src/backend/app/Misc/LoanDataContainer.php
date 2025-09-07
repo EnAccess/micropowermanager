@@ -5,7 +5,6 @@ namespace App\Misc;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
 use App\Exceptions\Meters\MeterIsNotInUse;
-use App\Exceptions\Meters\MeterNotFound;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\Meter\Meter;

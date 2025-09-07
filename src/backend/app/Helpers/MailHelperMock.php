@@ -2,9 +2,6 @@
 
 namespace App\Helpers;
 
-use App\Exceptions\MailNotSentException;
-use PHPMailer\PHPMailer\Exception as PHPMailerException;
-
 class MailHelperMock implements MailHelperInterface {
     /**
      * @param string      $to
