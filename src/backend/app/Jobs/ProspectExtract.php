@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\Device;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -79,7 +78,7 @@ class ProspectExtract extends AbstractJob {
         foreach ($devices as $device) {
             $deviceData = $device->device;
 
-            if (!$deviceData instanceof Model) {
+            if ($deviceData === null) {
                 continue;
             }
 
@@ -138,17 +137,17 @@ class ProspectExtract extends AbstractJob {
                 'rated_power_w' => null,
                 'pv_power_w' => null,
                 'serial_number' => $deviceData->serial_number ?? '',
-                'site_name' => $primaryAddress?->street ?? null,
+                'site_name' => $primaryAddress->street ?? null,
 
                 // Payment plan information
                 'payment_plan_amount_financed_principal' => null,
                 'payment_plan_amount_financed_interest' => null,
                 'payment_plan_amount_financed_total' => null,
-                'payment_plan_amount_down_payment' => $assetPerson?->down_payment ?? null,
-                'payment_plan_cash_price' => $assetPerson?->total_cost ?? null,
+                'payment_plan_amount_down_payment' => $assetPerson->down_payment ?? null,
+                'payment_plan_cash_price' => $assetPerson->total_cost ?? null,
                 'payment_plan_currency' => null,
                 'payment_plan_installment_amount' => null,
-                'payment_plan_number_of_installments' => $assetPerson?->rate_count ?? null,
+                'payment_plan_number_of_installments' => $assetPerson->rate_count ?? null,
                 'payment_plan_installment_period_days' => null,
                 'payment_plan_days_financed' => null,
                 'payment_plan_days_down_payment' => null,
@@ -166,9 +165,9 @@ class ProspectExtract extends AbstractJob {
                 'is_test' => false,
                 'latitude' => $latitude,
                 'longitude' => $longitude,
-                'country' => $primaryAddress?->city?->country?->country_code ?? null,
-                'location_area_1' => $primaryAddress?->city?->country?->country_name ?? null,
-                'location_area_2' => $primaryAddress?->city?->name ?? null,
+                'country' => $primaryAddress->city->country->country_code ?? null,
+                'location_area_1' => $primaryAddress->city->country->country_name ?? null,
+                'location_area_2' => $primaryAddress->city->name ?? null,
                 'location_area_3' => null,
                 'location_area_4' => null,
                 'location_area_5' => null,

@@ -44,4 +44,8 @@ return [
     'waveMoney' => [
         'url' => env('WAVEMONEY_API_URL'),
     ],
+    'prospect' => [
+        'api_url' => env('PROSPECT_API_URL'),
+        'api_token' => env('PROSPECT_API_TOKEN'),
+    ],
 ];

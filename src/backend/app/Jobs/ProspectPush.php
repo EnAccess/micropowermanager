@@ -187,9 +187,9 @@ class ProspectPush extends AbstractJob {
      */
     private function sendToProspect(array $payload): Response {
         return Http::withHeaders([
-            'Authorization' => 'Bearer '.env('PROSPECT_API_TOKEN'),
+            'Authorization' => 'Bearer '.config('services.prospect.api_token'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-        ])->timeout(30)->post(env('PROSPECT_API_URL'), $payload);
+        ])->timeout(30)->post(config('services.prospect.api_url'), $payload);
     }
 }
