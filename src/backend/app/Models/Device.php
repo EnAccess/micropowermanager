@@ -16,13 +16,13 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property int                         $connection_group_id
- * @property \Carbon\Carbon              $created_at
- * @property \Carbon\Carbon              $updated_at
+ * @property int                              $connection_group_id
+ * @property \Carbon\Carbon                   $created_at
+ * @property \Carbon\Carbon                   $updated_at
  * @property Meter|SolarHomeSystem|EBike|null $device
- * @property Person|null                 $person
- * @property Address                     $address
- * @property string                      $device_type
+ * @property Person|null                      $person
+ * @property Address                          $address
+ * @property string                           $device_type
  */
 class Device extends BaseModel {
     /** @use HasFactory<\Database\Factories\DeviceFactory> */
