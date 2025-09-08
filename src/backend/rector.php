@@ -21,7 +21,7 @@ return RectorConfig::configure()
     // ->withPhpSets()
     ->withTypeCoverageLevel(0)
     ->withDeadCodeLevel(0)
-    ->withCodeQualityLevel(1000);
+    ->withCodeQualityLevel(0);
 // ->withSetProviders(LaravelSetProvider::class)
 // ->withComposerBased(laravel: true/* other options */)
 // ->withSets([
