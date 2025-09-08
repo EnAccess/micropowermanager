@@ -82,7 +82,7 @@
 
         <!-- Top Performing Agents Table -->
         <div
-          class="md-layout-item md-size-40 md-medium-size-50 md-small-size-100"
+          class="md-layout-item md-size-30 md-medium-size-50 md-small-size-100"
         >
           <widget :title="$tc('phrases.topPerformingAgents')" id="top-agents">
             <md-table md-card style="margin-left: 0">
@@ -111,7 +111,7 @@
 
         <!-- Performance Charts -->
         <div
-          class="md-layout-item md-size-60 md-medium-size-50 md-small-size-100"
+          class="md-layout-item md-size-70 md-medium-size-50 md-small-size-100"
         >
           <widget
             :title="$tc('phrases.performanceTrends')"
