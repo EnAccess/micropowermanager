@@ -102,7 +102,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return Collection<int, AssetPerson>|LengthAwarePaginator<AssetPerson>
+     * @return Collection<int, AssetPerson>|LengthAwarePaginator<int, AssetPerson>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

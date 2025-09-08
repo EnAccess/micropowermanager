@@ -59,7 +59,7 @@ class AgentService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, Agent>|LengthAwarePaginator<Agent>
+     * @return Collection<int, Agent>|LengthAwarePaginator<int, Agent>
      */
     public function searchAgent(string $searchTerm, int $paginate): Collection|LengthAwarePaginator {
         if ($paginate === 1) {
@@ -99,7 +99,7 @@ class AgentService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, Agent>|LengthAwarePaginator<Agent>
+     * @return Collection<int, Agent>|LengthAwarePaginator<int, Agent>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

@@ -47,7 +47,7 @@ class ProtectedPageService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, ProtectedPage>|LengthAwarePaginator<ProtectedPage>
+     * @return Collection<int, ProtectedPage>|LengthAwarePaginator<int, ProtectedPage>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->protectedPage->all();

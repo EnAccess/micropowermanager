@@ -286,7 +286,7 @@ class TransactionService implements IAssociative, IBaseService {
     }
 
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

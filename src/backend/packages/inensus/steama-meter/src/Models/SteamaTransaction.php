@@ -10,6 +10,13 @@ use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
+/**
+ * @property AgentTransaction      $agentTransaction
+ * @property ThirdPartyTransaction $thirdPartyTransaction
+ * @property MesombTransaction     $mesombTransaction
+ * @property SwiftaTransaction     $swiftaTransaction
+ * @property WaveMoneyTransaction  $waveMoneyTransaction
+ */
 class SteamaTransaction extends BaseModel implements ManufacturerTransactionInterface {
     protected $table = 'steama_transactions';
 

@@ -20,9 +20,7 @@ class GeographicalInformationObserver {
             if ($address->owner instanceof Device) {
                 $device = $address->owner;
 
-                if ($device instanceof Device) {
-                    $this->updateSteamaMeterGeolocation($device, $geographicalInformation);
-                }
+                $this->updateSteamaMeterGeolocation($device, $geographicalInformation);
             }
         }
     }

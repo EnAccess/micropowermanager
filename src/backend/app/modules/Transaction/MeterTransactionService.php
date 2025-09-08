@@ -11,7 +11,7 @@ class MeterTransactionService {
     public function __construct(private Transaction $transaction) {}
 
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function search(
         ?string $serialNumber = null,

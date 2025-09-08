@@ -5,6 +5,9 @@ namespace Inensus\SteamaMeter\Models;
 use App\Models\ConnectionType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property ConnectionType $mpmConnectionType
+ */
 class SteamaUserType extends BaseModel {
     protected $table = 'steama_user_types';
 

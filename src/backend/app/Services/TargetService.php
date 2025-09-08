@@ -32,7 +32,7 @@ class TargetService {
     }
 
     /**
-     * @return Collection<int, Target>|LengthAwarePaginator<Target>
+     * @return Collection<int, Target>|LengthAwarePaginator<int, Target>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

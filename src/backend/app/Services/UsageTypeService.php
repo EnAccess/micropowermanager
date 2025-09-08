@@ -16,7 +16,7 @@ class UsageTypeService implements IBaseService {
     ) {}
 
     /**
-     * @return Collection<int, UsageType>|LengthAwarePaginator<UsageType>
+     * @return Collection<int, UsageType>|LengthAwarePaginator<int, UsageType>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
