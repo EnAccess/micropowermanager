@@ -117,25 +117,21 @@
             :title="$tc('phrases.performanceTrends')"
             id="performance-charts"
           >
-            <div class="charts-container">
-              <div class="chart-item">
-                <chart-card
-                  type="LineChart"
-                  :header-text="$tc('phrases.commissionTrends')"
-                  :chartData="commissionChartData"
-                  :chartOptions="chartOptions"
-                  :extendable="true"
-                />
-              </div>
-              <div class="chart-item">
-                <chart-card
-                  type="LineChart"
-                  :header-text="$tc('phrases.salesTrends')"
-                  :chartData="salesChartData"
-                  :chartOptions="chartOptions"
-                  :extendable="true"
-                />
-              </div>
+            <div class="md-layout md-gutter" style="padding: 10px">
+              <chart-card
+                type="LineChart"
+                :header-text="$tc('phrases.commissionTrends')"
+                :chartData="commissionChartData"
+                :chartOptions="chartOptions"
+                :extendable="true"
+              />
+              <chart-card
+                type="LineChart"
+                :header-text="$tc('phrases.salesTrends')"
+                :chartData="salesChartData"
+                :chartOptions="chartOptions"
+                :extendable="true"
+              />
             </div>
           </widget>
         </div>
@@ -307,41 +303,5 @@ export default {
 
 .md-select-menu {
   z-index: 1000;
-}
-
-.charts-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-height: 400px;
-}
-
-.chart-item {
-  flex: 1;
-  min-height: 200px;
-}
-
-.chart-item .md-layout-item.md-size-100 {
-  height: 100%;
-  min-height: 400px;
-}
-
-.chart-item .chart-card {
-  height: 100%;
-  min-height: 400px;
-}
-
-.chart-item .chart-card .md-card-content {
-  height: calc(100% - 60px);
-  min-height: 340px;
-}
-
-.chart-item .chart-card .md-card-content > div {
-  height: 100%;
-}
-
-.chart-item .chart-card .md-card-content .gchart {
-  height: 100% !important;
-  min-height: 340px !important;
 }
 </style>
