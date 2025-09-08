@@ -74,7 +74,8 @@ class ProspectPush extends AbstractJob {
         try {
             $filePath = $this->filePath ?? $this->getLatestCsvFile();
         } catch (\Exception $e) {
-            Log::info('No CSV files available for Prospect push: ' . $e->getMessage());
+            Log::info('No CSV files available for Prospect push: '.$e->getMessage());
+
             return [];
         }
 
