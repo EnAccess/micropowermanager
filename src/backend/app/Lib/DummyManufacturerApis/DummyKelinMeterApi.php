@@ -56,7 +56,12 @@ class DummyKelinMeterApi implements IManufacturerAPI {
      * Generate a random energy token for demo purposes.
      */
     private function generateRandomEnergyToken(): string {
-        return sprintf('%020d', rand(10000000000000000000, 99999999999999999999));
+        $token = '';
+        for ($i = 0; $i < 12; ++$i) {
+            $token .= random_int(0, 9);
+        }
+
+        return $token;
     }
 
     /**
