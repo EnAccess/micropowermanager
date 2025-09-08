@@ -12,6 +12,9 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\UserNotDefinedException;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
+// This has been deprecated by upstream. We should implement
+// this as suggested by `Tymon\JWTAuth`.
+// @phpstan-ignore class.extendsDeprecatedClass
 class JwtMiddleware extends BaseMiddleware {
     /**
      * Handle an incoming request.
@@ -24,6 +27,7 @@ class JwtMiddleware extends BaseMiddleware {
      */
     public function handle(Request $request, \Closure $next, string $type = 'user'): mixed {
         try {
+            // @phpstan-ignore property.deprecatedClass
             $id = $this->auth->parseToken()->getPayload()->get('sub');
             if ($type === 'agent') {
                 $user = Agent::query()->findOrFail($id);

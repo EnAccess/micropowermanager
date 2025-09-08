@@ -4,6 +4,9 @@ namespace App\Traits;
 
 use App\Models\Plugins;
 
+// FIXME: `ScheduledPluginCommand` is used in `packages` with is currently
+// not covered by Larastan.
+// @phpstan-ignore trait.unused
 trait ScheduledPluginCommand {
     private static int $ACTIVE = 1;
 

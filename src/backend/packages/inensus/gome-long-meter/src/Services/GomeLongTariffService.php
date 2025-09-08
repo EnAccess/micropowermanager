@@ -128,7 +128,8 @@ class GomeLongTariffService {
 
                 $registeredGomeLongTariff = $this->gomeLongTariff->newQuery()
                     ->with('mpmTariff')
-                    ->where('tariff_id', $gomeLongTariff['FID'])->first();
+                    ->where('tariff_id', $gomeLongTariff['FID'])
+                    ->first();
 
                 if ($registeredGomeLongTariff) {
                     $meterTariff = $registeredGomeLongTariff->mpmTariff;

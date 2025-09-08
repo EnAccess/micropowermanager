@@ -40,7 +40,7 @@ class ManufacturerService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, Manufacturer>|LengthAwarePaginator<Manufacturer>
+     * @return Collection<int, Manufacturer>|LengthAwarePaginator<int, Manufacturer>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

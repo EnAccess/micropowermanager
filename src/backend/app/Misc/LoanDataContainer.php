@@ -5,7 +5,6 @@ namespace App\Misc;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
 use App\Exceptions\Meters\MeterIsNotInUse;
-use App\Exceptions\Meters\MeterNotFound;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\Meter\Meter;
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoanDataContainer {
-    private ?Person $meterOwner;
+    private Person $meterOwner;
     private Transaction $transaction;
 
     /**
@@ -29,9 +28,6 @@ class LoanDataContainer {
     }
 
     public function loanCost(): float {
-        if (!$this->meterOwner) {
-            throw new MeterNotFound('loan data container');
-        }
         $loans = $this->getCustomerDueRates($this->meterOwner);
 
         foreach ($loans as $loan) {

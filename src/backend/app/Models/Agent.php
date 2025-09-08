@@ -52,7 +52,7 @@ class Agent extends Authenticatable implements JWTSubject {
     protected $guarded = [];
 
     /**
-     * @var array<int, string>
+     * {@inheritdoc}
      */
     protected $hidden = [
         'password',

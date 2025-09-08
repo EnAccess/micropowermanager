@@ -49,7 +49,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AssetPerson>|LengthAwarePaginator<AssetPerson>
+     * @return Collection<int, AssetPerson>|LengthAwarePaginator<int, AssetPerson>
      */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
@@ -81,7 +81,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<AgentSoldAppliance>|LengthAwarePaginator<AssetPerson>
+     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<int, AgentSoldAppliance>|LengthAwarePaginator<int, AssetPerson>
      */
     public function getAll(
         ?int $limit = null,
@@ -123,7 +123,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<AssetPerson>
+     * @return LengthAwarePaginator<int, AssetPerson>
      */
     public function list(int $agentId): LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates', 'asset.assetType'])

@@ -29,7 +29,7 @@ class PluginsService {
     }
 
     /**
-     * @return Collection<int, Plugins>|LengthAwarePaginator<Plugins>
+     * @return Collection<int, Plugins>|LengthAwarePaginator<int, Plugins>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

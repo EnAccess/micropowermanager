@@ -84,7 +84,7 @@ class UserService {
     }
 
     /**
-     * @return LengthAwarePaginator<User>
+     * @return LengthAwarePaginator<int, User>
      */
     public function list(): LengthAwarePaginator {
         return $this->user->newQuery()

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $phone
  * @property string|null $street
  * @property int         $city_id
+ * @property City        $city
  * @property int         $is_primary
  * @property int         $owner_id
  * @property string      $owner_type

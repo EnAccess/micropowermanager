@@ -36,7 +36,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
     }
 
     /**
-     * @return Collection<int, ConnectionGroup>|LengthAwarePaginator<ConnectionGroup>
+     * @return Collection<int, ConnectionGroup>|LengthAwarePaginator<int, ConnectionGroup>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
