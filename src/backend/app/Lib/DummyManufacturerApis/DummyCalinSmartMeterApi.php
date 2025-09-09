@@ -6,12 +6,17 @@ use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
+use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
 
 /**
  * Dummy Calin Smart Meter API for demo purposes.
  * Returns random tokens for device charging operations.
  */
 class DummyCalinSmartMeterApi implements IManufacturerAPI {
+    public function __construct(
+        private CalinSmartTransaction $calinSmartTransaction,
+    ) {}
+
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
@@ -20,6 +25,13 @@ class DummyCalinSmartMeterApi implements IManufacturerAPI {
 
         // Generate a random token for demo purposes
         $randomToken = $this->generateRandomToken();
+
+        // Record transaction like the real API
+        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create([]);
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => 'calin_smart_transaction',
+        ]);
 
         return [
             'token' => $randomToken,
