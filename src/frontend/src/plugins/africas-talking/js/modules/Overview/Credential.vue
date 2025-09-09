@@ -122,7 +122,6 @@ import { baseUrl } from "@/repositories/Client/AxiosClient"
 import { mapGetters } from "vuex"
 import { notify } from "@/mixins/notify"
 
-
 export default {
   name: "Credential",
   mixins: [notify],
