@@ -4,20 +4,28 @@
       <h3 class="md-title" style="flex: 1">
         {{ $tc("phrases.agentPerformanceDashboard") }}
       </h3>
-      <div class="period-selector">
-        <md-field>
-          <md-select
-            v-model="selectedPeriod"
-            @input="loadAgentPerformanceData"
-            placeholder="Period"
+      <md-menu
+        md-direction="bottom-end"
+        md-size="big"
+        :md-offset-x="127"
+        :md-offset-y="-36"
+      >
+        <md-button md-menu-trigger>
+          <md-icon>keyboard_arrow_down</md-icon>
+          {{ $tc("words.period") }}:
+          {{ selectedPeriodLabel }}
+        </md-button>
+        <md-menu-content>
+          <md-menu-item
+            v-for="period in periodOptions"
+            :key="period.value"
+            @click="setPeriod(period.value)"
           >
-            <md-option value="daily">{{ $tc("words.daily") }}</md-option>
-            <md-option value="weekly">{{ $tc("words.weekly") }}</md-option>
-            <md-option value="monthly">{{ $tc("words.monthly") }}</md-option>
-            <md-option value="yearly">{{ $tc("words.yearly") }}</md-option>
-          </md-select>
-        </md-field>
-      </div>
+            <span>{{ period.label }}</span>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+
       <md-button class="md-raised" @click="refreshData" :disabled="loading">
         <md-icon>update</md-icon>
         {{ $tc("phrases.refreshData") }}
@@ -109,7 +117,7 @@
           </widget>
         </div>
 
-        <!-- Performance Charts -->
+        <!-- Performance Charts - Side by Side with Table -->
         <div
           class="md-layout-item md-size-70 md-medium-size-50 md-small-size-100"
         >
@@ -117,21 +125,25 @@
             :title="$tc('phrases.performanceTrends')"
             id="performance-charts"
           >
-            <div class="md-layout md-gutter" style="padding: 10px">
-              <chart-card
-                type="LineChart"
-                :header-text="$tc('phrases.commissionTrends')"
-                :chartData="commissionChartData"
-                :chartOptions="chartOptions"
-                :extendable="true"
-              />
-              <chart-card
-                type="LineChart"
-                :header-text="$tc('phrases.salesTrends')"
-                :chartData="salesChartData"
-                :chartOptions="chartOptions"
-                :extendable="true"
-              />
+            <div class="charts-container">
+              <div class="chart-item">
+                <chart-card
+                  type="LineChart"
+                  :header-text="$tc('phrases.commissionTrends')"
+                  :chartData="commissionChartData"
+                  :chartOptions="chartOptions"
+                  :extendable="false"
+                />
+              </div>
+              <div class="chart-item">
+                <chart-card
+                  type="LineChart"
+                  :header-text="$tc('phrases.salesTrends')"
+                  :chartData="salesChartData"
+                  :chartOptions="chartOptions"
+                  :extendable="false"
+                />
+              </div>
             </div>
           </widget>
         </div>
@@ -160,9 +172,21 @@ export default {
       metrics: {},
       topAgents: [],
       periodData: {},
+      periodOptions: [
+        { value: "daily", label: this.$tc("words.daily") },
+        { value: "weekly", label: this.$tc("words.weekly") },
+        { value: "monthly", label: this.$tc("words.monthly") },
+        { value: "yearly", label: this.$tc("words.yearly") },
+      ],
     }
   },
   computed: {
+    selectedPeriodLabel() {
+      const option = this.periodOptions.find(
+        (p) => p.value === this.selectedPeriod,
+      )
+      return option ? option.label : this.selectedPeriod
+    },
     commissionChartData() {
       if (!this.periodData || Object.keys(this.periodData).length === 0) {
         return [["Period", "Commission"]]
@@ -199,6 +223,8 @@ export default {
         },
         colors: ["#26c6da", "#ffa726"],
         legend: { position: "top" },
+        height: 400,
+        width: "100%",
       }
     },
   },
@@ -222,6 +248,10 @@ export default {
         this.loading = false
       }
     },
+    setPeriod(period) {
+      this.selectedPeriod = period
+      this.loadAgentPerformanceData()
+    },
     async refreshData() {
       await this.loadAgentPerformanceData()
       this.alertNotify(
@@ -244,7 +274,7 @@ export default {
 
 <style lang="scss" scoped>
 .period-selector {
-  margin-right: 1rem;
+  margin-right: 2rem;
   min-width: 120px;
   max-width: 150px;
   flex-shrink: 0;
@@ -254,6 +284,7 @@ export default {
   margin: 0;
   padding: 0;
   min-height: auto;
+  border: none;
 }
 
 .period-selector .md-field .md-input {
@@ -291,7 +322,7 @@ export default {
 }
 
 .md-toolbar .period-selector {
-  margin: 0 1rem;
+  margin: 0 2rem 0 0;
   position: relative;
   z-index: 2;
 }
@@ -301,7 +332,71 @@ export default {
   flex-shrink: 0;
 }
 
-.md-select-menu {
+.md-menu {
   z-index: 1000;
+}
+
+.period-selector .md-button {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.period-selector .md-button:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.charts-container {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chart-item {
+  width: 100%;
+  min-height: 350px;
+}
+
+.chart-item .md-layout-item {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+}
+
+.chart-item .chart-card {
+  width: 100%;
+  margin-bottom: 1vh;
+  min-height: 100%;
+}
+
+.chart-item .md-layout-item.md-size-33 {
+  width: 100% !important;
+  flex: 0 0 100% !important;
+}
+
+.chart-item .md-layout-item.md-medium-size-100 {
+  width: 100% !important;
+  flex: 0 0 100% !important;
+}
+
+.chart-item .chart-card .md-card-content {
+  width: 100%;
+}
+
+.chart-item .chart-card .md-card-content > div {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .charts-container {
+    padding: 5px;
+    gap: 15px;
+  }
+
+  .chart-item {
+    min-height: 300px;
+  }
 }
 </style>
