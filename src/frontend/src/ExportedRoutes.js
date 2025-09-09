@@ -12,6 +12,8 @@ import ClusterDetailPage from "./pages/Dashboard/Cluster/_id.vue"
 // MiniGridOverviewPage just redirects to MiniGridDetailPage for first Mini-Grid
 import MiniGridOverviewPage from "./pages/Dashboard/MiniGrid/index.vue"
 import MiniGridDetailPage from "./pages/Dashboard/MiniGrid/_id.vue"
+import AgentDashboardPage from "./pages/Dashboard/Agents/index.vue"
+import AgentPerformanceDashboardPage from "./pages/Dashboard/AgentPerformance/index.vue"
 import AddCluster from "./pages/Location/Cluster/New/index.vue"
 import AddVillage from "./pages/Location/Village/New/index.vue"
 import AddMiniGrid from "./pages/Location/MiniGrid/New/index.vue"
@@ -43,7 +45,6 @@ import MessageList from "./pages/Sms/index.vue"
 import MessageNew from "./pages/Sms/New/index.vue"
 import Maintenance from "./pages/Maintenance/index.vue"
 import ApplianceList from "./pages/Appliance/index.vue"
-import AgentList from "./pages/Agent/index.vue"
 import AgentCommissionTypeList from "./pages/Agent/Commission/index.vue"
 import AgentDetail from "./pages/Agent/_id.vue"
 import SoldApplianceDetail from "./pages/Client/Appliance/_id.vue"
@@ -347,6 +348,35 @@ export const exportedRoutes = [
                 name: "Mini-Grid",
                 link: "/dashboards/mini-grid",
                 target: "id",
+              },
+            },
+          },
+        ],
+      },
+
+      {
+        path: "dashboards/agent-performance",
+        component: ChildRouteWrapper,
+        meta: {
+          sidebar: {
+            enabled: true,
+            name: "Agent Performance",
+          },
+        },
+        children: [
+          {
+            path: "",
+            component: AgentPerformanceDashboardPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agent Performance",
+                link: "/dashboards/agent-performance",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Agent Performance",
               },
             },
           },
@@ -713,15 +743,24 @@ export const exportedRoutes = [
           layout: "default",
           sidebar: {
             enabled: true,
-            name: "List",
+            name: "Overview",
           },
         },
         children: [
           {
             path: "",
-            component: AgentList,
+            component: AgentDashboardPage,
             meta: {
               layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agents",
+                link: "/agents",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Overview",
+              },
             },
           },
           {
