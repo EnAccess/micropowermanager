@@ -21,6 +21,12 @@ abstract class SmsSender {
     public const AFRICAS_TALKING_GATEWAY = 'AfricasTalkingGateway';
     public const DEFAULT_GATEWAY = 'AndroidGateway';
 
+    public const SMS_GATE_WAY_IDS = [
+        self::VIBER_GATEWAY => MpmPlugin::VIBER_MESSAGING,
+        self::AFRICAS_TALKING_GATEWAY => MpmPlugin::AFRICAS_TALKING,
+        self::DEFAULT_GATEWAY => 2,
+    ];
+
     protected mixed $smsBodyService;
     protected mixed $data;
 
@@ -63,6 +69,8 @@ abstract class SmsSender {
                         $this->viberIdOfReceiver,
                         $lastRecordedSMS
                     );
+                $lastRecordedSMS->gateway_id = self::SMS_GATE_WAY_IDS[self::VIBER_GATEWAY];
+                $lastRecordedSMS->save();
                 break;
 
             case self::AFRICAS_TALKING_GATEWAY:
@@ -72,6 +80,8 @@ abstract class SmsSender {
                         $this->receiver,
                         $lastRecordedSMS
                     );
+                $lastRecordedSMS->gateway_id = self::SMS_GATE_WAY_IDS[self::AFRICAS_TALKING_GATEWAY];
+                $lastRecordedSMS->save();
                 break;
 
             default:

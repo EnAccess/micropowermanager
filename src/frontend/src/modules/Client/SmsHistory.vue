@@ -25,16 +25,11 @@
 
             <div class="md-list-item-text md-size-100">
               <div class="md-layout">
-                <div class="md-layout-item md-gutter md-size-100">
-                  <div
-                    class="md-layout-item md-size-5"
-                    style="float: left; font-weight: bold"
-                  >
-                    <small>
-                      <md-icon>person</md-icon>
-                    </small>
+                <div class="md-layout-item md-gutter md-size-100 user-header">
+                  <div class="user-icon">
+                    <md-icon>person</md-icon>
                   </div>
-                  <div class="md-layout-item md-size-95 sms-body">
+                  <div class="md-layout-item md-size-95 username-header">
                     <a
                       v-if="sms.direction === 0"
                       href="javascript:void(0);"
@@ -172,6 +167,7 @@ export default {
         this.message = ""
         this.scrollDown()
       } catch (e) {
+        this.alertNotify("error", e.message)
         console.log(e)
       }
     },
@@ -197,6 +193,25 @@ export default {
   float: right;
   font-weight: bolder;
   margin-top: 5px;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.username-header {
+  display: inline-flex;
+  align-items: center;
 }
 
 .chat-body-scroll {

@@ -7,6 +7,7 @@ use App\Http\Requests\SmsRequest;
 use App\Http\Requests\StoreSmsRequest;
 use App\Http\Resources\ApiResource;
 use App\Http\Resources\SmsSearchResultResource;
+use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Sms;
@@ -186,18 +187,19 @@ class SmsController extends Controller {
         $message = $request->get('message');
         $senderId = $request->get('senderId');
         if ($personId !== null) {
-            // get person primary phone
-            $primaryAddress = $this->person::with('addresses')
-                ->whereHas(
-                    'addresses',
-                    static function ($q) {
-                        $q->where('is_primary', 1);
-                    }
-                )
-                ->find($personId);
-            $phone = $primaryAddress->addresses[0]->phone;
+            // get person primary phone; fall back to request phone if missing
+            $phone = Address::where('owner_type', 'person')
+                ->where('owner_id', $personId)
+                ->where('is_primary', 1)
+                ->value('phone')
+                ?? $request->get('phone');
         } else {
             $phone = $request->get('phone');
+        }
+
+        if (!$phone) {
+            // raise exception
+            throw new \Exception('Phone number is required for sending SMS.');
         }
 
         $smsData = [
