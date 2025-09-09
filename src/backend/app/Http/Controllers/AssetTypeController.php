@@ -10,10 +10,7 @@ use App\Services\ApplianceTypeService;
 use Illuminate\Http\Request;
 
 class AssetTypeController extends Controller {
-    /**
-     * @var ApplianceTypeService
-     */
-    private $applianceTypeService;
+    private ApplianceTypeService $applianceTypeService;
 
     public function __construct(ApplianceTypeService $applianceTypeService) {
         $this->applianceTypeService = $applianceTypeService;

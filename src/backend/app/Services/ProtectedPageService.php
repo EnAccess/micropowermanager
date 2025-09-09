@@ -35,6 +35,7 @@ class ProtectedPageService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function update(Model $model, array $data): ProtectedPage {
+        // Parameter types must be compatible (contravariant).
         /* @var ProtectedPage $model */
         $model->update($data);
 
@@ -46,7 +47,7 @@ class ProtectedPageService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, ProtectedPage>|LengthAwarePaginator<ProtectedPage>
+     * @return Collection<int, ProtectedPage>|LengthAwarePaginator<int, ProtectedPage>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->protectedPage->all();

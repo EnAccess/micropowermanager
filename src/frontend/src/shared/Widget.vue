@@ -176,6 +176,7 @@ export default {
       EventBus.$on("widgetContentLoaded", this.checkDataLength)
     }
   },
+
   beforeDestroy() {
     EventBus.$off("search.end", this.cancelSearching)
   },

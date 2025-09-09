@@ -32,11 +32,6 @@ class AddressesService implements IBaseService, IAssociative {
         ]);
     }
 
-    /**
-     * @template T of \Illuminate\Database\Eloquent\Model
-     *
-     * @param HasAddressesInterface<T> $owner
-     */
     public function assignAddressToOwner(HasAddressesInterface $owner, Address $address): Address|bool {
         return $owner->addresses()->save($address);
     }
@@ -63,7 +58,7 @@ class AddressesService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return Collection<int, Address>|LengthAwarePaginator<Address>
+     * @return Collection<int, Address>|LengthAwarePaginator<int, Address>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

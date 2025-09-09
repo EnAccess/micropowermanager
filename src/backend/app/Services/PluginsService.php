@@ -15,10 +15,7 @@ class PluginsService {
      * @param array<string, mixed> $pluginData
      */
     public function create(array $pluginData): Plugins {
-        /** @var Plugins $plugin */
-        $plugin = $this->plugin->newQuery()->create($pluginData);
-
-        return $plugin;
+        return $this->plugin->newQuery()->create($pluginData);
     }
 
     /**
@@ -32,7 +29,7 @@ class PluginsService {
     }
 
     /**
-     * @return Collection<int, Plugins>|LengthAwarePaginator<Plugins>
+     * @return Collection<int, Plugins>|LengthAwarePaginator<int, Plugins>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

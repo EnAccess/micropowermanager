@@ -5,33 +5,13 @@ namespace Inensus\SparkMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\SparkMeter\Helpers\InsertSparkMeterApi;
-use Inensus\SparkMeter\Services\CredentialService;
-use Inensus\SparkMeter\Services\CustomerService;
-use Inensus\SparkMeter\Services\MeterModelService;
 use Inensus\SparkMeter\Services\PackageInstallationService;
-use Inensus\SparkMeter\Services\SiteService;
-use Inensus\SparkMeter\Services\SmSmsBodyService;
-use Inensus\SparkMeter\Services\SmSmsFeedbackWordService;
-use Inensus\SparkMeter\Services\SmSmsSettingService;
-use Inensus\SparkMeter\Services\SmSmsVariableDefaultValueService;
-use Inensus\SparkMeter\Services\SmSyncSettingService;
 
 class UpdateSparkMeterPackage extends Command {
     protected $signature = 'spark-meter:update';
     protected $description = 'Update the Spark Meter Integration Package';
 
     public function __construct(
-        private InsertSparkMeterApi $insertSparkMeterApi,
-        private MeterModelService $meterModelService,
-        private CredentialService $credentialService,
-        private CustomerService $customerService,
-        private SiteService $siteService,
-        private SmSmsSettingService $smsSettingService,
-        private SmSyncSettingService $syncSettingService,
-        private SmSmsBodyService $smsBodyService,
-        private SmSmsVariableDefaultValueService $defaultValueService,
-        private SmSmsFeedbackWordService $smSmsFeedbackWordService,
         private PackageInstallationService $packageInstallationService,
         private Filesystem $filesystem,
     ) {

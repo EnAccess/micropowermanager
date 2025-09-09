@@ -54,10 +54,7 @@ class SmsService {
      * @param array<string, mixed> $smsData
      */
     public function createSms(array $smsData): Sms {
-        /** @var Sms $sms */
-        $sms = $this->sms->newQuery()->create($smsData);
-
-        return $sms;
+        return $this->sms->newQuery()->create($smsData);
     }
 
     /**

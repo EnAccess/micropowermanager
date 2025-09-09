@@ -20,7 +20,6 @@ use App\Observers\PersonObserver;
 use App\Services\CountryService;
 use App\Services\RolesService;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Horizon\Horizon;
 
 class ServicesProvider extends ServiceProvider {
     /**
@@ -31,11 +30,6 @@ class ServicesProvider extends ServiceProvider {
     public function boot(): void {
         Person::observe(PersonObserver::class);
         Address::observe(AddressesObserver::class);
-        Horizon::auth(
-            static function ($request) {
-                return true;
-            }
-        );
         AgentBalanceHistory::observe(AgentBalanceHistoryObserver::class);
         AgentReceipt::observe(AgentReceiptObserver::class);
         Agent::observe(AgentObserver::class);

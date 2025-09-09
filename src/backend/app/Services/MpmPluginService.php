@@ -19,7 +19,6 @@ class MpmPluginService implements IBaseService {
      * @param int|string $id
      */
     public function getById($id): MpmPlugin {
-        /** @var MpmPlugin $result */
         $result = $this->mpmPlugin->newQuery()->findOrFail($id);
 
         return $result;
@@ -44,7 +43,7 @@ class MpmPluginService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, MpmPlugin>|LengthAwarePaginator<MpmPlugin>
+     * @return Collection<int, MpmPlugin>|LengthAwarePaginator<int, MpmPlugin>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

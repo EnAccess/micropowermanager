@@ -58,7 +58,7 @@ class MainSettingsService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, MainSettings>|LengthAwarePaginator<MainSettings>
+     * @return Collection<int, MainSettings>|LengthAwarePaginator<int, MainSettings>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->mainSettings->newQuery()->get();

@@ -47,7 +47,7 @@ class RegistrationTailService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, RegistrationTail>|LengthAwarePaginator<RegistrationTail>
+     * @return Collection<int, RegistrationTail>|LengthAwarePaginator<int, RegistrationTail>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->registrationTail->newQuery()->get();

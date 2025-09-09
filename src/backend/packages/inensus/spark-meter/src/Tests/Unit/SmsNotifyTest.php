@@ -18,7 +18,6 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SparkMeter\Models\SmCustomer;
@@ -45,7 +44,6 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
-        /** @var Collection<int, SmCustomer> */
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
@@ -56,7 +54,6 @@ class SmsNotifyTest extends TestCase {
             Carbon::now()->subMinutes($lowBalanceMin)
         )->get();
 
-        /** @var Collection<int, SmSmsNotifiedCustomer> */
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
@@ -73,14 +70,15 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                $customer->mpmPerson->addresses->isEmpty()
+                || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer, SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
+            $smsService->sendSms($customer->toArray(), SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
@@ -128,14 +126,19 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if (
-                !$notifyCustomer->mpmPerson->addresses || $notifyCustomer->mpmPerson->addresses[0]->phone === null
+                $notifyCustomer->mpmPerson->addresses->isEmpty()
+                || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                 || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($sparkTransaction->thirdPartyTransaction->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $sparkTransaction->thirdPartyTransaction->transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $notifyCustomer->customer_id,
@@ -221,9 +224,7 @@ class SmsNotifyTest extends TestCase {
         ]);
 
         // associate meter with a person
-        /** @var Person */
         $p = Person::query()->first();
-        /** @var Meter */
         $m = Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,

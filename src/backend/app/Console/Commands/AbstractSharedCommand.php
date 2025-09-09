@@ -30,7 +30,6 @@ abstract class AbstractSharedCommand extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        /** @var DatabaseProxyManagerService $databaseProxyManagerService */
         $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
 
         $companyId = $this->option('company-id');
@@ -57,6 +56,7 @@ abstract class AbstractSharedCommand extends Command {
                     $input,
                     $output
                 ) {
+                    // @phpstan-ignore instanceof.alwaysTrue
                     if ($companyDatabase instanceof CompanyDatabase) {
                         $this->runForCompany(
                             $databaseProxyManagerService,

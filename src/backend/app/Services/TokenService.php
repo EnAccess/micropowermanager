@@ -38,7 +38,7 @@ class TokenService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, Token>|LengthAwarePaginator<Token>
+     * @return Collection<int, Token>|LengthAwarePaginator<int, Token>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

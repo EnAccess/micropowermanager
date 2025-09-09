@@ -32,22 +32,21 @@ use Inensus\Ticket\Models\Ticket;
 /**
  * Class Person.
  *
- * @property int                     $id
- * @property string                  $title
- * @property string                  $education
- * @property string                  $name
- * @property string                  $surname
- * @property mixed                   $birth_date
- * @property string                  $sex                  TODO: replace with gender
- * @property int                     $nationality
- * @property int                     $is_customer
- * @property Collection<int, Ticket> $tickets
- * @property mixed                   $agent_sold_appliance
- * @property Collection<int, Device> $devices
- *
- * @implements HasAddressesInterface<Person>
+ * @property int                      $id
+ * @property string                   $title
+ * @property string                   $education
+ * @property string                   $name
+ * @property string                   $surname
+ * @property mixed                    $birth_date
+ * @property string                   $sex                  TODO: replace with gender
+ * @property int                      $nationality
+ * @property int                      $is_customer
+ * @property Collection<int, Ticket>  $tickets
+ * @property mixed                    $agent_sold_appliance
+ * @property Collection<int, Device>  $devices
+ * @property Collection<int, Address> $addresses
  */
-class Person extends BaseModel implements HasAddressesInterface /* <Person> */ , RoleInterface {
+class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -79,13 +78,10 @@ class Person extends BaseModel implements HasAddressesInterface /* <Person> */ ,
     }
 
     /**
-     * @return MorphMany<Address, self>
+     * @return MorphMany<Address, $this>
      */
     public function addresses(): MorphMany {
-        /** @var MorphMany<Address, self> $relation */
-        $relation = $this->morphMany(Address::class, 'owner');
-
-        return $relation;
+        return $this->morphMany(Address::class, 'owner');
     }
 
     /**

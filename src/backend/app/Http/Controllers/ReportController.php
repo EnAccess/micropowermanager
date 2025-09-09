@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController {
-    /**
-     * @var Report
-     */
     private Report $report;
 
     public function __construct(Report $report) {
@@ -46,14 +43,14 @@ class ReportController {
     }
 
     /**
-     * @return LengthAwarePaginator<Report>
+     * @return LengthAwarePaginator<int, Report>
      */
     private function getWeeklyReports(?string $startDate, ?string $endDate): LengthAwarePaginator {
         return $this->report->where('type', 'weekly')->paginate(15);
     }
 
     /**
-     * @return LengthAwarePaginator<Report>
+     * @return LengthAwarePaginator<int, Report>
      */
     private function getMonthlyReports(?string $startDate, ?string $endDate): LengthAwarePaginator {
         return $this->report->where('type', 'monthly')
@@ -61,7 +58,7 @@ class ReportController {
     }
 
     /**
-     * @return LengthAwarePaginator<Report>
+     * @return LengthAwarePaginator<int, Report>
      */
     private function getAllReports(?string $startDate, ?string $endDate): LengthAwarePaginator {
         return $this->report->paginate(15);

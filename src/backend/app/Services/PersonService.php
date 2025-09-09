@@ -8,7 +8,6 @@ use App\Services\Interfaces\IBaseService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -28,7 +27,7 @@ class PersonService implements IBaseService {
     }
 
     // associates the person with a country
-    public function addCitizenship(Person $person, Country $country): Model {
+    public function addCitizenship(Person $person, Country $country): Person {
         return $person->citizenship()->associate($country);
     }
 
@@ -55,7 +54,7 @@ class PersonService implements IBaseService {
      * @param string                          $searchTerm could either phone, name or surname
      * @param Request|array<mixed>|int|string $paginate
      *
-     * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<Person>
+     * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
     public function searchPerson($searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
@@ -75,7 +74,7 @@ class PersonService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<mixed>
+     * @return LengthAwarePaginator<int, mixed>
      */
     public function getPersonTransactions(Person $person): LengthAwarePaginator {
         return $person->payments()->with('transaction.token')->latest()->paginate(7);
@@ -86,7 +85,6 @@ class PersonService implements IBaseService {
      */
     public function createMaintenancePerson(array $personData): Person {
         $personData['is_customer'] = 0;
-        /** @var Person $person */
         $person = $this->person->newQuery()->create($personData);
 
         return $person;
@@ -142,7 +140,6 @@ class PersonService implements IBaseService {
     }
 
     public function getById(int $personId): Person {
-        /** @var Person $model */
         $model = $this->person->newQuery()->find($personId);
 
         return $model;
@@ -174,7 +171,7 @@ class PersonService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<Person>
+     * @return LengthAwarePaginator<int, Person>
      */
     public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
         $query = $this->person->newQuery()->with([

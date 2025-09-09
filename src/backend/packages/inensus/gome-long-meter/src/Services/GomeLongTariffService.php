@@ -17,13 +17,12 @@ class GomeLongTariffService {
 
     public function __construct(
         private ApiRequests $apiRequests,
-        private MeterTariff $meterTariff,
         private GomeLongTariff $gomeLongTariff,
         private GomeLongCredentialService $credentialService,
         private MainSettings $mainSettings,
     ) {}
 
-    public function getByMpmTariffId($mpmTariffId): GomeLongTariff {
+    public function getByMpmTariffId($mpmTariffId): ?GomeLongTariff {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
@@ -85,8 +84,7 @@ class GomeLongTariffService {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-            // FIXME: Is this correct here or a development leftover?
-            if ($gomeLongTariff) {
+            if (!$gomeLongTariff) {
                 return true;
             }
 
@@ -130,7 +128,8 @@ class GomeLongTariffService {
 
                 $registeredGomeLongTariff = $this->gomeLongTariff->newQuery()
                     ->with('mpmTariff')
-                    ->where('tariff_id', $gomeLongTariff['FID'])->first();
+                    ->where('tariff_id', $gomeLongTariff['FID'])
+                    ->first();
 
                 if ($registeredGomeLongTariff) {
                     $meterTariff = $registeredGomeLongTariff->mpmTariff;
