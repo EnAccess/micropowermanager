@@ -82,10 +82,10 @@
         {{ $tc("phrases.paymentUrl") }}
       </div>
       <div class="md-layout-item md-subheader n-font">
-        <a 
-          v-if="ot.payment_url" 
-          :href="ot.payment_url" 
-          target="_blank" 
+        <a
+          v-if="ot.payment_url"
+          :href="ot.payment_url"
+          target="_blank"
           class="payment-link"
         >
           {{ $tc("phrases.viewPaymentLink") }}

@@ -1,9 +1,13 @@
 <template>
   <div>
-    <widget id="paystack-transactions" :title="title" :paginator="transactionService.paginator" :subscriber="subscriber"
-      color="green">
+    <widget
+      id="paystack-transactions"
+      :title="title"
+      :paginator="transactionService.paginator"
+      :subscriber="subscriber"
+      color="green"
+    >
       <md-table style="width: 100%">
-
         <md-table-row>
           <md-table-head md-sort-by="id">ID</md-table-head>
           <md-table-head md-sort-by="order_id">Order ID</md-table-head>
@@ -44,11 +48,19 @@
             {{ formatDate(item.created_at) }}
           </md-table-cell>
           <md-table-cell md-label="Actions">
-            <md-button class="md-icon-button md-primary" @click="viewTransaction(item)" title="View Details">
+            <md-button
+              class="md-icon-button md-primary"
+              @click="viewTransaction(item)"
+              title="View Details"
+            >
               <md-icon>visibility</md-icon>
             </md-button>
-            <md-button v-if="item.status === 0" class="md-icon-button md-accent" @click="verifyTransaction(item)"
-              title="Verify Transaction">
+            <md-button
+              v-if="item.status === 0"
+              class="md-icon-button md-accent"
+              @click="verifyTransaction(item)"
+              title="Verify Transaction"
+            >
               <md-icon>check_circle</md-icon>
             </md-button>
           </md-table-cell>
@@ -57,7 +69,10 @@
     </widget>
 
     <!-- Transaction Details Dialog -->
-    <md-dialog :md-active.sync="showTransactionDialog" class="transaction-dialog">
+    <md-dialog
+      :md-active.sync="showTransactionDialog"
+      class="transaction-dialog"
+    >
       <md-dialog-title>{{ $tc("phrases.transactionDetails") }}</md-dialog-title>
       <md-dialog-content>
         <div v-if="selectedTransaction" class="transaction-details">
@@ -71,12 +86,19 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Reference ID:</span>
-            <span class="detail-value">{{ selectedTransaction.reference_id }}</span>
+            <span class="detail-value">
+              {{ selectedTransaction.reference_id }}
+            </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Amount:</span>
             <span class="detail-value">
-              {{ formatAmount(selectedTransaction.amount, selectedTransaction.currency) }}
+              {{
+                formatAmount(
+                  selectedTransaction.amount,
+                  selectedTransaction.currency,
+                )
+              }}
             </span>
           </div>
           <div class="detail-row">
@@ -89,28 +111,42 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Customer ID:</span>
-            <span class="detail-value">{{ selectedTransaction.customer_id }}</span>
+            <span class="detail-value">
+              {{ selectedTransaction.customer_id }}
+            </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Serial ID:</span>
-            <span class="detail-value">{{ selectedTransaction.serial_id }}</span>
+            <span class="detail-value">
+              {{ selectedTransaction.serial_id }}
+            </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Equipment Type:</span>
-            <span class="detail-value">{{ selectedTransaction.device_type }}</span>
+            <span class="detail-value">
+              {{ selectedTransaction.device_type }}
+            </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Paystack Reference:</span>
-            <span class="detail-value">{{ selectedTransaction.paystack_reference || 'N/A' }}</span>
+            <span class="detail-value">
+              {{ selectedTransaction.paystack_reference || "N/A" }}
+            </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">External Transaction ID:</span>
-            <span class="detail-value">{{ selectedTransaction.external_transaction_id || 'N/A' }}</span>
+            <span class="detail-value">
+              {{ selectedTransaction.external_transaction_id || "N/A" }}
+            </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Payment URL:</span>
             <span class="detail-value">
-              <a v-if="selectedTransaction.payment_url" :href="selectedTransaction.payment_url" target="_blank">
+              <a
+                v-if="selectedTransaction.payment_url"
+                :href="selectedTransaction.payment_url"
+                target="_blank"
+              >
                 {{ selectedTransaction.payment_url }}
               </a>
               <span v-else>N/A</span>
@@ -118,11 +154,15 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Created:</span>
-            <span class="detail-value">{{ formatDate(selectedTransaction.created_at) }}</span>
+            <span class="detail-value">
+              {{ formatDate(selectedTransaction.created_at) }}
+            </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Updated:</span>
-            <span class="detail-value">{{ formatDate(selectedTransaction.updated_at) }}</span>
+            <span class="detail-value">
+              {{ formatDate(selectedTransaction.updated_at) }}
+            </span>
           </div>
         </div>
       </md-dialog-content>
@@ -172,12 +212,17 @@ export default {
     },
     async verifyTransaction(transaction) {
       if (!transaction.paystack_reference) {
-        this.alertNotify("error", "No Paystack reference found for this transaction")
+        this.alertNotify(
+          "error",
+          "No Paystack reference found for this transaction",
+        )
         return
       }
 
       try {
-        await this.transactionService.verifyTransaction(transaction.paystack_reference)
+        await this.transactionService.verifyTransaction(
+          transaction.paystack_reference,
+        )
         this.alertNotify("success", "Transaction verified successfully")
         EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
       } catch (error) {

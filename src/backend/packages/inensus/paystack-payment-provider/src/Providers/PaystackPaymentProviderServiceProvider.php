@@ -10,13 +10,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\PaystackPaymentProvider\Console\Commands\InstallPackage;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
-use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
-use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
-use Inensus\PaystackPaymentProvider\Services\PaystackWebhookService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
+use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
+use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
+use Inensus\PaystackPaymentProvider\Services\PaystackWebhookService;
 
 class PaystackPaymentProviderServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem): void {
+        $this->app->register(RouteServiceProvider::class);
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
@@ -47,7 +48,6 @@ class PaystackPaymentProviderServiceProvider extends ServiceProvider {
 
     public function register() {
         $this->mergeConfigFrom(__DIR__.'/../../config/paystack-payment-provider.php', 'paystack-payment-provider');
-        $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
     }

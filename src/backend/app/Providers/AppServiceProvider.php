@@ -34,13 +34,15 @@ use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
 use MPM\User\Events\UserCreatedEvent;
 use MPM\User\UserListener;
+use App\Events\TransactionSuccessfulEvent;
+use App\Listeners\TransactionSuccessfulListener;
+
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -109,6 +111,14 @@ class AppServiceProvider extends ServiceProvider {
         Event::listen(
             UserCreatedEvent::class,
             UserListener::class
+        );
+
+        // App\Listeners namespace
+        // manually register TransactionSuccessfulEvent to listener. 
+        // because TransactionSuccessfulEvent is also registered in SparkMeter namespace.
+        Event::listen(
+            TransactionSuccessfulEvent::class,
+            TransactionSuccessfulListener::class
         );
     }
 }

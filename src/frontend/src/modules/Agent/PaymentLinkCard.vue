@@ -9,15 +9,21 @@
       <div class="payment-details">
         <div class="detail-row">
           <span class="detail-label">{{ $tc("words.customer") }}:</span>
-          <span class="detail-value">{{ customer?.name }} {{ customer?.surname }}</span>
+          <span class="detail-value">
+            {{ customer?.name }} {{ customer?.surname }}
+          </span>
         </div>
         <div class="detail-row">
           <span class="detail-label">{{ $tc("words.amount") }}:</span>
-          <span class="detail-value amount">{{ formatCurrency(payment.amount, payment.currency) }}</span>
+          <span class="detail-value amount">
+            {{ formatCurrency(payment.amount, payment.currency) }}
+          </span>
         </div>
         <div class="detail-row">
           <span class="detail-label">{{ $tc("words.reference") }}:</span>
-          <span class="detail-value reference">{{ payment.reference || payment.reference_id }}</span>
+          <span class="detail-value reference">
+            {{ payment.reference || payment.reference_id }}
+          </span>
         </div>
         <div class="detail-row">
           <span class="detail-label">{{ $tc("words.status") }}:</span>
@@ -37,14 +43,14 @@
         </div>
         <div class="link-container">
           <md-field>
-            <md-input 
-              :value="paymentUrl" 
-              readonly 
+            <md-input
+              :value="paymentUrl"
+              readonly
               id="payment-link-input"
               class="payment-link-input"
             />
-            <md-button 
-              class="md-icon-button md-primary copy-button" 
+            <md-button
+              class="md-icon-button md-primary copy-button"
               @click="copyToClipboard"
               :title="$tc('phrases.copyLink')"
             >
@@ -62,7 +68,9 @@
         </div>
         <div class="qr-code-container">
           <canvas ref="qrCanvas" class="qr-canvas"></canvas>
-          <p class="qr-instruction">{{ $tc("phrases.scanToPayInstruction") }}</p>
+          <p class="qr-instruction">
+            {{ $tc("phrases.scanToPayInstruction") }}
+          </p>
         </div>
       </div>
 
@@ -73,7 +81,7 @@
           <span>{{ $tc("phrases.sharePaymentLink") }}</span>
         </div>
         <div class="share-buttons">
-          <md-button 
+          <md-button
             class="md-raised share-btn sms-btn"
             @click="shareViaSMS"
             :disabled="!customerPhone"
@@ -81,8 +89,8 @@
             <md-icon>sms</md-icon>
             {{ $tc("words.sms") }}
           </md-button>
-          
-          <md-button 
+
+          <md-button
             class="md-raised share-btn whatsapp-btn"
             @click="shareViaWhatsApp"
             :disabled="!customerPhone"
@@ -90,8 +98,8 @@
             <md-icon>chat</md-icon>
             WhatsApp
           </md-button>
-          
-          <md-button 
+
+          <md-button
             class="md-raised share-btn email-btn"
             @click="shareViaEmail"
             :disabled="!customerEmail"
@@ -99,8 +107,8 @@
             <md-icon>email</md-icon>
             {{ $tc("words.email") }}
           </md-button>
-          
-          <md-button 
+
+          <md-button
             class="md-raised share-btn copy-btn"
             @click="copyToClipboard"
           >
@@ -114,7 +122,9 @@
       <div class="payment-instructions">
         <md-icon class="instruction-icon">info</md-icon>
         <div class="instruction-text">
-          <p><strong>{{ $tc("phrases.instructionsForCustomer") }}:</strong></p>
+          <p>
+            <strong>{{ $tc("phrases.instructionsForCustomer") }}:</strong>
+          </p>
           <ol>
             <li>{{ $tc("phrases.clickPaymentLink") }}</li>
             <li>{{ $tc("phrases.enterCardDetails") }}</li>
@@ -126,14 +136,16 @@
 
       <!-- Verification Section -->
       <div class="verification-section" v-if="payment.status === 0">
-        <md-button 
+        <md-button
           class="md-raised md-accent verify-btn"
           @click="verifyPayment"
           :disabled="verifying"
         >
           <md-progress-spinner v-if="verifying" :md-diameter="20" />
           <md-icon v-else>verified_user</md-icon>
-          {{ verifying ? $tc("phrases.verifying") : $tc("phrases.verifyPayment") }}
+          {{
+            verifying ? $tc("phrases.verifying") : $tc("phrases.verifyPayment")
+          }}
         </md-button>
       </div>
     </md-card-content>
@@ -170,13 +182,21 @@ export default {
       return this.payment.redirectionUrl || ""
     },
     customerPhone() {
-      if (!this.customer || !this.customer.addresses || this.customer.addresses.length === 0) {
+      if (
+        !this.customer ||
+        !this.customer.addresses ||
+        this.customer.addresses.length === 0
+      ) {
         return null
       }
       return this.customer.addresses[0].phone
     },
     customerEmail() {
-      if (!this.customer || !this.customer.addresses || this.customer.addresses.length === 0) {
+      if (
+        !this.customer ||
+        !this.customer.addresses ||
+        this.customer.addresses.length === 0
+      ) {
         return null
       }
       return this.customer.addresses[0].email
@@ -239,7 +259,7 @@ export default {
 
       const message = this.createShareMessage()
       const smsUrl = `sms:${this.customerPhone}?body=${encodeURIComponent(message)}`
-      
+
       try {
         window.open(smsUrl)
         this.$emit("link-shared", "sms")
@@ -257,7 +277,7 @@ export default {
 
       const message = this.createShareMessage()
       const whatsappUrl = `https://wa.me/${this.customerPhone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(message)}`
-      
+
       try {
         window.open(whatsappUrl, "_blank")
         this.$emit("link-shared", "whatsapp")
@@ -276,7 +296,7 @@ export default {
       const subject = `Payment Link - ${this.formatCurrency(this.payment.amount, this.payment.currency)}`
       const message = this.createEmailMessage()
       const emailUrl = `mailto:${this.customerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`
-      
+
       try {
         window.open(emailUrl)
         this.$emit("link-shared", "email")
@@ -319,10 +339,11 @@ Thank you!`
 
       try {
         this.verifying = true
-        const reference = this.payment.paystack_reference || this.payment.reference
+        const reference =
+          this.payment.paystack_reference || this.payment.reference
         await this.paystackService.verifyTransaction(reference)
         this.alertNotify("success", "Payment verification requested")
-        
+
         // Emit event to refresh payment status
         this.$emit("payment-verified")
       } catch (error) {
@@ -342,19 +363,27 @@ Thank you!`
 
     getStatusClass(status) {
       switch (status) {
-        case 0: return "md-primary"
-        case 1: return "md-accent"
-        case 2: return "md-warn"
-        default: return ""
+        case 0:
+          return "md-primary"
+        case 1:
+          return "md-accent"
+        case 2:
+          return "md-warn"
+        default:
+          return ""
       }
     },
 
     getStatusText(status) {
       switch (status) {
-        case 0: return "Pending"
-        case 1: return "Completed"
-        case 2: return "Failed"
-        default: return "Unknown"
+        case 0:
+          return "Pending"
+        case 1:
+          return "Completed"
+        case 2:
+          return "Failed"
+        default:
+          return "Unknown"
       }
     },
   },
@@ -533,20 +562,20 @@ Thank you!`
     align-items: flex-start;
     gap: 0.25rem;
   }
-  
+
   .detail-value {
     text-align: left;
   }
-  
+
   .share-buttons {
     flex-direction: column;
   }
-  
+
   .share-btn {
     min-width: auto;
     width: 100%;
   }
-  
+
   .payment-instructions {
     flex-direction: column;
   }

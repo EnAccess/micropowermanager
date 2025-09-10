@@ -14,7 +14,8 @@
           "
         >
           <span>
-            Configure your Paystack payment provider to start accepting payments from customers.
+            Configure your Paystack payment provider to start accepting payments
+            from customers.
           </span>
           <span style="margin-top: 16px">
             You'll need your Paystack API keys and webhook configuration.
@@ -26,29 +27,33 @@
               <md-icon class="step-icon">vpn_key</md-icon>
               <h4>1. Get your Paystack API Keys</h4>
               <p>
-                Log in to your 
-                <a href="https://dashboard.paystack.com" target="_blank">Paystack Dashboard</a>
+                Log in to your
+                <a href="https://dashboard.paystack.com" target="_blank">
+                  Paystack Dashboard
+                </a>
                 and get your Secret Key and Public Key
               </p>
             </div>
-            
+
             <div class="step">
               <md-icon class="step-icon">settings</md-icon>
               <h4>2. Configure Webhook</h4>
               <p>
-                Set up webhook endpoints in your Paystack dashboard to receive payment notifications
+                Set up webhook endpoints in your Paystack dashboard to receive
+                payment notifications
               </p>
             </div>
-            
+
             <div class="step">
               <md-icon class="step-icon">payment</md-icon>
               <h4>3. Test Integration</h4>
               <p>
-                Use test credentials first to verify your integration before going live
+                Use test credentials first to verify your integration before
+                going live
               </p>
             </div>
           </div>
-          
+
           <div class="buttons-area">
             <md-button
               role="button"
@@ -57,11 +62,7 @@
             >
               Configure Paystack Now
             </md-button>
-            <md-button
-              role="button"
-              class="md-raised"
-              @click="learnMore"
-            >
+            <md-button role="button" class="md-raised" @click="learnMore">
               Learn More
             </md-button>
           </div>
@@ -152,16 +153,16 @@ export default {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .step {
     max-width: 90%;
   }
-  
+
   .buttons-area {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .buttons-area .md-button {
     width: 200px;
   }

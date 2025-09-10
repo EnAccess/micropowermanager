@@ -3,7 +3,7 @@
     <!-- Agent Actions Header -->
     <div class="agent-actions-header">
       <div class="actions-container">
-        <md-button 
+        <md-button
           class="md-raised md-primary create-payment-btn"
           @click="goToCreatePayment"
         >
@@ -108,7 +108,7 @@ export default {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .create-payment-btn {
     width: 100%;
     justify-content: center;

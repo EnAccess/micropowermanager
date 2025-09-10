@@ -133,10 +133,31 @@ class PaystackPublicController extends Controller {
                 return response()->json(['error' => 'Transaction not found'], 404);
             }
 
+            // Get the main transaction and its token
+            $mainTransaction = $transaction->transaction()->first();
+            $token = null;
+            $tokenStatus = 'pending';
+            
+            if ($mainTransaction) {
+                $token = $mainTransaction->token()->first();
+                
+                // Determine token status based on transaction and token state
+                if ($token) {
+                    $tokenStatus = 'generated';
+                } else {
+                    // Check if transaction is still processing or failed
+                    if ($mainTransaction->status === 0) { // STATUS_REQUESTED
+                        $tokenStatus = 'processing';
+                    } else {
+                        $tokenStatus = 'failed';
+                    }
+                }
+            }
+
             // Verify transaction with Paystack
             $verification = $this->apiService->verifyTransaction($reference);
 
-            return response()->json([
+            $response = [
                 'transaction' => [
                     'id' => $transaction->getId(),
                     'amount' => $transaction->getAmount(),
@@ -147,7 +168,20 @@ class PaystackPublicController extends Controller {
                 ],
                 'verification' => $verification,
                 'success' => $verification['status'] === 'success',
-            ]);
+                'token_status' => $tokenStatus,
+            ];
+
+            // Include token information if available
+            if ($token) {
+                $response['token'] = [
+                    'token' => $token->token,
+                    'token_type' => $token->token_type,
+                    'token_unit' => $token->token_unit,
+                    'token_amount' => $token->token_amount,
+                ];
+            }
+
+            return response()->json($response);
 
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to show result', [

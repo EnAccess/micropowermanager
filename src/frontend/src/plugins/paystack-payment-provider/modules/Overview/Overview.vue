@@ -3,21 +3,49 @@
     <!-- Payment Statistics -->
     <div class="overview-line">
       <div class="md-layout md-gutter">
-        <div class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25">
-          <box :box-color="'green'" :center-text="true" :header-text="'Total Transactions'"
-            :sub-text="stats.totalTransactions.toString()" :box-icon="'payment'" />
+        <div
+          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
+        >
+          <box
+            :box-color="'green'"
+            :center-text="true"
+            :header-text="'Total Transactions'"
+            :sub-text="stats.totalTransactions.toString()"
+            :box-icon="'payment'"
+          />
         </div>
-        <div class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25">
-          <box :box-color="'blue'" :center-text="true" :header-text="'Successful Payments'"
-            :sub-text="stats.successfulTransactions.toString()" :box-icon="'check_circle'" />
+        <div
+          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
+        >
+          <box
+            :box-color="'blue'"
+            :center-text="true"
+            :header-text="'Successful Payments'"
+            :sub-text="stats.successfulTransactions.toString()"
+            :box-icon="'check_circle'"
+          />
         </div>
-        <div class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25">
-          <box :box-color="'orange'" :center-text="true" :header-text="'Pending Payments'"
-            :sub-text="stats.pendingTransactions.toString()" :box-icon="'schedule'" />
+        <div
+          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
+        >
+          <box
+            :box-color="'orange'"
+            :center-text="true"
+            :header-text="'Pending Payments'"
+            :sub-text="stats.pendingTransactions.toString()"
+            :box-icon="'schedule'"
+          />
         </div>
-        <div class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25">
-          <box :box-color="credentialStatus.color" :center-text="true" :header-text="'Configuration'"
-            :sub-text="credentialStatus.text" :box-icon="'settings'" />
+        <div
+          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
+        >
+          <box
+            :box-color="credentialStatus.color"
+            :center-text="true"
+            :header-text="'Configuration'"
+            :sub-text="credentialStatus.text"
+            :box-icon="'settings'"
+          />
         </div>
       </div>
     </div>
@@ -25,7 +53,9 @@
     <!-- Configuration Section -->
     <div class="overview-line">
       <div class="md-layout md-gutter">
-        <div class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100">
+        <div
+          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
+        >
           <credential style="height: 100% !important" />
         </div>
       </div>
@@ -77,11 +107,10 @@ export default {
   },
   computed: {
     credentialStatus() {
-      if (!this.credentials.secretKey ||
-        !this.credentials.publicKey) {
-        return { color: 'red', text: 'Not Configured' }
+      if (!this.credentials.secretKey || !this.credentials.publicKey) {
+        return { color: "red", text: "Not Configured" }
       }
-      return { color: 'green', text: 'Configured' }
+      return { color: "green", text: "Configured" }
     },
   },
   methods: {
@@ -92,8 +121,12 @@ export default {
         const transactions = response.data.data || []
 
         this.stats.totalTransactions = transactions.length
-        this.stats.successfulTransactions = transactions.filter(t => t.status === 1).length
-        this.stats.pendingTransactions = transactions.filter(t => t.status === 0).length
+        this.stats.successfulTransactions = transactions.filter(
+          (t) => t.status === 1,
+        ).length
+        this.stats.pendingTransactions = transactions.filter(
+          (t) => t.status === 0,
+        ).length
       } catch (error) {
         console.error("Error loading stats:", error)
         this.alertNotify("error", "Failed to load transaction statistics")

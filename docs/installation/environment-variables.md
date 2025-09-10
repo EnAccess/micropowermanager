@@ -206,3 +206,15 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 | Environment Variable | Default                            | Description                                                                 |
 | -------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
 | `WAVEMONEY_API_URL`  | **Required** (when plugin is used) | WaveMoney API URL. For example `https://preprodpayments.wavemoney.io:8107`. |
+
+#### Paystack
+
+For detailed information see [Paystack Developer Documentation](https://paystack.com/docs)
+
+| Environment Variable                    | Default                                    | Description                                                                 |
+| --------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------- |
+| `PAYSTACK_API_URL`                      | `https://api.paystack.co`                  | Paystack API URL. The same URL is used for both test and production environments. |
+| `PAYSTACK_MERCHANT_EMAIL`               | `noreply@micropowermanager.com`           | Default merchant email used for Paystack transactions.                     |
+| `PAYSTACK_COMPANY_HASH_SALT`            | `APP_KEY`                                  | Salt used for generating company-specific payment URLs. Defaults to the application key. |
+| `PAYSTACK_API_TIMEOUT`                  | `30`                                       | API request timeout in seconds.                                            |
+| `PAYSTACK_VERIFY_WEBHOOK_SIGNATURE`     | `true`                                     | Whether to verify Paystack webhook signatures for security.                |

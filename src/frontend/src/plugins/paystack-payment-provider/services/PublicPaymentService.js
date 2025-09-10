@@ -5,13 +5,13 @@ export class PublicPaymentService {
     this.paymentRequest = {
       meterSerial: null,
       amount: null,
-      currency: 'NGN',
+      currency: "NGN",
     }
   }
 
   async getCompanyInfo(companyHash, companyId) {
     const response = await Client.get(
-      `${baseUrl}/api/paystack/public/payment/${companyHash}/${companyId}`
+      `${baseUrl}/api/paystack/public/payment/${companyHash}/${companyId}`,
     )
     return response.data
   }
@@ -21,7 +21,7 @@ export class PublicPaymentService {
       `${baseUrl}/api/paystack/public/validate-meter/${companyHash}/${companyId}`,
       {
         meter_serial: meterSerial,
-      }
+      },
     )
     return response.data
   }
@@ -33,7 +33,7 @@ export class PublicPaymentService {
         meter_serial: paymentData.meterSerial,
         amount: parseFloat(paymentData.amount),
         currency: paymentData.currency,
-      }
+      },
     )
     return response.data
   }
@@ -45,7 +45,7 @@ export class PublicPaymentService {
         params: {
           reference: reference,
         },
-      }
+      },
     )
     return response.data
   }
@@ -57,7 +57,7 @@ export class PublicPaymentService {
         params: {
           reference: reference,
         },
-      }
+      },
     )
     return response.data
   }

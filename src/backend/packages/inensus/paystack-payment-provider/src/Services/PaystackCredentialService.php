@@ -10,7 +10,13 @@ class PaystackCredentialService {
     ) {}
 
     public function getCredentials(): PaystackCredential {
-        return $this->paystackCredential->newQuery()->first();
+        $credential = $this->paystackCredential->newQuery()->first();
+        
+        if (!$credential) {
+            return $this->createCredentials();
+        }
+        
+        return $credential;
     }
 
     public function createCredentials(): PaystackCredential {

@@ -136,8 +136,12 @@
                       name="environment"
                       v-model="credentialService.credential.environment"
                     >
-                      <md-option value="test">{{ $tc("phrases.test") }}</md-option>
-                      <md-option value="live">{{ $tc("phrases.live") }}</md-option>
+                      <md-option value="test">
+                        {{ $tc("phrases.test") }}
+                      </md-option>
+                      <md-option value="live">
+                        {{ $tc("phrases.live") }}
+                      </md-option>
                     </md-select>
                   </md-field>
                 </div>
@@ -158,7 +162,9 @@
     <md-card class="public-urls-card">
       <md-card-header>
         <div class="md-title">Public Payment URLs</div>
-        <div class="md-subhead">Share these URLs with your customers for direct payments</div>
+        <div class="md-subhead">
+          Share these URLs with your customers for direct payments
+        </div>
       </md-card-header>
       <md-card-content>
         <div class="url-section">
@@ -184,7 +190,8 @@
             </div>
             <p class="url-description">
               <md-icon>info</md-icon>
-              This URL never expires. Customers can bookmark it for regular payments.
+              This URL never expires. Customers can bookmark it for regular
+              payments.
             </p>
           </div>
 
@@ -208,32 +215,38 @@
                 <md-icon>content_copy</md-icon>
               </md-button>
             </div>
-            
+
             <div class="callback-instructions">
               <h4>Instructions:</h4>
               <ol>
                 <li>Copy the callback URL above</li>
-                <li>Paste this URL in the <strong>"Callback URL"</strong> field</li>
+                <li>
+                  Paste this URL in the
+                  <strong>"Callback URL"</strong>
+                  field
+                </li>
                 <li>Save your settings</li>
               </ol>
-              
+
               <div class="warning-box">
                 <md-icon class="warning-icon">warning</md-icon>
                 <div class="warning-content">
-                  <strong>Important:</strong> This callback URL is required for payment verification. 
-                  Without it, customers won't see payment confirmation after completing their transactions.
+                  <strong>Important:</strong>
+                  This callback URL is required for payment verification.
+                  Without it, customers won't see payment confirmation after
+                  completing their transactions.
                 </div>
               </div>
             </div>
           </div>
-          
+
           <!-- Time-based URLs -->
           <div class="url-item time-based-url">
             <label class="url-label">
               <md-icon class="url-icon">schedule</md-icon>
               Time-based URLs (Expire in 24 hours):
             </label>
-            
+
             <div class="url-sub-item">
               <label class="url-sublabel">Payment URL:</label>
               <div class="url-container">
@@ -251,7 +264,7 @@
                 </md-button>
               </div>
             </div>
-            
+
             <div class="url-sub-item">
               <label class="url-sublabel">Result URL:</label>
               <div class="url-container">
@@ -269,20 +282,21 @@
                 </md-button>
               </div>
             </div>
-            
+
             <p class="url-description">
               <md-icon>warning</md-icon>
-              These URLs expire in 24 hours. Use for temporary or agent-generated links.
+              These URLs expire in 24 hours. Use for temporary or
+              agent-generated links.
             </p>
           </div>
-          
+
           <!-- Agent Payment URL Generator -->
           <div class="url-item agent-url">
             <label class="url-label">
               <md-icon class="url-icon">person</md-icon>
               Generate Agent Payment Link:
             </label>
-            
+
             <div class="agent-generator">
               <md-field>
                 <label>Select Customer (Optional)</label>
@@ -297,13 +311,15 @@
                     :value="customer.id"
                   >
                     {{ customer.name }} {{ customer.surname }}
-                    <span v-if="customer.addresses && customer.addresses.length > 0">
+                    <span
+                      v-if="customer.addresses && customer.addresses.length > 0"
+                    >
                       ({{ customer.addresses[0].phone }})
                     </span>
                   </md-option>
                 </md-select>
               </md-field>
-              
+
               <md-field>
                 <label>Select Agent (Optional)</label>
                 <md-select
@@ -311,16 +327,10 @@
                   placeholder="Choose an agent to associate with the link"
                   :disabled="loadingAgents"
                 >
-                  <md-option
-                    v-if="loadingAgents"
-                    disabled
-                  >
+                  <md-option v-if="loadingAgents" disabled>
                     Loading agents...
                   </md-option>
-                  <md-option
-                    v-else-if="agents.length === 0"
-                    disabled
-                  >
+                  <md-option v-else-if="agents.length === 0" disabled>
                     No agents found
                   </md-option>
                   <md-option
@@ -328,14 +338,17 @@
                     :key="agent.id"
                     :value="agent.id"
                   >
-                    {{ agent.name || agent.person?.name }} {{ agent.surname || agent.person?.surname }}
-                    <span v-if="agent.phone || agent.person?.addresses?.[0]?.phone">
+                    {{ agent.name || agent.person?.name }}
+                    {{ agent.surname || agent.person?.surname }}
+                    <span
+                      v-if="agent.phone || agent.person?.addresses?.[0]?.phone"
+                    >
                       ({{ agent.phone || agent.person?.addresses?.[0]?.phone }})
                     </span>
                   </md-option>
                 </md-select>
               </md-field>
-              
+
               <div class="url-container">
                 <md-input
                   v-model="agentPaymentUrl"
@@ -351,7 +364,7 @@
                   <md-icon>content_copy</md-icon>
                 </md-button>
               </div>
-              
+
               <md-button
                 class="md-raised md-primary"
                 @click="generateAgentUrl"
@@ -361,19 +374,20 @@
                   v-if="loadingAgentUrl"
                   md-diameter="20"
                   md-stroke="2"
-                  style="margin-right: 8px;"
+                  style="margin-right: 8px"
                 ></md-progress-spinner>
-                {{ loadingAgentUrl ? 'Generating...' : 'Generate Agent URL' }}
+                {{ loadingAgentUrl ? "Generating..." : "Generate Agent URL" }}
               </md-button>
             </div>
-            
+
             <p class="url-description">
               <md-icon>info</md-icon>
-              Generate a time-limited payment link for specific customers. Expires in 24 hours.
+              Generate a time-limited payment link for specific customers.
+              Expires in 24 hours.
             </p>
           </div>
         </div>
-        
+
         <div class="url-actions">
           <md-button
             class="md-raised md-primary"
@@ -384,11 +398,11 @@
               v-if="loadingUrls"
               md-diameter="20"
               md-stroke="2"
-              style="margin-right: 8px;"
+              style="margin-right: 8px"
             ></md-progress-spinner>
-            {{ loadingUrls ? 'Generating...' : 'Generate URLs' }}
+            {{ loadingUrls ? "Generating..." : "Generate URLs" }}
           </md-button>
-          
+
           <md-button
             class="md-raised"
             @click="openPaymentPage"
@@ -424,17 +438,17 @@ export default {
       loadingAgents: false,
       agentCustomerId: null,
       agentId: null,
-      agentPaymentUrl: '',
+      agentPaymentUrl: "",
       customers: [],
       agents: [],
       personService: new PersonService(),
       agentService: new AgentService(),
       publicUrls: {
-        permanent_payment_url: '',
-        time_based_payment_url: '',
-        time_based_result_url: '',
+        permanent_payment_url: "",
+        time_based_payment_url: "",
+        time_based_result_url: "",
       },
-      callbackUrl: '',
+      callbackUrl: "",
     }
   },
   mounted() {
@@ -473,16 +487,24 @@ export default {
       this.loadingUrls = true
       try {
         const response = await this.credentialService.getPublicUrls()
-        
+
         // Add frontend prefix to all URLs
         this.publicUrls = {
-          permanent_payment_url: this.addFrontendPrefix(response.permanent_payment_url),
-          time_based_payment_url: this.addFrontendPrefix(response.time_based_payment_url),
-          time_based_result_url: this.addFrontendPrefix(response.time_based_result_url),
-          company_id: response.company_id
+          permanent_payment_url: this.addFrontendPrefix(
+            response.permanent_payment_url,
+          ),
+          time_based_payment_url: this.addFrontendPrefix(
+            response.time_based_payment_url,
+          ),
+          time_based_result_url: this.addFrontendPrefix(
+            response.time_based_result_url,
+          ),
+          company_id: response.company_id,
         }
-        
-        this.callbackUrl = this.addFrontendPrefix(response.permanent_payment_url.replace('/payment/', '/result/'))
+
+        this.callbackUrl = this.addFrontendPrefix(
+          response.permanent_payment_url.replace("/payment/", "/result/"),
+        )
       } catch (error) {
         console.error("Error generating public URLs:", error)
         this.alertNotify("error", "Failed to generate public URLs")
@@ -496,11 +518,11 @@ export default {
         this.alertNotify("success", "URL copied to clipboard")
       } catch (error) {
         // Fallback for older browsers
-        const textArea = document.createElement('textarea')
+        const textArea = document.createElement("textarea")
         textArea.value = text
         document.body.appendChild(textArea)
         textArea.select()
-        document.execCommand('copy')
+        document.execCommand("copy")
         document.body.removeChild(textArea)
         this.alertNotify("success", "URL copied to clipboard")
       }
@@ -519,13 +541,13 @@ export default {
         this.loadingCustomers = false
       }
     },
-    
+
     async loadAgents() {
       this.loadingAgents = true
       try {
         // Use direct API call with proper error handling
         const response = await AgentRepository.list()
-        
+
         // Handle different response structures
         let agentsData = []
         if (response.data && response.data.data) {
@@ -535,25 +557,33 @@ export default {
         } else if (Array.isArray(response)) {
           agentsData = response
         }
-        
+
         this.agents = agentsData
-        
+
         if (this.agents.length === 0) {
           this.alertNotify("warning", "No agents found in the system")
         }
       } catch (error) {
         console.error("Error loading agents:", error)
-        this.alertNotify("error", "Failed to load agents: " + (error.message || "Unknown error"))
+        this.alertNotify(
+          "error",
+          "Failed to load agents: " + (error.message || "Unknown error"),
+        )
       } finally {
         this.loadingAgents = false
       }
     },
-    
+
     async generateAgentUrl() {
       this.loadingAgentUrl = true
       try {
-        const response = await this.credentialService.generateAgentPaymentUrl(this.agentCustomerId, this.agentId)
-        this.agentPaymentUrl = this.addFrontendPrefix(response.agent_payment_url)
+        const response = await this.credentialService.generateAgentPaymentUrl(
+          this.agentCustomerId,
+          this.agentId,
+        )
+        this.agentPaymentUrl = this.addFrontendPrefix(
+          response.agent_payment_url,
+        )
         this.alertNotify("success", "Agent payment URL generated successfully")
       } catch (error) {
         this.alertNotify("error", "Failed to generate agent payment URL")
@@ -563,12 +593,12 @@ export default {
     },
     openPaymentPage() {
       if (this.publicUrls.permanent_payment_url) {
-        window.open(this.publicUrls.permanent_payment_url, '_blank')
+        window.open(this.publicUrls.permanent_payment_url, "_blank")
       }
     },
     addFrontendPrefix(url_path) {
       if (!url_path) return url_path
-      const origin = window.location.origin;
+      const origin = window.location.origin
       return `${origin}/#${url_path}`
     },
   },

@@ -12,7 +12,7 @@ export class CredentialService {
       callbackUrl: "",
       merchantName: "",
       environment: "test",
-    };
+    }
   }
 
   fromJson(credentialData) {
@@ -24,24 +24,24 @@ export class CredentialService {
       callbackUrl: credentialData.callback_url,
       merchantName: credentialData.merchant_name,
       environment: credentialData.environment,
-    };
-    return this.credential;
+    }
+    return this.credential
   }
 
   async getCredential() {
     try {
-      const response = await Client.get(`${resource}`);
+      const response = await Client.get(`${resource}`)
       if (response.data && response.data.data) {
-        return this.fromJson(response.data.data);
+        return this.fromJson(response.data.data)
       }
     } catch (error) {
-      console.error("Error fetching credential:", error);
+      console.error("Error fetching credential:", error)
       if (error.response && error.response.status === 404) {
         // Initialize with default values, credential will be created on first save
-        return this.credential;
+        return this.credential
       }
-      
-      throw error;
+
+      throw error
     }
   }
 
@@ -54,48 +54,52 @@ export class CredentialService {
         callback_url: this.credential.callbackUrl,
         merchant_name: this.credential.merchantName,
         environment: this.credential.environment,
-      };
-      
-      const response = await Client.put(`${resource}`, credentialPayload);
-      if (response.data && response.data.data) {
-        return this.fromJson(response.data.data);
       }
-      return response;
+
+      const response = await Client.put(`${resource}`, credentialPayload)
+      if (response.data && response.data.data) {
+        return this.fromJson(response.data.data)
+      }
+      return response
     } catch (error) {
-      console.error("Error updating credential:", error);
-      
+      console.error("Error updating credential:", error)
+
       // Handle validation errors from Laravel (422 status)
       if (error.response && error.response.status === 422) {
-        const validationErrors = error.response.data.errors;
-        const errorMessages = [];
-        
+        const validationErrors = error.response.data.errors
+        const errorMessages = []
+
         // Convert validation errors to user-friendly messages
         for (const field in validationErrors) {
           if (validationErrors.hasOwnProperty(field)) {
-            errorMessages.push(...validationErrors[field]);
+            errorMessages.push(...validationErrors[field])
           }
         }
-        
-        const combinedMessage = errorMessages.join(', ');
-        throw new Error(combinedMessage);
+
+        const combinedMessage = errorMessages.join(", ")
+        throw new Error(combinedMessage)
       }
-      
+
       // Handle other types of errors
-      if (error.response && error.response.data && error.response.data.message) {
-        throw new Error(error.response.data.message);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        throw new Error(error.response.data.message)
       }
-      
-      throw error;
+
+      throw error
     }
   }
 
   async getPublicUrls() {
     try {
-      const response = await Client.get(`${resource}/public-urls`);
-      return response.data;
+      const response = await Client.get(`${resource}/public-urls`)
+      return response.data
     } catch (error) {
-      console.error("Error fetching public URLs:", error);
-      throw error;
+      console.error("Error fetching public URLs:", error)
+      throw error
     }
   }
 
@@ -104,11 +108,11 @@ export class CredentialService {
       const response = await Client.post(`${resource}/agent-payment-url`, {
         customer_id: customerId,
         agent_id: agentId,
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error("Error generating agent payment URL:", error);
-      throw error;
+      console.error("Error generating agent payment URL:", error)
+      throw error
     }
   }
 }

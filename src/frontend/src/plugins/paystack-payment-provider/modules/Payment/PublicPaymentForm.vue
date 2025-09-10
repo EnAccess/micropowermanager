@@ -4,16 +4,14 @@
       <div class="title">
         <span class="title highlight">MicroPowerManager</span>
       </div>
-      <div class="title-2">
-        Paystack online payments for {{ companyName }}
-      </div>
+      <div class="title-2">Paystack online payments for {{ companyName }}</div>
 
       <p class="cloud-description">
         On this page, you can make your online payment for energy tokens.
-        MicroPowerManager uses Paystack to process your payment securely.
-        Please enter your meter number and the amount you want to pay.
+        MicroPowerManager uses Paystack to process your payment securely. Please
+        enter your meter number and the amount you want to pay.
       </p>
-      
+
       <form
         @submit.prevent="submitPaymentRequestForm"
         data-vv-scope="Payment-Form"
@@ -37,19 +35,28 @@
               {{ errors.first("Payment-Form.meterSerial") }}
             </span>
             <div v-if="meterValidation.loading" class="validation-loading">
-              <md-progress-spinner md-diameter="20" md-stroke="2"></md-progress-spinner>
+              <md-progress-spinner
+                md-diameter="20"
+                md-stroke="2"
+              ></md-progress-spinner>
               <span>Validating meter...</span>
             </div>
-            <div v-if="meterValidation.valid === true" class="validation-success">
+            <div
+              v-if="meterValidation.valid === true"
+              class="validation-success"
+            >
               <md-icon>check_circle</md-icon>
               <span>Meter is valid</span>
             </div>
-            <div v-if="meterValidation.valid === false" class="validation-error">
+            <div
+              v-if="meterValidation.valid === false"
+              class="validation-error"
+            >
               <md-icon>error</md-icon>
               <span>Invalid meter serial number</span>
             </div>
           </md-field>
-          
+
           <md-field
             :class="{
               'md-invalid': errors.has('Payment-Form.amount'),
@@ -93,13 +100,13 @@
             :disabled="!isFormValid || loading"
             style="margin: inherit"
           >
-            <md-progress-spinner 
-              v-if="loading" 
-              md-diameter="20" 
+            <md-progress-spinner
+              v-if="loading"
+              md-diameter="20"
               md-stroke="2"
-              style="margin-right: 8px;"
+              style="margin-right: 8px"
             ></md-progress-spinner>
-            {{ loading ? 'Processing...' : 'Make Payment' }}
+            {{ loading ? "Processing..." : "Make Payment" }}
           </md-button>
         </div>
       </form>
@@ -119,8 +126,8 @@ export default {
     return {
       paymentService: new PublicPaymentService(),
       loading: false,
-      companyName: '',
-      supportedCurrencies: ['NGN', 'GHS', 'KES', 'ZAR'],
+      companyName: "",
+      supportedCurrencies: ["NGN", "GHS", "KES", "ZAR"],
       meterValidation: {
         loading: false,
         valid: null,
@@ -135,7 +142,7 @@ export default {
       return this.$route.params.companyId
     },
     selectedCurrency() {
-      return this.paymentService.paymentRequest.currency || 'NGN'
+      return this.paymentService.paymentRequest.currency || "NGN"
     },
     isFormValid() {
       return (
@@ -153,16 +160,22 @@ export default {
   methods: {
     async loadCompanyInfo() {
       try {
-        const response = await this.paymentService.getCompanyInfo(this.companyHash, this.companyId)
+        const response = await this.paymentService.getCompanyInfo(
+          this.companyHash,
+          this.companyId,
+        )
         this.companyName = response.company.name
         this.supportedCurrencies = response.supported_currencies
         this.paymentService.paymentRequest.currency = response.default_currency
       } catch (error) {
-        this.alertNotify('error', 'Failed to load company information')
+        this.alertNotify("error", "Failed to load company information")
       }
     },
     async validateMeter() {
-      if (!this.paymentService.paymentRequest.meterSerial || this.paymentService.paymentRequest.meterSerial.length < 3) {
+      if (
+        !this.paymentService.paymentRequest.meterSerial ||
+        this.paymentService.paymentRequest.meterSerial.length < 3
+      ) {
         this.meterValidation.valid = null
         return
       }
@@ -172,12 +185,12 @@ export default {
         const response = await this.paymentService.validateMeter(
           this.companyHash,
           this.companyId,
-          this.paymentService.paymentRequest.meterSerial
+          this.paymentService.paymentRequest.meterSerial,
         )
         this.meterValidation.valid = response.valid
       } catch (error) {
         this.meterValidation.valid = false
-        console.error('Meter validation error:', error)
+        console.error("Meter validation error:", error)
       } finally {
         this.meterValidation.loading = false
       }
@@ -202,9 +215,9 @@ export default {
         const data = await this.paymentService.initiatePayment(
           this.companyHash,
           this.companyId,
-          this.paymentService.paymentRequest
+          this.paymentService.paymentRequest,
         )
-        
+
         this.$swal({
           title: "Success!",
           text: "You will be redirected to the payment page",
