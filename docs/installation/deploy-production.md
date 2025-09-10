@@ -16,7 +16,7 @@ For running a self-hosted version of MicroPowerManager multiple options exists.
 We "officially" support two deployment options for MicroPowerManager
 
 1. Cloud-hosted [Kubernetes](https://kubernetes.io/) with dedicated databases.
-2. Monolithic [Docker Compose](https://docs.docker.com/compose/) on stand-alone server with Compose-managed databases.
+2. Monolithic deployment with [Docker Compose](https://docs.docker.com/compose/).
 
 which are further explained in the sections below.
 
@@ -198,7 +198,7 @@ Deploy a VPN IPSec Gateway
 2. Using `ssh` configure the IPSec Gateway to install `haproxy` and `strongswan`.
 3. Configure according to provider request.
 
-### Stand-alone server using Docker Compose
+## Deployment with Docker Compose
 
 > [!INFO]
 > If you choose to run MicroPowerManager on a stand-alone server, additional configuration steps are required.
@@ -206,18 +206,95 @@ Deploy a VPN IPSec Gateway
 >
 > There are plenty of great resources available online that cover these topics in detail.
 
-1. A working "all-in one" environment running with production containers fetched from DockerHub can be achieved by running:
+### Prerequisites
 
-   ```sh
-   docker compose -f docker-compose-dockerhub.yml up
+- **Docker**: Version 20.10 or higher
+- **Docker Compose**: Version 2.0 or higher
+- **System Resources**: Minimum 4GB RAM, 20GB free disk space, 2 CPU cores
+
+### Environment Configuration
+
+1. **Backend Configuration** - Update `dev/.env.micropowermanager-backend`:
+
+   ```env
+   APP_ENV=production
+   APP_KEY=<generate_secure_key_for_production>
+   APP_DEBUG=false
+   APP_URL=https://your-domain.com
+
+   DB_CONNECTION=mysql
+   DB_HOST=db
+   DB_PORT=3306
+   DB_DATABASE=micro_power_manager
+   DB_USERNAME=root
+   DB_PASSWORD=<secure_database_password>
+
+   CACHE_DRIVER=redis
+   REDIS_HOST=redis
+   REDIS_PORT=6379
+
+   MPM_LOAD_DEMO_DATA=false
+   MPM_ENV=production
    ```
 
-   This exposes
-   - Port `8443`, `8000`: The backend of MicroPowerManager
-   - Port `8001`: The frontend of MicroPowerManager
+2. **Frontend Configuration** - Update `dev/.env.micropowermanager-frontend`:
 
-2. Configure WebServer, networking, TLS, certificates and DNS.
-3. Proceed to the [Next Steps](#next-steps) section
+   ```env
+   MPM_ENV=production
+   MPM_BACKEND_URL=https://api.your-domain.com
+   ```
+
+3. **Database Configuration** - Update `dev/.env.mysql`:
+
+   ```env
+   MYSQL_ROOT_PASSWORD=<secure_database_password>
+   MYSQL_DATABASE=micro_power_manager
+   MYSQL_USER=mpm_user
+   MYSQL_PASSWORD=<secure_user_password>
+   ```
+
+### Deployment
+
+#### Option 1: DockerHub Images (Recommended)
+
+```sh
+# Start all services
+docker compose -f docker-compose-dockerhub.yml up -d
+```
+
+#### Option 2: Build Locally
+
+```sh
+# Start all services
+docker compose -f docker-compose-prod.yml up -d
+```
+
+### Service Ports
+
+- **Backend**: 8000 (HTTP), 8443 (HTTPS)
+- **Frontend**: 8001
+- **MySQL**: 3306
+- **Redis**: 6379
+
+### Health Check
+
+```sh
+# Check service status
+docker compose -f docker-compose-dockerhub.yml ps
+
+# Test backend health
+curl http://localhost:8000/up
+```
+
+### Configure WebServer, networking, TLS, certificates and DNS
+
+For production deployment, you'll need to configure:
+
+- **Web Server**: Install and configure Nginx or Apache as a reverse proxy
+- **TLS/SSL**: Set up SSL certificates (Let's Encrypt recommended)
+- **DNS**: Point your domain to the server's IP address
+- **Firewall**: Configure firewall rules to allow HTTP/HTTPS traffic
+- **Domain Configuration**: Update environment variables with your actual domain names
 
 ## Next Steps
 
