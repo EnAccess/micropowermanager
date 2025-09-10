@@ -94,6 +94,12 @@ class UserResourceTest extends TestCase {
     public function resetPasswordWithNonExistingEmail(): void {
         $request = $this->post('/api/users/password', ['email' => 'ako@inensus.com']);
 
-        $request->assertStatus(422);
+        $request->assertStatus(404);
+        $request->assertJson([
+            'data' => [
+                'message' => 'Email address not found in any company.',
+                'status_code' => 404,
+            ],
+        ]);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -52,8 +53,18 @@ class UserDefaultDatabaseConnectionMiddleware {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
         } elseif ($request->path() === 'api/users/password' && $request->isMethod('post')) {
-            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
-            $companyId = $databaseProxy->getCompanyId();
+            try {
+                $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
+                $companyId = $databaseProxy->getCompanyId();
+            } catch (ModelNotFoundException $e) {
+                // User with this email doesn't exist in any company
+                return response()->json([
+                    'data' => [
+                        'message' => 'Email address not found in any company.',
+                        'status_code' => 404,
+                    ],
+                ], 404);
+            }
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
