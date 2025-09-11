@@ -30,13 +30,24 @@ class MeterSeeder extends Seeder {
      */
     public function run() {
         // Manufacturer
-        // Here, we adding some fake Manufacturers for seeding.
-        // Additional (actual) manufacturers can be added by
-        // enabling to corresponding plugin in the demo environment.
-        $manufacturers = Manufacturer::factory()
-            ->count(3)
-            ->isMeterManufacturer()
-            ->create();
+        // Create dummy manufacturers for demo purposes
+        $calinSmartManufacturer = Manufacturer::create([
+            'name' => 'Dummy Calin Smart Meter',
+            'type' => 'meter',
+            'website' => 'https://example.com/calin-smart',
+            'contact_person' => 'Demo Person',
+            'api_name' => 'DummyCalinSmartMeterApi',
+        ]);
+
+        $kelinManufacturer = Manufacturer::create([
+            'name' => 'Dummy Kelin Meter',
+            'type' => 'meter',
+            'website' => 'https://example.com/kelin',
+            'contact_person' => 'Demo Person',
+            'api_name' => 'DummyKelinMeterApi',
+        ]);
+
+        $manufacturers = collect([$calinSmartManufacturer, $kelinManufacturer]);
 
         // Connection Group / Connection Type
         ConnectionType::create(['name' => 'House Hold']);
@@ -132,7 +143,7 @@ class MeterSeeder extends Seeder {
                 ->for(ConnectionType::all()->random())
                 ->for(ConnectionGroup::all()->random())
                 ->for(MeterType::all()->random())
-                ->for(Manufacturer::all()->random())
+                ->for($manufacturers->random())
                 ->for(MeterTariff::all()->random(), 'tariff')
                 ->createOne();
 

@@ -27,13 +27,16 @@ class SolarHomeSystemSeeder extends Seeder {
      */
     public function run() {
         // Manufacturer
-        // Here, we adding some fake Manufacturers for seeding.
-        // Additional (actual) manufacturers can be added by
-        // enabling to corresponding plugin in the demo environment.
-        $manufacturers = Manufacturer::factory()
-            ->count(2)
-            ->isShsManufacturer()
-            ->create();
+        // Create dummy SHS manufacturer for demo purposes
+        $sunKingManufacturer = Manufacturer::create([
+            'name' => 'Dummy SunKing SHS',
+            'type' => 'shs',
+            'website' => 'https://example.com/sunking',
+            'contact_person' => 'Demo Person',
+            'api_name' => 'DummySunKingSHSApi',
+        ]);
+
+        $manufacturers = collect([$sunKingManufacturer]);
 
         // Get the SHS asset type
         $assetType = AssetType::where('name', 'Solar Home System')->first();
@@ -73,7 +76,7 @@ class SolarHomeSystemSeeder extends Seeder {
             // Create a Solar Home System
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')
-                ->for(Manufacturer::where('type', 'shs')->get()->random())
+                ->for($sunKingManufacturer)
                 ->create();
 
             // Assign the SHS to the customer by creating a device
@@ -107,7 +110,7 @@ class SolarHomeSystemSeeder extends Seeder {
         for ($i = 1; $i <= 10; ++$i) {
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')
-                ->for(Manufacturer::where('type', 'shs')->get()->random())
+                ->for($sunKingManufacturer)
                 ->create();
 
             $device = Device::factory()
