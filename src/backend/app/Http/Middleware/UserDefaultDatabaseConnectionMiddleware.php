@@ -60,10 +60,10 @@ class UserDefaultDatabaseConnectionMiddleware {
                 // User with this email doesn't exist in any company
                 return response()->json([
                     'data' => [
-                        'message' => 'Email address not found in any company.',
-                        'status_code' => 404,
+                        'message' => 'Password reset email has been sent.',
+                        'status_code' => 200,
                     ],
-                ], 404);
+                ], 200);
             }
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
