@@ -122,6 +122,7 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->alias(AccessRatePayer::class, 'AccessRatePayer');
 
         // Register dummy manufacturer APIs for demo purposes
+        // Future plans with https://github.com/EnAccess/micropowermanager/issues/881
         $this->app->bind(DummySunKingSHSApi::class);
         $this->app->alias(DummySunKingSHSApi::class, 'DummySunKingSHSApi');
 
