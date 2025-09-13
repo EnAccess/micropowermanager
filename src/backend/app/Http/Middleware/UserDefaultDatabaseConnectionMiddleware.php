@@ -51,9 +51,6 @@ class UserDefaultDatabaseConnectionMiddleware {
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
-        } elseif ($request->path() === 'api/users/password' && $request->isMethod('post')) {
-            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
-            $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
@@ -118,7 +115,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         }
 
         if ($method === 'POST') {
-            return $path === 'api/companies';
+            return in_array($path, ['api/users/password', 'api/companies']);
         }
 
         return false;
