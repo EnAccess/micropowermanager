@@ -78,21 +78,22 @@ class ProspectExtract extends AbstractJob {
         foreach ($devices as $device) {
             $deviceData = $device->device;
 
-            if ($deviceData === null) {
+            if (!$device->device()->exists()) {
                 continue;
             }
 
             $deviceData->load('manufacturer');
 
-            $person = $device->person;
+            $person = $device->person()->first();
             $assetPerson = $device->assetPerson;
 
             // Create meaningful customer identifier
             $customerIdentifier = $person ? trim($person->name.' '.$person->surname) : 'Unknown Customer';
 
             $primaryAddress = null;
-            if ($person) {
-                $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?? $person->addresses->first();
+
+            if ($person && $person->addresses()->exists()) {
+                $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?: $person->addresses->first();
             }
 
             $latitude = null;
