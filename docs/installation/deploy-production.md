@@ -212,7 +212,157 @@ Deploy a VPN IPSec Gateway
 - **Docker Compose**: Version 2.0 or higher
 - **System Resources**: Minimum 4GB RAM, 20GB free disk space, 2 CPU cores
 
-### Environment Configuration
+### Recommended: Custom Docker Compose Setup
+
+For production deployments, we recommend creating your own `docker-compose.yml` file tailored to your specific needs. This approach provides:
+
+- **Flexibility**: Use external databases, custom networking, or specific configurations
+- **Security**: Embed environment variables directly in the compose file
+- **Maintainability**: Version control your specific deployment configuration
+- **Scalability**: Easy to modify for different environments (staging, production, etc.)
+
+#### Example Custom Compose File
+
+Create a `docker-compose.yml` file with your specific configuration:
+
+```yaml
+version: "3.8"
+
+
+x-common-env-variables: &common-env-variables
+  APP_ENV: production
+  APP_KEY: base64:your-generated-app-key
+  APP_DEBUG: false
+  APP_URL: https://your-domain.com
+  DB_CONNECTION: mysql
+  DB_HOST: mysql # Change to your external DB host if not using local MySQL
+  DB_PORT: 3306
+  DB_DATABASE: micro_power_manager
+  DB_USERNAME: root
+  DB_PASSWORD: your-secure-db-password
+  CACHE_DRIVER: redis
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  MPM_LOAD_DEMO_DATA: false
+  MPM_ENV: production
+
+services:
+  backend:
+    image: enaccess/micropowermanager-backend:latest
+    environment: *common-variables
+    ports:
+      - "8000:80"
+      - "8443:443"
+    depends_on:
+      - redis
+      - mysql # Remove if using external database
+    restart: unless-stopped
+    volumes:
+      - storage_data:/var/www/html/storage
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/up]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 100
+
+  frontend:
+    image: enaccess/micropowermanager-frontend:latest
+    environment:
+      MPM_ENV: production
+      MPM_BACKEND_URL: https://api.your-domain.com
+    ports:
+      - "8001:80"
+    restart: unless-stopped
+
+  scheduler:
+    image: enaccess/micropowermanager-scheduler:latest
+    environment: *common-env-variables
+    depends_on:
+      - redis
+      - mysql # Remove if using external database
+    restart: unless-stopped
+    volumes:
+      - storage_data:/var/www/html/storage
+
+  worker:
+    image: enaccess/micropowermanager-queue-worker:latest
+    environment: *common-env-variables
+    depends_on:
+      - redis
+      - mysql # Remove if using external database
+    restart: unless-stopped
+    volumes:
+      - storage_data:/var/www/html/storage
+
+  # Optional: Include MySQL if you don't have an external database
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: your-secure-db-password
+      MYSQL_DATABASE: micro_power_manager
+      MYSQL_USER: mpm_user
+      MYSQL_PASSWORD: your-secure-user-password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, localhost]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data: # Remove if using external database
+  redis_data:
+  storage_data:
+```
+
+#### Deployment Steps
+
+1. **Generate Application Key**:
+
+   ```sh
+   # Generate a secure application key
+   openssl rand -base64 32
+   ```
+
+2. **Update Configuration**: Modify the environment variables in your `docker-compose.yml` with your actual values
+
+3. **Deploy**:
+
+   ```sh
+   docker compose up -d
+   ```
+
+4. **Health Check**:
+
+   ```sh
+   # Check service status
+   docker compose ps
+
+   # Test backend health
+   curl http://localhost:8000/up
+   ```
+
+### Simple: Quick Start with Provided Compose Files
+
+> [!WARNING]
+> This approach is provided for quick testing and development. For production deployments, we recommend using the [Custom Docker Compose Setup](#recommended-custom-docker-compose-setup) above.
+
+If you want to get started quickly without customizing the configuration, you can use the provided compose files as a starting point.
+
+#### Environment Configuration
 
 1. **Backend Configuration** - Update `dev/.env.micropowermanager-backend`:
 
@@ -253,30 +403,30 @@ Deploy a VPN IPSec Gateway
    MYSQL_PASSWORD=<secure_user_password>
    ```
 
-### Deployment
+#### Deployment Options
 
-#### Option 1: DockerHub Images (Recommended)
+**Option 1: DockerHub Images**
 
 ```sh
 # Start all services
 docker compose -f docker-compose-dockerhub.yml up -d
 ```
 
-#### Option 2: Build Locally
+**Option 2: Build Locally**
 
 ```sh
 # Start all services
 docker compose -f docker-compose-prod.yml up -d
 ```
 
-### Service Ports
+#### Service Ports
 
 - **Backend**: 8000 (HTTP), 8443 (HTTPS)
 - **Frontend**: 8001
 - **MySQL**: 3306
 - **Redis**: 6379
 
-### Health Check
+#### Health Check
 
 ```sh
 # Check service status
