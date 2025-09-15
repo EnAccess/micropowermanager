@@ -67,6 +67,6 @@ class AssetPerson extends BaseModel {
      * @return BelongsTo<Device, $this>
      */
     public function device(): BelongsTo {
-        return $this->belongsTo(Device::class, 'device_serial');
+        return $this->belongsTo(Device::class, 'device_serial', 'device_serial');
     }
 }
