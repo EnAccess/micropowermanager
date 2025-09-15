@@ -59,9 +59,7 @@ class ClusterGeoListener {
      *
      * @param $data
      *
-     * @return array[]
-     *
-     * @psalm-return list<array{0: mixed, 1: mixed}>
+     * @return array<mixed>
      *
      * @throws GeoFormatException
      */
