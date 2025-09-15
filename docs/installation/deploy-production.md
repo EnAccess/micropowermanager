@@ -201,10 +201,15 @@ Deploy a VPN IPSec Gateway
 ## Deployment with Docker Compose
 
 > [!INFO]
-> If you choose to run MicroPowerManager on a stand-alone server, additional configuration steps are required.
-> These include installing a web server like [Nginx](https://nginx.org/), managing TLS certificates with [Let's Encrypt](https://letsencrypt.org/), and handling general Linux server maintenance such as system updates, [security patches](https://ubuntu.com/security/esm), and performance monitoring.
+> If you choose to run MicroPowerManager on a stand-alone server, additional
+configuration steps are required.
+> These include installing a web server like [Nginx](https://nginx.org/),
+managing TLS certificates with [Let's Encrypt](https://letsencrypt.org/), and
+handling general Linux server maintenance such as system updates,
+[security patches](https://ubuntu.com/security/esm), and performance monitoring.
 >
-> There are plenty of great resources available online that cover these topics in detail.
+> There are plenty of great resources available online that cover these topics
+ in detail.
 
 ### Prerequisites
 
@@ -214,12 +219,14 @@ Deploy a VPN IPSec Gateway
 
 ### Recommended: Custom Docker Compose Setup
 
-For production deployments, we recommend creating your own `docker-compose.yml` file tailored to your specific needs. This approach provides:
+For production deployments, we recommend creating your own `docker-compose.yml`
+file tailored to your specific needs. This approach provides:
 
 - **Flexibility**: Use external databases, custom networking, or specific configurations
 - **Security**: Embed environment variables directly in the compose file
 - **Maintainability**: Version control your specific deployment configuration
-- **Scalability**: Easy to modify for different environments (staging, production, etc.)
+- **Scalability**: Easy to modify for different environments (staging,
+production, etc.)
 
 #### Example Custom Compose File
 
@@ -337,7 +344,8 @@ volumes:
    openssl rand -base64 32
    ```
 
-2. **Update Configuration**: Modify the environment variables in your `docker-compose.yml` with your actual values
+2. **Update Configuration**: Modify the environment variables in
+your `docker-compose.yml` with your actual values
 
 3. **Deploy**:
 
@@ -358,9 +366,12 @@ volumes:
 ### Simple: Quick Start with Provided Compose Files
 
 > [!WARNING]
-> This approach is provided for quick testing and development. For production deployments, we recommend using the [Custom Docker Compose Setup](#recommended-custom-docker-compose-setup) above.
+> This approach is provided for quick testing and development. For production
+deployments, we recommend using the
+[Custom Docker Compose Setup](#recommended-custom-docker-compose-setup) above.
 
-If you want to get started quickly without customizing the configuration, you can use the provided compose files as a starting point.
+If you want to get started quickly without customizing the configuration,
+you can use the provided compose files as a starting point.
 
 #### Environment Configuration
 
@@ -405,14 +416,14 @@ If you want to get started quickly without customizing the configuration, you ca
 
 #### Deployment Options
 
-**Option 1: DockerHub Images**
+#### Option 1: DockerHub Images
 
 ```sh
 # Start all services
 docker compose -f docker-compose-dockerhub.yml up -d
 ```
 
-**Option 2: Build Locally**
+#### Option 2: Build Locally
 
 ```sh
 # Start all services
