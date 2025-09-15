@@ -43,11 +43,6 @@ class Company extends BaseModelCentral {
         return $this->name;
     }
 
-    /** @return HasMany<CompanyJob, $this> */
-    public function jobs(): HasMany {
-        return $this->hasMany(CompanyJob::class);
-    }
-
     /**
      * Get the protected page password with deprecation warning.
      *
