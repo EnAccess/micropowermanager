@@ -38,16 +38,14 @@
           <md-list-item>
             <div class="md-list-item-text">
               <span>{{ $tc("words.manufacturer") }}</span>
-              <span>
-                {{ soldAppliance.device.manufacturer?.name || "N/A" }}
-              </span>
+              <span>N/A</span>
             </div>
           </md-list-item>
           <md-divider></md-divider>
           <md-list-item>
             <div class="md-list-item-text">
               <span>{{ $tc("words.appliance") }}</span>
-              <span>{{ soldAppliance.device.appliance?.name || "N/A" }}</span>
+              <span>{{ soldAppliance.applianceType?.name || "N/A" }}</span>
             </div>
           </md-list-item>
         </md-list>
@@ -309,10 +307,6 @@
         </div>
       </widget>
     </div>
-    <!-- Debug: Show what's in soldAppliance -->
-    <widget title="Debug Info" color="red" style="margin-top: 1rem">
-      <pre>{{ JSON.stringify(soldAppliance, null, 2) }}</pre>
-    </widget>
   </div>
 </template>
 
@@ -349,6 +343,7 @@ export default {
           name: "",
         },
         logs: [],
+        device: null,
       },
       adminId:
         this.$store.getters["auth/authenticationService"].authenticateUser.id,
@@ -387,9 +382,7 @@ export default {
   },
   created() {
     this.selectedApplianceId = this.$route.params.id
-    this.getSoldApplianceDetail().then((personId) => {
-      this.getPersonSoldAppliances(personId)
-    })
+    this.getSoldApplianceDetail()
   },
   methods: {
     getApplianceRates() {
@@ -447,11 +440,9 @@ export default {
         this.personId = this.soldAppliance.personId
         this.updateDetail++
 
-        // Debug: Check what's in the response
-        console.log("Sold Appliance Data:", this.soldAppliance)
-        console.log("Device Data:", this.soldAppliance.device)
-
+        // Only call this once, not twice
         await this.getPersonSoldAppliances()
+
         EventBus.$emit(
           "widgetContentLoaded",
           this.subscriber,
