@@ -14,7 +14,7 @@ use Database\Factories\ManufacturerFactory;
 use Database\Factories\Meter\MeterFactory;
 use Database\Factories\Meter\MeterTariffFactory;
 use Database\Factories\Meter\MeterTypeFactory;
-use Database\Factories\MeterConsumptionFactory;
+use Database\Factories\Meter\MeterConsumptionFactory;
 use Database\Factories\MeterTokenFactory;
 use Database\Factories\PaymentHistoryFactory;
 use Database\Factories\Person\PersonFactory;

@@ -3,6 +3,7 @@
 namespace App\Models\Meter;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $reading_date
  */
 class MeterConsumption extends BaseModel {
+    /** @use HasFactory<\Database\Factories\Meter\MeterConsumptionFactory> */
+    use HasFactory;
     protected $table = 'meter_consumptions';
 
     /**
