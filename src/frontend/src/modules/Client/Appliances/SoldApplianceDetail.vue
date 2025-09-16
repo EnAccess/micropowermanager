@@ -12,6 +12,49 @@
         :key="updateList"
         v-if="personId"
       />
+
+      <!-- Device Information Section -->
+      <widget
+        :title="deviceInfoTitle"
+        color="green"
+        id="device-info"
+        style="margin-top: 2rem"
+      >
+        <md-list class="md-double-line" v-if="soldAppliance.device">
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("phrases.serialNumber") }}</span>
+              <span>{{ soldAppliance.device.device_serial || "N/A" }}</span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("words.deviceType") }}</span>
+              <span>{{ soldAppliance.device.device_type || "N/A" }}</span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("words.manufacturer") }}</span>
+              <span>
+                {{ soldAppliance.device.manufacturer?.name || "N/A" }}
+              </span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("words.appliance") }}</span>
+              <span>{{ soldAppliance.device.appliance?.name || "N/A" }}</span>
+            </div>
+          </md-list-item>
+        </md-list>
+        <div v-else style="padding: 2rem; text-align: center">
+          <p>Device information not available</p>
+        </div>
+      </widget>
     </div>
     <div class="md-layout-item md-size-60">
       <widget
@@ -266,6 +309,10 @@
         </div>
       </widget>
     </div>
+    <!-- Debug: Show what's in soldAppliance -->
+    <widget title="Debug Info" color="red" style="margin-top: 1rem">
+      <pre>{{ JSON.stringify(soldAppliance, null, 2) }}</pre>
+    </widget>
   </div>
 </template>
 
@@ -319,6 +366,18 @@ export default {
       subscriber: "sold-appliance-detail",
       currency: this.$store.getters["settings/getMainSettings"].currency,
     }
+  },
+  computed: {
+    deviceInfoTitle() {
+      if (this.soldAppliance.device?.device_type) {
+        const deviceType = this.soldAppliance.device.device_type
+        return (
+          deviceType.charAt(0).toUpperCase() +
+          deviceType.slice(1).replace(/_/g, " ")
+        )
+      }
+      return "Device Information"
+    },
   },
   watch: {
     $route() {
@@ -380,12 +439,18 @@ export default {
       }
     },
     async getSoldApplianceDetail() {
+      this.progress = true
       try {
         this.soldAppliance = await this.assetPersonService.show(
           this.selectedApplianceId,
         )
         this.personId = this.soldAppliance.personId
         this.updateDetail++
+
+        // Debug: Check what's in the response
+        console.log("Sold Appliance Data:", this.soldAppliance)
+        console.log("Device Data:", this.soldAppliance.device)
+
         await this.getPersonSoldAppliances()
         EventBus.$emit(
           "widgetContentLoaded",
@@ -395,6 +460,8 @@ export default {
         return this.personId
       } catch (e) {
         this.alertNotify("error", e.message)
+      } finally {
+        this.progress = false
       }
     },
     async getPersonSoldAppliances() {
