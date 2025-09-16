@@ -50,7 +50,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     public function getApplianceDetails(int $applianceId): AssetPerson {
-        $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner')
+        $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner', 'device')
             ->where('id', '=', $applianceId)
             ->first();
 

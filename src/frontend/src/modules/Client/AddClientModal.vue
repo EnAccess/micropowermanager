@@ -38,7 +38,6 @@
                     type="text"
                     name="title"
                     id="title"
-                    v-validate="'required'"
                     v-model="personService.person.title"
                   />
                   <span class="md-error">
@@ -99,7 +98,7 @@
                     name="birthDate"
                     md-immediately
                     v-model="personService.person.birthDate"
-                    v-validate="'required|date_format:YYYY-MM-DD'"
+                    v-validate="'date_format:YYYY-MM-DD'"
                     :data-vv-as="$tc('words.birthday')"
                     :md-close-on-blur="false"
                   >
@@ -122,7 +121,6 @@
                   <md-select
                     name="gender"
                     id="gender"
-                    v-validate="'required'"
                     v-model="personService.person.gender"
                   >
                     <md-option value="male">
@@ -162,7 +160,7 @@
                   <md-input
                     type="text"
                     name="email"
-                    v-validate="'required|email'"
+                    v-validate="'email'"
                     id="email"
                     v-model="personService.person.address.email"
                   />
@@ -247,7 +245,7 @@
                     id="street"
                     name="street"
                     v-model="personService.person.address.street"
-                    v-validate="'required|min:5'"
+                    v-validate="'min:5'"
                   />
                   <span class="md-error">
                     {{ errors.first("customer-add-form.street") }}
@@ -327,9 +325,11 @@ export default {
           country_code: this.phone.countryCode,
           title: this.personService.person.title,
           education: this.personService.person.education,
-          birthDate: moment(this.personService.person.birthDate).format(
-            "YYYY-MM-DD HH:mm:ss",
-          ),
+          birthDate: this.personService.person.birthDate
+            ? moment(this.personService.person.birthDate).format(
+                "YYYY-MM-DD HH:mm:ss",
+              )
+            : null,
           sex: this.personService.person.gender,
           isCustomer: true,
         }
