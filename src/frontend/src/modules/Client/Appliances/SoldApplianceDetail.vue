@@ -13,7 +13,6 @@
         v-if="personId"
       />
 
-      <!-- Device Information Section -->
       <widget
         :title="deviceInfoTitle"
         color="green"
@@ -38,14 +37,20 @@
           <md-list-item>
             <div class="md-list-item-text">
               <span>{{ $tc("words.manufacturer") }}</span>
-              <span>N/A</span>
+              <span>{{ detailedDeviceInfo?.manufacturer?.name || "N/A" }}</span>
             </div>
           </md-list-item>
           <md-divider></md-divider>
           <md-list-item>
             <div class="md-list-item-text">
               <span>{{ $tc("words.appliance") }}</span>
-              <span>{{ soldAppliance.applianceType?.name || "N/A" }}</span>
+              <span>
+                {{
+                  detailedDeviceInfo?.appliance?.name ||
+                  soldAppliance.applianceType?.name ||
+                  "N/A"
+                }}
+              </span>
             </div>
           </md-list-item>
         </md-list>
@@ -224,8 +229,6 @@
                 <md-table-cell>
                   {{ formatReadableDate(rate.due_date) }}
                 </md-table-cell>
-
-                <!--                                soldAppliance.applianceType.asset_type_id means the appliance type is not a SHS-->
                 <div
                   v-if="
                     rate.rate_cost === rate.remaining &&
@@ -289,7 +292,6 @@
                 <md-table-cell>#</md-table-cell>
                 <md-table-cell>Log</md-table-cell>
                 <md-table-cell>Date</md-table-cell>
-                <!--                                <md-table-cell>Initiator</md-table-cell>-->
               </md-table-row>
               <md-table-row
                 v-for="(log, index) in soldAppliance.logs"
@@ -300,7 +302,6 @@
                 <md-table-cell>
                   {{ formatReadableDate(log.created_at) }}
                 </md-table-cell>
-                <!--                                <md-table-cell>{{ log.owner.name }}</md-table-cell>-->
               </md-table-row>
             </md-table>
           </div>
@@ -360,6 +361,7 @@ export default {
       updateDetail: 0,
       subscriber: "sold-appliance-detail",
       currency: this.$store.getters["settings/getMainSettings"].currency,
+      detailedDeviceInfo: null,
     }
   },
   computed: {
@@ -440,7 +442,13 @@ export default {
         this.personId = this.soldAppliance.personId
         this.updateDetail++
 
-        // Only call this once, not twice
+        if (
+          this.soldAppliance.device?.device_type &&
+          this.soldAppliance.device?.device_serial
+        ) {
+          await this.fetchDetailedDeviceInfo()
+        }
+
         await this.getPersonSoldAppliances()
 
         EventBus.$emit(
@@ -453,6 +461,29 @@ export default {
         this.alertNotify("error", e.message)
       } finally {
         this.progress = false
+      }
+    },
+    async fetchDetailedDeviceInfo() {
+      try {
+        const { device_type, device_id, device_serial } =
+          this.soldAppliance.device
+
+        if (device_type === "solar_home_system") {
+          const solarHomeSystemService = new (
+            await import("@/services/SolarHomeSystemService")
+          ).SolarHomeSystemService()
+
+          this.detailedDeviceInfo =
+            await solarHomeSystemService.getSolarHomeSystem(device_id)
+        } else if (device_type === "meter") {
+          const meterService = new (
+            await import("@/services/MeterService")
+          ).MeterService()
+          this.detailedDeviceInfo =
+            await meterService.getMeterBySerialNumber(device_serial)
+        }
+      } catch (e) {
+        console.error("Error fetching detailed device info:", e)
       }
     },
     async getPersonSoldAppliances() {
