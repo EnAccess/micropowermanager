@@ -8,9 +8,9 @@
         <div
           class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
         >
-          <h5>{{ $tc("phrases.ticketsOverview", 2) }}</h5>
+          <h5 class="chart-title">{{ $tc("phrases.ticketsOverview", 2) }}</h5>
           <div v-if="!hasValidData" class="no-data-message">
-            <p>{{ $tc("phrases.noDataAvailable") }}</p>
+            <p>{{ $tc("phrases.noData") }}</p>
           </div>
           <GChart
             v-else
@@ -229,6 +229,14 @@ export default {
 .no-data-message small {
   color: #999;
   font-style: italic;
+}
+
+.chart-title {
+  text-align: center;
+  margin: 0.5rem 0 1rem 0;
+  padding: 0 1rem;
+  line-height: 2;
+  word-wrap: break-word;
 }
 
 .chart-note {
