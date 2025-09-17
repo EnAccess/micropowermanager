@@ -23,19 +23,6 @@
             </md-field>
           </div>
           <div
-            class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
-          >
-            <md-field>
-              <label for="serial_number">Serial Number</label>
-              <md-input
-                type="text"
-                name="serial_number"
-                v-model="filter.serial_number"
-                v-on:keyup.enter="submitFilter"
-              ></md-input>
-            </md-field>
-          </div>
-          <div
             v-if="selectedDevice === 'meter'"
             class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
           >
@@ -158,6 +145,9 @@ import moment from "moment-timezone"
 import store from "@/store/store"
 import { TransactionExportService } from "@/services/TransactionExportService"
 import { notify } from "@/mixins"
+import { MiniGridService } from "@/services/MiniGridService"
+import { CityService } from "@/services/CityService"
+import { CurrencyListService } from "@/services/CurrencyListService"
 
 export default {
   name: "FilterTransaction",
@@ -179,7 +169,6 @@ export default {
       filterTo: null,
       filter: {
         status: null,
-        serial_number: null,
         tariff: null,
         provider: null,
         from: null,
@@ -187,6 +176,17 @@ export default {
         deviceType: null,
       },
       transactionProviders: [],
+      miniGridService: new MiniGridService(),
+      cityService: new CityService(),
+      currencyListService: new CurrencyListService(),
+      exportFilters: {
+        format: "csv",
+        currency: null,
+        timeZone: "UTC",
+        deviceType: null,
+        provider: null,
+        status: null,
+      },
     }
   },
   created() {
@@ -199,6 +199,14 @@ export default {
     this.getSearch()
     this.getTransactionProviders()
     EventBus.$on("dataLoaded", this.dataLoaded)
+    EventBus.$on("pageLoaded", this.reloadList)
+    EventBus.$on("searching", this.searching)
+    EventBus.$on("end_searching", this.endSearching)
+    this.loadMiniGrids()
+    this.loadCities()
+    this.loadCurrencyList()
+    this.exportFilters.currency =
+      store.getters["settings/getMainSettings"].currency
   },
   methods: {
     async getTariffs() {
@@ -257,9 +265,23 @@ export default {
       this.adjustFilter()
       const data = {
         ...this.filter,
-        timeZone: moment.tz.guess(),
-        currency: store.getters["settings/getMainSettings"].currency,
+        format: this.exportFilters.format,
+        currency:
+          this.exportFilters.currency ||
+          store.getters["settings/getMainSettings"].currency,
+        timeZone: this.exportFilters.timeZone || moment.tz.guess(),
+        deviceType: this.exportFilters.deviceType,
+        provider: this.exportFilters.provider,
+        status: this.exportFilters.status,
       }
+
+      // Remove null/empty values
+      Object.keys(data).forEach((key) => {
+        if (data[key] === null || data[key] === "") {
+          delete data[key]
+        }
+      })
+
       try {
         const response =
           await this.transactionExportService.exportTransactions(data)
@@ -270,10 +292,12 @@ export default {
 
         const contentDisposition = response.headers["content-disposition"]
         const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+
+        // Fix Excel format - use correct format parameter
         const defaultFileName =
-          data.format === "csv"
-            ? "export_transactions.csv"
-            : "export_transactions.xlsx"
+          data.format === "excel"
+            ? "export_transactions.xlsx"
+            : "export_transactions.csv"
         a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
 
         document.body.appendChild(a)
@@ -281,16 +305,13 @@ export default {
         a.remove()
         window.URL.revokeObjectURL(downloadUrl)
       } catch (e) {
-        this.alertNotify("error", "Error occured while exporting transactions")
+        this.alertNotify("error", "Error occurred while exporting transactions")
       }
     },
     getSearch() {
       let search = this.$store.getters.search
 
       if (Object.keys(search).length) {
-        if ("serial_number" in search) {
-          this.filter["serial_number"] = search["serial_number"]
-        }
         if ("from" in search) {
           this.filter["from"] = search["from"]
         }
@@ -301,9 +322,6 @@ export default {
     },
     adjustFilter() {
       this.filter.provider = this.selectedProvider
-      if (this.filter.serial_number === "") {
-        this.filter.serial_number = null
-      }
       if (this.filter.provider === -1 || this.filter.provider === "-1") {
         this.filter.provider = null
       }
@@ -320,6 +338,71 @@ export default {
       if (this.filterTo !== null) {
         const toDate = new Date(this.filterTo)
         this.filter.to = toDate.toISOString().split("T")[0] + " 23:59:59"
+      }
+    },
+    async loadMiniGrids() {
+      try {
+        await this.miniGridService.getMiniGrids()
+      } catch (error) {
+        console.error("Failed to load mini grids:", error)
+      }
+    },
+
+    async loadCities() {
+      try {
+        await this.cityService.getCities()
+      } catch (error) {
+        console.error("Failed to load cities:", error)
+      }
+    },
+
+    async loadCurrencyList() {
+      try {
+        await this.currencyListService.getCurrencyList()
+      } catch (error) {
+        console.error("Failed to load currency list:", error)
+      }
+    },
+
+    async exportCustomers() {
+      try {
+        const data = {
+          format: this.exportFilters.format,
+        }
+
+        // Add optional filters if they are set
+        if (this.exportFilters.isActive !== null) {
+          data.isActive = this.exportFilters.isActive
+        }
+        if (this.exportFilters.miniGrid) {
+          data.miniGrid = this.exportFilters.miniGrid
+        }
+        if (this.exportFilters.village) {
+          data.village = this.exportFilters.village
+        }
+        if (this.exportFilters.deviceType) {
+          data.deviceType = this.exportFilters.deviceType
+        }
+        if (this.selectedAgentId) {
+          data.agent = this.selectedAgentId
+        }
+
+        const response = await this.customerExportService.exportCustomers(data)
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+        const contentDisposition = response.headers["content-disposition"]
+        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        a.download = fileNameMatch ? fileNameMatch[1] : "export_customers.csv"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+        this.alertNotify("success", "Customers exported successfully!")
+        this.showExportModal = false
+      } catch (e) {
+        this.alertNotify("error", "Error occurred while exporting customers")
       }
     },
   },

@@ -439,18 +439,6 @@
             </md-field>
           </div>
         </div>
-
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-100">
-            <md-field>
-              <label>{{ $tc("words.serialNumber") }}</label>
-              <md-input
-                v-model="exportFilters.serialNumber"
-                placeholder="Enter device serial number"
-              ></md-input>
-            </md-field>
-          </div>
-        </div>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -519,7 +507,6 @@ export default {
         deviceType: null,
         provider: null,
         status: null,
-        serialNumber: null,
       },
       airtelLogo: airtelLogo,
       vodacomLogo: vodacomLogo,
@@ -632,9 +619,6 @@ export default {
         if (this.exportFilters.status !== null) {
           data.status = this.exportFilters.status
         }
-        if (this.exportFilters.serialNumber) {
-          data.serial_number = this.exportFilters.serialNumber
-        }
 
         const response =
           await this.transactionExportService.exportTransactions(data)
@@ -644,9 +628,14 @@ export default {
         a.href = downloadUrl
         const contentDisposition = response.headers["content-disposition"]
         const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
-        a.download = fileNameMatch
-          ? fileNameMatch[1]
-          : "export_transactions.csv"
+
+        // Fix Excel format - use correct file extension
+        const defaultFileName =
+          this.exportFilters.format === "xlsx"
+            ? "export_transactions.xlsx"
+            : "export_transactions.csv"
+        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
+
         document.body.appendChild(a)
         a.click()
         a.remove()
