@@ -1,4 +1,7 @@
 <?php
+
+namespace Inensus\Prospect\Providers;
+
 use Illuminate\Support\ServiceProvider;
 use Inensus\Prospect\Providers\EventServiceProvider;
 use Inensus\Prospect\Providers\RouteServiceProvider;
