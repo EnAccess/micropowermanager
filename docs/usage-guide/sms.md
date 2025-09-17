@@ -54,7 +54,7 @@ notifications and communications.
 
 1. In your AfricasTalking dashboard, go to **SMS** → **Callback URLs**
 2. Set up the delivery callback URL to point to your MPM instance: Copy the url
-from the plugin overview page
+   from the plugin overview page
 
    ```bash
    https://your-mpm-domain.com/api/africas-talking/callback/1/delivery-reports
@@ -103,9 +103,9 @@ from the plugin overview page
 **Common Issues:**
 
 - **SMS not sending**: Verify API credentials and check if the plugin is
-properly enabled
+  properly enabled
 - **Delivery reports not updating**: Ensure callback URL is
-correctly configured and accessible
+  correctly configured and accessible
 - **Authentication errors**: Double-check API key and username in plugin settings
 
 **Verification Steps:**
