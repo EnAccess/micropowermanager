@@ -53,7 +53,6 @@ return [
 
     'url' => env('APP_URL', 'http://localhost:8000'),
 
-
     /*
     |--------------------------------------------------------------------------
     | Application Frontend URL
