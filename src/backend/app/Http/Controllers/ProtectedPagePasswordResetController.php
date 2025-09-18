@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProtectedPagePasswordConfirmRequest;
 use App\Http\Requests\ProtectedPagePasswordResetRequest;
-use App\Http\Resources\ApiResource;
 use App\Services\ProtectedPagePasswordResetService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 
 class ProtectedPagePasswordResetController extends Controller {
     public function __construct(

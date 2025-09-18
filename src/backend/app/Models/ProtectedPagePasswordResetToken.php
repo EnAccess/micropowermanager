@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 /**
