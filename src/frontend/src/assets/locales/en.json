@@ -187,6 +187,7 @@
     "flatLoadLimit": "Flat Load Limit",
     "flatPrice": "Flat Price",
     "forgotPassword": "Forgot Password | Please insert your email address that you use in system.",
+    "forgotProtectedPassword": "Forgot Protected Pages Password | Please insert your email address to receive a reset link for your Protected Pages Password.",
     "fromDate": "From Date",
     "getUpdatesFrom": "Get Update From {x}",
     "inReturn": "In Return",

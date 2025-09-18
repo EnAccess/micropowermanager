@@ -53,6 +53,18 @@ return [
 
     'url' => env('APP_URL', 'http://localhost:8000'),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used by the application to generate URLs for the frontend.
+    |
+    */
+
+    'frontend_url' => env('MPM_FRONTEND_URL', 'http://localhost:8001'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
