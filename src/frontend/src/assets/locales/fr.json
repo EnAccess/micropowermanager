@@ -187,6 +187,7 @@
     "flatLoadLimit": "Limite de charge forfaitaire",
     "flatPrice": "Prix forfaitaire",
     "forgotPassword": "Mot de passe oublié | Veuillez entrer l'adresse courriel que vous utilisez dans le système.",
+    "forgotProtectedPassword": "Mot de passe des pages protégées oublié | Veuillez entrer votre adresse courriel pour recevoir un lien de réinitialisation pour votre mot de passe des pages protégées.",
     "fromDate": "Date du début",
     "getUpdatesFrom": "Obtenir des mises à jour de {x}",
     "inReturn": "Pour",
