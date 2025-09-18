@@ -128,6 +128,10 @@ class UserService {
         return $this->user->newQuery()->find($id);
     }
 
+    public function getByEmail(string $email): ?User {
+        return $this->user->newQuery()->where('email', $email)->first();
+    }
+
     public function delete(User $model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }

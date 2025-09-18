@@ -39,6 +39,7 @@ use App\Http\Controllers\PersonExportController;
 use App\Http\Controllers\PersonMeterController;
 use App\Http\Controllers\PluginController;
 use App\Http\Controllers\ProtectedPageController;
+use App\Http\Controllers\ProtectedPagePasswordResetController;
 use App\Http\Controllers\RegistrationTailController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RevenueController;
@@ -102,6 +103,11 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
     });
 });
 Route::post('users/password', [UserPasswordController::class, 'forgotPassword']);
+
+// Protected Pages Password reset routes
+Route::post('protected-page-password/reset', [ProtectedPagePasswordResetController::class, 'sendResetEmail']);
+Route::get('protected-page-password/validate/{token}', [ProtectedPagePasswordResetController::class, 'validateToken']);
+Route::post('protected-page-password/confirm', [ProtectedPagePasswordResetController::class, 'resetPassword']);
 
 // Assets
 Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
