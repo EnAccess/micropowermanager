@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Exceptions\MailNotSentException;
-use App\Helpers\MailHelperInterface;
 use App\Helpers\PasswordGenerator;
+use App\Jobs\EmailJobPayload;
+use App\Jobs\SendEmail;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -13,7 +14,6 @@ use MPM\User\Events\UserCreatedEvent;
 class UserService {
     public function __construct(
         private User $user,
-        private MailHelperInterface $mailHelper,
     ) {}
 
     /**
@@ -66,11 +66,15 @@ class UserService {
         $user->update(['password' => $newPassword]);
 
         try {
-            $this->mailHelper->sendViaTemplate(
-                $user->getEmail(),
-                'Your new Password | Micro Power Manager',
-                'templates.mail.forgot_password',
-                ['userName' => $user->getName(), 'password' => $newPassword]
+            SendEmail::dispatch(
+                $user->getCompanyId(),
+                EmailJobPayload::fromArray(
+                    ['to' => $user->getEmail(),
+                        'subject' => 'Your new Password | Micro Power Manager',
+                        'templatePath' => 'templates.mail.forgot_password',
+                        'templateVariables' => ['userName' => $user->getName(), 'password' => $newPassword],
+                    ]
+                )
             );
         } catch (MailNotSentException $exception) {
             report($exception);
