@@ -74,7 +74,6 @@
               </md-select>
             </md-field>
 
-            <!-- Debug info -->
             <div
               v-if="agentService.list.length === 0"
               style="color: red; font-size: 12px"
@@ -204,7 +203,7 @@
             <md-field>
               <label>{{ $tc("words.miniGrid") }}</label>
               <md-select v-model="exportFilters.miniGrid">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option
                   v-for="miniGrid in miniGridService.list"
                   :key="miniGrid.id"
@@ -219,7 +218,7 @@
             <md-field>
               <label>{{ $tc("words.village") }}</label>
               <md-select v-model="exportFilters.village">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option
                   v-for="city in cityService.list"
                   :key="city.id"
@@ -238,7 +237,7 @@
             <md-field>
               <label>{{ $tc("words.status") }}</label>
               <md-select v-model="exportFilters.isActive">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option :value="true">{{ $tc("words.active") }}</md-option>
                 <md-option :value="false">
                   {{ $tc("words.inactive") }}
@@ -250,7 +249,7 @@
             <md-field>
               <label>{{ $tc("words.deviceType") }}</label>
               <md-select v-model="exportFilters.deviceType">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option value="meter">{{ $tc("words.meter") }}</md-option>
                 <md-option value="appliance">
                   {{ $tc("words.appliance") }}
@@ -330,10 +329,10 @@ export default {
       showFilter: false,
       exportFilters: {
         format: "csv",
-        isActive: null,
-        miniGrid: null,
-        village: null,
-        deviceType: null,
+        isActive: "",
+        miniGrid: "",
+        village: "",
+        deviceType: "",
       },
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
@@ -504,20 +503,16 @@ export default {
     },
     async loadMiniGrids() {
       try {
-        const response = await this.miniGridService.repository.list()
-        const miniGrids = response.data.data || response.data
-        this.miniGridService.updateList(miniGrids)
-      } catch (e) {
-        console.error("Failed to load mini grids:", e)
+        await this.miniGridService.getMiniGrids()
+      } catch (error) {
+        console.error("Failed to load mini grids:", error)
       }
     },
     async loadCities() {
       try {
-        const response = await this.cityService.repository.list()
-        const cities = response.data.data || response.data
-        this.cityService.updateList(cities)
-      } catch (e) {
-        console.error("Failed to load cities:", e)
+        await this.cityService.getCities()
+      } catch (error) {
+        console.error("Failed to load cities:", error)
       }
     },
     async exportCustomers() {
@@ -526,17 +521,17 @@ export default {
           format: this.exportFilters.format,
         }
 
-        // Add optional filters if they are set
-        if (this.exportFilters.isActive !== null) {
+        // Add optional filters if they are set (check for empty strings)
+        if (this.exportFilters.isActive !== "") {
           data.isActive = this.exportFilters.isActive
         }
-        if (this.exportFilters.miniGrid) {
+        if (this.exportFilters.miniGrid !== "") {
           data.miniGrid = this.exportFilters.miniGrid
         }
-        if (this.exportFilters.village) {
+        if (this.exportFilters.village !== "") {
           data.village = this.exportFilters.village
         }
-        if (this.exportFilters.deviceType) {
+        if (this.exportFilters.deviceType !== "") {
           data.deviceType = this.exportFilters.deviceType
         }
         if (this.selectedAgentId) {
@@ -551,7 +546,6 @@ export default {
         const contentDisposition = response.headers["content-disposition"]
         const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
 
-        // Fix Excel format - use correct file extension
         const defaultFileName =
           this.exportFilters.format === "excel"
             ? "export_customers.xlsx"

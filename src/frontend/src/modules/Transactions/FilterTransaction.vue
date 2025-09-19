@@ -363,48 +363,6 @@ export default {
         console.error("Failed to load currency list:", error)
       }
     },
-
-    async exportCustomers() {
-      try {
-        const data = {
-          format: this.exportFilters.format,
-        }
-
-        // Add optional filters if they are set
-        if (this.exportFilters.isActive !== null) {
-          data.isActive = this.exportFilters.isActive
-        }
-        if (this.exportFilters.miniGrid) {
-          data.miniGrid = this.exportFilters.miniGrid
-        }
-        if (this.exportFilters.village) {
-          data.village = this.exportFilters.village
-        }
-        if (this.exportFilters.deviceType) {
-          data.deviceType = this.exportFilters.deviceType
-        }
-        if (this.selectedAgentId) {
-          data.agent = this.selectedAgentId
-        }
-
-        const response = await this.customerExportService.exportCustomers(data)
-        const blob = new Blob([response.data])
-        const downloadUrl = window.URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = downloadUrl
-        const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
-        a.download = fileNameMatch ? fileNameMatch[1] : "export_customers.csv"
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        window.URL.revokeObjectURL(downloadUrl)
-        this.alertNotify("success", "Customers exported successfully!")
-        this.showExportModal = false
-      } catch (e) {
-        this.alertNotify("error", "Error occurred while exporting customers")
-      }
-    },
   },
   computed: {
     ...mapGetters({
