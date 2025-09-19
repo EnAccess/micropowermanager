@@ -293,7 +293,6 @@ export default {
         const contentDisposition = response.headers["content-disposition"]
         const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
 
-        // Fix Excel format - use correct format parameter
         const defaultFileName =
           data.format === "excel"
             ? "export_transactions.xlsx"
