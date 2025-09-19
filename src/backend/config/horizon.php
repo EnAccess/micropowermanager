@@ -7,6 +7,7 @@ $queues = [
     'token',
     'transaction_appliance',
     'transaction_energy',
+    'email',
 ];
 
 return [

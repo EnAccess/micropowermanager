@@ -2,7 +2,6 @@
 
 namespace MPM\OutstandingDebts;
 
-use App\Helpers\MailHelper;
 use App\Jobs\EmailJobPayload;
 use App\Jobs\SendEmail;
 use App\Models\AssetRate;
@@ -18,7 +17,6 @@ class OutstandingDebtsExportService extends AbstractExportService {
         private readonly UserService $userService,
         private ApplianceRateService $applianceService,
         private ApplianceRateService $applianceRateService,
-        private MailHelper $mailHelper,
     ) {}
 
     /**
@@ -86,7 +84,6 @@ class OutstandingDebtsExportService extends AbstractExportService {
             ->each(function (User $user) use ($path, $reportDate) {
                 SendEmail::dispatch(
                     $user->getCompanyId(),
-                    $this->mailHelper,
                     EmailJobPayload::fromArray(
                         [
                             'to' => $user->email,

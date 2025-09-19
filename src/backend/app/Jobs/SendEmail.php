@@ -54,14 +54,12 @@ class SendEmail extends AbstractJob {
      * Create a new job instance.
      *
      * @param int             $companyId
-     * @param MailHelper      $mailHelper
      * @param EmailJobPayload $payload
      *
      * @return void
      */
     public function __construct(
         int $companyId,
-        private MailHelper $mailHelper,
         private EmailJobPayload $payload,
     ) {
         $this->onConnection('redis');
@@ -75,8 +73,11 @@ class SendEmail extends AbstractJob {
      */
     public function executeJob(): void {
         try {
+            // Resolve MailHelper at runtime to avoid serialization issues
+            $mailHelper = resolve(MailHelper::class);
+
             if ($this->payload->templatePath) {
-                $this->mailHelper->sendViaTemplate(
+                $mailHelper->sendViaTemplate(
                     $this->payload->to,
                     $this->payload->subject,
                     $this->payload->templatePath,
@@ -84,7 +85,7 @@ class SendEmail extends AbstractJob {
                     $this->payload->attachmentPath
                 );
             } else {
-                $this->mailHelper->sendPlain(
+                $mailHelper->sendPlain(
                     $this->payload->to,
                     $this->payload->subject,
                     $this->payload->body,

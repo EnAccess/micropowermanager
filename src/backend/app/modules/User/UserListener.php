@@ -19,7 +19,6 @@ class UserListener {
         private CompanyDatabaseService $companyDatabaseService,
         private TicketUserService $ticketUserService,
         private CompanyService $companyService,
-        private MailHelper $mailHelper,
     ) {}
 
     public function handle(UserCreatedEvent $event): void {
@@ -44,7 +43,6 @@ class UserListener {
 
         SendEmail::dispatch(
             $event->user->getCompanyId(),
-            $this->mailHelper,
             EmailJobPayload::fromArray(
                 [
                     'to' => $event->user->getEmail(),
