@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace MPM\User;
 
-use App\Helpers\MailHelperInterface;
+use App\Helpers\MailHelper;
+use App\Jobs\EmailJobPayload;
+use App\Jobs\SendEmail;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
@@ -17,7 +19,7 @@ class UserListener {
         private CompanyDatabaseService $companyDatabaseService,
         private TicketUserService $ticketUserService,
         private CompanyService $companyService,
-        private MailHelperInterface $mailHelper,
+        private MailHelper $mailHelper,
     ) {}
 
     public function handle(UserCreatedEvent $event): void {
@@ -40,11 +42,20 @@ class UserListener {
         $company = $this->companyService->getById($event->user->getCompanyId());
         $this->ticketUserService->findOrCreateByUser($event->user);
 
-        $this->mailHelper->sendViaTemplate(
-            $event->user->getEmail(),
-            'Welcome to MicroPowerManager',
-            'templates.mail.register_welcome',
-            ['userName' => $event->user->getName(), 'companyName' => $company->getName()]
+        SendEmail::dispatch(
+            $event->user->getCompanyId(),
+            $this->mailHelper,
+            EmailJobPayload::fromArray(
+                [
+                    'to' => $event->user->getEmail(),
+                    'subject' => 'Welcome to MicroPowerManager',
+                    'templatePath' => 'templates.mail.register_welcome',
+                    'templateVariables' => [
+                        'userName' => $event->user->getName(),
+                        'companyName' => $company->getName(),
+                    ],
+                ]
+            )
         );
     }
 }

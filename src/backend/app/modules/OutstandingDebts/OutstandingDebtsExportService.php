@@ -3,6 +3,8 @@
 namespace MPM\OutstandingDebts;
 
 use App\Helpers\MailHelper;
+use App\Jobs\EmailJobPayload;
+use App\Jobs\SendEmail;
 use App\Models\AssetRate;
 use App\Models\User;
 use App\Services\AbstractExportService;
@@ -82,11 +84,17 @@ class OutstandingDebtsExportService extends AbstractExportService {
 
         $this->userService->getUsers()
             ->each(function (User $user) use ($path, $reportDate) {
-                $this->mailHelper->sendPlain(
-                    $user->email,
-                    'Outstanding debts report - '.$reportDate->format('d-m-Y'),
-                    'Please find attached the outstanding debts report. This report is generated on '.CarbonImmutable::now()->format('d-m-Y').'.',
-                    $path
+                SendEmail::dispatch(
+                    $user->getCompanyId(),
+                    $this->mailHelper,
+                    EmailJobPayload::fromArray(
+                        [
+                            'to' => $user->email,
+                            'subject' => 'Outstanding debts report - '.$reportDate->format('d-m-Y'),
+                            'body' => 'Please find attached the outstanding debts report. This report is generated on '.CarbonImmutable::now()->format('d-m-Y').'.',
+                            'attachmentPath' => $path,
+                        ]
+                    )
                 );
             });
     }
