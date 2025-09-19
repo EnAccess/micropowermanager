@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MPM\User;
 
-use App\Helpers\MailHelper;
 use App\Jobs\EmailJobPayload;
 use App\Jobs\SendEmail;
 use App\Services\CompanyDatabaseService;
