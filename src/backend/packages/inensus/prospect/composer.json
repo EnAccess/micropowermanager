@@ -1,14 +1,14 @@
 {
   "name": "inensus/prospect",
-  "description": "Package description",
+  "description": "Prospect integration for MicroPowerManager",
   "type": "package",
   "require": {},
   "license": "MIT",
   "authors": [
     {
-      "name": "author",
-      "email": "email",
-      "role": "role"
+      "name": "Alain Honore Kubwayo",
+      "email": "alaincodes24@gmail.com",
+      "role": "Developer"
     }
   ],
   "minimum-stability": "dev",
@@ -20,7 +20,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Inensus\\Prospect\\Providers\\ServiceProvider"
+        "Inensus\\Prospect\\Providers\\ProspectServiceProvider"
       ]
     }
   }
