@@ -3,7 +3,7 @@
 namespace Inensus\SwiftaPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Transaction\ManufacturerTransactionInterface;
+use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property string                                 $transaction_reference
- * @property Model&ManufacturerTransactionInterface $manufacturerTransaction
+ * @property Model&BaseManufacturerTransaction $manufacturerTransaction
  * @property int                                    $status
  * @property float                                  $amount
  * @property string                                 $cipher
