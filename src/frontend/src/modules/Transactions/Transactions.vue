@@ -397,7 +397,7 @@
             <md-field>
               <label>{{ $tc("words.deviceType") }}</label>
               <md-select v-model="exportFilters.deviceType">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option value="meter">{{ $tc("words.meter") }}</md-option>
                 <md-option value="appliance">
                   {{ $tc("words.appliance") }}
@@ -409,7 +409,7 @@
             <md-field>
               <label>{{ $tc("words.provider") }}</label>
               <md-select v-model="exportFilters.provider">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option value="vodacom_transaction">Vodacom</md-option>
                 <md-option value="airtel_transaction">Airtel</md-option>
                 <md-option value="wave_money_transaction">Wave Money</md-option>
@@ -422,7 +422,7 @@
             <md-field>
               <label>{{ $tc("words.status") }}</label>
               <md-select v-model="exportFilters.status">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option :value="1">{{ $tc("words.confirm", 2) }}</md-option>
                 <md-option :value="0">{{ $tc("words.process", 3) }}</md-option>
                 <md-option :value="-1">{{ $tc("words.reject", 2) }}</md-option>
@@ -504,9 +504,9 @@ export default {
         format: "csv",
         currency: "TSZ",
         timeZone: "UTC",
-        deviceType: null,
-        provider: null,
-        status: null,
+        deviceType: "",
+        provider: "",
+        status: "",
       },
       airtelLogo: airtelLogo,
       vodacomLogo: vodacomLogo,
@@ -608,15 +608,13 @@ export default {
           currency: this.exportFilters.currency,
           timeZone: this.exportFilters.timeZone,
         }
-
-        // Add optional filters if they are set
-        if (this.exportFilters.deviceType) {
+        if (this.exportFilters.deviceType !== "") {
           data.deviceType = this.exportFilters.deviceType
         }
-        if (this.exportFilters.provider) {
+        if (this.exportFilters.provider !== "") {
           data.provider = this.exportFilters.provider
         }
-        if (this.exportFilters.status !== null) {
+        if (this.exportFilters.status !== "") {
           data.status = this.exportFilters.status
         }
 
@@ -629,7 +627,6 @@ export default {
         const contentDisposition = response.headers["content-disposition"]
         const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
 
-        // Fix Excel format - use correct file extension
         const defaultFileName =
           this.exportFilters.format === "xlsx"
             ? "export_transactions.xlsx"
@@ -697,12 +694,6 @@ span {
   margin-left: auto;
   margin-right: auto;
 }
-
-/* .box {
-  border-right: 2px solid #6d7f94;
-  padding-left: 45px;
-  color: #6d7f94;
-} */
 
 .information {
   font-size: 2.5rem;
