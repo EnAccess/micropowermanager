@@ -28,6 +28,7 @@ export class AssetPersonService {
       totalPayments: data.totalPayments,
       rates: data.rates,
       logs: data.logs,
+      device: data.device,
     }
   }
   async getPersonAssets(id) {

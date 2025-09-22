@@ -69,7 +69,12 @@ class Ticket extends BaseModel {
         return $this->morphTo('creator');
     }
 
-    public function ticketsOpenedWithCategories($miniGridId): bool|array {
+    public function ticketsOpenedWithCategories($miniGridId, $startDate = null, $endDate = null): bool|array {
+        $dateFilter = '';
+        if ($startDate && $endDate) {
+            $dateFilter = " AND tickets.created_at BETWEEN '{$startDate}' AND '{$endDate}'";
+        }
+
         $sql = <<<SQL
             SELECT
                 ticket_categories.label_name,
@@ -84,12 +89,11 @@ class Ticket extends BaseModel {
                     SELECT id
                     FROM cities
                     WHERE mini_grid_id = {$miniGridId}
-                )
+                ){$dateFilter}
             GROUP BY
                 ticket_categories.label_name,
                 tickets.category_id,
-                YEARWEEK(tickets.updated_at, 3),
-                tickets.created_at;
+                YEARWEEK(tickets.created_at, 3);
             SQL;
 
         $sth = DB::connection('tenant')->getPdo()->prepare($sql);
@@ -99,7 +103,12 @@ class Ticket extends BaseModel {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function ticketsClosedWithCategories($miniGridId): bool|array {
+    public function ticketsClosedWithCategories($miniGridId, $startDate = null, $endDate = null): bool|array {
+        $dateFilter = '';
+        if ($startDate && $endDate) {
+            $dateFilter = " AND tickets.updated_at BETWEEN '{$startDate}' AND '{$endDate}'";
+        }
+
         $sql = <<<SQL
             SELECT
                 ticket_categories.label_name,
@@ -113,9 +122,9 @@ class Ticket extends BaseModel {
                 AND addresses.city_id IN (
                     SELECT id
                     FROM cities
-                    WHERE id = {$miniGridId}
+                    WHERE mini_grid_id = {$miniGridId}
                 )
-                AND tickets.status = 1
+                AND tickets.status = 1{$dateFilter}
             GROUP BY
                 ticket_categories.label_name,
                 tickets.category_id,

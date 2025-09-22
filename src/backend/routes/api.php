@@ -297,7 +297,6 @@ Route::group(['prefix' => 'sms-android-callback'], static function () {
 Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/{connectionTypeId?}', [SubConnectionTypeController::class, 'index']);
     Route::post('/', [SubConnectionTypeController::class, 'store']);
-    Route::get('/{id}', [SubConnectionTypeController::class, 'show']);
     Route::put('/{subConnectionTypeId}', [SubConnectionTypeController::class, 'update']);
 });
 // Targets
