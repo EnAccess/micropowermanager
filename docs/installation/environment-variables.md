@@ -124,15 +124,14 @@ Slack
 Configure the following environment variable to enable MicroPowerManager to send email via SMTP.
 These configure instance level email sent to tenants, for example signup confirmation, password reset, etc...
 
-| Environment Variable   | Default                                      | Description                                                   |
-| ---------------------- | -------------------------------------------- | ------------------------------------------------------------- |
-| `MAIL_SMTP_HOST`       | `smtp.mailgun.org`                           | Mail server hostname. For example `smtp.mailserver.com`.      |
-| `MAIL_SMTP_PORT`       | `587`                                        | Mail server port.                                             |
-| `MAIL_SMTP_ENCRYPTION` | `tls`                                        | Mail encryption.                                              |
-| `MAIL_SMTP_USERNAME`   | **Required** (when authentication is needed) | The username used in SMTP authentication.                     |
-| `MAIL_SMTP_PASSWORD`   | **Required** (when authentication is needed) | The password used in SMTP authentication.                     |
-| `MAIL_FROM_ADDRESS`    | `hello@example.com`                          | Global "from" address for all emails sent by the application. |
-| `MAIL_FROM_NAME`       | `Example`                                    | Global "from" name for all emails sent by the application.    |
+| Environment Variable | Default             | Description                                                   |
+| -------------------- | ------------------- | ------------------------------------------------------------- |
+| `MAIL_FROM_ADDRESS`  | `hello@example.com` | Global "from" address for all emails sent by the application. |
+| `MAIL_FROM_NAME`     | `Example`           | Global "from" name for all emails sent by the application.    |
+
+Using SMTP Email Service
+
+To Configure email with SMTP follow the official [guidge](https://laravel.com/docs/12.x/mail#driver-prerequisites).
 
 #### Laravel Horizon and Horizon Dashboard
 
