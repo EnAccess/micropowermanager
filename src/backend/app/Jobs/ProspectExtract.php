@@ -207,7 +207,7 @@ class ProspectExtract extends AbstractJob {
         $csvContent = $this->arrayToCsv($data, $headers);
 
         // Get company database from the current context
-        $companyDatabase = app(\App\Models\CompanyDatabase::class)->newQuery()->first();
+        $companyDatabase = app(\App\Services\CompanyDatabaseService::class)->findByCompanyId($this->companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
