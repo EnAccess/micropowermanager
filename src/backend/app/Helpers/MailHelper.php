@@ -3,6 +3,8 @@
 namespace App\Helpers;
 
 use App\Exceptions\MailNotSentException;
+use App\Mail\HtmlEmail;
+use App\Mail\PlainEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
@@ -19,13 +21,8 @@ class MailHelper {
      */
     public function sendPlain(string $to, string $title, string $body, ?string $attachment = null): void {
         try {
-            Mail::raw($body, function ($message) use ($to, $title, $attachment) {
-                $message->to($to)->subject($title);
-
-                if ($attachment) {
-                    $message->attach($attachment);
-                }
-            });
+            $mailable = new PlainEmail($title, $body, $attachment);
+            Mail::to($to)->queue($mailable);
 
             Log::info("Email sent successfully to: {$to} with subject: {$title}");
         } catch (TransportExceptionInterface $e) {
@@ -47,14 +44,8 @@ class MailHelper {
         try {
             $html = View::make($templatePath, array_merge($variables ?? [], ['title' => $title]))->render();
 
-            Mail::html($html, function ($message) use ($to, $title, $attachmentPath) {
-                $message->to($to)->subject($title);
-
-                if ($attachmentPath) {
-                    $message->attach($attachmentPath);
-                }
-            });
-
+            $mailable = new HtmlEmail($title, $html, $attachmentPath);
+            Mail::to($to)->queue($mailable);
             Log::info("Template email sent successfully to: {$to} with subject: {$title}");
         } catch (TransportExceptionInterface $e) {
             Log::error("Failed to send template email to {$to}: ".$e->getMessage());
