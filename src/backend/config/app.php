@@ -62,7 +62,7 @@ return [
     |
     */
 
-    'frontend_url' => env('MPM_FRONTEND_URL', 'http://localhost:8001'),
+    'frontend_url' => env('MPM_FRONTEND_URL'),
 
     /*
     |--------------------------------------------------------------------------

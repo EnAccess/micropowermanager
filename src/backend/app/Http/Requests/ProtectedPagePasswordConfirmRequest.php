@@ -20,7 +20,7 @@ class ProtectedPagePasswordConfirmRequest extends FormRequest {
     public function rules(): array {
         return [
             'token' => 'required|string',
-            'password' => 'required|string|min:5',
+            'password' => 'required|string|min:6',
             'password_confirmation' => 'required|string|same:password',
         ];
     }
@@ -34,7 +34,7 @@ class ProtectedPagePasswordConfirmRequest extends FormRequest {
         return [
             'token.required' => 'Reset token is required.',
             'password.required' => 'New password is required.',
-            'password.min' => 'Password must be at least 5 characters long.',
+            'password.min' => 'Password must be at least 6 characters long.',
             'password_confirmation.required' => 'Password confirmation is required.',
             'password_confirmation.same' => 'Password confirmation does not match.',
         ];
