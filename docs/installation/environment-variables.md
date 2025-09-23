@@ -34,15 +34,15 @@ For more details see the corresponding plugin's documentation.
 | `APP_DEBUG`          | `True`                  | Whether or not to run MicroPowerManager in debug mode. Recommended to set to `false` in production environments.                                                                                     |
 | `APP_KEY`            | **Required**            | Used by the Illuminate encrypter service to encrypt database entries. In production environments make sure this is a random, 32 character string, otherwise these encrypted strings will not be safe |
 | `APP_URL`            | `http://localhost:8000` | Set this to root of MicroPowerManager in deployed environments (`production` or `demo`).                                                                                                             |
-| `MPM_FRONTEND_URL`   | **Required**            | The URL where MicroPowerManager frontend is located, this is **required** for email password reset and other related functionality that requires Knowledge of the frontend.                          |
 
 ### MicroPowerManager
 
 These environment variables control how the MicroPowerManager behaves as an application.
 
-| Environment Variable | Default | Description                                                                                                                                                                                        |
-| -------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MPM_LOAD_DEMO_DATA` | `false` | Whether or not the demo data should be loaded when the MicroPowerManager starts for the first time. Recommended for local development and demo environments. Optional for production environments. |
+| Environment Variable | Default      | Description                                                                                                                                                                                        |
+| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MPM_FRONTEND_URL`   | **Required** | The URL where MicroPowerManager frontend is located, this is **required** for email password reset and other related functionality that requires Knowledge of the frontend.                        |
+| `MPM_LOAD_DEMO_DATA` | `false`      | Whether or not the demo data should be loaded when the MicroPowerManager starts for the first time. Recommended for local development and demo environments. Optional for production environments. |
 
 ### JSON Web Token Authentication (jwt-auth)
 
