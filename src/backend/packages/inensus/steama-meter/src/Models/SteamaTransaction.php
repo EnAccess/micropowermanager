@@ -2,8 +2,8 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;

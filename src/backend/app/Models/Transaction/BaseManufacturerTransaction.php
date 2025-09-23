@@ -3,8 +3,6 @@
 namespace App\Models\Transaction;
 
 use App\Models\Base\BaseModel;
-use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\ThirdPartyTransaction;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -16,8 +14,6 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * This abstract class provides common relationship methods that are shared
  * across all manufacturer transaction implementations, eliminating code duplication
  * that was previously handled through interfaces.
- *
- * All manufacturer transaction models should extend this class.
  */
 abstract class BaseManufacturerTransaction extends BaseModel {
     /**

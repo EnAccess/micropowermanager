@@ -13,11 +13,11 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property string                                 $transaction_reference
+ * @property string                            $transaction_reference
  * @property Model&BaseManufacturerTransaction $manufacturerTransaction
- * @property int                                    $status
- * @property float                                  $amount
- * @property string                                 $cipher
+ * @property int                               $status
+ * @property float                             $amount
+ * @property string                            $cipher
  */
 class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'swifta_transaction';

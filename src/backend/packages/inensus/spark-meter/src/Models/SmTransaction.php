@@ -2,8 +2,8 @@
 
 namespace Inensus\SparkMeter\Models;
 
-use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
