@@ -23,7 +23,7 @@ class HtmlEmail extends Mailable {
         $this->attachmentPath = $attachmentPath;
     }
 
-    public function build() {
+    public function build(): self {
         $mail = $this->subject($this->emailSubject)
             ->html($this->htmlContent);
 
