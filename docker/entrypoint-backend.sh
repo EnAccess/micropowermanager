@@ -38,7 +38,7 @@ chown -R www-data:www-data /var/www/html
 chmod -R 775 /var/www/html/storage
 
 
-# Create psysh config directory
+# Required for Tinker to work without root access
 mkdir -p /var/www/.config/psysh
 chown -R www-data:www-data /var/www/.config
 
