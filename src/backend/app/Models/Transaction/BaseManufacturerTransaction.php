@@ -11,9 +11,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 /**
  * Base class for manufacturer transaction models.
  *
- * This abstract class provides common relationship methods that are shared
- * across all manufacturer transaction implementations, eliminating code duplication
- * that was previously handled through interfaces.
+ * This abstract class provides common relationship methods that are shared across all manufacturer transaction implementations.
  */
 abstract class BaseManufacturerTransaction extends BaseModel {
     /**
