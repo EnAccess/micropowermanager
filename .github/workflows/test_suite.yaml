@@ -22,6 +22,10 @@ jobs:
           MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
         ports:
           - 3306:3306
+      redis:
+        image: redis:5
+        ports:
+          - 6379:6379
 
     steps:
       - uses: actions/checkout@v3
