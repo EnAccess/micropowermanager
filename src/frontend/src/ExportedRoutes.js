@@ -93,6 +93,7 @@ import EBikeList from "./pages/EBikes/index.vue"
 import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
+import ProspectOverview from "./plugins/prospect/js/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1472,4 +1473,28 @@ export const exportedRoutes = [
       },
     ],
   },
+  {
+    path: "/prospect",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 21,
+        name: "Prospect",
+        icon: "bolt",
+      },
+    },
+    children: [
+      {
+        path: "prospect-overview",
+        component: ProspectOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  }
 ]
