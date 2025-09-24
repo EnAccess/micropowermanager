@@ -77,7 +77,6 @@ class WebhookController extends Controller {
                     return;
                 }
 
-                /** @var ?\App\Models\Person\Person $person */
                 $person = $meter->device->person;
 
                 // We should review this logic.
