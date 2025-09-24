@@ -358,40 +358,10 @@
       </div>
     </div>
 
-    <!-- Export Modal -->
     <md-dialog :md-active.sync="showExportModal" class="export-dialog">
       <md-dialog-title>{{ $tc("phrases.exportTransactions") }}</md-dialog-title>
 
       <md-dialog-content>
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-50">
-            <md-field>
-              <label>{{ $tc("words.currency") }}</label>
-              <md-select v-model="exportFilters.currency">
-                <md-option value="TSZ">TSZ</md-option>
-                <md-option value="USD">USD</md-option>
-                <md-option value="EUR">EUR</md-option>
-                <md-option value="NGN">NGN</md-option>
-                <md-option value="FCFA">FCFA</md-option>
-              </md-select>
-            </md-field>
-          </div>
-          <div class="md-layout-item md-size-50">
-            <md-field>
-              <label>{{ $tc("words.timeZone") }}</label>
-              <md-select v-model="exportFilters.timeZone">
-                <md-option value="UTC">UTC</md-option>
-                <md-option value="Africa/Lagos">Africa/Lagos</md-option>
-                <md-option value="Africa/Douala">Africa/Douala</md-option>
-                <md-option value="Africa/Dar_es_Salaam">
-                  Africa/Dar_es_Salaam
-                </md-option>
-                <md-option value="Europe/Berlin">Europe/Berlin</md-option>
-              </md-select>
-            </md-field>
-          </div>
-        </div>
-
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-25">
             <md-field>
@@ -502,8 +472,6 @@ export default {
       ],
       exportFilters: {
         format: "csv",
-        currency: "TSZ",
-        timeZone: "UTC",
         deviceType: "",
         provider: "",
         status: "",
@@ -522,7 +490,6 @@ export default {
     this.checkRouteChanges()
     this.loadAnalytics()
     this.getPeriod()
-    this.loadMainSettings()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("transactionFilterClosed", this.closeFilter)
   },
@@ -585,28 +552,10 @@ export default {
     transactionDetail(id) {
       this.$router.push({ path: "/transactions/" + id })
     },
-    async loadMainSettings() {
-      try {
-        const settings = await this.mainSettingsService.list()
-        this.exportFilters.currency = settings.currency || "TSZ"
-        this.exportFilters.timeZone = "UTC" // Default timezone
-      } catch (e) {
-        console.error("Failed to load main settings:", e)
-      }
-    },
-    async getTransactions() {
-      try {
-        await this.transactionService.getTransactions()
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
     async exportTransactions() {
       try {
         const data = {
           format: this.exportFilters.format,
-          currency: this.exportFilters.currency,
-          timeZone: this.exportFilters.timeZone,
         }
         if (this.exportFilters.deviceType !== "") {
           data.deviceType = this.exportFilters.deviceType
