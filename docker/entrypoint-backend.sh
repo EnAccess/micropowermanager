@@ -37,6 +37,11 @@ mkdir -p \
 chown -R www-data:www-data /var/www/html
 chmod -R 775 /var/www/html/storage
 
+
+# Required for Tinker to work without root access
+mkdir -p /var/www/.config/psysh
+chown -R www-data:www-data /var/www/.config
+
 # DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 cd /var/www/html

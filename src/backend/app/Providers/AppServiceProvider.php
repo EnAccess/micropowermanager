@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Helpers\MailHelper;
-use App\Helpers\MailHelperInterface;
-use App\Helpers\MailHelperMock;
 use App\Lib\DummyManufacturerApis\DummyCalinSmartMeterApi;
 use App\Lib\DummyManufacturerApis\DummyKelinMeterApi;
 use App\Lib\DummyManufacturerApis\DummySunKingSHSApi;
@@ -98,12 +95,6 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register(): void {
-        if ($this->app->environment('development') || $this->app->environment('local')) {
-            $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
-        } else {
-            $this->app->singleton(MailHelperInterface::class, MailHelper::class);
-        }
-
         // Aliases here added for backwards-compatibility
         $this->app->singleton(AndroidGateway::class);
         $this->app->alias(AndroidGateway::class, 'AndroidGateway');
