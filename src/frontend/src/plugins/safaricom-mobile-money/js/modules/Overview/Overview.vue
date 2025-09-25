@@ -108,9 +108,11 @@
 <script>
 import { mapState } from 'vuex'
 import moment from 'moment'
+import { notify } from "@/mixins/notify"
 
 export default {
   name: 'SafaricomMobileMoneyOverview',
+  mixins: [notify],
   data() {
     return {
       settings: {
@@ -135,15 +137,9 @@ export default {
           `${this.baseUrl}/safaricom/settings`,
           this.settings
         )
-        this.$notify({
-          type: 'success',
-          message: 'Settings saved successfully'
-        })
+        this.alertNotify('success', 'Settings saved successfully')
       } catch (error) {
-        this.$notify({
-          type: 'error',
-          message: error.response?.data?.message || 'Failed to save settings'
-        })
+        this.alertNotify('error', error.response?.data?.message || 'Failed to save settings')
       }
     },
     async loadSettings() {
@@ -151,10 +147,7 @@ export default {
         const response = await this.$http.get(`${this.baseUrl}/safaricom/settings`)
         this.settings = response.data.data
       } catch (error) {
-        this.$notify({
-          type: 'error',
-          message: 'Failed to load settings'
-        })
+        this.alertNotify('error', 'Failed to load settings')
       }
     },
     async loadTransactions() {
@@ -162,10 +155,7 @@ export default {
         const response = await this.$http.get(`${this.baseUrl}/safaricom/transactions`)
         this.transactions = response.data.data
       } catch (error) {
-        this.$notify({
-          type: 'error',
-          message: 'Failed to load transactions'
-        })
+        this.alertNotify('error', 'Failed to load transactions')
       }
     },
     async checkStatus(referenceId) {
@@ -173,16 +163,10 @@ export default {
         const response = await this.$http.get(
           `${this.baseUrl}/safaricom/transaction/${referenceId}/status`
         )
-        this.$notify({
-          type: 'success',
-          message: `Transaction status: ${response.data.data.status}`
-        })
+        this.alertNotify('success', `Transaction status: ${response.data.data.status}`)
         await this.loadTransactions()
       } catch (error) {
-        this.$notify({
-          type: 'error',
-          message: error.response?.data?.message || 'Failed to check status'
-        })
+        this.alertNotify('error', error.response?.data?.message || 'Failed to check status')
       }
     },
     getStatusClass(status) {

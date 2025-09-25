@@ -1499,7 +1499,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 18,
+        enabled_by_mpm_plugin_id: 21,
         name: "Safaricom M-PESA",
         icon: "money",
       },

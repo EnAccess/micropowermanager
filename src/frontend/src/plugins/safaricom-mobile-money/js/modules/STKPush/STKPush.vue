@@ -69,10 +69,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from 'vuex' 
+import { notify } from "@/mixins/notify"
 
 export default {
   name: 'SafaricomSTKPush',
+  mixins: [notify],
   data() {
     return {
       payment: {
@@ -100,15 +102,9 @@ export default {
           this.payment
         )
         this.paymentStatus = response.data.data
-        this.$notify({
-          type: 'success',
-          message: 'Payment initiated successfully'
-        })
+        this.alertNotify('success', 'Payment initiated successfully')
       } catch (error) {
-        this.$notify({
-          type: 'error',
-          message: error.response?.data?.message || 'Failed to initiate payment'
-        })
+        this.alertNotify('error', error.response?.data?.message || 'Failed to initiate payment')
       } finally {
         this.isLoading = false
       }
