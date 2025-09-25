@@ -2,10 +2,12 @@
 
 namespace Inensus\SafaricomMobileMoney\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\SafaricomMobileMoney\Console\Commands\InstallPackage;
+use Inensus\SafaricomMobileMoney\Models\SafaricomTransaction;
 use Inensus\SafaricomMobileMoney\Providers\EventServiceProvider;
 use Inensus\SafaricomMobileMoney\Providers\ObserverServiceProvider;
 use Inensus\SafaricomMobileMoney\Providers\RouteServiceProvider;
@@ -18,13 +20,23 @@ class SafaricomMobileMoneyServiceProvider extends ServiceProvider {
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
+
+        Relation::morphMap(
+            [
+                SafaricomTransaction::RELATION_NAME => SafaricomTransaction::class,
+            ]
+        );
     }
 
     public function register() {
         $this->mergeConfigFrom(__DIR__.'/../../config/safaricom-mobile-money.php', 'safaricom-mobile-money');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
+        $this->app->singleton(SafaricomMobileMoneyTransactionProvider::class);
+        $this->app->alias(SafaricomMobileMoneyTransactionProvider::class, 'SafaricomMobileMoneyTransactionProvider');
     }
 
     public function publishConfigFiles() {

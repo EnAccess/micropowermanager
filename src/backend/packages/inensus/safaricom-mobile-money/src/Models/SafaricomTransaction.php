@@ -7,6 +7,7 @@ use Inensus\SafaricomMobileMoney\Enums\TransactionStatus;
 
 class SafaricomTransaction extends BaseModel {
     protected $table = 'safaricom_transactions';
+    public const RELATION_NAME = 'safaricom_transaction';
 
     protected $fillable = [
         'reference_id',
