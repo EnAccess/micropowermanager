@@ -10,6 +10,7 @@ use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
+use App\Models\Meter\MeterConsumption;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
@@ -172,6 +173,25 @@ class MeterSeeder extends Seeder {
                 ->createOne([
                     'device_serial' => $meter->serial_number,
                 ]);
+            $this->generateMeterConsumptionData($meter);
         }
+    }
+
+    private function generateMeterConsumptionData(Meter $meter): void {
+        $readingDate = date('Y-m-d', strtotime('-'.mt_rand(0, 30).' days'));
+        $meterId = $meter->id;
+        $totalConsumption = mt_rand(1, 1000) / 10;
+        $consumption = mt_rand(1, 10) / 10;
+        $creditOnMeter = mt_rand(1, 10) / 10;
+
+        $meterConsumption = MeterConsumption::factory()->createOne([
+            'meter_id' => $meterId,
+            'reading_date' => $readingDate,
+            'total_consumption' => $totalConsumption,
+            'consumption' => $consumption,
+            'credit_on_meter' => $creditOnMeter,
+        ]);
+
+        echo "Created meter consumption data for meter ID: {$meterId}\n";
     }
 }

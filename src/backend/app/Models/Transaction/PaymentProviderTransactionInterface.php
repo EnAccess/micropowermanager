@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  *
  * This provider-specific transaction is:
  * - Linked to a general-purpose system `Transaction` model (polymorphic).
- * - Optionally associated with a `ManufacturerTransactionInterface` implementation,
+ * - Optionally associated with a `BaseManufacturerTransaction` implementation,
  *   which represents how the transaction enables or interacts with manufacturer-specific devices.
  *
  * Implementations are expected to support querying and persistence.

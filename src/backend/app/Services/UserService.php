@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\MailNotSentException;
-use App\Helpers\MailHelperInterface;
+use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -13,7 +13,7 @@ use MPM\User\Events\UserCreatedEvent;
 class UserService {
     public function __construct(
         private User $user,
-        private MailHelperInterface $mailHelper,
+        private MailHelper $mailHelper,
     ) {}
 
     /**

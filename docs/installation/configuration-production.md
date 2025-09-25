@@ -30,6 +30,8 @@ Set the following environment variables to configure the Email provider
 
 - `MAIL_SMTP_HOST`
 - `MAIL_SMTP_DEFAULT_SENDER`
+- `MAIL_FROM_ADDRESS`
+- `MAIL_FROM_NAME`
 
 If your Email provider requires authentication, also populate:
 
@@ -42,10 +44,6 @@ Alternatively, when using an Email provider with IP whitelisting:
 - Make sure cluster egress is using a static IP.
   For example of GKE, see [`egress-nat-policy.yaml`](https://github.com/EnAccess/micropowermanager/blob/main/k8s/base/gcp_gke/kustomization.yaml).
 - Whitelist the NAT Gateway's static IP in the Email provider.
-
-Optionally, to debug Email you can set:
-
-- `MAIL_SMTP_DEBUG_LEVEL`
 
 ### Testing Email integration
 
