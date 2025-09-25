@@ -3,6 +3,8 @@
 namespace MPM\Transaction\Provider;
 
 use App\Models\Transaction\AgentTransaction;
+use Inensus\SafaricomMobileMoney\Models\SafaricomTransaction;
+use Inensus\SafaricomMobileMoney\Providers\SafaricomMobileMoneyTransactionProvider;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -34,6 +36,11 @@ class TransactionAdapter {
             return $baseTransaction;
         } elseif ($transactionProvider instanceof WaveComTransaction) {
             $baseTransaction = resolve(WaveComTransactionProvider::class);
+            $baseTransaction->init($transactionProvider);
+
+            return $baseTransaction;
+        } elseif ($transactionProvider instanceof SafaricomTransaction) {
+            $baseTransaction = resolve(SafaricomMobileMoneyTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;

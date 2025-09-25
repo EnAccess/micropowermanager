@@ -95,6 +95,8 @@ import EBikeList from "./pages/EBikes/index.vue"
 import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
+import SafaricomMobileMoneyOverview from "./plugins/safaricom-mobile-money/js/modules/Overview/Overview"
+import SafaricomMobileMoneySTKPush from "./plugins/safaricom-mobile-money/js/modules/STKPush/STKPush"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1487,6 +1489,41 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/safaricom-mobile-money-overview",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 21,
+        name: "Safaricom M-PESA",
+        icon: "money",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: SafaricomMobileMoneyOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "stk-push",
+        component: SafaricomMobileMoneySTKPush,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Initiate Payment",
           },
         },
       },

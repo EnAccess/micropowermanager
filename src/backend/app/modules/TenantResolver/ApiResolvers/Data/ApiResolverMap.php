@@ -8,6 +8,7 @@ use MPM\TenantResolver\ApiResolvers\AfricasTalkingApiResolver;
 use MPM\TenantResolver\ApiResolvers\AndroidGatewayCallbackApiResolver;
 use MPM\TenantResolver\ApiResolvers\DataExportResolver;
 use MPM\TenantResolver\ApiResolvers\DownloadingReportsResolver;
+use MPM\TenantResolver\ApiResolvers\SafaricomMobileMoneyApiResolver;
 use MPM\TenantResolver\ApiResolvers\SwiftaPaymentApiResolver;
 use MPM\TenantResolver\ApiResolvers\TestApiResolver;
 use MPM\TenantResolver\ApiResolvers\ViberMessagingApiResolver;
@@ -24,6 +25,7 @@ class ApiResolverMap {
     public const DATA_EXPORTING_API = 'api/export';
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
     public const VODACOM_MOBILE_MONEY = 'api/vodacom/';
+    public const SAFARICOM_MOBILE_MONEY = 'api/safaricom/';
 
     public const RESOLVABLE_APIS = [
         self::TEST_API,
@@ -35,6 +37,7 @@ class ApiResolverMap {
         self::DATA_EXPORTING_API,
         self::AFRICAS_TALKING_API,
         self::VODACOM_MOBILE_MONEY,
+        self::SAFARICOM_MOBILE_MONEY,
     ];
 
     private const API_RESOLVER = [
@@ -47,6 +50,7 @@ class ApiResolverMap {
         self::DATA_EXPORTING_API => DataExportResolver::class,
         self::AFRICAS_TALKING_API => AfricasTalkingApiResolver::class,
         self::VODACOM_MOBILE_MONEY => VodacomMobileMoneyApiResolver::class,
+        self::SAFARICOM_MOBILE_MONEY => SafaricomMobileMoneyApiResolver::class,
     ];
 
     /**

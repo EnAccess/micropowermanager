@@ -25,4 +25,5 @@ return [
     Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider::class,
     Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class,
     Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class,
+    Inensus\SafaricomMobileMoney\Providers\SafaricomMobileMoneyServiceProvider::class,
 ];
