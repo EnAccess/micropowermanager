@@ -74,6 +74,7 @@ Vue.component("Prospect", Prospect)
 const unauthorizedPaths = [
   "login",
   "forgot-password",
+  "reset-protected-password",
   "welcome",
   "register",
   "/wave-money/payment",

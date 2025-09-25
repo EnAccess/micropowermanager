@@ -210,14 +210,41 @@ class PersonService implements IBaseService {
     /**
      * @return Collection<int, Person>|array<int, Person>
      */
-    public function getAllForExport(?int $customerType = 1): Collection|array {
-        return $this->person->newQuery()->with([
+    public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null, ?string $status = null): Collection|array {
+        $isActive = $isActive == null ? 1 : $isActive;
+        $query = $this->person->newQuery()->with([
             'addresses' => function ($q) {
                 return $q->where('is_primary', 1);
             },
             'addresses.city',
             'devices',
-        ])->where('is_customer', $customerType)->get();
+        ])->where('is_customer', $isActive);
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if ($miniGrid) {
+            $query->whereHas('addresses', function ($q) use ($miniGrid) {
+                $q->whereHas('city', function ($q) use ($miniGrid) {
+                    $q->where('mini_grid_id', $miniGrid);
+                });
+            });
+        }
+
+        if ($village) {
+            $query->whereHas('addresses', function ($q) use ($village) {
+                $q->where('city_id', $village);
+            });
+        }
+
+        if ($deviceType) {
+            $query->whereHas('devices', function ($q) use ($deviceType) {
+                $q->where('device_type', $deviceType);
+            });
+        }
+
+        return $query->get();
     }
 
     public function createFromRequest(Request $request): Person {

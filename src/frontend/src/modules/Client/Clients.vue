@@ -74,7 +74,6 @@
               </md-select>
             </md-field>
 
-            <!-- Debug info -->
             <div
               v-if="agentService.list.length === 0"
               style="color: red; font-size: 12px"
@@ -193,46 +192,52 @@
       :key="key"
     />
 
-    <!-- Export Modal -->
+    <!-- Updated Export Modal for Customer Export -->
     <md-dialog :md-active.sync="showExportModal" class="export-dialog">
       <md-dialog-title>{{ $tc("phrases.exportCustomers") }}</md-dialog-title>
 
       <md-dialog-content>
+        <!-- Geographical Filters Row -->
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50">
             <md-field>
-              <label>{{ $tc("words.currency") }}</label>
-              <md-select v-model="exportFilters.currency">
-                <md-option value="TSZ">TSZ</md-option>
-                <md-option value="USD">USD</md-option>
-                <md-option value="EUR">EUR</md-option>
-                <md-option value="NGN">NGN</md-option>
-                <md-option value="FCFA">FCFA</md-option>
+              <label>{{ $tc("words.miniGrid") }}</label>
+              <md-select v-model="exportFilters.miniGrid">
+                <md-option value="">{{ $tc("words.all") }}</md-option>
+                <md-option
+                  v-for="miniGrid in miniGridService.list"
+                  :key="miniGrid.id"
+                  :value="miniGrid.id"
+                >
+                  {{ miniGrid.name }}
+                </md-option>
               </md-select>
             </md-field>
           </div>
           <div class="md-layout-item md-size-50">
             <md-field>
-              <label>{{ $tc("words.timeZone") }}</label>
-              <md-select v-model="exportFilters.timeZone">
-                <md-option value="UTC">UTC</md-option>
-                <md-option value="Africa/Lagos">Africa/Lagos</md-option>
-                <md-option value="Africa/Douala">Africa/Douala</md-option>
-                <md-option value="Africa/Dar_es_Salaam">
-                  Africa/Dar_es_Salaam
+              <label>{{ $tc("words.village") }}</label>
+              <md-select v-model="exportFilters.village">
+                <md-option value="">{{ $tc("words.all") }}</md-option>
+                <md-option
+                  v-for="city in cityService.list"
+                  :key="city.id"
+                  :value="city.id"
+                >
+                  {{ city.name }}
                 </md-option>
-                <md-option value="Europe/Berlin">Europe/Berlin</md-option>
               </md-select>
             </md-field>
           </div>
         </div>
 
+        <!-- Status, Device Type, and Format Row -->
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-33">
             <md-field>
               <label>{{ $tc("words.status") }}</label>
               <md-select v-model="exportFilters.isActive">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option :value="true">{{ $tc("words.active") }}</md-option>
                 <md-option :value="false">
                   {{ $tc("words.inactive") }}
@@ -244,7 +249,7 @@
             <md-field>
               <label>{{ $tc("words.deviceType") }}</label>
               <md-select v-model="exportFilters.deviceType">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
+                <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option value="meter">{{ $tc("words.meter") }}</md-option>
                 <md-option value="appliance">
                   {{ $tc("words.appliance") }}
@@ -257,7 +262,7 @@
               <label>{{ $tc("words.format") }}</label>
               <md-select v-model="exportFilters.format">
                 <md-option value="csv">CSV</md-option>
-                <md-option value="xlsx">Excel</md-option>
+                <md-option value="excel">Excel</md-option>
               </md-select>
             </md-field>
           </div>
@@ -290,6 +295,8 @@ import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExport
 import { CustomerExportService } from "@/services/CustomerExportService"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import { AgentService } from "@/services/AgentService"
+import { MiniGridService } from "@/services/MiniGridService"
+import { CityService } from "@/services/CityService"
 
 const debounce = require("debounce")
 
@@ -322,12 +329,13 @@ export default {
       showFilter: false,
       exportFilters: {
         format: "csv",
-        currency: "TSZ",
-        timeZone: "UTC",
-        isActive: null,
-        city: null,
-        deviceType: null,
+        isActive: "",
+        miniGrid: "",
+        village: "",
+        deviceType: "",
       },
+      miniGridService: new MiniGridService(),
+      cityService: new CityService(),
     }
   },
   watch: {
@@ -344,6 +352,8 @@ export default {
     this.getClientList()
     this.loadMainSettings()
     this.loadAgents()
+    this.loadMiniGrids()
+    this.loadCities()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("searching", this.searching)
     EventBus.$on("end_searching", this.endSearching)
@@ -491,22 +501,37 @@ export default {
         console.error("Failed to load agents:", e)
       }
     },
+    async loadMiniGrids() {
+      try {
+        await this.miniGridService.getMiniGrids()
+      } catch (error) {
+        console.error("Failed to load mini grids:", error)
+      }
+    },
+    async loadCities() {
+      try {
+        await this.cityService.getCities()
+      } catch (error) {
+        console.error("Failed to load cities:", error)
+      }
+    },
     async exportCustomers() {
       try {
         const data = {
           format: this.exportFilters.format,
-          currency: this.exportFilters.currency,
-          timeZone: this.exportFilters.timeZone,
         }
 
-        // Add optional filters if they are set
-        if (this.exportFilters.isActive !== null) {
+        // Add optional filters if they are set (check for empty strings)
+        if (this.exportFilters.isActive !== "") {
           data.isActive = this.exportFilters.isActive
         }
-        if (this.exportFilters.city) {
-          data.city = this.exportFilters.city
+        if (this.exportFilters.miniGrid !== "") {
+          data.miniGrid = this.exportFilters.miniGrid
         }
-        if (this.exportFilters.deviceType) {
+        if (this.exportFilters.village !== "") {
+          data.village = this.exportFilters.village
+        }
+        if (this.exportFilters.deviceType !== "") {
           data.deviceType = this.exportFilters.deviceType
         }
         if (this.selectedAgentId) {
@@ -520,7 +545,13 @@ export default {
         a.href = downloadUrl
         const contentDisposition = response.headers["content-disposition"]
         const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
-        a.download = fileNameMatch ? fileNameMatch[1] : "export_customers.csv"
+
+        const defaultFileName =
+          this.exportFilters.format === "excel"
+            ? "export_customers.xlsx"
+            : "export_customers.csv"
+        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
+
         document.body.appendChild(a)
         a.click()
         a.remove()

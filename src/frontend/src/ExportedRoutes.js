@@ -4,6 +4,8 @@ import Welcome from "./pages/Welcome/index.vue"
 import Login from "./pages/Login/index.vue"
 import Register from "./pages/Register/index.vue"
 import ForgotPassword from "./pages/ForgotPassword/index.vue"
+import ProtectedPagePasswordResetRequest from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetRequest.vue"
+import ProtectedPagePasswordResetConfirm from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetConfirm.vue"
 
 import ChildRouteWrapper from "./shared/ChildRouteWrapper.vue"
 
@@ -129,6 +131,24 @@ export const exportedRoutes = [
     name: "forgot-password",
     components: {
       default: ForgotPassword,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/forgot-protected-password",
+    name: "forgot-protected-password",
+    components: {
+      default: ProtectedPagePasswordResetRequest,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/reset-protected-password",
+    name: "reset-protected-password",
+    components: {
+      default: ProtectedPagePasswordResetConfirm,
       header: LoginHeader,
       footer: LoginFooter,
     },

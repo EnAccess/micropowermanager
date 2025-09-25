@@ -85,9 +85,6 @@ abstract class AbstractExportService {
         // Create a DateTime object with the UTC-based date
         $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
 
-        // Set the desired timezone
-        $dateTimeUtc->setTimezone(new \DateTimeZone($this->timeZone));
-
         // Format the date and time as a string
         return $dateTimeUtc->format('Y-m-d H:i:s');
     }
