@@ -19,7 +19,6 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\EBikeController;
-use App\Http\Controllers\MailSettingsController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
 use App\Http\Controllers\ManufacturerController;
@@ -232,11 +231,6 @@ Route::group(['prefix' => 'map-settings'], static function () {
 Route::group(['prefix' => 'settings'], static function () {
     Route::get('/main', [MainSettingsController::class, 'index']);
     Route::put('/main/{mainSettings}', [MainSettingsController::class, 'update'])
-        ->middleware('jwt.verify');
-    Route::get('/mail', [MailSettingsController::class, 'index']);
-    Route::post('/mail', [MailSettingsController::class, 'store'])
-        ->middleware('jwt.verify');
-    Route::put('/mail/{mailSettings}', [MailSettingsController::class, 'update'])
         ->middleware('jwt.verify');
     Route::get('/currency-list', [CurrencyController::class, 'index']);
 });
