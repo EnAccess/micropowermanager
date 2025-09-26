@@ -13,10 +13,9 @@ return new class extends Migration {
         if (!Schema::connection('tenant')->hasTable('paystack_credentials')) {
             Schema::connection('tenant')->create('paystack_credentials', function (Blueprint $table) {
                 $table->id();
-                $table->string('secret_key');
-                $table->string('public_key');
-                $table->string('webhook_secret')->nullable();
-                $table->string('callback_url')->nullable();
+                $table->text('secret_key');
+                $table->text('public_key');
+                $table->string('callback_url', 255)->nullable();
                 $table->string('merchant_name')->default('Paystack');
                 $table->enum('environment', ['test', 'live'])->default('test');
                 $table->timestamps();

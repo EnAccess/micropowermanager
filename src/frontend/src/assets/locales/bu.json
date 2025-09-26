@@ -415,7 +415,6 @@
     "paystackTransactions": "Paystack ငွေပေးငွေယူများ",
     "transactionDetails": "ငွေပေးငွေယူ အသေးစိတ်",
     "publicKey": "အများသုံး သော့",
-    "webhookSecret": "Webhook လျှို့ဝှက်စာ",
     "callbackUrl": "ပြန်ခေါ် URL",
     "merchantName": "ကုန်သည်အမည်",
     "environment": "ပတ်ဝန်းကျင်",

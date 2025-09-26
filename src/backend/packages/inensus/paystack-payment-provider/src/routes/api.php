@@ -25,10 +25,11 @@ Route::prefix('paystack')->group(function () {
 
     // Public payment pages (no authentication required)
     Route::prefix('public')->group(function () {
-        Route::get('/payment/{companyHash}/{companyId}', [PaystackPublicController::class, 'showPaymentForm']);
-        Route::post('/payment/{companyHash}/{companyId}', [PaystackPublicController::class, 'initiatePayment']);
-        Route::get('/result/{companyHash}/{companyId}', [PaystackPublicController::class, 'showResult']);
-        Route::get('/verify/{companyHash}/{companyId}', [PaystackPublicController::class, 'verifyTransaction']);
-        Route::post('/validate-meter/{companyHash}/{companyId}', [PaystackPublicController::class, 'validateMeter']);
+        // New tokenized routes: use ?ct=<encrypted token> to avoid exposing company ID
+        Route::get('/payment/{companyHash}', [PaystackPublicController::class, 'showPaymentForm']);
+        Route::post('/payment/{companyHash}', [PaystackPublicController::class, 'initiatePayment']);
+        Route::get('/result/{companyHash}', [PaystackPublicController::class, 'showResult']);
+        Route::get('/verify/{companyHash}', [PaystackPublicController::class, 'verifyTransaction']);
+        Route::post('/validate-meter/{companyHash}', [PaystackPublicController::class, 'validateMeter']);
     });
 });

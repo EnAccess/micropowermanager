@@ -2,6 +2,7 @@
 
 namespace Inensus\PaystackPaymentProvider\Services;
 
+use Illuminate\Support\Facades\Crypt;
 use Inensus\PaystackPaymentProvider\Models\PaystackCredential;
 
 class PaystackCredentialService {
@@ -11,11 +12,11 @@ class PaystackCredentialService {
 
     public function getCredentials(): PaystackCredential {
         $credential = $this->paystackCredential->newQuery()->first();
-        
+
         if (!$credential) {
             return $this->createCredentials();
         }
-        
+
         return $credential;
     }
 
@@ -23,7 +24,6 @@ class PaystackCredentialService {
         return $this->paystackCredential->newQuery()->create([
             'secret_key' => '',
             'public_key' => '',
-            'webhook_secret' => '',
             'callback_url' => '',
             'merchant_name' => 'Paystack',
             'environment' => 'test',
@@ -32,6 +32,12 @@ class PaystackCredentialService {
 
     public function updateCredentials(array $data): PaystackCredential {
         $credential = $this->getCredentials();
+        if (array_key_exists('secret_key', $data)) {
+            $data['secret_key'] = Crypt::encrypt($data['secret_key']);
+        }
+        if (array_key_exists('public_key', $data)) {
+            $data['public_key'] = Crypt::encrypt($data['public_key']);
+        }
         $credential->update($data);
         $credential->fresh();
 

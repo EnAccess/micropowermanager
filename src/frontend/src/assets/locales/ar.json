@@ -415,7 +415,6 @@
     "paystackTransactions": "معاملات Paystack",
     "transactionDetails": "تفاصيل المعاملة",
     "publicKey": "المفتاح العام",
-    "webhookSecret": "سر الويب هوك",
     "callbackUrl": "رابط الاستدعاء",
     "merchantName": "اسم التاجر",
     "environment": "البيئة",

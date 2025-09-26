@@ -414,7 +414,6 @@
     "paystackTransactions": "Transactions Paystack",
     "transactionDetails": "Détails de la transaction",
     "publicKey": "Clé publique",
-    "webhookSecret": "Secret du webhook",
     "callbackUrl": "URL de rappel",
     "merchantName": "Nom du commerçant",
     "environment": "Environnement",

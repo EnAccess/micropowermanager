@@ -437,7 +437,6 @@
     "paystackTransactions": "Paystack Transactions",
     "transactionDetails": "Transaction Details",
     "publicKey": "Public Key",
-    "webhookSecret": "Webhook Secret",
     "callbackUrl": "Callback URL",
     "merchantName": "Merchant Name",
     "environment": "Environment",

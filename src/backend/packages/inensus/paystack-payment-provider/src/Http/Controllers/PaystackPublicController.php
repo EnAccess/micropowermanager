@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Inensus\PaystackPaymentProvider\Http\Controllers;
 
 use App\Services\CompanyService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Inensus\PaystackPaymentProvider\Http\Requests\PublicPaymentRequest;
 use Inensus\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
-use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
+use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 use Ramsey\Uuid\Uuid;
 
 class PaystackPublicController extends Controller {
@@ -25,16 +25,17 @@ class PaystackPublicController extends Controller {
         private CompanyService $companyService,
     ) {}
 
-    public function showPaymentForm(Request $request, string $companyHash, int $companyId): JsonResponse {
+    public function showPaymentForm(Request $request, string $companyHash, ?int $companyId = null): JsonResponse {
         try {
-            // Validate company hash
-            if (!$this->hashService->validateHash($companyHash, $companyId)) {
+            // Resolve company id from token if not provided
+            $companyId = $companyId ?? $this->hashService->parseHashFromCompanyId((string) $request->query('ct'));
+            if (!$companyId || !$this->hashService->validateHash($companyHash, $companyId)) {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
             // Get company information
             $company = $this->companyService->getById($companyId);
-            
+
             // Check if Paystack is enabled for this company
             $credentials = $this->credentialService->getCredentials();
             if (!$credentials) {
@@ -49,7 +50,6 @@ class PaystackPublicController extends Controller {
                 'supported_currencies' => ['NGN', 'GHS', 'KES', 'ZAR'],
                 'default_currency' => 'NGN',
             ]);
-
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to show payment form', [
                 'error' => $e->getMessage(),
@@ -61,32 +61,43 @@ class PaystackPublicController extends Controller {
         }
     }
 
-    public function initiatePayment(PublicPaymentRequest $request, string $companyHash, int $companyId): JsonResponse {
+    public function initiatePayment(PublicPaymentRequest $request, string $companyHash, ?int $companyId = null): JsonResponse {
         try {
-            // Validate company hash
-            if (!$this->hashService->validateHash($companyHash, $companyId)) {
+            $companyId = $companyId ?? $this->hashService->parseHashFromCompanyId((string) $request->query('ct'));
+            if (!$companyId || !$this->hashService->validateHash($companyHash, $companyId)) {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
             // Validate meter serial and amount
             $validatedData = $request->validated();
-            
+
             // Get agent_id from query parameters if present
             $agentId = $request->query('agent');
+
+            $deviceType = $validatedData['device_type'] ?? 'meter';
+
+
+            if ($deviceType === 'shs') {
+                $serial = $validatedData['serial'];
+                $customerId = $this->transactionService->getCustomerIdBySHSSerial($validatedData['serial']);
+            } else {
+                $serial = $validatedData['meter_serial'];
+                $customerId = $this->transactionService->getCustomerIdByMeterSerial($validatedData['meter_serial']);
+            }
+
+            // get customer id from meter serial
             
-            // get customer id from meter serial 
-            $customerId = $this->transactionService->getCustomerIdByMeterSerial($validatedData['meter_serial']);
-            
+
             // Create Paystack transaction
             $transaction = $this->transactionService->createPublicTransaction([
                 'amount' => $validatedData['amount'],
                 'currency' => $validatedData['currency'],
-                'serial_id' => $validatedData['meter_serial'],
-                'device_type' => 'meter',
+                'serial_id' => $serial,
+                'device_type' => $deviceType,
                 'customer_id' => $customerId,
                 'order_id' => Uuid::uuid4()->toString(),
                 'reference_id' => Uuid::uuid4()->toString(),
-                'agent_id' => $agentId ? (int)$agentId : null,
+                'agent_id' => $agentId ? (int) $agentId : null,
             ]);
 
             // Initialize Paystack transaction with company ID for callback URL
@@ -102,7 +113,6 @@ class PaystackPublicController extends Controller {
                 'reference' => $result['reference'],
                 'transaction_id' => $transaction->getId(),
             ]);
-
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to initiate payment', [
                 'error' => $e->getMessage(),
@@ -115,10 +125,10 @@ class PaystackPublicController extends Controller {
         }
     }
 
-    public function showResult(Request $request, string $companyHash, int $companyId): JsonResponse {
+    public function showResult(Request $request, string $companyHash, ?int $companyId = null): JsonResponse {
         try {
-            // Validate company hash
-            if (!$this->hashService->validateHash($companyHash, $companyId)) {
+            $companyId = $companyId ?? $this->hashService->parseHashFromCompanyId((string) $request->query('ct'));
+            if (!$companyId || !$this->hashService->validateHash($companyHash, $companyId)) {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
@@ -137,19 +147,19 @@ class PaystackPublicController extends Controller {
             $mainTransaction = $transaction->transaction()->first();
             $token = null;
             $tokenStatus = 'pending';
-            
+
             if ($mainTransaction) {
                 $token = $mainTransaction->token()->first();
-                
+
                 // Determine token status based on transaction and token state
                 if ($token) {
                     $tokenStatus = 'generated';
                 } else {
-                    // Check if transaction is still processing or failed
-                    if ($mainTransaction->status === 0) { // STATUS_REQUESTED
+                    // Treat non-generated tokens as processing or pending
+                    if (in_array($mainTransaction->status, [0, 1], true)) { // requested or success
                         $tokenStatus = 'processing';
                     } else {
-                        $tokenStatus = 'failed';
+                        $tokenStatus = 'pending';
                     }
                 }
             }
@@ -182,7 +192,6 @@ class PaystackPublicController extends Controller {
             }
 
             return response()->json($response);
-
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to show result', [
                 'error' => $e->getMessage(),
@@ -195,10 +204,10 @@ class PaystackPublicController extends Controller {
         }
     }
 
-    public function verifyTransaction(Request $request, string $companyHash, int $companyId): JsonResponse {
+    public function verifyTransaction(Request $request, string $companyHash, ?int $companyId = null): JsonResponse {
         try {
-            // Validate company hash
-            if (!$this->hashService->validateHash($companyHash, $companyId)) {
+            $companyId = $companyId ?? $this->hashService->parseHashFromCompanyId((string) $request->query('ct'));
+            if (!$companyId || !$this->hashService->validateHash($companyHash, $companyId)) {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
@@ -214,7 +223,6 @@ class PaystackPublicController extends Controller {
                 'success' => $verification['status'] === 'success',
                 'verification' => $verification,
             ]);
-
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to verify transaction', [
                 'error' => $e->getMessage(),
@@ -227,10 +235,10 @@ class PaystackPublicController extends Controller {
         }
     }
 
-    public function validateMeter(Request $request, string $companyHash, int $companyId): JsonResponse {
+    public function validateMeter(Request $request, string $companyHash, ?int $companyId = null): JsonResponse {
         try {
-            // Validate company hash
-            if (!$this->hashService->validateHash($companyHash, $companyId)) {
+            $companyId = $companyId ?? $this->hashService->parseHashFromCompanyId((string) $request->query('ct'));
+            if (!$companyId || !$this->hashService->validateHash($companyHash, $companyId)) {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
@@ -246,7 +254,6 @@ class PaystackPublicController extends Controller {
                 'valid' => $isValid,
                 'meter_serial' => $meterSerial,
             ]);
-
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to validate meter', [
                 'error' => $e->getMessage(),

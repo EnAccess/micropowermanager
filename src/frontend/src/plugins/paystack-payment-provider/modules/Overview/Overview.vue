@@ -82,7 +82,6 @@ export default {
       credentials: {
         secretKey: "",
         publicKey: "",
-        webhookSecret: "",
         callbackUrl: "",
         merchantName: "",
         environment: "test",
@@ -142,7 +141,6 @@ export default {
           this.credentials = {
             secretKey: credential.secretKey || "",
             publicKey: credential.publicKey || "",
-            webhookSecret: credential.webhookSecret || "",
             callbackUrl: credential.callbackUrl || "",
             merchantName: credential.merchantName || "",
             environment: credential.environment || "test",
@@ -153,7 +151,6 @@ export default {
         this.credentials = {
           secretKey: "",
           publicKey: "",
-          webhookSecret: "",
           callbackUrl: "",
           merchantName: "",
           environment: "test",

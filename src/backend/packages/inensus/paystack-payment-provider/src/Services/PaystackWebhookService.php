@@ -15,9 +15,9 @@ class PaystackWebhookService {
 
     public function verifyWebhook(Request $request): bool {
         $credential = $this->credentialService->getCredentials();
-        $webhookSecret = $credential->getWebhookSecret();
+        $secretKey = $credential->getSecretKey();
 
-        if (empty($webhookSecret)) {
+        if (empty($secretKey)) {
             return false;
         }
 
@@ -27,7 +27,7 @@ class PaystackWebhookService {
         }
 
         $payload = $request->getContent();
-        $expectedSignature = hash_hmac('sha512', $payload, $webhookSecret);
+        $expectedSignature = hash_hmac('sha512', $payload, $secretKey);
 
         return hash_equals($expectedSignature, $signature);
     }

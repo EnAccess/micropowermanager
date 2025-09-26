@@ -62,29 +62,6 @@
                 >
                   <md-field
                     :class="{
-                      'md-invalid': errors.has('Credential-Form.webhookSecret'),
-                    }"
-                  >
-                    <label for="webhookSecret">
-                      {{ $tc("phrases.webhookSecret") }}
-                    </label>
-                    <md-input
-                      id="webhookSecret"
-                      name="webhookSecret"
-                      v-model="credentialService.credential.webhookSecret"
-                      v-validate="'required|min:3'"
-                      type="password"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.webhookSecret") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
-                >
-                  <md-field
-                    :class="{
                       'md-invalid': errors.has('Credential-Form.callbackUrl'),
                     }"
                   >

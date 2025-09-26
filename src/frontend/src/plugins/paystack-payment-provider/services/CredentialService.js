@@ -8,7 +8,6 @@ export class CredentialService {
     this.credential = {
       secretKey: "",
       publicKey: "",
-      webhookSecret: "",
       callbackUrl: "",
       merchantName: "",
       environment: "test",
@@ -20,7 +19,6 @@ export class CredentialService {
       id: credentialData.id,
       secretKey: credentialData.secret_key,
       publicKey: credentialData.public_key,
-      webhookSecret: credentialData.webhook_secret,
       callbackUrl: credentialData.callback_url,
       merchantName: credentialData.merchant_name,
       environment: credentialData.environment,
@@ -50,7 +48,6 @@ export class CredentialService {
       const credentialPayload = {
         secret_key: this.credential.secretKey,
         public_key: this.credential.publicKey,
-        webhook_secret: this.credential.webhookSecret,
         callback_url: this.credential.callbackUrl,
         merchant_name: this.credential.merchantName,
         environment: this.credential.environment,

@@ -7,9 +7,9 @@
       <div class="title-2">Paystack online payments for {{ companyName }}</div>
 
       <p class="cloud-description">
-        On this page, you can make your online payment for energy tokens.
+        On this page, you can make your online payment for energy or SHS credit.
         MicroPowerManager uses Paystack to process your payment securely. Please
-        enter your meter number and the amount you want to pay.
+        select a device type, enter its serial number, and the amount you want to pay.
       </p>
 
       <form
@@ -18,12 +18,25 @@
         class="Payment-Form"
       >
         <div class="router-box">
+          <md-field>
+            <label for="deviceType">Device Type</label>
+            <md-select
+              id="deviceType"
+              name="deviceType"
+              v-model="paymentService.paymentRequest.deviceType"
+              @md-selected="onDeviceTypeChange"
+            >
+              <md-option value="meter">Meter</md-option>
+              <md-option value="shs">Solar Home System</md-option>
+            </md-select>
+          </md-field>
+
           <md-field
             :class="{
               'md-invalid': errors.has('Payment-Form.meterSerial'),
             }"
           >
-            <label for="meterSerial">Meter Serial Number</label>
+            <label for="meterSerial">{{ serialLabel }}</label>
             <md-input
               id="meterSerial"
               name="meterSerial"
@@ -42,18 +55,18 @@
               <span>Validating meter...</span>
             </div>
             <div
-              v-if="meterValidation.valid === true"
+              v-if="shouldShowValidation && meterValidation.valid === true"
               class="validation-success"
             >
               <md-icon>check_circle</md-icon>
-              <span>Meter is valid</span>
+              <span>Serial is valid</span>
             </div>
             <div
-              v-if="meterValidation.valid === false"
+              v-if="shouldShowValidation && meterValidation.valid === false"
               class="validation-error"
             >
               <md-icon>error</md-icon>
-              <span>Invalid meter serial number</span>
+              <span>Invalid serial number</span>
             </div>
           </md-field>
 
@@ -138,8 +151,17 @@ export default {
     companyHash() {
       return this.$route.params.companyHash
     },
-    companyId() {
-      return this.$route.params.companyId
+    companyIdToken() {
+      return this.$route.query.ct
+    },
+    serialLabel() {
+      if (this.paymentService.paymentRequest.deviceType === 'shs') {
+        return 'SHS Serial Number'
+      }
+      return 'Meter Serial Number'
+    },
+    shouldShowValidation() {
+      return this.paymentService.paymentRequest.deviceType === 'meter'
     },
     selectedCurrency() {
       return this.paymentService.paymentRequest.currency || "NGN"
@@ -150,7 +172,7 @@ export default {
         this.paymentService.paymentRequest.amount &&
         this.paymentService.paymentRequest.amount > 0 &&
         this.paymentService.paymentRequest.currency &&
-        this.meterValidation.valid === true
+        (this.paymentService.paymentRequest.deviceType !== 'meter' || this.meterValidation.valid === true)
       )
     },
   },
@@ -158,11 +180,15 @@ export default {
     await this.loadCompanyInfo()
   },
   methods: {
+    onDeviceTypeChange() {
+      // Reset validation state when device type changes
+      this.meterValidation.valid = null
+    },
     async loadCompanyInfo() {
       try {
         const response = await this.paymentService.getCompanyInfo(
           this.companyHash,
-          this.companyId,
+          this.companyIdToken,
         )
         this.companyName = response.company.name
         this.supportedCurrencies = response.supported_currencies
@@ -172,6 +198,11 @@ export default {
       }
     },
     async validateMeter() {
+      if (this.paymentService.paymentRequest.deviceType !== 'meter') {
+        // Skip remote validation for non-meter devices
+        this.meterValidation.valid = true
+        return
+      }
       if (
         !this.paymentService.paymentRequest.meterSerial ||
         this.paymentService.paymentRequest.meterSerial.length < 3
@@ -184,7 +215,7 @@ export default {
       try {
         const response = await this.paymentService.validateMeter(
           this.companyHash,
-          this.companyId,
+          this.companyIdToken,
           this.paymentService.paymentRequest.meterSerial,
         )
         this.meterValidation.valid = response.valid
@@ -214,7 +245,7 @@ export default {
         this.loading = true
         const data = await this.paymentService.initiatePayment(
           this.companyHash,
-          this.companyId,
+          this.companyIdToken,
           this.paymentService.paymentRequest,
         )
 

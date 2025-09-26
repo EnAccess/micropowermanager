@@ -3,11 +3,11 @@
 namespace Inensus\PaystackPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @property string secret_key
  * @property string public_key
- * @property string|null webhook_secret
  * @property string|null callback_url
  * @property string|null merchant_name
  * @property string environment
@@ -16,15 +16,19 @@ class PaystackCredential extends BaseModel {
     protected $table = 'paystack_credentials';
 
     public function getSecretKey(): string {
-        return $this->secret_key;
+        try {
+            return Crypt::decrypt($this->attributes['secret_key']);
+        } catch (\Throwable) {
+            return $this->attributes['secret_key'] ?? '';
+        }
     }
 
     public function getPublicKey(): string {
-        return $this->public_key;
-    }
-
-    public function getWebhookSecret(): ?string {
-        return $this->webhook_secret;
+        try {
+            return Crypt::decrypt($this->attributes['public_key']);
+        } catch (\Throwable) {
+            return $this->attributes['public_key'] ?? '';
+        }
     }
 
     public function getMerchantName(): ?string {

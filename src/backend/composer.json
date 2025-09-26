@@ -15,6 +15,7 @@
     "bogdaan/viber-bot-php": "^0.0.15",
     "fakerphp/faker": "^1.24",
     "guzzlehttp/guzzle": "^7.10",
+    "hashids/hashids": "^5.0",
     "laravel/framework": "^12.0",
     "laravel/helpers": "^1.2",
     "laravel/horizon": "^5.0",

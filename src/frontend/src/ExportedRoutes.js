@@ -1358,12 +1358,12 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     children: [
       {
-        path: "payment/:companyHash/:companyId",
+        path: "payment/:companyHash",
         component: PaystackPublicPayment,
         name: "/paystack/public/payment",
       },
       {
-        path: "result/:companyHash/:companyId",
+        path: "result/:companyHash",
         name: "/paystack/public/result",
         component: PaystackPublicResult,
       },

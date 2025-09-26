@@ -15,12 +15,9 @@ class PublicPaymentRequest extends FormRequest {
 
     public function rules(): array {
         return [
-            'meter_serial' => [
-                'required',
-                'string',
-                'min:3',
-                'max:50',
-            ],
+            'meter_serial' => ['nullable', 'string', 'min:3', 'max:50'],
+            'serial' => ['required_without:meter_serial', 'string', 'min:3', 'max:50'],
+            'device_type' => ['nullable', 'string', 'in:meter,shs,other'],
             'amount' => [
                 'required',
                 'numeric',
@@ -51,12 +48,15 @@ class PublicPaymentRequest extends FormRequest {
 
     public function getPaystackTransaction(): PaystackTransaction {
         $validated = $this->validated();
-        
+
+        $serial = $validated['serial'] ?? $validated['meter_serial'];
+        $deviceType = $validated['device_type'] ?? 'meter';
+
         return new PaystackTransaction([
             'amount' => $validated['amount'],
             'currency' => $validated['currency'],
-            'serial_id' => $validated['meter_serial'],
-            'device_type' => 'meter',
+            'serial_id' => $serial,
+            'device_type' => $deviceType,
             'customer_id' => 0, // Public payment
             'order_id' => Uuid::uuid4()->toString(),
             'reference_id' => Uuid::uuid4()->toString(),

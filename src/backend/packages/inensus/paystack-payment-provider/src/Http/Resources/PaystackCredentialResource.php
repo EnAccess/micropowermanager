@@ -12,7 +12,6 @@ class PaystackCredentialResource extends JsonResource {
             'id' => $this->id,
             'secret_key' => $this->secret_key,
             'public_key' => $this->public_key,
-            'webhook_secret' => $this->webhook_secret,
             'callback_url' => $this->callback_url,
             'merchant_name' => $this->merchant_name,
             'environment' => $this->environment,

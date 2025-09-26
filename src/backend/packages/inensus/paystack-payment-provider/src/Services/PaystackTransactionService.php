@@ -3,19 +3,22 @@
 declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Modules\Transaction;
+
 namespace Inensus\PaystackPaymentProvider\Services;
 
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
+use App\Models\Device;
 use App\Models\Meter\Meter;
+use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
+use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Ramsey\Uuid\Uuid;
-use App\Services\PersonService;
 
 /**
  * @implements IBaseService<PaystackTransaction>
@@ -94,19 +97,19 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
     public function create(array $paystackTransactionData): PaystackTransaction {
         /** @var PaystackTransaction $paystackTransaction */
         $paystackTransaction = $this->paystackTransaction->newQuery()->create($paystackTransactionData);
-        
+
         // Get customer's phone number for sender field
         $customerPhone = $this->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
-        $sender = $customerPhone ?: "";
-        
+        $sender = $customerPhone ?: '';
+
         $paystackTransaction->transaction()->create([
             'amount' => $paystackTransaction->getAmount(),
             'sender' => $sender,
             'message' => $paystackTransaction->getDeviceSerial(),
             'type' => 'energy',
         ]);
-        return $paystackTransaction;
 
+        return $paystackTransaction;
     }
 
     public function delete($paystackTransaction): ?bool {
@@ -152,7 +155,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
             $transactionData['metadata']['agent_id'] = $transactionData['agent_id'];
         }
 
-
         return $this->paystackTransaction->newQuery()->create($transactionData);
     }
 
@@ -191,14 +193,35 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
 
         // Return the customer ID associated with the meter
         $person = $meter->device->person->id;
+
         return $person;
+    }
+
+    public function getCustomerIdBySHSSerial(string $serialId): ?int {
+        // Find SHS by serial number and resolve owning person via device relationship
+        $shs = app()->make(SolarHomeSystem::class)
+            ->newQuery()
+            ->where('serial_number', $serialId)
+            ->first();
+
+        if (!$shs) {
+            return null;
+        }
+
+        $device = $shs->device()->first();
+        if (!$device || !$device->person) {
+            return null;
+        }
+
+        return (int) $device->person->id;
     }
 
     public function getCustomerPhoneByCustomerId(int $customerId): ?string {
         // Get the customer's phone number by customer ID
         try {
-        $personService = app()->make(PersonService::class);
+            $personService = app()->make(PersonService::class);
             $person = $personService->getById($customerId);
+
             return $person->addresses->first()->phone;
         } catch (\Exception $e) {
             return null;

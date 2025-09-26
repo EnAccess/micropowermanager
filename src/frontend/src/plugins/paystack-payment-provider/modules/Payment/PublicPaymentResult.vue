@@ -250,8 +250,8 @@ export default {
     companyHash() {
       return this.$route.params.companyHash
     },
-    companyId() {
-      return this.$route.params.companyId
+    companyIdToken() {
+      return this.$route.query.ct
     },
     reference() {
       const urlParams = new URLSearchParams(window.location.search)
@@ -267,7 +267,7 @@ export default {
       try {
         const response = await this.paymentService.getCompanyInfo(
           this.companyHash,
-          this.companyId,
+          this.companyIdToken,
         )
         this.companyName = response.company.name
       } catch (error) {
@@ -284,7 +284,7 @@ export default {
         this.loading = true
         const response = await this.paymentService.getPaymentResult(
           this.companyHash,
-          this.companyId,
+          this.companyIdToken,
           this.reference,
         )
         this.paymentResult = response
@@ -304,8 +304,8 @@ export default {
         name: "/paystack/public/payment",
         params: {
           companyHash: this.companyHash,
-          companyId: this.companyId,
         },
+        query: Object.fromEntries(new URLSearchParams(window.location.search)),
       })
     },
     goHome() {
@@ -317,8 +317,8 @@ export default {
           name: "/paystack/public/payment",
           params: {
             companyHash: this.companyHash,
-            companyId: this.companyId,
           },
+          query: Object.fromEntries(new URLSearchParams(window.location.search)),
         })
       }
     },
