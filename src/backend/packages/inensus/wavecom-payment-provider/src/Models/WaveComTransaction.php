@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Inensus\WavecomPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $amount
  * @property int    $status
  */
-class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class WaveComTransaction extends BasePaymentProviderTransaction {
     protected $table = 'wavecom_transactions';
     public const RELATION_NAME = 'wavecom_transaction';
     public const STATUS_SUCCESS = 1;

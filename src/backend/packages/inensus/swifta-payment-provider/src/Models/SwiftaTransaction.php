@@ -2,9 +2,8 @@
 
 namespace Inensus\SwiftaPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
 use App\Models\Transaction\BaseManufacturerTransaction;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property float                             $amount
  * @property string                            $cipher
  */
-class SwiftaTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class SwiftaTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'swifta_transaction';
     public const STATUS_SUCCESS = 1;
     public const STATUS_PENDING = 0;

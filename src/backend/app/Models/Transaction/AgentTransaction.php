@@ -3,7 +3,6 @@
 namespace App\Models\Transaction;
 
 use App\Models\Agent;
-use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $status
  * @property string $sender
  */
-class AgentTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class AgentTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'agent_transaction';
 
     /**
