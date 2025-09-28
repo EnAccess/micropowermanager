@@ -3,11 +3,8 @@
 namespace App\Models\Transaction;
 
 use App\Models\Agent;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int    $agent_id
@@ -18,19 +15,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class AgentTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'agent_transaction';
 
-    /**
-     * @return MorphOne<Transaction, $this>
-     */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
 
     /**
      * @return BelongsTo<Agent, $this>

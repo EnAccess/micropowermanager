@@ -3,11 +3,8 @@
 namespace App\Models\Transaction;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int    $user_id
@@ -25,19 +22,6 @@ class CashTransaction extends BasePaymentProviderTransaction {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return MorphOne<Transaction, $this>
-     */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
 
     /**
      * @return MorphMany<TransactionConflicts, $this>
