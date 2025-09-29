@@ -38,8 +38,10 @@ abstract class BasePaymentProviderTransaction extends BaseModel {
      * @return Builder<static>
      */
     public function newQuery(): Builder {
-        /* @var Builder<static> */
-        return parent::newQuery();
+        /** @var Builder<static> $query */
+        $query = parent::newQuery();
+
+        return $query;
     }
 
     /**
