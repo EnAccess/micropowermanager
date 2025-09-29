@@ -27,7 +27,6 @@ class SwiftaTransaction extends BasePaymentProviderTransaction {
         return $this->amount;
     }
 
-
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }

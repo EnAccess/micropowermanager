@@ -22,7 +22,6 @@ class CashTransaction extends BasePaymentProviderTransaction {
         return $this->belongsTo(User::class);
     }
 
-
     /**
      * @return MorphMany<TransactionConflicts, $this>
      */

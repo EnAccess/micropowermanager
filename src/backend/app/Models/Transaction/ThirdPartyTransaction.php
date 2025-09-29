@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 class ThirdPartyTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'third_party_transaction';
 
-
     /**
      * @return MorphMany<TransactionConflicts, $this>
      */

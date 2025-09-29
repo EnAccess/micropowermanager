@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 class AgentTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'agent_transaction';
 
-
     /**
      * @return BelongsTo<Agent, $this>
      */
