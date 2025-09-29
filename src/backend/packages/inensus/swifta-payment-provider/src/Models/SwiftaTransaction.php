@@ -5,6 +5,7 @@ namespace Inensus\SwiftaPaymentProvider\Models;
 use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
