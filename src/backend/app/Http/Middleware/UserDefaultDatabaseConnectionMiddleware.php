@@ -100,6 +100,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         if (Str::startsWith($path, [
             'horizon',
             'laravel-erd',
+            'api/users/password',
         ])) {
             return true;
         }
@@ -115,7 +116,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         }
 
         if ($method === 'POST') {
-            return in_array($path, ['api/users/password', 'api/companies']);
+            return in_array($path, ['api/companies']);
         }
 
         return false;

@@ -102,6 +102,8 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
     });
 });
 Route::post('users/password', [UserPasswordController::class, 'forgotPassword']);
+Route::get('users/password/validate/{token}', [UserPasswordController::class, 'validateResetToken']);
+Route::post('users/password/confirm', [UserPasswordController::class, 'confirmReset']);
 
 // Protected Pages Password reset routes
 Route::post('protected-page-password/reset', [ProtectedPagePasswordResetController::class, 'sendResetEmail']);
