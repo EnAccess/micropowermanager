@@ -115,7 +115,6 @@
     "larastan-packages": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=5 packages/",
     "rector-fix": "vendor/bin/rector",
     "rector-check": "vendor/bin/rector --dry-run",
-    "rector-check-github": "vendor/bin/rector --dry-run --output-format=github",
     "rector-version": "vendor/bin/rector --version"
   }
 }
