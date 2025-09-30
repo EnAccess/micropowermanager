@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,8 +25,8 @@ class AgentPerformanceMetricsResource extends JsonResource {
     /**
      * Customize the response for the resource.
      *
-     * @param Request                       $request
-     * @param \Illuminate\Http\JsonResponse $response
+     * @param Request      $request
+     * @param JsonResponse $response
      *
      * @return void
      */

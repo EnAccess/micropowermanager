@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use MPM\User\Events\UserCreatedEvent;
+use Tymon\JWTAuth\JWTGuard;
 
 class UserService {
     public function __construct(
@@ -23,7 +24,7 @@ class UserService {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
 
         if ($companyId === null) {
-            /** @var \Tymon\JWTAuth\JWTGuard $guard */
+            /** @var JWTGuard $guard */
             $guard = auth('api');
             $payload = $guard->check() ? $guard->payload() : null;
             $companyId = $payload?->get('companyId');

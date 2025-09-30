@@ -18,6 +18,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
@@ -45,7 +46,7 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, SteamaCustomer> */
+        /** @var Collection<int, SteamaCustomer> */
         $customers = SteamaCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {

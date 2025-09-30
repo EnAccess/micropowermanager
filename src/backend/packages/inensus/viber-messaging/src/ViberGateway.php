@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Exceptions\MessageNotSentException;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
 use Inensus\ViberMessaging\Services\ViberMessageService;
+use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Viber\Bot;
 
@@ -34,7 +35,7 @@ class ViberGateway {
     ) {
         try {
             $this->bot->getClient()->sendMessage(
-                (new \Viber\Api\Message\Text())
+                (new Text())
                     ->setSender($this->botSender)
                     ->setReceiver($viberId)
                     ->setText($body)

@@ -5,6 +5,7 @@ namespace App\Models\AccessRate;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterTariff;
 use App\Models\PaymentHistory;
+use Database\Factories\AccessRate\AccessRateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property int $period    when the payment repeats itself
  */
 class AccessRate extends BaseModel {
-    /** @use HasFactory<\Database\Factories\AccessRate\AccessRateFactory> */
+    /** @use HasFactory<AccessRateFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'access_rate';

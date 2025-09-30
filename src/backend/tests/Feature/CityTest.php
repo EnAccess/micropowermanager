@@ -55,7 +55,7 @@ class CityTest extends TestCase {
         $cityData = [
             'cluster_id' => $this->clusterIds[0],
             'mini_grid_id' => $this->miniGridIds[0],
-            'name' => $this->faker->city,
+            'name' => $this->faker->city(),
         ];
         $response = $this->actingAs($this->user)->post('/api/cities', $cityData);
         $response->assertStatus(201);
@@ -86,7 +86,7 @@ class CityTest extends TestCase {
         while ($clusterCount > 0) {
             $user = UserFactory::new()->create();
             $cluster = ClusterFactory::new()->create([
-                'name' => $this->faker->unique()->companySuffix,
+                'name' => $this->faker->unique()->companySuffix(),
                 'manager_id' => $this->user->id,
             ]);
             array_push($this->clusterIds, $cluster->id);
@@ -95,12 +95,12 @@ class CityTest extends TestCase {
                 $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
                 $miniGrid = MiniGridFactory::new()->create([
                     'cluster_id' => $cluster->id,
-                    'name' => $this->faker->unique()->companySuffix,
+                    'name' => $this->faker->unique()->companySuffix(),
                 ]);
 
                 while ($cityCount > 0) {
                     $city = CityFactory::new()->create([
-                        'name' => $this->faker->unique()->citySuffix,
+                        'name' => $this->faker->unique()->citySuffix(),
                         'country_id' => 1,
                         'mini_grid_id' => $miniGrid->id,
                         'cluster_id' => $cluster->id,

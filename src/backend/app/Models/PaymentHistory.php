@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
@@ -32,14 +33,14 @@ use Illuminate\Support\Facades\DB;
  */
 class PaymentHistory extends BaseModel {
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function paidFor(): MorphTo {
         return $this->morphTo();
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function payer(): MorphTo {
         return $this->morphTo();

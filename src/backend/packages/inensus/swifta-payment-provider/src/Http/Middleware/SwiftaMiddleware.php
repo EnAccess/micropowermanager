@@ -5,10 +5,13 @@ namespace Inensus\SwiftaPaymentProvider\Http\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\JWTGuard;
+
+// Test
 
 class SwiftaMiddleware {
     public function handle(Request $request, \Closure $next) {
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        /** @var JWTGuard $guard */
         $guard = auth();
 
         if ($guard->payload()->get('usr') !== 'swifta-token') {

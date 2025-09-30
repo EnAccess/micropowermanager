@@ -35,13 +35,13 @@ class AgentTest extends TestCase {
         $this->createCity();
         $this->createAgentCommission();
         $postData = [
-            'name' => $this->faker->name,
-            'surname' => $this->faker->name,
+            'name' => $this->faker->name(),
+            'surname' => $this->faker->name(),
             'birth_date' => $this->faker->date(),
-            'password' => $this->faker->password,
-            'email' => $this->faker->unique()->safeEmail,
+            'password' => $this->faker->password(),
+            'email' => $this->faker->unique()->safeEmail(),
             'mini_grid_id' => $this->miniGrid->id,
-            'phone' => $this->faker->phoneNumber,
+            'phone' => $this->faker->phoneNumber(),
             'agent_commission_id' => $this->agentCommissions[0]->id,
             'city_id' => $this->city->id,
         ];
@@ -68,7 +68,7 @@ class AgentTest extends TestCase {
             'name' => 'updated name',
             'surname' => 'updated surname',
             'birthday' => $this->faker->date(),
-            'phone' => $this->faker->phoneNumber,
+            'phone' => $this->faker->phoneNumber(),
             'gender' => 'male',
             'commissionTypeId' => 1,
         ];

@@ -5,6 +5,7 @@ namespace App\Models\Address;
 use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
+use Database\Factories\Address\AddressFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Model       $owner
  */
 class Address extends BaseModel {
-    /** @use HasFactory<\Database\Factories\Address\AddressFactory> */
+    /** @use HasFactory<AddressFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'address';

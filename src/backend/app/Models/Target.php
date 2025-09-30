@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\TargetFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -19,7 +21,7 @@ use Illuminate\Support\Facades\DB;
  * @property int    $city_id
  */
 class Target extends BaseModel {
-    /** @use HasFactory<\Database\Factories\TargetFactory> */
+    /** @use HasFactory<TargetFactory> */
     use HasFactory;
 
     /**
@@ -68,7 +70,7 @@ class Target extends BaseModel {
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function owner(): MorphTo {
         return $this->morphTo();

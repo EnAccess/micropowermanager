@@ -16,6 +16,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Services\TicketCommentService;
@@ -294,7 +295,7 @@ class SmsController extends Controller {
         return new ApiResource($smses);
     }
 
-    public function search(string $search): \Illuminate\Http\Resources\Json\AnonymousResourceCollection {
+    public function search(string $search): AnonymousResourceCollection {
         // search in people
         $list = $this->person::with('addresses')
             ->whereHas(

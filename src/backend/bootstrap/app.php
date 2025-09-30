@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -37,7 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // additional middleware group to `web` and `api` default groups
         $middleware->group('agent_api', [
-            Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SubstituteBindings::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
