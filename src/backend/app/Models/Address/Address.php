@@ -2,10 +2,10 @@
 
 namespace App\Models\Address;
 
-use Database\Factories\Address\AddressFactory;
 use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
+use Database\Factories\Address\AddressFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

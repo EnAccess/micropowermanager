@@ -25,7 +25,7 @@ class AgentPerformanceMetricsResource extends JsonResource {
     /**
      * Customize the response for the resource.
      *
-     * @param Request                       $request
+     * @param Request      $request
      * @param JsonResponse $response
      *
      * @return void

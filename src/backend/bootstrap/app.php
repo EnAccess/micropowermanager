@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Console\Commands\MailApplianceDebtsCommand;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
@@ -13,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Tymon\JWTAuth\Exceptions\JWTException;

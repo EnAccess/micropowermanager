@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Inensus\WavecomPaymentProvider\Http\Requests;
 
-use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 
 class UploadTransactionRequest extends FormRequest {
     public const TRANSACTION_FILE = 'transaction_file';

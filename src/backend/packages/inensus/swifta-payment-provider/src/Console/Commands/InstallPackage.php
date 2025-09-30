@@ -2,7 +2,6 @@
 
 namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 
-use Tymon\JWTAuth\JWTGuard;
 use App\Models\User;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
@@ -11,6 +10,7 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
+use Tymon\JWTAuth\JWTGuard;
 
 class InstallPackage extends Command {
     protected $signature = 'swifta-payment-provider:install';

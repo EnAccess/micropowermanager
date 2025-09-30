@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Database\Factories\AgentCommissionFactory;
 use App\Models\Base\BaseModel;
+use Database\Factories\AgentCommissionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;

@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Builder;
 use App\Events\NewLogEvent;
 use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;

@@ -2,13 +2,13 @@
 
 namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 
-use Tymon\JWTAuth\JWTGuard;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
+use Tymon\JWTAuth\JWTGuard;
 
 class UpdatePackage extends Command {
     protected $signature = 'swifta-payment-provider:update';

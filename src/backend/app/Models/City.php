@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Database\Factories\CityFactory;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
+use Database\Factories\CityFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

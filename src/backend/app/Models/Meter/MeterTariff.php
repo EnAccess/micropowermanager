@@ -2,13 +2,13 @@
 
 namespace App\Models\Meter;
 
-use Database\Factories\Meter\MeterTariffFactory;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Base\BaseModel;
 use App\Models\CustomerGroup;
 use App\Models\SocialTariff;
 use App\Models\TariffPricingComponent;
 use App\Models\TimeOfUsage;
+use Database\Factories\Meter\MeterTariffFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;

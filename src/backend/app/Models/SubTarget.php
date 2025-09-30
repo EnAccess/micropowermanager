@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Database\Factories\SubTargetFactory;
 use App\Models\Base\BaseModel;
+use Database\Factories\SubTargetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use Tymon\JWTAuth\JWTGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -13,6 +12,7 @@ use MPM\TenantResolver\ApiCompanyResolverService;
 use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tymon\JWTAuth\JWTGuard;
 
 /**
  * The goal is to have the database connection on each incomming http request.

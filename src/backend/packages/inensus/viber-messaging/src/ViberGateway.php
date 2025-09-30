@@ -2,12 +2,12 @@
 
 namespace Inensus\ViberMessaging;
 
-use Viber\Api\Message\Text;
 use App\Models\Sms;
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Exceptions\MessageNotSentException;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
 use Inensus\ViberMessaging\Services\ViberMessageService;
+use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Viber\Bot;
 

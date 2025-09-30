@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Database\Factories\MainSettingsFactory;
 use App\Models\Base\BaseModel;
+use Database\Factories\MainSettingsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**

@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use Symfony\Component\Console\Input\InputOption;
 use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractSharedCommand extends Command {

@@ -22,8 +22,8 @@ use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
 use Inensus\Ticket\Providers\TicketServiceProvider;
 use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
-use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
 use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
+use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
 
 return [
     AppServiceProvider::class,

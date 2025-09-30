@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Database\Factories\AgentBalanceHistoryFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
+use Database\Factories\AgentBalanceHistoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 

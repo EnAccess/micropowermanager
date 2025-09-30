@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Database\Factories\SolarHomeSystemFactory;
 use App\Models\Base\BaseModel;
+use Database\Factories\SolarHomeSystemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;

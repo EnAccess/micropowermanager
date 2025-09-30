@@ -2,10 +2,10 @@
 
 namespace Inensus\SwiftaPaymentProvider\Http\Middleware;
 
-use Tymon\JWTAuth\JWTGuard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\JWTGuard;
 
 // Test
 

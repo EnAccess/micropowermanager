@@ -2,10 +2,10 @@
 
 namespace Inensus\Ticket\Services;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\User;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketUser;
 

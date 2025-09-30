@@ -3,7 +3,7 @@
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
-/**
+/*
  * Laravel - A PHP Framework For Web Artisans.
  *
  * @author   Taylor Otwell <taylor@laravel.com>

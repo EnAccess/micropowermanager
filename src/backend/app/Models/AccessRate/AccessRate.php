@@ -2,10 +2,10 @@
 
 namespace App\Models\AccessRate;
 
-use Database\Factories\AccessRate\AccessRateFactory;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterTariff;
 use App\Models\PaymentHistory;
+use Database\Factories\AccessRate\AccessRateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

@@ -2,7 +2,6 @@
 
 namespace Inensus\SteamaMeter\Tests\Unit;
 
-use Illuminate\Database\Eloquent\Collection;
 use App\Models\Address\Address;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
@@ -19,6 +18,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SteamaMeter\Models\SteamaCustomer;

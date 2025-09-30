@@ -2,7 +2,6 @@
 
 namespace Inensus\ViberMessaging\Http\Controllers;
 
-use Viber\Api\Message\Text;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsResendInformationKeyService;
@@ -13,6 +12,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Services\ViberContactService;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
+use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Viber\Bot;
 

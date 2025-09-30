@@ -1,28 +1,28 @@
 <?php
 
+use Knuckles\Scribe\Extracting\Strategies;
+use Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromBodyParamAttribute;
+use Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromBodyParamTag;
+use Knuckles\Scribe\Extracting\Strategies\Headers\GetFromHeaderAttribute;
+use Knuckles\Scribe\Extracting\Strategies\Headers\GetFromHeaderTag;
 use Knuckles\Scribe\Extracting\Strategies\Metadata\GetFromDocBlocks;
 use Knuckles\Scribe\Extracting\Strategies\Metadata\GetFromMetadataAttributes;
-use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromLaravelAPI;
-use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamAttribute;
-use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamTag;
 use Knuckles\Scribe\Extracting\Strategies\QueryParameters\GetFromFormRequest;
 use Knuckles\Scribe\Extracting\Strategies\QueryParameters\GetFromInlineValidator;
 use Knuckles\Scribe\Extracting\Strategies\QueryParameters\GetFromQueryParamAttribute;
 use Knuckles\Scribe\Extracting\Strategies\QueryParameters\GetFromQueryParamTag;
-use Knuckles\Scribe\Extracting\Strategies\Headers\GetFromHeaderAttribute;
-use Knuckles\Scribe\Extracting\Strategies\Headers\GetFromHeaderTag;
-use Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromBodyParamAttribute;
-use Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromBodyParamTag;
-use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseAttributes;
-use Knuckles\Scribe\Extracting\Strategies\Responses\UseTransformerTags;
-use Knuckles\Scribe\Extracting\Strategies\Responses\UseApiResourceTags;
-use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseTag;
-use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseFileTag;
-use Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls;
 use Knuckles\Scribe\Extracting\Strategies\ResponseFields\GetFromResponseFieldAttribute;
 use Knuckles\Scribe\Extracting\Strategies\ResponseFields\GetFromResponseFieldTag;
+use Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls;
+use Knuckles\Scribe\Extracting\Strategies\Responses\UseApiResourceTags;
+use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseAttributes;
+use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseFileTag;
+use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseTag;
+use Knuckles\Scribe\Extracting\Strategies\Responses\UseTransformerTags;
+use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromLaravelAPI;
+use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamAttribute;
+use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamTag;
 use Knuckles\Scribe\Matching\RouteMatcher;
-use Knuckles\Scribe\Extracting\Strategies;
 
 return [
     // The HTML <title> for the generated documentation. If this is empty, Scribe will infer it from config('app.name').

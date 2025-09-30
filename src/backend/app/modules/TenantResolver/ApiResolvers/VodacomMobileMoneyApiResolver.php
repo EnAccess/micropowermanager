@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MPM\TenantResolver\ApiResolvers;
 
-use Tymon\JWTAuth\JWTGuard;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\JWTGuard;
 
 class VodacomMobileMoneyApiResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {

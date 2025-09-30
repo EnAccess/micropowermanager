@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Database\Factories\AgentFactory;
 use App\Models\Address\Address;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use Database\Factories\AgentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Agent;
+use App\Models\User;
 
 return [
     'defaults' => [

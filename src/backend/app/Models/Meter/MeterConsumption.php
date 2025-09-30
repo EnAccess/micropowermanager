@@ -2,8 +2,8 @@
 
 namespace App\Models\Meter;
 
-use Database\Factories\Meter\MeterConsumptionFactory;
 use App\Models\Base\BaseModel;
+use Database\Factories\Meter\MeterConsumptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

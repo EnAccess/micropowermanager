@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Database\Factories\GeographicalInformationFactory;
 use App\Models\Base\BaseModel;
+use Database\Factories\GeographicalInformationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;

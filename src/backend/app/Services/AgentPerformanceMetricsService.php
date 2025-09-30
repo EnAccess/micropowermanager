@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Collection;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AgentPerformanceMetricsService {

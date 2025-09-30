@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Events\NewLogEvent;
 use App\Models\Log;
+use Illuminate\Database\Eloquent\Model;
 
 class LogListener {
     public function __construct(private Log $log) {}

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Tymon\JWTAuth\JWTGuard;
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\CompanyDatabase;
@@ -14,6 +13,7 @@ use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTGuard;
 
 class AgentWebController extends Controller {
     public function __construct(

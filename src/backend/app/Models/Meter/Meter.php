@@ -2,7 +2,6 @@
 
 namespace App\Models\Meter;
 
-use Database\Factories\Meter\MeterFactory;
 use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Base\BaseModel;
@@ -12,6 +11,7 @@ use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Database\Factories\Meter\MeterFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

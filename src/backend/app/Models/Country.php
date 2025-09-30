@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Database\Factories\CountryFactory;
 use App\Models\Base\BaseModel;
+use Database\Factories\CountryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

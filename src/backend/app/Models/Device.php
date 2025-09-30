@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Database\Factories\DeviceFactory;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use Carbon\Carbon;
+use Database\Factories\DeviceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int                         $connection_group_id
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property Carbon                      $created_at
+ * @property Carbon                      $updated_at
  * @property Meter|SolarHomeSystem|EBike $device
  * @property Person                      $person
  * @property Address                     $address

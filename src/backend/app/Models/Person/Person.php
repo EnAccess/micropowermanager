@@ -178,8 +178,8 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     public function latestPayment(): HasOne {
         return $this->hasOne(PaymentHistory::class, 'payer_id')->latestOfMany('created_at');
     }
-    protected function casts(): array
-    {
+
+    protected function casts(): array {
         return [
             'additional_json' => 'array',
         ];

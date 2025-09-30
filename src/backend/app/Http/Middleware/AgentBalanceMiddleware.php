@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
 use App\Exceptions\AgentRiskBalanceExceeded;
 use App\Exceptions\DownPaymentBiggerThanAmountException;
 use App\Exceptions\DownPaymentNotFoundException;
@@ -10,6 +9,7 @@ use App\Exceptions\TransactionAmountNotFoundException;
 use App\Services\AgentAssignedApplianceService;
 use App\Services\AgentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class AgentBalanceMiddleware {
     public function __construct(
@@ -20,8 +20,8 @@ class AgentBalanceMiddleware {
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param \Closure                 $next
+     * @param Request  $request
+     * @param \Closure $next
      *
      * @return mixed
      */

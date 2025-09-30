@@ -2,11 +2,11 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
-use PhpOffice\PhpSpreadsheet\Exception;
 use Illuminate\Http\Request;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
 use Inensus\Ticket\Services\TicketService;
+use PhpOffice\PhpSpreadsheet\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TicketExportController {

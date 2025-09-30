@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Tymon\JWTAuth\JWTGuard;
 use App\Exceptions\MailNotSentException;
 use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
@@ -10,6 +9,7 @@ use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use MPM\User\Events\UserCreatedEvent;
+use Tymon\JWTAuth\JWTGuard;
 
 class UserService {
     public function __construct(
