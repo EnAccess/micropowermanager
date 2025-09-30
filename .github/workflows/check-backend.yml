@@ -107,5 +107,5 @@ jobs:
         working-directory: ./src/backend
 
       - name: Run Rector
-        run: ./vendor/bin/rector --dry-run --output-format=github | sed -E 's/file=[^:]+/file=src\/backend\/\0/'
+        run: ./vendor/bin/rector --dry-run --output-format=github | sed -E 's#(file=)(src/backend/)?([^,]*)#\1src/backend/\3#g'
         working-directory: ./src/backend
