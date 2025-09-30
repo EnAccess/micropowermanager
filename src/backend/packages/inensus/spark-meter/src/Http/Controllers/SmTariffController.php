@@ -51,7 +51,7 @@ class SmTariffController extends Controller implements IBaseController {
         return new SparkResource($this->tariffService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->tariffService->getSmTariffsCount();
     }
 }

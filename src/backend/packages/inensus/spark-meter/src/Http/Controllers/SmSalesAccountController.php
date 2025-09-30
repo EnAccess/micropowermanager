@@ -27,7 +27,7 @@ class SmSalesAccountController implements IBaseController {
         return new SparkResource($this->smSalesAccountService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->smSalesAccountService->getSmSalesAccountsCount();
     }
 }

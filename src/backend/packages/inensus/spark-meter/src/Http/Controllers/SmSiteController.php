@@ -31,7 +31,7 @@ class SmSiteController implements IBaseController {
         return new SparkResource($this->siteService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->siteService->getSmSitesCount();
     }
 

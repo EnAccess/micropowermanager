@@ -197,7 +197,7 @@ class SteamaSiteService implements ISynchronizeService {
         return $this->cluster->newQuery()->latest('created_at')->first();
     }
 
-    private function steamaSiteHasher(array $steamaSite) {
+    private function steamaSiteHasher(array $steamaSite): string {
         return $this->apiHelpers->makeHash([
             $steamaSite['name'],
             $steamaSite['latitude'],

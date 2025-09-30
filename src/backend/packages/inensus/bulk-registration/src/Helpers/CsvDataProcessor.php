@@ -26,7 +26,7 @@ class CsvDataProcessor {
         ];
     }
 
-    public function processParsedCsvData($csvData) {
+    public function processParsedCsvData($csvData): array {
         Collect($csvData)->each(function (array $row) {
             try {
                 DB::connection('tenant')->beginTransaction();

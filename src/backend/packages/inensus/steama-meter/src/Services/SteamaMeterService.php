@@ -307,7 +307,7 @@ class SteamaMeterService implements ISynchronizeService {
         return $stmMeter->fresh();
     }
 
-    private function steamaMeterHasher(array $steamaMeter) {
+    private function steamaMeterHasher(array $steamaMeter): string {
         return $this->apiHelpers->makeHash([
             $steamaMeter['reference'],
             $steamaMeter['version'],

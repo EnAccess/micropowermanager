@@ -34,7 +34,7 @@ class SteamaCustomerController extends Controller implements IBaseController {
         return new SteamaResource($this->customerService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->customerService->getCustomersCount();
     }
 

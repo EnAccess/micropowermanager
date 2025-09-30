@@ -502,7 +502,7 @@ class SteamaCustomerService implements ISynchronizeService {
         });
     }
 
-    private function steamaCustomerHasher(array $steamaCustomer) {
+    private function steamaCustomerHasher(array $steamaCustomer): string {
         return $this->apiHelpers->makeHash([
             $steamaCustomer['user_type'],
             $steamaCustomer['control_type'],

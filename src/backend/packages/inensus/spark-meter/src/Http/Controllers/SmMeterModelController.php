@@ -30,7 +30,7 @@ class SmMeterModelController extends Controller implements IBaseController {
         return new SparkResource($this->meterModelService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->meterModelService->getSmMeterModelsCount();
     }
 }

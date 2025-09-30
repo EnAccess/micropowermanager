@@ -27,7 +27,7 @@ return RectorConfig::configure()
         // deadCode: true,
         // typeDeclarations: true
     )
-    ->withTypeCoverageLevel(0)
+    ->withTypeCoverageLevel(30)
     // ->withCodeQualityLevel(0)
     // ->withDeadCodeLevel(0)
     ->withSetProviders(LaravelSetProvider::class)

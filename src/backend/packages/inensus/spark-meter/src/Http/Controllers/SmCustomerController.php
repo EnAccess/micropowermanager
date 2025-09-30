@@ -31,7 +31,7 @@ class SmCustomerController implements IBaseController {
         return new SparkResource($this->customerService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->customerService->getSmCustomersCount();
     }
 

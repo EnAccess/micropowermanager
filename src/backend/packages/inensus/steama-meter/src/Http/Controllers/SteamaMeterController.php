@@ -28,7 +28,7 @@ class SteamaMeterController extends Controller implements IBaseController {
         return new SteamaResource($this->meterService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->meterService->getMetersCount();
     }
 }

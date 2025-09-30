@@ -28,7 +28,7 @@ class SteamaAgentController extends Controller implements IBaseController {
         return new SteamaResource($this->agentService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->agentService->getAgentsCount();
     }
 }

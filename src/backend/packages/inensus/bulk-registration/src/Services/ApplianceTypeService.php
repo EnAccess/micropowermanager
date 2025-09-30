@@ -15,7 +15,7 @@ class ApplianceTypeService extends CreatorService {
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    public function resolveCsvDataFromComingRow($csvData): void {
         $applianceTypeConfig = config('bulk-registration.csv_fields.appliance_type');
 
         $applianceTypes = config('bulk-registration.appliance_types');
