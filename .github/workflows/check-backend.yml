@@ -106,10 +106,11 @@ jobs:
         run: composer install --no-interaction --prefer-dist
         working-directory: ./src/backend
 
+      - name: Run Rector Test
+        run: echo "::error file=src/backend/packages/inensus/swifta-payment-provider/src/Console/Commands/UpdatePackage.php,line=9::Something wrong"
+        working-directory: ./src/backend
+
       - name: Run Rector
         run: ./vendor/bin/rector --dry-run --output-format=github | sed -E 's#(file=)(src/backend/)?([^,]*)#\1src/backend/\3#g'
         working-directory: ./src/backend
 
-      - name: Run Rector Test
-        run: echo "::error file=src/backend/packages/inensus/swifta-payment-provider/src/Console/Commands/UpdatePackage.php,line=2::Something wrong"
-        working-directory: ./src/backend
