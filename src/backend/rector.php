@@ -21,19 +21,20 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
     // ->withPhpSets()
+    // uncomment to apply code quality improvements
     // ->withPreparedSets(
     //     deadCode: true,
     //     codeQuality: true,
     //     typeDeclarations: true
     // )
-    ->withTypeCoverageLevel(0)
-    ->withDeadCodeLevel(0)
-    ->withCodeQualityLevel(0)
+    // ->withTypeCoverageLevel(0)
+    // ->withDeadCodeLevel(0)
+    // ->withCodeQualityLevel(0)
     ->withSetProviders(LaravelSetProvider::class)
     ->withComposerBased(laravel: true)
     ->withSets([
-        LaravelSetList::LARAVEL_CODE_QUALITY,
-        LaravelSetList::LARAVEL_COLLECTION,
+        // LaravelSetList::LARAVEL_CODE_QUALITY,
+        // LaravelSetList::LARAVEL_COLLECTION,
     ])
     ->withSkip([
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
