@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -19,7 +20,7 @@ class AgentSoldApplianceWebTest extends TestCase {
         $this->assertEquals(count($response['data']), 1);
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

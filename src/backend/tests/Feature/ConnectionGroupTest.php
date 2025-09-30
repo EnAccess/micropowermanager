@@ -6,6 +6,7 @@ use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionGroupFactory;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -58,7 +59,7 @@ class ConnectionGroupTest extends TestCase {
         $this->assertEquals($response['data']['name'], $connectionGroupData['name']);
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

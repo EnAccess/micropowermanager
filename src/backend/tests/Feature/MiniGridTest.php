@@ -10,6 +10,7 @@ use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\MiniGridFactory;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -118,7 +119,7 @@ class MiniGridTest extends TestCase {
         }
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

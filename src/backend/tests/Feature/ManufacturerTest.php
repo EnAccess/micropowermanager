@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -41,7 +42,7 @@ class ManufacturerTest extends TestCase {
         $this->assertEquals($response['data']['name'], $manufacturerData['name']);
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

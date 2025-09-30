@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Inensus\Ticket\Models\TicketCategory;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -108,7 +109,7 @@ class TicketTest extends TestCase {
         $this->assertEquals(1, count($response['data']['data']));
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

@@ -12,6 +12,7 @@ use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -21,7 +22,7 @@ class AgentSellApplianceTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

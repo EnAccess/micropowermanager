@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AgentCommission;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -65,7 +66,7 @@ class AgentCommissionTest extends TestCase {
         $this->assertEquals(0, $agentsCount);
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

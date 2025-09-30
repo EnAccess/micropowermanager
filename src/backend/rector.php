@@ -25,8 +25,9 @@ return RectorConfig::configure()
     ->withPreparedSets(
         // codeQuality: true,
         // deadCode: true,
-        typeDeclarations: true
+        // typeDeclarations: true
     )
+    ->withTypeCoverageLevel(0)
     // ->withCodeQualityLevel(0)
     // ->withDeadCodeLevel(0)
     ->withSetProviders(LaravelSetProvider::class)

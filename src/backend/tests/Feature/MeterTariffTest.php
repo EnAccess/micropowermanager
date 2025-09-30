@@ -7,6 +7,7 @@ use App\Models\Meter\MeterTariff;
 use App\Models\SocialTariff;
 use App\Models\TimeOfUsage;
 use App\Services\TariffPricingComponentService;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -213,7 +214,7 @@ class MeterTariffTest extends TestCase {
         $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

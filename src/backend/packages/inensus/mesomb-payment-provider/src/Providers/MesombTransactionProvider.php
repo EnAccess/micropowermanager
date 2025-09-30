@@ -8,7 +8,6 @@ use App\Models\Transaction\Transaction;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPayerMustHaveOnlyOneConnectedMeterException;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPaymentPhoneNumberNotFoundException;

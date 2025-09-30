@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Agent;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -24,7 +25,7 @@ class AgentChargeTest extends TestCase {
         $this->assertEquals($agent->balance, $agentBalance + $postData['amount']);
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
