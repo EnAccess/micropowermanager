@@ -36,6 +36,7 @@ return RectorConfig::configure()
         // LaravelSetList::LARAVEL_CODE_QUALITY,
         // LaravelSetList::LARAVEL_COLLECTION,
     ])
-    ->withSkip([
-        AddClosureVoidReturnTypeWhereNoReturnRector::class,
-    ]);
+    // ->withSkip([
+    //     AddClosureVoidReturnTypeWhereNoReturnRector::class,
+    // ])
+;

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
+// Test
+
 class SwiftaMiddleware {
     public function handle(Request $request, \Closure $next) {
         /** @var \Tymon\JWTAuth\JWTGuard $guard */

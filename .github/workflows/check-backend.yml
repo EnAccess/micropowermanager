@@ -1,4 +1,4 @@
-name: Code Quality
+name: Code Quality (Backend)
 
 on:
   push:
@@ -71,7 +71,6 @@ jobs:
 
   larastan-next:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -89,6 +88,7 @@ jobs:
       - name: Run PHPStan/Larastan (next level)
         run: composer larastan-next
         working-directory: ./src/backend
+        continue-on-error: true
 
   rector:
     runs-on: ubuntu-latest
