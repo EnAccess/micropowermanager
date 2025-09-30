@@ -78,7 +78,10 @@ export default {
       try {
         let response = await this.userPasswordService.forgotPassword(this.email)
         if (response.status_code === 200) {
-          this.alertNotify("success", "New password has sended to your email.")
+          this.alertNotify(
+            "success",
+            "If the email exists, a reset link has been sent.",
+          )
           setTimeout(() => {
             this.$router.push("/")
           }, 1500)
