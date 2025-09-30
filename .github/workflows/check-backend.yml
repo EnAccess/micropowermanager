@@ -107,8 +107,11 @@ jobs:
         working-directory: ./src/backend
 
       - name: Run Rector Test
-        run: echo "::error file=src/backend/packages/inensus/swifta-payment-provider/src/Http/Middleware/SwiftaMiddleware.php::Something wrong"
+        run: echo "::error file=packages/inensus/swifta-payment-provider/src/Http/Middleware/SwiftaMiddleware.php::Something wrong"
         working-directory: ./src/backend
+
+      - name: Run Rector Test 2
+        run: echo "::error file=src/backend/packages/inensus/swifta-payment-provider/src/Http/Middleware/SwiftaMiddleware.php::Something wrong 2"
 
       - name: Run Rector
         run: ./vendor/bin/rector --dry-run --output-format=github | sed -E 's#(file=)(src/backend/)?([^,]*)#\1src/backend/\3#g'
