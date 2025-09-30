@@ -158,7 +158,7 @@ class WebhookController extends Controller {
         return "No transaction found for meter serial: $meterSerial";
     }
 
-    private function answerToCustomer(Bot $bot, Sender $botSender, $event, $message): void {
+    private function answerToCustomer(Bot $bot, Sender $botSender, $event, string $message): void {
         $bot->getClient()->sendMessage(
             (new Text())
                 ->setSender($botSender)

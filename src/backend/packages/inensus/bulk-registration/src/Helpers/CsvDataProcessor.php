@@ -92,7 +92,7 @@ class CsvDataProcessor {
         return $this->recentlyCreatedRecords;
     }
 
-    private function createRecordFromCsv($row, $serviceName) {
+    private function createRecordFromCsv(array $row, $serviceName) {
         $service = app()->make($serviceName);
 
         return $service->resolveCsvDataFromComingRow($row);
