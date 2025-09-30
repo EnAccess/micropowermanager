@@ -107,7 +107,7 @@ jobs:
         working-directory: ./src/backend
 
       - name: Run Rector Test
-        run: echo "::error file=src/backend/packages/inensus/swifta-payment-provider/src/Console/Commands/UpdatePackage.php::Something wrong"
+        run: echo "::error file=src/backend/packages/inensus/swifta-payment-provider/src/Http/Middleware/SwiftaMiddleware.php::Something wrong"
         working-directory: ./src/backend
 
       - name: Run Rector
