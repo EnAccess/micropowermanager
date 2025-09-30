@@ -234,8 +234,8 @@ class KelinMeterService implements ISynchronizeService {
                 // $geographicalCoordinatesResult = $this->geographicalLocationFinder->getCoordinatesGivenAddress($kelinCustomer->address);
                 // $geoLocation->points = $geographicalCoordinatesResult['lat'] . ',' . $geographicalCoordinatesResult['lng'];
 
-                $points = $kelinCustomer->address != null ? $kelinCustomer->address : ',';
-                $p = $points == null ? ',' : $kelinCustomer->address;
+                $points = $kelinCustomer->mpmPerson->addresses[0]->geo->points;
+                $p = $points == null ? ',' : $kelinCustomer->mpmPerson->addresses[0];
                 $geoLocation->points = $p;
                 $connectionType = $this->connectionType->newQuery()->first();
                 if (!$connectionType) {
@@ -251,7 +251,7 @@ class KelinMeterService implements ISynchronizeService {
                 }
                 $meter->connection_type_id = $connectionType->id;
                 $meter->connection_group_id = $connectionGroup->id;
-                $meter->owner()->associate($kelinCustomer->mpmPerson);
+                $meter->device->person()->associate($kelinCustomer->mpmPerson);
                 $tariff = $this->meterTariff->newQuery()->firstOrCreate(['id' => 1], [
                     'name' => 'Automatically Created Tariff',
                     'price' => 0,
@@ -259,10 +259,14 @@ class KelinMeterService implements ISynchronizeService {
                 ]);
                 $meter->tariff()->associate($tariff);
                 $meter->save();
-                $kelinCustomerAddress = $kelinCustomer->mpmPerson()->newQuery()->with('addresses.city')
+                $kelinCustomerAddress = $kelinCustomer
+                    ->mpmPerson
+                    ->with('addresses.city')
                     ->whereHas('addresses', function ($q) {
                         return $q->where('is_primary', 1);
-                    })->first();
+                    })
+                    ->first()
+                ;
 
                 $city = $kelinCustomerAddress->addresses[0]->city()->first() ?? null;
                 $address = new Address();

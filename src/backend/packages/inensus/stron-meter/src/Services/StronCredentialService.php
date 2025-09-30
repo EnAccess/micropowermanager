@@ -59,13 +59,8 @@ class StronCredentialService {
                 'is_authenticated' => true,
             ]);
         } catch (ClientException $cException) {
-            if ($cException->getResponse()->getStatusCode() === 400) {
-                $credential->is_authenticated = false;
-                $credential->api_token = null;
-            } else {
-                $credential->is_authenticated = null;
-                $credential->api_token = null;
-            }
+            $credential->is_authenticated = false;
+            $credential->api_token = null;
         } catch (\Exception $exception) {
             Log::critical(
                 'Unknown exception while authenticating StronMeter',

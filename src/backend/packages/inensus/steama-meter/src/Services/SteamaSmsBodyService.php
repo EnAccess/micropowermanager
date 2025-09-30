@@ -19,10 +19,10 @@ class SteamaSmsBodyService {
         return $this->smsBody->newQuery()->get();
     }
 
-    public function updateSmsBodies($smsBodiesData) {
+    public function updateSmsBodies(array $smsBodiesData) {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData)->each(function (array $smsBody) use ($smsBodies) {
-            $smsBodies->filter(function (array $body) use ($smsBody): bool {
+            $smsBodies->filter(function (SteamaSmsBody $body) use ($smsBody): bool {
                 return $body['id'] === $smsBody['id'];
             })->first()->update([
                 'body' => $smsBody['body'],

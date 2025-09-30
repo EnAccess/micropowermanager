@@ -352,7 +352,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanSubscription()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
                 $this->setSubscriptionPlan($customer);
@@ -365,7 +365,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanHybrid()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
 
@@ -378,7 +378,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanMinimumTopUp()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
 
@@ -391,7 +391,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanPerKwh()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
                 $this->setPerKwhPlan($customer);
@@ -403,7 +403,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanFlatRate()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
                 $this->setFlatRatePlan($customer);

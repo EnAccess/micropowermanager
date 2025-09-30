@@ -34,6 +34,6 @@ class ApplianceTypeService extends CreatorService {
             return true;
         });
 
-        return $this->createRelatedDataIfDoesNotExists($appliances);
+        $this->createRelatedDataIfDoesNotExists($appliances);
     }
 }

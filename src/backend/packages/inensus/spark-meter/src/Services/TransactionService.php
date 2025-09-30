@@ -4,6 +4,7 @@ namespace Inensus\SparkMeter\Services;
 
 use App\Events\PaymentSuccessEvent;
 use App\Models\Token;
+use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -107,13 +108,13 @@ class TransactionService {
             '*'
         )->find($smTransaction['external_id']);
 
-        if ($transaction && $transaction->orginalAgent) {
-            $transaction->orginalAgent->update([
+        if ($transaction && $transaction->originalTransaction instanceof AgentTransaction) {
+            $transaction->originalTransaction->update([
                 'status' => $status,
             ]);
         } else {
-            if ($transaction && $transaction->originalThirdParty) {
-                $transaction->originalThirdParty->update([
+            if ($transaction && $transaction->originalTransaction instanceof ThirdPartyTransaction) {
+                $transaction->originalTransaction->update([
                     'status' => $status,
                 ]);
             }
@@ -228,7 +229,7 @@ class TransactionService {
                         if (!$sparkCustomer) {
                             return true;
                         }
-                        $meter = $sparkCustomer->mpmPerson->meters[0];
+                        $meter = $sparkCustomer->mpmPerson->devices[0]->device;
                         $mainTransaction = $this->createTransaction(
                             $transaction,
                             $thirdPartyTransaction,
