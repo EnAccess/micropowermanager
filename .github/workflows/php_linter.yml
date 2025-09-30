@@ -48,9 +48,7 @@ jobs:
         working-directory: ./src/backend
         continue-on-error: true
 
-        # Temporarily disabled, until we can run it with php-parser version 5
-        # https://github.com/vimeo/psalm/issues/11112
-        # - name: Run Psalm
-        #   run: composer psalm-check
-        #   working-directory: ./src/backend
-        #   continue-on-error: true
+      - name: Run Rector
+        run: composer rector-check-github
+        working-directory: ./src/backend
+        continue-on-error: true
