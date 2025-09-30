@@ -109,4 +109,3 @@ jobs:
       - name: Run Rector
         run: composer rector-check
         working-directory: ./src/backend
-
