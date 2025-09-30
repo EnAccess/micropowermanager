@@ -23,10 +23,10 @@ class MiniGridTest extends TestCase {
     private $company;
     private $companyDatabase;
     private $person;
-    private $clusterIds = [];
-    private $miniGridIds = [];
+    private array $clusterIds = [];
+    private array $miniGridIds = [];
 
-    public function testUserGetsMiniGridList() {
+    public function testUserGetsMiniGridList(): void {
         $clusterCount = 1;
         $miniGridCount = 2;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -35,7 +35,7 @@ class MiniGridTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->miniGridIds));
     }
 
-    public function testUserGetsMiniGridById() {
+    public function testUserGetsMiniGridById(): void {
         $clusterCount = 1;
         $miniGridCount = 2;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -44,7 +44,7 @@ class MiniGridTest extends TestCase {
         $this->assertEquals($response['data']['id'], $this->miniGridIds[0]);
     }
 
-    public function testUserGetsMiniGridByIdWithGeographicalInformation() {
+    public function testUserGetsMiniGridByIdWithGeographicalInformation(): void {
         $clusterCount = 1;
         $miniGridCount = 2;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -53,7 +53,7 @@ class MiniGridTest extends TestCase {
         $this->assertEquals(array_key_exists('location', $response['data']), true);
     }
 
-    public function testUserCreatesNewMiniGrid() {
+    public function testUserCreatesNewMiniGrid(): void {
         $clusterCount = 1;
         $miniGridCount = 0;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -71,7 +71,7 @@ class MiniGridTest extends TestCase {
         $this->assertEquals(count(MiniGrid::query()->get()), 1);
     }
 
-    public function testUserUpdatesAMiniGrid() {
+    public function testUserUpdatesAMiniGrid(): void {
         $clusterCount = 1;
         $miniGridCount = 1;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -118,7 +118,7 @@ class MiniGridTest extends TestCase {
         }
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

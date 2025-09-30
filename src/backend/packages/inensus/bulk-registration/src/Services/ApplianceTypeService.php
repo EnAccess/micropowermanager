@@ -9,7 +9,7 @@ class ApplianceTypeService extends CreatorService {
         parent::__construct($assetType);
     }
 
-    public function createRelatedDataIfDoesNotExists($appliances) {
+    public function createRelatedDataIfDoesNotExists($appliances): void {
         foreach ($appliances as $appliance) {
             AssetType::query()->firstOrCreate($appliance, $appliance);
         }
@@ -22,7 +22,7 @@ class ApplianceTypeService extends CreatorService {
 
         $columnApplianceTypes = $csvData[$applianceTypeConfig['name']];
 
-        $appliances = collect($applianceTypes)->map(function ($type) use ($columnApplianceTypes) {
+        $appliances = collect($applianceTypes)->map(function ($type) use ($columnApplianceTypes): array|true {
             $applianceIndex = strpos($columnApplianceTypes, $type);
             if ($applianceIndex !== false) {
                 return [

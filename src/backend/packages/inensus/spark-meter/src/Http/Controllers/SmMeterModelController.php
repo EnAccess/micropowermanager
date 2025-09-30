@@ -8,7 +8,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\MeterModelService;
 
 class SmMeterModelController extends Controller implements IBaseController {
-    private $meterModelService;
+    private MeterModelService $meterModelService;
 
     public function __construct(
         MeterModelService $meterModelService,

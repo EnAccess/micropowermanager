@@ -6,15 +6,15 @@ use Inensus\SparkMeter\Models\SmSetting;
 use Inensus\SparkMeter\Models\SmSmsSetting;
 
 class SmSmsSettingService {
-    private $smsSetting;
-    private $setting;
+    private SmSmsSetting $smsSetting;
+    private SmSetting $setting;
 
     public function __construct(SmSmsSetting $smsSetting, SmSetting $setting) {
         $this->smsSetting = $smsSetting;
         $this->setting = $setting;
     }
 
-    public function createDefaultSettings() {
+    public function createDefaultSettings(): void {
         $smsTransaction = $this->smsSetting->newQuery()->where('state', 'Transactions')->first();
         if (!$smsTransaction) {
             $smsSetting = $this->setting->newQuery()->make();

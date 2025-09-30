@@ -52,7 +52,7 @@ class AppServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
+    public function boot(): void {
         // Maria DB work-around
         Schema::defaultStringLength(191);
 

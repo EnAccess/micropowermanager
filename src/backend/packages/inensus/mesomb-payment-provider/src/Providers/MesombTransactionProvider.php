@@ -20,9 +20,9 @@ use MPM\Transaction\Provider\ITransactionProvider;
 class MesombTransactionProvider implements ITransactionProvider {
     private $transaction;
     private $mesombTransaction;
-    private $mesombTransactionService;
-    private $validData = [];
-    private $address;
+    private MesomTransactionService $mesombTransactionService;
+    private array $validData = [];
+    private Address $address;
 
     public function __construct(
         Transaction $transaction,
@@ -87,7 +87,7 @@ class MesombTransactionProvider implements ITransactionProvider {
             '</Response>';
     }
 
-    private function checkPhoneIsExists($requestData): Model {
+    private function checkPhoneIsExists(array $requestData): Model {
         $personAddresses = $this->address->newQuery()
             ->where('phone', $requestData['b_party'])
             ->orWhere('phone', '+'.$requestData['b_party'])->get();
@@ -99,7 +99,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         return $personAddresses->first();
     }
 
-    private function checkSenderHasOnlyOneMeterRegistered($senderAddress): void {
+    private function checkSenderHasOnlyOneMeterRegistered(Model $senderAddress): void {
         $senderMeters = $senderAddress->newQuery()->whereHasMorph(
             'owner',
             [Person::class]

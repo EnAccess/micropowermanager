@@ -14,7 +14,7 @@ class UserResourceTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

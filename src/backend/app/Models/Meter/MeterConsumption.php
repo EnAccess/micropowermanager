@@ -29,7 +29,7 @@ class MeterConsumption extends BaseModel {
         return $this->belongsTo(Meter::class);
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return 'Meter  : '.$this->meter_id.'  consumption : '.$this->total_consumption.
             '  credit :'.$this->credit_on_meter;
     }

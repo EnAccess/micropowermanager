@@ -7,7 +7,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\SmSalesAccoutService;
 
 class SmSalesAccountController implements IBaseController {
-    private $smSalesAccountService;
+    private SmSalesAccoutService $smSalesAccountService;
 
     public function __construct(SmSalesAccoutService $salesAccountService) {
         $this->smSalesAccountService = $salesAccountService;

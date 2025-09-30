@@ -144,7 +144,7 @@ class TokenProcessor extends AbstractJob {
 
     private function handleRollbackInFailure(): void {
         $paidRates = $this->transactionContainer->paidRates;
-        collect($paidRates)->map(function ($paidRate) {
+        collect($paidRates)->map(function (array $paidRate) {
             $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);
             $assetRate->remaining += $paidRate['paid'];
             $assetRate->update();

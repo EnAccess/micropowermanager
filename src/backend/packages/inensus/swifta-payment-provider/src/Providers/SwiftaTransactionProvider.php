@@ -75,11 +75,11 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         return $this->transaction;
     }
 
-    public function setValidData($swiftaTransactionData) {
+    public function setValidData(array $swiftaTransactionData): void {
         $this->validData = $swiftaTransactionData;
     }
 
-    public function getValidData() {
+    public function getValidData(): array {
         return $this->validData;
     }
 

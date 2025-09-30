@@ -11,7 +11,7 @@ class StronCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'company_name' => ['required', Rule::unique('tenant.stron_api_credentials')->ignore($this->id)],
             'username' => ['required', Rule::unique('tenant.stron_api_credentials')->ignore($this->id)],

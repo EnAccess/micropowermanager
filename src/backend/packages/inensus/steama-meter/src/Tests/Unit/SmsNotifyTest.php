@@ -38,7 +38,7 @@ class SmsNotifyTest extends TestCase {
     use RefreshDatabase;
 
     /** @test */
-    public function isLowBalanceNotifySend() {
+    public function isLowBalanceNotifySend(): void {
         Queue::fake();
         $this->initializeData();
         $lowBalanceMin = SteamaSmsSetting::query()->where(
@@ -60,7 +60,7 @@ class SmsNotifyTest extends TestCase {
         $smsNotifiedCustomers = SteamaSmsNotifiedCustomer::query()->get();
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
-        ) {
+        ): true {
             /** @var ?SteamaSmsNotifiedCustomer */
             $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
                 'customer_id',
@@ -98,7 +98,7 @@ class SmsNotifyTest extends TestCase {
     }
 
     /** @test */
-    public function isTransactionNotifySend() {
+    public function isTransactionNotifySend(): void {
         Queue::fake();
         $data = $this->initializeData();
         $this->initializeSteamaTransaction($data['customer'], $data['meter']);
@@ -120,7 +120,7 @@ class SmsNotifyTest extends TestCase {
         )->where('category', 'PAY')->get()->each(function ($steamaTransaction) use (
             $smsNotifiedCustomers,
             $customers
-        ) {
+        ): true {
             $smsNotifiedCustomers = $smsNotifiedCustomers->where(
                 'notify_id',
                 $steamaTransaction->id
@@ -128,7 +128,7 @@ class SmsNotifyTest extends TestCase {
             if ($smsNotifiedCustomers) {
                 return true;
             }
-            $notifyCustomer = $customers->filter(function ($customer) use ($steamaTransaction) {
+            $notifyCustomer = $customers->filter(function ($customer) use ($steamaTransaction): bool {
                 return $customer->customer_id == $steamaTransaction->customer_id;
             })->first();
             if (!$notifyCustomer) {
@@ -159,7 +159,7 @@ class SmsNotifyTest extends TestCase {
     }
 
     /** @test */
-    public function isMaxAttemptNotifySend() {
+    public function isMaxAttemptNotifySend(): void {
         Queue::fake();
         $this->addSyncSettings();
         $this->initializeAdminData();
@@ -167,7 +167,7 @@ class SmsNotifyTest extends TestCase {
             ->orderBy('next_sync')->get();
         $oldNextSync = $syncActions->first()->next_sync;
         $newNextSync = null;
-        SteamaSyncSetting::query()->get()->each(function ($syncSetting) use ($syncActions, $newNextSync) {
+        SteamaSyncSetting::query()->get()->each(function ($syncSetting) use ($syncActions, $newNextSync): true {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
 
             if (!$syncAction) {
@@ -201,7 +201,7 @@ class SmsNotifyTest extends TestCase {
         $this->assertLessThan($oldNextSync, $newNextSync);
     }
 
-    private function initializeData() {
+    private function initializeData(): array {
         $this->addSmsSettings();
         $this->addSmsBodies();
         // create person
@@ -271,7 +271,7 @@ class SmsNotifyTest extends TestCase {
         return ['customer' => $p, 'meter' => $steamaMeter];
     }
 
-    private function initializeSteamaTransaction($customer, $steamaMeter) {
+    private function initializeSteamaTransaction($customer, $steamaMeter): void {
         $steamaTransaction = SteamaTransaction::query()->create([
             'transaction_id' => '1111',
             'site_id' => 1,
@@ -303,7 +303,7 @@ class SmsNotifyTest extends TestCase {
         $transaction->save();
     }
 
-    private function initializeAdminData() {
+    private function initializeAdminData(): void {
         $user = User::factory()->create();
         $address = Address::query()->make([
             'phone' => '+905396398161',
@@ -314,7 +314,7 @@ class SmsNotifyTest extends TestCase {
         $address->save();
     }
 
-    private function addSmsSettings() {
+    private function addSmsSettings(): void {
         $smsSetting = SteamaSetting::query()->make();
 
         $smsTransaction = SteamaSmsSetting::query()->create([
@@ -338,7 +338,7 @@ class SmsNotifyTest extends TestCase {
         $balanceSetting->save();
     }
 
-    private function addSyncSettings() {
+    private function addSyncSettings(): void {
         $minInterval = CarbonInterval::make('1minute');
         $now = Carbon::now();
         $siteSetting = SteamaSetting::query()->make();
@@ -477,7 +477,7 @@ class SmsNotifyTest extends TestCase {
                 'title' => 'Sms Footer',
             ],
         ];
-        collect($smsBodies)->each(function ($smsBody) {
+        collect($smsBodies)->each(function (array $smsBody) {
             SteamaSmsBody::query()->create([
                 'reference' => $smsBody['reference'],
                 'place_holder' => $smsBody['place_holder'],

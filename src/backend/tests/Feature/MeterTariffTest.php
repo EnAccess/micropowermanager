@@ -14,7 +14,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class MeterTariffTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsMeterTariffList() {
+    public function testUserGetsMeterTariffList(): void {
         $this->createTestData();
         $meterTariffCount = 5;
         $this->createMeterTariff($meterTariffCount);
@@ -23,7 +23,7 @@ class MeterTariffTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->meterTariffs));
     }
 
-    public function testUserGetsMeterTariffById() {
+    public function testUserGetsMeterTariffById(): void {
         $this->createTestData();
         $this->createMeterTariff();
         $response = $this->actingAs($this->user)->get(sprintf('/api/tariffs/%s', $this->meterTariffs[0]->id));
@@ -31,7 +31,7 @@ class MeterTariffTest extends TestCase {
         $this->assertEquals($response['data']['id'], $this->meterTariffs[0]->id);
     }
 
-    public function testUserUpdatesAMeterTariff() {
+    public function testUserUpdatesAMeterTariff(): void {
         Queue::fake();
         $this->createTestData();
         $this->createMeterTariff();
@@ -213,7 +213,7 @@ class MeterTariffTest extends TestCase {
         $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

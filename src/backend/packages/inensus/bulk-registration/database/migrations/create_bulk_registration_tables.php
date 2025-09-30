@@ -10,7 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up() {
+    public function up(): void {
         if (!Schema::hasTable('bulk_registration_csv_datas')) {
             Schema::create('bulk_registration_csv_datas', function (Blueprint $table) {
                 $table->increments('id');
@@ -27,7 +27,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('bulk_registration_csv_datas');
     }
 };

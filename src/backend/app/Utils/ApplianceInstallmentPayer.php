@@ -57,7 +57,7 @@ class ApplianceInstallmentPayer {
 
     public function consumeAmount(): float {
         $installments = $this->getInstallments($this->customer);
-        $installments->each(function ($installment) {
+        $installments->each(function ($installment): bool {
             if ($installment->remaining > $this->consumableAmount) {// money is not enough to cover the
                 // whole rate
                 $this->consumableAmount = 0;
@@ -96,7 +96,7 @@ class ApplianceInstallmentPayer {
      * @param Collection<int, mixed> $installments
      */
     private function pay(Collection $installments, Person $customer): void {
-        $installments->map(function ($installment) use ($customer) {
+        $installments->map(function ($installment) use ($customer): bool {
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 event(new PaymentSuccessEvent(
                     amount: $this->transaction->amount,

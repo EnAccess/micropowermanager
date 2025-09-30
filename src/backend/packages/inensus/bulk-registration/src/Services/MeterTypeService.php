@@ -5,7 +5,7 @@ namespace Inensus\BulkRegistration\Services;
 use App\Models\Meter\MeterType;
 
 class MeterTypeService {
-    private $meterType;
+    private MeterType $meterType;
 
     public function __construct(MeterType $meterType) {
         $this->meterType = $meterType;

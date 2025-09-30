@@ -8,7 +8,7 @@ use Inensus\CalinMeter\Http\Resources\CalinResource;
 use Inensus\CalinMeter\Services\CalinCredentialService;
 
 class CalinCredentialController extends Controller {
-    private $credentialService;
+    private CalinCredentialService $credentialService;
 
     public function __construct(CalinCredentialService $credentialService) {
         $this->credentialService = $credentialService;

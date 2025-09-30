@@ -8,7 +8,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaAgentService;
 
 class SteamaAgentController extends Controller implements IBaseController {
-    private $agentService;
+    private SteamaAgentService $agentService;
 
     public function __construct(SteamaAgentService $agentService) {
         $this->agentService = $agentService;

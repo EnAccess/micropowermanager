@@ -42,7 +42,7 @@ class SmsController extends Controller {
     /**
      * @return void
      */
-    public function storeBulk(Request $request) {
+    public function storeBulk(Request $request): void {
         $type = $request->get('type');
         $receivers = $request->get('receivers');
         $message = $request->get('message');

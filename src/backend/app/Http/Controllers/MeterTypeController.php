@@ -58,7 +58,7 @@ class MeterTypeController extends Controller {
      *
      * @return ApiResource
      */
-    public function show($meterTypeId): ApiResource {
+    public function show(int $meterTypeId): ApiResource {
         return ApiResource::make($this->meterTypeService->getById($meterTypeId));
     }
 
@@ -77,7 +77,7 @@ class MeterTypeController extends Controller {
      *
      * @return ApiResource
      */
-    public function update(MeterTypeUpdateRequest $request, $meterTypeId): ApiResource {
+    public function update(MeterTypeUpdateRequest $request, int $meterTypeId): ApiResource {
         $meterType = $this->meterTypeService->getById($meterTypeId);
         $meterTypeData = $request->only(['online', 'phase', 'max_current']);
 

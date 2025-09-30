@@ -11,7 +11,7 @@ class SteamaCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'username' => ['required', Rule::unique('tenant.steama_credentials')->ignore($this->id)],
             'password' => 'required',

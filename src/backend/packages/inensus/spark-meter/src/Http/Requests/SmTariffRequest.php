@@ -12,7 +12,7 @@ class SmTariffRequest extends FormRequest {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
@@ -21,7 +21,7 @@ class SmTariffRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         $meterTariff = SmTariff::with('mpmTariff')->where('tariff_id', $this->id)->firstOrFail();
 
         return [

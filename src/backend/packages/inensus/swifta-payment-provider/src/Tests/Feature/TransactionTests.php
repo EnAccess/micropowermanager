@@ -21,7 +21,7 @@ class TransactionTests extends TestCase {
     use RefreshDatabase;
     use InteractsWithAuthentication;
 
-    public function testWithNonExistingTransaction() {
+    public function testWithNonExistingTransaction(): void {
         $data = [
             'transaction_id' => -1,
             'transaction_reference' => 'ref',
@@ -41,7 +41,7 @@ class TransactionTests extends TestCase {
         ]);
     }
 
-    public function testWithDifferentTransactionAmountFromValidatedTransaction() {
+    public function testWithDifferentTransactionAmountFromValidatedTransaction(): void {
         $this->initializeData();
         $user = User::query()->create([
             'name' => 'test',
@@ -70,7 +70,7 @@ class TransactionTests extends TestCase {
         ]);
     }
 
-    public function testWithValidTransaction() {
+    public function testWithValidTransaction(): void {
         Queue::fake();
         $this->initializeData();
         $user = User::query()->create([
@@ -110,7 +110,7 @@ class TransactionTests extends TestCase {
         ]);
     }
 
-    private function initializeData() {
+    private function initializeData(): void {
         // create person
         Person::factory()->create();
         // create meter-tariff

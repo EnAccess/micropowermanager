@@ -15,17 +15,17 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
 class SiteService implements ISynchronizeService {
-    private $site;
-    private $sparkMeterApiRequests;
-    private $rootUrl = '/organizations';
-    private $smTableEncryption;
-    private $organizationService;
-    private $cluster;
-    private $miniGrid;
-    private $city;
-    private $geographicalInformation;
-    private $smSyncSettingService;
-    private $smSyncActionService;
+    private SmSite $site;
+    private SparkMeterApiRequests $sparkMeterApiRequests;
+    private string $rootUrl = '/organizations';
+    private SmTableEncryption $smTableEncryption;
+    private OrganizationService $organizationService;
+    private Cluster $cluster;
+    private MiniGrid $miniGrid;
+    private City $city;
+    private GeographicalInformation $geographicalInformation;
+    private SmSyncSettingService $smSyncSettingService;
+    private SmSyncActionService $smSyncActionService;
 
     public function __construct(
         SmSite $site,
@@ -67,11 +67,11 @@ class SiteService implements ISynchronizeService {
         return $sites;
     }
 
-    public function getSmSitesCount() {
+    public function getSmSitesCount(): int {
         return count($this->site->newQuery()->get());
     }
 
-    public function creteRelatedMiniGrid($site) {
+    public function creteRelatedMiniGrid(array $site) {
         $cluster = $this->cluster->newQuery()->latest('created_at')->first();
         $miniGrid = $this->miniGrid->newQuery()->create([
             'name' => $site['name'],
@@ -88,7 +88,7 @@ class SiteService implements ISynchronizeService {
         return $miniGrid;
     }
 
-    public function updateGeographicalInformation($miniGridId) {
+    public function updateGeographicalInformation($miniGridId): void {
         $geographicalInformation = $this->geographicalInformation->newQuery()->whereHasMorph(
             'owner',
             [MiniGrid::class],
@@ -105,13 +105,13 @@ class SiteService implements ISynchronizeService {
         ]);
     }
 
-    public function updateRelatedMiniGrid($site, $miniGrid) {
+    public function updateRelatedMiniGrid(array $site, $miniGrid) {
         return $miniGrid->newQuery()->update([
             'name' => $site['name'],
         ]);
     }
 
-    public function update($siteId, $data) {
+    public function update($siteId, array $data) {
         $site = $this->site->newQuery()->find($siteId);
         $site->update([
             'thundercloud_token' => $data['thundercloud_token'],
@@ -149,9 +149,9 @@ class SiteService implements ISynchronizeService {
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function ($site) {
+            $syncCheck['data']->filter(function (array $site): bool {
                 return $site['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function ($site) {
+            })->each(function (array $site) {
                 $miniGrid = $this->creteRelatedMiniGrid($site);
                 $this->site->newQuery()->create([
                     'site_id' => $site['id'],
@@ -162,9 +162,9 @@ class SiteService implements ISynchronizeService {
                 $this->updateGeographicalInformation($miniGrid->id);
             });
 
-            $syncCheck['data']->filter(function ($site) {
+            $syncCheck['data']->filter(function (array $site): bool {
                 return $site['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function ($site) {
+            })->each(function (array $site) {
                 $miniGrid = is_null($site['relatedMiniGrid']) ?
                     $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid(
                         $site,
@@ -188,7 +188,10 @@ class SiteService implements ISynchronizeService {
         }
     }
 
-    public function syncCheck($returnData = false) {
+    /**
+     * @return mixed[]
+     */
+    public function syncCheck($returnData = false): array {
         $organizations = $this->organizationService->getOrganizations();
         $sites = [];
         try {
@@ -211,7 +214,7 @@ class SiteService implements ISynchronizeService {
         $sparkSites = $this->site->newQuery()->get();
         $miniGrids = $this->miniGrid->newQuery()->get();
 
-        $sitesCollection->transform(function ($site) use ($sparkSites, $miniGrids) {
+        $sitesCollection->transform(function (array $site) use ($sparkSites, $miniGrids): array {
             $registeredSparkSite = $sparkSites->firstWhere('site_id', $site['id']);
             $relatedMiniGrid = null;
             $siteHash = $this->modelHasher($site, null);
@@ -244,7 +247,7 @@ class SiteService implements ISynchronizeService {
         ]);
     }
 
-    public function syncCheckBySite($siteId) {
+    public function syncCheckBySite($siteId): void {
         // This function is not using for sites
     }
 }

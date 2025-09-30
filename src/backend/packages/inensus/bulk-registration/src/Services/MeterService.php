@@ -5,7 +5,7 @@ namespace Inensus\BulkRegistration\Services;
 use App\Models\Meter\Meter;
 
 class MeterService extends CreatorService {
-    private $meterTypeService;
+    private MeterTypeService $meterTypeService;
 
     public function __construct(Meter $meter, MeterTypeService $meterTypeService) {
         parent::__construct($meter);

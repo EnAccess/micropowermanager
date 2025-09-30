@@ -11,7 +11,7 @@ class CalinCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'user_id' => ['required', Rule::unique('tenant.calin_api_credentials')->ignore($this->id)],
             'api_key' => ['required', Rule::unique('tenant.calin_api_credentials')->ignore($this->id)],

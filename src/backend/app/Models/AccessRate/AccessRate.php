@@ -39,7 +39,7 @@ class AccessRate extends BaseModel {
         return $this->hasMany(AccessRatePayment::class);
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return sprintf('For tariff : %s', $this->tariff()->first()->name);
     }
 

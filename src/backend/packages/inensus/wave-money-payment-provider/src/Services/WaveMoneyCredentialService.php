@@ -27,7 +27,7 @@ class WaveMoneyCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data): WaveMoneyCredential {
+    public function updateCredentials(array $data): WaveMoneyCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

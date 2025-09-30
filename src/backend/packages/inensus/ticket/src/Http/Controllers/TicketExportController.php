@@ -48,7 +48,7 @@ class TicketExportController {
         return TicketResource::make($this->ticketOutsourceReportService->create($ticketOutsourceReportData));
     }
 
-    public function download($id): BinaryFileResponse {
+    public function download(int $id): BinaryFileResponse {
         $report = $this->ticketOutsourceReportService->getById($id);
 
         return response()->download(explode('*', $report->path)[0]);

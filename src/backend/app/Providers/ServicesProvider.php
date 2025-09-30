@@ -44,14 +44,14 @@ class ServicesProvider extends ServiceProvider {
     public function register(): void {
         $this->app->bind(
             RolesService::class,
-            function ($app) {
+            function ($app): RolesService {
                 return new RolesService($this->app->make(Roles::class), $this->app->make(RoleDefinition::class));
             }
         );
 
         $this->app->bind(
             CountryService::class,
-            function ($app) {
+            function ($app): CountryService {
                 return new CountryService($this->app->make(Country::class));
             }
         );

@@ -14,20 +14,20 @@ use Inensus\SteamaMeter\Models\SteamaMeter;
 use Inensus\SteamaMeter\Models\SteamaTransaction;
 
 class SteamaTransactionsService implements ISynchronizeService {
-    private $stemaMeterService;
-    private $steamaCustomerService;
-    private $steamaCredentialService;
-    private $steamaSiteService;
-    private $steamaAgentService;
-    private $steamaTransaction;
-    private $steamaMeter;
-    private $steamaApi;
-    private $thirdPartyTransaction;
-    private $rootUrl = '/transactions';
-    private $transaction;
-    private $token;
-    private $steamaSyncSettingService;
-    private $steamaSyncActionService;
+    private SteamaMeterService $stemaMeterService;
+    private SteamaCustomerService $steamaCustomerService;
+    private SteamaCredentialService $steamaCredentialService;
+    private SteamaSiteService $steamaSiteService;
+    private SteamaAgentService $steamaAgentService;
+    private SteamaTransaction $steamaTransaction;
+    private SteamaMeter $steamaMeter;
+    private SteamaMeterApiClient $steamaApi;
+    private ThirdPartyTransaction $thirdPartyTransaction;
+    private string $rootUrl = '/transactions';
+    private Transaction $transaction;
+    private Token $token;
+    private SteamaSyncSettingService $steamaSyncSettingService;
+    private StemaSyncActionService $steamaSyncActionService;
 
     public function __construct(
         SteamaMeterService $steamaMeterService,
@@ -84,7 +84,7 @@ class SteamaTransactionsService implements ISynchronizeService {
                 $transactions = $result['results'];
                 while ($result['next']) {
                     $transactionsCollection = collect($transactions);
-                    $transactionsCollection->each(function ($transaction) use (
+                    $transactionsCollection->each(function (array $transaction) use (
                         $steamaMeters,
                         $lastRecordedTransactionId
                     ) {
@@ -127,7 +127,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $syncCheck['message'];
     }
 
-    public function syncCheck() {
+    public function syncCheck(): array {
         $credentials = $this->steamaCredentialService->getCredentials();
         if ($credentials) {
             if ($credentials->is_authenticated) {
@@ -177,7 +177,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         )->where('category', 'PAY')->get();
     }
 
-    private function createSteamaTransaction($transaction) {
+    private function createSteamaTransaction(array $transaction) {
         return $this->steamaTransaction->newQuery()->create([
             'transaction_id' => $transaction['id'],
             'site_id' => $transaction['site_id'],
@@ -190,7 +190,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         ]);
     }
 
-    private function createThirdPartyTransaction($transaction, $steamaTransaction) {
+    private function createThirdPartyTransaction(array $transaction, $steamaTransaction) {
         $thirdPartyTransaction = $this->thirdPartyTransaction->newQuery()->make([
             'transaction_id' => $transaction['id'],
             'status' => $transaction['reversed_by_id'] !== null ? -1 : 1,
@@ -203,7 +203,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $thirdPartyTransaction;
     }
 
-    private function createTransaction($transaction, $thirdPartyTransaction, $steamaMeter) {
+    private function createTransaction(array $transaction, $thirdPartyTransaction, $steamaMeter) {
         $transaction = $this->transaction->newQuery()->make([
             'amount' => (int) $transaction['amount'],
             'sender' => $transaction['customer_telephone'],
@@ -218,7 +218,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $transaction;
     }
 
-    private function createToken($steamaMeter, $mainTransaction, $transaction) {
+    private function createToken($steamaMeter, $mainTransaction, array $transaction) {
         $stmCustomer = $steamaMeter->stmCustomer->first();
         $customerEnergyPrice = $stmCustomer->energy_price;
         $chargedEnergy = $mainTransaction->amount / $customerEnergyPrice;
@@ -241,7 +241,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $token;
     }
 
-    private function createPayment($steamaMeter, $mainTransaction, $token) {
+    private function createPayment($steamaMeter, $mainTransaction, $token): void {
         $owner = $steamaMeter->mpmMeter->device()->person;
 
         if ($owner) {

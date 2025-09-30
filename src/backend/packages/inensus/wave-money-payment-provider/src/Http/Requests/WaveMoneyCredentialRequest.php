@@ -10,7 +10,7 @@ class WaveMoneyCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'merchant_id' => ['required'],
             'secret_key' => ['required'],

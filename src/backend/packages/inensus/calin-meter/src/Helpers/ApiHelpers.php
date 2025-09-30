@@ -6,13 +6,13 @@ use App\Models\Manufacturer;
 use Inensus\CalinMeter\Exceptions\CalinApiResponseException;
 
 class ApiHelpers {
-    private $manufacturer;
+    private Manufacturer $manufacturer;
 
     public function __construct(Manufacturer $manufacturerModel) {
         $this->manufacturer = $manufacturerModel;
     }
 
-    public function registerCalinMeterManufacturer() {
+    public function registerCalinMeterManufacturer(): void {
         $api = $this->manufacturer->newQuery()->where('api_name', 'CalinMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
@@ -23,7 +23,7 @@ class ApiHelpers {
         }
     }
 
-    public function checkApiResult($result) {
+    public function checkApiResult(array $result) {
         if ((int) $result['result_code'] !== 0) {
             throw new CalinApiResponseException($result['reason']);
         }

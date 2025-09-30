@@ -9,7 +9,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AgentReceiptTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsAgentsReceipts() {
+    public function testUserGetsAgentsReceipts(): void {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -24,7 +24,7 @@ class AgentReceiptTest extends TestCase {
         $this->assertEquals($response['data'][0]['agent']['balance'], $agentBalance);
     }
 
-    public function testUserGetsAllReceipts() {
+    public function testUserGetsAllReceipts(): void {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -35,7 +35,7 @@ class AgentReceiptTest extends TestCase {
         $this->assertEquals(count($response['data']), 1);
     }
 
-    public function testUserCreatesNewReceipt() {
+    public function testUserCreatesNewReceipt(): void {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -50,7 +50,7 @@ class AgentReceiptTest extends TestCase {
         $this->assertEquals($response['data']['amount'], $postData['amount']);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 class CsvDataProcessor {
     public const CONNECTION_GROUP = 1;
     private $reflections;
-    private $recentlyCreatedRecords;
+    private array $recentlyCreatedRecords;
 
     public function __construct() {
         $this->reflections = config('bulk-registration.reflections');
@@ -27,7 +27,7 @@ class CsvDataProcessor {
     }
 
     public function processParsedCsvData($csvData) {
-        Collect($csvData)->each(function ($row) {
+        Collect($csvData)->each(function (array $row) {
             try {
                 DB::connection('tenant')->beginTransaction();
                 $person = $this->createRecordFromCsv($row, $this->reflections['PersonService']);
@@ -98,7 +98,7 @@ class CsvDataProcessor {
         return $service->resolveCsvDataFromComingRow($row);
     }
 
-    private function checkRecordWasRecentlyCreated($record, $type) {
+    private function checkRecordWasRecentlyCreated($record, string $type): void {
         if ($record->wasRecentlyCreated) {
             ++$this->recentlyCreatedRecords[$type];
         }

@@ -8,7 +8,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaSmsSettingService;
 
 class SteamaSmsSettingController extends Controller {
-    private $smsSettingService;
+    private SteamaSmsSettingService $smsSettingService;
 
     public function __construct(SteamaSmsSettingService $smsSettingService) {
         $this->smsSettingService = $smsSettingService;

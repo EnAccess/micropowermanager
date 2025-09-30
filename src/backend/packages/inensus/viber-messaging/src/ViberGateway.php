@@ -12,8 +12,8 @@ use Viber\Api\Sender;
 use Viber\Bot;
 
 class ViberGateway {
-    private $bot;
-    private $botSender;
+    private Bot $bot;
+    private Sender $botSender;
 
     public function __construct(
         private ViberCredentialService $credentialService,
@@ -32,7 +32,7 @@ class ViberGateway {
         string $body,
         string $viberId,
         ?Sms $registeredSms = null,
-    ) {
+    ): void {
         try {
             $this->bot->getClient()->sendMessage(
                 (new Text())

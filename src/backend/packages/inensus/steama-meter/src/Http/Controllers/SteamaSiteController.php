@@ -8,7 +8,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaSiteService;
 
 class SteamaSiteController extends Controller implements IBaseController {
-    private $siteService;
+    private SteamaSiteService $siteService;
 
     public function __construct(SteamaSiteService $siteService) {
         $this->siteService = $siteService;

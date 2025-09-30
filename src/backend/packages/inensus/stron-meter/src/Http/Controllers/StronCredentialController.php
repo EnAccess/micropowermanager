@@ -9,7 +9,7 @@ use Inensus\StronMeter\Http\Resources\StronResource;
 use Inensus\StronMeter\Services\StronCredentialService;
 
 class StronCredentialController extends Controller {
-    private $credentialService;
+    private StronCredentialService $credentialService;
 
     public function __construct(StronCredentialService $credentialService) {
         $this->credentialService = $credentialService;

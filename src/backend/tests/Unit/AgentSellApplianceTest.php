@@ -21,7 +21,7 @@ class AgentSellApplianceTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -34,7 +34,7 @@ class AgentSellApplianceTest extends TestCase {
      *
      * @return void
      */
-    public function testAgentSellAppliance() {
+    public function testAgentSellAppliance(): void {
         $this->initData();
         $data = [
             'agent_assigned_appliance_id' => 2,
@@ -58,7 +58,7 @@ class AgentSellApplianceTest extends TestCase {
         $this->assertEquals($data['down_payment'], $paymentHistory->amount);
     }
 
-    public function initData() {
+    public function initData(): void {
         $user = UserFactory::new()->create();
         $this->actingAs($user);
         PersonFactory::new()->create();

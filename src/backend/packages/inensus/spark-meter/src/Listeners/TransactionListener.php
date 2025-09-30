@@ -7,8 +7,8 @@ use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\Services\TransactionService;
 
 class TransactionListener {
-    private $transactionService;
-    private $smTransaction;
+    private TransactionService $transactionService;
+    private SmTransaction $smTransaction;
 
     public function __construct(
         TransactionService $transactionService,
@@ -23,14 +23,14 @@ class TransactionListener {
      *
      * @param Transaction $transaction
      */
-    public function onTransactionSuccess(Transaction $transaction) {
+    public function onTransactionSuccess(Transaction $transaction): void {
         $smTransaction = $this->smTransaction->newQuery()->where('mpm_transaction_id', $transaction->id)->first();
         if ($smTransaction) {
             $this->transactionService->updateTransactionStatus($smTransaction);
         }
     }
 
-    public function handle(Transaction $transaction) {
+    public function handle(Transaction $transaction): void {
         $this->onTransactionSuccess($transaction);
     }
 }

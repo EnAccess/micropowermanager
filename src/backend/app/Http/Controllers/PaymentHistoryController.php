@@ -39,7 +39,7 @@ class PaymentHistoryController {
      *
      * @return array<string, array<string, mixed>>
      */
-    public function show(int $payerId, string $period, $limit = null, $order = 'ASC'): array {
+    public function show(int $payerId, string $period, ?int $limit = null, string $order = 'ASC'): array {
         $period = strtoupper($period);
         switch ($period) {
             case 'D':

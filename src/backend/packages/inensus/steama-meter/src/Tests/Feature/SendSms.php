@@ -23,7 +23,7 @@ class SendSms extends TestCase {
     use InteractsWithAuthentication;
 
     /** @test */
-    public function isMeterBalanceFeedbackSend() {
+    public function isMeterBalanceFeedbackSend(): void {
         Queue::fake();
         Config::set('app.debug', false);
         $this->withoutExceptionHandling();
@@ -39,7 +39,7 @@ class SendSms extends TestCase {
         $this->assertEquals(2, $smsCount);
     }
 
-    private function initializeData() {
+    private function initializeData(): array {
         $this->addSmsBodies();
         $this->addFeedBackKeys();
         MainSettings::factory()->create();
@@ -215,7 +215,7 @@ class SendSms extends TestCase {
                 'title' => 'Sms Footer',
             ],
         ];
-        collect($smsBodies)->each(function ($smsBody) {
+        collect($smsBodies)->each(function (array $smsBody) {
             SteamaSmsBody::query()->create([
                 'reference' => $smsBody['reference'],
                 'place_holder' => $smsBody['place_holder'],
@@ -228,7 +228,7 @@ class SendSms extends TestCase {
         return SmsBody::query()->get();
     }
 
-    private function addFeedBackKeys() {
+    private function addFeedBackKeys(): void {
         SteamaSmsFeedbackWord::query()->create([
             'meter_balance' => 'Balance',
         ]);

@@ -43,7 +43,7 @@ class AgentAssignedApplianceWebController extends Controller {
      *
      * @return ApiResource
      */
-    public function index($agentId, Request $request) {
+    public function index(?int $agentId, Request $request) {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentAssignedApplianceService->getAll($limit, $agentId));

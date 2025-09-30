@@ -8,10 +8,10 @@ use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
 class PersonObserver {
-    private $customerService;
-    private $smTableEncryption;
-    private $person;
-    private $smCustomer;
+    private CustomerService $customerService;
+    private SmTableEncryption $smTableEncryption;
+    private Person $person;
+    private SmCustomer $smCustomer;
 
     public function __construct(
         CustomerService $customerService,
@@ -25,7 +25,7 @@ class PersonObserver {
         $this->smCustomer = $smCustomer;
     }
 
-    public function updated(Person $person) {
+    public function updated(Person $person): void {
         $smCustomer = $this->smCustomer->newQuery()->with('site')
             ->where('mpm_customer_id', $person->id)->first();
 

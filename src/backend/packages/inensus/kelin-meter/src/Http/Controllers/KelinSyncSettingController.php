@@ -8,7 +8,7 @@ use Inensus\KelinMeter\Http\Resources\KelinResource;
 use Inensus\KelinMeter\Services\KelinSyncSettingService;
 
 class KelinSyncSettingController extends Controller {
-    private $syncSettingService;
+    private KelinSyncSettingService $syncSettingService;
 
     public function __construct(KelinSyncSettingService $syncSettingService) {
         $this->syncSettingService = $syncSettingService;

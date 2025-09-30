@@ -23,11 +23,11 @@ class CityTest extends TestCase {
     private $company;
     private $companyDatabase;
     private $person;
-    private $clusterIds = [];
-    private $miniGridIds = [];
-    private $cityIds = [];
+    private array $clusterIds = [];
+    private array $miniGridIds = [];
+    private array $cityIds = [];
 
-    public function testUserGetsCities() {
+    public function testUserGetsCities(): void {
         $clusterCount = 1;
         $miniGridCount = 1;
         $cityCount = 5;
@@ -37,7 +37,7 @@ class CityTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->cityIds));
     }
 
-    public function testUserGetsCityById() {
+    public function testUserGetsCityById(): void {
         $clusterCount = 1;
         $miniGridCount = 1;
         $cityCount = 1;
@@ -47,7 +47,7 @@ class CityTest extends TestCase {
         $this->assertEquals($response['data']['id'], $this->cityIds[0]);
     }
 
-    public function testUserCreatesNewCity() {
+    public function testUserCreatesNewCity(): void {
         $clusterCount = 1;
         $miniGridCount = 1;
         $cityCount = 1;
@@ -62,7 +62,7 @@ class CityTest extends TestCase {
         $this->assertEquals($response['data']['name'], $cityData['name']);
     }
 
-    public function testUserUpdatesACity() {
+    public function testUserUpdatesACity(): void {
         $clusterCount = 2;
         $miniGridCount = 2;
         $cityCount = 1;
@@ -119,7 +119,7 @@ class CityTest extends TestCase {
         }
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

@@ -27,15 +27,15 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
     protected $signature = 'steama-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Steamaco Meter.';
 
-    private $steamaTransactionsService;
-    private $steamaSyncSettingservice;
-    private $stemaMeterService;
-    private $steamaCustomerService;
-    private $steamaSiteService;
-    private $steamaAgentService;
-    private $steamaSyncActionService;
-    private $address;
-    private $cluster;
+    private SteamaTransactionsService $steamaTransactionsService;
+    private SteamaSyncSettingService $steamaSyncSettingservice;
+    private SteamaMeterService $stemaMeterService;
+    private SteamaCustomerService $steamaCustomerService;
+    private SteamaSiteService $steamaSiteService;
+    private SteamaAgentService $steamaAgentService;
+    private StemaSyncActionService $steamaSyncActionService;
+    private Address $address;
+    private Cluster $cluster;
 
     public function __construct(
         SteamaTransactionsService $steamaTransactionsService,
@@ -73,7 +73,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
 
         $syncActions = $this->steamaSyncActionService->getActionsNeedsToSync();
         try {
-            $this->steamaSyncSettingservice->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
+            $this->steamaSyncSettingservice->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
                 if (!$syncAction) {
                     return true;

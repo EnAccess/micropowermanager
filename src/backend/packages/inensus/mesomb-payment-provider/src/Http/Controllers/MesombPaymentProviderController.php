@@ -11,7 +11,7 @@ use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingReso
 use Inensus\MesombPaymentProvider\Providers\MesombTransactionProvider;
 
 class MesombPaymentProviderController extends Controller {
-    public function store(Request $request) {
+    public function store(Request $request): MesombTransactionProcessingResource {
         $transactionProvider = resolve(MesombTransactionProvider::class);
         $transactionProvider->saveTransaction();
         // store common data

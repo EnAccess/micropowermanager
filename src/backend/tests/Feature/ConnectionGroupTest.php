@@ -19,9 +19,9 @@ class ConnectionGroupTest extends TestCase {
     private $company;
     private $companyDatabase;
     private $person;
-    private $connectonGroupIds = [];
+    private array $connectonGroupIds = [];
 
-    public function testUserGetsConnectionGroupList() {
+    public function testUserGetsConnectionGroupList(): void {
         $connectionGroupCount = 5;
         $this->createTestData($connectionGroupCount);
         $response = $this->actingAs($this->user)->get('/api/connection-groups');
@@ -29,7 +29,7 @@ class ConnectionGroupTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->connectonGroupIds));
     }
 
-    public function testUserGetsConnectionGroupById() {
+    public function testUserGetsConnectionGroupById(): void {
         $connectionGroupCount = 5;
         $this->createTestData($connectionGroupCount);
         $response = $this->actingAs($this->user)->get(sprintf('/api/connection-groups/%s', $this->connectonGroupIds[0]));
@@ -37,7 +37,7 @@ class ConnectionGroupTest extends TestCase {
         $this->assertEquals($response['data']['id'], $this->connectonGroupIds[0]);
     }
 
-    public function testUserCreatesNewConnectionGroup() {
+    public function testUserCreatesNewConnectionGroup(): void {
         $connectionGroupCount = 0;
         $this->createTestData($connectionGroupCount);
         $connectionGroupData = ['name' => 'Test Connection Group'];
@@ -46,7 +46,7 @@ class ConnectionGroupTest extends TestCase {
         $this->assertEquals($response['data']['name'], $connectionGroupData['name']);
     }
 
-    public function testUserUpdatesAConnectionGroup() {
+    public function testUserUpdatesAConnectionGroup(): void {
         $connectionGroupCount = 1;
         $this->createTestData($connectionGroupCount);
         $connectionGroupData = ['name' => 'Updated Connection Group'];
@@ -58,7 +58,7 @@ class ConnectionGroupTest extends TestCase {
         $this->assertEquals($response['data']['name'], $connectionGroupData['name']);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

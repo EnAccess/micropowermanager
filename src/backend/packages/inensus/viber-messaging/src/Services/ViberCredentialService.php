@@ -31,7 +31,7 @@ class ViberCredentialService {
     /**
      * @throws WebhookNotCreatedException
      */
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

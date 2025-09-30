@@ -25,7 +25,7 @@ class MicroStarCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->getCredentials();
         $credential->update([
             'certificate_password' => $data['certificate_password'],

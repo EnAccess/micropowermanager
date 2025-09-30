@@ -9,7 +9,7 @@ use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
 class SmCustomerController implements IBaseController {
-    private $customerService;
+    private CustomerService $customerService;
 
     public function __construct(
         CustomerService $customerService,
@@ -45,7 +45,7 @@ class SmCustomerController implements IBaseController {
         ])));
     }
 
-    public function search() {
+    public function search(): SparkResource {
         $term = request('term');
         $paginate = request('paginate') ?? 1;
 

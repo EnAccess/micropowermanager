@@ -63,7 +63,7 @@ class AuthController extends Controller {
      *
      * @return JsonResponse
      */
-    public function refresh() {
+    public function refresh(): JsonResponse {
         /** @var JWTGuard $guard */
         $guard = auth()->guard('api');
 

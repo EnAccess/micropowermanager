@@ -9,7 +9,7 @@ use Inensus\KelinMeter\Http\Resources\KelinResource;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 
 class KelinCustomerController extends Controller implements IBaseController {
-    private $customerService;
+    private KelinCustomerService $customerService;
 
     public function __construct(KelinCustomerService $customerService) {
         $this->customerService = $customerService;

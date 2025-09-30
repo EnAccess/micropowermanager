@@ -5,8 +5,8 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 
 class SteamaBitharvesterService {
-    private $steamaApi;
-    private $rootUrl = '/bitharvesters';
+    private SteamaMeterApiClient $steamaApi;
+    private string $rootUrl = '/bitharvesters';
 
     public function __construct(
         SteamaMeterApiClient $steamaApi,
@@ -18,7 +18,7 @@ class SteamaBitharvesterService {
         $result = $this->steamaApi->get($this->rootUrl);
         $bitHarvesters = $result['results'];
 
-        return array_values(array_filter($bitHarvesters, function ($obj) use ($siteId) {
+        return array_values(array_filter($bitHarvesters, function (array $obj) use ($siteId): bool {
             return $obj['site'] === $siteId;
         }))[0];
     }

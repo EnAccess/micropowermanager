@@ -48,7 +48,7 @@ class TicketService implements IAssociative {
         return $ticket;
     }
 
-    public function getBatch($tickets) {
+    public function getBatch(array $tickets): array {
         foreach ($tickets as $index => $ticket) {
             $tickets[$index]['comments'] = $ticket->comments()->with('ticketUser')->get();
         }

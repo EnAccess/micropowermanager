@@ -9,7 +9,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AgentChargeTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserCreatesNewBalanceForAgent() {
+    public function testUserCreatesNewBalanceForAgent(): void {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -24,7 +24,7 @@ class AgentChargeTest extends TestCase {
         $this->assertEquals($agent->balance, $agentBalance + $postData['amount']);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

@@ -8,7 +8,7 @@ use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Services\DailyConsumptionService;
 
 class KelinDailyConsumptionController extends Controller {
-    private $dailyConsumptionService;
+    private DailyConsumptionService $dailyConsumptionService;
 
     public function __construct(DailyConsumptionService $dailyConsumptionService) {
         $this->dailyConsumptionService = $dailyConsumptionService;

@@ -29,7 +29,7 @@ class UserPasswordController extends Controller {
             $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
             $companyId = $databaseProxy->getCompanyId();
 
-            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($email, $response) {
+            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($email, $response): Response {
                 if (!$this->userPasswordResetService->sendResetEmail($email)) {
                     return $response->setStatusCode(422)->setContent(
                         [
@@ -75,7 +75,7 @@ class UserPasswordController extends Controller {
             $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
             $companyId = $databaseProxy->getCompanyId();
 
-            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($rawToken) {
+            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($rawToken): ApiResource {
                 $resolvedEmail = $this->userPasswordResetService->validateToken($rawToken);
 
                 return new ApiResource([
@@ -107,7 +107,7 @@ class UserPasswordController extends Controller {
             $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
             $companyId = $databaseProxy->getCompanyId();
 
-            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($rawToken, $password) {
+            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($rawToken, $password): ApiResource {
                 $success = $this->userPasswordResetService->resetPassword($rawToken, $password);
 
                 return new ApiResource([

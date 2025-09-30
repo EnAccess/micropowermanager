@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Providers\MesombTransactionProvider;
 
 class TransactionFailedListener {
-    public function onTransactionFailed(Transaction $transaction, $message = null): void {
+    public function onTransactionFailed(Transaction $transaction, ?string $message = null): void {
         $transactionProvider = resolve(MesombTransactionProvider::class);
         $transactionProvider->addConflict($message);
         if (config('app.debug')) {

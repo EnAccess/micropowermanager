@@ -40,7 +40,7 @@ class SubConnectionTypeController extends Controller {
      *
      * @return ApiResource
      */
-    public function update(Request $request, $subConnectionTypeId): ApiResource {
+    public function update(Request $request, int $subConnectionTypeId): ApiResource {
         $subConnectionType = $this->subConnectionTypeService->getById($subConnectionTypeId);
         $subConnectionTypeData = $request->only(['name', 'tariff_id']);
 

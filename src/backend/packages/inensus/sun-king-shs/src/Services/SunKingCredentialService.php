@@ -33,7 +33,7 @@ class SunKingCredentialService {
         return $this->credential->newQuery()->findOrFail($id);
     }
 
-    public function isAccessTokenValid($credential) {
+    public function isAccessTokenValid($credential): bool {
         $accessToken = $credential->getAccessToken();
 
         if ($accessToken == null) {

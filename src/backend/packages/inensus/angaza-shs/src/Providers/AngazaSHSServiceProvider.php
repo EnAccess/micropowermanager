@@ -9,7 +9,7 @@ use Inensus\AngazaSHS\Console\Commands\InstallPackage;
 use Inensus\AngazaSHS\Modules\Api\AngazaSHSApi;
 
 class AngazaSHSServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

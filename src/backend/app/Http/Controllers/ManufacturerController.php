@@ -55,7 +55,7 @@ class ManufacturerController extends Controller {
      *
      * @return ApiResource
      */
-    public function show($manufacturerId): ApiResource {
+    public function show(int $manufacturerId): ApiResource {
         return ApiResource::make($this->manufacturerService->getById($manufacturerId));
     }
 }

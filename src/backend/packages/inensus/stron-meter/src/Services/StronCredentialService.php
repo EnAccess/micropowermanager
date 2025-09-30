@@ -8,9 +8,9 @@ use Inensus\StronMeter\Http\Requests\StronMeterApiRequests;
 use Inensus\StronMeter\Models\StronCredential;
 
 class StronCredentialService {
-    private $rootUrl = '/login/';
-    private $credential;
-    private $stronApi;
+    private string $rootUrl = '/login/';
+    private StronCredential $credential;
+    private StronMeterApiRequests $stronApi;
 
     public function __construct(
         StronCredential $credentialModel,
@@ -37,7 +37,7 @@ class StronCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->credential->newQuery()->firstOrFail();
 
         $credential->update([

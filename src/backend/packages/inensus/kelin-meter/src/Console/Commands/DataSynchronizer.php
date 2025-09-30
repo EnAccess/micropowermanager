@@ -47,7 +47,7 @@ class DataSynchronizer extends AbstractSharedCommand {
 
         $syncActions = $this->syncActionService->getActionsNeedsToSync();
         try {
-            $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
+            $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
                 if (!$syncAction) {
                     return true;

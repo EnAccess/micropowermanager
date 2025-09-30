@@ -5,7 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 
 class SteamaSettingService {
-    private $steamaSetting;
+    private SteamaSetting $steamaSetting;
 
     public function __construct(SteamaSetting $steamaSetting) {
         $this->steamaSetting = $steamaSetting;

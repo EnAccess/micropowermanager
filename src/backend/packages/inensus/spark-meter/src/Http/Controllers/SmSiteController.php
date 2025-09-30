@@ -9,7 +9,7 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Services\SiteService;
 
 class SmSiteController implements IBaseController {
-    private $siteService;
+    private SiteService $siteService;
 
     public function __construct(
         SiteService $siteService,

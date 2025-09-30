@@ -7,7 +7,7 @@ use Inensus\SparkMeter\Models\SmCustomer;
 
 class SparkSmsLowBalanceBody extends SmsBodyParser {
     protected $variables = ['low_balance_limit', 'credit_balance'];
-    protected $sparkCustomer;
+    protected SmCustomer $sparkCustomer;
 
     public function __construct(SmCustomer $sparkCustomer) {
         $this->sparkCustomer = $sparkCustomer;

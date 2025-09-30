@@ -41,7 +41,7 @@ class MiniGridController extends Controller {
      *
      * @return ApiResource
      */
-    public function show($miniGridId, Request $request): ApiResource {
+    public function show(int $miniGridId, Request $request): ApiResource {
         $relation = $request->get('relation');
 
         if ((int) $relation === 1) {
@@ -73,7 +73,7 @@ class MiniGridController extends Controller {
      *
      * @return ApiResource
      */
-    public function update($miniGridId, UpdateMiniGridRequest $request): ApiResource {
+    public function update(int $miniGridId, UpdateMiniGridRequest $request): ApiResource {
         $miniGrid = $this->miniGridService->getById($miniGridId);
 
         return ApiResource::make($this->miniGridService->getById($miniGridId));
