@@ -121,6 +121,7 @@
     "anyUser": "Tout utilisateur",
     "apiKey": "API Key",
     "apiToken": "API Token",
+    "apiEndpoint": "API Endpoint",
     "appliance": "Appliance | Appliances",
     "applianceCommission": "Commission de l'appareil",
     "assetType": "Type de bien | Types de bien",

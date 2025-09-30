@@ -121,6 +121,7 @@
     "anyUser": "أي مستخدم",
     "apiKey": "API مفتاح",
     "apiToken": "API رمز",
+    "apiEndpoint": "نقطة نهاية API",
     "appliance": "الأجهزة | الجهاز",
     "applianceCommission": "عمولة الجهاز (عينة 0.1)",
     "applianceType": "إضافة نوع الجهاز | أنواع الأجهزة | نوع الجهاز",

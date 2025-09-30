@@ -121,6 +121,7 @@
     "anyUser": "Any User",
     "apiKey": "API Key",
     "apiToken": "API Token",
+    "apiEndpoint": "API Endpoint",
     "appliance": "Appliance | Appliances",
     "applianceCommission": "Appliance Commission (sample 0.1)",
     "applianceType": "Appliance Type | Appliance Types | Add Appliance Type",
