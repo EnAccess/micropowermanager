@@ -16,7 +16,7 @@ class TransactionFailedListener {
         $transactionProvider->sendResult(false, $transaction);
     }
 
-    public function handle(Transaction $transaction, $message = null): void {
+    public function handle(Transaction $transaction, ?string $message = null): void {
         $this->onTransactionFailed($transaction, $message);
     }
 }

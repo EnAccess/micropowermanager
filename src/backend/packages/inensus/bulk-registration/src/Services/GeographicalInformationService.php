@@ -18,7 +18,7 @@ class GeographicalInformationService {
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData, $ownerModel): void {
+    public function resolveCsvDataFromComingRow(array $csvData, $ownerModel): void {
         $this->geographicalInformationConfig = config('bulk-registration.csv_fields.geographical_information');
         $geographicalInformationData = ['points' => ''];
         if ($ownerModel instanceof MiniGrid) {
