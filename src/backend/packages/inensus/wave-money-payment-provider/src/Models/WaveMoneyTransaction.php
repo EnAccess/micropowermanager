@@ -2,13 +2,9 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
-use App\Models\Transaction\Transaction;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\TransactionConflicts;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int         $id
@@ -21,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int         $customer_id
  * @property string|null $meter_serial
  */
-class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class WaveMoneyTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'wave_money_transaction';
 
     public const STATUS_REQUESTED = 0;
@@ -80,21 +76,7 @@ class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransacti
         $this->amount = $amount;
     }
 
-    /**
-     * @return MorphOne<Transaction, $this>
-     */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
-
-    public function conflicts() {
+    public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
