@@ -107,5 +107,5 @@ jobs:
         working-directory: ./src/backend
 
       - name: Run Rector
-        run: composer rector-check-github
+        run: ./vendor/bin/rector --dry-run --output-format=github
         working-directory: ./src/backend
