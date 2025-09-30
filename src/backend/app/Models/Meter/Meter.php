@@ -2,6 +2,7 @@
 
 namespace App\Models\Meter;
 
+use Database\Factories\Meter\MeterFactory;
 use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Base\BaseModel;
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property MeterTariff  $tariff
  */
 class Meter extends BaseModel {
-    /** @use HasFactory<\Database\Factories\Meter\MeterFactory> */
+    /** @use HasFactory<MeterFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'meter';

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use App\Models\Address\Address;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +23,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string|null $email
  */
 class User extends Authenticatable implements JWTSubject {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'users';

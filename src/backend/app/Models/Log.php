@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -15,7 +16,7 @@ class Log extends BaseModel {
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function affected(): MorphTo {
         return $this->morphTo();

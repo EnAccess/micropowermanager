@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\AgentSoldApplianceFactory;
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AgentSoldAppliance extends BaseModel {
-    /** @use HasFactory<\Database\Factories\AgentSoldApplianceFactory> */
+    /** @use HasFactory<AgentSoldApplianceFactory> */
     use HasFactory;
 
     protected $guarded = [];

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\SubTargetFactory;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $new_connections
  */
 class SubTarget extends BaseModel {
-    /** @use HasFactory<\Database\Factories\SubTargetFactory> */
+    /** @use HasFactory<SubTargetFactory> */
     use HasFactory;
 
     /**

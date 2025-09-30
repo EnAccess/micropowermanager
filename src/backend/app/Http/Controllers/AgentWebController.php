@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Tymon\JWTAuth\JWTGuard;
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\CompanyDatabase;
@@ -47,7 +48,7 @@ class AgentWebController extends Controller {
             'fire_base_token' => '-',
             'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        /** @var JWTGuard $guard */
         $guard = auth('api');
         $companyId = $guard->payload()->get('companyId');
         $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();

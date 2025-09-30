@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Symfony\Component\Console\Input\InputOption;
 use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
@@ -24,7 +25,7 @@ abstract class AbstractSharedCommand extends Command {
         $this->addOption(
             'company-id',
             null,
-            \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_OPTIONAL,
             'The ID of the company to run the command for. If not provided, runs for all companies.'
         );
     }

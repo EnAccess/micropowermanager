@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use App\Events\NewLogEvent;
 use App\Models\AssetPerson;
 use App\Models\MainSettings;
@@ -73,7 +74,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder<AssetPerson>
+     * @return Builder<AssetPerson>
      */
     public function getLoansForCustomerId(int $customerId) {
         return $this->assetPerson->newQuery()->where('person_id', $customerId);

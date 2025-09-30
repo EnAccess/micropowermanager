@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\AssetFactory;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int    $price
  */
 class Asset extends BaseModel {
-    /** @use HasFactory<\Database\Factories\AssetFactory> */
+    /** @use HasFactory<AssetFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'appliance';

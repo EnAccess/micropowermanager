@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Inensus\WavecomPaymentProvider\Http\Requests;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UploadTransactionRequest extends FormRequest {
     public const TRANSACTION_FILE = 'transaction_file';
 
-    public function getFile(): \Illuminate\Http\UploadedFile {
+    public function getFile(): UploadedFile {
         return $this->file(self::TRANSACTION_FILE);
     }
 

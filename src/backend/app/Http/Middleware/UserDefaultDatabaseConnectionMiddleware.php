@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use Tymon\JWTAuth\JWTGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -55,7 +56,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path())) { // agent app authenticated user requests
-            /** @var \Tymon\JWTAuth\JWTGuard */
+            /** @var JWTGuard */
             $guard = auth('agent_api');
             $companyId = $guard->payload()->get('companyId');
             if (!is_numeric($companyId)) {
@@ -64,7 +65,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         } elseif ($this->resolveThirdPartyApi($request->path())) {
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { // web client authenticated user requests
-            /** @var \Tymon\JWTAuth\JWTGuard */
+            /** @var JWTGuard */
             $guard = auth('api');
             $companyId = $guard->payload()->get('companyId');
             if (!is_numeric($companyId)) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\SmsStoredEvent;
 use App\Http\Requests\SmsRequest;
 use App\Http\Requests\StoreSmsRequest;
@@ -294,7 +295,7 @@ class SmsController extends Controller {
         return new ApiResource($smses);
     }
 
-    public function search(string $search): \Illuminate\Http\Resources\Json\AnonymousResourceCollection {
+    public function search(string $search): AnonymousResourceCollection {
         // search in people
         $list = $this->person::with('addresses')
             ->whereHas(

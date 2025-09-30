@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\AgentAssignedAppliancesFactory;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AgentAssignedAppliances extends BaseModel {
-    /** @use HasFactory<\Database\Factories\AgentAssignedAppliancesFactory> */
+    /** @use HasFactory<AgentAssignedAppliancesFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'agent_appliance';

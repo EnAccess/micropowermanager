@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
+use PhpOffice\PhpSpreadsheet\Exception;
 use Illuminate\Http\Request;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
@@ -32,7 +33,7 @@ class TicketExportController {
      *
      * @return TicketResource
      *
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws Exception
      */
     public function outsource(Request $request): TicketResource {
         $startDate = $request->input('startDate');

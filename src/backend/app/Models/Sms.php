@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use Database\Factories\SmsFactory;
@@ -35,7 +36,7 @@ class Sms extends BaseModel {
     public const STATUS_FAILED = -1;
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function trigger(): MorphTo {
         return $this->morphTo();

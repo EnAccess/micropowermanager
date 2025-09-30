@@ -2,6 +2,8 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Spatie\Geocoder\Exceptions\CouldNotGeocode;
 
@@ -39,10 +41,10 @@ class Handler extends ExceptionHandler {
     /**
      * Render an exception into an HTTP response.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param \Throwable               $exception
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @throws \Throwable
      */

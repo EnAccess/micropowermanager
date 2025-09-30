@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use App\Events\AssetPersonCreated;
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
@@ -57,7 +58,7 @@ class AssetPerson extends BaseModel {
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function creator(): MorphTo {
         return $this->morphTo();

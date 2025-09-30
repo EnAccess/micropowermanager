@@ -2,6 +2,7 @@
 
 namespace App\Models\Address;
 
+use Database\Factories\Address\AddressFactory;
 use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Model       $owner
  */
 class Address extends BaseModel {
-    /** @use HasFactory<\Database\Factories\Address\AddressFactory> */
+    /** @use HasFactory<AddressFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'address';

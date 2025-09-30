@@ -2,6 +2,7 @@
 
 namespace Inensus\ViberMessaging\Http\Controllers;
 
+use Viber\Api\Message\Text;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsResendInformationKeyService;
@@ -42,7 +43,7 @@ class WebhookController extends Controller {
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first()->key;
         $this->bot
             ->onConversation(function ($event) {
-                return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText('Can I help you?');
+                return (new Text())->setSender($this->botSender)->setText('Can I help you?');
             })
             ->onText('|register+.*|si', function ($event) use ($bot, $botSender) {
                 $message = $event->getMessage()->getText();
@@ -159,7 +160,7 @@ class WebhookController extends Controller {
 
     private function answerToCustomer($bot, $botSender, $event, $message) {
         $bot->getClient()->sendMessage(
-            (new \Viber\Api\Message\Text())
+            (new Text())
                 ->setSender($botSender)
                 ->setReceiver($event->getSender()->getId())
                 ->setText("Hello, {$event->getSender()->getName()}! {$message}")

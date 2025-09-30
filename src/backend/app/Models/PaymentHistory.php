@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
 use Carbon\CarbonImmutable;
@@ -32,14 +33,14 @@ use Illuminate\Support\Facades\DB;
  */
 class PaymentHistory extends BaseModel {
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function paidFor(): MorphTo {
         return $this->morphTo();
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function payer(): MorphTo {
         return $this->morphTo();

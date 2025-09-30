@@ -2,6 +2,7 @@
 
 namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 
+use Tymon\JWTAuth\JWTGuard;
 use App\Models\User;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
@@ -50,7 +51,7 @@ class InstallPackage extends Command {
         ];
         $this->databaseProxyService->create($databaseProxyData);
 
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        /** @var JWTGuard $guard */
         $guard = auth('api');
 
         $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];

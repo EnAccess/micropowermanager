@@ -25,9 +25,9 @@ class AddressTest extends TestCase {
         $companyDatabase = CompanyDatabaseFactory::new()->create();
 
         $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
-            'email' => $this->faker->email,
-            'phone' => $this->faker->phoneNumber,
-            'street' => $this->faker->streetAddress,
+            'email' => $this->faker->email(),
+            'phone' => $this->faker->phoneNumber(),
+            'street' => $this->faker->streetAddress(),
             'city_id' => 1,
             'country_id' => 1,
             'cluster_id' => 1,
@@ -49,7 +49,7 @@ class AddressTest extends TestCase {
         $companyDatabase = CompanyDatabaseFactory::new()->create();
         $address = AddressFactory::new()->create();
 
-        $streetName = $this->faker->streetName;
+        $streetName = $this->faker->streetName();
 
         $response = $this->actingAs($user)->put(sprintf('/api/people/%s/addresses', $person->id), [
             'id' => $address->id,

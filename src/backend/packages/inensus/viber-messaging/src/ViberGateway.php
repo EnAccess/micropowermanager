@@ -2,6 +2,7 @@
 
 namespace Inensus\ViberMessaging;
 
+use Viber\Api\Message\Text;
 use App\Models\Sms;
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Exceptions\MessageNotSentException;
@@ -34,7 +35,7 @@ class ViberGateway {
     ) {
         try {
             $this->bot->getClient()->sendMessage(
-                (new \Viber\Api\Message\Text())
+                (new Text())
                     ->setSender($this->botSender)
                     ->setReceiver($viberId)
                     ->setText($body)

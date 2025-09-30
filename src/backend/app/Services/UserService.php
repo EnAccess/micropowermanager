@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Tymon\JWTAuth\JWTGuard;
 use App\Exceptions\MailNotSentException;
 use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
@@ -23,7 +24,7 @@ class UserService {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
 
         if ($companyId === null) {
-            /** @var \Tymon\JWTAuth\JWTGuard $guard */
+            /** @var JWTGuard $guard */
             $guard = auth('api');
             $payload = $guard->check() ? $guard->payload() : null;
             $companyId = $payload?->get('companyId');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\MaintenanceUsersFactory;
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Inensus\Ticket\Models\Ticket;
 
 class MaintenanceUsers extends BaseModel {
-    /** @use HasFactory<\Database\Factories\MaintenanceUsersFactory> */
+    /** @use HasFactory<MaintenanceUsersFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'maintenance_user';

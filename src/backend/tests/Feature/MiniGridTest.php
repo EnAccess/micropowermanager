@@ -59,10 +59,10 @@ class MiniGridTest extends TestCase {
         $this->createTestData($clusterCount, $miniGridCount);
         $miGridData = [
             'cluster_id' => $this->clusterIds[0],
-            'name' => $this->faker->name,
+            'name' => $this->faker->name(),
             'geo_data' => [
-                'latitude' => $this->faker->latitude,
-                'longitude' => $this->faker->longitude,
+                'latitude' => $this->faker->latitude(),
+                'longitude' => $this->faker->longitude(),
             ],
         ];
         $response = $this->actingAs($this->user)->post('/api/mini-grids', $miGridData);
@@ -92,7 +92,7 @@ class MiniGridTest extends TestCase {
         while ($clusterCount > 0) {
             $user = UserFactory::new()->create();
             $cluster = ClusterFactory::new()->create([
-                'name' => $this->faker->unique()->companySuffix,
+                'name' => $this->faker->unique()->companySuffix(),
                 'manager_id' => $this->user->id,
             ]);
             array_push($this->clusterIds, $cluster->id);
@@ -101,12 +101,12 @@ class MiniGridTest extends TestCase {
                 $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
                 $miniGrid = MiniGridFactory::new()->create([
                     'cluster_id' => $cluster->id,
-                    'name' => $this->faker->unique()->companySuffix,
+                    'name' => $this->faker->unique()->companySuffix(),
                 ]);
                 $geographicalInformation->owner()->associate($miniGrid);
                 $geographicalInformation->save();
                 $city = CityFactory::new()->create([
-                    'name' => $this->faker->unique()->citySuffix,
+                    'name' => $this->faker->unique()->citySuffix(),
                     'country_id' => 1,
                     'mini_grid_id' => $miniGrid->id,
                     'cluster_id' => $cluster->id,

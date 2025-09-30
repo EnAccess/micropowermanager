@@ -2,6 +2,7 @@
 
 namespace App\Models\Role;
 
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -17,7 +18,7 @@ class Roles extends BaseModel {
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function roleOwner(): MorphTo {
         return $this->morphTo();

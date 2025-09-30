@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Tests\Unit;
 
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\Address\Address;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
@@ -45,7 +46,7 @@ class SmsNotifyTest extends TestCase {
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, SteamaCustomer> */
+        /** @var Collection<int, SteamaCustomer> */
         $customers = SteamaCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {

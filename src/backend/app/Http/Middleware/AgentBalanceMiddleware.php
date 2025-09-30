@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Request;
 use App\Exceptions\AgentRiskBalanceExceeded;
 use App\Exceptions\DownPaymentBiggerThanAmountException;
 use App\Exceptions\DownPaymentNotFoundException;
@@ -19,7 +20,7 @@ class AgentBalanceMiddleware {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param \Closure                 $next
      *
      * @return mixed

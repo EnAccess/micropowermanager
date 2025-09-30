@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Console\Commands\MailApplianceDebtsCommand;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
@@ -37,7 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // additional middleware group to `web` and `api` default groups
         $middleware->group('agent_api', [
-            Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SubstituteBindings::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

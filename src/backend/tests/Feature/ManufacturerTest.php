@@ -30,11 +30,11 @@ class ManufacturerTest extends TestCase {
         $this->createCity();
         $manufacturerData = [
             'name' => 'test meters company',
-            'website' => $this->faker->url,
-            'api_name' => $this->faker->name,
+            'website' => $this->faker->url(),
+            'api_name' => $this->faker->name(),
             'email' => 'test@test.com',
             'city_id' => $this->cities[0]->id,
-            'phone' => $this->faker->phoneNumber,
+            'phone' => $this->faker->phoneNumber(),
         ];
         $response = $this->actingAs($this->user)->post('/api/manufacturers', $manufacturerData);
         $response->assertStatus(201);

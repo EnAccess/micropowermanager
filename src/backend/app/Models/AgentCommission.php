@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\AgentCommissionFactory;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property float $risk_balance
  */
 class AgentCommission extends BaseModel {
-    /** @use HasFactory<\Database\Factories\AgentCommissionFactory> */
+    /** @use HasFactory<AgentCommissionFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'agent_commission';

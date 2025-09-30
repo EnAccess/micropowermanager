@@ -2,6 +2,7 @@
 
 namespace Inensus\ViberMessaging\Services;
 
+use Inensus\ViberMessaging\Exceptions\WebhookNotCreatedException;
 use Inensus\ViberMessaging\Models\ViberCredential;
 
 class ViberCredentialService {
@@ -28,7 +29,7 @@ class ViberCredentialService {
     }
 
     /**
-     * @throws \Inensus\ViberMessaging\Exceptions\WebhookNotCreatedException
+     * @throws WebhookNotCreatedException
      */
     public function updateCredentials($data) {
         $credential = $this->credential->newQuery()->find($data['id']);

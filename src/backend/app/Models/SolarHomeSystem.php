@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\SolarHomeSystemFactory;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property Manufacturer $manufacturer
  */
 class SolarHomeSystem extends BaseModel {
-    /** @use HasFactory<\Database\Factories\SolarHomeSystemFactory> */
+    /** @use HasFactory<SolarHomeSystemFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'solar_home_system';

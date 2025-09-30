@@ -28,10 +28,6 @@ class Cluster extends BaseModel implements TargetAssignable {
 
     public const RELATION_NAME = 'cluster';
 
-    protected $casts = [
-        'geo_data' => 'array',
-    ];
-
     /** @return BelongsTo<User, $this> */
     public function manager(): BelongsTo {
         return $this->belongsTo(User::class);
@@ -45,5 +41,11 @@ class Cluster extends BaseModel implements TargetAssignable {
     /** @return HasMany<MiniGrid, $this> */
     public function miniGrids(): HasMany {
         return $this->hasMany(MiniGrid::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'geo_data' => 'array',
+        ];
     }
 }

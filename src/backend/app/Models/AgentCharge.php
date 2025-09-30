@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\AgentChargeFactory;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class AgentCharge extends BaseModel {
-    /** @use HasFactory<\Database\Factories\AgentChargeFactory> */
+    /** @use HasFactory<AgentChargeFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'agent_charge';

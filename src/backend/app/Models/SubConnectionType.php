@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\SubConnectionTypeFactory;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SubConnectionType extends BaseModel {
-    /** @use HasFactory<\Database\Factories\SubConnectionTypeFactory> */
+    /** @use HasFactory<SubConnectionTypeFactory> */
     use HasFactory;
 
     /**

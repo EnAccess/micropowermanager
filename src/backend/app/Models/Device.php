@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Database\Factories\DeviceFactory;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
@@ -16,15 +18,15 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int                         $connection_group_id
- * @property \Carbon\Carbon              $created_at
- * @property \Carbon\Carbon              $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property Meter|SolarHomeSystem|EBike $device
  * @property Person                      $person
  * @property Address                     $address
  * @property string                      $device_type
  */
 class Device extends BaseModel {
-    /** @use HasFactory<\Database\Factories\DeviceFactory> */
+    /** @use HasFactory<DeviceFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'device';
