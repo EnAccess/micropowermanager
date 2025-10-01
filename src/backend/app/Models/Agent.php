@@ -46,7 +46,7 @@ class Agent extends Authenticatable implements JWTSubject {
         parent::__construct($attributes);
     }
 
-    public function setPasswordAttribute(string $password): void {
+    public function setPasswordAttribute(#[\SensitiveParameter] string $password): void {
         $this->attributes['password'] = Hash::make($password);
     }
 

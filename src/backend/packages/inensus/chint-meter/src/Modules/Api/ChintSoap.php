@@ -80,7 +80,7 @@ class ChintSoap {
         return $xml->asXML();
     }
 
-    private function createValidationRequestXml(string $passwordSignature, string $paraSignature): string|false {
+    private function createValidationRequestXml(#[\SensitiveParameter] string $passwordSignature, string $paraSignature): string|false {
         $username = $this->credentials->user_name;
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"></soap:Envelope>');
 
