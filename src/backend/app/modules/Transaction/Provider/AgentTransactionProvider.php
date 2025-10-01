@@ -54,7 +54,7 @@ class AgentTransactionProvider implements ITransactionProvider {
     }
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
-        $this->agentTransaction->update(['status' => $requestType === true ? 1 : -1]);
+        $this->agentTransaction->update(['status' => $requestType ? 1 : -1]);
         $agent = $this->agentTransaction->agent;
 
         if (!$requestType) {
@@ -151,7 +151,7 @@ class AgentTransactionProvider implements ITransactionProvider {
 
             $query->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
         if ($agentId !== $agent->id) {
             throw new \Exception('Agent authorization failed.');

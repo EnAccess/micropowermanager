@@ -96,7 +96,7 @@ class MiniGridTest extends TestCase {
                 'name' => $this->faker->unique()->companySuffix(),
                 'manager_id' => $this->user->id,
             ]);
-            array_push($this->clusterIds, $cluster->id);
+            $this->clusterIds[] = $cluster->id;
 
             while ($miniGridCount > 0) {
                 $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
@@ -112,7 +112,7 @@ class MiniGridTest extends TestCase {
                     'mini_grid_id' => $miniGrid->id,
                     'cluster_id' => $cluster->id,
                 ]);
-                array_push($this->miniGridIds, $miniGrid->id);
+                $this->miniGridIds[] = $miniGrid->id;
                 --$miniGridCount;
             }
             --$clusterCount;

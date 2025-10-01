@@ -65,7 +65,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         try {
             return $this->transaction->newQuery()->findOrFail($transactionId);
         } catch (ModelNotFoundException $exception) {
-            throw new \Exception('transaction_id validation field.');
+            throw new \Exception('transaction_id validation field.', $exception->getCode(), $exception);
         }
     }
 

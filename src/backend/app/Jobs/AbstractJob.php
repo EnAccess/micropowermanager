@@ -25,11 +25,7 @@ abstract class AbstractJob implements ShouldQueue {
     public function __construct(?int $companyId = null) {
         $this->afterCommit = true;
 
-        if ($companyId !== null) {
-            $this->companyId = $companyId;
-        } else {
-            $this->companyId = app()->make(UserService::class)->getCompanyId();
-        }
+        $this->companyId = $companyId !== null ? $companyId : app()->make(UserService::class)->getCompanyId();
     }
 
     public function handle(): void {
@@ -40,7 +36,7 @@ abstract class AbstractJob implements ShouldQueue {
     }
 
     public function failed(?\Throwable $t = null): void {
-        if ($t !== null) {
+        if ($t instanceof \Throwable) {
             Log::error(static::class.' failed for company '.$this->companyId, [
                 'message' => $t->getMessage(),
                 'trace' => $t->getTraceAsString(),

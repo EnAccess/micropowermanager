@@ -101,7 +101,7 @@ class AssetPersonController extends Controller {
                 $this->geographicalInformationService->save($geographicalInformation);
             }
             if ($downPayment > 0) {
-                $sender = !isset($addressData) ? '-' : $addressData['phone'];
+                $sender = isset($addressData) ? $addressData['phone'] : '-';
                 $transaction = $this->cashTransactionService->createCashTransaction(
                     $user->id,
                     $downPayment,
@@ -124,7 +124,7 @@ class AssetPersonController extends Controller {
             return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 

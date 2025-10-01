@@ -107,7 +107,7 @@ class SteamaMeterService implements ISynchronizeService {
                 $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $meter) {
-                    array_push($meters, $meter);
+                    $meters[] = $meter;
                 }
             }
         } catch (SteamaApiResponseException $e) {
@@ -175,8 +175,8 @@ class SteamaMeterService implements ISynchronizeService {
                     $points = $stmMeter['latitude'].','.$stmMeter['longitude'];
                 } else {
                     $points = explode(',', config('steama.geoLocation'));
-                    $latitude = strval(doubleval($points[0]) - (mt_rand(10, 1000) / 10000));
-                    $longitude = strval(doubleval($points[1]) - (mt_rand(10, 1000) / 10000));
+                    $latitude = strval(floatval($points[0]) - (mt_rand(10, 1000) / 10000));
+                    $longitude = strval(floatval($points[1]) - (mt_rand(10, 1000) / 10000));
                     $points = $latitude.','.$longitude;
                 }
 

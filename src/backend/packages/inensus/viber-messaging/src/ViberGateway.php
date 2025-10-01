@@ -47,7 +47,7 @@ class ViberGateway {
             throw new MessageNotSentException('Viber message sending failed');
         }
 
-        if ($registeredSms) {
+        if ($registeredSms instanceof Sms) {
             $this->viberMessageService->create(['sms_id' => $registeredSms->id]);
         }
     }

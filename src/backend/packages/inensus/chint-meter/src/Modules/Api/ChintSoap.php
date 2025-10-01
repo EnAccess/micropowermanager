@@ -51,7 +51,7 @@ class ChintSoap {
 
         $response = curl_exec($ch);
 
-        if (curl_errno($ch)) {
+        if (curl_errno($ch) !== 0) {
             Log::error('ChintMeterApi error: '.curl_error($ch));
             throw new ChintApiResponseException('ChintMeterApi error: '.curl_error($ch));
         }

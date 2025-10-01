@@ -16,7 +16,7 @@ class AccountService {
             return $result->getData()['uri'];
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

@@ -36,7 +36,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
             // We need to make sure that the payment is fully processable from our end .
             $this->swiftaTransactionService->imitateTransactionForValidation($swiftaTransactionData);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $this->setValidData($swiftaTransactionData);

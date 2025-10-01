@@ -14,10 +14,8 @@ class SteamaSmsBalanceFeedbackBody extends SmsBodyParser {
     }
 
     protected function getVariableValue(string $variable): mixed {
-        switch ($variable) {
-            case 'account_balance':
-                $variable = $this->steamaCustomer->account_balance;
-                break;
+        if ($variable === 'account_balance') {
+            $variable = $this->steamaCustomer->account_balance;
         }
 
         return $variable;

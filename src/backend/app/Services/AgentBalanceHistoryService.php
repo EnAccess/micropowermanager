@@ -74,7 +74,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->where('agent_id', $agent->id)
             ->where('trigger_type', 'agent_transaction');
 
-        if ($lastReceipt) {
+        if ($lastReceipt instanceof AgentReceipt) {
             $query->where('created_at', '>', $lastReceipt->created_at);
         }
 
@@ -112,7 +112,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
 
             return $period;
         } else {
-            foreach ($period as $key => $value) {
+            foreach (array_keys($period) as $key) {
                 foreach ($history as $h) {
                     if ($key === $h->date) {
                         $lastRow = $history->where('trigger_Type', '!=', 'agent_commission')

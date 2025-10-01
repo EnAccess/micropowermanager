@@ -45,10 +45,10 @@ class TokenProcessor extends AbstractJob {
 
         $token = $this->handleExistingToken();
 
-        if ($token === null) {
+        if (!$token instanceof Token) {
             $this->generateToken($api);
         }
-        if ($token !== null) {
+        if ($token instanceof Token) {
             $this->handlePaymentEvents($token);
         }
     }
@@ -64,7 +64,7 @@ class TokenProcessor extends AbstractJob {
     private function handleExistingToken(): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
-        if ($token !== null && $this->reCreate === true) {
+        if ($token !== null && $this->reCreate) {
             $token->delete();
             $token = null;
         }

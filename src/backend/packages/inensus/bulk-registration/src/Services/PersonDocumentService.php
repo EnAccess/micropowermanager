@@ -26,7 +26,7 @@ class PersonDocumentService extends CreatorService {
                 'type' => $docConfig['type'],
                 'location' => $docConfig['location'],
             ];
-            array_push($personDocuments, $personDocumentData);
+            $personDocuments[] = $personDocumentData;
         }
         $this->createRelatedDataIfDoesNotExists($personDocuments);
     }

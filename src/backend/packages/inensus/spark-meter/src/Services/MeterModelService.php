@@ -100,7 +100,7 @@ class MeterModelService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark meter models sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -118,10 +118,7 @@ class MeterModelService implements ISynchronizeService {
             } catch (SparkAPIResponseException $e) {
                 Log::critical('Spark meter meter-models sync-check failed.', ['Error :' => $e->getMessage()]);
                 if ($returnData) {
-                    array_push(
-                        $returnArray,
-                        ['result' => false]
-                    );
+                    $returnArray[] = ['result' => false];
                 }
                 throw new SparkAPIResponseException($e->getMessage());
             }

@@ -112,12 +112,10 @@ class TransactionService {
             $transaction->originalTransaction->update([
                 'status' => $status,
             ]);
-        } else {
-            if ($transaction && $transaction->originalTransaction instanceof ThirdPartyTransaction) {
-                $transaction->originalTransaction->update([
-                    'status' => $status,
-                ]);
-            }
+        } elseif ($transaction && $transaction->originalTransaction instanceof ThirdPartyTransaction) {
+            $transaction->originalTransaction->update([
+                'status' => $status,
+            ]);
         }
 
         $smTransaction->update([
@@ -180,7 +178,7 @@ class TransactionService {
             if ($count === 1) {
                 break;
             }
-            if (!count($syncCheck)) {
+            if (count($syncCheck) === 0) {
                 break;
             }
             collect($transactions)->filter(function (array $transaction): bool {

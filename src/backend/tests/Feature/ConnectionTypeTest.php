@@ -74,7 +74,7 @@ class ConnectionTypeTest extends TestCase {
 
         while ($connectionTypeCount > 0) {
             $connectionType = ConnectionTypeFactory::new()->create();
-            array_push($this->connectonTypeIds, $connectionType->id);
+            $this->connectonTypeIds[] = $connectionType->id;
             --$connectionTypeCount;
         }
     }

@@ -51,7 +51,7 @@ class AgentCustomersPaymentHistoryService {
 
         $payments = $this->executeSqlCommand($sql, $customerId, null, 'person');
 
-        if (empty($payments)) {
+        if ($payments === []) {
             return [$periodParam => ['' => 0.0]];
         }
 
@@ -105,7 +105,7 @@ class AgentCustomersPaymentHistoryService {
 
         $payments = $this->executeSqlCommand($sql, null, $agentId, 'person');
 
-        if (empty($payments)) {
+        if ($payments === []) {
             return [$periodParam => ['' => 0.0]];
         }
 

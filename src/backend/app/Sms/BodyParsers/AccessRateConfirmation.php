@@ -13,10 +13,8 @@ class AccessRateConfirmation extends SmsBodyParser {
     }
 
     protected function getVariableValue(string $variable): mixed {
-        switch ($variable) {
-            case 'amount':
-                $variable = $this->paymentHistory->amount;
-                break;
+        if ($variable === 'amount') {
+            $variable = $this->paymentHistory->amount;
         }
 
         return $variable;

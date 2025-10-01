@@ -33,7 +33,7 @@ class AccessRate {
      * @throws NoAccessRateFound
      */
     public function initializeAccessRatePayment(): AccessRatePayment {
-        if ($this->accessRate === null) {
+        if (!$this->accessRate instanceof AccessRateModel) {
             throw new NoAccessRateFound('Access Rate is not set');
         }
         // get current date and add AccessRate.period days
@@ -98,7 +98,7 @@ class AccessRate {
     }
 
     public function updatePayment(AccessRatePayment $accessRatePayment, int $paidAmount, bool $satisfied = false): void {
-        $accessRatePayment->debt = $satisfied === true ? 0 : $accessRatePayment->debt - $paidAmount;
+        $accessRatePayment->debt = $satisfied ? 0 : $accessRatePayment->debt - $paidAmount;
         $accessRatePayment->save();
     }
 

@@ -26,13 +26,11 @@ class AgentBalanceHistoryObserver {
             if ($agent->balance < 0) {
                 $agent->due_to_energy_supplier += (-1 * $agentBalanceHistory->amount);
                 $agent->balance += $agentBalanceHistory->amount;
+            } elseif ($agent->balance < (-1 * $agentBalanceHistory->amount)) {
+                $agent->due_to_energy_supplier += -1 * ($agent->balance + $agentBalanceHistory->amount);
+                $agent->balance += $agentBalanceHistory->amount;
             } else {
-                if ($agent->balance < (-1 * $agentBalanceHistory->amount)) {
-                    $agent->due_to_energy_supplier += -1 * ($agent->balance + $agentBalanceHistory->amount);
-                    $agent->balance += $agentBalanceHistory->amount;
-                } else {
-                    $agent->balance += $agentBalanceHistory->amount;
-                }
+                $agent->balance += $agentBalanceHistory->amount;
             }
 
             $agent->update();

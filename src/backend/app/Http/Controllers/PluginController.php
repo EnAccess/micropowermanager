@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
+use App\Models\Plugins;
 use App\Services\MpmPluginService;
 use App\Services\PluginsService;
 use App\Services\RegistrationTailService;
@@ -37,7 +38,7 @@ class PluginController extends Controller {
         if ($request->input('checked')) {
             // Check if this is the first time we are installing the plugin.
             // In that case we also need to run install commands, if present
-            if (!$plugin) {
+            if (!$plugin instanceof Plugins) {
                 $createdPlugin = $this->pluginsService->create($pluginData);
                 $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
 

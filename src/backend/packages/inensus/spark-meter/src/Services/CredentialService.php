@@ -39,11 +39,7 @@ class CredentialService {
             $smCredentials->is_authenticated = true;
             $this->organizationService->createOrganization($result['organizations'][0]);
         } catch (ClientException $cException) {
-            if ($cException->getResponse()->getStatusCode() === 401) {
-                $smCredentials->is_authenticated = false;
-            } else {
-                $smCredentials->is_authenticated = null;
-            }
+            $smCredentials->is_authenticated = $cException->getResponse()->getStatusCode() === 401 ? false : null;
         } catch (\Exception $exception) {
             Log::critical('Unknown exception while authenticating SparkMeter', ['reason' => $exception->getMessage()]);
             $smCredentials->is_authenticated = null;

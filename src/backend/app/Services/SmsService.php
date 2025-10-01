@@ -71,7 +71,7 @@ class SmsService {
             $receiver = $sender->getReceiver();
             $sender->validateReferences();
 
-            if ($smsAndroidSettings) {
+            if ($smsAndroidSettings instanceof SmsAndroidSetting) {
                 $gatewayId = $smsAndroidSettings->getId();
                 $sender->setCallback($smsAndroidSettings->callback, $uuid);
             }

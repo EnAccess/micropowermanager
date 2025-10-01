@@ -124,7 +124,7 @@ class SteamaAgentService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama agents sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -137,7 +137,7 @@ class SteamaAgentService implements ISynchronizeService {
                 $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $agent) {
-                    array_push($agents, $agent);
+                    $agents[] = $agent;
                 }
             }
         } catch (SteamaApiResponseException $e) {

@@ -16,7 +16,7 @@ class ReportController {
     }
 
     public function download(int $id): ?BinaryFileResponse {
-        if (!$id) {
+        if ($id === 0) {
             return null;
         }
         $report = $this->report->find($id);

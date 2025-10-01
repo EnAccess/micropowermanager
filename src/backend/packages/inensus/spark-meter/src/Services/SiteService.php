@@ -97,8 +97,8 @@ class SiteService implements ISynchronizeService {
             }
         )->first();
         $points = explode(',', config('spark.geoLocation'));
-        $latitude = strval(doubleval($points[0]) + (mt_rand(10, 10000) / 10000));
-        $longitude = strval(doubleval($points[1]) + (mt_rand(10, 10000) / 10000));
+        $latitude = strval(floatval($points[0]) + (mt_rand(10, 10000) / 10000));
+        $longitude = strval(floatval($points[1]) + (mt_rand(10, 10000) / 10000));
         $points = $latitude.','.$longitude;
         $geographicalInformation->update([
             'points' => $points,
@@ -184,7 +184,7 @@ class SiteService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark sites sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -200,7 +200,7 @@ class SiteService implements ISynchronizeService {
                 $result = $this->sparkMeterApiRequests->getFromKoios($url);
                 $organizationSites = $result['sites'];
                 foreach ($organizationSites as $site) {
-                    array_push($sites, $site);
+                    $sites[] = $site;
                 }
             }
         } catch (SparkAPIResponseException $e) {

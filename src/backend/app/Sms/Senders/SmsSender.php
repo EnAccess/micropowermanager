@@ -155,7 +155,7 @@ abstract class SmsSender {
     public function validateReferences(): void {
         if (($this->data instanceof Transaction) || ($this->data instanceof AssetRate)) {
             $nullSmsBodies = $this->smsBodyService->getNullBodies();
-            if (count($nullSmsBodies)) {
+            if (count($nullSmsBodies) > 0) {
                 Log::critical('Send sms rejected, some of sms bodies are null', ['Sms Bodies' => $nullSmsBodies]);
                 throw new MissingSmsReferencesException('Send sms rejected, some of sms bodies are null');
             }
