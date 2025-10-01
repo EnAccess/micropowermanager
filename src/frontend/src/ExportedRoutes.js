@@ -80,6 +80,8 @@ import StronMeterOverview from "./plugins/stron-meter/js/modules/Overview/Overvi
 import BulkRegistrationCsv from "./plugins/bulk-registration/js/modules/Csv"
 import ViberMessagingOverview from "./plugins/viber-messaging/js/modules/Overview/Overview"
 import AfricasTalkingOverview from "./plugins/africas-talking/js/modules/Overview/Overview"
+import ProspectOverview from "./plugins/prospect/js/modules/Overview/Overview"
+import ProspectSettings from "./plugins/prospect/js/modules/Setting/Setting"
 import WaveMoneyOverview from "./plugins/wave-money-payment-provider/js/modules/Overview/Overview"
 // FIXME: These are used as modules which seem broken.
 // https://github.com/EnAccess/micropowermanager/issues/142
@@ -95,7 +97,6 @@ import EBikeList from "./pages/EBikes/index.vue"
 import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
-import ProspectOverview from "./plugins/prospect/js/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1512,6 +1513,17 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Overview",
+          },
+        },
+      },
+      {
+        path: "prospect-setting",
+        component: ProspectSettings,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Settings",
           },
         },
       },

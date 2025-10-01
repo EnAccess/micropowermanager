@@ -15,7 +15,6 @@ return [
     Inensus\KelinMeter\Providers\KelinMeterServiceProvider::class,
     Inensus\MesombPaymentProvider\Providers\MesombServiceProvider::class,
     Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
-    Inensus\Prospect\Providers\ProspectServiceProvider::class,
     Inensus\SparkMeter\Providers\SparkMeterServiceProvider::class,
     Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider::class,
     Inensus\StronMeter\Providers\StronMeterServiceProvider::class,
@@ -24,6 +23,8 @@ return [
     Inensus\Ticket\Providers\TicketServiceProvider::class,
     Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider::class,
     Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider::class,
+
+    Inensus\Prospect\Providers\ProspectServiceProvider::class,
     Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class,
     Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class,
 ];

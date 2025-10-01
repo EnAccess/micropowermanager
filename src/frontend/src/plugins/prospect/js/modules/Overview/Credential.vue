@@ -23,15 +23,14 @@
                     <label for="apiUrl">
                       {{ $tc("phrases.apiEndpoint") }}
                     </label>
-                    <md-select
+                    <md-input
                       id="apiUrl"
                       name="apiUrl"
+                      type="url"
                       v-model="credentialService.credential.apiUrl"
-                      v-validate="'required'"
-                    >
-                      <md-option value="installations">installations</md-option>
-                      <md-option value="payments">payments</md-option>
-                    </md-select>
+                      v-validate="'required|url'"
+                      placeholder="https://demo.prospect.energy/api/v1/in/installations"
+                    />
                     <span class="md-error">
                       {{ errors.first("Credential-Form.apiUrl") }}
                     </span>

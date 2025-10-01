@@ -13,8 +13,9 @@ class InstallPackage extends Command {
     }
 
     public function handle(): void {
-        $this->info('Installing Prospect Integration Package\n');
-
+        $this->info('Installing Prospect Integration Package');
+        $this->call('vendor:publish', ['--provider' => "Inensus\Prospect\Providers\ProspectServiceProvider", '--tag' => "migrations"]);
+        $this->call('migrate');
         $this->info('Package installed successfully..');
     }
 }
