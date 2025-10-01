@@ -8,7 +8,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\SmSmsBodyService;
 
 class SmSmsBodyController extends Controller {
-    private $smsBodyService;
+    private SmSmsBodyService $smsBodyService;
 
     public function __construct(SmSmsBodyService $smsBodyService) {
         $this->smsBodyService = $smsBodyService;

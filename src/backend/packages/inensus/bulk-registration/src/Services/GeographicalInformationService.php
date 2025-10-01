@@ -10,7 +10,7 @@ use Inensus\BulkRegistration\Helpers\GeographicalLocationFinder;
 class GeographicalInformationService {
     private $geographicalInformationConfig;
 
-    public function createRelatedDataIfDoesNotExists($geographicalInformationData, $ownerModel) {
+    public function createRelatedDataIfDoesNotExists($geographicalInformationData, $ownerModel): void {
         if ($geographicalInformationData) {
             $geographicalInformation = GeographicalInformation::query()->make($geographicalInformationData);
             $geographicalInformation->owner()->associate($ownerModel);
@@ -18,7 +18,7 @@ class GeographicalInformationService {
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData, $ownerModel) {
+    public function resolveCsvDataFromComingRow(array $csvData, $ownerModel): void {
         $this->geographicalInformationConfig = config('bulk-registration.csv_fields.geographical_information');
         $geographicalInformationData = ['points' => ''];
         if ($ownerModel instanceof MiniGrid) {
@@ -33,7 +33,7 @@ class GeographicalInformationService {
         }
     }
 
-    private function createMiniGridRelatedGeographicalInformation($ownerModel) {
+    private function createMiniGridRelatedGeographicalInformation(MiniGrid $ownerModel) {
         $miniGridId = $ownerModel->id;
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])
             ->whereHasMorph(
@@ -57,10 +57,10 @@ class GeographicalInformationService {
     }
 
     private function createMeterRelatedGeographicalInformation(
-        $geographicalInformationData,
-        $csvData,
+        array $geographicalInformationData,
+        array $csvData,
         $ownerModel,
-    ) {
+    ): false|array {
         $meterId = $ownerModel->id;
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])
             ->whereHasMorph(

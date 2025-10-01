@@ -8,10 +8,10 @@ use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
 class PersonObserver {
-    private $customerService;
-    private $smTableEncryption;
-    private $person;
-    private $smCustomer;
+    private CustomerService $customerService;
+    private SmTableEncryption $smTableEncryption;
+    private Person $person;
+    private SmCustomer $smCustomer;
 
     public function __construct(
         CustomerService $customerService,
@@ -25,14 +25,14 @@ class PersonObserver {
         $this->smCustomer = $smCustomer;
     }
 
-    public function updated(Person $person) {
+    public function updated(Person $person): void {
         $smCustomer = $this->smCustomer->newQuery()->with('site')
             ->where('mpm_customer_id', $person->id)->first();
 
         if ($smCustomer) {
             $personId = $person->id;
             $customer = $this->person->newQuery()
-                ->with(['meters.tariff', 'meters.geo', 'meters.meter', 'addresses' => function ($q) {
+                ->with(['devices.device.tariff', 'devices.device.geo', 'devices.device.meter', 'addresses' => function ($q) {
                     return $q->where('is_primary', 1);
                 }])->where('id', $personId)->first();
 
@@ -41,10 +41,10 @@ class PersonObserver {
             $customerData = [
                 'id' => $smCustomer->customer_id,
                 'active' => true,
-                'meter_tariff_name' => $customer->meters[0]->tariff->name,
+                'meter_tariff_name' => $customer->devices[0]->device->tariff->name,
                 'name' => $person->name.' '.$person->surname,
                 'phone_number' => $customer->addresses[0]->phone,
-                'coords' => $customer->meters[0]->geo->points,
+                'coords' => $customer->devices[0]->address->geo->points,
                 'address' => $customer->addresses[0]->street,
             ];
 
@@ -53,9 +53,9 @@ class PersonObserver {
             $smModelHash = $this->smTableEncryption->makeHash([
                 $person->name.' '.$person->surname,
                 $customer->addresses[0]->phone,
-                $customer->credit_balance,
-                $customer->meters[0]->tariff->name,
-                $customer->meters[0]->meter->serial_number,
+                $smCustomer->credit_balance,
+                $customer->devices[0]->device->tariff->name,
+                $customer->devices[0]->device->serial_number,
             ]);
 
             $smCustomer->update([

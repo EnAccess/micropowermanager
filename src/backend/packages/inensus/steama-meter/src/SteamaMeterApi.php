@@ -17,7 +17,7 @@ use Inensus\SteamaMeter\Services\SteamaCredentialService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 
 class SteamaMeterApi implements IManufacturerAPI {
-    protected $api;
+    protected Client $api;
 
     public function __construct(
         Client $httpClient,

@@ -13,7 +13,7 @@ class TicketResource extends JsonResource {
      *
      * @return array
      */
-    public function toArray($request) {
+    public function toArray(Request $request) {
         return parent::toArray($request);
     }
 }

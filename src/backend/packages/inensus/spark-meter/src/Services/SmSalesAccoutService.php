@@ -11,13 +11,13 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
 class SmSalesAccoutService implements ISynchronizeService {
-    private $sparkMeterApiRequests;
-    private $rootUrl = '/sales-accounts';
-    private $smTableEncryption;
-    private $smSalesAccount;
-    private $smSite;
-    private $smSyncSettingService;
-    private $smSyncActionService;
+    private SparkMeterApiRequests $sparkMeterApiRequests;
+    private string $rootUrl = '/sales-accounts';
+    private SmTableEncryption $smTableEncryption;
+    private SmSalesAccount $smSalesAccount;
+    private SmSite $smSite;
+    private SmSyncSettingService $smSyncSettingService;
+    private SmSyncActionService $smSyncActionService;
 
     public function __construct(
         SparkMeterApiRequests $sparkMeterApiRequests,
@@ -41,7 +41,7 @@ class SmSalesAccoutService implements ISynchronizeService {
         return $this->smSalesAccount->newQuery()->with(['site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getSmSalesAccountsCount() {
+    public function getSmSalesAccountsCount(): int {
         return count($this->smSalesAccount->newQuery()->get());
     }
 
@@ -51,10 +51,10 @@ class SmSalesAccoutService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
             $salesAccountsCollection = collect($syncCheck)->except('available_site_count');
-            $salesAccountsCollection->each(function ($salesAccounts) {
-                $salesAccounts['site_data']->filter(function ($salesAccount) {
+            $salesAccountsCollection->each(function (array $salesAccounts) {
+                $salesAccounts['site_data']->filter(function (array $salesAccount): bool {
                     return $salesAccount['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-                })->each(function ($salesAccount) use ($salesAccounts) {
+                })->each(function (array $salesAccount) use ($salesAccounts) {
                     $this->smSalesAccount->newQuery()->create([
                         'sales_account_id' => $salesAccount['id'],
                         'account_type' => $salesAccount['account_type'],
@@ -67,9 +67,9 @@ class SmSalesAccoutService implements ISynchronizeService {
                     ]);
                 });
 
-                $salesAccounts['site_data']->filter(function ($salesAccount) {
+                $salesAccounts['site_data']->filter(function (array $salesAccount): bool {
                     return $salesAccount['syncStatus'] === SyncStatus::MODIFIED;
-                })->each(function ($salesAccount) use ($salesAccounts) {
+                })->each(function (array $salesAccount) use ($salesAccounts) {
                     $salesAccount['registeredSparkSalesAccount']->update([
                         'account_type' => $salesAccount['account_type'],
                         'active' => $salesAccount['active'],
@@ -93,7 +93,10 @@ class SmSalesAccoutService implements ISynchronizeService {
         }
     }
 
-    public function syncCheck($returnData = false) {
+    /**
+     * @return mixed[]
+     */
+    public function syncCheck($returnData = false): array {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
 
@@ -114,7 +117,7 @@ class SmSalesAccoutService implements ISynchronizeService {
             }
             $sparkSalesAccountsCollection = collect($sparkSalesAccounts['accounts']);
             $salesAccounts = $this->smSalesAccount->newQuery()->where('site_id', $site->site_id)->get();
-            $sparkSalesAccountsCollection->transform(function ($salesAccount) use ($salesAccounts) {
+            $sparkSalesAccountsCollection->transform(function (array $salesAccount) use ($salesAccounts): array {
                 $registeredSparkSalesAccount = $salesAccounts->firstWhere('sales_account_id', $salesAccount['id']);
                 $salesAccountsHash = $this->modelHasher($salesAccount, null);
                 if ($registeredSparkSalesAccount) {
@@ -148,7 +151,7 @@ class SmSalesAccoutService implements ISynchronizeService {
         return $returnArray;
     }
 
-    public function syncCheckBySite($siteId) {
+    public function syncCheckBySite($siteId): array {
         try {
             $url = $this->rootUrl;
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
@@ -160,7 +163,7 @@ class SmSalesAccoutService implements ISynchronizeService {
 
         $salesAccounts = $this->smSalesAccount->newQuery()->where('site_id', $siteId)->get();
 
-        $sparkSalesAccountsCollection->transform(function ($salesAccount) use ($salesAccounts) {
+        $sparkSalesAccountsCollection->transform(function (array $salesAccount) use ($salesAccounts): array {
             $registeredSparkSalesAccount = $salesAccounts->firstWhere('id', $salesAccount['id']);
             $salesAccountHash = $this->modelHasher($salesAccount, null);
             if ($registeredSparkSalesAccount) {

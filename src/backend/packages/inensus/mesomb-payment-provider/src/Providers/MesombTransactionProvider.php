@@ -8,7 +8,6 @@ use App\Models\Transaction\Transaction;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPayerMustHaveOnlyOneConnectedMeterException;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPaymentPhoneNumberNotFoundException;
@@ -20,9 +19,9 @@ use MPM\Transaction\Provider\ITransactionProvider;
 class MesombTransactionProvider implements ITransactionProvider {
     private $transaction;
     private $mesombTransaction;
-    private $mesombTransactionService;
-    private $validData = [];
-    private $address;
+    private MesomTransactionService $mesombTransactionService;
+    private array $validData = [];
+    private Address $address;
 
     public function __construct(
         Transaction $transaction,
@@ -87,7 +86,7 @@ class MesombTransactionProvider implements ITransactionProvider {
             '</Response>';
     }
 
-    private function checkPhoneIsExists($requestData): Model {
+    private function checkPhoneIsExists(array $requestData): ?Address {
         $personAddresses = $this->address->newQuery()
             ->where('phone', $requestData['b_party'])
             ->orWhere('phone', '+'.$requestData['b_party'])->get();
@@ -99,18 +98,20 @@ class MesombTransactionProvider implements ITransactionProvider {
         return $personAddresses->first();
     }
 
-    private function checkSenderHasOnlyOneMeterRegistered($senderAddress): void {
-        $senderMeters = $senderAddress->newQuery()->whereHasMorph(
+    private function checkSenderHasOnlyOneMeterRegistered(Address $senderAddress): void {
+        /** @var Person|null $senderPerson */
+        $senderPerson = $senderAddress->newQuery()->whereHasMorph(
             'owner',
             [Person::class]
-        )
-            ->first()->owner()->first()->meters();
+        )->first()?->owner;
+
+        $senderMeters = $senderPerson->devices;
         $senderMetersCount = $senderMeters->count();
         if ($senderMetersCount > 1 || $senderMetersCount == 0) {
             throw new MesombPayerMustHaveOnlyOneConnectedMeterException('Each payer must have if and only if connected meter with one phone number. Registered meter count is '.$senderMetersCount);
         }
 
-        $this->validData['meter'] = $senderMeters->first()->meter()->first()->serial_number;
+        $this->validData['meter'] = $senderMeters->first()->device()->first()->serial_number;
     }
 
     public function init($transaction): void {

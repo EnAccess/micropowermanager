@@ -12,7 +12,7 @@ use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 class SwiftaPaymentProviderController extends Controller {
     public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
 
-    public function validation(SwiftaValidationRequest $request) {
+    public function validation(SwiftaValidationRequest $request): Response {
         $transactionId = $request->get('transactionId');
         $customerName = $request->get('customerName');
         $data = collect([
@@ -27,7 +27,7 @@ class SwiftaPaymentProviderController extends Controller {
         return new Response($data, 200);
     }
 
-    public function transaction(SwiftaTransactionRequest $request) {
+    public function transaction(SwiftaTransactionRequest $request): Response {
         $transaction = $request->get('transaction');
         $reference = $request->get('reference');
         $swiftaTransaction = $transaction->originalTransaction()->first();

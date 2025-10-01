@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class SwiftaTransactionProvider implements ITransactionProvider {
@@ -75,15 +77,15 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         return $this->transaction;
     }
 
-    public function setValidData($swiftaTransactionData) {
+    public function setValidData(array $swiftaTransactionData): void {
         $this->validData = $swiftaTransactionData;
     }
 
-    public function getValidData() {
+    public function getValidData(): array {
         return $this->validData;
     }
 
-    public function getSubTransaction() {
+    public function getSubTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
         return $this->swiftaTransactionService->getSwiftaTransaction();
     }
 

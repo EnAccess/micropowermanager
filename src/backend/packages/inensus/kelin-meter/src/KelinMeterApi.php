@@ -16,7 +16,7 @@ use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\KelinTransaction;
 
 class KelinMeterApi implements IManufacturerAPI {
-    private $rootUrl = '/recharge';
+    private string $rootUrl = '/recharge';
 
     public function __construct(
         private KelinMeter $kelinMeter,

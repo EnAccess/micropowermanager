@@ -81,7 +81,7 @@ class RegistrationTailService implements IBaseService {
     public function removeMpmPluginFromRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
         $tail = !empty($registrationTail->tail) ? json_decode($registrationTail->tail, true) : [];
 
-        $updatedTail = array_filter($tail, function ($item) use ($mpmPlugin) {
+        $updatedTail = array_filter($tail, function (array $item) use ($mpmPlugin): bool {
             return $item['tag'] !== $mpmPlugin->tail_tag;
         });
 

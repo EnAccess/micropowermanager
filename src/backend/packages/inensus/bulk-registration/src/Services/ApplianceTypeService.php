@@ -9,20 +9,20 @@ class ApplianceTypeService extends CreatorService {
         parent::__construct($assetType);
     }
 
-    public function createRelatedDataIfDoesNotExists($appliances) {
+    public function createRelatedDataIfDoesNotExists($appliances): void {
         foreach ($appliances as $appliance) {
             AssetType::query()->firstOrCreate($appliance, $appliance);
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    public function resolveCsvDataFromComingRow($csvData): void {
         $applianceTypeConfig = config('bulk-registration.csv_fields.appliance_type');
 
         $applianceTypes = config('bulk-registration.appliance_types');
 
         $columnApplianceTypes = $csvData[$applianceTypeConfig['name']];
 
-        $appliances = collect($applianceTypes)->map(function ($type) use ($columnApplianceTypes) {
+        $appliances = collect($applianceTypes)->map(function ($type) use ($columnApplianceTypes): array|true {
             $applianceIndex = strpos($columnApplianceTypes, $type);
             if ($applianceIndex !== false) {
                 return [
@@ -34,6 +34,6 @@ class ApplianceTypeService extends CreatorService {
             return true;
         });
 
-        return $this->createRelatedDataIfDoesNotExists($appliances);
+        $this->createRelatedDataIfDoesNotExists($appliances);
     }
 }

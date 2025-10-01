@@ -15,7 +15,7 @@ class SmsListener {
         private SmsService $smsService,
     ) {}
 
-    public function onSmsStored($sender, $message) {
+    public function onSmsStored($sender, $message): void {
         $steamaCustomer = $this->customerService->getSteamaCustomerWithPhone($sender);
         if (!$steamaCustomer) {
             return;
@@ -34,7 +34,7 @@ class SmsListener {
         }
     }
 
-    public function handle($sender, $message) {
+    public function handle($sender, $message): void {
         // TODO: Uncomment this when steamaco-meter package is refactored with device->meter approach
         // $this->onSmsStored($sender, $message);
     }

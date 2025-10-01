@@ -13,7 +13,7 @@ class MeterResource extends JsonResource {
      *
      * @return array<string, mixed>
      */
-    public function toArray($request) {
+    public function toArray(Request $request) {
         return parent::toArray($request);
     }
 }

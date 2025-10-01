@@ -9,13 +9,13 @@ class AddressService extends CreatorService {
         parent::__construct($address);
     }
 
-    public function createRelatedDataIfDoesNotExists($addresses) {
+    public function createRelatedDataIfDoesNotExists($addresses): void {
         foreach ($addresses as $address) {
             Address::query()->firstOrCreate($address, $address);
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    public function resolveCsvDataFromComingRow($csvData): void {
         $addressConfig = config('bulk-registration.csv_fields.address');
         $returnAddresses = [];
         $firstAddressData = [

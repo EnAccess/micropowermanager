@@ -10,7 +10,7 @@ class SwiftaValidationRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'meter_number' => 'required',
             'amount' => 'required',

@@ -4,13 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Agent;
 use App\Models\Person\Person;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsAgentList() {
+    public function testUserGetsAgentList(): void {
         $this->createTestData();
         $agentCount = 4;
         $this->createAgent(4);
@@ -19,7 +20,7 @@ class AgentTest extends TestCase {
         $this->assertEquals(count($response['data']), $agentCount);
     }
 
-    public function testUserGetsAgentById() {
+    public function testUserGetsAgentById(): void {
         $this->createTestData();
         $agentCount = 4;
         $this->createAgent(4);
@@ -28,7 +29,7 @@ class AgentTest extends TestCase {
         $this->assertEquals($response['data']['id'], $this->agents[0]->id);
     }
 
-    public function testUserCreatesNewAgent() {
+    public function testUserCreatesNewAgent(): void {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -55,7 +56,7 @@ class AgentTest extends TestCase {
         $this->assertEquals($personAddress->phone, $postData['phone']);
     }
 
-    public function testUserCanUpdateAnAgent() {
+    public function testUserCanUpdateAnAgent(): void {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -80,7 +81,7 @@ class AgentTest extends TestCase {
         $this->assertEquals($putData['gender'], $response['data']['person']['sex']);
     }
 
-    public function testUserCanResetsAgentsPassword() {
+    public function testUserCanResetsAgentsPassword(): void {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -96,7 +97,7 @@ class AgentTest extends TestCase {
         $response->assertStatus(200);
     }
 
-    public function testUserCanSearchAnAgentByName() {
+    public function testUserCanSearchAnAgentByName(): void {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -109,7 +110,7 @@ class AgentTest extends TestCase {
         $this->assertEquals($responseData['name'], $this->agents[0]->person->name);
     }
 
-    public function testUserCanDeleteAnAgent() {
+    public function testUserCanDeleteAnAgent(): void {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -121,7 +122,7 @@ class AgentTest extends TestCase {
         $this->assertEquals(0, $agentsCount);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

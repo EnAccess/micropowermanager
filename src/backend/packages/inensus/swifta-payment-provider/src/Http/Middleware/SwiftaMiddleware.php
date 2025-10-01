@@ -36,7 +36,7 @@ class SwiftaMiddleware {
         return $next($request);
     }
 
-    private function checkCipherIsValid(Request $request) {
+    private function checkCipherIsValid(Request $request): void {
         $hash = md5('Inensus'.$request->input('timestamp').$request->input('amount').'Swifta');
         if ($request->input('cipher') != $hash) {
             Log::warning('Swifta Transaction Validation Failed', [

@@ -13,7 +13,7 @@ class PersonObserver {
         private KelinCustomer $kelinCustomer,
     ) {}
 
-    public function updated(Person $person) {
+    public function updated(Person $person): void {
         $kelinCustomer = $this->kelinCustomer->newQuery()->where('mpm_customer_id', $person->id)->first();
 
         if ($kelinCustomer) {

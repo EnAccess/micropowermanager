@@ -5,7 +5,7 @@ namespace Inensus\CalinSmartMeter\Services;
 use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 
 class CalinSmartCredentialService {
-    private $credential;
+    private CalinSmartCredential $credential;
 
     public function __construct(
         CalinSmartCredential $credentialModel,

@@ -8,7 +8,7 @@ use Inensus\KelinMeter\Http\Resources\KelinCredentialResource;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 
 class KelinCredentialController extends Controller {
-    private $credentialService;
+    private KelinCredentialService $credentialService;
 
     public function __construct(KelinCredentialService $credentialService) {
         $this->credentialService = $credentialService;

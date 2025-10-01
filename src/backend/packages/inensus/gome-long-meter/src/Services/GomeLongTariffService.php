@@ -26,7 +26,7 @@ class GomeLongTariffService {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
-    public function createGomeLongTariff($tariff) {
+    public function createGomeLongTariff($tariff): void {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
         if (!$gomeLongTariff) {
@@ -106,7 +106,7 @@ class GomeLongTariffService {
         }
     }
 
-    public function sync() {
+    public function sync(): bool {
         try {
             $credentials = $this->credentialService->getCredentials();
 

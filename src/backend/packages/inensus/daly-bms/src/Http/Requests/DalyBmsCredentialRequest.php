@@ -10,7 +10,7 @@ class DalyBmsCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'user_name' => ['required'],
             'password' => ['required'],

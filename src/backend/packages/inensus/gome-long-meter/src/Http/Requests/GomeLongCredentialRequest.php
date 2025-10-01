@@ -10,7 +10,7 @@ class GomeLongCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'user_id' => ['required'],
             'user_password' => ['required'],

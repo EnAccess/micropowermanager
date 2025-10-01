@@ -8,9 +8,9 @@ use Inensus\StronMeter\Http\Requests\StronMeterApiRequests;
 use Inensus\StronMeter\Models\StronCredential;
 
 class StronCredentialService {
-    private $rootUrl = '/login/';
-    private $credential;
-    private $stronApi;
+    private string $rootUrl = '/login/';
+    private StronCredential $credential;
+    private StronMeterApiRequests $stronApi;
 
     public function __construct(
         StronCredential $credentialModel,
@@ -37,7 +37,7 @@ class StronCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->credential->newQuery()->firstOrFail();
 
         $credential->update([
@@ -59,13 +59,8 @@ class StronCredentialService {
                 'is_authenticated' => true,
             ]);
         } catch (ClientException $cException) {
-            if ($cException->getResponse()->getStatusCode() === 400) {
-                $credential->is_authenticated = false;
-                $credential->api_token = null;
-            } else {
-                $credential->is_authenticated = null;
-                $credential->api_token = null;
-            }
+            $credential->is_authenticated = false;
+            $credential->api_token = null;
         } catch (\Exception $exception) {
             Log::critical(
                 'Unknown exception while authenticating StronMeter',

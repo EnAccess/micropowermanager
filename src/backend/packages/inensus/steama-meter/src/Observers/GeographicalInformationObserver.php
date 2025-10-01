@@ -14,7 +14,7 @@ class GeographicalInformationObserver {
         private SteamaMeter $stmMeter,
     ) {}
 
-    public function updated(GeographicalInformation $geographicalInformation) {
+    public function updated(GeographicalInformation $geographicalInformation): void {
         if ($geographicalInformation->owner instanceof Address) {
             $address = $geographicalInformation->owner;
             if ($address->owner instanceof Device) {
@@ -33,7 +33,7 @@ class GeographicalInformationObserver {
      *
      * @return void
      */
-    private function updateSteamaMeterGeolocation(Device $device, GeographicalInformation $geographicalInformation) {
+    private function updateSteamaMeterGeolocation(Device $device, GeographicalInformation $geographicalInformation): void {
         $meter = $device->device;
         $stmMeter = $this->stmMeter->newQuery()
             ->where('mpm_meter_id', $meter->id)

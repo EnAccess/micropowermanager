@@ -9,7 +9,7 @@ use Inensus\KelinMeter\Http\Resources\KelinResource;
 use Inensus\KelinMeter\Services\KelinMeterService;
 
 class KelinMeterController extends Controller {
-    private $meterService;
+    private KelinMeterService $meterService;
 
     public function __construct(KelinMeterService $meterService) {
         $this->meterService = $meterService;

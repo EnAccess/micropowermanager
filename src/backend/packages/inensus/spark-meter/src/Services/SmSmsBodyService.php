@@ -5,7 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSmsBody;
 
 class SmSmsBodyService {
-    private $smsBody;
+    private SmSmsBody $smsBody;
 
     public function __construct(SmSmsBody $smsBody) {
         $this->smsBody = $smsBody;
@@ -21,8 +21,8 @@ class SmSmsBodyService {
 
     public function updateSmsBodies($smsBodiesData) {
         $smsBodies = $this->smsBody->newQuery()->get();
-        collect($smsBodiesData)->each(function ($smsBody) use ($smsBodies) {
-            $smsBodies->filter(function ($body) use ($smsBody) {
+        collect($smsBodiesData)->each(function (array $smsBody) use ($smsBodies) {
+            $smsBodies->filter(function (SmSmsBody $body) use ($smsBody): bool {
                 return $body['id'] === $smsBody['id'];
             })->first()->update([
                 'body' => $smsBody['body'],
@@ -36,7 +36,7 @@ class SmSmsBodyService {
         return $this->smsBody->newQuery()->whereNull('body')->get();
     }
 
-    public function createSmsBodies() {
+    public function createSmsBodies(): void {
         $smsBodies = [
             [
                 'reference' => 'SparkSmsLowBalanceHeader',
@@ -100,7 +100,7 @@ class SmSmsBodyService {
                 'title' => 'Sms Footer',
             ],
         ];
-        collect($smsBodies)->each(function ($smsBody) {
+        collect($smsBodies)->each(function (array $smsBody) {
             $this->smsBody->newQuery()->firstOrCreate(
                 ['reference' => $smsBody['reference']],
                 $smsBody

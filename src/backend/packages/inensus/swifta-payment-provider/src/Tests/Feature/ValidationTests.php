@@ -21,7 +21,7 @@ class ValidationTests extends TestCase {
     use RefreshDatabase;
     use InteractsWithAuthentication;
 
-    public function testOnlyAuthenticatedSwiftaUserSendsTransaction() {
+    public function testOnlyAuthenticatedSwiftaUserSendsTransaction(): void {
         $data = [
             'meter_number' => '478881899',
             'amount' => 1000,
@@ -41,7 +41,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithoutInvalidCipher() {
+    public function testWithoutInvalidCipher(): void {
         $data = [
             'meter_number' => '478881899',
             'amount' => 1000,
@@ -60,7 +60,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithoutNonExistingMeterNumber() {
+    public function testWithoutNonExistingMeterNumber(): void {
         $this->initializeData();
         $data = [
             'meter_number' => '4700005610',
@@ -81,7 +81,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithNonSenderAddress() {
+    public function testWithNonSenderAddress(): void {
         $this->initializeData();
         Address::query()->first()->delete();
         $data = [
@@ -104,7 +104,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithInvalidTransactionAmount() {
+    public function testWithInvalidTransactionAmount(): void {
         $this->initializeData();
         AccessRate::query()->where('id', 1)->update([
             'tariff_id' => 1,
@@ -135,7 +135,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithValidTransactionAmount() {
+    public function testWithValidTransactionAmount(): void {
         $this->initializeData();
         $data = [
             'meter_number' => '4700005646',
@@ -163,7 +163,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    private function initializeData() {
+    private function initializeData(): void {
         // create person
         Person::factory()->create();
         // create meter-tariff

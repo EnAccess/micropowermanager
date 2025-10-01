@@ -7,7 +7,7 @@ use Inensus\KelinMeter\Http\Resources\KelinSettingResource;
 use Inensus\KelinMeter\Services\KelinSettingService;
 
 class KelinSettingController extends Controller {
-    private $settingService;
+    private KelinSettingService $settingService;
 
     public function __construct(KelinSettingService $settingService) {
         $this->settingService = $settingService;

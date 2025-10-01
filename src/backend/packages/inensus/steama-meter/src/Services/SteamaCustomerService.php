@@ -23,25 +23,25 @@ use Inensus\SteamaMeter\Models\SteamaUserType;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
 class SteamaCustomerService implements ISynchronizeService {
-    private $customer;
-    private $steamaApi;
-    private $apiHelpers;
-    private $rootUrl = '/customers';
-    private $person;
-    private $customerBasisPaymentPlan;
-    private $flatRatePaymentPlan;
-    private $subscriptionPaymentPlan;
-    private $hybridPaymentPlan;
-    private $minimumTopUpPaymentPlan;
-    private $perKwhPaymentPlan;
-    private $userType;
-    private $steamaSite;
-    private $bitharvesterService;
-    private $stmSite;
-    private $city;
-    private $steamaSyncSettingService;
-    private $steamaSyncActionService;
-    private $steamaSmsNotifiedCustomerService;
+    private SteamaCustomer $customer;
+    private SteamaMeterApiClient $steamaApi;
+    private ApiHelpers $apiHelpers;
+    private string $rootUrl = '/customers';
+    private Person $person;
+    private SteamaCustomerBasisPaymentPlan $customerBasisPaymentPlan;
+    private SteamaFlatRatePaymentPlan $flatRatePaymentPlan;
+    private SteamaSubscriptionPaymentPlan $subscriptionPaymentPlan;
+    private SteamaHybridPaymentPlan $hybridPaymentPlan;
+    private SteamaMinimumTopUpRequirementsPaymentPlan $minimumTopUpPaymentPlan;
+    private SteamaPerKwhPaymentPlan $perKwhPaymentPlan;
+    private SteamaUserType $userType;
+    private SteamaSite $steamaSite;
+    private SteamaBitharvesterService $bitharvesterService;
+    private SteamaSite $stmSite;
+    private City $city;
+    private SteamaSyncSettingService $steamaSyncSettingService;
+    private StemaSyncActionService $steamaSyncActionService;
+    private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService;
 
     public function __construct(
         SteamaCustomer $steamaCustomerModel,
@@ -89,7 +89,7 @@ class SteamaCustomerService implements ISynchronizeService {
         return $this->customer->newQuery()->with(['mpmPerson.addresses', 'site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getCustomersCount() {
+    public function getCustomersCount(): int {
         return count($this->customer->newQuery()->get());
     }
 
@@ -99,9 +99,9 @@ class SteamaCustomerService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
             $userTypes = $this->userType->newQuery()->get();
-            $syncCheck['data']->filter(function ($value) {
+            $syncCheck['data']->filter(function (array $value): bool {
                 return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function ($customer) use ($userTypes) {
+            })->each(function (array $customer) use ($userTypes) {
                 $person = $this->createRelatedPerson($customer);
                 $userType = $userTypes->where('syntax', $customer['user_type'])->first();
                 $this->customer->newQuery()->create([
@@ -117,9 +117,9 @@ class SteamaCustomerService implements ISynchronizeService {
                 $this->setStmCustomerPaymentPlan($customer);
             });
 
-            $syncCheck['data']->filter(function ($value) {
+            $syncCheck['data']->filter(function (array $value): bool {
                 return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function ($customer) use ($userTypes) {
+            })->each(function (array $customer) use ($userTypes) {
                 $person = is_null($customer['relatedPerson']) ?
                     $this->createRelatedPerson($customer) : $this->updateRelatedPerson(
                         $customer,
@@ -152,7 +152,7 @@ class SteamaCustomerService implements ISynchronizeService {
         }
     }
 
-    public function syncCheck($returnData = false) {
+    public function syncCheck($returnData = false): array {
         try {
             $url = $this->rootUrl.'?page=1&page_size=100';
             $result = $this->steamaApi->get($url);
@@ -174,7 +174,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $customersCollection = collect($customers);
         $stmCustomers = $this->customer->newQuery()->get();
         $people = $this->person->newQuery()->get();
-        $customersCollection->transform(function ($customer) use ($stmCustomers, $people) {
+        $customersCollection->transform(function (array $customer) use ($stmCustomers, $people): array {
             $registeredStmCustomer = $stmCustomers->firstWhere('customer_id', $customer['id']);
             $relatedPerson = null;
             $customerHash = $this->steamaCustomerHasher($customer);
@@ -199,7 +199,7 @@ class SteamaCustomerService implements ISynchronizeService {
         return $returnData ? ['data' => $customersCollection, 'result' => true] : ['result' => true];
     }
 
-    public function createRelatedPerson($customer) {
+    public function createRelatedPerson(array $customer) {
         $personData = [
             'name' => $customer['first_name'] ? $customer['first_name'] : '',
             'surname' => $customer['last_name'] ? $customer['last_name'] : '',
@@ -227,7 +227,7 @@ class SteamaCustomerService implements ISynchronizeService {
         return $person;
     }
 
-    public function updateRelatedPerson($customer, $person) {
+    public function updateRelatedPerson(array $customer, $person) {
         $person->update([
             'name' => $customer['first_name'] ? $customer['first_name'] : '',
             'surname' => $customer['last_name'] ? $customer['last_name'] : '',
@@ -341,7 +341,7 @@ class SteamaCustomerService implements ISynchronizeService {
             })->get();
     }
 
-    public function setStmCustomerPaymentPlan($customer) {
+    public function setStmCustomerPaymentPlan(array $customer): void {
         $plan = explode(',', $customer['payment_plan'])[0];
 
         switch ($plan) {
@@ -352,7 +352,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanSubscription()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
                 $this->setSubscriptionPlan($customer);
@@ -365,7 +365,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanHybrid()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
 
@@ -378,7 +378,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanMinimumTopUp()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
 
@@ -391,7 +391,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanPerKwh()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
                 $this->setPerKwhPlan($customer);
@@ -403,7 +403,7 @@ class SteamaCustomerService implements ISynchronizeService {
                         $customer['id']
                     )->first();
                 if ($customerBasisPlan) {
-                    $customerBasisPlan->paymentPlanFlatRate()->delete();
+                    $customerBasisPlan->paymentPlan()->delete();
                     $customerBasisPlan->delete();
                 }
                 $this->setFlatRatePlan($customer);
@@ -411,7 +411,7 @@ class SteamaCustomerService implements ISynchronizeService {
         }
     }
 
-    public function setFlatRatePlan($customer) {
+    public function setFlatRatePlan(array $customer): void {
         $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()->make([
             'customer_id' => $customer['id'],
         ]);
@@ -423,7 +423,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $customerBasisPlan->save();
     }
 
-    public function setPerKwhPlan($customer) {
+    public function setPerKwhPlan(array $customer): void {
         $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()->make([
             'customer_id' => $customer['id'],
         ]);
@@ -434,7 +434,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $customerBasisPlan->save();
     }
 
-    public function setMinimumTopUpPlan($customer) {
+    public function setMinimumTopUpPlan(array $customer): void {
         $plan = explode(',', $customer['payment_plan']);
         $threshold = $plan[1];
 
@@ -448,7 +448,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $customerBasisPlan->save();
     }
 
-    public function setSubscriptionPlan($customer) {
+    public function setSubscriptionPlan(array $customer): void {
         $plan = explode(',', $customer['payment_plan']);
         $fee = $plan[1];
         $duration = $plan[2];
@@ -469,7 +469,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $customerBasisPlan->save();
     }
 
-    public function setHybridPlan($customer) {
+    public function setHybridPlan(array $customer): void {
         $plan = explode(',', $customer['payment_plan']);
         $connectionFee = $plan[1];
         $subscriptionCost = $plan[2];
@@ -488,7 +488,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $customerBasisPlan->save();
     }
 
-    public function getSteamaCustomerName($customerId) {
+    public function getSteamaCustomerName($customerId): array {
         $stmCustomer = $this->customer->newQuery()->with('mpmPerson')->where('customer_id', $customerId)->first();
 
         return ['name' => $stmCustomer->mpmPerson->name.' '.$stmCustomer->mpmPerson->surname];
@@ -502,7 +502,7 @@ class SteamaCustomerService implements ISynchronizeService {
         });
     }
 
-    private function steamaCustomerHasher($steamaCustomer) {
+    private function steamaCustomerHasher(array $steamaCustomer): string {
         return $this->apiHelpers->makeHash([
             $steamaCustomer['user_type'],
             $steamaCustomer['control_type'],

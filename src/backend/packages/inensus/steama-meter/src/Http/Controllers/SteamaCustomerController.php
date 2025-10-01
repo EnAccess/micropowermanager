@@ -10,7 +10,7 @@ use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 
 class SteamaCustomerController extends Controller implements IBaseController {
-    private $customerService;
+    private SteamaCustomerService $customerService;
 
     public function __construct(SteamaCustomerService $steamaCustomerService) {
         $this->customerService = $steamaCustomerService;
@@ -34,7 +34,7 @@ class SteamaCustomerController extends Controller implements IBaseController {
         return new SteamaResource($this->customerService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->customerService->getCustomersCount();
     }
 

@@ -12,7 +12,7 @@ class ObserverServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
+    public function boot(): void {
         parent::boot();
         // removed observing of tariffs since GomeLong's API does not support it
         // MeterTariff::observe(MeterTariffObserver::class);

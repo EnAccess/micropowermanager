@@ -10,7 +10,7 @@ class CreateWaveMoneyPaymentProviderTables extends Migration {
      *
      * @return void
      */
-    public function up() {
+    public function up(): void {
         if (!Schema::hasTable('wave_money_transactions')) {
             Schema::create('wave_money_transactions', static function (Blueprint $table) {
                 $table->increments('id');
@@ -45,7 +45,7 @@ class CreateWaveMoneyPaymentProviderTables extends Migration {
      *
      * @return void
      */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('wave_money_transactions');
         Schema::dropIfExists('wave_money_credentials');
     }

@@ -7,7 +7,7 @@ use Inensus\SparkMeter\Models\SmCustomer;
 
 class SparkSmsBalanceFeedbackBody extends SmsBodyParser {
     protected $variables = ['credit_balance'];
-    protected $sparkCustomer;
+    protected SmCustomer $sparkCustomer;
 
     public function __construct(SmCustomer $sparkCustomer) {
         $this->sparkCustomer = $sparkCustomer;

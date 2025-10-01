@@ -7,7 +7,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\SmSalesAccoutService;
 
 class SmSalesAccountController implements IBaseController {
-    private $smSalesAccountService;
+    private SmSalesAccoutService $smSalesAccountService;
 
     public function __construct(SmSalesAccoutService $salesAccountService) {
         $this->smSalesAccountService = $salesAccountService;
@@ -27,7 +27,7 @@ class SmSalesAccountController implements IBaseController {
         return new SparkResource($this->smSalesAccountService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->smSalesAccountService->getSmSalesAccountsCount();
     }
 }

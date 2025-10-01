@@ -9,9 +9,9 @@ use Inensus\SparkMeter\Models\SmSetting;
 use Inensus\SparkMeter\Models\SmSyncSetting;
 
 class SmSyncSettingService {
-    private $syncSetting;
-    private $setting;
-    private $syncActionService;
+    private SmSyncSetting $syncSetting;
+    private SmSetting $setting;
+    private SmSyncActionService $syncActionService;
 
     public function __construct(SmSyncSetting $syncSetting, SmSetting $setting, SmSyncActionService $syncActionService) {
         $this->syncSetting = $syncSetting;
@@ -19,7 +19,7 @@ class SmSyncSettingService {
         $this->syncActionService = $syncActionService;
     }
 
-    public function createDefaultSettings() {
+    public function createDefaultSettings(): void {
         $dayInterval = CarbonInterval::make('1day');
         $fiveMinInterval = CarbonInterval::make('5minute');
 

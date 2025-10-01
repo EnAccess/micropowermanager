@@ -9,7 +9,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\CredentialService;
 
 class SmCredentialController extends Controller {
-    private $credentialService;
+    private CredentialService $credentialService;
 
     public function __construct(CredentialService $credentialService) {
         $this->credentialService = $credentialService;

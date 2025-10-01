@@ -22,7 +22,7 @@ class AgentBalanceHistoryObserver {
      *
      * @return void
      */
-    public function created(AgentBalanceHistory $agentBalanceHistory) {
+    public function created(AgentBalanceHistory $agentBalanceHistory): void {
         $trigger = $agentBalanceHistory->trigger()->first();
         $agent = $this->agentService->getById($agentBalanceHistory->agent_id);
 

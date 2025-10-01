@@ -9,7 +9,7 @@ use Inensus\SparkMeter\Models\SmSmsFeedbackWord;
 use Inensus\SparkMeter\Services\SmSmsFeedbackWordService;
 
 class SmSmsFeedbackController extends Controller {
-    private $smsFeedbackWorkService;
+    private SmSmsFeedbackWordService $smsFeedbackWorkService;
 
     public function __construct(SmSmsFeedbackWordService $smsFeedbackWordService) {
         $this->smsFeedbackWorkService = $smsFeedbackWordService;

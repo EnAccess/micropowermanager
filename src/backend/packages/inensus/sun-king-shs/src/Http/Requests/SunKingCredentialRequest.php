@@ -10,7 +10,7 @@ class SunKingCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'client_id' => ['required'],
             'client_secret' => ['required'],

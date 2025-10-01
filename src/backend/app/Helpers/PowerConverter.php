@@ -6,7 +6,7 @@ class PowerConverter {
     /**
      * @var array<string, int>
      */
-    private static $powerUnits = [
+    private static array $powerUnits = [
         'W' => 1,
         'kW' => 1000,
         'MW' => 1000000,

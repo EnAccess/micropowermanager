@@ -10,7 +10,7 @@ class SwiftaTransactionRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'transaction_id' => 'required',
             'transaction_reference' => 'required',

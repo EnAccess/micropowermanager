@@ -8,7 +8,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaMeterService;
 
 class SteamaMeterController extends Controller implements IBaseController {
-    private $meterService;
+    private SteamaMeterService $meterService;
 
     public function __construct(SteamaMeterService $meterService) {
         $this->meterService = $meterService;
@@ -28,7 +28,7 @@ class SteamaMeterController extends Controller implements IBaseController {
         return new SteamaResource($this->meterService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->meterService->getMetersCount();
     }
 }

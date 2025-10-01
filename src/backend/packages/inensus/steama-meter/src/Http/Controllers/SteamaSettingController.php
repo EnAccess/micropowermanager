@@ -7,7 +7,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaSettingService;
 
 class SteamaSettingController extends Controller {
-    private $settingService;
+    private SteamaSettingService $settingService;
 
     public function __construct(SteamaSettingService $settingService) {
         $this->settingService = $settingService;

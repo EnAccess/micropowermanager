@@ -10,7 +10,7 @@ class AfricasTalkingCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'api_key' => ['required'],
             'username' => ['required'],

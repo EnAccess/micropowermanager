@@ -16,8 +16,8 @@ use Inensus\StronMeter\Models\StronCredential;
 use Inensus\StronMeter\Models\StronTransaction;
 
 class StronMeterApi implements IManufacturerAPI {
-    protected $api;
-    private $rootUrl = '/vending/';
+    protected Client $api;
+    private string $rootUrl = '/vending/';
 
     public function __construct(
         Client $httpClient,

@@ -5,7 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSmsFeedbackWord;
 
 class SmSmsFeedbackWordService {
-    private $smsFeedbackWord;
+    private SmSmsFeedbackWord $smsFeedbackWord;
 
     public function __construct(SmSmsFeedbackWord $smsFeedbackWord) {
         $this->smsFeedbackWord = $smsFeedbackWord;
@@ -22,7 +22,7 @@ class SmSmsFeedbackWordService {
         ]);
     }
 
-    public function updateSmsFeedbackWord($smsFeedbackWord, $smsFeedbackWordData) {
+    public function updateSmsFeedbackWord($smsFeedbackWord, array $smsFeedbackWordData) {
         $smsFeedbackWord->update([
             'meter_reset' => $smsFeedbackWordData['meter_reset'],
             'meter_balance' => $smsFeedbackWordData['meter_balance'],

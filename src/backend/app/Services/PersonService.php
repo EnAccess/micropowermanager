@@ -56,7 +56,7 @@ class PersonService implements IBaseService {
      *
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
-    public function searchPerson($searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
+    public function searchPerson(string $searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
             fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')

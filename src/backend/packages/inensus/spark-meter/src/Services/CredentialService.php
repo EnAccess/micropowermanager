@@ -8,7 +8,7 @@ use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmCredential;
 
 class CredentialService {
-    private $rootUrl = '/organizations';
+    private string $rootUrl = '/organizations';
 
     public function __construct(
         private SparkMeterApiRequests $sparkMeterApiRequests,
@@ -28,7 +28,7 @@ class CredentialService {
         ]);
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $smCredentials = $this->smCredential->newQuery()->find($data['id']);
         $smCredentials->update([
             'api_key' => $data['api_key'],

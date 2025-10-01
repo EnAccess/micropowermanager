@@ -8,6 +8,7 @@ use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\PersonFactory;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -17,7 +18,7 @@ class AddressTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
-    public function testUserDefinesAnAddressToCustomerForOwnCompany() {
+    public function testUserDefinesAnAddressToCustomerForOwnCompany(): void {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -40,7 +41,7 @@ class AddressTest extends TestCase {
         $this->assertEquals(1, $person->addresses()->first()->is_primary);
     }
 
-    public function testUserUpdatesAndAddressOfCustomerForOwnCompany() {
+    public function testUserUpdatesAndAddressOfCustomerForOwnCompany(): void {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -66,7 +67,7 @@ class AddressTest extends TestCase {
         $this->assertEquals(0, $person->addresses()->first()->is_primary);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

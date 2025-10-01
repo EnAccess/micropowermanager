@@ -13,7 +13,7 @@ class VodacomTransactionResource extends JsonResource {
      *
      * @return array
      */
-    public function toArray($request): array {
+    public function toArray(Request $request): array {
         return [
             'data' => array_merge(parent::toArray($request), ['success' => true]),
         ];

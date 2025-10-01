@@ -16,7 +16,7 @@ class AndroidGateway implements ISmsProvider {
      * @param string            $callback
      * @param SmsAndroidSetting $smsAndroidSetting
      */
-    public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting) {
+    public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting): void {
         if (!config('app.env') == 'production') {
             Log::debug('Send sms on allowed in production', ['number' => $number, 'message' => $body]);
 

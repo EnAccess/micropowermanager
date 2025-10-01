@@ -8,9 +8,9 @@ use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaCredential;
 
 class SteamaCredentialService {
-    private $rootUrl = '/get-token/';
-    private $credential;
-    private $steamaApi;
+    private string $rootUrl = '/get-token/';
+    private SteamaCredential $credential;
+    private SteamaMeterApiClient $steamaApi;
 
     public function __construct(
         SteamaCredential $credentialModel,
@@ -37,7 +37,7 @@ class SteamaCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

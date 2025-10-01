@@ -5,7 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSetting;
 
 class SmSettingService {
-    private $smSetting;
+    private SmSetting $smSetting;
 
     public function __construct(SmSetting $smSetting) {
         $this->smSetting = $smSetting;

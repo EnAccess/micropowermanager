@@ -9,7 +9,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaCredentialService;
 
 class SteamaCredentialController extends Controller {
-    private $credentialService;
+    private SteamaCredentialService $credentialService;
 
     public function __construct(SteamaCredentialService $credentialService) {
         $this->credentialService = $credentialService;

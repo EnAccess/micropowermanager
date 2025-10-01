@@ -6,8 +6,8 @@ use App\Models\Transaction\Transaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 
 class MesomTransactionService {
-    private $mesombTransaction;
-    private $transaction;
+    private MesombTransaction $mesombTransaction;
+    private Transaction $transaction;
 
     public function __construct(
         MesombTransaction $mesombTransaction,

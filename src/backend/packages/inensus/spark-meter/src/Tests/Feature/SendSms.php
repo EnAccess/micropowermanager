@@ -26,7 +26,7 @@ class SendSms extends TestCase {
     use InteractsWithAuthentication;
 
     /** @test */
-    public function isMeterResetFeedbackSend() {
+    public function isMeterResetFeedbackSend(): void {
         Queue::fake();
         $this->withoutExceptionHandling();
         $person = $this->initializeData()['customer'];
@@ -43,7 +43,7 @@ class SendSms extends TestCase {
     }
 
     /** @test */
-    public function isMeterBalanceFeedbackSend() {
+    public function isMeterBalanceFeedbackSend(): void {
         Queue::fake();
         $this->withoutExceptionHandling();
         $person = $this->initializeData()['customer'];
@@ -58,7 +58,7 @@ class SendSms extends TestCase {
         $this->assertEquals(2, $smsCount);
     }
 
-    private function initializeData() {
+    private function initializeData(): array {
         $this->addSmsBodies();
         $this->addFeedBackKeys();
         MainSettings::factory()->createOne();
@@ -290,7 +290,7 @@ class SendSms extends TestCase {
                 'title' => 'Sms Footer',
             ],
         ];
-        collect($smsBodies)->each(function ($smsBody) {
+        collect($smsBodies)->each(function (array $smsBody) {
             SmSmsBody::query()->create([
                 'reference' => $smsBody['reference'],
                 'place_holder' => $smsBody['place_holder'],
@@ -303,7 +303,7 @@ class SendSms extends TestCase {
         return SmsBody::query()->get();
     }
 
-    private function addFeedBackKeys() {
+    private function addFeedBackKeys(): void {
         SmSmsFeedbackWord::query()->create([
             'meter_reset' => 'Reset',
             'meter_balance' => 'Balance',

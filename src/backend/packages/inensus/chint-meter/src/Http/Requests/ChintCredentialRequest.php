@@ -10,7 +10,7 @@ class ChintCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'user_name' => ['required'],
             'user_password' => ['required'],

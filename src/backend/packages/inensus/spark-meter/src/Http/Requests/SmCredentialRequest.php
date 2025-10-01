@@ -11,7 +11,7 @@ class SmCredentialRequest extends FormRequest {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
@@ -20,7 +20,7 @@ class SmCredentialRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'api_key' => ['required', Rule::unique('tenant.sm_api_credentials')->ignore($this->id)],
             'api_secret' => 'required',

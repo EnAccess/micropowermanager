@@ -30,8 +30,8 @@ class SmsBodyService {
      */
     public function updateSmsBodies(array $smsBodiesData): Collection {
         $smsBodies = $this->smsBody->newQuery()->get();
-        collect($smsBodiesData[0])->each(function ($smsBody) use ($smsBodies) {
-            $smsBodies->filter(function ($body) use ($smsBody) {
+        collect($smsBodiesData[0])->each(function (array $smsBody) use ($smsBodies) {
+            $smsBodies->filter(function (SmsBody $body) use ($smsBody): bool {
                 return $body['id'] === $smsBody['id'];
             })->first()->update([
                 'body' => $smsBody['body'],

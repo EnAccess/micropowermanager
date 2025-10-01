@@ -11,6 +11,8 @@ use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Ramsey\Uuid\Uuid;
 
@@ -101,7 +103,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return $this->waveMoneyTransaction->newQuery()->get();
     }
 
-    public function getWaveMoneyTransaction() {
+    public function getWaveMoneyTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
         return $this->getPaymentAggregatorTransaction();
     }
 }

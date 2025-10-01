@@ -7,7 +7,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\SmSyncSettingService;
 
 class SmSyncSettingController {
-    private $syncSettingService;
+    private SmSyncSettingService $syncSettingService;
 
     public function __construct(SmSyncSettingService $syncSettingService) {
         $this->syncSettingService = $syncSettingService;

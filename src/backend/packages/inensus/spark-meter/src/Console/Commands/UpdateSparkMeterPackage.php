@@ -34,12 +34,12 @@ class UpdateSparkMeterPackage extends Command {
         $this->info('Package updated successfully..');
     }
 
-    private function removeOldVersionOfPackage() {
+    private function removeOldVersionOfPackage(): void {
         $this->info('Removing former version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  remove inensus/spark-meter');
     }
 
-    private function installNewVersionOfPackage() {
+    private function installNewVersionOfPackage(): void {
         $this->info('Installing last version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/spark-meter');
     }
@@ -56,7 +56,7 @@ class UpdateSparkMeterPackage extends Command {
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
-    private function publishMigrationsAgain() {
+    private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
@@ -64,12 +64,12 @@ class UpdateSparkMeterPackage extends Command {
         ]);
     }
 
-    private function updateDatabase() {
+    private function updateDatabase(): void {
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFilesAgain() {
+    private function publishVueFilesAgain(): void {
         $this->info('Updating vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",

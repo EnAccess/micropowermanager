@@ -3,11 +3,11 @@
 namespace Inensus\SparkMeter\Services;
 
 class PackageInstallationService {
-    private $smsSettingService;
-    private $syncSettingService;
-    private $smsBodyService;
-    private $defaultValueService;
-    private $smSmsFeedbackWordService;
+    private SmSmsSettingService $smsSettingService;
+    private SmSyncSettingService $syncSettingService;
+    private SmSmsBodyService $smsBodyService;
+    private SmSmsVariableDefaultValueService $defaultValueService;
+    private SmSmsFeedbackWordService $smSmsFeedbackWordService;
 
     public function __construct(
         SmSmsSettingService $smsSettingService,
@@ -23,7 +23,7 @@ class PackageInstallationService {
         $this->smSmsFeedbackWordService = $smSmsFeedbackWordService;
     }
 
-    public function createDefaultSettingRecords() {
+    public function createDefaultSettingRecords(): void {
         $this->smsBodyService->createSmsBodies();
         $this->defaultValueService->createSmsVariableDefaultValues();
         $this->syncSettingService->createDefaultSettings();

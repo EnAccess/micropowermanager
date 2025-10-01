@@ -17,7 +17,7 @@ class ClusterEvent {
     public Cluster $cluster;
     public string $type;
     /**
-     * @var mixed contains geo coordinates array or external url to fetch
+     * @var array<string, mixed> contains geo coordinates array or external url to fetch
      */
     public $data;
 

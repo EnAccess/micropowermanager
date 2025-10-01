@@ -17,8 +17,8 @@ use Viber\Api\Sender;
 use Viber\Bot;
 
 class WebhookController extends Controller {
-    private $bot;
-    private $botSender;
+    private ?Bot $bot = null;
+    private Sender $botSender;
 
     public function __construct(
         private ViberCredentialService $credentialService,
@@ -146,19 +146,19 @@ class WebhookController extends Controller {
         return 'You have successfully registered with MicroPowerManager.';
     }
 
-    private function setAlreadyRegisteredMessage($meterSerialNumber) {
+    private function setAlreadyRegisteredMessage(string $meterSerialNumber): string {
         return "$meterSerialNumber has already registered with MicroPowerManager.";
     }
 
-    private function setNotRegisteredMessage() {
+    private function setNotRegisteredMessage(): string {
         return 'Not registered with MicroPowerManager.';
     }
 
-    private function setNoTransactionMessage($meterSerial) {
+    private function setNoTransactionMessage($meterSerial): string {
         return "No transaction found for meter serial: $meterSerial";
     }
 
-    private function answerToCustomer($bot, $botSender, $event, $message) {
+    private function answerToCustomer(Bot $bot, Sender $botSender, $event, string $message): void {
         $bot->getClient()->sendMessage(
             (new Text())
                 ->setSender($botSender)

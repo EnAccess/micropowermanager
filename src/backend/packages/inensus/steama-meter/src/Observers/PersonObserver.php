@@ -13,7 +13,7 @@ class PersonObserver {
         private SteamaCustomer $stmCustomer,
     ) {}
 
-    public function updated(Person $person) {
+    public function updated(Person $person): void {
         $stmCustomer = $this->stmCustomer->newQuery()->with('site')->where('mpm_customer_id', $person->id)->first();
 
         if ($stmCustomer) {

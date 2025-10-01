@@ -12,14 +12,14 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
 class MeterModelService implements ISynchronizeService {
-    private $sparkMeterApiRequests;
-    private $rootUrl = '/meters';
-    private $smTableEncryption;
-    private $smMeterModel;
-    private $smSite;
-    private $meterType;
-    private $smSyncSettingService;
-    private $smSyncActionService;
+    private SparkMeterApiRequests $sparkMeterApiRequests;
+    private string $rootUrl = '/meters';
+    private SmTableEncryption $smTableEncryption;
+    private SmMeterModel $smMeterModel;
+    private SmSite $smSite;
+    private MeterType $meterType;
+    private SmSyncSettingService $smSyncSettingService;
+    private SmSyncActionService $smSyncActionService;
 
     public function __construct(
         SparkMeterApiRequests $sparkMeterApiRequests,
@@ -45,7 +45,7 @@ class MeterModelService implements ISynchronizeService {
         return $this->smMeterModel->newQuery()->with(['meterType', 'site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getSmMeterModelsCount() {
+    public function getSmMeterModelsCount(): int {
         return count($this->smMeterModel->newQuery()->get());
     }
 
@@ -55,10 +55,10 @@ class MeterModelService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
             $meterModelsCollection = collect($syncCheck)->except('available_site_count');
-            $meterModelsCollection->each(function ($meterModels) {
-                $meterModels['site_data']->filter(function ($meterModel) {
+            $meterModelsCollection->each(function (array $meterModels) {
+                $meterModels['site_data']->filter(function (array $meterModel): bool {
                     return $meterModel['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-                })->each(function ($meterModel) use ($meterModels) {
+                })->each(function (array $meterModel) use ($meterModels) {
                     $meterType = $this->meterType->newQuery()->create([
                         'online' => 1,
                         'phase' => $meterModel['phase_count'],
@@ -74,9 +74,9 @@ class MeterModelService implements ISynchronizeService {
                     ]);
                 });
 
-                $meterModels['site_data']->filter(function ($meterModel) {
+                $meterModels['site_data']->filter(function (array $meterModel): bool {
                     return $meterModel['syncStatus'] === SyncStatus::MODIFIED;
-                })->each(function ($meterModel) use ($meterModels) {
+                })->each(function (array $meterModel) use ($meterModels) {
                     is_null($meterModel['relatedMeterType']) ?
                         $this->createRelatedMeterModel($meterModel) : $this->updateRelatedMeterModel(
                             $meterModel,
@@ -104,7 +104,10 @@ class MeterModelService implements ISynchronizeService {
         }
     }
 
-    public function syncCheck($returnData = false) {
+    /**
+     * @return mixed[]
+     */
+    public function syncCheck($returnData = false): array {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
         foreach ($sites as $key => $site) {
@@ -127,7 +130,7 @@ class MeterModelService implements ISynchronizeService {
             $meterModels = $this->smMeterModel->newQuery()->where('site_id', $site->site_id)->get();
             $meterTypes = $this->meterType->newQuery()->get();
 
-            $sparkMeterModelsCollection->transform(function ($meterModel) use ($meterModels, $meterTypes) {
+            $sparkMeterModelsCollection->transform(function (array $meterModel) use ($meterModels, $meterTypes): array {
                 $registeredSparkMeterModel = $meterModels->firstWhere('model_name', $meterModel['name']);
                 $relatedMeterType = null;
                 $meterModelHash = $this->modelHasher($meterModel, null);
@@ -174,7 +177,7 @@ class MeterModelService implements ISynchronizeService {
         ]);
     }
 
-    public function syncCheckBySite($siteId) {
+    public function syncCheckBySite($siteId): array {
         try {
             $url = $this->rootUrl.'/models';
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
@@ -187,7 +190,7 @@ class MeterModelService implements ISynchronizeService {
         $meterModels = $this->smMeterModel->newQuery()->where('site_id', $siteId)->get();
         $meterTypes = $this->meterType->newQuery()->get();
 
-        $sparkMeterModelsCollection->transform(function ($meterModel) use ($meterModels, $meterTypes) {
+        $sparkMeterModelsCollection->transform(function (array $meterModel) use ($meterModels, $meterTypes): array {
             $registeredSparkMeterModel = $meterModels->firstWhere('model_name', $meterModel['name']);
             $relatedMeterType = null;
             $meterModelHash = $this->modelHasher($meterModel, null);
@@ -214,7 +217,7 @@ class MeterModelService implements ISynchronizeService {
         }
     }
 
-    public function createRelatedMeterModel($meterModel) {
+    public function createRelatedMeterModel(array $meterModel) {
         return $this->meterType->newQuery()->create([
             'online' => 1,
             'phase' => $meterModel['phase_count'],
@@ -222,7 +225,7 @@ class MeterModelService implements ISynchronizeService {
         ]);
     }
 
-    public function updateRelatedMeterModel($meterModel, $relatedMeterModel) {
+    public function updateRelatedMeterModel(array $meterModel, $relatedMeterModel) {
         return $meterModel['relatedMeterModel']->update([
             'phase' => $meterModel['phase_count'],
             'max_current' => $meterModel['continuous_limit'],

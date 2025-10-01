@@ -8,7 +8,7 @@ use Inensus\CalinSmartMeter\Http\Resources\CalinSmartResource;
 use Inensus\CalinSmartMeter\Services\CalinSmartCredentialService;
 
 class CalinSmartCredentialController extends Controller {
-    private $credentialService;
+    private CalinSmartCredentialService $credentialService;
 
     public function __construct(CalinSmartCredentialService $credentialService) {
         $this->credentialService = $credentialService;
