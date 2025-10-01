@@ -79,9 +79,7 @@ class UserService {
             return null;
         }
 
-        $user = $user->fresh()->with(['addressDetails'])->first();
-
-        return $user;
+        return $user->fresh()->with(['addressDetails'])->first();
     }
 
     /**
@@ -95,11 +93,9 @@ class UserService {
     }
 
     public function get(int $id): User {
-        $user = User::with(['addressDetails'])
+        return User::with(['addressDetails'])
             ->where('id', '=', $id)
             ->firstOrFail();
-
-        return $user;
     }
 
     /**

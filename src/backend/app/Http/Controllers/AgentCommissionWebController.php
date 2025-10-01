@@ -12,8 +12,6 @@ class AgentCommissionWebController extends Controller {
 
     /**
      * Display a listing of the resource.
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
@@ -23,8 +21,6 @@ class AgentCommissionWebController extends Controller {
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param CreateAgentCommissionRequest $request
      *
      * @return ApiResource
      */
@@ -37,10 +33,7 @@ class AgentCommissionWebController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param                              $agentCommissionId
-     * @param CreateAgentCommissionRequest $request
-     *
-     * @return ApiResource
+     * @param $agentCommissionId
      */
     public function update(int $agentCommissionId, CreateAgentCommissionRequest $request): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
@@ -52,8 +45,6 @@ class AgentCommissionWebController extends Controller {
      * Remove the specified resource from storage.
      *
      * @param $agentCommissionId
-     *
-     * @return ApiResource
      */
     public function destroy(int $agentCommissionId): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);

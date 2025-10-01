@@ -38,7 +38,7 @@ class SmSmsSettingService {
     }
 
     public function updateSmsSettings($smsSettings) {
-        foreach ($smsSettings as $key => $setting) {
+        foreach ($smsSettings as $setting) {
             $smsSetting = $this->smsSetting->newQuery()->find($setting['id']);
             if ($smsSetting) {
                 $smsSetting->update([

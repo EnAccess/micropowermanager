@@ -25,8 +25,6 @@ class MeterGeographicalInformationController extends Controller {
      *
      * @urlParam mini_grid_id int
      *
-     * @return ApiResource
-     *
      * @responseFile responses/meters/meters.geo.list.json
      */
     public function index(?int $miniGridId = null): ApiResource {
@@ -52,10 +50,6 @@ class MeterGeographicalInformationController extends Controller {
      *
      * @urlParam person required The ID of the person
      *
-     * @param int $personId
-     *
-     * @return ApiResource
-     *
      * @responseFile responses/people/person.meter.list.json
      */
     public function show(int $personId): ApiResource {
@@ -69,10 +63,6 @@ class MeterGeographicalInformationController extends Controller {
      * @urlParam  meter int
      *
      * @bodyParam points string. Comma seperated latitude and longitude. Example 1,2
-     *
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function update(Request $request): ApiResource {
         $meters = $request->all();

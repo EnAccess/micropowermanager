@@ -14,13 +14,7 @@ use Illuminate\Http\Response;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class UserPasswordController extends Controller {
-    public function __construct(
-        private UserService $userService,
-        private DatabaseProxyManagerService $databaseProxyManagerService,
-        private UserPasswordResetService $userPasswordResetService,
-    ) {
-        $this->userService = $userService;
-    }
+    public function __construct(private UserService $userService, private DatabaseProxyManagerService $databaseProxyManagerService, private UserPasswordResetService $userPasswordResetService) {}
 
     public function forgotPassword(AdminResetPasswordRequest $request, Response $response): Response {
         $email = $request->input('email');

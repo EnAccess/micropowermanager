@@ -11,11 +11,6 @@ class AgentCustomersPaymentHistoryService {
     ) {}
 
     /**
-     * @param string   $period
-     * @param int      $customerId
-     * @param int|null $limit
-     * @param string   $order
-     *
      * @return array<string, array<string, float>>
      */
     public function getPaymentFlowByCustomerId(string $period, int $customerId, ?int $limit, string $order = 'ASC'): array {
@@ -51,7 +46,7 @@ class AgentCustomersPaymentHistoryService {
             SQL;
 
         if ($limit !== null) {
-            $sql .= ' LIMIT '.(int) $limit;
+            $sql .= ' LIMIT '.$limit;
         }
 
         $payments = $this->executeSqlCommand($sql, $customerId, null, 'person');
@@ -64,11 +59,6 @@ class AgentCustomersPaymentHistoryService {
     }
 
     /**
-     * @param string   $period
-     * @param int      $agentId
-     * @param int|null $limit
-     * @param string   $order
-     *
      * @return array<string, array<string, float>>
      */
     public function getPaymentFlows(string $period, int $agentId, ?int $limit, string $order = 'ASC'): array {
@@ -110,7 +100,7 @@ class AgentCustomersPaymentHistoryService {
             SQL;
 
         if ($limit !== null) {
-            $sql .= ' LIMIT '.(int) $limit;
+            $sql .= ' LIMIT '.$limit;
         }
 
         $payments = $this->executeSqlCommand($sql, null, $agentId, 'person');
@@ -137,11 +127,6 @@ class AgentCustomersPaymentHistoryService {
     }
 
     /**
-     * @param string   $sql
-     * @param int|null $payerId
-     * @param int|null $agentId
-     * @param string   $payerType
-     *
      * @return array<int, array<string, mixed>>
      */
     private function executeSqlCommand(string $sql, ?int $payerId, ?int $agentId, string $payerType): array {

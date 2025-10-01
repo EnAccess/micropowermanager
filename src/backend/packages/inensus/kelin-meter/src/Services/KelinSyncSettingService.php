@@ -25,7 +25,7 @@ class KelinSyncSettingService {
 
     public function createDefaultSettings(): void {
         $dayInterval = CarbonInterval::make('1day');
-        $fiveMinInterval = CarbonInterval::make('5minute');
+        CarbonInterval::make('5minute');
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
         if (!$syncCustomer) {

@@ -22,10 +22,6 @@ class SubConnectionTypeController extends Controller {
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @param SubConnectionTypeCreateRequest $request
-     *
-     * @return ApiResource
      */
     public function store(SubConnectionTypeCreateRequest $request): ApiResource {
         $subConnectionTypeData = $request->only(['name', 'connection_type_id', 'tariff_id']);
@@ -35,10 +31,6 @@ class SubConnectionTypeController extends Controller {
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param int $subConnectionTypeId
-     *
-     * @return ApiResource
      */
     public function update(Request $request, int $subConnectionTypeId): ApiResource {
         $subConnectionType = $this->subConnectionTypeService->getById($subConnectionTypeId);

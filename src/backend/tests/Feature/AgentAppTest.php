@@ -41,7 +41,6 @@ class AgentAppTest extends TestCase {
     public function testAgentLogsOut(): void {
         $this->createTestData();
         $this->createAgent();
-        $agent = $this->agent;
         $response = $this->actingAs($this->agent)->post('/api/app/logout');
         $response->assertStatus(200);
         $this->assertEquals($response->json('message'), 'Successfully logged out');
@@ -50,7 +49,6 @@ class AgentAppTest extends TestCase {
     public function testAgentRefreshesAuthToken(): void {
         $this->createTestData();
         $this->createAgent();
-        $agent = $this->agent;
         $response = $this->actingAs($this->agent)->post('/api/app/refresh');
         $response->assertStatus(200);
     }
@@ -59,7 +57,6 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
-        $agent = $this->agent;
         $postData = [
             'fire_base_token' => '123456789',
         ];
@@ -89,7 +86,6 @@ class AgentAppTest extends TestCase {
         $this->createPerson($personCount);
         $this->createAgentCommission();
         $this->createAgent();
-        $agent = $this->agent;
         $response = $this->actingAs($this->agent)->get('/api/app/agents/customers');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $personCount);
@@ -106,7 +102,6 @@ class AgentAppTest extends TestCase {
         $this->createPerson($personCount);
         $this->createAgentCommission();
         $this->createAgent();
-        $agent = $this->agent;
         $person = Person::query()->where('is_customer', 1)->first();
         $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/search?q=%s', $person->name));
         $response->assertStatus(200);
@@ -256,7 +251,7 @@ class AgentAppTest extends TestCase {
         $this->createAgent();
         $assignedApplianceCount = 2;
         $this->createAssignedAppliances($assignedApplianceCount);
-        $assignedAppliance = AgentAssignedAppliances::query()->first();
+        AgentAssignedAppliances::query()->first();
         $response = $this->actingAs($this->agent)->get('/api/app/agents/applianceTypes');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $assignedApplianceCount);

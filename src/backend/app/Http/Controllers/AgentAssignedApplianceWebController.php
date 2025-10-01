@@ -20,8 +20,6 @@ class AgentAssignedApplianceWebController extends Controller {
      * @bodyParam appliance_type_id integer required
      * @bodyParam cost integer required
      *
-     * @param CreateAgentAssignedApplianceRequest $request
-     *
      * @return ApiResource
      */
     public function store(CreateAgentAssignedApplianceRequest $request) {
@@ -38,8 +36,7 @@ class AgentAssignedApplianceWebController extends Controller {
     /**
      * List for Web interface.
      *
-     * @param int     $agentId
-     * @param Request $request
+     * @param int $agentId
      *
      * @return ApiResource
      */

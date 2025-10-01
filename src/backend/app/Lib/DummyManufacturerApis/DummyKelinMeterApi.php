@@ -22,7 +22,7 @@ class DummyKelinMeterApi implements IManufacturerAPI {
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        $energy = (float) $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargedEnergy;
 
         $meter = $transactionContainer->device->device;
         $amount = $transactionContainer->totalAmount;
@@ -69,8 +69,6 @@ class DummyKelinMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

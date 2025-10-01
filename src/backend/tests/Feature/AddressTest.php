@@ -22,8 +22,8 @@ class AddressTest extends TestCase {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
         $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
 
         $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
             'email' => $this->faker->email(),
@@ -44,10 +44,10 @@ class AddressTest extends TestCase {
     public function testUserUpdatesAndAddressOfCustomerForOwnCompany(): void {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
-        $city = CityFactory::new()->create();
+        CityFactory::new()->create();
 
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
         $address = AddressFactory::new()->create();
 
         $streetName = $this->faker->streetName();

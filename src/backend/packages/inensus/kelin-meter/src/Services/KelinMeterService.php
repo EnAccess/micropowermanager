@@ -342,8 +342,7 @@ class KelinMeterService implements ISynchronizeService {
                 }
             }
         }
-        $newSerial .= '-'.rand(0, 9);
 
-        return $newSerial;
+        return $newSerial.('-'.rand(0, 9));
     }
 }

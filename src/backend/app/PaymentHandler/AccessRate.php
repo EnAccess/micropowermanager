@@ -12,14 +12,6 @@ use Carbon\Carbon;
 
 class AccessRate {
     private ?AccessRateModel $accessRate = null;
-    // FIXME: Check if $meter can be removed here
-    // @phpstan-ignore property.onlyWritten
-    private Meter $meter;
-
-    /**
-     * AccessRatePayment constructor.
-     */
-    public function __construct() {}
 
     /**
      * @throws NoAccessRateFound
@@ -30,18 +22,14 @@ class AccessRate {
         }
         $accessRate = new self();
         $accessRate->accessRate = $meter->accessRate();
-        $accessRate->setMeter($meter);
+        $accessRate->setMeter();
 
         return $accessRate;
     }
 
-    private function setMeter(Meter $meter): void {
-        $this->meter = $meter;
-    }
+    private function setMeter(): void {}
 
     /**
-     * @return AccessRatePayment
-     *
      * @throws NoAccessRateFound
      */
     public function initializeAccessRatePayment(): AccessRatePayment {
@@ -60,8 +48,6 @@ class AccessRate {
     }
 
     /**
-     * @return int
-     *
      * @throws NoAccessRateFound
      */
     private function getDebt(Meter $meter): int {
@@ -74,10 +60,6 @@ class AccessRate {
     }
 
     /**
-     * @param TransactionDataContainer $transactionData
-     *
-     * @return TransactionDataContainer
-     *
      * @deprecated
      */
     public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer {

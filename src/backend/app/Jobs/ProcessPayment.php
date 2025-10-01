@@ -31,8 +31,6 @@ class ProcessPayment extends AbstractJob {
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function executeJob(): void {
         TransactionPaymentProcessor::process($this->companyId, $this->transactionId);

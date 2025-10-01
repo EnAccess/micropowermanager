@@ -12,10 +12,6 @@ use Mockery\Exception;
 class ClusterGeoListener {
     /**
      * Handle the event.
-     *
-     * @param ClusterEvent $event
-     *
-     * @return void
      */
     public function handle(ClusterEvent $event): void {
         $cluster = $event->cluster;
@@ -47,7 +43,6 @@ class ClusterGeoListener {
     /**
      * Creates a json file which has the same name as the cluster.
      *
-     * @param Cluster              $cluster
      * @param array<string, mixed> $data
      */
     private function storeData(Cluster $cluster, array $data): void {

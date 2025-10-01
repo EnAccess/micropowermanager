@@ -112,7 +112,7 @@ class MeterTest extends TestCase {
     }
 
     public function testUserGetsPersonMeters(): void {
-        $meter = $this->getMeter();
+        $this->getMeter();
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/people/%s/meters',
             $this->person->id
@@ -187,14 +187,13 @@ class MeterTest extends TestCase {
 
     protected function getMeter(): mixed {
         $this->createTestData();
-        $meter = MeterFactory::new()->create([
+
+        return MeterFactory::new()->create([
             'meter_type_id' => $this->meterType->id,
             'in_use' => true,
             'manufacturer_id' => $this->manufacturer->id,
             'serial_number' => str_random(36),
         ]);
-
-        return $meter;
     }
 
     protected function createMeterWithGeo(): void {
@@ -250,7 +249,7 @@ class MeterTest extends TestCase {
             'meter_id' => $meter->id,
             'token' => $this->faker->unique()->randomNumber(),
         ]);
-        $paymentHistory = PaymentHistoryFactory::new()->create([
+        PaymentHistoryFactory::new()->create([
             'transaction_id' => $this->transaction->id,
             'amount' => $this->transaction->amount,
             'payment_service' => 'agent_transaction',

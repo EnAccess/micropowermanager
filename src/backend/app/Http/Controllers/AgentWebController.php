@@ -96,9 +96,6 @@ class AgentWebController extends Controller {
         return ApiResource::make($this->agentService->searchAgent($term, $paginate));
     }
 
-    /**
-     * @return Response
-     */
     public function resetPassword(Request $request, Response $response): Response {
         $responseMessage = $this->agentService->resetPassword($request->input('email'));
 

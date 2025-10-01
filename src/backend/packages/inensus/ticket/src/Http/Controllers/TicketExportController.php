@@ -17,8 +17,6 @@ class TicketExportController {
 
     /**
      * A list of stored book keeping data.
-     *
-     * @return TicketResource
      */
     public function index(Request $request): TicketResource {
         $limit = $request->input('per_page');
@@ -28,10 +26,6 @@ class TicketExportController {
 
     /**
      * Generates a book keeping file and stores it.
-     *
-     * @param Request $request
-     *
-     * @return TicketResource
      *
      * @throws Exception
      */

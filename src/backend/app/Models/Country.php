@@ -18,9 +18,6 @@ class Country extends BaseModel {
     /** @use HasFactory<CountryFactory> */
     use HasFactory;
 
-    /**
-     * @return string
-     */
     public function getRouteKeyName(): string {
         return 'country_code';
     }

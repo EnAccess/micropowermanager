@@ -39,9 +39,6 @@ class SmsController extends Controller {
         return new ApiResource($list);
     }
 
-    /**
-     * @return void
-     */
     public function storeBulk(Request $request): void {
         $type = $request->get('type');
         $receivers = $request->get('receivers');
@@ -219,8 +216,6 @@ class SmsController extends Controller {
      * Marks the sms as sent.
      *
      * @param string $uuid
-     *
-     * @return void
      */
     public function updateForDelivered($uuid): void {
         try {

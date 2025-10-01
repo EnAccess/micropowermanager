@@ -45,7 +45,7 @@ class SteamaMeterApi implements IManufacturerAPI {
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'load' => (float) $transactionContainer->chargedEnergy,
+                'load' => $transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;
@@ -110,8 +110,6 @@ class SteamaMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

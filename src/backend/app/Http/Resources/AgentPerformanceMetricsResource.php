@@ -27,8 +27,6 @@ class AgentPerformanceMetricsResource extends JsonResource {
      *
      * @param Request      $request
      * @param JsonResponse $response
-     *
-     * @return void
      */
     public function withResponse($request, $response): void {
         $data = $response->getData(true);

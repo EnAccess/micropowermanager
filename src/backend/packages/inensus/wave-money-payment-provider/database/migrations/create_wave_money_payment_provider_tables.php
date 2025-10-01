@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Schema;
 class CreateWaveMoneyPaymentProviderTables extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void {
         if (!Schema::hasTable('wave_money_transactions')) {
@@ -42,8 +40,6 @@ class CreateWaveMoneyPaymentProviderTables extends Migration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void {
         Schema::dropIfExists('wave_money_transactions');

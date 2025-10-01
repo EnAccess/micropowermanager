@@ -76,8 +76,6 @@ class LoanDataContainer {
     }
 
     /**
-     * @param Person $owner
-     *
      * @return Collection<int, AssetRate>
      *
      * @psalm-return Collection<int, AssetRate>
@@ -93,10 +91,6 @@ class LoanDataContainer {
     }
 
     /**
-     * @param string $serialNumber
-     *
-     * @return Person
-     *
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer
      */

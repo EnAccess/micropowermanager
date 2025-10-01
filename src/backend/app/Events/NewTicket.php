@@ -16,8 +16,6 @@ class NewTicket implements ShouldBroadcast {
 
     /**
      * Create a new event instance.
-     *
-     * @param Ticket $ticket
      */
     public function __construct(public Ticket $ticket) {}
 

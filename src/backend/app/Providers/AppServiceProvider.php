@@ -49,8 +49,6 @@ use MPM\User\UserListener;
 class AppServiceProvider extends ServiceProvider {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void {
         // Maria DB work-around
@@ -91,8 +89,6 @@ class AppServiceProvider extends ServiceProvider {
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void {
         // Aliases here added for backwards-compatibility

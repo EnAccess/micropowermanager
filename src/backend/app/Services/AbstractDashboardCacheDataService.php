@@ -28,8 +28,6 @@ abstract class AbstractDashboardCacheDataService {
     }
 
     /**
-     * @param int|string $id
-     *
      * @return array<string, mixed>|null
      */
     public function getDataById(int|string $id): ?array {

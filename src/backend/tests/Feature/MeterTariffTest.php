@@ -201,15 +201,7 @@ class MeterTariffTest extends TestCase {
         $this->createMeterTariff();
         $tariff = $this->meterTariff;
         $tariffPrice = $tariff->total_price;
-        $tariffPricingComponentService = app()->make(TariffPricingComponentService::class);
-        $componentsData = [
-            [
-                'name' => 'Some component',
-                'price' => 100000,
-            ], [
-                'name' => 'Some other component',
-                'price' => 100000,
-            ]];
+        app()->make(TariffPricingComponentService::class);
         $updatedTariff = $tariff->fresh();
         $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
     }

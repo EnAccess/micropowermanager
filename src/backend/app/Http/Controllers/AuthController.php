@@ -38,8 +38,6 @@ class AuthController extends Controller {
 
     /**
      * Get the authenticated User.
-     *
-     * @return JsonResponse
      */
     public function me(): JsonResponse {
         return response()->json(auth('api')->user());
@@ -47,8 +45,6 @@ class AuthController extends Controller {
 
     /**
      * Log the user out (Invalidate the token).
-     *
-     * @return JsonResponse
      */
     public function logout(): JsonResponse {
         auth('api')->logout();
@@ -60,8 +56,6 @@ class AuthController extends Controller {
      * Refresh token
      * Generates a new valid token for the next 3600 seconds
      * Inorder to generate the new token, a working (Bearer)token has to be provided in the header.
-     *
-     * @return JsonResponse
      */
     public function refresh(): JsonResponse {
         /** @var JWTGuard $guard */
@@ -74,8 +68,6 @@ class AuthController extends Controller {
      * Get the token array structure.
      *
      * @param string $token
-     *
-     * @return JsonResponse
      */
     protected function respondWithToken($token): JsonResponse {
         /** @var JWTGuard $guard */

@@ -85,14 +85,10 @@ class PersonService implements IBaseService {
      */
     public function createMaintenancePerson(array $personData): Person {
         $personData['is_customer'] = 0;
-        $person = $this->person->newQuery()->create($personData);
 
-        return $person;
+        return $this->person->newQuery()->create($personData);
     }
 
-    /**
-     * @return \Illuminate\Database\Query\Builder
-     */
     public function livingInCluster(int $clusterId): \Illuminate\Database\Query\Builder {
         return $this->person->livingInClusterQuery($clusterId);
     }
@@ -140,9 +136,7 @@ class PersonService implements IBaseService {
     }
 
     public function getById(int $personId): Person {
-        $model = $this->person->newQuery()->find($personId);
-
-        return $model;
+        return $this->person->newQuery()->find($personId);
     }
 
     /**

@@ -242,9 +242,7 @@ class TransactionService {
                         $token = $this->createToken(
                             $sparkTariff,
                             $mainTransaction,
-                            $transaction,
-                            $sparkTransaction,
-                            $meter
+                            $transaction
                         );
                         $this->createPayment($meter, $mainTransaction, $token);
                     }
@@ -369,7 +367,7 @@ class TransactionService {
         return $transaction;
     }
 
-    private function createToken($sparkTariff, $mainTransaction, array $transaction, $sparkTransaction, $meterParameter) {
+    private function createToken($sparkTariff, $mainTransaction, array $transaction) {
         try {
             $tariff = $this->sparkTariffService->singleSync($sparkTariff);
         } catch (SparkAPIResponseException $exception) {
@@ -377,8 +375,6 @@ class TransactionService {
         }
 
         $chargedEnergy = (int) $transaction['amount'] / ($tariff->total_price / 100);
-
-        $token = $sparkTransaction->site_id.'-'.$transaction['source'].'-'.$sparkTransaction->customer_id;
 
         $token = $this->token->newQuery()->where('transaction_id', $mainTransaction->id)->first();
         if (!$token) {

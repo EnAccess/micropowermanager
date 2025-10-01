@@ -30,7 +30,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
     public function handle(): void {
         $amountToSend = (int) $this->argument('amount');
-        $messagesToSend = $this->sms
+        $this->sms
             ->where('direction', 1)
             ->where('status', -1)
             ->orderBy('id')

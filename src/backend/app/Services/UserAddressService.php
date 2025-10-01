@@ -15,10 +15,7 @@ class UserAddressService {
     }
 
     /**
-     * @param User                 $user
      * @param array<string, mixed> $data
-     *
-     * @return Address
      */
     public function create(User $user, array $data): Address {
         $address = $this->address->newQuery()->create([
@@ -36,10 +33,7 @@ class UserAddressService {
     }
 
     /**
-     * @param User                 $user
      * @param array<string, mixed> $data
-     *
-     * @return User
      */
     public function update(User $user, array $data): User {
         $user->name = $data['name'];

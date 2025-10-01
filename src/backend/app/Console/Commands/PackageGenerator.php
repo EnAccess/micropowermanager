@@ -14,7 +14,7 @@ class PackageGenerator extends Command {
         $nameSpace = '';
         $strings = preg_split('/([-.*\/])/', $packageNameArg);
         $firstCapitals = array_map('ucfirst', $strings);
-        foreach ($firstCapitals as $key => $item) {
+        foreach ($firstCapitals as $item) {
             $nameSpace .= $item;
         }
 

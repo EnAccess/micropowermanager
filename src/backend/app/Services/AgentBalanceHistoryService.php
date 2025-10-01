@@ -156,7 +156,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
             ->get();
         $period = [];
-        foreach ($days as $key => $item) {
+        foreach ($days as $item) {
             $period[$item->day] = [
                 'balance' => 0,
                 'due' => 0,
@@ -181,7 +181,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->get();
 
         $p = $this->periodService->generatePeriodicList($startDate, $endDate, 'weekly', ['revenue' => 0]);
-        foreach ($Revenues as $rIndex => $revenue) {
+        foreach ($Revenues as $revenue) {
             $p[$revenue->period]['revenue'] = $revenue->revenue;
         }
 

@@ -40,11 +40,6 @@ class GeographicalInformationObserver {
 
     /**
      * Update Spark meter customer information.
-     *
-     * @param Device                  $device
-     * @param GeographicalInformation $geographicalInformation
-     *
-     * @return void
      */
     private function updateSparkMetaCustomerInformation(Device $device, GeographicalInformation $geographicalInformation): void {
         $meter = $device->device;

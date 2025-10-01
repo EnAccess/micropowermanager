@@ -24,10 +24,6 @@ class PersonAddressesController extends Controller {
      *
      * @responseFile responses/people/person.addresses.list.json
      *
-     * @param int $personId
-     *
-     * @return ApiResource
-     *
      * @apiResourceModel \App\Models\Person\Person
      */
     public function show(int $personId): ApiResource {

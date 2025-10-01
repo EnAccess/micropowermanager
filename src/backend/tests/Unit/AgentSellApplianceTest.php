@@ -32,8 +32,6 @@ class AgentSellApplianceTest extends TestCase {
 
     /**
      * A basic unit test example.
-     *
-     * @return void
      */
     public function testAgentSellAppliance(): void {
         $this->initData();

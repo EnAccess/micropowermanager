@@ -167,7 +167,7 @@ class ValidationTests extends TestCase {
         // create person
         Person::factory()->create();
         // create meter-tariff
-        $tariff = MeterTariff::query()->create([
+        MeterTariff::query()->create([
             'name' => 'test tariff',
             'price' => 100000,
             'total_price' => 100000,
@@ -187,7 +187,7 @@ class ValidationTests extends TestCase {
             'api_name' => 'SparkMeterApi',
         ]);
         // create meter
-        $meter = Meter::query()->create([
+        Meter::query()->create([
             'serial_number' => '4700005646',
             'meter_type_id' => 1,
             'in_use' => 1,

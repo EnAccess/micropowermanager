@@ -76,7 +76,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin): void {
+    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers): void {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ): true {
@@ -144,7 +144,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                         'updated_at',
                         '>=',
                         Carbon::now()->subMinutes($lowBalanceMin)
-                    ), $smsNotifiedCustomers, $lowBalanceMin);
+                    ), $smsNotifiedCustomers);
             }
         } catch (CronJobException $e) {
             $this->warn('dataSync command is failed. message => '.$e->getMessage());

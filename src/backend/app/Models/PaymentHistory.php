@@ -69,7 +69,7 @@ class PaymentHistory extends BaseModel {
             SQL;
 
         if ($limit !== null) {
-            $sql .= ' LIMIT '.(int) $limit;
+            $sql .= ' LIMIT '.$limit;
         }
 
         return $this->executeSqlCommand($sql, $payer_id, null, $payer_type);
@@ -97,9 +97,8 @@ class PaymentHistory extends BaseModel {
         $sth->bindValue(':year', $year);
 
         $sth->execute();
-        $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $results;
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -121,9 +120,8 @@ class PaymentHistory extends BaseModel {
             SQL;
         $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         $sth->execute();
-        $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $results;
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**

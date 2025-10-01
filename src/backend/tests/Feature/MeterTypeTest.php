@@ -60,7 +60,6 @@ class MeterTypeTest extends TestCase {
 
     public function testUserUpdatesAMeterType(): void {
         $meterTypeCount = 1;
-        $meterTariffCount = 1;
         $this->createTestData();
         $this->createMeterType($meterTypeCount);
         $meterTypeData = [

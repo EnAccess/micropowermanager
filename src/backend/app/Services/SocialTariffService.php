@@ -44,9 +44,7 @@ class SocialTariffService implements IBaseService {
         /* @var SocialTariff $socialTariff */
         $socialTariff->update($socialTariffData);
 
-        $freshTariff = $socialTariff->fresh();
-
-        return $freshTariff;
+        return $socialTariff->fresh();
     }
 
     public function deleteByTariffId(int $meterTariffId): void {

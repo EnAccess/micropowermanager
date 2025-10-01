@@ -46,8 +46,6 @@ class Company extends BaseModelCentral {
     /**
      * Get the protected page password with deprecation warning.
      *
-     * @return string|null
-     *
      * @deprecated Use main_settings.protected_page_password instead
      */
     public function getProtectedPagePasswordAttribute(mixed $value): ?string {

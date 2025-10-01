@@ -18,8 +18,6 @@ class MiniGridDashboardCacheController extends Controller {
     }
 
     /**
-     * @param Request $request
-     *
      * @return array<string, mixed>
      */
     public function update(Request $request): array {
