@@ -18,7 +18,6 @@ class SmsListener {
     public function __construct(
         SmSmsFeedbackWordService $smsFeedbackWordService,
         CustomerService $customerService,
-        Meter $meter,
         SmsService $smsService,
     ) {
         $this->smsFeedbackWordService = $smsFeedbackWordService;
