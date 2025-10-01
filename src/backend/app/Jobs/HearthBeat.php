@@ -28,8 +28,6 @@ class HearthBeat implements ShouldQueue {
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(): void {
         Log::critical('I\'m alive');

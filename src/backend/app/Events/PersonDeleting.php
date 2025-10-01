@@ -26,8 +26,6 @@ class PersonDeleting {
 
     /**
      * Get the Person model instance associated with the event.
-     *
-     * @return Person
      */
     public function getPerson(): Person {
         return $this->person;
@@ -35,8 +33,6 @@ class PersonDeleting {
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return PrivateChannel
      */
     public function broadcastOn(): PrivateChannel {
         return new PrivateChannel('person.deleted');

@@ -46,15 +46,9 @@ class AngazaSHSApi implements IManufacturerAPI {
             ],
         ];
         $credentials = $this->credentialService->getCredentials();
-
-        try {
-            $response = $this->apiRequests->put($credentials, $params, self::API_CALL_UNIT_CREDIT);
-
-            if (isset($response['context'])) {
-                throw new AngazaApiResponseException($response['context']['reason']);
-            }
-        } catch (AngazaApiResponseException $e) {
-            throw $e;
+        $response = $this->apiRequests->put($credentials, $params, self::API_CALL_UNIT_CREDIT);
+        if (isset($response['context'])) {
+            throw new AngazaApiResponseException($response['context']['reason']);
         }
 
         $manufacturerTransaction = $this->angazaTransaction->newQuery()->create([]);
@@ -81,8 +75,6 @@ class AngazaSHSApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

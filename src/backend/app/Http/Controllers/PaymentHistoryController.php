@@ -32,11 +32,6 @@ class PaymentHistoryController {
      * @urlParam limit integer
      * @urlParam order string
      *
-     * @param int    $payerId
-     * @param string $period
-     * @param null   $limit
-     * @param string $order
-     *
      * @return array<string, array<string, mixed>>
      */
     public function show(int $payerId, string $period, ?int $limit = null, string $order = 'ASC'): array {
@@ -71,10 +66,6 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      *
-     * @param Person $person
-     *
-     * @return ApiResource
-     *
      * @throws \Exception
      */
     public function getPaymentPeriod(Person $person): ApiResource {
@@ -98,9 +89,6 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      *
-     * @param int      $personId
-     * @param int|null $year
-     *
      * @return array<int, float>
      */
     public function byYear(int $personId, ?int $year = null): array {
@@ -119,10 +107,6 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      * checks if the person has any debts to the system
-     *
-     * @param int $personId
-     *
-     * @return ApiResource
      */
     public function debts(int $personId): ApiResource {
         $accessRateDebt = 0;
@@ -149,8 +133,6 @@ class PaymentHistoryController {
      *
      * @bodyParam begin string
      * @bodyParam end string
-     *
-     * @return ApiResource
      *
      * @throws \Exception
      */

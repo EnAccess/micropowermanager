@@ -32,7 +32,6 @@ class SparkMeterApi implements IManufacturerAPI {
     }
 
     public function chargeDevice($transactionContainer): array {
-        $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $owner = $transactionContainer->device->person;
 
@@ -134,8 +133,6 @@ class SparkMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

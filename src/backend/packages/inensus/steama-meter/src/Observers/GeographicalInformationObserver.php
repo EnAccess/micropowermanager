@@ -27,11 +27,6 @@ class GeographicalInformationObserver {
 
     /**
      * Update Steama meter geolocation information.
-     *
-     * @param Device                  $device
-     * @param GeographicalInformation $geographicalInformation
-     *
-     * @return void
      */
     private function updateSteamaMeterGeolocation(Device $device, GeographicalInformation $geographicalInformation): void {
         $meter = $device->device;

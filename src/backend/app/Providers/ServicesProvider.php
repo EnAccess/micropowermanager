@@ -24,8 +24,6 @@ use Illuminate\Support\ServiceProvider;
 class ServicesProvider extends ServiceProvider {
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot(): void {
         Person::observe(PersonObserver::class);
@@ -38,8 +36,6 @@ class ServicesProvider extends ServiceProvider {
 
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register(): void {
         $this->app->bind(

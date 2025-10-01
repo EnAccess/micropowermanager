@@ -39,9 +39,6 @@ class Target extends BaseModel {
     }
 
     /**
-     * @param int|string $cityId
-     * @param string     $endDate
-     *
      * @return Builder<Target>
      */
     public function targetForMiniGrid(int|string $cityId, string $endDate): Builder {
@@ -55,7 +52,6 @@ class Target extends BaseModel {
 
     /**
      * @param array<int|string> $miniGridIds
-     * @param string            $endDate
      *
      * @return Builder<Target>
      */
@@ -77,9 +73,6 @@ class Target extends BaseModel {
     }
 
     /**
-     * @param int|string $cityId
-     * @param string     $startDate
-     *
      * @return Builder<Target>
      */
     public function periodTargetAlternative(int|string $cityId, string $startDate): Builder {

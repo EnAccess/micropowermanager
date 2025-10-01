@@ -165,14 +165,13 @@ trait CreateEnvironments {
 
     protected function getMeter(): mixed {
         $this->createTestData();
-        $meter = MeterFactory::new()->create([
+
+        return MeterFactory::new()->create([
             'meter_type_id' => $this->meterType->id,
             'in_use' => true,
             'manufacturer_id' => $this->manufacturer->id,
             'serial_number' => str_random(36),
         ]);
-
-        return $meter;
     }
 
     protected function createMeterWithGeo(): void {
@@ -220,7 +219,7 @@ trait CreateEnvironments {
             'meter_id' => $meter->id,
             'token' => $this->faker->unique()->randomNumber(),
         ]);
-        $paymentHistory = PaymentHistoryFactory::new()->create([
+        PaymentHistoryFactory::new()->create([
             'transaction_id' => $this->transaction->id,
             'amount' => $this->transaction->amount,
             'payment_service' => 'agent_transaction',
@@ -692,10 +691,7 @@ trait CreateEnvironments {
         }
     }
 
-    protected function createTicketOutsourceReport($ticketOutSourceReportCount = 1) {
-        while ($ticketOutSourceReportCount > 0) {
-        }
-    }
+    protected function createTicketOutsourceReport($ticketOutSourceReportCount = 1) {}
 
     protected function createTicketUser($ticketUserCount = 1, $tag = 'inensusinensus') {
         $ticketUserService = app()->make(TicketUserService::class);

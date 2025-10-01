@@ -225,7 +225,7 @@ class SmsNotifyTest extends TestCase {
 
         // associate meter with a person
         $p = Person::query()->first();
-        $m = Meter::query()->create([
+        Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,
             'connection_type_id' => 1,

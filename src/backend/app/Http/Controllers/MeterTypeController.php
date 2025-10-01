@@ -22,8 +22,6 @@ class MeterTypeController extends Controller {
      * List.
      *
      * @responseFile responses/metertypes/meter.types.list.json
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource {
         $limit = $request->get('limit');
@@ -39,8 +37,6 @@ class MeterTypeController extends Controller {
      * @bodyParam phase int required
      * @bodyParam max_current int required
      *
-     * @param MeterTypeCreateRequest $request
-     *
      * @return ApiResource
      */
     public function store(MeterTypeCreateRequest $request) {
@@ -53,10 +49,6 @@ class MeterTypeController extends Controller {
      * Detail.
      *
      * @bodyParam id int required
-     *
-     * @param int $meterTypeId
-     *
-     * @return ApiResource
      */
     public function show(int $meterTypeId): ApiResource {
         return ApiResource::make($this->meterTypeService->getById($meterTypeId));
@@ -71,11 +63,6 @@ class MeterTypeController extends Controller {
      * @bodyParam online int required
      * @bodyParam phase int required
      * @bodyParam max_current int required
-     *
-     * @param MeterTypeUpdateRequest $request
-     * @param int                    $meterTypeId
-     *
-     * @return ApiResource
      */
     public function update(MeterTypeUpdateRequest $request, int $meterTypeId): ApiResource {
         $meterType = $this->meterTypeService->getById($meterTypeId);

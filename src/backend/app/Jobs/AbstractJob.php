@@ -52,8 +52,6 @@ abstract class AbstractJob implements ShouldQueue {
      * Dispatch the job for all tenants.
      *
      * @param mixed ...$args
-     *
-     * @return void
      */
     public static function dispatchForAllTenants(...$args): void {
         foreach (Company::pluck('id') as $companyId) {

@@ -35,7 +35,7 @@ class StronMeterApi implements IManufacturerAPI {
 
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        Log::debug('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
             ' Manufacturer => StronMeterApi');
 
         $credentials = $this->credentials->newQuery()->firstOrFail();
@@ -96,8 +96,6 @@ class StronMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

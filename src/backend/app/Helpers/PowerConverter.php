@@ -15,9 +15,6 @@ class PowerConverter {
         'MWh' => 1000000,
     ];
 
-    /**
-     * @param int|string $power
-     */
     public static function convert(int|string $power, string $powerUnit, string $expectedUnit = 'Wh'): float|int {
         return $power * self::$powerUnits[$powerUnit] / self::$powerUnits[$expectedUnit];
     }

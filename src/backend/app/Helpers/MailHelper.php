@@ -12,11 +12,6 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class MailHelper {
     /**
-     * @param string      $to
-     * @param string      $title
-     * @param string      $body
-     * @param string|null $attachment
-     *
      * @throws MailNotSentException
      */
     public function sendPlain(string $to, string $title, string $body, ?string $attachment = null): void {

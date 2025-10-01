@@ -22,7 +22,6 @@ class AgentTest extends TestCase {
 
     public function testUserGetsAgentById(): void {
         $this->createTestData();
-        $agentCount = 4;
         $this->createAgent(4);
         $response = $this->actingAs($this->user)->get(sprintf('/api/agents/%s', $this->agents[0]->id));
         $response->assertStatus(200);
@@ -117,7 +116,7 @@ class AgentTest extends TestCase {
         $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
-        $response = $this->actingAs($this->user)->delete(sprintf('/api/agents/%s', $this->agents[0]->id));
+        $this->actingAs($this->user)->delete(sprintf('/api/agents/%s', $this->agents[0]->id));
         $agentsCount = Agent::query()->get()->count();
         $this->assertEquals(0, $agentsCount);
     }

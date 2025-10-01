@@ -24,8 +24,6 @@ class ClusterEvent {
     /**
      * Create a new event instance.
      *
-     * @param Cluster              $cluster
-     * @param string               $type
      * @param array<string, mixed> $data
      */
     public function __construct(Cluster $cluster, string $type, array $data) {
@@ -37,8 +35,6 @@ class ClusterEvent {
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return PrivateChannel
      */
     public function broadcastOn(): PrivateChannel {
         return new PrivateChannel('clusters');

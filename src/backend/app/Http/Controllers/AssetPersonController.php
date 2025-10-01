@@ -39,12 +39,6 @@ class AssetPersonController extends Controller {
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param Asset   $asset
-     * @param Person  $person
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function store(
         Asset $asset,
@@ -136,11 +130,6 @@ class AssetPersonController extends Controller {
 
     /**
      * Display the specified resource.
-     *
-     * @param Person  $person
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function index(Person $person, Request $request): ApiResource {
         $assets = $this->assetPerson::with('asset.assetType', 'rates.logs', 'logs.owner')

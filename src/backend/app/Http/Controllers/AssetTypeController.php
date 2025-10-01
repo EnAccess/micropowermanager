@@ -18,8 +18,6 @@ class AssetTypeController extends Controller {
 
     /**
      * Display a listing of the resource.
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource {
         return new ApiResource($this->applianceTypeService->getApplianceTypes($request));
@@ -27,10 +25,6 @@ class AssetTypeController extends Controller {
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param AssetTypeCreateRequest $request
-     *
-     * @return ApiResource
      */
     public function store(AssetTypeCreateRequest $request): ApiResource {
         $appliance = $this->applianceTypeService->createApplianceType($request->validated());
@@ -40,11 +34,6 @@ class AssetTypeController extends Controller {
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param AssetTypeUpdateRequest $request
-     * @param AssetType              $assetType
-     *
-     * @return ApiResource
      */
     public function update(AssetTypeUpdateRequest $request, AssetType $assetType): ApiResource {
         $appliance = $this->applianceTypeService->updateApplianceType($request->validated(), $assetType);
@@ -54,10 +43,6 @@ class AssetTypeController extends Controller {
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param AssetType $assetType
-     *
-     * @return ApiResource
      *
      * @throws \Exception
      */

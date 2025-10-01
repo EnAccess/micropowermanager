@@ -99,7 +99,7 @@ class PaymentProcessTests extends TestCase {
             'api_name' => 'CalinApi',
         ]);
         // create meter
-        $meter = Meter::query()->create([
+        Meter::query()->create([
             'serial_number' => '4700005646',
             'meter_type_id' => 1,
             'in_use' => 1,

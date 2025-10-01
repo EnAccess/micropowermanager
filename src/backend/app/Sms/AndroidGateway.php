@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Log;
 class AndroidGateway implements ISmsProvider {
     /**
      * Sends the sms to the sms provider.
-     *
-     * @param string            $number
-     * @param string            $body
-     * @param string            $callback
-     * @param SmsAndroidSetting $smsAndroidSetting
      */
     public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting): void {
         if (!config('app.env') == 'production') {

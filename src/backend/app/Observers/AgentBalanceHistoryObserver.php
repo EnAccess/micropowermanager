@@ -17,10 +17,6 @@ class AgentBalanceHistoryObserver {
 
     /**
      * Handle the asset person "updated" event.
-     *
-     * @param AgentBalanceHistory $agentBalanceHistory
-     *
-     * @return void
      */
     public function created(AgentBalanceHistory $agentBalanceHistory): void {
         $trigger = $agentBalanceHistory->trigger()->first();

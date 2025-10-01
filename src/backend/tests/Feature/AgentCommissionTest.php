@@ -61,7 +61,7 @@ class AgentCommissionTest extends TestCase {
     public function testUserCanDeleteAnAgent(): void {
         $this->createTestData();
         $this->createAgentCommission();
-        $response = $this->actingAs($this->user)->delete(sprintf('/api/agents/commissions/%s', $this->agentCommissions[0]->id));
+        $this->actingAs($this->user)->delete(sprintf('/api/agents/commissions/%s', $this->agentCommissions[0]->id));
         $agentsCount = AgentCommission::query()->get()->count();
         $this->assertEquals(0, $agentsCount);
     }

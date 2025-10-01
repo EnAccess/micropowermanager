@@ -76,7 +76,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin): void {
+    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers): void {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ): true {
@@ -143,7 +143,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                         'updated_at',
                         '>=',
                         Carbon::now()->subMinutes($lowBalanceMin)
-                    ), $smsNotifiedCustomers, $lowBalanceMin);
+                    ), $smsNotifiedCustomers);
             }
         } catch (CronJobException|\Exception $e) {
             $this->warn('dataSync command is failed. message => '.$e->getMessage());

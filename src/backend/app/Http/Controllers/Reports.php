@@ -157,10 +157,6 @@ class Reports {
     }
 
     /**
-     * @param Worksheet $sheet
-     * @param string    $coordinate
-     * @param string    $color
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function fillBackground(Worksheet $sheet, string $coordinate, string $color): void {
@@ -168,11 +164,6 @@ class Reports {
     }
 
     /**
-     * @param Worksheet   $sheet
-     * @param             $column
-     * @param string|null $border
-     * @param string|null $color
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function styleSheet(Worksheet $sheet, string $column, ?string $border, ?string $color): void {
@@ -187,11 +178,6 @@ class Reports {
     }
 
     /**
-     * @param Worksheet $sheet
-     * @param           $dateRange
-     *
-     * @return void
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function addStaticText(Worksheet $sheet, string $dateRange): void {
@@ -240,8 +226,6 @@ class Reports {
     }
 
     /**
-     * @param Worksheet                   $sheet
-     * @param string                      $dateRange
      * @param Collection<int,Transaction> $transactions
      *
      * @throws CustomerGroupNotFound
@@ -271,8 +255,6 @@ class Reports {
     }
 
     /**
-     * @param Worksheet                    $sheet
-     * @param bool                         $addPurchaseBreakDown
      * @param Collection<int, Transaction> $transactions
      *
      * @throws CustomerGroupNotFound
@@ -348,11 +330,7 @@ class Reports {
     /**
      * Add the breakdown of the transaction amount into the right place on the spreadsheet.
      *
-     * @param Worksheet                       $sheet
      * @param Collection<int, PaymentHistory> $paymentHistories
-     * @param int                             $index
-     * @param string                          $connectionGroupName
-     * @param mixed                           $tariff
      *
      * @throws CustomerGroupNotFound
      */
@@ -386,10 +364,6 @@ class Reports {
     }
 
     /**
-     * @param string $connectionGroupName
-     *
-     * @return string
-     *
      * @throws CustomerGroupNotFound
      */
     private function getConnectionGroupColumn(string $connectionGroupName): string {
@@ -409,10 +383,7 @@ class Reports {
     }
 
     /**
-     * @param Worksheet                    $sheet
      * @param Collection|ConnectionGroup[] $connectionGroups
-     * @param string                       $startingColumn
-     * @param int                          $startingRow
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -422,8 +393,6 @@ class Reports {
         string $startingColumn,
         int $startingRow,
     ): void {
-        $tmpConnectionTypeName = null;
-
         foreach ($connectionGroups as $connectionGroup) {
             if (!isset($connectionGroup->name)) {
                 continue;
@@ -460,9 +429,7 @@ class Reports {
     }
 
     /**
-     * @param string               $connectionGroupName
      * @param array<string, float> $amount
-     * @param float|null           $unit
      */
     private function addSoldTotal(string $connectionGroupName, array $amount, ?float $unit = null): void {
         if (!array_key_exists($connectionGroupName, $this->totalSold)) {
@@ -482,8 +449,6 @@ class Reports {
     }
 
     /**
-     * @param Worksheet $sheet
-     *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -532,12 +497,6 @@ class Reports {
     }
 
     /**
-     * @param int    $cityId
-     * @param string $cityName
-     * @param string $startDate
-     * @param string $endDate
-     * @param string $reportType
-     *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -688,7 +647,6 @@ class Reports {
     }
 
     /**
-     * @param mixed                       $connectionGroupId
      * @param array{0: string, 1: string} $dateRange
      *
      * @return array<int, array{connection_group_id: mixed, meter: string, revenue: float, tariff_price: float, total: float}>

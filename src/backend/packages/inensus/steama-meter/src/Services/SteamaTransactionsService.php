@@ -104,7 +104,7 @@ class SteamaTransactionsService implements ISynchronizeService {
                                     $steamaMeter
                                 );
 
-                                $token = $this->createToken($steamaMeter, $mainTransaction, $transaction);
+                                $token = $this->createToken($steamaMeter, $mainTransaction);
 
                                 $this->createPayment($steamaMeter, $mainTransaction, $token);
                             }
@@ -218,15 +218,10 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $transaction;
     }
 
-    private function createToken($steamaMeter, $mainTransaction, array $transaction) {
+    private function createToken($steamaMeter, $mainTransaction) {
         $stmCustomer = $steamaMeter->stmCustomer->first();
         $customerEnergyPrice = $stmCustomer->energy_price;
         $chargedEnergy = $mainTransaction->amount / $customerEnergyPrice;
-
-        $token = $transaction['site_id'].'-'.
-            $transaction['category'].'-'.
-            $transaction['provider'].'-'.
-            $transaction['customer_id'];
 
         $token = $this->token->newQuery()->where('transaction_id', $mainTransaction->id)->first();
         if (!$token) {

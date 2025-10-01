@@ -15,8 +15,6 @@ use Tymon\JWTAuth\JWTGuard;
 class AgentAuthController extends Controller {
     /**
      * Create a new AuthController instance.
-     *
-     * @param AgentService $agentService
      */
     public function __construct(private AgentService $agentService) {
         $this->middleware('auth:agent_api', ['except' => ['login']]);
@@ -24,8 +22,6 @@ class AgentAuthController extends Controller {
 
     /**
      * Get the JWT authentication guard.
-     *
-     * @return JWTGuard
      */
     protected function guard(): JWTGuard {
         /** @var JWTGuard $guard */

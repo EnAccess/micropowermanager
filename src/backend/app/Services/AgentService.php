@@ -29,9 +29,7 @@ class AgentService implements IBaseService {
         try {
             $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();
         } catch (ModelNotFoundException $x) {
-            $message = 'Invalid email.';
-
-            return $message;
+            return 'Invalid email.';
         }
 
         $agent->password = $newPassword;

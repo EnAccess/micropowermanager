@@ -25,11 +25,6 @@ class MaintenanceUserController extends Controller {
         return new ApiResource($maintenance_user_list);
     }
 
-    /**
-     * @param MaintenanceRequest $request
-     *
-     * @return JsonResponse
-     */
     public function store(MaintenanceRequest $request): JsonResponse {
         $phone = $request->get('phone');
 

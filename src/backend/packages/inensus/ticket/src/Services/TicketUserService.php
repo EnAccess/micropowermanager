@@ -55,10 +55,8 @@ class TicketUserService implements IBaseService {
     }
 
     public function findByPhone(string $phone): TicketUser {
-        $result = $this->ticketUser->newQuery()->where('phone', '=', $phone)
+        return $this->ticketUser->newQuery()->where('phone', '=', $phone)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function findOrCreateByUser(User $user): TicketUser {

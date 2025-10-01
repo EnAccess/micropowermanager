@@ -8,8 +8,6 @@ use Illuminate\Validation\Rule;
 class CalinCredentialRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array {
         return [

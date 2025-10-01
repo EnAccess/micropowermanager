@@ -13,18 +13,15 @@ use Inensus\SparkMeter\Sms\SparkSmsTypes;
 class SmsListener {
     private SmSmsFeedbackWordService $smsFeedbackWordService;
     private CustomerService $customerService;
-    private Meter $meter;
     private SmsService $smsService;
 
     public function __construct(
         SmSmsFeedbackWordService $smsFeedbackWordService,
         CustomerService $customerService,
-        Meter $meter,
         SmsService $smsService,
     ) {
         $this->smsFeedbackWordService = $smsFeedbackWordService;
         $this->customerService = $customerService;
-        $this->meter = $meter;
         $this->smsService = $smsService;
     }
 

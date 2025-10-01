@@ -77,9 +77,8 @@ class UserPasswordResetService {
      */
     public function encodeCompositeToken(string $email, string $rawToken): string {
         $payload = json_encode(['e' => $email, 't' => $rawToken]);
-        $b64 = rtrim(strtr(base64_encode($payload), '+/', '-_'), '=');
 
-        return $b64;
+        return rtrim(strtr(base64_encode($payload), '+/', '-_'), '=');
     }
 
     /**

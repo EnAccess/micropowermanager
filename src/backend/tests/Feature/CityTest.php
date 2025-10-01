@@ -31,7 +31,6 @@ class CityTest extends TestCase {
     public function testUserGetsCities(): void {
         $clusterCount = 1;
         $miniGridCount = 1;
-        $cityCount = 5;
         $this->createTestData($clusterCount, $miniGridCount);
         $response = $this->actingAs($this->user)->get('/api/cities');
         $response->assertStatus(200);
@@ -66,7 +65,6 @@ class CityTest extends TestCase {
     public function testUserUpdatesACity(): void {
         $clusterCount = 2;
         $miniGridCount = 2;
-        $cityCount = 1;
         $this->createTestData($clusterCount, $miniGridCount);
         $city = City::query()->first();
         $cityData = [

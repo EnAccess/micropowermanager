@@ -86,16 +86,12 @@ class DalyBmsApi implements IManufacturerAPI {
         ];
 
         $credentials = $this->credentialService->getCredentials();
-        try {
-            if (!$this->credentialService->isAccessTokenValid($credentials)) {
-                $authResponse = $this->apiRequests->authentication($credentials);
-                $this->credentialService->updateCredentials($credentials, $authResponse);
-            }
-
-            return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_SWITCH);
-        } catch (DalyBmsApiResponseException $e) {
-            throw $e;
+        if (!$this->credentialService->isAccessTokenValid($credentials)) {
+            $authResponse = $this->apiRequests->authentication($credentials);
+            $this->credentialService->updateCredentials($credentials, $authResponse);
         }
+
+        return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_SWITCH);
     }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -145,8 +141,6 @@ class DalyBmsApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

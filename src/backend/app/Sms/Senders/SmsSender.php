@@ -160,18 +160,14 @@ abstract class SmsSender {
                 throw new MissingSmsReferencesException('Send sms rejected, some of sms bodies are null');
             }
         }
-        try {
-            if (array_key_exists('header', $this->references)) {
-                $this->prepareHeader();
-            }
-            if (array_key_exists('body', $this->references)) {
-                $this->prepareBody();
-            }
-            if (array_key_exists('footer', $this->references)) {
-                $this->prepareFooter();
-            }
-        } catch (MissingSmsReferencesException $exception) {
-            throw $exception;
+        if (array_key_exists('header', $this->references)) {
+            $this->prepareHeader();
+        }
+        if (array_key_exists('body', $this->references)) {
+            $this->prepareBody();
+        }
+        if (array_key_exists('footer', $this->references)) {
+            $this->prepareFooter();
         }
     }
 

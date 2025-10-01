@@ -20,8 +20,6 @@ class TransactionListener {
 
     /**
      * Sets the in_use to true.
-     *
-     * @param Transaction $transaction
      */
     public function onTransactionSuccess(Transaction $transaction): void {
         $smTransaction = $this->smTransaction->newQuery()->where('mpm_transaction_id', $transaction->id)->first();

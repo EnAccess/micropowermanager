@@ -24,11 +24,10 @@ return RectorConfig::configure()
     // uncomment to apply code quality improvements
     ->withPreparedSets(
         // codeQuality: true,
-        // deadCode: true,
+        deadCode: true,
         typeDeclarations: true
     )
     // ->withCodeQualityLevel(0)
-    // ->withDeadCodeLevel(0)
     ->withSetProviders(LaravelSetProvider::class)
     ->withComposerBased(laravel: true)
     ->withSets([

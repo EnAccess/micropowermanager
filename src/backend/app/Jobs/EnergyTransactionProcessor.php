@@ -29,8 +29,6 @@ class EnergyTransactionProcessor extends AbstractJob {
     /**
      * Execute the job.
      *
-     * @return void
-     *
      * @throws TransactionNotInitializedException
      */
     public function executeJob(): void {

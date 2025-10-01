@@ -38,9 +38,7 @@ class CompanyService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function create(array $data): Company {
-        $company = $this->company->newQuery()->create($data);
-
-        return $company;
+        return $this->company->newQuery()->create($data);
     }
 
     /**

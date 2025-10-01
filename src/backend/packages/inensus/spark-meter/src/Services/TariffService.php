@@ -142,7 +142,7 @@ class TariffService implements ISynchronizeService {
             'currency' => config('spark.currency'),
             'total_price' => $tariff['flat_price'] * 100,
         ]);
-        foreach ($tariff['tous'] as $key => $tou) {
+        foreach ($tariff['tous'] as $tou) {
             $this->timeOfUsage->newQuery()->create([
                 'tariff_id' => $meterTariff->id,
                 'start' => $tou['start'],
@@ -166,10 +166,10 @@ class TariffService implements ISynchronizeService {
                 $tariff->tou[$key]->update();
             }
         } else {
-            foreach ($tariff->tou as $key => $tou) {
+            foreach ($tariff->tou as $tou) {
                 $tou->delete();
             }
-            foreach ($model['tous'] as $key => $tou) {
+            foreach ($model['tous'] as $tou) {
                 $this->timeOfUsage->newQuery()->create([
                     'tariff_id' => $tariff->id,
                     'start' => $tou['start'],

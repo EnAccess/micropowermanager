@@ -75,7 +75,7 @@ class SmsService {
                 $gatewayId = $smsAndroidSettings->getId();
                 $sender->setCallback($smsAndroidSettings->callback, $uuid);
             }
-            $this->associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId);
+            $this->associateSmsWithForSmsType($sender, $uuid, $receiver, $gatewayId);
             SmsProcessor::dispatch($sender);
         } catch (
             SmsTypeNotFoundException|
@@ -113,10 +113,7 @@ class SmsService {
         ]);
     }
 
-    /**
-     * @param array<string, mixed> $data
-     */
-    private function associateSmsWithForSmsType(SmsSender $sender, array $data, string $uuid, string $receiver, ?int $gatewayId): void {
+    private function associateSmsWithForSmsType(SmsSender $sender, string $uuid, string $receiver, ?int $gatewayId): void {
         if (!($sender instanceof ManualSms)) {
             Sms::query()->create([
                 'uuid' => $uuid,

@@ -5,10 +5,6 @@ namespace Inensus\VodacomMobileMoney\Services;
 class VodacomTransactionService {
     /**
      * Validate a transaction request.
-     *
-     * @param array $data
-     *
-     * @return array
      */
     public function validateTransaction(array $data): array {
         return [];
@@ -16,10 +12,6 @@ class VodacomTransactionService {
 
     /**
      * Process a transaction.
-     *
-     * @param array $data
-     *
-     * @return array
      */
     public function processTransaction(array $data): array {
         return [];
@@ -27,8 +19,6 @@ class VodacomTransactionService {
 
     /**
      * Check the status of a transaction.
-     *
-     * @return array
      */
     public function transactionEnquiryStatus(array $data): array {
         // $referenceId = $data['referenceId'];

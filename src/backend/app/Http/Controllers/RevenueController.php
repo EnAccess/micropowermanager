@@ -112,10 +112,6 @@ class RevenueController extends Controller {
 
     /**
      * Prepares the data for revenue dashboard.
-     *
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function revenueData(Request $request): ApiResource {
         $startDate = date('Y-m-d', strtotime($request->get('start_date') ?? '2018-01-01'));
