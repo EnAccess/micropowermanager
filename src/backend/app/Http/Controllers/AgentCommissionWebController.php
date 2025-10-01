@@ -32,8 +32,6 @@ class AgentCommissionWebController extends Controller {
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param $agentCommissionId
      */
     public function update(int $agentCommissionId, CreateAgentCommissionRequest $request): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
@@ -43,8 +41,6 @@ class AgentCommissionWebController extends Controller {
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param $agentCommissionId
      */
     public function destroy(int $agentCommissionId): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);

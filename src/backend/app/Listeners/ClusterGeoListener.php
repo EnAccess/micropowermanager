@@ -52,8 +52,6 @@ class ClusterGeoListener {
     /**
      * External geojson resource has lon,lat format. Change order to lat,lon.
      *
-     * @param $data
-     *
      * @return array<mixed>
      *
      * @throws GeoFormatException

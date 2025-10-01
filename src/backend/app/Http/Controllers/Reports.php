@@ -164,8 +164,6 @@ class Reports {
     }
 
     /**
-     * @param $column
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function styleSheet(Worksheet $sheet, string $column, ?string $border, ?string $color): void {
@@ -180,8 +178,6 @@ class Reports {
     }
 
     /**
-     * @param $dateRange
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function addStaticText(Worksheet $sheet, string $dateRange): void {

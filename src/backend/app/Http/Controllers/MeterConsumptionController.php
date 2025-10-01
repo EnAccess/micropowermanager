@@ -22,10 +22,6 @@ class MeterConsumptionController extends Controller {
      * @urlParam     end YYYY-mm-dd format
      *
      * @responseFile responses/meters/meter.consumption.list.json
-     *
-     * @param $serialNumber
-     * @param $start
-     * @param $end
      */
     public function show(string $serialNumber, string $start, string $end): ApiResource {
         $meter = $this->meterService->getBySerialNumber($serialNumber);

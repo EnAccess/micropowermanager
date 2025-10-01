@@ -136,8 +136,6 @@ class PersonController extends Controller {
      * The list of all transactions(paginated) which belong to that person.
      * Each page contains 7 entries of the last transaction.
      *
-     * @param $personId
-     *
      * @bodyParam    person_id int required the ID of the person. Example: 2
      *
      * @responseFile responses/people/person.transaction.list.json

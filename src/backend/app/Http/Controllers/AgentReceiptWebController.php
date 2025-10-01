@@ -16,8 +16,6 @@ class AgentReceiptWebController extends Controller {
 
     /**
      * Display a listing of the resource.
-     *
-     * @param $agentId
      */
     public function show(int $agentId, Request $request): ApiResource {
         $limit = $request->input('per_page');
@@ -38,8 +36,6 @@ class AgentReceiptWebController extends Controller {
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param $agentId
      *
      * @return ApiResource
      */

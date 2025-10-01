@@ -91,8 +91,6 @@ class MeterController extends Controller {
      * Deletes the meter with its all releations.
      *
      * @urlParam meterId. The ID of the meter to be delete
-     *
-     * @param $meterId
      */
     public function destroy(int $meterId): JsonResponse {
         $this->meterService->getById($meterId);
