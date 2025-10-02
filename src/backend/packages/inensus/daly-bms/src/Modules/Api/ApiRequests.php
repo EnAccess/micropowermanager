@@ -24,7 +24,9 @@ class ApiRequests {
             $body = json_decode((string) $response->getBody(), true);
             $status = $body['status'];
 
-            throw_if($status !== 200, new DalyBmsApiResponseException($body['message']));
+            if ($status !== 200) {
+                throw new DalyBmsApiResponseException($body['message']);
+            }
 
             $response = $body['response'];
             $token = $response['token'];
@@ -58,7 +60,9 @@ class ApiRequests {
             $body = json_decode((string) $response->getBody(), true);
             $status = $body['status'];
 
-            throw_if(($status !== 200 && $status !== 201) || (!is_array($body['response']) && $body['response'] === false), new DalyBmsApiResponseException($body['msg']));
+            if (($status !== 200 && $status !== 201) || (!is_array($body['response']) && $body['response'] === false)) {
+                throw new DalyBmsApiResponseException($body['msg']);
+            }
 
             return $body['response']['Data'];
         } catch (GuzzleException $e) {
@@ -94,7 +98,9 @@ class ApiRequests {
             );
             $body = json_decode((string) $response->getBody(), true);
             $status = $body['status'];
-            throw_if($status !== 200 && $status !== 201, new DalyBmsApiResponseException($body['message']));
+            if ($status !== 200 && $status !== 201) {
+                throw new DalyBmsApiResponseException($body['message']);
+            }
             $response = $body['response'];
 
             return $response['data'];

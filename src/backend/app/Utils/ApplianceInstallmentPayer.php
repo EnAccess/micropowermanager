@@ -50,7 +50,7 @@ class ApplianceInstallmentPayer {
     public function payInstallments(): int {
         $customer = $this->customer;
         $appliancePersonIds = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
-        $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds->all());
+        $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds->toArray());
         $this->pay($installments, $customer);
 
         return $this->transaction->amount;
@@ -77,7 +77,9 @@ class ApplianceInstallmentPayer {
     private function getCustomerByDeviceSerial(string $serialNumber): Person {
         $device = $this->deviceService->getBySerialNumber($serialNumber);
 
-        throw_unless($device instanceof Device, new DeviceIsNotAssignedToCustomer('Device is not assigned to customer'));
+        if (!$device instanceof Device) {
+            throw new DeviceIsNotAssignedToCustomer('Device is not assigned to customer');
+        }
 
         return $device->person;
     }
@@ -88,7 +90,7 @@ class ApplianceInstallmentPayer {
     private function getInstallments(Person $customer): Collection {
         $loans = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
 
-        return $this->applianceRateService->getByLoanIdsForDueDate($loans->all());
+        return $this->applianceRateService->getByLoanIdsForDueDate($loans->toArray());
     }
 
     /**

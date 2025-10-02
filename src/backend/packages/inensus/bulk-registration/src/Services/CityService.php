@@ -13,7 +13,9 @@ class CityService extends CreatorService {
     public function resolveCsvDataFromComingRow($csvData) {
         $cityConfig = config('bulk-registration.csv_fields.city');
 
-        throw_unless($csvData[$cityConfig['name']], new VillageNotFoundException('Village Name is required'));
+        if (!$csvData[$cityConfig['name']]) {
+            throw new VillageNotFoundException('Village Name is required');
+        }
         $registeredCity = City::query()->where('name', $csvData[$cityConfig['name']])->first();
 
         if (!$registeredCity) {

@@ -24,8 +24,12 @@ class ApiHelpers {
     }
 
     public function checkApiResult(array $result): array {
-        throw_if(array_key_exists('detail', $result), new SteamaApiResponseException($result['detail']));
-        throw_if(array_key_exists('non_field_errors', $result), new SteamaApiResponseException($result['non_field_errors']));
+        if (array_key_exists('detail', $result)) {
+            throw new SteamaApiResponseException($result['detail']);
+        }
+        if (array_key_exists('non_field_errors', $result)) {
+            throw new SteamaApiResponseException($result['non_field_errors']);
+        }
 
         return $result;
     }

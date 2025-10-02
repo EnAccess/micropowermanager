@@ -34,7 +34,9 @@ class AppliancePaymentService {
         $deviceSerial = $applianceDetail->device_serial;
         $applianceOwner = $appliancePerson->person;
 
-        throw_unless($applianceOwner, new \InvalidArgumentException('Appliance owner not found'));
+        if (!$applianceOwner) {
+            throw new \InvalidArgumentException('Appliance owner not found');
+        }
 
         $ownerAddress = $applianceOwner->addresses()->where('is_primary', 1)->first();
         $sender = $ownerAddress == null ? '-' : $ownerAddress->phone;
@@ -91,11 +93,17 @@ class AppliancePaymentService {
         $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
         $installmentCost = $applianceDetail->rates[1]['rate_cost'] ?? 0;
 
-        throw_if($amount > $totalRemainingAmount, new PaymentAmountBiggerThanTotalRemainingAmount('Payment Amount can not bigger than Total Remaining Amount'));
+        if ($amount > $totalRemainingAmount) {
+            throw new PaymentAmountBiggerThanTotalRemainingAmount('Payment Amount can not bigger than Total Remaining Amount');
+        }
 
-        throw_if($amount < $installmentCost, new PaymentAmountSmallerThanZero('Payment amount can not smaller than installment cost'));
+        if ($amount < $installmentCost) {
+            throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than installment cost');
+        }
 
-        throw_if($amount <= 0, new PaymentAmountSmallerThanZero('Payment amount can not smaller than zero'));
+        if ($amount <= 0) {
+            throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than zero');
+        }
     }
 
     public function payInstallment(Model $installment, AssetPerson $applianceOwner, Transaction $transaction): void {
@@ -115,7 +123,9 @@ class AppliancePaymentService {
     private function processPaymentForDevice(string $deviceSerial, Transaction $transaction, AssetPerson $applianceDetail): void {
         $device = $this->deviceService->getBySerialNumber($deviceSerial);
 
-        throw_unless($device instanceof Device, new ModelNotFoundException("No device found with $deviceSerial"));
+        if (!$device instanceof Device) {
+            throw new ModelNotFoundException("No device found with $deviceSerial");
+        }
 
         $manufacturer = $device->device->manufacturer;
         $installments = $applianceDetail->rates;

@@ -16,7 +16,9 @@ class VodacomMobileMoneyApiResolver implements ApiResolverInterface {
 
         $companyId = $payload?->get('companyId');
 
-        throw_unless($companyId, ValidationException::withMessages(['webhook' => 'failed to parse company identifier from the webhook']));
+        if (!$companyId) {
+            throw ValidationException::withMessages(['webhook' => 'failed to parse company identifier from the webhook']);
+        }
 
         return (int) $companyId;
     }

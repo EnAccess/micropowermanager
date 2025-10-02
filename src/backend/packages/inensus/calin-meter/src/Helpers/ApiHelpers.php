@@ -24,7 +24,9 @@ class ApiHelpers {
     }
 
     public function checkApiResult(array $result) {
-        throw_if((int) $result['result_code'] !== 0, new CalinApiResponseException($result['reason']));
+        if ((int) $result['result_code'] !== 0) {
+            throw new CalinApiResponseException($result['reason']);
+        }
 
         return $result['result'];
     }

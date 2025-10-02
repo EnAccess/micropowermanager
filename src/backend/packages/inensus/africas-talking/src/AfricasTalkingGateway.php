@@ -33,7 +33,9 @@ class AfricasTalkingGateway {
             $sms = $this->africasTalking->sms();
             $phoneNumber = str_replace(' ', '', $phoneNumber);
 
-            throw_if(empty($phoneNumber), new MessageNotSentException('Invalid phone number'));
+            if (empty($phoneNumber)) {
+                throw new MessageNotSentException('Invalid phone number');
+            }
 
             $shortCode = $this->credentials->short_code;
             $response = $sms->send([
@@ -44,13 +46,17 @@ class AfricasTalkingGateway {
 
             $status = $response['status'];
 
-            throw_if($status !== 'success', new MessageNotSentException('AfricasTalking message sending failed with status: '.$status));
+            if ($status !== 'success') {
+                throw new MessageNotSentException('AfricasTalking message sending failed with status: '.$status);
+            }
 
             $data = (array) $response['data'];
             $messageData = (array) $data['SMSMessageData'];
             $recipients = $messageData['Recipients'];
 
-            throw_if(count($recipients) !== 1, new MessageNotSentException('AfricasTalking message sending failed with wrong number of recipients'));
+            if (count($recipients) !== 1) {
+                throw new MessageNotSentException('AfricasTalking message sending failed with wrong number of recipients');
+            }
 
             $recipient = [];
             $africasTalkingMessage = [];
@@ -58,7 +64,9 @@ class AfricasTalkingGateway {
             foreach ($recipients as $recipient) {
                 $recipient = (array) $recipient;
 
-                throw_if($recipient['status'] !== 'Success', new MessageNotSentException('AfricasTalking message sending failed with recipient status: '.$recipient['status']));
+                if ($recipient['status'] !== 'Success') {
+                    throw new MessageNotSentException('AfricasTalking message sending failed with recipient status: '.$recipient['status']);
+                }
 
                 $africasTalkingMessage = [
                     'status' => $recipient['status'],

@@ -18,7 +18,9 @@ class AccessRateListener {
         try {
             $tariff = $meter->tariff()->first();
             $accessRate = $tariff?->accessRate;
-            throw_unless($accessRate, new NoAccessRateFound('Access Rate is not set'));
+            if (!$accessRate) {
+                throw new NoAccessRateFound('Access Rate is not set');
+            }
             $nextPaymentDate = Carbon::now()->addDays($accessRate->period);
             $accessRatePayment = new AccessRatePayment();
             $accessRatePayment->accessRate()->associate($accessRate);

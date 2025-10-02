@@ -72,7 +72,9 @@ class EnergyTransactionProcessor extends AbstractJob {
         if ($minimumPurchaseAmount > 0) {
             $validator = resolve(MinimumPurchaseAmountValidator::class);
             try {
-                throw_unless($validator->validate($transactionData, $minimumPurchaseAmount), new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->device->device_serial}"));
+                if (!$validator->validate($transactionData, $minimumPurchaseAmount)) {
+                    throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->device->device_serial}");
+                }
             } catch (\Exception $e) {
                 throw new TransactionAmountNotEnoughException($e->getMessage());
             }

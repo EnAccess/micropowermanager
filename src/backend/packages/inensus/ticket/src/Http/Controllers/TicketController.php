@@ -12,12 +12,12 @@ class TicketController extends Controller {
     public function __construct(private TicketService $ticketService) {}
 
     public function index(Request $request): TicketResource {
-        $assignedId = $request->input('person');
-        $categoryId = $request->input('category');
-        $status = $request->input('status');
-        $limit = $request->input('limit', 5);
-        $agentId = $request->input('agent');
-        $customerId = $request->input('customer');
+        $assignedId = $request->input('person') ?? null;
+        $categoryId = $request->input('category') ?? null;
+        $status = $request->input('status') ?? null;
+        $limit = $request->input('limit') ?? 5;
+        $agentId = $request->input('agent') ?? null;
+        $customerId = $request->input('customer') ?? null;
 
         return TicketResource::make($this->ticketService->getAll(
             $limit,

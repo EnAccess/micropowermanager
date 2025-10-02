@@ -62,9 +62,13 @@ class ClusterGeoListener {
             $data = $data[0];
         }
 
-        throw_unless(array_key_exists('geojson', $data), new GeoFormatException('external resource should contain a geojson key'));
+        if (!array_key_exists('geojson', $data)) {
+            throw new GeoFormatException('external resource should contain a geojson key');
+        }
 
-        throw_unless(array_key_exists('coordinates', $data['geojson']), new GeoFormatException('geojson key has not coordinates key'));
+        if (!array_key_exists('coordinates', $data['geojson'])) {
+            throw new GeoFormatException('geojson key has not coordinates key');
+        }
 
         $coordinates = $data['geojson']['coordinates'][0];
 
