@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\DatabaseProxy;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Report;
@@ -264,7 +265,8 @@ class Reports {
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if ($transaction->device->device === null) {
+            // @phpstan-ignore instanceof.alwaysTrue
+            if (!$transaction->device instanceof Device) {
                 continue;
             }
 
