@@ -142,15 +142,13 @@ class CustomerService implements ISynchronizeService {
                 if ($geoLocation === null) {
                     $geoLocation = new GeographicalInformation();
                 }
-                $person = $this->person->newQuery()->whereHas('devices.device', static function ($q) use ($meter) {
-                    return $q->where('id', $meter->id);
-                })->first();
+                $person = $this->person->newQuery()->whereHas('devices.device', static fn ($q) => $q->where('id', $meter->id))->first();
             }
             if ($person === null) {
                 $data = [
-                    'name' => ($customer['name']) ? ($customer['name']) : '',
-                    'phone' => ($customer['phone_number']) ? ($customer['phone_number']) : null,
-                    'street1' => ($customer['meters'][0]['street1']) ? ($customer['meters'][0]['street1']) : null,
+                    'name' => $customer['name'] ?: '',
+                    'phone' => $customer['phone_number'] ?: null,
+                    'street1' => $customer['meters'][0]['street1'] ?: null,
                 ];
                 $person = $this->createPerson($data);
             }
@@ -175,9 +173,7 @@ class CustomerService implements ISynchronizeService {
 
             $smTariff = $this->smTariff->newQuery()->with('mpmTariff')->whereHas(
                 'mpmTariff',
-                function ($q) use ($currentTariffName) {
-                    return $q->where('name', $currentTariffName);
-                }
+                fn ($q) => $q->where('name', $currentTariffName)
             )->first();
             if ($smTariff) {
                 $meter->tariff()->associate($smTariff->mpmTariff);
@@ -248,9 +244,7 @@ class CustomerService implements ISynchronizeService {
         }
         $smTariff = $this->smTariff->newQuery()->with(['mpmTariff'])->whereHas(
             'mpmTariff',
-            function ($q) use ($currentTariffName) {
-                return $q->where('name', $currentTariffName);
-            }
+            fn ($q) => $q->where('name', $currentTariffName)
         )->first();
 
         if ($smTariff) {
@@ -332,9 +326,7 @@ class CustomerService implements ISynchronizeService {
 
     public function getLowBalancedCustomers() {
         return $this->smCustomer->newQuery()->with([
-            'mpmPerson.addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
+            'mpmPerson.addresses' => fn ($q) => $q->where('is_primary', 1),
         ])
             ->whereNotNull('low_balance_limit')
             ->where('low_balance_limit', '>', 0)
@@ -348,9 +340,7 @@ class CustomerService implements ISynchronizeService {
             $syncCheck = $this->syncCheck(true);
             $customersCollection = collect($syncCheck)->except('available_site_count');
             $customersCollection->each(function (array $customers) {
-                $customers['site_data']->filter(function (array $customer): bool {
-                    return $customer['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-                })->each(function (array $customer) use ($customers) {
+                $customers['site_data']->filter(fn (array $customer): bool => $customer['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $customer) use ($customers) {
                     $mpmCustomerId = $this->createRelatedPerson($customer, $customers['site_id']);
                     $this->smCustomer->newQuery()->create([
                         'customer_id' => $customer['id'],
@@ -360,9 +350,7 @@ class CustomerService implements ISynchronizeService {
                         'hash' => $customer['hash'],
                     ]);
                 });
-                $customers['site_data']->filter(function (array $customer): bool {
-                    return $customer['syncStatus'] === SyncStatus::MODIFIED;
-                })->each(function (array $customer) use ($customers) {
+                $customers['site_data']->filter(fn (array $customer): bool => $customer['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $customer) use ($customers) {
                     is_null($customer['relatedPerson']) ? $this->createRelatedPerson(
                         $customer,
                         $customers['site_id']
@@ -412,9 +400,7 @@ class CustomerService implements ISynchronizeService {
                 throw new \Exception($e->getMessage(), $e->getCode(), $e);
             }
 
-            $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(function (array $customer): bool {
-                return $customer['id'] && $customer['meters'][0]['current_tariff_name'];
-            });
+            $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(fn (array $customer): bool => $customer['id'] && $customer['meters'][0]['current_tariff_name']);
             $sparkCustomers = $this->smCustomer->newQuery()->where('site_id', $site->site_id)->get();
             $people = $this->person->newQuery()->get();
 
@@ -470,9 +456,7 @@ class CustomerService implements ISynchronizeService {
     public function getSparkCustomersWithAddress() {
         return $this->smCustomer->newQuery()->with([
             'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', function ($q) {
-            return $q->where('is_primary', 1);
-        })->get();
+        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->get();
     }
 
     public function syncCheckBySite($siteId): array {
@@ -483,9 +467,7 @@ class CustomerService implements ISynchronizeService {
             throw new SparkAPIResponseException($e->getMessage());
         }
 
-        $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(function (array $customer): bool {
-            return $customer['id'] && $customer['meters'][0]['current_tariff_name'];
-        });
+        $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(fn (array $customer): bool => $customer['id'] && $customer['meters'][0]['current_tariff_name']);
 
         $sparkCustomers = $this->smCustomer->newQuery()->where('site_id', $siteId)->get();
         $people = $this->person->newQuery()->get();

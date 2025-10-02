@@ -5,6 +5,7 @@ namespace Inensus\SparkMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Inensus\SparkMeter\Providers\SparkMeterServiceProvider;
 use Inensus\SparkMeter\Services\PackageInstallationService;
 
 class UpdateSparkMeterPackage extends Command {
@@ -59,7 +60,7 @@ class UpdateSparkMeterPackage extends Command {
     private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
+            '--provider' => SparkMeterServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }
@@ -72,7 +73,7 @@ class UpdateSparkMeterPackage extends Command {
     private function publishVueFilesAgain(): void {
         $this->info('Updating vue files\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
+            '--provider' => SparkMeterServiceProvider::class,
             '--tag' => 'vue-components',
             '--force' => true,
         ]);

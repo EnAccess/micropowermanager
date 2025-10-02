@@ -11,19 +11,7 @@ use App\Sms\SmsTypes;
 use Illuminate\Support\Facades\Log;
 
 class SmsListener {
-    private SmsResendInformationKeyService $smsResendInformationKeyService;
-    private Transaction $transaction;
-    private SmsService $smsService;
-
-    public function __construct(
-        SmsResendInformationKeyService $smsResendInformationKeyService,
-        Transaction $transaction,
-        SmsService $smsService,
-    ) {
-        $this->smsResendInformationKeyService = $smsResendInformationKeyService;
-        $this->transaction = $transaction;
-        $this->smsService = $smsService;
-    }
+    public function __construct(private SmsResendInformationKeyService $smsResendInformationKeyService, private Transaction $transaction, private SmsService $smsService) {}
 
     public function onSmsStored(string $sender, string $message): void {
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first();
@@ -32,7 +20,7 @@ class SmsListener {
             return;
         }
 
-        if (strpos(strtolower($message), strtolower($resendInformationKey->key)) !== false) {
+        if (str_contains(strtolower($message), strtolower($resendInformationKey->key))) {
             $wordsInMessage = explode(' ', $message);
             $meterSerial = end($wordsInMessage);
 

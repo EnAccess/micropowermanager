@@ -9,11 +9,7 @@ use Inensus\KelinMeter\Http\Resources\KelinResource;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 
 class KelinCustomerController extends Controller implements IBaseController {
-    private KelinCustomerService $customerService;
-
-    public function __construct(KelinCustomerService $customerService) {
-        $this->customerService = $customerService;
-    }
+    public function __construct(private KelinCustomerService $customerService) {}
 
     public function index(Request $request) {
         return KelinCustomerResource::collection($this->customerService->getCustomers($request));

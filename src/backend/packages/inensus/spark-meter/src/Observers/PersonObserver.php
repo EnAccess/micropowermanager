@@ -8,22 +8,7 @@ use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
 class PersonObserver {
-    private CustomerService $customerService;
-    private SmTableEncryption $smTableEncryption;
-    private Person $person;
-    private SmCustomer $smCustomer;
-
-    public function __construct(
-        CustomerService $customerService,
-        SmTableEncryption $smTableEncryption,
-        Person $person,
-        SmCustomer $smCustomer,
-    ) {
-        $this->customerService = $customerService;
-        $this->smTableEncryption = $smTableEncryption;
-        $this->person = $person;
-        $this->smCustomer = $smCustomer;
-    }
+    public function __construct(private CustomerService $customerService, private SmTableEncryption $smTableEncryption, private Person $person, private SmCustomer $smCustomer) {}
 
     public function updated(Person $person): void {
         $smCustomer = $this->smCustomer->newQuery()->with('site')
@@ -32,9 +17,7 @@ class PersonObserver {
         if ($smCustomer) {
             $personId = $person->id;
             $customer = $this->person->newQuery()
-                ->with(['devices.device.tariff', 'devices.device.geo', 'devices.device.meter', 'addresses' => function ($q) {
-                    return $q->where('is_primary', 1);
-                }])->where('id', $personId)->first();
+                ->with(['devices.device.tariff', 'devices.device.geo', 'devices.device.meter', 'addresses' => fn ($q) => $q->where('is_primary', 1)])->where('id', $personId)->first();
 
             $siteId = $smCustomer->site->site_id;
 

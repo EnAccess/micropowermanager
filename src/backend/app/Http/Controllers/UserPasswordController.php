@@ -44,7 +44,7 @@ class UserPasswordController extends Controller {
                     ]
                 );
             });
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $response->setStatusCode(200)->setContent(
                 [
                     'data' => [
@@ -77,7 +77,7 @@ class UserPasswordController extends Controller {
                     'email' => $resolvedEmail,
                 ]);
             });
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return new ApiResource([
                 'valid' => false,
                 'email' => null,
@@ -109,7 +109,7 @@ class UserPasswordController extends Controller {
                     'status_code' => $success ? 200 : 400,
                 ]);
             });
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return new ApiResource([
                 'message' => 'Invalid company email.',
                 'status_code' => 400,

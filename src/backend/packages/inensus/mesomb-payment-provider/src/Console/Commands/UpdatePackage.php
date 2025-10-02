@@ -5,6 +5,7 @@ namespace Inensus\MesombPaymentProvider\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
 
 class UpdatePackage extends Command {
     protected $signature = 'mesomb-payment-provider:update';
@@ -53,7 +54,7 @@ class UpdatePackage extends Command {
     private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\MesombPaymentProvider\Providers\MesombServiceProvider",
+            '--provider' => MesombServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }

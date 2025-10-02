@@ -168,14 +168,11 @@ class SmsController extends Controller {
         ];
         $sms = $this->smsService->createSms($smsData);
 
-        switch ($this->smsService->checkMessageType($message)) {
-            case $this->smsService::FEEDBACK:
-                event(new SmsStoredEvent($sender, $message));
-                break;
-            case $this->smsService::TICKET:
-                $this->commentService->storeComment($sender, $message);
-                break;
-        }
+        match ($this->smsService->checkMessageType($message)) {
+            $this->smsService::FEEDBACK => event(new SmsStoredEvent($sender, $message)),
+            $this->smsService::TICKET => $this->commentService->storeComment($sender, $message),
+            default => new ApiResource($sms),
+        };
 
         return new ApiResource($sms);
     }
@@ -223,7 +220,7 @@ class SmsController extends Controller {
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
             $sms->status = Sms::STATUS_DELIVERED;
             $sms->save();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             Log::critical(
                 'Sms confirmation update failed ',
                 [
@@ -240,7 +237,7 @@ class SmsController extends Controller {
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
             $sms->status = Sms::STATUS_FAILED;
             $sms->save();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             Log::critical(
                 'Sms rejection update failed ',
                 [
@@ -257,7 +254,7 @@ class SmsController extends Controller {
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
             $sms->status = Sms::STATUS_SENT;
             $sms->save();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             Log::critical(
                 'Sms rejection update failed ',
                 [

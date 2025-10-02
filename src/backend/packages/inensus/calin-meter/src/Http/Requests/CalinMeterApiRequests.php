@@ -10,19 +10,7 @@ use Inensus\CalinMeter\Helpers\ApiHelpers;
 use Inensus\CalinMeter\Models\CalinCredential;
 
 class CalinMeterApiRequests {
-    private Client $client;
-    private ApiHelpers $apiHelpers;
-    private CalinCredential $credential;
-
-    public function __construct(
-        Client $httpClient,
-        ApiHelpers $apiHelpers,
-        CalinCredential $credentialModel,
-    ) {
-        $this->client = $httpClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->credential = $credentialModel;
-    }
+    public function __construct(private Client $client, private ApiHelpers $apiHelpers, private CalinCredential $credential) {}
 
     public function post($url, $postParams) {
         try {

@@ -9,19 +9,7 @@ use Inensus\KelinMeter\Models\KelinSetting;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 
 class KelinSyncSettingService {
-    private KelinSyncSetting $syncSetting;
-    private KelinSetting $setting;
-    private KelinSyncActionService $syncActionService;
-
-    public function __construct(
-        KelinSyncSetting $syncSetting,
-        KelinSetting $setting,
-        KelinSyncActionService $syncActionService,
-    ) {
-        $this->syncSetting = $syncSetting;
-        $this->setting = $setting;
-        $this->syncActionService = $syncActionService;
-    }
+    public function __construct(private KelinSyncSetting $syncSetting, private KelinSetting $setting, private KelinSyncActionService $syncActionService) {}
 
     public function createDefaultSettings(): void {
         $dayInterval = CarbonInterval::make('1day');

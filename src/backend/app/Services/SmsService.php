@@ -27,12 +27,11 @@ class SmsService {
     public function checkMessageType(string $message): int {
         $wordsInMessage = explode(' ', $message);
         $firstWord = $wordsInMessage[0];
-        switch (strtolower($firstWord)) {
-            case 'ticket':
-                return self::TICKET;
-            default:
-                return self::FEEDBACK;
-        }
+
+        return match (strtolower($firstWord)) {
+            'ticket' => self::TICKET,
+            default => self::FEEDBACK,
+        };
     }
 
     /**

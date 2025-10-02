@@ -6,11 +6,8 @@ use App\Sms\BodyParsers\SmsBodyParser;
 
 class SparkSmsMeterResetFailedFeedbackBody extends SmsBodyParser {
     protected $variables = ['meter_serial'];
-    protected $data;
 
-    public function __construct($data) {
-        $this->data = $data;
-    }
+    public function __construct(protected $data) {}
 
     protected function getVariableValue(string $variable): mixed {
         if ($variable === 'meter_serial') {

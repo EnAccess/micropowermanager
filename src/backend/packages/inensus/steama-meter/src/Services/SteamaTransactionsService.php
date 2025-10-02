@@ -14,50 +14,9 @@ use Inensus\SteamaMeter\Models\SteamaMeter;
 use Inensus\SteamaMeter\Models\SteamaTransaction;
 
 class SteamaTransactionsService implements ISynchronizeService {
-    private SteamaMeterService $stemaMeterService;
-    private SteamaCustomerService $steamaCustomerService;
-    private SteamaCredentialService $steamaCredentialService;
-    private SteamaSiteService $steamaSiteService;
-    private SteamaAgentService $steamaAgentService;
-    private SteamaTransaction $steamaTransaction;
-    private SteamaMeter $steamaMeter;
-    private SteamaMeterApiClient $steamaApi;
-    private ThirdPartyTransaction $thirdPartyTransaction;
     private string $rootUrl = '/transactions';
-    private Transaction $transaction;
-    private Token $token;
-    private SteamaSyncSettingService $steamaSyncSettingService;
-    private StemaSyncActionService $steamaSyncActionService;
 
-    public function __construct(
-        SteamaMeterService $steamaMeterService,
-        SteamaCustomerService $steamaCustomerService,
-        SteamaCredentialService $steamaCredentialService,
-        SteamaSiteService $steamaSiteService,
-        SteamaAgentService $steamaAgentService,
-        SteamaTransaction $steamaTransaction,
-        SteamaMeterApiClient $steamaApi,
-        Transaction $transaction,
-        SteamaMeter $steamaMeter,
-        ThirdPartyTransaction $thirdPartyTransaction,
-        Token $token,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService,
-    ) {
-        $this->stemaMeterService = $steamaMeterService;
-        $this->steamaCustomerService = $steamaCustomerService;
-        $this->steamaCredentialService = $steamaCredentialService;
-        $this->steamaSiteService = $steamaSiteService;
-        $this->steamaAgentService = $steamaAgentService;
-        $this->steamaTransaction = $steamaTransaction;
-        $this->steamaApi = $steamaApi;
-        $this->transaction = $transaction;
-        $this->steamaMeter = $steamaMeter;
-        $this->thirdPartyTransaction = $thirdPartyTransaction;
-        $this->token = $token;
-        $this->steamaSyncSettingService = $steamaSyncSettingService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-    }
+    public function __construct(private SteamaMeterService $stemaMeterService, private SteamaCustomerService $steamaCustomerService, private SteamaCredentialService $steamaCredentialService, private SteamaSiteService $steamaSiteService, private SteamaAgentService $steamaAgentService, private SteamaTransaction $steamaTransaction, private SteamaMeterApiClient $steamaApi, private Transaction $transaction, private SteamaMeter $steamaMeter, private ThirdPartyTransaction $thirdPartyTransaction, private Token $token, private SteamaSyncSettingService $steamaSyncSettingService, private StemaSyncActionService $steamaSyncActionService) {}
 
     public function sync() {
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Transactions');

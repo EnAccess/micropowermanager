@@ -668,9 +668,7 @@ class Reports {
             ->whereHasMorph(
                 'originalTransaction',
                 '*',
-                static function ($q) {
-                    return $q->where('status', 1);
-                }
+                static fn ($q) => $q->where('status', 1)
             )
             ->groupBy('meters.id')
             ->get()->toArray();

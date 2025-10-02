@@ -5,6 +5,7 @@ namespace Inensus\StronMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Inensus\StronMeter\Providers\StronMeterServiceProvider;
 
 class UpdatePackage extends Command {
     protected $signature = 'stron-meter:update';
@@ -53,7 +54,7 @@ class UpdatePackage extends Command {
     private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\StronMeter\Providers\StronMeterServiceProvider",
+            '--provider' => StronMeterServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }
@@ -66,7 +67,7 @@ class UpdatePackage extends Command {
     private function publishVueFilesAgain(): void {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\StronMeter\Providers\StronMeterServiceProvider",
+            '--provider' => StronMeterServiceProvider::class,
             '--tag' => 'vue-components',
         ]);
     }

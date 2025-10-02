@@ -27,37 +27,18 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
     protected $signature = 'steama-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Steamaco Meter.';
 
-    private SteamaTransactionsService $steamaTransactionsService;
-    private SteamaSyncSettingService $steamaSyncSettingservice;
-    private SteamaMeterService $stemaMeterService;
-    private SteamaCustomerService $steamaCustomerService;
-    private SteamaSiteService $steamaSiteService;
-    private SteamaAgentService $steamaAgentService;
-    private StemaSyncActionService $steamaSyncActionService;
-    private Address $address;
-    private Cluster $cluster;
-
     public function __construct(
-        SteamaTransactionsService $steamaTransactionsService,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        SteamaMeterService $steamaMeterService,
-        SteamaCustomerService $steamaCustomerService,
-        SteamaSiteService $steamaSiteService,
-        SteamaAgentService $steamaAgentService,
-        StemaSyncActionService $steamaSyncActionService,
-        Address $address,
-        Cluster $cluster,
+        private SteamaTransactionsService $steamaTransactionsService,
+        private SteamaSyncSettingService $steamaSyncSettingservice,
+        private SteamaMeterService $stemaMeterService,
+        private SteamaCustomerService $steamaCustomerService,
+        private SteamaSiteService $steamaSiteService,
+        private SteamaAgentService $steamaAgentService,
+        private StemaSyncActionService $steamaSyncActionService,
+        private Address $address,
+        private Cluster $cluster,
     ) {
         parent::__construct();
-        $this->steamaTransactionsService = $steamaTransactionsService;
-        $this->steamaSyncSettingservice = $steamaSyncSettingService;
-        $this->stemaMeterService = $steamaMeterService;
-        $this->steamaCustomerService = $steamaCustomerService;
-        $this->steamaSiteService = $steamaSiteService;
-        $this->steamaAgentService = $steamaAgentService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-        $this->address = $address;
-        $this->cluster = $cluster;
     }
 
     public function handle(): void {

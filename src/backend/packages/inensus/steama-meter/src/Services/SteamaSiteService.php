@@ -14,38 +14,9 @@ use Inensus\SteamaMeter\Models\SteamaSite;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
 class SteamaSiteService implements ISynchronizeService {
-    private SteamaSite $site;
-    private SteamaMeterApiClient $steamaApi;
-    private ApiHelpers $apiHelpers;
     private string $rootUrl = '/sites';
-    private MiniGrid $miniGrid;
-    private Cluster $cluster;
-    private GeographicalInformation $geographicalInformation;
-    private City $city;
-    private SteamaSyncSettingService $steamaSyncSettingService;
-    private StemaSyncActionService $steamaSyncActionService;
 
-    public function __construct(
-        SteamaSite $steamaSiteModel,
-        SteamaMeterApiClient $steamaApi,
-        ApiHelpers $apiHelpers,
-        MiniGrid $miniGrid,
-        Cluster $cluster,
-        GeographicalInformation $geographicalInformation,
-        City $city,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService,
-    ) {
-        $this->site = $steamaSiteModel;
-        $this->steamaApi = $steamaApi;
-        $this->apiHelpers = $apiHelpers;
-        $this->miniGrid = $miniGrid;
-        $this->cluster = $cluster;
-        $this->city = $city;
-        $this->geographicalInformation = $geographicalInformation;
-        $this->steamaSyncSettingService = $steamaSyncSettingService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-    }
+    public function __construct(private SteamaSite $site, private SteamaMeterApiClient $steamaApi, private ApiHelpers $apiHelpers, private MiniGrid $miniGrid, private Cluster $cluster, private GeographicalInformation $geographicalInformation, private City $city, private SteamaSyncSettingService $steamaSyncSettingService, private StemaSyncActionService $steamaSyncActionService) {}
 
     public function getSites($request) {
         $perPage = $request->input('per_page') ?? 15;
@@ -62,9 +33,7 @@ class SteamaSiteService implements ISynchronizeService {
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function (array $site) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $site) {
                 $miniGrid = $this->creteRelatedMiniGrid($site);
                 $this->site->newQuery()->create([
                     'site_id' => $site['id'],
@@ -74,9 +43,7 @@ class SteamaSiteService implements ISynchronizeService {
                 $this->createOrUpdateGeographicalInformation($miniGrid->id, $site);
             });
 
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function (array $site) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $site) {
                 $miniGrid = is_null($site['relatedMiniGrid']) ?
                     $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid($site, $site['relatedMiniGrid']);
                 $this->createOrUpdateGeographicalInformation($miniGrid->id, $site);

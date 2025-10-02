@@ -6,13 +6,7 @@ use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSmsSetting;
 
 class SteamaSmsSettingService {
-    private SteamaSmsSetting $smsSetting;
-    private SteamaSetting $setting;
-
-    public function __construct(SteamaSmsSetting $smsSetting, SteamaSetting $setting) {
-        $this->smsSetting = $smsSetting;
-        $this->setting = $setting;
-    }
+    public function __construct(private SteamaSmsSetting $smsSetting, private SteamaSetting $setting) {}
 
     public function createDefaultSettings(): void {
         $smsTransaction = $this->smsSetting->newQuery()->where('state', 'Transactions')->first();

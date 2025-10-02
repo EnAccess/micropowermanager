@@ -169,9 +169,7 @@ class PersonService implements IBaseService {
      */
     public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
         $query = $this->person->newQuery()->with([
-            'addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
+            'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
             'agentSoldAppliance.assignedAppliance.agent',
@@ -207,9 +205,7 @@ class PersonService implements IBaseService {
     public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null, ?string $status = null): Collection|array {
         $isActive = $isActive == null ? 1 : $isActive;
         $query = $this->person->newQuery()->with([
-            'addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
+            'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
         ])->where('is_customer', $isActive);

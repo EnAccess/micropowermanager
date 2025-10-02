@@ -23,65 +23,9 @@ use Inensus\SteamaMeter\Models\SteamaUserType;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
 class SteamaCustomerService implements ISynchronizeService {
-    private SteamaCustomer $customer;
-    private SteamaMeterApiClient $steamaApi;
-    private ApiHelpers $apiHelpers;
     private string $rootUrl = '/customers';
-    private Person $person;
-    private SteamaCustomerBasisPaymentPlan $customerBasisPaymentPlan;
-    private SteamaFlatRatePaymentPlan $flatRatePaymentPlan;
-    private SteamaSubscriptionPaymentPlan $subscriptionPaymentPlan;
-    private SteamaHybridPaymentPlan $hybridPaymentPlan;
-    private SteamaMinimumTopUpRequirementsPaymentPlan $minimumTopUpPaymentPlan;
-    private SteamaPerKwhPaymentPlan $perKwhPaymentPlan;
-    private SteamaUserType $userType;
-    private SteamaSite $steamaSite;
-    private SteamaBitharvesterService $bitharvesterService;
-    private SteamaSite $stmSite;
-    private City $city;
-    private SteamaSyncSettingService $steamaSyncSettingService;
-    private StemaSyncActionService $steamaSyncActionService;
-    private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService;
 
-    public function __construct(
-        SteamaCustomer $steamaCustomerModel,
-        SteamaMeterApiClient $steamaApi,
-        ApiHelpers $apiHelpers,
-        Person $person,
-        SteamaFlatRatePaymentPlan $flatRatePaymentPlan,
-        SteamaCustomerBasisPaymentPlan $customerBasisPaymentPlan,
-        SteamaSubscriptionPaymentPlan $subscriptionPaymentPlan,
-        SteamaHybridPaymentPlan $hybridPaymentPlan,
-        SteamaMinimumTopUpRequirementsPaymentPlan $minimumTopUpPaymentPlan,
-        SteamaPerKwhPaymentPlan $perKwhPaymentPlan,
-        SteamaUserType $userType,
-        SteamaSite $steamaSite,
-        SteamaBitharvesterService $bitharvesterService,
-        SteamaSite $stmSite,
-        City $city,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService,
-        SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
-    ) {
-        $this->customer = $steamaCustomerModel;
-        $this->apiHelpers = $apiHelpers;
-        $this->steamaApi = $steamaApi;
-        $this->person = $person;
-        $this->flatRatePaymentPlan = $flatRatePaymentPlan;
-        $this->customerBasisPaymentPlan = $customerBasisPaymentPlan;
-        $this->subscriptionPaymentPlan = $subscriptionPaymentPlan;
-        $this->hybridPaymentPlan = $hybridPaymentPlan;
-        $this->minimumTopUpPaymentPlan = $minimumTopUpPaymentPlan;
-        $this->perKwhPaymentPlan = $perKwhPaymentPlan;
-        $this->userType = $userType;
-        $this->steamaSite = $steamaSite;
-        $this->bitharvesterService = $bitharvesterService;
-        $this->stmSite = $stmSite;
-        $this->city = $city;
-        $this->steamaSyncSettingService = $steamaSyncSettingService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-        $this->steamaSmsNotifiedCustomerService = $steamaSmsNotifiedCustomerService;
-    }
+    public function __construct(private SteamaCustomer $customer, private SteamaMeterApiClient $steamaApi, private ApiHelpers $apiHelpers, private Person $person, private SteamaFlatRatePaymentPlan $flatRatePaymentPlan, private SteamaCustomerBasisPaymentPlan $customerBasisPaymentPlan, private SteamaSubscriptionPaymentPlan $subscriptionPaymentPlan, private SteamaHybridPaymentPlan $hybridPaymentPlan, private SteamaMinimumTopUpRequirementsPaymentPlan $minimumTopUpPaymentPlan, private SteamaPerKwhPaymentPlan $perKwhPaymentPlan, private SteamaUserType $userType, private SteamaSite $steamaSite, private SteamaBitharvesterService $bitharvesterService, private SteamaSite $stmSite, private City $city, private SteamaSyncSettingService $steamaSyncSettingService, private StemaSyncActionService $steamaSyncActionService, private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService) {}
 
     public function getCustomers($request) {
         $perPage = $request->input('per_page') ?? 15;
@@ -99,9 +43,7 @@ class SteamaCustomerService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
             $userTypes = $this->userType->newQuery()->get();
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function (array $customer) use ($userTypes) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $customer) use ($userTypes) {
                 $person = $this->createRelatedPerson($customer);
                 $userType = $userTypes->where('syntax', $customer['user_type'])->first();
                 $this->customer->newQuery()->create([
@@ -117,9 +59,7 @@ class SteamaCustomerService implements ISynchronizeService {
                 $this->setStmCustomerPaymentPlan($customer);
             });
 
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function (array $customer) use ($userTypes) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $customer) use ($userTypes) {
                 $person = is_null($customer['relatedPerson']) ?
                     $this->createRelatedPerson($customer) : $this->updateRelatedPerson(
                         $customer,
@@ -201,10 +141,10 @@ class SteamaCustomerService implements ISynchronizeService {
 
     public function createRelatedPerson(array $customer) {
         $personData = [
-            'name' => $customer['first_name'] ? $customer['first_name'] : '',
-            'surname' => $customer['last_name'] ? $customer['last_name'] : '',
-            'phone' => $customer['telephone'] ? $customer['telephone'] : null,
-            'street1' => $customer['site_name'] ? $customer['site_name'] : null,
+            'name' => $customer['first_name'] ?: '',
+            'surname' => $customer['last_name'] ?: '',
+            'phone' => $customer['telephone'] ?: null,
+            'street1' => $customer['site_name'] ?: null,
         ];
         $customerSite = $this->stmSite->newQuery()->with('mpmMiniGrid')->where('site_id', $customer['site'])->first();
         $customerCity = $this->city->newQuery()->where('mini_grid_id', $customerSite->mpmMiniGrid->id)->first();
@@ -229,16 +169,16 @@ class SteamaCustomerService implements ISynchronizeService {
 
     public function updateRelatedPerson(array $customer, $person) {
         $person->update([
-            'name' => $customer['first_name'] ? $customer['first_name'] : '',
-            'surname' => $customer['last_name'] ? $customer['last_name'] : '',
+            'name' => $customer['first_name'] ?: '',
+            'surname' => $customer['last_name'] ?: '',
         ]);
         $customerSite = $this->stmSite->newQuery()->with('mpmMiniGrid')->where('site_id', $customer['site'])->first();
         $customerCity = $this->city->newQuery()->where('mini_grid_id', $customerSite->mpmMiniGrid->id)->first();
 
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->update([
-            'phone' => $customer['telephone'] ? $customer['telephone'] : null,
-            'street' => $customer['site_name'] ? $customer['site_name'] : null,
+            'phone' => $customer['telephone'] ?: null,
+            'street' => $customer['site_name'] ?: null,
             'city_id' => $customerCity->id,
         ]);
 
@@ -497,9 +437,7 @@ class SteamaCustomerService implements ISynchronizeService {
     public function getSteamaCustomersWithAddress() {
         return $this->customer->newQuery()->with([
             'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', function ($q) {
-            return $q->where('is_primary', 1);
-        });
+        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1));
     }
 
     private function steamaCustomerHasher(array $steamaCustomer): string {

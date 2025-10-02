@@ -7,11 +7,8 @@ use Inensus\SteamaMeter\Models\SteamaCustomer;
 
 class SteamaSmsBalanceFeedbackBody extends SmsBodyParser {
     protected $variables = ['account_balance'];
-    protected SteamaCustomer $steamaCustomer;
 
-    public function __construct(SteamaCustomer $steamaCustomer) {
-        $this->steamaCustomer = $steamaCustomer;
-    }
+    public function __construct(protected SteamaCustomer $steamaCustomer) {}
 
     protected function getVariableValue(string $variable): mixed {
         if ($variable === 'account_balance') {

@@ -98,7 +98,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
             }
         } catch (TransactionAmountNotEnoughException $e) {
             throw new TransactionAmountNotEnoughException($e->getMessage());
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new TransactionIsInvalidForProcessingIncomingRequestException('Invalid Transaction request.');
         }
     }

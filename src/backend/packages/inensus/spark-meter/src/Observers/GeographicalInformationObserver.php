@@ -46,9 +46,7 @@ class GeographicalInformationObserver {
 
         $customer = $this->person->newQuery()
             ->with(['devices.device.tariff', 'devices.address.geo'])
-            ->whereHas('devices', function ($q) use ($device) {
-                return $q->where('id', $device->id);
-            })->first();
+            ->whereHas('devices', fn ($q) => $q->where('id', $device->id))->first();
 
         if (!$customer) {
             return;

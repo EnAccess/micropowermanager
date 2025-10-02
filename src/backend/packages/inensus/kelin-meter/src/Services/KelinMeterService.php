@@ -21,47 +21,10 @@ use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\SyncStatus;
 
 class KelinMeterService implements ISynchronizeService {
-    private Meter $meter;
     private string $rootUrl = '/listMeter';
-    private KelinMeter $kelinMeter;
-    private KelinMeterApiClient $kelinApiClient;
-    private ApiHelpers $apiHelpers;
-    private KelinSyncSettingService $syncSettingService;
-    private KelinSyncActionService $syncActionService;
-    private KelinCustomer $kelinCustomer;
-    private Manufacturer $manufacturer;
-
-    private ConnectionGroup $connectionGroup;
-    private ConnectionType $connectionType;
-    private MeterTariff $meterTariff;
     private $earlyRegisteredMeters;
 
-    public function __construct(
-        Meter $meter,
-        KelinMeter $kelinMeter,
-        KelinMeterApiClient $kelinApiClient,
-        ApiHelpers $apiHelpers,
-        KelinSyncSettingService $syncSettingService,
-        KelinSyncActionService $syncActionService,
-        KelinCustomer $kelinCustomer,
-        Manufacturer $manufacturer,
-        ConnectionGroup $connectionGroup,
-        ConnectionType $connectionType,
-        MeterTariff $meterTariff,
-    ) {
-        $this->meter = $meter;
-        $this->kelinMeter = $kelinMeter;
-        $this->kelinApiClient = $kelinApiClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->syncActionService = $syncActionService;
-        $this->syncSettingService = $syncSettingService;
-        $this->kelinCustomer = $kelinCustomer;
-        $this->manufacturer = $manufacturer;
-
-        $this->connectionGroup = $connectionGroup;
-        $this->connectionType = $connectionType;
-        $this->meterTariff = $meterTariff;
-    }
+    public function __construct(private Meter $meter, private KelinMeter $kelinMeter, private KelinMeterApiClient $kelinApiClient, private ApiHelpers $apiHelpers, private KelinSyncSettingService $syncSettingService, private KelinSyncActionService $syncActionService, private KelinCustomer $kelinCustomer, private Manufacturer $manufacturer, private ConnectionGroup $connectionGroup, private ConnectionType $connectionType, private MeterTariff $meterTariff) {}
 
     public function getMeters($request) {
         $perPage = $request->input('per_page') ?? 15;
@@ -77,9 +40,7 @@ class KelinMeterService implements ISynchronizeService {
         $syncAction = $this->syncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function (array $meter) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $meter) {
                 $createdMeter = $this->createRelatedMeter($meter);
                 $this->kelinMeter->newQuery()->create([
                     'meter_name' => $meter['meterName'],
@@ -90,9 +51,7 @@ class KelinMeterService implements ISynchronizeService {
                     'hash' => $meter['hash'],
                 ]);
             });
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::EARLY_REGISTERED;
-            })->each(function (array $meter) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::EARLY_REGISTERED)->each(function (array $meter) {
                 $updatedMeter = $this->updateRelatedMeter(
                     $meter,
                     $meter['relatedMeter']
@@ -105,9 +64,7 @@ class KelinMeterService implements ISynchronizeService {
                     'hash' => $meter['hash'],
                 ]);
             });
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function (array $meter) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $meter) {
                 $relatedMeter = is_null($meter['relatedMeter']) ?
                     $this->createRelatedMeter($meter) : $this->updateRelatedMeter($meter, $meter['relatedMeter']);
                 $meter['registeredKelinMeter']->update([
@@ -143,9 +100,7 @@ class KelinMeterService implements ISynchronizeService {
             throw new KelinApiResponseException($exception->getMessage());
         }
 
-        $metersCollection = collect($meters)->filter(function (array $meter): bool {
-            return $meter['consNo'] !== null;
-        });
+        $metersCollection = collect($meters)->filter(fn (array $meter): bool => $meter['consNo'] !== null);
 
         $kelinMeters = $this->kelinMeter->newQuery()->get();
         $this->getEarlyRegisteredMetersWithChangeSerialNumbersAsSimilarAsKalinMeterData();
@@ -262,9 +217,7 @@ class KelinMeterService implements ISynchronizeService {
                 $kelinCustomerAddress = $kelinCustomer
                     ->mpmPerson
                     ->with('addresses.city')
-                    ->whereHas('addresses', function ($q) {
-                        return $q->where('is_primary', 1);
-                    })
+                    ->whereHas('addresses', fn ($q) => $q->where('is_primary', 1))
                     ->first()
                 ;
 
@@ -321,7 +274,7 @@ class KelinMeterService implements ISynchronizeService {
         $this->earlyRegisteredMeters = $this->meter->newQuery()->get()->map(function ($q): array {
             $string = substr($q->serial_number, 0, -2);
             $array = explode('-', $string);
-            $serial = implode($array);
+            $serial = implode('', $array);
 
             return [
                 'meter_serial' => $serial,
@@ -343,6 +296,6 @@ class KelinMeterService implements ISynchronizeService {
             }
         }
 
-        return $newSerial.('-'.rand(0, 9));
+        return $newSerial.('-'.random_int(0, 9));
     }
 }

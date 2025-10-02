@@ -10,19 +10,7 @@ use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 
 class SteamaMeterReadingService {
-    private SteamaMeter $steamaMeter;
-    private SteamaMeterApiClient $steamaApi;
-    private MeterConsumption $meterConsumtion;
-
-    public function __construct(
-        SteamaMeter $steamaMeter,
-        SteamaMeterApiClient $steamaApi,
-        MeterConsumption $meterConsumption,
-    ) {
-        $this->steamaMeter = $steamaMeter;
-        $this->steamaApi = $steamaApi;
-        $this->meterConsumtion = $meterConsumption;
-    }
+    public function __construct(private SteamaMeter $steamaMeter, private SteamaMeterApiClient $steamaApi, private MeterConsumption $meterConsumtion) {}
 
     public function getMeterReadingsThroughHourlyWorkingJob(): void {
         $now = Carbon::now()->toIso8601ZuluString();

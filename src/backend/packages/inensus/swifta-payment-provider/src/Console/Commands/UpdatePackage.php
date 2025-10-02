@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
+use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
 use Tymon\JWTAuth\JWTGuard;
 
 class UpdatePackage extends Command {
@@ -41,7 +42,7 @@ class UpdatePackage extends Command {
     private function publishConfigurations(): void {
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
+            '--provider' => SwiftaServiceProvider::class,
             '--tag' => 'configurations',
         ]);
     }
@@ -70,7 +71,7 @@ class UpdatePackage extends Command {
     private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
+            '--provider' => SwiftaServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }

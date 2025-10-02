@@ -10,19 +10,7 @@ use Inensus\SteamaMeter\Helpers\ApiHelpers;
 use Inensus\SteamaMeter\Models\SteamaCredential;
 
 class SteamaMeterApiClient {
-    private Client $client;
-    private ApiHelpers $apiHelpers;
-    private SteamaCredential $credential;
-
-    public function __construct(
-        Client $httpClient,
-        ApiHelpers $apiHelpers,
-        SteamaCredential $credentialModel,
-    ) {
-        $this->client = $httpClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->credential = $credentialModel;
-    }
+    public function __construct(private Client $client, private ApiHelpers $apiHelpers, private SteamaCredential $credential) {}
 
     public function get(string $url): array {
         try {

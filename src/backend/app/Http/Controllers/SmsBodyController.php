@@ -7,11 +7,7 @@ use App\Services\SmsBodyService;
 use Illuminate\Http\Request;
 
 class SmsBodyController extends Controller {
-    private SmsBodyService $smsBodyService;
-
-    public function __construct(SmsBodyService $smsBodyService) {
-        $this->smsBodyService = $smsBodyService;
-    }
+    public function __construct(private SmsBodyService $smsBodyService) {}
 
     public function index(): ApiResource {
         return new ApiResource($this->smsBodyService->getSmsBodies());

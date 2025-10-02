@@ -13,16 +13,12 @@ class PersonDeleting {
     use InteractsWithSockets;
     use SerializesModels;
 
-    private Person $person;
-
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Person $person) {
-        $this->person = $person;
-    }
+    public function __construct(private Person $person) {}
 
     /**
      * Get the Person model instance associated with the event.

@@ -46,9 +46,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                 if ($smsNotifiedCustomers) {
                     return true;
                 }
-                $notifyCustomer = $customers->filter(function ($customer) use ($smTransaction): bool {
-                    return $customer->customer_id == $smTransaction->customer_id;
-                })->first();
+                $notifyCustomer = $customers->filter(fn ($customer): bool => $customer->customer_id == $smTransaction->customer_id)->first();
 
                 if (!$notifyCustomer) {
                     return true;

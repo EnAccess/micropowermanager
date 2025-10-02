@@ -7,11 +7,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\SmSettingService;
 
 class SmSettingController extends Controller {
-    private SmSettingService $settingService;
-
-    public function __construct(SmSettingService $settingService) {
-        $this->settingService = $settingService;
-    }
+    public function __construct(private SmSettingService $settingService) {}
 
     public function index(): SparkResource {
         return new SparkResource($this->settingService->getSettings());

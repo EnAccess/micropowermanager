@@ -68,7 +68,7 @@ class AccessRate {
         $accessRatePayment = $nonStaticGateway->getAccessRatePayment($transactionData->meter);
         try {
             $debt_amount = $nonStaticGateway->getDebt($transactionData->meter);
-        } catch (NoAccessRateFound $e) { // no access rate found
+        } catch (NoAccessRateFound) { // no access rate found
             return $transactionData;
         }
 

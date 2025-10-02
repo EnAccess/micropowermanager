@@ -5,13 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmOrganization;
 
 class OrganizationService {
-    private SmOrganization $organization;
-
-    public function __construct(
-        SmOrganization $organization,
-    ) {
-        $this->organization = $organization;
-    }
+    public function __construct(private SmOrganization $organization) {}
 
     public function getOrganizations() {
         return $this->organization->newQuery()->where('id', '>', 0)->get();

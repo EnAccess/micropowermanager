@@ -720,6 +720,6 @@ trait CreateEnvironments {
             $endIndex = count($ids);
         }
 
-        return rand($startIndex, $endIndex);
+        return random_int($startIndex, $endIndex);
     }
 }

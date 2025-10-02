@@ -22,13 +22,13 @@ class AgentService implements IBaseService {
     public function resetPassword(string $email): string {
         try {
             $newPassword = PasswordGenerator::generatePassword();
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $newPassword = (string) time();
         }
 
         try {
             $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();
-        } catch (ModelNotFoundException $x) {
+        } catch (ModelNotFoundException) {
             return 'Invalid email.';
         }
 

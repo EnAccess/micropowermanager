@@ -6,11 +6,7 @@ use App\Models\Manufacturer;
 use Inensus\CalinMeter\Exceptions\CalinApiResponseException;
 
 class ApiHelpers {
-    private Manufacturer $manufacturer;
-
-    public function __construct(Manufacturer $manufacturerModel) {
-        $this->manufacturer = $manufacturerModel;
-    }
+    public function __construct(private Manufacturer $manufacturer) {}
 
     public function registerCalinMeterManufacturer(): void {
         $api = $this->manufacturer->newQuery()->where('api_name', 'CalinMeterApi')->first();

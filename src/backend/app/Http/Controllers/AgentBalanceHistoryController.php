@@ -10,11 +10,7 @@ use App\Services\AgentBalanceHistoryService;
 use Illuminate\Http\Request;
 
 class AgentBalanceHistoryController extends Controller {
-    private AgentBalanceHistoryService $agentBalanceHistoryService;
-
-    public function __construct(AgentBalanceHistoryService $agentBalanceHistoryService) {
-        $this->agentBalanceHistoryService = $agentBalanceHistoryService;
-    }
+    public function __construct(private AgentBalanceHistoryService $agentBalanceHistoryService) {}
 
     /**
      * Store a newly created resource in storage.
