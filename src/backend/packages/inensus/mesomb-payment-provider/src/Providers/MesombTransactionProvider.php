@@ -45,7 +45,12 @@ class MesombTransactionProvider implements ITransactionProvider {
     }
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
-        $this->mesombTransaction = $transaction->originalTransaction()->first();
+        $mesombTransaction = $transaction->originalTransaction;
+        if (!$mesombTransaction instanceof MesombTransaction) {
+            throw new \Exception('Wrong transaction type.');
+        }
+        $this->mesombTransaction = $mesombTransaction;
+
         if ($requestType) {
             $this->mesombTransaction->status = 1;
             $this->mesombTransaction->save();
