@@ -33,7 +33,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
         } else {
-            list($startDate, $endDate) = $dateRange;
+            [$startDate, $endDate] = $dateRange;
         }
 
         $monthlyPeriods = $this->periodService->generatePeriodicList($startDate, $endDate, 'monthly', [

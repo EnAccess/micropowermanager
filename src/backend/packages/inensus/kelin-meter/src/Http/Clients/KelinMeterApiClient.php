@@ -11,19 +11,7 @@ use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Models\KelinCredential;
 
 class KelinMeterApiClient {
-    private Client $client;
-    private ApiHelpers $apiHelpers;
-    private KelinCredential $credential;
-
-    public function __construct(
-        Client $httpClient,
-        ApiHelpers $apiHelpers,
-        KelinCredential $credential,
-    ) {
-        $this->client = $httpClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->credential = $credential;
-    }
+    public function __construct(private Client $client, private ApiHelpers $apiHelpers, private KelinCredential $credential) {}
 
     public function token(string $url, $queryParams) {
         try {

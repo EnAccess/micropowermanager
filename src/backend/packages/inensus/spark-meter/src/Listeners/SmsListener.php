@@ -11,19 +11,7 @@ use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
 class SmsListener {
-    private SmSmsFeedbackWordService $smsFeedbackWordService;
-    private CustomerService $customerService;
-    private SmsService $smsService;
-
-    public function __construct(
-        SmSmsFeedbackWordService $smsFeedbackWordService,
-        CustomerService $customerService,
-        SmsService $smsService,
-    ) {
-        $this->smsFeedbackWordService = $smsFeedbackWordService;
-        $this->customerService = $customerService;
-        $this->smsService = $smsService;
-    }
+    public function __construct(private SmSmsFeedbackWordService $smsFeedbackWordService, private CustomerService $customerService, private SmsService $smsService) {}
 
     public function onSmsStored($sender, $message): void {
         $sparkCustomer = $this->customerService->getSparkCustomerWithPhone($sender);
@@ -43,7 +31,7 @@ class SmsListener {
                 );
 
                 return;
-            } catch (SparkAPIResponseException $exception) {
+            } catch (SparkAPIResponseException) {
                 $this->smsService->sendSms(
                     ['meter' => $meter['serial_number'], 'phone' => $sender],
                     SparkSmsTypes::METER_RESET_FEEDBACK,

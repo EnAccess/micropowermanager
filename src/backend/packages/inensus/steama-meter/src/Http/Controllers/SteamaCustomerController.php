@@ -10,11 +10,7 @@ use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 
 class SteamaCustomerController extends Controller implements IBaseController {
-    private SteamaCustomerService $customerService;
-
-    public function __construct(SteamaCustomerService $steamaCustomerService) {
-        $this->customerService = $steamaCustomerService;
-    }
+    public function __construct(private SteamaCustomerService $customerService) {}
 
     public function index(Request $request): SteamaResource {
         $customers = $this->customerService->getCustomers($request);

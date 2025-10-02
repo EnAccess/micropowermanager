@@ -41,7 +41,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
         } else {
-            list($startDate, $endDate) = $dateRange;
+            [$startDate, $endDate] = $dateRange;
         }
 
         $miniGrids = $this->miniGridService->getAll();

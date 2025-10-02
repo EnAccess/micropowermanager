@@ -20,22 +20,12 @@ use Ramsey\Uuid\Uuid;
  * @implements IBaseService<WaveMoneyTransaction>
  */
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
-    private Meter $meter;
-    private Address $address;
-    private Transaction $transaction;
-    private WaveMoneyTransaction $waveMoneyTransaction;
-
     public function __construct(
-        Meter $meter,
-        Address $address,
-        Transaction $transaction,
-        WaveMoneyTransaction $waveMoneyTransaction,
+        private Meter $meter,
+        private Address $address,
+        private Transaction $transaction,
+        private WaveMoneyTransaction $waveMoneyTransaction,
     ) {
-        $this->transaction = $transaction;
-        $this->address = $address;
-        $this->meter = $meter;
-        $this->waveMoneyTransaction = $waveMoneyTransaction;
-
         parent::__construct(
             $this->meter,
             $this->address,

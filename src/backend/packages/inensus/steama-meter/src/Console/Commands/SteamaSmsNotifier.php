@@ -46,9 +46,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                 if ($smsNotifiedCustomers) {
                     return true;
                 }
-                $notifyCustomer = $customers->filter(function ($customer) use ($steamaTransaction): bool {
-                    return $customer->customer_id == $steamaTransaction->customer_id;
-                })->first();
+                $notifyCustomer = $customers->filter(fn ($customer): bool => $customer->customer_id == $steamaTransaction->customer_id)->first();
 
                 if (!$notifyCustomer) {
                     return true;

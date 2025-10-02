@@ -161,8 +161,6 @@ class PaymentHistory extends BaseModel {
             ->get();
 
         // Convert stdClass objects to arrays to match the expected return type
-        return $result->map(function ($item): array {
-            return ['customer_id' => (int) $item->customer_id];
-        });
+        return $result->map(fn ($item): array => ['customer_id' => (int) $item->customer_id]);
     }
 }

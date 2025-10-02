@@ -7,11 +7,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\SmSyncSettingService;
 
 class SmSyncSettingController {
-    private SmSyncSettingService $syncSettingService;
-
-    public function __construct(SmSyncSettingService $syncSettingService) {
-        $this->syncSettingService = $syncSettingService;
-    }
+    public function __construct(private SmSyncSettingService $syncSettingService) {}
 
     public function update(Request $request): SparkResource {
         return new SparkResource($this->syncSettingService->updateSyncSettings($request->all()));

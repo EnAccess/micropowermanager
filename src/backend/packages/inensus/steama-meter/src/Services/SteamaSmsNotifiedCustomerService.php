@@ -5,13 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSmsNotifiedCustomer;
 
 class SteamaSmsNotifiedCustomerService {
-    private SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer;
-
-    public function __construct(
-        SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer,
-    ) {
-        $this->steamaSmsNotifiedCustomer = $steamaSmsNotifiedCustomer;
-    }
+    public function __construct(private SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer) {}
 
     public function getSteamaSmsNotifiedCustomers() {
         return $this->steamaSmsNotifiedCustomer->newQuery()->get();

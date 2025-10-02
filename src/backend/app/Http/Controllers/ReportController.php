@@ -9,11 +9,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController {
-    private Report $report;
-
-    public function __construct(Report $report) {
-        $this->report = $report;
-    }
+    public function __construct(private Report $report) {}
 
     public function download(int $id): ?BinaryFileResponse {
         if ($id === 0) {

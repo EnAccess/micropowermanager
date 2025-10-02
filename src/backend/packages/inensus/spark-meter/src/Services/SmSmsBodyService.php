@@ -5,11 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSmsBody;
 
 class SmSmsBodyService {
-    private SmSmsBody $smsBody;
-
-    public function __construct(SmSmsBody $smsBody) {
-        $this->smsBody = $smsBody;
-    }
+    public function __construct(private SmSmsBody $smsBody) {}
 
     public function getSmsBodyByReference($reference) {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
@@ -22,9 +18,7 @@ class SmSmsBodyService {
     public function updateSmsBodies($smsBodiesData) {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData)->each(function (array $smsBody) use ($smsBodies) {
-            $smsBodies->filter(function (SmSmsBody $body) use ($smsBody): bool {
-                return $body['id'] === $smsBody['id'];
-            })->first()->update([
+            $smsBodies->filter(fn (SmSmsBody $body): bool => $body['id'] === $smsBody['id'])->first()->update([
                 'body' => $smsBody['body'],
             ]);
         });

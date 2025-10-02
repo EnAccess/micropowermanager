@@ -25,7 +25,7 @@ abstract class AbstractJob implements ShouldQueue {
     public function __construct(?int $companyId = null) {
         $this->afterCommit = true;
 
-        $this->companyId = $companyId !== null ? $companyId : app()->make(UserService::class)->getCompanyId();
+        $this->companyId = $companyId ?? app()->make(UserService::class)->getCompanyId();
     }
 
     public function handle(): void {

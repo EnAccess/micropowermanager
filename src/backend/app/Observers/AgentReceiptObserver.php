@@ -33,7 +33,7 @@ class AgentReceiptObserver {
         }
         try {
             $earlier = $this->agentReceiptDetailService->getSummary($agentId);
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             $earlier = 0;
         }
 

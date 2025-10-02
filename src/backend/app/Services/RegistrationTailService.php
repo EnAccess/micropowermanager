@@ -54,9 +54,7 @@ class RegistrationTailService implements IBaseService {
     }
 
     public function getFirst(): RegistrationTail {
-        return $this->registrationTail->newQuery()->firstOr(function () {
-            return $this->registrationTail->create(['tail' => json_encode([])]);
-        });
+        return $this->registrationTail->newQuery()->firstOr(fn () => $this->registrationTail->create(['tail' => json_encode([])]));
     }
 
     public function addMpmPluginToRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
@@ -81,9 +79,7 @@ class RegistrationTailService implements IBaseService {
     public function removeMpmPluginFromRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
         $tail = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
-        $updatedTail = array_filter($tail, function (array $item) use ($mpmPlugin): bool {
-            return $item['tag'] !== $mpmPlugin->tail_tag;
-        });
+        $updatedTail = array_filter($tail, fn (array $item): bool => $item['tag'] !== $mpmPlugin->tail_tag);
 
         return $this->update(
             $registrationTail,

@@ -6,11 +6,7 @@ use App\Models\Manufacturer;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 
 class ApiHelpers {
-    private Manufacturer $manufacturer;
-
-    public function __construct(Manufacturer $manufacturerModel) {
-        $this->manufacturer = $manufacturerModel;
-    }
+    public function __construct(private Manufacturer $manufacturer) {}
 
     public function registerSparkMeterManufacturer(): void {
         $api = $this->manufacturer->newQuery()->where('api_name', 'SteamaMeterApi')->first();

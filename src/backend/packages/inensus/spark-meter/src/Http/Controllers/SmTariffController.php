@@ -9,11 +9,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\TariffService;
 
 class SmTariffController extends Controller implements IBaseController {
-    private TariffService $tariffService;
-
-    public function __construct(TariffService $tariffService) {
-        $this->tariffService = $tariffService;
-    }
+    public function __construct(private TariffService $tariffService) {}
 
     public function index(Request $request): SparkResource {
         return new SparkResource($this->tariffService->getSmTariffs($request));

@@ -7,11 +7,7 @@ use Inensus\SparkMeter\Services\SmSmsVariableDefaultValueService;
 use Inensus\Ticket\Http\Controllers\Controller;
 
 class SmSmsVariableDefaultValueController extends Controller {
-    private SmSmsVariableDefaultValueService $smsVariableDefaultSValueService;
-
-    public function __construct(SmSmsVariableDefaultValueService $smsVariableDefaultSValueService) {
-        $this->smsVariableDefaultSValueService = $smsVariableDefaultSValueService;
-    }
+    public function __construct(private SmSmsVariableDefaultValueService $smsVariableDefaultSValueService) {}
 
     public function index(): SparkResource {
         return new SparkResource($this->smsVariableDefaultSValueService->getSmsVariableDefaultValues());

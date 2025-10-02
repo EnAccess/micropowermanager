@@ -53,7 +53,7 @@ class TokenProcessor extends AbstractJob {
         }
     }
 
-    private function handleApiException(\Exception $e): void {
+    private function handleApiException(\Throwable $e): void {
         Log::critical(
             'No Api is registered for '.$this->transactionContainer->manufacturer->name,
             ['message' => $e->getMessage()]
@@ -84,7 +84,7 @@ class TokenProcessor extends AbstractJob {
         $this->saveToken($tokenData);
     }
 
-    private function handleTokenGenerationFailure(\Exception $e): void {
+    private function handleTokenGenerationFailure(\Throwable $e): void {
         if (MAX_TRIES > $this->counter) {
             $this->retryTokenGeneration();
 

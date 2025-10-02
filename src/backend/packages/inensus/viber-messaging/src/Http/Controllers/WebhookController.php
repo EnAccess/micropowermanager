@@ -42,16 +42,14 @@ class WebhookController extends Controller {
         $botSender = $this->botSender;
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first()->key;
         $this->bot
-            ->onConversation(function ($event) {
-                return (new Text())->setSender($this->botSender)->setText('Can I help you?');
-            })
+            ->onConversation(fn ($event) => (new Text())->setSender($this->botSender)->setText('Can I help you?'))
             ->onText('|register+.*|si', function ($event) use ($bot, $botSender) {
                 $message = $event->getMessage()->getText();
 
                 try {
                     $message = explode('+', $message);
                     $meterSerialNumber = $message[1];
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setWrongFormatMessage());
 
                     return;

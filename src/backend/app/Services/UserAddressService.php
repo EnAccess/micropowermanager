@@ -6,13 +6,7 @@ use App\Models\Address\Address;
 use App\Models\User;
 
 class UserAddressService {
-    private Address $address;
-    private User $user;
-
-    public function __construct(Address $address, User $user) {
-        $this->address = $address;
-        $this->user = $user;
-    }
+    public function __construct(private Address $address, private User $user) {}
 
     /**
      * @param array<string, mixed> $data

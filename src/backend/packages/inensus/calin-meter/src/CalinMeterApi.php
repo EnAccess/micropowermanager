@@ -15,17 +15,9 @@ use Inensus\CalinMeter\Models\CalinTransaction;
 
 class CalinMeterApi implements IManufacturerAPI {
     public const CREDIT_TOKEN = 'CreditToken';
-    protected Client $api;
     private string $rootUrl = '/tokennew';
 
-    public function __construct(
-        Client $httpClient,
-        private CalinTransaction $calinTransaction,
-        private CalinCredential $credentials,
-        private CalinMeterApiRequests $calinMeterApiRequests,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private CalinTransaction $calinTransaction, private CalinCredential $credentials, private CalinMeterApiRequests $calinMeterApiRequests) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;

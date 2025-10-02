@@ -5,11 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSmsBody;
 
 class SteamaSmsBodyService {
-    private SteamaSmsBody $smsBody;
-
-    public function __construct(SteamaSmsBody $smsBody) {
-        $this->smsBody = $smsBody;
-    }
+    public function __construct(private SteamaSmsBody $smsBody) {}
 
     public function getSmsBodyByReference($reference) {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
@@ -22,9 +18,7 @@ class SteamaSmsBodyService {
     public function updateSmsBodies(array $smsBodiesData) {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData)->each(function (array $smsBody) use ($smsBodies) {
-            $smsBodies->filter(function (SteamaSmsBody $body) use ($smsBody): bool {
-                return $body['id'] === $smsBody['id'];
-            })->first()->update([
+            $smsBodies->filter(fn (SteamaSmsBody $body): bool => $body['id'] === $smsBody['id'])->first()->update([
                 'body' => $smsBody['body'],
             ]);
         });

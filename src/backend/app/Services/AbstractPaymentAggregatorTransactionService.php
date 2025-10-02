@@ -92,7 +92,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
             throw_unless($validator->validate($transactionData, $this->getMinimumPurchaseAmount()), new TransactionAmountNotEnoughException('Transaction amount is not enough'));
         } catch (TransactionAmountNotEnoughException $e) {
             throw new TransactionAmountNotEnoughException($e->getMessage());
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new TransactionIsInvalidForProcessingIncomingRequestException('Invalid Transaction request.');
         }
     }

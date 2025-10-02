@@ -18,7 +18,7 @@ class TransactionDataContainer {
     public int $accessRateDebt;
     public Transaction $transaction;
     public Device $device;
-    public ?MeterTariff $tariff;
+    public ?MeterTariff $tariff = null;
     public Manufacturer $manufacturer;
     public Token $token;
     /** @var array<int, array<string, float|int>> */
@@ -27,8 +27,8 @@ class TransactionDataContainer {
     public float $amount;
     public float $totalAmount;
     public float $rawAmount;
-    public ?AssetPerson $appliancePerson;
-    public ?Meter $meter;
+    public ?AssetPerson $appliancePerson = null;
+    public ?Meter $meter = null;
     public float $installmentCost;
     public float $dayDifferenceBetweenTwoInstallments;
     public bool $applianceInstallmentsFullFilled;

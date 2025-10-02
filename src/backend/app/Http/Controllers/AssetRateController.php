@@ -8,21 +8,17 @@ use App\Services\ApplianceRateService;
 use Illuminate\Http\Request;
 
 class AssetRateController extends Controller {
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request   $request
-     * @param AssetRate $assetRate
-     *
-     * @return ApiResource
-     */
-    private ApplianceRateService $applianceRateService;
-
     public function __construct(
-        ApplianceRateService $applianceRateService,
-    ) {
-        $this->applianceRateService = $applianceRateService;
-    }
+        /**
+         * Update the specified resource in storage.
+         *
+         * @param Request   $request
+         * @param AssetRate $assetRate
+         *
+         * @return ApiResource
+         */
+        private ApplianceRateService $applianceRateService,
+    ) {}
 
     public function update(Request $request, AssetRate $applianceRate): ApiResource {
         $cost = $request->get('cost');

@@ -6,11 +6,7 @@ use App\Models\SmsBody;
 use Illuminate\Database\Eloquent\Collection;
 
 class SmsBodyService {
-    private SmsBody $smsBody;
-
-    public function __construct(SmsBody $smsBody) {
-        $this->smsBody = $smsBody;
-    }
+    public function __construct(private SmsBody $smsBody) {}
 
     public function getSmsBodyByReference(string $reference): SmsBody {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
@@ -31,9 +27,7 @@ class SmsBodyService {
     public function updateSmsBodies(array $smsBodiesData): Collection {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData[0])->each(function (array $smsBody) use ($smsBodies) {
-            $smsBodies->filter(function (SmsBody $body) use ($smsBody): bool {
-                return $body['id'] === $smsBody['id'];
-            })->first()->update([
+            $smsBodies->filter(fn (SmsBody $body): bool => $body['id'] === $smsBody['id'])->first()->update([
                 'body' => $smsBody['body'],
             ]);
         });

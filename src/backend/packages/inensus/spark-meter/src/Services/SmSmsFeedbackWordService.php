@@ -5,11 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSmsFeedbackWord;
 
 class SmSmsFeedbackWordService {
-    private SmSmsFeedbackWord $smsFeedbackWord;
-
-    public function __construct(SmSmsFeedbackWord $smsFeedbackWord) {
-        $this->smsFeedbackWord = $smsFeedbackWord;
-    }
+    public function __construct(private SmSmsFeedbackWord $smsFeedbackWord) {}
 
     public function getSmsFeedbackWords() {
         return $this->smsFeedbackWord->newQuery()->get();

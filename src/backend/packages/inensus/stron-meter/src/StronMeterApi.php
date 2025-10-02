@@ -16,17 +16,9 @@ use Inensus\StronMeter\Models\StronCredential;
 use Inensus\StronMeter\Models\StronTransaction;
 
 class StronMeterApi implements IManufacturerAPI {
-    protected Client $api;
     private string $rootUrl = '/vending/';
 
-    public function __construct(
-        Client $httpClient,
-        private StronTransaction $stronTransaction,
-        private MainSettings $mainSettings,
-        private StronCredential $credentials,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private StronTransaction $stronTransaction, private MainSettings $mainSettings, private StronCredential $credentials) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;

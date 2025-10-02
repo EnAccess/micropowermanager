@@ -20,9 +20,7 @@ class PersonObserver {
             $personId = $person->id;
             $customer = $this->person->newQuery()
                 ->with([
-                    'addresses' => function ($q) {
-                        return $q->where('is_primary', 1);
-                    },
+                    'addresses' => fn ($q) => $q->where('is_primary', 1),
                 ])->where('id', $personId)->first();
 
             /*      $customerData = [

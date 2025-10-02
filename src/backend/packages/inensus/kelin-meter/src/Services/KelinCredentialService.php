@@ -50,7 +50,7 @@ class KelinCredentialService {
                 'authentication_token' => $result['data']['token'],
                 'is_authenticated' => true,
             ]);
-        } catch (KelinApiResponseException $exception) {
+        } catch (KelinApiResponseException) {
             $credential->is_authenticated = false;
             $credential->authentication_token = null;
         } catch (GuzzleException $exception) {

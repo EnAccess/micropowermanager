@@ -45,7 +45,7 @@ class AgentTicketController extends Controller {
 
         try {
             $owner = $this->personService->getById($ownerId);
-        } catch (TicketOwnerNotFoundException $e) {
+        } catch (TicketOwnerNotFoundException) {
             throw new TicketOwnerNotFoundException('Ticket owner with following id not found '.$ownerId);
         }
 

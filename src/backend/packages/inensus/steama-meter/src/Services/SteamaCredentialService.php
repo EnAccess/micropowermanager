@@ -9,16 +9,8 @@ use Inensus\SteamaMeter\Models\SteamaCredential;
 
 class SteamaCredentialService {
     private string $rootUrl = '/get-token/';
-    private SteamaCredential $credential;
-    private SteamaMeterApiClient $steamaApi;
 
-    public function __construct(
-        SteamaCredential $credentialModel,
-        SteamaMeterApiClient $steamaApi,
-    ) {
-        $this->credential = $credentialModel;
-        $this->steamaApi = $steamaApi;
-    }
+    public function __construct(private SteamaCredential $credential, private SteamaMeterApiClient $steamaApi) {}
 
     /**
      * This function uses one time on installation of the package.

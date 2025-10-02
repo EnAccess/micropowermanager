@@ -7,19 +7,7 @@ use App\Models\SubConnectionType;
 use Inensus\SteamaMeter\Models\SteamaUserType;
 
 class SteamaUserTypeService {
-    private ConnectionType $connectionType;
-    private SteamaUserType $userType;
-    private SubConnectionType $subConnectionType;
-
-    public function __construct(
-        ConnectionType $connectionTypeModel,
-        SteamaUserType $userTypeModel,
-        SubConnectionType $subConnectionType,
-    ) {
-        $this->connectionType = $connectionTypeModel;
-        $this->userType = $userTypeModel;
-        $this->subConnectionType = $subConnectionType;
-    }
+    public function __construct(private ConnectionType $connectionType, private SteamaUserType $userType, private SubConnectionType $subConnectionType) {}
 
     /**
      * This function uses one time on installation of the package.

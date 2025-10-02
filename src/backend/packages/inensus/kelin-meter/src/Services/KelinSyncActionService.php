@@ -7,11 +7,7 @@ use Carbon\CarbonInterval;
 use Inensus\KelinMeter\Models\KelinSyncAction;
 
 class KelinSyncActionService {
-    private KelinSyncAction $syncAction;
-
-    public function __construct(KelinSyncAction $syncAction) {
-        $this->syncAction = $syncAction;
-    }
+    public function __construct(private KelinSyncAction $syncAction) {}
 
     public function createSyncAction(array $syncAction) {
         return $this->syncAction->newQuery()->create($syncAction);

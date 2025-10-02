@@ -9,16 +9,8 @@ use Inensus\KelinMeter\Models\KelinMeterDailyData;
 
 class DailyConsumptionService {
     private string $rootUrl = '/getDayData';
-    private KelinMeterApiClient $kelinApi;
-    private KelinMeterDailyData $kelinMeterDailyData;
 
-    public function __construct(
-        KelinMeterApiClient $kelinApi,
-        KelinMeterDailyData $kelinMeterDailyData,
-    ) {
-        $this->kelinApi = $kelinApi;
-        $this->kelinMeterDailyData = $kelinMeterDailyData;
-    }
+    public function __construct(private KelinMeterApiClient $kelinApi, private KelinMeterDailyData $kelinMeterDailyData) {}
 
     public function getDailyDataFromAPI(): void {
         $startDay = Carbon::now()->subDays(1)->format('Ymd');

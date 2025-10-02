@@ -5,11 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSmsVariableDefaultValue;
 
 class SteamaSmsVariableDefaultValueService {
-    private SteamaSmsVariableDefaultValue $smsVariableDefaultValue;
-
-    public function __construct(SteamaSmsVariableDefaultValue $smsVariableDefaultValue) {
-        $this->smsVariableDefaultValue = $smsVariableDefaultValue;
-    }
+    public function __construct(private SteamaSmsVariableDefaultValue $smsVariableDefaultValue) {}
 
     public function getSmsVariableDefaultValues() {
         return $this->smsVariableDefaultValue->newQuery()->get();
