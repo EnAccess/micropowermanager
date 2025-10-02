@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use Illuminate\Support\Facades\Log;
 
@@ -30,7 +31,7 @@ class PersonObserver {
             $address->delete();
         }
         foreach ($person->devices()->get() as $device) {
-            if ($device->device_type === 'meter' && $device->device !== null) {
+            if ($device->device instanceof Meter) {
                 $device->device->delete();
             }
             $device->delete();
