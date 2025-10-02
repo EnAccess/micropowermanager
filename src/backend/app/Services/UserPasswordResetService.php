@@ -42,13 +42,13 @@ class UserPasswordResetService {
         }
     }
 
-    public function validateToken(string $token): ?string {
+    public function validateToken(#[\SensitiveParameter] string $token): ?string {
         $record = $this->passwordResetToken->newQuery()->where('token', $token)->first();
 
         return $record?->email;
     }
 
-    public function resetPassword(string $token, string $password): bool {
+    public function resetPassword(#[\SensitiveParameter] string $token, #[\SensitiveParameter] string $password): bool {
         $record = $this->passwordResetToken->newQuery()->where('token', $token)->first();
         if (!$record) {
             return false;
