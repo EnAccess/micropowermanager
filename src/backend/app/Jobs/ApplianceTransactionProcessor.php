@@ -57,7 +57,9 @@ class ApplianceTransactionProcessor extends AbstractJob {
 
     private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void {
         $minimumPurchaseAmount = $container->installmentCost;
-        throw_if($container->amount < $minimumPurchaseAmount, new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$container->device->device_serial}"));
+        if ($container->amount < $minimumPurchaseAmount) {
+            throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$container->device->device_serial}");
+        }
     }
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {

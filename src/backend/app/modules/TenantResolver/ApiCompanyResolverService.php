@@ -16,7 +16,9 @@ class ApiCompanyResolverService {
     public function resolve(Request $request): int {
         $resolvableApis = $this->apiResolverMap->getResolvableApis();
         $api = collect($resolvableApis)->filter(fn (string $apiPath): bool => Str::startsWith(Str::lower($request->path()), Str::lower($apiPath)));
-        throw_if($api->isEmpty(), ValidationException::withMessages(['path' => 'No api resolver registered for '.$request->path()]));
+        if ($api->isEmpty()) {
+            throw ValidationException::withMessages(['path' => 'No api resolver registered for '.$request->path()]);
+        }
 
         $resolver = $this->startResolver($api->first());
 
@@ -29,7 +31,9 @@ class ApiCompanyResolverService {
 
     private function startResolver(string $api): ApiResolverInterface {
         $apiResolver = $this->apiResolverMap->getApiResolver($api);
-        throw_if($apiResolver === null, ValidationException::withMessages(['resolver' => 'Api is registered to resolve but no resolver class is assigned'.$api]));
+        if ($apiResolver === null) {
+            throw ValidationException::withMessages(['resolver' => 'Api is registered to resolve but no resolver class is assigned'.$api]);
+        }
         /** @var ApiResolverInterface $resolver */
         $resolver = app()->make($apiResolver);
 

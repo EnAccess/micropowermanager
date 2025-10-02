@@ -118,7 +118,9 @@ class RevenueController extends Controller {
         $endDate = Carbon::parse(date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31')))->endOfDay();
         $targetTypeId = $request->get('target_type_id'); // cluster or mini-grid id
         $targetType = $request->get('target_type'); // cluster or mini-grid
-        throw_if($targetType !== 'mini-grid' && $targetType !== 'cluster', new \Exception('target type must either mini-grid or cluster'));
+        if ($targetType !== 'mini-grid' && $targetType !== 'cluster') {
+            throw new \Exception('target type must either mini-grid or cluster');
+        }
 
         // get target
         if ($targetType === 'mini-grid') {

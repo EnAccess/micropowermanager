@@ -576,7 +576,9 @@ class Reports {
         $databaseProxy = app()->make(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-        throw_if(!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath), new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath)));
+        if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
+        }
         try {
             $fileName = str_slug($reportType.'-'.$cityName.'-'.$dateRange).'.xlsx';
             $writer->save(storage_path('./'.$reportType.'/'.$fileName));

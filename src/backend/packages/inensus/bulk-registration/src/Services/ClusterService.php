@@ -14,7 +14,9 @@ class ClusterService extends CreatorService {
     public function resolveCsvDataFromComingRow($csvData) {
         $clusterConfig = config('bulk-registration.csv_fields.cluster');
 
-        throw_unless($csvData[$clusterConfig['name']], new ClusterNotFoundException('Cluster Name is required'));
+        if (!$csvData[$clusterConfig['name']]) {
+            throw new ClusterNotFoundException('Cluster Name is required');
+        }
         $registeredCluster = Cluster::query()->where('name', $csvData[$clusterConfig['name']])->first();
 
         if (!$registeredCluster) {

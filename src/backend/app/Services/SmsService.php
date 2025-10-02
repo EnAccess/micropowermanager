@@ -94,12 +94,16 @@ class SmsService {
     private function getSender(array $data, int $smsType, string $smsConfigs, ?SmsAndroidSetting $smsAndroidSettings): SmsSender {
         $configs = resolve($smsConfigs);
 
-        throw_unless(array_key_exists($smsType, $configs->smsTypes), new SmsTypeNotFoundException('SmsType could not resolve.'));
+        if (!array_key_exists($smsType, $configs->smsTypes)) {
+            throw new SmsTypeNotFoundException('SmsType could not resolve.');
+        }
 
         $smsBodyService = resolve($configs->servicePath);
         $reflection = new \ReflectionClass($configs->smsTypes[$smsType]);
 
-        throw_unless($reflection->isSubclassOf(SmsSender::class), new SmsBodyParserNotExtendedException('SmsBodyParser has not extended.'));
+        if (!$reflection->isSubclassOf(SmsSender::class)) {
+            throw new SmsBodyParserNotExtendedException('SmsBodyParser has not extended.');
+        }
 
         return $reflection->newInstanceArgs([
             $data,

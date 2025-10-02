@@ -47,7 +47,9 @@ class AngazaSHSApi implements IManufacturerAPI {
         ];
         $credentials = $this->credentialService->getCredentials();
         $response = $this->apiRequests->put($credentials, $params, self::API_CALL_UNIT_CREDIT);
-        throw_if(isset($response['context']), new AngazaApiResponseException($response['context']['reason']));
+        if (isset($response['context'])) {
+            throw new AngazaApiResponseException($response['context']['reason']);
+        }
 
         $manufacturerTransaction = $this->angazaTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([

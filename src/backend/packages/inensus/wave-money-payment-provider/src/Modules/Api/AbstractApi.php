@@ -23,7 +23,9 @@ abstract class AbstractApi {
 
         $statusCode = $response->getStatusCode();
 
-        throw_if($statusCode !== 200 && $statusCode !== 201, new ApiRequestFailedException($response->getStatusCode(), $resource->getUri(), $response->getBody()->getContents()));
+        if ($statusCode !== 200 && $statusCode !== 201) {
+            throw new ApiRequestFailedException($response->getStatusCode(), $resource->getUri(), $response->getBody()->getContents());
+        }
 
         $resource->setBody($response->getBody()->getContents());
 
