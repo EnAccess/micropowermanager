@@ -102,9 +102,7 @@ class LoanDataContainer {
         }
 
         // meter is not been used by anyone
-        if (!$meter->in_use) {
-            throw new MeterIsNotInUse($serialNumber.' meter is not in use');
-        }
+        throw_unless($meter->in_use, new MeterIsNotInUse($serialNumber.' meter is not in use'));
 
         return $meter->device->person;
     }

@@ -59,18 +59,14 @@ class UserDefaultDatabaseConnectionMiddleware {
             /** @var JWTGuard */
             $guard = auth('agent_api');
             $companyId = $guard->payload()->get('companyId');
-            if (!is_numeric($companyId)) {
-                throw new \Exception('JWT is not provided');
-            }
+            throw_unless(is_numeric($companyId), new \Exception('JWT is not provided'));
         } elseif ($this->resolveThirdPartyApi($request->path())) {
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { // web client authenticated user requests
             /** @var JWTGuard */
             $guard = auth('api');
             $companyId = $guard->payload()->get('companyId');
-            if (!is_numeric($companyId)) {
-                throw new \Exception('JWT is not provided');
-            }
+            throw_unless(is_numeric($companyId), new \Exception('JWT is not provided'));
         }
 
         return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request, $companyId) {

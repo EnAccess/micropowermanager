@@ -70,9 +70,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
     }
 
     public function checkAmountIsSame($amount, $transaction): void {
-        if ($amount != (int) $transaction->amount) {
-            throw new \Exception('amount validation field.');
-        }
+        throw_if($amount != (int) $transaction->amount, new \Exception('amount validation field.'));
     }
 
     public function getById(?int $id): SwiftaTransaction {

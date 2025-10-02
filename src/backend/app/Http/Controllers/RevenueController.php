@@ -67,8 +67,8 @@ class RevenueController extends Controller {
 
     public function trending(int $id, Request $request): ApiResource {
         // the array which holds the final response
-        $startDate = $request->input('startDate') ?? date('Y-01-01');
-        $end = $request->input('endDate') ?? date('Y-m-d');
+        $startDate = $request->input('startDate', date('Y-01-01'));
+        $end = $request->input('endDate', date('Y-m-d'));
         $endDate = Carbon::parse($end)->endOfDay();
 
         $cities = $this->city::query()->where('mini_grid_id', $id)->get();
@@ -118,9 +118,7 @@ class RevenueController extends Controller {
         $endDate = Carbon::parse(date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31')))->endOfDay();
         $targetTypeId = $request->get('target_type_id'); // cluster or mini-grid id
         $targetType = $request->get('target_type'); // cluster or mini-grid
-        if ($targetType !== 'mini-grid' && $targetType !== 'cluster') {
-            throw new \Exception('target type must either mini-grid or cluster');
-        }
+        throw_if($targetType !== 'mini-grid' && $targetType !== 'cluster', new \Exception('target type must either mini-grid or cluster'));
 
         // get target
         if ($targetType === 'mini-grid') {

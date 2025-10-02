@@ -17,9 +17,7 @@ class AccessRate {
      * @throws NoAccessRateFound
      */
     public static function withMeter(Meter $meter): AccessRate {
-        if ($meter->tariff->accessRate === null) {
-            throw new NoAccessRateFound('Tariff  '.$meter->tariff->name.' has no access rate');
-        }
+        throw_if($meter->tariff->accessRate === null, new NoAccessRateFound('Tariff  '.$meter->tariff->name.' has no access rate'));
         $accessRate = new self();
         $accessRate->accessRate = $meter->accessRate();
         $accessRate->setMeter();
@@ -33,9 +31,7 @@ class AccessRate {
      * @throws NoAccessRateFound
      */
     public function initializeAccessRatePayment(): AccessRatePayment {
-        if (!$this->accessRate instanceof AccessRateModel) {
-            throw new NoAccessRateFound('Access Rate is not set');
-        }
+        throw_unless($this->accessRate instanceof AccessRateModel, new NoAccessRateFound('Access Rate is not set'));
         // get current date and add AccessRate.period days
         $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period);
         // create accessRatePayment instance and fill with the variables
@@ -52,9 +48,7 @@ class AccessRate {
      */
     private function getDebt(Meter $meter): int {
         $accessRate = $meter->accessRatePayment()->first();
-        if ($accessRate === null) {
-            throw new NoAccessRateFound('no access rate is defined');
-        }
+        throw_if($accessRate === null, new NoAccessRateFound('no access rate is defined'));
 
         return $accessRate->debt;
     }

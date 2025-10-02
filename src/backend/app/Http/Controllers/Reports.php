@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\DatabaseProxy;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Report;
@@ -264,7 +265,8 @@ class Reports {
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if ($transaction->device->device === null) {
+            // @phpstan-ignore instanceof.alwaysTrue
+            if (!$transaction->device instanceof Device) {
                 continue;
             }
 
@@ -574,9 +576,7 @@ class Reports {
         $databaseProxy = app()->make(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-        if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
-        }
+        throw_if(!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath), new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath)));
         try {
             $fileName = str_slug($reportType.'-'.$cityName.'-'.$dateRange).'.xlsx';
             $writer->save(storage_path('./'.$reportType.'/'.$fileName));

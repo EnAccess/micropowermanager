@@ -31,9 +31,7 @@ class CustomerRegistrationAppService {
         $serialNumber = $request->input('serial_number');
         $meter = $this->meterService->getBySerialNumber($serialNumber);
         $phone = $request->input('phone');
-        if ($meter instanceof Meter) {
-            throw new \Exception('Meter already exists');
-        }
+        throw_if($meter instanceof Meter, new \Exception('Meter already exists'));
 
         $person = $this->personService->getByPhoneNumber($phone);
         $manufacturerId = $request->input('manufacturer');

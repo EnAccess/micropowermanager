@@ -11,9 +11,7 @@ class DataExportResolver implements ApiResolverInterface {
         /** @var JWTGuard */
         $guard = auth('api');
         $companyId = $guard->payload()->get('companyId');
-        if (is_null($companyId)) {
-            throw ValidationException::withMessages(['companyId' => 'failed to parse company identifier from request']);
-        }
+        throw_if(is_null($companyId), ValidationException::withMessages(['companyId' => 'failed to parse company identifier from request']));
 
         return (int) $companyId;
     }

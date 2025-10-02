@@ -36,9 +36,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider {
                 return true;
             }
 
-            if (empty($horizon_username) || empty($horizon_password)) {
-                abort(403, 'Horizon access not configured.');
-            }
+            abort_if(empty($horizon_username) || empty($horizon_password), 403, 'Horizon access not configured.');
 
             // Prompt for HTTP Basic Auth
             if (!isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {

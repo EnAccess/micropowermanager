@@ -121,16 +121,12 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
             $smsSettings = $this->smsSettingsService->getSmsSettings();
             $transactionsSettings = $smsSettings->where('state', 'Transactions')->first();
 
-            if (!$transactionsSettings) {
-                throw new CronJobException('Transaction min is not set');
-            }
+            throw_unless($transactionsSettings, new CronJobException('Transaction min is not set'));
             $transactionMin = $transactionsSettings->not_send_elder_than_mins;
 
             $lowBalanceWarningSetting = $smsSettings->where('state', 'Low Balance Warning')->first();
 
-            if (!$lowBalanceWarningSetting) {
-                throw new CronJobException('Low balance min is not set');
-            }
+            throw_unless($lowBalanceWarningSetting, new CronJobException('Low balance min is not set'));
 
             $lowBalanceMin = $lowBalanceWarningSetting->not_send_elder_than_mins;
             $smsNotifiedCustomers = $this->smSmsNotifiedCustomerService->getSmsNotifiedCustomers();

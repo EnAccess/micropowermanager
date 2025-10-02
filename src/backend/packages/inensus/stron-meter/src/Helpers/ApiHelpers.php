@@ -24,12 +24,8 @@ class ApiHelpers {
     }
 
     public function checkApiResult($result) {
-        if (is_array($result) && array_key_exists('Message', $result)) {
-            throw new StronApiResponseException($result['Message']);
-        }
-        if ($result === 'false') {
-            throw new StronApiResponseException('Returned false.');
-        }
+        throw_if(is_array($result) && array_key_exists('Message', $result), new StronApiResponseException($result['Message']));
+        throw_if($result === 'false', new StronApiResponseException('Returned false.'));
 
         return $result;
     }

@@ -48,7 +48,7 @@ class Company extends BaseModelCentral {
      *
      * @deprecated Use main_settings.protected_page_password instead
      */
-    public function getProtectedPagePasswordAttribute(mixed $value): ?string {
+    protected function getProtectedPagePasswordAttribute(mixed $value): ?string {
         if ($value !== null) {
             trigger_error(
                 'Company::protected_page_password is deprecated. Use MainSettings.protected_page_password instead.',
@@ -66,7 +66,7 @@ class Company extends BaseModelCentral {
      *
      * @deprecated Use main_settings.protected_page_password instead
      */
-    public function setProtectedPagePasswordAttribute(mixed $value): void {
+    protected function setProtectedPagePasswordAttribute(mixed $value): void {
         trigger_error(
             'Company::protected_page_password is deprecated. Use MainSettings.protected_page_password instead.',
             E_USER_DEPRECATED
