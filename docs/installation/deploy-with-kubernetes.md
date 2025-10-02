@@ -10,16 +10,6 @@ order: 2
 
 The MicroPowerManager is distributed as pre-compile Docker images via [DockerHub](https://hub.docker.com/u/enaccess).
 
-## Choose a deployment scenario
-
-For running a self-hosted version of MicroPowerManager multiple options exists.
-We "officially" support two deployment options for MicroPowerManager
-
-1. Cloud-hosted [Kubernetes](https://kubernetes.io/) with dedicated databases.
-2. Deployment with Docker Compose.
-
-which are further explained in the sections below.
-
 ### Kubernetes (base setup)
 
 This section describes the deployment scenario of a cloud-hosted [Kubernetes](https://kubernetes.io/) cluster with dedicated databases.
@@ -200,12 +190,11 @@ Deploy a VPN IPSec Gateway
 
 ## Next Steps
 
-After successful deployment, your MicroPowerManager instance will be accessible at your configured domain. However, additional configuration is required for production use:
+After the installation an empty instance of MicroPowerManager should be accessible at
 
-1. **User Management**: Create admin users and configure authentication
-2. **Company Setup**: Configure your company information and settings
-3. **Security**: Review and implement security best practices
-4. **Monitoring**: Set up monitoring and alerting
-5. **Backups**: Implement regular backup procedures
+- [https://<your-url.com>](https://demo.micropowermanager.io)
+
+This instance is fully functional just yet.
+For example, you cannot log in, as further configuration is required.
 
 Please proceed to [Configuration for Production](configuration-production.md) to complete your setup.
