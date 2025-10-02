@@ -117,7 +117,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         }
 
         if ($method === 'POST') {
-            return in_array($path, ['api/companies']);
+            return $path == 'api/companies';
         }
 
         return false;

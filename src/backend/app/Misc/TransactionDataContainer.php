@@ -65,7 +65,7 @@ class TransactionDataContainer {
             // Handle appliance payments if any
             $container->handleAppliancePayments($transaction);
         } catch (ModelNotFoundException $e) {
-            throw new \Exception('Unexpected error occurred while processing transaction. '.$e->getMessage());
+            throw new \Exception('Unexpected error occurred while processing transaction. '.$e->getMessage(), $e->getCode(), $e);
         }
 
         return $container;

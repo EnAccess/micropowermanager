@@ -48,7 +48,7 @@ class TransactionService implements IAssociative, IBaseService {
      * @param array<int> $transactionIds
      */
     private function getTransactionCountByStatus($transactionIds, bool $status): int {
-        $status = $status === true ? 1 : 0;
+        $status = $status ? 1 : 0;
 
         return $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\MailNotSentException;
 use App\Helpers\MailHelper;
 use App\Models\PasswordResetToken;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class UserPasswordResetService {
@@ -16,7 +17,7 @@ class UserPasswordResetService {
 
     public function sendResetEmail(string $email): bool {
         $user = $this->userService->getByEmail($email);
-        if (!$user) {
+        if (!$user instanceof User) {
             return true;
         }
 
@@ -54,7 +55,7 @@ class UserPasswordResetService {
         }
 
         $user = $this->userService->getByEmail($record->email);
-        if (!$user) {
+        if (!$user instanceof User) {
             return false;
         }
 

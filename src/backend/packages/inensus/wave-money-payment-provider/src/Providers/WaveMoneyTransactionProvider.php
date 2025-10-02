@@ -36,7 +36,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
             // We need to make sure that the payment is fully processable from our end .
             $this->waveMoneyTransactionService->imitateTransactionForValidation($waveMoneyTransactionData);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $this->setValidData($waveMoneyTransactionData);

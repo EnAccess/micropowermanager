@@ -26,7 +26,7 @@ class AgentReceiptObserver {
         $sinceLastVisit = 0;
         $lastReceipt = $this->agentReceiptService->getLastReceipt($agentId);
 
-        if ($lastReceipt) {
+        if ($lastReceipt instanceof AgentReceipt) {
             $agentBalanceHistoryId = $lastReceipt->last_controlled_balance_history_id;
             $sinceLastVisit =
                 $this->agentBalanceHistoryService->getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId);

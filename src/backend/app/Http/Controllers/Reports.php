@@ -275,7 +275,7 @@ class Reports {
             $sheet->setCellValue('E'.$sheetIndex, $transaction->message);
             $sheet->setCellValue('F'.$sheetIndex, $transaction->amount);
 
-            if (\count($transaction->paymentHistories)) {
+            if (\count($transaction->paymentHistories) > 0) {
                 $paymentHistory = $transaction->paymentHistories[0];
                 if (isset($paymentHistory->payer->name) && isset($paymentHistory->payer->surname)) {
                     $sheet->setCellValue(
@@ -297,7 +297,7 @@ class Reports {
                 $tariff = $meter->tariff()->first();
                 $connectionType = $meter->connectionType()->first();
 
-                if ($tariff and $connectionType) {
+                if ($tariff && $connectionType) {
                     $sheet->setCellValue(
                         'J'.$sheetIndex,
                         $tariff->name.'-'.
@@ -411,15 +411,13 @@ class Reports {
                     // store column to get them later when payments are placed
                     $accessRate = $meter->tariff->accessRate()->first();
                     // merge two cells if tariff has access rate
-                    if ($accessRate) {
-                        if ($accessRate->amount > 0) {
-                            $nextColumn = $startingColumn;
-                            ++$nextColumn;
-                            $sheet->mergeCells($startingColumn.$startingRow.':'.
-                                $nextColumn.$startingRow);
-                            ++$startingColumn;
-                            break;
-                        }
+                    if ($accessRate && $accessRate->amount > 0) {
+                        $nextColumn = $startingColumn;
+                        ++$nextColumn;
+                        $sheet->mergeCells($startingColumn.$startingRow.':'.
+                            $nextColumn.$startingRow);
+                        ++$startingColumn;
+                        break;
                     }
                 }
             }
@@ -629,10 +627,10 @@ class Reports {
 
                 $tariffPrice = (float) $groupRevenue['tariff_price'];
 
-                if (!$tariffPrice) {
+                if ($tariffPrice === 0.0) {
                     continue;
                 }
-                if (!$energyRevenue) {
+                if ($energyRevenue === 0.0) {
                     continue;
                 }
                 $tariffPrice /= 100;

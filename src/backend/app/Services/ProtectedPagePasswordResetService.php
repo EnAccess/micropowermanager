@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\MailNotSentException;
 use App\Helpers\MailHelper;
 use App\Models\ProtectedPagePasswordResetToken;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class ProtectedPagePasswordResetService {
@@ -20,7 +21,7 @@ class ProtectedPagePasswordResetService {
      */
     public function sendResetEmail(string $email): bool {
         $user = $this->userService->getByEmail($email);
-        if (!$user) {
+        if (!$user instanceof User) {
             return true;
         }
 
@@ -64,7 +65,7 @@ class ProtectedPagePasswordResetService {
         }
 
         $user = $this->userService->getByEmail($resetToken->email);
-        if (!$user) {
+        if (!$user instanceof User) {
             return false;
         }
 

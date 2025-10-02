@@ -25,7 +25,7 @@ class AndroidGateway implements ISmsProvider {
                 ['number' => $number, 'message' => $body, 'error' => $e->getMessage()]
             );
 
-            throw new \Exception('Error while sending sms');
+            throw new \Exception('Error while sending sms', $e->getCode(), $e);
         }
 
         // add sms to sms_gateway job

@@ -110,7 +110,7 @@ class KelinCustomerService implements ISynchronizeService {
         } catch (\Exception $exception) {
             $this->syncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Kelin customers sync failed.', ['Error :' => $exception->getMessage()]);
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 

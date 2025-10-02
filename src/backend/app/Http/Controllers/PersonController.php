@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\Country;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\CountryService;
@@ -85,7 +86,7 @@ class PersonController extends Controller {
                 $country = $this->countryService->getByCode($request->get('country_code'));
                 $person = $this->personService->create($personData);
 
-                if ($country !== null) {
+                if ($country instanceof Country) {
                     $person = $this->personService->addCitizenship($person, $country);
                 }
             }
@@ -100,7 +101,7 @@ class PersonController extends Controller {
             return ApiResource::make($person)->response()->setStatusCode(201);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 

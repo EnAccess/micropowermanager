@@ -41,10 +41,6 @@ class DalyBmsCredentialService {
         }
         $tokenExpirationTime = $credential->getExpirationTime();
 
-        if ($tokenExpirationTime == null || $tokenExpirationTime < time()) {
-            return false;
-        }
-
-        return true;
+        return $tokenExpirationTime != null && $tokenExpirationTime >= time();
     }
 }

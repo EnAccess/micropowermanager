@@ -148,7 +148,7 @@ class SteamaCustomerService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama customers sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -162,7 +162,7 @@ class SteamaCustomerService implements ISynchronizeService {
                 $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $customer) {
-                    array_push($customers, $customer);
+                    $customers[] = $customer;
                 }
             }
         } catch (SteamaApiResponseException $e) {

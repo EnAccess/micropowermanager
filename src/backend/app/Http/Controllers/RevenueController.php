@@ -74,7 +74,7 @@ class RevenueController extends Controller {
         $cities = $this->city::query()->where('mini_grid_id', $id)->get();
         $cityIds = implode(',', $cities->pluck('id')->toArray());
 
-        if (!count($cities)) {
+        if (count($cities) === 0) {
             $response = ['data' => null, 'message' => 'There is no city for this MiniGrid'];
 
             return ApiResource::make($response);

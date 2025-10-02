@@ -6,6 +6,7 @@ use App\Exceptions\AgentRiskBalanceExceeded;
 use App\Exceptions\DownPaymentBiggerThanAmountException;
 use App\Exceptions\DownPaymentNotFoundException;
 use App\Exceptions\TransactionAmountNotFoundException;
+use App\Models\AgentAssignedAppliances;
 use App\Services\AgentAssignedApplianceService;
 use App\Services\AgentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -33,7 +34,7 @@ class AgentBalanceMiddleware {
         if ($routeName === 'agent-sell-appliance') {
             $assignedApplianceCost = $this->agentAssignedApplianceService->getById($request->input('agent_assigned_appliance_id'));
             $downPayment = $request->input('down_payment');
-            if (!$assignedApplianceCost) {
+            if (!$assignedApplianceCost instanceof AgentAssignedAppliances) {
                 throw new ModelNotFoundException('Assigned Appliance not found');
             }
 

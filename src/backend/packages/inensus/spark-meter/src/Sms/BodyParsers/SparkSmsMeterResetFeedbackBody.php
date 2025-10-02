@@ -13,10 +13,8 @@ class SparkSmsMeterResetFeedbackBody extends SmsBodyParser {
     }
 
     protected function getVariableValue(string $variable): mixed {
-        switch ($variable) {
-            case 'meter_serial':
-                $variable = $this->meter->serial_number;
-                break;
+        if ($variable === 'meter_serial') {
+            $variable = $this->meter->serial_number;
         }
 
         return $variable;

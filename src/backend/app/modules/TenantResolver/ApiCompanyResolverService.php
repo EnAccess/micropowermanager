@@ -31,7 +31,7 @@ class ApiCompanyResolverService {
 
     private function startResolver(string $api): ApiResolverInterface {
         $apiResolver = $this->apiResolverMap->getApiResolver($api);
-        if (!$apiResolver) {
+        if ($apiResolver === null) {
             throw ValidationException::withMessages(['resolver' => 'Api is registered to resolve but no resolver class is assigned'.$api]);
         }
         /** @var ApiResolverInterface $resolver */

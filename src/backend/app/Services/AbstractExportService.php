@@ -78,7 +78,7 @@ abstract class AbstractExportService {
         $decimal = isset($parts[1]) ? substr($parts[1].'00', 0, 2) : '';
 
         // Combine the whole number and decimal parts
-        return $decimal ? "$whole.$decimal" : $whole;
+        return $decimal !== '' && $decimal !== '0' ? "$whole.$decimal" : $whole;
     }
 
     public function convertUtcDateToTimezone(string|\DateTimeInterface|null $utcDate): string {
@@ -137,7 +137,7 @@ abstract class AbstractExportService {
             }
 
             // Write header row
-            if (empty($headers)) {
+            if ($headers === []) {
                 // Use keys from the first row if no custom headers provided
                 fputcsv($handle, array_keys($this->exportingData->first()));
             } else {

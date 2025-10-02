@@ -361,7 +361,7 @@ class ClusterRevenueService {
      * @return DateRange
      */
     public function setDatesForRequest(string $startDate, ?string $endDate): array {
-        if (!$startDate) {
+        if ($startDate === '' || $startDate === '0') {
             $start = new \DateTime();
             $year = (int) $start->format('Y');
             $month = (int) $start->format('n');

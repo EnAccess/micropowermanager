@@ -32,7 +32,7 @@ class SteamaMeterReadingService {
             try {
                 $result = $this->steamaApi->get($url);
                 $readings = $result['results'];
-                if (count($readings)) {
+                if (count($readings) > 0) {
                     collect($readings)->each(function (array $reading) use ($meter) {
                         $this->meterConsumtion->newQuery()
                             ->updateOrCreate(

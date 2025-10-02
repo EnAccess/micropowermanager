@@ -6,6 +6,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetPerson;
+use App\Models\Device;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
@@ -76,7 +77,7 @@ class ApplianceInstallmentPayer {
     private function getCustomerByDeviceSerial(string $serialNumber): Person {
         $device = $this->deviceService->getBySerialNumber($serialNumber);
 
-        if (!$device) {
+        if (!$device instanceof Device) {
             throw new DeviceIsNotAssignedToCustomer('Device is not assigned to customer');
         }
 

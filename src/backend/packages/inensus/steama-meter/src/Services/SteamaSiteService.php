@@ -92,7 +92,7 @@ class SteamaSiteService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama sites sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -107,7 +107,7 @@ class SteamaSiteService implements ISynchronizeService {
                 $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $site) {
-                    array_push($sites, $site);
+                    $sites[] = $site;
                 }
             }
         } catch (SteamaApiResponseException $e) {

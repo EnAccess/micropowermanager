@@ -74,7 +74,7 @@ class ConnectionGroupTest extends TestCase {
 
         while ($connectionGroupCount > 0) {
             $connectionGroup = ConnectionGroupFactory::new()->create();
-            array_push($this->connectonGroupIds, $connectionGroup->id);
+            $this->connectonGroupIds[] = $connectionGroup->id;
             --$connectionGroupCount;
         }
     }

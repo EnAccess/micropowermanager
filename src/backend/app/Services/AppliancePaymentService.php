@@ -9,6 +9,7 @@ use App\Exceptions\PaymentAmountSmallerThanZero;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
+use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
@@ -21,16 +22,9 @@ use MPM\Device\DeviceService;
 
 class AppliancePaymentService {
     private float $paymentAmount;
-    public bool $applianceInstallmentsFullFilled;
+    public bool $applianceInstallmentsFullFilled = false;
 
-    public function __construct(
-        private CashTransactionService $cashTransactionService,
-        private MainSettings $mainSettings,
-        private AppliancePersonService $appliancePersonService,
-        private DeviceService $deviceService,
-    ) {
-        $this->applianceInstallmentsFullFilled = false;
-    }
+    public function __construct(private CashTransactionService $cashTransactionService, private MainSettings $mainSettings, private AppliancePersonService $appliancePersonService, private DeviceService $deviceService) {}
 
     public function getPaymentForAppliance(Request $request, AssetPerson $appliancePerson): AssetPerson {
         $creatorId = auth('api')->user()->id;
@@ -129,7 +123,7 @@ class AppliancePaymentService {
     private function processPaymentForDevice(string $deviceSerial, Transaction $transaction, AssetPerson $applianceDetail): void {
         $device = $this->deviceService->getBySerialNumber($deviceSerial);
 
-        if (!$device) {
+        if (!$device instanceof Device) {
             throw new ModelNotFoundException("No device found with $deviceSerial");
         }
 

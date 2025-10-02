@@ -73,7 +73,7 @@ class PaymentHistoryController {
 
         $difference = 'no data available';
         $lastTransactionDate = null;
-        if (\count($payments)) {
+        if (\count($payments) > 0) {
             $lastTransactionDate = $newest = $payments[0]->created_at;
             $newest = new Carbon($newest);
             $lastTransactionDate = $newest->diffInDays(Carbon::now()).' days ago';

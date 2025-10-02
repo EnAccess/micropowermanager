@@ -127,7 +127,7 @@ class KelinMeterService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->syncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Kelin meters sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -283,7 +283,7 @@ class KelinMeterService implements ISynchronizeService {
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             Log::critical('Error while synchronizing kelin meters', ['message' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
