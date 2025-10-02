@@ -30,8 +30,11 @@ return RectorConfig::configure()
     ->withSetProviders(LaravelSetProvider::class)
     ->withComposerBased(laravel: true)
     ->withSets([
-        // LaravelSetList::LARAVEL_CODE_QUALITY,
-        // LaravelSetList::LARAVEL_COLLECTION,
+        LaravelSetList::LARAVEL_CODE_QUALITY,
+        LaravelSetList::LARAVEL_COLLECTION,
+        LaravelSetList::LARAVEL_IF_HELPERS,
+        // Next rector-laravel release add
+        // LaravelSetList::LARAVEL_TYPE_DECLARATIONS,
     ])
     ->withSkip([
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
