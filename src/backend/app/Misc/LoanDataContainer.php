@@ -77,8 +77,6 @@ class LoanDataContainer {
 
     /**
      * @return Collection<int, AssetRate>
-     *
-     * @psalm-return Collection<int, AssetRate>
      */
     private function getCustomerDueRates(Person $owner): Collection {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
