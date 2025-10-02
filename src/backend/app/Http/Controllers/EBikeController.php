@@ -46,7 +46,7 @@ class EBikeController extends Controller {
 
     public function search(Request $request): ApiResource {
         $term = $request->input('term');
-        $paginate = $request->input('paginate') ?? 1;
+        $paginate = $request->input('paginate', 1);
 
         return ApiResource::make($this->eBikeService->search($term, $paginate));
     }

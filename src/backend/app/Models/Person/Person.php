@@ -162,7 +162,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
         return $this->id;
     }
 
-    public function getIsActiveAttribute(): bool {
+    protected function getIsActiveAttribute(): bool {
         $lastPayment = $this->latestPayment;
 
         if (!$lastPayment) {

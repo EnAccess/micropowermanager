@@ -34,19 +34,13 @@ class AgentBalanceMiddleware {
         if ($routeName === 'agent-sell-appliance') {
             $assignedApplianceCost = $this->agentAssignedApplianceService->getById($request->input('agent_assigned_appliance_id'));
             $downPayment = $request->input('down_payment');
-            if (!$assignedApplianceCost instanceof AgentAssignedAppliances) {
-                throw new ModelNotFoundException('Assigned Appliance not found');
-            }
+            throw_unless($assignedApplianceCost instanceof AgentAssignedAppliances, new ModelNotFoundException('Assigned Appliance not found'));
 
-            if (!isset($downPayment)) {
-                throw new DownPaymentNotFoundException('DownPayment not found');
-            }
+            throw_unless(isset($downPayment), new DownPaymentNotFoundException('DownPayment not found'));
 
             $agentBalance -= $downPayment;
 
-            if ($assignedApplianceCost->cost < $request->input('down_payment')) {
-                throw new DownPaymentBiggerThanAmountException('Down payment is bigger than amount');
-            }
+            throw_if($assignedApplianceCost->cost < $request->input('down_payment'), new DownPaymentBiggerThanAmountException('Down payment is bigger than amount'));
         }
         if ($routeName === 'agent-transaction') {
             if ($transactionAmount = $request->input('amount')) {
@@ -56,9 +50,7 @@ class AgentBalanceMiddleware {
             }
         }
 
-        if ($agentBalance < $commission->risk_balance) {
-            throw new AgentRiskBalanceExceeded('Risk balance exceeded');
-        }
+        throw_if($agentBalance < $commission->risk_balance, new AgentRiskBalanceExceeded('Risk balance exceeded'));
 
         return $next($request);
     }

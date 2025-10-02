@@ -6,9 +6,7 @@ use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 
 class ResultStatusChecker {
     public function checkApiResult(array $result): array {
-        if ($result['error'] !== false && $result['error'] !== null) {
-            throw new SparkAPIResponseException($result['error']);
-        }
+        throw_if($result['error'] !== false && $result['error'] !== null, new SparkAPIResponseException($result['error']));
 
         return $result;
     }

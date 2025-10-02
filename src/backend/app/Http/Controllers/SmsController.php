@@ -195,10 +195,8 @@ class SmsController extends Controller {
             $phone = $request->get('phone');
         }
 
-        if (!$phone) {
-            // raise exception
-            throw new \Exception('Phone number is required for sending SMS.');
-        }
+        // raise exception
+        throw_unless($phone, new \Exception('Phone number is required for sending SMS.'));
 
         $smsData = [
             'receiver' => $phone,

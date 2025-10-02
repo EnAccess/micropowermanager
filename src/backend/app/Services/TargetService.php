@@ -22,9 +22,7 @@ class TargetService {
             'target_date' => $period->format('Y-m-d'),
             'type' => $targetForType,
         ]);
-        if (!$targetOwner instanceof Model) {
-            throw ValidationException::withMessages(['target_owner' => 'target owner should be a model']);
-        }
+        throw_unless($targetOwner instanceof Model, ValidationException::withMessages(['target_owner' => 'target owner should be a model']));
         $target->owner()->associate($targetOwner);
         $target->save();
 

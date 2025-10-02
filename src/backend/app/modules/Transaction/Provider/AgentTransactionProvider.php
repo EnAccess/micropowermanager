@@ -153,9 +153,7 @@ class AgentTransactionProvider implements ITransactionProvider {
         } catch (ModelNotFoundException $e) {
             throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
-        if ($agentId !== $agent->id) {
-            throw new \Exception('Agent authorization failed.');
-        }
+        throw_if($agentId !== $agent->id, new \Exception('Agent authorization failed.'));
         $this->validData = request()->only(['device_serial', 'amount']);
         $this->validData['device_id'] = $deviceId;
         $this->validData['agent_id'] = $agentId;

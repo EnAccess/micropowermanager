@@ -31,17 +31,13 @@ abstract class AbstractPaymentAggregatorTransactionService {
     ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
-        if (!($meter = $this->meter->findBySerialNumber($meterSerialNumber)) instanceof Meter) {
-            throw new ModelNotFoundException('Meter not found with serial number you entered');
-        }
+        throw_unless(($meter = $this->meter->findBySerialNumber($meterSerialNumber)) instanceof Meter, new ModelNotFoundException('Meter not found with serial number you entered'));
 
         $meterTariff = $meter->tariff;
 
         $customerId = $meter->device->person->id;
 
-        if (!$customerId) {
-            throw new ModelNotFoundException('Customer not found with meter serial number you entered');
-        }
+        throw_unless($customerId, new ModelNotFoundException('Customer not found with meter serial number you entered'));
 
         $this->meterSerialNumber = $meterSerialNumber;
         $this->minimumPurchaseAmount = $meterTariff->minimum_purchase_amount ?? self::MINIMUM_TRANSACTION_AMOUNT;
@@ -93,9 +89,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $validator = resolve(MinimumPurchaseAmountValidator::class);
 
         try {
-            if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
-                throw new TransactionAmountNotEnoughException('Transaction amount is not enough');
-            }
+            throw_unless($validator->validate($transactionData, $this->getMinimumPurchaseAmount()), new TransactionAmountNotEnoughException('Transaction amount is not enough'));
         } catch (TransactionAmountNotEnoughException $e) {
             throw new TransactionAmountNotEnoughException($e->getMessage());
         } catch (\Exception $e) {

@@ -23,18 +23,10 @@ class ApiHelpers {
     }
 
     public function checkApiResult($result) {
-        if (!$result) {
-            throw new KelinApiEmtyDataException('Null result returned.');
-        }
-        if ($result['status'] == -1) {
-            throw new KelinApiResponseException($result['error']);
-        }
-        if ($result['status'] == -2) {
-            throw new KelinApiAuthenticationException($result['error']);
-        }
-        if (empty($result['data'])) {
-            throw new KelinApiEmtyDataException('Data field of response is empty.');
-        }
+        throw_unless($result, new KelinApiEmtyDataException('Null result returned.'));
+        throw_if($result['status'] == -1, new KelinApiResponseException($result['error']));
+        throw_if($result['status'] == -2, new KelinApiAuthenticationException($result['error']));
+        throw_if(empty($result['data']), new KelinApiEmtyDataException('Data field of response is empty.'));
 
         return $result;
     }

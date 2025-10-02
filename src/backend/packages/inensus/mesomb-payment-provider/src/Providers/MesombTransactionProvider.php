@@ -37,9 +37,7 @@ class MesombTransactionProvider implements ITransactionProvider {
 
     public function validateRequest($request): void {
         $requestData = $request->all();
-        if ($requestData['status'] === 'FAILED') {
-            throw new MesombStatusFailedException($requestData['status'].' Sender: '.$requestData['b_party']);
-        }
+        throw_if($requestData['status'] === 'FAILED', new MesombStatusFailedException($requestData['status'].' Sender: '.$requestData['b_party']));
 
         $senderAddress = $this->checkPhoneIsExists($requestData);
         $this->checkSenderHasOnlyOneMeterRegistered($senderAddress);
@@ -91,9 +89,7 @@ class MesombTransactionProvider implements ITransactionProvider {
             ->where('phone', $requestData['b_party'])
             ->orWhere('phone', '+'.$requestData['b_party'])->get();
         $phoneNumbersCount = $personAddresses->count();
-        if ($phoneNumbersCount > 1 || $phoneNumbersCount == 0) {
-            throw new MesombPaymentPhoneNumberNotFoundException('Each payer must have if and only if registered phone number. Registered phone count with '.$requestData['b_party'].'is '.$phoneNumbersCount);
-        }
+        throw_if($phoneNumbersCount > 1 || $phoneNumbersCount == 0, new MesombPaymentPhoneNumberNotFoundException('Each payer must have if and only if registered phone number. Registered phone count with '.$requestData['b_party'].'is '.$phoneNumbersCount));
 
         return $personAddresses->first();
     }
@@ -107,9 +103,7 @@ class MesombTransactionProvider implements ITransactionProvider {
 
         $senderMeters = $senderPerson->devices;
         $senderMetersCount = $senderMeters->count();
-        if ($senderMetersCount > 1 || $senderMetersCount == 0) {
-            throw new MesombPayerMustHaveOnlyOneConnectedMeterException('Each payer must have if and only if connected meter with one phone number. Registered meter count is '.$senderMetersCount);
-        }
+        throw_if($senderMetersCount > 1 || $senderMetersCount == 0, new MesombPayerMustHaveOnlyOneConnectedMeterException('Each payer must have if and only if connected meter with one phone number. Registered meter count is '.$senderMetersCount));
 
         $this->validData['meter'] = $senderMeters->first()->device()->first()->serial_number;
     }

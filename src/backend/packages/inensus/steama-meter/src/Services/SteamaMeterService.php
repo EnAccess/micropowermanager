@@ -205,7 +205,7 @@ class SteamaMeterService implements ISynchronizeService {
 
                 $address = new Address();
                 $address = $address->newQuery()->create([
-                    'city_id' => request()->input('city_id') ?? $steamaCity->id,
+                    'city_id' => request()->input('city_id', $steamaCity->id),
                 ]);
                 $address->owner()->associate($meter);
                 $address->geo()->save($meter->device->address->geo()->first());

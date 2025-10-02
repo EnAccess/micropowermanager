@@ -13,9 +13,7 @@ class TestApiResolver implements ApiResolverInterface {
 
     public function resolveCompanyId(Request $request): int {
         $companyId = $request->input(self::QUERY_PARAM_COMPANY_ID);
-        if (!is_numeric($companyId)) {
-            throw ValidationException::withMessages(['companyId' => 'the field which is used to identify the company is not provided']);
-        }
+        throw_unless(is_numeric($companyId), ValidationException::withMessages(['companyId' => 'the field which is used to identify the company is not provided']));
 
         return (int) $companyId;
     }
