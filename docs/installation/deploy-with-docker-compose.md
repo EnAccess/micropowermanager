@@ -284,8 +284,8 @@ Expected response: `{"status":"ok"}`
 
 Once deployed, MicroPowerManager will be accessible at:
 
-- **Frontend**: http://localhost:8001
-- **Backend API**: http://localhost:8000
+- **Frontend**: <http://localhost:8001>
+- **Backend API**: <http://localhost:8000>
 
 > [!WARNING]
 > The application is not yet fully configured for production use. You'll need to complete additional setup steps including user creation, company configuration, and SSL certificate setup.
@@ -388,6 +388,7 @@ docker compose restart backend
    ```
 
 3. **Check logs for errors**:
+
    ```bash
    docker compose logs backend
    docker compose logs mysql
@@ -408,6 +409,7 @@ docker compose restart backend
    ```
 
 3. **Test database connection**:
+
    ```bash
    docker compose exec mysql mysql -u root -p
    ```
@@ -427,6 +429,7 @@ docker compose restart backend
    ```
 
 3. **Test internal connectivity**:
+
    ```bash
    docker compose exec backend curl http://localhost/up
    ```
