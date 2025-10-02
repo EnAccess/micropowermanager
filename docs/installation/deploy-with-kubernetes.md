@@ -10,7 +10,7 @@ order: 2
 
 The MicroPowerManager is distributed as pre-compile Docker images via [DockerHub](https://hub.docker.com/u/enaccess).
 
-### Kubernetes (base setup)
+## Kubernetes (base setup)
 
 This section describes the deployment scenario of a cloud-hosted [Kubernetes](https://kubernetes.io/) cluster with dedicated databases.
 
