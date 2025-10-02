@@ -46,7 +46,7 @@ class DummyCalinSmartMeterApi implements IManufacturerAPI {
      */
     public function clearDevice(Device $device): ?array {
         // Generate a random result code for demo purposes
-        $randomResultCode = rand(200, 299);
+        $randomResultCode = random_int(200, 299);
 
         return [
             'result_code' => $randomResultCode,

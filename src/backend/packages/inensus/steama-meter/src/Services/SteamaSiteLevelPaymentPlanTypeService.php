@@ -5,11 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSiteLevelPaymentPlanType;
 
 class SteamaSiteLevelPaymentPlanTypeService {
-    private SteamaSiteLevelPaymentPlanType $paymentPlanType;
-
-    public function __construct(SteamaSiteLevelPaymentPlanType $paymentPlanTypeModel) {
-        $this->paymentPlanType = $paymentPlanTypeModel;
-    }
+    public function __construct(private SteamaSiteLevelPaymentPlanType $paymentPlanType) {}
 
     /**
      * This function uses one time on installation of the package.

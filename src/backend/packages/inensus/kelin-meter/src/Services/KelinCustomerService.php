@@ -16,28 +16,8 @@ use Inensus\KelinMeter\Models\SyncStatus;
 
 class KelinCustomerService implements ISynchronizeService {
     private string $rootUrl = '/listCons';
-    private KelinCustomer $kelinCustomer;
-    private Person $person;
-    private KelinMeterApiClient $kelinApiClient;
-    private ApiHelpers $apiHelpers;
-    private KelinSyncSettingService $syncSettingService;
-    private KelinSyncActionService $syncActionService;
 
-    public function __construct(
-        KelinCustomer $kelinCustomer,
-        Person $person,
-        KelinMeterApiClient $kelinApiClient,
-        ApiHelpers $apiHelpers,
-        KelinSyncSettingService $syncSettingService,
-        KelinSyncActionService $syncActionService,
-    ) {
-        $this->kelinCustomer = $kelinCustomer;
-        $this->person = $person;
-        $this->kelinApiClient = $kelinApiClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->syncActionService = $syncActionService;
-        $this->syncSettingService = $syncSettingService;
-    }
+    public function __construct(private KelinCustomer $kelinCustomer, private Person $person, private KelinMeterApiClient $kelinApiClient, private ApiHelpers $apiHelpers, private KelinSyncSettingService $syncSettingService, private KelinSyncActionService $syncActionService) {}
 
     public function sync() {
         $synSetting = $this->syncSettingService->getSyncSettingsByActionName('Customers');
@@ -45,9 +25,7 @@ class KelinCustomerService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
 
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::EARLY_REGISTERED;
-            })->each(function (array $customer) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::EARLY_REGISTERED)->each(function (array $customer) {
                 $person = $this->updateRelatedPerson(
                     $customer,
                     $customer['relatedPerson']
@@ -60,7 +38,7 @@ class KelinCustomerService implements ISynchronizeService {
                         'mobile' => $customer['mobile'],
                         'hash' => $customer['hash'],
                     ]);
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     $phone = ltrim($customer['mobile'], $customer['mobile'][0]);
                     $addresses = DB::table('addresses')->where('phone', 'LIKE', '%'.$phone.'%')->where('owner_type', 'person')
                         ->get();
@@ -73,9 +51,7 @@ class KelinCustomerService implements ISynchronizeService {
                     ]);
                 }
             });
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function (array $customer) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $customer) {
                 $person = $this->createRelatedPerson($customer);
 
                 $this->kelinCustomer->newQuery()->create([
@@ -86,9 +62,7 @@ class KelinCustomerService implements ISynchronizeService {
                     'hash' => $customer['hash'],
                 ]);
             });
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function (array $customer) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $customer) {
                 $person = is_null($customer['relatedPerson']) ?
                     $this->createRelatedPerson($customer) : $this->updateRelatedPerson(
                         $customer,
@@ -125,9 +99,7 @@ class KelinCustomerService implements ISynchronizeService {
             }
             throw new KelinApiResponseException($exception->getMessage());
         }
-        $customersCollection = collect($customers)->filter(function (array $q): bool {
-            return $q['consNo'] !== '';
-        });
+        $customersCollection = collect($customers)->filter(fn (array $q): bool => $q['consNo'] !== '');
 
         $kelinCustomers = $this->kelinCustomer->newQuery()->get();
         $people = $this->person->newQuery()->get();

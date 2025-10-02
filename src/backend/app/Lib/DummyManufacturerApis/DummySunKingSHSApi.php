@@ -58,10 +58,10 @@ class DummySunKingSHSApi implements IManufacturerAPI {
     private function generateRandomToken(): string {
         return sprintf(
             '%04d-%04d-%04d-%04d',
-            rand(1000, 9999),
-            rand(1000, 9999),
-            rand(1000, 9999),
-            rand(1000, 9999)
+            random_int(1000, 9999),
+            random_int(1000, 9999),
+            random_int(1000, 9999),
+            random_int(1000, 9999)
         );
     }
 

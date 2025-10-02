@@ -6,16 +6,7 @@ use App\Models\Transaction\Transaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 
 class MesomTransactionService {
-    private MesombTransaction $mesombTransaction;
-    private Transaction $transaction;
-
-    public function __construct(
-        MesombTransaction $mesombTransaction,
-        Transaction $transaction,
-    ) {
-        $this->mesombTransaction = $mesombTransaction;
-        $this->transaction = $transaction;
-    }
+    public function __construct(private MesombTransaction $mesombTransaction, private Transaction $transaction) {}
 
     public function assignIncomingDataToMesombTransaction(array $data) {
         return $this->mesombTransaction->newQuery()->create([

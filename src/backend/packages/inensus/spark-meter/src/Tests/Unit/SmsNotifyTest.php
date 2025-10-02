@@ -46,9 +46,7 @@ class SmsNotifyTest extends TestCase {
 
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', function ($q) {
-            return $q->where('is_primary', 1);
-        })->where(
+        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->where(
             'updated_at',
             '>=',
             Carbon::now()->subMinutes($lowBalanceMin)
@@ -101,9 +99,7 @@ class SmsNotifyTest extends TestCase {
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', function ($q) {
-            return $q->where('is_primary', 1);
-        })->get();
+        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->get();
         SmTransaction::query()->with(['thirdPartyTransaction.transaction'])->where(
             'timestamp',
             '>=',
@@ -119,9 +115,7 @@ class SmsNotifyTest extends TestCase {
             if ($smsNotifiedCustomers) {
                 return true;
             }
-            $notifyCustomer = $customers->filter(function ($customer) use ($sparkTransaction): bool {
-                return $customer->customer_id == $sparkTransaction->customer_id;
-            })->first();
+            $notifyCustomer = $customers->filter(fn ($customer): bool => $customer->customer_id == $sparkTransaction->customer_id)->first();
             if (!$notifyCustomer) {
                 return true;
             }

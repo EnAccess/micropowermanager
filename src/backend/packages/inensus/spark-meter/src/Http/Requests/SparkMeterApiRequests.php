@@ -96,7 +96,7 @@ class SparkMeterApiRequests {
             );
 
             return json_decode((string) $request->getBody(), true);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return [
                 'status' => 'failure',
             ];

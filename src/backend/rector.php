@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use RectorLaravel\Set\LaravelSetList;
 use RectorLaravel\Set\LaravelSetProvider;
@@ -19,9 +21,12 @@ return RectorConfig::configure()
         __DIR__.'/routes',
         __DIR__.'/tests',
     ])
-    // uncomment to reach your current PHP version
-    // ->withPhpSets()
-    // uncomment to apply code quality improvements
+    ->withSkipPath(
+        __DIR__.'/bootstrap/cache',
+    )
+    ->withPhpSets(
+        php82: true
+    )
     ->withPreparedSets(
         codeQuality: true,
         deadCode: true,
@@ -37,5 +42,7 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
+        ReadOnlyPropertyRector::class,
+        NullToStrictStringFuncCallArgRector::class,
     ])
 ;

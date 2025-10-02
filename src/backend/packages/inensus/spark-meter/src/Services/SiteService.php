@@ -15,41 +15,9 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
 class SiteService implements ISynchronizeService {
-    private SmSite $site;
-    private SparkMeterApiRequests $sparkMeterApiRequests;
     private string $rootUrl = '/organizations';
-    private SmTableEncryption $smTableEncryption;
-    private OrganizationService $organizationService;
-    private Cluster $cluster;
-    private MiniGrid $miniGrid;
-    private City $city;
-    private GeographicalInformation $geographicalInformation;
-    private SmSyncSettingService $smSyncSettingService;
-    private SmSyncActionService $smSyncActionService;
 
-    public function __construct(
-        SmSite $site,
-        SparkMeterApiRequests $sparkMeterApiRequests,
-        SmTableEncryption $smTableEncryption,
-        OrganizationService $organizationService,
-        Cluster $cluster,
-        MiniGrid $miniGrid,
-        City $city,
-        GeographicalInformation $geographicalInformation,
-        SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService,
-    ) {
-        $this->site = $site;
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
-        $this->smTableEncryption = $smTableEncryption;
-        $this->organizationService = $organizationService;
-        $this->cluster = $cluster;
-        $this->miniGrid = $miniGrid;
-        $this->city = $city;
-        $this->geographicalInformation = $geographicalInformation;
-        $this->smSyncSettingService = $smSyncSettingService;
-        $this->smSyncActionService = $smSyncActionService;
-    }
+    public function __construct(private SmSite $site, private SparkMeterApiRequests $sparkMeterApiRequests, private SmTableEncryption $smTableEncryption, private OrganizationService $organizationService, private Cluster $cluster, private MiniGrid $miniGrid, private City $city, private GeographicalInformation $geographicalInformation, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService) {}
 
     public function getSmSites($request) {
         $perPage = $request->input('per_page') ?? 15;
@@ -127,7 +95,7 @@ class SiteService implements ISynchronizeService {
             $site->is_online = Carbon::parse($system['last_sync_date'])
                 ->toDateTimeString() > Carbon::now()->utc()
                 ->subMinutes(15)->toDateTimeString();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $site->is_authenticated = false;
             $site->is_online = false;
         }
@@ -149,9 +117,7 @@ class SiteService implements ISynchronizeService {
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function (array $site): bool {
-                return $site['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function (array $site) {
+            $syncCheck['data']->filter(fn (array $site): bool => $site['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $site) {
                 $miniGrid = $this->creteRelatedMiniGrid($site);
                 $this->site->newQuery()->create([
                     'site_id' => $site['id'],
@@ -162,9 +128,7 @@ class SiteService implements ISynchronizeService {
                 $this->updateGeographicalInformation($miniGrid->id);
             });
 
-            $syncCheck['data']->filter(function (array $site): bool {
-                return $site['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function (array $site) {
+            $syncCheck['data']->filter(fn (array $site): bool => $site['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $site) {
                 $miniGrid = is_null($site['relatedMiniGrid']) ?
                     $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid(
                         $site,

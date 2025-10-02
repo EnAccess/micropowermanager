@@ -5,6 +5,7 @@ namespace Inensus\KelinMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\KelinMeter\Services\PackageInstallationService;
 
 class UpdatePackage extends Command {
@@ -57,7 +58,7 @@ class UpdatePackage extends Command {
     private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
+            '--provider' => KelinMeterServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }
@@ -70,7 +71,7 @@ class UpdatePackage extends Command {
     private function publishVueFilesAgain(): void {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
+            '--provider' => KelinMeterServiceProvider::class,
             '--tag' => 'vue-components',
             '--force' => true,
         ]);

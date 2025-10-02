@@ -5,13 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSmsNotifiedCustomer;
 
 class SmSmsNotifiedCustomerService {
-    private SmSmsNotifiedCustomer $smSmsNotifiedCustomer;
-
-    public function __construct(
-        SmSmsNotifiedCustomer $smSmsNotifiedCustomer,
-    ) {
-        $this->smSmsNotifiedCustomer = $smSmsNotifiedCustomer;
-    }
+    public function __construct(private SmSmsNotifiedCustomer $smSmsNotifiedCustomer) {}
 
     public function getSmsNotifiedCustomers() {
         return $this->smSmsNotifiedCustomer->newQuery()->get();

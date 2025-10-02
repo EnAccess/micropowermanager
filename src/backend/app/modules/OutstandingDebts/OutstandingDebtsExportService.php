@@ -41,15 +41,13 @@ class OutstandingDebtsExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->outstandingDebtsData->map(function (AssetRate $applianceRate): array {
-            return [
-                $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
-                $applianceRate->assetPerson->asset->name,
-                $applianceRate->assetPerson->device_serial,
-                $applianceRate->due_date,
-                $applianceRate->remaining,
-            ];
-        });
+        $this->exportingData = $this->outstandingDebtsData->map(fn (AssetRate $applianceRate): array => [
+            $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
+            $applianceRate->assetPerson->asset->name,
+            $applianceRate->assetPerson->device_serial,
+            $applianceRate->due_date,
+            $applianceRate->remaining,
+        ]);
     }
 
     /**

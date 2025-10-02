@@ -14,17 +14,9 @@ use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
 
 class CalinSmartMeterApi implements IManufacturerAPI {
-    protected Client $api;
     private string $rootUrl = '/POS_Purchase/';
 
-    public function __construct(
-        Client $httpClient,
-        private CalinSmartTransaction $calinSmartTransaction,
-        private CalinSmartCredential $credentials,
-        private CalinSmartMeterApiRequests $calinSmartMeterApiRequests,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private CalinSmartTransaction $calinSmartTransaction, private CalinSmartCredential $credentials, private CalinSmartMeterApiRequests $calinSmartMeterApiRequests) {}
 
     public function chargeDevice($transactionContainer): array {
         $meter = $transactionContainer->device->device;

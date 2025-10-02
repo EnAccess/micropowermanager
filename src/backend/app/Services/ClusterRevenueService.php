@@ -370,7 +370,7 @@ class ClusterRevenueService {
             $start->sub(new \DateInterval('P12M'));
             $startDate = $start->format('Y-m-d');
         }
-        $endDate = $endDate ?? date('Y-m-t');
+        $endDate ??= date('Y-m-t');
 
         return ['startDate' => $startDate, 'endDate' => $endDate];
     }

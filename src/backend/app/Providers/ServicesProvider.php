@@ -40,16 +40,12 @@ class ServicesProvider extends ServiceProvider {
     public function register(): void {
         $this->app->bind(
             RolesService::class,
-            function ($app): RolesService {
-                return new RolesService($this->app->make(Roles::class), $this->app->make(RoleDefinition::class));
-            }
+            fn ($app): RolesService => new RolesService($this->app->make(Roles::class), $this->app->make(RoleDefinition::class))
         );
 
         $this->app->bind(
             CountryService::class,
-            function ($app): CountryService {
-                return new CountryService($this->app->make(Country::class));
-            }
+            fn ($app): CountryService => new CountryService($this->app->make(Country::class))
         );
     }
 }

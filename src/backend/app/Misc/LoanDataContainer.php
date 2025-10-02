@@ -97,7 +97,7 @@ class LoanDataContainer {
             $meter = Meter::with('device.person')
                 ->where('serial_number', $serialNumber)
                 ->firstOrFail();
-        } catch (ModelNotFoundException $ex) {
+        } catch (ModelNotFoundException) {
             throw new MeterIsNotAssignedToCustomer('');
         }
 

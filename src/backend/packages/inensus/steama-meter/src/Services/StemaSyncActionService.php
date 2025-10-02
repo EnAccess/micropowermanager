@@ -7,11 +7,7 @@ use Carbon\CarbonInterval;
 use Inensus\SteamaMeter\Models\SteamaSyncAction;
 
 class StemaSyncActionService {
-    private SteamaSyncAction $syncAction;
-
-    public function __construct(SteamaSyncAction $syncAction) {
-        $this->syncAction = $syncAction;
-    }
+    public function __construct(private SteamaSyncAction $syncAction) {}
 
     public function createSyncAction(array $syncAction) {
         return $this->syncAction->newQuery()->create($syncAction);

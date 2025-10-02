@@ -5,6 +5,7 @@ namespace Inensus\CalinSmartMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider;
 
 class UpdatePackage extends Command {
     protected $signature = 'calin-smart-meter:update';
@@ -53,7 +54,7 @@ class UpdatePackage extends Command {
     private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider",
+            '--provider' => CalinSmartMeterServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }
@@ -66,7 +67,7 @@ class UpdatePackage extends Command {
     private function publishVueFilesAgain(): void {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider",
+            '--provider' => CalinSmartMeterServiceProvider::class,
             '--tag' => 'vue-components',
         ]);
     }

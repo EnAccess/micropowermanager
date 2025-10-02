@@ -22,9 +22,7 @@ class PersonObserver {
                 'devices.device.tariff',
                 'devices.device.geo',
                 'devices.device.meter',
-                'addresses' => function ($q) {
-                    return $q->where('is_primary', 1);
-                },
+                'addresses' => fn ($q) => $q->where('is_primary', 1),
             ])->where('id', $personId)->first();
 
             $customerData = [

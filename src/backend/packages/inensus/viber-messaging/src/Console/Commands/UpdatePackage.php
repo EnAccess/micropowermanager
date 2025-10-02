@@ -5,6 +5,7 @@ namespace Inensus\ViberMessaging\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
 
 class UpdatePackage extends Command {
     protected $signature = 'viber-messaging:update';
@@ -55,7 +56,7 @@ class UpdatePackage extends Command {
     private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider",
+            '--provider' => ViberMessagingServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }
@@ -68,7 +69,7 @@ class UpdatePackage extends Command {
     private function publishVueFilesAgain(): void {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider",
+            '--provider' => ViberMessagingServiceProvider::class,
             '--tag' => 'vue-components',
         ]);
     }

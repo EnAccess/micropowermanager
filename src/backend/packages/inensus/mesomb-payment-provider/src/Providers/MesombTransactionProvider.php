@@ -17,23 +17,9 @@ use Inensus\MesombPaymentProvider\Services\MesomTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class MesombTransactionProvider implements ITransactionProvider {
-    private $transaction;
-    private $mesombTransaction;
-    private MesomTransactionService $mesombTransactionService;
     private array $validData = [];
-    private Address $address;
 
-    public function __construct(
-        Transaction $transaction,
-        MesombTransaction $mesombTransaction,
-        MesomTransactionService $mesombTransactionService,
-        Address $address,
-    ) {
-        $this->mesombTransaction = $mesombTransaction;
-        $this->transaction = $transaction;
-        $this->mesombTransactionService = $mesombTransactionService;
-        $this->address = $address;
-    }
+    public function __construct(private Transaction $transaction, private MesombTransaction $mesombTransaction, private MesomTransactionService $mesombTransactionService, private Address $address) {}
 
     public function validateRequest($request): void {
         $requestData = $request->all();
@@ -59,7 +45,12 @@ class MesombTransactionProvider implements ITransactionProvider {
     }
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
-        $this->mesombTransaction = $transaction->originalTransaction()->first();
+        $mesombTransaction = $transaction->originalTransaction;
+        if (!$mesombTransaction instanceof MesombTransaction) {
+            throw new \Exception('Wrong transaction type.');
+        }
+        $this->mesombTransaction = $mesombTransaction;
+
         if ($requestType) {
             $this->mesombTransaction->status = 1;
             $this->mesombTransaction->save();

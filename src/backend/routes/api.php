@@ -333,9 +333,7 @@ Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], stati
     Route::delete('/{timeOfUsageId}', [TimeOfUsageController::class, 'destroy']);
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', [MpmPluginController::class, 'index']);

@@ -22,59 +22,9 @@ use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Models\SmTransaction;
 
 class TransactionService {
-    private SparkMeterApiRequests $sparkMeterApiRequests;
-    private SmOrganization $sparkOrganization;
-    private CredentialService $sparkCredentialService;
-    private SiteService $sparkSiteService;
-    private CustomerService $sparkCustomerService;
-    private MeterModelService $sparkMeterModelService;
-    private TariffService $sparkTariffService;
-    private SmTransaction $sparkTransaction;
-    private SmTariff $sparkTariff;
-    private ThirdPartyTransaction $thirdPartyTransaction;
-    private Transaction $transaction;
-    private SmSite $sparkSite;
-    private SmCustomer $smCustomer;
     private string $rootUrl = '/transaction/';
-    private SmSyncSettingService $smSyncSettingService;
-    private SmSyncActionService $smSyncActionService;
-    private Token $token;
 
-    public function __construct(
-        SparkMeterApiRequests $sparkMeterApiRequests,
-        CredentialService $sparkCredentialService,
-        SiteService $sparkSiteService,
-        CustomerService $sparkCustomerService,
-        MeterModelService $sparkMeterModelService,
-        SmTariff $sparkTariff,
-        SmSite $sparkSite,
-        TariffService $sparkTariffService,
-        SmTransaction $sparkTransaction,
-        SmOrganization $sparkOrganization,
-        ThirdPartyTransaction $thirdPartyTransaction,
-        Transaction $transaction,
-        SmCustomer $smCustomer,
-        SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService,
-        Token $token,
-    ) {
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
-        $this->sparkOrganization = $sparkOrganization;
-        $this->sparkCredentialService = $sparkCredentialService;
-        $this->sparkSiteService = $sparkSiteService;
-        $this->sparkCustomerService = $sparkCustomerService;
-        $this->sparkTariff = $sparkTariff;
-        $this->sparkSite = $sparkSite;
-        $this->sparkMeterModelService = $sparkMeterModelService;
-        $this->sparkTariffService = $sparkTariffService;
-        $this->sparkTransaction = $sparkTransaction;
-        $this->thirdPartyTransaction = $thirdPartyTransaction;
-        $this->transaction = $transaction;
-        $this->smCustomer = $smCustomer;
-        $this->smSyncSettingService = $smSyncSettingService;
-        $this->smSyncActionService = $smSyncActionService;
-        $this->token = $token;
-    }
+    public function __construct(private SparkMeterApiRequests $sparkMeterApiRequests, private CredentialService $sparkCredentialService, private SiteService $sparkSiteService, private CustomerService $sparkCustomerService, private MeterModelService $sparkMeterModelService, private SmTariff $sparkTariff, private SmSite $sparkSite, private TariffService $sparkTariffService, private SmTransaction $sparkTransaction, private SmOrganization $sparkOrganization, private ThirdPartyTransaction $thirdPartyTransaction, private Transaction $transaction, private SmCustomer $smCustomer, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService, private Token $token) {}
 
     public function updateTransactionStatus($smTransaction): void {
         try {
@@ -88,20 +38,12 @@ class TransactionService {
             $smStatus = $e->getMessage();
             Log::critical('Updating SmTransaction status information failed.', ['Error :' => $e->getMessage()]);
         }
-        switch ($smStatus) {
-            case 'processed':
-                $status = 1;
-                break;
-            case 'pending':
-                $status = 0;
-                break;
-            case 'not-processed':
-            case 'error':
-                $status = -1;
-                break;
-            default:
-                $status = 1;
-        }
+        $status = match ($smStatus) {
+            'processed' => 1,
+            'pending' => 0,
+            'not-processed', 'error' => -1,
+            default => 1,
+        };
 
         $transaction = $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',
@@ -130,13 +72,7 @@ class TransactionService {
         // TODO find a way for variety of error handling acts.
         try {
             $syncCheck = $this->syncCheck();
-        } catch (CredentialsNotFoundException $exception) {
-            Log::warning($exception->getMessage());
-        } catch (CredentialsNotUpToDateException $exception) {
-            Log::warning($exception->getMessage());
-        } catch (SitesNotUpToDateException $exception) {
-            Log::warning($exception->getMessage());
-        } catch (NoOnlineSiteRecordException $exception) {
+        } catch (CredentialsNotFoundException|CredentialsNotUpToDateException|SitesNotUpToDateException|NoOnlineSiteRecordException $exception) {
             Log::warning($exception->getMessage());
         }
         $lastCreatedTransaction = $this->sparkTransaction->newQuery()->latest('created_at')->orderBy(
@@ -181,27 +117,17 @@ class TransactionService {
             if (count($syncCheck) === 0) {
                 break;
             }
-            collect($transactions)->filter(function (array $transaction): bool {
-                return $transaction['type'] === 'transaction';
-            })->each(function (array $transaction) use ($syncCheck, $sparkCustomers, $sparkTariffs): true {
+            collect($transactions)->filter(fn (array $transaction): bool => $transaction['type'] === 'transaction')->each(function (array $transaction) use ($syncCheck, $sparkCustomers, $sparkTariffs): true {
                 $siteTransaction = $syncCheck->firstWhere('site_id', $transaction['site']);
                 if (!$siteTransaction) {
                     return true;
                 }
-                switch ($transaction['state']) {
-                    case 'processed':
-                        $status = 1;
-                        break;
-                    case 'pending':
-                        $status = 0;
-                        break;
-                    case 'reversed':
-                    case 'error':
-                        $status = -1;
-                        break;
-                    default:
-                        $status = 1;
-                }
+                $status = match ($transaction['state']) {
+                    'processed' => 1,
+                    'pending' => 0,
+                    'reversed', 'error' => -1,
+                    default => 1,
+                };
                 $transactionRecord = $this->sparkTransaction->newQuery()->where(
                     'transaction_id',
                     $transaction['transaction_id']
@@ -331,9 +257,7 @@ class TransactionService {
             'processed'
         )->get();
 
-        return $transactions->filter(function ($transaction) use ($transactionMin): bool {
-            return Carbon::parse($transaction->timestamp) >= Carbon::now()->subMinutes($transactionMin);
-        });
+        return $transactions->filter(fn ($transaction): bool => Carbon::parse($transaction->timestamp) >= Carbon::now()->subMinutes($transactionMin));
     }
 
     private function createThirdPartyTransaction(array $transaction, $sparkTransaction, int $status) {

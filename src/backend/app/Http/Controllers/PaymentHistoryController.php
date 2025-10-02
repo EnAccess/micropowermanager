@@ -15,14 +15,10 @@ use Carbon\CarbonInterval;
  * Class PaymentHistoryController
  */
 class PaymentHistoryController {
-    private PaymentHistory $history;
-
     /**
      * PaymentHistoryController constructor.
      */
-    public function __construct(PaymentHistory $history) {
-        $this->history = $history;
-    }
+    public function __construct(private PaymentHistory $history) {}
 
     /**
      * Detail.
@@ -36,20 +32,12 @@ class PaymentHistoryController {
      */
     public function show(int $payerId, string $period, ?int $limit = null, string $order = 'ASC'): array {
         $period = strtoupper($period);
-        switch ($period) {
-            case 'D':
-                $period = 'Day(created_at), Month(created_at), Year(created_at)';
-                break;
-            case 'W':
-                $period = 'Week(created_at), Year(created_at)';
-                break;
-            case 'M':
-                $period = 'Month(created_at), Year(created_at)';
-                break;
-            default:
-                $period = 'Year(created_at)';
-                break;
-        }
+        $period = match ($period) {
+            'D' => 'Day(created_at), Month(created_at), Year(created_at)',
+            'W' => 'Week(created_at), Year(created_at)',
+            'M' => 'Month(created_at), Year(created_at)',
+            default => 'Year(created_at)',
+        };
         $payments = app()->make(PaymentHistory::class)->getFlow(
             'person',
             $payerId,
@@ -92,7 +80,7 @@ class PaymentHistoryController {
      * @return array<int, float>
      */
     public function byYear(int $personId, ?int $year = null): array {
-        $year = $year ?? (int) date('Y');
+        $year ??= (int) date('Y');
         $payments = $this->history->getPaymentFlow('person', $personId, $year);
         $paymentFlow = array_fill(0, 11, 0);
         foreach ($payments as $payment) {

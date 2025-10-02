@@ -9,13 +9,7 @@ use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
 class SmCustomerController implements IBaseController {
-    private CustomerService $customerService;
-
-    public function __construct(
-        CustomerService $customerService,
-    ) {
-        $this->customerService = $customerService;
-    }
+    public function __construct(private CustomerService $customerService) {}
 
     public function index(Request $request): SparkResource {
         $customers = $this->customerService->getSmCustomers($request);

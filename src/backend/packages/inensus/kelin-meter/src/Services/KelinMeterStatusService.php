@@ -9,11 +9,8 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 
 class KelinMeterStatusService {
     private string $rootUrl = '/getMeterStatus';
-    private KelinMeterApiClient $kelinApiClient;
 
-    public function __construct(KelinMeterApiClient $kelinApiClient) {
-        $this->kelinApiClient = $kelinApiClient;
-    }
+    public function __construct(private KelinMeterApiClient $kelinApiClient) {}
 
     public function getStatusOfMeter($meter): \stdClass {
         try {

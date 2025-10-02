@@ -9,16 +9,8 @@ use Inensus\KelinMeter\Models\KelinMeterMinutelyData;
 
 class MinutelyConsumptionService {
     private string $rootUrl = '/getMinData';
-    private KelinMeterApiClient $kelinApi;
-    private KelinMeterMinutelyData $kelinMeterMinutelyData;
 
-    public function __construct(
-        KelinMeterApiClient $kelinApi,
-        KelinMeterMinutelyData $kelinMeterMinutelyData,
-    ) {
-        $this->kelinApi = $kelinApi;
-        $this->kelinMeterMinutelyData = $kelinMeterMinutelyData;
-    }
+    public function __construct(private KelinMeterApiClient $kelinApi, private KelinMeterMinutelyData $kelinMeterMinutelyData) {}
 
     public function getMinutelyDataFromAPI(): void {
         $today = Carbon::now()->format('Ymd');

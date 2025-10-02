@@ -17,41 +17,9 @@ use Inensus\SteamaMeter\Models\SteamaSite;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
 class SteamaAgentService implements ISynchronizeService {
-    private AgentCommission $agentCommission;
-    private Agent $agent;
-    private SteamaAgent $stmAgent;
-    private SteamaMeterApiClient $steamaApi;
-    private ApiHelpers $apiHelpers;
     private string $rootUrl = '/agents';
-    private Person $person;
-    private SteamaSite $site;
-    private Address $address;
-    private SteamaSyncSettingService $steamaSyncSettingService;
-    private StemaSyncActionService $steamaSyncActionService;
 
-    public function __construct(
-        AgentCommission $agentCommissionModel,
-        SteamaAgent $steamaAgentModel,
-        SteamaMeterApiClient $steamaApi,
-        ApiHelpers $apiHelpers,
-        Agent $agent,
-        Person $person,
-        SteamaSite $site,
-        Address $address,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService,
-    ) {
-        $this->agentCommission = $agentCommissionModel;
-        $this->stmAgent = $steamaAgentModel;
-        $this->steamaApi = $steamaApi;
-        $this->apiHelpers = $apiHelpers;
-        $this->agent = $agent;
-        $this->person = $person;
-        $this->site = $site;
-        $this->address = $address;
-        $this->steamaSyncSettingService = $steamaSyncSettingService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-    }
+    public function __construct(private AgentCommission $agentCommission, private SteamaAgent $stmAgent, private SteamaMeterApiClient $steamaApi, private ApiHelpers $apiHelpers, private Agent $agent, private Person $person, private SteamaSite $site, private Address $address, private SteamaSyncSettingService $steamaSyncSettingService, private StemaSyncActionService $steamaSyncActionService) {}
 
     public function getAgents($request) {
         $perPage = $request->input('per_page') ?? 15;
@@ -85,9 +53,7 @@ class SteamaAgentService implements ISynchronizeService {
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function (array $agent) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $agent) {
                 $createdAgent = $this->createRelatedAgent($agent);
                 $this->stmAgent->newQuery()->create([
                     'agent_id' => $agent['id'],
@@ -98,9 +64,7 @@ class SteamaAgentService implements ISynchronizeService {
                     'hash' => $agent['hash'],
                 ]);
             });
-            $syncCheck['data']->filter(function (array $value): bool {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function (array $agent) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $agent) {
                 $relatedAgent = is_null($agent['relatedAgent']) ?
                     $this->createRelatedAgent($agent) : $this->updateRelatedAgent(
                         $agent,
