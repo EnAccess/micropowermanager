@@ -19,7 +19,7 @@ class TransactionAdvancedController extends Controller {
         $status = $request->input('status');
         $fromDate = $request->input('from');
         $toDate = $request->input('to');
-        $limit = (int) ($request->input('per_page') ?? '15');
+        $limit = (int) $request->input('per_page', '15');
         $transactionService = $this->transactionService->getRelatedService($type);
 
         return ApiResource::make($transactionService->search(
@@ -41,9 +41,9 @@ class TransactionAdvancedController extends Controller {
         // get transactions for both current and previous periods
         $transactions = $this->transactionService->getByComparisonPeriod($comparisonPeriod);
         // get data for the current period
-        $currentTransactions = $this->transactionService->getAnalysis($transactions['current']->toArray()) ?? $this->transactionService->getEmptyCompareResult();
+        $currentTransactions = $this->transactionService->getAnalysis($transactions['current']->all()) ?? $this->transactionService->getEmptyCompareResult();
         // get data for the previous period
-        $pastTransactions = $this->transactionService->getAnalysis($transactions['past']->toArray()) ?? $this->transactionService->getEmptyCompareResult();
+        $pastTransactions = $this->transactionService->getAnalysis($transactions['past']->all()) ?? $this->transactionService->getEmptyCompareResult();
 
         // compare current period with the previous period
         return [

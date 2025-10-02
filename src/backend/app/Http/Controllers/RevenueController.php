@@ -67,8 +67,8 @@ class RevenueController extends Controller {
 
     public function trending(int $id, Request $request): ApiResource {
         // the array which holds the final response
-        $startDate = $request->input('startDate') ?? date('Y-01-01');
-        $end = $request->input('endDate') ?? date('Y-m-d');
+        $startDate = $request->input('startDate', date('Y-01-01'));
+        $end = $request->input('endDate', date('Y-m-d'));
         $endDate = Carbon::parse($end)->endOfDay();
 
         $cities = $this->city::query()->where('mini_grid_id', $id)->get();
