@@ -20,12 +20,14 @@ class ProspectServiceProvider extends ServiceProvider
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
     }
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/prospect-integration.php', 'prospect');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/prospect.php', 'prospect');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
 
@@ -34,7 +36,7 @@ class ProspectServiceProvider extends ServiceProvider
     public function publishConfigFiles()
     {
         $this->publishes([
-            __DIR__ . '/../../config/prospect-integration.php' => config_path('prospect-integration.php'),
+            __DIR__ . '/../../config/prospect.php' => config_path('prospect.php'),
         ]);
     }
 
@@ -48,11 +50,11 @@ class ProspectServiceProvider extends ServiceProvider
 
     public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
-            __DIR__ . '/../../database/migrations/create_prospect_tables.php.stub' => $this->getMigrationFileName($filesystem),
+            __DIR__ . '/../../database/migrations/create_prospect_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_prospect_tables.php'),
         ], 'migrations');
     }
 
-    protected function getMigrationFileName(Filesystem $filesystem): string {
+    protected function getMigrationFileName(Filesystem $filesystem, string $migrationName): string {
         $timestamp = date('Y_m_d_His');
 
         return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
