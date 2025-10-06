@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Country;
-use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\CountryService;
-use App\Services\MaintenanceUserService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Illuminate\Http\JsonResponse;
@@ -25,7 +23,6 @@ class PersonController extends Controller {
         private AddressesService $addressService,
         private PersonService $personService,
         private PersonAddressService $personAddressService,
-        private MaintenanceUserService $maintenanceUserService,
         private CountryService $countryService,
     ) {}
 
@@ -76,12 +73,8 @@ class PersonController extends Controller {
             $miniGridId = $request->input('mini_grid_id');
             DB::connection('tenant')->beginTransaction();
             if ($this->personService->isMaintenancePerson($customerType)) {
+                $personData['mini_grid_id'] = $miniGridId;
                 $person = $this->personService->createMaintenancePerson($personData);
-                $maintenanceUserData = [
-                    'person_id' => $person->id,
-                    'mini_grid_id' => $miniGridId,
-                ];
-                $this->maintenanceUserService->create($maintenanceUserData);
             } else {
                 $country = $this->countryService->getByCode($request->get('country_code'));
                 $person = $this->personService->create($personData);

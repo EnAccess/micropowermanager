@@ -126,6 +126,8 @@ class AgentService implements IBaseService {
         ?object $personService = null,
         ?object $personAddressService = null,
     ): Agent {
+        // Ensure the person is created with type 'agent'
+        $personData['type'] = 'agent';
         $person = $personService->create($personData);
 
         if ($country !== null) {

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
-use App\Models\MaintenanceUsers;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\User;
@@ -131,11 +130,10 @@ class TicketSeeder extends Seeder {
                 )
                 ->create();
 
-            // Make the person a Maintenance User
-            $maintenanceUser = MaintenanceUsers::factory()
-                ->for($minigrid)
-                ->for($person)
-                ->create();
+            // Make the person a Maintenance User by setting type and mini_grid_id
+            $person->type = 'maintenance';
+            $person->mini_grid_id = $minigrid->id;
+            $person->save();
 
             // Find the MiniGrid's Agents and make them all Maintenance Users
             $agents = $minigrid->agents()->get();
@@ -144,10 +142,9 @@ class TicketSeeder extends Seeder {
                 $agentPerson = $agent->person()->first();
 
                 if ($agentPerson) {
-                    $maintenanceUserAgent = MaintenanceUsers::factory()
-                        ->for($minigrid)
-                        ->for($agentPerson)
-                        ->create();
+                    // Set the agent person type to 'agent' (not maintenance)
+                    $agentPerson->type = 'agent';
+                    $agentPerson->save();
                 }
             }
         }
@@ -171,9 +168,9 @@ class TicketSeeder extends Seeder {
         $randomCreator = User::query()->inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
         $ticketUser = TicketUser::factory()->createOne();
-        $randomMaintenanceUser = MaintenanceUsers::query()->inRandomOrder()->first();
+        $randomMaintenanceUser = Person::query()->inRandomOrder()->where('type', 'maintenance')->first();
         $randomUser = User::query()->inRandomOrder()->first();
-        $randomPerson = Person::query()->inRandomOrder()->where('is_customer', 1)->first();
+        $randomPerson = Person::query()->inRandomOrder()->where('type', 'customer')->first();
         $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
 
@@ -192,7 +189,7 @@ class TicketSeeder extends Seeder {
         if ($randomCategory->out_source) {
             $ticket->assigned_id = $randomUser->id;
             $ticket->owner_id = $randomMaintenanceUser->id;
-            $ticket->owner_type = 'maintenance_user';
+            $ticket->owner_type = 'person';
             $ticket->save();
             try {
                 $amount = random_int(10, 200);

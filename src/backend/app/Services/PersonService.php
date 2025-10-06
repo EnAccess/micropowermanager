@@ -85,6 +85,7 @@ class PersonService implements IBaseService {
      */
     public function createMaintenancePerson(array $personData): Person {
         $personData['is_customer'] = 0;
+        $personData['type'] = 'maintenance';
 
         return $this->person->newQuery()->create($personData);
     }
@@ -132,6 +133,7 @@ class PersonService implements IBaseService {
             'birth_date' => $request->get('birth_date'),
             'sex' => $request->get('sex'),
             'is_customer' => $request->get('is_customer') ?? 0,
+            'mini_grid_id' => $request->get('mini_grid_id'),
         ];
     }
 
@@ -266,5 +268,12 @@ class PersonService implements IBaseService {
     public function getByPhoneNumber(string $phoneNumber): ?Person {
         return $this->person->newQuery()->whereHas('addresses', fn ($q) => $q->where('phone', $phoneNumber))
             ->first();
+    }
+
+    /**
+     * @return Collection<int, Person>|array<int, Person>
+     */
+    public function getAllMaintenanceUsers(): Collection|array {
+        return $this->person->newQuery()->where('type', 'maintenance')->get();
     }
 }

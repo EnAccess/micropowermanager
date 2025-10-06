@@ -70,6 +70,8 @@ class AgentTicketController extends Controller {
         $this->personTicketService->assign();
         $this->ticketService->save($ticket);
 
-        return TicketResource::make($this->ticketService->getBatch([$ticket]));
+        $tickets = $this->ticketService->getBatch([$ticket]);
+
+        return TicketResource::make($tickets);
     }
 }
