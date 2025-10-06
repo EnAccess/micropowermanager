@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     /**
@@ -16,16 +14,16 @@ return new class extends Migration {
         // Set type to 'maintenance' and populate mini_grid_id for maintenance users
         DB::connection('tenant')->statement('
             UPDATE people 
-            SET 
+            SET
                 type = "maintenance",
                 mini_grid_id = (
                     SELECT mini_grid_id 
-                    FROM maintenance_users 
+                    FROM maintenance_users
                     WHERE maintenance_users.person_id = people.id
                 )
             WHERE EXISTS (
                 SELECT 1 
-                FROM maintenance_users 
+                FROM maintenance_users
                 WHERE maintenance_users.person_id = people.id
             )
         ');
@@ -36,12 +34,12 @@ return new class extends Migration {
             SET type = "agent"
             WHERE EXISTS (
                 SELECT 1 
-                FROM agents 
+                FROM agents
                 WHERE agents.person_id = people.id
             )
             AND NOT EXISTS (
                 SELECT 1 
-                FROM maintenance_users 
+                FROM maintenance_users
                 WHERE maintenance_users.person_id = people.id
             )
         ');
@@ -57,12 +55,12 @@ return new class extends Migration {
         // Set type back to 'customer' and clear mini_grid_id for maintenance users
         DB::connection('tenant')->statement('
             UPDATE people 
-            SET 
+            SET
                 type = "customer",
                 mini_grid_id = NULL
             WHERE EXISTS (
                 SELECT 1 
-                FROM maintenance_users 
+                FROM maintenance_users
                 WHERE maintenance_users.person_id = people.id
             )
         ');
@@ -73,12 +71,12 @@ return new class extends Migration {
             SET type = "customer"
             WHERE EXISTS (
                 SELECT 1 
-                FROM agents 
+                FROM agents
                 WHERE agents.person_id = people.id
             )
             AND NOT EXISTS (
                 SELECT 1 
-                FROM maintenance_users 
+                FROM maintenance_users
                 WHERE maintenance_users.person_id = people.id
             )
         ');
