@@ -14,6 +14,7 @@ use Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
 use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
 use Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
+use Inensus\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
 use Inensus\SparkMeter\Providers\SparkMeterServiceProvider;
 use Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use Inensus\StronMeter\Providers\StronMeterServiceProvider;
@@ -50,4 +51,5 @@ return [
     VodacomMobileMoneyServiceProvider::class,
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
+    OdysseyDataExportServiceProvider::class,
 ];
