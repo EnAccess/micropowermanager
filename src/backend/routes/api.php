@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgentPerformanceMetricsController;
+use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetPersonController;
@@ -346,6 +347,13 @@ Route::group(['prefix' => 'registration-tails'], static function () {
 Route::group(['prefix' => 'plugins'], static function () {
     Route::get('/', [PluginController::class, 'index']);
     Route::put('/{mpmPluginId}', [PluginController::class, 'update']);
+});
+
+// API Keys management (requires web client auth token)
+Route::group(['middleware' => 'auth:api'], static function () {
+    Route::get('/api-keys', [ApiKeyController::class, 'index']);
+    Route::post('/api-keys', [ApiKeyController::class, 'store']);
+    Route::delete('/api-keys/{id}', [ApiKeyController::class, 'destroy']);
 });
 
 Route::get('/clusterlist', [ClusterController::class, 'index']);
