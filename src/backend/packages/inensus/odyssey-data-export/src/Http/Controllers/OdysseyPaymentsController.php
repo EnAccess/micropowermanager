@@ -26,7 +26,7 @@ class OdysseyPaymentsController extends Controller {
             ->with(['paidFor', 'payer.addresses', 'transaction'])
             ->whereBetween('created_at', [$from, $to])
             ->get()
-            ->map(fn (PaymentHistory $p) => $transformer->transform($p))
+            ->map(fn (PaymentHistory $p): array => $transformer->transform($p))
             ->values();
 
         return response()->json([

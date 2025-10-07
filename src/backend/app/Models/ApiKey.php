@@ -31,7 +31,7 @@ class ApiKey extends BaseModelCentral {
      *
      * @return Builder<ApiKey>
      */
-    public function scopeActive(Builder $query): Builder {
+    protected function scopeActive(Builder $query): Builder {
         return $query->where('active', true);
     }
 }
