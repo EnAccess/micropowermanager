@@ -17,21 +17,22 @@
                 >
                   <md-field
                     :class="{
-                      'md-invalid': errors.has('Credential-Form.apiUrl'),
+                      'md-invalid': submitted && errors.has('Credential-Form.apiUrl'),
                     }"
                   >
                     <label for="apiUrl">
                       {{ $tc("phrases.apiEndpoint") }}
                     </label>
-                    <md-input
+                    <md-select
                       id="apiUrl"
                       name="apiUrl"
-                      type="url"
                       v-model="credentialService.credential.apiUrl"
-                      v-validate="'required|url'"
-                      placeholder="https://demo.prospect.energy/api/v1/in/installations"
-                    />
-                    <span class="md-error">
+                      v-validate="'required'"
+                    >
+                      <md-option value="installations">Installations</md-option>
+                      <md-option value="payments">Payments</md-option>
+                    </md-select>
+                    <span class="md-error" v-if="submitted">
                       {{ errors.first("Credential-Form.apiUrl") }}
                     </span>
                   </md-field>
@@ -42,7 +43,7 @@
                 >
                   <md-field
                     :class="{
-                      'md-invalid': errors.has('Credential-Form.apiToken'),
+                      'md-invalid': submitted && errors.has('Credential-Form.apiToken'),
                     }"
                   >
                     <label for="apiToken">
@@ -55,7 +56,7 @@
                       v-model="credentialService.credential.apiToken"
                       v-validate="'required|min:3'"
                     />
-                    <span class="md-error">
+                    <span class="md-error" v-if="submitted">
                       {{ errors.first("Credential-Form.apiToken") }}
                     </span>
                   </md-field>
@@ -100,6 +101,7 @@ export default {
     return {
       credentialService: new CredentialService(),
       loading: false,
+      submitted: false,
     }
   },
   mounted() {
@@ -110,6 +112,7 @@ export default {
       await this.credentialService.getCredential()
     },
     async submitCredentialForm() {
+      this.submitted = true
       let validator = await this.$validator.validateAll("Credential-Form")
       if (!validator) {
         return

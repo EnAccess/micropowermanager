@@ -6,7 +6,7 @@
           <div
             class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
           >
-            <credential style="height: 100% !important" />
+            <Credential style="height: 100% !important" />
           </div>
         </div>
       </div>
