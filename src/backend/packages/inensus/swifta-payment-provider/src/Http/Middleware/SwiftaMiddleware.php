@@ -10,6 +10,9 @@ use Tymon\JWTAuth\JWTGuard;
 // Test
 
 class SwiftaMiddleware {
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
         /** @var JWTGuard $guard */
         $guard = auth();

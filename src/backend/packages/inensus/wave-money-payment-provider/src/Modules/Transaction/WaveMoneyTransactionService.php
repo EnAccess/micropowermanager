@@ -14,6 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -34,6 +35,17 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         );
     }
 
+    /**
+     * @return array{
+     *     order_id: string,
+     *     reference_id: string,
+     *     meter_serial: string,
+     *     status: int,
+     *     currency: string,
+     *     customer_id: int,
+     *     amount: float|int
+     * }
+     */
     public function initializeTransactionData(): array {
         $orderId = Uuid::uuid4()->toString(); // need to store somewhere
         $referenceId = Uuid::uuid4()->toString(); // need to store somewhere
@@ -49,17 +61,20 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         ];
     }
 
-    public function getByOrderId(string $orderId) {
+    public function getByOrderId(string $orderId): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->where('order_id', '=', $orderId)
             ->firstOrFail();
     }
 
-    public function getByExternalTransactionId(string $externalTransactionId) {
+    public function getByExternalTransactionId(string $externalTransactionId): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->where('external_transaction_id', '=', $externalTransactionId)
             ->firstOrFail();
     }
 
-    public function getByStatus($status) {
+    /**
+     * @return Collection<int, WaveMoneyTransaction>
+     */
+    public function getByStatus(int $status): Collection {
         return $this->waveMoneyTransaction->newQuery()->where('status', '=', $status)
             ->get();
     }

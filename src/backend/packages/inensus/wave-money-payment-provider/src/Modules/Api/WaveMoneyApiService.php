@@ -14,6 +14,12 @@ class WaveMoneyApiService {
         private WaveMoneyCredentialService $credentialService,
     ) {}
 
+    /**
+     * @return array{
+     *     redirectionUrl: string|null,
+     *     error: string|null
+     * }
+     */
     public function requestPayment(WaveMoneyTransaction $transaction): array {
         $credential = $this->credentialService->getCredentials();
         $transactionResource = new StartTransactionResource($credential, $transaction);

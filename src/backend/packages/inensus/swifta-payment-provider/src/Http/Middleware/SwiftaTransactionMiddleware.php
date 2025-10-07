@@ -7,6 +7,9 @@ use Illuminate\Http\Response;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
 
 class SwiftaTransactionMiddleware {
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
         $transactionProvider = resolve(SwiftaTransactionProvider::class);
 

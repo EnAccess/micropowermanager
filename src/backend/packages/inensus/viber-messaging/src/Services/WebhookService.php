@@ -4,10 +4,11 @@ namespace Inensus\ViberMessaging\Services;
 
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Exceptions\WebhookNotCreatedException;
+use Inensus\ViberMessaging\Models\ViberCredential;
 use Viber\Client;
 
 class WebhookService {
-    public function createWebHook($credential): void {
+    public function createWebHook(ViberCredential $credential): void {
         $apiKey = $credential->api_token;
         $webhookUrl = $credential->webhook_url;
 

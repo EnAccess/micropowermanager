@@ -40,7 +40,7 @@ class UpdatePackage extends Command {
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/viber-messaging');
     }
 
-    private function deleteMigration(Filesystem $filesystem) {
+    private function deleteMigration(Filesystem $filesystem): int|bool {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.
             '*_create_viber_tables.php')[0];
         $migration = DB::table('migrations')

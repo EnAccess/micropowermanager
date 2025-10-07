@@ -30,6 +30,9 @@ class ViberMessageService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, ViberMessage>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

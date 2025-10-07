@@ -54,6 +54,9 @@ class WaveComTransaction extends BasePaymentProviderTransaction {
         $this->amount = $amount;
     }
 
+    /**
+     * @return MorphMany<TransactionConflicts, $this>
+     */
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }

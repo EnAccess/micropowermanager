@@ -2,12 +2,14 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Providers;
 
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -16,7 +18,8 @@ use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionSer
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class WaveMoneyTransactionProvider implements ITransactionProvider {
-    private $validData = [];
+    /** @var array<string, mixed> */
+    private array $validData = [];
 
     public function __construct(
         private WaveMoneyTransaction $waveMoneytransaction,
@@ -25,7 +28,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         private TransactionConflicts $transactionConflicts,
     ) {}
 
-    public function validateRequest($request): void {
+    public function validateRequest(Request $request): void {
         $meterSerial = $request->input('meterSerial');
         $amount = $request->input('amount');
 
@@ -93,7 +96,10 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         throw new \BadMethodCallException('Method saveCommonData() not yet implemented.');
     }
 
-    public function init($transaction): void {
+    public function init(BasePaymentProviderTransaction $transaction): void {
+        if (!$transaction instanceof WaveMoneyTransaction) {
+            throw new \InvalidArgumentException('Expected instance of '.WaveMoneyTransaction::class.', got '.get_class($transaction));
+        }
         $this->waveMoneytransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
@@ -110,11 +116,17 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         return $this->transaction;
     }
 
-    public function setValidData($waveMoneyTransactionData): void {
+    /**
+     * @param array<string, mixed> $waveMoneyTransactionData
+     */
+    public function setValidData(array $waveMoneyTransactionData): void {
         $this->validData = $waveMoneyTransactionData;
     }
 
-    public function getValidData() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function getValidData(): array {
         return $this->validData;
     }
 

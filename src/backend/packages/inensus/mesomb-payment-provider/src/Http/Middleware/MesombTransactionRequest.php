@@ -10,6 +10,9 @@ use Inensus\MesombPaymentProvider\Exceptions\MesombStatusFailedException;
 use Inensus\MesombPaymentProvider\Providers\MesombTransactionProvider;
 
 class MesombTransactionRequest {
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
         $transactionProvider = resolve(MesombTransactionProvider::class);
         try {
