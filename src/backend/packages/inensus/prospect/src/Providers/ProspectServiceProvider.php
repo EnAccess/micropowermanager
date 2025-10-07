@@ -58,15 +58,15 @@ class ProspectServiceProvider extends ServiceProvider
         $timestamp = date('Y_m_d_His');
 
         return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
-            ->flatMap(function ($path) use ($filesystem) {
-                if (count($filesystem->glob($path.'*_create_prospect_tables.php'))) {
-                    $file = $filesystem->glob($path.'*_create_prospect_tables.php')[0];
+            ->flatMap(function ($path) use ($filesystem, $migrationName) {
+                if (count($filesystem->glob($path.'*_'.$migrationName))) {
+                    $file = $filesystem->glob($path.'*_'.$migrationName)[0];
 
-                    file_put_contents($file, file_get_contents(__DIR__.'/../../database/migrations/create_prospect_tables.php.stub'));
+                    file_put_contents($file, file_get_contents(__DIR__.'/../../database/migrations/' . $migrationName.'.stub'));
                 }
 
-                return $filesystem->glob($path.'*_create_prospect_tables.php');
-            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_prospect_tables.php")
+                return $filesystem->glob($path.'*_'.$migrationName);
+            })->push($this->app->databasePath()."/migrations/tenant/{$timestamp}_{$migrationName}")
             ->first();
     }
 }
