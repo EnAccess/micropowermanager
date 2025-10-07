@@ -19,7 +19,6 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\EBike;
-use App\Models\MaintenanceUsers;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
@@ -75,7 +74,6 @@ class AppServiceProvider extends ServiceProvider {
                 MeterTariff::RELATION_NAME => MeterTariff::class,
                 ThirdPartyTransaction::RELATION_NAME => ThirdPartyTransaction::class,
                 CashTransaction::RELATION_NAME => CashTransaction::class,
-                MaintenanceUsers::RELATION_NAME => MaintenanceUsers::class,
                 Meter::RELATION_NAME => Meter::class,
                 Device::RELATION_NAME => Device::class,
                 City::RELATION_NAME => City::class,

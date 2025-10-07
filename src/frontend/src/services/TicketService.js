@@ -102,7 +102,7 @@ export class TicketService {
     if (type === "ticketListOpened") this.openedList = []
     else this.closedList = []
 
-    const result = data?.data?.map((ticket) => {
+    const result = data?.map((ticket) => {
       return {
         created: ticket.created_at,
         id: ticket.id,
@@ -149,7 +149,7 @@ export class TicketService {
       description: maintenanceData.description,
       title: maintenanceData.title,
       owner_id: maintenanceData.assigned.id,
-      owner_type: "maintenance_user",
+      owner_type: "person",
       creator_type: "admin",
     }
     try {
