@@ -44,4 +44,7 @@ return [
     'waveMoney' => [
         'url' => env('WAVEMONEY_API_URL'),
     ],
+    'prospect' => [
+        'default_api_url' => env('PROSPECT_API_URL', 'https://demo.prospect.energy/api/v1/in/'),
+    ],
 ];

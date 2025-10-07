@@ -12,7 +12,7 @@ class ProspectCredentialRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'api_url' => ['required', 'url'],
+            'api_url' => ['required', 'in:installations,payments'],
             'api_token' => ['required'],
         ];
     }

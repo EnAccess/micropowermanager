@@ -31,8 +31,12 @@ class ProspectCredentialService {
             $credential = $this->createCredentials();
         }
 
+        $baseUrl = rtrim(config('prospect.api_uri', 'https://demo.prospect.energy/api/v1/in/'), '/');
+        $endpoint = ltrim($data['api_url'], '/');
+        $normalizedApiUrl = $baseUrl . '/' . $endpoint;
+
         $credential->update([
-            'api_url' => $data['api_url'],
+            'api_url' => $normalizedApiUrl,
             'api_token' => $data['api_token'],
         ]);
         $credential->save();
