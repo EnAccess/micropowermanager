@@ -17,7 +17,7 @@ return new class extends Migration {
                 'id' => MpmPlugin::ODYSSEY_DATA_EXPORT,
                 'name' => 'OdysseyDataExport',
                 'description' => 'This plugin developed for OdysseyDataExport functionality.',
-                'tail_tag' => 'OdysseyDataExport',
+                'tail_tag' => null,
                 'installation_command' => 'odyssey-data-export:install',
                 'root_class' => 'OdysseyDataExport',
                 'created_at' => Carbon::now(),
