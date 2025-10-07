@@ -26,9 +26,10 @@
                     <md-select
                       id="apiUrl"
                       name="apiUrl"
-                      v-model="credentialService.credential.apiUrl"
+                      v-model="selectedEndpoint"
                       v-validate="'required'"
                     >
+                      <md-option value="" disabled>Select endpoint</md-option>
                       <md-option value="installations">Installations</md-option>
                       <md-option value="payments">Payments</md-option>
                     </md-select>
@@ -102,6 +103,7 @@ export default {
       credentialService: new CredentialService(),
       loading: false,
       submitted: false,
+      selectedEndpoint: "",
     }
   },
   mounted() {
@@ -110,6 +112,14 @@ export default {
   methods: {
     async getCredential() {
       await this.credentialService.getCredential()
+      const savedUrl = this.credentialService.credential.apiUrl || ""
+      if (savedUrl.endsWith("/installations") || savedUrl.includes("/installations")) {
+        this.selectedEndpoint = "installations"
+      } else if (savedUrl.endsWith("/payments") || savedUrl.includes("/payments")) {
+        this.selectedEndpoint = "payments"
+      } else {
+        this.selectedEndpoint = ""
+      }
     },
     async submitCredentialForm() {
       this.submitted = true
@@ -119,6 +129,7 @@ export default {
       }
       try {
         this.loading = true
+        this.credentialService.credential.apiUrl = this.selectedEndpoint
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Updated successfully")
         EventBus.$emit("Prospect")
