@@ -2,28 +2,24 @@
 
 namespace Inensus\OdysseyDataExport\Providers;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
-class RouteServiceProvider extends ServiceProvider
-{
+class RouteServiceProvider extends ServiceProvider {
     protected $namespace = 'Inensus\OdysseyDataExport\Http\Controllers';
 
-    public function boot()
-    {
+    public function boot(): void {
         parent::boot();
     }
 
-    public function map()
-    {
+    public function map(): void {
         $this->mapApiRoutes();
     }
 
-    protected function mapApiRoutes()
-    {
+    protected function mapApiRoutes() {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(__DIR__ . '/../routes/api.php');
+            ->group(__DIR__.'/../routes/api.php');
     }
 }

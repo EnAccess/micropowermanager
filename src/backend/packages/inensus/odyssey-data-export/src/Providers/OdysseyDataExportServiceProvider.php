@@ -4,12 +4,9 @@ namespace Inensus\OdysseyDataExport\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Inensus\OdysseyDataExport\Console\Commands\InstallPackage;
-use Inensus\OdysseyDataExport\Providers\EventServiceProvider;
-use Inensus\OdysseyDataExport\Providers\ObserverServiceProvider;
-use Inensus\OdysseyDataExport\Providers\RouteServiceProvider;
 
 class OdysseyDataExportServiceProvider extends ServiceProvider {
-    public function boot() {
+    public function boot(): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -19,19 +16,19 @@ class OdysseyDataExportServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/odyssey-data-export.php', 'odyssey-data-export');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/odyssey-data-export.php' => config_path('odyssey-data-export.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/odyssey-data-export'

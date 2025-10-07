@@ -2,10 +2,12 @@
 
 namespace Inensus\OdysseyDataExport\Services;
 
+use App\Models\AccessRate\AccessRate;
 use App\Models\AssetRate;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
+use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
@@ -20,8 +22,11 @@ class OdysseyPaymentTransformer {
         $transactionKwh = null;
         $latitude = null;
         $longitude = null;
+        $customerCategory = null;
 
-        $paidFor = $payment->paidFor; // Token | AssetRate | AccessRate
+        /** @var Token|AssetRate|AccessRate|null $paidFor */
+        $paidFor = $payment->paidFor;
+
         if ($paidFor instanceof Token) {
             $device = $paidFor->device; // App\Models\Device
             if ($paidFor->token_type === Token::TYPE_ENERGY && $paidFor->token_unit === Token::UNIT_KWH) {
@@ -52,7 +57,7 @@ class OdysseyPaymentTransformer {
             }
         }
         // Handle appliance installment payments paid against AssetRate
-        if ($paidFor instanceof AssetRate) {
+        elseif ($paidFor instanceof AssetRate) {
             $assetPerson = $paidFor->assetPerson()->with('device.device', 'device.address.geo')->first();
             if ($assetPerson && $assetPerson->device) {
                 $device = $assetPerson->device;
@@ -75,14 +80,19 @@ class OdysseyPaymentTransformer {
             }
         }
 
-        $payer = $payment->payer; // expected Person
-        $customerId = $payer?->id ? (string) $payer->id : 'N/A';
-        $customerName = $payer ? trim(($payer->name ?? '').' '.($payer->surname ?? '')) : null;
+        /** @var Person|null $payer */
+        $payer = $payment->payer;
+        $customerId = 'N/A';
+        $customerName = null;
         $customerPhone = null;
-        $customerCategory = $customerCategory ?? null;
-        if ($payer) {
+
+        if ($payer instanceof Person) {
+            $customerId = (string) $payer->id;
+            $customerName = trim(($payer->name ?? '').' '.($payer->surname ?? ''));
+
             $primaryAddress = $payer->addresses()->where('is_primary', 1)->first();
             $customerPhone = $primaryAddress?->phone;
+
             // Fallback: if no category yet, try payer's device connection type
             if (!$customerCategory) {
                 $firstDevice = $payer->devices()->with('device.connectionType')->first();
