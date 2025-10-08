@@ -2,9 +2,12 @@
 
 namespace Inensus\DalyBms\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\DalyBms\Models\DalyBmsCredential;
 
 class DalyBmsCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private DalyBmsCredential $credential,
     ) {}
@@ -20,17 +23,48 @@ class DalyBmsCredentialService {
     }
 
     public function getCredentials() {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->user_name) {
+                $credential->user_name = $this->decryptCredentialField($credential->user_name);
+            }
+            if ($credential->password) {
+                $credential->password = $this->decryptCredentialField($credential->password);
+            }
+            if ($credential->access_token) {
+                $credential->access_token = $this->decryptCredentialField($credential->access_token);
+            }
+        }
+
+        return $credential;
     }
 
     public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+        $encryptedData = $this->encryptCredentialFields($updateData, ['user_name', 'password', 'access_token']);
+        $credentials->update($encryptedData);
 
-        return $credentials->fresh();
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['user_name', 'password', 'access_token']);
     }
 
     public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        // Decrypt sensitive fields
+        if ($credential->user_name) {
+            $credential->user_name = $this->decryptCredentialField($credential->user_name);
+        }
+        if ($credential->password) {
+            $credential->password = $this->decryptCredentialField($credential->password);
+        }
+        if ($credential->access_token) {
+            $credential->access_token = $this->decryptCredentialField($credential->access_token);
+        }
+
+        return $credential;
     }
 
     public function isAccessTokenValid($credential): bool {

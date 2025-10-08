@@ -2,9 +2,12 @@
 
 namespace Inensus\CalinSmartMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 
 class CalinSmartCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(private CalinSmartCredential $credential) {}
 
     /**
@@ -20,7 +23,25 @@ class CalinSmartCredentialService {
     }
 
     public function getCredentials() {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->company_name) {
+                $credential->company_name = $this->decryptCredentialField($credential->company_name);
+            }
+            if ($credential->user_name) {
+                $credential->user_name = $this->decryptCredentialField($credential->user_name);
+            }
+            if ($credential->password) {
+                $credential->password = $this->decryptCredentialField($credential->password);
+            }
+            if ($credential->password_vend) {
+                $credential->password_vend = $this->decryptCredentialField($credential->password_vend);
+            }
+        }
+
+        return $credential;
     }
 
     public function updateCredentials($data) {
@@ -30,13 +51,14 @@ class CalinSmartCredentialService {
             $credential = $this->createCredentials();
         }
 
-        $credential->update([
-            'company_name' => $data['company_name'],
-            'user_name' => $data['user_name'],
-            'password' => $data['password'],
-            'password_vend' => $data['password_vend'],
-        ]);
 
-        return $credential->fresh();
+        $encryptedData = $this->encryptCredentialFields($data, ['company_name', 'user_name', 'password', 'password_vend']);
+
+        $credential->update($encryptedData);
+        $credential->save();
+
+        $credential->fresh();
+
+        return $this->decryptCredentialFields($credential, ['company_name', 'user_name', 'password', 'password_vend']);
     }
 }

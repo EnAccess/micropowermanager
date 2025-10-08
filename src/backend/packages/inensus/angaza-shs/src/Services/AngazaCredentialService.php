@@ -2,9 +2,12 @@
 
 namespace Inensus\AngazaSHS\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\AngazaSHS\Models\AngazaCredential;
 
 class AngazaCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private AngazaCredential $credential,
     ) {}
@@ -20,17 +23,25 @@ class AngazaCredentialService {
     }
 
     public function getCredentials() {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 
     public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+        $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret']);
 
-        return $credentials->fresh();
+        $credentials->update($encryptedData);
+
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret']);
     }
 
     public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 
     public function isAccessTokenValid($credential): bool {

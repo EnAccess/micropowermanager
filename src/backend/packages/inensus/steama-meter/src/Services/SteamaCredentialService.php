@@ -2,12 +2,14 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaCredential;
 
 class SteamaCredentialService {
+    use EncryptsCredentials;
     private string $rootUrl = '/get-token/';
 
     public function __construct(private SteamaCredential $credential, private SteamaMeterApiClient $steamaApi) {}
@@ -26,16 +28,16 @@ class SteamaCredentialService {
     }
 
     public function getCredentials() {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['username', 'password', 'authentication_token']);
     }
 
     public function updateCredentials(array $data) {
         $credential = $this->credential->newQuery()->find($data['id']);
 
-        $credential->update([
-            'username' => $data['username'],
-            'password' => $data['password'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['username', 'password']);
+        $credential->update($encryptedData);
         $postParams = [
             'username' => $data['username'],
             'password' => $data['password'],
@@ -43,7 +45,7 @@ class SteamaCredentialService {
         try {
             $result = $this->steamaApi->token($this->rootUrl, $postParams);
             $credential->update([
-                'authentication_token' => $result['token'],
+                'authentication_token' => $this->encryptCredentialField($result['token']),
                 'is_authenticated' => true,
             ]);
         } catch (ClientException $cException) {
@@ -63,7 +65,8 @@ class SteamaCredentialService {
             $credential->authentication_token = null;
         }
         $credential->save();
+        $credential->fresh();
 
-        return $credential->fresh();
+        return $this->decryptCredentialFields($credential, ['username', 'password', 'authentication_token']);
     }
 }
