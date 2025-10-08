@@ -2,8 +2,7 @@
 
 namespace Inensus\PaystackPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -25,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null payment_url
  * @property array|null metadata
  */
-class PaystackTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class PaystackTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'paystack_transaction';
 
     public const STATUS_REQUESTED = 0;
@@ -64,7 +63,6 @@ class PaystackTransaction extends BaseModel implements PaymentProviderTransactio
     public function getDeviceSerial(): string {
         return $this->serial_id;
     }
-
 
     public function getCustomerId(): int {
         return $this->customer_id;
