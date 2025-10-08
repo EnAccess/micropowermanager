@@ -22,7 +22,7 @@ class GomeLongCredentialService {
         ]);
     }
 
-    public function getCredentials(): object|null {
+    public function getCredentials(): ?object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['user_id', 'user_password']);

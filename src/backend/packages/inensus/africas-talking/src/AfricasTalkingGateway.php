@@ -11,7 +11,7 @@ use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
 
 class AfricasTalkingGateway {
     private AfricasTalking $africasTalking;
-    private ?object $credentials;
+    private ?object $credentials = null;
 
     public function __construct(
         private AfricasTalkingCredentialService $credentialService,

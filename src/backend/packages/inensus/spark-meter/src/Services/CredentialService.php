@@ -18,7 +18,7 @@ class CredentialService {
         private OrganizationService $organizationService,
     ) {}
 
-    public function getCredentials(): object|null {
+    public function getCredentials(): ?object {
         $credential = $this->smCredential->newQuery()->latest()->take(1)->first();
 
         return $this->decryptCredentialFields($credential, ['api_key', 'api_secret']);
