@@ -48,6 +48,11 @@ return new class extends Migration {
 
     /**
      * Encrypt existing credentials in the database.
+     *
+     * @param string        $tableName
+     * @param array<string> $fields
+     *
+     * @return void
      */
     private function encryptExistingCredentials(string $tableName, array $fields): void {
         $records = DB::connection('tenant')->table($tableName)->get();
@@ -120,6 +125,11 @@ return new class extends Migration {
 
     /**
      * Decrypt existing credentials in the database.
+     *
+     * @param string        $tableName
+     * @param array<string> $fields
+     *
+     * @return void
      */
     private function decryptExistingCredentials(string $tableName, array $fields): void {
         $records = DB::connection('tenant')->table($tableName)->get();

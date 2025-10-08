@@ -22,13 +22,13 @@ class AngazaCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 
-    public function updateCredentials($credentials, $updateData) {
+    public function updateCredentials(object $credentials, array $updateData): object {
         $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret']);
 
         $credentials->update($encryptedData);
@@ -38,7 +38,7 @@ class AngazaCredentialService {
         return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret']);
     }
 
-    public function getById($id) {
+    public function getById($id): object {
         $credential = $this->credential->newQuery()->findOrFail($id);
 
         return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);

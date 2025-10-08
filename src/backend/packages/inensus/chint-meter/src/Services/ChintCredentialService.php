@@ -38,7 +38,7 @@ class ChintCredentialService {
         return $credential;
     }
 
-    public function updateCredentials($credentials, $updateData) {
+    public function updateCredentials(object $credentials, array $updateData): object {
         $encryptedData = $this->encryptCredentialFields($updateData, ['user_name', 'user_password']);
 
         $credentials->update($encryptedData);

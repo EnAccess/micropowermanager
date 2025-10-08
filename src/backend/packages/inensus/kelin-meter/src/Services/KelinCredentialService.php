@@ -50,7 +50,7 @@ class KelinCredentialService {
         return $credential;
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->getCredentials();
         $encryptedData = $this->encryptCredentialFields($data, ['username', 'password']);
         $credential->update($encryptedData);

@@ -18,7 +18,7 @@ class CredentialService {
         private OrganizationService $organizationService,
     ) {}
 
-    public function getCredentials() {
+    public function getCredentials(): object {
         $credential = $this->smCredential->newQuery()->latest()->take(1)->first();
 
         return $this->decryptCredentialFields($credential, ['api_key', 'api_secret']);
@@ -32,7 +32,7 @@ class CredentialService {
         ]);
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $smCredentials = $this->smCredential->newQuery()->find($data['id']);
         $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'api_secret']);
         $smCredentials->update($encryptedData);

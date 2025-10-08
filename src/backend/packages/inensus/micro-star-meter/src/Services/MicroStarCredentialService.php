@@ -24,13 +24,13 @@ class MicroStarCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['certificate_file_name', 'certificate_path', 'certificate_password']);
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->getCredentials();
 
         $encryptedData = $this->encryptCredentialFields($data, ['certificate_password']);

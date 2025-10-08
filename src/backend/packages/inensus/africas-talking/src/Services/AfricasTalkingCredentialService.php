@@ -23,13 +23,13 @@ class AfricasTalkingCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['api_key', 'username', 'short_code']);
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'username', 'short_code']);

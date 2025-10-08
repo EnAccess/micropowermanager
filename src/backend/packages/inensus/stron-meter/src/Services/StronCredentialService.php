@@ -49,7 +49,7 @@ class StronCredentialService {
         return $credential;
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->credential->newQuery()->firstOrFail();
 
         $encryptedData = $this->encryptCredentialFields($data, ['username', 'password', 'company_name']);

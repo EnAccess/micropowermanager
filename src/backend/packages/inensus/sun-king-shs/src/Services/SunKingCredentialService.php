@@ -41,7 +41,7 @@ class SunKingCredentialService {
         return $credential;
     }
 
-    public function updateCredentials($credentials, $updateData) {
+    public function updateCredentials(object $credentials, array $updateData): object {
         $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret', 'access_token']);
         $credentials->update($encryptedData);
 

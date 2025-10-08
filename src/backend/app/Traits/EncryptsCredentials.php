@@ -4,13 +4,12 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Crypt;
 
+/** @phpstan-ignore trait.unused */
 trait EncryptsCredentials {
     /**
      * Encrypt a credential field value.
      *
-     * @param string|null $value
      *
-     * @return string|null
      */
     protected function encryptCredentialField(?string $value): ?string {
         if ($value === null) {
@@ -19,7 +18,7 @@ trait EncryptsCredentials {
 
         try {
             return Crypt::encryptString($value);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $value; // Return original value if encryption fails
         }
     }
@@ -27,9 +26,7 @@ trait EncryptsCredentials {
     /**
      * Decrypt a credential field value.
      *
-     * @param string|null $value
      *
-     * @return string|null
      */
     protected function decryptCredentialField(?string $value): ?string {
         if ($value === null) {
@@ -38,7 +35,7 @@ trait EncryptsCredentials {
 
         try {
             return Crypt::decryptString($value);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $value; // Return original value if decryption fails
         }
     }
@@ -46,20 +43,13 @@ trait EncryptsCredentials {
     /**
      * Encrypt multiple credential fields in an array.
      *
-     * @param array $data
-     * @param array $fieldsToEncrypt
      *
-     * @return array
      */
     protected function encryptCredentialFields(array $data, array $fieldsToEncrypt): array {
         $encryptedData = [];
 
         foreach ($data as $key => $value) {
-            if (in_array($key, $fieldsToEncrypt)) {
-                $encryptedData[$key] = $this->encryptCredentialField($value);
-            } else {
-                $encryptedData[$key] = $value;
-            }
+            $encryptedData[$key] = in_array($key, $fieldsToEncrypt) ? $this->encryptCredentialField($value) : $value;
         }
 
         return $encryptedData;
@@ -68,10 +58,7 @@ trait EncryptsCredentials {
     /**
      * Decrypt multiple credential fields on a model.
      *
-     * @param object $model
-     * @param array  $fieldsToDecrypt
      *
-     * @return object
      */
     protected function decryptCredentialFields(object $model, array $fieldsToDecrypt): object {
         if (!$model) {

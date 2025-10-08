@@ -22,13 +22,13 @@ class GomeLongCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['user_id', 'user_password']);
     }
 
-    public function updateCredentials($credentials, $updateData) {
+    public function updateCredentials(object $credentials, $updateData): object {
         $credentials->update($updateData);
 
         $credentials->fresh();
@@ -36,7 +36,7 @@ class GomeLongCredentialService {
         return $this->decryptCredentialFields($credentials, ['user_id', 'user_password']);
     }
 
-    public function getById($id) {
+    public function getById($id): object {
         $credential = $this->credential->newQuery()->findOrFail($id);
 
         return $this->decryptCredentialFields($credential, ['user_id', 'user_password']);

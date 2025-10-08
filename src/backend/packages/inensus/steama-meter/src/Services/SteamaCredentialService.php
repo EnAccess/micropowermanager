@@ -27,13 +27,13 @@ class SteamaCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['username', 'password', 'authentication_token']);
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $encryptedData = $this->encryptCredentialFields($data, ['username', 'password']);

@@ -44,13 +44,12 @@ class CalinSmartCredentialService {
         return $credential;
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->credential->newQuery()->find($data['id'] ?? null);
 
         if (!$credential) {
             $credential = $this->createCredentials();
         }
-
 
         $encryptedData = $this->encryptCredentialFields($data, ['company_name', 'user_name', 'password', 'password_vend']);
 

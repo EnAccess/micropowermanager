@@ -20,13 +20,13 @@ class CalinCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['user_id', 'api_key']);
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->credential->newQuery()->firstOrFail();
         $encryptedData = $this->encryptCredentialFields($data, ['user_id', 'api_key']);
 
