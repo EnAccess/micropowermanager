@@ -27,7 +27,7 @@ class SteamaCredentialService {
         ]);
     }
 
-    public function getCredentials(): object {
+    public function getCredentials(): object|null {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['username', 'password', 'authentication_token']);

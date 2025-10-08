@@ -52,7 +52,7 @@ trait EncryptsCredentials {
     /**
      * Decrypt multiple credential fields on a model.
      */
-    protected function decryptCredentialFields(object $model, array $fieldsToDecrypt): object {
+    protected function decryptCredentialFields(object $model, array $fieldsToDecrypt): object|null {
         if (!$model) {
             return $model;
         }
