@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Crypt;
 trait EncryptsCredentials {
     /**
      * Encrypt a credential field value.
-     *
-     *
      */
     protected function encryptCredentialField(?string $value): ?string {
         if ($value === null) {
@@ -25,8 +23,6 @@ trait EncryptsCredentials {
 
     /**
      * Decrypt a credential field value.
-     *
-     *
      */
     protected function decryptCredentialField(?string $value): ?string {
         if ($value === null) {
@@ -42,8 +38,6 @@ trait EncryptsCredentials {
 
     /**
      * Encrypt multiple credential fields in an array.
-     *
-     *
      */
     protected function encryptCredentialFields(array $data, array $fieldsToEncrypt): array {
         $encryptedData = [];
@@ -57,8 +51,6 @@ trait EncryptsCredentials {
 
     /**
      * Decrypt multiple credential fields on a model.
-     *
-     *
      */
     protected function decryptCredentialFields(object $model, array $fieldsToDecrypt): object {
         if (!$model) {
