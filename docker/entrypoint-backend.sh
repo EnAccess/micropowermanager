@@ -60,6 +60,17 @@ fi
 
 echo "Executing command: $@"
 
+# If running in production, generate Laravel caches so the app is optimized.
+# We do this at container startup (not build) so runtime environment variables are available to the framework.
+if [ "$APP_ENV" = "production" ] || [ "$MPM_FORCE_OPTIMIZE" = "1" ]; then
+  echo "Generating Laravel caches (config, events, routes, views) and optimizing..."
+  gosu www-data php artisan config:cache || echo "php artisan config:cache failed"
+  gosu www-data php artisan event:cache || echo "php artisan event:cache failed"
+  gosu www-data php artisan route:cache || echo "php artisan route:cache failed"
+  gosu www-data php artisan view:cache || echo "php artisan view:cache failed"
+  gosu www-data php artisan optimize || echo "php artisan optimize failed"
+fi
+
 # the main image's CMD arguments are somehow not passed to this script
 # so we need to check if there are any arguments and if not, execute apache2-foreground which is the default CMD of the main image
 if [ -z "$@" ]; then
