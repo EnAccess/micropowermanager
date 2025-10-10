@@ -133,10 +133,12 @@ import { TicketUserService } from "@/services/TicketUserService"
 import { TicketLabelService } from "@/services/TicketLabelService"
 import TicketItem from "../../shared/TicketItem"
 import { baseUrl } from "@/repositories/Client/AxiosClient"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Ticket",
   components: { TicketItem, Widget },
+  mixins: [notify],
   props: {
     personId: {
       required: true,
@@ -149,7 +151,6 @@ export default {
       subscriber: "userTickets",
       tickets: new UserTickets(this.personId),
       showPriceInput: false,
-      paginator: null,
       tableHeads: [
         this.$tc("words.subject"),
         this.$tc("words.category"),
@@ -189,7 +190,6 @@ export default {
 
   mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
-    //this.getTickets();
     this.getUsers()
     this.getLabels()
     this.$on("close", function () {
@@ -212,6 +212,7 @@ export default {
 
       if (category.out_source === 1) {
         this.showPriceInput = true
+        this.newTicket.outsourcing = 1
       }
     },
     reloadList(sub, data) {
@@ -225,6 +226,22 @@ export default {
     },
     closeModal() {
       this.showModal = false
+      this.resetForm()
+    },
+    resetForm() {
+      this.newTicket = {
+        title: "",
+        description: "",
+        dueDate: null,
+        label: null,
+        assignedPerson: null,
+        owner_id: this.personId,
+        owner_type: "person",
+        creator:
+          this.$store.getters["auth/authenticationService"].authenticateUser.id,
+        outsourcing: 0,
+      }
+      this.showPriceInput = false
     },
     openModal() {
       this.showModal = true
@@ -240,25 +257,6 @@ export default {
         date.getUTCDate() < 10 ? "0" + date.getUTCDate() : date.getUTCDate()
       this.newTicket.dueDate = day + "." + month + "." + year
     },
-    getTickets(pageNumber = 1) {
-      let personId = this.personId
-      this.loaded = false
-
-      if (this.paginator === null)
-        this.paginator = new Paginator(resources.ticket.getUser + personId)
-
-      this.paginator.loadPage(pageNumber).then((response) => {
-        this.loaded = true
-        this.tickets = []
-
-        for (let i in response.data) {
-          let t = new Ticket()
-          let data = response.data[i]
-
-          this.tickets.push(t.fromJson(data))
-        }
-      })
-    },
     closeTicket(ticket) {
       ticket.close()
     },
@@ -273,7 +271,7 @@ export default {
       this.labels = await this.ticketLabelService.getLabels()
     },
 
-    saveTicket() {
+    async saveTicket() {
       //validate ticket
       if (this.showPriceInput && this.newTicket.outsourcing === 0) {
         this.$swal({
@@ -284,16 +282,30 @@ export default {
         return
       }
 
-      axios.post(baseUrl + resources.ticket.create, this.newTicket).then(() => {
+      const newTicketParams = {
+        ...this.newTicket,
+        dueDate: this.newTicket.dueDate
+          ? moment(this.newTicket.dueDate).format("YYYY-MM-DD HH:mm:ss")
+          : null,
+      }
+
+      try {
+        await axios.post(baseUrl + resources.ticket.create, newTicketParams)
+        this.alertNotify("success", "Ticket created successfully.")
+        // Refresh ticket list
         EventBus.$emit(
           "widgetContentLoaded",
           this.subscriber,
           this.tickets.list.length,
         )
         this.resetKey++
-      })
-
-      this.$emit("close")
+        // Reset form and close modal
+        this.resetForm()
+        this.closeModal()
+      } catch (error) {
+        console.error("Error creating ticket:", error)
+        this.alertNotify("error", error.message)
+      }
     },
   },
 }
