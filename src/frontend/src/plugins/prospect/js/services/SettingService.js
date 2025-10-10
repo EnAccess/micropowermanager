@@ -22,14 +22,12 @@ export class SettingService {
       {
         id: 1,
         actionName: "Installations",
-        syncInValueStr: "weekly",
-        maxAttempts: 3,
+        apiToken: "",
       },
       {
         id: 2,
         actionName: "Payments",
-        syncInValueStr: "weekly",
-        maxAttempts: 3,
+        apiToken: "",
       },
     ]
   }
