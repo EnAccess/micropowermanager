@@ -124,10 +124,9 @@
 
 <script>
 import Widget from "@/shared/Widget.vue"
-import { Ticket, UserTickets } from "@/services/TicketService"
+import { UserTickets } from "@/services/TicketService"
 import { resources } from "@/resources"
 import { EventBus } from "@/shared/eventbus"
-import { Paginator } from "@/Helpers/Paginator"
 import moment from "moment"
 import { TicketUserService } from "@/services/TicketUserService"
 import { TicketLabelService } from "@/services/TicketLabelService"
