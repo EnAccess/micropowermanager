@@ -10,6 +10,8 @@ use Inensus\CalinMeter\Providers\CalinMeterServiceProvider;
 use Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider;
 use Inensus\ChintMeter\Providers\ChintMeterServiceProvider;
 use Inensus\DalyBms\Providers\DalyBmsServiceProvider;
+use Inensus\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
+use Inensus\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
 use Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
 use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
@@ -24,8 +26,6 @@ use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
 use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
 use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
-use Inensus\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
-use Inensus\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -52,6 +52,6 @@ return [
     VodacomMobileMoneyServiceProvider::class,
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
-DemoMeterManufacturerServiceProvider::class,
-DemoShsManufacturerServiceProvider::class,
+    DemoMeterManufacturerServiceProvider::class,
+    DemoShsManufacturerServiceProvider::class,
 ];

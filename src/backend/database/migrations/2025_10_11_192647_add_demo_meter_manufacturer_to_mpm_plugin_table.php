@@ -14,12 +14,12 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::DEMO_SHS_MANUFACTURER,
-                'name' => 'DemoShsManufacturer',
-                'description' => 'This plugin developed for DemoShsManufacturer functionality.',
-                'tail_tag' => 'DemoShsManufacturer',
-                'installation_command' => 'demo-shs-manufacturer:install',
-                'root_class' => 'DemoShsManufacturer',
+                'id' => MpmPlugin::DEMO_METER_MANUFACTURER,
+                'name' => 'DemoMeterManufacturer',
+                'description' => 'Demo manufacturer plugin for meters that generates realistic tokens and transactions without requiring real manufacturer API integration. Perfect for testing and demonstration purposes.',
+                'tail_tag' => 'DemoMeterManufacturer',
+                'installation_command' => 'demo-meter-manufacturer:install',
+                'root_class' => 'DemoMeterManufacturer',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -33,7 +33,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::DEMO_SHS_MANUFACTURER)
+            ->where('id', MpmPlugin::DEMO_METER_MANUFACTURER)
             ->delete();
     }
 };
