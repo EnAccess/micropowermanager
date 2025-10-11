@@ -24,6 +24,8 @@ use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
 use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
 use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
+use Inensus\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
+use Inensus\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -50,4 +52,6 @@ return [
     VodacomMobileMoneyServiceProvider::class,
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
+DemoMeterManufacturerServiceProvider::class,
+DemoShsManufacturerServiceProvider::class,
 ];

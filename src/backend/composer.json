@@ -61,6 +61,8 @@
   "autoload": {
     "psr-4": {
       "App\\": "app/",
+"Inensus\\DemoShsManufacturer\\": "packages/inensus/demo-shs-manufacturer/src",
+"Inensus\\DemoMeterManufacturer\\": "packages/inensus/demo-meter-manufacturer/src",
       "Database\\Factories\\": "database/factories/",
       "Database\\Seeders\\": "database/seeders/",
       "MPM\\": "app/modules",
