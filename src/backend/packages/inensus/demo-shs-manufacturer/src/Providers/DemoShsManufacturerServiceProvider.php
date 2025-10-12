@@ -5,9 +5,6 @@ namespace Inensus\DemoShsManufacturer\Providers;
 use Illuminate\Support\ServiceProvider;
 use Inensus\DemoShsManufacturer\Console\Commands\InstallPackage;
 use Inensus\DemoShsManufacturer\DemoShsManufacturerApi;
-use Inensus\DemoShsManufacturer\Providers\EventServiceProvider;
-use Inensus\DemoShsManufacturer\Providers\ObserverServiceProvider;
-use Inensus\DemoShsManufacturer\Providers\RouteServiceProvider;
 
 class DemoShsManufacturerServiceProvider extends ServiceProvider {
     public function boot(): void {

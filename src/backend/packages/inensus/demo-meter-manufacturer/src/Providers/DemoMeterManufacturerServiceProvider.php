@@ -2,12 +2,9 @@
 
 namespace Inensus\DemoMeterManufacturer\Providers;
 
-use Inensus\DemoMeterManufacturer\DemoMeterManufacturerApi;
 use Illuminate\Support\ServiceProvider;
 use Inensus\DemoMeterManufacturer\Console\Commands\InstallPackage;
-use Inensus\DemoMeterManufacturer\Providers\EventServiceProvider;
-use Inensus\DemoMeterManufacturer\Providers\ObserverServiceProvider;
-use Inensus\DemoMeterManufacturer\Providers\RouteServiceProvider;
+use Inensus\DemoMeterManufacturer\DemoMeterManufacturerApi;
 
 class DemoMeterManufacturerServiceProvider extends ServiceProvider {
     public function boot(): void {
