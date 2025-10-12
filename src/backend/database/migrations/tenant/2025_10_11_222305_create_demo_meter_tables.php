@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
 return new class extends Migration {
-    public function up()
+    public function up() : void
     {
         if (!Schema::connection('tenant')->hasTable('demo_meter_transactions')) {
             Schema::connection('tenant')->create('demo_meter_transactions', static function (Blueprint $table) {
@@ -15,7 +15,7 @@ return new class extends Migration {
         }
     }
 
-    public function down()
+    public function down() : void
     {
         Schema::connection('tenant')->dropIfExists('demo_meter_transactions');
     }

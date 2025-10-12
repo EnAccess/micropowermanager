@@ -5,20 +5,20 @@ namespace Inensus\DemoShsManufacturer\Services;
 
 class MenuItemService
 {
-    public function createMenuItems()
+    public function createMenuItems(): array
     {
         $menuItem = [
             'name' =>'{{Menu-Item}}',
             'url_slug' =>'',
             'md_icon' =>''
         ];
-        $subMenuItems= array();
+        $subMenuItems= [];
 
         $subMenuItem1=[
             'name' =>'{{Submenu-Item}}',
             'url_slug' =>'{{menu-item}}/{{submenu-item}}',
         ];
-        array_push($subMenuItems, $subMenuItem1);
+        $subMenuItems[] = $subMenuItem1;
 
         return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
 

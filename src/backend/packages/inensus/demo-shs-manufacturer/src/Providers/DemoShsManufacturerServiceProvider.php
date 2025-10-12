@@ -10,7 +10,7 @@ use Inensus\DemoShsManufacturer\Providers\ObserverServiceProvider;
 use Inensus\DemoShsManufacturer\Providers\RouteServiceProvider;
 
 class DemoShsManufacturerServiceProvider extends ServiceProvider {
-    public function boot() {
+    public function boot(): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishMigrations();
@@ -20,7 +20,7 @@ class DemoShsManufacturerServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/demo-shs-manufacturer.php', 'demo-shs-manufacturer');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
@@ -30,13 +30,13 @@ class DemoShsManufacturerServiceProvider extends ServiceProvider {
         $this->app->alias(DemoShsManufacturerApi::class, 'DemoShsManufacturerApi');
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/demo-shs-manufacturer.php' => config_path('demo-shs-manufacturer.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/demo-shs-manufacturer'
@@ -44,7 +44,7 @@ class DemoShsManufacturerServiceProvider extends ServiceProvider {
         ], 'vue-components');
     }
 
-    public function publishMigrations() {
+    public function publishMigrations(): void {
         if (!class_exists('CreateDemoShsTables')) {
             $timestamp = date('Y_m_d_His');
             $this->publishes([

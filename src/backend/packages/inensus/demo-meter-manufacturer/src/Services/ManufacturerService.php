@@ -19,7 +19,7 @@ class ManufacturerService {
                     'api_name' => 'DemoMeterManufacturerApi',
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // If tenant database is not available (e.g., during central installation),
             // the manufacturer will be registered when the plugin is activated by a company
             Log::info('Demo Meter Manufacturer registration skipped - tenant database not available');
