@@ -71,7 +71,7 @@ class WaveComTransactionProvider implements ITransactionProvider {
 
     public function init(BasePaymentProviderTransaction $transaction): void {
         if (!$transaction instanceof WaveComTransaction) {
-            throw new \InvalidArgumentException('Expected instance of '.WaveComTransaction::class.', got '.get_class($transaction));
+            throw new \InvalidArgumentException('Expected instance of '.WaveComTransaction::class.', got '.$transaction::class);
         }
         $this->waveComTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();

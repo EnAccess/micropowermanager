@@ -98,7 +98,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
 
     public function init(BasePaymentProviderTransaction $transaction): void {
         if (!$transaction instanceof WaveMoneyTransaction) {
-            throw new \InvalidArgumentException('Expected instance of '.WaveMoneyTransaction::class.', got '.get_class($transaction));
+            throw new \InvalidArgumentException('Expected instance of '.WaveMoneyTransaction::class.', got '.$transaction::class);
         }
         $this->waveMoneytransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
