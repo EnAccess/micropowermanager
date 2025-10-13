@@ -39,10 +39,11 @@ For more details see the corresponding plugin's documentation.
 
 These environment variables control how the MicroPowerManager behaves as an application.
 
-| Environment Variable | Default      | Description                                                                                                                                                                                        |
-| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MPM_FRONTEND_URL`   | **Required** | The URL where MicroPowerManager frontend is located, this is **required** for email password reset and other related functionality that requires Knowledge of the frontend.                        |
-| `MPM_LOAD_DEMO_DATA` | `false`      | Whether or not the demo data should be loaded when the MicroPowerManager starts for the first time. Recommended for local development and demo environments. Optional for production environments. |
+| Environment Variable | Default | Description |
+|---|---|---|
+| `MPM_FRONTEND_URL` | **Required** | The URL where MicroPowerManager frontend is located, this is **required** for email password reset and other related functionality that requires Knowledge of the frontend. |
+| `MPM_LOAD_DEMO_DATA` | `false` | Whether or not the demo data should be loaded when the MicroPowerManager starts for the first time. Recommended for local development and demo environments. Optional for production environments. |
+| `MPM_FORCE_OPTIMIZE` | `false` | Force Laravel optimization (`php artisan optimize`) on container startup even when not in production mode. Set to `true` to enable. Optimization runs automatically when `APP_ENV=production`. |
 
 ### JSON Web Token Authentication (jwt-auth)
 
