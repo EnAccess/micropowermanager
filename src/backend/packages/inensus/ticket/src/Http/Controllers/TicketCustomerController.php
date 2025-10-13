@@ -50,7 +50,7 @@ class TicketCustomerController extends Controller {
         return TicketResource::make($ticket);
     }
 
-    public function index($customerId, Request $request) {
+    public function index(int $customerId, Request $request): TicketResource {
         $limit = 5;
         $agentId = null;
         $status = null;
