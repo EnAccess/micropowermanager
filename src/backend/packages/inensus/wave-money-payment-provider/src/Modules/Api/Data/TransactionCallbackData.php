@@ -96,6 +96,9 @@ class TransactionCallbackData {
         return $this->requestTime;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAdditionalFields(): array {
         return [
             'add1' => $this->additional1,

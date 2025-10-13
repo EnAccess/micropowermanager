@@ -8,6 +8,7 @@ use App\Models\Transaction\Transaction;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPayerMustHaveOnlyOneConnectedMeterException;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPaymentPhoneNumberNotFoundException;
@@ -21,7 +22,7 @@ class MesombTransactionProvider implements ITransactionProvider {
 
     public function __construct(private Transaction $transaction, private MesombTransaction $mesombTransaction, private MesomTransactionService $mesombTransactionService, private Address $address) {}
 
-    public function validateRequest($request): void {
+    public function validateRequest(Request $request): void {
         $requestData = $request->all();
         if ($requestData['status'] === 'FAILED') {
             throw new MesombStatusFailedException($requestData['status'].' Sender: '.$requestData['b_party']);

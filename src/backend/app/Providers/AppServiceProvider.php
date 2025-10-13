@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Lib\DummyManufacturerApis\DummyCalinSmartMeterApi;
-use App\Lib\DummyManufacturerApis\DummyKelinMeterApi;
-use App\Lib\DummyManufacturerApis\DummySunKingSHSApi;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
@@ -105,17 +102,6 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->alias(ApplianceInstallmentPayer::class, 'ApplianceInstallmentPayer');
         $this->app->bind(AccessRatePayer::class);
         $this->app->alias(AccessRatePayer::class, 'AccessRatePayer');
-
-        // Register dummy manufacturer APIs for demo purposes
-        // Future plans with https://github.com/EnAccess/micropowermanager/issues/881
-        $this->app->bind(DummySunKingSHSApi::class);
-        $this->app->alias(DummySunKingSHSApi::class, 'DummySunKingSHSApi');
-
-        $this->app->bind(DummyCalinSmartMeterApi::class);
-        $this->app->alias(DummyCalinSmartMeterApi::class, 'DummyCalinSmartMeterApi');
-
-        $this->app->bind(DummyKelinMeterApi::class);
-        $this->app->alias(DummyKelinMeterApi::class, 'DummyKelinMeterApi');
 
         // Register custom MPM Events
 

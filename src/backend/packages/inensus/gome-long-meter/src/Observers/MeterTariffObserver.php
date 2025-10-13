@@ -3,7 +3,6 @@
 namespace Inensus\GomeLongMeter\Observers;
 
 use App\Models\Meter\MeterTariff;
-// use App\Traits\ScheduledPluginCommand;
 use App\Models\MpmPlugin;
 use App\Traits\ScheduledPluginCommand;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;

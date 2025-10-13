@@ -15,6 +15,9 @@ use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 class WaveMoneyTransactionCallbackMiddleware {
     public function __construct(private WaveMoneyTransactionService $transactionService) {}
 
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
         $mapper = new TransactionCallbackRequestMapper();
         $callbackData = $mapper->getMappedObject($request);

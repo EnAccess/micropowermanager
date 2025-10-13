@@ -2,9 +2,12 @@
 
 namespace Inensus\ChintMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\ChintMeter\Models\ChintCredential;
 
 class ChintCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private ChintCredential $credential,
     ) {}
@@ -20,16 +23,42 @@ class ChintCredentialService {
     }
 
     public function getCredentials() {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->user_name) {
+                $credential->user_name = $this->decryptCredentialField($credential->user_name);
+            }
+            if ($credential->user_password) {
+                $credential->user_password = $this->decryptCredentialField($credential->user_password);
+            }
+        }
+
+        return $credential;
     }
 
-    public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+    public function updateCredentials(object $credentials, array $updateData): object {
+        $encryptedData = $this->encryptCredentialFields($updateData, ['user_name', 'user_password']);
 
-        return $credentials->fresh();
+        $credentials->update($encryptedData);
+
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['user_name', 'user_password']);
     }
 
     public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        // Decrypt sensitive fields
+        if ($credential->user_name) {
+            $credential->user_name = $this->decryptCredentialField($credential->user_name);
+        }
+        if ($credential->user_password) {
+            $credential->user_password = $this->decryptCredentialField($credential->user_password);
+        }
+
+        return $credential;
     }
 }

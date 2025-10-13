@@ -10,6 +10,9 @@ class MesombTransaction extends BasePaymentProviderTransaction {
     protected $table = 'mesomb_transactions';
     public const RELATION_NAME = 'mesomb_transactions';
 
+    /**
+     * @return MorphMany<TransactionConflicts, $this>
+     */
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }

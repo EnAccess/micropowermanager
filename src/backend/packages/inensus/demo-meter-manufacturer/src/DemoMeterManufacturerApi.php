@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Lib\DummyManufacturerApis;
+namespace Inensus\DemoMeterManufacturer;
 
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
-use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
+use Inensus\DemoMeterManufacturer\Models\DemoMeterTransaction;
 
 /**
- * Dummy Calin Smart Meter API for demo purposes.
- * Returns random tokens for device charging operations.
+ * Demo Meter Manufacturer API for demo purposes.
+ * Returns random tokens for device charging operations without making real API calls.
  */
-class DummyCalinSmartMeterApi implements IManufacturerAPI {
+class DemoMeterManufacturerApi implements IManufacturerAPI {
     public function __construct(
-        private CalinSmartTransaction $calinSmartTransaction,
+        private DemoMeterTransaction $demoMeterTransaction,
     ) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -27,10 +27,10 @@ class DummyCalinSmartMeterApi implements IManufacturerAPI {
         $randomToken = $this->generateRandomToken();
 
         // Record transaction like the real API
-        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create([]);
+        $manufacturerTransaction = $this->demoMeterTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => 'calin_smart_transaction',
+            'manufacturer_transaction_type' => 'demo_meter_transaction',
         ]);
 
         return [
