@@ -14,7 +14,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 
 /**

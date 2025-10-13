@@ -3,7 +3,6 @@
 namespace Inensus\ViberMessaging\Services;
 
 use App\Services\Interfaces\IBaseService;
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Inensus\ViberMessaging\Models\ViberContact;
 

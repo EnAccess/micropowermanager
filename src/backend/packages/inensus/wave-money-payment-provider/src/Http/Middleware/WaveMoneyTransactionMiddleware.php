@@ -2,8 +2,6 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Http\Middleware;
 
-use Closure;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;

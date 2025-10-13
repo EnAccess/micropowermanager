@@ -6,7 +6,6 @@ use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 
 interface ITransactionProvider {
     // saves the main transaction
