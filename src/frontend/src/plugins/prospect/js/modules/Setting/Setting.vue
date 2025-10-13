@@ -125,11 +125,6 @@ export default {
     return {
       settingService: new SettingService(),
       loadingSync: false,
-      selectedActionType: "installations",
-      actionTypes: [
-        { value: "installations", label: "Installations" },
-        { value: "payments", label: "Payments" },
-      ],
       syncPeriods: [
         { value: "everyMinute", label: "Every Minute" },
         { value: "everyFifteenMinutes", label: "Every 15 Minutes" },
@@ -154,24 +149,6 @@ export default {
     async getSettings() {
       await this.settingService.getSettings()
     },
-    onActionTypeChange() {
-      // Update the current setting based on selected action type
-      this.currentSetting.actionName = this.selectedActionType.charAt(0).toUpperCase() + this.selectedActionType.slice(1)
-      
-      // Load settings for the selected action type
-      const setting = this.settingService.syncList.find(s => s.actionName.toLowerCase() === this.selectedActionType)
-      if (setting) {
-        this.currentSetting = { ...setting }
-      } else {
-        // Default values for new action type
-        this.currentSetting = {
-          id: this.selectedActionType === "installations" ? 1 : 2,
-          actionName: this.selectedActionType.charAt(0).toUpperCase() + this.selectedActionType.slice(1),
-          syncInValueStr: "weekly",
-          maxAttempts: 3,
-        }
-      }
-    },
     async updateSyncSetting() {
       let validator = await this.$validator.validateAll("Synchronization-Form")
       if (!validator) {
@@ -181,7 +158,7 @@ export default {
         this.loadingSync = true
         
         // Update the setting in the service
-        const settingIndex = this.settingService.syncList.findIndex(s => s.actionName.toLowerCase() === this.selectedActionType)
+        const settingIndex = this.settingService.syncList.findIndex(s => s.id === this.currentSetting.id)
         if (settingIndex !== -1) {
           this.settingService.syncList[settingIndex] = { ...this.currentSetting }
         } else {
