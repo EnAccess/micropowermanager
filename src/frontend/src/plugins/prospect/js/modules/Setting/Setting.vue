@@ -13,30 +13,10 @@
                   <div
                     class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100"
                   >
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has('Synchronization-Form.actionType'),
-                      }"
-                    >
-                      <label for="actionType">Action Type</label>
-                      <md-select
-                        name="actionType"
-                        v-model="selectedActionType"
-                        id="actionType"
-                        v-validate="'required'"
-                        @change="onActionTypeChange"
-                      >
-                        <md-option
-                          v-for="(action, i) in actionTypes"
-                          :value="action.value"
-                          :key="i"
-                        >
-                          {{ action.label }}
-                        </md-option>
-                      </md-select>
-                      <span class="md-error">
-                        {{ errors.first("Synchronization-Form.actionType") }}
-                      </span>
+                    <md-field>
+                      <label>
+                        {{ currentSetting.actionName }}
+                      </label>
                     </md-field>
                   </div>
                   <div
