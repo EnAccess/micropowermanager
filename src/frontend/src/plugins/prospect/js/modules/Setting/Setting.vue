@@ -9,89 +9,96 @@
             <md-card-header>Synchronization Settings</md-card-header>
             <md-card-content>
               <form data-vv-scope="Synchronization-Form">
-                <div class="md-layout md-gutter">
-                  <div
-                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
-                  >
-                    <md-field>
-                      <label>
-                        {{ currentSetting.actionName }}
-                      </label>
-                    </md-field>
-                  </div>
-                  <div
-                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
-                  >
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has('Synchronization-Form.each'),
-                      }"
+                <div v-for="(setting, i) in settingService.syncList" :key="i">
+                  <div class="md-layout md-gutter">
+                    <div
+                      class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
                     >
-                      <label for="per">Each</label>
-                      <md-input
-                        id="each"
-                        name="each"
-                        v-model="currentSetting.syncInValueNum"
-                        type="number"
-                        min="1"
-                        v-validate="'required|min_value:1'"
-                      />
-                      <span class="md-error">
-                        {{ errors.first('Synchronization-Form.each') }}
-                      </span>
-                    </md-field>
-                  </div>
-                  <div
-                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
-                  >
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has('Synchronization-Form.period'),
-                      }"
+                      <md-field>
+                        <label>
+                          {{ setting.actionName }}
+                        </label>
+                      </md-field>
+                    </div>
+                    <div
+                      class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
                     >
-                      <label for="period">
-                        {{ $tc("words.period") }}
-                      </label>
-                      <md-select
-                        name="period"
-                        v-model="currentSetting.syncInValueStr"
-                        id="period"
-                        v-validate="'required'"
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Synchronization-Form.each_' + setting.id,
+                          ),
+                        }"
                       >
-                        <md-option
-                          v-for="(p, i) in syncPeriods"
-                          :value="p.value"
-                          :key="i"
-                        >
-                          {{ p.label }}
-                        </md-option>
-                      </md-select>
-                      <span class="md-error">
-                        {{ errors.first("Synchronization-Form.period") }}
-                      </span>
-                    </md-field>
-                  </div>
-                  <div
-                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
-                  >
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has('Synchronization-Form.max_attempt'),
-                      }"
+                        <label for="per">Each</label>
+                        <md-input
+                          min="1"
+                          :id="'each_' + setting.id"
+                          :name="'each_' + setting.id"
+                          v-model="setting.syncInValueNum"
+                          type="number"
+                          v-validate="'required|min_value:1'"
+                        />
+                        <span class="md-error">
+                          {{
+                            errors.first(
+                              "Synchronization-Form.each_" + setting.id,
+                            )
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
+                    <div
+                      class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
                     >
-                      <label for="max_attempt">Maximum Attempt(s)</label>
-                      <md-input
-                        id="max_attempt"
-                        name="max_attempt"
-                        v-model="currentSetting.maxAttempts"
-                        type="number"
-                        min="1"
-                        v-validate="'required|min_value:1'"
-                      />
-                      <span class="md-error">
-                        {{ errors.first("Synchronization-Form.max_attempt") }}
-                      </span>
-                    </md-field>
+                      <md-field>
+                        <label for="period">
+                          {{ $tc("words.period") }}
+                        </label>
+                        <md-select
+                          name="period"
+                          v-model="setting.syncInValueStr"
+                          id="period"
+                          v-validate="'required'"
+                        >
+                          <md-option
+                            v-for="(p, i) in syncPeriods"
+                            :value="p.value"
+                            :key="i"
+                          >
+                            {{ p.label }}
+                          </md-option>
+                        </md-select>
+                      </md-field>
+                    </div>
+                    <div
+                      class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
+                    >
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Synchronization-Form.max_attempt_' + setting.id,
+                          ),
+                        }"
+                      >
+                        <label for="max_attempt">Maximum Attempt(s)</label>
+                        <md-input
+                          :id="'max_attempt_' + setting.id"
+                          :name="'max_attempt_' + setting.id"
+                          v-model="setting.maxAttempts"
+                          type="number"
+                          min="1"
+                          v-validate="'required|min_value:1'"
+                        />
+                        <span class="md-error">
+                          {{
+                            errors.first(
+                              "Synchronization-Form.max_attempt_" + setting.id,
+                            )
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
                   </div>
                 </div>
               </form>
@@ -133,13 +140,6 @@ export default {
         { value: "weekly", label: "Weekly" },
         { value: "monthly", label: "Monthly" },
       ],
-      currentSetting: {
-        id: 1,
-        actionName: "Installations",
-        syncInValueNum: 1,
-        syncInValueStr: "weekly",
-        maxAttempts: 3,
-      },
     }
   },
   mounted() {
@@ -156,15 +156,6 @@ export default {
       }
       try {
         this.loadingSync = true
-        
-        // Update the setting in the service
-        const settingIndex = this.settingService.syncList.findIndex(s => s.id === this.currentSetting.id)
-        if (settingIndex !== -1) {
-          this.settingService.syncList[settingIndex] = { ...this.currentSetting }
-        } else {
-          this.settingService.syncList.push({ ...this.currentSetting })
-        }
-        
         await this.settingService.updateSyncSettings()
         this.loadingSync = false
         this.alertNotify("success", "Sync settings updated.")
