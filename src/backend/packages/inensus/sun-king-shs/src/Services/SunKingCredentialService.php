@@ -2,9 +2,12 @@
 
 namespace Inensus\SunKingSHS\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\SunKingSHS\Models\SunKingCredential;
 
 class SunKingCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private SunKingCredential $credential,
     ) {}
@@ -20,17 +23,48 @@ class SunKingCredentialService {
     }
 
     public function getCredentials() {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->client_id) {
+                $credential->client_id = $this->decryptCredentialField($credential->client_id);
+            }
+            if ($credential->client_secret) {
+                $credential->client_secret = $this->decryptCredentialField($credential->client_secret);
+            }
+            if ($credential->access_token) {
+                $credential->access_token = $this->decryptCredentialField($credential->access_token);
+            }
+        }
+
+        return $credential;
     }
 
-    public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+    public function updateCredentials(object $credentials, array $updateData): object {
+        $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret', 'access_token']);
+        $credentials->update($encryptedData);
 
-        return $credentials->fresh();
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret', 'access_token']);
     }
 
     public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        // Decrypt sensitive fields
+        if ($credential->client_id) {
+            $credential->client_id = $this->decryptCredentialField($credential->client_id);
+        }
+        if ($credential->client_secret) {
+            $credential->client_secret = $this->decryptCredentialField($credential->client_secret);
+        }
+        if ($credential->access_token) {
+            $credential->access_token = $this->decryptCredentialField($credential->access_token);
+        }
+
+        return $credential;
     }
 
     public function isAccessTokenValid($credential): bool {
