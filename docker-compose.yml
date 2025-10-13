@@ -91,7 +91,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - 3307:3306
+      - 3306:3306
     healthcheck:
       test: [CMD, mysqladmin, ping, -h, localhost]
       start_period: 10s

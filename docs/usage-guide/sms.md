@@ -88,8 +88,6 @@ notifications and communications.
 ![Register callback URL for sms delivery](images/africanstalking-sms-delivery-callback.png)
 
 
-
-
 ### Step 7: Test SMS Functionality
 
 1. Navigate to **Customers** in your MPM dashboard
