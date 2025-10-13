@@ -54,6 +54,17 @@ class WaveMoneyCredentialService {
         return $credential;
     }
 
+    /**
+     * @param array{
+     *     id: int,
+     *     merchant_id: string,
+     *     secret_key: string,
+     *     callback_url: string,
+     *     payment_url: string,
+     *     result_url: string,
+     *     merchant_name: string
+     * } $data
+     */
     public function updateCredentials(array $data): WaveMoneyCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 

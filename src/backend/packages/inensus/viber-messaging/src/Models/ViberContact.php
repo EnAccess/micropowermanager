@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ViberContact extends BaseModel {
     protected $table = 'viber_contacts';
 
+    /**
+     * @return BelongsTo<Person, $this>
+     */
     public function mpmPerson(): BelongsTo {
         return $this->belongsTo(Person::class, 'person_id');
     }

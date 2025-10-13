@@ -16,6 +16,8 @@ class SmTariffRequest extends FormRequest {
 
     /**
      * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
      */
     public function rules(): array {
         $meterTariff = SmTariff::with('mpmTariff')->where('tariff_id', $this->id)->firstOrFail();

@@ -18,7 +18,7 @@ class ViberCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): ViberCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_token' => null,
             'webhook_url' => null,
@@ -27,7 +27,7 @@ class ViberCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): ?ViberCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {
@@ -47,9 +47,11 @@ class ViberCredentialService {
     }
 
     /**
+     * @param array<string, mixed> $data
+     *
      * @throws WebhookNotCreatedException
      */
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): ?ViberCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $encryptedData = $this->encryptCredentialFields($data, ['api_token', 'webhook_url']);
