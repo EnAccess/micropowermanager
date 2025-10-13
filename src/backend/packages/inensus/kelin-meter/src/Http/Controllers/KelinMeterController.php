@@ -9,11 +9,7 @@ use Inensus\KelinMeter\Http\Resources\KelinResource;
 use Inensus\KelinMeter\Services\KelinMeterService;
 
 class KelinMeterController extends Controller {
-    private $meterService;
-
-    public function __construct(KelinMeterService $meterService) {
-        $this->meterService = $meterService;
-    }
+    public function __construct(private KelinMeterService $meterService) {}
 
     public function index(Request $request) {
         return KelinMeterResource::collection($this->meterService->getMeters($request));

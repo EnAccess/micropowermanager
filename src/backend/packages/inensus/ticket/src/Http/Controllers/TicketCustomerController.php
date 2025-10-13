@@ -2,8 +2,6 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
-use App\Services\MaintenanceUserService;
-use App\Services\MaintenanceUserTicketService;
 use App\Services\PersonService;
 use App\Services\PersonTicketService;
 use App\Services\UserTicketService;
@@ -22,8 +20,6 @@ class TicketCustomerController extends Controller {
         private TicketCategoryService $ticketCategoryService,
         private PersonService $personService,
         private TicketOutSourceService $ticketOutSourceService,
-        private MaintenanceUserService $maintenanceUserService,
-        private MaintenanceUserTicketService $maintenanceUserTicketService,
     ) {}
 
     public function store(UserTicketCreateRequest $request): TicketResource {
@@ -35,17 +31,11 @@ class TicketCustomerController extends Controller {
         $this->userTicketService->setAssignee($user);
         $this->userTicketService->assign();
 
-        if ($request->input('owner_type') === 'maintenance_user') {
-            $owner = $this->maintenanceUserService->getById($request->getOwnerId());
-            $this->maintenanceUserTicketService->setAssigned($ticket);
-            $this->maintenanceUserTicketService->setAssignee($owner);
-            $this->maintenanceUserTicketService->assign();
-        } else {
-            $owner = $this->personService->getById($request->getOwnerId());
-            $this->personTicketService->setAssigned($ticket);
-            $this->personTicketService->setAssignee($owner);
-            $this->personTicketService->assign();
-        }
+        $owner = $this->personService->getById($request->getOwnerId());
+        $this->personTicketService->setAssigned($ticket);
+        $this->personTicketService->setAssignee($owner);
+        $this->personTicketService->assign();
+
         $this->ticketService->save($ticket);
         // get category to check outsourcing
         $categoryData = $this->ticketCategoryService->getById($request->getLabel());

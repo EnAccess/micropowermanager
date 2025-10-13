@@ -8,13 +8,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Services\MeterModelService;
 
 class SmMeterModelController extends Controller implements IBaseController {
-    private $meterModelService;
-
-    public function __construct(
-        MeterModelService $meterModelService,
-    ) {
-        $this->meterModelService = $meterModelService;
-    }
+    public function __construct(private MeterModelService $meterModelService) {}
 
     public function index(Request $request): SparkResource {
         $meterModels = $this->meterModelService->getSmMeterModels($request);
@@ -30,7 +24,7 @@ class SmMeterModelController extends Controller implements IBaseController {
         return new SparkResource($this->meterModelService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->meterModelService->getSmMeterModelsCount();
     }
 }

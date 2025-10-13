@@ -2,9 +2,12 @@
 
 namespace Inensus\AngazaSHS\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\AngazaSHS\Models\AngazaCredential;
 
 class AngazaCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private AngazaCredential $credential,
     ) {}
@@ -19,21 +22,29 @@ class AngazaCredentialService {
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): object {
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 
-    public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+    public function updateCredentials(object $credentials, array $updateData): object {
+        $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret']);
 
-        return $credentials->fresh();
+        $credentials->update($encryptedData);
+
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret']);
     }
 
-    public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+    public function getById($id): object {
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 
-    public function isAccessTokenValid($credential) {
+    public function isAccessTokenValid($credential): bool {
         $accessToken = $credential->getAccessToken();
 
         if ($accessToken == null) {
@@ -41,10 +52,6 @@ class AngazaCredentialService {
         }
         $tokenExpirationTime = $credential->getExpirationTime();
 
-        if ($tokenExpirationTime == null || $tokenExpirationTime < time()) {
-            return false;
-        }
-
-        return true;
+        return $tokenExpirationTime != null && $tokenExpirationTime >= time();
     }
 }

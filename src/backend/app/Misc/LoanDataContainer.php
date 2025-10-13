@@ -76,11 +76,7 @@ class LoanDataContainer {
     }
 
     /**
-     * @param Person $owner
-     *
      * @return Collection<int, AssetRate>
-     *
-     * @psalm-return Collection<int, AssetRate>
      */
     private function getCustomerDueRates(Person $owner): Collection {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
@@ -93,10 +89,6 @@ class LoanDataContainer {
     }
 
     /**
-     * @param string $serialNumber
-     *
-     * @return Person
-     *
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer
      */
@@ -105,7 +97,7 @@ class LoanDataContainer {
             $meter = Meter::with('device.person')
                 ->where('serial_number', $serialNumber)
                 ->firstOrFail();
-        } catch (ModelNotFoundException $ex) {
+        } catch (ModelNotFoundException) {
             throw new MeterIsNotAssignedToCustomer('');
         }
 

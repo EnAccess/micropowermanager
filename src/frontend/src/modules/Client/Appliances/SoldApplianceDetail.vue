@@ -12,6 +12,52 @@
         :key="updateList"
         v-if="personId"
       />
+
+      <widget
+        :title="deviceInfoTitle"
+        color="green"
+        id="device-info"
+        style="margin-top: 2rem"
+      >
+        <md-list class="md-double-line" v-if="soldAppliance.device">
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("phrases.serialNumber") }}</span>
+              <span>{{ soldAppliance.device.device_serial || "N/A" }}</span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("words.deviceType") }}</span>
+              <span>{{ soldAppliance.device.device_type || "N/A" }}</span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("words.manufacturer") }}</span>
+              <span>{{ detailedDeviceInfo?.manufacturer?.name || "N/A" }}</span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("words.appliance") }}</span>
+              <span>
+                {{
+                  detailedDeviceInfo?.appliance?.name ||
+                  soldAppliance.applianceType?.name ||
+                  "N/A"
+                }}
+              </span>
+            </div>
+          </md-list-item>
+        </md-list>
+        <div v-else style="padding: 2rem; text-align: center">
+          <p>Device information not available</p>
+        </div>
+      </widget>
     </div>
     <div class="md-layout-item md-size-60">
       <widget
@@ -183,8 +229,6 @@
                 <md-table-cell>
                   {{ formatReadableDate(rate.due_date) }}
                 </md-table-cell>
-
-                <!--                                soldAppliance.applianceType.asset_type_id means the appliance type is not a SHS-->
                 <div
                   v-if="
                     rate.rate_cost === rate.remaining &&
@@ -248,7 +292,6 @@
                 <md-table-cell>#</md-table-cell>
                 <md-table-cell>Log</md-table-cell>
                 <md-table-cell>Date</md-table-cell>
-                <!--                                <md-table-cell>Initiator</md-table-cell>-->
               </md-table-row>
               <md-table-row
                 v-for="(log, index) in soldAppliance.logs"
@@ -259,7 +302,6 @@
                 <md-table-cell>
                   {{ formatReadableDate(log.created_at) }}
                 </md-table-cell>
-                <!--                                <md-table-cell>{{ log.owner.name }}</md-table-cell>-->
               </md-table-row>
             </md-table>
           </div>
@@ -302,6 +344,7 @@ export default {
           name: "",
         },
         logs: [],
+        device: null,
       },
       adminId:
         this.$store.getters["auth/authenticationService"].authenticateUser.id,
@@ -318,7 +361,20 @@ export default {
       updateDetail: 0,
       subscriber: "sold-appliance-detail",
       currency: this.$store.getters["settings/getMainSettings"].currency,
+      detailedDeviceInfo: null,
     }
+  },
+  computed: {
+    deviceInfoTitle() {
+      if (this.soldAppliance.device?.device_type) {
+        const deviceType = this.soldAppliance.device.device_type
+        return (
+          deviceType.charAt(0).toUpperCase() +
+          deviceType.slice(1).replace(/_/g, " ")
+        )
+      }
+      return "Device Information"
+    },
   },
   watch: {
     $route() {
@@ -328,9 +384,7 @@ export default {
   },
   created() {
     this.selectedApplianceId = this.$route.params.id
-    this.getSoldApplianceDetail().then((personId) => {
-      this.getPersonSoldAppliances(personId)
-    })
+    this.getSoldApplianceDetail()
   },
   methods: {
     getApplianceRates() {
@@ -380,13 +434,23 @@ export default {
       }
     },
     async getSoldApplianceDetail() {
+      this.progress = true
       try {
         this.soldAppliance = await this.assetPersonService.show(
           this.selectedApplianceId,
         )
         this.personId = this.soldAppliance.personId
         this.updateDetail++
+
+        if (
+          this.soldAppliance.device?.device_type &&
+          this.soldAppliance.device?.device_serial
+        ) {
+          await this.fetchDetailedDeviceInfo()
+        }
+
         await this.getPersonSoldAppliances()
+
         EventBus.$emit(
           "widgetContentLoaded",
           this.subscriber,
@@ -395,6 +459,31 @@ export default {
         return this.personId
       } catch (e) {
         this.alertNotify("error", e.message)
+      } finally {
+        this.progress = false
+      }
+    },
+    async fetchDetailedDeviceInfo() {
+      try {
+        const { device_type, device_id, device_serial } =
+          this.soldAppliance.device
+
+        if (device_type === "solar_home_system") {
+          const solarHomeSystemService = new (
+            await import("@/services/SolarHomeSystemService")
+          ).SolarHomeSystemService()
+
+          this.detailedDeviceInfo =
+            await solarHomeSystemService.getSolarHomeSystem(device_id)
+        } else if (device_type === "meter") {
+          const meterService = new (
+            await import("@/services/MeterService")
+          ).MeterService()
+          this.detailedDeviceInfo =
+            await meterService.getMeterBySerialNumber(device_serial)
+        }
+      } catch (e) {
+        console.error("Error fetching detailed device info:", e)
       }
     },
     async getPersonSoldAppliances() {

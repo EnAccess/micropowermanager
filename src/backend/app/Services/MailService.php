@@ -6,11 +6,7 @@ use Illuminate\Mail\MailManager;
 use Illuminate\Mail\Message;
 
 class MailService {
-    private MailManager $mailManager;
-
-    public function __construct(MailManager $mailManager) {
-        $this->mailManager = $mailManager;
-    }
+    public function __construct(private MailManager $mailManager) {}
 
     /**
      * @param array<string, mixed>  $viewData

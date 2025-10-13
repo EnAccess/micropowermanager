@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\CountryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -14,12 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $country_name
  * **/
 class Country extends BaseModel {
-    /** @use HasFactory<\Database\Factories\CountryFactory> */
+    /** @use HasFactory<CountryFactory> */
     use HasFactory;
 
-    /**
-     * @return string
-     */
     public function getRouteKeyName(): string {
         return 'country_code';
     }

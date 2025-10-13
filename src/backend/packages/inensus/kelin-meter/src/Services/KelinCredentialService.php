@@ -2,6 +2,7 @@
 
 namespace Inensus\KelinMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
@@ -9,7 +10,8 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinCredential;
 
 class KelinCredentialService {
-    private $rootUrl = '/login';
+    use EncryptsCredentials;
+    private string $rootUrl = '/login';
 
     public function __construct(
         private KelinCredential $credential,
@@ -30,15 +32,28 @@ class KelinCredentialService {
     }
 
     public function getCredentials() {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->username) {
+                $credential->username = $this->decryptCredentialField($credential->username);
+            }
+            if ($credential->password) {
+                $credential->password = $this->decryptCredentialField($credential->password);
+            }
+            if ($credential->authentication_token) {
+                $credential->authentication_token = $this->decryptCredentialField($credential->authentication_token);
+            }
+        }
+
+        return $credential;
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->getCredentials();
-        $credential->update([
-            'username' => $data['username'],
-            'password' => $data['password'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['username', 'password']);
+        $credential->update($encryptedData);
 
         try {
             $queryParams = [
@@ -47,10 +62,10 @@ class KelinCredentialService {
             ];
             $result = $this->kelinApi->token($this->rootUrl, $queryParams);
             $credential->update([
-                'authentication_token' => $result['data']['token'],
+                'authentication_token' => $this->encryptCredentialField($result['data']['token']),
                 'is_authenticated' => true,
             ]);
-        } catch (KelinApiResponseException $exception) {
+        } catch (KelinApiResponseException) {
             $credential->is_authenticated = false;
             $credential->authentication_token = null;
         } catch (GuzzleException $exception) {
@@ -62,11 +77,12 @@ class KelinCredentialService {
             $credential->authentication_token = null;
         }
         $credential->save();
+        $credential->fresh();
 
-        return $credential->fresh();
+        return $this->decryptCredentialFields($credential, ['username', 'password', 'authentication_token']);
     }
 
-    public function refreshAccessToken() {
+    public function refreshAccessToken(): void {
         $credential = $this->getCredentials();
         if (!$credential || (!$credential->username && !$credential->password)) {
             Log::debug('KelinMeter credentials is not registered yet.');
@@ -81,7 +97,7 @@ class KelinCredentialService {
 
             $result = $this->kelinApi->token($this->rootUrl, $queryParams);
             $credential->update([
-                'authentication_token' => $result['data']['token'],
+                'authentication_token' => $this->encryptCredentialField($result['data']['token']),
                 'is_authenticated' => true,
             ]);
         } catch (KelinApiResponseException $exception) {

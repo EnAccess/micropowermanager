@@ -5,7 +5,7 @@ namespace Inensus\Ticket\Providers;
 use Illuminate\Support\ServiceProvider;
 
 class TicketServiceProvider extends ServiceProvider {
-    public function boot() {
+    public function boot(): void {
         $this->app->register(TicketRootServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -26,7 +26,7 @@ class TicketServiceProvider extends ServiceProvider {
         ], 'config');
     }
 
-    public function publishMigrations() {
+    public function publishMigrations(): void {
         if (!class_exists('CreateTicketingTables')) {
             $timestamp = date('Y_m_d_His', time());
 

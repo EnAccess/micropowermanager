@@ -22,7 +22,7 @@ class CustomerRegistrationAppController extends Controller {
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             Log::critical('Error while adding new Customer', ['message' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

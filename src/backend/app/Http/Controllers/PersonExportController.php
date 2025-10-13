@@ -24,7 +24,12 @@ class PersonExportController extends Controller {
     }
 
     public function downloadExcel(Request $request): BinaryFileResponse {
-        $people = $this->personService->getAllForExport();
+        $miniGrid = $request->get('miniGrid');
+        $village = $request->get('village');
+        $deviceType = $request->get('deviceType');
+        $isActive = $request->get('isActive');
+        $status = $request->get('status');
+        $people = $this->personService->getAllForExport($miniGrid, $village, $deviceType, $isActive, $status);
         $this->peopleExportService->createSpreadSheetFromTemplate($this->peopleExportService->getTemplatePath());
         $this->peopleExportService->setPeopleData($people);
         $this->peopleExportService->setExportingData();
@@ -35,7 +40,13 @@ class PersonExportController extends Controller {
     }
 
     public function downloadCsv(Request $request): BinaryFileResponse {
-        $people = $this->personService->getAllForExport();
+        $miniGrid = $request->get('miniGrid');
+        $village = $request->get('village');
+        $deviceType = $request->get('deviceType');
+        $isActive = $request->get('isActive');
+        $status = $request->get('status');
+
+        $people = $this->personService->getAllForExport($miniGrid, $village, $deviceType, $isActive, $status);
 
         $this->peopleExportService->setPeopleData($people);
         $this->peopleExportService->setExportingData();

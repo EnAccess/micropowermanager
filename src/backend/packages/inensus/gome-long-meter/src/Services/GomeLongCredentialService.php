@@ -2,9 +2,12 @@
 
 namespace Inensus\GomeLongMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\GomeLongMeter\Models\GomeLongCredential;
 
 class GomeLongCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private GomeLongCredential $credential,
     ) {}
@@ -19,17 +22,23 @@ class GomeLongCredentialService {
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): ?object {
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['user_id', 'user_password']);
     }
 
-    public function updateCredentials($credentials, $updateData) {
+    public function updateCredentials(object $credentials, $updateData): object {
         $credentials->update($updateData);
 
-        return $credentials->fresh();
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['user_id', 'user_password']);
     }
 
-    public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+    public function getById($id): object {
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        return $this->decryptCredentialFields($credential, ['user_id', 'user_password']);
     }
 }

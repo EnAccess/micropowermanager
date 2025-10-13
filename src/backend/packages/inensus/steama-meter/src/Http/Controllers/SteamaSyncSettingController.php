@@ -8,11 +8,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaSyncSettingService;
 
 class SteamaSyncSettingController extends Controller {
-    private $syncSettingService;
-
-    public function __construct(SteamaSyncSettingService $syncSettingService) {
-        $this->syncSettingService = $syncSettingService;
-    }
+    public function __construct(private SteamaSyncSettingService $syncSettingService) {}
 
     public function update(Request $request): SteamaResource {
         return new SteamaResource($this->syncSettingService->updateSyncSettings($request->all()));

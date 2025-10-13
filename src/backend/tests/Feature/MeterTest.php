@@ -11,15 +11,16 @@ use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\ManufacturerFactory;
+use Database\Factories\Meter\MeterConsumptionFactory;
 use Database\Factories\Meter\MeterFactory;
 use Database\Factories\Meter\MeterTariffFactory;
 use Database\Factories\Meter\MeterTypeFactory;
-use Database\Factories\MeterConsumptionFactory;
 use Database\Factories\MeterTokenFactory;
 use Database\Factories\PaymentHistoryFactory;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -43,7 +44,7 @@ class MeterTest extends TestCase {
     private $token;
     private $transaction;
 
-    public function testUserGetsMeterList() {
+    public function testUserGetsMeterList(): void {
         $this->createTestData();
         $meterCunt = 5;
         while ($meterCunt > 0) {
@@ -62,7 +63,7 @@ class MeterTest extends TestCase {
         $this->assertEquals(5, count($response['data']));
     }
 
-    public function testUserCreatesAMeter() {
+    public function testUserCreatesAMeter(): void {
         $this->createTestData();
         $meterData = [
             'serial_number' => '123456789',
@@ -76,21 +77,21 @@ class MeterTest extends TestCase {
         $this->assertEquals($meter->serial_number, $meterData['serial_number']);
     }
 
-    public function testUserGetsMeterBySerialNumber() {
+    public function testUserGetsMeterBySerialNumber(): void {
         $meter = $this->getMeter();
         $response = $this->actingAs($this->user)->get(sprintf('/api/meters/%s', $meter->serial_number));
         $response->assertStatus(200);
         $this->assertEquals($meter->serial_number, $response['data']['serial_number']);
     }
 
-    public function testUserSearchesMetersBySerialNumber() {
+    public function testUserSearchesMetersBySerialNumber(): void {
         $meter = $this->getMeter();
         $response = $this->actingAs($this->user)->get(sprintf('/api/meters/search?term=%s', $meter->serial_number));
         $response->assertStatus(200);
         $this->assertEquals($response['data'][0]['id'], $meter->id);
     }
 
-    public function testUserSearchesMeterByTariffName() {
+    public function testUserSearchesMeterByTariffName(): void {
         $meter = $this->getMeter();
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/meters/search?term=%s',
@@ -100,7 +101,7 @@ class MeterTest extends TestCase {
         $this->assertEquals($response['data'][0]['id'], $meter->id);
     }
 
-    public function testUserUpdatesMetersGeolocation() {
+    public function testUserUpdatesMetersGeolocation(): void {
         $this->createMeterWithGeo();
         $meterData = [
             ['lat' => '444', 'lng' => '555', 'id' => 1],
@@ -110,8 +111,8 @@ class MeterTest extends TestCase {
         $response->assertStatus(200);
     }
 
-    public function testUserGetsPersonMeters() {
-        $meter = $this->getMeter();
+    public function testUserGetsPersonMeters(): void {
+        $this->getMeter();
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/people/%s/meters',
             $this->person->id
@@ -121,7 +122,7 @@ class MeterTest extends TestCase {
         $this->assertEquals(count($response['data']['meters']), $metersCount);
     }
 
-    public function testUserGetsPersonMetersGeographicalInformation() {
+    public function testUserGetsPersonMetersGeographicalInformation(): void {
         $this->createMeterWithGeo();
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/people/%s/meters/geo',
@@ -130,7 +131,7 @@ class MeterTest extends TestCase {
         $response->assertStatus(200);
     }
 
-    public function testUserGetsMetersTransactions() {
+    public function testUserGetsMetersTransactions(): void {
         $meter = $this->createMeterWithTransaction();
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/meters/%s/transactions',
@@ -141,7 +142,7 @@ class MeterTest extends TestCase {
         $this->assertEquals($response['data'][0]['id'], $this->transaction->id);
     }
 
-    public function testUserGetsMeterRevenueBySerialNumber() {
+    public function testUserGetsMeterRevenueBySerialNumber(): void {
         $meter = $this->createMeterWithTransaction();
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/meters/%s/revenue',
@@ -151,7 +152,7 @@ class MeterTest extends TestCase {
         $this->assertEquals($response['data']['revenue'], $this->transaction->amount);
     }
 
-    public function testUserGetsMeterConsumptions() {
+    public function testUserGetsMeterConsumptions(): void {
         $meter = $this->createMeterWithTransaction();
         $consumption = MeterConsumptionFactory::new()->create();
         $response = $this->actingAs($this->user)->get(sprintf(
@@ -165,7 +166,7 @@ class MeterTest extends TestCase {
         $this->assertEquals($response['data'][0]['meter_id'], $meter->id);
     }
 
-    public function testUserDeletesAMeter() {
+    public function testUserDeletesAMeter(): void {
         $meter = $this->getMeter();
         $response = $this->actingAs($this->user)->delete(sprintf('/api/meters/%s', $meter->id));
         $response->assertStatus(204);
@@ -186,14 +187,13 @@ class MeterTest extends TestCase {
 
     protected function getMeter(): mixed {
         $this->createTestData();
-        $meter = MeterFactory::new()->create([
+
+        return MeterFactory::new()->create([
             'meter_type_id' => $this->meterType->id,
             'in_use' => true,
             'manufacturer_id' => $this->manufacturer->id,
             'serial_number' => str_random(36),
         ]);
-
-        return $meter;
     }
 
     protected function createMeterWithGeo(): void {
@@ -227,7 +227,7 @@ class MeterTest extends TestCase {
         }
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -240,7 +240,7 @@ class MeterTest extends TestCase {
         $this->transaction = TransactionFactory::new()->create([
             'id' => 1,
             'amount' => $this->faker->unique()->randomNumber(),
-            'sender' => $this->faker->phoneNumber,
+            'sender' => $this->faker->phoneNumber(),
             'message' => $meter->serial_number,
             'original_transaction_id' => $this->faker->unique()->randomNumber(),
             'original_transaction_type' => 'agent_transaction',
@@ -249,11 +249,11 @@ class MeterTest extends TestCase {
             'meter_id' => $meter->id,
             'token' => $this->faker->unique()->randomNumber(),
         ]);
-        $paymentHistory = PaymentHistoryFactory::new()->create([
+        PaymentHistoryFactory::new()->create([
             'transaction_id' => $this->transaction->id,
             'amount' => $this->transaction->amount,
             'payment_service' => 'agent_transaction',
-            'sender' => $this->faker->phoneNumber,
+            'sender' => $this->faker->phoneNumber(),
             'payment_type' => 'energy',
             'paid_for_type' => 'token',
             'paid_for_id' => $this->token->id,

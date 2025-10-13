@@ -23,19 +23,23 @@ export class Ticket {
     this.title = ticketData.title
     this.description = ticketData.content
     this.due = ticketData.due_date
-    this.category = ticketData.category.label_name
+    this.category = ticketData.category?.label_name || "-"
     this.closed = ticketData.status === 1
     this.status = ticketData.status
+    this.owner = ticketData.owner
+    this.assignedTo = ticketData.assigned_to
 
-    if (comments) {
+    if (comments && Array.isArray(comments)) {
       const commentList = comments.map(function (comment) {
         return {
           comment: comment.comment,
           date: comment.created_at,
-          username: comment.ticket_user.user_name,
+          username: comment.ticket_user?.user_name || "Unknown",
         }
       })
       this.comments = commentList
+    } else {
+      this.comments = []
     }
 
     return this
@@ -76,8 +80,18 @@ export class UserTickets {
 
   updateList(data) {
     this.list = []
-    if ("data" in data) {
-      this.list = data.data.map(function (ticket) {
+
+    let ticketsArray = []
+
+    // Handle both cases: array directly or object with data property
+    if (Array.isArray(data)) {
+      ticketsArray = data
+    } else if (data && "data" in data && Array.isArray(data.data)) {
+      ticketsArray = data.data
+    }
+
+    if (ticketsArray.length > 0) {
+      this.list = ticketsArray.map(function (ticket) {
         return new Ticket().fromJson(ticket)
       })
     }
@@ -102,7 +116,7 @@ export class TicketService {
     if (type === "ticketListOpened") this.openedList = []
     else this.closedList = []
 
-    const result = data?.data?.map((ticket) => {
+    const result = data?.map((ticket) => {
       return {
         created: ticket.created_at,
         id: ticket.id,
@@ -149,7 +163,7 @@ export class TicketService {
       description: maintenanceData.description,
       title: maintenanceData.title,
       owner_id: maintenanceData.assigned.id,
-      owner_type: "maintenance_user",
+      owner_type: "person",
       creator_type: "admin",
     }
     try {

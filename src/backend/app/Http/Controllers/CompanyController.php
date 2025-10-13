@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRegistrationRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\User;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\MainSettingsService;
@@ -47,7 +48,7 @@ class CompanyController extends Controller {
         // Create Admin user and DatabaseProxy
         $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
-            fn () => $this->userService->create(
+            fn (): User => $this->userService->create(
                 [
                     'name' => $adminData['name'],
                     'password' => $adminData['password'],

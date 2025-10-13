@@ -8,14 +8,11 @@ use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 
 class KelinMeterStatusService {
-    private $rootUrl = '/getMeterStatus';
-    private $kelinApiClient;
+    private string $rootUrl = '/getMeterStatus';
 
-    public function __construct(KelinMeterApiClient $kelinApiClient) {
-        $this->kelinApiClient = $kelinApiClient;
-    }
+    public function __construct(private KelinMeterApiClient $kelinApiClient) {}
 
-    public function getStatusOfMeter($meter) {
+    public function getStatusOfMeter($meter): \stdClass {
         try {
             $queryParams = [
                 'meterType' => 1,

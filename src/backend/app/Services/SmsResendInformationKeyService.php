@@ -6,11 +6,7 @@ use App\Models\SmsResendInformationKey;
 use Illuminate\Database\Eloquent\Collection;
 
 class SmsResendInformationKeyService {
-    private SmsResendInformationKey $smsResendInformationKey;
-
-    public function __construct(SmsResendInformationKey $smsResendInformationKey) {
-        $this->smsResendInformationKey = $smsResendInformationKey;
-    }
+    public function __construct(private SmsResendInformationKey $smsResendInformationKey) {}
 
     /**
      * @return Collection<int, SmsResendInformationKey>

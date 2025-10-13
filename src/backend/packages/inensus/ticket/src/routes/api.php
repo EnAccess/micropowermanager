@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /* Ticketing package prefix is ticket */
 
 Route::group(['prefix' => 'ticket'], function () {

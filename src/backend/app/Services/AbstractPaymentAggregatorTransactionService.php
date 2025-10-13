@@ -31,7 +31,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
     ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
-        if (!$meter = $this->meter->findBySerialNumber($meterSerialNumber)) {
+        if (!($meter = $this->meter->findBySerialNumber($meterSerialNumber)) instanceof Meter) {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
 
@@ -51,7 +51,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         try {
             $this->payerPhoneNumber = $this->getTransactionSender($meterSerialNumber);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -87,7 +87,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         try {
             $transactionData = TransactionDataContainer::initialize($transaction);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
 
         $validator = resolve(MinimumPurchaseAmountValidator::class);
@@ -98,7 +98,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
             }
         } catch (TransactionAmountNotEnoughException $e) {
             throw new TransactionAmountNotEnoughException($e->getMessage());
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new TransactionIsInvalidForProcessingIncomingRequestException('Invalid Transaction request.');
         }
     }
@@ -124,7 +124,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
 
             return $address->phone;
         } catch (ModelNotFoundException $exception) {
-            throw new \Exception('No phone number record found by customer.');
+            throw new \Exception('No phone number record found by customer.', $exception->getCode(), $exception);
         }
     }
 

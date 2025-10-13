@@ -11,6 +11,8 @@ use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Ramsey\Uuid\Uuid;
 
@@ -18,22 +20,12 @@ use Ramsey\Uuid\Uuid;
  * @implements IBaseService<WaveMoneyTransaction>
  */
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
-    private Meter $meter;
-    private Address $address;
-    private Transaction $transaction;
-    private WaveMoneyTransaction $waveMoneyTransaction;
-
     public function __construct(
-        Meter $meter,
-        Address $address,
-        Transaction $transaction,
-        WaveMoneyTransaction $waveMoneyTransaction,
+        private Meter $meter,
+        private Address $address,
+        private Transaction $transaction,
+        private WaveMoneyTransaction $waveMoneyTransaction,
     ) {
-        $this->transaction = $transaction;
-        $this->address = $address;
-        $this->meter = $meter;
-        $this->waveMoneyTransaction = $waveMoneyTransaction;
-
         parent::__construct(
             $this->meter,
             $this->address,
@@ -42,6 +34,17 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         );
     }
 
+    /**
+     * @return array{
+     *     order_id: string,
+     *     reference_id: string,
+     *     meter_serial: string,
+     *     status: int,
+     *     currency: string,
+     *     customer_id: int,
+     *     amount: float|int
+     * }
+     */
     public function initializeTransactionData(): array {
         $orderId = Uuid::uuid4()->toString(); // need to store somewhere
         $referenceId = Uuid::uuid4()->toString(); // need to store somewhere
@@ -57,17 +60,20 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         ];
     }
 
-    public function getByOrderId(string $orderId) {
+    public function getByOrderId(string $orderId): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->where('order_id', '=', $orderId)
             ->firstOrFail();
     }
 
-    public function getByExternalTransactionId(string $externalTransactionId) {
+    public function getByExternalTransactionId(string $externalTransactionId): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->where('external_transaction_id', '=', $externalTransactionId)
             ->firstOrFail();
     }
 
-    public function getByStatus($status) {
+    /**
+     * @return Collection<int, WaveMoneyTransaction>
+     */
+    public function getByStatus(int $status): Collection {
         return $this->waveMoneyTransaction->newQuery()->where('status', '=', $status)
             ->get();
     }
@@ -101,7 +107,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return $this->waveMoneyTransaction->newQuery()->get();
     }
 
-    public function getWaveMoneyTransaction() {
+    public function getWaveMoneyTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
         return $this->getPaymentAggregatorTransaction();
     }
 }

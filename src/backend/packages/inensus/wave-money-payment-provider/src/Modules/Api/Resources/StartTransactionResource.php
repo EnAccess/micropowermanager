@@ -20,6 +20,9 @@ class StartTransactionResource extends AbstractApiResource {
         return RequestMethod::POST;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getBodyData(): array {
         return [
             'merchant_id' => $this->waveMoneyCredential->getMerchantId(),
@@ -39,6 +42,9 @@ class StartTransactionResource extends AbstractApiResource {
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getQueryParams(): array {
         return [];
     }

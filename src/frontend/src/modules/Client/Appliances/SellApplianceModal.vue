@@ -1,7 +1,7 @@
 <template>
   <div>
     <md-dialog
-      :md-active.sync="showSellApplianceModal"
+      :md-active.sync="modalVisible"
       style="max-width: 60rem; margin: auto"
     >
       <md-dialog-title>Sell Appliance</md-dialog-title>
@@ -644,6 +644,17 @@ export default {
       settings: "settings/getMainSettings",
       user: "auth/getAuthenticateUser",
     }),
+    modalVisible: {
+      get() {
+        return this.showSellApplianceModal
+      },
+      set(value) {
+        // Emit the standard .sync update event
+        this.$emit("update:showSellApplianceModal", value)
+        // Also emit legacy hide event used by parents
+        if (!value) this.$emit("hideModal")
+      },
+    },
     showRatesButton() {
       return this.applianceService.appliance.rate > 1
     },

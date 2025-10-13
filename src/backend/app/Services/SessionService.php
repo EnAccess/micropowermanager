@@ -17,7 +17,7 @@ class SessionService {
     }
 
     private function checkDatabaseName(string $databaseName): bool {
-        return $this->getAuthenticatedUserDatabaseName() == $databaseName;
+        return $this->getAuthenticatedUserDatabaseName() === $databaseName;
     }
 
     public function getAuthenticatedUserDatabaseName(): string {

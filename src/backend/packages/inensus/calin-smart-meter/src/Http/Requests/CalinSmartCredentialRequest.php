@@ -9,9 +9,9 @@ class CalinSmartCredentialRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'company_name' => ['required'],
             'user_name' => ['required', Rule::unique('tenant.calin_smart_api_credentials')->ignore($this->id)],

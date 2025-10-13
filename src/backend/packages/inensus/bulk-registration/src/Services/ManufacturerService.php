@@ -6,7 +6,7 @@ use App\Models\Manufacturer;
 use Inensus\BulkRegistration\Exceptions\ManufacturerNotSupportedException;
 
 class ManufacturerService extends CreatorService {
-    private $manufacturers = [
+    private array $manufacturers = [
         'Calin Meter',
         'Calin Smart Meter',
         'Kelin Meter',

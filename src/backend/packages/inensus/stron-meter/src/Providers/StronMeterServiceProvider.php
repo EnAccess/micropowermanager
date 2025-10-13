@@ -10,7 +10,7 @@ use Inensus\StronMeter\Console\Commands\UpdatePackage;
 use Inensus\StronMeter\StronMeterApi;
 
 class StronMeterServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

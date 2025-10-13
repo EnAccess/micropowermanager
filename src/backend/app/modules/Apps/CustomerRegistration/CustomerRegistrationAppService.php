@@ -4,6 +4,7 @@ namespace MPM\Apps\CustomerRegistration;
 
 use App\Events\AccessRatePaymentInitialize;
 use App\Http\Requests\AndroidAppRequest;
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\AddressGeographicalInformationService;
@@ -30,7 +31,7 @@ class CustomerRegistrationAppService {
         $serialNumber = $request->input('serial_number');
         $meter = $this->meterService->getBySerialNumber($serialNumber);
         $phone = $request->input('phone');
-        if ($meter) {
+        if ($meter instanceof Meter) {
             throw new \Exception('Meter already exists');
         }
 
@@ -42,7 +43,7 @@ class CustomerRegistrationAppService {
         $tariffId = $request->input('tariff_id');
         $cityId = $request->input('city_id');
         $geoPoints = $request->input('geo_points');
-        if ($person === null) {
+        if (!$person instanceof Person) {
             $request->attributes->add(['is_customer' => 1]);
             $person = $this->personService->createFromRequest($request);
         }

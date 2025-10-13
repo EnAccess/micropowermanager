@@ -6,11 +6,7 @@ use Barryvdh\DomPDF\PDF;
 use Illuminate\Support\Facades\Storage;
 
 class PdfService {
-    private PDF $pdf;
-
-    public function __construct(PDF $pdf) {
-        $this->pdf = $pdf;
-    }
+    public function __construct(private PDF $pdf) {}
 
     public function generatePdfFromView(string $view, mixed $dataToInject): string {
         $this->pdf->loadView($view, ['data' => $dataToInject]);

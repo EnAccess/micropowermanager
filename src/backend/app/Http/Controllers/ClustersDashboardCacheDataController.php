@@ -15,7 +15,7 @@ class ClustersDashboardCacheDataController extends Controller {
         $cachedData = $this->clustersDashboardCacheDataService->getData();
 
         // If cache is empty, initialize it before returning
-        if (empty($cachedData)) {
+        if ($cachedData === []) {
             $this->clustersDashboardCacheDataService->setData();
             $cachedData = $this->clustersDashboardCacheDataService->getData();
         }

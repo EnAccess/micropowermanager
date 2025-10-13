@@ -14,8 +14,6 @@ class AssetController extends Controller {
 
     /**
      * Display a listing of the resource.
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource {
         return ApiResource::make($this->assetService->getAssets($request));

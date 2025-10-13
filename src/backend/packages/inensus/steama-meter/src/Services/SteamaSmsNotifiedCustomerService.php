@@ -5,13 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSmsNotifiedCustomer;
 
 class SteamaSmsNotifiedCustomerService {
-    private $steamaSmsNotifiedCustomer;
-
-    public function __construct(
-        SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer,
-    ) {
-        $this->steamaSmsNotifiedCustomer = $steamaSmsNotifiedCustomer;
-    }
+    public function __construct(private SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer) {}
 
     public function getSteamaSmsNotifiedCustomers() {
         return $this->steamaSmsNotifiedCustomer->newQuery()->get();
@@ -32,7 +26,7 @@ class SteamaSmsNotifiedCustomerService {
         ]);
     }
 
-    public function removeLowBalancedCustomer($customer) {
+    public function removeLowBalancedCustomer(array $customer): bool {
         if ($customer['low_balance_warning'] >= $customer['account_balance']) {
             return false;
         }

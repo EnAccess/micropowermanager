@@ -18,12 +18,6 @@ use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 class JwtMiddleware extends BaseMiddleware {
     /**
      * Handle an incoming request.
-     *
-     * @param Request  $request
-     * @param \Closure $next
-     * @param string   $type
-     *
-     * @return mixed
      */
     public function handle(Request $request, \Closure $next, string $type = 'user'): mixed {
         try {

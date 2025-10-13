@@ -48,6 +48,11 @@ export default {
           inputType: "password",
           input: "password",
           inputPlaceholder: this.$tc("words.password"),
+          showCancelButton: true,
+          confirmButtonText: "Enter",
+          cancelButtonText: "Cancel",
+          footer:
+            '<button type="button" id="forgot-ppp-btn" style="background: none; border: none; color: #4f4e94; text-decoration: none; cursor: pointer; font-size: inherit;">Forgot Protected Pages Password?</button>',
 
           inputValidator: async (value) => {
             try {
@@ -70,6 +75,21 @@ export default {
               this.$router.replace("/")
             }
           },
+        }).then((result) => {
+          if (result.dismiss === "cancel") {
+            this.$router.replace("/")
+          }
+        })
+
+        // Use Vue's $nextTick to ensure DOM is updated
+        this.$nextTick(() => {
+          const forgotBtn = document.getElementById("forgot-ppp-btn")
+          if (forgotBtn) {
+            forgotBtn.addEventListener("click", () => {
+              this.$swal.close()
+              this.$router.push("/forgot-protected-password")
+            })
+          }
         })
       }
     },

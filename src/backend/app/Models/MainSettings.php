@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\MainSettingsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -18,6 +19,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property float  $vat_appliance
  * */
 class MainSettings extends BaseModel {
-    /** @use HasFactory<\Database\Factories\MainSettingsFactory> */
+    /** @use HasFactory<MainSettingsFactory> */
     use HasFactory;
 }

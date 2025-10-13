@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
+use Database\Factories\MiniGridFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,7 +27,7 @@ use MPM\Target\TargetAssignable;
  * @property array<string, mixed>         $revenueList  This field is used only for caching.
  */
 class MiniGrid extends BaseModel implements TargetAssignable {
-    /** @use HasFactory<\Database\Factories\MiniGridFactory> */
+    /** @use HasFactory<MiniGridFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'mini-grid';

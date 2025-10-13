@@ -52,7 +52,7 @@ class CheckPayments extends AbstractSharedCommand {
                 ->whereDate('due_date', '>=', now()->format('Y-m-d'))
                 ->where('remaining', '>', 0)
                 ->where('remind', '>', 0)
-                ->each(fn ($installment) => $this->lockTheBike($installment));
+                ->each(fn ($installment): bool => $this->lockTheBike($installment));
         } catch (\Exception $e) {
             $this->warn('check-payments command is failed. message => '.$e->getMessage());
         }
@@ -63,7 +63,7 @@ class CheckPayments extends AbstractSharedCommand {
         $this->info('#############################');
     }
 
-    private function lockTheBike($installment): bool {
+    private function lockTheBike(object $installment): bool {
         $eBike = $this->eBikeService->getBySerialNumber($installment->assetPerson->device_serial);
 
         if ($eBike->manufacturer->name != self::MANUFACTURER_NAME) {

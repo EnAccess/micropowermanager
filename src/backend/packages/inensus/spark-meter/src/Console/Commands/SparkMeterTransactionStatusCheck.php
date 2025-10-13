@@ -32,7 +32,7 @@ class SparkMeterTransactionStatusCheck extends AbstractSharedCommand {
             ->orWhere('status', 'pending')
             ->whereNotNull('external_id')
             ->get();
-        foreach ($smTransactions as $key => $smTransaction) {
+        foreach ($smTransactions as $smTransaction) {
             $this->transactionService->updateTransactionStatus($smTransaction);
         }
     }

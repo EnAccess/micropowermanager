@@ -13,6 +13,7 @@ use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTGuard;
 
 class AgentWebController extends Controller {
     public function __construct(
@@ -47,7 +48,7 @@ class AgentWebController extends Controller {
             'fire_base_token' => '-',
             'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        /** @var JWTGuard $guard */
         $guard = auth('api');
         $companyId = $guard->payload()->get('companyId');
         $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
@@ -95,10 +96,7 @@ class AgentWebController extends Controller {
         return ApiResource::make($this->agentService->searchAgent($term, $paginate));
     }
 
-    /**
-     * @return Response
-     */
-    public function resetPassword(Request $request, Response $response) {
+    public function resetPassword(Request $request, Response $response): Response {
         $responseMessage = $this->agentService->resetPassword($request->input('email'));
 
         if ($responseMessage === 'Invalid email.') {

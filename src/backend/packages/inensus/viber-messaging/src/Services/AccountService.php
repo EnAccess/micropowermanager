@@ -3,10 +3,11 @@
 namespace Inensus\ViberMessaging\Services;
 
 use Illuminate\Support\Facades\Log;
+use Inensus\ViberMessaging\Models\ViberCredential;
 use Viber\Client;
 
 class AccountService {
-    public function getAccountInfo($credential) {
+    public function getAccountInfo(ViberCredential $credential): string {
         $apiKey = $credential->api_token;
 
         try {
@@ -16,7 +17,7 @@ class AccountService {
             return $result->getData()['uri'];
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

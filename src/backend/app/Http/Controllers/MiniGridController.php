@@ -20,10 +20,6 @@ class MiniGridController extends Controller {
 
     /**
      * List.
-     *
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
@@ -35,13 +31,8 @@ class MiniGridController extends Controller {
      * Detail.
      *
      * @bodyParam id int required
-     *
-     * @param int     $miniGridId
-     * @param Request $request
-     *
-     * @return ApiResource
      */
-    public function show($miniGridId, Request $request): ApiResource {
+    public function show(int $miniGridId, Request $request): ApiResource {
         $relation = $request->get('relation');
 
         if ((int) $relation === 1) {
@@ -67,14 +58,9 @@ class MiniGridController extends Controller {
      * Update.
      *
      * @bodyParam name string The name of the MiniGrid.
-     *
-     * @param int                   $miniGridId
-     * @param UpdateMiniGridRequest $request
-     *
-     * @return ApiResource
      */
-    public function update($miniGridId, UpdateMiniGridRequest $request): ApiResource {
-        $miniGrid = $this->miniGridService->getById($miniGridId);
+    public function update(int $miniGridId, UpdateMiniGridRequest $request): ApiResource {
+        $this->miniGridService->getById($miniGridId);
 
         return ApiResource::make($this->miniGridService->getById($miniGridId));
     }

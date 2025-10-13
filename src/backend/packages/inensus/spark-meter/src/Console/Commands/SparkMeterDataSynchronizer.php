@@ -54,7 +54,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
 
         $syncActions = $this->smSyncActionService->getActionsNeedsToSync();
         try {
-            $this->smSyncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
+            $this->smSyncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
                 if (!$syncAction) {
                     return true;

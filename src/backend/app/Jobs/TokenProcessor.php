@@ -45,15 +45,15 @@ class TokenProcessor extends AbstractJob {
 
         $token = $this->handleExistingToken();
 
-        if ($token === null) {
+        if (!$token instanceof Token) {
             $this->generateToken($api);
         }
-        if ($token !== null) {
+        if ($token instanceof Token) {
             $this->handlePaymentEvents($token);
         }
     }
 
-    private function handleApiException(\Exception $e): void {
+    private function handleApiException(\Throwable $e): void {
         Log::critical(
             'No Api is registered for '.$this->transactionContainer->manufacturer->name,
             ['message' => $e->getMessage()]
@@ -64,7 +64,7 @@ class TokenProcessor extends AbstractJob {
     private function handleExistingToken(): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
-        if ($token !== null && $this->reCreate === true) {
+        if ($token !== null && $this->reCreate) {
             $token->delete();
             $token = null;
         }
@@ -84,7 +84,7 @@ class TokenProcessor extends AbstractJob {
         $this->saveToken($tokenData);
     }
 
-    private function handleTokenGenerationFailure(\Exception $e): void {
+    private function handleTokenGenerationFailure(\Throwable $e): void {
         if (MAX_TRIES > $this->counter) {
             $this->retryTokenGeneration();
 
@@ -144,7 +144,7 @@ class TokenProcessor extends AbstractJob {
 
     private function handleRollbackInFailure(): void {
         $paidRates = $this->transactionContainer->paidRates;
-        collect($paidRates)->map(function ($paidRate) {
+        collect($paidRates)->map(function (array $paidRate) {
             $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);
             $assetRate->remaining += $paidRate['paid'];
             $assetRate->update();

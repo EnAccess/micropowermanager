@@ -11,6 +11,7 @@ use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Database\Factories\Meter\MeterFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property MeterTariff  $tariff
  */
 class Meter extends BaseModel {
-    /** @use HasFactory<\Database\Factories\Meter\MeterFactory> */
+    /** @use HasFactory<MeterFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'meter';
@@ -102,9 +103,7 @@ class Meter extends BaseModel {
     }
 
     public function findBySerialNumber(string $meterSerialNumber): ?self {
-        $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
-
-        return $result;
+        return $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
     }
 
     public function getId(): int {

@@ -3,17 +3,18 @@
 namespace App\Services;
 
 use App\Exceptions\MailNotSentException;
-use App\Helpers\MailHelperInterface;
+use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use MPM\User\Events\UserCreatedEvent;
+use Tymon\JWTAuth\JWTGuard;
 
 class UserService {
     public function __construct(
         private User $user,
-        private MailHelperInterface $mailHelper,
+        private MailHelper $mailHelper,
     ) {}
 
     /**
@@ -23,7 +24,7 @@ class UserService {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
 
         if ($companyId === null) {
-            /** @var \Tymon\JWTAuth\JWTGuard $guard */
+            /** @var JWTGuard $guard */
             $guard = auth('api');
             $payload = $guard->check() ? $guard->payload() : null;
             $companyId = $payload?->get('companyId');
@@ -78,9 +79,7 @@ class UserService {
             return null;
         }
 
-        $user = $user->fresh()->with(['addressDetails'])->first();
-
-        return $user;
+        return $user->fresh()->with(['addressDetails'])->first();
     }
 
     /**
@@ -94,11 +93,9 @@ class UserService {
     }
 
     public function get(int $id): User {
-        $user = User::with(['addressDetails'])
+        return User::with(['addressDetails'])
             ->where('id', '=', $id)
             ->firstOrFail();
-
-        return $user;
     }
 
     /**
@@ -126,6 +123,10 @@ class UserService {
 
     public function getById(int $id): ?User {
         return $this->user->newQuery()->find($id);
+    }
+
+    public function getByEmail(string $email): ?User {
+        return $this->user->newQuery()->where('email', $email)->first();
     }
 
     public function delete(User $model): ?bool {

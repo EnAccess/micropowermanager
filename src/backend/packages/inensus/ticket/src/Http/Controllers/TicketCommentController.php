@@ -11,7 +11,7 @@ use Inensus\Ticket\Services\TicketUserService;
 class TicketCommentController extends Controller {
     public function __construct(private TicketCommentService $ticketCommentService, private TicketUserService $ticketUserService) {}
 
-    public function store(Request $request) {
+    public function store(Request $request): void {
         /** @var User $user */
         $user = Auth::user();
         $ticketId = (int) $request->input('cardId');

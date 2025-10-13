@@ -3,7 +3,6 @@
 namespace Inensus\GomeLongMeter\Observers;
 
 use App\Models\Meter\MeterTariff;
-// use App\Traits\ScheduledPluginCommand;
 use App\Models\MpmPlugin;
 use App\Traits\ScheduledPluginCommand;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
@@ -17,7 +16,7 @@ class MeterTariffObserver {
         private GomeLongCredentialService $credentialService,
     ) {}
 
-    public function created(MeterTariff $tariff) {
+    public function created(MeterTariff $tariff): void {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }
@@ -27,7 +26,7 @@ class MeterTariffObserver {
         }
     }
 
-    public function updated(MeterTariff $tariff) {
+    public function updated(MeterTariff $tariff): void {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }
@@ -38,7 +37,7 @@ class MeterTariffObserver {
         }
     }
 
-    public function deleted(MeterTariff $tariff) {
+    public function deleted(MeterTariff $tariff): void {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }

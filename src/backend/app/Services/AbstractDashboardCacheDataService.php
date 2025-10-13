@@ -7,13 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 
 abstract class AbstractDashboardCacheDataService {
-    protected string $cacheDataKey;
-
-    public function __construct(
-        string $cacheDataKey,
-    ) {
-        $this->cacheDataKey = $cacheDataKey;
-    }
+    public function __construct(protected string $cacheDataKey) {}
 
     /**
      * @param array<int, string> $dateRange
@@ -28,17 +22,13 @@ abstract class AbstractDashboardCacheDataService {
     }
 
     /**
-     * @param int|string $id
-     *
      * @return array<string, mixed>|null
      */
     public function getDataById(int|string $id): ?array {
         /** @var array<int, array<string, mixed>>|null $cachedData */
         $cachedData = Cache::get(self::cacheKeyGenerator());
 
-        return $cachedData ? collect($cachedData)->filter(function (array $data) use ($id): bool {
-            return $data['id'] == $id;
-        })->first() : null;
+        return $cachedData ? collect($cachedData)->filter(fn (array $data): bool => $data['id'] == $id)->first() : null;
     }
 
     protected function cacheKeyGenerator(): string {

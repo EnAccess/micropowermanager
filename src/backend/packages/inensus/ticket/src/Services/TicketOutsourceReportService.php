@@ -27,7 +27,7 @@ class TicketOutsourceReportService implements IBaseService {
         return $this->ticketOutsourceReport->newQuery()->get();
     }
 
-    public function createExcelSheet($startDate, $endDate, $tickets) {
+    public function createExcelSheet(string $startDate, string $endDate, $tickets): string {
         $fileName = 'Outsourcing-'.$startDate.'-'.$endDate.'.xlsx';
 
         $sheet = $this->spreadsheet->getActiveSheet();

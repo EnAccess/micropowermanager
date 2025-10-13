@@ -53,9 +53,6 @@ class ClusterService implements IBaseService {
     }
 
     /**
-     * @param string|null $startDate
-     * @param string|null $endDate
-     *
      * @return array<int, string>
      */
     public function getDateRangeFromRequest(?string $startDate, ?string $endDate): array {

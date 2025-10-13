@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Helpers\MailHelper;
-use App\Helpers\MailHelperInterface;
-use App\Helpers\MailHelperMock;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
@@ -19,7 +16,6 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\EBike;
-use App\Models\MaintenanceUsers;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
@@ -49,10 +45,8 @@ use MPM\User\UserListener;
 class AppServiceProvider extends ServiceProvider {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot() {
+    public function boot(): void {
         // Maria DB work-around
         Schema::defaultStringLength(191);
 
@@ -77,7 +71,6 @@ class AppServiceProvider extends ServiceProvider {
                 MeterTariff::RELATION_NAME => MeterTariff::class,
                 ThirdPartyTransaction::RELATION_NAME => ThirdPartyTransaction::class,
                 CashTransaction::RELATION_NAME => CashTransaction::class,
-                MaintenanceUsers::RELATION_NAME => MaintenanceUsers::class,
                 Meter::RELATION_NAME => Meter::class,
                 Device::RELATION_NAME => Device::class,
                 City::RELATION_NAME => City::class,
@@ -91,16 +84,8 @@ class AppServiceProvider extends ServiceProvider {
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void {
-        if ($this->app->environment('development') || $this->app->environment('local')) {
-            $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
-        } else {
-            $this->app->singleton(MailHelperInterface::class, MailHelper::class);
-        }
-
         // Aliases here added for backwards-compatibility
         $this->app->singleton(AndroidGateway::class);
         $this->app->alias(AndroidGateway::class, 'AndroidGateway');

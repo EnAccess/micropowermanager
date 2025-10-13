@@ -11,7 +11,7 @@ class PackageInstallationService {
         private SteamaSmsFeedbackWordService $steamaSmsFeedbackWordService,
     ) {}
 
-    public function createDefaultSettingRecords() {
+    public function createDefaultSettingRecords(): void {
         $this->smsBodyService->createSmsBodies();
         $this->defaultValueService->createSmsVariableDefaultValues();
         $this->syncSettingService->createDefaultSettings();

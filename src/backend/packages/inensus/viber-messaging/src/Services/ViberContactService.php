@@ -14,7 +14,7 @@ class ViberContactService implements IBaseService {
         private ViberContact $viberContact,
     ) {}
 
-    public function createContact($personId, $viberId) {
+    public function createContact(int $personId, int $viberId): ViberContact {
         return $this->viberContact->newQuery()->firstOrCreate(['person_id' => $personId], [
             'viber_id' => $viberId,
         ]);
@@ -24,23 +24,35 @@ class ViberContactService implements IBaseService {
         return $this->viberContact->newQuery()->find($id);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): ViberContact {
         return $this->viberContact->newQuery()->create($data);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): ViberContact {
         throw new \Exception('Method update() not yet implemented.');
     }
 
+    /**
+     * @param ViberContact $model
+     */
     public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, ViberContact>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 
-    public function getByReceiverPhoneNumber($receiver) {
+    public function getByReceiverPhoneNumber(string $receiver): ?ViberContact {
         return $this->viberContact->newQuery()
             ->whereHas('mpmPerson', function ($q) use ($receiver) {
                 $q->whereHas('addresses', static function ($q) use ($receiver) {
@@ -49,11 +61,11 @@ class ViberContactService implements IBaseService {
             })->first();
     }
 
-    public function getByRegisteredMeterSerialNumber($meterSerialNumber) {
+    public function getByRegisteredMeterSerialNumber(string $meterSerialNumber): ?ViberContact {
         return $this->viberContact->newQuery()->where('registered_meter_serial_number', $meterSerialNumber)->first();
     }
 
-    public function getByViberId($viberId) {
+    public function getByViberId(int $viberId): ?ViberContact {
         return $this->viberContact->newQuery()->where('viber_id', $viberId)->first();
     }
 }

@@ -2,16 +2,13 @@
 
 namespace App\Observers;
 
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use Illuminate\Support\Facades\Log;
 
 class PersonObserver {
     /**
      * Handle the Person "updated" event.
-     *
-     * @param Person $person
-     *
-     * @return void
      */
     public function updated(Person $person): void {
         Log::debug($person->id.'updated');
@@ -19,10 +16,6 @@ class PersonObserver {
 
     /**
      * Handle the User "deleted" event.
-     *
-     * @param Person $person
-     *
-     * @return void
      */
     public function deleted(Person $person): void {
         // delete all associated roles
@@ -38,7 +31,7 @@ class PersonObserver {
             $address->delete();
         }
         foreach ($person->devices()->get() as $device) {
-            if ($device->device_type === 'meter' && $device->device !== null) {
+            if ($device->device instanceof Meter) {
                 $device->device->delete();
             }
             $device->delete();

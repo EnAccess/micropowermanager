@@ -29,8 +29,6 @@ class MeterTypeService implements IBaseService {
     }
 
     /**
-     * @param int|null $limit
-     *
      * @return Collection<int, MeterType>|LengthAwarePaginator<int, MeterType>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {

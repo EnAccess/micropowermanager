@@ -32,12 +32,10 @@ class CompanyDatabase extends BaseModelCentral {
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase {
-        $result = $this->newQuery()
+        return $this->newQuery()
             ->select(self::COL_DATABASE_NAME)
             ->where(self::COL_COMPANY_ID, '=', $companyId)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function getDatabaseName(): string {

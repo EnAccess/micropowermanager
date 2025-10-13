@@ -22,7 +22,7 @@ class TicketUserController extends Controller {
         return TicketResource::make($this->ticketUserService->getAll($limit, $outSource));
     }
 
-    public function storeExternal(TicketingUserExternalRequest $request) {
+    public function storeExternal(TicketingUserExternalRequest $request): void {
         $ticketUserData = [
             'user_name' => $request->getUserName(),
             'phone' => $request->getPhone(),

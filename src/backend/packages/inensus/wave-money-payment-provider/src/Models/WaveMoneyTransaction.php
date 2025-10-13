@@ -2,13 +2,9 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
-use App\Models\Transaction\Transaction;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\TransactionConflicts;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int         $id
@@ -21,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int         $customer_id
  * @property string|null $meter_serial
  */
-class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class WaveMoneyTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'wave_money_transaction';
 
     public const STATUS_REQUESTED = 0;
@@ -52,49 +48,38 @@ class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransacti
         return $this->id;
     }
 
-    public function setStatus(int $status) {
+    public function setStatus(int $status): void {
         $this->status = $status;
     }
 
-    public function setExternalTransactionId(string $transactionId) {
+    public function setExternalTransactionId(string $transactionId): void {
         $this->external_transaction_id = $transactionId;
     }
 
-    public function setOrderId(string $orderId) {
+    public function setOrderId(string $orderId): void {
         $this->order_id = $orderId;
     }
 
-    public function setReferenceId(string $referenceId) {
+    public function setReferenceId(string $referenceId): void {
         $this->reference_id = $referenceId;
     }
 
-    public function setCustomerId(int $customerId) {
+    public function setCustomerId(int $customerId): void {
         $this->customer_id = $customerId;
     }
 
-    public function setMeterSerial(string $meterSerialNumber) {
+    public function setMeterSerial(string $meterSerialNumber): void {
         $this->meter_serial = $meterSerialNumber;
     }
 
-    public function setAmount(int $amount) {
+    public function setAmount(int $amount): void {
         $this->amount = $amount;
     }
 
     /**
-     * @return MorphOne<Transaction, $this>
+     * @return MorphMany<TransactionConflicts, $this>
      */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
-
-    public function conflicts() {
+    public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 

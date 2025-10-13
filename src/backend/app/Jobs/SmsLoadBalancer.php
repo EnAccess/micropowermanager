@@ -21,18 +21,11 @@ class SmsLoadBalancer extends AbstractJob {
     public mixed $gateways;
 
     /**
-     * @var array<mixed>
-     */
-    public array $smsBody;
-
-    /**
      * @param array<mixed> $smsBody
      */
-    public function __construct(array $smsBody) {
+    public function __construct(public array $smsBody) {
         $this->onConnection('redis');
         $this->onQueue('sms_gateway');
-
-        $this->smsBody = $smsBody;
         parent::__construct();
     }
 

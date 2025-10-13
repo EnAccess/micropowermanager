@@ -14,7 +14,7 @@ class ImportCsv extends TestCase {
     use InteractsWithAuthentication;
 
     /** @test */
-    public function isUserSentCsv() {
+    public function isUserSentCsv(): void {
         $this->withoutExceptionHandling();
         $user = User::factory()->createOne();
 

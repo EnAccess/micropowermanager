@@ -61,9 +61,7 @@ class MeterRevenueService {
             ->whereHasMorph(
                 'originalTransaction',
                 '*',
-                static function ($q) {
-                    return $q->where('status', 1);
-                }
+                static fn ($q) => $q->where('status', 1)
             )
             ->whereBetween('transactions.created_at', [$startDate, $endDate])
             ->get()->toArray();
@@ -96,9 +94,7 @@ class MeterRevenueService {
             ->whereHasMorph(
                 'originalTransaction',
                 '*',
-                static function ($q) {
-                    return $q->where('status', 1);
-                }
+                static fn ($q) => $q->where('status', 1)
             )
             ->whereBetween(DB::raw('DATE(transactions.created_at)'), [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(transactions.created_at, 3)'))
@@ -140,9 +136,7 @@ class MeterRevenueService {
             ->whereHasMorph(
                 'originalTransaction',
                 '*',
-                static function ($q) {
-                    return $q->where('status', 1);
-                }
+                static fn ($q) => $q->where('status', 1)
             )
             ->whereBetween('transactions.created_at', [$startDate, $endDate])
             ->get()->toArray();

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -37,7 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // additional middleware group to `web` and `api` default groups
         $middleware->group('agent_api', [
-            Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SubstituteBindings::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
@@ -46,23 +47,17 @@ return Application::configure(basePath: dirname(__DIR__))
         // Lowering the LogLevel here to not spam our logging.
         $exceptions->level(JWTException::class, LogLevel::INFO);
 
-        $exceptions->render(function (JWTException $e) {
-            return response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401);
-        });
+        $exceptions->render(fn (JWTException $e) => response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401));
 
-        $exceptions->render(function (ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Model not found '.implode(' ', $e->getIds()),
-                'status_code' => 404,
-            ]);
-        });
-        $exceptions->render(function (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors(),
-                'status_code' => 422,
-            ], 422);
-        });
+        $exceptions->render(fn (ModelNotFoundException $e) => response()->json([
+            'message' => 'Model not found '.implode(' ', $e->getIds()),
+            'status_code' => 404,
+        ]));
+        $exceptions->render(fn (ValidationException $e) => response()->json([
+            'message' => 'Validation failed',
+            'errors' => $e->errors(),
+            'status_code' => 422,
+        ], 422));
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');

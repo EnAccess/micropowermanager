@@ -15,11 +15,7 @@ class PersonMeterController {
      * Person with Meters & Tariff
      * Person details with his/her owned meter(s) and its assigned tariff
      *
-     * @param int $personId
-     *
      * @urlParam person required The ID of the person
-     *
-     * @return ApiResource
      *
      * @responseFile responses/people/person.meter.tariff.json
      */

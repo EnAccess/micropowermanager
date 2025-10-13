@@ -26,10 +26,10 @@ class GomeLongTariffService {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
-    public function createGomeLongTariff($tariff) {
+    public function createGomeLongTariff($tariff): void {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-        if (!$gomeLongTariff) {
+        if (!$gomeLongTariff instanceof GomeLongTariff) {
             $credentials = $this->credentialService->getCredentials();
             $vatEnergy = $this->mainSettings->newQuery()->first()->vat_energy;
             $params = [
@@ -55,7 +55,7 @@ class GomeLongTariffService {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-            if (!$gomeLongTariff) {
+            if (!$gomeLongTariff instanceof GomeLongTariff) {
                 return true;
             }
 
@@ -76,7 +76,7 @@ class GomeLongTariffService {
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -84,7 +84,7 @@ class GomeLongTariffService {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-            if (!$gomeLongTariff) {
+            if (!$gomeLongTariff instanceof GomeLongTariff) {
                 return true;
             }
 
@@ -102,11 +102,11 @@ class GomeLongTariffService {
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function sync() {
+    public function sync(): bool {
         try {
             $credentials = $this->credentialService->getCredentials();
 
@@ -168,7 +168,7 @@ class GomeLongTariffService {
                 'syncing tariff info from gomelong api failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 class RouteServiceProvider extends ServiceProvider {
     protected $namespace = 'Inensus\ViberMessaging\Http\Controllers';
 
-    public function boot() {
+    public function boot(): void {
         parent::boot();
     }
 

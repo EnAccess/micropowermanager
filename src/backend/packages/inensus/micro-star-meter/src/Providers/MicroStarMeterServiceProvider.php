@@ -10,7 +10,7 @@ use Inensus\MicroStarMeter\Console\Commands\UpdatePackage;
 use Inensus\MicroStarMeter\Modules\Api\MicroStarMeterApi;
 
 class MicroStarMeterServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

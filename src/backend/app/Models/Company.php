@@ -43,19 +43,12 @@ class Company extends BaseModelCentral {
         return $this->name;
     }
 
-    /** @return HasMany<CompanyJob, $this> */
-    public function jobs(): HasMany {
-        return $this->hasMany(CompanyJob::class);
-    }
-
     /**
      * Get the protected page password with deprecation warning.
      *
-     * @return string|null
-     *
      * @deprecated Use main_settings.protected_page_password instead
      */
-    public function getProtectedPagePasswordAttribute(mixed $value): ?string {
+    protected function getProtectedPagePasswordAttribute(mixed $value): ?string {
         if ($value !== null) {
             trigger_error(
                 'Company::protected_page_password is deprecated. Use MainSettings.protected_page_password instead.',
@@ -73,7 +66,7 @@ class Company extends BaseModelCentral {
      *
      * @deprecated Use main_settings.protected_page_password instead
      */
-    public function setProtectedPagePasswordAttribute(mixed $value): void {
+    protected function setProtectedPagePasswordAttribute(mixed $value): void {
         trigger_error(
             'Company::protected_page_password is deprecated. Use MainSettings.protected_page_password instead.',
             E_USER_DEPRECATED

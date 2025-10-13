@@ -116,10 +116,7 @@ class ClusterRevenueService {
 
     /**
      * @param Collection<int, Cluster> $clusters
-     * @param string                   $startDate
-     * @param string                   $endDate
      * @param array<string, mixed>     $periods
-     * @param string                   $period
      *
      * @return array<int, ClusterData>
      */
@@ -138,7 +135,7 @@ class ClusterRevenueService {
             } else {
                 $revenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate]);
             }
-            foreach ($revenues as $rIndex => $revenue) {
+            foreach ($revenues as $revenue) {
                 $revenueData = $revenue->toArray();
                 if ($period === 'weekMonth') {
                     $p[$revenueData['period']][$revenueData['week']]['revenue'] = $revenueData['revenue'];
@@ -174,12 +171,12 @@ class ClusterRevenueService {
         $weeklyRevenues = $this->getTransactionsForWeeklyPeriod($cluster->id, [$startDate, $endDate]);
         $monthlyRevenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate]);
 
-        foreach ($weeklyRevenues as $rIndex => $revenue) {
+        foreach ($weeklyRevenues as $revenue) {
             $revenueData = $revenue->toArray();
             $pW[$revenueData['period']][$revenueData['week']]['revenue'] = $revenueData['revenue'];
         }
 
-        foreach ($monthlyRevenues as $rIndex => $revenue) {
+        foreach ($monthlyRevenues as $revenue) {
             $revenueData = $revenue->toArray();
             $pM[$revenueData['period']]['revenue'] += $revenueData['revenue'];
             $totalRevenue += $revenueData['revenue'];
@@ -306,7 +303,7 @@ class ClusterRevenueService {
                 $miniGrid->id
             );
 
-            foreach ($revenues as $rIndex => $revenue) {
+            foreach ($revenues as $revenue) {
                 $revenueData = $revenue->toArray();
                 $p[$revenueData['period']]['revenue'] += $revenueData['revenue'];
                 $totalRevenue += $revenueData['revenue'];
@@ -343,7 +340,7 @@ class ClusterRevenueService {
                 $revenues = $this->getTransactionsForMonthlyPeriodById($clusterId, [$startDate, $endDate]);
             }
 
-            foreach ($revenues as $rIndex => $revenue) {
+            foreach ($revenues as $revenue) {
                 $revenueData = $revenue->toArray();
                 if ($period === 'weekMonth') {
                     $p[$revenueData['period']][$revenueData['week']]['revenue'] = $revenueData['revenue'];
@@ -364,7 +361,7 @@ class ClusterRevenueService {
      * @return DateRange
      */
     public function setDatesForRequest(string $startDate, ?string $endDate): array {
-        if (!$startDate) {
+        if ($startDate === '' || $startDate === '0') {
             $start = new \DateTime();
             $year = (int) $start->format('Y');
             $month = (int) $start->format('n');
@@ -373,7 +370,7 @@ class ClusterRevenueService {
             $start->sub(new \DateInterval('P12M'));
             $startDate = $start->format('Y-m-d');
         }
-        $endDate = $endDate ?? date('Y-m-t');
+        $endDate ??= date('Y-m-t');
 
         return ['startDate' => $startDate, 'endDate' => $endDate];
     }

@@ -81,7 +81,7 @@ class ApiRequests {
     public function postWithQueryParams(DalyBmsCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
 
-        if (strpos($url, '?') === false) {
+        if (!str_contains($url, '?')) {
             $url .= '?'.http_build_query($params);
         } else {
             $url .= '&'.http_build_query($params);

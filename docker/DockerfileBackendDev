@@ -30,8 +30,14 @@ RUN docker-php-ext-configure pcntl --enable-pcntl
 RUN pecl install redis-5.3.7 && docker-php-ext-enable redis
 
 # install composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')" \
+    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")" \
+    && if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then \
+        >&2 echo 'ERROR: Invalid installer checksum'; \
+        rm composer-setup.php; \
+        exit 1; \
+    fi;
 RUN php composer-setup.php --version=2.8.8
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer

@@ -7,7 +7,7 @@ class PackageInstallationService {
         private KelinSyncSettingService $syncSettingService,
     ) {}
 
-    public function createDefaultSettingRecords() {
+    public function createDefaultSettingRecords(): void {
         $this->syncSettingService->createDefaultSettings();
     }
 }

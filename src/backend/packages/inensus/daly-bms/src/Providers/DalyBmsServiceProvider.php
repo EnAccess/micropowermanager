@@ -12,7 +12,7 @@ use Inensus\DalyBms\Console\Commands\SyncBikes;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
 
 class DalyBmsServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

@@ -17,12 +17,8 @@ class AgentBalanceHistoryObserver {
 
     /**
      * Handle the asset person "updated" event.
-     *
-     * @param AgentBalanceHistory $agentBalanceHistory
-     *
-     * @return void
      */
-    public function created(AgentBalanceHistory $agentBalanceHistory) {
+    public function created(AgentBalanceHistory $agentBalanceHistory): void {
         $trigger = $agentBalanceHistory->trigger()->first();
         $agent = $this->agentService->getById($agentBalanceHistory->agent_id);
 
@@ -30,13 +26,11 @@ class AgentBalanceHistoryObserver {
             if ($agent->balance < 0) {
                 $agent->due_to_energy_supplier += (-1 * $agentBalanceHistory->amount);
                 $agent->balance += $agentBalanceHistory->amount;
+            } elseif ($agent->balance < (-1 * $agentBalanceHistory->amount)) {
+                $agent->due_to_energy_supplier += -1 * ($agent->balance + $agentBalanceHistory->amount);
+                $agent->balance += $agentBalanceHistory->amount;
             } else {
-                if ($agent->balance < (-1 * $agentBalanceHistory->amount)) {
-                    $agent->due_to_energy_supplier += -1 * ($agent->balance + $agentBalanceHistory->amount);
-                    $agent->balance += $agentBalanceHistory->amount;
-                } else {
-                    $agent->balance += $agentBalanceHistory->amount;
-                }
+                $agent->balance += $agentBalanceHistory->amount;
             }
 
             $agent->update();

@@ -20,8 +20,6 @@ class MeterTariffController extends Controller {
      * The list is paginated and each page contains 15 results.
      *
      * @responseFile responses/tariffs/tariffs.list.json
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource {
         $limit = $request->get('limit');
@@ -35,11 +33,6 @@ class MeterTariffController extends Controller {
      * @urlParam     id int required
      *
      * @responseFile responses/tariffs/tariff.detail.json
-     *
-     * @param int     $meterTariffId
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function show(Request $request, int $meterTariffId): ApiResource {
         return ApiResource::make($this->meterTariffService->getById($meterTariffId));
@@ -52,10 +45,6 @@ class MeterTariffController extends Controller {
      * @bodyParam factor int. The factor between two different sub tariffs. Like day/night sub-tariffs.
      * @bodyParam currency string
      * @bodyParam price int required.
-     *
-     * @param TariffCreateRequest $request
-     *
-     * @return JsonResponse
      */
     public function store(TariffCreateRequest $request): JsonResponse {
         $meterTariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);
@@ -91,12 +80,6 @@ class MeterTariffController extends Controller {
         return $this->meterTariffService->delete($meterTariff);
     }
 
-    /**
-     * @param int $meterTariffId
-     * @param int $changeId
-     *
-     * @return ApiResource
-     */
     public function updateTariff(int $meterTariffId, int $changeId): ApiResource {
         $result = $this->meterTariffService->changeMetersTariff($meterTariffId, $changeId);
 
@@ -111,10 +94,6 @@ class MeterTariffController extends Controller {
 
     /**
      * Display a list of meters which using a particular tariff.
-     *
-     * @param int $meterTariffId
-     *
-     * @return ApiResource
      */
     public function showUsageCount(int $meterTariffId): ApiResource {
         return ApiResource::make($this->meterTariffService->getCountById($meterTariffId));

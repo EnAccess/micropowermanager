@@ -10,10 +10,7 @@ class ClusterTransactionService {
     /**
      * Get total transaction amount by cluster ID within a date range.
      *
-     * @param int                $clusterId
      * @param array<int, string> $range
-     *
-     * @return float
      */
     public function getById(int $clusterId, array $range): float {
         return $this->transaction->newQuery()->whereHas(

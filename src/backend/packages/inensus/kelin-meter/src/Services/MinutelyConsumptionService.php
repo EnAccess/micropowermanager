@@ -8,19 +8,11 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinMeterMinutelyData;
 
 class MinutelyConsumptionService {
-    private $rootUrl = '/getMinData';
-    private $kelinApi;
-    private $kelinMeterMinutelyData;
+    private string $rootUrl = '/getMinData';
 
-    public function __construct(
-        KelinMeterApiClient $kelinApi,
-        KelinMeterMinutelyData $kelinMeterMinutelyData,
-    ) {
-        $this->kelinApi = $kelinApi;
-        $this->kelinMeterMinutelyData = $kelinMeterMinutelyData;
-    }
+    public function __construct(private KelinMeterApiClient $kelinApi, private KelinMeterMinutelyData $kelinMeterMinutelyData) {}
 
-    public function getMinutelyDataFromAPI() {
+    public function getMinutelyDataFromAPI(): void {
         $today = Carbon::now()->format('Ymd');
         $moment = Carbon::now()->format('His');
         $pageNo = 1;
@@ -37,7 +29,7 @@ class MinutelyConsumptionService {
             ];
             try {
                 $result = $this->kelinApi->get($this->rootUrl, $queryParams);
-                collect($result['data']['minData'])->each(function ($data) {
+                collect($result['data']['minData'])->each(function (array $data) {
                     KelinMeterMinutelyData::query()->create([
                         'id_of_terminal' => $data['rtuId'],
                         'id_of_measurement_point' => $data['mpId'],

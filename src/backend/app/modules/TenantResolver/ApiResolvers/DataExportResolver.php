@@ -4,10 +4,11 @@ namespace MPM\TenantResolver\ApiResolvers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\JWTGuard;
 
 class DataExportResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
-        /** @var \Tymon\JWTAuth\JWTGuard */
+        /** @var JWTGuard */
         $guard = auth('api');
         $companyId = $guard->payload()->get('companyId');
         if (is_null($companyId)) {

@@ -18,21 +18,17 @@ class DeviceService implements IBaseService, IAssociative {
     ) {}
 
     public function make(mixed $deviceData): Device {
-        $result = $this->device->newQuery()->make([
+        return $this->device->newQuery()->make([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
         ]);
-
-        return $result;
     }
 
     public function getBySerialNumber(string $serialNumber): ?Device {
-        $result = $this->device->newQuery()
+        return $this->device->newQuery()
             ->with(['address.geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)
             ->first();
-
-        return $result;
     }
 
     public function save($device): bool {

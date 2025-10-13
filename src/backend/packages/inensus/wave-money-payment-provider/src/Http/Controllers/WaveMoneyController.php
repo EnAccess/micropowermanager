@@ -23,7 +23,7 @@ class WaveMoneyController extends Controller {
         return WaveMoneyResource::make($this->apiService->requestPayment($transaction));
     }
 
-    public function transactionCallBack(Request $request) {
+    public function transactionCallBack(Request $request): void {
         $transaction = $request->get('waveMoneyTransaction');
         $status = $request->get('status');
 

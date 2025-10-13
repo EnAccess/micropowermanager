@@ -6,6 +6,7 @@ use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -19,9 +20,9 @@ class ConnectionTypeTest extends TestCase {
     private $company;
     private $companyDatabase;
     private $person;
-    private $connectonTypeIds = [];
+    private array $connectonTypeIds = [];
 
-    public function testUserGetsConnectionTypeList() {
+    public function testUserGetsConnectionTypeList(): void {
         $connectionTypeCount = 5;
         $this->createTestData($connectionTypeCount);
         $response = $this->actingAs($this->user)->get('/api/connection-types');
@@ -29,7 +30,7 @@ class ConnectionTypeTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->connectonTypeIds));
     }
 
-    public function testUserGetsConnectionTypeById() {
+    public function testUserGetsConnectionTypeById(): void {
         $connectionTypeCount = 5;
         $this->createTestData($connectionTypeCount);
         $response = $this->actingAs($this->user)->get(sprintf('/api/connection-types/%s', $this->connectonTypeIds[0]));
@@ -37,7 +38,7 @@ class ConnectionTypeTest extends TestCase {
         $this->assertEquals($response['data']['id'], $this->connectonTypeIds[0]);
     }
 
-    public function testUserCreatesNewConnectionType() {
+    public function testUserCreatesNewConnectionType(): void {
         $connectionTypeCount = 0;
         $this->createTestData($connectionTypeCount);
         $connectionTypeData = ['name' => 'Test Connection Type'];
@@ -46,7 +47,7 @@ class ConnectionTypeTest extends TestCase {
         $this->assertEquals($response['data']['name'], $connectionTypeData['name']);
     }
 
-    public function testUserUpdatesAConnectionType() {
+    public function testUserUpdatesAConnectionType(): void {
         $connectionTypeCount = 1;
         $this->createTestData($connectionTypeCount);
         $connectionTypeData = ['name' => 'Updated Connection Type'];
@@ -58,7 +59,7 @@ class ConnectionTypeTest extends TestCase {
         $this->assertEquals($response['data']['name'], $connectionTypeData['name']);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -73,7 +74,7 @@ class ConnectionTypeTest extends TestCase {
 
         while ($connectionTypeCount > 0) {
             $connectionType = ConnectionTypeFactory::new()->create();
-            array_push($this->connectonTypeIds, $connectionType->id);
+            $this->connectonTypeIds[] = $connectionType->id;
             --$connectionTypeCount;
         }
     }

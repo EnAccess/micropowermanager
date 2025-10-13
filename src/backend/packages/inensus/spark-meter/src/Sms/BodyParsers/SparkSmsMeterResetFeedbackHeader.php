@@ -7,11 +7,8 @@ use App\Sms\BodyParsers\SmsBodyParser;
 
 class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser {
     protected $variables = ['name', 'surname'];
-    protected $data;
 
-    public function __construct($data) {
-        $this->data = $data;
-    }
+    public function __construct(protected $data) {}
 
     protected function getVariableValue(string $variable): mixed {
         if (!is_array($this->data)) {
@@ -19,24 +16,17 @@ class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser {
         } else {
             try {
                 $person = Person::query()->with([
-                    'devices.device' => function ($q) {
-                        return $q->where('serial_number', $this->data['meter'])->first();
-                    },
+                    'devices.device' => fn ($q) => $q->where('serial_number', $this->data['meter'])->first(),
                 ])->firstOrFail();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return '';
             }
         }
 
-        switch ($variable) {
-            case 'name':
-                $variable = $person->name;
-                break;
-            case 'surname':
-                $variable = $person->surname;
-                break;
-        }
-
-        return $variable;
+        return match ($variable) {
+            'name' => $person->name,
+            'surname' => $person->surname,
+            default => $variable,
+        };
     }
 }

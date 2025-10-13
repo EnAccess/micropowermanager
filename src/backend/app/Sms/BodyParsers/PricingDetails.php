@@ -10,30 +10,20 @@ class PricingDetails extends SmsBodyParser {
      * @var array<int, string>
      */
     public $variables = ['amount', 'vat_energy', 'vat_others'];
-
-    protected Transaction $transaction;
     private float $vatEnergy = 0;
     private float $vatOtherStaffs = 0;
 
-    public function __construct(Transaction $transaction) {
-        $this->transaction = $transaction;
+    public function __construct(protected Transaction $transaction) {
         $this->calculateTaxes();
     }
 
     protected function getVariableValue(string $variable): mixed {
-        switch ($variable) {
-            case 'amount':
-                $variable = $this->transaction->amount;
-                break;
-            case 'vat_energy':
-                $variable = $this->vatEnergy;
-                break;
-            case 'vat_others':
-                $variable = $this->vatOtherStaffs;
-                break;
-        }
-
-        return $variable;
+        return match ($variable) {
+            'amount' => $this->transaction->amount,
+            'vat_energy' => $this->vatEnergy,
+            'vat_others' => $this->vatOtherStaffs,
+            default => $variable,
+        };
     }
 
     private function calculateTaxes(): void {

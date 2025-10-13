@@ -16,14 +16,6 @@ class ClusterRevenueAnalysisController extends Controller {
     ) {}
 
     public function show(int $clusterId, Request $request): ApiResource {
-        /**
-         * !!!!
-         * To group revenue by city -> connection type
-         * use following structure
-         * $revenueAnalysis[$connectionType->name] = $periods;.
-         */
-        $revenueAnalysis = [];
-
         $startDate = $request->get('startDate') ?? date('Y-01-01');
         $endDate = $request->get('endDate') ?? date('Y-m-t');
         $period = $request->get('period') ?? 'monthly';

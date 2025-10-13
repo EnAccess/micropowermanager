@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\GeographicalInformationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $owner_type
  */
 class GeographicalInformation extends BaseModel {
-    /** @use HasFactory<\Database\Factories\GeographicalInformationFactory> */
+    /** @use HasFactory<GeographicalInformationFactory> */
     use HasFactory;
 
     protected $table = 'geographical_informations';

@@ -3,6 +3,7 @@
 namespace Inensus\AfricasTalking\Http\Controllers;
 
 use App\Events\SmsStoredEvent;
+use App\Models\Address\Address;
 use App\Models\Sms;
 use App\Services\AddressesService;
 use App\Services\SmsService;
@@ -22,7 +23,7 @@ class AfricasTalkingCallbackController extends Controller {
         $phoneNumber = $data['from'];
         $message = $data['text'];
         $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
-        $sender = $address ? $address->owner : null;
+        $sender = $address instanceof Address ? $address->owner : null;
         // @phpstan-ignore property.notFound
         $senderId = $sender ? $sender->id : null;
 

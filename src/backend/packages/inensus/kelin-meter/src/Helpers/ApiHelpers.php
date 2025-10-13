@@ -8,13 +8,9 @@ use Inensus\KelinMeter\Exceptions\KelinApiEmtyDataException;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 
 class ApiHelpers {
-    private $manufacturer;
+    public function __construct(private Manufacturer $manufacturer) {}
 
-    public function __construct(Manufacturer $manufacturerModel) {
-        $this->manufacturer = $manufacturerModel;
-    }
-
-    public function registerMeterManufacturer() {
+    public function registerMeterManufacturer(): void {
         $this->manufacturer->newQuery()->firstOrCreate(['api_name' => 'KelinMeterApi'], [
             'name' => 'Kelin Meters',
             'website' => '-',
@@ -39,7 +35,7 @@ class ApiHelpers {
         return $result;
     }
 
-    public function makeHash($data) {
+    public function makeHash($data): string {
         return md5(implode('', $data));
     }
 }

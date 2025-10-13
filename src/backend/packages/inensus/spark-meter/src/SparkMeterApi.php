@@ -17,22 +17,11 @@ use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\Services\TariffService;
 
 class SparkMeterApi implements IManufacturerAPI {
-    protected $api;
-    private $rootUrl = '/transaction/';
+    private string $rootUrl = '/transaction/';
 
-    public function __construct(
-        Client $httpClient,
-        private SparkMeterApiRequests $sparkMeterApiRequests,
-        private TariffService $tariffService,
-        private SmCustomer $smCustomer,
-        private SmTransaction $smTransaction,
-        private SmTariff $smTariff,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private SparkMeterApiRequests $sparkMeterApiRequests, private TariffService $tariffService, private SmCustomer $smCustomer, private SmTransaction $smTransaction, private SmTariff $smTariff) {}
 
     public function chargeDevice($transactionContainer): array {
-        $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $owner = $transactionContainer->device->person;
 
@@ -134,8 +123,6 @@ class SparkMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

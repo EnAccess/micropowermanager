@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Inensus\Ticket\Models\TicketCategory;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -9,7 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class TicketTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsTicketUserList() {
+    public function testUserGetsTicketUserList(): void {
         $this->createTestData();
         $this->createTicketUser();
         $response = $this->actingAs($this->user)->get('/tickets/api/users');
@@ -17,7 +18,7 @@ class TicketTest extends TestCase {
         $this->assertEquals(1, count($response['data']));
     }
 
-    public function testUserCreatesATicket() {
+    public function testUserCreatesATicket(): void {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -36,7 +37,7 @@ class TicketTest extends TestCase {
         $response->assertStatus(200);
     }
 
-    public function testUserGetsTicketList() {
+    public function testUserGetsTicketList(): void {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -47,7 +48,7 @@ class TicketTest extends TestCase {
         $this->assertEquals(1, count($response['data']['data']));
     }
 
-    public function testUserClosesATicket() {
+    public function testUserClosesATicket(): void {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -58,7 +59,7 @@ class TicketTest extends TestCase {
         $response->assertStatus(200);
     }
 
-    public function testUserGetsAgentsTicketList() {
+    public function testUserGetsAgentsTicketList(): void {
         $this->createTestData();
         $this->createPerson();
         $this->createAgentCommission();
@@ -71,7 +72,7 @@ class TicketTest extends TestCase {
         $this->assertEquals(1, count($response['data']['data']));
     }
 
-    public function testUserCreatesATicketCategory() {
+    public function testUserCreatesATicketCategory(): void {
         $this->createTestData();
         $postData = [
             'labelName' => 'test category',
@@ -85,7 +86,7 @@ class TicketTest extends TestCase {
         $this->assertEquals($ticketCategory->label_name, $postData['labelName']);
     }
 
-    public function testUserGetsTicketCategoryList() {
+    public function testUserGetsTicketCategoryList(): void {
         $this->createTestData();
         $ticketCategoryCount = 5;
         $this->createTicketCategory($ticketCategoryCount);
@@ -95,7 +96,7 @@ class TicketTest extends TestCase {
         $this->assertEquals($ticketCategoryCount, TicketCategory::query()->count());
     }
 
-    public function testUserGetsTicketListForACustomer() {
+    public function testUserGetsTicketListForACustomer(): void {
         $this->createTestData();
         $this->createPerson();
         $this->createAgentCommission();
@@ -108,7 +109,7 @@ class TicketTest extends TestCase {
         $this->assertEquals(1, count($response['data']['data']));
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

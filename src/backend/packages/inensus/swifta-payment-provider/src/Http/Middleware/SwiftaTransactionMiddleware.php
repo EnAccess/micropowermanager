@@ -7,6 +7,9 @@ use Illuminate\Http\Response;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
 
 class SwiftaTransactionMiddleware {
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
         $transactionProvider = resolve(SwiftaTransactionProvider::class);
 
@@ -24,7 +27,7 @@ class SwiftaTransactionMiddleware {
 
         $swiftaTransaction = $transactionProvider->getSubTransaction();
         $transaction = $swiftaTransaction->transaction()->first();
-        $owner = $transaction->meter->device()->person;
+        $owner = $transaction->device->person;
 
         $request->attributes->add(['transactionId' => $transaction->id]);
         $request->attributes->add(['customerName' => $owner->name.' '.$owner->surname]);

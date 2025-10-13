@@ -6,32 +6,21 @@ use App\Models\PaymentHistory;
 
 class EnergyConfirmation extends SmsBodyParser {
     protected $variables = ['meter', 'token', 'energy', 'amount'];
-    protected PaymentHistory $paymentHistory;
 
-    public function __construct(PaymentHistory $paymentHistory) {
-        $this->paymentHistory = $paymentHistory;
-    }
+    public function __construct(protected PaymentHistory $paymentHistory) {}
 
     protected function getVariableValue(mixed $variable): mixed {
         // FIXME
         /** @var mixed $token */
         $token = $this->paymentHistory->paidFor()->first();
         $transaction = $this->paymentHistory->transaction()->first();
-        switch ($variable) {
-            case 'meter':
-                $variable = $transaction->message;
-                break;
-            case 'token':
-                $variable = $token->token;
-                break;
-            case 'energy':
-                $variable = $token->energy;
-                break;
-            case 'amount':
-                $variable = $this->paymentHistory->amount;
-                break;
-        }
 
-        return $variable;
+        return match ($variable) {
+            'meter' => $transaction->message,
+            'token' => $token->token,
+            'energy' => $token->energy,
+            'amount' => $this->paymentHistory->amount,
+            default => $variable,
+        };
     }
 }

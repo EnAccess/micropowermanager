@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -27,11 +28,7 @@ class NewLogEvent {
     use SerializesModels;
 
     /**
-     * @param array{
-     *   user_id: int,
-     *   affected: \Illuminate\Database\Eloquent\Model,
-     *   action: string
-     * } $logData
+     * @param array{user_id: int, affected: Model, action: string} $logData
      */
     public function __construct(public array $logData) {}
 }

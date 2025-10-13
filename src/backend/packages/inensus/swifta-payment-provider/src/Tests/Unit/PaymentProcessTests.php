@@ -23,7 +23,7 @@ use Tests\TestCase;
 class PaymentProcessTests extends TestCase {
     use RefreshDatabase;
 
-    public function testProcessPaymentStartsEnergyTransactionProcessor() {
+    public function testProcessPaymentStartsEnergyTransactionProcessor(): void {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
@@ -32,7 +32,7 @@ class PaymentProcessTests extends TestCase {
         Queue::assertPushed(EnergyTransactionProcessor::class);
     }
 
-    public function testEnergyTransactionProcessorStartsTokenProcessor() {
+    public function testEnergyTransactionProcessorStartsTokenProcessor(): void {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
@@ -41,7 +41,7 @@ class PaymentProcessTests extends TestCase {
         Queue::assertPushed(TokenProcessor::class);
     }
 
-    public function testTokenProcessorChargesMeter() {
+    public function testTokenProcessorChargesMeter(): void {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
@@ -79,7 +79,7 @@ class PaymentProcessTests extends TestCase {
         );
     }
 
-    private function initializeData() {
+    private function initializeData(): void {
         // create person
         Person::factory()->create();
         // create meter-tariff
@@ -99,7 +99,7 @@ class PaymentProcessTests extends TestCase {
             'api_name' => 'CalinApi',
         ]);
         // create meter
-        $meter = Meter::query()->create([
+        Meter::query()->create([
             'serial_number' => '4700005646',
             'meter_type_id' => 1,
             'in_use' => 1,

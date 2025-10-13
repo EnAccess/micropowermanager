@@ -21,7 +21,7 @@ class SparkMeterServiceProvider extends ServiceProvider {
     /**
      * Bootstrap the application services.
      */
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(SparkMeterRouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

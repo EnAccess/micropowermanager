@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Agent;
+use App\Models\User;
+
 return [
     'defaults' => [
         'guard' => 'api',
@@ -25,11 +28,11 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => User::class,
         ],
         'agents' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Agent::class,
+            'model' => Agent::class,
         ],
     ],
 

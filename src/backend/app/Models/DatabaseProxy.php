@@ -30,20 +30,16 @@ class DatabaseProxy extends BaseModelCentral {
     }
 
     public function findByEmail(string $email): DatabaseProxy {
-        $result = $this->buildQuery()
+        return $this->buildQuery()
             ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=', self::COL_COMPANY_ID)
             ->where(self::COL_EMAIL, '=', $email)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function findByCompanyId(int $companyId): DatabaseProxy {
-        $result = $this->buildQuery($companyId)
+        return $this->buildQuery($companyId)
             ->select(CompanyDatabase::COL_DATABASE_NAME)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function getCompanyId(): int {

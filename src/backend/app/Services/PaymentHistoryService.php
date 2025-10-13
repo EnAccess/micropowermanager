@@ -19,9 +19,7 @@ class PaymentHistoryService implements IAssociative {
     ) {}
 
     /**
-     * @param array<int>      $customerIds
-     * @param CarbonImmutable $startDate
-     * @param CarbonImmutable $endDate
+     * @param array<int> $customerIds
      *
      * @return Collection<int, PaymentHistory>
      */

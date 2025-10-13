@@ -11,7 +11,7 @@ use Inensus\GomeLongMeter\Console\Commands\InstallPackage;
 use Inensus\GomeLongMeter\Modules\Api\GomeLongMeterApi;
 
 class GomeLongMeterServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

@@ -32,8 +32,6 @@ class AgentSoldApplianceController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param CreateAgentSoldApplianceRequest $request
-     *
      * @return ApiResource
      */
     public function store(CreateAgentSoldApplianceRequest $request) {

@@ -5,7 +5,7 @@ namespace Inensus\BulkRegistration\Helpers;
 use ParseCsv\Csv;
 
 class CsvFileParser {
-    private $csv;
+    private Csv $csv;
 
     public function __construct() {
         $this->csv = new Csv();

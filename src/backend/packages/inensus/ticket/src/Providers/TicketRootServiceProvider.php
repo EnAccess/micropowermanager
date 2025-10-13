@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 class TicketRootServiceProvider extends ServiceProvider {
     protected $namespace = 'Inensus\Ticket\Http\Controllers';
 
-    public function boot() {
+    public function boot(): void {
         parent::boot();
     }
 

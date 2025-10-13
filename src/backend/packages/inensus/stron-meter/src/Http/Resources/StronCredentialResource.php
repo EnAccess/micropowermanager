@@ -26,22 +26,19 @@ class StronCredentialResource extends JsonResource {
     }
 
     private function alertType($authenticationStatus) {
-        switch ($authenticationStatus) {
-            case true:
-                return [
-                    'type' => 'success',
-                    'message' => 'Authentication Successful',
-                ];
-            case false:
-                return [
-                    'type' => 'error',
-                    'message' => 'Authentication failed, please check your credentials',
-                ];
-            default:
-                return [
-                    'type' => 'warning',
-                    'message' => 'An error occurred while reaching out to Spark Meter. Please try it again later.',
-                ];
-        }
+        return match ($authenticationStatus) {
+            true => [
+                'type' => 'success',
+                'message' => 'Authentication Successful',
+            ],
+            false => [
+                'type' => 'error',
+                'message' => 'Authentication failed, please check your credentials',
+            ],
+            default => [
+                'type' => 'warning',
+                'message' => 'An error occurred while reaching out to Spark Meter. Please try it again later.',
+            ],
+        };
     }
 }

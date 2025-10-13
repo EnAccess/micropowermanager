@@ -5,6 +5,7 @@ namespace Inensus\Ticket\Services;
 use App\Models\Agent;
 use App\Services\Interfaces\IAssociative;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\Ticket;
 
 /**
@@ -48,12 +49,14 @@ class TicketService implements IAssociative {
         return $ticket;
     }
 
-    public function getBatch($tickets) {
+    public function getBatch(LengthAwarePaginator|array $tickets): array {
+        $ticketData = [];
         foreach ($tickets as $index => $ticket) {
-            $tickets[$index]['comments'] = $ticket->comments()->with('ticketUser')->get();
+            $ticketData[$index] = $ticket;
+            $ticketData[$index]['comments'] = $ticket->comments()->with('ticketUser')->get();
         }
 
-        return $tickets;
+        return $ticketData;
     }
 
     public function getById($ticketId) {
@@ -105,12 +108,8 @@ class TicketService implements IAssociative {
 
         $query->orderBy('created_at', 'desc');
 
-        if ($limit) {
-            $tickets = $query->paginate($limit);
-        } else {
-            $tickets = $query->paginate();
-        }
-
+        /** @var LengthAwarePaginator $tickets */
+        $tickets = $limit ? $query->paginate($limit) : $query->paginate();
         $ticketData = $this->getBatch($tickets);
         $tickets->setCollection(Collection::make($ticketData));
 

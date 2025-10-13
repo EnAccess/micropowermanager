@@ -1,0 +1,135 @@
+name: Code Quality (Frontend)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.20.4
+
+      - name: Install Node.js dependencies
+        run: npm install
+        working-directory: ./src/frontend
+
+      - name: Run ESLint
+        run: npm run lint
+        working-directory: ./src/frontend
+
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.20.4
+
+      - name: Install Node.js dependencies
+        run: npm install
+        working-directory: ./src/frontend
+
+      - name: Run Prettier
+        run: npm run prettier
+        working-directory: ./src/frontend
+
+  misc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.20.4
+
+      - name: Check i18n JSON's sorting
+        # We check if JSON are sorted alphabetically
+        # Too sort a translation JSON you can run
+        # > cat lang.json | jq -S . > tmp.json && mv tmp.json lang.json
+        # Remember to apply Prettier formatting after.
+        working-directory: ./src/frontend/src/assets/locales
+        run: |
+          # Flag to track if any file fails the check
+          failed=0
+
+          for file in *.json; do
+              if [[ "$(jq -S . "$file")" != "$(jq . "$file")" ]]; then
+                  echo "$file: JSON is invalid or keys are not sorted"
+                  failed=1
+              fi
+          done
+
+          if [ $failed -eq 1 ]; then
+              exit 1
+          else
+              echo "All JSON files are valid and keys are sorted"
+          fi
+
+      - name: Check i18n JSON's length
+        # We check if all JSON have the same number of rows
+        working-directory: ./src/frontend/src/assets/locales
+        run: |
+          # Flag to track if any file fails the check
+          failed=0
+
+          # Define the reference file
+          reference_file="en.json"
+
+          # Get the number of lines in the reference file
+          line_count=$(wc -l < "$reference_file")
+
+          # Loop through all JSON files and compare line counts
+          for file in ./*.json; do
+              if [ "$file" != "$reference_file" ]; then
+                  current_line_count=$(wc -l < "$file")
+                  if [ "$current_line_count" -ne "$line_count" ]; then
+                      echo "Line count mismatch in file: $file"
+                      failed=1
+                  fi
+              fi
+          done
+
+          if [ $failed -eq 1 ]; then
+              exit 1
+          else
+              echo "All JSON files in the current directory have the same number of lines."
+          fi
+
+  build-production:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.20.4
+
+      - name: Install Node.js dependencies
+        run: npm install
+        working-directory: ./src/frontend
+
+      - name: Build npm on production mode
+        run: npm run build
+        working-directory: ./src/frontend

@@ -1,0 +1,111 @@
+name: Code Quality (Backend)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, zip
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist
+        working-directory: ./src/backend
+
+      - name: Run PHP-CS-Fixer
+        run: composer php-cs-fixer-check
+        working-directory: ./src/backend
+
+  larastan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, zip
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist
+        working-directory: ./src/backend
+
+      - name: Run PHPStan/Larastan
+        run: composer larastan
+        working-directory: ./src/backend
+
+  larastan-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, zip
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist
+        working-directory: ./src/backend
+
+      - name: Run PHPStan/Larastan (Packages)
+        run: composer larastan-packages
+        working-directory: ./src/backend
+
+  larastan-next:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, zip
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist
+        working-directory: ./src/backend
+
+      - name: Run PHPStan/Larastan (next level)
+        run: composer larastan-next
+        working-directory: ./src/backend
+        continue-on-error: true
+
+  rector:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, zip
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist
+        working-directory: ./src/backend
+
+      - name: Run Rector
+        run: composer rector-check
+        working-directory: ./src/backend

@@ -8,7 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Inensus\VodacomMobileMoney\Console\Commands\InstallPackage;
 
 class VodacomMobileMoneyServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

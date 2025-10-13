@@ -10,8 +10,8 @@ use Inensus\AfricasTalking\Services\AfricasTalkingCredentialService;
 use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
 
 class AfricasTalkingGateway {
-    private $africasTalking;
-    private $credentials;
+    private AfricasTalking $africasTalking;
+    private ?object $credentials = null;
 
     public function __construct(
         private AfricasTalkingCredentialService $credentialService,
@@ -28,7 +28,7 @@ class AfricasTalkingGateway {
         string $body,
         string $phoneNumber,
         Sms $registeredSms,
-    ) {
+    ): void {
         try {
             $sms = $this->africasTalking->sms();
             $phoneNumber = str_replace(' ', '', $phoneNumber);

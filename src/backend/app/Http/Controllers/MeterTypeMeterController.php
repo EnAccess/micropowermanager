@@ -17,9 +17,6 @@ class MeterTypeMeterController extends Controller {
      *
      * @responseFile responses/metertypes/metertypes.meter.list.json
      *
-     * @param Request $request
-     * @param int     $meterTypeId
-     *
      * @return ApiResource
      */
     public function show(Request $request, int $meterTypeId) {

@@ -10,7 +10,7 @@ use Inensus\ViberMessaging\Console\Commands\UpdatePackage;
 use Inensus\ViberMessaging\ViberGateway;
 
 class ViberMessagingServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
