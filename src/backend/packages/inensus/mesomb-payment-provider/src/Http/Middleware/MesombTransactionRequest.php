@@ -2,7 +2,9 @@
 
 namespace Inensus\MesombPaymentProvider\Http\Middleware;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPayerMustHaveOnlyOneConnectedMeterException;
 use Inensus\MesombPaymentProvider\Exceptions\MesombPaymentPhoneNumberNotFoundException;
@@ -10,6 +12,9 @@ use Inensus\MesombPaymentProvider\Exceptions\MesombStatusFailedException;
 use Inensus\MesombPaymentProvider\Providers\MesombTransactionProvider;
 
 class MesombTransactionRequest {
+    /**
+     * @return Request|Response|JsonResponse
+     */
     public function handle(Request $request, \Closure $next) {
         $transactionProvider = resolve(MesombTransactionProvider::class);
         try {

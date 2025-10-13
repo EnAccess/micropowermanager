@@ -2,9 +2,12 @@
 
 namespace Inensus\CalinMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\CalinMeter\Models\CalinCredential;
 
 class CalinCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(private CalinCredential $credential) {}
 
     /**
@@ -17,17 +20,21 @@ class CalinCredentialService {
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): object {
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['user_id', 'api_key']);
     }
 
-    public function updateCredentials(array $data) {
+    public function updateCredentials(array $data): object {
         $credential = $this->credential->newQuery()->firstOrFail();
-        $credential->update([
-            'user_id' => $data['user_id'],
-            'api_key' => $data['api_key'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['user_id', 'api_key']);
 
-        return $credential->fresh();
+        $credential->update($encryptedData);
+        $credential->save();
+
+        $credential->fresh();
+
+        return $this->decryptCredentialFields($credential, ['user_id', 'api_key']);
     }
 }

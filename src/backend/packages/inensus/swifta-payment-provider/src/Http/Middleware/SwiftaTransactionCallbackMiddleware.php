@@ -11,6 +11,9 @@ use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 class SwiftaTransactionCallbackMiddleware {
     public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
 
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
         try {
             $transactionId = $request->input('transaction_id');
