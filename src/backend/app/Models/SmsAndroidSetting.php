@@ -21,7 +21,7 @@ class SmsAndroidSetting extends BaseModel {
             try {
                 $lastSms = Sms::query()->latest()->select('id')->take(1)->firstOrFail()->id;
                 $responsibleGateway = $smsAndroidSettings[$lastSms % $smsAndroidSettings->count()];
-            } catch (ModelNotFoundException $e) {
+            } catch (ModelNotFoundException) {
                 $responsibleGateway = $smsAndroidSettings[0];
             }
 

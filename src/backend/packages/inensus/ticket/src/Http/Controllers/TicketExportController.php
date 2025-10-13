@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
 use Inensus\Ticket\Services\TicketService;
+use PhpOffice\PhpSpreadsheet\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TicketExportController {
@@ -16,8 +17,6 @@ class TicketExportController {
 
     /**
      * A list of stored book keeping data.
-     *
-     * @return TicketResource
      */
     public function index(Request $request): TicketResource {
         $limit = $request->input('per_page');
@@ -28,11 +27,7 @@ class TicketExportController {
     /**
      * Generates a book keeping file and stores it.
      *
-     * @param Request $request
-     *
-     * @return TicketResource
-     *
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws Exception
      */
     public function outsource(Request $request): TicketResource {
         $startDate = $request->input('startDate');
@@ -47,7 +42,7 @@ class TicketExportController {
         return TicketResource::make($this->ticketOutsourceReportService->create($ticketOutsourceReportData));
     }
 
-    public function download($id): BinaryFileResponse {
+    public function download(int $id): BinaryFileResponse {
         $report = $this->ticketOutsourceReportService->getById($id);
 
         return response()->download(explode('*', $report->path)[0]);

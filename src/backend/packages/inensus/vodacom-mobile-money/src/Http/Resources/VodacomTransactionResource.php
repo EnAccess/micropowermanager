@@ -8,12 +8,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class VodacomTransactionResource extends JsonResource {
     /**
      * Transform the resource into an array.
-     *
-     * @param Request $request
-     *
-     * @return array
      */
-    public function toArray($request): array {
+    public function toArray(Request $request): array {
         return [
             'data' => array_merge(parent::toArray($request), ['success' => true]),
         ];
@@ -21,11 +17,6 @@ class VodacomTransactionResource extends JsonResource {
 
     /**
      * Return an error response.
-     *
-     * @param string $message
-     * @param int    $statusCode
-     *
-     * @return VodacomTransactionResource
      */
     public static function error(string $message, int $statusCode = 400): VodacomTransactionResource {
         $errorData = [

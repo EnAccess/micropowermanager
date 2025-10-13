@@ -9,24 +9,9 @@ use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Services\TariffService;
 
 class MeterTariffObserver {
-    private $tariffService;
-    private $smTableEncryption;
-    private $smTariff;
-    private $accessRate;
+    public function __construct(private TariffService $tariffService, private SmTableEncryption $smTableEncryption, private SmTariff $smTariff, private AccessRate $accessRate) {}
 
-    public function __construct(
-        TariffService $tariffService,
-        SmTableEncryption $smTableEncryption,
-        SmTariff $smTariff,
-        AccessRate $accessRate,
-    ) {
-        $this->tariffService = $tariffService;
-        $this->smTableEncryption = $smTableEncryption;
-        $this->smTariff = $smTariff;
-        $this->accessRate = $accessRate;
-    }
-
-    public function updated(MeterTariff $tariff) {
+    public function updated(MeterTariff $tariff): void {
         $smTariff = $this->smTariff->newQuery()->where('mpm_tariff_id', $tariff->id)->first();
         if ($smTariff) {
             $sparkTariff = $this->tariffService->getSparkTariffInfo($smTariff->tariff_id);
@@ -58,7 +43,7 @@ class MeterTariffObserver {
             $updatedTariff = $this->tariffService->updateSparkTariffInfo($tariffData);
             $modelTouString = '';
             foreach ($updatedTariff['tous'] as $item) {
-                $modelTouString .= $item['start'].$item['end'].doubleval($item['value']);
+                $modelTouString .= $item['start'].$item['end'].floatval($item['value']);
             }
             $modelHash = $this->smTableEncryption->makeHash([
                 $updatedTariff['name'],

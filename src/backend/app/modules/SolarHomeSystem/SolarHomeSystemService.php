@@ -25,11 +25,9 @@ class SolarHomeSystemService implements IBaseService {
     }
 
     public function getById(int $id): SolarHomeSystem {
-        $result = $this->solarHomeSystem->newQuery()
+        return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person', 'device.address.geo', 'tokens'])
             ->find($id);
-
-        return $result;
     }
 
     /**

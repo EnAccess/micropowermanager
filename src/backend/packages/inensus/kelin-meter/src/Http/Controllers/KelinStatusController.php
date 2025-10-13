@@ -10,17 +10,13 @@ use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Services\KelinMeterStatusService;
 
 class KelinStatusController extends Controller {
-    private $kelinMeterStatusService;
+    public function __construct(private KelinMeterStatusService $kelinMeterStatusService) {}
 
-    public function __construct(KelinMeterStatusService $kelinMeterStatusService) {
-        $this->kelinMeterStatusService = $kelinMeterStatusService;
-    }
-
-    public function show(KelinMeter $meter) {
+    public function show(KelinMeter $meter): KelinMeterStatusResource {
         return new KelinMeterStatusResource($this->kelinMeterStatusService->getStatusOfMeter($meter));
     }
 
-    public function update(Request $request, KelinMeter $meter) {
+    public function update(Request $request, KelinMeter $meter): KelinResource {
         return new KelinResource($this->kelinMeterStatusService->changeStatusOfMeter($meter->meter_address, $request->input('status')));
     }
 }

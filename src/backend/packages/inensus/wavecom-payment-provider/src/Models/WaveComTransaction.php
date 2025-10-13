@@ -67,7 +67,7 @@ class WaveComTransaction extends BasePaymentProviderTransaction {
         return $this->getMessage();
     }
 
-    public function setStatus(int $status) {
+    public function setStatus(int $status): void {
         $this->status = $status;
     }
 

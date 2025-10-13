@@ -16,17 +16,9 @@ use Inensus\StronMeter\Models\StronCredential;
 use Inensus\StronMeter\Models\StronTransaction;
 
 class StronMeterApi implements IManufacturerAPI {
-    protected $api;
-    private $rootUrl = '/vending/';
+    private string $rootUrl = '/vending/';
 
-    public function __construct(
-        Client $httpClient,
-        private StronTransaction $stronTransaction,
-        private MainSettings $mainSettings,
-        private StronCredential $credentials,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private StronTransaction $stronTransaction, private MainSettings $mainSettings, private StronCredential $credentials) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
@@ -35,7 +27,7 @@ class StronMeterApi implements IManufacturerAPI {
 
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        Log::debug('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
             ' Manufacturer => StronMeterApi');
 
         $credentials = $this->credentials->newQuery()->firstOrFail();
@@ -96,8 +88,6 @@ class StronMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

@@ -9,7 +9,7 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinCredential;
 
 class KelinCredentialService {
-    private $rootUrl = '/login';
+    private string $rootUrl = '/login';
 
     public function __construct(
         private KelinCredential $credential,
@@ -33,7 +33,7 @@ class KelinCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->getCredentials();
         $credential->update([
             'username' => $data['username'],
@@ -50,7 +50,7 @@ class KelinCredentialService {
                 'authentication_token' => $result['data']['token'],
                 'is_authenticated' => true,
             ]);
-        } catch (KelinApiResponseException $exception) {
+        } catch (KelinApiResponseException) {
             $credential->is_authenticated = false;
             $credential->authentication_token = null;
         } catch (GuzzleException $exception) {
@@ -66,7 +66,7 @@ class KelinCredentialService {
         return $credential->fresh();
     }
 
-    public function refreshAccessToken() {
+    public function refreshAccessToken(): void {
         $credential = $this->getCredentials();
         if (!$credential || (!$credential->username && !$credential->password)) {
             Log::debug('KelinMeter credentials is not registered yet.');

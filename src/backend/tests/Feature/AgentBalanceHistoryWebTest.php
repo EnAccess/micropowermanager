@@ -2,13 +2,14 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentBalanceHistoryWebTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsAgentsBalanceHistories() {
+    public function testUserGetsAgentsBalanceHistories(): void {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -20,7 +21,7 @@ class AgentBalanceHistoryWebTest extends TestCase {
         $this->assertEquals(count($response['data']), $agentBalanceHistoryCount);
     }
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

@@ -29,16 +29,6 @@ class ProtectedPagePasswordResetToken extends BaseModel {
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'created_at' => 'datetime',
-        'expires_at' => 'datetime',
-    ];
-
-    /**
      * Generate a new reset token for the given email.
      */
     public static function generateToken(string $email): self {
@@ -68,5 +58,17 @@ class ProtectedPagePasswordResetToken extends BaseModel {
      */
     public function isExpired(): bool {
         return $this->expires_at->isPast();
+    }
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array {
+        return [
+            'created_at' => 'datetime',
+            'expires_at' => 'datetime',
+        ];
     }
 }

@@ -5,13 +5,7 @@ namespace Inensus\CalinMeter\Services;
 use Inensus\CalinMeter\Models\CalinCredential;
 
 class CalinCredentialService {
-    private $credential;
-
-    public function __construct(
-        CalinCredential $credentialModel,
-    ) {
-        $this->credential = $credentialModel;
-    }
+    public function __construct(private CalinCredential $credential) {}
 
     /**
      * This function uses one time on installation of the package.
@@ -27,7 +21,7 @@ class CalinCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->credential->newQuery()->firstOrFail();
         $credential->update([
             'user_id' => $data['user_id'],

@@ -7,22 +7,14 @@ use Inensus\SparkMeter\Models\SmCustomer;
 
 class SparkSmsLowBalanceHeader extends SmsBodyParser {
     protected $variables = ['name', 'surname'];
-    protected $sparkCustomer;
 
-    public function __construct(SmCustomer $sparkCustomer) {
-        $this->sparkCustomer = $sparkCustomer;
-    }
+    public function __construct(protected SmCustomer $sparkCustomer) {}
 
     protected function getVariableValue(string $variable): mixed {
-        switch ($variable) {
-            case 'name':
-                $variable = $this->sparkCustomer->mpmPerson->name;
-                break;
-            case 'surname':
-                $variable = $this->sparkCustomer->mpmPerson->surname;
-                break;
-        }
-
-        return $variable;
+        return match ($variable) {
+            'name' => $this->sparkCustomer->mpmPerson->name,
+            'surname' => $this->sparkCustomer->mpmPerson->surname,
+            default => $variable,
+        };
     }
 }

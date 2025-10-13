@@ -11,31 +11,18 @@ class AgentCustomersPaymentHistoryService {
     ) {}
 
     /**
-     * @param string   $period
-     * @param int      $customerId
-     * @param int|null $limit
-     * @param string   $order
-     *
      * @return array<string, array<string, float>>
      */
     public function getPaymentFlowByCustomerId(string $period, int $customerId, ?int $limit, string $order = 'ASC'): array {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
-        switch ($period) {
-            case 'D':
-                $period = 'Day(created_at), Month(created_at), Year(created_at)';
-                break;
-            case 'W':
-                $period = 'Week(created_at), Year(created_at)';
-                break;
-            case 'M':
-                $period = 'Month(created_at), Year(created_at)';
-                break;
-            default:
-                $period = 'Year(created_at)';
-                break;
-        }
+        $period = match ($period) {
+            'D' => 'Day(created_at), Month(created_at), Year(created_at)',
+            'W' => 'Week(created_at), Year(created_at)',
+            'M' => 'Month(created_at), Year(created_at)',
+            default => 'Year(created_at)',
+        };
 
         $sql = <<<SQL
             SELECT
@@ -51,12 +38,12 @@ class AgentCustomersPaymentHistoryService {
             SQL;
 
         if ($limit !== null) {
-            $sql .= ' LIMIT '.(int) $limit;
+            $sql .= ' LIMIT '.$limit;
         }
 
         $payments = $this->executeSqlCommand($sql, $customerId, null, 'person');
 
-        if (empty($payments)) {
+        if ($payments === []) {
             return [$periodParam => ['' => 0.0]];
         }
 
@@ -64,31 +51,18 @@ class AgentCustomersPaymentHistoryService {
     }
 
     /**
-     * @param string   $period
-     * @param int      $agentId
-     * @param int|null $limit
-     * @param string   $order
-     *
      * @return array<string, array<string, float>>
      */
     public function getPaymentFlows(string $period, int $agentId, ?int $limit, string $order = 'ASC'): array {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
-        switch ($period) {
-            case 'D':
-                $period = 'Day(payment_histories.created_at), Month(payment_histories.created_at), Year(payment_histories.created_at)';
-                break;
-            case 'W':
-                $period = 'Week(payment_histories.created_at), Year(payment_histories.created_at)';
-                break;
-            case 'M':
-                $period = 'Month(payment_histories.created_at), Year(payment_histories.created_at)';
-                break;
-            default:
-                $period = 'Year(payment_histories.created_at)';
-                break;
-        }
+        $period = match ($period) {
+            'D' => 'Day(payment_histories.created_at), Month(payment_histories.created_at), Year(payment_histories.created_at)',
+            'W' => 'Week(payment_histories.created_at), Year(payment_histories.created_at)',
+            'M' => 'Month(payment_histories.created_at), Year(payment_histories.created_at)',
+            default => 'Year(payment_histories.created_at)',
+        };
 
         $sql = <<<SQL
             SELECT
@@ -110,12 +84,12 @@ class AgentCustomersPaymentHistoryService {
             SQL;
 
         if ($limit !== null) {
-            $sql .= ' LIMIT '.(int) $limit;
+            $sql .= ' LIMIT '.$limit;
         }
 
         $payments = $this->executeSqlCommand($sql, null, $agentId, 'person');
 
-        if (empty($payments)) {
+        if ($payments === []) {
             return [$periodParam => ['' => 0.0]];
         }
 
@@ -137,11 +111,6 @@ class AgentCustomersPaymentHistoryService {
     }
 
     /**
-     * @param string   $sql
-     * @param int|null $payerId
-     * @param int|null $agentId
-     * @param string   $payerType
-     *
      * @return array<int, array<string, mixed>>
      */
     private function executeSqlCommand(string $sql, ?int $payerId, ?int $agentId, string $payerType): array {

@@ -152,7 +152,7 @@ class AgentSoldApplianceService implements IBaseService {
     public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
-        $appliance = $assignedAppliance->appliance()->first();
+        $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
 

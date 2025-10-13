@@ -72,7 +72,12 @@
     }
   },
   "messages": {
+    "emailNotRecognized": "Email address not recognized",
+    "invalidOrExpiredResetLink": "Invalid or expired reset link. Please request a new one.",
+    "invalidResetLink": "Invalid reset link. Please request a new one.",
+    "passwordResetSuccess": "Password has been reset successfully.",
     "paymentAmountCannotBeLess": "Payment amount cannot be less than {amount}",
+    "resetLinkSent": "If the email exists, a reset link has been sent.",
     "successfullyCreated": "{item} Successfully Created",
     "successfullyUpdated": "{item} Successfully Updated"
   },
@@ -305,6 +310,7 @@
     "relocateMeter": "Relocate Meter | Are you sure you want to relocate the selected meters? | Meter is relocated successfully",
     "remainingAmount": "RemainingAmount",
     "reminderRate": "Reminder Rate (Day)",
+    "resetPassword": "Reset Password | Set a new Password",
     "responsibleFor": "Responsible For (Mini-Grid)",
     "revenueAnalysis": "Revenue Analysis",
     "revenueColumns": "Revenue Columns",
@@ -429,6 +435,7 @@
     "commission": "Commission",
     "compared": "Compared",
     "confirm": "Confirm | Confirmed",
+    "confirmNewPassword": "Confirm New Password",
     "connect": "Connect | Connected",
     "connection": "Connection | Connections",
     "connectivity": "Connectivity",
@@ -505,6 +512,7 @@
     "name": "Name",
     "network": "Network",
     "new": "New",
+    "newPassword": "New Password",
     "next": "Next",
     "no": "No",
     "notice": "Notice",

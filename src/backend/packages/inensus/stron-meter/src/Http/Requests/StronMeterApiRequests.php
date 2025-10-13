@@ -8,21 +8,9 @@ use Inensus\StronMeter\Helpers\ApiHelpers;
 use Inensus\StronMeter\Models\StronCredential;
 
 class StronMeterApiRequests {
-    private $client;
-    private $apiHelpers;
-    private $credential;
+    public function __construct(private Client $client, private ApiHelpers $apiHelpers, private StronCredential $credential) {}
 
-    public function __construct(
-        Client $httpClient,
-        ApiHelpers $apiHelpers,
-        StronCredential $credentialModel,
-    ) {
-        $this->client = $httpClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->credential = $credentialModel;
-    }
-
-    public function token($url, $postParams) {
+    public function token(string $url, $postParams) {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {

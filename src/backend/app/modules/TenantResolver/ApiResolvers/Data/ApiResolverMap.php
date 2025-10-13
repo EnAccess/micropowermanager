@@ -61,11 +61,9 @@ class ApiResolverMap {
     }
 
     /**
-     * @param string $api
-     *
-     * @return class-string
+     * @return class-string|null
      */
-    public function getApiResolver(string $api): string {
-        return self::API_RESOLVER[$api];
+    public function getApiResolver(string $api): ?string {
+        return self::API_RESOLVER[$api] ?? null;
     }
 }

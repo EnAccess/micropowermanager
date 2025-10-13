@@ -41,7 +41,7 @@ class ApiRequests {
         }
     }
 
-    public function get(SunKingCredential $credentials, array $params, string $slug) {
+    public function get(SunKingCredential $credentials, array $params, string $slug): mixed {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
@@ -66,7 +66,7 @@ class ApiRequests {
         }
     }
 
-    public function post(SunKingCredential $credentials, array $params, string $slug) {
+    public function post(SunKingCredential $credentials, array $params, string $slug): mixed {
         $url = $credentials->getApiUrl().$slug;
         try {
             $request = $this->httpClient->post(

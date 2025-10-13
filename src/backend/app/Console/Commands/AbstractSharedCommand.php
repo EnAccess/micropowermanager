@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractSharedCommand extends Command {
@@ -24,7 +25,7 @@ abstract class AbstractSharedCommand extends Command {
         $this->addOption(
             'company-id',
             null,
-            \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_OPTIONAL,
             'The ID of the company to run the command for. If not provided, runs for all companies.'
         );
     }

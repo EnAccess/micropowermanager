@@ -9,13 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class RolesService {
-    private Roles $role;
-    private RoleDefinition $definition;
-
-    public function __construct(Roles $role, RoleDefinition $definition) {
-        $this->role = $role;
-        $this->definition = $definition;
-    }
+    public function __construct(private Roles $role, private RoleDefinition $definition) {}
 
     public function findOrCreateRoleDefinition(string $roleName): RoleDefinition {
         return $this->definition->firstOrCreate(['role_name' => $roleName]);

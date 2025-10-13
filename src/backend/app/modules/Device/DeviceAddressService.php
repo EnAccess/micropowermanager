@@ -28,18 +28,14 @@ class DeviceAddressService implements IAssignationService {
     }
 
     public function getAddressByDevice(Device $device): ?Address {
-        $result = Address::query()->with('geo')
+        return Address::query()->with('geo')
             ->where('owner_id', $device->id)
             ->where('owner_type', 'device')
             ->first();
-
-        return $result;
     }
 
     /**
      * @param array{lat: float|string, lon: float|string} $addressData
-     *
-     * @return Address
      */
     public function updateDeviceAddress(Address $deviceAddress, array $addressData): Address {
         $points = $addressData['lat'].','.$addressData['lon'];

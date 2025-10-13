@@ -5,13 +5,7 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSmsNotifiedCustomer;
 
 class SmSmsNotifiedCustomerService {
-    private $smSmsNotifiedCustomer;
-
-    public function __construct(
-        SmSmsNotifiedCustomer $smSmsNotifiedCustomer,
-    ) {
-        $this->smSmsNotifiedCustomer = $smSmsNotifiedCustomer;
-    }
+    public function __construct(private SmSmsNotifiedCustomer $smSmsNotifiedCustomer) {}
 
     public function getSmsNotifiedCustomers() {
         return $this->smSmsNotifiedCustomer->newQuery()->get();
@@ -32,7 +26,7 @@ class SmSmsNotifiedCustomerService {
         ]);
     }
 
-    public function removeLowBalancedCustomer($customer) {
+    public function removeLowBalancedCustomer(array $customer): bool {
         if ($customer['low_balance_limit'] >= $customer['credit_balance']) {
             return false;
         }

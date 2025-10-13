@@ -9,21 +9,9 @@ use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSyncSetting;
 
 class SteamaSyncSettingService {
-    private $syncSetting;
-    private $setting;
-    private $syncActionService;
+    public function __construct(private SteamaSyncSetting $syncSetting, private SteamaSetting $setting, private StemaSyncActionService $syncActionService) {}
 
-    public function __construct(
-        SteamaSyncSetting $syncSetting,
-        SteamaSetting $setting,
-        StemaSyncActionService $syncActionService,
-    ) {
-        $this->syncSetting = $syncSetting;
-        $this->setting = $setting;
-        $this->syncActionService = $syncActionService;
-    }
-
-    public function createDefaultSettings() {
+    public function createDefaultSettings(): void {
         $dayInterval = CarbonInterval::make('1day');
         $fiveMinInterval = CarbonInterval::make('5minute');
 

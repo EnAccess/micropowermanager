@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
@@ -32,14 +33,14 @@ use Illuminate\Support\Facades\DB;
  */
 class PaymentHistory extends BaseModel {
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function paidFor(): MorphTo {
         return $this->morphTo();
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function payer(): MorphTo {
         return $this->morphTo();
@@ -68,7 +69,7 @@ class PaymentHistory extends BaseModel {
             SQL;
 
         if ($limit !== null) {
-            $sql .= ' LIMIT '.(int) $limit;
+            $sql .= ' LIMIT '.$limit;
         }
 
         return $this->executeSqlCommand($sql, $payer_id, null, $payer_type);
@@ -96,9 +97,8 @@ class PaymentHistory extends BaseModel {
         $sth->bindValue(':year', $year);
 
         $sth->execute();
-        $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $results;
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -120,9 +120,8 @@ class PaymentHistory extends BaseModel {
             SQL;
         $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         $sth->execute();
-        $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $results;
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -162,8 +161,6 @@ class PaymentHistory extends BaseModel {
             ->get();
 
         // Convert stdClass objects to arrays to match the expected return type
-        return $result->map(function ($item) {
-            return ['customer_id' => (int) $item->customer_id];
-        });
+        return $result->map(fn ($item): array => ['customer_id' => (int) $item->customer_id]);
     }
 }

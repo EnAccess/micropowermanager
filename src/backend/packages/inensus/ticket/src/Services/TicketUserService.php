@@ -5,6 +5,7 @@ namespace Inensus\Ticket\Services;
 use App\Models\User;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketUser;
 
@@ -54,17 +55,15 @@ class TicketUserService implements IBaseService {
     }
 
     public function findByPhone(string $phone): TicketUser {
-        $result = $this->ticketUser->newQuery()->where('phone', '=', $phone)
+        return $this->ticketUser->newQuery()->where('phone', '=', $phone)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function findOrCreateByUser(User $user): TicketUser {
         try {
             $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->getId())
                 ->firstOrFail();
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+        } catch (ModelNotFoundException) {
             $result = $this->ticketUser->newQuery()->create([
                 'user_name' => $user->getName(),
                 'phone' => null,

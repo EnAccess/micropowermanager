@@ -9,23 +9,11 @@ use Inensus\KelinMeter\Models\KelinSetting;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 
 class KelinSyncSettingService {
-    private $syncSetting;
-    private $setting;
-    private $syncActionService;
+    public function __construct(private KelinSyncSetting $syncSetting, private KelinSetting $setting, private KelinSyncActionService $syncActionService) {}
 
-    public function __construct(
-        KelinSyncSetting $syncSetting,
-        KelinSetting $setting,
-        KelinSyncActionService $syncActionService,
-    ) {
-        $this->syncSetting = $syncSetting;
-        $this->setting = $setting;
-        $this->syncActionService = $syncActionService;
-    }
-
-    public function createDefaultSettings() {
+    public function createDefaultSettings(): void {
         $dayInterval = CarbonInterval::make('1day');
-        $fiveMinInterval = CarbonInterval::make('5minute');
+        CarbonInterval::make('5minute');
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
         if (!$syncCustomer) {

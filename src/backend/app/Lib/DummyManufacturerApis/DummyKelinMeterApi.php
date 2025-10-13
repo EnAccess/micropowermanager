@@ -22,13 +22,13 @@ class DummyKelinMeterApi implements IManufacturerAPI {
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        $energy = (float) $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargedEnergy;
 
         $meter = $transactionContainer->device->device;
         $amount = $transactionContainer->totalAmount;
 
         // Generate random token data for demo purposes
-        $opType = rand(1, 2); // 1 or 2, like in the original
+        $opType = random_int(1, 2); // 1 or 2, like in the original
         $payKWH = $energy;
         $openToken1 = $this->generateRandomOpenToken();
         $openToken2 = $this->generateRandomOpenToken();
@@ -69,8 +69,6 @@ class DummyKelinMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException
@@ -95,6 +93,6 @@ class DummyKelinMeterApi implements IManufacturerAPI {
      * Generate a random open token for demo purposes.
      */
     private function generateRandomOpenToken(): string {
-        return sprintf('%016d', rand(1000000000000000, 9999999999999999));
+        return sprintf('%016d', random_int(1000000000000000, 9999999999999999));
     }
 }

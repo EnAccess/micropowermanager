@@ -6,13 +6,7 @@ use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 
 class CashTransactionService {
-    private CashTransaction $cashTransaction;
-    private Transaction $transaction;
-
-    public function __construct(CashTransaction $cashTransaction, Transaction $transaction) {
-        $this->transaction = $transaction;
-        $this->cashTransaction = $cashTransaction;
-    }
+    public function __construct(private CashTransaction $cashTransaction, private Transaction $transaction) {}
 
     public function createCashTransaction(int $creatorId, float $amount, string $sender, ?string $deviceSerial = null): Transaction {
         $cashTransaction = $this->cashTransaction->newQuery()->create([

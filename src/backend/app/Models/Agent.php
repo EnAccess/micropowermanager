@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Address\Address;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use Database\Factories\AgentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -32,7 +33,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int    $company_id
  */
 class Agent extends Authenticatable implements JWTSubject {
-    /** @use HasFactory<\Database\Factories\AgentFactory> */
+    /** @use HasFactory<AgentFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'agent';
@@ -45,7 +46,7 @@ class Agent extends Authenticatable implements JWTSubject {
         parent::__construct($attributes);
     }
 
-    public function setPasswordAttribute(string $password): void {
+    protected function setPasswordAttribute(#[\SensitiveParameter] string $password): void {
         $this->attributes['password'] = Hash::make($password);
     }
 

@@ -12,7 +12,7 @@ use Inensus\CalinMeter\Console\Commands\UpdatePackage;
 use Inensus\CalinMeter\Models\CalinTransaction;
 
 class CalinMeterServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();

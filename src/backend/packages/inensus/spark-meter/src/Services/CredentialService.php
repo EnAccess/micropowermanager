@@ -8,7 +8,7 @@ use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmCredential;
 
 class CredentialService {
-    private $rootUrl = '/organizations';
+    private string $rootUrl = '/organizations';
 
     public function __construct(
         private SparkMeterApiRequests $sparkMeterApiRequests,
@@ -28,7 +28,7 @@ class CredentialService {
         ]);
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $smCredentials = $this->smCredential->newQuery()->find($data['id']);
         $smCredentials->update([
             'api_key' => $data['api_key'],
@@ -39,11 +39,7 @@ class CredentialService {
             $smCredentials->is_authenticated = true;
             $this->organizationService->createOrganization($result['organizations'][0]);
         } catch (ClientException $cException) {
-            if ($cException->getResponse()->getStatusCode() === 401) {
-                $smCredentials->is_authenticated = false;
-            } else {
-                $smCredentials->is_authenticated = null;
-            }
+            $smCredentials->is_authenticated = $cException->getResponse()->getStatusCode() === 401 ? false : null;
         } catch (\Exception $exception) {
             Log::critical('Unknown exception while authenticating SparkMeter', ['reason' => $exception->getMessage()]);
             $smCredentials->is_authenticated = null;

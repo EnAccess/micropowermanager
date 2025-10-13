@@ -33,7 +33,7 @@ class AngazaCredentialService {
         return $this->credential->newQuery()->findOrFail($id);
     }
 
-    public function isAccessTokenValid($credential) {
+    public function isAccessTokenValid($credential): bool {
         $accessToken = $credential->getAccessToken();
 
         if ($accessToken == null) {
@@ -41,10 +41,6 @@ class AngazaCredentialService {
         }
         $tokenExpirationTime = $credential->getExpirationTime();
 
-        if ($tokenExpirationTime == null || $tokenExpirationTime < time()) {
-            return false;
-        }
-
-        return true;
+        return $tokenExpirationTime != null && $tokenExpirationTime >= time();
     }
 }

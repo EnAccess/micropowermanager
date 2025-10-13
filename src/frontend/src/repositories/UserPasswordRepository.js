@@ -11,4 +11,10 @@ export default {
   post(email) {
     return Client.post(`${resource}`, { email: email })
   },
+  validateToken(token) {
+    return Client.get(`${resource}/validate/${token}`)
+  },
+  confirmReset(data) {
+    return Client.post(`${resource}/confirm`, data)
+  },
 }

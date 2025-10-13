@@ -9,11 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class ApplianceTypeService {
-    private AssetType $assetType;
-
-    public function __construct(AssetType $assetType) {
-        $this->assetType = $assetType;
-    }
+    public function __construct(private AssetType $assetType) {}
 
     /**
      * @return LengthAwarePaginator<int, AssetType>|Collection<int, AssetType>

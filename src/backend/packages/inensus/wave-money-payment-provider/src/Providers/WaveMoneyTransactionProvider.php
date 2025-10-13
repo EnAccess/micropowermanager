@@ -9,6 +9,8 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
@@ -34,7 +36,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
             // We need to make sure that the payment is fully processable from our end .
             $this->waveMoneyTransactionService->imitateTransactionForValidation($waveMoneyTransactionData);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $this->setValidData($waveMoneyTransactionData);
@@ -108,7 +110,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         return $this->transaction;
     }
 
-    public function setValidData($waveMoneyTransactionData) {
+    public function setValidData($waveMoneyTransactionData): void {
         $this->validData = $waveMoneyTransactionData;
     }
 
@@ -116,7 +118,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         return $this->validData;
     }
 
-    public function getSubTransaction() {
+    public function getSubTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
         return $this->waveMoneyTransactionService->getWaveMoneyTransaction();
     }
 }

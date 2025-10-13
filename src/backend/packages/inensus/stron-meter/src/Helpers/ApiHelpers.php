@@ -6,13 +6,9 @@ use App\Models\Manufacturer;
 use Inensus\StronMeter\Exceptions\StronApiResponseException;
 
 class ApiHelpers {
-    private $manufacturer;
+    public function __construct(private Manufacturer $manufacturer) {}
 
-    public function __construct(Manufacturer $manufacturerModel) {
-        $this->manufacturer = $manufacturerModel;
-    }
-
-    public function registerStronMeterManufacturer() {
+    public function registerStronMeterManufacturer(): void {
         $api = $this->manufacturer->newQuery()->where('api_name', 'StronMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
@@ -34,7 +30,7 @@ class ApiHelpers {
         return $result;
     }
 
-    public function makeHash($data) {
+    public function makeHash($data): string {
         return md5(implode('', $data));
     }
 }

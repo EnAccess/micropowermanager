@@ -7,6 +7,7 @@ use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
@@ -73,7 +74,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder<AssetPerson>
+     * @return Builder<AssetPerson>
      */
     public function getLoansForCustomerId(int $customerId) {
         return $this->assetPerson->newQuery()->where('person_id', $customerId);

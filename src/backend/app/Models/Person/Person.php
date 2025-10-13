@@ -12,6 +12,7 @@ use App\Models\Base\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
 use App\Models\Device;
+use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
@@ -57,10 +58,6 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
 
     protected $appends = ['is_active'];
 
-    protected $casts = [
-        'additional_json' => 'array',
-    ];
-
     /** @var array<string, string> */
     protected $dispatchesEvents = [
         'deleting' => PersonDeleting::class,
@@ -71,6 +68,27 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
      */
     public function tickets(): MorphMany {
         return $this->morphMany(Ticket::class, 'owner');
+    }
+
+    /**
+     * @return BelongsTo<MiniGrid, $this>
+     */
+    public function miniGrid(): BelongsTo {
+        return $this->belongsTo(MiniGrid::class, 'mini_grid_id', 'id');
+    }
+
+    /**
+     * Check if this person is a maintenance user.
+     */
+    public function isMaintenanceUser(): bool {
+        return $this->type === 'maintenance' && $this->mini_grid_id !== null;
+    }
+
+    /**
+     * Check if this person is an agent.
+     */
+    public function isAgent(): bool {
+        return $this->type === 'agent';
     }
 
     public function saveAddress(Address $address): void {
@@ -166,7 +184,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
         return $this->id;
     }
 
-    public function getIsActiveAttribute(): bool {
+    protected function getIsActiveAttribute(): bool {
         $lastPayment = $this->latestPayment;
 
         if (!$lastPayment) {
@@ -181,5 +199,11 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
      */
     public function latestPayment(): HasOne {
         return $this->hasOne(PaymentHistory::class, 'payer_id')->latestOfMany('created_at');
+    }
+
+    protected function casts(): array {
+        return [
+            'additional_json' => 'array',
+        ];
     }
 }

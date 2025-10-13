@@ -1,5 +1,19 @@
 <?php
 
+use Inensus\BulkRegistration\Services\AddressService;
+use Inensus\BulkRegistration\Services\ApplianceTypeService;
+use Inensus\BulkRegistration\Services\CityService;
+use Inensus\BulkRegistration\Services\ClusterService;
+use Inensus\BulkRegistration\Services\ConnectionGroupService;
+use Inensus\BulkRegistration\Services\ConnectionTypeService;
+use Inensus\BulkRegistration\Services\GeographicalInformationService;
+use Inensus\BulkRegistration\Services\ManufacturerService;
+use Inensus\BulkRegistration\Services\MeterService;
+use Inensus\BulkRegistration\Services\MiniGridService;
+use Inensus\BulkRegistration\Services\PersonDocumentService;
+use Inensus\BulkRegistration\Services\PersonService;
+use Inensus\BulkRegistration\Services\TariffService;
+
 return [
     'csv_fields' => [
         'person' => [
@@ -115,18 +129,18 @@ return [
     ],
 
     'reflections' => [
-        'PersonService' => 'Inensus\BulkRegistration\Services\PersonService',
-        'PersonDocumentService' => 'Inensus\BulkRegistration\Services\PersonDocumentService',
-        'ClusterService' => 'Inensus\BulkRegistration\Services\ClusterService',
-        'MiniGridService' => 'Inensus\BulkRegistration\Services\MiniGridService',
-        'GeographicalInformationService' => 'Inensus\BulkRegistration\Services\GeographicalInformationService',
-        'CityService' => 'Inensus\BulkRegistration\Services\CityService',
-        'AddressService' => 'Inensus\BulkRegistration\Services\AddressService',
-        'TariffService' => 'Inensus\BulkRegistration\Services\TariffService',
-        'ConnectionTypeService' => 'Inensus\BulkRegistration\Services\ConnectionTypeService',
-        'ConnectionGroupService' => 'Inensus\BulkRegistration\Services\ConnectionGroupService',
-        'ApplianceTypeService' => 'Inensus\BulkRegistration\Services\ApplianceTypeService',
-        'MeterService' => 'Inensus\BulkRegistration\Services\MeterService',
-        'ManufacturerService' => 'Inensus\BulkRegistration\Services\ManufacturerService',
+        'PersonService' => PersonService::class,
+        'PersonDocumentService' => PersonDocumentService::class,
+        'ClusterService' => ClusterService::class,
+        'MiniGridService' => MiniGridService::class,
+        'GeographicalInformationService' => GeographicalInformationService::class,
+        'CityService' => CityService::class,
+        'AddressService' => AddressService::class,
+        'TariffService' => TariffService::class,
+        'ConnectionTypeService' => ConnectionTypeService::class,
+        'ConnectionGroupService' => ConnectionGroupService::class,
+        'ApplianceTypeService' => ApplianceTypeService::class,
+        'MeterService' => MeterService::class,
+        'ManufacturerService' => ManufacturerService::class,
     ],
 ];

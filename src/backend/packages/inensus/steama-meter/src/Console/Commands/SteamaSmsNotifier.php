@@ -33,12 +33,12 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
         parent::__construct();
     }
 
-    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
+    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers): void {
         $this->steamaTransactionService->getSteamaTransactions($transactionMin)
             ->each(function ($steamaTransaction) use (
                 $smsNotifiedCustomers,
                 $customers
-            ) {
+            ): true {
                 $smsNotifiedCustomers = $smsNotifiedCustomers->where(
                     'notify_id',
                     $steamaTransaction->id
@@ -46,9 +46,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                 if ($smsNotifiedCustomers) {
                     return true;
                 }
-                $notifyCustomer = $customers->filter(function ($customer) use ($steamaTransaction) {
-                    return $customer->customer_id == $steamaTransaction->customer_id;
-                })->first();
+                $notifyCustomer = $customers->filter(fn ($customer): bool => $customer->customer_id == $steamaTransaction->customer_id)->first();
 
                 if (!$notifyCustomer) {
                     return true;
@@ -76,10 +74,10 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin) {
+    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers): void {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
-        ) {
+        ): true {
             $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
                 'customer_id',
                 $customer->customer_id
@@ -144,7 +142,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                         'updated_at',
                         '>=',
                         Carbon::now()->subMinutes($lowBalanceMin)
-                    ), $smsNotifiedCustomers, $lowBalanceMin);
+                    ), $smsNotifiedCustomers);
             }
         } catch (CronJobException $e) {
             $this->warn('dataSync command is failed. message => '.$e->getMessage());

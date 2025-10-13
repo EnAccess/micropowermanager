@@ -13,10 +13,8 @@ use Inensus\SparkMeter\Observers\PersonObserver;
 class ObserverServiceProvider extends ServiceProvider {
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
-    public function boot() {
+    public function boot(): void {
         parent::boot();
         Person::observe(PersonObserver::class);
         GeographicalInformation::observe(GeographicalInformationObserver::class);

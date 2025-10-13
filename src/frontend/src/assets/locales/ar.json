@@ -72,7 +72,12 @@
     }
   },
   "messages": {
+    "emailNotRecognized": "البريد الإلكتروني غير معروف",
+    "invalidOrExpiredResetLink": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية. يرجى طلب رابط جديد.",
+    "invalidResetLink": "رابط إعادة التعيين غير صالح. يرجى طلب رابط جديد.",
+    "passwordResetSuccess": "تمت إعادة تعيين كلمة السر بنجاح.",
     "paymentAmountCannotBeLess": "‏{amount}‏ قيمة الدفع لا يمكن أن تكون أقل من",
+    "resetLinkSent": "إذا كان البريد الإلكتروني موجودًا، فقد تم إرسال رابط إعادة التعيين.",
     "successfullyCreated": " ‏{item}‏ :تم إنشاء العنصر التالي بنجاح",
     "successfullyUpdated": "‏{item}‏ :تم العنصر التالي تحديث بنجاح"
   },
@@ -305,6 +310,7 @@
     "relocateMeter": "تم نقل العداد بنجاح | هل أنت متأكد من رغبتك في نقل العدادات المحددة؟ | نقل العداد",
     "remainingAmount": "المبلغ المتبقي",
     "reminderRate": "معدل التذكير (باليوم)",
+    "resetPassword": "إعادة تعيين كلمة السر | أدخل كلمة سر جديدة",
     "responsibleFor": "مسؤول عن (المجمّع الكهربائي الصغير)",
     "revenueAnalysis": "تحليل الإيرادات",
     "revenueColumns": "أعمدة الإيرادات",
@@ -429,6 +435,7 @@
     "commission": "عمولة",
     "compared": "مقارنة",
     "confirm": "مؤكد | تأكيد",
+    "confirmNewPassword": "تأكيد كلمة السر الجديدة",
     "connect": "متصل | اتصال",
     "connection": "اتصالات | اتصال",
     "connectivity": "الاتصال",
@@ -505,6 +512,7 @@
     "name": "اسم",
     "network": "شبكة",
     "new": "جديد",
+    "newPassword": "كلمة سر جديدة",
     "next": "التالي",
     "no": "لا",
     "notice": "إشعار",

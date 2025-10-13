@@ -32,6 +32,7 @@
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.5",
+    "driftingly/rector-laravel": "^2.0",
     "filp/whoops": "^2.0",
     "friendsofphp/php-cs-fixer": "^3.64",
     "knuckleswtf/scribe": "^4.38",
@@ -42,6 +43,7 @@
     "phpstan/phpstan-deprecation-rules": "^2.0",
     "phpunit/phpunit": "^10.0",
     "recca0120/laravel-erd": "^0.3",
+    "rector/rector": "^2.1",
     "spatie/laravel-export": "^1.0",
     "spatie/laravel-ignition": "^2.0",
     "spatie/laravel-web-tinker": "^1.7"
@@ -111,6 +113,9 @@
     "larastan": "phpstan analyse --memory-limit=2G --no-progress",
     "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=7",
     "larastan-no-cache": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress",
-    "larastan-packages": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=5 packages/"
+    "larastan-packages": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=5 packages/",
+    "rector-fix": "vendor/bin/rector && php-cs-fixer fix",
+    "rector-check": "vendor/bin/rector --dry-run",
+    "rector-version": "vendor/bin/rector --version"
   }
 }

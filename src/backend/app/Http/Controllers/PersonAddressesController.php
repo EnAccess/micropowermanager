@@ -24,10 +24,6 @@ class PersonAddressesController extends Controller {
      *
      * @responseFile responses/people/person.addresses.list.json
      *
-     * @param int $personId
-     *
-     * @return ApiResource
-     *
      * @apiResourceModel \App\Models\Person\Person
      */
     public function show(int $personId): ApiResource {
@@ -55,7 +51,7 @@ class PersonAddressesController extends Controller {
 
     public function update(int $personId, CreateAddressRequest $request): ApiResource {
         $person = $this->personService->getById($personId);
-        $address = $this->addressService->getById($request->input('id') ?? -1);
+        $address = $this->addressService->getById($request->input('id', -1));
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $this->personAddressService->setAssignee($person);
         $this->personAddressService->setAssigned($address);

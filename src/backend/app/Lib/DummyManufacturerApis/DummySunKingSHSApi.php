@@ -44,8 +44,6 @@ class DummySunKingSHSApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException
@@ -60,10 +58,10 @@ class DummySunKingSHSApi implements IManufacturerAPI {
     private function generateRandomToken(): string {
         return sprintf(
             '%04d-%04d-%04d-%04d',
-            rand(1000, 9999),
-            rand(1000, 9999),
-            rand(1000, 9999),
-            rand(1000, 9999)
+            random_int(1000, 9999),
+            random_int(1000, 9999),
+            random_int(1000, 9999),
+            random_int(1000, 9999)
         );
     }
 

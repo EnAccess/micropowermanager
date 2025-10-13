@@ -8,10 +8,8 @@ use Illuminate\Validation\Rule;
 class SteamaCustomerRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'id' => ['required', Rule::unique('tenant.steama_customers')->ignore($this->id)],
             'low_balance_warning' => 'required',

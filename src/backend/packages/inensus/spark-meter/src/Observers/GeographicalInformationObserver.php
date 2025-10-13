@@ -20,7 +20,7 @@ class GeographicalInformationObserver {
         private PluginsService $pluginsService,
     ) {}
 
-    public function updated(GeographicalInformation $geographicalInformation) {
+    public function updated(GeographicalInformation $geographicalInformation): void {
         if (!$this->pluginsService->isPluginActive(MpmPlugin::SPARK_METER)) {
             return;
         }
@@ -40,20 +40,13 @@ class GeographicalInformationObserver {
 
     /**
      * Update Spark meter customer information.
-     *
-     * @param Device                  $device
-     * @param GeographicalInformation $geographicalInformation
-     *
-     * @return void
      */
-    private function updateSparkMetaCustomerInformation(Device $device, GeographicalInformation $geographicalInformation) {
+    private function updateSparkMetaCustomerInformation(Device $device, GeographicalInformation $geographicalInformation): void {
         $meter = $device->device;
 
         $customer = $this->person->newQuery()
             ->with(['devices.device.tariff', 'devices.address.geo'])
-            ->whereHas('devices', function ($q) use ($device) {
-                return $q->where('id', $device->id);
-            })->first();
+            ->whereHas('devices', fn ($q) => $q->where('id', $device->id))->first();
 
         if (!$customer) {
             return;

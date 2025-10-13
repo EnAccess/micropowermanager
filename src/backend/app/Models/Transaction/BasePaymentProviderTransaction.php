@@ -48,8 +48,6 @@ abstract class BasePaymentProviderTransaction extends BaseModel {
      * Save the model to the database.
      *
      * @param array<string, mixed> $options
-     *
-     * @return bool
      */
     public function save(array $options = []): bool {
         return parent::save($options);

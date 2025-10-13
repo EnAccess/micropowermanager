@@ -24,7 +24,7 @@ class AfricasTalkingCredentialService {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data) {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

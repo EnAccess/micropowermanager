@@ -15,27 +15,19 @@ use Inensus\CalinMeter\Models\CalinTransaction;
 
 class CalinMeterApi implements IManufacturerAPI {
     public const CREDIT_TOKEN = 'CreditToken';
-    protected $api;
-    private $rootUrl = '/tokennew';
+    private string $rootUrl = '/tokennew';
 
-    public function __construct(
-        Client $httpClient,
-        private CalinTransaction $calinTransaction,
-        private CalinCredential $credentials,
-        private CalinMeterApiRequests $calinMeterApiRequests,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private CalinTransaction $calinTransaction, private CalinCredential $credentials, private CalinMeterApiRequests $calinMeterApiRequests) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         // we round the energy to be charged to 1 decimal place because the api only accepts 1 decimal place.
         $transactionContainer->chargedEnergy += round($transactionContainer->amount / $tariff->total_price, 1);
-        Log::debug('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
             ' Manufacturer => CalinMeterApi');
         $credentials = $this->credentials->newQuery()->firstOrFail();
-        $energy = (float) $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargedEnergy;
 
         $tokenParams = [
             'user_id' => $credentials->user_id,
@@ -68,8 +60,6 @@ class CalinMeterApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Device $device
-     *
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException

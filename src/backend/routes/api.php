@@ -62,21 +62,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Routes for City resource
-require 'resources/Cities.php';
+require __DIR__.'/resources/Cities.php';
 // Routes for Country resource
-require 'resources/Countries.php';
+require __DIR__.'/resources/Countries.php';
 // Routes for meter resource
-require 'resources/Meters.php';
+require __DIR__.'/resources/Meters.php';
 // Routes for Addresses resource
-require 'resources/Addresses.php';
+require __DIR__.'/resources/Addresses.php';
 // Transaction routes
-require 'api_paths/transactions.php';
+require __DIR__.'/api_paths/transactions.php';
 // Agent routes
-require 'resources/AgentApp.php';
+require __DIR__.'/resources/AgentApp.php';
 // Agent Web panel routes
-require 'resources/AgentWeb.php';
+require __DIR__.'/resources/AgentWeb.php';
 // Routes for CustomerRegistrationApp resource
-require 'resources/CustomerRegistrationApp.php';
+require __DIR__.'/resources/CustomerRegistrationApp.php';
 
 // JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
@@ -102,6 +102,8 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
     });
 });
 Route::post('users/password', [UserPasswordController::class, 'forgotPassword']);
+Route::get('users/password/validate/{token}', [UserPasswordController::class, 'validateResetToken']);
+Route::post('users/password/confirm', [UserPasswordController::class, 'confirmReset']);
 
 // Protected Pages Password reset routes
 Route::post('protected-page-password/reset', [ProtectedPagePasswordResetController::class, 'sendResetEmail']);
@@ -331,9 +333,7 @@ Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], stati
     Route::delete('/{timeOfUsageId}', [TimeOfUsageController::class, 'destroy']);
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', [MpmPluginController::class, 'index']);

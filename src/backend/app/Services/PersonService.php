@@ -56,7 +56,7 @@ class PersonService implements IBaseService {
      *
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
-    public function searchPerson($searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
+    public function searchPerson(string $searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
             fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
@@ -85,14 +85,11 @@ class PersonService implements IBaseService {
      */
     public function createMaintenancePerson(array $personData): Person {
         $personData['is_customer'] = 0;
-        $person = $this->person->newQuery()->create($personData);
+        $personData['type'] = 'maintenance';
 
-        return $person;
+        return $this->person->newQuery()->create($personData);
     }
 
-    /**
-     * @return \Illuminate\Database\Query\Builder
-     */
     public function livingInCluster(int $clusterId): \Illuminate\Database\Query\Builder {
         return $this->person->livingInClusterQuery($clusterId);
     }
@@ -136,13 +133,12 @@ class PersonService implements IBaseService {
             'birth_date' => $request->get('birth_date'),
             'sex' => $request->get('sex'),
             'is_customer' => $request->get('is_customer') ?? 0,
+            'mini_grid_id' => $request->get('mini_grid_id'),
         ];
     }
 
     public function getById(int $personId): Person {
-        $model = $this->person->newQuery()->find($personId);
-
-        return $model;
+        return $this->person->newQuery()->find($personId);
     }
 
     /**
@@ -175,9 +171,7 @@ class PersonService implements IBaseService {
      */
     public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
         $query = $this->person->newQuery()->with([
-            'addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
+            'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
             'agentSoldAppliance.assignedAppliance.agent',
@@ -213,9 +207,7 @@ class PersonService implements IBaseService {
     public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null, ?string $status = null): Collection|array {
         $isActive = $isActive == null ? 1 : $isActive;
         $query = $this->person->newQuery()->with([
-            'addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
+            'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
         ])->where('is_customer', $isActive);
@@ -276,5 +268,12 @@ class PersonService implements IBaseService {
     public function getByPhoneNumber(string $phoneNumber): ?Person {
         return $this->person->newQuery()->whereHas('addresses', fn ($q) => $q->where('phone', $phoneNumber))
             ->first();
+    }
+
+    /**
+     * @return Collection<int, Person>|array<int, Person>
+     */
+    public function getAllMaintenanceUsers(): Collection|array {
+        return $this->person->newQuery()->where('type', 'maintenance')->get();
     }
 }

@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
+use Database\Factories\AgentBalanceHistoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -15,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property float  $revenue
  */
 class AgentBalanceHistory extends BaseModel {
-    /** @use HasFactory<\Database\Factories\AgentBalanceHistoryFactory> */
+    /** @use HasFactory<AgentBalanceHistoryFactory> */
     use HasFactory;
 
     protected $guarded = [];
@@ -28,7 +30,7 @@ class AgentBalanceHistory extends BaseModel {
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function trigger(): MorphTo {
         return $this->morphTo();
