@@ -42,9 +42,9 @@ chmod -R 775 /var/www/html/storage
 mkdir -p /var/www/.config/psysh
 chown -R www-data:www-data /var/www/.config
 
-# DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)
-
 cd /var/www/html
+
+# DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 echo "Running MicroPowerManager central migrations..."
 gosu www-data php artisan migrate --force

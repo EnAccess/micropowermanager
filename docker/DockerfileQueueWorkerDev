@@ -83,7 +83,6 @@ RUN chmod +x /usr/local/bin/entrypoint-queue-worker-dev.sh
 # benefit from hot-reloading.
 RUN sed -i '/^# DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)$/a\
 echo "Installing MicroPowerManager in development mode..."\n\
-cd /var/www/html\n\
 gosu www-data composer install\n' /usr/local/bin/entrypoint-queue-worker-dev.sh
 
 # define entrypoint
