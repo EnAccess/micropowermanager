@@ -28,6 +28,9 @@ class DemoMeterManufacturerApi implements IManufacturerAPI {
 
         // Record transaction like the real API
         $manufacturerTransaction = $this->demoMeterTransaction->newQuery()->create([]);
+        \PHPStan\dumpType($manufacturerTransaction->id);
+        \PHPStan\dumpType($manufacturerTransaction->created_at);
+        \PHPStan\dumpType($manufacturerTransaction->updated_at);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'demo_meter_transaction',
