@@ -11,7 +11,7 @@
               <form data-vv-scope="Synchronization-Form">
                 <div class="md-layout md-gutter">
                   <div
-                    class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100"
+                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
                   >
                     <md-field>
                       <label>
@@ -20,7 +20,29 @@
                     </md-field>
                   </div>
                   <div
-                    class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100"
+                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
+                  >
+                    <md-field
+                      :class="{
+                        'md-invalid': errors.has('Synchronization-Form.each'),
+                      }"
+                    >
+                      <label for="per">Each</label>
+                      <md-input
+                        id="each"
+                        name="each"
+                        v-model="currentSetting.syncInValueNum"
+                        type="number"
+                        min="1"
+                        v-validate="'required|min_value:1'"
+                      />
+                      <span class="md-error">
+                        {{ errors.first('Synchronization-Form.each') }}
+                      </span>
+                    </md-field>
+                  </div>
+                  <div
+                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
                   >
                     <md-field
                       :class="{
@@ -50,7 +72,7 @@
                     </md-field>
                   </div>
                   <div
-                    class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100"
+                    class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-100"
                   >
                     <md-field
                       :class="{
@@ -119,6 +141,7 @@ export default {
       currentSetting: {
         id: 1,
         actionName: "Installations",
+        syncInValueNum: 1,
         syncInValueStr: "weekly",
         maxAttempts: 3,
       },
