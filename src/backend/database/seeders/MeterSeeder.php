@@ -31,24 +31,16 @@ class MeterSeeder extends Seeder {
      */
     public function run() {
         // Manufacturer
-        // Create dummy manufacturers for demo purposes
-        $calinSmartManufacturer = Manufacturer::create([
-            'name' => 'Dummy Calin Smart Meter',
+        // Create demo manufacturers for demo purposes
+        $demoMeterManufacturer = Manufacturer::create([
+            'name' => 'Demo Meter Manufacturer',
             'type' => 'meter',
-            'website' => 'https://example.com/calin-smart',
+            'website' => 'https://demo.micropowermanager.com/',
             'contact_person' => 'Demo Person',
-            'api_name' => 'DummyCalinSmartMeterApi',
+            'api_name' => 'DemoMeterManufacturerApi',
         ]);
 
-        $kelinManufacturer = Manufacturer::create([
-            'name' => 'Dummy Kelin Meter',
-            'type' => 'meter',
-            'website' => 'https://example.com/kelin',
-            'contact_person' => 'Demo Person',
-            'api_name' => 'DummyKelinMeterApi',
-        ]);
-
-        $manufacturers = collect([$calinSmartManufacturer, $kelinManufacturer]);
+        $manufacturers = collect([$demoMeterManufacturer]);
 
         // Connection Group / Connection Type
         ConnectionType::create(['name' => 'House Hold']);

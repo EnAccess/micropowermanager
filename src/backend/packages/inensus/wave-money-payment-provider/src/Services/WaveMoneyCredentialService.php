@@ -2,9 +2,12 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 
 class WaveMoneyCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private WaveMoneyCredential $credential,
     ) {}
@@ -24,7 +27,31 @@ class WaveMoneyCredentialService {
     }
 
     public function getCredentials(): WaveMoneyCredential {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->merchant_id) {
+                $credential->merchant_id = $this->decryptCredentialField($credential->merchant_id);
+            }
+            if ($credential->merchant_name) {
+                $credential->merchant_name = $this->decryptCredentialField($credential->merchant_name);
+            }
+            if ($credential->secret_key) {
+                $credential->secret_key = $this->decryptCredentialField($credential->secret_key);
+            }
+            if ($credential->callback_url) {
+                $credential->callback_url = $this->decryptCredentialField($credential->callback_url);
+            }
+            if ($credential->payment_url) {
+                $credential->payment_url = $this->decryptCredentialField($credential->payment_url);
+            }
+            if ($credential->result_url) {
+                $credential->result_url = $this->decryptCredentialField($credential->result_url);
+            }
+        }
+
+        return $credential;
     }
 
     /**
@@ -41,16 +68,12 @@ class WaveMoneyCredentialService {
     public function updateCredentials(array $data): WaveMoneyCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
-        $credential->update([
-            'merchant_id' => $data['merchant_id'],
-            'secret_key' => $data['secret_key'],
-            'callback_url' => $data['callback_url'],
-            'payment_url' => $data['payment_url'],
-            'result_url' => $data['result_url'],
-            'merchant_name' => $data['merchant_name'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['merchant_id', 'secret_key', 'callback_url', 'payment_url', 'result_url', 'merchant_name']);
+        $credential->update($encryptedData);
         $credential->save();
 
-        return $credential->fresh();
+        $credential->fresh();
+
+        return $this->decryptCredentialFields($credential, ['merchant_id', 'secret_key', 'callback_url', 'payment_url', 'result_url', 'merchant_name']);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Lib\DummyManufacturerApis;
+namespace Inensus\DemoShsManufacturer;
 
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
@@ -8,15 +8,15 @@ use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
-use Inensus\SunKingSHS\Models\SunKingTransaction;
+use Inensus\DemoShsManufacturer\Models\DemoShsTransaction;
 
 /**
- * Dummy SunKing SHS API for demo purposes.
- * Returns random tokens for device charging operations.
+ * Demo SHS Manufacturer API for demo purposes.
+ * Returns random tokens for device charging operations without making real API calls.
  */
-class DummySunKingSHSApi implements IManufacturerAPI {
+class DemoShsManufacturerApi implements IManufacturerAPI {
     public function __construct(
-        private SunKingTransaction $sunKingTransaction,
+        private DemoShsTransaction $demoShsTransaction,
     ) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -66,11 +66,11 @@ class DummySunKingSHSApi implements IManufacturerAPI {
     }
 
     private function recordTransaction(TransactionDataContainer $transactionContainer): void {
-        $manufacturerTransaction = $this->sunKingTransaction->newQuery()->create([]);
+        $manufacturerTransaction = $this->demoShsTransaction->newQuery()->create([]);
 
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => 'sun_king_transaction',
+            'manufacturer_transaction_type' => 'demo_shs_transaction',
         ]);
     }
 
@@ -78,8 +78,8 @@ class DummySunKingSHSApi implements IManufacturerAPI {
         $isInstallmentsCompleted = $this->isInstallmentsCompleted($transactionContainer);
         $energy = $transactionContainer->chargedEnergy;
         $action = $isInstallmentsCompleted
-            ? "Token: $token created for unlocking device."
-            : "Token: $token created for $energy days usage.";
+            ? "Demo Token: $token created for unlocking device."
+            : "Demo Token: $token created for $energy days usage.";
 
         event(new NewLogEvent([
             'user_id' => -1,

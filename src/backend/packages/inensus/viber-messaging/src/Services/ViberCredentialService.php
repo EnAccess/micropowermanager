@@ -2,10 +2,13 @@
 
 namespace Inensus\ViberMessaging\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\ViberMessaging\Exceptions\WebhookNotCreatedException;
 use Inensus\ViberMessaging\Models\ViberCredential;
 
 class ViberCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private ViberCredential $credential,
         private WebhookService $webhookService,
@@ -25,7 +28,22 @@ class ViberCredentialService {
     }
 
     public function getCredentials(): ?ViberCredential {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->api_token) {
+                $credential->api_token = $this->decryptCredentialField($credential->api_token);
+            }
+            if ($credential->webhook_url) {
+                $credential->webhook_url = $this->decryptCredentialField($credential->webhook_url);
+            }
+            if ($credential->deep_link) {
+                $credential->deep_link = $this->decryptCredentialField($credential->deep_link);
+            }
+        }
+
+        return $credential;
     }
 
     /**
@@ -36,10 +54,8 @@ class ViberCredentialService {
     public function updateCredentials(array $data): ?ViberCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
-        $credential->update([
-            'api_token' => $data['api_token'],
-            'webhook_url' => $data['webhook_url'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['api_token', 'webhook_url']);
+        $credential->update($encryptedData);
         $credential->save();
 
         if (!$credential->has_webhook_created) {

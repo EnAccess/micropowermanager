@@ -84,7 +84,9 @@
       "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
       "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src",
       "Inensus\\VodacomMobileMoney\\": "packages/inensus/vodacom-mobile-money/src",
-      "Inensus\\ChintMeter\\": "packages/inensus/chint-meter/src"
+      "Inensus\\ChintMeter\\": "packages/inensus/chint-meter/src",
+      "Inensus\\DemoShsManufacturer\\": "packages/inensus/demo-shs-manufacturer/src",
+      "Inensus\\DemoMeterManufacturer\\": "packages/inensus/demo-meter-manufacturer/src"
     }
   },
   "autoload-dev": {
