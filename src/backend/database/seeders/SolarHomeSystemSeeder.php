@@ -27,16 +27,16 @@ class SolarHomeSystemSeeder extends Seeder {
      */
     public function run() {
         // Manufacturer
-        // Create dummy SHS manufacturer for demo purposes
-        $sunKingManufacturer = Manufacturer::create([
-            'name' => 'Dummy SunKing SHS',
+        // Create demo SHS manufacturer for demo purposes
+        $demoShsManufacturer = Manufacturer::create([
+            'name' => 'Demo SHS Manufacturer',
             'type' => 'shs',
-            'website' => 'https://example.com/sunking',
+            'website' => 'https://demo.micropowermanager.com/',
             'contact_person' => 'Demo Person',
-            'api_name' => 'DummySunKingSHSApi',
+            'api_name' => 'DemoShsManufacturerApi',
         ]);
 
-        $manufacturers = collect([$sunKingManufacturer]);
+        $manufacturers = collect([$demoShsManufacturer]);
 
         // Get the SHS asset type
         $assetType = AssetType::where('name', 'Solar Home System')->first();
@@ -76,7 +76,7 @@ class SolarHomeSystemSeeder extends Seeder {
             // Create a Solar Home System
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')
-                ->for($sunKingManufacturer)
+                ->for($demoShsManufacturer)
                 ->create();
 
             // Assign the SHS to the customer by creating a device
@@ -110,7 +110,7 @@ class SolarHomeSystemSeeder extends Seeder {
         for ($i = 1; $i <= 10; ++$i) {
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')
-                ->for($sunKingManufacturer)
+                ->for($demoShsManufacturer)
                 ->create();
 
             $device = Device::factory()
