@@ -5,6 +5,7 @@ namespace Inensus\Ticket\Services;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
@@ -27,7 +28,10 @@ class TicketOutsourceReportService implements IBaseService {
         return $this->ticketOutsourceReport->newQuery()->get();
     }
 
-    public function createExcelSheet(string $startDate, string $endDate, $tickets): string {
+    /**
+     * @param Collection<int, Ticket> $tickets
+     */
+    public function createExcelSheet(string $startDate, string $endDate, Collection $tickets): string {
         $fileName = 'Outsourcing-'.$startDate.'-'.$endDate.'.xlsx';
 
         $sheet = $this->spreadsheet->getActiveSheet();
