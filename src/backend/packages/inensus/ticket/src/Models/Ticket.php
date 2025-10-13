@@ -53,7 +53,7 @@ class Ticket extends BaseModel {
     }
 
     /**
-     * @return MorphTo<Person, $this>
+     * @return MorphTo<Model, $this>
      */
     public function owner(): MorphTo {
         return $this->morphTo();
