@@ -9,71 +9,64 @@
         <md-card-content>
           <div class="md-layout md-gutter">
             <div
-              class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
             >
-              <div class="md-layout md-gutter">
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
-                >
-                  <md-field
-                    :class="{
-                      'md-invalid': submitted && errors.has('Credential-Form.apiUrl'),
-                    }"
-                  >
-                    <label for="apiUrl">
-                      {{ $tc("phrases.apiEndpoint") }}
-                    </label>
-                    <md-select
-                      id="apiUrl"
-                      name="apiUrl"
-                      v-model="selectedEndpoint"
-                      v-validate="'required'"
-                    >
-                      <md-option value="" disabled>Select endpoint</md-option>
-                      <md-option value="installations">Installations</md-option>
-                      <md-option value="payments">Payments</md-option>
-                    </md-select>
-                    <span class="md-error" v-if="submitted">
-                      {{ errors.first("Credential-Form.apiUrl") }}
-                    </span>
-                  </md-field>
-                </div>
-
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
-                >
-                  <md-field
-                    :class="{
-                      'md-invalid': submitted && errors.has('Credential-Form.apiToken'),
-                    }"
-                  >
-                    <label for="apiToken">
-                      {{ $tc("phrases.apiToken") }}
-                    </label>
-                    <md-input
-                      id="apiToken"
-                      name="apiToken"
-                      type="password"
-                      v-model="credentialService.credential.apiToken"
-                      v-validate="'required|min:3'"
-                    />
-                    <span class="md-error" v-if="submitted">
-                      {{ errors.first("Credential-Form.apiToken") }}
-                    </span>
-                  </md-field>
-                </div>
-              </div>
-            </div>
-
-            <div class="md-layout md-gutter" style="padding: 2.5rem">
-              <div
-                class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-layout-item--right"
+              <md-field
+                :class="{
+                  'md-invalid': submitted && errors.has('Credential-Form.apiUrl'),
+                }"
               >
-                <span style="font-weight: bold">
-                  Prospect Webhook URL:
-                  <p class="token-value">{{ prospectWebhookUrl }}</p>
+                <label for="apiUrl">
+                  {{ $tc("phrases.apiEndpoint") }}
+                </label>
+                <md-input
+                  id="apiUrl"
+                  name="apiUrl"
+                  v-model="baseUrl"
+                  v-validate="'required'"
+                  placeholder="https://demo.prospect.energy/api/v1/in"
+                />
+                <span class="md-error" v-if="submitted">
+                  {{ errors.first("Credential-Form.apiUrl") }}
                 </span>
-              </div>
+              </md-field>
+            </div>
+          </div>
+
+          <div class="md-layout md-gutter">
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field>
+                <label>Installations</label>
+                <md-input
+                  value="Installations"
+                  disabled
+                />
+              </md-field>
+            </div>
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field
+                :class="{
+                  'md-invalid': submitted && errors.has('Credential-Form.apiToken'),
+                }"
+              >
+                <label for="apiToken">
+                  {{ $tc("phrases.apiToken") }}
+                </label>
+                <md-input
+                  id="apiToken"
+                  name="apiToken"
+                  type="password"
+                  v-model="credentialService.credential.apiToken"
+                  v-validate="'required|min:3'"
+                />
+                <span class="md-error" v-if="submitted">
+                  {{ errors.first("Credential-Form.apiToken") }}
+                </span>
+              </md-field>
             </div>
           </div>
         </md-card-content>
@@ -91,8 +84,6 @@
 <script>
 import { CredentialService } from "../../services/CredentialService"
 import { EventBus } from "@/shared/eventbus"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
-import { mapGetters } from "vuex"
 import { notify } from "@/mixins/notify"
 
 export default {
@@ -103,7 +94,8 @@ export default {
       credentialService: new CredentialService(),
       loading: false,
       submitted: false,
-      selectedEndpoint: "",
+      baseUrl: "",
+      endpointType: "installations",
     }
   },
   mounted() {
@@ -112,14 +104,18 @@ export default {
   methods: {
     async getCredential() {
       await this.credentialService.getCredential()
-      const savedUrl = this.credentialService.credential.apiUrl || ""
-      if (savedUrl.endsWith("/installations") || savedUrl.includes("/installations")) {
-        this.selectedEndpoint = "installations"
-      } else if (savedUrl.endsWith("/payments") || savedUrl.includes("/payments")) {
-        this.selectedEndpoint = "payments"
-      } else {
-        this.selectedEndpoint = ""
-      }
+      const fullUrl = this.credentialService.credential.apiUrl || ""
+      this.baseUrl = this.extractBaseUrl(fullUrl)
+    },
+    extractBaseUrl(fullUrl) {
+      if (!fullUrl) return ""
+      
+      const lastSlashIndex = fullUrl.lastIndexOf('/')
+      return lastSlashIndex === -1 ? fullUrl : fullUrl.substring(0, lastSlashIndex)
+    },
+    
+    buildFullUrl(baseUrl, endpoint) {
+      return baseUrl.endsWith('/') ? `${baseUrl}${endpoint}` : `${baseUrl}/${endpoint}`
     },
     async submitCredentialForm() {
       this.submitted = true
@@ -129,22 +125,18 @@ export default {
       }
       try {
         this.loading = true
-        this.credentialService.credential.apiUrl = this.selectedEndpoint
+        
+        const fullUrl = this.buildFullUrl(this.baseUrl, this.endpointType)
+        this.credentialService.credential.apiUrl = fullUrl
+        
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Updated successfully")
         EventBus.$emit("Prospect")
       } catch (e) {
         this.alertNotify("error", "MPM failed to verify your request")
+      } finally {
+        this.loading = false
       }
-      this.loading = false
-    },
-  },
-  computed: {
-    ...mapGetters({
-      authUser: "auth/getAuthenticateUser",
-    }),
-    prospectWebhookUrl() {
-      return `${baseUrl}/api/prospect/webhook/${this.authUser.companyId}`
     },
   },
 }
@@ -157,14 +149,5 @@ export default {
 
 .Credential-Form {
   height: 100% !important;
-}
-.token-value {
-  font-size: 16px;
-  color: #333;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  font-weight: normal;
 }
 </style>

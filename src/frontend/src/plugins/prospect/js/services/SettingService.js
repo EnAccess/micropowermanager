@@ -24,11 +24,6 @@ export class SettingService {
         actionName: "Installations",
         apiToken: "",
       },
-      {
-        id: 2,
-        actionName: "Payments",
-        apiToken: "",
-      },
     ]
   }
 

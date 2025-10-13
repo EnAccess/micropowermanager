@@ -12,34 +12,28 @@ class ProspectCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): ProspectCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_url' => 'https://demo.prospect.energy/api/v1/in/installations',
             'api_token' => null,
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): ?ProspectCredential {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data): ProspectCredential {
         $credential = $this->credential->newQuery()->first();
 
         if (!$credential) {
-            // Create credential if it doesn't exist
             $credential = $this->createCredentials();
         }
 
-        $baseUrl = rtrim(config('prospect.api_uri', 'https://demo.prospect.energy/api/v1/in/'), '/');
-        $endpoint = ltrim($data['api_url'], '/');
-        $normalizedApiUrl = $baseUrl . '/' . $endpoint;
-
         $credential->update([
-            'api_url' => $normalizedApiUrl,
+            'api_url' => $data['api_url'],
             'api_token' => $data['api_token'],
         ]);
-        $credential->save();
 
         return $credential->fresh();
     }
