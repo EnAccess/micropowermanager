@@ -6,25 +6,33 @@ export class SettingService {
   constructor() {
     this.repository = SettingRepository
     this.syncSettingsService = new SyncSettingService()
+    // Keep `list` like Kelin for UI binding; maintain `syncList` for backward compatibility
+    this.list = []
     this.syncList = []
   }
 
   updateSyncList(data) {
+    this.list = []
     this.syncList = []
     for (let s in data) {
-      this.syncList.push(data[s].data.attributes)
+      const attrs = data[s].data.attributes
+      this.list.push(attrs)
+      this.syncList.push(attrs)
     }
   }
 
   // Initialize with default sync settings for Prospect
   initializeDefaultSyncSettings() {
-    this.syncList = [
+    this.list = [
       {
         id: 1,
         actionName: "Installations",
-        apiToken: "",
+        syncInValueStr: "weekly",
+        syncInValueNum: 1,
+        maxAttempts: 3,
       },
     ]
+    this.syncList = this.list
   }
 
   async getSettings() {
@@ -47,14 +55,9 @@ export class SettingService {
 
   async updateSyncSettings() {
     try {
-      // For now, just simulate success since backend API doesn't exist yet
-      // TODO: Uncomment when backend API is ready
-      // await this.syncSettingsService.updateSyncSettings(this.syncList)
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      return true
+      // Forward to SyncSettingService to perform real API call
+      const response = await this.syncSettingsService.updateSyncSettings(this.list)
+      return response
     } catch (e) {
       let errorMessage = e.message
       return new ErrorHandler(errorMessage, "http")

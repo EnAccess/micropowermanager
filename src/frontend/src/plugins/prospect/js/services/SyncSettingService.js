@@ -8,7 +8,18 @@ export class SyncSettingService {
 
   async updateSyncSettings(syncList) {
     try {
-      let response = await this.repository.updateSyncSettings(syncList)
+      // Map to backend expected payload schema
+      let payload = []
+      for (let s in syncList) {
+        payload.push({
+          id: syncList[s].id,
+          action_name: syncList[s].actionName,
+          sync_in_value_str: syncList[s].syncInValueStr,
+          sync_in_value_num: syncList[s].syncInValueNum,
+          max_attempts: syncList[s].maxAttempts,
+        })
+      }
+      let response = await this.repository.updateSyncSettings(payload)
       if (response.status !== 200) {
         return new ErrorHandler(response.error, "http", response.status)
       }

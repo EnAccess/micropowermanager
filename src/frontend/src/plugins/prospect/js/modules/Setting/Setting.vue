@@ -9,7 +9,7 @@
             <md-card-header>Synchronization Settings</md-card-header>
             <md-card-content>
               <form data-vv-scope="Synchronization-Form">
-                <div v-for="(setting, i) in settingService.syncList" :key="i">
+                <div v-for="(setting, i) in settingService.list" :key="i">
                   <div class="md-layout md-gutter">
                     <div
                       class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"

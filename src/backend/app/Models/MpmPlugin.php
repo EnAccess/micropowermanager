@@ -32,7 +32,7 @@ class MpmPlugin extends BaseModelCentral {
     public const CHINT_METER = 20;
     public const PROSPECT = 21;
     public const DEMO_SHS_MANUFACTURER = 22;
-    public const DEMO_METER_MANUFACTURER = 21;
+    public const DEMO_METER_MANUFACTURER = 23;
 
     protected $table = 'mpm_plugins';
 
