@@ -2,11 +2,16 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Http\Middleware;
 
+use Closure;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 
 class WaveMoneyTransactionMiddleware {
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
         $transactionProvider = resolve(WaveMoneyTransactionProvider::class);
 

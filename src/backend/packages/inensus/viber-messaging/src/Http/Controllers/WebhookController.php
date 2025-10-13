@@ -8,8 +8,11 @@ use App\Services\SmsResendInformationKeyService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Inensus\ViberMessaging\Models\ViberContact;
 use Inensus\ViberMessaging\Services\ViberContactService;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
 use Viber\Api\Message\Text;
@@ -32,7 +35,7 @@ class WebhookController extends Controller {
         ]);
     }
 
-    public function index(string $slug) {
+    public function index(string $slug): JsonResponse {
         Log::info('Webhook called');
 
         $credential = $this->credentialService->getCredentials();
@@ -65,7 +68,7 @@ class WebhookController extends Controller {
 
                 $viberContact = $this->viberContactService->getByRegisteredMeterSerialNumber($meterSerialNumber);
 
-                if ($viberContact) {
+                if ($viberContact instanceof ViberContact) {
                     $this->answerToCustomer(
                         $bot,
                         $botSender,

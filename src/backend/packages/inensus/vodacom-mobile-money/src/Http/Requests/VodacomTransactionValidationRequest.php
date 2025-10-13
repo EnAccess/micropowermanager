@@ -9,6 +9,9 @@ class VodacomTransactionValidationRequest extends FormRequest {
         return true; // Set this based on your authentication logic if needed
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array {
         return [
             'serialNumber' => 'required|string|regex:/^[A-Z0-9]{8,12}$/',

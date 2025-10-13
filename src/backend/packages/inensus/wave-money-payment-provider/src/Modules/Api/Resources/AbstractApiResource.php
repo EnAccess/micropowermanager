@@ -10,8 +10,14 @@ abstract class AbstractApiResource {
 
     abstract public function getRequestMethod(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
     abstract public function getBodyData(): array;
 
+    /**
+     * @return array<string, mixed>
+     */
     abstract public function getQueryParams(): array;
 
     abstract public function getBackendCallback(): string;
@@ -26,6 +32,9 @@ abstract class AbstractApiResource {
         return config('wave-money-payment-provider.api_uri').'/payment';
     }
 
+    /**
+     * @return array{Accept: string}
+     */
     public function getHeaders(): array {
         return ['Accept' => 'application/json'];
     }
@@ -38,6 +47,9 @@ abstract class AbstractApiResource {
         return $this->body;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getBodyAsArray(): array {
         return json_decode($this->body, true);
     }
