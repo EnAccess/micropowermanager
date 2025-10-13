@@ -177,7 +177,7 @@ class TicketService implements IAssociative {
     ): LengthAwarePaginator {
         $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
 
-        if ($agentId) {
+        if ($agentId !== 0) {
             $query->whereHasMorph(
                 'creator',
                 [Agent::class],
