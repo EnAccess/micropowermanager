@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Person\Person;
 use Carbon\Carbon;
 use Database\Factories\Inensus\Ticket\Models\TicketFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\DB;
  * @property Carbon          $updated_at
  * @property TicketOutsource $outsource
  * @property TicketCategory  $category
+ * @property ?Person         $owner
  */
 class Ticket extends BaseModel {
     /** @use HasFactory<TicketFactory> */
@@ -51,7 +53,7 @@ class Ticket extends BaseModel {
     }
 
     /**
-     * @return MorphTo<Model, $this>
+     * @return MorphTo<Person, $this>
      */
     public function owner(): MorphTo {
         return $this->morphTo();
