@@ -2,9 +2,12 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Person\Person;
 use Carbon\Carbon;
 use Database\Factories\Inensus\Ticket\Models\TicketFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -12,17 +15,23 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @property int    $id
- * @property string $creator_type
- * @property int    $creator_id
- * @property int    $assigned_id
- * @property string $owner_type
- * @property int    $owner_id
- * @property int    $status
- * @property Carbon $due_date
- * @property string $title
- * @property string $content
- * @property int    $category_id
+ * @property int             $id
+ * @property string          $creator_type
+ * @property int             $creator_id
+ * @property int             $assigned_id
+ * @property string          $owner_type
+ * @property int             $owner_id
+ * @property int             $status
+ * @property Carbon          $due_date
+ * @property string          $title
+ * @property string          $content
+ * @property int             $category_id
+ * @property TicketUser      $assignedTo
+ * @property Carbon          $created_at
+ * @property Carbon          $updated_at
+ * @property TicketOutsource $outsource
+ * @property TicketCategory  $category
+ * @property ?Person         $owner
  */
 class Ticket extends BaseModel {
     /** @use HasFactory<TicketFactory> */
@@ -36,40 +45,64 @@ class Ticket extends BaseModel {
         'waiting' => 2,
     ];
 
+    /**
+     * @return BelongsTo<TicketCategory, $this>
+     */
     public function category(): BelongsTo {
         return $this->belongsTo(TicketCategory::class, 'category_id');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function owner(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return HasOne<TicketOutsource, $this>
+     */
     public function outsource(): HasOne {
         return $this->hasOne(TicketOutsource::class);
     }
 
+    /**
+     * @return BelongsTo<TicketUser, $this>
+     */
     public function assignedTo(): BelongsTo {
         return $this->belongsTo(TicketUser::class, 'assigned_id');
     }
 
-    public function ticketsOpenedInPeriod($startDate, $endDate) {
+    /**
+     * @return Builder<Ticket>
+     */
+    public function ticketsOpenedInPeriod(mixed $startDate, mixed $endDate): Builder {
         return $this->select(DB::raw('COUNT(id) as amount, YEARWEEK(created_at,3) as period'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(created_at,3)'));
     }
 
-    public function ticketsClosedInPeriod($startDate, $endDate) {
+    /**
+     * @return Builder<Ticket>
+     */
+    public function ticketsClosedInPeriod(mixed $startDate, mixed $endDate): Builder {
         return $this->select(DB::raw('COUNT(id) as amount, YEARWEEK(updated_at,3) as period,avg(timestampdiff(SECOND, created_at, updated_at)) as avgdiff'))
             ->where('status', 1)
             ->whereBetween('updated_at', [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(updated_at,3)'));
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function creator() {
         return $this->morphTo('creator');
     }
 
-    public function ticketsOpenedWithCategories($miniGridId, $startDate = null, $endDate = null): bool|array {
+    /**
+     * @return array<int, mixed>
+     */
+    public function ticketsOpenedWithCategories(int $miniGridId, mixed $startDate = null, mixed $endDate = null): bool|array {
         $dateFilter = '';
         if ($startDate && $endDate) {
             $dateFilter = " AND tickets.created_at BETWEEN '{$startDate}' AND '{$endDate}'";
@@ -103,7 +136,10 @@ class Ticket extends BaseModel {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function ticketsClosedWithCategories($miniGridId, $startDate = null, $endDate = null): bool|array {
+    /**
+     * @return array<int, mixed>
+     */
+    public function ticketsClosedWithCategories(int $miniGridId, mixed $startDate = null, mixed $endDate = null): bool|array {
         $dateFilter = '';
         if ($startDate && $endDate) {
             $dateFilter = " AND tickets.updated_at BETWEEN '{$startDate}' AND '{$endDate}'";
@@ -138,6 +174,9 @@ class Ticket extends BaseModel {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @return HasMany<TicketComment, $this>
+     */
     public function comments(): HasMany {
         return $this->hasMany(TicketComment::class, 'ticket_id', 'id');
     }

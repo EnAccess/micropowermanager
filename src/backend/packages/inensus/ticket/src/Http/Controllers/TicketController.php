@@ -36,7 +36,7 @@ class TicketController extends Controller {
     }
 
     // TODO: change this on UI side with query parameter $ticketId
-    public function destroy(int $ticketId, Request $request) {
+    public function destroy(int $ticketId, Request $request): TicketResource {
         $closed = $this->ticketService->close($ticketId);
 
         return TicketResource::make(['data' => $closed]);
