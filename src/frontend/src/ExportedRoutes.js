@@ -1538,5 +1538,5 @@ export const exportedRoutes = [
         },
       },
     ],
-  }
+  },
 ]

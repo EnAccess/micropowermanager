@@ -39,7 +39,7 @@ export class SettingService {
     try {
       // For now, initialize with default settings since API doesn't exist yet
       this.initializeDefaultSyncSettings()
-      
+
       // TODO: Uncomment when backend API is ready
       // let syncResponse = await this.repository.getSyncSettings()
       // if (syncResponse.status === 200) {
@@ -56,7 +56,9 @@ export class SettingService {
   async updateSyncSettings() {
     try {
       // Forward to SyncSettingService to perform real API call
-      const response = await this.syncSettingsService.updateSyncSettings(this.list)
+      const response = await this.syncSettingsService.updateSyncSettings(
+        this.list,
+      )
       return response
     } catch (e) {
       let errorMessage = e.message

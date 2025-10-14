@@ -13,7 +13,8 @@
             >
               <md-field
                 :class="{
-                  'md-invalid': submitted && errors.has('Credential-Form.apiUrl'),
+                  'md-invalid':
+                    submitted && errors.has('Credential-Form.apiUrl'),
                 }"
               >
                 <label for="apiUrl">
@@ -39,10 +40,7 @@
             >
               <md-field>
                 <label>Installations</label>
-                <md-input
-                  value="Installations"
-                  disabled
-                />
+                <md-input value="Installations" disabled />
               </md-field>
             </div>
             <div
@@ -50,7 +48,8 @@
             >
               <md-field
                 :class="{
-                  'md-invalid': submitted && errors.has('Credential-Form.apiToken'),
+                  'md-invalid':
+                    submitted && errors.has('Credential-Form.apiToken'),
                 }"
               >
                 <label for="apiToken">
@@ -109,13 +108,17 @@ export default {
     },
     extractBaseUrl(fullUrl) {
       if (!fullUrl) return ""
-      
-      const lastSlashIndex = fullUrl.lastIndexOf('/')
-      return lastSlashIndex === -1 ? fullUrl : fullUrl.substring(0, lastSlashIndex)
+
+      const lastSlashIndex = fullUrl.lastIndexOf("/")
+      return lastSlashIndex === -1
+        ? fullUrl
+        : fullUrl.substring(0, lastSlashIndex)
     },
-    
+
     buildFullUrl(baseUrl, endpoint) {
-      return baseUrl.endsWith('/') ? `${baseUrl}${endpoint}` : `${baseUrl}/${endpoint}`
+      return baseUrl.endsWith("/")
+        ? `${baseUrl}${endpoint}`
+        : `${baseUrl}/${endpoint}`
     },
     async submitCredentialForm() {
       this.submitted = true
@@ -125,10 +128,10 @@ export default {
       }
       try {
         this.loading = true
-        
+
         const fullUrl = this.buildFullUrl(this.baseUrl, this.endpointType)
         this.credentialService.credential.apiUrl = fullUrl
-        
+
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Updated successfully")
         EventBus.$emit("Prospect")
