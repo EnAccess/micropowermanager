@@ -9,11 +9,9 @@ class ProspectResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
      * @return array
      */
-    public function toArray($request) {
+    public function toArray(\Illuminate\Http\Request $request) {
         return parent::toArray($request);
     }
 }

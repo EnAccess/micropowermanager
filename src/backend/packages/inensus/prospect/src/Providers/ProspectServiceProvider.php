@@ -12,7 +12,7 @@ use Inensus\Prospect\Console\Commands\InstallPackage;
 
 class ProspectServiceProvider extends ServiceProvider
 {
-    public function boot(Filesystem $filesystem)
+    public function boot(Filesystem $filesystem): void
     {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
@@ -25,7 +25,7 @@ class ProspectServiceProvider extends ServiceProvider
         }
     }
 
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../../config/prospect.php', 'prospect');
         $this->app->register(EventServiceProvider::class);
@@ -33,14 +33,14 @@ class ProspectServiceProvider extends ServiceProvider
 
     }
 
-    public function publishConfigFiles()
+    public function publishConfigFiles(): void
     {
         $this->publishes([
             __DIR__ . '/../../config/prospect.php' => config_path('prospect.php'),
         ]);
     }
 
-    public function publishVueFiles()
+    public function publishVueFiles(): void
     {
         $this->publishes([
             __DIR__ . '/../resources/assets' => resource_path('assets/js/plugins/prospect'

@@ -6,10 +6,11 @@ namespace MPM\TenantResolver\ApiResolvers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\JWTGuard;
 
 class ProspectApiResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        /** @var JWTGuard $guard */
         $guard = auth('api');
         $payload = $guard->check() ? $guard->payload() : null;
 
