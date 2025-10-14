@@ -14,5 +14,3 @@ class ProspectSyncSettingController extends Controller {
         return new ProspectResource($this->syncSettingService->updateSyncSettings($request->all()));
     }
 }
-
-

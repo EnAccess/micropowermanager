@@ -14,5 +14,3 @@ class ProspectSyncSetting extends BaseModel {
         'max_attempts',
     ];
 }
-
-

@@ -11,7 +11,7 @@ class ProspectResource extends JsonResource {
      *
      * @return array
      */
-    public function toArray(\Illuminate\Http\Request $request) {
+    public function toArray(Request $request) {
         return parent::toArray($request);
     }
 }

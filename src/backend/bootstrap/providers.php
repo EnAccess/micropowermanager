@@ -16,6 +16,7 @@ use Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
 use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
 use Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
+use Inensus\Prospect\Providers\ProspectServiceProvider;
 use Inensus\SparkMeter\Providers\SparkMeterServiceProvider;
 use Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use Inensus\StronMeter\Providers\StronMeterServiceProvider;
@@ -26,7 +27,6 @@ use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
 use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
 use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
-use Inensus\Prospect\Providers\ProspectServiceProvider;
 
 return [
     AppServiceProvider::class,

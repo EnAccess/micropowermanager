@@ -2,8 +2,6 @@
 
 namespace Inensus\Prospect\Services;
 
-use Carbon\Carbon;
-use Carbon\CarbonInterval;
 use Inensus\Prospect\Models\ProspectSyncSetting;
 
 class ProspectSyncSettingService {
@@ -25,5 +23,3 @@ class ProspectSyncSettingService {
         return $this->syncSetting->newQuery()->get();
     }
 }
-
-
