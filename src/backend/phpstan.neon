@@ -32,7 +32,7 @@ parameters:
         # - packages/inensus/viber-messaging/
         # - packages/inensus/vodacom-mobile-money/
         # - packages/inensus/wave-money-payment-provider/
-        # - packages/inensus/wavecom-payment-provider/
+        - packages/inensus/wavecom-payment-provider/
         - public
         - resources
         - routes
