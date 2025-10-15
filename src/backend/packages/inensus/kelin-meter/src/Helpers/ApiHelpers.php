@@ -35,7 +35,10 @@ class ApiHelpers {
         return $result;
     }
 
-    public function makeHash($data): string {
+    /**
+     * @param array<string, string> $data
+     */
+    public function makeHash(array $data): string {
         return md5(implode('', $data));
     }
 }
