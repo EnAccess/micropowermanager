@@ -12,6 +12,9 @@ class ApiRequests {
         private Client $httpClient,
     ) {}
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function get(AngazaCredential $credentials, array $params, string $slug): mixed {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
@@ -38,6 +41,9 @@ class ApiRequests {
         }
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function put(AngazaCredential $credentials, array $params, string $slug): mixed {
         $url = $credentials->getApiUrl().$slug;
         try {
