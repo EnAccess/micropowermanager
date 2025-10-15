@@ -8,8 +8,11 @@ use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
+use Inensus\SunKingSHS\Models\SunKingCredential;
 use Inensus\SunKingSHS\Models\SunKingTransaction;
 use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
@@ -24,6 +27,9 @@ class SunKingSHSApi implements IManufacturerAPI {
         private ApiRequests $apiRequests,
     ) {}
 
+    /**
+     * @return array{token: string, token_type: string, token_unit: string, token_amount: float}
+     */
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
@@ -50,6 +56,9 @@ class SunKingSHSApi implements IManufacturerAPI {
         ];
     }
 
+    /**
+     * @return array{device: string, command: string, payload?: float, time_unit?: string}
+     */
     private function buildParams(TransactionDataContainer $transactionContainer): array {
         $deviceSerial = $transactionContainer->device->device_serial;
 
@@ -68,7 +77,10 @@ class SunKingSHSApi implements IManufacturerAPI {
         ];
     }
 
-    private function handleApiRequest(&$credentials, array $params): array {
+    /**
+     * @param array<string, mixed> $params
+     */
+    private function handleApiRequest(SunKingCredential &$credentials, array $params): mixed {
         try {
             $authResponse = $this->apiRequests->authentication($credentials);
             $this->credentialService->updateCredentials($credentials, $authResponse);
