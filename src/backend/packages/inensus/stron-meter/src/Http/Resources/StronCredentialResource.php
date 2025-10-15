@@ -25,7 +25,10 @@ class StronCredentialResource extends JsonResource {
         return $credentials;
     }
 
-    private function alertType($authenticationStatus) {
+    /**
+     * @return array{type: string, message:string}
+     */
+    private function alertType(?bool $authenticationStatus): array {
         return match ($authenticationStatus) {
             true => [
                 'type' => 'success',

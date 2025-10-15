@@ -19,7 +19,12 @@ class ApiHelpers {
         }
     }
 
-    public function checkApiResult($result) {
+    /**
+     * @param array<string, mixed>|string $result
+     *
+     * @return array<string, mixed>|string
+     */
+    public function checkApiResult(array|string $result): array|string {
         if (is_array($result) && array_key_exists('Message', $result)) {
             throw new StronApiResponseException($result['Message']);
         }
@@ -30,7 +35,10 @@ class ApiHelpers {
         return $result;
     }
 
-    public function makeHash($data): string {
+    /**
+     * @param array<string, string> $data
+     */
+    public function makeHash(array $data): string {
         return md5(implode('', $data));
     }
 }

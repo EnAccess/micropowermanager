@@ -25,7 +25,7 @@ parameters:
         # - packages/inensus/micro-star-meter/
         # - packages/inensus/spark-meter/
         # - packages/inensus/steama-meter/
-        # - packages/inensus/stron-meter/
+        - packages/inensus/stron-meter/
         - packages/inensus/sun-king-shs/
         - packages/inensus/swifta-payment-provider/
         - packages/inensus/ticket/
