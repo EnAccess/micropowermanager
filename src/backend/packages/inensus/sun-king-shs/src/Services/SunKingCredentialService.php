@@ -3,9 +3,7 @@
 namespace Inensus\SunKingSHS\Services;
 
 use App\Traits\EncryptsCredentials;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Inensus\SunKingSHS\Models\SunKingCredential;
-use InvalidArgumentException;
 
 class SunKingCredentialService {
     use EncryptsCredentials;

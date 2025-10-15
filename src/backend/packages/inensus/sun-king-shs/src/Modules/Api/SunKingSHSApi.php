@@ -8,8 +8,6 @@ use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
 use Inensus\SunKingSHS\Models\SunKingCredential;
