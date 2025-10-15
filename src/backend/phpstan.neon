@@ -27,7 +27,7 @@ parameters:
         # - packages/inensus/steama-meter/
         # - packages/inensus/stron-meter/
         # - packages/inensus/sun-king-shs/
-        # - packages/inensus/swifta-payment-provider/
+        - packages/inensus/swifta-payment-provider/
         - packages/inensus/ticket/
         - packages/inensus/viber-messaging/
         - packages/inensus/vodacom-mobile-money/

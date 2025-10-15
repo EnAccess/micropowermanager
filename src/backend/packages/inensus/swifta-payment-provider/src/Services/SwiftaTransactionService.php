@@ -34,6 +34,11 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         );
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array{amount: mixed, cipher: mixed, status: int, timestamp:mixed}
+     */
     public function initializeTransactionData(array $data): array {
         return [
             'amount' => $data['amount'],
@@ -61,7 +66,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         return $this->getPaymentAggregatorTransaction();
     }
 
-    public function getTransactionById($transactionId) {
+    public function getTransactionById(int $transactionId): Transaction {
         try {
             return $this->transaction->newQuery()->findOrFail($transactionId);
         } catch (ModelNotFoundException $exception) {
@@ -69,7 +74,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         }
     }
 
-    public function checkAmountIsSame($amount, $transaction): void {
+    public function checkAmountIsSame(int $amount, Transaction $transaction): void {
         if ($amount != (int) $transaction->amount) {
             throw new \Exception('amount validation field.');
         }

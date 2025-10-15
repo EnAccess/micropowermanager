@@ -81,7 +81,7 @@ class UpdatePackage extends Command {
         $this->call('migrate');
     }
 
-    private function generateAuthenticationTokenAgain() {
+    private function generateAuthenticationTokenAgain(): string {
         $password = $this->generateRandomNumber();
         $user = $this->user->newQuery()->firstOrCreate([
             'email' => 'swifta-user',
