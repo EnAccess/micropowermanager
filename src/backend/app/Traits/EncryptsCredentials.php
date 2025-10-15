@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Crypt;
 
-/** @phpstan-ignore trait.unused */
 trait EncryptsCredentials {
     /**
      * Encrypt a credential field value.
