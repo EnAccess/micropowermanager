@@ -15,6 +15,9 @@ class ApiRequests {
         private ResponseResolver $responseResolver,
     ) {}
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function get(MicroStarCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
