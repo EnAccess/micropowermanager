@@ -31,7 +31,7 @@ class ApiHelpers {
     }
 
     /**
-     * @param array<string, string> $data
+     * @param array<string|int, mixed> $data
      */
     public function makeHash(array $data): string {
         return md5(implode('', $data));
