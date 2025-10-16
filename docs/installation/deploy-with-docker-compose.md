@@ -55,15 +55,18 @@ cd micro-powermanager
 
 ## 2. Environment Configuration
 
-Create a `.env` file to store your configuration variables:
+Create three `.env` files to separate configuration for backend, frontend, and MySQL. This mirrors typical local setups and keeps concerns isolated.
 
 ```bash
-nano .env
+# From your micro-powermanager directory
+touch .env.backend .env.frontend .env.mysql
 ```
 
-Add the following configuration, updating the values to match your environment:
+Add the following configuration to each file, updating values for your environment:
 
 ```env
+# .env.backend
+
 # Application Configuration
 APP_ENV=production
 APP_KEY=base64:your-generated-app-key-here
@@ -71,7 +74,7 @@ APP_DEBUG=false
 APP_URL=https://api.your-domain.com
 MPM_FRONTEND_URL=https://your-domain.com
 
-# Database Configuration
+# Database Configuration (service name is "mysql" from compose)
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
@@ -87,11 +90,18 @@ REDIS_PORT=6379
 # MicroPowerManager Configuration
 MPM_LOAD_DEMO_DATA=false
 MPM_ENV=production
+```
 
-# Frontend Configuration
+```env
+# .env.frontend
+
+MPM_ENV=production
 MPM_BACKEND_URL=https://api.your-domain.com
+```
 
-# Database User Configuration
+```env
+# .env.mysql
+
 MYSQL_ROOT_PASSWORD=your-secure-database-password
 MYSQL_DATABASE=micro_power_manager
 MYSQL_USER=mpm_user
@@ -107,6 +117,7 @@ openssl rand -base64 32
 ```
 
 Copy the generated key and replace `your-generated-app-key-here` in your `.env` file.
+Paste it into `APP_KEY` inside `.env.backend`.
 
 ## 4. Create Docker Compose File
 
@@ -118,23 +129,8 @@ version: "3.8"
 services:
   backend:
     image: enaccess/micropowermanager-backend:latest
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_KEY: ${APP_KEY}
-      APP_DEBUG: ${APP_DEBUG}
-      APP_URL: ${APP_URL}
-      DB_CONNECTION: ${DB_CONNECTION}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      CACHE_DRIVER: ${CACHE_DRIVER}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      MPM_LOAD_DEMO_DATA: ${MPM_LOAD_DEMO_DATA}
-      MPM_ENV: ${MPM_ENV}
-      MPM_FRONTEND_URL: ${MPM_FRONTEND_URL}
+    env_file:
+      - .env.backend
     ports:
       - "8000:80"
       - "8443:443"
@@ -153,9 +149,8 @@ services:
 
   frontend:
     image: enaccess/micropowermanager-frontend:latest
-    environment:
-      MPM_ENV: ${MPM_ENV}
-      MPM_BACKEND_URL: ${MPM_BACKEND_URL}
+    env_file:
+      - .env.frontend
     ports:
       - "8001:80"
     depends_on:
@@ -164,22 +159,8 @@ services:
 
   scheduler:
     image: enaccess/micropowermanager-scheduler:latest
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_KEY: ${APP_KEY}
-      APP_DEBUG: ${APP_DEBUG}
-      APP_URL: ${APP_URL}
-      DB_CONNECTION: ${DB_CONNECTION}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      CACHE_DRIVER: ${CACHE_DRIVER}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      MPM_LOAD_DEMO_DATA: ${MPM_LOAD_DEMO_DATA}
-      MPM_ENV: ${MPM_ENV}
+    env_file:
+      - .env.backend
     depends_on:
       - redis
       - mysql
@@ -189,22 +170,8 @@ services:
 
   worker:
     image: enaccess/micropowermanager-queue-worker:latest
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_KEY: ${APP_KEY}
-      APP_DEBUG: ${APP_DEBUG}
-      APP_URL: ${APP_URL}
-      DB_CONNECTION: ${DB_CONNECTION}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      CACHE_DRIVER: ${CACHE_DRIVER}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      MPM_LOAD_DEMO_DATA: ${MPM_LOAD_DEMO_DATA}
-      MPM_ENV: ${MPM_ENV}
+    env_file:
+      - .env.backend
     depends_on:
       - redis
       - mysql
@@ -214,11 +181,8 @@ services:
 
   mysql:
     image: mysql:8.4
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    env_file:
+      - .env.mysql
     ports:
       - "3306:3306"
     volumes:
