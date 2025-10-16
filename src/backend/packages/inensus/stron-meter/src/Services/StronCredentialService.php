@@ -12,12 +12,15 @@ class StronCredentialService {
     use EncryptsCredentials;
     private string $rootUrl = '/login/';
 
-    public function __construct(private StronCredential $credential, private StronMeterApiRequests $stronApi) {}
+    public function __construct(
+        private StronCredential $credential,
+        private StronMeterApiRequests $stronApi,
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): StronCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'username' => null,
             'password' => null,
@@ -27,7 +30,7 @@ class StronCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): StronCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {
@@ -49,7 +52,10 @@ class StronCredentialService {
         return $credential;
     }
 
-    public function updateCredentials(array $data): object {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): StronCredential {
         $credential = $this->credential->newQuery()->firstOrFail();
 
         $encryptedData = $this->encryptCredentialFields($data, ['username', 'password', 'company_name']);

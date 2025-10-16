@@ -33,7 +33,7 @@ class InstallPackage extends Command {
         $this->info('Package installed successfully..');
     }
 
-    private function generateAuthenticationToken() {
+    private function generateAuthenticationToken(): string {
         $password = $this->generateRandomNumber();
         $companyId = app()->make(UserService::class)->getCompanyId();
         $company = $this->companyService->getById($companyId);

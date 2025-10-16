@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Crypt;
 
-/** @phpstan-ignore trait.unused */
 trait EncryptsCredentials {
     /**
      * Encrypt a credential field value.
@@ -38,6 +37,11 @@ trait EncryptsCredentials {
 
     /**
      * Encrypt multiple credential fields in an array.
+     *
+     * @param array<string, mixed> $data
+     * @param string[]             $fieldsToEncrypt
+     *
+     * @return array<string, string>
      */
     protected function encryptCredentialFields(array $data, array $fieldsToEncrypt): array {
         $encryptedData = [];
@@ -51,14 +55,16 @@ trait EncryptsCredentials {
 
     /**
      * Decrypt multiple credential fields on a model.
+     *
+     * @param string[] $fieldsToDecrypt
      */
-    protected function decryptCredentialFields(object $model, array $fieldsToDecrypt): ?object {
+    protected function decryptCredentialFields(?object $model, array $fieldsToDecrypt): ?object {
         if (!$model) {
             return $model;
         }
 
         foreach ($fieldsToDecrypt as $field) {
-            if (isset($model->$field) && $model->$field !== null) {
+            if (isset($model->$field)) {
                 $model->$field = $this->decryptCredentialField($model->$field);
             }
         }

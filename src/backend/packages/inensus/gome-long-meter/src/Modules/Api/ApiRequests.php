@@ -13,6 +13,9 @@ class ApiRequests {
         private Client $httpClient,
     ) {}
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function get(GomeLongCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
@@ -42,6 +45,9 @@ class ApiRequests {
         }
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function post(GomeLongCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         try {

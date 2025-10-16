@@ -44,6 +44,9 @@ class ApiRequests {
         }
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function postWithBodyParams(DalyBmsCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         try {
@@ -78,6 +81,9 @@ class ApiRequests {
         }
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function postWithQueryParams(DalyBmsCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
 
