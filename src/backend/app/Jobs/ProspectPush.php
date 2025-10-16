@@ -89,7 +89,7 @@ class ProspectPush extends AbstractJob {
         $csvContent = file_get_contents($filePath);
         $lines = str_getcsv($csvContent, "\n");
 
-        $lines = array_filter($lines, fn($line): bool => !in_array(trim($line), ['', '0'], true));
+        $lines = array_filter($lines, fn ($line): bool => !in_array(trim($line), ['', '0'], true));
 
         if ($lines === []) {
             throw new \Exception('CSV file is empty or contains no valid data');

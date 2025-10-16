@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Services\CompanyDatabaseService;
 use App\Models\Address\Address;
 use App\Models\Device;
+use App\Services\CompanyDatabaseService;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -202,7 +202,6 @@ class ProspectExtract extends AbstractJob {
      * Write data to CSV file.
      *
      * @param array<int, array<string, mixed>> $data
-     *
      */
     private function writeCsvFile(array $data, string $fileName): string {
         $headers = array_keys($data[0]);

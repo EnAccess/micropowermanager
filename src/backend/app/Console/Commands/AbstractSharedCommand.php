@@ -84,8 +84,6 @@ abstract class AbstractSharedCommand extends Command {
 
     /**
      * Get the company database.
-     *
-     *
      */
     protected function getCompanyDatabase(?string $companyId = null): CompanyDatabase {
         try {
