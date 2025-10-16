@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Services\CompanyDatabaseService;
 use App\Models\Device;
+use App\Services\CompanyDatabaseService;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -30,6 +30,7 @@ class ProspectExtract extends AbstractJob {
 
             if ($data === []) {
                 Log::warning('No data found to extract.');
+
                 return;
             }
 
@@ -180,6 +181,7 @@ class ProspectExtract extends AbstractJob {
      */
     private function generateFileName(): string {
         $timestamp = now()->toISOString();
+
         return "prospect_{$timestamp}.csv";
     }
 
