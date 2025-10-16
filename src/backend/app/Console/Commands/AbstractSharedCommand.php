@@ -84,10 +84,6 @@ abstract class AbstractSharedCommand extends Command {
 
     /**
      * Get the company database.
-     *
-     * @param string|null $companyId
-     *
-     * @return CompanyDatabase
      */
     protected function getCompanyDatabase(?string $companyId = null): CompanyDatabase {
         try {
@@ -101,7 +97,7 @@ abstract class AbstractSharedCommand extends Command {
 
             return app(CompanyDatabase::class)->newQuery()->first();
         } catch (\Exception $e) {
-            throw new \Exception('Unable to find company database: '.$e->getMessage());
+            throw new \Exception('Unable to find company database: '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

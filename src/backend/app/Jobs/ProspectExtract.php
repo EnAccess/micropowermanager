@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\CompanyDatabaseService;
 use App\Models\Device;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ class ProspectExtract extends AbstractJob {
 
             $data = $this->extractDataFromDatabase();
 
-            if (empty($data)) {
+            if ($data === []) {
                 Log::warning('No data found to extract.');
 
                 return;
@@ -185,8 +186,6 @@ class ProspectExtract extends AbstractJob {
 
     /**
      * Generate filename for CSV.
-     *
-     * @return string
      */
     private function generateFileName(): string {
         $timestamp = now()->toISOString();
@@ -198,16 +197,13 @@ class ProspectExtract extends AbstractJob {
      * Write data to CSV file.
      *
      * @param array<int, array<string, mixed>> $data
-     * @param string                           $fileName
-     *
-     * @return string
      */
     private function writeCsvFile(array $data, string $fileName): string {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
         // Get company database from the current context
-        $companyDatabase = app(\App\Services\CompanyDatabaseService::class)->findByCompanyId($this->companyId);
+        $companyDatabase = app(CompanyDatabaseService::class)->findByCompanyId($this->companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
@@ -229,8 +225,6 @@ class ProspectExtract extends AbstractJob {
      *
      * @param array<int, array<string, mixed>> $data
      * @param array<int, string>               $headers
-     *
-     * @return string
      */
     private function arrayToCsv(array $data, array $headers): string {
         $output = fopen('php://temp', 'r+');
