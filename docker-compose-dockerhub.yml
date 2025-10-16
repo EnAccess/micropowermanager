@@ -50,8 +50,7 @@ services:
   worker:
     container_name: worker
     restart: unless-stopped
-    build:
-      dockerfile: docker/DockerfileQueueWorker
+    image: enaccess/micropowermanager-queue-worker:latest
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       mysql:

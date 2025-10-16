@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\CompanyDatabase;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class ProspectPush extends AbstractJob {
 
             $data = $this->loadCsvData();
 
-            if (empty($data)) {
+            if ($data === []) {
                 Log::info('No data to push to Prospect. This may be because no CSV files have been created yet by the extract job.');
 
                 return;
@@ -88,11 +89,9 @@ class ProspectPush extends AbstractJob {
         $csvContent = file_get_contents($filePath);
         $lines = str_getcsv($csvContent, "\n");
 
-        $lines = array_filter($lines, function ($line) {
-            return !empty(trim($line));
-        });
+        $lines = array_filter($lines, fn ($line): bool => !in_array(trim($line), ['', '0'], true));
 
-        if (empty($lines)) {
+        if ($lines === []) {
             throw new \Exception('CSV file is empty or contains no valid data');
         }
 
@@ -103,7 +102,7 @@ class ProspectPush extends AbstractJob {
         $data = [];
 
         foreach ($lines as $lineNumber => $line) {
-            if (empty(trim($line))) {
+            if (in_array(trim($line), ['', '0'], true)) {
                 continue;
             }
 
@@ -138,12 +137,10 @@ class ProspectPush extends AbstractJob {
 
     /**
      * Get the latest CSV file from prospect folder.
-     *
-     * @return string
      */
     private function getLatestCsvFile(): string {
         // Get the company database to determine the correct prospect folder path
-        $companyDatabase = app(\App\Models\CompanyDatabase::class)->newQuery()->first();
+        $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $prospectPath = storage_path("app/prospect/{$companyDatabaseName}/");
@@ -154,7 +151,7 @@ class ProspectPush extends AbstractJob {
 
         $files = glob($prospectPath.'*.csv');
 
-        if (empty($files)) {
+        if ($files === [] || $files === false) {
             Log::info("No CSV files found in prospect folder: {$prospectPath}");
             throw new \Exception("No CSV files found in prospect folder: {$prospectPath}");
         }
