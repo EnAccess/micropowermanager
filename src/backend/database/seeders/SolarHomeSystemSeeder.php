@@ -31,7 +31,7 @@ class SolarHomeSystemSeeder extends Seeder {
         $demoShsManufacturer = Manufacturer::create([
             'name' => 'Demo SHS Manufacturer',
             'type' => 'shs',
-            'website' => 'https://demo.micropowermanager.com/',
+            'website' => 'https://demo.micropowermanager.io/',
             'contact_person' => 'Demo Person',
             'api_name' => 'DemoShsManufacturerApi',
         ]);
