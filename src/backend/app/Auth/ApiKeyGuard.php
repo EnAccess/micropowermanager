@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Auth;
 
 use App\Models\Company;
@@ -42,8 +40,6 @@ class ApiKeyGuard implements Guard {
      * Validate a user's credentials.
      *
      * @param array<string, mixed> $credentials
-     *
-     * @return bool
      */
     public function validate(array $credentials = []): bool {
         return !is_null($this->provider->retrieveByCredentials($credentials));

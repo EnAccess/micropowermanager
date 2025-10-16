@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Auth;
 
 use App\Models\ApiKey;
@@ -77,8 +75,6 @@ class ApiKeyProvider implements UserProvider {
      *
      * @param ApiKeyAuthenticatable $user
      * @param array<string, mixed>  $credentials
-     *
-     * @return bool
      */
     public function validateCredentials(Authenticatable $user, array $credentials): bool {
         // For API key authentication, if we got here, the credentials are valid
@@ -90,9 +86,6 @@ class ApiKeyProvider implements UserProvider {
      *
      * @param ApiKeyAuthenticatable $user
      * @param array<string, mixed>  $credentials
-     * @param bool                  $force
-     *
-     * @return void
      */
     public function rehashPasswordIfRequired(Authenticatable $user, array $credentials, bool $force = false): void {
         // Not applicable for API key authentication
