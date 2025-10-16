@@ -79,6 +79,9 @@ class MesombTransactionProvider implements ITransactionProvider {
             '</Response>';
     }
 
+    /**
+     * @param array<string, mixed> $requestData
+     */
     private function checkPhoneIsExists(array $requestData): ?Address {
         $personAddresses = $this->address->newQuery()
             ->where('phone', $requestData['b_party'])
@@ -107,6 +110,9 @@ class MesombTransactionProvider implements ITransactionProvider {
         $this->validData['meter'] = $senderMeters->first()->device()->first()->serial_number;
     }
 
+    /**
+     * @param MesombTransaction $transaction
+     */
     public function init($transaction): void {
         // TODO: Implement init() method.
     }

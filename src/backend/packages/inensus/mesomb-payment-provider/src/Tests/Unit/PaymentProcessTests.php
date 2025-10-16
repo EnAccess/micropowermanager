@@ -14,6 +14,7 @@ use App\Models\Meter\MeterType;
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use App\Models\Token;
+use App\Models\Transaction\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Queue;
@@ -56,7 +57,7 @@ class PaymentProcessTests extends TestCase {
         $this->assertEquals(1, $mesombPaymentCount);
     }
 
-    private function initializeTransaction() {
+    private function initializeTransaction(): Transaction {
         $validData = [
             'pk' => 'ae58a073-2b76-4774-995b-3743d6793d53',
             'type' => 'PAYMENT',
@@ -69,7 +70,7 @@ class PaymentProcessTests extends TestCase {
             'ts' => '2021-05-25 07:11:25.974488+00:00',
             'direction' => -1,
         ];
-        $mesombTransactionService = App::make(MesomTransactionService::class);
+        $mesombTransactionService = app()->make(MesomTransactionService::class);
         $mesombTransaction = $mesombTransactionService->assignIncomingDataToMesombTransaction($validData);
         $transaction = $mesombTransactionService->assignIncomingDataToTransaction($validData);
 
