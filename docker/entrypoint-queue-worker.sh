@@ -37,13 +37,12 @@ mkdir -p \
 chown -R www-data:www-data /var/www/html
 chmod -R 775 /var/www/html/storage
 
-cd /var/www/html
-
 # DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 # If running in production, generate Laravel caches so the app is optimized.
 # We do this at container startup (not build) so runtime environment variables are available to the framework.
 if [ "$APP_ENV" = "production" ] || ( [ -n "$MPM_FORCE_OPTIMIZE" ] && [ "$MPM_FORCE_OPTIMIZE" != "0" ] && [ "$MPM_FORCE_OPTIMIZE" != "false" ] ); then
+  cd /var/www/html
   echo "Optimizing Laravel (caching config, events, routes, views)..."
   gosu www-data php artisan optimize || echo "php artisan optimize failed"
 fi
