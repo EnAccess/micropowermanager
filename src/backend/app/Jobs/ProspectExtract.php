@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Services\CompanyDatabaseService;
+use App\Models\Address\Address;
 use App\Models\Device;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +29,7 @@ class ProspectExtract extends AbstractJob {
 
             $data = $this->extractDataFromDatabase();
 
-            if (empty($data)) {
+            if ($data === []) {
                 Log::warning('No data found to extract.');
 
                 return;
@@ -90,6 +92,7 @@ class ProspectExtract extends AbstractJob {
             // Create meaningful customer identifier
             $customerIdentifier = $person ? trim($person->name.' '.$person->surname) : 'Unknown Customer';
 
+            /** @var ?Address $primaryAddress */
             $primaryAddress = null;
 
             if ($person && $person->addresses()->exists()) {
@@ -99,8 +102,9 @@ class ProspectExtract extends AbstractJob {
             $latitude = null;
             $longitude = null;
 
-            if ($primaryAddress && $primaryAddress->geo && $primaryAddress->geo->points) {
-                $coordinates = explode(',', $primaryAddress->geo->points);
+            $geoInfo = $primaryAddress ? $primaryAddress->geo : null;
+            if ($geoInfo && $geoInfo->points) {
+                $coordinates = explode(',', $geoInfo->points);
                 if (count($coordinates) >= 2) {
                     $latitude = (float) trim($coordinates[0]);
                     $longitude = (float) trim($coordinates[1]);
@@ -113,6 +117,8 @@ class ProspectExtract extends AbstractJob {
                 'solar_home_system' => 'solar_home_system',
                 default => 'other',
             };
+
+            $manufacturer = $deviceData->manufacturer ?? null;
 
             $installation = [
                 // Customer and agent identification
@@ -132,7 +138,7 @@ class ProspectExtract extends AbstractJob {
                 'ac_input_source' => null,
                 'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
                 'firmware_version' => null,
-                'manufacturer' => ($deviceData->manufacturer !== null) ? $deviceData->manufacturer->name : 'Unknown',
+                'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
                 'model' => null,
                 'primary_use' => null,
                 'rated_power_w' => null,
@@ -185,8 +191,6 @@ class ProspectExtract extends AbstractJob {
 
     /**
      * Generate filename for CSV.
-     *
-     * @return string
      */
     private function generateFileName(): string {
         $timestamp = now()->toISOString();
@@ -198,16 +202,14 @@ class ProspectExtract extends AbstractJob {
      * Write data to CSV file.
      *
      * @param array<int, array<string, mixed>> $data
-     * @param string                           $fileName
      *
-     * @return string
      */
     private function writeCsvFile(array $data, string $fileName): string {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
         // Get company database from the current context
-        $companyDatabase = app(\App\Services\CompanyDatabaseService::class)->findByCompanyId($this->companyId);
+        $companyDatabase = app(CompanyDatabaseService::class)->findByCompanyId($this->companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
@@ -229,8 +231,6 @@ class ProspectExtract extends AbstractJob {
      *
      * @param array<int, array<string, mixed>> $data
      * @param array<int, string>               $headers
-     *
-     * @return string
      */
     private function arrayToCsv(array $data, array $headers): string {
         $output = fopen('php://temp', 'r+');
