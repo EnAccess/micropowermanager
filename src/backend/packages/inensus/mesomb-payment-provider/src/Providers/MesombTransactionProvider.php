@@ -18,6 +18,7 @@ use Inensus\MesombPaymentProvider\Services\MesomTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class MesombTransactionProvider implements ITransactionProvider {
+    /** @var array<string, mixed> */
     private array $validData = [];
 
     public function __construct(private Transaction $transaction, private MesombTransaction $mesombTransaction, private MesomTransactionService $mesombTransactionService, private Address $address) {}

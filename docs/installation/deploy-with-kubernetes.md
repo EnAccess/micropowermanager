@@ -2,7 +2,7 @@
 order: 2
 ---
 
-# Deploy for Production
+# Deploy To Cloud (Kubernetes)
 
 > [!INFO]
 > This page covers **deployment** related information for MicroPowerManager.
@@ -10,17 +10,7 @@ order: 2
 
 The MicroPowerManager is distributed as pre-compile Docker images via [DockerHub](https://hub.docker.com/u/enaccess).
 
-## Choose a deployment scenario
-
-For running a self-hosted version of MicroPowerManager multiple options exists.
-We "officially" support two deployment options for MicroPowerManager
-
-1. Cloud-hosted [Kubernetes](https://kubernetes.io/) with dedicated databases.
-2. Monolithic [Docker Compose](https://docs.docker.com/compose/) on stand-alone server with Compose-managed databases.
-
-which are further explained in the sections below.
-
-### Kubernetes (base setup)
+## Kubernetes (base setup)
 
 This section describes the deployment scenario of a cloud-hosted [Kubernetes](https://kubernetes.io/) cluster with dedicated databases.
 
@@ -198,27 +188,6 @@ Deploy a VPN IPSec Gateway
 2. Using `ssh` configure the IPSec Gateway to install `haproxy` and `strongswan`.
 3. Configure according to provider request.
 
-### Stand-alone server using Docker Compose
-
-> [!INFO]
-> If you choose to run MicroPowerManager on a stand-alone server, additional configuration steps are required.
-> These include installing a web server like [Nginx](https://nginx.org/), managing TLS certificates with [Let's Encrypt](https://letsencrypt.org/), and handling general Linux server maintenance such as system updates, [security patches](https://ubuntu.com/security/esm), and performance monitoring.
->
-> There are plenty of great resources available online that cover these topics in detail.
-
-1. A working "all-in one" environment running with production containers fetched from DockerHub can be achieved by running:
-
-   ```sh
-   docker compose -f docker-compose-dockerhub.yml up
-   ```
-
-   This exposes
-   - Port `8443`, `8000`: The backend of MicroPowerManager
-   - Port `8001`: The frontend of MicroPowerManager
-
-2. Configure WebServer, networking, TLS, certificates and DNS.
-3. Proceed to the [Next Steps](#next-steps) section
-
 ## Next Steps
 
 After the installation an empty instance of MicroPowerManager should be accessible at
@@ -228,6 +197,4 @@ After the installation an empty instance of MicroPowerManager should be accessib
 This instance is fully functional just yet.
 For example, you cannot log in, as further configuration is required.
 
-Please proceed to [Configuration for Production](configuration-production.md)
-
-## Troubleshooting
+Please proceed to [Configuration for Production](configuration-production.md) to complete your setup.

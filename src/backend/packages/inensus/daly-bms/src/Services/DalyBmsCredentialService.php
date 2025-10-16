@@ -41,6 +41,9 @@ class DalyBmsCredentialService {
         return $credential;
     }
 
+    /**
+     * @param array<string, mixed> $updateData
+     */
     public function updateCredentials(object $credentials, array $updateData): object {
         $encryptedData = $this->encryptCredentialFields($updateData, ['user_name', 'password', 'access_token']);
         $credentials->update($encryptedData);

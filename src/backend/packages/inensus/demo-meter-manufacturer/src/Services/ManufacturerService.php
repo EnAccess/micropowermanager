@@ -15,7 +15,7 @@ class ManufacturerService {
                 $this->manufacturer->newQuery()->create([
                     'name' => 'Demo Meter Manufacturer',
                     'type' => 'meter',
-                    'website' => 'https://demo.micropowermanager.com/',
+                    'website' => 'https://demo.micropowermanager.io/',
                     'api_name' => 'DemoMeterManufacturerApi',
                 ]);
             }

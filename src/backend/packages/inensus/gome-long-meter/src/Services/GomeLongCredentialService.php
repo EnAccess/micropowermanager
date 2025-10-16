@@ -36,7 +36,7 @@ class GomeLongCredentialService {
         return $this->decryptCredentialFields($credentials, ['user_id', 'user_password']);
     }
 
-    public function getById($id): object {
+    public function getById(int $id): object {
         $credential = $this->credential->newQuery()->findOrFail($id);
 
         return $this->decryptCredentialFields($credential, ['user_id', 'user_password']);
