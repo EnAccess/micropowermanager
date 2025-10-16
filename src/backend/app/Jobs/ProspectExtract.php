@@ -30,7 +30,6 @@ class ProspectExtract extends AbstractJob {
 
             if ($data === []) {
                 Log::warning('No data found to extract.');
-
                 return;
             }
 
@@ -44,7 +43,6 @@ class ProspectExtract extends AbstractJob {
 
             Log::info('CSV file: '.$fileName);
             Log::info('File path: '.$filePath);
-
             Log::info('Prospect data extraction completed successfully!');
         } catch (\Exception $e) {
             Log::error('Error during extraction: '.$e->getMessage(), [
@@ -62,7 +60,6 @@ class ProspectExtract extends AbstractJob {
     private function extractDataFromDatabase(): array {
         Log::info('Loading installation data from database...');
 
-        // Query devices with all necessary relationships
         $query = Device::query()->with([
             'device',
             'person.addresses.geo',
@@ -73,26 +70,22 @@ class ProspectExtract extends AbstractJob {
         ]);
 
         $devices = $query->get();
-
         $installations = [];
 
         foreach ($devices as $device) {
-            $deviceData = $device->device;
-
             if (!$device->device()->exists()) {
                 continue;
             }
 
+            $deviceData = $device->device;
             $deviceData->load('manufacturer');
 
             $person = $device->person()->first();
             $assetPerson = $device->assetPerson;
 
-            // Create meaningful customer identifier
             $customerIdentifier = $person ? trim($person->name.' '.$person->surname) : 'Unknown Customer';
 
             $primaryAddress = null;
-
             if ($person && $person->addresses()->exists()) {
                 $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?: $person->addresses->first();
             }
@@ -100,15 +93,17 @@ class ProspectExtract extends AbstractJob {
             $latitude = null;
             $longitude = null;
 
-            if ($primaryAddress && $primaryAddress->geo && $primaryAddress->geo->points) {
-                $coordinates = explode(',', $primaryAddress->geo->points);
-                if (count($coordinates) >= 2) {
-                    $latitude = (float) trim($coordinates[0]);
-                    $longitude = (float) trim($coordinates[1]);
+            if ($primaryAddress && isset($primaryAddress->geo)) {
+                $points = $primaryAddress->geo->points ?? '';
+                if ($points !== '') {
+                    $coordinates = explode(',', $points);
+                    if (count($coordinates) >= 2) {
+                        $latitude = (float) trim($coordinates[0]);
+                        $longitude = (float) trim($coordinates[1]);
+                    }
                 }
             }
 
-            // Determine device category
             $deviceCategory = match ($device->device_type) {
                 'meter' => 'meter',
                 'solar_home_system' => 'solar_home_system',
@@ -116,7 +111,6 @@ class ProspectExtract extends AbstractJob {
             };
 
             $installation = [
-                // Customer and agent identification
                 'customer_external_id' => $customerIdentifier,
                 'seller_agent_external_id' => $customerIdentifier,
                 'installer_agent_external_id' => $customerIdentifier,
@@ -125,23 +119,21 @@ class ProspectExtract extends AbstractJob {
                 'parent_external_id' => null,
                 'account_external_id' => null,
 
-                // Device specifications
                 'battery_capacity_wh' => null,
                 'usage_category' => 'household',
                 'usage_sub_category' => null,
                 'device_category' => $deviceCategory,
                 'ac_input_source' => null,
-                'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
+                'dc_input_source' => $deviceCategory === 'solar_home_system' ? 'solar' : null,
                 'firmware_version' => null,
-                'manufacturer' => ($deviceData->manufacturer !== null) ? $deviceData->manufacturer->name : 'Unknown',
+                'manufacturer' => $deviceData->manufacturer->name ?? 'Unknown',
                 'model' => null,
                 'primary_use' => null,
                 'rated_power_w' => null,
                 'pv_power_w' => null,
-                'serial_number' => $deviceData->serial_number ?? '',
+                'serial_number' => $deviceData->serial_number,
                 'site_name' => $primaryAddress->street ?? null,
 
-                // Payment plan information
                 'payment_plan_amount_financed_principal' => null,
                 'payment_plan_amount_financed_interest' => null,
                 'payment_plan_amount_financed_total' => null,
@@ -155,7 +147,6 @@ class ProspectExtract extends AbstractJob {
                 'payment_plan_days_down_payment' => null,
                 'payment_plan_category' => 'paygo',
 
-                // Dates
                 'purchase_date' => $device->created_at->format('Y-m-d'),
                 'installation_date' => $device->created_at->format('Y-m-d'),
                 'repossession_date' => null,
@@ -189,7 +180,6 @@ class ProspectExtract extends AbstractJob {
      */
     private function generateFileName(): string {
         $timestamp = now()->toISOString();
-
         return "prospect_{$timestamp}.csv";
     }
 
@@ -202,12 +192,10 @@ class ProspectExtract extends AbstractJob {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
-        // Get company database from the current context
         $companyDatabase = app(CompanyDatabaseService::class)->findByCompanyId($this->companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
-
         $directory = "prospect/{$companyDatabaseName}";
         $fullDirectoryPath = storage_path("app/{$directory}");
 
