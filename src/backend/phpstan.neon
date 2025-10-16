@@ -10,7 +10,7 @@ parameters:
         - config/
         - database
         # - packages
-        # - packages/inensus/africas-talking/
+        - packages/inensus/africas-talking/
         - packages/inensus/angaza-shs/
         # - packages/inensus/bulk-registration/
         # - packages/inensus/calin-meter/

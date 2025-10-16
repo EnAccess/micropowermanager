@@ -3,7 +3,9 @@
 namespace Inensus\AfricasTalking\Services;
 
 use App\Traits\EncryptsCredentials;
+use Illuminate\Database\Eloquent\MassAssignmentException;
 use Inensus\AfricasTalking\Models\AfricasTalkingCredential;
+use InvalidArgumentException;
 
 class AfricasTalkingCredentialService {
     use EncryptsCredentials;
@@ -15,7 +17,7 @@ class AfricasTalkingCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): AfricasTalkingCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_key' => null,
             'username' => null,
@@ -23,13 +25,16 @@ class AfricasTalkingCredentialService {
         ]);
     }
 
-    public function getCredentials(): object {
+    public function getCredentials(): AfricasTalkingCredential {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['api_key', 'username', 'short_code']);
     }
 
-    public function updateCredentials(array $data): object {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): AfricasTalkingCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'username', 'short_code']);
