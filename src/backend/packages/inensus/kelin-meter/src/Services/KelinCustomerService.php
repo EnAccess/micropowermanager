@@ -169,7 +169,7 @@ class KelinCustomerService implements ISynchronizeService {
             'surname' => $personData['surname'],
             'is_customer' => 1,
         ]);
-        $addressService = App::make(AddressesService::class);
+        $addressService = app()->make(AddressesService::class);
         $city = City::query()->first();
         $addressParams = [
             'phone' => $personData['phone'],

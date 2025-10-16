@@ -150,7 +150,7 @@ class SteamaAgentService implements ISynchronizeService {
 
         $city = $site->mpmMiniGrid->cities->first();
 
-        $addressService = App::make(AddressesService::class);
+        $addressService = app()->make(AddressesService::class);
         $addressParams = [
             'city_id' => $city->id,
             'email' => '',

@@ -210,7 +210,7 @@ class CustomerService implements ISynchronizeService {
             'name' => $data['name'],
             'is_customer' => 1,
         ]);
-        $addressService = App::make(AddressesService::class);
+        $addressService = app()->make(AddressesService::class);
 
         $addressParams = [
             'phone' => $data['phone'],
