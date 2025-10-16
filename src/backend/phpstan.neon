@@ -16,7 +16,7 @@ parameters:
         # - packages/inensus/calin-meter/
         # - packages/inensus/calin-smart-meter/
         # - packages/inensus/chint-meter/
-        # - packages/inensus/daly-bms/
+        - packages/inensus/daly-bms/
         - packages/inensus/demo-meter-manufacturer/
         - packages/inensus/demo-shs-manufacturer/
         # - packages/inensus/gome-long-meter/

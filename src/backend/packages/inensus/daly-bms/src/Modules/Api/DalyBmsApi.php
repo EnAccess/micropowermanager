@@ -9,6 +9,8 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Models\User;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Facades\Log;
 use Inensus\DalyBms\Exceptions\DalyBmsApiResponseException;
 use Inensus\DalyBms\Models\DalyBmsTransaction;
@@ -30,7 +32,12 @@ class DalyBmsApi implements IManufacturerAPI {
         private ApiRequests $apiRequests,
     ) {}
 
-    public function getDevices(array $deviceSerials) {
+    /**
+     * @param array<string, mixed> $deviceSerials
+     *
+     * @return array<string, mixed>
+     */
+    public function getDevices(array $deviceSerials): array {
         $params = [
             'codes' => $deviceSerials,
         ];
@@ -53,7 +60,10 @@ class DalyBmsApi implements IManufacturerAPI {
         }
     }
 
-    public function getDevice(string $code) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function getDevice(string $code): array {
         $params = [
             'Code' => $code,
         ];
@@ -75,7 +85,10 @@ class DalyBmsApi implements IManufacturerAPI {
         }
     }
 
-    public function switchDevice(string $code, bool $isOn) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function switchDevice(string $code, bool $isOn): array {
         $params = [
             'cmdKey' => '8500_004',
             'data' => [
