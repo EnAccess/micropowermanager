@@ -35,7 +35,7 @@ class MeterSeeder extends Seeder {
         $demoMeterManufacturer = Manufacturer::create([
             'name' => 'Demo Meter Manufacturer',
             'type' => 'meter',
-            'website' => 'https://demo.micropowermanager.com/',
+            'website' => 'https://demo.micropowermanager.io/',
             'contact_person' => 'Demo Person',
             'api_name' => 'DemoMeterManufacturerApi',
         ]);
