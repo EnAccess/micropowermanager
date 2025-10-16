@@ -3,9 +3,11 @@
 namespace Inensus\Prospect\Providers;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\Prospect\Console\Commands\InstallPackage;
+use Inensus\Prospect\Console\Commands\ProspectDataSynchronizer;
 
 class ProspectServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem): void {
@@ -14,10 +16,15 @@ class ProspectServiceProvider extends ServiceProvider {
             $this->publishConfigFiles();
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
-            $this->commands([InstallPackage::class]);
+            $this->commands([InstallPackage::class, ProspectDataSynchronizer::class]);
         } else {
-            $this->commands([InstallPackage::class]);
+            $this->commands([InstallPackage::class, ProspectDataSynchronizer::class]);
         }
+
+        $this->app->booted(function ($app) {
+            $app->make(Schedule::class)->command('prospect:dataSync')->withoutOverlapping(50)
+                ->appendOutputTo(storage_path('logs/cron.log'));
+        });
     }
 
     public function register(): void {

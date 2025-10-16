@@ -42,6 +42,17 @@ return new class extends Migration {
                 $table->timestamps();
             });
         }
+
+        if (!Schema::connection('tenant')->hasTable('prospect_sync_actions')) {
+            Schema::connection('tenant')->create('prospect_sync_actions', static function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('sync_setting_id');
+                $table->integer('attempts')->default(0);
+                $table->dateTime('last_sync')->nullable();
+                $table->dateTime('next_sync')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -52,6 +63,7 @@ return new class extends Migration {
     public function down() {
         Schema::connection('tenant')->dropIfExists('prospect_data_syncs');
         Schema::connection('tenant')->dropIfExists('prospect_credentials');
+        Schema::connection('tenant')->dropIfExists('prospect_sync_actions');
         Schema::connection('tenant')->dropIfExists('prospect_sync_settings');
     }
 };

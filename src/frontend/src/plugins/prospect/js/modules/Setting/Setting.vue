@@ -133,9 +133,7 @@ export default {
       settingService: new SettingService(),
       loadingSync: false,
       syncPeriods: [
-        { value: "everyMinute", label: "Every Minute" },
-        { value: "everyFifteenMinutes", label: "Every 15 Minutes" },
-        { value: "everyHour", label: "Hourly" },
+        { value: "hourly", label: "Hourly" },
         { value: "daily", label: "Daily" },
         { value: "weekly", label: "Weekly" },
         { value: "monthly", label: "Monthly" },
