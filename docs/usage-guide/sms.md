@@ -72,7 +72,6 @@ notifications and communications.
 
 ![Plugin Overview page](images/africanstalking-cred-overview-page.png)
 
-
 ### Step 6: Register SMS Delivery Callback URL
 
 1. In your AfricasTalking dashboard, go to **SMS** → **Callback URLs**
@@ -86,7 +85,6 @@ notifications and communications.
 3. Enable delivery reports to track SMS delivery status
 
 ![Register callback URL for sms delivery](images/africanstalking-sms-delivery-callback.png)
-
 
 ### Step 7: Test SMS Functionality
 
