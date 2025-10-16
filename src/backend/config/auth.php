@@ -1,6 +1,9 @@
 <?php
 
+use App\Auth\ApiKeyGuard;
+use App\Auth\ApiKeyProvider;
 use App\Models\Agent;
+use App\Models\Company;
 use App\Models\User;
 
 return [
@@ -23,6 +26,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'agents',
         ],
+        'api-key' => [
+            'driver' => 'api-key',
+            'provider' => 'companies',
+        ],
     ],
 
     'providers' => [
@@ -33,6 +40,10 @@ return [
         'agents' => [
             'driver' => 'eloquent',
             'model' => Agent::class,
+        ],
+        'companies' => [
+            'driver' => 'api-key',
+            'model' => Company::class,
         ],
     ],
 

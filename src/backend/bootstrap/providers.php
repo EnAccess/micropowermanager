@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\ApiKeyServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\ServicesProvider;
@@ -30,6 +31,7 @@ use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServicePr
 
 return [
     AppServiceProvider::class,
+    ApiKeyServiceProvider::class,
     HorizonServiceProvider::class,
     ServicesProvider::class,
     AfricasTalkingServiceProvider::class,

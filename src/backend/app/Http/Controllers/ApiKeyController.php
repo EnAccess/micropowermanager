@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ApiKey;
+use App\Models\Company;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -26,8 +27,9 @@ class ApiKeyController extends Controller {
         $plaintext = Str::random(40).bin2hex(random_bytes(16));
         $hash = hash('sha256', $plaintext);
 
-        $apiKey = $this->apiKey->query()->create([
-            'company_id' => $companyId,
+        // Use the relationship to create the API key
+        $company = Company::findOrFail($companyId);
+        $apiKey = $company->apiKeys()->create([
             'name' => $name,
             'token_hash' => $hash,
             'active' => true,

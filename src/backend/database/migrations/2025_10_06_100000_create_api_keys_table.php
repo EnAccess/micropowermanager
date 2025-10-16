@@ -14,6 +14,9 @@ return new class extends Migration {
             $table->timestamp('last_used_at')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->index('company_id');
+            $table->index('token_hash');
         });
     }
 

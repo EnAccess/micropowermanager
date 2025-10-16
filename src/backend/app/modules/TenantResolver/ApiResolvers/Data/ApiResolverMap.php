@@ -23,7 +23,7 @@ class ApiResolverMap {
     public const SWIFTA_PAYMENT_API = 'api/swifta/';
     public const REPORT_DOWNLOADING_API = 'api/report-downloading';
     public const DATA_EXPORTING_API = 'api/export';
-    public const ODYSSEY_PAYMENTS_API = 'api/payments/odyssey';
+    public const ODYSSEY_PAYMENTS_API = 'api/odyssey';
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
     public const VODACOM_MOBILE_MONEY = 'api/vodacom/';
 
