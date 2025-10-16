@@ -1,7 +1,5 @@
 <?php
 
-use App\Auth\ApiKeyGuard;
-use App\Auth\ApiKeyProvider;
 use App\Models\Agent;
 use App\Models\Company;
 use App\Models\User;
