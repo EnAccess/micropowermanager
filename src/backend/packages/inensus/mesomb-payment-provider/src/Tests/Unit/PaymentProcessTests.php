@@ -16,7 +16,6 @@ use App\Models\Person\Person;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Queue;
 use Inensus\MesombPaymentProvider\Services\MesomTransactionService;
 use Tests\TestCase;

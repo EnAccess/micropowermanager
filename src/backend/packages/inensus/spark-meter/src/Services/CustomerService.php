@@ -11,7 +11,6 @@ use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;

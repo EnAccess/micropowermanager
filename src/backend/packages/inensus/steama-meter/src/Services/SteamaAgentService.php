@@ -7,7 +7,6 @@ use App\Models\Agent;
 use App\Models\AgentCommission;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;

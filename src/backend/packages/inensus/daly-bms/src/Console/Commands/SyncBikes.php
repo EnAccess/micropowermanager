@@ -5,10 +5,7 @@ namespace Inensus\DalyBms\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\InvalidCastException;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
-use InvalidArgumentException;
 use MPM\Device\DeviceAddressService;
 use MPM\EBike\EBikeService;
 

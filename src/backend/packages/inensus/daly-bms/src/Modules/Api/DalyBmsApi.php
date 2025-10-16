@@ -9,8 +9,6 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Models\User;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Facades\Log;
 use Inensus\DalyBms\Exceptions\DalyBmsApiResponseException;
 use Inensus\DalyBms\Models\DalyBmsTransaction;

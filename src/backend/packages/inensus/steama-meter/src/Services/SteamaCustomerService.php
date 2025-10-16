@@ -5,7 +5,6 @@ namespace Inensus\SteamaMeter\Services;
 use App\Models\City;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;

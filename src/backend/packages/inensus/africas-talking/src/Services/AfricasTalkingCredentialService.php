@@ -3,9 +3,7 @@
 namespace Inensus\AfricasTalking\Services;
 
 use App\Traits\EncryptsCredentials;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Inensus\AfricasTalking\Models\AfricasTalkingCredential;
-use InvalidArgumentException;
 
 class AfricasTalkingCredentialService {
     use EncryptsCredentials;
