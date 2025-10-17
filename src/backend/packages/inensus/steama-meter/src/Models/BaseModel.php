@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model {
     protected $guarded = ['id'];
+
+    /** @var array<string, string|array<string>> */
     public static $rules = [];
 
     public function __construct(array $attributes = []) {
