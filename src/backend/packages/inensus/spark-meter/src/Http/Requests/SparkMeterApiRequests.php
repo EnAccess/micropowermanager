@@ -37,11 +37,11 @@ class SparkMeterApiRequests {
     }
 
     /**
-     * @param array<string, mixed> $postParams
+     * @param ?array<string, mixed> $postParams
      *
      * @return array<string, mixed>|string
      */
-    public function post(string $url, $postParams, int $siteId): array|string {
+    public function post(string $url, ?array $postParams, int $siteId): array|string {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->post(
