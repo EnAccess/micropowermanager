@@ -6,9 +6,11 @@ use Inensus\MicroStarMeter\Exceptions\MicroStarApiResponseException;
 
 class ResponseResolver {
     /**
-     * @throws MicroStarApiResponseException
+     * @param array<string, mixed> $result
+     *
+     * @return array<string, mixed>
      */
-    public function checkResponse($result) {
+    public function checkResponse(array $result): array {
         if (isset($result['errorCode'])) {
             if ($result['errorCode'] == 1000) {
                 return $result;
@@ -22,7 +24,7 @@ class ResponseResolver {
         return $result;
     }
 
-    public function getMessage($statusCode): string {
+    public function getMessage(int $statusCode): string {
         return match ($statusCode) {
             1000 => 'Success',
             1001 => 'Parameter Error',

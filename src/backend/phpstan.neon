@@ -22,7 +22,7 @@ parameters:
         - packages/inensus/gome-long-meter/
         # - packages/inensus/kelin-meter/
         - packages/inensus/mesomb-payment-provider/
-        # - packages/inensus/micro-star-meter/
+        - packages/inensus/micro-star-meter/
         # - packages/inensus/spark-meter/
         # - packages/inensus/steama-meter/
         - packages/inensus/stron-meter/
