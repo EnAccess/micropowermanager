@@ -86,6 +86,25 @@
                   </span>
                 </md-field>
               </div>
+              <div
+                class="md-layout-item md-size-50 md-small-size-100"
+                v-if="
+                  $store.getters['auth/getPermissions'].includes('roles.manage')
+                "
+              >
+                <md-field>
+                  <label for="roles">Roles</label>
+                  <md-select id="roles" v-model="selectedRoles" multiple>
+                    <md-option
+                      v-for="r in roleService.roles"
+                      :key="r.name"
+                      :value="r.name"
+                    >
+                      {{ r.name }}
+                    </md-option>
+                  </md-select>
+                </md-field>
+              </div>
             </md-card-content>
             <md-card-actions>
               <md-button class="md-raised md-primary" @click="updateUser()">
@@ -105,6 +124,7 @@
 <script>
 import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify"
+import { RoleService } from "@/services/RoleService"
 export default {
   components: { Widget },
   name: "EditUser",
@@ -131,12 +151,25 @@ export default {
         valid: true,
       },
       firstStepClicked: false,
+      roleService: new RoleService(),
+      selectedRoles: [],
     }
   },
   mounted() {
     this.setSelectedCity()
   },
   methods: {
+    async loadRoles() {
+      try {
+        await this.roleService.fetchAll()
+        if (this.user.id) {
+          await this.roleService.fetchUserRoles(this.user.id)
+          this.selectedRoles = [...this.roleService.userRoles]
+        }
+      } catch (e) {
+        // silent
+      }
+    },
     async updateUser() {
       this.firstStepClicked = true
       const validation = await this.$validator.validateAll("Edit-Form")
@@ -145,6 +178,21 @@ export default {
         return
       }
       this.user.cityId = this.selectedCity
+      // Save role changes first, then emit update
+      const current = new Set(this.roleService.userRoles)
+      const next = new Set(this.selectedRoles)
+      // assign newly added
+      for (const role of next) {
+        if (!current.has(role)) {
+          await this.roleService.assignToUser(role, this.user.id)
+        }
+      }
+      // remove deleted
+      for (const role of current) {
+        if (!next.has(role)) {
+          await this.roleService.removeFromUser(role, this.user.id)
+        }
+      }
       this.$emit("updateUser", this.user)
     },
     setSelectedCity() {
@@ -167,6 +215,7 @@ export default {
   watch: {
     showEditUser() {
       this.setSelectedCity()
+      this.loadRoles()
     },
   },
 }
