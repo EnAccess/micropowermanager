@@ -144,7 +144,9 @@
                 {{ client.name }} {{ client.surname }}
               </md-table-cell>
               <md-table-cell>
-                {{ client.addresses.length > 0 ? client.addresses[0].phone : "-" }}
+                {{
+                  client.addresses.length > 0 ? client.addresses[0].phone : "-"
+                }}
               </md-table-cell>
               <md-table-cell class="hidden-xs">
                 {{
@@ -157,7 +159,9 @@
                 {{ client.is_active ? $tc("words.yes") : $tc("words.no") }}
               </md-table-cell>
               <md-table-cell>
-                {{ client.devices.length > 0 ? deviceList(client.devices) : "-" }}
+                {{
+                  client.devices.length > 0 ? deviceList(client.devices) : "-"
+                }}
               </md-table-cell>
               <md-table-cell>
                 {{ getAgentName(client) }}
