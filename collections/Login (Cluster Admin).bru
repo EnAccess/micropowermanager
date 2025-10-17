@@ -1,7 +1,7 @@
 meta {
-  name: Login
+  name: Login (Cluster Admin)
   type: http
-  seq: 2
+  seq: 10
 }
 
 post {
@@ -12,8 +12,8 @@ post {
 
 body:json {
   {
-    "email": "{{email}}",
-    "password": "{{password}}"
+    "email": "{{cluster_admin_email}}",
+    "password": "{{cluster_admin_password}}"
   }
 }
 

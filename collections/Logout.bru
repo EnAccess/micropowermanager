@@ -1,20 +1,13 @@
 meta {
   name: Logout
   type: http
-  seq: 10
+  seq: 12
 }
 
 post {
   url: {{mpm_backend_url}}/api/auth/logout
   body: json
   auth: inherit
-}
-
-body:json {
-  {
-    "email": "{{email}}",
-    "password": "{{password}}"
-  }
 }
 
 assert {
