@@ -50,7 +50,7 @@ class ApiRequests {
     /**
      * @return array<string, mixed>
      */
-    public function testGet() {
+    public function testGet(): array {
         // ti1 = 1 phase 2 = 3 phase
 
         $url = 'https://ympt.microstarelectric.com';
