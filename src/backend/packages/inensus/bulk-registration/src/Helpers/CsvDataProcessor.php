@@ -102,11 +102,13 @@ class CsvDataProcessor {
                         $geographicalInformationService->resolveCsvDataFromComingRow($row, $meter);
 
                         $address = new Address();
-                        $address = $address->newQuery()->create([
+                        $address = $address->newQuery()->make([
                             'city_id' => $city->id,
                         ]);
                         $address->owner()->associate($meter);
-                        $address->geo()->save($meter->device->address->geo()->first());
+                        // See: https://github.com/EnAccess/micropowermanager/issues/1004
+                        // FIXME: We are not creating Devices in the Csv processing
+                        // $address->geo()->save($meter->device->address->geo()->first());
                         $address->save();
                     }
                 }

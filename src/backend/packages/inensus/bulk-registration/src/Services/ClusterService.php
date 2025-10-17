@@ -30,10 +30,8 @@ class ClusterService extends CreatorService {
         }
 
         $clusterConfig = config('bulk-registration.csv_fields.cluster');
-        $user = User::query()->first();
         $clusterData = [
             'name' => $csvData[$clusterConfig['name']],
-            'manager_id' => $user->id,
         ];
 
         return $this->createRelatedDataIfDoesNotExists($clusterData);

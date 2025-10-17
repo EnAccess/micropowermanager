@@ -17,6 +17,8 @@ class ManufacturerService extends CreatorService {
         'GomeLong Meter',
         'MicroStar Meter',
         'SunKing SHS',
+        'Demo Meter Manufacturer',
+        'Demo SHS Manufacturer',
     ];
 
     public function __construct(
