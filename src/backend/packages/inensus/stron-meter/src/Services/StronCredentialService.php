@@ -30,7 +30,7 @@ class StronCredentialService {
         ]);
     }
 
-    public function getCredentials(): StronCredential {
+    public function getCredentials(): ?StronCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {

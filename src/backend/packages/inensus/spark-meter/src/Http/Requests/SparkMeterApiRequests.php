@@ -36,7 +36,12 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function post(string $url, $postParams, $siteId): array {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>|string
+     */
+    public function post(string $url, $postParams, int $siteId): array|string {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->post(

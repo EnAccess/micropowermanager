@@ -24,7 +24,7 @@ class CalinSmartCredentialService {
         ]);
     }
 
-    public function getCredentials(): CalinSmartCredential {
+    public function getCredentials(): ?CalinSmartCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {

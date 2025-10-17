@@ -24,7 +24,7 @@ class MicroStarCredentialService {
         ]);
     }
 
-    public function getCredentials(): object {
+    public function getCredentials(): ?object {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['certificate_file_name', 'certificate_path', 'certificate_password']);

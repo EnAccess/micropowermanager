@@ -22,7 +22,7 @@ class CalinCredentialService {
         ]);
     }
 
-    public function getCredentials(): CalinCredential {
+    public function getCredentials(): ?CalinCredential {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['user_id', 'api_key']);

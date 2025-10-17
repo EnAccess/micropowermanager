@@ -22,7 +22,7 @@ class ChintCredentialService {
         ]);
     }
 
-    public function getCredentials(): ChintCredential {
+    public function getCredentials(): ?ChintCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {

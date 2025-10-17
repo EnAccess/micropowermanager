@@ -3,9 +3,7 @@
 namespace Inensus\GomeLongMeter\Services;
 
 use App\Traits\EncryptsCredentials;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Inensus\GomeLongMeter\Models\GomeLongCredential;
-use InvalidArgumentException;
 
 class GomeLongCredentialService {
     use EncryptsCredentials;
