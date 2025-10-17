@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\TicketUser;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -37,10 +38,16 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject {
     /** @use HasFactory<UserFactory> */
     use HasFactory;
+    use HasRoles;
 
     public const RELATION_NAME = 'users';
     public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'company_id';
+
+    /**
+     * Guard name for Spatie Permission.
+     */
+    protected string $guard_name = 'api';
 
     /**
      * @param array<string, mixed> $attributes

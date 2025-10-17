@@ -45,8 +45,8 @@ class CompanyController extends Controller {
                 Carbon::now()->timestamp,
         ]);
 
-        // Create Admin user and DatabaseProxy
-        $this->databaseProxyManagerService->runForCompany(
+        // Create Admin user and DatabaseProxy, then assign owner role within tenant
+        $adminUser = $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             fn (): User => $this->userService->create(
                 [
@@ -57,6 +57,17 @@ class CompanyController extends Controller {
                 ],
                 $company->getId()
             )
+        );
+
+        $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
+            function () use ($adminUser): void {
+                // Assign owner role to initial company admin
+                /* @var \App\Models\User $adminUser */
+                if (method_exists($adminUser, 'assignRole')) {
+                    $adminUser->assignRole('owner');
+                }
+            }
         );
 
         // Set some meaningful settings by default
