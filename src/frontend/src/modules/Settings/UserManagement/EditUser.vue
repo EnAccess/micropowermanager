@@ -6,12 +6,19 @@
           <md-card>
             <md-card-content class="md-layout md-gutter">
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field :class="{
-                  'md-invalid': errors.has('Edit-Form.' + $tc('words.name')),
-                }">
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('Edit-Form.' + $tc('words.name')),
+                  }"
+                >
                   <label>{{ $tc("words.name") }}</label>
-                  <md-input disabled v-model="user.name" v-validate="'required|min:2|max:20'" :name="$tc('words.name')"
-                    id="name" />
+                  <md-input
+                    disabled
+                    v-model="user.name"
+                    v-validate="'required|min:2|max:20'"
+                    :name="$tc('words.name')"
+                    id="name"
+                  />
                   <md-icon>create</md-icon>
                   <span class="md-error">
                     {{ errors.first("Edit-Form." + $tc("words.name")) }}
@@ -19,14 +26,31 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field :class="{ 'md-invalid': !phone.valid && firstStepClicked }">
-                  <vue-tel-input id="phone" :validCharactersOnly="true" mode="international"
-                    invalidMsg="invalid phone number" :disabledFetchingCountry="false" :disabledFormatting="false"
-                    placeholder="Enter a phone number" :required="true"
-                    :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']" autocomplete="off" :name="$tc('words.phone')"
-                    enabledCountryCode="true" v-model="user.phone" @validate="validatePhone" @input="onPhoneInput" />
+                <md-field
+                  :class="{ 'md-invalid': !phone.valid && firstStepClicked }"
+                >
+                  <vue-tel-input
+                    id="phone"
+                    :validCharactersOnly="true"
+                    mode="international"
+                    invalidMsg="invalid phone number"
+                    :disabledFetchingCountry="false"
+                    :disabledFormatting="false"
+                    placeholder="Enter a phone number"
+                    :required="true"
+                    :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                    autocomplete="off"
+                    :name="$tc('words.phone')"
+                    enabledCountryCode="true"
+                    v-model="user.phone"
+                    @validate="validatePhone"
+                    @input="onPhoneInput"
+                  />
                   <md-icon>phone</md-icon>
-                  <span v-if="!phone.valid && firstStepClicked" class="md-error">
+                  <span
+                    v-if="!phone.valid && firstStepClicked"
+                    class="md-error"
+                  >
                     invalid phone number
                   </span>
                 </md-field>
@@ -39,13 +63,20 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field :class="{
-                  'md-invalid': errors.has('Edit-Form.' + $tc('words.city')),
-                }">
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('Edit-Form.' + $tc('words.city')),
+                  }"
+                >
                   <label for="city">
                     {{ $tc("words.city") }}
                   </label>
-                  <md-select v-model="selectedCity" :name="$tc('words.city')" id="city" v-validate="'required'">
+                  <md-select
+                    v-model="selectedCity"
+                    :name="$tc('words.city')"
+                    id="city"
+                    v-validate="'required'"
+                  >
                     <md-option v-for="c in cities" :key="c.id" :value="c.id">
                       {{ c.name }}
                     </md-option>
