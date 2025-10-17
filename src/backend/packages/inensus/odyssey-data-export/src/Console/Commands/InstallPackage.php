@@ -14,13 +14,6 @@ class InstallPackage extends Command {
 
     public function handle(): void {
         $this->info('Installing OdysseyDataExport Integration Package\n');
-
-        $this->call('plugin:add', [
-            'name' => 'OdysseyDataExport',
-            'composer_name' => 'inensus/odyssey-data-export',
-            'description' => 'OdysseyDataExport integration package for MicroPowerManager',
-        ]);
-        $this->call('routes:generate');
         $this->info('Package installed successfully..');
     }
 }

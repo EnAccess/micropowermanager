@@ -54,7 +54,7 @@ export default {
   name: "OdysseyExportOverview",
   data() {
     return {
-      endpointUrl: `${baseUrl}/api/payments/odyssey`,
+      endpointUrl: `${baseUrl}/api/odyssey/payments`,
     }
   },
   methods: {

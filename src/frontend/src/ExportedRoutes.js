@@ -1508,7 +1508,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 21,
+        enabled_by_mpm_plugin_id: 23,
         name: "Odyssey Export",
         icon: "cloud_upload",
       },
