@@ -7,6 +7,7 @@ use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\User;
+use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -25,7 +26,10 @@ class ClusterSeeder extends Seeder {
     public function run() {
         $clusterAdmin = User::factory()
             ->clusterAdmin()
-            ->create();
+            ->create([
+                'email' => DemoCompany::DEMO_COMPANY_CLUSTER_ADMIN_EMAIL,
+                'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
+            ]);
 
         $clusters = Cluster::factory()
             ->count(2)

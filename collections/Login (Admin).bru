@@ -1,0 +1,27 @@
+meta {
+  name: Login (Admin)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{mpm_backend_url}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{admin_email}}",
+    "password": "{{admin_password}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isString
+}
+
+script:post-response {
+  bru.setEnvVar("jwt_token", res.body.access_token);
+}
