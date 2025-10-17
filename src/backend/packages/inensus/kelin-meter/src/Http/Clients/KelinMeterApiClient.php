@@ -13,7 +13,7 @@ use Inensus\KelinMeter\Models\KelinCredential;
 class KelinMeterApiClient {
     public function __construct(private Client $client, private ApiHelpers $apiHelpers, private KelinCredential $credential) {}
 
-    public function token(string $url, $queryParams) {
+    public function token(string $url, $queryParams): string|array {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -31,7 +31,7 @@ class KelinMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $response->getBody(), true));
     }
 
-    public function get(string $url, $queryParams = null) {
+    public function get(string $url, $queryParams = null): string|array {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {

@@ -8,12 +8,14 @@ use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 class CalinSmartCredentialService {
     use EncryptsCredentials;
 
-    public function __construct(private CalinSmartCredential $credential) {}
+    public function __construct(
+        private CalinSmartCredential $credential,
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): CalinSmartCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'company_name' => null,
             'user_name' => null,
@@ -22,7 +24,7 @@ class CalinSmartCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): ?CalinSmartCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {
@@ -44,7 +46,10 @@ class CalinSmartCredentialService {
         return $credential;
     }
 
-    public function updateCredentials(array $data): object {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): CalinSmartCredential {
         $credential = $this->credential->newQuery()->find($data['id'] ?? null);
 
         if (!$credential) {

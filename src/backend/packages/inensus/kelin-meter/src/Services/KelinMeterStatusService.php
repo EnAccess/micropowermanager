@@ -34,7 +34,7 @@ class KelinMeterStatusService {
         }
     }
 
-    public function changeStatusOfMeter($meterAddress, $status) {
+    public function changeStatusOfMeter($meterAddress, $status): array|string {
         try {
             $rootUrl = '/meterRemoteControl';
             $queryParams = [

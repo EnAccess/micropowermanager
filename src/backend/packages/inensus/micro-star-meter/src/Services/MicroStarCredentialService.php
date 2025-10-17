@@ -15,7 +15,7 @@ class MicroStarCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): MicroStarCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_url' => null,
             'certificate_password' => null,
@@ -24,13 +24,16 @@ class MicroStarCredentialService {
         ]);
     }
 
-    public function getCredentials(): object {
+    public function getCredentials(): ?MicroStarCredential {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['certificate_file_name', 'certificate_path', 'certificate_password']);
     }
 
-    public function updateCredentials(array $data): object {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): MicroStarCredential {
         $credential = $this->getCredentials();
 
         $encryptedData = $this->encryptCredentialFields($data, ['certificate_password']);

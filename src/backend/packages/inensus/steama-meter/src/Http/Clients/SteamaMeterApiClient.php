@@ -58,7 +58,12 @@ class SteamaMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function post(string $url, $postParams): array {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>|string
+     */
+    public function post(string $url, array $postParams): array|string {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {

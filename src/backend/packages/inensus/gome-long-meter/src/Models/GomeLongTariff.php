@@ -7,11 +7,15 @@ use App\Models\Meter\MeterTariff;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * @property int         $id
  * @property MeterTariff $mpmTariff
  */
 class GomeLongTariff extends BaseModel {
     protected $table = 'gome_long_tariffs';
 
+    /**
+     * @return BelongsTo<MeterTariff, $this>
+     */
     public function mpmTariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class, 'mpm_tariff_id');
     }

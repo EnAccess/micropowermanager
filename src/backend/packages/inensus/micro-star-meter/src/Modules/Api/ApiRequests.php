@@ -17,8 +17,10 @@ class ApiRequests {
 
     /**
      * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
      */
-    public function get(MicroStarCredential $credentials, array $params, string $slug) {
+    public function get(MicroStarCredential $credentials, array $params, string $slug): array {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
@@ -45,7 +47,10 @@ class ApiRequests {
         }
     }
 
-    public function testGet() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function testGet(): array {
         // ti1 = 1 phase 2 = 3 phase
 
         $url = 'https://ympt.microstarelectric.com';

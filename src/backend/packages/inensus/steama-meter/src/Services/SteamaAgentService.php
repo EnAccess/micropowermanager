@@ -7,7 +7,6 @@ use App\Models\Agent;
 use App\Models\AgentCommission;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
@@ -150,7 +149,7 @@ class SteamaAgentService implements ISynchronizeService {
 
         $city = $site->mpmMiniGrid->cities->first();
 
-        $addressService = App::make(AddressesService::class);
+        $addressService = app()->make(AddressesService::class);
         $addressParams = [
             'city_id' => $city->id,
             'email' => '',
