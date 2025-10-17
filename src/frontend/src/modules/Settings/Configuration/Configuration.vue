@@ -15,6 +15,9 @@
         <md-tab id="tab-map" md-icon="map" md-label="Map">
           <map-settings :mapSettings="mapSettings" />
         </md-tab>
+        <md-tab id="tab-api-keys" md-icon="vpn_key" md-label="API Keys">
+          <api-keys-settings />
+        </md-tab>
       </md-tabs>
     </widget>
   </div>
@@ -24,6 +27,7 @@
 import Widget from "@/shared/Widget.vue"
 import MainSettings from "./MainSettings"
 import MapSettings from "./MapSettings"
+import ApiKeysSettings from "./ApiKeysSettings"
 import SmsSettings from "./SmsSettings"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import { MapSettingsService } from "@/services/MapSettingsService"
@@ -41,6 +45,7 @@ export default {
     Widget,
     MainSettings,
     MapSettings,
+    ApiKeysSettings,
     SmsSettings,
   },
   data() {
