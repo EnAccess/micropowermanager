@@ -17,7 +17,7 @@ class GeographicalInformationService {
      * @param array<string, mixed> $geographicalInformationData
      */
     public function createRelatedDataIfDoesNotExists(array $geographicalInformationData, object $ownerModel): void {
-        if ($geographicalInformationData) {
+        if ($geographicalInformationData !== []) {
             $geographicalInformation = GeographicalInformation::query()->make($geographicalInformationData);
             $geographicalInformation->owner()->associate($ownerModel);
             $geographicalInformation->save();

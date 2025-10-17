@@ -12,7 +12,6 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

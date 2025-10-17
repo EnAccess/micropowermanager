@@ -29,7 +29,7 @@ class ApplianceTypeService extends CreatorService {
         $columnApplianceTypes = $csvData[$applianceTypeConfig['name']];
 
         $appliances = collect($applianceTypes)->map(function ($type) use ($columnApplianceTypes): array|true {
-            $applianceIndex = strpos($columnApplianceTypes, (string) $type);
+            $applianceIndex = strpos($columnApplianceTypes, $type);
             if ($applianceIndex !== false) {
                 return [
                     'name' => $type,
@@ -40,6 +40,6 @@ class ApplianceTypeService extends CreatorService {
             return true;
         });
 
-        $this->createRelatedDataIfDoesNotExists($appliances->toArray());
+        $this->createRelatedDataIfDoesNotExists($appliances->all());
     }
 }
