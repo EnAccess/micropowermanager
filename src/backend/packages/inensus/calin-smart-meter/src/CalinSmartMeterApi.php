@@ -3,6 +3,7 @@
 namespace Inensus\CalinSmartMeter;
 
 use App\Lib\IManufacturerAPI;
+use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
 use GuzzleHttp\Client;
@@ -16,17 +17,22 @@ use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
 class CalinSmartMeterApi implements IManufacturerAPI {
     private string $rootUrl = '/POS_Purchase/';
 
-    public function __construct(protected Client $api, private CalinSmartTransaction $calinSmartTransaction, private CalinSmartCredential $credentials, private CalinSmartMeterApiRequests $calinSmartMeterApiRequests) {}
+    public function __construct(
+        protected Client $api,
+        private CalinSmartTransaction $calinSmartTransaction,
+        private CalinSmartCredential $credentials,
+        private CalinSmartMeterApiRequests $calinSmartMeterApiRequests,
+    ) {}
 
-    public function chargeDevice($transactionContainer): array {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        Log::critical('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
+        Log::critical('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
             ' Manufacturer => Calin Smart');
 
-        $energy = (float) $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargedEnergy;
         try {
             $credentials = $this->credentials->newQuery()->firstOrFail();
         } catch (ModelNotFoundException $e) {

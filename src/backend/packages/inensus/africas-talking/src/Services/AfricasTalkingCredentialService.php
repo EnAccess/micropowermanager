@@ -23,7 +23,7 @@ class AfricasTalkingCredentialService {
         ]);
     }
 
-    public function getCredentials(): AfricasTalkingCredential {
+    public function getCredentials(): ?AfricasTalkingCredential {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['api_key', 'username', 'short_code']);

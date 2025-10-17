@@ -22,7 +22,7 @@ class DalyBmsCredentialService {
         ]);
     }
 
-    public function getCredentials(): DalyBmsCredential {
+    public function getCredentials(): ?DalyBmsCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {

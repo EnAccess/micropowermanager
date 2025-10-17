@@ -13,6 +13,9 @@ class ChintSoap {
         private ?float $amount,
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function transaction(): array {
         $tid = $this->getCustomOrderID();
         $param = $tid.';'.$this->customerId.';'.number_format($this->amount, 4, '.', '').';';
@@ -24,6 +27,9 @@ class ChintSoap {
         return $this->parseTransactionResponse($response);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function validation(): array {
         $param = $this->customerId.';';
         $passwordSignature = $this->getPasswordSignature();
@@ -119,6 +125,9 @@ class ChintSoap {
         return (string) microtime(true);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function parseTransactionResponse(bool|string $response): array {
         try {
             $xml = simplexml_load_string($response);
@@ -144,6 +153,9 @@ class ChintSoap {
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function parseValidationResponse(bool|string $response): array {
         try {
             $xml = simplexml_load_string($response);

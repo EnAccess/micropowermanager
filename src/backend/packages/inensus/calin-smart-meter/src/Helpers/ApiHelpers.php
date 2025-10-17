@@ -19,7 +19,12 @@ class ApiHelpers {
         }
     }
 
-    public function checkApiResult(array $result) {
+    /**
+     * @param array<string, mixed>|string $result
+     *
+     * @return array<string, mixed>|string
+     */
+    public function checkApiResult(array|string $result): array|string {
         if ((int) $result['result_code'] !== 0) {
             throw new CalinSmartApiResponseException($result['reason']);
         }

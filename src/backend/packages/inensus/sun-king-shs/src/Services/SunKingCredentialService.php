@@ -22,7 +22,7 @@ class SunKingCredentialService {
         ]);
     }
 
-    public function getCredentials(): SunKingCredential {
+    public function getCredentials(): ?SunKingCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {

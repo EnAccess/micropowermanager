@@ -22,7 +22,7 @@ class AngazaCredentialService {
         ]);
     }
 
-    public function getCredentials(): AngazaCredential {
+    public function getCredentials(): ?AngazaCredential {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);

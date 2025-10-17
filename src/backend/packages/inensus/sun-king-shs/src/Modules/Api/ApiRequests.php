@@ -74,8 +74,10 @@ class ApiRequests {
 
     /**
      * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>|string
      */
-    public function post(SunKingCredential $credentials, array $params, string $slug): mixed {
+    public function post(SunKingCredential $credentials, array $params, string $slug): array|string {
         $url = $credentials->getApiUrl().$slug;
         try {
             $request = $this->httpClient->post(
