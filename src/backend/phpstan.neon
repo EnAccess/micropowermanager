@@ -10,18 +10,18 @@ parameters:
         - config/
         - database
         # - packages
-        # - packages/inensus/africas-talking/
+        - packages/inensus/africas-talking/
         - packages/inensus/angaza-shs/
         # - packages/inensus/bulk-registration/
         # - packages/inensus/calin-meter/
         # - packages/inensus/calin-smart-meter/
         # - packages/inensus/chint-meter/
-        # - packages/inensus/daly-bms/
+        - packages/inensus/daly-bms/
         - packages/inensus/demo-meter-manufacturer/
         - packages/inensus/demo-shs-manufacturer/
         # - packages/inensus/gome-long-meter/
         # - packages/inensus/kelin-meter/
-        # - packages/inensus/mesomb-payment-provider/
+        - packages/inensus/mesomb-payment-provider/
         # - packages/inensus/micro-star-meter/
         # - packages/inensus/spark-meter/
         # - packages/inensus/steama-meter/

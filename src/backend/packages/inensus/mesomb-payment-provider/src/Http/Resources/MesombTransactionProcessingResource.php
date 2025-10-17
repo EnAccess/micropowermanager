@@ -13,11 +13,22 @@ class MesombTransactionProcessingResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
-     * @return array
+     * @return array{
+     *     data: array{
+     *         type: string,
+     *         pk: mixed,
+     *         attributes: array{
+     *             status: int,
+     *             type: string,
+     *             amount: float|int|null,
+     *             fees: float|int|null,
+     *             b_party: string|null,
+     *             message: string|null
+     *         }
+     *     }
+     * }
      */
-    public function toArray($request) {
+    public function toArray(Request $request): array {
         return [
             'data' => [
                 'type' => 'mesomb_transaction',

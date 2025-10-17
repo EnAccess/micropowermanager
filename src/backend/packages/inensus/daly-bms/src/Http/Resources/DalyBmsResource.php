@@ -2,16 +2,6 @@
 
 namespace Inensus\DalyBms\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DalyBmsResource extends JsonResource {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array
-     */
-    public function toArray(Request $request) {
-        return parent::toArray($request);
-    }
-}
+class DalyBmsResource extends JsonResource {}

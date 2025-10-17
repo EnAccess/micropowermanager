@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model {
     protected $guarded = ['id'];
+
+    /** @var array<string, string> */
     public static $rules = [];
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(array $attributes = []) {
         parent::__construct($attributes);
         $this->setConnection('tenant');
