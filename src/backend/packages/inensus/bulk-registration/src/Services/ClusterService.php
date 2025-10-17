@@ -3,7 +3,6 @@
 namespace Inensus\BulkRegistration\Services;
 
 use App\Models\Cluster;
-use App\Models\User;
 use Inensus\BulkRegistration\Exceptions\ClusterNotFoundException;
 
 class ClusterService extends CreatorService {
