@@ -26,6 +26,8 @@ export class AuthenticationService {
         name: data.user.name,
         intervalId: 0,
         companyId: data.user.company_id,
+        roles: Array.isArray(data.roles) ? data.roles : [],
+        permissions: Array.isArray(data.permissions) ? data.permissions : [],
       }
       localStorage.setItem("token", this.authenticateUser.token)
       this.startTimer()
