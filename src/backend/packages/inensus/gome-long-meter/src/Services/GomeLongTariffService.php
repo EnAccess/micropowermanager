@@ -22,11 +22,11 @@ class GomeLongTariffService {
         private MainSettings $mainSettings,
     ) {}
 
-    public function getByMpmTariffId($mpmTariffId): ?GomeLongTariff {
+    public function getByMpmTariffId(int $mpmTariffId): ?GomeLongTariff {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
-    public function createGomeLongTariff($tariff): void {
+    public function createGomeLongTariff(MeterTariff $tariff): void {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
         if (!$gomeLongTariff instanceof GomeLongTariff) {
@@ -51,7 +51,10 @@ class GomeLongTariffService {
         }
     }
 
-    public function updateGomeLongTariff($tariff) {
+    /**
+     * @return array<string, mixed>|string
+     */
+    public function updateGomeLongTariff(MeterTariff $tariff): array|string|bool {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
@@ -80,7 +83,10 @@ class GomeLongTariffService {
         }
     }
 
-    public function deleteGomeLongTariff($tariff) {
+    /**
+     * @return array<string, mixed>|string
+     */
+    public function deleteGomeLongTariff(MeterTariff $tariff): array|string|bool {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
@@ -110,8 +116,7 @@ class GomeLongTariffService {
         try {
             $credentials = $this->credentialService->getCredentials();
 
-            if (!$credentials || ($credentials->getUserId() === null
-                    || $credentials->getUserPassword() === null)) {
+            if (!$credentials || ($credentials->getUserId() === null || $credentials->getUserPassword() === null)) {
                 return true;
             }
 
