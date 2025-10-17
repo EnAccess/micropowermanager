@@ -51,9 +51,10 @@ export class UserService {
       return new ErrorHandler(e, "http")
     }
   }
-  async create() {
+  async create(payload = {}) {
     try {
-      const { data, status, error } = await this.repository.create(this.user)
+      const requestBody = { ...this.user, ...payload }
+      const { data, status, error } = await this.repository.create(requestBody)
       if (status !== 200) {
         return new ErrorHandler(error, status)
       }

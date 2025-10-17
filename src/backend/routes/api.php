@@ -43,6 +43,7 @@ use App\Http\Controllers\ProtectedPagePasswordResetController;
 use App\Http\Controllers\RegistrationTailController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RevenueController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SmsAndroidSettingController;
 use App\Http\Controllers\SmsApplianceRemindRateController;
 use App\Http\Controllers\SmsBodyController;
@@ -113,10 +114,10 @@ Route::post('protected-page-password/confirm', [ProtectedPagePasswordResetContro
 
 // Assets
 Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
-    Route::get('/', [AssetController::class, 'index']);
-    Route::post('/', [AssetController::class, 'store']);
-    Route::put('/{asset}', [AssetController::class, 'update']);
-    Route::delete('/{asset}', [AssetController::class, 'destroy']);
+    Route::get('/', [AssetController::class, 'index'])->middleware('permission:assets.view');
+    Route::post('/', [AssetController::class, 'store'])->middleware('permission:assets.create');
+    Route::put('/{asset}', [AssetController::class, 'update'])->middleware('permission:assets.update');
+    Route::delete('/{asset}', [AssetController::class, 'destroy'])->middleware('permission:assets.delete');
     Route::group(['prefix' => 'person'], function () {
         Route::post('/{asset}/people/{person}', [AssetPersonController::class, 'store']);
         Route::get('/people/{person}', [AssetPersonController::class, 'index']);
@@ -211,22 +212,22 @@ Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], fun
 });
 // People
 Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static function () {
-    Route::get('/{personId}/meters', [PersonMeterController::class, 'show']);
-    Route::get('/{personId}/meters/geo', [MeterGeographicalInformationController::class, 'show']);
+    Route::get('/{personId}/meters', [PersonMeterController::class, 'show'])->middleware('permission:customers.view');
+    Route::get('/{personId}/meters/geo', [MeterGeographicalInformationController::class, 'show'])->middleware('permission:customers.view');
 
-    Route::get('/', [PersonController::class, 'index']);
+    Route::get('/', [PersonController::class, 'index'])->middleware('permission:customers.view');
     // https://github.com/EnAccess/micropowermanager-customer-registration-app/issues/5
-    Route::get('/all', [PersonController::class, 'index']);
-    Route::post('/', [PersonController::class, 'store']);
-    Route::get('/search', [PersonController::class, 'search']);
-    Route::get('/{personId}', [PersonController::class, 'show']);
-    Route::get('/{personId}/transactions', [PersonController::class, 'transactions']);
-    Route::put('/{personId}', [PersonController::class, 'update']);
-    Route::delete('/{personId}', [PersonController::class, 'destroy']);
+    Route::get('/all', [PersonController::class, 'index'])->middleware('permission:customers.view');
+    Route::post('/', [PersonController::class, 'store'])->middleware('permission:customers.create');
+    Route::get('/search', [PersonController::class, 'search'])->middleware('permission:customers.view');
+    Route::get('/{personId}', [PersonController::class, 'show'])->middleware('permission:customers.view');
+    Route::get('/{personId}/transactions', [PersonController::class, 'transactions'])->middleware('permission:customers.view');
+    Route::put('/{personId}', [PersonController::class, 'update'])->middleware('permission:customers.update');
+    Route::delete('/{personId}', [PersonController::class, 'destroy'])->middleware('permission:customers.delete');
 
-    Route::get('/{personId}/addresses', [PersonAddressesController::class, 'show']);
-    Route::post('/{personId}/addresses', [PersonAddressesController::class, 'store']);
-    Route::put('/{personId}/addresses', [PersonAddressesController::class, 'update']);
+    Route::get('/{personId}/addresses', [PersonAddressesController::class, 'show'])->middleware('permission:customers.view');
+    Route::post('/{personId}/addresses', [PersonAddressesController::class, 'store'])->middleware('permission:customers.update');
+    Route::put('/{personId}/addresses', [PersonAddressesController::class, 'update'])->middleware('permission:customers.update');
 });
 // Map Settings
 Route::group(['prefix' => 'map-settings'], static function () {
@@ -238,10 +239,28 @@ Route::group(['prefix' => 'map-settings'], static function () {
 
 // Settings
 Route::group(['prefix' => 'settings'], static function () {
+    // anyone can read settings? keep public index but hide secrets server-side
     Route::get('/main', [MainSettingsController::class, 'index']);
+    // update requires auth and permission
     Route::put('/main/{mainSettings}', [MainSettingsController::class, 'update'])
-        ->middleware('jwt.verify');
+        ->middleware(['jwt.verify', 'permission:settings.update']);
     Route::get('/currency-list', [CurrencyController::class, 'index']);
+});
+
+// Roles (custom role management)
+Route::group(['prefix' => 'roles', 'middleware' => ['jwt.verify', 'permission:roles.manage']], static function () {
+    Route::get('/', [RoleController::class, 'index']);
+    Route::get('/permissions', [RoleController::class, 'permissions']);
+    Route::get('/details', [RoleController::class, 'details']);
+    Route::get('/user/{userId}', [RoleController::class, 'userRoles']);
+    Route::post('/', [RoleController::class, 'store']);
+    Route::put('/{roleIdOrName}', [RoleController::class, 'update']);
+    Route::delete('/{roleIdOrName}', [RoleController::class, 'destroy']);
+    // assignments
+    Route::post('/{roleIdOrName}/assign/user/{userId}', [RoleController::class, 'assignToUser']);
+    Route::delete('/{roleIdOrName}/assign/user/{userId}', [RoleController::class, 'removeFromUser']);
+    Route::post('/{roleIdOrName}/assign/agent/{agentId}', [RoleController::class, 'assignToAgent']);
+    Route::delete('/{roleIdOrName}/assign/agent/{agentId}', [RoleController::class, 'removeFromAgent']);
 });
 // Sms
 Route::group(['prefix' => 'sms-body'], static function () {
@@ -268,8 +287,8 @@ Route::group(['prefix' => 'sms-variable-default-value'], static function () {
 });
 // Reports
 Route::group(['prefix' => 'reports', 'middleware' => 'jwt.verify'], function () {
-    Route::get('/', [ReportController::class, 'index']);
-    Route::get('/download/{id}', [ReportController::class, 'download']);
+    Route::get('/', [ReportController::class, 'index'])->middleware('permission:reports.view');
+    Route::get('/download/{id}', [ReportController::class, 'download'])->middleware('permission:reports.view');
 });
 // Revenue
 Route::group(['prefix' => 'revenue', 'middleware' => 'jwt.verify'], static function () {
@@ -335,7 +354,7 @@ Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], stati
 Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
-    Route::get('/', [MpmPluginController::class, 'index']);
+    Route::get('/', [MpmPluginController::class, 'index'])->middleware('permission:plugins.manage');
 });
 
 Route::group(['prefix' => 'registration-tails'], static function () {
@@ -343,8 +362,8 @@ Route::group(['prefix' => 'registration-tails'], static function () {
     Route::put('/{registrationTail}', [RegistrationTailController::class, 'update']);
 });
 Route::group(['prefix' => 'plugins'], static function () {
-    Route::get('/', [PluginController::class, 'index']);
-    Route::put('/{mpmPluginId}', [PluginController::class, 'update']);
+    Route::get('/', [PluginController::class, 'index'])->middleware('permission:plugins.manage');
+    Route::put('/{mpmPluginId}', [PluginController::class, 'update'])->middleware('permission:plugins.manage');
 });
 
 // API Keys management (requires web client auth token)
@@ -387,9 +406,9 @@ Route::group(['prefix' => 'e-bikes'], static function () {
     Route::post('/switch', [EBikeController::class, 'switch']);
 });
 Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
-    Route::get('/transactions', [TransactionExportController::class, 'download']);
-    Route::get('/debts', [OutstandingDebtsExportController::class, 'download']);
-    Route::get('/customers', [PersonExportController::class, 'download']);
+    Route::get('/transactions', [TransactionExportController::class, 'download'])->middleware('permission:exports.transactions');
+    Route::get('/debts', [OutstandingDebtsExportController::class, 'download'])->middleware('permission:exports.debts');
+    Route::get('/customers', [PersonExportController::class, 'download'])->middleware('permission:exports.customers');
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);
