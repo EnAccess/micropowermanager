@@ -162,7 +162,10 @@ export default {
   async mounted() {
     try {
       await this.roleService.fetchAll()
-    } catch (e) {}
+    } catch (e) {
+      this.alertNotify("error", "Failed to fetch roles")
+      console.error(e)
+    }
   },
   methods: {
     async createUser() {
