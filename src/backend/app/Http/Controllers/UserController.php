@@ -25,6 +25,11 @@ class UserController extends Controller {
 
     public function store(CreateAdminRequest $request): ApiResource {
         $user = $this->userService->create($request->only(['name', 'password', 'email']));
+        // Optionally assign roles provided by frontend (if any)
+        $roles = (array) $request->input('roles', []);
+        if ($roles !== []) {
+            $user->syncRoles($roles);
+        }
         $companyDatabase = $this->companyDatabaseService->findByCompanyId($user->getCompanyId());
         $databaseProxyData = [
             'email' => $user->getEmail(),
