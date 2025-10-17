@@ -26,8 +26,7 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field class="has-vue-tel" :class="{ 'md-invalid': !phone.valid && firstStepClicked }">
-                  <label>{{ $tc('words.phone') }}</label>
+                <md-field :class="{ 'md-invalid': !phone.valid && firstStepClicked }">
                   <vue-tel-input
                     id="phone"
                     :validCharactersOnly="true"
@@ -136,7 +135,6 @@ export default {
     async updateUser() {
       this.firstStepClicked = true
       const validation = await this.$validator.validateAll("Edit-Form")
-
       if (!this.phone.valid) return
       if (!validation) {
         return
@@ -172,75 +170,5 @@ export default {
 <style lang="scss" scoped>
 .md-select-menu-container {
   z-index: 99999 !important;
-}
-
-/* Ensure vue-tel-input's flag and input are vertically centered inside md-field */
-.md-field {
-  /* keep relative positioning consistent with other fields */
-  position: relative;
-}
-
-/* Use deep selector so styles apply to the vue-tel-input inner elements */
-.md-field ::v-deep .vti,
-.md-field ::v-deep .vti__wrapper,
-.md-field ::v-deep .vue-tel-input {
-  display: flex;
-  align-items: center;
-}
-
-.md-field ::v-deep .vti__selected-flag,
-.md-field ::v-deep .vti__flag {
-  margin-top: 0 !important;
-  align-self: center;
-}
-
-.md-field ::v-deep .vti__input {
-  height: auto;
-  /* tighten vertical padding so baseline matches other md-inputs */
-  padding-top: 0.15rem;
-  padding-bottom: 0.15rem;
-}
-
-/* Additional tweaks: make wrapper a flex row, ensure flag and its image are vertically centered
-   and constrain the flag image size so it lines up with the input text baseline. */
-.md-field ::v-deep .vti__wrapper,
-.md-field ::v-deep .vue-tel-input {
-  display: flex !important;
-  flex-direction: row;
-  align-items: center !important;
-}
-
-.md-field ::v-deep .vti__selected-flag,
-.md-field ::v-deep .vti__flag {
-  display: inline-flex !important;
-  align-items: center !important;
-  vertical-align: middle !important;
-  margin-right: 0.5rem !important;
-}
-
-.md-field ::v-deep .vti__flag img {
-  display: block !important;
-  max-height: 1.6rem !important;
-  width: auto !important;
-}
-
-.md-field ::v-deep input.vti__input {
-  line-height: 1.6 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Float the label for fields using vue-tel-input so it doesn't overlap the flag */
-.has-vue-tel > label {
-  transform: translateY(-1.25rem) scale(0.85);
-  transform-origin: left top;
-  z-index: 3;
-  background: white; /* cover the flag edge */
-  padding: 0 0.25rem;
-  color: rgba(0, 0, 0, 0.54);
-}
-
-.has-vue-tel {
-  padding-top: 0.6rem; /* make room for the floated label */
 }
 </style>
