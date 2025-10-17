@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\Ticket;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -35,8 +36,14 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Agent extends Authenticatable implements JWTSubject {
     /** @use HasFactory<AgentFactory> */
     use HasFactory;
+    use HasRoles;
 
     public const RELATION_NAME = 'agent';
+
+    /**
+     * Guard name for Spatie Permission.
+     */
+    protected string $guard_name = 'agent';
 
     /**
      * @param array<string, mixed> $attributes

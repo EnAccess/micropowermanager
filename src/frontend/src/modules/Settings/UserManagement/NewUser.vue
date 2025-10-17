@@ -97,6 +97,27 @@
               </md-field>
             </div>
           </md-card-content>
+          <md-card-content
+            class="md-layout md-gutter"
+            v-if="
+              $store.getters['auth/getPermissions'].includes('roles.manage')
+            "
+          >
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <md-field>
+                <label for="roles">Roles</label>
+                <md-select id="roles" v-model="selectedRoles" multiple>
+                  <md-option
+                    v-for="r in roleService.roles"
+                    :key="r.name"
+                    :value="r.name"
+                  >
+                    {{ r.name }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
+          </md-card-content>
           <md-card-actions>
             <md-button type="submit" class="md-raised md-primary">
               {{ $tc("words.create") }}
@@ -115,6 +136,7 @@
 <script>
 import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify"
+import { RoleService } from "@/services/RoleService"
 export default {
   name: "NewUser",
   mixins: [notify],
@@ -131,13 +153,24 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      roleService: new RoleService(),
+      selectedRoles: [],
+    }
+  },
+  async mounted() {
+    try {
+      await this.roleService.fetchAll()
+    } catch (e) {}
+  },
   methods: {
     async createUser() {
       const validation = await this.$validator.validateAll("Create-Form")
       if (!validation) {
         return
       }
-      this.$emit("createUser")
+      this.$emit("createUser", { roles: this.selectedRoles })
     },
     closeNewUser() {
       this.$emit("newUserClosed")
