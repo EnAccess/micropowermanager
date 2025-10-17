@@ -2,6 +2,7 @@
 
 namespace Inensus\BulkRegistration\Services;
 
+use Illuminate\Http\Request;
 use Inensus\BulkRegistration\Exceptions\MissingDataException;
 use Inensus\BulkRegistration\Helpers\CsvDataProcessor;
 use Inensus\BulkRegistration\Helpers\CsvFileParser;
@@ -14,7 +15,7 @@ class CsvDataService {
         private CsvDataProcessor $csvDataProcessor,
     ) {}
 
-    public function create($request) {
+    public function create(Request $request): CsvData {
         $path = $request->file('csv');
         $parsedCsvData = $this->csvFileParser->parseCsvFromFilePath($path);
         $message = '';

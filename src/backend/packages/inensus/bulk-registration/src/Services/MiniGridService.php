@@ -10,7 +10,10 @@ class MiniGridService extends CreatorService {
         parent::__construct($miniGrid);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $miniGridConfig = config('bulk-registration.csv_fields.mini_grid');
 
         if (!$csvData[$miniGridConfig['name']]) {

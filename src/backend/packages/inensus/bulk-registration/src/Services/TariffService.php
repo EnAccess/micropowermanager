@@ -2,7 +2,6 @@
 
 namespace Inensus\BulkRegistration\Services;
 
-use App\Models\MainSettings;
 use App\Models\Meter\MeterTariff;
 
 class TariffService extends CreatorService {
@@ -10,7 +9,10 @@ class TariffService extends CreatorService {
         parent::__construct($meterTariff);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData): MeterTariff {
         $tariffConfig = config('bulk-registration.csv_fields.tariff');
 
         $tariffData = [

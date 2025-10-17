@@ -11,7 +11,10 @@ class ClusterService extends CreatorService {
         parent::__construct($cluster);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $clusterConfig = config('bulk-registration.csv_fields.cluster');
 
         if (!$csvData[$clusterConfig['name']]) {

@@ -6,6 +6,9 @@ use GuzzleHttp\Client;
 use Spatie\Geocoder\Geocoder;
 
 class GeographicalLocationFinder {
+    /**
+     * @return array<string, mixed>
+     */
     public function getCoordinatesGivenAddress(string $address_string): array {
         $client = new Client();
         $geocoder = new Geocoder($client);

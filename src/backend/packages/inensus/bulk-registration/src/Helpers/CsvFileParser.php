@@ -11,7 +11,10 @@ class CsvFileParser {
         $this->csv = new Csv();
     }
 
-    public function parseCsvFromFilePath($path) {
+    /**
+     * @return array<string|int, mixed>
+     */
+    public function parseCsvFromFilePath(string $path) {
         $this->csv->auto($path);
 
         return $this->csv->data;

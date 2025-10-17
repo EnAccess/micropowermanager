@@ -15,9 +15,15 @@ class ApplianceTypeService extends CreatorService {
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData): void {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData): void {
         $applianceTypeConfig = config('bulk-registration.csv_fields.appliance_type');
 
+        /**
+         * @var array<int, string>
+         */
         $applianceTypes = config('bulk-registration.appliance_types');
 
         $columnApplianceTypes = $csvData[$applianceTypeConfig['name']];
@@ -34,6 +40,6 @@ class ApplianceTypeService extends CreatorService {
             return true;
         });
 
-        $this->createRelatedDataIfDoesNotExists($appliances);
+        $this->createRelatedDataIfDoesNotExists($appliances->toArray());
     }
 }
