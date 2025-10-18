@@ -15,7 +15,10 @@ class AddressService extends CreatorService {
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData): void {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData): void {
         $addressConfig = config('bulk-registration.csv_fields.address');
         $returnAddresses = [];
         $firstAddressData = [

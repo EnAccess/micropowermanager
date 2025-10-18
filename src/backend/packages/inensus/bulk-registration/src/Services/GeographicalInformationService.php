@@ -8,17 +8,26 @@ use App\Models\MiniGrid;
 use Inensus\BulkRegistration\Helpers\GeographicalLocationFinder;
 
 class GeographicalInformationService {
-    private $geographicalInformationConfig;
+    /**
+     * @var array<string, mixed>
+     */
+    private array $geographicalInformationConfig;
 
-    public function createRelatedDataIfDoesNotExists($geographicalInformationData, $ownerModel): void {
-        if ($geographicalInformationData) {
+    /**
+     * @param array<string, mixed> $geographicalInformationData
+     */
+    public function createRelatedDataIfDoesNotExists(array $geographicalInformationData, object $ownerModel): void {
+        if ($geographicalInformationData !== []) {
             $geographicalInformation = GeographicalInformation::query()->make($geographicalInformationData);
             $geographicalInformation->owner()->associate($ownerModel);
             $geographicalInformation->save();
         }
     }
 
-    public function resolveCsvDataFromComingRow(array $csvData, $ownerModel): void {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData, object $ownerModel): void {
         $this->geographicalInformationConfig = config('bulk-registration.csv_fields.geographical_information');
         $geographicalInformationData = ['points' => ''];
         if ($ownerModel instanceof MiniGrid) {
@@ -33,7 +42,7 @@ class GeographicalInformationService {
         }
     }
 
-    private function createMiniGridRelatedGeographicalInformation(MiniGrid $ownerModel) {
+    private function createMiniGridRelatedGeographicalInformation(MiniGrid $ownerModel): bool {
         $miniGridId = $ownerModel->id;
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])
             ->whereHasMorph(
@@ -56,10 +65,16 @@ class GeographicalInformationService {
         return $geographicalInformation->save();
     }
 
+    /**
+     * @param array<string, mixed> $geographicalInformationData
+     * @param array<string, mixed> $csvData
+     *
+     * @return false|array<string, mixed>
+     */
     private function createMeterRelatedGeographicalInformation(
         array $geographicalInformationData,
         array $csvData,
-        $ownerModel,
+        object $ownerModel,
     ): false|array {
         $meterId = $ownerModel->id;
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])

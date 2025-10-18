@@ -6,6 +6,9 @@ use App\Models\Manufacturer;
 use Inensus\BulkRegistration\Exceptions\ManufacturerNotSupportedException;
 
 class ManufacturerService extends CreatorService {
+    /**
+     * @var array<int, string>
+     */
     private array $manufacturers = [
         'Calin Meter',
         'Calin Smart Meter',
@@ -14,13 +17,20 @@ class ManufacturerService extends CreatorService {
         'GomeLong Meter',
         'MicroStar Meter',
         'SunKing SHS',
+        'Demo Meter Manufacturer',
+        'Demo SHS Manufacturer',
     ];
 
-    public function __construct(Manufacturer $manufacturer) {
+    public function __construct(
+        Manufacturer $manufacturer,
+    ) {
         parent::__construct($manufacturer);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $manufacturerConfig = config('bulk-registration.csv_fields.manufacturer');
 
         if (!in_array($csvData[$manufacturerConfig['name']], $this->manufacturers)) {
