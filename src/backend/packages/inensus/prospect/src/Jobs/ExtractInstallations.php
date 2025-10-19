@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ExtractInstallations implements ShouldQueue {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public string $queue = 'prospect_extract';
 
@@ -24,6 +27,7 @@ class ExtractInstallations implements ShouldQueue {
             $data = $this->extractDataFromDatabase();
             if (empty($data)) {
                 Log::warning('Prospect: no data to extract');
+
                 return;
             }
 
@@ -144,6 +148,7 @@ class ExtractInstallations implements ShouldQueue {
 
     private function generateFileName(): string {
         $timestamp = now()->toISOString();
+
         return "prospect_{$timestamp}.csv";
     }
 
@@ -180,8 +185,7 @@ class ExtractInstallations implements ShouldQueue {
         rewind($output);
         $csvContent = stream_get_contents($output);
         fclose($output);
+
         return $csvContent;
     }
 }
-
-

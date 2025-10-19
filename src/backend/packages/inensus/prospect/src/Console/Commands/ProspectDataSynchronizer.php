@@ -53,5 +53,3 @@ class ProspectDataSynchronizer extends Command {
         $this->info('prospect:dataSync finished');
     }
 }
-
-

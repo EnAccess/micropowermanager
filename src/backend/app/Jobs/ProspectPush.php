@@ -187,6 +187,6 @@ class ProspectPush extends AbstractJob {
             'Authorization' => 'Bearer '.config('services.prospect.api_token'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-        ])->timeout(30)->post(config('services.prospect.default_api_url' . 'installations'), $payload);
+        ])->timeout(30)->post(config('services.prospect.default_api_urlinstallations'), $payload);
     }
 }

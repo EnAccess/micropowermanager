@@ -2,8 +2,8 @@
 
 namespace Inensus\Prospect\Providers;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\Prospect\Console\Commands\InstallPackage;

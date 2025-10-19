@@ -65,5 +65,3 @@ class ProspectSyncActionService {
         return $canonical;
     }
 }
-
-

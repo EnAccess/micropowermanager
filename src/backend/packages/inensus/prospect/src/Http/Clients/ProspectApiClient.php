@@ -22,5 +22,3 @@ class ProspectApiClient {
         ])->timeout(30)->post($cred->api_url, $payload);
     }
 }
-
-

@@ -7,12 +7,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Inensus\Prospect\Http\Clients\ProspectApiClient;
 
 class PushInstallations implements ShouldQueue {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public string $queue = 'prospect_push';
 
@@ -23,6 +25,7 @@ class PushInstallations implements ShouldQueue {
             $data = $this->loadCsvData();
             if (empty($data)) {
                 Log::info('Prospect: no data to push');
+
                 return;
             }
             $payload = ['data' => $data];
@@ -57,12 +60,17 @@ class PushInstallations implements ShouldQueue {
                 continue;
             }
             $record = array_combine($headers, $row);
-            $record = array_map(function ($v) { $v = trim((string) $v); return $v === '' ? null : $v; }, $record);
+            $record = array_map(function ($v) {
+                $v = trim((string) $v);
+
+                return $v === '' ? null : $v;
+            }, $record);
             if (empty($record['customer_external_id']) || empty($record['serial_number'])) {
                 continue;
             }
             $data[] = $record;
         }
+
         return $data;
     }
 
@@ -75,10 +83,12 @@ class PushInstallations implements ShouldQueue {
         $latestTime = 0;
         foreach ($files as $file) {
             $t = @filemtime($file) ?: 0;
-            if ($t > $latestTime) { $latestTime = $t; $latestFile = $file; }
+            if ($t > $latestTime) {
+                $latestTime = $t;
+                $latestFile = $file;
+            }
         }
+
         return $latestFile;
     }
 }
-
-

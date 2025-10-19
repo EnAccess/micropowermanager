@@ -12,5 +12,3 @@ class ProspectSyncAction extends BaseModel {
         return $this->belongsTo(ProspectSyncSetting::class, 'sync_setting_id');
     }
 }
-
-

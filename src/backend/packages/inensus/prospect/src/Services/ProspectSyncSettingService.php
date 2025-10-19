@@ -2,10 +2,9 @@
 
 namespace Inensus\Prospect\Services;
 
-use Inensus\Prospect\Models\ProspectSyncSetting;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Inensus\Prospect\Services\ProspectSyncActionService;
+use Inensus\Prospect\Models\ProspectSyncSetting;
 
 class ProspectSyncSettingService {
     public function __construct(private ProspectSyncSetting $syncSetting, private ProspectSyncActionService $syncActionService) {}
