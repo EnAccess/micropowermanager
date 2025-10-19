@@ -25,19 +25,14 @@ Route::group(
             $id = request('id');
             $recreate = (bool) request('recreate');
             $companyId = auth('agent_api')->user()->company_id;
-            TokenProcessor::dispatch(
-                $companyId,
-                TransactionDataContainer::initialize(Transaction::find($id)),
-                $recreate,
-                1
-            );
+            dispatch(new TokenProcessor($companyId, TransactionDataContainer::initialize(Transaction::find($id)), $recreate, 1));
         })->where('id', '[0-9]+')->name('jobs.token');
 
         Route::get('energy/{id}', function () {
             $id = request('id');
             $transaction = Transaction::find($id);
             $companyId = auth('agent_api')->user()->company_id;
-            EnergyTransactionProcessor::dispatch($companyId, $transaction->id);
+            dispatch(new EnergyTransactionProcessor($companyId, $transaction->id));
         });
     }
 );

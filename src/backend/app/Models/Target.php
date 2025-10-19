@@ -46,7 +46,7 @@ class Target extends BaseModel {
             ->where('owner_id', $cityId)
             ->where('owner_type', 'mini-grid')
             ->where('target_date', '>=', $endDate)
-            ->orderBy('target_date')
+            ->oldest('target_date')
             ->limit(1);
     }
 

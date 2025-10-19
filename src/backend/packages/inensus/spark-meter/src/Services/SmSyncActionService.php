@@ -2,8 +2,8 @@
 
 namespace Inensus\SparkMeter\Services;
 
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\Date;
 use Inensus\SparkMeter\Models\SmSyncAction;
 
 class SmSyncActionService {
@@ -18,22 +18,22 @@ class SmSyncActionService {
     }
 
     public function getActionsNeedsToSync() {
-        return $this->syncAction->newQuery()->where('next_sync', '<=', Carbon::now())->orderBy('next_sync')->get();
+        return $this->syncAction->newQuery()->where('next_sync', '<=', Date::now())->orderBy('next_sync')->get();
     }
 
     public function updateSyncAction($syncAction, $syncSetting, $syncResult) {
         if (!$syncResult) {
             return $syncAction->update([
                 'attempts' => $syncAction->attempts + 1,
-                'last_sync' => Carbon::now(),
+                'last_sync' => Date::now(),
             ]);
         }
         $interval = CarbonInterval::make($syncSetting->sync_in_value_num.$syncSetting->sync_in_value_str);
 
         return $syncAction->update([
             'attempts' => 0,
-            'last_sync' => Carbon::now(),
-            'next_sync' => Carbon::now()->add($interval),
+            'last_sync' => Date::now(),
+            'next_sync' => Date::now()->add($interval),
         ]);
     }
 }

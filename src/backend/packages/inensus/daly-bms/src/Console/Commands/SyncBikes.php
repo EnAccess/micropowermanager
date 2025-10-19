@@ -4,7 +4,7 @@ namespace Inensus\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
 use MPM\Device\DeviceAddressService;
 use MPM\EBike\EBikeService;
@@ -33,7 +33,7 @@ class SyncBikes extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Daly BMS Package #');
-        $startedAt = Carbon::now()->toIso8601ZuluString();
+        $startedAt = Date::now()->toIso8601ZuluString();
         $this->info('sync-bikes command started at '.$startedAt);
 
         try {

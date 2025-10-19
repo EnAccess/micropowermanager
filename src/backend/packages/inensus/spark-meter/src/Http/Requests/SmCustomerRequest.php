@@ -19,7 +19,7 @@ class SmCustomerRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'low_balance_limit' => 'required',
+            'low_balance_limit' => ['required'],
         ];
     }
 }

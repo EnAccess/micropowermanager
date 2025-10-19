@@ -6,7 +6,7 @@ use App\Events\AccessRatePaymentInitialize;
 use App\Exceptions\AccessRates\NoAccessRateFound;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
 
 class AccessRateListener {
@@ -21,7 +21,7 @@ class AccessRateListener {
             if (!$accessRate) {
                 throw new NoAccessRateFound('Access Rate is not set');
             }
-            $nextPaymentDate = Carbon::now()->addDays($accessRate->period);
+            $nextPaymentDate = Date::now()->addDays($accessRate->period);
             $accessRatePayment = new AccessRatePayment();
             $accessRatePayment->accessRate()->associate($accessRate);
             $accessRatePayment->meter()->associate($meter);

@@ -16,7 +16,6 @@ use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
-use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Inensus\Ticket\Models\Ticket;
 
@@ -191,7 +191,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
             return false;
         }
 
-        return (int) Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
+        return (int) Date::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
     }
 
     /**

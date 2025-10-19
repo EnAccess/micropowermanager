@@ -75,7 +75,7 @@ class SmsService {
                 $sender->setCallback($smsAndroidSettings->callback, $uuid);
             }
             $this->associateSmsWithForSmsType($sender, $uuid, $receiver, $gatewayId);
-            SmsProcessor::dispatch($sender);
+            dispatch(new SmsProcessor($sender));
         } catch (
             SmsTypeNotFoundException|
             SmsAndroidSettingNotExistingException|

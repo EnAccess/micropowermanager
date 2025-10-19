@@ -3,7 +3,7 @@
 namespace Inensus\GomeLongMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Inensus\GomeLongMeter\Exceptions\CronJobException;
 use Inensus\GomeLongMeter\Services\GomeLongTariffService;
 
@@ -21,7 +21,7 @@ class GomeLongMeterDataSynchronizer extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# GomeLong Meter Package #');
-        $startedAt = Carbon::now()->toIso8601ZuluString();
+        $startedAt = Date::now()->toIso8601ZuluString();
         $this->info('dataSync command started at '.$startedAt);
         try {
             $this->gomeLongTariffService->sync();

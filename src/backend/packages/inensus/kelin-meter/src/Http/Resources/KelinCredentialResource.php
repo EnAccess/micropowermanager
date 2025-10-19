@@ -24,7 +24,7 @@ class KelinCredentialResource extends JsonResource {
         ];
     }
 
-    private function alertType($authenticationStatus) {
+    private function alertType($authenticationStatus): array {
         return match ($authenticationStatus) {
             true => [
                 'type' => 'success',

@@ -39,13 +39,13 @@ class OdysseyPaymentTransformer {
                 if ($underlying instanceof Meter) {
                     $meterId = $underlying->serial_number;
                     // Prefer connection type name when available
-                    $customerCategory = optional($underlying->connectionType)->name;
+                    $customerCategory = $underlying->connectionType?->name;
                 } elseif ($underlying instanceof SolarHomeSystem) {
                     $serialNumber = $underlying->serial_number;
                 }
 
                 // Geo
-                $geo = optional(optional($device->address)->geo);
+                $geo = optional($device->address?->geo);
                 if ($geo && !empty($geo->points)) {
                     // Expecting "lat,lng" or "lng,lat"; we assume "lat,lng"
                     $parts = explode(',', $geo->points);
@@ -66,10 +66,10 @@ class OdysseyPaymentTransformer {
                     $serialNumber = $underlying->serial_number;
                 } elseif ($underlying instanceof Meter) {
                     $meterId = $underlying->serial_number;
-                    $customerCategory = optional($underlying->connectionType)->name;
+                    $customerCategory = $underlying->connectionType?->name;
                 }
 
-                $geo = optional(optional($device->address)->geo);
+                $geo = optional($device->address?->geo);
                 if ($geo && !empty($geo->points)) {
                     $parts = explode(',', $geo->points);
                     if (count($parts) === 2) {
@@ -97,7 +97,7 @@ class OdysseyPaymentTransformer {
             if (!$customerCategory) {
                 $firstDevice = $payer->devices()->with('device.connectionType')->first();
                 if ($firstDevice && $firstDevice->device instanceof Meter) {
-                    $customerCategory = optional($firstDevice->device->connectionType)->name;
+                    $customerCategory = $firstDevice->device->connectionType?->name;
                 }
             }
         }

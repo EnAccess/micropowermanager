@@ -43,9 +43,9 @@ class PersonExportService extends AbstractExportService {
                 $person->surname,
                 $person->birth_date,
                 $person->sex === '1' ? 'Male' : 'Female',
-                optional($primaryAddress)->email,
-                optional($primaryAddress)->phone,
-                optional($primaryAddress?->city)->name,
+                $primaryAddress?->email,
+                $primaryAddress?->phone,
+                $primaryAddress?->city?->name,
                 $devices,
                 $agent->person->name ?? '',
             ];

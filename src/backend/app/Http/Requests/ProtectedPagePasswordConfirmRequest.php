@@ -19,9 +19,9 @@ class ProtectedPagePasswordConfirmRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'token' => 'required|string',
-            'password' => 'required|string|min:6',
-            'password_confirmation' => 'required|string|same:password',
+            'token' => ['required', 'string'],
+            'password' => ['required', 'string', 'min:6'],
+            'password_confirmation' => ['required', 'string', 'same:password'],
         ];
     }
 

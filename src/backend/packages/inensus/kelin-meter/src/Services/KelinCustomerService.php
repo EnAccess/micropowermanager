@@ -143,14 +143,14 @@ class KelinCustomerService implements ISynchronizeService {
         return $returnData ? ['data' => $customersCollection, 'result' => true] : ['result' => true];
     }
 
-    public function createRelatedPerson($customer) {
+    public function createRelatedPerson(array $customer) {
         $names = explode(' ', $customer['consName']);
         $phone = ltrim($customer['mobile'], $customer['mobile'][0]);
 
-        if (count($names) == 1) {
+        if (count($names) === 1) {
             $name = $customer['consName'];
             $surname = '';
-        } elseif (count($names) == 2) {
+        } elseif (count($names) === 2) {
             $name = $names[0];
             $surname = $names[1];
         } else {
@@ -184,10 +184,10 @@ class KelinCustomerService implements ISynchronizeService {
 
     public function updateRelatedPerson(array $customer, $person) {
         $names = explode(' ', $customer['consName']);
-        if (count($names) == 1) {
+        if (count($names) === 1) {
             $name = $customer['consName'];
             $surname = '';
-        } elseif (count($names) == 2) {
+        } elseif (count($names) === 2) {
             $name = $names[0];
             $surname = $names[1];
         } else {

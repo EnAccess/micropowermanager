@@ -18,6 +18,6 @@ class ImportCsvRequest extends FormRequest {
      * @return array<string, mixed>
      */
     public function rules(): array {
-        return ['csv' => 'required|mimes:csv,txt'];
+        return ['csv' => ['required', 'mimes:csv,txt']];
     }
 }

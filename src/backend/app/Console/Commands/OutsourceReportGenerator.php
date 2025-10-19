@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Person\Person;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use Inensus\Ticket\Services\TicketService;
@@ -25,11 +25,11 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
 
     public function handle(): void {
         if ($this->option('start-date') !== '') {
-            $toDay = Carbon::parse($this->option('start-date'))->format('Y-m-d');
+            $toDay = Date::parse($this->option('start-date'))->format('Y-m-d');
         } else {
-            $toDay = Carbon::now()->subDays(1)->format('Y-m-d');
+            $toDay = Date::now()->subDays(1)->format('Y-m-d');
         }
-        $startDay = Carbon::parse($toDay)->modify('first day of this month')->format('Y-m-d');
+        $startDay = Date::parse($toDay)->modify('first day of this month')->format('Y-m-d');
 
         try {
             $tickets = $this->ticketService->getForOutsourceReportForGeneration($startDay, $toDay);

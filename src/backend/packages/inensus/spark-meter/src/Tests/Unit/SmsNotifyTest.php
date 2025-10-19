@@ -16,9 +16,9 @@ use App\Models\User;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Models\SmSetting;
@@ -49,7 +49,7 @@ class SmsNotifyTest extends TestCase {
         ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->where(
             'updated_at',
             '>=',
-            Carbon::now()->subMinutes($lowBalanceMin)
+            Date::now()->subMinutes($lowBalanceMin)
         )->get();
 
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
@@ -103,7 +103,7 @@ class SmsNotifyTest extends TestCase {
         SmTransaction::query()->with(['thirdPartyTransaction.transaction'])->where(
             'timestamp',
             '>=',
-            Carbon::now()->subMinutes($transactionMin)
+            Date::now()->subMinutes($transactionMin)
         )->where('status', 'processed')->get()->each(function ($sparkTransaction) use (
             $smsNotifiedCustomers,
             $customers
@@ -149,7 +149,7 @@ class SmsNotifyTest extends TestCase {
         Queue::fake();
         $this->addSyncSettings();
         $this->initializeAdminData();
-        $syncActions = SmSyncAction::query()->where('next_sync', '<=', Carbon::now())
+        $syncActions = SmSyncAction::query()->where('next_sync', '<=', Date::now())
             ->orderBy('next_sync')->get();
         $oldNextSync = $syncActions->first()->next_sync;
         $newNextSync = null;
@@ -160,7 +160,7 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if ($syncAction->attempts >= $syncSetting->max_attempts) {
-                $nextSync = Carbon::parse($syncAction->next_sync)->addHours(2);
+                $nextSync = Date::parse($syncAction->next_sync)->addHours(2);
                 $syncAction->next_sync = $nextSync;
                 $adminAddress = Address::query()->whereHasMorph(
                     'owner',
@@ -252,7 +252,7 @@ class SmsNotifyTest extends TestCase {
             'customer_id' => $customer->id,
             'transaction_id' => '1111',
             'status' => 'processed',
-            'timestamp' => Carbon::now()->toIso8601ZuluString(),
+            'timestamp' => Date::now()->toIso8601ZuluString(),
             'external_id' => null,
         ]);
 
@@ -269,8 +269,8 @@ class SmsNotifyTest extends TestCase {
             'sender' => '905494322161',
             'message' => $customer->meters[0]->meter->serial_number,
             'type' => 'energy',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
         ]);
         $transaction->originalTransaction()->associate($thirdPartyTransaction);
         $transaction->save();
@@ -304,8 +304,8 @@ class SmsNotifyTest extends TestCase {
             'state' => 'Low Balance Warning',
             'not_send_elder_than_mins' => 5,
             'enabled' => 1,
-            'updated_at' => Carbon::now(),
-            'created_at' => Carbon::now(),
+            'updated_at' => Date::now(),
+            'created_at' => Date::now(),
         ]);
         $balanceSetting->setting()->associate($smsLowBalanceWarning);
         $balanceSetting->save();
@@ -313,7 +313,7 @@ class SmsNotifyTest extends TestCase {
 
     private function addSyncSettings(): void {
         $minInterval = CarbonInterval::make('1minute');
-        $now = Carbon::now();
+        $now = Date::now();
         $siteSetting = SmSetting::query()->make();
         $syncSite = SmSyncSetting::query()->create([
             'action_name' => 'Sites',

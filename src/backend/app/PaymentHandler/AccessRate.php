@@ -8,7 +8,7 @@ use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRate as AccessRateModel;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 
 class AccessRate {
     private ?AccessRateModel $accessRate = null;
@@ -37,7 +37,7 @@ class AccessRate {
             throw new NoAccessRateFound('Access Rate is not set');
         }
         // get current date and add AccessRate.period days
-        $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period);
+        $nextPaymentDate = Date::now()->addDays($this->accessRate->period);
         // create accessRatePayment instance and fill with the variables
         $accessRatePayment = new AccessRatePayment();
         $accessRatePayment->accessRate()->associate($this->accessRate);

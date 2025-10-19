@@ -2,8 +2,8 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\Date;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSyncSetting;
@@ -18,7 +18,7 @@ class SteamaSyncSettingService {
         $syncSite = $this->syncSetting->newQuery()->where('action_name', 'Sites')->first();
 
         if (!$syncSite) {
-            $now = Carbon::now();
+            $now = Date::now();
             $siteSetting = $this->setting->newQuery()->make();
             $syncSite = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Sites',
@@ -36,7 +36,7 @@ class SteamaSyncSettingService {
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
         if (!$syncCustomer) {
-            $now = Carbon::now();
+            $now = Date::now();
             $customerSetting = $this->setting->newQuery()->make();
             $syncCustomer = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Customers',
@@ -54,7 +54,7 @@ class SteamaSyncSettingService {
 
         $syncMeter = $this->syncSetting->newQuery()->where('action_name', 'Meters')->first();
         if (!$syncMeter) {
-            $now = Carbon::now();
+            $now = Date::now();
             $meterSetting = $this->setting->newQuery()->make();
             $syncMeter = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Meters',
@@ -72,7 +72,7 @@ class SteamaSyncSettingService {
 
         $syncAgent = $this->syncSetting->newQuery()->where('action_name', 'Agents')->first();
         if (!$syncAgent) {
-            $now = Carbon::now();
+            $now = Date::now();
             $agentSetting = $this->setting->newQuery()->make();
             $syncAgent = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Agents',
@@ -90,7 +90,7 @@ class SteamaSyncSettingService {
 
         $syncTransaction = $this->syncSetting->newQuery()->where('action_name', 'Transactions')->first();
         if (!$syncTransaction) {
-            $now = Carbon::now();
+            $now = Date::now();
             $transactionSetting = $this->setting->newQuery()->make();
             $syncTransaction = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Transactions',
@@ -114,7 +114,7 @@ class SteamaSyncSettingService {
             $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($setting['id']);
 
             if ($syncSetting) {
-                $date = Carbon::now();
+                $date = Date::now();
                 $interval = CarbonInterval::make($intervalStr);
 
                 $syncSetting->update([

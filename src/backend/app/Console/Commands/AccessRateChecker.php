@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\AccessRate\AccessRatePayment;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 
 class AccessRateChecker extends AbstractSharedCommand {
     protected $signature = 'accessrate:check';
@@ -11,7 +11,7 @@ class AccessRateChecker extends AbstractSharedCommand {
 
     public function handle(): void {
         // get all access-rate payments where due Date is <= today
-        $accessRatePayments = AccessRatePayment::where('due_date', '<=', Carbon::now())->get();
+        $accessRatePayments = AccessRatePayment::where('due_date', '<=', Date::now())->get();
 
         // iterate in unpaid acess-rates
         foreach ($accessRatePayments as $accessRatePayment) {
@@ -19,7 +19,7 @@ class AccessRateChecker extends AbstractSharedCommand {
             if ($accessRate === null) {
                 continue;
             }
-            $accessRatePayment->due_date = Carbon::now()->addDays($accessRate->period);
+            $accessRatePayment->due_date = Date::now()->addDays($accessRate->period);
             // access-rate is defined
             if ($accessRate->amount > 0) {
                 $accessRatePayment->debt += $accessRate->amount;

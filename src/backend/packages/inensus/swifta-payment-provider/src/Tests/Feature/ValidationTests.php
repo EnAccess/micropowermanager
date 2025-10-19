@@ -11,9 +11,9 @@ use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Date;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
 
@@ -114,7 +114,7 @@ class ValidationTests extends TestCase {
         AccessRatePayment::query()->create([
             'meter_id' => 1,
             'access_rate_id' => 1,
-            'due_date' => Carbon::now()->addDays(-1),
+            'due_date' => Date::now()->addDays(-1),
             'debt' => 1000,
         ]);
         $data = [

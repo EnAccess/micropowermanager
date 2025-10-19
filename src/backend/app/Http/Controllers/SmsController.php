@@ -65,7 +65,7 @@ class SmsController extends Controller {
                 ];
                 $this->smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
             }
-        } elseif ($type === 'group' || $type === 'type' || $type === 'all') {
+        } elseif (in_array($type, ['group', 'type', 'all'], true)) {
             // get connection group meters and owners
             if ($type === 'group') {
                 $meters = $this->meter::with(

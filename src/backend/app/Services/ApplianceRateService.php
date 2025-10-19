@@ -5,10 +5,10 @@ namespace App\Services;
 use App\Events\NewLogEvent;
 use App\Models\AssetRate;
 use App\Models\MainSettings;
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Date;
 
 // FIXME:
 // class ApplianceRateService implements IBaseService
@@ -93,7 +93,7 @@ class ApplianceRateService {
                     'asset_person_id' => $assetPerson->id,
                     'rate_cost' => round($assetPerson->down_payment),
                     'remaining' => 0,
-                    'due_date' => Carbon::parse(date('Y-m-d'))->toDateTimeString(),
+                    'due_date' => Date::parse(date('Y-m-d'))->toDateTimeString(),
                     'remind' => 0,
                 ]
             );

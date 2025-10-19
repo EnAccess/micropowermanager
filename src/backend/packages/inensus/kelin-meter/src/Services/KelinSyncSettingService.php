@@ -2,9 +2,9 @@
 
 namespace Inensus\KelinMeter\Services;
 
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Date;
 use Inensus\KelinMeter\Models\KelinSetting;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 
@@ -17,7 +17,7 @@ class KelinSyncSettingService {
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
         if (!$syncCustomer) {
-            $now = Carbon::now();
+            $now = Date::now();
             $customerSetting = $this->setting->newQuery()->make();
             $syncCustomer = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Customers',
@@ -35,7 +35,7 @@ class KelinSyncSettingService {
 
         $syncMeter = $this->syncSetting->newQuery()->where('action_name', 'Meters')->first();
         if (!$syncMeter) {
-            $now = Carbon::now();
+            $now = Date::now();
             $meterSetting = $this->setting->newQuery()->make();
             $syncMeter = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Meters',
@@ -59,7 +59,7 @@ class KelinSyncSettingService {
             $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($setting['id']);
 
             if ($syncSetting) {
-                $date = Carbon::now();
+                $date = Date::now();
                 $interval = CarbonInterval::make($intervalStr);
 
                 $syncSetting->update([

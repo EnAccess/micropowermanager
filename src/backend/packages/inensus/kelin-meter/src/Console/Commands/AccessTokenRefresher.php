@@ -4,7 +4,7 @@ namespace Inensus\KelinMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 
 class AccessTokenRefresher extends AbstractSharedCommand {
@@ -25,7 +25,7 @@ class AccessTokenRefresher extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Kelin Meter Package #');
-        $startedAt = Carbon::now()->toIso8601ZuluString();
+        $startedAt = Date::now()->toIso8601ZuluString();
         $this->info('access-token-refresher command started at '.$startedAt);
         $this->credentialService->refreshAccessToken();
         $timeEnd = microtime(true);

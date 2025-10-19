@@ -15,7 +15,7 @@ class ApiKeyController extends Controller {
         $companyId = (int) $request->attributes->get('companyId');
 
         return response()->json([
-            'data' => $this->apiKey->query()->where('company_id', $companyId)->orderByDesc('created_at')->get(),
+            'data' => $this->apiKey->query()->where('company_id', $companyId)->latest()->get(),
         ]);
     }
 

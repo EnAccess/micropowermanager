@@ -4,7 +4,7 @@ namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
 class TransactionStatusChecker extends AbstractSharedCommand {
@@ -26,7 +26,7 @@ class TransactionStatusChecker extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Swifta Transaction Package #');
-        $startedAt = Carbon::now()->toIso8601ZuluString();
+        $startedAt = Date::now()->toIso8601ZuluString();
         $this->info('transactionStatusCheck command started at '.$startedAt);
         $this->swiftaTransactionService->setRequestedTransactionsStatusFailed();
         $timeEnd = microtime(true);

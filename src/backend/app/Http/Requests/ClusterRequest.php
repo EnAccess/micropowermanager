@@ -29,10 +29,10 @@ class ClusterRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'name' => 'required',
-            'geo_type' => 'required',
-            'geo_data' => 'required',
-            'manager_id' => 'required',
+            'name' => ['required'],
+            'geo_type' => ['required'],
+            'geo_data' => ['required'],
+            'manager_id' => ['required'],
         ];
     }
 }

@@ -5,11 +5,11 @@ namespace App\Services;
 use App\Models\Country;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Date;
 
 /**
  * @implements IBaseService<Person>
@@ -113,7 +113,7 @@ class PersonService implements IBaseService {
     }
 
     public function updatePersonUpdatedDate(Person $person): void {
-        $person->updated_at = Carbon::now();
+        $person->updated_at = Date::now();
         $person->save();
     }
 
@@ -188,12 +188,12 @@ class PersonService implements IBaseService {
             // For active customers (true), show those with recent payments
             if ($activeCustomer) {
                 $query->whereHas('payments', function ($q) {
-                    $q->where('created_at', '>=', Carbon::now()->subDays(25));
+                    $q->where('created_at', '>=', Date::now()->subDays(25));
                 });
             } else {
                 // For inactive customers (false), exclude those with recent payments
                 $query->whereDoesntHave('payments', function ($q) {
-                    $q->where('created_at', '>=', Carbon::now()->subDays(25));
+                    $q->where('created_at', '>=', Date::now()->subDays(25));
                 });
             }
         }

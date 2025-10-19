@@ -51,7 +51,7 @@ abstract class AbstractJob implements ShouldQueue {
      */
     public static function dispatchForAllTenants(...$args): void {
         foreach (Company::pluck('id') as $companyId) {
-            static::dispatch($companyId, ...$args);
+            dispatch(new (get_called_class())($companyId, ...$args));
         }
     }
 }

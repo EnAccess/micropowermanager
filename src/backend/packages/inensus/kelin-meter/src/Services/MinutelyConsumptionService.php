@@ -2,7 +2,7 @@
 
 namespace Inensus\KelinMeter\Services;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinMeterMinutelyData;
@@ -13,8 +13,8 @@ class MinutelyConsumptionService {
     public function __construct(private KelinMeterApiClient $kelinApi, private KelinMeterMinutelyData $kelinMeterMinutelyData) {}
 
     public function getMinutelyDataFromAPI(): void {
-        $today = Carbon::now()->format('Ymd');
-        $moment = Carbon::now()->format('His');
+        $today = Date::now()->format('Ymd');
+        $moment = Date::now()->format('His');
         $pageNo = 1;
 
         do {

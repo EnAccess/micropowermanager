@@ -7,7 +7,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Inensus\SparkMeter\Exceptions\CronJobException;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\SmSmsNotifiedCustomerService;
@@ -113,7 +113,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Spark Meter Package #');
-        $startedAt = Carbon::now()->toIso8601ZuluString();
+        $startedAt = Date::now()->toIso8601ZuluString();
         $this->info('smsNotifier command started at '.$startedAt);
         try {
             $smsSettings = $this->smsSettingsService->getSmsSettings();
@@ -140,7 +140,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                     ->where(
                         'updated_at',
                         '>=',
-                        Carbon::now()->subMinutes($lowBalanceMin)
+                        Date::now()->subMinutes($lowBalanceMin)
                     ), $smsNotifiedCustomers);
             }
         } catch (CronJobException|\Exception $e) {

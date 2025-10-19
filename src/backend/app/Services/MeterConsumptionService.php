@@ -23,7 +23,7 @@ class MeterConsumptionService implements IBaseService {
             ->where('meter_id', $meter->id)->whereBetween(
                 'reading_date',
                 [$start, $end]
-            )->orderBy('reading_date')->get();
+            )->oldest('reading_date')->get();
     }
 
     public function getById(int $id): MeterConsumption {

@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use MPM\Device\DeviceService;
 
 class AppliancePaymentService {
@@ -166,8 +166,8 @@ class AppliancePaymentService {
                 return 30;
             }
 
-            $dueDateSecondRow = Carbon::parse($secondDueDate);
-            $dueDateThirdRow = Carbon::parse($thirdDueDate);
+            $dueDateSecondRow = Date::parse($secondDueDate);
+            $dueDateThirdRow = Date::parse($thirdDueDate);
 
             return (int) $dueDateSecondRow->diffInDays($dueDateThirdRow);
         } catch (\Exception) {

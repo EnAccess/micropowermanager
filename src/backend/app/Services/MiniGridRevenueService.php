@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use MPM\Device\MiniGridDeviceService;
 
 class MiniGridRevenueService {
@@ -35,7 +35,7 @@ class MiniGridRevenueService {
                 static fn ($q) => $q->where('status', 1)
             )
             ->whereIn('message', $miniGridMeters->pluck('serial_number'))
-            ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
+            ->whereBetween('created_at', [$startDate, Date::parse($endDate)->endOfDay()])->get();
     }
 
     /**
@@ -56,7 +56,7 @@ class MiniGridRevenueService {
                 $query->where('device_type', 'meter')
                     ->whereIn('device_id', $miniGridMeters->pluck('id'));
             })
-            ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
+            ->whereBetween('created_at', [$startDate, Date::parse($endDate)->endOfDay()])->get();
         $energy = 0;
 
         if ($soldEnergy->isNotEmpty() && isset($soldEnergy[0]->token_amount)) {

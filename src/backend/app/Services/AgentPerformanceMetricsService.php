@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class AgentPerformanceMetricsService {
@@ -15,8 +15,8 @@ class AgentPerformanceMetricsService {
      * @return array{metrics: \stdClass|null, top_agents: Collection<int, \stdClass>, period: array<string, array{agent_commissions: float, appliance_sales: int}>}
      */
     public function getMetrics(?string $startDate = null, ?string $endDate = null, ?string $interval = 'monthly'): array {
-        $startDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->subMonths(3)->startOfDay();
-        $endDate = $endDate ? Carbon::parse($endDate) : Carbon::now()->endOfDay();
+        $startDate = $startDate ? Date::parse($startDate) : Date::now()->subMonths(3)->startOfDay();
+        $endDate = $endDate ? Date::parse($endDate) : Date::now()->endOfDay();
 
         // Overall metrics
         $overall = DB::connection('tenant')

@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
-use Carbon\Carbon;
 use Database\Factories\CityFactory;
 use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
@@ -22,6 +21,7 @@ use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Date;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -158,8 +158,8 @@ class MeterTest extends TestCase {
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/meters/%s/consumptions/%s/%s',
             $meter->serial_number,
-            Carbon::now()->subDays(3)->format('Y-m-d'),
-            Carbon::now()->format('Y-m-d')
+            Date::now()->subDays(3)->format('Y-m-d'),
+            Date::now()->format('Y-m-d')
         ));
         $response->assertStatus(200);
         $this->assertEquals($response['data'][0]['consumption'], $consumption->consumption);
