@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Person         $mpmPerson
  * @property SteamaUserType $userType
  */
-class SteamaCustomer extends BaseModel {
+class SteamaCustomer extends \App\Models\Base\BaseModel {
     protected $table = 'steama_customers';
 
     public function mpmPerson(): BelongsTo {

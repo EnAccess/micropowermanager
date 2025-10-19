@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $date
  * @property string $path
  */
-class TicketOutsourceReport extends BaseModel {
+class TicketOutsourceReport extends \App\Models\Base\BaseModel {
     /** @use HasFactory<TicketOutsourceReportFactory> */
     use HasFactory;
 

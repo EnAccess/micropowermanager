@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Person $mpmPerson
  * @property SmSite $site
  */
-class SmCustomer extends BaseModel {
+class SmCustomer extends \App\Models\Base\BaseModel {
     protected $table = 'sm_customers';
 
     public function mpmPerson(): BelongsTo {

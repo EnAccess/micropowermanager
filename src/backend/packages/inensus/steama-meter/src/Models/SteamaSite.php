@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
  * @property Collection<int, SteamaSiteLevelPaymentPlan> $paymentPlans
  * @property Collection<int, SteamaAgent>                $agents
  */
-class SteamaSite extends BaseModel {
+class SteamaSite extends \App\Models\Base\BaseModel {
     protected $table = 'steama_sites';
 
     public function mpmMiniGrid(): BelongsTo {

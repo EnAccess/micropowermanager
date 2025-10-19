@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class TicketUser extends BaseModel {
+class TicketUser extends \App\Models\Base\BaseModel {
     /** @use HasFactory<TicketUserFactory> */
     use HasFactory;
 

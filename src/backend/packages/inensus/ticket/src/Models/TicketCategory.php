@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $label_color
  * @property int    $out_source
  */
-class TicketCategory extends BaseModel {
+class TicketCategory extends \App\Models\Base\BaseModel {
     /** @use HasFactory<TicketFactory> */
     use HasFactory;
 

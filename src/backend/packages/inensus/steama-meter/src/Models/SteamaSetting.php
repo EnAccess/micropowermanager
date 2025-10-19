@@ -5,7 +5,7 @@ namespace Inensus\SteamaMeter\Models;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class SteamaSetting extends BaseModel {
+class SteamaSetting extends \App\Models\Base\BaseModel {
     protected $table = 'steama_settings';
 
     public function setting(): MorphTo {

@@ -4,7 +4,7 @@ namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
 
-class SteamaSmsSetting extends BaseModel {
+class SteamaSmsSetting extends \App\Models\Base\BaseModel {
     protected $table = 'steama_sms_settings';
 
     public function setting() {

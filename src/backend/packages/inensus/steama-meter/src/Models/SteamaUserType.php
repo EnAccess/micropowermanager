@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property ConnectionType $mpmConnectionType
  */
-class SteamaUserType extends BaseModel {
+class SteamaUserType extends \App\Models\Base\BaseModel {
     protected $table = 'steama_user_types';
 
     public function mpmConnectionType(): BelongsTo {

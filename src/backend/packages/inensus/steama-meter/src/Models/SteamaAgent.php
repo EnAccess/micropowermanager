@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Agent      $mpmAgent
  * @property SteamaSite $site
  */
-class SteamaAgent extends BaseModel {
+class SteamaAgent extends \App\Models\Base\BaseModel {
     protected $table = 'steama_agents';
 
     public function mpmAgent(): BelongsTo {

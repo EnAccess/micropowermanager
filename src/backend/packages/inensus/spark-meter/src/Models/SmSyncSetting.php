@@ -2,7 +2,7 @@
 
 namespace Inensus\SparkMeter\Models;
 
-class SmSyncSetting extends BaseModel {
+class SmSyncSetting extends \App\Models\Base\BaseModel {
     protected $table = 'sm_sync_settings';
 
     public function syncAction() {

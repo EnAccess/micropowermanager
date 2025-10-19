@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class TicketOutsource extends BaseModel {
+class TicketOutsource extends \App\Models\Base\BaseModel {
     /** @use HasFactory<TicketOutsourceFactory> */
     use HasFactory;
 

@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\DB;
  * @property TicketCategory  $category
  * @property ?Person         $owner
  */
-class Ticket extends BaseModel {
+class Ticket extends \App\Models\Base\BaseModel {
     /** @use HasFactory<TicketFactory> */
     use HasFactory;
 

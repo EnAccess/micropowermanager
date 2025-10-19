@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property MiniGrid $mpmMiniGrid
  */
-class SmSite extends BaseModel {
+class SmSite extends \App\Models\Base\BaseModel {
     protected $table = 'sm_sites';
 
     public function mpmMiniGrid(): BelongsTo {

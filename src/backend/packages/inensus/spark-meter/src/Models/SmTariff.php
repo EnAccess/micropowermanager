@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property MeterTariff $mpmTariff
  * @property SmSite      $site
  */
-class SmTariff extends BaseModel {
+class SmTariff extends \App\Models\Base\BaseModel {
     protected $table = 'sm_tariffs';
 
     public function mpmTariff(): BelongsTo {
