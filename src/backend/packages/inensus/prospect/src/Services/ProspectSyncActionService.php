@@ -53,7 +53,8 @@ class ProspectSyncActionService {
 
         // Fallback to CarbonInterval::make using canonical units
         $unit = strtolower($valueStr);
-        $canonical = match ($unit) {
+
+        return match ($unit) {
             'minute', 'minutes' => CarbonInterval::minutes(max(1, $valueNum)),
             'hour', 'hours' => CarbonInterval::hours(max(1, $valueNum)),
             'day', 'days' => CarbonInterval::days(max(1, $valueNum)),
@@ -61,7 +62,5 @@ class ProspectSyncActionService {
             'month', 'months' => CarbonInterval::months(max(1, $valueNum)),
             default => CarbonInterval::minutes(15),
         };
-
-        return $canonical;
     }
 }

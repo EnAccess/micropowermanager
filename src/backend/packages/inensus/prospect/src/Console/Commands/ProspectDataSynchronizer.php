@@ -4,6 +4,8 @@ namespace Inensus\Prospect\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Inensus\Prospect\Jobs\ExtractInstallations;
+use Inensus\Prospect\Jobs\PushInstallations;
 use Inensus\Prospect\Services\ProspectSyncActionService;
 use Inensus\Prospect\Services\ProspectSyncSettingService;
 
@@ -26,7 +28,7 @@ class ProspectDataSynchronizer extends Command {
 
         $this->syncSettingService->updateSyncSettings([]); // no-op; ensure service is wired
 
-        $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
+        $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
             if (!$syncAction) {
                 return true;
@@ -37,11 +39,11 @@ class ProspectDataSynchronizer extends Command {
             $result = false;
             try {
                 if ($actionName === 'installations' || $actionName === 'installation') {
-                    \Inensus\Prospect\Jobs\ExtractInstallations::dispatch();
-                    \Inensus\Prospect\Jobs\PushInstallations::dispatch();
+                    ExtractInstallations::dispatch();
+                    PushInstallations::dispatch();
                     $result = true;
                 }
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $result = false;
             }
 

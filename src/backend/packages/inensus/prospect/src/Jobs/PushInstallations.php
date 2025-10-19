@@ -2,6 +2,7 @@
 
 namespace Inensus\Prospect\Jobs;
 
+use App\Models\CompanyDatabase;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,7 +24,7 @@ class PushInstallations implements ShouldQueue {
     public function handle(ProspectApiClient $apiClient): void {
         try {
             $data = $this->loadCsvData();
-            if (empty($data)) {
+            if ($data === []) {
                 Log::info('Prospect: no data to push');
 
                 return;
@@ -48,13 +49,13 @@ class PushInstallations implements ShouldQueue {
             return [];
         }
         $csvContent = file_get_contents($filePath) ?: '';
-        $lines = array_values(array_filter(str_getcsv($csvContent, "\n"), fn ($l) => trim((string) $l) !== ''));
-        if (empty($lines)) {
+        $lines = array_values(array_filter(str_getcsv($csvContent, "\n"), fn ($l): bool => trim((string) $l) !== ''));
+        if ($lines === []) {
             return [];
         }
         $headers = array_map('trim', str_getcsv(array_shift($lines)));
         $data = [];
-        foreach ($lines as $idx => $line) {
+        foreach ($lines as $line) {
             $row = str_getcsv($line);
             if (count($row) !== count($headers)) {
                 continue;
@@ -75,7 +76,7 @@ class PushInstallations implements ShouldQueue {
     }
 
     private function getLatestCsvFile(): string {
-        $companyDatabase = app(\App\Models\CompanyDatabase::class)->newQuery()->first();
+        $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
         $companyDatabaseName = $companyDatabase->getDatabaseName();
         $prospectPath = storage_path("app/prospect/{$companyDatabaseName}/");
         $files = glob($prospectPath.'*.csv') ?: [];

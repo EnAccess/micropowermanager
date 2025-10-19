@@ -3,6 +3,7 @@
 namespace Inensus\Prospect\Jobs;
 
 use App\Models\Device;
+use App\Services\CompanyDatabaseService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,7 +26,7 @@ class ExtractInstallations implements ShouldQueue {
             Log::info('Prospect: starting extraction');
 
             $data = $this->extractDataFromDatabase();
-            if (empty($data)) {
+            if ($data === []) {
                 Log::warning('Prospect: no data to extract');
 
                 return;
@@ -156,7 +157,7 @@ class ExtractInstallations implements ShouldQueue {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
-        $companyDatabase = app(\App\Services\CompanyDatabaseService::class)->findByCompanyId(1);
+        $companyDatabase = app(CompanyDatabaseService::class)->findByCompanyId(1);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";

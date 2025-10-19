@@ -1506,7 +1506,6 @@ export const exportedRoutes = [
     ],
   },
   {
-
     path: "/prospect",
     component: ChildRouteWrapper,
     meta: {
