@@ -2,6 +2,7 @@
 
 namespace Inensus\BulkRegistration\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inensus\BulkRegistration\Models\CsvData as CsvDataModel;
 
@@ -9,7 +10,10 @@ use Inensus\BulkRegistration\Models\CsvData as CsvDataModel;
  * @mixin CsvDataModel
  */
 class CsvData extends JsonResource {
-    public function toArray($request) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request) {
         return [
             'data' => [
                 'type' => 'csv_data',

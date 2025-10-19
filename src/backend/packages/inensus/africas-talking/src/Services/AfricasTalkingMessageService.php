@@ -4,8 +4,12 @@ namespace Inensus\AfricasTalking\Services;
 
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\AfricasTalking\Models\AfricasTalkingMessage;
 
+/**
+ * @implements IBaseService<AfricasTalkingMessage>
+ */
 class AfricasTalkingMessageService implements IBaseService {
     public function __construct(
         private AfricasTalkingMessage $africasTalkingMessage,
@@ -31,7 +35,10 @@ class AfricasTalkingMessageService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection {
+    /**
+     * @return Collection<int, AfricasTalkingMessage>|LengthAwarePaginator<int, AfricasTalkingMessage>
+     */
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 }

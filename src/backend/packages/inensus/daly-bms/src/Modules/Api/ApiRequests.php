@@ -13,7 +13,10 @@ class ApiRequests {
         private Client $httpClient,
     ) {}
 
-    public function authentication($credential): array {
+    /**
+     * @return array<string, mixed>
+     */
+    public function authentication(DalyBmsCredential $credential): array {
         try {
             $slug = '/Login/Authenticate?';
             $userName = $credential->getUserName();
@@ -44,7 +47,12 @@ class ApiRequests {
         }
     }
 
-    public function postWithBodyParams(DalyBmsCredential $credentials, array $params, string $slug) {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public function postWithBodyParams(DalyBmsCredential $credentials, array $params, string $slug): array {
         $url = $credentials->getApiUrl().$slug;
         try {
             $response = $this->httpClient->post(
@@ -78,7 +86,12 @@ class ApiRequests {
         }
     }
 
-    public function postWithQueryParams(DalyBmsCredential $credentials, array $params, string $slug) {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public function postWithQueryParams(DalyBmsCredential $credentials, array $params, string $slug): array {
         $url = $credentials->getApiUrl().$slug;
 
         if (!str_contains($url, '?')) {

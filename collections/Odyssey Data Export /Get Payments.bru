@@ -1,0 +1,20 @@
+meta {
+  name: Get Payments
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{mpm_backend_url}}/api/odyssey/payments?FROM=2025-10-06T00:00:00Z&TO=2025-10-06T23:59:59Z
+  body: none
+  auth: bearer
+}
+
+params:query {
+  FROM: 2025-10-06T00:00:00Z
+  TO: 2025-10-06T23:59:59Z
+}
+
+auth:bearer {
+  token: m0KWdo7rWMrfoPMOU3atzEF52YL4GQiWisVJHC5u1b806e6d6fecf6ecc2979bf105ca958a
+}

@@ -39,7 +39,7 @@ class UpdatePackage extends Command {
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/calin-smart-meter');
     }
 
-    private function deleteMigration(Filesystem $filesystem) {
+    private function deleteMigration(Filesystem $filesystem): mixed {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_calin_smart_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();

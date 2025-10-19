@@ -5,11 +5,17 @@ namespace Inensus\BulkRegistration\Services;
 use App\Models\Meter\Meter;
 
 class MeterService extends CreatorService {
-    public function __construct(Meter $meter, private MeterTypeService $meterTypeService) {
+    public function __construct(
+        Meter $meter,
+        private MeterTypeService $meterTypeService,
+    ) {
         parent::__construct($meter);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $meterConfig = config('bulk-registration.csv_fields.meter');
 
         if (strlen(preg_replace('/\s+/', '', $csvData[$meterConfig['serial_number']])) > 0) {
@@ -19,6 +25,9 @@ class MeterService extends CreatorService {
                 'in_use' => $meterConfig['in_use'],
                 'manufacturer_id' => $csvData[$meterConfig['manufacturer_id']],
                 'meter_type_id' => $meterType->id,
+                'connection_type_id' => $csvData['connection_type_id'],
+                'connection_group_id' => $csvData['connection_group_id'],
+                'tariff_id' => $csvData['tariff_id'],
             ];
 
             return $this->createRelatedDataIfDoesNotExists($meterData);

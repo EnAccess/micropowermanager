@@ -26,7 +26,7 @@ class WaveMoneyCredentialService {
         ]);
     }
 
-    public function getCredentials(): WaveMoneyCredential {
+    public function getCredentials(): ?WaveMoneyCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {

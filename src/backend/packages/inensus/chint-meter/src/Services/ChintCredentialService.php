@@ -15,14 +15,14 @@ class ChintCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): ChintCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'user_name' => null,
             'user_password' => null,
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): ?ChintCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {
@@ -38,7 +38,10 @@ class ChintCredentialService {
         return $credential;
     }
 
-    public function updateCredentials(object $credentials, array $updateData): object {
+    /**
+     * @param array<string, mixed> $updateData
+     */
+    public function updateCredentials(ChintCredential $credentials, array $updateData): ChintCredential {
         $encryptedData = $this->encryptCredentialFields($updateData, ['user_name', 'user_password']);
 
         $credentials->update($encryptedData);
@@ -48,7 +51,7 @@ class ChintCredentialService {
         return $this->decryptCredentialFields($credentials, ['user_name', 'user_password']);
     }
 
-    public function getById($id) {
+    public function getById(int $id): ChintCredential {
         $credential = $this->credential->newQuery()->findOrFail($id);
 
         // Decrypt sensitive fields

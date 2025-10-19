@@ -30,7 +30,12 @@ class DalyBmsApi implements IManufacturerAPI {
         private ApiRequests $apiRequests,
     ) {}
 
-    public function getDevices(array $deviceSerials) {
+    /**
+     * @param array<string, mixed> $deviceSerials
+     *
+     * @return array<string, mixed>
+     */
+    public function getDevices(array $deviceSerials): array {
         $params = [
             'codes' => $deviceSerials,
         ];
@@ -53,7 +58,10 @@ class DalyBmsApi implements IManufacturerAPI {
         }
     }
 
-    public function getDevice(string $code) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function getDevice(string $code): array {
         $params = [
             'Code' => $code,
         ];
@@ -75,7 +83,10 @@ class DalyBmsApi implements IManufacturerAPI {
         }
     }
 
-    public function switchDevice(string $code, bool $isOn) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function switchDevice(string $code, bool $isOn): array {
         $params = [
             'cmdKey' => '8500_004',
             'data' => [

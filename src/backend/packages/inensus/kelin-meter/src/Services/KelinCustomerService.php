@@ -5,7 +5,6 @@ namespace Inensus\KelinMeter\Services;
 use App\Models\City;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
@@ -169,7 +168,7 @@ class KelinCustomerService implements ISynchronizeService {
             'surname' => $personData['surname'],
             'is_customer' => 1,
         ]);
-        $addressService = App::make(AddressesService::class);
+        $addressService = app()->make(AddressesService::class);
         $city = City::query()->first();
         $addressParams = [
             'phone' => $personData['phone'],

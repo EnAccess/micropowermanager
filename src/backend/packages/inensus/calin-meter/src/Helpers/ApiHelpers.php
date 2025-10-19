@@ -19,7 +19,12 @@ class ApiHelpers {
         }
     }
 
-    public function checkApiResult(array $result) {
+    /**
+     * @param array<string, mixed>|string $result
+     *
+     * @return array<string, mixed>|string
+     */
+    public function checkApiResult(array|string $result): array|string {
         if ((int) $result['result_code'] !== 0) {
             throw new CalinApiResponseException($result['reason']);
         }
@@ -28,13 +33,13 @@ class ApiHelpers {
     }
 
     public function generateCipherText(
-        $serialID,
-        $userID,
-        $meterID,
+        int $serialID,
+        int $userID,
+        int $meterID,
         string $tokenType,
         float $amount,
         int $timestamp,
-        $key,
+        string $key,
     ): string {
         return md5(
             sprintf(

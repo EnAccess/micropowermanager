@@ -8,7 +8,10 @@ use Inensus\MicroStarMeter\Modules\Api\ApiRequests;
 class MicroStarTestController extends Controller {
     public function __construct(private ApiRequests $apiRequests) {}
 
-    public function show() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function show(): array {
         return $this->apiRequests->testGet();
     }
 }

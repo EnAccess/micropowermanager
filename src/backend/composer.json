@@ -61,6 +61,7 @@
   "autoload": {
     "psr-4": {
       "App\\": "app/",
+"Inensus\\OdysseyDataExport\\": "packages/inensus/odyssey-data-export/src",
       "Database\\Factories\\": "database/factories/",
       "Database\\Seeders\\": "database/seeders/",
       "MPM\\": "app/modules",

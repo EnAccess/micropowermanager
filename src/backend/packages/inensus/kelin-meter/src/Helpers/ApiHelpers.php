@@ -18,7 +18,12 @@ class ApiHelpers {
         ]);
     }
 
-    public function checkApiResult($result) {
+    /**
+     * @param array<string, mixed>|string $result
+     *
+     * @return array<string, mixed>|string
+     */
+    public function checkApiResult(array|string $result): array|string {
         if (!$result) {
             throw new KelinApiEmtyDataException('Null result returned.');
         }
@@ -35,7 +40,10 @@ class ApiHelpers {
         return $result;
     }
 
-    public function makeHash($data): string {
+    /**
+     * @param array<string|int, mixed> $data
+     */
+    public function makeHash(array $data): string {
         return md5(implode('', $data));
     }
 }

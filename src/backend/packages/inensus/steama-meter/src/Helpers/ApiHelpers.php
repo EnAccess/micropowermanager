@@ -19,7 +19,12 @@ class ApiHelpers {
         }
     }
 
-    public function checkApiResult(array $result): array {
+    /**
+     * @param array<string, mixed>|string $result
+     *
+     * @return array<string, mixed>|string
+     */
+    public function checkApiResult(array|string $result): array|string {
         if (array_key_exists('detail', $result)) {
             throw new SteamaApiResponseException($result['detail']);
         }
@@ -30,7 +35,10 @@ class ApiHelpers {
         return $result;
     }
 
-    public function makeHash($data): string {
+    /**
+     * @param array<string|int, mixed> $data
+     */
+    public function makeHash(array $data): string {
         return md5(implode('', $data));
     }
 }

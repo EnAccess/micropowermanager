@@ -15,14 +15,14 @@ class SunKingCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): SunKingCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'client_id' => null,
             'client_secret' => null,
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): ?SunKingCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {
@@ -41,7 +41,10 @@ class SunKingCredentialService {
         return $credential;
     }
 
-    public function updateCredentials(object $credentials, array $updateData): object {
+    /**
+     * @param array<string, mixed> $updateData
+     */
+    public function updateCredentials(SunKingCredential $credentials, array $updateData): SunKingCredential {
         $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret', 'access_token']);
         $credentials->update($encryptedData);
 
@@ -50,7 +53,7 @@ class SunKingCredentialService {
         return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret', 'access_token']);
     }
 
-    public function getById($id) {
+    public function getById(int $id): SunKingCredential {
         $credential = $this->credential->newQuery()->findOrFail($id);
 
         // Decrypt sensitive fields
@@ -67,7 +70,7 @@ class SunKingCredentialService {
         return $credential;
     }
 
-    public function isAccessTokenValid($credential): bool {
+    public function isAccessTokenValid(SunKingCredential $credential): bool {
         $accessToken = $credential->getAccessToken();
 
         if ($accessToken == null) {

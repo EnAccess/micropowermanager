@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Models\ViberContact;
 use Inensus\ViberMessaging\Services\ViberContactService;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
+use Viber\Api\Event\Message as MessageEvent;
 use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Viber\Bot;
@@ -154,11 +155,11 @@ class WebhookController extends Controller {
         return 'Not registered with MicroPowerManager.';
     }
 
-    private function setNoTransactionMessage($meterSerial): string {
+    private function setNoTransactionMessage(string $meterSerial): string {
         return "No transaction found for meter serial: $meterSerial";
     }
 
-    private function answerToCustomer(Bot $bot, Sender $botSender, $event, string $message): void {
+    private function answerToCustomer(Bot $bot, Sender $botSender, MessageEvent $event, string $message): void {
         $bot->getClient()->sendMessage(
             (new Text())
                 ->setSender($botSender)

@@ -7,6 +7,7 @@ use App\Models\Address\Address;
 use App\Models\Sms;
 use App\Services\AddressesService;
 use App\Services\SmsService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
@@ -18,7 +19,7 @@ class AfricasTalkingCallbackController extends Controller {
         private AddressesService $addressesService,
     ) {}
 
-    public function incoming(Request $request) {
+    public function incoming(Request $request): JsonResponse {
         $data = $request->all();
         $phoneNumber = $data['from'];
         $message = $data['text'];
@@ -41,7 +42,7 @@ class AfricasTalkingCallbackController extends Controller {
         return response()->json(['status' => 'success']);
     }
 
-    public function delivery(Request $request) {
+    public function delivery(Request $request): JsonResponse {
         $data = $request->all();
         $status = $data['status'];
         $id = $data['id'];

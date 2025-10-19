@@ -9,7 +9,10 @@ class PersonService extends CreatorService {
         parent::__construct($person);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData): Person {
         $personConfig = config('bulk-registration.csv_fields.person');
         $personData = [
             'name' => $csvData[$personConfig['name']],

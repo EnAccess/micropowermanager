@@ -2,12 +2,22 @@
 
 namespace Inensus\BulkRegistration\Services;
 
-abstract class CreatorService implements ICreatorService {
-    public function __construct(protected $model) {}
+abstract class CreatorService {
+    public function __construct(protected object $model) {}
 
-    public function createRelatedDataIfDoesNotExists($resolvedCsvData) {
+    /**
+     * @param array<string, mixed>|list<array<string, mixed>> $resolvedCsvData
+     *
+     * @return object|void
+     */
+    public function createRelatedDataIfDoesNotExists(array $resolvedCsvData) {
         return $this->model->newQuery()->firstOrCreate($resolvedCsvData, $resolvedCsvData);
     }
 
-    abstract public function resolveCsvDataFromComingRow($csvData);
+    /**
+     * @param array<string, mixed> $csvData
+     *
+     * @return object|void|bool
+     */
+    abstract public function resolveCsvDataFromComingRow(array $csvData);
 }

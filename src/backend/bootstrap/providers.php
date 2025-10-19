@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\ApiKeyServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\ServicesProvider;
@@ -17,6 +18,7 @@ use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
 use Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
 use Inensus\Prospect\Providers\ProspectServiceProvider;
+use Inensus\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
 use Inensus\SparkMeter\Providers\SparkMeterServiceProvider;
 use Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use Inensus\StronMeter\Providers\StronMeterServiceProvider;
@@ -30,6 +32,7 @@ use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServicePr
 
 return [
     AppServiceProvider::class,
+    ApiKeyServiceProvider::class,
     HorizonServiceProvider::class,
     ServicesProvider::class,
     AfricasTalkingServiceProvider::class,
@@ -54,6 +57,7 @@ return [
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
     ProspectServiceProvider::class,
+    OdysseyDataExportServiceProvider::class,
     DemoMeterManufacturerServiceProvider::class,
     DemoShsManufacturerServiceProvider::class,
 ];

@@ -35,6 +35,11 @@ class Company extends BaseModelCentral {
         return $this->hasMany(DatabaseProxy::class);
     }
 
+    /** @return HasMany<ApiKey, $this> */
+    public function apiKeys(): HasMany {
+        return $this->hasMany(ApiKey::class);
+    }
+
     public function getId(): int {
         return $this->id;
     }

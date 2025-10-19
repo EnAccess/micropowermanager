@@ -15,20 +15,23 @@ class AngazaCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): AngazaCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'client_id' => null,
             'client_secret' => null,
         ]);
     }
 
-    public function getCredentials(): object {
+    public function getCredentials(): ?AngazaCredential {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 
-    public function updateCredentials(object $credentials, array $updateData): object {
+    /**
+     * @param array<string, mixed> $updateData
+     */
+    public function updateCredentials(AngazaCredential $credentials, array $updateData): AngazaCredential {
         $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret']);
 
         $credentials->update($encryptedData);
@@ -38,20 +41,9 @@ class AngazaCredentialService {
         return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret']);
     }
 
-    public function getById($id): object {
+    public function getById(int $id): AngazaCredential {
         $credential = $this->credential->newQuery()->findOrFail($id);
 
         return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
-    }
-
-    public function isAccessTokenValid($credential): bool {
-        $accessToken = $credential->getAccessToken();
-
-        if ($accessToken == null) {
-            return false;
-        }
-        $tokenExpirationTime = $credential->getExpirationTime();
-
-        return $tokenExpirationTime != null && $tokenExpirationTime >= time();
     }
 }
