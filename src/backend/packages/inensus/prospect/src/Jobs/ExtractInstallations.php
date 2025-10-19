@@ -68,8 +68,10 @@ class ExtractInstallations implements ShouldQueue {
 
             $latitude = null;
             $longitude = null;
-            if ($primaryAddress && $primaryAddress->geo && $primaryAddress->geo->points) {
-                $coordinates = explode(',', $primaryAddress->geo->points);
+
+            $geoInfo = $primaryAddress ? $primaryAddress->geo : null;
+            if ($geoInfo && $geoInfo->points) {
+                $coordinates = explode(',', $geoInfo->points);
                 if (count($coordinates) >= 2) {
                     $latitude = (float) trim($coordinates[0]);
                     $longitude = (float) trim($coordinates[1]);
@@ -81,6 +83,8 @@ class ExtractInstallations implements ShouldQueue {
                 'solar_home_system' => 'solar_home_system',
                 default => 'other',
             };
+
+            $manufacturer = $deviceData->manufacturer ?? null;
 
             $installations[] = [
                 'customer_external_id' => $customerIdentifier,
@@ -97,7 +101,7 @@ class ExtractInstallations implements ShouldQueue {
                 'ac_input_source' => null,
                 'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
                 'firmware_version' => null,
-                'manufacturer' => ($deviceData->manufacturer !== null) ? $deviceData->manufacturer->name : 'Unknown',
+                'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
                 'model' => null,
                 'primary_use' => null,
                 'rated_power_w' => null,
@@ -116,8 +120,8 @@ class ExtractInstallations implements ShouldQueue {
                 'payment_plan_days_financed' => null,
                 'payment_plan_days_down_payment' => null,
                 'payment_plan_category' => 'paygo',
-                'purchase_date' => $device->created_at?->format('Y-m-d'),
-                'installation_date' => $device->created_at?->format('Y-m-d'),
+                'purchase_date' => $device->created_at->format('Y-m-d'),
+                'installation_date' => $device->created_at->format('Y-m-d'),
                 'repossession_date' => null,
                 'paid_off_date' => null,
                 'repossession_category' => null,
@@ -147,7 +151,7 @@ class ExtractInstallations implements ShouldQueue {
         $headers = array_keys($data[0]);
         $csvContent = $this->arrayToCsv($data, $headers);
 
-        $companyDatabase = app(\App\Services\CompanyDatabaseService::class)->findByCompanyId(null);
+        $companyDatabase = app(\App\Services\CompanyDatabaseService::class)->findByCompanyId(1);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
