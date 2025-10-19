@@ -45,7 +45,7 @@ class OdysseyPaymentTransformer {
                 }
 
                 // Geo
-                $geo = optional($device->address?->geo);
+                $geo = optional($device->address->geo);
                 if ($geo && !empty($geo->points)) {
                     // Expecting "lat,lng" or "lng,lat"; we assume "lat,lng"
                     $parts = explode(',', $geo->points);
@@ -69,7 +69,7 @@ class OdysseyPaymentTransformer {
                     $customerCategory = $underlying->connectionType?->name;
                 }
 
-                $geo = optional($device->address?->geo);
+                $geo = optional($device->address->geo);
                 if ($geo && !empty($geo->points)) {
                     $parts = explode(',', $geo->points);
                     if (count($parts) === 2) {
