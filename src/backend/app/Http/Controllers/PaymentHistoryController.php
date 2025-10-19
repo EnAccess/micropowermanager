@@ -64,9 +64,9 @@ class PaymentHistoryController {
         if (\count($payments) > 0) {
             $lastTransactionDate = $newest = $payments[0]->created_at;
             $newest = new Carbon($newest);
-            $lastTransactionDate = $newest->diffInDays(Carbon::now()).' days ago';
+            $lastTransactionDate = (int) $newest->diffInDays(Carbon::now()).' days ago';
             $eldest = new Carbon($payments[\count($payments) - 1]->created_at);
-            $difference = $eldest->diffInDays($newest).' days';
+            $difference = (int) $eldest->diffInDays($newest).' days';
         }
 
         return ApiResource::make(['difference' => $difference, 'lastTransaction' => $lastTransactionDate]);

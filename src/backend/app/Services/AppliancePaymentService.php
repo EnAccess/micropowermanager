@@ -169,7 +169,7 @@ class AppliancePaymentService {
             $dueDateSecondRow = Carbon::parse($secondDueDate);
             $dueDateThirdRow = Carbon::parse($thirdDueDate);
 
-            return $dueDateSecondRow->diffInDays($dueDateThirdRow);
+            return (int) $dueDateSecondRow->diffInDays($dueDateThirdRow);
         } catch (\Exception) {
             return 30;
         }
