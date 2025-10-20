@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\ConnectionType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

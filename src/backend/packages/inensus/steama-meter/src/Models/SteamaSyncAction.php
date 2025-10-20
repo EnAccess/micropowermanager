@@ -2,6 +2,8 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
+
 class SteamaSyncAction extends BaseModel {
     protected $table = 'steama_sync_actions';
 
