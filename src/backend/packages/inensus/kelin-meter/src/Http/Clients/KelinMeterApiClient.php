@@ -11,9 +11,18 @@ use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Models\KelinCredential;
 
 class KelinMeterApiClient {
-    public function __construct(private Client $client, private ApiHelpers $apiHelpers, private KelinCredential $credential) {}
+    public function __construct(
+        private Client $client,
+        private ApiHelpers $apiHelpers,
+        private KelinCredential $credential,
+    ) {}
 
-    public function token(string $url, $queryParams): string|array {
+    /**
+     * @param array<string, mixed> $queryParams
+     *
+     * @return string|array<string, mixed>
+     */
+    public function token(string $url, array $queryParams): string|array {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -31,7 +40,12 @@ class KelinMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $response->getBody(), true));
     }
 
-    public function get(string $url, $queryParams = null): string|array {
+    /**
+     * @param array<string, mixed> $queryParams
+     *
+     * @return array<string, string|array<string, string|array<string, mixed>>>|string
+     */
+    public function get(string $url, ?array $queryParams = null): string|array {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {
@@ -54,7 +68,7 @@ class KelinMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $response->getBody(), true));
     }
 
-    public function getCredentials() {
+    public function getCredentials(): KelinCredential {
         return $this->credential->newQuery()->firstOrFail();
     }
 }
