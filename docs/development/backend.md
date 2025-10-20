@@ -65,6 +65,23 @@ $person->surname = 'A Surname'
 $person->save();
 ```
 
+### Automatically generate Model properties
+
+MicroPowerManager ships with a custom version of [Laravel IDE Helper](https://github.com/barryvdh/laravel-ide-helper) which can be used to automatically generate PHPDocs for Model properties.
+
+To generate Model properties enter a local development container using
+
+```bash
+docker exec -it -u www-data backend-dev bash
+```
+
+Then run
+
+```bash
+php artisan mpm-ide-helper:models -RW
+composer rector-fix
+```
+
 ## Schemas
 
 ### Central Database Schema
@@ -108,3 +125,7 @@ Objects and models may contain information specific to the manufacturer, for exa
 
 <!-- prettier-ignore -->
 OpenAPI documentation for MPM can be found here: [OpenAPI docs](/openapi/index.html){target="_self"}
+
+```
+
+```
