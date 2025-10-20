@@ -3,23 +3,42 @@
 namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Inensus\KelinMeter\Models\KelinSetting as KelinSettingData;
+use Inensus\KelinMeter\Models\KelinSetting;
 
 /**
- * @mixin KelinSettingData
+ * @mixin KelinSetting
  */
 class KelinSettingResource extends JsonResource {
+    /**
+     * Transform the resource into an array.
+     *
+     * @param mixed $request
+     *
+     * @return array{
+     *     data: array{
+     *         type: 'setting',
+     *         id: int,
+     *         attributes: array{
+     *             id: int,
+     *             actionName: string,
+     *             syncInValueStr: string,
+     *             syncInValueNum: int,
+     *             maxAttempts: int
+     *         }
+     *     }
+     * }
+     */
     public function toArray($request) {
         return [
             'data' => [
                 'type' => 'setting',
                 'id' => $this->id,
                 'attributes' => [
-                    'id' => $this->setting->id, // @phpstan-ignore property.notFound
-                    'actionName' => $this->setting->action_name, // @phpstan-ignore property.notFound
-                    'syncInValueStr' => $this->setting->sync_in_value_str, // @phpstan-ignore property.notFound
-                    'syncInValueNum' => $this->setting->sync_in_value_num, // @phpstan-ignore property.notFound
-                    'maxAttempts' => $this->setting->max_attempts, // @phpstan-ignore property.notFound
+                    'id' => $this->setting->id,
+                    'actionName' => $this->setting->action_name,
+                    'syncInValueStr' => $this->setting->sync_in_value_str,
+                    'syncInValueNum' => $this->setting->sync_in_value_num,
+                    'maxAttempts' => $this->setting->max_attempts,
                 ],
             ],
         ];

@@ -2,14 +2,32 @@
 
 namespace Inensus\KelinMeter\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\KelinMeter as KelinMeterData;
 
 /**
  * @mixin KelinMeterData
  */
 class KelinMeterResource extends JsonResource {
-    public function toArray($request) {
+    /**
+     * @return array{
+     *     data: array{
+     *         type: 'setting',
+     *         id: int,
+     *         attributes: array{
+     *             id: int|string,
+     *             meterName: string,
+     *             meterAddress: string,
+     *             owner: string,
+     *             terminalId: int,
+     *             kelinCustomer: KelinCustomer
+     *         }
+     *     }
+     * }
+     */
+    public function toArray(Request $request) {
         return [
             'data' => [
                 'type' => 'setting',

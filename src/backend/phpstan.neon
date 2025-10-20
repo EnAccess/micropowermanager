@@ -20,7 +20,7 @@ parameters:
         - packages/inensus/demo-meter-manufacturer/
         - packages/inensus/demo-shs-manufacturer/
         - packages/inensus/gome-long-meter/
-        # - packages/inensus/kelin-meter/
+        - packages/inensus/kelin-meter/
         - packages/inensus/mesomb-payment-provider/
         - packages/inensus/micro-star-meter/
         # - packages/inensus/spark-meter/
