@@ -14,17 +14,16 @@ use ReflectionClass;
  * This file is a copy of the great laravel-ide-helper.
  * https://github.com/barryvdh/laravel-ide-helper/blob/9ef25f60e70ced86f687ef6b9ffd9ac74a7c388a/src/Console/ModelsCommand.php#L1164.
  *
- * Unfortunately laravel-ide-helper lacks some configuration options.
- * It generates a lot of PHPDocs which are no longer required by Laravel 11+.
- * And might be outdated and cause confusion.
+ * The original implementation lacks some configuration flexibility.
+ * It also generates extensive PHPDocs that are largely unnecessary for Laravel 11+,
+ * and may become outdated or misleading over time.
  *
- * What we mainly want is the auto-generation of @property and @property-read
- * magic methods to be consistent with out database.
+ * Our main goal is to automatically generate @property and @property-read
+ * Model annotations that accurately reflect our database schema.
  *
- * Hence we have customised below like so
- *
- * - Do not generate the Eloquent helper file
- * - Do not generate generic @mixin on models
+ * Therefore, we have customized the logic as follows:
+ * - Skip generation of the Eloquent helper file
+ * - Omit generic @mixin annotations from models
  */
 class MpmModelsCommand extends ModelsCommand {
     // protected $signature = 'mpm:ide-helper';
