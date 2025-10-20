@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
-use Barryvdh\LaravelIdeHelper\Generator;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -86,23 +85,23 @@ class MpmModelsCommand extends ModelsCommand {
         $helperFilename = $this->config->get('ide-helper.filename');
         $writeHelper = $this->option('write-eloquent-helper');
 
-        if (!$writeHelper && !$this->files->exists($helperFilename) && ($this->write || $this->write_mixin)) {
-            if ($this->confirm("{$helperFilename} does not exist.
-            Do you want to generate a minimal helper to generate the Eloquent methods?")) {
-                $writeHelper = true;
-            }
-        }
+        // if (!$writeHelper && !$this->files->exists($helperFilename) && ($this->write || $this->write_mixin)) {
+        //     if ($this->confirm("{$helperFilename} does not exist.
+        //     Do you want to generate a minimal helper to generate the Eloquent methods?")) {
+        //         $writeHelper = true;
+        //     }
+        // }
 
-        if ($writeHelper) {
-            $generator = new Generator($this->config, $this->view, $this->getOutput());
-            $content = $generator->generateEloquent();
-            $written = $this->files->put($helperFilename, $content);
-            if ($written !== false) {
-                $this->info("Eloquent helper was written to $helperFilename");
-            } else {
-                $this->error("Failed to write eloquent helper to $helperFilename");
-            }
-        }
+        // if ($writeHelper) {
+        //     $generator = new Generator($this->config, $this->view, $this->getOutput());
+        //     $content = $generator->generateEloquent();
+        //     $written = $this->files->put($helperFilename, $content);
+        //     if ($written !== false) {
+        //         $this->info("Eloquent helper was written to $helperFilename");
+        //     } else {
+        //         $this->error("Failed to write eloquent helper to $helperFilename");
+        //     }
+        // }
     }
 
     /**
@@ -172,31 +171,31 @@ class MpmModelsCommand extends ModelsCommand {
 
         ksort($this->methods);
 
-        foreach ($this->methods as $name => $method) {
-            if (in_array($name, $methods)) {
-                continue;
-            }
-            $arguments = implode(', ', $method['arguments']);
-            $tagLine = "@method static {$method['type']} {$name}({$arguments})";
-            if ($method['comment'] !== '') {
-                $tagLine .= " {$method['comment']}";
-            }
-            $tag = Tag::createInstance($tagLine, $phpdoc);
-            $phpdoc->appendTag($tag);
-        }
+        // foreach ($this->methods as $name => $method) {
+        //     if (in_array($name, $methods)) {
+        //         continue;
+        //     }
+        //     $arguments = implode(', ', $method['arguments']);
+        //     $tagLine = "@method static {$method['type']} {$name}({$arguments})";
+        //     if ($method['comment'] !== '') {
+        //         $tagLine .= " {$method['comment']}";
+        //     }
+        //     $tag = Tag::createInstance($tagLine, $phpdoc);
+        //     $phpdoc->appendTag($tag);
+        // }
 
-        if ($this->write) {
-            $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
+        // if ($this->write) {
+        //     $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
 
-            // remove the already existing tag to prevent duplicates
-            foreach ($phpdoc->getTagsByName('mixin') as $tag) {
-                if ($tag->getContent() === $eloquentClassNameInModel) {
-                    $phpdoc->deleteTag($tag);
-                }
-            }
+        //     // remove the already existing tag to prevent duplicates
+        //     foreach ($phpdoc->getTagsByName('mixin') as $tag) {
+        //         if ($tag->getContent() === $eloquentClassNameInModel) {
+        //             $phpdoc->deleteTag($tag);
+        //         }
+        //     }
 
-            $phpdoc->appendTag(Tag::createInstance('@mixin '.$eloquentClassNameInModel, $phpdoc));
-        }
+        //     $phpdoc->appendTag(Tag::createInstance('@mixin '.$eloquentClassNameInModel, $phpdoc));
+        // }
 
         if ($this->phpstorm_noinspections) {
             /*
