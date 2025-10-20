@@ -2,18 +2,21 @@
 
 namespace App\Services;
 
+use App\Support\AppStorage;
 use Barryvdh\DomPDF\PDF;
-use Illuminate\Support\Facades\Storage;
 
 class PdfService {
     public function __construct(private PDF $pdf) {}
 
     public function generatePdfFromView(string $view, mixed $dataToInject): string {
-        $this->pdf->loadView($view, ['data' => $dataToInject]);
+        $pdf = $this->pdf->loadView($view, ['data' => $dataToInject]);
+        $pdfContent = $pdf->output();
 
-        $filePath = Storage::path('non-paying').time().'.pdf';
+        // Build a dynamic file path
+        $timestamp = time();
+        $filePath = "non-paying/{$timestamp}.pdf";
 
-        $this->pdf->save($filePath);
+        AppStorage::put($filePath, $pdfContent);
 
         return $filePath;
     }
