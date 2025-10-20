@@ -25,9 +25,4 @@ abstract class BaseModel extends Model {
 
         parent::__construct($attributes);
     }
-
-    public function resolveChildRouteBinding($childType, $value, $field) {
-        // TODO: Implement resolveChildRouteBinding() method.
-        throw new \Exception('Method resolveChildRouteBinding() not yet implemented.');
-    }
 }
