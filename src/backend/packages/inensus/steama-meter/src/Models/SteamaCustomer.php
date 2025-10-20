@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Person         $mpmPerson
  * @property SteamaUserType $userType
  */
-class SteamaCustomer extends \App\Models\Base\BaseModel {
+class SteamaCustomer extends BaseModel {
     protected $table = 'steama_customers';
 
     public function mpmPerson(): BelongsTo {

@@ -2,6 +2,8 @@
 
 namespace Inensus\SparkMeter\Models;
 
-class SmSmsBody extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SmSmsBody extends BaseModel {
     protected $table = 'sm_sms_bodies';
 }

@@ -2,6 +2,8 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-class SteamaFlatRatePaymentPlan extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SteamaFlatRatePaymentPlan extends BaseModel {
     protected $table = 'steama_flat_rate_payment_plans';
 }

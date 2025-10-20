@@ -2,6 +2,8 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-class SteamaHybridPaymentPlan extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SteamaHybridPaymentPlan extends BaseModel {
     protected $table = 'steama_hybrid_payment_plans';
 }

@@ -2,13 +2,14 @@
 
 namespace Inensus\SparkMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\MiniGrid;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property MiniGrid $mpmMiniGrid
  */
-class SmSite extends \App\Models\Base\BaseModel {
+class SmSite extends BaseModel {
     protected $table = 'sm_sites';
 
     public function mpmMiniGrid(): BelongsTo {

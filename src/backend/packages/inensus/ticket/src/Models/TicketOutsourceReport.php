@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Base\BaseModel;
 use Database\Factories\Inensus\Ticket\Models\TicketOutsourceReportFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $date
  * @property string $path
  */
-class TicketOutsourceReport extends \App\Models\Base\BaseModel {
+class TicketOutsourceReport extends BaseModel {
     /** @use HasFactory<TicketOutsourceReportFactory> */
     use HasFactory;
 

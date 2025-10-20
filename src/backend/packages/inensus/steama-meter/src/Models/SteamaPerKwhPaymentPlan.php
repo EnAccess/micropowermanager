@@ -2,6 +2,8 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-class SteamaPerKwhPaymentPlan extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SteamaPerKwhPaymentPlan extends BaseModel {
     protected $table = 'steama_per_kwh_payment_plans';
 }

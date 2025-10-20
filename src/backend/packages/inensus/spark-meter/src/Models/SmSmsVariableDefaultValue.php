@@ -2,6 +2,8 @@
 
 namespace Inensus\SparkMeter\Models;
 
-class SmSmsVariableDefaultValue extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SmSmsVariableDefaultValue extends BaseModel {
     protected $table = 'sm_sms_variable_default_values';
 }

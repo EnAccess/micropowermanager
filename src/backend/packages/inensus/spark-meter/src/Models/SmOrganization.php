@@ -2,6 +2,8 @@
 
 namespace Inensus\SparkMeter\Models;
 
-class SmOrganization extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SmOrganization extends BaseModel {
     protected $table = 'sm_organizations';
 }

@@ -2,7 +2,9 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-class SteamaSyncSetting extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SteamaSyncSetting extends BaseModel {
     protected $table = 'steama_sync_settings';
 
     public function syncAction() {

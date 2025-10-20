@@ -2,10 +2,11 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterTariff;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SteamaTariff extends \App\Models\Base\BaseModel {
+class SteamaTariff extends BaseModel {
     protected $table = 'steama_tariffs';
 
     public function mpmTariff(): BelongsTo {

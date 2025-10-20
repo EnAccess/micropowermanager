@@ -3,13 +3,14 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Agent;
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property Agent      $mpmAgent
  * @property SteamaSite $site
  */
-class SteamaAgent extends \App\Models\Base\BaseModel {
+class SteamaAgent extends BaseModel {
     protected $table = 'steama_agents';
 
     public function mpmAgent(): BelongsTo {

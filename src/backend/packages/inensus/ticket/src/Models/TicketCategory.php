@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Base\BaseModel;
 use Database\Factories\Inensus\Ticket\Models\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $label_color
  * @property int    $out_source
  */
-class TicketCategory extends \App\Models\Base\BaseModel {
+class TicketCategory extends BaseModel {
     /** @use HasFactory<TicketFactory> */
     use HasFactory;
 

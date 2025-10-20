@@ -2,12 +2,13 @@
 
 namespace Inensus\SparkMeter\Models;
 
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property SmSite $site
  */
-class SmSalesAccount extends \App\Models\Base\BaseModel {
+class SmSalesAccount extends BaseModel {
     protected $table = 'sm_sales_accounts';
 
     public function site(): BelongsTo {

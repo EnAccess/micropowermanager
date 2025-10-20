@@ -2,10 +2,11 @@
 
 namespace Inensus\SparkMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SmMeterModel extends \App\Models\Base\BaseModel {
+class SmMeterModel extends BaseModel {
     protected $table = 'sm_meter_models';
 
     public function meterType(): BelongsTo {

@@ -2,6 +2,8 @@
 
 namespace Inensus\SparkMeter\Models;
 
-class SmSmsFeedbackWord extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SmSmsFeedbackWord extends BaseModel {
     protected $table = 'sm_sms_feedback_words';
 }

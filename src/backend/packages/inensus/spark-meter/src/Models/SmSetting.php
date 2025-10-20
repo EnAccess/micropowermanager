@@ -2,9 +2,10 @@
 
 namespace Inensus\SparkMeter\Models;
 
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class SmSetting extends \App\Models\Base\BaseModel {
+class SmSetting extends BaseModel {
     protected $table = 'sm_settings';
 
     public function setting(): MorphTo {

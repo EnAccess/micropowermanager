@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\MiniGrid;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ use Illuminate\Support\Collection;
  * @property Collection<int, SteamaSiteLevelPaymentPlan> $paymentPlans
  * @property Collection<int, SteamaAgent>                $agents
  */
-class SteamaSite extends \App\Models\Base\BaseModel {
+class SteamaSite extends BaseModel {
     protected $table = 'steama_sites';
 
     public function mpmMiniGrid(): BelongsTo {

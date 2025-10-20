@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Carbon\Carbon;
 use Database\Factories\Inensus\Ticket\Models\TicketFactory;
@@ -33,7 +34,7 @@ use Illuminate\Support\Facades\DB;
  * @property TicketCategory  $category
  * @property ?Person         $owner
  */
-class Ticket extends \App\Models\Base\BaseModel {
+class Ticket extends BaseModel {
     /** @use HasFactory<TicketFactory> */
     use HasFactory;
 

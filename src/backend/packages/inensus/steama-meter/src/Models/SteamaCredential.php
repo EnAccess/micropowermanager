@@ -2,6 +2,8 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-class SteamaCredential extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SteamaCredential extends BaseModel {
     protected $table = 'steama_credentials';
 }

@@ -2,6 +2,8 @@
 
 namespace Inensus\SparkMeter\Models;
 
-class SmCredential extends \App\Models\Base\BaseModel {
+use App\Models\Base\BaseModel;
+
+class SmCredential extends BaseModel {
     protected $table = 'sm_api_credentials';
 }

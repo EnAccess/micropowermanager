@@ -2,10 +2,11 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SteamaMeter extends \App\Models\Base\BaseModel {
+class SteamaMeter extends BaseModel {
     protected $table = 'steama_meters';
 
     public function mpmMeter(): BelongsTo {

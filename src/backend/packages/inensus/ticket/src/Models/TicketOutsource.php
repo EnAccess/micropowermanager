@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Base\BaseModel;
 use Carbon\Carbon;
 use Database\Factories\Inensus\Ticket\Models\TicketOutsourceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class TicketOutsource extends \App\Models\Base\BaseModel {
+class TicketOutsource extends BaseModel {
     /** @use HasFactory<TicketOutsourceFactory> */
     use HasFactory;
 

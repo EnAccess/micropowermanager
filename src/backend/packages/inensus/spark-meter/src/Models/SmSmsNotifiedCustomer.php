@@ -2,9 +2,10 @@
 
 namespace Inensus\SparkMeter\Models;
 
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class SmSmsNotifiedCustomer extends \App\Models\Base\BaseModel {
+class SmSmsNotifiedCustomer extends BaseModel {
     protected $table = 'sm_sms_notified_customers';
 
     public function notify(): MorphTo {

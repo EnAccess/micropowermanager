@@ -2,9 +2,10 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TicketComment extends \App\Models\Base\BaseModel {
+class TicketComment extends BaseModel {
     protected $table = 'ticket_comments';
 
     /**
