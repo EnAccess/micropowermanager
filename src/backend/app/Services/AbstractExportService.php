@@ -6,6 +6,7 @@ use App\Exceptions\ActiveSheetNotCreatedException;
 use App\Exceptions\Export\CsvNotSavedException;
 use App\Exceptions\Export\SpreadSheetNotCreatedException;
 use App\Exceptions\Export\SpreadSheetNotSavedException;
+use App\Support\AppStorage;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
@@ -107,13 +108,22 @@ abstract class AbstractExportService {
     public function saveSpreadSheet(): string {
         try {
             $uuid = Str::uuid()->toString();
-            $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.xlsx';
-            $this->createDirectoryIfNotExists(storage_path('appliance'));
-            $this->setRecentlyCreatedSpreadSheetId($uuid);
-            $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
-            $writer->save($fileName);
 
-            return $fileName;
+            $directory = 'appliance';
+            $fileName = $this->getPrefix().'-'.$uuid.'.xlsx';
+            $path = "{$directory}/{$fileName}";
+
+            // Save spreadsheet to a temporary stream (in memory)
+            $tempPath = tempnam(sys_get_temp_dir(), 'spreadsheet_');
+            $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
+            $writer->save($tempPath);
+
+            AppStorage::put($path, file_get_contents($tempPath));
+            unlink($tempPath);
+
+            $this->setRecentlyCreatedSpreadSheetId($uuid);
+
+            return $path;
         } catch (\Exception $e) {
             throw new SpreadSheetNotSavedException($e->getMessage());
         }
@@ -123,42 +133,55 @@ abstract class AbstractExportService {
      * @param array<int, string> $headers
      */
     public function saveCsv(array $headers = []): string {
-        $uuid = Str::uuid()->toString();
-        $filePath = storage_path('appliance/'.$this->getPrefix().'-'.$uuid.'.csv');
-        $this->createDirectoryIfNotExists(storage_path('appliance'));
-
         try {
-            $handle = fopen($filePath, 'w');
+            $uuid = Str::uuid()->toString();
 
-            if ($this->exportingData->isEmpty()) {
-                fclose($handle);
+            $directory = 'appliance';
+            $fileName = $this->getPrefix().'-'.$uuid.'.csv';
+            $path = "{$directory}/{$fileName}";
 
-                return $filePath;
-            }
+            $csvContent = $this->generateCsvContent($headers);
 
-            // Write header row
-            if ($headers === []) {
-                // Use keys from the first row if no custom headers provided
-                fputcsv($handle, array_keys($this->exportingData->first()));
-            } else {
-                // Use the provided custom headers
-                fputcsv($handle, $headers);
-            }
+            AppStorage::put($path, $csvContent);
 
-            // Write each data row
-            foreach ($this->exportingData as $row) {
-                fputcsv($handle, $row);
-            }
-
-            fclose($handle);
-
-            return $filePath;
+            return $path;
         } catch (\Exception $e) {
-            Log::critical('An error occurred while creating the CSV file', [
-                'message' => $e->getMessage(),
-            ]);
+            Log::critical('Error saving CSV', ['message' => $e->getMessage()]);
             throw new CsvNotSavedException($e->getMessage());
         }
+    }
+
+    /**
+     * Generate CSV content as a string.
+     *
+     * @param array<int, string> $headers
+     */
+    private function generateCsvContent(array $headers = []): string {
+        $stream = fopen('php://temp', 'r+');
+
+        if ($this->exportingData->isEmpty()) {
+            fclose($stream);
+
+            return '';
+        }
+
+        // Write headers
+        if ($headers === []) {
+            fputcsv($stream, array_keys($this->exportingData->first()));
+        } else {
+            fputcsv($stream, $headers);
+        }
+
+        // Write rows
+        foreach ($this->exportingData as $row) {
+            fputcsv($stream, $row);
+        }
+
+        rewind($stream);
+        $csvContent = stream_get_contents($stream);
+        fclose($stream);
+
+        return $csvContent ?: '';
     }
 
     public function createDirectoryIfNotExists(string $path): void {

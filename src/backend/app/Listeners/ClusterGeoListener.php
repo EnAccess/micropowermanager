@@ -5,8 +5,8 @@ namespace App\Listeners;
 use App\Events\ClusterEvent;
 use App\Exceptions\GeoFormatException;
 use App\Models\Cluster;
+use App\Support\AppStorage;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
 
 class ClusterGeoListener {
@@ -46,7 +46,8 @@ class ClusterGeoListener {
      * @param array<string, mixed> $data
      */
     private function storeData(Cluster $cluster, array $data): void {
-        Storage::disk('local')->put($cluster->name.'.json', json_encode($data));
+        $filePath = $cluster->name.'.json';
+        AppStorage::put($filePath, json_encode($data));
     }
 
     /**

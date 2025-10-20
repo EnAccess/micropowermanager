@@ -14,8 +14,10 @@ use App\Models\Report;
 use App\Models\Target;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
+use App\Support\AppStorage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
@@ -569,28 +571,36 @@ class Reports {
             $this->addTargetsToXls($sheet2);
         }
 
-        $writer = new Xlsx($this->spreadsheet);
-        $dirPath = storage_path('./'.$reportType);
-        $user = User::query()->first();
-        $databaseProxy = app()->make(DatabaseProxy::class);
-        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
-
-        if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
-        }
         try {
-            $fileName = str_slug($reportType.'-'.$cityName.'-'.$dateRange).'.xlsx';
-            $writer->save(storage_path('./'.$reportType.'/'.$fileName));
-            $this->report->create(
-                [
-                    'path' => storage_path($reportType.'/'.$fileName.'*'.$companyId),
-                    'type' => $reportType,
-                    'date' => $startDate.'---'.$endDate,
-                    'name' => $cityName,
-                ]
-            );
+            $fileName = Str::slug("{$reportType}-{$cityName}-{$dateRange}").'.xlsx';
+            $path = "{$reportType}/{$fileName}";
+
+            // Save to a temporary local file
+            $tempFile = tempnam(sys_get_temp_dir(), 'city_report_').'.xlsx';
+            $writer = new Xlsx($this->spreadsheet);
+            $writer->save($tempFile);
+
+            AppStorage::put($path, file_get_contents($tempFile));
+            unlink($tempFile);
+
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
+            // Save report metadata
+            $this->report->create([
+                'path' => $path."*{$companyId}",
+                'type' => $reportType,
+                'date' => "{$startDate}---{$endDate}",
+                'name' => $cityName,
+            ]);
+
+            Log::info("Report generated: {$fileName}");
         } catch (Exception $e) {
-            echo 'error'.$e->getMessage();
+            Log::error('Error generating report for city', [
+                'city' => $cityName,
+                'exception' => $e->getMessage(),
+            ]);
         }
     }
 
