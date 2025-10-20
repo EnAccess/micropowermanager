@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Models;
 
+use App\Models\Base\BaseModel;
 use Database\Factories\Inensus\Ticket\Models\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
