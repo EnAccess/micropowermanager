@@ -125,7 +125,3 @@ Objects and models may contain information specific to the manufacturer, for exa
 
 <!-- prettier-ignore -->
 OpenAPI documentation for MPM can be found here: [OpenAPI docs](/openapi/index.html){target="_self"}
-
-```
-
-```
