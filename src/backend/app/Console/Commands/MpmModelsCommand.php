@@ -23,6 +23,7 @@ use Illuminate\Support\Str;
  * Therefore, we have customized the logic as follows:
  * - Skip generation of the Eloquent helper file
  * - Omit generic @mixin annotations from models
+ * - Hardcode `bit` and `tinyint` as `bool` as this is the behaviour of Laravel with MySQL
  */
 class MpmModelsCommand extends ModelsCommand {
     // protected $signature = 'mpm:ide-helper';
@@ -275,5 +276,71 @@ class MpmModelsCommand extends ModelsCommand {
         }
 
         return $output."{}\n}\n\n";
+    }
+
+    /**
+     * Load the properties from the database table.
+     *
+     * @param Model $model
+     */
+    public function getPropertiesFromTable($model) {
+        $table = $model->getTable();
+        $schema = $model->getConnection()->getSchemaBuilder();
+        $columns = $schema->getColumns($table);
+        $driverName = $model->getConnection()->getDriverName();
+
+        if (!$columns) {
+            return;
+        }
+
+        $this->setForeignKeys($schema, $table);
+        foreach ($columns as $column) {
+            $name = $column['name'];
+            if (in_array($name, $model->getDates())) {
+                $type = $this->dateClass;
+            } else {
+                // Match types to php equivalent
+                $type = match ($column['type_name']) {
+                    // remove `bit` and 'tinyint' from here
+                    'integer', 'int', 'int4',
+                    'smallint', 'int2',
+                    'mediumint',
+                    'bigint', 'int8' => 'int',
+
+                    // add `bit` and 'tinyint' here
+                    'tinyint', 'bit', 'boolean', 'bool' => 'bool',
+
+                    'float', 'real', 'float4',
+                    'double', 'float8' => 'float',
+
+                    default => 'string',
+                };
+            }
+
+            if ($column['nullable']) {
+                $this->nullableColumns[$name] = true;
+            }
+            $this->setProperty(
+                $name,
+                $this->getTypeInModel($model, $type),
+                true,
+                true,
+                $column['comment'],
+                $column['nullable']
+            );
+            if ($this->write_model_magic_where) {
+                $builderClass = $this->write_model_external_builder_methods
+                    ? get_class($model->newModelQuery())
+                    : '\Illuminate\Database\Eloquent\Builder';
+
+                $this->setMethod(
+                    Str::camel('where_'.$name),
+                    $this->getClassNameInDestinationFile($model, $builderClass)
+                    .'<static>|'
+                    .$this->getClassNameInDestinationFile($model, get_class($model)),
+                    ['$value']
+                );
+            }
+        }
     }
 }
