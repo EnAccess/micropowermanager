@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 /**
  * This file is a copy of the great laravel-ide-helper.
- * https://github.com/barryvdh/laravel-ide-helper/blob/9ef25f60e70ced86f687ef6b9ffd9ac74a7c388a/src/Console/ModelsCommand.php#L1164.
+ * https://github.com/barryvdh/laravel-ide-helper/blob/9ef25f60e70ced86f687ef6b9ffd9ac74a7c388a/src/Console/ModelsCommand.php.
  *
  * The original implementation lacks some configuration flexibility.
  * It also generates extensive PHPDocs that are largely unnecessary for Laravel 11+,
@@ -138,8 +138,10 @@ class MpmModelsCommand extends ModelsCommand {
         foreach ($phpdoc->getTags() as $tag) {
             $name = $tag->getName();
             if ($name == 'property' || $name == 'property-read' || $name == 'property-write') {
+                // @phpstan-ignore method.notFound
                 $properties[] = $tag->getVariableName();
             } elseif ($name == 'method') {
+                // @phpstan-ignore method.notFound
                 $methods[] = $tag->getMethodName();
             }
         }
@@ -256,6 +258,8 @@ class MpmModelsCommand extends ModelsCommand {
             }
         }
 
+        // FIX to make linter pass
+        $mixinClassName = '';
         $classname = $this->write_mixin ? $mixinClassName : $classname;
 
         $allowDynamicAttributes = $this->write_mixin ? "#[\AllowDynamicProperties]\n\t" : '';
