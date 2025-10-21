@@ -7,7 +7,9 @@ use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use ReflectionClass;
 
 /**
  * This file is a copy of the great laravel-ide-helper.
@@ -290,6 +292,7 @@ class MpmModelsCommand extends ModelsCommand {
      *
      * @param Model $model
      */
+    // @phpstan-ignore missingType.return
     public function getPropertiesFromTable($model) {
         $table = $model->getTable();
         $schema = $model->getConnection()->getSchemaBuilder();
