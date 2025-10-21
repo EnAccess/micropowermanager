@@ -36,6 +36,9 @@ return (new PhpCsFixer\Config())
         'phpdoc_align' => [
             'tags' => ['method', 'param', 'property', 'property-read', 'return', 'throws', 'type', 'var'],
         ],
+        'phpdoc_to_comment' => [
+            'allow_before_return_statement' => true,
+        ],
     ])
     ->setFinder($finder)
 ;
