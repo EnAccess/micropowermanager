@@ -28,6 +28,7 @@
     "pusher/pusher-php-server": "^7.0",
     "spatie/geocoder": "^3.14",
     "spatie/laravel-backup": "^9.0",
+    "spatie/laravel-google-cloud-storage": "^2.3",
     "spatie/laravel-permission": "^6.21",
     "tymon/jwt-auth": "^2.2"
   },
