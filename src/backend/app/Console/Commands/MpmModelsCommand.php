@@ -9,7 +9,6 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use ReflectionClass;
 
 /**
  * This file is a copy of the great laravel-ide-helper.
