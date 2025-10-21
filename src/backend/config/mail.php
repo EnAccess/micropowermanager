@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'log'),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,14 +38,9 @@ return [
             'host' => env('MAIL_SMTP_HOST', 'smtp.mailgun.org'),
             'port' => env('MAIL_SMTP_PORT', 587),
             'encryption' => env('MAIL_SMTP_ENCRYPTION', 'tls'),
-            'auth' => env('MAIL_SMTP_AUTH', false),
             'username' => env('MAIL_SMTP_USERNAME'),
             'password' => env('MAIL_SMTP_PASSWORD'),
-            'default_sender' => env('MAIL_SMTP_DEFAULT_SENDER'),
-            'default_message' => env('MAIL_SMTP_DEFAULT_MESSAGE', 'Please do not reply to this email'),
-            'debug_level' => env('MAIL_SMTP_DEBUG_LEVEL', 0),
             'timeout' => null,
-            'auth_mode' => null,
         ],
 
         'ses' => [
@@ -67,7 +62,7 @@ return [
 
         'log' => [
             'transport' => 'log',
-            'channel' => env('MAIL_LOG_CHANNEL'),
+            'channel' => env('MAIL_LOG_CHANNEL', 'stdout'),
         ],
 
         'array' => [

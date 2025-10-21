@@ -9,13 +9,7 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Services\SiteService;
 
 class SmSiteController implements IBaseController {
-    private $siteService;
-
-    public function __construct(
-        SiteService $siteService,
-    ) {
-        $this->siteService = $siteService;
-    }
+    public function __construct(private SiteService $siteService) {}
 
     public function index(Request $request): SparkResource {
         $customers = $this->siteService->getSmSites($request);
@@ -31,7 +25,7 @@ class SmSiteController implements IBaseController {
         return new SparkResource($this->siteService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->siteService->getSmSitesCount();
     }
 

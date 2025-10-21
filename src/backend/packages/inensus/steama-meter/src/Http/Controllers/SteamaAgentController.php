@@ -8,11 +8,7 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaAgentService;
 
 class SteamaAgentController extends Controller implements IBaseController {
-    private $agentService;
-
-    public function __construct(SteamaAgentService $agentService) {
-        $this->agentService = $agentService;
-    }
+    public function __construct(private SteamaAgentService $agentService) {}
 
     public function index(Request $request): SteamaResource {
         $customers = $this->agentService->getAgents($request);
@@ -28,7 +24,7 @@ class SteamaAgentController extends Controller implements IBaseController {
         return new SteamaResource($this->agentService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->agentService->getAgentsCount();
     }
 }

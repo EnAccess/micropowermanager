@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,7 +23,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string|null $email
  */
 class User extends Authenticatable implements JWTSubject {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'users';
@@ -38,14 +39,12 @@ class User extends Authenticatable implements JWTSubject {
         parent::__construct($attributes);
     }
 
-    public function setPasswordAttribute(string $password): void {
+    protected function setPasswordAttribute(#[\SensitiveParameter] string $password): void {
         $this->attributes['password'] = Hash::make($password);
     }
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * {@inheritdoc}
      */
     protected $fillable = [
         'name',
@@ -55,9 +54,7 @@ class User extends Authenticatable implements JWTSubject {
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array<int, string>
+     * {@inheritdoc}
      */
     protected $hidden = [
         'password',
@@ -66,10 +63,8 @@ class User extends Authenticatable implements JWTSubject {
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
      */
-    public function getJWTIdentifier() {
+    public function getJWTIdentifier(): mixed {
         return $this->getKey();
     }
 
@@ -84,22 +79,37 @@ class User extends Authenticatable implements JWTSubject {
         ];
     }
 
+    /**
+     * @return MorphOne<Address, $this>
+     */
     public function address(): MorphOne {
         return $this->morphOne(Address::class, 'owner');
     }
 
+    /**
+     * @return MorphOne<Address, $this>
+     */
     public function addressDetails(): MorphOne {
         return $this->address()->with('city');
     }
 
+    /**
+     * @return HasMany<AgentBalanceHistory, $this>
+     */
     public function balanceHistory(): HasMany {
         return $this->hasMany(AgentBalanceHistory::class);
     }
 
+    /**
+     * @return HasMany<AgentAssignedAppliances, $this>
+     */
     public function assignedAppliance(): HasMany {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
 
+    /**
+     * @return BelongsTo<Company, $this>
+     */
     public function company(): BelongsTo {
         return $this->BelongsTo(Company::class, 'company_id');
     }
@@ -120,6 +130,9 @@ class User extends Authenticatable implements JWTSubject {
         return $this->email;
     }
 
+    /**
+     * @return HasOne<TicketUser, $this>
+     */
     public function relationTicketUser(): HasOne {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);
     }

@@ -14,7 +14,7 @@ class SolarHomeSystemService implements IBaseService {
     public function __construct(private SolarHomeSystem $solarHomeSystem) {}
 
     /**
-     * @return Collection<int, SolarHomeSystem>|LengthAwarePaginator<SolarHomeSystem>
+     * @return Collection<int, SolarHomeSystem>|LengthAwarePaginator<int, SolarHomeSystem>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
@@ -25,26 +25,20 @@ class SolarHomeSystemService implements IBaseService {
     }
 
     public function getById(int $id): SolarHomeSystem {
-        /** @var SolarHomeSystem|null $result */
-        $result = $this->solarHomeSystem->newQuery()
+        return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person', 'device.address.geo', 'tokens'])
             ->find($id);
-
-        return $result;
     }
 
     /**
      * @param array<string, mixed> $data
      */
     public function create(array $data): SolarHomeSystem {
-        /** @var SolarHomeSystem $result */
-        $result = $this->solarHomeSystem->newQuery()->create($data);
-
-        return $result;
+        return $this->solarHomeSystem->newQuery()->create($data);
     }
 
     /**
-     * @return LengthAwarePaginator<SolarHomeSystem>
+     * @return LengthAwarePaginator<int, SolarHomeSystem>
      */
     public function search(int $term, int $paginate): LengthAwarePaginator {
         return $this->solarHomeSystem->newQuery()

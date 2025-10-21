@@ -54,7 +54,10 @@ class SyncBikes extends AbstractSharedCommand {
         $this->info('#############################');
     }
 
-    private function updateBike($deviceData) {
+    /**
+     * @param array<string, mixed> $deviceData
+     */
+    private function updateBike(array $deviceData): void {
         $updatingData = [
             'receive_time' => $deviceData['ReceiveTime'],
             'lat' => strval($deviceData['Lat']),

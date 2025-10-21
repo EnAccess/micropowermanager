@@ -5,6 +5,7 @@ namespace App\Models\AccessRate;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterTariff;
 use App\Models\PaymentHistory;
+use Database\Factories\AccessRate\AccessRateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,22 +20,32 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property int $period    when the payment repeats itself
  */
 class AccessRate extends BaseModel {
+    /** @use HasFactory<AccessRateFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'access_rate';
 
+    /**
+     * @return BelongsTo<MeterTariff, $this>
+     */
     public function tariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class, 'tariff_id', 'id');
     }
 
+    /**
+     * @return HasMany<AccessRatePayment, $this>
+     */
     public function accessRatePayments(): HasMany {
         return $this->hasMany(AccessRatePayment::class);
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return sprintf('For tariff : %s', $this->tariff()->first()->name);
     }
 
+    /**
+     * @return MorphMany<PaymentHistory, $this>
+     */
     public function paymentHistories(): MorphMany {
         return $this->morphMany(PaymentHistory::class, 'paid_for');
     }

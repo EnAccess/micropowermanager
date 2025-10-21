@@ -10,21 +10,9 @@ use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 
 class SteamaMeterReadingService {
-    private $steamaMeter;
-    private $steamaApi;
-    private $meterConsumtion;
+    public function __construct(private SteamaMeter $steamaMeter, private SteamaMeterApiClient $steamaApi, private MeterConsumption $meterConsumtion) {}
 
-    public function __construct(
-        SteamaMeter $steamaMeter,
-        SteamaMeterApiClient $steamaApi,
-        MeterConsumption $meterConsumption,
-    ) {
-        $this->steamaMeter = $steamaMeter;
-        $this->steamaApi = $steamaApi;
-        $this->meterConsumtion = $meterConsumption;
-    }
-
-    public function getMeterReadingsThroughHourlyWorkingJob() {
+    public function getMeterReadingsThroughHourlyWorkingJob(): void {
         $now = Carbon::now()->toIso8601ZuluString();
         $oneHourEarlier = Carbon::now()->subHours(10)->toIso8601ZuluString();
         $this->steamaMeter->newQuery()->get()->each(function ($meter) use ($now, $oneHourEarlier) {
@@ -32,8 +20,8 @@ class SteamaMeterReadingService {
             try {
                 $result = $this->steamaApi->get($url);
                 $readings = $result['results'];
-                if (count($readings)) {
-                    collect($readings)->each(function ($reading) use ($meter) {
+                if (count($readings) > 0) {
+                    collect($readings)->each(function (array $reading) use ($meter) {
                         $this->meterConsumtion->newQuery()
                             ->updateOrCreate(
                                 [

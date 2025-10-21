@@ -10,6 +10,9 @@ class TransactionInitializeRequest extends FormRequest {
     private const BODY_PARAM_METER_SERIAL = 'meterSerial';
     private const BODY_PARAM_AMOUNT = 'amount';
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array {
         return [
             self::BODY_PARAM_METER_SERIAL => 'required',

@@ -49,7 +49,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AssetPerson>|LengthAwarePaginator<AssetPerson>
+     * @return Collection<int, AssetPerson>|LengthAwarePaginator<int, AssetPerson>
      */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
@@ -81,7 +81,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<AgentSoldAppliance>
+     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<int, AgentSoldAppliance>|LengthAwarePaginator<int, AssetPerson>
      */
     public function getAll(
         ?int $limit = null,
@@ -122,7 +122,10 @@ class AgentSoldApplianceService implements IBaseService {
         }
     }
 
-    public function list($agentId) {
+    /**
+     * @return LengthAwarePaginator<int, AssetPerson>
+     */
+    public function list(int $agentId): LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates', 'asset.assetType'])
             ->whereHasMorph(
                 'creator',
@@ -149,7 +152,7 @@ class AgentSoldApplianceService implements IBaseService {
     public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
-        $appliance = $assignedAppliance->appliance()->first();
+        $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
 

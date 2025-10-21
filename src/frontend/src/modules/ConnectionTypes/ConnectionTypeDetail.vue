@@ -179,7 +179,7 @@
       :color="'green'"
       :subscriber="subscriber.subTypes"
     >
-      <md-card>
+      <md-card v-if="subConnectionTypeService.subConnectionTypes.length > 0">
         <md-card-content>
           <md-table>
             <md-table-row>
@@ -197,10 +197,10 @@
               v-for="(
                 subType, index
               ) in subConnectionTypeService.subConnectionTypes"
-              :key="index"
+              :key="subType.id || index"
             >
               <md-table-cell>{{ index + 1 }}</md-table-cell>
-              <md-table-cell>{{ subType.id }}</md-table-cell>
+              <md-table-cell>{{ subType.id || "-" }}</md-table-cell>
               <md-table-cell>
                 <div v-if="editSubConnectionType === subType.id">
                   <md-field
@@ -223,7 +223,7 @@
                   </md-field>
                 </div>
                 <div v-else>
-                  {{ subType.name }}
+                  {{ subType.name || "-" }}
                 </div>
               </md-table-cell>
               <md-table-cell>
@@ -252,7 +252,7 @@
                   </md-field>
                 </div>
                 <div v-else>
-                  {{ subType.tariff.name }}
+                  {{ subType.tariff?.name || "-" }}
                 </div>
               </md-table-cell>
               <md-table-cell>
@@ -349,10 +349,10 @@ export default {
         showCancelButton: true,
         cancelButtonText: this.$tc("words.no"),
         confirmButtonText: this.$tc("words.yes"),
-      }).then((response) => {
+      }).then(async (response) => {
         if (this.checkConfirm(response)) {
           try {
-            this.subConnectionTypeService.updateSubConnectionType(subType)
+            await this.subConnectionTypeService.updateSubConnectionType(subType)
             this.editSubConnectionType = null
             this.alertNotify(
               "success",
@@ -454,13 +454,18 @@ export default {
         await this.subConnectionTypeService.getSubConnectionTypes(
           connectionTypeId,
         )
+        // Ensure we have an array even if the API returns null/undefined
+        const subConnectionTypes =
+          this.subConnectionTypeService.subConnectionTypes || []
         EventBus.$emit(
           "widgetContentLoaded",
           this.subscriber.subTypes,
-          this.subConnectionTypeService.subConnectionTypes.length,
+          subConnectionTypes.length,
         )
       } catch (e) {
         this.alertNotify("error", e.message)
+        // Emit with 0 length to show empty state on error
+        EventBus.$emit("widgetContentLoaded", this.subscriber.subTypes, 0)
       }
     },
   },

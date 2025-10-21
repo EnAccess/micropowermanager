@@ -27,12 +27,11 @@ class SmsService {
     public function checkMessageType(string $message): int {
         $wordsInMessage = explode(' ', $message);
         $firstWord = $wordsInMessage[0];
-        switch (strtolower($firstWord)) {
-            case 'ticket':
-                return self::TICKET;
-            default:
-                return self::FEEDBACK;
-        }
+
+        return match (strtolower($firstWord)) {
+            'ticket' => self::TICKET,
+            default => self::FEEDBACK,
+        };
     }
 
     /**
@@ -54,10 +53,7 @@ class SmsService {
      * @param array<string, mixed> $smsData
      */
     public function createSms(array $smsData): Sms {
-        /** @var Sms $sms */
-        $sms = $this->sms->newQuery()->create($smsData);
-
-        return $sms;
+        return $this->sms->newQuery()->create($smsData);
     }
 
     /**
@@ -74,12 +70,12 @@ class SmsService {
             $receiver = $sender->getReceiver();
             $sender->validateReferences();
 
-            if ($smsAndroidSettings) {
+            if ($smsAndroidSettings instanceof SmsAndroidSetting) {
                 $gatewayId = $smsAndroidSettings->getId();
                 $sender->setCallback($smsAndroidSettings->callback, $uuid);
             }
-            $this->associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId);
-            SmsProcessor::dispatch($sender)->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+            $this->associateSmsWithForSmsType($sender, $uuid, $receiver, $gatewayId);
+            SmsProcessor::dispatch($sender);
         } catch (
             SmsTypeNotFoundException|
             SmsAndroidSettingNotExistingException|
@@ -116,10 +112,7 @@ class SmsService {
         ]);
     }
 
-    /**
-     * @param array<string, mixed> $data
-     */
-    private function associateSmsWithForSmsType(SmsSender $sender, array $data, string $uuid, string $receiver, ?int $gatewayId): void {
+    private function associateSmsWithForSmsType(SmsSender $sender, string $uuid, string $receiver, ?int $gatewayId): void {
         if (!($sender instanceof ManualSms)) {
             Sms::query()->create([
                 'uuid' => $uuid,

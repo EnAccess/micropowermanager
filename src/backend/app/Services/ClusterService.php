@@ -53,9 +53,6 @@ class ClusterService implements IBaseService {
     }
 
     /**
-     * @param string|null $startDate
-     * @param string|null $endDate
-     *
      * @return array<int, string>
      */
     public function getDateRangeFromRequest(?string $startDate, ?string $endDate): array {
@@ -84,7 +81,7 @@ class ClusterService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, Cluster>|LengthAwarePaginator<Cluster>
+     * @return Collection<int, Cluster>|LengthAwarePaginator<int, Cluster>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit !== null) {

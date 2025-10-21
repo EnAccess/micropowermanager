@@ -6,9 +6,11 @@ use Inensus\MicroStarMeter\Exceptions\MicroStarApiResponseException;
 
 class ResponseResolver {
     /**
-     * @throws MicroStarApiResponseException
+     * @param array<string, mixed> $result
+     *
+     * @return array<string, mixed>
      */
-    public function checkResponse($result) {
+    public function checkResponse(array $result): array {
         if (isset($result['errorCode'])) {
             if ($result['errorCode'] == 1000) {
                 return $result;
@@ -22,49 +24,28 @@ class ResponseResolver {
         return $result;
     }
 
-    public function getMessage($statusCode): string {
-        switch ($statusCode) {
-            case 1000:
-                return 'Success';
-            case 1001:
-                return 'Parameter Error';
-            case 1003:
-                return 'No Result Error';
-            case 1004:
-                return 'Database Error';
-            case 1005:
-                return 'In Process';
-            case 2002:
-                return 'TOKEN rejected';
-            case 2003:
-                return 'TOKEN expired';
-            case 2004:
-                return 'TOKEN used';
-            case 2005:
-                return 'Manufacture code error';
-            case 2006:
-                return 'Key expired error';
-            case 2007:
-                return 'DDTK error';
-            case 2008:
-                return 'Charge amount overflow';
-            case 2009:
-                return 'Key type Error';
-            case 2010:
-                return 'Incorrect TOKEN data format';
-            case 2011:
-                return 'Key range error';
-            case 2012:
-                return 'Function not supported';
-            case 2013:
-                return 'The first section key is accepted and OK';
-            case 2014:
-                return 'The second section key is accepted and OK';
-            case 2015:
-                return 'Lockout After 10 continuous rejections of token inputs, P2000 will lock out for one day (24 hours). During this period, any token entry will be rejected. After one day customers can input tokens again.';
-
-            default:
-                return 'Unknown Error';
-        }
+    public function getMessage(int $statusCode): string {
+        return match ($statusCode) {
+            1000 => 'Success',
+            1001 => 'Parameter Error',
+            1003 => 'No Result Error',
+            1004 => 'Database Error',
+            1005 => 'In Process',
+            2002 => 'TOKEN rejected',
+            2003 => 'TOKEN expired',
+            2004 => 'TOKEN used',
+            2005 => 'Manufacture code error',
+            2006 => 'Key expired error',
+            2007 => 'DDTK error',
+            2008 => 'Charge amount overflow',
+            2009 => 'Key type Error',
+            2010 => 'Incorrect TOKEN data format',
+            2011 => 'Key range error',
+            2012 => 'Function not supported',
+            2013 => 'The first section key is accepted and OK',
+            2014 => 'The second section key is accepted and OK',
+            2015 => 'Lockout After 10 continuous rejections of token inputs, P2000 will lock out for one day (24 hours). During this period, any token entry will be rejected. After one day customers can input tokens again.',
+            default => 'Unknown Error',
+        };
     }
 }

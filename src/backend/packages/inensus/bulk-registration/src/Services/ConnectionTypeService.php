@@ -9,7 +9,10 @@ class ConnectionTypeService extends CreatorService {
         parent::__construct($connectionType);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $connectionTypeConfig = config('bulk-registration.csv_fields.connection_type');
         $connectionTypeData = [
             'name' => $csvData[$connectionTypeConfig['name']],

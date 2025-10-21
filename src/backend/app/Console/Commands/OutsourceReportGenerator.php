@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Person\Person;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Models\TicketOutsourceReport;
@@ -45,7 +46,7 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
 
             $row = 2;
             foreach ($tickets as $t) {
-                $owner = $t->owner !== null ? $t->owner->person->name.' '.$t->owner->person->surname : 'No assigned user found, please check your history reports';
+                $owner = $t->owner instanceof Person ? $t->owner->name.' '.$t->owner->surname : 'No assigned user found, please check your history reports';
                 $sheet->setCellValue('A'.$row, $owner);
                 $sheet->setCellValue('B'.$row, $t->created_at);
                 $sheet->setCellValue('C'.$row, $t->outsource->amount);

@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
-use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
@@ -15,26 +14,24 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
+const MAX_TRIES = 3;
+
 class TokenProcessor extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    private TransactionDataContainer $transactionContainer;
-    private bool $reCreate;
-    private int $counter;
-    private const MAX_TRIES = 3;
-
     public function __construct(
-        TransactionDataContainer $container,
-        bool $reCreate = false,
-        int $counter = self::MAX_TRIES,
+        int $companyId,
+        private TransactionDataContainer $transactionContainer,
+        private bool $reCreate = false,
+        private int $counter = MAX_TRIES,
     ) {
-        $this->transactionContainer = $container;
-        $this->reCreate = $reCreate;
-        $this->counter = $counter;
-        parent::__construct(static::class);
+        $this->onConnection('redis');
+        $this->onQueue('token');
+
+        parent::__construct($companyId);
     }
 
     public function executeJob(): void {
@@ -48,15 +45,15 @@ class TokenProcessor extends AbstractJob {
 
         $token = $this->handleExistingToken();
 
-        if ($token === null) {
+        if (!$token instanceof Token) {
             $this->generateToken($api);
         }
-        if ($token !== null) {
+        if ($token instanceof Token) {
             $this->handlePaymentEvents($token);
         }
     }
 
-    private function handleApiException(\Exception $e): void {
+    private function handleApiException(\Throwable $e): void {
         Log::critical(
             'No Api is registered for '.$this->transactionContainer->manufacturer->name,
             ['message' => $e->getMessage()]
@@ -67,7 +64,7 @@ class TokenProcessor extends AbstractJob {
     private function handleExistingToken(): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
-        if ($token !== null && $this->reCreate === true) {
+        if ($token !== null && $this->reCreate) {
             $token->delete();
             $token = null;
         }
@@ -75,7 +72,7 @@ class TokenProcessor extends AbstractJob {
         return $token;
     }
 
-    private function generateToken(IManufacturerAPI $api): void {
+    private function generateToken(mixed $api): void {
         try {
             $tokenData = $api->chargeDevice($this->transactionContainer);
         } catch (\Exception $e) {
@@ -87,8 +84,8 @@ class TokenProcessor extends AbstractJob {
         $this->saveToken($tokenData);
     }
 
-    private function handleTokenGenerationFailure(\Exception $e): void {
-        if (self::MAX_TRIES > $this->counter) {
+    private function handleTokenGenerationFailure(\Throwable $e): void {
+        if (MAX_TRIES > $this->counter) {
             $this->retryTokenGeneration();
 
             return;
@@ -110,6 +107,7 @@ class TokenProcessor extends AbstractJob {
     private function retryTokenGeneration(): void {
         ++$this->counter;
         self::dispatch(
+            $this->companyId,
             $this->transactionContainer,
             false,
             $this->counter
@@ -146,7 +144,7 @@ class TokenProcessor extends AbstractJob {
 
     private function handleRollbackInFailure(): void {
         $paidRates = $this->transactionContainer->paidRates;
-        collect($paidRates)->map(function ($paidRate) {
+        collect($paidRates)->map(function (array $paidRate) {
             $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);
             $assetRate->remaining += $paidRate['paid'];
             $assetRate->update();

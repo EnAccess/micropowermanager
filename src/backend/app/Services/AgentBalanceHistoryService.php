@@ -22,7 +22,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     ) {}
 
     /**
-     * @return Collection<int, AgentBalanceHistory>|LengthAwarePaginator<AgentBalanceHistory>
+     * @return Collection<int, AgentBalanceHistory>|LengthAwarePaginator<int, AgentBalanceHistory>
      */
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentBalanceHistory->newQuery()
@@ -74,7 +74,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->where('agent_id', $agent->id)
             ->where('trigger_type', 'agent_transaction');
 
-        if ($lastReceipt) {
+        if ($lastReceipt instanceof AgentReceipt) {
             $query->where('created_at', '>', $lastReceipt->created_at);
         }
 
@@ -112,7 +112,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
 
             return $period;
         } else {
-            foreach ($period as $key => $value) {
+            foreach (array_keys($period) as $key) {
                 foreach ($history as $h) {
                     if ($key === $h->date) {
                         $lastRow = $history->where('trigger_Type', '!=', 'agent_commission')
@@ -156,7 +156,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
             ->get();
         $period = [];
-        foreach ($days as $key => $item) {
+        foreach ($days as $item) {
             $period[$item->day] = [
                 'balance' => 0,
                 'due' => 0,
@@ -181,7 +181,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->get();
 
         $p = $this->periodService->generatePeriodicList($startDate, $endDate, 'weekly', ['revenue' => 0]);
-        foreach ($Revenues as $rIndex => $revenue) {
+        foreach ($Revenues as $revenue) {
             $p[$revenue->period]['revenue'] = $revenue->revenue;
         }
 

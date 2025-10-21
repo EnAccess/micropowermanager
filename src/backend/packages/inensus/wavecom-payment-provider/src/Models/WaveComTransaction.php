@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Inensus\WavecomPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
-use App\Models\Transaction\Transaction;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int    $id
@@ -18,8 +14,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $sender
  * @property string $message
  * @property int    $amount
+ * @property int    $status
  */
-class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class WaveComTransaction extends BasePaymentProviderTransaction {
     protected $table = 'wavecom_transactions';
     public const RELATION_NAME = 'wavecom_transaction';
     public const STATUS_SUCCESS = 1;
@@ -57,14 +54,9 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
         $this->amount = $amount;
     }
 
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
-
+    /**
+     * @return MorphMany<TransactionConflicts, $this>
+     */
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
@@ -78,7 +70,7 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
         return $this->getMessage();
     }
 
-    public function setStatus(int $status) {
+    public function setStatus(int $status): void {
         $this->status = $status;
     }
 

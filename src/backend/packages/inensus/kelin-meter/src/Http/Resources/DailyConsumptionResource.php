@@ -2,10 +2,50 @@
 
 namespace Inensus\KelinMeter\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\KelinMeter\Models\KelinMeterDailyData;
 
+/**
+ * @mixin KelinMeterDailyData
+ */
 class DailyConsumptionResource extends JsonResource {
-    public function toArray($request) {
+    /**
+     * @return array{
+     *     data: array{
+     *         type: 'daily_consumption',
+     *         id: int,
+     *         attributes: array{
+     *             terminalId: int,
+     *             measurementPoint: int,
+     *             meterAddress: string,
+     *             meterName: string,
+     *             dateOfData: int,
+     *             totalValueOfPositiveActivePowerCumulativeFlowIndication: float,
+     *             totalValueOfPositiveActivePeakPower: float,
+     *             totalValueOfPositiveActiveFlatPower: float,
+     *             totalValueOfPositiveActiveValleyPower: float,
+     *             totalValueOfPositiveActiveSpikePower: float,
+     *             totalValueOfPositiveReactivePowerCumulativeFlowIndication: float,
+     *             totalValueOfPositiveReactivePeakPower: float,
+     *             totalValueOfPositiveReactiveFlatPower: float,
+     *             totalValueOfPositiveReactiveValleyPower: float,
+     *             totalValueOfPositiveReactiveSpikePower: float,
+     *             totalValueOfRevertedActivePowerCumulativeFlowIndication: float,
+     *             totalValueOfRevertedReactivePowerCumulativeFlowIndication: float,
+     *             positiveActiveTotalDailyPower: float,
+     *             positiveActiveDailyPowerInPeak: float,
+     *             positiveActiveDailyPowerInFlat: float,
+     *             positiveActiveDailyPowerInValley: float,
+     *             positiveActiveDailyPowerInSpike: float,
+     *             positiveReactiveTotalDailyPower: float,
+     *             revertedActiveTotalDailyPower: float,
+     *             revertedReactiveTotalDailyPower: float
+     *         }
+     *     }
+     * }
+     */
+    public function toArray(Request $request) {
         return [
             'data' => [
                 'type' => 'daily_consumption',

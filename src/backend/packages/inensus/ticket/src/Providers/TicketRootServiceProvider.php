@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Route;
 class TicketRootServiceProvider extends ServiceProvider {
     protected $namespace = 'Inensus\Ticket\Http\Controllers';
 
-    public function boot() {
+    public function boot(): void {
         parent::boot();
     }
 
-    public function map() {
+    public function map(): void {
         $this->mapApiRoutes();
     }
 
-    protected function mapApiRoutes() {
+    protected function mapApiRoutes(): void {
         Route::prefix('tickets')
             ->namespace($this->namespace)
             ->group(__DIR__.'/../routes/web.php');

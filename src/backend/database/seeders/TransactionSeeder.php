@@ -10,6 +10,8 @@ use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
+use App\Utils\AccessRatePayer;
+use App\Utils\ApplianceInstallmentPayer;
 use Database\Factories\AgentTransactionFactory;
 use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
@@ -33,14 +35,15 @@ class TransactionSeeder extends Seeder {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
-    private $transactionTypes = [
+    /** @var class-string[] */
+    private array $transactionTypes = [
         SwiftaTransaction::class,
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
         AgentTransaction::class,
     ];
 
-    private $amount = 1000;
+    private int $amount = 1000;
 
     /**
      * Run the database seeds.
@@ -64,11 +67,11 @@ class TransactionSeeder extends Seeder {
         }
     }
 
-    private function getTransactionTypeRandomlyFromTransactionTypes() {
+    private function getTransactionTypeRandomlyFromTransactionTypes(): string {
         return $this->transactionTypes[array_rand($this->transactionTypes)];
     }
 
-    private function getManufacturerTransactionFromDeviceType($deviceModel): CalinTransaction|AngazaTransaction|SunKingTransaction {
+    private function getManufacturerTransactionFromDeviceType(mixed $deviceModel): CalinTransaction|AngazaTransaction|SunKingTransaction {
         if ($deviceModel instanceof Meter) {
             return CalinTransaction::create();
         }
@@ -88,6 +91,7 @@ class TransactionSeeder extends Seeder {
     private function generateTransaction(): void {
         try {
             // Get a random device (either Meter or SHS) that has a person with addresses
+            /** @var Device $randomDevice */
             $randomDevice = Device::inRandomOrder()
                 ->whereHasMorph('device', [Meter::class, SolarHomeSystem::class])
                 ->whereHas('person', function ($query) {
@@ -256,18 +260,21 @@ class TransactionSeeder extends Seeder {
         // only process access rate for meter devices
         if ($deviceModel instanceof Meter) {
             // pay access rate
-            $accessRatePayer = resolve('AccessRatePayer');
+            $accessRatePayer = resolve(AccessRatePayer::class);
             $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();
         }
 
         // pay appliance installments
-        $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
+        $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($transactionData);
         $transactionData->transaction->amount = $applianceInstallmentPayer->payInstallments();
         $transactionData->totalAmount = $transactionData->transaction->amount;
         $transactionData->paidRates = $applianceInstallmentPayer->paidRates;
-        $transactionData->shsLoan = $applianceInstallmentPayer->shsLoan;
+
+        // FIXME:
+        // Access to an undefined property App\Misc\TransactionDataContainer::$shsLoan.
+        // $transactionData->shsLoan = $applianceInstallmentPayer->shsLoan;
 
         // generate random token
         if ($transactionData->transaction->amount > 0) {

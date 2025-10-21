@@ -12,14 +12,11 @@
  */
 
 use App\Events\TransactionSuccessfulEvent;
-use App\Http\Controllers\HomeController;
 use App\Jobs\EnergyTransactionProcessor;
 use App\Jobs\TokenProcessor;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::group(
     ['prefix' => '/jobs', 'middleware' => 'auth'],
@@ -27,19 +24,20 @@ Route::group(
         Route::get('/token/{id}/{recreate?}', static function () {
             $id = request('id');
             $recreate = (bool) request('recreate');
+            $companyId = auth('agent_api')->user()->company_id;
             TokenProcessor::dispatch(
+                $companyId,
                 TransactionDataContainer::initialize(Transaction::find($id)),
                 $recreate,
                 1
-            )->allOnConnection('redis')->onQueue(
-                config('services.queues.token')
             );
         })->where('id', '[0-9]+')->name('jobs.token');
 
         Route::get('energy/{id}', function () {
             $id = request('id');
             $transaction = Transaction::find($id);
-            EnergyTransactionProcessor::dispatch($transaction)->allOnConnection('redis')->onQueue('energy_payment');
+            $companyId = auth('agent_api')->user()->company_id;
+            EnergyTransactionProcessor::dispatch($companyId, $transaction->id);
         });
     }
 );

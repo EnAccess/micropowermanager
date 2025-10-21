@@ -9,13 +9,7 @@ use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
 class SmCustomerController implements IBaseController {
-    private $customerService;
-
-    public function __construct(
-        CustomerService $customerService,
-    ) {
-        $this->customerService = $customerService;
-    }
+    public function __construct(private CustomerService $customerService) {}
 
     public function index(Request $request): SparkResource {
         $customers = $this->customerService->getSmCustomers($request);
@@ -31,7 +25,7 @@ class SmCustomerController implements IBaseController {
         return new SparkResource($this->customerService->syncCheck());
     }
 
-    public function count() {
+    public function count(): int {
         return $this->customerService->getSmCustomersCount();
     }
 
@@ -45,7 +39,7 @@ class SmCustomerController implements IBaseController {
         ])));
     }
 
-    public function search() {
+    public function search(): SparkResource {
         $term = request('term');
         $paginate = request('paginate') ?? 1;
 

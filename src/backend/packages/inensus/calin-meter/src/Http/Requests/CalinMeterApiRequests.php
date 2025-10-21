@@ -10,21 +10,18 @@ use Inensus\CalinMeter\Helpers\ApiHelpers;
 use Inensus\CalinMeter\Models\CalinCredential;
 
 class CalinMeterApiRequests {
-    private $client;
-    private $apiHelpers;
-    private $credential;
-
     public function __construct(
-        Client $httpClient,
-        ApiHelpers $apiHelpers,
-        CalinCredential $credentialModel,
-    ) {
-        $this->client = $httpClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->credential = $credentialModel;
-    }
+        private Client $client,
+        private ApiHelpers $apiHelpers,
+        private CalinCredential $credential,
+    ) {}
 
-    public function post($url, $postParams) {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>|string
+     */
+    public function post(string $url, array $postParams): array|string {
         try {
             $request = $this->client->post(
                 $url,
@@ -51,7 +48,7 @@ class CalinMeterApiRequests {
         }
     }
 
-    public function getCredentials() {
+    public function getCredentials(): CalinCredential {
         return $this->credential->newQuery()->firstOrFail();
     }
 }

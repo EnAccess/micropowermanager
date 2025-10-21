@@ -2,38 +2,44 @@
 
 namespace Inensus\CalinMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\CalinMeter\Models\CalinCredential;
 
 class CalinCredentialService {
-    private $credential;
+    use EncryptsCredentials;
 
     public function __construct(
-        CalinCredential $credentialModel,
-    ) {
-        $this->credential = $credentialModel;
-    }
+        private CalinCredential $credential,
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): CalinCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'user_id' => null,
             'api_key' => null,
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): ?CalinCredential {
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['user_id', 'api_key']);
     }
 
-    public function updateCredentials($data) {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): CalinCredential {
         $credential = $this->credential->newQuery()->firstOrFail();
-        $credential->update([
-            'user_id' => $data['user_id'],
-            'api_key' => $data['api_key'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['user_id', 'api_key']);
 
-        return $credential->fresh();
+        $credential->update($encryptedData);
+        $credential->save();
+
+        $credential->fresh();
+
+        return $this->decryptCredentialFields($credential, ['user_id', 'api_key']);
     }
 }

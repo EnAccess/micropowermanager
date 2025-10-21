@@ -8,7 +8,8 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
+use Tymon\JWTAuth\JWTGuard;
 
 class UpdatePackage extends Command {
     protected $signature = 'swifta-payment-provider:update';
@@ -38,25 +39,25 @@ class UpdatePackage extends Command {
         $this->info('Package updated successfully..');
     }
 
-    private function publishConfigurations() {
+    private function publishConfigurations(): void {
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
+            '--provider' => SwiftaServiceProvider::class,
             '--tag' => 'configurations',
         ]);
     }
 
-    private function removeOldVersionOfPackage() {
+    private function removeOldVersionOfPackage(): void {
         $this->info('Removing former version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  remove inensus/swifta-payment-provider');
     }
 
-    private function installNewVersionOfPackage() {
+    private function installNewVersionOfPackage(): void {
         $this->info('Installing last version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/swifta-payment-provider');
     }
 
-    private function deleteMigration(Filesystem $filesystem) {
+    private function deleteMigration(Filesystem $filesystem): void {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_swifta_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
@@ -67,20 +68,20 @@ class UpdatePackage extends Command {
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
-    private function publishMigrationsAgain() {
+    private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
+            '--provider' => SwiftaServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }
 
-    private function updateDatabase() {
+    private function updateDatabase(): void {
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
 
-    private function generateAuthenticationTokenAgain() {
+    private function generateAuthenticationTokenAgain(): string {
         $password = $this->generateRandomNumber();
         $user = $this->user->newQuery()->firstOrCreate([
             'email' => 'swifta-user',
@@ -90,9 +91,13 @@ class UpdatePackage extends Command {
             'email' => 'swifta-user',
         ]);
 
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $payload = JWTAuth::setToken($token)->getPayload();
+        /** @var JWTGuard $guard */
+        $guard = auth('api');
+
+        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];
+        $token = $guard->claims($customClaims)->login($user);
+        $payload = $guard->payload();
+
         $expirationTime = $payload['exp'];
         $this->authentication->newQuery()->updateOrCreate(['id' => 1], [
             'token' => $token,

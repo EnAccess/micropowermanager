@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\ClusterFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,14 +23,10 @@ use MPM\Target\TargetAssignable;
  * @property float  $revenue
  */
 class Cluster extends BaseModel implements TargetAssignable {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<ClusterFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'cluster';
-
-    protected $casts = [
-        'geo_data' => 'array',
-    ];
 
     /** @return BelongsTo<User, $this> */
     public function manager(): BelongsTo {
@@ -44,5 +41,11 @@ class Cluster extends BaseModel implements TargetAssignable {
     /** @return HasMany<MiniGrid, $this> */
     public function miniGrids(): HasMany {
         return $this->hasMany(MiniGrid::class);
+    }
+
+    protected function casts(): array {
+        return [
+            'geo_data' => 'array',
+        ];
     }
 }

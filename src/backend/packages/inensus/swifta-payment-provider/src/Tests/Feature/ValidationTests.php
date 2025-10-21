@@ -12,34 +12,36 @@ use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ValidationTests extends TestCase {
     use RefreshDatabase;
+    use InteractsWithAuthentication;
 
-    public function testOnlyAuthenticatedSwiftaUserSendsTransaction() {
+    public function testOnlyAuthenticatedSwiftaUserSendsTransaction(): void {
         $data = [
             'meter_number' => '478881899',
             'amount' => 1000,
             'cipher' => '549401e2bd56c9bee49737d16ccf58b1',
             'timestamp' => '1123123',
         ];
+        // Create a "wrong" user
         $user = User::query()->create([
             'name' => 'test',
             'password' => '123456',
             'email' => 'test',
         ]);
-        $response = $this->actingAsWrong($user)->post('/api/swifta/validation', $data)->assertStatus(401);
+        $response = $this->actingAs($user)->post('/api/swifta/validation', $data)->assertStatus(401);
         $response->assertJson([
             'success' => 0,
             'message' => 'Authentication field.',
         ]);
     }
 
-    public function testWithoutInvalidCipher() {
+    public function testWithoutInvalidCipher(): void {
         $data = [
             'meter_number' => '478881899',
             'amount' => 1000,
@@ -58,7 +60,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithoutNonExistingMeterNumber() {
+    public function testWithoutNonExistingMeterNumber(): void {
         $this->initializeData();
         $data = [
             'meter_number' => '4700005610',
@@ -79,7 +81,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithNonSenderAddress() {
+    public function testWithNonSenderAddress(): void {
         $this->initializeData();
         Address::query()->first()->delete();
         $data = [
@@ -102,7 +104,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithInvalidTransactionAmount() {
+    public function testWithInvalidTransactionAmount(): void {
         $this->initializeData();
         AccessRate::query()->where('id', 1)->update([
             'tariff_id' => 1,
@@ -133,7 +135,7 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    public function testWithValidTransactionAmount() {
+    public function testWithValidTransactionAmount(): void {
         $this->initializeData();
         $data = [
             'meter_number' => '4700005646',
@@ -161,11 +163,11 @@ class ValidationTests extends TestCase {
         ]);
     }
 
-    private function initializeData() {
+    private function initializeData(): void {
         // create person
         Person::factory()->create();
         // create meter-tariff
-        $tariff = MeterTariff::query()->create([
+        MeterTariff::query()->create([
             'name' => 'test tariff',
             'price' => 100000,
             'total_price' => 100000,
@@ -185,7 +187,7 @@ class ValidationTests extends TestCase {
             'api_name' => 'SparkMeterApi',
         ]);
         // create meter
-        $meter = Meter::query()->create([
+        Meter::query()->create([
             'serial_number' => '4700005646',
             'meter_type_id' => 1,
             'in_use' => 1,
@@ -202,23 +204,5 @@ class ValidationTests extends TestCase {
         ]);
         $address->owner()->associate($p);
         $address->save();
-    }
-
-    public function actingAsWrong($user, $driver = null) {
-        $customClaims = ['usr' => 'swifta-token-wrong', 'exp' => Carbon::now()->addYears(1)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
-    }
-
-    public function actingAs($user, $driver = null) {
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

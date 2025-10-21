@@ -28,18 +28,17 @@ class SmsApplianceRemindRateService {
 
     /**
      * @param array<string, mixed> $data
+     *
+     * @return Asset|Collection<int, Asset>
      */
-    public function updateApplianceRemindRate(SmsApplianceRemindRate $smsApplianceRemindRate, $data): Asset {
+    public function updateApplianceRemindRate(SmsApplianceRemindRate $smsApplianceRemindRate, array $data): Asset|Collection {
         $smsApplianceRemindRate->update([
             'appliance_id' => $data['appliance_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate'],
         ]);
 
-        /** @var Asset $result */
-        $result = $this->appliance->newQuery()->with(['smsReminderRate'])->get();
-
-        return $result;
+        return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
     }
 
     /**
@@ -47,7 +46,7 @@ class SmsApplianceRemindRateService {
      *
      * @return Collection<int, Asset>
      */
-    public function createApplianceRemindRate($data): Collection {
+    public function createApplianceRemindRate(array $data): Collection {
         $this->smsApplianceRemindRate->newQuery()->create([
             'appliance_id' => $data['appliance_type_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],

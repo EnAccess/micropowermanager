@@ -25,10 +25,8 @@ class CompanyService implements IBaseService {
 
     public function getById(int $id): Company {
         $result = $this->company->newQuery()->findOrFail($id);
-        if (isset($result->protected_page_password)) {
-            if (str_starts_with($result->protected_page_password, 'eyJ')) {
-                $result->protected_page_password = Crypt::decrypt($result->protected_page_password);
-            }
+        if (isset($result->protected_page_password) && str_starts_with($result->protected_page_password, 'eyJ')) {
+            $result->protected_page_password = Crypt::decrypt($result->protected_page_password);
         }
 
         return $result;
@@ -38,9 +36,7 @@ class CompanyService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function create(array $data): Company {
-        $company = $this->company->newQuery()->create($data);
-
-        return $company;
+        return $this->company->newQuery()->create($data);
     }
 
     /**

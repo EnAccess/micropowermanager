@@ -3,8 +3,31 @@
 namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\KelinMeter\Models\KelinSetting;
 
+/**
+ * @mixin KelinSetting
+ */
 class KelinSettingResource extends JsonResource {
+    /**
+     * Transform the resource into an array.
+     *
+     * @param mixed $request
+     *
+     * @return array{
+     *     data: array{
+     *         type: 'setting',
+     *         id: int,
+     *         attributes: array{
+     *             id: int,
+     *             actionName: string,
+     *             syncInValueStr: string,
+     *             syncInValueNum: int,
+     *             maxAttempts: int
+     *         }
+     *     }
+     * }
+     */
     public function toArray($request) {
         return [
             'data' => [

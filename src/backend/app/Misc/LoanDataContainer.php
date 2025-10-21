@@ -5,7 +5,6 @@ namespace App\Misc;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
 use App\Exceptions\Meters\MeterIsNotInUse;
-use App\Exceptions\Meters\MeterNotFound;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\Meter\Meter;
@@ -15,9 +14,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoanDataContainer {
-    private ?Person $meterOwner;
+    private Person $meterOwner;
     private Transaction $transaction;
 
+    /**
+     * @var array<int, array{asset_type_name: string, paid: float}>
+     */
     public array $paid_rates = [];
 
     public function initialize(Transaction $transaction): void {
@@ -25,10 +27,7 @@ class LoanDataContainer {
         $this->meterOwner = $this->getMeterOwner($transaction->message);
     }
 
-    public function loanCost() {
-        if (!$this->meterOwner) {
-            throw new MeterNotFound('loan data container');
-        }
+    public function loanCost(): float {
         $loans = $this->getCustomerDueRates($this->meterOwner);
 
         foreach ($loans as $loan) {
@@ -77,13 +76,9 @@ class LoanDataContainer {
     }
 
     /**
-     * @param $owner
-     *
      * @return Collection<int, AssetRate>
-     *
-     * @psalm-return Collection<int, AssetRate>
      */
-    private function getCustomerDueRates($owner): Collection {
+    private function getCustomerDueRates(Person $owner): Collection {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
 
         return AssetRate::with('assetPerson.device')
@@ -94,20 +89,15 @@ class LoanDataContainer {
     }
 
     /**
-     * @param string $serialNumber
-     *
-     * @return Person|null
-     *
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer
      */
-    private function getMeterOwner(string $serialNumber): ?Person {
+    private function getMeterOwner(string $serialNumber): Person {
         try {
-            /** @var Meter $meter */
             $meter = Meter::with('device.person')
                 ->where('serial_number', $serialNumber)
                 ->firstOrFail();
-        } catch (ModelNotFoundException $ex) {
+        } catch (ModelNotFoundException) {
             throw new MeterIsNotAssignedToCustomer('');
         }
 

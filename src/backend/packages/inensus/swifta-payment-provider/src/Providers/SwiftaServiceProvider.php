@@ -13,7 +13,7 @@ use Inensus\SwiftaPaymentProvider\Console\Commands\UpdatePackage;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 
 class SwiftaServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -31,20 +31,21 @@ class SwiftaServiceProvider extends ServiceProvider {
             ->appendOutputTo(storage_path('logs/cron.log'));
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/swifta-payment-provider.php', 'swifta-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SwiftaPaymentProvider', SwiftaTransactionProvider::class);
+        $this->app->bind(SwiftaTransactionProvider::class);
+        $this->app->alias(SwiftaTransactionProvider::class, 'SwiftPaymentProvider');
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/swifta-payment-provider.php' => config_path('swifta-payment-provider.php'),
         ], 'configurations');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_swifta_payment_provider_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
@@ -53,7 +54,7 @@ class SwiftaServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_swifta_payment_provider_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_swifta_payment_provider_tables.php')[0];

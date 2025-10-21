@@ -3,21 +3,22 @@
 namespace Inensus\BulkRegistration\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
 use Spatie\Geocoder\Exceptions\CouldNotGeocode;
+use Symfony\Component\HttpFoundation\Response;
 
 class Handler extends ExceptionHandler {
     /**
      * A list of the exception types that are not reported.
      *
-     * @var array
+     * @var array<int, class-string<\Throwable>>
      */
-    protected $dontReport = [
-    ];
+    protected $dontReport = [];
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $dontFlash = [
         'password',
@@ -27,29 +28,24 @@ class Handler extends ExceptionHandler {
     /**
      * Report or log an exception.
      *
-     * @param \Throwable $exception
-     *
-     * @return void
-     *
      * @throws \Exception
      */
-    public function report(\Throwable $exception) {
+    public function report(\Throwable $exception): void {
         parent::report($exception);
     }
 
     /**
      * Render an exception into an HTTP response.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Throwable               $exception
+     * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @throws \Throwable
      */
     public function render($request, \Throwable $exception) {
         if ($exception instanceof CouldNotGeocode) {
-            new GoogleMapsApiException(json_encode($exception->errors()));
+            new GoogleMapsApiException(json_encode($exception->getMessage()));
         }
 
         return parent::render($request, $exception);

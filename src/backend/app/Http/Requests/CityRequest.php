@@ -7,8 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class CityRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool {
         return true;
@@ -24,7 +22,7 @@ class CityRequest extends FormRequest {
             'name' => 'required',
             'mini_grid_id' => 'required',
             'cluster_id' => 'required',
-            'country_id' => 'required|integer|exists:countries,id',
+            'country_id' => 'required|integer|exists:tenant.countries,id',
         ];
     }
 }

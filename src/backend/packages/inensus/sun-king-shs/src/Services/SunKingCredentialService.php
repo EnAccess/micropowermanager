@@ -2,9 +2,12 @@
 
 namespace Inensus\SunKingSHS\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\SunKingSHS\Models\SunKingCredential;
 
 class SunKingCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private SunKingCredential $credential,
     ) {}
@@ -12,28 +15,62 @@ class SunKingCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): SunKingCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'client_id' => null,
             'client_secret' => null,
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): ?SunKingCredential {
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->client_id) {
+                $credential->client_id = $this->decryptCredentialField($credential->client_id);
+            }
+            if ($credential->client_secret) {
+                $credential->client_secret = $this->decryptCredentialField($credential->client_secret);
+            }
+            if ($credential->access_token) {
+                $credential->access_token = $this->decryptCredentialField($credential->access_token);
+            }
+        }
+
+        return $credential;
     }
 
-    public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+    /**
+     * @param array<string, mixed> $updateData
+     */
+    public function updateCredentials(SunKingCredential $credentials, array $updateData): SunKingCredential {
+        $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret', 'access_token']);
+        $credentials->update($encryptedData);
 
-        return $credentials->fresh();
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret', 'access_token']);
     }
 
-    public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+    public function getById(int $id): SunKingCredential {
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        // Decrypt sensitive fields
+        if ($credential->client_id) {
+            $credential->client_id = $this->decryptCredentialField($credential->client_id);
+        }
+        if ($credential->client_secret) {
+            $credential->client_secret = $this->decryptCredentialField($credential->client_secret);
+        }
+        if ($credential->access_token) {
+            $credential->access_token = $this->decryptCredentialField($credential->access_token);
+        }
+
+        return $credential;
     }
 
-    public function isAccessTokenValid($credential) {
+    public function isAccessTokenValid(SunKingCredential $credential): bool {
         $accessToken = $credential->getAccessToken();
 
         if ($accessToken == null) {
@@ -41,10 +78,6 @@ class SunKingCredentialService {
         }
         $tokenExpirationTime = $credential->getExpirationTime();
 
-        if ($tokenExpirationTime == null || $tokenExpirationTime < time()) {
-            return false;
-        }
-
-        return true;
+        return $tokenExpirationTime != null && $tokenExpirationTime >= time();
     }
 }

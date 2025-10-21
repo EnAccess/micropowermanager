@@ -7,10 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 class CreateAssetRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
@@ -19,7 +17,7 @@ class CreateAssetRequest extends FormRequest {
      *
      * @return array<string, mixed>
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'asset_type_id' => 'required',
             'name' => 'required|min:3',

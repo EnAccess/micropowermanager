@@ -4,11 +4,17 @@ namespace App\Services;
 
 class RevenueService {
     /**
-     * @param mixed $targetData
+     * @param iterable<object> $targetData
      *
-     * @return array<string, array{new_connections: int, revenue: float, connected_power: float, energy_per_month: float, average_revenue_per_month: float}>
+     * @return array<string, array{
+     *     new_connections: int,
+     *     revenue: float,
+     *     connected_power: float,
+     *     energy_per_month: float,
+     *     average_revenue_per_month: float
+     * }>
      */
-    public function fetchTargets($targetData): array {
+    public function fetchTargets(iterable $targetData): array {
         $formattedTarget = [];
         if (is_object($targetData) && count($targetData) >= 1) {
             foreach ($targetData as $targets) {

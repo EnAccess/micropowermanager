@@ -10,7 +10,7 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWTGuard;
 
 class InstallPackage extends Command {
     protected $signature = 'swifta-payment-provider:install';
@@ -33,36 +33,7 @@ class InstallPackage extends Command {
         $this->info('Package installed successfully..');
     }
 
-    private function publishConfigurations() {
-        $this->info('Copying configurations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => 'configurations',
-        ]);
-    }
-
-    private function publishMigrations() {
-        $this->info('Copying migrations\n');
-        $this->call('vendor:publish', [
-            '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    private function createDatabaseTables() {
-        $this->info('Creating database tables\n');
-        $this->call('migrate');
-    }
-
-    private function createPluginRecord() {
-        $this->call('plugin:add', [
-            'name' => 'SwiftaPaymentProvider',
-            'composer_name' => 'inensus/swifta-payment-provider',
-            'description' => 'SwiftaPaymentProvider integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function generateAuthenticationToken() {
+    private function generateAuthenticationToken(): string {
         $password = $this->generateRandomNumber();
         $companyId = app()->make(UserService::class)->getCompanyId();
         $company = $this->companyService->getById($companyId);
@@ -79,9 +50,14 @@ class InstallPackage extends Command {
             'fk_company_database_id' => $companyDatabase->getId(),
         ];
         $this->databaseProxyService->create($databaseProxyData);
+
+        /** @var JWTGuard $guard */
+        $guard = auth('api');
+
         $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];
-        $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-        $payload = JWTAuth::setToken($token)->getPayload();
+        $token = $guard->claims($customClaims)->login($user);
+        $payload = $guard->payload();
+
         $expirationTime = $payload['exp'];
         $this->authentication->newQuery()->create([
             'token' => $token,

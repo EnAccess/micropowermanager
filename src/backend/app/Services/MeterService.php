@@ -29,7 +29,7 @@ class MeterService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<Meter>
+     * @return LengthAwarePaginator<int, Meter>
      */
     public function search(string $term, int $paginate): LengthAwarePaginator {
         return $this->meter->newQuery()->with(['meterType', 'tariff'])
@@ -106,17 +106,16 @@ class MeterService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<Meter>
+     * @return LengthAwarePaginator<int, Meter>
      */
-    public function getAll(?int $limit = null, ?bool $inUse = true): LengthAwarePaginator {
+    public function getAll(?int $limit = null, ?bool $inUse = null): LengthAwarePaginator {
+        $query = $this->meter->newQuery()->with(['meterType', 'tariff']);
+
         if ($inUse !== null) {
-            return $this->meter->newQuery()->with(['meterType', 'tariff'])->where(
-                'in_use',
-                $inUse
-            )->paginate($limit);
+            $query->where('in_use', $inUse);
         }
 
-        return $this->meter->newQuery()->with(['meterType', 'tariff'])->paginate($limit);
+        return $query->paginate($limit);
     }
 
     public function update($meter, array $meterData): Meter {
@@ -130,7 +129,8 @@ class MeterService implements IBaseService {
      * @return Collection<int, Meter>
      */
     public function getNumberOfConnectionTypes(): Collection {
-        return $this->meter->newQuery()->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
+        return $this->meter->newQuery()
+            ->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
             ->select('connection_type_id', DB::raw('count(*) as total'))
             ->groupBy('connection_type_id')
             ->get();

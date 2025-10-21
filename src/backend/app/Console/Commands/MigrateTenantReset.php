@@ -6,7 +6,7 @@ class MigrateTenantReset extends AbstractSharedCommand {
     protected $signature = 'migrate-tenant:reset {--company-id=}';
     protected $description = 'Rollback all database migrations on provided tenant database(s)';
 
-    public function handle() {
+    public function handle(): void {
         $this->call('optimize:clear');
         $this->call('migrate:reset', [
             '--database' => 'tenant',

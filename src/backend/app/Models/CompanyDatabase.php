@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
+use Database\Factories\CompanyDatabaseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int    $company_id;
  */
 class CompanyDatabase extends BaseModelCentral {
-    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
+    /** @use HasFactory<CompanyDatabaseFactory> */
     use HasFactory;
 
     public const TABLE_NAME = 'company_databases';
@@ -31,13 +32,10 @@ class CompanyDatabase extends BaseModelCentral {
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase {
-        /** @var CompanyDatabase $result */
-        $result = $this->newQuery()
+        return $this->newQuery()
             ->select(self::COL_DATABASE_NAME)
             ->where(self::COL_COMPANY_ID, '=', $companyId)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function getDatabaseName(): string {

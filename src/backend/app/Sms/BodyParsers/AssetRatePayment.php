@@ -6,22 +6,14 @@ use App\Models\PaymentHistory;
 
 class AssetRatePayment extends SmsBodyParser {
     protected $variables = ['appliance_type_name', 'amount'];
-    protected $paymentHistory;
 
-    public function __construct(PaymentHistory $paymentHistory) {
-        $this->paymentHistory = $paymentHistory;
-    }
+    public function __construct(protected PaymentHistory $paymentHistory) {}
 
-    protected function getVariableValue($variable): mixed {
-        switch ($variable) {
-            case 'appliance_type_name':
-                $variable = $this->paymentHistory->paidFor->assetPerson->assetType;
-                break;
-            case 'amount':
-                $variable = $this->paymentHistory->amount;
-                break;
-        }
-
-        return $variable;
+    protected function getVariableValue(string $variable): mixed {
+        return match ($variable) {
+            'appliance_type_name' => $this->paymentHistory->paidFor->assetPerson->assetType,
+            'amount' => $this->paymentHistory->amount,
+            default => $variable,
+        };
     }
 }

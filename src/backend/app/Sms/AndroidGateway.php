@@ -10,13 +10,8 @@ use Illuminate\Support\Facades\Log;
 class AndroidGateway implements ISmsProvider {
     /**
      * Sends the sms to the sms provider.
-     *
-     * @param string            $number
-     * @param string            $body
-     * @param string            $callback
-     * @param SmsAndroidSetting $smsAndroidSetting
      */
-    public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting) {
+    public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting): void {
         if (!config('app.env') == 'production') {
             Log::debug('Send sms on allowed in production', ['number' => $number, 'message' => $body]);
 
@@ -30,7 +25,7 @@ class AndroidGateway implements ISmsProvider {
                 ['number' => $number, 'message' => $body, 'error' => $e->getMessage()]
             );
 
-            throw new \Exception('Error while sending sms');
+            throw new \Exception('Error while sending sms', $e->getCode(), $e);
         }
 
         // add sms to sms_gateway job
@@ -39,6 +34,6 @@ class AndroidGateway implements ISmsProvider {
             'message' => $body,
             'callback' => $callbackWithoutProtocolRoot,
             'setting' => $smsAndroidSetting,
-        ])->onConnection('redis')->onQueue('sms_gateway');
+        ]);
     }
 }

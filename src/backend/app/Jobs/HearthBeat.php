@@ -20,14 +20,16 @@ class HearthBeat implements ShouldQueue {
      *
      * @return void
      */
-    public function __construct() {}
+    public function __construct(
+    ) {
+        $this->onConnection('redis');
+        // $this->onQueue('default');
+    }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle() {
+    public function handle(): void {
         Log::critical('I\'m alive');
     }
 }

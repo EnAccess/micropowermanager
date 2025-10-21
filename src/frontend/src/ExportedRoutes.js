@@ -4,6 +4,9 @@ import Welcome from "./pages/Welcome/index.vue"
 import Login from "./pages/Login/index.vue"
 import Register from "./pages/Register/index.vue"
 import ForgotPassword from "./pages/ForgotPassword/index.vue"
+import ProtectedPagePasswordResetRequest from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetRequest.vue"
+import ProtectedPagePasswordResetConfirm from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetConfirm.vue"
+import UserPasswordResetConfirm from "./modules/UserPasswordReset/UserPasswordResetConfirm.vue"
 
 import ChildRouteWrapper from "./shared/ChildRouteWrapper.vue"
 
@@ -12,6 +15,8 @@ import ClusterDetailPage from "./pages/Dashboard/Cluster/_id.vue"
 // MiniGridOverviewPage just redirects to MiniGridDetailPage for first Mini-Grid
 import MiniGridOverviewPage from "./pages/Dashboard/MiniGrid/index.vue"
 import MiniGridDetailPage from "./pages/Dashboard/MiniGrid/_id.vue"
+import AgentDashboardPage from "./pages/Dashboard/Agents/index.vue"
+import AgentPerformanceDashboardPage from "./pages/Dashboard/AgentPerformance/index.vue"
 import AddCluster from "./pages/Location/Cluster/New/index.vue"
 import AddVillage from "./pages/Location/Village/New/index.vue"
 import AddMiniGrid from "./pages/Location/MiniGrid/New/index.vue"
@@ -43,7 +48,6 @@ import MessageList from "./pages/Sms/index.vue"
 import MessageNew from "./pages/Sms/New/index.vue"
 import Maintenance from "./pages/Maintenance/index.vue"
 import ApplianceList from "./pages/Appliance/index.vue"
-import AgentList from "./pages/Agent/index.vue"
 import AgentCommissionTypeList from "./pages/Agent/Commission/index.vue"
 import AgentDetail from "./pages/Agent/_id.vue"
 import SoldApplianceDetail from "./pages/Client/Appliance/_id.vue"
@@ -92,6 +96,7 @@ import EBikeList from "./pages/EBikes/index.vue"
 import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
+import OdysseyExportOverview from "./plugins/odyssey-data-export/js/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -127,6 +132,33 @@ export const exportedRoutes = [
     name: "forgot-password",
     components: {
       default: ForgotPassword,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/reset-password",
+    name: "reset-password",
+    components: {
+      default: UserPasswordResetConfirm,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/forgot-protected-password",
+    name: "forgot-protected-password",
+    components: {
+      default: ProtectedPagePasswordResetRequest,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/reset-protected-password",
+    name: "reset-protected-password",
+    components: {
+      default: ProtectedPagePasswordResetConfirm,
       header: LoginHeader,
       footer: LoginFooter,
     },
@@ -347,6 +379,35 @@ export const exportedRoutes = [
                 name: "Mini-Grid",
                 link: "/dashboards/mini-grid",
                 target: "id",
+              },
+            },
+          },
+        ],
+      },
+
+      {
+        path: "dashboards/agent-performance",
+        component: ChildRouteWrapper,
+        meta: {
+          sidebar: {
+            enabled: true,
+            name: "Agent Performance",
+          },
+        },
+        children: [
+          {
+            path: "",
+            component: AgentPerformanceDashboardPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agent Performance",
+                link: "/dashboards/agent-performance",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Agent Performance",
               },
             },
           },
@@ -713,15 +774,24 @@ export const exportedRoutes = [
           layout: "default",
           sidebar: {
             enabled: true,
-            name: "List",
+            name: "Overview",
           },
         },
         children: [
           {
             path: "",
-            component: AgentList,
+            component: AgentDashboardPage,
             meta: {
               layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agents",
+                link: "/agents",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Overview",
+              },
             },
           },
           {
@@ -1423,6 +1493,30 @@ export const exportedRoutes = [
       {
         path: "chint-overview",
         component: ChintMeterOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/odyssey-data-export",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 23,
+        name: "Odyssey Export",
+        icon: "cloud_upload",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: OdysseyExportOverview,
         meta: {
           layout: "default",
           sidebar: {

@@ -15,6 +15,8 @@ services:
     ports:
       - 8000:80
       - 8443:443
+    volumes:
+      - storage_data:/var/www/html/storage
     healthcheck:
       test: [CMD, curl, -f, http://localhost/up]
       start_period: 60s
@@ -28,8 +30,6 @@ services:
     env_file: ./dev/.env.micropowermanager-frontend
     ports:
       - 8001:80
-    volumes:
-      - frontend_node_modules:/app/node_modules/
 
   scheduler:
     container_name: scheduler
@@ -41,21 +41,17 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-      backend:
-        condition: service_healthy
     links:
       - mysql:db
       - redis:redis
+    volumes:
+      - storage_data:/var/www/html/storage
 
   worker:
     container_name: worker
     restart: unless-stopped
-    build:
-      dockerfile: docker/DockerfileQueueWorker
+    image: enaccess/micropowermanager-queue-worker:latest
     env_file: ./dev/.env.micropowermanager-backend
-    volumes:
-      - ./src/backend:/var/www/laravel
-      - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       mysql:
         condition: service_healthy
@@ -64,6 +60,8 @@ services:
     links:
       - mysql:db
       - redis:redis
+    volumes:
+      - storage_data:/var/www/html/storage
 
   redis:
     container_name: redis
@@ -89,6 +87,7 @@ services:
       retries: 3
 
 volumes:
-  frontend_node_modules:
   mysql_data:
   redis_data:
+  # storage volume is shared between services
+  storage_data:

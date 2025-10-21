@@ -2,36 +2,36 @@
 
 namespace Inensus\SparkMeter\Observers;
 
+use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
+use App\Models\Meter\Meter;
 use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Services\PluginsService;
-use Inensus\SparkMeter\Helpers\SmTableEncryption;
 use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
 class GeographicalInformationObserver {
     public function __construct(
         private CustomerService $customerService,
-        private SmTableEncryption $smTableEncryption,
         private Person $person,
         private SmCustomer $smCustomer,
         private PluginsService $pluginsService,
     ) {}
 
-    public function updated(GeographicalInformation $geographicalInformation) {
+    public function updated(GeographicalInformation $geographicalInformation): void {
         if (!$this->pluginsService->isPluginActive(MpmPlugin::SPARK_METER)) {
             return;
         }
 
-        if ($geographicalInformation->owner_type === 'address') {
+        if ($geographicalInformation->owner instanceof Address) {
             $address = $geographicalInformation->owner;
 
-            if ($address && $address->owner_type === 'device') {
+            if ($address->owner instanceof Device) {
                 $device = $address->owner;
 
-                if ($device && $device->device_type === 'meter') {
+                if ($device->device instanceof Meter) {
                     $this->updateSparkMetaCustomerInformation($device, $geographicalInformation);
                 }
             }
@@ -40,20 +40,13 @@ class GeographicalInformationObserver {
 
     /**
      * Update Spark meter customer information.
-     *
-     * @param Device                  $device
-     * @param GeographicalInformation $geographicalInformation
-     *
-     * @return void
      */
-    private function updateSparkMetaCustomerInformation(Device $device, GeographicalInformation $geographicalInformation) {
+    private function updateSparkMetaCustomerInformation(Device $device, GeographicalInformation $geographicalInformation): void {
         $meter = $device->device;
 
         $customer = $this->person->newQuery()
             ->with(['devices.device.tariff', 'devices.address.geo'])
-            ->whereHas('devices', function ($q) use ($device) {
-                return $q->where('id', $device->id);
-            })->first();
+            ->whereHas('devices', fn ($q) => $q->where('id', $device->id))->first();
 
         if (!$customer) {
             return;

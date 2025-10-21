@@ -34,7 +34,7 @@ interface IBaseService {
     public function delete(Model $model): ?bool;
 
     /**
-     * @return Collection|LengthAwarePaginator
+     * @return Collection<int, T>|LengthAwarePaginator<int, T>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator;
 }

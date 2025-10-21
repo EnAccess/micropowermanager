@@ -5,6 +5,7 @@ namespace Inensus\Ticket\Services;
 use App\Models\User;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketUser;
 
@@ -25,9 +26,15 @@ class TicketUserService implements IBaseService {
         }
 
         if ($limit) {
+            // This is returning `User` model rather than `TicketUser`.
+            // Not sure why this is the case, but not touching it right now.
+            // @phpstan-ignore return.type
             return $ticketUsers->paginate($limit);
         }
 
+        // This is returning `User` model rather than `TicketUser`.
+        // Not sure why this is the case, but not touching it right now.
+        // @phpstan-ignore return.type
         return $ticketUsers->get();
     }
 
@@ -48,19 +55,15 @@ class TicketUserService implements IBaseService {
     }
 
     public function findByPhone(string $phone): TicketUser {
-        /** @var TicketUser $result */
-        $result = $this->ticketUser->newQuery()->where('phone', '=', $phone)
+        return $this->ticketUser->newQuery()->where('phone', '=', $phone)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function findOrCreateByUser(User $user): TicketUser {
         try {
-            /** @var TicketUser $result */
             $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->getId())
                 ->firstOrFail();
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+        } catch (ModelNotFoundException) {
             $result = $this->ticketUser->newQuery()->create([
                 'user_name' => $user->getName(),
                 'phone' => null,

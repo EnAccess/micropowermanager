@@ -30,7 +30,12 @@ class DalyBmsApi implements IManufacturerAPI {
         private ApiRequests $apiRequests,
     ) {}
 
-    public function getDevices(array $deviceSerials) {
+    /**
+     * @param array<string, mixed> $deviceSerials
+     *
+     * @return array<string, mixed>
+     */
+    public function getDevices(array $deviceSerials): array {
         $params = [
             'codes' => $deviceSerials,
         ];
@@ -53,7 +58,10 @@ class DalyBmsApi implements IManufacturerAPI {
         }
     }
 
-    public function getDevice(string $code) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function getDevice(string $code): array {
         $params = [
             'Code' => $code,
         ];
@@ -75,7 +83,10 @@ class DalyBmsApi implements IManufacturerAPI {
         }
     }
 
-    public function switchDevice(string $code, bool $isOn) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function switchDevice(string $code, bool $isOn): array {
         $params = [
             'cmdKey' => '8500_004',
             'data' => [
@@ -86,16 +97,12 @@ class DalyBmsApi implements IManufacturerAPI {
         ];
 
         $credentials = $this->credentialService->getCredentials();
-        try {
-            if (!$this->credentialService->isAccessTokenValid($credentials)) {
-                $authResponse = $this->apiRequests->authentication($credentials);
-                $this->credentialService->updateCredentials($credentials, $authResponse);
-            }
-
-            return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_SWITCH);
-        } catch (DalyBmsApiResponseException $e) {
-            throw $e;
+        if (!$this->credentialService->isAccessTokenValid($credentials)) {
+            $authResponse = $this->apiRequests->authentication($credentials);
+            $this->credentialService->updateCredentials($credentials, $authResponse);
         }
+
+        return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_SWITCH);
     }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -144,7 +151,12 @@ class DalyBmsApi implements IManufacturerAPI {
         ];
     }
 
-    public function clearDevice(Device $device): void {
+    /**
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

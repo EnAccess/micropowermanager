@@ -3,13 +3,20 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\SolarHomeSystemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * @property int          $id
+ * @property string       $serial_number
+ * @property Device       $device
+ * @property Manufacturer $manufacturer
+ */
 class SolarHomeSystem extends BaseModel {
-    /** @use HasFactory<\Database\Factories\SolarHomeSystemFactory> */
+    /** @use HasFactory<SolarHomeSystemFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'solar_home_system';

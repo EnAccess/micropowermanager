@@ -5,7 +5,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up() {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void {
         if (!Schema::hasTable('bulk_registration_csv_datas')) {
             Schema::create('bulk_registration_csv_datas', function (Blueprint $table) {
                 $table->increments('id');
@@ -17,7 +20,10 @@ return new class extends Migration {
         }
     }
 
-    public function down() {
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void {
         Schema::dropIfExists('bulk_registration_csv_datas');
     }
 };

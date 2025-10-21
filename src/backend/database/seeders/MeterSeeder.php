@@ -10,6 +10,7 @@ use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
+use App\Models\Meter\MeterConsumption;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
@@ -30,13 +31,16 @@ class MeterSeeder extends Seeder {
      */
     public function run() {
         // Manufacturer
-        // Here, we adding some fake Manufacturers for seeding.
-        // Additional (actual) manufacturers can be added by
-        // enabling to corresponding plugin in the demo environment.
-        $manufacturers = Manufacturer::factory()
-            ->count(3)
-            ->isMeterManufacturer()
-            ->create();
+        // Create demo manufacturers for demo purposes
+        $demoMeterManufacturer = Manufacturer::create([
+            'name' => 'Demo Meter Manufacturer',
+            'type' => 'meter',
+            'website' => 'https://demo.micropowermanager.io/',
+            'contact_person' => 'Demo Person',
+            'api_name' => 'DemoMeterManufacturerApi',
+        ]);
+
+        $manufacturers = collect([$demoMeterManufacturer]);
 
         // Connection Group / Connection Type
         ConnectionType::create(['name' => 'House Hold']);
@@ -132,9 +136,9 @@ class MeterSeeder extends Seeder {
                 ->for(ConnectionType::all()->random())
                 ->for(ConnectionGroup::all()->random())
                 ->for(MeterType::all()->random())
-                ->for(Manufacturer::all()->random())
+                ->for($manufacturers->random())
                 ->for(MeterTariff::all()->random(), 'tariff')
-                ->create();
+                ->createOne();
 
             // Assign the Meter to the customer by creating a device
             $device = Device::factory()
@@ -145,6 +149,9 @@ class MeterSeeder extends Seeder {
                         ->for($person->addresses->first()->city)
                         ->has(
                             GeographicalInformation::factory()
+                                // Remove this after Laravel 12 upgrade, see
+                                // https://github.com/larastan/larastan/issues/2307
+                                // @phpstan-ignore-next-line
                                 ->state(function (array $attributes, Address $address) {
                                     /** @var Device $device */
                                     $device = $address->owner()->first();
@@ -155,9 +162,28 @@ class MeterSeeder extends Seeder {
                             'geo'
                         )
                 )
-                ->create([
+                ->createOne([
                     'device_serial' => $meter->serial_number,
                 ]);
+            $this->generateMeterConsumptionData($meter);
         }
+    }
+
+    private function generateMeterConsumptionData(Meter $meter): void {
+        $readingDate = date('Y-m-d', strtotime('-'.mt_rand(0, 30).' days'));
+        $meterId = $meter->id;
+        $totalConsumption = mt_rand(1, 1000) / 10;
+        $consumption = mt_rand(1, 10) / 10;
+        $creditOnMeter = mt_rand(1, 10) / 10;
+
+        $meterConsumption = MeterConsumption::factory()->createOne([
+            'meter_id' => $meterId,
+            'reading_date' => $readingDate,
+            'total_consumption' => $totalConsumption,
+            'consumption' => $consumption,
+            'credit_on_meter' => $creditOnMeter,
+        ]);
+
+        echo "Created meter consumption data for meter ID: {$meterId}\n";
     }
 }

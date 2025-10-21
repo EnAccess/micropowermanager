@@ -2,6 +2,7 @@
 
 namespace Inensus\MicroStarMeter\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inensus\MicroStarMeter\Http\Requests\ImportCertificateRequest;
@@ -15,13 +16,13 @@ class MicroStarCertificateController extends Controller {
         private MicroStarCredentialService $credentialService,
     ) {}
 
-    public function store(ImportCertificateRequest $request) {
+    public function store(ImportCertificateRequest $request): MicroStarResource {
         $credentials = $this->credentialService->getCredentials();
 
         return MicroStarResource::make($this->certificateService->upload($request, $credentials));
     }
 
-    public function show(Request $request) {
+    public function show(Request $request): JsonResponse {
         $credentials = $this->credentialService->getCredentials();
         $certificateName = $this->certificateService->getUploadedCertificate($credentials);
 

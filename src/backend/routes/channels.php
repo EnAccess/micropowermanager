@@ -13,10 +13,6 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('tickets.*', function ($user, $id) {
-    return (int) $user->id === (int) $id;
-});
+Broadcast::channel('tickets.*', fn ($user, $id): bool => (int) $user->id === (int) $id);
 
-Broadcast::channel('ticketcreated', function ($user) {
-    return true;
-});
+Broadcast::channel('ticketcreated', fn ($user): true => true);

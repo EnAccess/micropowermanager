@@ -3,28 +3,29 @@
 namespace Inensus\AfricasTalking\Http\Controllers;
 
 use App\Events\SmsStoredEvent;
+use App\Models\Address\Address;
 use App\Models\Sms;
 use App\Services\AddressesService;
 use App\Services\SmsService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Inensus\AfricasTalking\Services\AfricasTalkingCredentialService;
 use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
 
 class AfricasTalkingCallbackController extends Controller {
     public function __construct(
-        private AfricasTalkingCredentialService $credentialService,
         private AfricasTalkingMessageService $messageService,
         private SmsService $smsService,
         private AddressesService $addressesService,
     ) {}
 
-    public function incoming(Request $request) {
+    public function incoming(Request $request): JsonResponse {
         $data = $request->all();
         $phoneNumber = $data['from'];
         $message = $data['text'];
         $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
-        $sender = $address ? $address->owner : null;
+        $sender = $address instanceof Address ? $address->owner : null;
+        // @phpstan-ignore property.notFound
         $senderId = $sender ? $sender->id : null;
 
         $smsData = [
@@ -41,7 +42,7 @@ class AfricasTalkingCallbackController extends Controller {
         return response()->json(['status' => 'success']);
     }
 
-    public function delivery(Request $request) {
+    public function delivery(Request $request): JsonResponse {
         $data = $request->all();
         $status = $data['status'];
         $id = $data['id'];

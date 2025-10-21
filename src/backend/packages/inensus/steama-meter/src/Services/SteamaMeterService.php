@@ -8,7 +8,6 @@ use App\Models\ConnectionGroup;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +22,7 @@ use Inensus\SteamaMeter\Models\SteamaTariff;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
 class SteamaMeterService implements ISynchronizeService {
-    private $rootUrl = '/meters';
+    private string $rootUrl = '/meters';
 
     public function __construct(
         private SteamaMeter $stmMeter,
@@ -33,7 +32,6 @@ class SteamaMeterService implements ISynchronizeService {
         private SteamaCustomer $customer,
         private Manufacturer $manufacturer,
         private ConnectionGroup $connectionGroup,
-        private MeterTariff $meterTariff,
         private City $city,
         private MeterType $meterType,
         private SteamaMeterType $stmMeterType,
@@ -52,7 +50,7 @@ class SteamaMeterService implements ISynchronizeService {
         ])->paginate($perPage);
     }
 
-    public function getMetersCount() {
+    public function getMetersCount(): int {
         return count($this->stmMeter->newQuery()->get());
     }
 
@@ -61,9 +59,7 @@ class SteamaMeterService implements ISynchronizeService {
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function ($meter) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $meter) {
                 $createdMeter = $this->createRelatedMeter($meter);
                 $this->stmMeter->newQuery()->create([
                     'meter_id' => $meter['id'],
@@ -73,9 +69,7 @@ class SteamaMeterService implements ISynchronizeService {
                     'hash' => $meter['hash'],
                 ]);
             });
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function ($meter) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $meter) {
                 $relatedMeter = is_null($meter['relatedMeter']) ?
                     $this->createRelatedMeter($meter) : $this->updateRelatedMeter($meter, $meter['relatedMeter']);
                 $meter['registeredStmMeter']->update([
@@ -100,7 +94,7 @@ class SteamaMeterService implements ISynchronizeService {
         }
     }
 
-    public function syncCheck($returnData = false) {
+    public function syncCheck($returnData = false): array {
         try {
             $url = $this->rootUrl.'?page=1&page_size=100';
             $result = $this->steamaApi->get($url);
@@ -109,7 +103,7 @@ class SteamaMeterService implements ISynchronizeService {
                 $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $meter) {
-                    array_push($meters, $meter);
+                    $meters[] = $meter;
                 }
             }
         } catch (SteamaApiResponseException $e) {
@@ -118,12 +112,10 @@ class SteamaMeterService implements ISynchronizeService {
             }
             throw new SteamaApiResponseException($e->getMessage());
         }
-        $metersCollection = collect($meters)->filter(function ($meter) {
-            return $meter['customer'] !== null;
-        });
+        $metersCollection = collect($meters)->filter(fn (array $meter): bool => $meter['customer'] !== null);
         $stmMeters = $this->stmMeter->newQuery()->get();
         $meters = $this->meter->newQuery()->get();
-        $metersCollection->transform(function ($meter) use ($stmMeters, $meters) {
+        $metersCollection->transform(function (array $meter) use ($stmMeters, $meters): array {
             $registeredStmMeter = $stmMeters->firstWhere('meter_id', $meter['id']);
             $relatedMeter = null;
             $meterHash = $this->steamaMeterHasher($meter);
@@ -140,7 +132,7 @@ class SteamaMeterService implements ISynchronizeService {
 
             return $meter;
         });
-        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+        $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($meterSyncStatus) {
             return $returnData ? ['data' => $metersCollection, 'result' => false] : ['result' => false];
         }
@@ -148,7 +140,7 @@ class SteamaMeterService implements ISynchronizeService {
         return $returnData ? ['data' => $metersCollection, 'result' => true] : ['result' => true];
     }
 
-    public function createRelatedMeter($stmMeter) {
+    public function createRelatedMeter(array $stmMeter) {
         try {
             DB::connection('tenant')->beginTransaction();
             $meterSerial = $stmMeter['reference'];
@@ -157,7 +149,7 @@ class SteamaMeterService implements ISynchronizeService {
                 'customer_id',
                 $stmMeter['customer']
             )->first();
-            if ($meter === null) {
+            if (!$meter) {
                 $meter = new Meter();
                 $geoLocation = new GeographicalInformation();
             } else {
@@ -177,8 +169,8 @@ class SteamaMeterService implements ISynchronizeService {
                     $points = $stmMeter['latitude'].','.$stmMeter['longitude'];
                 } else {
                     $points = explode(',', config('steama.geoLocation'));
-                    $latitude = strval(doubleval($points[0]) - (mt_rand(10, 1000) / 10000));
-                    $longitude = strval(doubleval($points[1]) - (mt_rand(10, 1000) / 10000));
+                    $latitude = strval(floatval($points[0]) - (mt_rand(10, 1000) / 10000));
+                    $longitude = strval(floatval($points[1]) - (mt_rand(10, 1000) / 10000));
                     $points = $latitude.','.$longitude;
                 }
 
@@ -197,19 +189,18 @@ class SteamaMeterService implements ISynchronizeService {
                 $tariff = $this->tariff->newQuery()->with('mpmTariff')->first();
                 $meter->tariff()->associate($tariff->mpmTariff);
                 $meter->save();
-                $stmCustomerAddress = $stmCustomer->mpmPerson()->newQuery()->with('addresses.city')
-                    ->whereHas('addresses', function ($q) {
-                        return $q->where('is_primary', 1);
-                    })->first();
+                $stmCustomerAddress = $stmCustomer->mpmPerson->newQuery()->with('addresses.city')
+                    ->whereHas('addresses', fn ($q) => $q->where('is_primary', 1))->first();
                 $cityName = $stmCustomerAddress->addresses[0]->city->name;
 
                 $steamaCity = $this->city->newQuery()->with('miniGrid')->where('name', $cityName)->first();
+
                 $address = new Address();
                 $address = $address->newQuery()->create([
-                    'city_id' => request()->input('city_id') ?? $steamaCity->id,
+                    'city_id' => request()->input('city_id', $steamaCity->id),
                 ]);
                 $address->owner()->associate($meter);
-                $address->geo()->save($meter?->geo()->first());
+                $address->geo()->save($meter->device->address->geo()->first());
                 $address->save();
             }
             DB::connection('tenant')->commit();
@@ -222,7 +213,7 @@ class SteamaMeterService implements ISynchronizeService {
         }
     }
 
-    public function updateRelatedMeter($stmMeter, $meter) {
+    public function updateRelatedMeter(array $stmMeter, $meter) {
         $meterSerial = $stmMeter['reference'];
         $meter->serial_number = $meterSerial;
         $meter->meterType()->associate($this->getMeterType($stmMeter));
@@ -243,7 +234,7 @@ class SteamaMeterService implements ISynchronizeService {
         return $meter;
     }
 
-    public function getMeterType($stmMeter) {
+    public function getMeterType(array $stmMeter) {
         $version = $stmMeter['version'];
         $usageSpikeThreshold = $stmMeter['usage_spike_threshold'];
         $stmMeterType = $this->stmMeterType->newQuery()->with('mpmMeterType')->where(
@@ -308,7 +299,7 @@ class SteamaMeterService implements ISynchronizeService {
         return $stmMeter->fresh();
     }
 
-    private function steamaMeterHasher($steamaMeter) {
+    private function steamaMeterHasher(array $steamaMeter): string {
         return $this->apiHelpers->makeHash([
             $steamaMeter['reference'],
             $steamaMeter['version'],

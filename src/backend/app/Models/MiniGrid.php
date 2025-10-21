@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use App\Models\Transaction\Transaction;
+use Database\Factories\MiniGridFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,19 +15,19 @@ use MPM\Target\TargetAssignable;
 /**
  * Class MiniGrid.
  *
- * @property int        $id
- * @property string     $name
- * @property int        $cluster_id
- * @property Collection $cities
- * @property Collection $agents
- * @property mixed      $soldEnergy
- * @property mixed      $transactions
- * @property array      $period
- * @property array      $tickets
- * @property array      $revenueList
+ * @property int                          $id
+ * @property string                       $name
+ * @property int                          $cluster_id
+ * @property Collection<int, City>        $cities
+ * @property Collection<int, Agent>       $agents
+ * @property array{data: float}           $soldEnergy   This field is used only for caching.
+ * @property Collection<int, Transaction> $transactions This field is used only for caching.
+ * @property array<string, mixed>         $period       This field is used only for caching.
+ * @property array<string, mixed>         $tickets      This field is used only for caching.
+ * @property array<string, mixed>         $revenueList  This field is used only for caching.
  */
 class MiniGrid extends BaseModel implements TargetAssignable {
-    /** @use HasFactory<\Database\Factories\MiniGridFactory> */
+    /** @use HasFactory<MiniGridFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'mini-grid';

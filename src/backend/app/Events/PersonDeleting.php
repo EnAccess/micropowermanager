@@ -13,21 +13,15 @@ class PersonDeleting {
     use InteractsWithSockets;
     use SerializesModels;
 
-    private $person;
-
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Person $person) {
-        $this->person = $person;
-    }
+    public function __construct(private Person $person) {}
 
     /**
      * Get the Person model instance associated with the event.
-     *
-     * @return Person
      */
     public function getPerson(): Person {
         return $this->person;
@@ -35,8 +29,6 @@ class PersonDeleting {
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return PrivateChannel
      */
     public function broadcastOn(): PrivateChannel {
         return new PrivateChannel('person.deleted');

@@ -30,10 +30,10 @@ class MiniGridService implements IBaseService {
     }
 
     /**
+     * @param MiniGrid             $model
      * @param array<string, mixed> $miniGridData
      */
     public function update(Model $model, array $miniGridData): MiniGrid {
-        /* @var MiniGrid $model */
         $model->update([
             'name' => $miniGridData['name'] ?? $model->name,
         ]);
@@ -43,7 +43,7 @@ class MiniGridService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, MiniGrid>|LengthAwarePaginator<MiniGrid>
+     * @return Collection<int, MiniGrid>|LengthAwarePaginator<int, MiniGrid>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         $query = $this->miniGrid->newQuery()->with(['location']);

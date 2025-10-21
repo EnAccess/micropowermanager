@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\Token;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Token> */
 class TokenFactory extends Factory {
     protected $model = Token::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'transaction_id' => $this->faker->randomNumber(3),
             'token' => $this->generateToken(),

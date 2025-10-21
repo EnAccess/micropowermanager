@@ -4,10 +4,14 @@ namespace Inensus\WaveMoneyPaymentProvider\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 
 class WaveMoneyTransactionMiddleware {
+    /**
+     * @return Request|Response
+     */
     public function handle(Request $request, \Closure $next) {
-        $transactionProvider = resolve('WaveMoneyPaymentProvider');
+        $transactionProvider = resolve(WaveMoneyTransactionProvider::class);
 
         try {
             $transactionProvider->validateRequest($request);

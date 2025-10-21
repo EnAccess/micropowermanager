@@ -17,20 +17,19 @@ class GomeLongTariffService {
 
     public function __construct(
         private ApiRequests $apiRequests,
-        private MeterTariff $meterTariff,
         private GomeLongTariff $gomeLongTariff,
         private GomeLongCredentialService $credentialService,
         private MainSettings $mainSettings,
     ) {}
 
-    public function getByMpmTariffId($mpmTariffId) {
+    public function getByMpmTariffId(int $mpmTariffId): ?GomeLongTariff {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
-    public function createGomeLongTariff($tariff) {
+    public function createGomeLongTariff(MeterTariff $tariff): void {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-        if (!$gomeLongTariff) {
+        if (!$gomeLongTariff instanceof GomeLongTariff) {
             $credentials = $this->credentialService->getCredentials();
             $vatEnergy = $this->mainSettings->newQuery()->first()->vat_energy;
             $params = [
@@ -52,11 +51,14 @@ class GomeLongTariffService {
         }
     }
 
-    public function updateGomeLongTariff($tariff) {
+    /**
+     * @return array<string, mixed>|string
+     */
+    public function updateGomeLongTariff(MeterTariff $tariff): array|string|bool {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-            if (!$gomeLongTariff) {
+            if (!$gomeLongTariff instanceof GomeLongTariff) {
                 return true;
             }
 
@@ -77,15 +79,18 @@ class GomeLongTariffService {
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function deleteGomeLongTariff($tariff) {
+    /**
+     * @return array<string, mixed>|string
+     */
+    public function deleteGomeLongTariff(MeterTariff $tariff): array|string|bool {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-            if ($gomeLongTariff) {
+            if (!$gomeLongTariff instanceof GomeLongTariff) {
                 return true;
             }
 
@@ -103,16 +108,15 @@ class GomeLongTariffService {
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function sync() {
+    public function sync(): bool {
         try {
             $credentials = $this->credentialService->getCredentials();
 
-            if (!$credentials || ($credentials->getUserId() === null
-                    || $credentials->getUserPassword() === null)) {
+            if (!$credentials || ($credentials->getUserId() === null || $credentials->getUserPassword() === null)) {
                 return true;
             }
 
@@ -129,7 +133,8 @@ class GomeLongTariffService {
 
                 $registeredGomeLongTariff = $this->gomeLongTariff->newQuery()
                     ->with('mpmTariff')
-                    ->where('tariff_id', $gomeLongTariff['FID'])->first();
+                    ->where('tariff_id', $gomeLongTariff['FID'])
+                    ->first();
 
                 if ($registeredGomeLongTariff) {
                     $meterTariff = $registeredGomeLongTariff->mpmTariff;
@@ -168,7 +173,7 @@ class GomeLongTariffService {
                 'syncing tariff info from gomelong api failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

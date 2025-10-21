@@ -8,13 +8,17 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class SwiftaTransactionProvider implements ITransactionProvider {
-    private $validData = [];
+    /** @var array<string, mixed> */
+    private array $validData = [];
 
     public function __construct(
         private SwiftaTransaction $swiftaTransaction,
@@ -23,7 +27,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         private TransactionConflicts $transactionConflicts,
     ) {}
 
-    public function validateRequest($request): void {
+    public function validateRequest(Request $request): void {
         $meterSerial = $request->input('meter_number');
         $amount = $request->input('amount');
 
@@ -34,7 +38,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
             // We need to make sure that the payment is fully processable from our end .
             $this->swiftaTransactionService->imitateTransactionForValidation($swiftaTransactionData);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $this->setValidData($swiftaTransactionData);
@@ -45,6 +49,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
     }
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
+        /** @var SwiftaTransaction */
         $swiftaTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $updateData = [
@@ -52,7 +57,11 @@ class SwiftaTransactionProvider implements ITransactionProvider {
             ];
             $this->swiftaTransactionService->update($swiftaTransaction, $updateData);
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms(
+                $transaction->toArray(),
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            );
         } else {
             Log::error('swifta transaction is been cancelled');
         }
@@ -70,14 +79,27 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         return $this->transaction;
     }
 
-    public function setValidData($swiftaTransactionData) {
+    /**
+     * @param array<string, mixed> $swiftaTransactionData
+     */
+    public function setValidData(array $swiftaTransactionData): void {
         $this->validData = $swiftaTransactionData;
     }
 
-    public function getSubTransaction() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function getValidData(): array {
+        return $this->validData;
+    }
+
+    public function getSubTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
         return $this->swiftaTransactionService->getSwiftaTransaction();
     }
 
+    /**
+     * @param SwiftaTransaction $transaction
+     */
     public function init($transaction): void {
         $this->swiftaTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
@@ -89,6 +111,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
 
     public function getMessage(): string {
         // TODO: Implement getMessage() method.
+        throw new \BadMethodCallException('Method getMessage() not yet implemented.');
     }
 
     public function getAmount(): int {
@@ -101,5 +124,6 @@ class SwiftaTransactionProvider implements ITransactionProvider {
 
     public function saveCommonData(): Model {
         // TODO: Implement getSender() method.
+        throw new \BadMethodCallException('Method saveCommonData() not yet implemented.');
     }
 }

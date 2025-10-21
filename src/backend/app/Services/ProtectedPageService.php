@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Crypt;
 class ProtectedPageService implements IBaseService {
     public function __construct(private ProtectedPage $protectedPage) {}
 
-    public function compareProtectedPagePassword(MainSettings $mainSettings, string $password): bool {
+    public function compareProtectedPagePassword(MainSettings $mainSettings, ?string $password): bool {
         return Crypt::decrypt($mainSettings->protected_page_password) === $password;
     }
 
@@ -32,10 +32,10 @@ class ProtectedPageService implements IBaseService {
     }
 
     /**
+     * @param ProtectedPage        $model
      * @param array<string, mixed> $data
      */
     public function update(Model $model, array $data): ProtectedPage {
-        /* @var ProtectedPage $model */
         $model->update($data);
 
         return $model;
@@ -46,7 +46,7 @@ class ProtectedPageService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, ProtectedPage>|LengthAwarePaginator<ProtectedPage>
+     * @return Collection<int, ProtectedPage>|LengthAwarePaginator<int, ProtectedPage>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->protectedPage->all();

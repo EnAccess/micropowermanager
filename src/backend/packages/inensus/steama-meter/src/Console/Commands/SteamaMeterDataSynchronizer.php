@@ -27,37 +27,18 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
     protected $signature = 'steama-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Steamaco Meter.';
 
-    private $steamaTransactionsService;
-    private $steamaSyncSettingservice;
-    private $stemaMeterService;
-    private $steamaCustomerService;
-    private $steamaSiteService;
-    private $steamaAgentService;
-    private $steamaSyncActionService;
-    private $address;
-    private $cluster;
-
     public function __construct(
-        SteamaTransactionsService $steamaTransactionsService,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        SteamaMeterService $steamaMeterService,
-        SteamaCustomerService $steamaCustomerService,
-        SteamaSiteService $steamaSiteService,
-        SteamaAgentService $steamaAgentService,
-        StemaSyncActionService $steamaSyncActionService,
-        Address $address,
-        Cluster $cluster,
+        private SteamaTransactionsService $steamaTransactionsService,
+        private SteamaSyncSettingService $steamaSyncSettingservice,
+        private SteamaMeterService $stemaMeterService,
+        private SteamaCustomerService $steamaCustomerService,
+        private SteamaSiteService $steamaSiteService,
+        private SteamaAgentService $steamaAgentService,
+        private StemaSyncActionService $steamaSyncActionService,
+        private Address $address,
+        private Cluster $cluster,
     ) {
         parent::__construct();
-        $this->steamaTransactionsService = $steamaTransactionsService;
-        $this->steamaSyncSettingservice = $steamaSyncSettingService;
-        $this->stemaMeterService = $steamaMeterService;
-        $this->steamaCustomerService = $steamaCustomerService;
-        $this->steamaSiteService = $steamaSiteService;
-        $this->steamaAgentService = $steamaAgentService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-        $this->address = $address;
-        $this->cluster = $cluster;
     }
 
     public function handle(): void {
@@ -73,7 +54,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
 
         $syncActions = $this->steamaSyncActionService->getActionsNeedsToSync();
         try {
-            $this->steamaSyncSettingservice->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
+            $this->steamaSyncSettingservice->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
                 if (!$syncAction) {
                     return true;

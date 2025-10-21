@@ -2,30 +2,26 @@
 
 namespace Inensus\SparkMeter\Services;
 
-use GuzzleHttp\Exception\GuzzleException;
+use App\Traits\EncryptsCredentials;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmCredential;
 
 class CredentialService {
-    private $sparkMeterApiRequests;
-    private $smCredential;
-    private $smTableEncryption;
-    private $rootUrl = '/organizations';
-    private $organizationService;
+    use EncryptsCredentials;
+    private string $rootUrl = '/organizations';
 
     public function __construct(
-        SparkMeterApiRequests $sparkMeterApiRequests,
-        SmCredential $smCredential,
-        OrganizationService $organizationService,
-    ) {
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
-        $this->smCredential = $smCredential;
-        $this->organizationService = $organizationService;
-    }
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private SmCredential $smCredential,
+        private OrganizationService $organizationService,
+    ) {}
 
-    public function getCredentials() {
-        return $this->smCredential->newQuery()->latest()->take(1)->get()->first();
+    public function getCredentials(): ?object {
+        $credential = $this->smCredential->newQuery()->latest()->take(1)->first();
+
+        return $this->decryptCredentialFields($credential, ['api_key', 'api_secret']);
     }
 
     public function createSmCredentials() {
@@ -36,28 +32,22 @@ class CredentialService {
         ]);
     }
 
-    public function updateCredentials($data) {
+    public function updateCredentials(array $data): object {
         $smCredentials = $this->smCredential->newQuery()->find($data['id']);
-        $smCredentials->update([
-            'api_key' => $data['api_key'],
-            'api_secret' => $data['api_secret'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'api_secret']);
+        $smCredentials->update($encryptedData);
         try {
             $result = $this->sparkMeterApiRequests->getFromKoios($this->rootUrl);
             $smCredentials->is_authenticated = true;
             $this->organizationService->createOrganization($result['organizations'][0]);
-        } catch (GuzzleException $gException) {
-            if ($gException->getResponse()->getStatusCode() === 401) {
-                $smCredentials->is_authenticated = false;
-            } else {
-                $smCredentials->is_authenticated = null;
-            }
+        } catch (ClientException $cException) {
+            $smCredentials->is_authenticated = $cException->getResponse()->getStatusCode() === 401 ? false : null;
         } catch (\Exception $exception) {
             Log::critical('Unknown exception while authenticating SparkMeter', ['reason' => $exception->getMessage()]);
             $smCredentials->is_authenticated = null;
         }
         $smCredentials->save();
 
-        return $smCredentials->fresh();
+        return $this->decryptCredentialFields($smCredentials, ['api_key', 'api_secret']);
     }
 }

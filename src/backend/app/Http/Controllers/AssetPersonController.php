@@ -39,12 +39,6 @@ class AssetPersonController extends Controller {
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param Asset   $asset
-     * @param Person  $person
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function store(
         Asset $asset,
@@ -55,7 +49,7 @@ class AssetPersonController extends Controller {
             $userId = $request->input('user_id');
             $applianceId = $request->input('id');
             $personId = $request->input('person_id');
-            $cost = (float) $request->input('cost');
+            $cost = (int) $request->input('cost');
             $installmentCount = (int) $request->input('rate');
             $downPayment = (float) $request->input('down_payment');
             $deviceSerial = $request->input('device_serial');
@@ -107,7 +101,7 @@ class AssetPersonController extends Controller {
                 $this->geographicalInformationService->save($geographicalInformation);
             }
             if ($downPayment > 0) {
-                $sender = !isset($addressData) ? '-' : $addressData['phone'];
+                $sender = isset($addressData) ? $addressData['phone'] : '-';
                 $transaction = $this->cashTransactionService->createCashTransaction(
                     $user->id,
                     $downPayment,
@@ -130,17 +124,12 @@ class AssetPersonController extends Controller {
             return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param Person  $person
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function index(Person $person, Request $request): ApiResource {
         $assets = $this->assetPerson::with('asset.assetType', 'rates.logs', 'logs.owner')

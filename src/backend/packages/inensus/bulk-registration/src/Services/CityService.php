@@ -10,7 +10,10 @@ class CityService extends CreatorService {
         parent::__construct($city);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $cityConfig = config('bulk-registration.csv_fields.city');
 
         if (!$csvData[$cityConfig['name']]) {

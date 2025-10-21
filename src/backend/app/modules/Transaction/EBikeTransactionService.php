@@ -4,10 +4,15 @@ namespace MPM\Transaction;
 
 use App\Models\EBike;
 use App\Models\Transaction\Transaction;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class EBikeTransactionService {
     public function __construct(private Transaction $transaction) {}
 
+    /**
+     * @return LengthAwarePaginator<int, Transaction>|Collection<int, Transaction>
+     */
     public function search(
         ?string $serialNumber = null,
         ?int $tariffId = null,
@@ -17,7 +22,7 @@ class EBikeTransactionService {
         ?string $toDate = null,
         ?int $limit = null,
         bool $whereApplied = false,
-    ) {
+    ): LengthAwarePaginator|Collection {
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
             fn ($q) => $q->whereHasMorph('device', EBike::class)

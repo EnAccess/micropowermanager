@@ -9,7 +9,7 @@ use Inensus\BulkRegistration\Console\Commands\InstallPackage;
 use Inensus\BulkRegistration\Console\Commands\UpdatePackage;
 
 class BulkRegistrationServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -21,7 +21,7 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/bulk-registration.php',
             'bulk-registration'
@@ -33,13 +33,13 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
              });*/
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/bulk-registration.php' => config_path('bulk-registration.php'),
         ], 'configurations');
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/bulk-registration'
@@ -47,7 +47,7 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_bulk_registration_tables.php' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
@@ -56,7 +56,7 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_bulk-registration_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_bulk-registration_tables.php')[0];

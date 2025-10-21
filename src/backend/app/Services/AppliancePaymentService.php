@@ -9,6 +9,7 @@ use App\Exceptions\PaymentAmountSmallerThanZero;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
+use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
@@ -21,16 +22,9 @@ use MPM\Device\DeviceService;
 
 class AppliancePaymentService {
     private float $paymentAmount;
-    public bool $applianceInstallmentsFullFilled;
+    public bool $applianceInstallmentsFullFilled = false;
 
-    public function __construct(
-        private CashTransactionService $cashTransactionService,
-        private MainSettings $mainSettings,
-        private AppliancePersonService $appliancePersonService,
-        private DeviceService $deviceService,
-    ) {
-        $this->applianceInstallmentsFullFilled = false;
-    }
+    public function __construct(private CashTransactionService $cashTransactionService, private MainSettings $mainSettings, private AppliancePersonService $appliancePersonService, private DeviceService $deviceService) {}
 
     public function getPaymentForAppliance(Request $request, AssetPerson $appliancePerson): AssetPerson {
         $creatorId = auth('api')->user()->id;
@@ -65,7 +59,6 @@ class AppliancePaymentService {
     }
 
     public function updateRateRemaining(int $id, float $amount): AssetRate {
-        /** @var AssetRate $applianceRate */
         $applianceRate = AssetRate::query()->findOrFail($id);
         $applianceRate->remaining -= (int) $amount; // Cast to int to match property type
         $applianceRate->update();
@@ -75,7 +68,6 @@ class AppliancePaymentService {
     }
 
     public function createPaymentLog(AssetPerson $appliancePerson, float $amount, int $creatorId): void {
-        /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
         $currency = $mainSettings->currency ?? '€';
         event(new NewLogEvent([
@@ -131,7 +123,7 @@ class AppliancePaymentService {
     private function processPaymentForDevice(string $deviceSerial, Transaction $transaction, AssetPerson $applianceDetail): void {
         $device = $this->deviceService->getBySerialNumber($deviceSerial);
 
-        if (!$device) {
+        if (!$device instanceof Device) {
             throw new ModelNotFoundException("No device found with $deviceSerial");
         }
 
@@ -155,6 +147,9 @@ class AppliancePaymentService {
         $token->save();
     }
 
+    /**
+     * @param Collection<int, AssetRate> $installments
+     */
     public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {
         try {
             $secondInstallment = $installments[1];
@@ -175,7 +170,7 @@ class AppliancePaymentService {
             $dueDateThirdRow = Carbon::parse($thirdDueDate);
 
             return $dueDateSecondRow->diffInDays($dueDateThirdRow);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return 30;
         }
     }

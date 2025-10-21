@@ -7,15 +7,20 @@ use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
+use App\Utils\ApplianceInstallmentPayer;
 use Illuminate\Support\Facades\Log;
 
 class ApplianceTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
     protected const TYPE = 'deferred_payment';
 
-    public function __construct(private int $transactionId) {
+    public function __construct(int $companyId, private int $transactionId) {
+        $this->onConnection('redis');
+        $this->onQueue('transaction_appliance');
+
+        $this->companyId = $companyId;
         $this->afterCommit = true;
-        parent::__construct(get_class($this));
+        parent::__construct($companyId);
     }
 
     /**
@@ -35,7 +40,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
         }
     }
 
-    private function initializeTransaction() {
+    private function initializeTransaction(): void {
         $this->transaction = Transaction::query()->find($this->transactionId);
         $this->transaction->type = 'deferred_payment';
         $this->transaction->save();
@@ -58,13 +63,11 @@ class ApplianceTransactionProcessor extends AbstractJob {
     }
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {
-        $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
+        $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($container);
         $applianceInstallmentPayer->payInstallmentsForDevice($container);
         $container->paidRates = $applianceInstallmentPayer->paidRates;
-        $container->applianceInstallmentsFullFilled = $container->appliancePerson->rates->every(function ($installment) {
-            return $installment->remaining === 0;
-        });
+        $container->applianceInstallmentsFullFilled = $container->appliancePerson->rates->every(fn ($installment): bool => $installment->remaining === 0);
 
         return $container;
     }
@@ -73,8 +76,6 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $kWhToBeCharged = 0.0;
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 
-        TokenProcessor::dispatch($transactionData)
-            ->allOnConnection('redis')
-            ->onQueue(config('services.queues.token'));
+        TokenProcessor::dispatch($this->companyId, $transactionData);
     }
 }

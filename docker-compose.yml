@@ -18,6 +18,8 @@ services:
       - 8443:443
     volumes:
       - ./src/backend:/var/www/html
+      - backend_php_vendor:/var/www/html/vendor
+      - storage_data:/var/www/html/storage
     healthcheck:
       test: [CMD, curl, -f, http://localhost/up]
       start_period: 60s
@@ -47,24 +49,20 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-      backend-dev:
-        condition: service_healthy
     links:
       - mysql:db
       - redis:redis
     volumes:
-      - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./src/backend:/var/www/html
+      - scheduler_php_vendor:/var/www/html/vendor
+      - storage_data:/var/www/html/storage
 
-  worker:
-    container_name: worker
-    restart: unless-stopped
+  queue-worker-dev:
+    container_name: queue-worker-dev
     build:
-      dockerfile: docker/DockerfileQueueWorker
+      dockerfile: docker/DockerfileQueueWorkerDev
+    # micropowermanager-queue-worker is a backend service and uses the same configuration as micropowermanager-backend
     env_file: ./dev/.env.micropowermanager-backend
-    volumes:
-      - ./src/backend:/var/www/laravel
-      - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       mysql:
         condition: service_healthy
@@ -73,6 +71,10 @@ services:
     links:
       - mysql:db
       - redis:redis
+    volumes:
+      - ./src/backend:/var/www/html
+      - queue_worker_php_vendor:/var/www/html/vendor
+      - storage_data:/var/www/html/storage
 
   redis:
     container_name: redis
@@ -98,6 +100,14 @@ services:
       retries: 3
 
 volumes:
-  frontend_node_modules:
   mysql_data:
   redis_data:
+  # For local development we use a dedicated volume for each container
+  # to offload module and vendor directories. This avoids race
+  # conditions between different containers and local filesystem.
+  frontend_node_modules:
+  backend_php_vendor:
+  scheduler_php_vendor:
+  queue_worker_php_vendor:
+  # storage volume is shared between services
+  storage_data:

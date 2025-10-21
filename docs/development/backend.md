@@ -13,7 +13,7 @@ If you prefer to install dependencies manually or need to add additional package
 1. Enter the Docker container named "laravel":
 
    ```bash
-   docker exec -it backend-dev bash
+   docker exec -it -u www-data backend-dev bash
    ```
 
 2. Run the following command to install dependencies, replacing {package-name} with the actual name of the package:
@@ -65,6 +65,23 @@ $person->surname = 'A Surname'
 $person->save();
 ```
 
+### Automatically generate Model properties
+
+MicroPowerManager ships with a custom version of [Laravel IDE Helper](https://github.com/barryvdh/laravel-ide-helper) which can be used to automatically generate PHPDocs for Model properties.
+
+To generate Model properties enter a local development container using
+
+```bash
+docker exec -it -u www-data backend-dev bash
+```
+
+Then run
+
+```bash
+php artisan mpm-ide-helper:models -RW
+composer rector-fix
+```
+
 ## Schemas
 
 ### Central Database Schema
@@ -80,6 +97,14 @@ $person->save();
 > [!NOTE]
 > The schema of the central database is massive.
 > In `erd-editor` you can use `Right Click => Automatic Table Placement` to get nicer overview.
+
+### Cluster, MiniGrid, Village relations
+
+![Transaction abstractions](images/cluster_minigrid_village.excalidraw.svg)
+
+### Connection Groups and Types
+
+![Transaction abstractions](images/connection_groups_types.excalidraw.svg)
 
 ### Transactions abstractions
 

@@ -20,7 +20,7 @@ class PaymentTests extends TestCase {
     use RefreshDatabase;
     use CreatesApplication;
 
-    public function testOnlySuccessesPaymentsCanBeProcessed() {
+    public function testOnlySuccessesPaymentsCanBeProcessed(): void {
         $data = [
             'status' => 'FAILED',
             'type' => 'Payment',
@@ -38,7 +38,7 @@ class PaymentTests extends TestCase {
         ]);
     }
 
-    public function testOnlyOnePhoneNumberIsValidForOneCustomer() {
+    public function testOnlyOnePhoneNumberIsValidForOneCustomer(): void {
         $data = [
             'status' => 'SUCCESS',
             'type' => 'Payment',
@@ -57,7 +57,7 @@ class PaymentTests extends TestCase {
         ]);
     }
 
-    public function testOnlyOneConnectingMeterIsValidForOneNumber() {
+    public function testOnlyOneConnectingMeterIsValidForOneNumber(): void {
         // create person
         Person::factory()->create();
         // associate meter with a person
@@ -83,12 +83,12 @@ class PaymentTests extends TestCase {
             'errors' => [
                 'code' => 422,
                 'title' => 'Mesomp Payment Failed.',
-                'detail' => 'Each payer must have if and only if connected meter with one phone number. Registered meter count is '.Meter::query()->get()->count(),
+                'detail' => 'Each payer must have if and only if connected meter with one phone number. Registered meter count is '.Meter::query()->count(),
             ],
         ]);
     }
 
-    public function testValidTransactionStartsTransactionProcessing() {
+    public function testValidTransactionStartsTransactionProcessing(): void {
         Queue::fake();
         $this->withoutExceptionHandling();
         $this->initializeData();
@@ -129,7 +129,7 @@ class PaymentTests extends TestCase {
         Queue::assertPushed(ProcessPayment::class);
     }
 
-    private function initializeData() {
+    private function initializeData(): void {
         // create person
         Person::factory()->create();
         // create meter-tariff

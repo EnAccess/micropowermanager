@@ -2,8 +2,11 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
-class GoogleMapsApiException extends Exception {
-    public function render($request) {
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class GoogleMapsApiException extends \Exception {
+    public function render(Request $request): JsonResponse {
         return response()->json([
             'errors' => [
                 'code' => 422,

@@ -50,9 +50,9 @@ mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS erd;"
 Then
 
 ```sh
-docker exec -it backend-dev bash
+docker exec -it -u www-data backend-dev bash
 php artisan erd:generate micro_power_manager --excludes=plugins --file=central_database.sql
-php artisan erd:generate tenant --path=/database/migrations/tenant --excludes=companies,company_databases,company_jobs,database_proxies --file=tenant_database.sql
+php artisan erd:generate tenant --path=/database/migrations/tenant --excludes=companies,company_databases,database_proxies --file=tenant_database.sql
 php artisan export
 ```
 
@@ -86,7 +86,7 @@ Currently, OpenAPI docs generation is a (semi-)manual process.
 Assumping you have a local development setup running, run
 
 ```sh
-docker exec -it backend-dev bash
+docker exec -it -u www-data backend-dev bash
 php artisan scribe:generate
 ```
 

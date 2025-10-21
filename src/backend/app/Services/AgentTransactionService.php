@@ -5,14 +5,11 @@ namespace App\Services;
 use App\Models\Device;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
-use App\Services\Interfaces\IBaseService;
+use App\Services\Interfaces\IAgentTransactionService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @implements IBaseService<AgentTransaction>
- */
-class AgentTransactionService implements IBaseService {
+class AgentTransactionService implements IAgentTransactionService {
     public function __construct(
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
@@ -20,7 +17,7 @@ class AgentTransactionService implements IBaseService {
     ) {}
 
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getAll(
         ?int $limit = null,
@@ -43,13 +40,11 @@ class AgentTransactionService implements IBaseService {
             }
         );
 
-        $transactions = $limit ? $query->paginate($limit) : $query->get();
-
-        return $transactions;
+        return $limit ? $query->paginate($limit) : $query->get();
     }
 
     /**
-     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
@@ -59,7 +54,7 @@ class AgentTransactionService implements IBaseService {
             return new Collection();
         }
 
-        $transactions = $this->transaction->newQuery()
+        return $this->transaction->newQuery()
             ->with(['originalTransaction', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])
             ->whereHasMorph(
                 'originalTransaction',
@@ -69,8 +64,6 @@ class AgentTransactionService implements IBaseService {
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()
             ->paginate();
-
-        return $transactions;
     }
 
     public function getById(int $id): AgentTransaction {
@@ -87,11 +80,11 @@ class AgentTransactionService implements IBaseService {
     /**
      * @param array<string, mixed> $data
      */
-    public function update($model, array $data): AgentTransaction {
+    public function update(AgentTransaction $model, array $data): AgentTransaction {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool {
+    public function delete(AgentTransaction $model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

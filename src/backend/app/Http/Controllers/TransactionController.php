@@ -6,6 +6,7 @@ use App\Events\TransactionSavedEvent;
 use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\TransactionService;
 
@@ -36,9 +37,12 @@ class TransactionController extends Controller {
         event(new TransactionSavedEvent($transactionProvider));
 
         if (isset($transaction->id)) {
-            ProcessPayment::dispatch($transaction->id)
-                ->allOnConnection('redis')
-                ->onQueue(config('services.queues.payment'));
+            $companyId = $request->attributes->get('companyId') ?? null;
+            if ($companyId !== null) {
+                ProcessPayment::dispatch($companyId, $transaction->id);
+            } else {
+                Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
+            }
         }
     }
 }

@@ -12,10 +12,6 @@ use Mockery\Exception;
 class ClusterGeoListener {
     /**
      * Handle the event.
-     *
-     * @param ClusterEvent $event
-     *
-     * @return void
      */
     public function handle(ClusterEvent $event): void {
         $cluster = $event->cluster;
@@ -47,25 +43,20 @@ class ClusterGeoListener {
     /**
      * Creates a json file which has the same name as the cluster.
      *
-     * @param Cluster $cluster
-     * @param         $data
+     * @param array<string, mixed> $data
      */
-    private function storeData(Cluster $cluster, $data): void {
+    private function storeData(Cluster $cluster, array $data): void {
         Storage::disk('local')->put($cluster->name.'.json', json_encode($data));
     }
 
     /**
      * External geojson resource has lon,lat format. Change order to lat,lon.
      *
-     * @param $data
-     *
-     * @return array[]
+     * @return array<mixed>
      *
      * @throws GeoFormatException
-     *
-     * @psalm-return list<array{0: mixed, 1: mixed}>
      */
-    public function reformatExternalData($data): array {
+    public function reformatExternalData(mixed $data): array {
         $formatted = [];
         if (is_array($data) && !array_key_exists('geojson', $data)) {
             $data = $data[0];

@@ -13,17 +13,15 @@ class AccessRatePayer {
     private AccessRatePayment $accessRatePayment;
     private TransactionDataContainer $transactionData;
     private Transaction $transaction;
-    private float $debtAmount;
+    private int $debtAmount = self::MINIMUM_AMOUNT;
 
-    public function __construct(private AccessRatePaymentService $accessRatePaymentService) {
-        $this->debtAmount = self::MINIMUM_AMOUNT;
-    }
+    public function __construct(private AccessRatePaymentService $accessRatePaymentService) {}
 
     public function initialize(TransactionDataContainer $container): void {
         $meter = $container->device->device;
         $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($meter);
 
-        if ($accessRatePayment) {
+        if ($accessRatePayment instanceof AccessRatePayment) {
             $this->debtAmount = $accessRatePayment->debt;
             $this->accessRatePayment = $accessRatePayment;
         }

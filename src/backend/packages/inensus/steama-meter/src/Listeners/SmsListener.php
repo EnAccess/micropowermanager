@@ -2,7 +2,6 @@
 
 namespace Inensus\SteamaMeter\Listeners;
 
-use App\Models\Meter\Meter;
 use App\Services\SmsService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
@@ -10,24 +9,13 @@ use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
 
 class SmsListener {
-    private $smsFeedbackWordService;
-    private $customerService;
-    private $meter;
-    private $smsService;
-
     public function __construct(
-        SteamaSmsFeedbackWordService $smsFeedbackWordService,
-        SteamaCustomerService $customerService,
-        Meter $meter,
-        SmsService $smsService,
-    ) {
-        $this->smsFeedbackWordService = $smsFeedbackWordService;
-        $this->customerService = $customerService;
-        $this->meter = $meter;
-        $this->smsService = $smsService;
-    }
+        private SteamaSmsFeedbackWordService $smsFeedbackWordService,
+        private SteamaCustomerService $customerService,
+        private SmsService $smsService,
+    ) {}
 
-    public function onSmsStored($sender, $message) {
+    public function onSmsStored($sender, $message): void {
         $steamaCustomer = $this->customerService->getSteamaCustomerWithPhone($sender);
         if (!$steamaCustomer) {
             return;
@@ -46,7 +34,7 @@ class SmsListener {
         }
     }
 
-    public function handle($sender, $message) {
+    public function handle($sender, $message): void {
         // TODO: Uncomment this when steamaco-meter package is refactored with device->meter approach
         // $this->onSmsStored($sender, $message);
     }

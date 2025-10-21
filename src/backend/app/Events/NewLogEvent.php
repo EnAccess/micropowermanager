@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -20,11 +21,14 @@ use Illuminate\Queue\SerializesModels;
  * ]
  * ```
  *
- * @property array $logData The data to include in the `log` table.
+ * @property array<string, mixed> $logData The data to include in the `log` table.
  */
 class NewLogEvent {
     use Dispatchable;
     use SerializesModels;
 
+    /**
+     * @param array{user_id: int, affected: Model, action: string} $logData
+     */
     public function __construct(public array $logData) {}
 }

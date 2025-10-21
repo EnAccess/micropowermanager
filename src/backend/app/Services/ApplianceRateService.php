@@ -21,7 +21,7 @@ class ApplianceRateService {
     public function getCurrencyFromMainSettings(): string {
         $mainSettings = $this->mainSettings->newQuery()->first();
 
-        return $mainSettings?->currency ?? '€';
+        return $mainSettings->currency ?? '€';
     }
 
     public function updateApplianceRateCost(AssetRate $applianceRate, int $creatorId, int $cost, int $newCost): AssetRate {
@@ -59,6 +59,8 @@ class ApplianceRateService {
     }
 
     /**
+     * @param int[] $loanIds
+     *
      * @return Collection<int, AssetRate>
      */
     public function getByLoanIdsForDueDate(array $loanIds): Collection {
@@ -140,14 +142,11 @@ class ApplianceRateService {
     }
 
     public function getDownPaymentAsAssetRate(object $assetPerson): ?AssetRate {
-        /** @var ?AssetRate $result */
-        $result = $this->applianceRate->newQuery()
+        return $this->applianceRate->newQuery()
             ->where('asset_person_id', $assetPerson->id)
             ->where('rate_cost', round($assetPerson->down_payment))
             ->where('remaining', 0)
             ->first();
-
-        return $result;
     }
 
     /**

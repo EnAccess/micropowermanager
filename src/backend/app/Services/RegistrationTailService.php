@@ -47,23 +47,20 @@ class RegistrationTailService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, RegistrationTail>|LengthAwarePaginator<RegistrationTail>
+     * @return Collection<int, RegistrationTail>|LengthAwarePaginator<int, RegistrationTail>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->registrationTail->newQuery()->get();
     }
 
-    /**
-     * @param int|null $limit
-     */
-    public function getFirst($limit = null): RegistrationTail {
-        return $this->registrationTail->newQuery()->firstOrCreate();
+    public function getFirst(): RegistrationTail {
+        return $this->registrationTail->newQuery()->firstOr(fn () => $this->registrationTail->create(['tail' => json_encode([])]));
     }
 
     public function addMpmPluginToRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
-        $tail = !empty($registrationTail->tail) ? json_decode($registrationTail->tail, true) : [];
+        $tail = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
-        array_push($tail, [
+        $tail[] = [
             'tag' => $mpmPlugin->tail_tag,
             'component' => isset($mpmPlugin->tail_tag) ? str_replace(
                 ' ',
@@ -71,7 +68,7 @@ class RegistrationTailService implements IBaseService {
                 $mpmPlugin->tail_tag
             ) : null,
             'adjusted' => !isset($mpmPlugin->tail_tag),
-        ]);
+        ];
 
         return $this->update(
             $registrationTail,
@@ -80,11 +77,9 @@ class RegistrationTailService implements IBaseService {
     }
 
     public function removeMpmPluginFromRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
-        $tail = !empty($registrationTail->tail) ? json_decode($registrationTail->tail, true) : [];
+        $tail = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
-        $updatedTail = array_filter($tail, function ($item) use ($mpmPlugin) {
-            return $item['tag'] !== $mpmPlugin->tail_tag;
-        });
+        $updatedTail = array_filter($tail, fn (array $item): bool => $item['tag'] !== $mpmPlugin->tail_tag);
 
         return $this->update(
             $registrationTail,

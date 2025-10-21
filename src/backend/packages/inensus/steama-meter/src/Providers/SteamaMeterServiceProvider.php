@@ -25,7 +25,7 @@ use Inensus\SteamaMeter\Models\SteamaTransaction;
 use Inensus\SteamaMeter\SteamaMeterApi;
 
 class SteamaMeterServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -65,26 +65,27 @@ class SteamaMeterServiceProvider extends ServiceProvider {
         );
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/steama-meter.php', 'steama');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('SteamaMeterApi', SteamaMeterApi::class);
+        $this->app->bind(SteamaMeterApi::class);
+        $this->app->alias(SteamaMeterApi::class, 'SteamaMeterApi');
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/steama-meter.php' => config_path('steama-meter.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/steama-meter'),
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_steama_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
@@ -93,7 +94,7 @@ class SteamaMeterServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_steama_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_steama_tables.php')[0];

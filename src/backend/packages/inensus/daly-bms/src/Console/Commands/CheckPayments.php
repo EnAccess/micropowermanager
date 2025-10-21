@@ -6,7 +6,6 @@ use App\Console\Commands\AbstractSharedCommand;
 use App\Events\NewLogEvent;
 use App\Models\AssetRate;
 use App\Models\User;
-use App\Services\SmsApplianceRemindRateService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
@@ -23,7 +22,6 @@ class CheckPayments extends AbstractSharedCommand {
 
     public function __construct(
         private AssetRate $assetRate,
-        private SmsApplianceRemindRateService $smsApplianceRemindRateService,
         private DalyBmsApi $dalyBmsApi,
         private EBikeService $eBikeService,
         private User $user,
@@ -54,7 +52,7 @@ class CheckPayments extends AbstractSharedCommand {
                 ->whereDate('due_date', '>=', now()->format('Y-m-d'))
                 ->where('remaining', '>', 0)
                 ->where('remind', '>', 0)
-                ->each(fn ($installment) => $this->lockTheBike($installment));
+                ->each(fn ($installment): bool => $this->lockTheBike($installment));
         } catch (\Exception $e) {
             $this->warn('check-payments command is failed. message => '.$e->getMessage());
         }
@@ -65,7 +63,7 @@ class CheckPayments extends AbstractSharedCommand {
         $this->info('#############################');
     }
 
-    private function lockTheBike($installment): bool {
+    private function lockTheBike(object $installment): bool {
         $eBike = $this->eBikeService->getBySerialNumber($installment->assetPerson->device_serial);
 
         if ($eBike->manufacturer->name != self::MANUFACTURER_NAME) {

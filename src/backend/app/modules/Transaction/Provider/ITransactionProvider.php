@@ -2,10 +2,10 @@
 
 namespace MPM\Transaction\Provider;
 
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 
 interface ITransactionProvider {
     // saves the main transaction
@@ -14,8 +14,8 @@ interface ITransactionProvider {
     // accepts the payment or cancel the payment
     public function sendResult(bool $requestType, Transaction $transaction): void;
 
-    // validates incoming request - accepts either Transaction or WaveComTransaction
-    public function validateRequest(Transaction|WaveComTransaction $request): void;
+    // validates incoming request
+    public function validateRequest(Request $request): void;
 
     // the first contact, confirms that the request data is valid and could be processed
     public function confirm(): void;
@@ -31,8 +31,7 @@ interface ITransactionProvider {
 
     public function saveCommonData(): Model;
 
-    // init method accepts either Transaction or WaveComTransaction
-    public function init(mixed $transaction): void;
+    public function init(BasePaymentProviderTransaction $transaction): void;
 
     public function addConflict(?string $message): void;
 

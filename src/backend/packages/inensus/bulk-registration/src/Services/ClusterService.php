@@ -3,7 +3,6 @@
 namespace Inensus\BulkRegistration\Services;
 
 use App\Models\Cluster;
-use App\Models\User;
 use Inensus\BulkRegistration\Exceptions\ClusterNotFoundException;
 
 class ClusterService extends CreatorService {
@@ -11,7 +10,10 @@ class ClusterService extends CreatorService {
         parent::__construct($cluster);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $clusterConfig = config('bulk-registration.csv_fields.cluster');
 
         if (!$csvData[$clusterConfig['name']]) {
@@ -27,10 +29,8 @@ class ClusterService extends CreatorService {
         }
 
         $clusterConfig = config('bulk-registration.csv_fields.cluster');
-        $user = User::query()->first();
         $clusterData = [
             'name' => $csvData[$clusterConfig['name']],
-            'manager_id' => $user->id,
         ];
 
         return $this->createRelatedDataIfDoesNotExists($clusterData);

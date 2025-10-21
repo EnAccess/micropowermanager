@@ -7,6 +7,7 @@ use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
@@ -50,7 +51,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     public function getApplianceDetails(int $applianceId): AssetPerson {
-        $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner')
+        $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner', 'device')
             ->where('id', '=', $applianceId)
             ->first();
 
@@ -58,7 +59,6 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     private function sumTotalPaymentsAndTotalRemainingAmount(AssetPerson $appliance): AssetPerson {
-        /** @var SupportCollection<int, mixed> $rates */
         $rates = collect($appliance->rates);
         $appliance['totalRemainingAmount'] = 0;
         $appliance['totalPayments'] = 0;
@@ -74,7 +74,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder<AssetPerson>
+     * @return Builder<AssetPerson>
      */
     public function getLoansForCustomerId(int $customerId) {
         return $this->assetPerson->newQuery()->where('person_id', $customerId);
@@ -103,7 +103,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return Collection<int, AssetPerson>|LengthAwarePaginator<AssetPerson>
+     * @return Collection<int, AssetPerson>|LengthAwarePaginator<int, AssetPerson>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

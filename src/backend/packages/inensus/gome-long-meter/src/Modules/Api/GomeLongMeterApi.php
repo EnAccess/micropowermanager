@@ -25,22 +25,22 @@ class GomeLongMeterApi implements IManufacturerAPI {
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        Log::debug('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
             ' Manufacturer => GomeLongMeterApi');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => (float) $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargedEnergy,
             ];
         } else {
-            $energy = (float) $transactionContainer->chargedEnergy;
+            $energy = $transactionContainer->chargedEnergy;
             $credentials = $this->credentialService->getCredentials();
             $params = [
                 'U' => $credentials->getUserId(),
                 'K' => $credentials->getUserPassword(),
                 'meter' => $meter->serial_number,
-                'amt' => (float) $transactionContainer->chargedEnergy,
+                'amt' => $transactionContainer->chargedEnergy,
             ];
 
             $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
@@ -60,7 +60,12 @@ class GomeLongMeterApi implements IManufacturerAPI {
         }
     }
 
-    public function clearDevice(Device $device) {
+    /**
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

@@ -116,12 +116,9 @@ class ClusterRevenueService {
 
     /**
      * @param Collection<int, Cluster> $clusters
-     * @param string                   $startDate
-     * @param string                   $endDate
-     * @param array                    $periods
-     * @param string                   $period
+     * @param array<string, mixed>     $periods
      *
-     * @return array
+     * @return array<int, ClusterData>
      */
     public function getPeriodicRevenueForClustersOld(
         Collection $clusters,
@@ -138,7 +135,7 @@ class ClusterRevenueService {
             } else {
                 $revenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate]);
             }
-            foreach ($revenues as $rIndex => $revenue) {
+            foreach ($revenues as $revenue) {
                 $revenueData = $revenue->toArray();
                 if ($period === 'weekMonth') {
                     $p[$revenueData['period']][$revenueData['week']]['revenue'] = $revenueData['revenue'];
@@ -174,12 +171,12 @@ class ClusterRevenueService {
         $weeklyRevenues = $this->getTransactionsForWeeklyPeriod($cluster->id, [$startDate, $endDate]);
         $monthlyRevenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate]);
 
-        foreach ($weeklyRevenues as $rIndex => $revenue) {
+        foreach ($weeklyRevenues as $revenue) {
             $revenueData = $revenue->toArray();
             $pW[$revenueData['period']][$revenueData['week']]['revenue'] = $revenueData['revenue'];
         }
 
-        foreach ($monthlyRevenues as $rIndex => $revenue) {
+        foreach ($monthlyRevenues as $revenue) {
             $revenueData = $revenue->toArray();
             $pM[$revenueData['period']]['revenue'] += $revenueData['revenue'];
             $totalRevenue += $revenueData['revenue'];
@@ -284,9 +281,11 @@ class ClusterRevenueService {
     }
 
     /**
+     * @return array<int, MiniGridData>
+     *
      * @throws \Exception
      */
-    public function getMonthlyMiniGridBasedRevenueById(int $clusterId) {
+    public function getMonthlyMiniGridBasedRevenueById(int $clusterId): array {
         $startDate = date('Y-01-01');
         $endDate = date('Y-m-t');
         $period = 'monthly';
@@ -304,7 +303,7 @@ class ClusterRevenueService {
                 $miniGrid->id
             );
 
-            foreach ($revenues as $rIndex => $revenue) {
+            foreach ($revenues as $revenue) {
                 $revenueData = $revenue->toArray();
                 $p[$revenueData['period']]['revenue'] += $revenueData['revenue'];
                 $totalRevenue += $revenueData['revenue'];
@@ -314,10 +313,12 @@ class ClusterRevenueService {
             $miniGrids[$miniGridIndex]['totalRevenue'] = $totalRevenue;
         }
 
-        return $miniGrids;
+        return $miniGrids->toArray();
     }
 
     /**
+     * @return array<int, MiniGridData>
+     *
      * @throws \Exception
      */
     public function getMiniGridBasedRevenueById(
@@ -325,7 +326,7 @@ class ClusterRevenueService {
         string $startDate,
         string $endDate,
         string $period,
-    ) {
+    ): array {
         $clusterMiniGrids = $this->cluster->newQuery()->with('miniGrids')->find($clusterId);
         $miniGrids = $clusterMiniGrids->miniGrids;
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, ['revenue' => 0]);
@@ -339,7 +340,7 @@ class ClusterRevenueService {
                 $revenues = $this->getTransactionsForMonthlyPeriodById($clusterId, [$startDate, $endDate]);
             }
 
-            foreach ($revenues as $rIndex => $revenue) {
+            foreach ($revenues as $revenue) {
                 $revenueData = $revenue->toArray();
                 if ($period === 'weekMonth') {
                     $p[$revenueData['period']][$revenueData['week']]['revenue'] = $revenueData['revenue'];
@@ -353,14 +354,14 @@ class ClusterRevenueService {
             $miniGrids[$miniGridIndex]['totalRevenue'] = $totalRevenue;
         }
 
-        return $miniGrids;
+        return $miniGrids->toArray();
     }
 
     /**
      * @return DateRange
      */
     public function setDatesForRequest(string $startDate, ?string $endDate): array {
-        if (!$startDate) {
+        if ($startDate === '' || $startDate === '0') {
             $start = new \DateTime();
             $year = (int) $start->format('Y');
             $month = (int) $start->format('n');
@@ -369,7 +370,7 @@ class ClusterRevenueService {
             $start->sub(new \DateInterval('P12M'));
             $startDate = $start->format('Y-m-d');
         }
-        $endDate = $endDate ?? date('Y-m-t');
+        $endDate ??= date('Y-m-t');
 
         return ['startDate' => $startDate, 'endDate' => $endDate];
     }

@@ -2,13 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\MainSettings as MainSettingsAlias;
+use App\Models\MainSettings;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<MainSettings> */
 class MainSettingsFactory extends Factory {
-    protected $model = MainSettingsAlias::class;
+    protected $model = MainSettings::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array {
         return [
             'site_title' => 'MPM - The easiest way to manage your Mini-Grid',

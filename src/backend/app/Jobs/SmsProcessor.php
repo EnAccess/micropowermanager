@@ -20,18 +20,16 @@ class SmsProcessor extends AbstractJob {
 
     /**
      * Create a new job instance.
-     *
-     * @param $data
-     * @param $smsConfigs
      */
     public function __construct(private SmsSender $smsSender) {
-        parent::__construct(get_class($this));
+        $this->onConnection('redis');
+        $this->onQueue('sms');
+
+        parent::__construct();
     }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function executeJob(): void {
         try {

@@ -11,29 +11,9 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
 class SmSalesAccoutService implements ISynchronizeService {
-    private $sparkMeterApiRequests;
-    private $rootUrl = '/sales-accounts';
-    private $smTableEncryption;
-    private $smSalesAccount;
-    private $smSite;
-    private $smSyncSettingService;
-    private $smSyncActionService;
+    private string $rootUrl = '/sales-accounts';
 
-    public function __construct(
-        SparkMeterApiRequests $sparkMeterApiRequests,
-        SmTableEncryption $smTableEncryption,
-        SmSalesAccount $smSalesAccount,
-        SmSite $smSite,
-        SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService,
-    ) {
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
-        $this->smTableEncryption = $smTableEncryption;
-        $this->smSalesAccount = $smSalesAccount;
-        $this->smSite = $smSite;
-        $this->smSyncSettingService = $smSyncSettingService;
-        $this->smSyncActionService = $smSyncActionService;
-    }
+    public function __construct(private SparkMeterApiRequests $sparkMeterApiRequests, private SmTableEncryption $smTableEncryption, private SmSalesAccount $smSalesAccount, private SmSite $smSite, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService) {}
 
     public function getSmSalesAccounts($request) {
         $perPage = $request->input('per_page') ?? 15;
@@ -41,7 +21,7 @@ class SmSalesAccoutService implements ISynchronizeService {
         return $this->smSalesAccount->newQuery()->with(['site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getSmSalesAccountsCount() {
+    public function getSmSalesAccountsCount(): int {
         return count($this->smSalesAccount->newQuery()->get());
     }
 
@@ -51,10 +31,8 @@ class SmSalesAccoutService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
             $salesAccountsCollection = collect($syncCheck)->except('available_site_count');
-            $salesAccountsCollection->each(function ($salesAccounts) {
-                $salesAccounts['site_data']->filter(function ($salesAccount) {
-                    return $salesAccount['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-                })->each(function ($salesAccount) use ($salesAccounts) {
+            $salesAccountsCollection->each(function (array $salesAccounts) {
+                $salesAccounts['site_data']->filter(fn (array $salesAccount): bool => $salesAccount['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $salesAccount) use ($salesAccounts) {
                     $this->smSalesAccount->newQuery()->create([
                         'sales_account_id' => $salesAccount['id'],
                         'account_type' => $salesAccount['account_type'],
@@ -67,9 +45,7 @@ class SmSalesAccoutService implements ISynchronizeService {
                     ]);
                 });
 
-                $salesAccounts['site_data']->filter(function ($salesAccount) {
-                    return $salesAccount['syncStatus'] === SyncStatus::MODIFIED;
-                })->each(function ($salesAccount) use ($salesAccounts) {
+                $salesAccounts['site_data']->filter(fn (array $salesAccount): bool => $salesAccount['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $salesAccount) use ($salesAccounts) {
                     $salesAccount['registeredSparkSalesAccount']->update([
                         'account_type' => $salesAccount['account_type'],
                         'active' => $salesAccount['active'],
@@ -89,11 +65,14 @@ class SmSalesAccoutService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark sales account sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function syncCheck($returnData = false) {
+    /**
+     * @return mixed[]
+     */
+    public function syncCheck($returnData = false): array {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
 
@@ -105,16 +84,13 @@ class SmSalesAccoutService implements ISynchronizeService {
             } catch (\Exception $e) {
                 Log::critical('Spark meter sales-accounts sync-check failed.', ['Error :' => $e->getMessage()]);
                 if ($returnData) {
-                    array_push(
-                        $returnArray,
-                        ['result' => false]
-                    );
+                    $returnArray[] = ['result' => false];
                 }
                 throw new SparkAPIResponseException($e->getMessage());
             }
             $sparkSalesAccountsCollection = collect($sparkSalesAccounts['accounts']);
             $salesAccounts = $this->smSalesAccount->newQuery()->where('site_id', $site->site_id)->get();
-            $sparkSalesAccountsCollection->transform(function ($salesAccount) use ($salesAccounts) {
+            $sparkSalesAccountsCollection->transform(function (array $salesAccount) use ($salesAccounts): array {
                 $registeredSparkSalesAccount = $salesAccounts->firstWhere('sales_account_id', $salesAccount['id']);
                 $salesAccountsHash = $this->modelHasher($salesAccount, null);
                 if ($registeredSparkSalesAccount) {
@@ -129,7 +105,7 @@ class SmSalesAccoutService implements ISynchronizeService {
                 return $salesAccount;
             });
 
-            $salesAccountsSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', SyncStatus::SYNCED)->count();
+            $salesAccountsSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
             if ($salesAccountsSyncStatus) {
                 $returnData ? array_push($returnArray, [
                     'site_id' => $site->site_id,
@@ -148,7 +124,7 @@ class SmSalesAccoutService implements ISynchronizeService {
         return $returnArray;
     }
 
-    public function syncCheckBySite($siteId) {
+    public function syncCheckBySite($siteId): array {
         try {
             $url = $this->rootUrl;
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
@@ -160,7 +136,7 @@ class SmSalesAccoutService implements ISynchronizeService {
 
         $salesAccounts = $this->smSalesAccount->newQuery()->where('site_id', $siteId)->get();
 
-        $sparkSalesAccountsCollection->transform(function ($salesAccount) use ($salesAccounts) {
+        $sparkSalesAccountsCollection->transform(function (array $salesAccount) use ($salesAccounts): array {
             $registeredSparkSalesAccount = $salesAccounts->firstWhere('id', $salesAccount['id']);
             $salesAccountHash = $this->modelHasher($salesAccount, null);
             if ($registeredSparkSalesAccount) {
@@ -175,7 +151,7 @@ class SmSalesAccoutService implements ISynchronizeService {
             return $salesAccount;
         });
 
-        $salesAccountSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', 1)->count();
+        $salesAccountSyncStatus = $sparkSalesAccountsCollection->whereNotIn('syncStatus', [1])->count();
 
         if ($salesAccountSyncStatus) {
             return ['result' => false, 'message' => 'sales accounts are not updated for site '.$siteId];

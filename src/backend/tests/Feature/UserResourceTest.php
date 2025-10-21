@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +15,7 @@ class UserResourceTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function actingAs($user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -94,6 +95,12 @@ class UserResourceTest extends TestCase {
     public function resetPasswordWithNonExistingEmail(): void {
         $request = $this->post('/api/users/password', ['email' => 'ako@inensus.com']);
 
-        $request->assertStatus(422);
+        $request->assertStatus(404);
+        $request->assertJson([
+            'data' => [
+                'message' => 'Email address not found in any company.',
+                'status_code' => 404,
+            ],
+        ]);
     }
 }

@@ -6,13 +6,9 @@ use App\Models\Manufacturer;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 
 class ApiHelpers {
-    private $manufacturer;
+    public function __construct(private Manufacturer $manufacturer) {}
 
-    public function __construct(Manufacturer $manufacturerModel) {
-        $this->manufacturer = $manufacturerModel;
-    }
-
-    public function registerSparkMeterManufacturer() {
+    public function registerSparkMeterManufacturer(): void {
         $api = $this->manufacturer->newQuery()->where('api_name', 'SteamaMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
@@ -23,7 +19,12 @@ class ApiHelpers {
         }
     }
 
-    public function checkApiResult($result) {
+    /**
+     * @param array<string, mixed>|string $result
+     *
+     * @return array<string, mixed>|string
+     */
+    public function checkApiResult(array|string $result): array|string {
         if (array_key_exists('detail', $result)) {
             throw new SteamaApiResponseException($result['detail']);
         }
@@ -34,7 +35,10 @@ class ApiHelpers {
         return $result;
     }
 
-    public function makeHash($data) {
+    /**
+     * @param array<string|int, mixed> $data
+     */
+    public function makeHash(array $data): string {
         return md5(implode('', $data));
     }
 }

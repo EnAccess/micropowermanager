@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AfricasTalkingMessage extends BaseModel {
     protected $table = 'africas_talking_messages';
 
+    /**
+     * @return BelongsTo<Sms, $this>
+     */
     public function sms(): BelongsTo {
         return $this->belongsTo(Sms::class);
     }

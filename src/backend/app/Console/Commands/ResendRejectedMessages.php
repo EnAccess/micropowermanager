@@ -4,21 +4,18 @@ namespace App\Console\Commands;
 
 use App\Models\Sms;
 use App\Models\SmsAndroidSetting;
+use App\Sms\AndroidGateway;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 class ResendRejectedMessages extends AbstractSharedCommand {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
     protected $signature = 'sms:resend-rejected {amount}';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected $description = 'Takes unsent messages from the sms table and send them via the registered SMS-Provide';
 
@@ -33,7 +30,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
     public function handle(): void {
         $amountToSend = (int) $this->argument('amount');
-        $messagesToSend = $this->sms
+        $this->sms
             ->where('direction', 1)
             ->where('status', -1)
             ->orderBy('id')
@@ -46,7 +43,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
                 $sms->gateway_id = $smsAndroidSettings->getId();
                 $sms->save();
 
-                resolve('AndroidGateway')
+                resolve(AndroidGateway::class)
                     ->sendSms(
                         $sms->receiver,
                         $sms->body,

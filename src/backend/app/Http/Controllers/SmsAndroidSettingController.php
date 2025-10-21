@@ -8,9 +8,7 @@ use App\Models\SmsAndroidSetting;
 use App\Services\SmsAndroidSettingService;
 
 class SmsAndroidSettingController extends Controller {
-    public function __construct(private SmsAndroidSettingService $smsAndroidSettingService) {
-        $this->smsAndroidSettingService = $smsAndroidSettingService;
-    }
+    public function __construct(private SmsAndroidSettingService $smsAndroidSettingService) {}
 
     public function index(): ApiResource {
         return ApiResource::make($this->smsAndroidSettingService->getSmsAndroidSetting());

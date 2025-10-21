@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter;
 
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
@@ -16,17 +17,7 @@ use Inensus\SteamaMeter\Services\SteamaCredentialService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 
 class SteamaMeterApi implements IManufacturerAPI {
-    protected $api;
-
-    public function __construct(
-        Client $httpClient,
-        private SteamaCustomer $steamaCustomer,
-        private SteamaCredentialService $credentialService,
-        private SteamaCustomerService $customerService,
-        private SteamaTransaction $steamaTransaction,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private SteamaCustomer $steamaCustomer, private SteamaCredentialService $credentialService, private SteamaCustomerService $customerService, private SteamaTransaction $steamaTransaction) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $owner = $transactionContainer->device->person;
@@ -44,7 +35,7 @@ class SteamaMeterApi implements IManufacturerAPI {
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'load' => (float) $transactionContainer->chargedEnergy,
+                'load' => $transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;
@@ -108,5 +99,12 @@ class SteamaMeterApi implements IManufacturerAPI {
         }
     }
 
-    public function clearDevice(Device $device) {}
+    /**
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
 }

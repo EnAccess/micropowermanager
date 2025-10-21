@@ -9,7 +9,7 @@ use Inensus\AfricasTalking\AfricasTalkingGateway;
 use Inensus\AfricasTalking\Console\Commands\InstallPackage;
 
 class AfricasTalkingServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -20,20 +20,21 @@ class AfricasTalkingServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/africas-talking.php', 'africas-talking');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('AfricasTalkingGateway', AfricasTalkingGateway::class);
+        $this->app->bind(AfricasTalkingGateway::class);
+        $this->app->alias(AfricasTalkingGateway::class, 'AfricasTalkingGateway');
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/africas-talking.php' => config_path('africas-talking.php'),
         ]);
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_africas_talking_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
@@ -42,7 +43,7 @@ class AfricasTalkingServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_africas_talking_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_africas_talking_tables.php')[0];

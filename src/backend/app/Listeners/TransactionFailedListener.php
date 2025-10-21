@@ -8,7 +8,7 @@ use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\Provider\TransactionAdapter;
 
 class TransactionFailedListener {
-    public function onTransactionFailed(Transaction $transaction, $message = null): void {
+    public function onTransactionFailed(Transaction $transaction, ?string $message = null): void {
         $originalTransaction = $transaction->originalTransaction()->first();
         if ($originalTransaction instanceof ITransactionProvider) {
             $baseTransaction = TransactionAdapter::getTransaction($originalTransaction);

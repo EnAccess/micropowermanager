@@ -22,16 +22,14 @@ class AgentService implements IBaseService {
     public function resetPassword(string $email): string {
         try {
             $newPassword = PasswordGenerator::generatePassword();
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $newPassword = (string) time();
         }
 
         try {
             $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();
-        } catch (ModelNotFoundException $x) {
-            $message = 'Invalid email.';
-
-            return $message;
+        } catch (ModelNotFoundException) {
+            return 'Invalid email.';
         }
 
         $agent->password = $newPassword;
@@ -59,7 +57,7 @@ class AgentService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, Agent>|LengthAwarePaginator<Agent>
+     * @return Collection<int, Agent>|LengthAwarePaginator<int, Agent>
      */
     public function searchAgent(string $searchTerm, int $paginate): Collection|LengthAwarePaginator {
         if ($paginate === 1) {
@@ -99,7 +97,7 @@ class AgentService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, Agent>|LengthAwarePaginator<Agent>
+     * @return Collection<int, Agent>|LengthAwarePaginator<int, Agent>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
@@ -128,6 +126,8 @@ class AgentService implements IBaseService {
         ?object $personService = null,
         ?object $personAddressService = null,
     ): Agent {
+        // Ensure the person is created with type 'agent'
+        $personData['type'] = 'agent';
         $person = $personService->create($personData);
 
         if ($country !== null) {

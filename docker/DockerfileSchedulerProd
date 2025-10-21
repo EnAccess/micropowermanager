@@ -3,6 +3,7 @@ FROM php:8.2-cli
 # install basic apt packages
 RUN apt-get update && apt-get install -y \
     git \
+    gosu \
     libfreetype6-dev \
     libjpeg-dev \
     libssl-dev \
@@ -33,8 +34,14 @@ RUN docker-php-ext-configure pcntl --enable-pcntl
 RUN pecl install redis-5.3.7 && docker-php-ext-enable redis
 
 # install composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')" \
+    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")" \
+    && if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then \
+        >&2 echo 'ERROR: Invalid installer checksum'; \
+        rm composer-setup.php; \
+        exit 1; \
+    fi;
 RUN php composer-setup.php --version=2.8.8
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
@@ -43,9 +50,9 @@ RUN mv composer.phar /usr/local/bin/composer
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_connephpct_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    echo xdebug.remote_connect_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
+    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 # configure PHP
 COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
@@ -58,8 +65,9 @@ RUN touch /var/log/cron.log
 
 # get MicroPowerManager source code and addition files
 COPY src/backend /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 775 /var/www/html/storage
+
+# indicate storage directory to persist data
+VOLUME ["/var/www/html/storage"]
 
 COPY docker/entrypoint-scheduler.sh /usr/local/bin/entrypoint-scheduler-prod.sh
 RUN chmod +x /usr/local/bin/entrypoint-scheduler-prod.sh

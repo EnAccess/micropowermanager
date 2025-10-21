@@ -26,7 +26,9 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <template>
+                <md-field
+                  :class="{ 'md-invalid': !phone.valid && firstStepClicked }"
+                >
                   <vue-tel-input
                     id="phone"
                     :validCharactersOnly="true"
@@ -42,17 +44,16 @@
                     enabledCountryCode="true"
                     v-model="user.phone"
                     @validate="validatePhone"
-                  ></vue-tel-input>
+                    @input="onPhoneInput"
+                  />
                   <md-icon>phone</md-icon>
                   <span
                     v-if="!phone.valid && firstStepClicked"
-                    style="color: red"
                     class="md-error"
                   >
                     invalid phone number
                   </span>
-                  <md-icon>phone</md-icon>
-                </template>
+                </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
@@ -129,6 +130,7 @@ export default {
       phone: {
         valid: true,
       },
+      firstStepClicked: false,
     }
   },
   mounted() {
@@ -136,7 +138,9 @@ export default {
   },
   methods: {
     async updateUser() {
+      this.firstStepClicked = true
       const validation = await this.$validator.validateAll("Edit-Form")
+      if (!this.phone.valid) return
       if (!validation) {
         return
       }
@@ -151,6 +155,9 @@ export default {
       }
     },
     validatePhone(phone) {
+      this.phone = phone
+    },
+    onPhoneInput(_, phone) {
       this.phone = phone
     },
     closeEditUser() {

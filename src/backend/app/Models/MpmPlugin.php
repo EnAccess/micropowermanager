@@ -3,15 +3,13 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string|null $tail_tag
  * @property string|null $installation_command
  */
 class MpmPlugin extends BaseModelCentral {
-    use HasFactory;
-
     public const SPARK_METER = 1;
     public const STEAMACO_METER = 2;
     public const CALIN_METER = 3;
@@ -32,10 +30,16 @@ class MpmPlugin extends BaseModelCentral {
     public const AFRICAS_TALKING = 18;
     public const VODACOM_MOBILE_MONEY = 19;
     public const CHINT_METER = 20;
+    public const DEMO_SHS_MANUFACTURER = 22;
+    public const DEMO_METER_MANUFACTURER = 21;
+    public const ODYSSEY_DATA_EXPORT = 23;
 
     protected $table = 'mpm_plugins';
 
-    public function plugins() {
+    /**
+     * @return HasMany<Plugins, $this>
+     */
+    public function plugins(): HasMany {
         return $this->hasMany(Plugins::class);
     }
 }

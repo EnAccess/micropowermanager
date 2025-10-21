@@ -68,7 +68,7 @@ return [
 
         'slack' => [
             'driver' => 'slack',
-            'level' => env('LOG_SLACK_LEVEL', 'critical'),
+            'level' => env('LOG_SLACK_LEVEL', 'error'),
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
@@ -80,7 +80,7 @@ return [
             'driver' => 'monolog',
             'handler' => FilterHandler::class,
             'with' => [
-                'handler' => fn () => new StreamHandler('php://stdout'),
+                'handler' => fn (): StreamHandler => new StreamHandler('php://stdout'),
                 'minLevelOrList' => max(Logger::toMonologLevel('debug'), Logger::toMonologLevel(env('LOG_LEVEL', 'debug'))),
                 'maxLevel' => Logger::toMonologLevel('notice'),
             ],
@@ -90,7 +90,7 @@ return [
             'driver' => 'monolog',
             'handler' => FilterHandler::class,
             'with' => [
-                'handler' => fn () => new StreamHandler('php://stderr'),
+                'handler' => fn (): StreamHandler => new StreamHandler('php://stderr'),
                 'minLevelOrList' => max(Logger::toMonologLevel('warning'), Logger::toMonologLevel(env('LOG_LEVEL', 'debug'))),
                 'maxLevel' => Logger::toMonologLevel('emergency'),
             ],

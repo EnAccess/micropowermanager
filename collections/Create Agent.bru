@@ -1,0 +1,33 @@
+meta {
+  name: Create Agent
+  type: http
+  seq: 31
+}
+
+post {
+  url: {{mpm_backend_url}}/api/agents
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Test Agent",
+    "surname": "Test Agent (Created via API)",
+    "is_customer": 0,
+    "nationality": null,
+    "city_id": 3,
+    "email": "demo_agent_api_created@example.com",
+    "phone": "+254 123 456789",
+    "is_primary": 1,
+    "agent_commission_id": 1,
+    "password": "123123",
+    "birth_date": "2025-08-13 00:00:00",
+    "sex": " female"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

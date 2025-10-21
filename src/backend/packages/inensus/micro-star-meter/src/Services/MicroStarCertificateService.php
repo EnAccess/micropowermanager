@@ -3,11 +3,13 @@
 namespace Inensus\MicroStarMeter\Services;
 
 use App\Services\UserService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Inensus\MicroStarMeter\Models\MicroStarCredential;
 
 class MicroStarCertificateService {
-    public function upload($request, $credentials) {
+    public function upload(Request $request, MicroStarCredential $credentials): MicroStarCredential {
         $file = $request->file('cert');
         $companyId = app()->make(UserService::class)->getCompanyId();
 
@@ -26,7 +28,7 @@ class MicroStarCertificateService {
         return $credentials;
     }
 
-    public function getUploadedCertificate($credentials) {
+    public function getUploadedCertificate(MicroStarCredential $credentials): string {
         if (!$credentials->certificate_path || !$credentials->certificate_file_name) {
             return '';
         }

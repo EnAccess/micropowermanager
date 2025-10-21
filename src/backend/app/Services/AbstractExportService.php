@@ -8,6 +8,7 @@ use App\Exceptions\Export\SpreadSheetNotCreatedException;
 use App\Exceptions\Export\SpreadSheetNotSavedException;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -19,6 +20,7 @@ abstract class AbstractExportService {
     protected IReader $reader;
     protected Worksheet $worksheet;
     protected Spreadsheet $spreadsheet;
+    /** @var Collection<int, mixed> */
     protected Collection $exportingData;
     protected string $currency;
     protected string $timeZone;
@@ -72,19 +74,16 @@ abstract class AbstractExportService {
         $parts = explode('.', str_replace(' ', '', $amount));
 
         // Check if the array keys exist before accessing them
-        $whole = isset($parts[0]) ? number_format((float) $parts[0], 0, '', $separator) : '';
+        $whole = number_format((float) $parts[0], 0, '', $separator);
         $decimal = isset($parts[1]) ? substr($parts[1].'00', 0, 2) : '';
 
         // Combine the whole number and decimal parts
-        return $decimal ? "$whole.$decimal" : $whole;
+        return $decimal !== '' && $decimal !== '0' ? "$whole.$decimal" : $whole;
     }
 
-    public function convertUtcDateToTimezone($utcDate): string {
+    public function convertUtcDateToTimezone(string|\DateTimeInterface|null $utcDate): string {
         // Create a DateTime object with the UTC-based date
         $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
-
-        // Set the desired timezone
-        $dateTimeUtc->setTimezone(new \DateTimeZone($this->timeZone));
 
         // Format the date and time as a string
         return $dateTimeUtc->format('Y-m-d H:i:s');
@@ -109,6 +108,7 @@ abstract class AbstractExportService {
         try {
             $uuid = Str::uuid()->toString();
             $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.xlsx';
+            $this->createDirectoryIfNotExists(storage_path('appliance'));
             $this->setRecentlyCreatedSpreadSheetId($uuid);
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
             $writer->save($fileName);
@@ -119,9 +119,13 @@ abstract class AbstractExportService {
         }
     }
 
+    /**
+     * @param array<int, string> $headers
+     */
     public function saveCsv(array $headers = []): string {
         $uuid = Str::uuid()->toString();
         $filePath = storage_path('appliance/'.$this->getPrefix().'-'.$uuid.'.csv');
+        $this->createDirectoryIfNotExists(storage_path('appliance'));
 
         try {
             $handle = fopen($filePath, 'w');
@@ -133,7 +137,7 @@ abstract class AbstractExportService {
             }
 
             // Write header row
-            if (empty($headers)) {
+            if ($headers === []) {
                 // Use keys from the first row if no custom headers provided
                 fputcsv($handle, array_keys($this->exportingData->first()));
             } else {
@@ -154,6 +158,12 @@ abstract class AbstractExportService {
                 'message' => $e->getMessage(),
             ]);
             throw new CsvNotSavedException($e->getMessage());
+        }
+    }
+
+    public function createDirectoryIfNotExists(string $path): void {
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0775, true);
         }
     }
 }

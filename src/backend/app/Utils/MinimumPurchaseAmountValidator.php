@@ -8,15 +8,15 @@ class MinimumPurchaseAmountValidator {
     private float $restAmount;
     private TransactionDataContainer $transactionData;
 
-    public function validate(TransactionDataContainer $transactionData, $minimumPurchaseAmount): bool {
+    public function validate(TransactionDataContainer $transactionData, float $minimumPurchaseAmount): bool {
         $this->transactionData = $transactionData;
         $this->restAmount = $this->transactionData->transaction->amount;
 
-        $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
+        $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($transactionData);
         $this->restAmount = $applianceInstallmentPayer->consumeAmount();
 
-        $accessRatePayer = resolve('AccessRatePayer');
+        $accessRatePayer = resolve(AccessRatePayer::class);
         $accessRatePayer->initialize($transactionData);
         $this->restAmount = $accessRatePayer->consumeAmount();
 

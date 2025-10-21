@@ -16,18 +16,9 @@ use Carbon\CarbonInterval;
  */
 class PaymentHistoryController {
     /**
-     * @var PaymentHistory
-     */
-    private $history;
-
-    /**
      * PaymentHistoryController constructor.
-     *
-     * @param PaymentHistory $history
      */
-    public function __construct(PaymentHistory $history) {
-        $this->history = $history;
-    }
+    public function __construct(private PaymentHistory $history) {}
 
     /**
      * Detail.
@@ -37,29 +28,16 @@ class PaymentHistoryController {
      * @urlParam limit integer
      * @urlParam order string
      *
-     * @param int    $payerId
-     * @param string $period
-     * @param null   $limit
-     * @param string $order
-     *
-     * @return array<string, array<string, float|int>>
+     * @return array<string, array<string, mixed>>
      */
-    public function show(int $payerId, string $period, $limit = null, $order = 'ASC'): array {
+    public function show(int $payerId, string $period, ?int $limit = null, string $order = 'ASC'): array {
         $period = strtoupper($period);
-        switch ($period) {
-            case 'D':
-                $period = 'Day(created_at), Month(created_at), Year(created_at)';
-                break;
-            case 'W':
-                $period = 'Week(created_at), Year(created_at)';
-                break;
-            case 'M':
-                $period = 'Month(created_at), Year(created_at)';
-                break;
-            default:
-                $period = 'Year(created_at)';
-                break;
-        }
+        $period = match ($period) {
+            'D' => 'Day(created_at), Month(created_at), Year(created_at)',
+            'W' => 'Week(created_at), Year(created_at)',
+            'M' => 'Month(created_at), Year(created_at)',
+            default => 'Year(created_at)',
+        };
         $payments = app()->make(PaymentHistory::class)->getFlow(
             'person',
             $payerId,
@@ -76,18 +54,14 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      *
-     * @param $personId
-     *
-     * @return ApiResource
-     *
      * @throws \Exception
      */
-    public function getPaymentPeriod(Person $person) {
+    public function getPaymentPeriod(Person $person): ApiResource {
         $payments = $person->payments()->latest()->take(10)->get();
 
         $difference = 'no data available';
         $lastTransactionDate = null;
-        if (\count($payments)) {
+        if (\count($payments) > 0) {
             $lastTransactionDate = $newest = $payments[0]->created_at;
             $newest = new Carbon($newest);
             $lastTransactionDate = $newest->diffInDays(Carbon::now()).' days ago';
@@ -103,13 +77,10 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      *
-     * @param int      $personId
-     * @param int|null $year
-     *
      * @return array<int, float>
      */
     public function byYear(int $personId, ?int $year = null): array {
-        $year = $year ?? (int) date('Y');
+        $year ??= (int) date('Y');
         $payments = $this->history->getPaymentFlow('person', $personId, $year);
         $paymentFlow = array_fill(0, 11, 0);
         foreach ($payments as $payment) {
@@ -124,12 +95,8 @@ class PaymentHistoryController {
      *
      * @urlParam personId integer required
      * checks if the person has any debts to the system
-     *
-     * @param int $personId
-     *
-     * @return ApiResource
      */
-    public function debts($personId) {
+    public function debts(int $personId): ApiResource {
         $accessRateDebt = 0;
         $meters = Device::query()->with('device')
             ->whereHasMorph(
@@ -155,8 +122,6 @@ class PaymentHistoryController {
      * @bodyParam begin string
      * @bodyParam end string
      *
-     * @return ApiResource
-     *
      * @throws \Exception
      */
     public function getPaymentRange(): ApiResource {
@@ -181,9 +146,9 @@ class PaymentHistoryController {
     }
 
     /**
-     * @param array<int, array{aperiod: string, payment_type: string, amount: float|int}> $payments
+     * @param array<mixed> $payments
      *
-     * @return array<string, array<string, float|int>>
+     * @return array<string, array<string, mixed>>
      */
     public function preparePaymentFlow(array $payments): array {
         $flowList = [];

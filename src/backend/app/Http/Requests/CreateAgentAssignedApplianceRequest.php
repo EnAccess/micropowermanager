@@ -2,16 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentAssignedApplianceRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
@@ -20,10 +17,7 @@ class CreateAgentAssignedApplianceRequest extends FormRequest {
      *
      * @return array<string, mixed>
      */
-    public function rules() {
-        $sessionService = app()->make(SessionService::class);
-        $database = $sessionService->getAuthenticatedUserDatabaseName();
-
+    public function rules(): array {
         return [
             'agent_id' => 'required',
             'user_id' => 'required',

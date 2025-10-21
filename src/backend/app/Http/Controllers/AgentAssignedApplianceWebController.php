@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentAssignedApplianceRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
 use App\Services\AgentAssignedApplianceService;
 use Illuminate\Http\Request;
 
@@ -20,8 +19,6 @@ class AgentAssignedApplianceWebController extends Controller {
      * @bodyParam user_id integer required
      * @bodyParam appliance_type_id integer required
      * @bodyParam cost integer required
-     *
-     * @param CreateAgentAssignedApplianceRequest $request
      *
      * @return ApiResource
      */
@@ -39,12 +36,11 @@ class AgentAssignedApplianceWebController extends Controller {
     /**
      * List for Web interface.
      *
-     * @param int     $agentId
-     * @param Request $request
+     * @param int $agentId
      *
      * @return ApiResource
      */
-    public function index($agentId, Request $request) {
+    public function index(?int $agentId, Request $request) {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentAssignedApplianceService->getAll($limit, $agentId));

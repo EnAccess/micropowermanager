@@ -21,13 +21,13 @@ class ChintMeterApi implements IManufacturerAPI {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
 
-        Log::debug('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
             ' Manufacturer => ChintMeterApi');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => (float) $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargedEnergy,
             ];
         }
 
@@ -67,7 +67,12 @@ class ChintMeterApi implements IManufacturerAPI {
         ];
     }
 
-    public function clearDevice(Device $device) {
+    /**
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

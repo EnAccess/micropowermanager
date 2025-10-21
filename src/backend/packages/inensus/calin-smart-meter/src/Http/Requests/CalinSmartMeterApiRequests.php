@@ -7,24 +7,19 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Inensus\CalinSmartMeter\Exceptions\CalinSmartApiResponseException;
 use Inensus\CalinSmartMeter\Helpers\ApiHelpers;
-use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 
 class CalinSmartMeterApiRequests {
-    private $client;
-    private $apiHelpers;
-    private $credential;
-
     public function __construct(
-        Client $httpClient,
-        ApiHelpers $apiHelpers,
-        CalinSmartCredential $credentialModel,
-    ) {
-        $this->client = $httpClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->credential = $credentialModel;
-    }
+        private Client $client,
+        private ApiHelpers $apiHelpers,
+    ) {}
 
-    public function post($url, $postParams) {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>|string
+     */
+    public function post(string $url, array $postParams): array|string {
         try {
             $request = $this->client->post(
                 $url,

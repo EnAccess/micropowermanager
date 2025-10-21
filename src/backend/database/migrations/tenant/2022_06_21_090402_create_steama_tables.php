@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up() {
         if (!Schema::hasTable('steama_agents')) {
             Schema::connection('tenant')->create('steama_agents', function (Blueprint $table) {
@@ -295,6 +300,11 @@ return new class extends Migration {
         }
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down() {
         Schema::connection('tenant')->dropIfExists('steama_agents');
         Schema::connection('tenant')->dropIfExists('steama_asset_rates_payment_plans');

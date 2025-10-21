@@ -7,6 +7,7 @@ use App\Http\Requests\SmsRequest;
 use App\Http\Requests\StoreSmsRequest;
 use App\Http\Resources\ApiResource;
 use App\Http\Resources\SmsSearchResultResource;
+use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Sms;
@@ -15,6 +16,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Services\TicketCommentService;
@@ -37,10 +39,7 @@ class SmsController extends Controller {
         return new ApiResource($list);
     }
 
-    /**
-     * @return void
-     */
-    public function storeBulk(Request $request) {
+    public function storeBulk(Request $request): void {
         $type = $request->get('type');
         $receivers = $request->get('receivers');
         $message = $request->get('message');
@@ -169,14 +168,11 @@ class SmsController extends Controller {
         ];
         $sms = $this->smsService->createSms($smsData);
 
-        switch ($this->smsService->checkMessageType($message)) {
-            case $this->smsService::FEEDBACK:
-                event(new SmsStoredEvent($sender, $message));
-                break;
-            case $this->smsService::TICKET:
-                $this->commentService->storeComment($sender, $message);
-                break;
-        }
+        match ($this->smsService->checkMessageType($message)) {
+            $this->smsService::FEEDBACK => event(new SmsStoredEvent($sender, $message)),
+            $this->smsService::TICKET => $this->commentService->storeComment($sender, $message),
+            default => new ApiResource($sms),
+        };
 
         return new ApiResource($sms);
     }
@@ -186,18 +182,19 @@ class SmsController extends Controller {
         $message = $request->get('message');
         $senderId = $request->get('senderId');
         if ($personId !== null) {
-            // get person primary phone
-            $primaryAddress = $this->person::with('addresses')
-                ->whereHas(
-                    'addresses',
-                    static function ($q) {
-                        $q->where('is_primary', 1);
-                    }
-                )
-                ->find($personId);
-            $phone = $primaryAddress->addresses[0]->phone;
+            // get person primary phone; fall back to request phone if missing
+            $phone = Address::where('owner_type', 'person')
+                ->where('owner_id', $personId)
+                ->where('is_primary', 1)
+                ->value('phone')
+                ?? $request->get('phone');
         } else {
             $phone = $request->get('phone');
+        }
+
+        if (!$phone) {
+            // raise exception
+            throw new \Exception('Phone number is required for sending SMS.');
         }
 
         $smsData = [
@@ -216,8 +213,6 @@ class SmsController extends Controller {
      * Marks the sms as sent.
      *
      * @param string $uuid
-     *
-     * @return void
      */
     public function updateForDelivered($uuid): void {
         try {
@@ -225,7 +220,7 @@ class SmsController extends Controller {
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
             $sms->status = Sms::STATUS_DELIVERED;
             $sms->save();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             Log::critical(
                 'Sms confirmation update failed ',
                 [
@@ -242,7 +237,7 @@ class SmsController extends Controller {
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
             $sms->status = Sms::STATUS_FAILED;
             $sms->save();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             Log::critical(
                 'Sms rejection update failed ',
                 [
@@ -259,7 +254,7 @@ class SmsController extends Controller {
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
             $sms->status = Sms::STATUS_SENT;
             $sms->save();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             Log::critical(
                 'Sms rejection update failed ',
                 [
@@ -292,7 +287,7 @@ class SmsController extends Controller {
         return new ApiResource($smses);
     }
 
-    public function search(string $search): \Illuminate\Http\Resources\Json\AnonymousResourceCollection {
+    public function search(string $search): AnonymousResourceCollection {
         // search in people
         $list = $this->person::with('addresses')
             ->whereHas(

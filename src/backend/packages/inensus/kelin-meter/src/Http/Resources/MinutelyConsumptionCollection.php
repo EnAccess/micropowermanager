@@ -2,17 +2,17 @@
 
 namespace Inensus\KelinMeter\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Collection;
 
 class MinutelyConsumptionCollection extends ResourceCollection {
     /**
      * Transform the resource collection into an array.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return array
+     * @return array{data: Collection<int, mixed>}
      */
-    public function toArray($request) {
+    public function toArray(Request $request) {
         return [
             'data' => $this->collection,
         ];

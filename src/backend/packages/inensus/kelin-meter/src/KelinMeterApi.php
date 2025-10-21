@@ -2,7 +2,9 @@
 
 namespace Inensus\KelinMeter;
 
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
+use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
 use Carbon\Carbon;
@@ -15,7 +17,7 @@ use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\KelinTransaction;
 
 class KelinMeterApi implements IManufacturerAPI {
-    private $rootUrl = '/recharge';
+    private string $rootUrl = '/recharge';
 
     public function __construct(
         private KelinMeter $kelinMeter,
@@ -23,18 +25,18 @@ class KelinMeterApi implements IManufacturerAPI {
         private KelinMeterApiClient $kelinApi,
     ) {}
 
-    public function chargeDevice($transactionContainer): array {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
         Log::critical('ENERGY TO BE CHARGED float '.
-            (float) $transactionContainer->chargedEnergy.
+            $transactionContainer->chargedEnergy.
             ' Manufacturer => Kelin');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => (float) $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;
@@ -95,7 +97,7 @@ class KelinMeterApi implements IManufacturerAPI {
                 'manufacturer_transaction_type' => 'kelin_transaction',
             ]);
 
-            $token = $transactionResult['opType'] === 2 ? sprintf(
+            $token = $transactionResult['opType'] == 2 ? sprintf(
                 'EnergyToken : %s',
                 $transactionResult['payToken']
             ) :
@@ -114,5 +116,12 @@ class KelinMeterApi implements IManufacturerAPI {
         }
     }
 
-    public function clearDevice(Device $device) {}
+    /**
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
 }

@@ -13,6 +13,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
+use Inensus\MesombPaymentProvider\Models\MesombTransaction;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 /**
  * General purpose system Transaction.
@@ -26,12 +30,14 @@ use Illuminate\Support\Facades\DB;
  * The `originalTransaction()` method links this system-level transaction to the
  * payment provider-specific transaction.
  *
- * @property int    $id
- * @property int    $amount
- * @property string $type
- * @property string $sender
- * @property string $message
- * @property string $original_transaction_type
+ * @property int                                                                                                                                $id
+ * @property int                                                                                                                                $amount
+ * @property string                                                                                                                             $type
+ * @property string                                                                                                                             $sender
+ * @property string                                                                                                                             $message
+ * @property Device                                                                                                                             $device
+ * @property string                                                                                                                             $original_transaction_type
+ * @property AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction $originalTransaction
  */
 class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
@@ -40,10 +46,13 @@ class Transaction extends BaseModel {
     /**
      * Get the payment provider-specific transaction linked to this system transaction.
      *
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this>
      */
     public function originalTransaction(): MorphTo {
-        return $this->morphTo();
+        /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this> $relation */
+        $relation = $this->morphTo();
+
+        return $relation;
     }
 
     /**

@@ -2,23 +2,20 @@
 
 namespace Inensus\BulkRegistration\Services;
 
+use Illuminate\Http\Request;
 use Inensus\BulkRegistration\Exceptions\MissingDataException;
 use Inensus\BulkRegistration\Helpers\CsvDataProcessor;
 use Inensus\BulkRegistration\Helpers\CsvFileParser;
 use Inensus\BulkRegistration\Models\CsvData;
 
 class CsvDataService {
-    private $csvData;
-    private $csvDataProcessor;
-    private $csvFileParser;
+    public function __construct(
+        private CsvData $csvData,
+        private CsvFileParser $csvFileParser,
+        private CsvDataProcessor $csvDataProcessor,
+    ) {}
 
-    public function __construct(CsvData $csvData, CsvFileParser $csvFileParser, CsvDataProcessor $csvDataProcessor) {
-        $this->csvData = $csvData;
-        $this->csvDataProcessor = $csvDataProcessor;
-        $this->csvFileParser = $csvFileParser;
-    }
-
-    public function create($request) {
+    public function create(Request $request): CsvData {
         $path = $request->file('csv');
         $parsedCsvData = $this->csvFileParser->parseCsvFromFilePath($path);
         $message = '';
@@ -31,8 +28,8 @@ class CsvDataService {
 
         $csvData = $this->csvData->newQuery()->create([
             'csv_filename' => $request->file('csv')->getClientOriginalName(),
-            'user_id' => auth()->user()->id,
-            'csv_data' => json_encode(array_values($parsedCsvData), true),
+            'user_id' => auth('api')->user()->id,
+            'csv_data' => json_encode(array_values($parsedCsvData), 1),
         ]);
         $csvData['recently_created_records'] = $recentlyCreatedRecords;
         $csvData['alert'] = $message;

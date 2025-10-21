@@ -6,17 +6,12 @@ use App\Models\PaymentHistory;
 
 class AccessRateConfirmation extends SmsBodyParser {
     protected $variables = ['amount'];
-    protected $paymentHistory;
 
-    public function __construct(PaymentHistory $paymentHistory) {
-        $this->paymentHistory = $paymentHistory;
-    }
+    public function __construct(protected PaymentHistory $paymentHistory) {}
 
-    protected function getVariableValue($variable): mixed {
-        switch ($variable) {
-            case 'amount':
-                $variable = $this->paymentHistory->amount;
-                break;
+    protected function getVariableValue(string $variable): mixed {
+        if ($variable === 'amount') {
+            $variable = $this->paymentHistory->amount;
         }
 
         return $variable;

@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter;
 
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
@@ -16,22 +17,11 @@ use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\Services\TariffService;
 
 class SparkMeterApi implements IManufacturerAPI {
-    protected $api;
-    private $rootUrl = '/transaction/';
+    private string $rootUrl = '/transaction/';
 
-    public function __construct(
-        Client $httpClient,
-        private SparkMeterApiRequests $sparkMeterApiRequests,
-        private TariffService $tariffService,
-        private SmCustomer $smCustomer,
-        private SmTransaction $smTransaction,
-        private SmTariff $smTariff,
-    ) {
-        $this->api = $httpClient;
-    }
+    public function __construct(protected Client $api, private SparkMeterApiRequests $sparkMeterApiRequests, private TariffService $tariffService, private SmCustomer $smCustomer, private SmTransaction $smTransaction, private SmTariff $smTariff) {}
 
     public function chargeDevice($transactionContainer): array {
-        $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $owner = $transactionContainer->device->person;
 
@@ -89,17 +79,17 @@ class SparkMeterApi implements IManufacturerAPI {
                     ['Body :' => json_encode($postParams), 'message :' => $e->getMessage()]
                 );
             }
-            if ($result['error'] !== false && $result['error'] !== null) {
+            if (isset($result['error']) && $result['error'] !== false) {
                 throw new SparkAPIResponseException($result['error']);
             } else {
                 $transactionInformation = $this->sparkMeterApiRequests->getInfo(
                     $this->rootUrl,
-                    $result['transaction_id'],
+                    $result['transaction_id'] ?? null,
                     $smCustomer->site->site_id
                 );
 
                 $transactionResult = [
-                    'transaction_id' => $result['transaction_id'],
+                    'transaction_id' => $result['transaction_id'] ?? null,
                     'site_id' => $smCustomer->site->site_id,
                     'customer_id' => $smCustomer->customer_id,
                     'status' => $transactionInformation['status'],
@@ -132,7 +122,13 @@ class SparkMeterApi implements IManufacturerAPI {
         }
     }
 
-    public function clearDevice(Device $device) {
+    /**
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
         // TODO: Implement clearDevice() method.
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

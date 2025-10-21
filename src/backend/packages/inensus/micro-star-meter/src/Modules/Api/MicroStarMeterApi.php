@@ -25,10 +25,10 @@ class MicroStarMeterApi implements IManufacturerAPI {
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        Log::debug('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
             ' Manufacturer => MicroStarMeterApi');
 
-        $energy = (float) $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargedEnergy;
         $params = ['deviceNo' => $meter->serial_number, 'rechargeAmount' => $energy]; // if they accepts
         // rechargeAmount as money, then we have to convert it to money
         $credentials = $this->credentialService->getCredentials();
@@ -53,7 +53,12 @@ class MicroStarMeterApi implements IManufacturerAPI {
         ];
     }
 
-    public function clearDevice(Device $device) {
+    /**
+     * @return array<string,mixed>|null
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

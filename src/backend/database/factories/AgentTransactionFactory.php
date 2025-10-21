@@ -5,15 +5,16 @@ namespace Database\Factories;
 use App\Models\Transaction\AgentTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<AgentTransaction> */
 class AgentTransactionFactory extends Factory {
     protected $model = AgentTransaction::class;
 
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition() {
+    public function definition(): array {
         return [
             'agent_id' => 1,
             'mobile_device_id' => '123456789',

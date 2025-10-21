@@ -9,7 +9,10 @@ class ConnectionGroupService extends CreatorService {
         parent::__construct($connectionGroup);
     }
 
-    public function resolveCsvDataFromComingRow($csvData) {
+    /**
+     * @param array<string, mixed> $csvData
+     */
+    public function resolveCsvDataFromComingRow(array $csvData) {
         $connectionGroupConfig = config('bulk-registration.csv_fields.connection_group');
         $connectionGroupData = [
             'name' => $csvData[$connectionGroupConfig['name']],

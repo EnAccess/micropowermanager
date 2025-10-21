@@ -23,14 +23,12 @@ class MeterGeographicalInformationController extends Controller {
      * A list of meters with their positions and access rate payments
      * The list is not paginated.
      *
-     * @urlParam mini_grid_id
-     *
-     * @return ApiResource
+     * @urlParam mini_grid_id int
      *
      * @responseFile responses/meters/meters.geo.list.json
      */
-    public function index(?int $miniGridId): ApiResource {
-        $cityIds = $this->cityService->getCityIdsByMiniGridId($miniGridId);
+    public function index(?int $miniGridId = null): ApiResource {
+        $cityIds = $miniGridId ? $this->cityService->getCityIdsByMiniGridId($miniGridId) : [];
         // we can get city id only by address
         if ($miniGridId === null) {
             $meters = $this->meterService->getUsedMetersGeoWithAccessRatePayments();
@@ -52,10 +50,6 @@ class MeterGeographicalInformationController extends Controller {
      *
      * @urlParam person required The ID of the person
      *
-     * @param int $personId
-     *
-     * @return ApiResource
-     *
      * @responseFile responses/people/person.meter.list.json
      */
     public function show(int $personId): ApiResource {
@@ -69,8 +63,6 @@ class MeterGeographicalInformationController extends Controller {
      * @urlParam  meter int
      *
      * @bodyParam points string. Comma seperated latitude and longitude. Example 1,2
-     *
-     * @param Request $request
      */
     public function update(Request $request): ApiResource {
         $meters = $request->all();

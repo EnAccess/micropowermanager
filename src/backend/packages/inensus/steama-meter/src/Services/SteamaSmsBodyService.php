@@ -5,11 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSmsBody;
 
 class SteamaSmsBodyService {
-    private $smsBody;
-
-    public function __construct(SteamaSmsBody $smsBody) {
-        $this->smsBody = $smsBody;
-    }
+    public function __construct(private SteamaSmsBody $smsBody) {}
 
     public function getSmsBodyByReference($reference) {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
@@ -19,12 +15,10 @@ class SteamaSmsBodyService {
         return $this->smsBody->newQuery()->get();
     }
 
-    public function updateSmsBodies($smsBodiesData) {
+    public function updateSmsBodies(array $smsBodiesData) {
         $smsBodies = $this->smsBody->newQuery()->get();
-        collect($smsBodiesData)->each(function ($smsBody) use ($smsBodies) {
-            $smsBodies->filter(function ($body) use ($smsBody) {
-                return $body['id'] === $smsBody['id'];
-            })->first()->update([
+        collect($smsBodiesData)->each(function (array $smsBody) use ($smsBodies) {
+            $smsBodies->filter(fn (SteamaSmsBody $body): bool => $body['id'] === $smsBody['id'])->first()->update([
                 'body' => $smsBody['body'],
             ]);
         });
@@ -36,7 +30,7 @@ class SteamaSmsBodyService {
         return $this->smsBody->newQuery()->whereNull('body')->get();
     }
 
-    public function createSmsBodies() {
+    public function createSmsBodies(): void {
         $smsBodies = [
             [
                 'reference' => 'SteamaSmsLowBalanceHeader',
@@ -76,7 +70,7 @@ class SteamaSmsBodyService {
                 'title' => 'Sms Footer',
             ],
         ];
-        collect($smsBodies)->each(function ($smsBody) {
+        collect($smsBodies)->each(function (array $smsBody) {
             $this->smsBody->newQuery()->firstOrCreate(['reference' => $smsBody['reference']], $smsBody);
         });
     }

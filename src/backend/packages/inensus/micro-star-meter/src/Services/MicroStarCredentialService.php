@@ -2,9 +2,12 @@
 
 namespace Inensus\MicroStarMeter\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\MicroStarMeter\Models\MicroStarCredential;
 
 class MicroStarCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private MicroStarCredential $credential,
     ) {}
@@ -12,7 +15,7 @@ class MicroStarCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): MicroStarCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_url' => null,
             'certificate_password' => null,
@@ -21,17 +24,25 @@ class MicroStarCredentialService {
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): ?MicroStarCredential {
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['certificate_file_name', 'certificate_path', 'certificate_password']);
     }
 
-    public function updateCredentials($data) {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): MicroStarCredential {
         $credential = $this->getCredentials();
-        $credential->update([
-            'certificate_password' => $data['certificate_password'],
-            'api_url' => $data['api_url'],
-        ]);
 
-        return $credential->fresh();
+        $encryptedData = $this->encryptCredentialFields($data, ['certificate_password']);
+        $encryptedData['api_url'] = $data['api_url'];
+
+        $credential->update($encryptedData);
+
+        $credential->fresh();
+
+        return $this->decryptCredentialFields($credential, ['certificate_file_name', 'certificate_path', 'certificate_password']);
     }
 }

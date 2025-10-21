@@ -100,6 +100,7 @@
                       enabledCountryCode="true"
                       v-model="agentService.agent.phone"
                       @validate="validatePhone"
+                      @input="onPhoneInput"
                     ></vue-tel-input>
                     <span
                       v-if="!phone.valid && firstStepClicked"
@@ -134,16 +135,28 @@
                 </div>
 
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-datepicker
-                    name="birthDate"
-                    md-immediately
-                    v-model="agentService.agent.birthday"
-                    :md-close-on-blur="false"
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has('birthDate'),
+                    }"
                   >
-                    <label for="birth-date">
-                      {{ $tc("words.birthday") }} :
-                    </label>
-                  </md-datepicker>
+                    <md-datepicker
+                      id="birth-date"
+                      name="birthDate"
+                      md-immediately
+                      v-model="agentService.agent.birthday"
+                      v-validate="'required|date_format:YYYY-MM-DD'"
+                      :data-vv-as="$tc('words.birthday')"
+                      :md-close-on-blur="false"
+                    >
+                      <label for="birth-date">
+                        {{ $tc("words.birthday") }} :
+                      </label>
+                    </md-datepicker>
+                    <span class="md-error">
+                      {{ errors.first("birthDate") }}
+                    </span>
+                  </md-field>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
@@ -318,6 +331,7 @@ export default {
       phone: {
         valid: true,
       },
+      firstStepClicked: false,
     }
   },
 
@@ -359,7 +373,9 @@ export default {
       this.selectedMiniGridId = miniGridId
     },
     async saveAgent() {
+      this.firstStepClicked = true
       let validator = await this.$validator.validateAll()
+      if (!this.phone.valid) return
       if (validator) {
         this.loading = true
         try {
@@ -376,6 +392,9 @@ export default {
       }
     },
     validatePhone(phone) {
+      this.phone = phone
+    },
+    onPhoneInput(_, phone) {
       this.phone = phone
     },
     hide() {

@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder {
                 SubConnectionTypeSeeder::class,
                 SmsSeeder::class,
                 TargetSeeder::class,
-                PluginsSeeder::class,
                 AgentApplianceSalesSeeder::class,
+                OutstandingDebtsSeeder::class,
             ]);
         } else {
             // If the database already includes the Demo data we don't throw an error,

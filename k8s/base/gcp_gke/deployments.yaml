@@ -23,6 +23,14 @@ spec:
                 name: mpm-configmap-backend
             - secretRef:
                 name: mpm-secret-backend
+          volumeMounts:
+            - name: storage-data
+              mountPath: /var/www/html/storage
+              subPath: ""
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: mpm-storage-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -74,3 +82,44 @@ spec:
                 name: mpm-configmap-backend
             - secretRef:
                 name: mpm-secret-backend
+          volumeMounts:
+            - name: storage-data
+              mountPath: /var/www/html/storage
+              subPath: ""
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: mpm-storage-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-queue-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-queue-worker
+  template:
+    metadata:
+      labels:
+        app: mpm-queue-worker
+    spec:
+      containers:
+        - name: mpm-queue-worker
+          image: enaccess/micropowermanager-queue-worker:latest
+          imagePullPolicy: Always
+          # micropowermanager-queue-worker is a backend service and uses the same configuration as micropowermanager-backend
+          envFrom:
+            - configMapRef:
+                name: mpm-configmap-backend
+            - secretRef:
+                name: mpm-secret-backend
+          volumeMounts:
+            - name: storage-data
+              mountPath: /var/www/html/storage
+              subPath: ""
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: mpm-storage-pvc

@@ -8,6 +8,7 @@ use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Models\SmsBody;
 use App\Models\User;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Queue;
@@ -16,18 +17,18 @@ use Inensus\SteamaMeter\Models\SteamaSite;
 use Inensus\SteamaMeter\Models\SteamaSmsBody;
 use Inensus\SteamaMeter\Models\SteamaSmsFeedbackWord;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SendSms extends TestCase {
     use RefreshDatabase;
+    use InteractsWithAuthentication;
 
     /** @test */
-    public function isMeterBalanceFeedbackSend() {
+    public function isMeterBalanceFeedbackSend(): void {
         Queue::fake();
         Config::set('app.debug', false);
         $this->withoutExceptionHandling();
         $person = $this->initializeData()['customer'];
-        $user = factory(User::class)->create();
+        $user = User::factory()->createOne();
         $data = [
             'sender' => $person->addresses[0]->phone,
             'message' => 'Balance',
@@ -38,21 +39,13 @@ class SendSms extends TestCase {
         $this->assertEquals(2, $smsCount);
     }
 
-    public function actingAs($user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
-    }
-
-    private function initializeData() {
+    private function initializeData(): array {
         $this->addSmsBodies();
         $this->addFeedBackKeys();
-        factory(MainSettings::class)->create();
+        MainSettings::factory()->create();
 
         // create person
-        factory(Person::class)->create();
+        Person::factory()->create();
 
         // associate meter with a person
         $p = Person::query()->first();
@@ -222,7 +215,7 @@ class SendSms extends TestCase {
                 'title' => 'Sms Footer',
             ],
         ];
-        collect($smsBodies)->each(function ($smsBody) {
+        collect($smsBodies)->each(function (array $smsBody) {
             SteamaSmsBody::query()->create([
                 'reference' => $smsBody['reference'],
                 'place_holder' => $smsBody['place_holder'],
@@ -235,7 +228,7 @@ class SendSms extends TestCase {
         return SmsBody::query()->get();
     }
 
-    private function addFeedBackKeys() {
+    private function addFeedBackKeys(): void {
         SteamaSmsFeedbackWord::query()->create([
             'meter_balance' => 'Balance',
         ]);

@@ -4,28 +4,34 @@ namespace Inensus\KelinMeter\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\KelinMeter\Models\KelinSyncAction;
+use Inensus\KelinMeter\Models\KelinSyncSetting;
 
 class KelinSyncActionService {
-    private $syncAction;
+    public function __construct(
+        private KelinSyncAction $syncAction,
+    ) {}
 
-    public function __construct(KelinSyncAction $syncAction) {
-        $this->syncAction = $syncAction;
-    }
-
-    public function createSyncAction($syncAction) {
+    /**
+     * @param array<string, mixed> $syncAction
+     */
+    public function createSyncAction(array $syncAction): KelinSyncAction {
         return $this->syncAction->newQuery()->create($syncAction);
     }
 
-    public function getSyncActionBySynSettingId($settingId) {
+    public function getSyncActionBySynSettingId(int $settingId): ?KelinSyncAction {
         return $this->syncAction->newQuery()->where('sync_setting_id', $settingId)->first();
     }
 
-    public function getActionsNeedsToSync() {
+    /**
+     * @return Collection<int, KelinSyncAction>
+     */
+    public function getActionsNeedsToSync(): Collection {
         return $this->syncAction->newQuery()->where('next_sync', '<=', Carbon::now())->orderBy('next_sync')->get();
     }
 
-    public function updateSyncAction($syncAction, $syncSetting, $syncResult) {
+    public function updateSyncAction(KelinSyncAction $syncAction, KelinSyncSetting $syncSetting, bool $syncResult): bool {
         if (!$syncResult) {
             return $syncAction->update([
                 'attempts' => $syncAction->attempts + 1,

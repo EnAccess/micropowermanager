@@ -10,7 +10,7 @@ class PeriodService {
      * @param                   $initialData
      * @param (int|int[])[]|int $initialData
      *
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws \Exception
      */
@@ -30,8 +30,14 @@ class PeriodService {
         }
         $end->setTime(0, 0, 1);
 
-        if ($interval === 'weekly') {
+        if ($interval === 'daily') {
+            $i = new \DateInterval('P1D');
+        } elseif ($interval === 'weekly') {
             $i = new \DateInterval('P1W');
+        } elseif ($interval === 'yearly') {
+            $begin = (new \DateTime($startDate))->modify('first day of January');
+            $end = (new \DateTime($endDate))->modify('last day of December')->setTime(0, 0, 1);
+            $i = new \DateInterval('P1Y');
         } else {
             // Make sure we don't overflow (and hence skip) a month if this is called with end date 31st.
             // See: https://www.php.net/manual/en/datetime.examples-arithmetic.php
@@ -51,10 +57,14 @@ class PeriodService {
                 foreach ($mPeriod as $mP) {
                     $result[$p->format('o-m')][$mP->format('o-W')] = $initialData;
                 }
+            } elseif ($interval === 'daily') {
+                $result[$p->format('Y-m-d')] = $initialData;
             } elseif ($interval === 'weekly') {
                 $result[$p->format('o-W')] = $initialData;
             } elseif ($interval === 'monthly') {
                 $result[$p->format('Y-m')] = $initialData;
+            } elseif ($interval === 'yearly') {
+                $result[$p->format('Y')] = $initialData;
             } else {
                 $result[$p->format('o-W')] = $initialData;
             }

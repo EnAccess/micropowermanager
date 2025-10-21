@@ -3,13 +3,14 @@
 namespace Inensus\SteamaMeter\Sms\Senders;
 
 use App\Sms\Senders\SmsConfigsCore;
+use Inensus\SteamaMeter\Services\SteamaSmsBodyService;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
 
 class SteamaSmsConfig extends SmsConfigsCore {
-    public $smsTypes = [
-        SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER => 'Inensus\SteamaMeter\Sms\Senders\LowBalanceLimitNotifier',
-        SteamaSmsTypes::BALANCE_FEEDBACK => 'Inensus\SteamaMeter\Sms\Senders\BalanceFeedback',
+    public array $smsTypes = [
+        SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER => LowBalanceLimitNotifier::class,
+        SteamaSmsTypes::BALANCE_FEEDBACK => BalanceFeedback::class,
     ];
-    public $bodyParsersPath = 'Inensus\\SteamaMeter\\Sms\\BodyParsers\\';
-    public $servicePath = 'Inensus\SteamaMeter\Services\SteamaSmsBodyService';
+    public string $bodyParsersPath = 'Inensus\\SteamaMeter\\Sms\\BodyParsers\\';
+    public string $servicePath = SteamaSmsBodyService::class;
 }

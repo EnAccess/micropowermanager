@@ -4,10 +4,14 @@ namespace App\Listeners;
 
 use App\Events\NewLogEvent;
 use App\Models\Log;
+use Illuminate\Database\Eloquent\Model;
 
 class LogListener {
     public function __construct(private Log $log) {}
 
+    /**
+     * @param array{user_id: int, affected: Model, action: string} $logData
+     */
     public function storeLog(array $logData): void {
         $this->log->user_id = $logData['user_id'];
         $this->log->affected()->associate($logData['affected']);

@@ -2,15 +2,16 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Address\Address;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 
 /**
- * @property int        $id
- * @property string     $name
- * @property string     $surname
- * @property Collection $addresses
+ * @property int                      $id
+ * @property string                   $name
+ * @property string                   $surname
+ * @property Collection<int, Address> $addresses
  */
 class SmsSearchResultResource extends JsonResource {
     /**
@@ -18,7 +19,7 @@ class SmsSearchResultResource extends JsonResource {
      *
      * @param Request $request
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($request): array {
         return [

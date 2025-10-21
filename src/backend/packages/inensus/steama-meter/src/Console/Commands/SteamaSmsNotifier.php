@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -24,36 +23,22 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
     protected $signature = 'steama-meter:smsNotifier';
     protected $description = 'Notifies customers on payments and low balance limits for SteamaCoMeters';
 
-    private $smsSettingsService;
-    private $sms;
-    private $steamaTransactionService;
-    private $steamaSmsNotifiedCustomerService;
-    private $steamaCustomerService;
-    private $smsService;
-
     public function __construct(
-        SteamaSmsSettingService $smsSettingService,
-        Sms $sms,
-        SteamaTransactionsService $steamaTransactionsService,
-        SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
-        SteamaCustomerService $steamaCustomerService,
-        SmsService $smsService,
+        private SteamaSmsSettingService $smsSettingsService,
+        private SteamaTransactionsService $steamaTransactionService,
+        private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
+        private SteamaCustomerService $steamaCustomerService,
+        private SmsService $smsService,
     ) {
         parent::__construct();
-        $this->smsSettingsService = $smsSettingService;
-        $this->sms = $sms;
-        $this->steamaTransactionService = $steamaTransactionsService;
-        $this->steamaSmsNotifiedCustomerService = $steamaSmsNotifiedCustomerService;
-        $this->steamaCustomerService = $steamaCustomerService;
-        $this->smsService = $smsService;
     }
 
-    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
+    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers): void {
         $this->steamaTransactionService->getSteamaTransactions($transactionMin)
             ->each(function ($steamaTransaction) use (
                 $smsNotifiedCustomers,
                 $customers
-            ) {
+            ): true {
                 $smsNotifiedCustomers = $smsNotifiedCustomers->where(
                     'notify_id',
                     $steamaTransaction->id
@@ -61,9 +46,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                 if ($smsNotifiedCustomers) {
                     return true;
                 }
-                $notifyCustomer = $customers->filter(function ($customer) use ($steamaTransaction) {
-                    return $customer->customer_id == $steamaTransaction->customer_id;
-                })->first();
+                $notifyCustomer = $customers->filter(fn ($customer): bool => $customer->customer_id == $steamaTransaction->customer_id)->first();
 
                 if (!$notifyCustomer) {
                     return true;
@@ -91,10 +74,10 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin) {
+    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers): void {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
-        ) {
+        ): true {
             $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
                 'customer_id',
                 $customer->customer_id
@@ -159,7 +142,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                         'updated_at',
                         '>=',
                         Carbon::now()->subMinutes($lowBalanceMin)
-                    ), $smsNotifiedCustomers, $lowBalanceMin);
+                    ), $smsNotifiedCustomers);
             }
         } catch (CronJobException $e) {
             $this->warn('dataSync command is failed. message => '.$e->getMessage());

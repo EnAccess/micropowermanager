@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Validation\ValidationException;
+use Psr\Log\LogLevel;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -38,35 +38,26 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // additional middleware group to `web` and `api` default groups
         $middleware->group('agent_api', [
-            Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SubstituteBindings::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->report(function (Throwable $e) {
-            Log::critical(get_class($e), [
-                'message' => $e->getMessage(),
-                'trace' => array_slice($e->getTrace(), 0, 10),
-            ]);
-        });
+        // JWTExceptions happen quite frequently.
+        // User token might expire, web scraper trying to access unauthrized areas, etc...
+        // Lowering the LogLevel here to not spam our logging.
+        $exceptions->level(JWTException::class, LogLevel::INFO);
 
-        $exceptions->render(function (JWTException $e, Request $request) {
-            return response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401);
-        });
-        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
-            return response()->json([
-                'message' => 'model not found '.implode(' ', $e->getIds()),
-                'status_code' => 404,
-            ]);
-        });
-        $exceptions->render(function (ValidationException $e, Request $request) {
-            $errorMessages = ($e instanceof Illuminate\Support\MessageBag) ? $e->toArray() : [$e];
+        $exceptions->render(fn (JWTException $e) => response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401));
 
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $errorMessages,
-                'status_code' => 422,
-            ]);
-        });
+        $exceptions->render(fn (ModelNotFoundException $e) => response()->json([
+            'message' => 'Model not found '.implode(' ', $e->getIds()),
+            'status_code' => 404,
+        ]));
+        $exceptions->render(fn (ValidationException $e) => response()->json([
+            'message' => 'Validation failed',
+            'errors' => $e->errors(),
+            'status_code' => 422,
+        ], 422));
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');

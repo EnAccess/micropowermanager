@@ -17,25 +17,18 @@ class DeviceService implements IBaseService, IAssociative {
         private Device $device,
     ) {}
 
-    /**
-     * @param array<string, mixed> $deviceData
-     */
-    public function make(array $deviceData): Device {
-        $result = $this->device->newQuery()->make([
+    public function make(mixed $deviceData): Device {
+        return $this->device->newQuery()->make([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
         ]);
-
-        return $result;
     }
 
     public function getBySerialNumber(string $serialNumber): ?Device {
-        $result = $this->device->newQuery()
+        return $this->device->newQuery()
             ->with(['address.geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)
             ->first();
-
-        return $result;
     }
 
     public function save($device): bool {
@@ -69,7 +62,7 @@ class DeviceService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return Collection<int, Device>|LengthAwarePaginator<Device>
+     * @return Collection<int, Device>|LengthAwarePaginator<int, Device>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {

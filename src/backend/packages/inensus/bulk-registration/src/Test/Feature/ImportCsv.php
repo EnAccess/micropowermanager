@@ -3,19 +3,20 @@
 namespace Inensus\BulkRegistration\Test\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Inensus\BulkRegistration\Models\CsvData;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ImportCsv extends TestCase {
     use RefreshDatabase;
+    use InteractsWithAuthentication;
 
     /** @test */
-    public function isUserSentCsv() {
+    public function isUserSentCsv(): void {
         $this->withoutExceptionHandling();
-        $user = factory(User::class)->create();
+        $user = User::factory()->createOne();
 
         $uploadedFile = new UploadedFile(__DIR__.'/test-files/test.csv', 'test.csv', null, null, true);
         $csv_data_file = [
@@ -36,13 +37,5 @@ class ImportCsv extends TestCase {
                 ],
             ],
         ]);
-    }
-
-    public function actingAs($user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

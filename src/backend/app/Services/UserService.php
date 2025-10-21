@@ -3,18 +3,18 @@
 namespace App\Services;
 
 use App\Exceptions\MailNotSentException;
-use App\Helpers\MailHelperInterface;
+use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use MPM\User\Events\UserCreatedEvent;
+use Tymon\JWTAuth\JWTGuard;
 
 class UserService {
     public function __construct(
         private User $user,
-        private MailHelperInterface $mailHelper,
+        private MailHelper $mailHelper,
     ) {}
 
     /**
@@ -24,14 +24,13 @@ class UserService {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
 
         if ($companyId === null) {
-            /** @var \Tymon\JWTAuth\JWTGuard $guard */
+            /** @var JWTGuard $guard */
             $guard = auth('api');
             $payload = $guard->check() ? $guard->payload() : null;
             $companyId = $payload?->get('companyId');
         }
 
-        /** @var User $user */
-        $user = $this->buildQuery()->newQuery()->create([
+        $user = $this->user->newQuery()->create([
             'name' => $userData['name'],
             'password' => $userData['password'],
             'email' => $userData['email'],
@@ -59,8 +58,7 @@ class UserService {
             $newPassword = time();
         }
 
-        /** @var User $user */
-        $user = $this->buildQuery()->where('email', $email)->firstOrFail();
+        $user = $this->user->newQuery()->where('email', $email)->firstOrFail();
 
         if ($user == null) {
             return null;
@@ -81,37 +79,30 @@ class UserService {
             return null;
         }
 
-        /** @var User|null $user */
-        $user = $user->fresh()->with(['addressDetails'])->first();
-
-        return $user;
+        return $user->fresh()->with(['addressDetails'])->first();
     }
 
     /**
-     * @return LengthAwarePaginator<User>
+     * @return LengthAwarePaginator<int, User>
      */
     public function list(): LengthAwarePaginator {
-        return $this->buildQuery()
+        return $this->user->newQuery()
             ->select('id', 'name', 'email')
             ->with(['addressDetails'])
             ->paginate();
     }
 
     public function get(int $id): User {
-        /** @var User $user */
-        $user = User::with(['addressDetails'])
+        return User::with(['addressDetails'])
             ->where('id', '=', $id)
             ->firstOrFail();
-
-        return $user;
     }
 
     /**
-     * @return array{email: string, password: string}
+     * @return array<string, mixed>
      */
     public function resetAdminPassword(): array {
-        /** @var User $user */
-        $user = $this->buildQuery()->first();
+        $user = $this->user->newQuery()->first();
         $randomPassword = str_random(8);
         $user->update(['password' => $randomPassword]);
         $user->save();
@@ -122,16 +113,8 @@ class UserService {
         return $admin;
     }
 
-    /**
-     * @return Builder<User>
-     */
-    private function buildQuery(): Builder {
-        return $this->user->newQuery();
-    }
-
     public function getCompanyId(): int {
-        /** @var User $user */
-        $user = $this->buildQuery()
+        $user = $this->user->newQuery()
             ->select(User::COL_COMPANY_ID)
             ->first();
 
@@ -140,6 +123,10 @@ class UserService {
 
     public function getById(int $id): ?User {
         return $this->user->newQuery()->find($id);
+    }
+
+    public function getByEmail(string $email): ?User {
+        return $this->user->newQuery()->where('email', $email)->first();
     }
 
     public function delete(User $model): ?bool {

@@ -10,7 +10,7 @@ use Inensus\ViberMessaging\Console\Commands\UpdatePackage;
 use Inensus\ViberMessaging\ViberGateway;
 
 class ViberMessagingServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -22,20 +22,21 @@ class ViberMessagingServiceProvider extends ServiceProvider {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/viber-messaging.php', 'viber-messaging');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('ViberGateway', ViberGateway::class);
+        $this->app->bind(ViberGateway::class);
+        $this->app->bind(ViberGateway::class, 'ViberGateway');
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/viber-messaging.php' => config_path('viber-messaging.php'),
         ]);
     }
 
-    public function publishVueFiles() {
+    public function publishVueFiles(): void {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/viber-messaging'
@@ -43,7 +44,7 @@ class ViberMessagingServiceProvider extends ServiceProvider {
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_viber_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
@@ -52,7 +53,7 @@ class ViberMessagingServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make([$this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR])
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_viber_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_viber_tables.php')[0];

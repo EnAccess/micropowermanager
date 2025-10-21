@@ -15,7 +15,12 @@ class ApiRequests {
         private ResponseResolver $responseResolver,
     ) {}
 
-    public function get(MicroStarCredential $credentials, array $params, string $slug) {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public function get(MicroStarCredential $credentials, array $params, string $slug): array {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
@@ -42,18 +47,13 @@ class ApiRequests {
         }
     }
 
-    public function testGet() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function testGet(): array {
         // ti1 = 1 phase 2 = 3 phase
 
         $url = 'https://ympt.microstarelectric.com';
-        $meterList = '/TMRDataService/deviceInfo/device?skip=0&take=500';
-        $meterInfo = '/TMRDataService/deviceInfo/device?deviceNo=0101189004654';
-        $billingInfo = '/TMRDataService/billingData?deviceNo=0101189004654&dataRecordMonth=2022-10';
-        $event = '/TMRDataService/eventInfo/event';
-        $eventCode = '/TMRDataService/eventInfo/event?eventCode=1408';
-        $token =
-            '/TMRDataService/getStsVendingToken?deviceNo=0101189000116&ti=1&rechargeAmount=1';
-        $customerList = '/TMRDataService/customer/customer?skip=0&take=500';
         $t = '/TMRDataService/getStsVendingToken?deviceNo=0101189000116&sgc=600415&ti=2&rechargeAmount=1';
 
         try {

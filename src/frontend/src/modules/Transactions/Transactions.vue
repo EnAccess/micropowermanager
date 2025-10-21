@@ -195,6 +195,15 @@
           button-icon="filter_list"
         >
           <div>
+            <div class="export-button-container">
+              <md-button
+                class="md-raised md-primary export-csv-button"
+                @click="showExportModal = true"
+              >
+                <md-icon>download</md-icon>
+                {{ $tc("phrases.exportTransactions") }}
+              </md-button>
+            </div>
             <md-table style="width: 100%" md-card>
               <md-table-row>
                 <md-table-head>
@@ -348,6 +357,69 @@
         </widget>
       </div>
     </div>
+
+    <md-dialog :md-active.sync="showExportModal" class="export-dialog">
+      <md-dialog-title>{{ $tc("phrases.exportTransactions") }}</md-dialog-title>
+
+      <md-dialog-content>
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.deviceType") }}</label>
+              <md-select v-model="exportFilters.deviceType">
+                <md-option value="">{{ $tc("words.all") }}</md-option>
+                <md-option value="meter">{{ $tc("words.meter") }}</md-option>
+                <md-option value="appliance">
+                  {{ $tc("words.appliance") }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.provider") }}</label>
+              <md-select v-model="exportFilters.provider">
+                <md-option value="">{{ $tc("words.all") }}</md-option>
+                <md-option value="vodacom_transaction">Vodacom</md-option>
+                <md-option value="airtel_transaction">Airtel</md-option>
+                <md-option value="wave_money_transaction">Wave Money</md-option>
+                <md-option value="agent_transaction">Agent</md-option>
+                <md-option value="cash_transaction">Cash</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.status") }}</label>
+              <md-select v-model="exportFilters.status">
+                <md-option value="">{{ $tc("words.all") }}</md-option>
+                <md-option :value="1">{{ $tc("words.confirm", 2) }}</md-option>
+                <md-option :value="0">{{ $tc("words.process", 3) }}</md-option>
+                <md-option :value="-1">{{ $tc("words.reject", 2) }}</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-25">
+            <md-field>
+              <label>{{ $tc("words.format") }}</label>
+              <md-select v-model="exportFilters.format">
+                <md-option value="csv">CSV</md-option>
+                <md-option value="xlsx">Excel</md-option>
+              </md-select>
+            </md-field>
+          </div>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button @click="showExportModal = false">
+          {{ $tc("words.cancel") }}
+        </md-button>
+        <md-button class="md-primary" @click="exportTransactions">
+          {{ $tc("words.export") }}
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -359,6 +431,8 @@ import Widget from "@/shared/Widget.vue"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction"
 import Box from "@/shared/Box"
 import { TransactionService } from "@/services/TransactionService"
+import { TransactionExportService } from "@/services/TransactionExportService"
+import { MainSettingsService } from "@/services/MainSettingsService"
 
 import airtelLogo from "@/assets/icons/airtel.png"
 import vodacomLogo from "@/assets/icons/vodacom.png"
@@ -377,6 +451,8 @@ export default {
   data() {
     return {
       transactionService: new TransactionService(),
+      transactionExportService: new TransactionExportService(),
+      mainSettingsService: new MainSettingsService(),
       period: "Yesterday",
       filter: [],
       loading: false,
@@ -387,12 +463,19 @@ export default {
       analyticsPeriod: null,
       showFilter: false,
       showBoxes: true,
+      showExportModal: false,
       analyticsPeriods: [
         "Yesterday",
         "Same day last week",
         "Past 7 days",
         "Past 30 days",
       ],
+      exportFilters: {
+        format: "csv",
+        deviceType: "",
+        provider: "",
+        status: "",
+      },
       airtelLogo: airtelLogo,
       vodacomLogo: vodacomLogo,
       thirdPartyLogo: thirdPartyLogo,
@@ -469,11 +552,44 @@ export default {
     transactionDetail(id) {
       this.$router.push({ path: "/transactions/" + id })
     },
-    async getTransactions() {
+    async exportTransactions() {
       try {
-        await this.transactionService.getTransactions()
+        const data = {
+          format: this.exportFilters.format,
+        }
+        if (this.exportFilters.deviceType !== "") {
+          data.deviceType = this.exportFilters.deviceType
+        }
+        if (this.exportFilters.provider !== "") {
+          data.provider = this.exportFilters.provider
+        }
+        if (this.exportFilters.status !== "") {
+          data.status = this.exportFilters.status
+        }
+
+        const response =
+          await this.transactionExportService.exportTransactions(data)
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+        const contentDisposition = response.headers["content-disposition"]
+        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+
+        const defaultFileName =
+          this.exportFilters.format === "xlsx"
+            ? "export_transactions.xlsx"
+            : "export_transactions.csv"
+        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
+
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+        this.alertNotify("success", "Transactions exported successfully!")
+        this.showExportModal = false
       } catch (e) {
-        this.alertNotify("error", e.message)
+        this.alertNotify("error", "Error occurred while exporting transactions")
       }
     },
     async loadAnalytics() {
@@ -527,12 +643,6 @@ span {
   margin-left: auto;
   margin-right: auto;
 }
-
-/* .box {
-  border-right: 2px solid #6d7f94;
-  padding-left: 45px;
-  color: #6d7f94;
-} */
 
 .information {
   font-size: 2.5rem;
@@ -602,5 +712,24 @@ span {
   .summary {
     display: none;
   }
+}
+
+.export-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+
+.export-csv-button {
+  margin-left: auto;
+}
+
+.export-dialog {
+  min-width: 600px;
+}
+
+.export-dialog .md-dialog-content {
+  padding: 20px;
 }
 </style>

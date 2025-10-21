@@ -3,21 +3,24 @@
 namespace MPM\OutstandingDebts;
 
 use App\Helpers\MailHelper;
+use App\Models\AssetRate;
 use App\Models\User;
 use App\Services\AbstractExportService;
 use App\Services\ApplianceRateService;
 use App\Services\UserService;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class OutstandingDebtsExportService extends AbstractExportService {
     public function __construct(
         private readonly UserService $userService,
-        private ApplianceRateService $applianceService,
         private ApplianceRateService $applianceRateService,
         private MailHelper $mailHelper,
     ) {}
 
+    /**
+     * @var Collection<int, AssetRate>
+     */
     private Collection $outstandingDebtsData;
 
     public function writeOutstandingDebtsData(): void {
@@ -37,29 +40,30 @@ class OutstandingDebtsExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->outstandingDebtsData->map(function ($applianceRate) {
-            return [
-                $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
-                $applianceRate->assetPerson->asset->name,
-                $applianceRate->assetPerson->device_serial,
-                $applianceRate->due_date,
-                $applianceRate->remaining,
-            ];
-        });
+        $this->exportingData = $this->outstandingDebtsData->map(fn (AssetRate $applianceRate): array => [
+            $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
+            $applianceRate->assetPerson->asset->name,
+            $applianceRate->assetPerson->device_serial,
+            $applianceRate->due_date,
+            $applianceRate->remaining,
+        ]);
     }
 
-    public function setOutstandingDebtsData($outstandingDebtsData): void {
+    /**
+     * @param Collection<int, AssetRate> $outstandingDebtsData
+     */
+    public function setOutstandingDebtsData(Collection $outstandingDebtsData): void {
         $this->outstandingDebtsData = $outstandingDebtsData;
     }
 
     public function getTemplatePath(): string {
-        return storage_path('appliance/export_outstanding_debts_template.xlsx');
+        return resource_path('templates/export_outstanding_debts_template.xlsx');
     }
 
     public function createReport(CarbonImmutable $toDate): string {
         $currency = $this->applianceRateService->getCurrencyFromMainSettings();
 
-        $data = $this->applianceService->queryOutstandingDebtsByApplianceRates($toDate)->get();
+        $data = $this->applianceRateService->queryOutstandingDebtsByApplianceRates($toDate)->get();
         $this->createSpreadSheetFromTemplate($this->getTemplatePath());
         $this->setCurrency($currency);
         $this->setOutstandingDebtsData($data);

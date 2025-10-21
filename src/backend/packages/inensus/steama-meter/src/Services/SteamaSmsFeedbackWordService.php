@@ -5,11 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use Inensus\SteamaMeter\Models\SteamaSmsFeedbackWord;
 
 class SteamaSmsFeedbackWordService {
-    private $smsFeedbackWord;
-
-    public function __construct(SteamaSmsFeedbackWord $smsFeedbackWord) {
-        $this->smsFeedbackWord = $smsFeedbackWord;
-    }
+    public function __construct(private SteamaSmsFeedbackWord $smsFeedbackWord) {}
 
     public function getSmsFeedbackWords() {
         return $this->smsFeedbackWord->newQuery()->get();
@@ -21,7 +17,7 @@ class SteamaSmsFeedbackWordService {
         ]);
     }
 
-    public function updateSmsFeedbackWord($smsFeedbackWord, $smsFeedbackWordData) {
+    public function updateSmsFeedbackWord($smsFeedbackWord, array $smsFeedbackWordData) {
         $smsFeedbackWord->update([
             'meter_balance' => $smsFeedbackWordData['meter_balance'],
         ]);
