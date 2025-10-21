@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inensus\Ticket\Models\Ticket;
 
@@ -191,7 +191,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
             return false;
         }
 
-        return (int) Date::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
+        return (int) Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
     }
 
     /**

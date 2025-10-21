@@ -3,7 +3,7 @@
 namespace Inensus\KelinMeter\Services;
 
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinMeterDailyData;
@@ -17,8 +17,8 @@ class DailyConsumptionService {
     ) {}
 
     public function getDailyDataFromAPI(): void {
-        $startDay = Date::now()->subDays(1)->format('Ymd');
-        $endDay = Date::now()->format('His');
+        $startDay = Carbon::now()->subDays(1)->format('Ymd');
+        $endDay = Carbon::now()->format('His');
         $pageNo = 1;
         do {
             $queryParams = [

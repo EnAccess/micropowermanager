@@ -14,7 +14,7 @@ use App\Services\RegistrationTailService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CompanyController extends Controller {
@@ -42,7 +42,7 @@ class CompanyController extends Controller {
         $this->companyDatabaseService->create([
             'company_id' => $company->getId(),
             'database_name' => str_replace(' ', '', preg_replace('/[^a-z\d_ ]/i', '', $company->getName())).'_'.
-                Date::now()->timestamp,
+                Carbon::now()->timestamp,
         ]);
 
         // Create Admin user and DatabaseProxy

@@ -7,7 +7,7 @@ use App\Events\NewLogEvent;
 use App\Models\AssetRate;
 use App\Models\User;
 use App\Traits\ScheduledPluginCommand;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
 use MPM\EBike\EBikeService;
 
@@ -37,7 +37,7 @@ class CheckPayments extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Daly BMS Package #');
-        $startedAt = Date::now()->toIso8601ZuluString();
+        $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('check-payments command started at '.$startedAt);
 
         try {

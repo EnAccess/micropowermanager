@@ -65,8 +65,8 @@ class MpmModelsCommand extends ModelsCommand {
             }
         }
 
-        $this->dateClass = class_exists(\Illuminate\Support\Facades\Date::class)
-            ? '\\'.get_class(\Illuminate\Support\Facades\Date::now())
+        $this->dateClass = class_exists(\Illuminate\Support\Facades\Carbon::class)
+            ? '\\'.get_class(\Illuminate\Support\Facades\Carbon::now())
             : '\Illuminate\Support\Carbon';
 
         $content = $this->generateDocs($model, $ignore);

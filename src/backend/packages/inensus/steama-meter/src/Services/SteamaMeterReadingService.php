@@ -3,7 +3,7 @@
 namespace Inensus\SteamaMeter\Services;
 
 use App\Models\Meter\MeterConsumption;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
@@ -14,8 +14,8 @@ class SteamaMeterReadingService {
     public function __construct(private SteamaMeter $steamaMeter, private SteamaMeterApiClient $steamaApi, private MeterConsumption $meterConsumtion) {}
 
     public function getMeterReadingsThroughHourlyWorkingJob(): void {
-        $now = Date::now()->toIso8601ZuluString();
-        $oneHourEarlier = Date::now()->subHours(10)->toIso8601ZuluString();
+        $now = Carbon::now()->toIso8601ZuluString();
+        $oneHourEarlier = Carbon::now()->subHours(10)->toIso8601ZuluString();
         $this->steamaMeter->newQuery()->get()->each(function ($meter) use ($now, $oneHourEarlier) {
             $url = '/meters/'.$meter->meter_id.'/utilities/1/readings/?start_time='.$oneHourEarlier.'&end_time='.$now;
             try {
@@ -27,14 +27,14 @@ class SteamaMeterReadingService {
                             ->updateOrCreate(
                                 [
                                     'meter_id' => $meter->mpm_meter_id,
-                                    'reading_date' => Date::parse($reading['timestamp'])->format('Y-m-d H:i:s'),
+                                    'reading_date' => Carbon::parse($reading['timestamp'])->format('Y-m-d H:i:s'),
                                 ],
                                 [
                                     'meter_id' => $meter->mpm_meter_id,
                                     'total_consumption' => $reading['reading'],
                                     'consumption' => $reading['usage_amount'],
                                     'credit_on_meter' => 0,
-                                    'reading_date' => Date::parse($reading['timestamp'])->format('Y-m-d H:i:s'),
+                                    'reading_date' => Carbon::parse($reading['timestamp'])->format('Y-m-d H:i:s'),
                                 ]
                             );
                     });

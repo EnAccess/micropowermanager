@@ -7,7 +7,7 @@ use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
 use Inensus\SparkMeter\Exceptions\CredentialsNotFoundException;
@@ -92,7 +92,7 @@ class TransactionService {
                 'entity_types' => ['transactions'],
                 'date_range' => [
                     'from' => $lastCreatedTransaction ?
-                        $lastCreatedTransaction->timestamp : Date::now()->subYears(10)->toIso8601String(),
+                        $lastCreatedTransaction->timestamp : Carbon::now()->subYears(10)->toIso8601String(),
                 ],
             ],
             'cursor' => null,
@@ -258,7 +258,7 @@ class TransactionService {
             'processed'
         )->get();
 
-        return $transactions->filter(fn ($transaction): bool => Date::parse($transaction->timestamp) >= Date::now()->subMinutes($transactionMin));
+        return $transactions->filter(fn ($transaction): bool => Carbon::parse($transaction->timestamp) >= Carbon::now()->subMinutes($transactionMin));
     }
 
     private function createThirdPartyTransaction(array $transaction, $sparkTransaction, int $status) {

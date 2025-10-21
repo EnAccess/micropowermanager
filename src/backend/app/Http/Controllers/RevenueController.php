@@ -13,7 +13,7 @@ use App\Services\MeterRevenueService;
 use App\Services\PeriodService;
 use App\Services\RevenueService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
 
@@ -69,7 +69,7 @@ class RevenueController extends Controller {
         // the array which holds the final response
         $startDate = $request->input('startDate', date('Y-01-01'));
         $end = $request->input('endDate', date('Y-m-d'));
-        $endDate = Date::parse($end)->endOfDay();
+        $endDate = Carbon::parse($end)->endOfDay();
 
         $cities = $this->city::query()->where('mini_grid_id', $id)->get();
         $cityIds = implode(',', $cities->pluck('id')->toArray());
@@ -115,7 +115,7 @@ class RevenueController extends Controller {
      */
     public function revenueData(Request $request): ApiResource {
         $startDate = date('Y-m-d', strtotime($request->get('start_date') ?? '2018-01-01'));
-        $endDate = Date::parse(date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31')))->endOfDay();
+        $endDate = Carbon::parse(date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31')))->endOfDay();
         $targetTypeId = $request->get('target_type_id'); // cluster or mini-grid id
         $targetType = $request->get('target_type'); // cluster or mini-grid
         if ($targetType !== 'mini-grid' && $targetType !== 'cluster') {

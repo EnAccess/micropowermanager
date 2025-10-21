@@ -4,7 +4,7 @@ namespace Inensus\KelinMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Inensus\KelinMeter\Services\DailyConsumptionService;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 
@@ -31,7 +31,7 @@ class ReadDailyMeterConsumptions extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Kelin Meter Package #');
-        $startedAt = Date::now()->toIso8601ZuluString();
+        $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('read-daily-consumptions command started at '.$startedAt);
 
         if ($credentials && $credentials->is_authenticated == 1) {

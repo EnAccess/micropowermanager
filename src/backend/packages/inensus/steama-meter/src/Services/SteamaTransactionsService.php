@@ -6,7 +6,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Models\Token;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
@@ -31,11 +31,11 @@ class SteamaTransactionsService implements ISynchronizeService {
 
             if ($lastCreatedTransaction) {
                 $url = $this->rootUrl.'?ordering=timestamp&created_after='.
-                    Date::parse($lastCreatedTransaction->timestamp)->toIso8601ZuluString().'&page=1&page_size=100';
+                    Carbon::parse($lastCreatedTransaction->timestamp)->toIso8601ZuluString().'&page=1&page_size=100';
                 $lastRecordedTransactionId = $lastCreatedTransaction->transaction_id;
             } else {
                 $url = $this->rootUrl.'?ordering=timestamp&created_before='.
-                    Date::now()->toIso8601ZuluString().'&page=1&page_size=100';
+                    Carbon::now()->toIso8601ZuluString().'&page=1&page_size=100';
             }
             $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.device.person'])->get();
             try {
@@ -132,7 +132,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $this->steamaTransaction->newQuery()->with(['thirdPartyTransaction.transaction'])->where(
             'timestamp',
             '>=',
-            Date::now()->subMinutes($transactionMin)
+            Carbon::now()->subMinutes($transactionMin)
         )->where('category', 'PAY')->get();
     }
 

@@ -7,7 +7,7 @@ use App\Exceptions\Export\CsvNotSavedException;
 use App\Exceptions\Export\SpreadSheetNotCreatedException;
 use App\Exceptions\Export\SpreadSheetNotSavedException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -83,7 +83,7 @@ abstract class AbstractExportService {
 
     public function convertUtcDateToTimezone(string|\DateTimeInterface|null $utcDate): string {
         // Create a DateTime object with the UTC-based date
-        $dateTimeUtc = Date::parse($utcDate)->setTimezone('UTC');
+        $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
 
         // Format the date and time as a string
         return $dateTimeUtc->format('Y-m-d H:i:s');

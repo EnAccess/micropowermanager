@@ -8,7 +8,7 @@ use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\AngazaSHS\Exceptions\AngazaApiResponseException;
 use Inensus\AngazaSHS\Models\AngazaTransaction;
@@ -41,7 +41,7 @@ class AngazaSHSApi implements IManufacturerAPI {
             'unit_number' => $device->device_serial,
             'state' => [
                 'desired' => [
-                    'credit_until_dt' => Date::now()->addDays($energy)->toIso8601String(),
+                    'credit_until_dt' => Carbon::now()->addDays($energy)->toIso8601String(),
                 ],
             ],
         ];

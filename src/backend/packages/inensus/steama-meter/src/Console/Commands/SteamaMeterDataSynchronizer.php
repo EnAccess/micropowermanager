@@ -10,7 +10,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Inensus\SteamaMeter\Exceptions\CronJobException;
 use Inensus\SteamaMeter\Services\SteamaAgentService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
@@ -49,7 +49,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Steamaco Meter Package #');
-        $startedAt = Date::now()->toIso8601ZuluString();
+        $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('dataSync command started at '.$startedAt);
 
         $syncActions = $this->steamaSyncActionService->getActionsNeedsToSync();
@@ -60,7 +60,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
                     return true;
                 }
                 if ($syncAction->attempts >= $syncSetting->max_attempts) {
-                    $nextSync = Date::now()->addHours(2);
+                    $nextSync = Carbon::now()->addHours(2);
                     $syncAction->next_sync = $nextSync;
                     $syncAction->save();
                     $cluster = $this->cluster->newQuery()->with('manager')->first();

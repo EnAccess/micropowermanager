@@ -5,7 +5,7 @@ namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
@@ -94,7 +94,7 @@ class UpdatePackage extends Command {
         /** @var JWTGuard $guard */
         $guard = auth('api');
 
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Date::now()->addYears(3)->timestamp];
+        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];
         $token = $guard->claims($customClaims)->login($user);
         $payload = $guard->payload();
 

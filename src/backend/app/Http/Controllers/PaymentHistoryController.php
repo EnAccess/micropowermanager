@@ -9,7 +9,6 @@ use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Illuminate\Support\Facades\Date;
 
 /**
  * @group   Payment-History
@@ -65,7 +64,7 @@ class PaymentHistoryController {
         if (\count($payments) > 0) {
             $lastTransactionDate = $newest = $payments[0]->created_at;
             $newest = new Carbon($newest);
-            $lastTransactionDate = (int) $newest->diffInDays(Date::now()).' days ago';
+            $lastTransactionDate = (int) $newest->diffInDays(Carbon::now()).' days ago';
             $eldest = new Carbon($payments[\count($payments) - 1]->created_at);
             $difference = (int) $eldest->diffInDays($newest).' days';
         }
@@ -130,9 +129,9 @@ class PaymentHistoryController {
         $end = request('end'); // Y-m- d
         // create a sequence of dates
         $period = new \DatePeriod(
-            Date::parse($begin),
+            Carbon::parse($begin),
             CarbonInterval::day(),
-            Date::parse($end.' 00:01')
+            Carbon::parse($end.' 00:01')
         );
         $result = [];
         foreach ($period as $p) {

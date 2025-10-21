@@ -8,7 +8,7 @@ use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
 use App\Services\UserService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
 use Tymon\JWTAuth\JWTGuard;
 
@@ -40,7 +40,7 @@ class InstallPackage extends Command {
         $user = $this->user->newQuery()->firstOrCreate([
             'name' => 'swifta-user',
             'password' => $password,
-            'email' => $company->getName().'-swifta-user-'.Date::now()->timestamp,
+            'email' => $company->getName().'-swifta-user-'.Carbon::now()->timestamp,
             'company_id' => $companyId,
         ]);
         $companyDatabase = $this->companyDatabaseService->getById($companyId);
@@ -54,7 +54,7 @@ class InstallPackage extends Command {
         /** @var JWTGuard $guard */
         $guard = auth('api');
 
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Date::now()->addYears(3)->timestamp];
+        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];
         $token = $guard->claims($customClaims)->login($user);
         $payload = $guard->payload();
 

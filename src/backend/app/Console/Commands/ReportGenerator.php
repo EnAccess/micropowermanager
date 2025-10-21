@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Reports;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 
 class ReportGenerator extends AbstractSharedCommand {
     protected $signature = 'reports:city-revenue {type} {--start-date=} {--company-id=}';
@@ -14,16 +14,16 @@ class ReportGenerator extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        $startDay = Date::now()->format('Y-m-d');
+        $startDay = Carbon::now()->format('Y-m-d');
         if ($this->option('start-date') != '') {
-            $toDay = Date::parse($this->option('start-date'))->format('Y-m-d');
+            $toDay = Carbon::parse($this->option('start-date'))->format('Y-m-d');
         } else {
-            $toDay = Date::now()->subDays(1)->format('Y-m-d');
+            $toDay = Carbon::now()->subDays(1)->format('Y-m-d');
         }
         if ($this->argument('type') == 'weekly') {
-            $startDay = Date::parse($toDay)->modify('last Monday')->format('Y-m-d');
+            $startDay = Carbon::parse($toDay)->modify('last Monday')->format('Y-m-d');
         } elseif ($this->argument('type') == 'monthly') {
-            $startDay = Date::parse($toDay)->modify('first day of this month')->format('Y-m-d');
+            $startDay = Carbon::parse($toDay)->modify('first day of this month')->format('Y-m-d');
         } else {
             var_dump('That the given parameter is not supported and end the process with that');
         }

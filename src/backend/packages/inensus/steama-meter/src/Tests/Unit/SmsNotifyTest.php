@@ -19,7 +19,7 @@ use App\Sms\SmsTypes;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
@@ -52,7 +52,7 @@ class SmsNotifyTest extends TestCase {
         ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->where(
             'updated_at',
             '>=',
-            Date::now()->subMinutes($lowBalanceMin)
+            Carbon::now()->subMinutes($lowBalanceMin)
         )->get();
 
         $smsNotifiedCustomers = SteamaSmsNotifiedCustomer::query()->get();
@@ -112,7 +112,7 @@ class SmsNotifyTest extends TestCase {
         SteamaTransaction::query()->with(['thirdPartyTransaction.transaction'])->where(
             'timestamp',
             '>=',
-            Date::now()->subMinutes($transactionMin)
+            Carbon::now()->subMinutes($transactionMin)
         )->where('category', 'PAY')->get()->each(function ($steamaTransaction) use (
             $smsNotifiedCustomers,
             $customers
@@ -157,7 +157,7 @@ class SmsNotifyTest extends TestCase {
         Queue::fake();
         $this->addSyncSettings();
         $this->initializeAdminData();
-        $syncActions = SteamaSyncAction::query()->where('next_sync', '<=', Date::now())
+        $syncActions = SteamaSyncAction::query()->where('next_sync', '<=', Carbon::now())
             ->orderBy('next_sync')->get();
         $oldNextSync = $syncActions->first()->next_sync;
         $newNextSync = null;
@@ -168,7 +168,7 @@ class SmsNotifyTest extends TestCase {
                 return true;
             }
             if ($syncAction->attempts >= $syncSetting->max_attempts) {
-                $nextSync = Date::parse($syncAction->next_sync)->addHours(2);
+                $nextSync = Carbon::parse($syncAction->next_sync)->addHours(2);
                 $syncAction->next_sync = $nextSync;
                 $newNextSync = $nextSync;
                 $adminAddress = Address::query()->whereHasMorph(
@@ -273,7 +273,7 @@ class SmsNotifyTest extends TestCase {
             'amount' => 1000,
             'category' => 'PAY',
             'provider' => 'AP',
-            'timestamp' => Date::now(),
+            'timestamp' => Carbon::now(),
             'synchronization_status' => 'processed',
         ]);
 
@@ -325,8 +325,8 @@ class SmsNotifyTest extends TestCase {
             'state' => 'Low Balance Warning',
             'not_send_elder_than_mins' => 5,
             'enabled' => 1,
-            'updated_at' => Date::now(),
-            'created_at' => Date::now(),
+            'updated_at' => Carbon::now(),
+            'created_at' => Carbon::now(),
         ]);
         $balanceSetting->setting()->associate($smsLowBalanceWarning);
         $balanceSetting->save();
@@ -334,7 +334,7 @@ class SmsNotifyTest extends TestCase {
 
     private function addSyncSettings(): void {
         $minInterval = CarbonInterval::make('1minute');
-        $now = Date::now();
+        $now = Carbon::now();
         $siteSetting = SteamaSetting::query()->make();
         $syncSite = SteamaSyncSetting::query()->create([
             'action_name' => 'Sites',

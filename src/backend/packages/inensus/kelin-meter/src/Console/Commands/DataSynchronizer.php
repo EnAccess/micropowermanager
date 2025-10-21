@@ -9,7 +9,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Inensus\KelinMeter\Exceptions\CronJobException;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 use Inensus\KelinMeter\Services\KelinMeterService;
@@ -42,7 +42,7 @@ class DataSynchronizer extends AbstractSharedCommand {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Kelin Meter Package #');
-        $startedAt = Date::now()->toIso8601ZuluString();
+        $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('dataSync command started at '.$startedAt);
 
         $syncActions = $this->syncActionService->getActionsNeedsToSync();
@@ -53,7 +53,7 @@ class DataSynchronizer extends AbstractSharedCommand {
                     return true;
                 }
                 if ($syncAction->attempts >= $syncSetting->max_attempts) {
-                    $nextSync = Date::parse($syncAction->next_sync)->addHours(2);
+                    $nextSync = Carbon::parse($syncAction->next_sync)->addHours(2);
                     $syncAction->next_sync = $nextSync;
                     $cluster = $this->cluster->newQuery()->with('manager')->first();
                     if (!$cluster) {

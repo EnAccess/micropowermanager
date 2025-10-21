@@ -9,7 +9,7 @@ use App\Models\Device;
 use App\Models\Token;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
@@ -54,7 +54,7 @@ class KelinMeterApi implements IManufacturerAPI {
                 'tariff' => $tariff->total_price,
                 'recharge' => $amount,
                 'energy' => $transactionContainer->chargedEnergy,
-                'rechargeTime' => Date::now()->format('Y-m-d'),
+                'rechargeTime' => Carbon::now()->format('Y-m-d'),
             ];
 
             try {

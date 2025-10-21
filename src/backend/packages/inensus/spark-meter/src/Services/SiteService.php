@@ -6,7 +6,7 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
-use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Helpers\SmTableEncryption;
@@ -92,8 +92,8 @@ class SiteService implements ISynchronizeService {
             $system = $result['grids'][0];
 
             $site->is_authenticated = true;
-            $site->is_online = Date::parse($system['last_sync_date'])
-                ->toDateTimeString() > Date::now()->utc()
+            $site->is_online = Carbon::parse($system['last_sync_date'])
+                ->toDateTimeString() > Carbon::now()->utc()
                 ->subMinutes(15)->toDateTimeString();
         } catch (\Exception) {
             $site->is_authenticated = false;
