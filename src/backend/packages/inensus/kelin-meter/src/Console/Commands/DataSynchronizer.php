@@ -9,7 +9,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Inensus\KelinMeter\Exceptions\CronJobException;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 use Inensus\KelinMeter\Services\KelinMeterService;

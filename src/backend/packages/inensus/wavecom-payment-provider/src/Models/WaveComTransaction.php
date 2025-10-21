@@ -45,7 +45,7 @@ class WaveComTransaction extends BasePaymentProviderTransaction {
         return $this->message;
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->amount;
     }
 

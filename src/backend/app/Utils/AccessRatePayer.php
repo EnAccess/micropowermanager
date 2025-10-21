@@ -22,7 +22,7 @@ class AccessRatePayer {
         $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($meter);
 
         if ($accessRatePayment instanceof AccessRatePayment) {
-            $this->debtAmount = $accessRatePayment->debt;
+            $this->debtAmount = (int) $accessRatePayment->debt;
             $this->accessRatePayment = $accessRatePayment;
         }
 
@@ -35,7 +35,7 @@ class AccessRatePayer {
         $owner = $this->transactionData->device->person;
         if ($this->debtAmount > self::MINIMUM_AMOUNT) { // there is unpaid amount
             if ($this->debtAmount > $this->transactionData->transaction->amount) {
-                $this->debtAmount -= $this->transactionData->transaction->amount;
+                $this->debtAmount -= (int) $this->transactionData->transaction->amount;
                 $this->transactionData->transaction->amount = self::MINIMUM_AMOUNT;
             } else {
                 $this->transactionData->transaction->amount = (int) ($this->transactionData->transaction->amount - $this->debtAmount);

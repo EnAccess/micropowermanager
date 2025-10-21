@@ -23,6 +23,11 @@ use MPM\Target\TargetAssignable;
  * @property-read Collection<int, City>     $cities
  * @property-read User|null                 $manager
  * @property-read Collection<int, MiniGrid> $miniGrids
+ *
+ * Special attributes only used for caching services:
+ * @property int   $population This field is used only for caching.
+ * @property int   $meterCount This field is used only for caching.
+ * @property float $revenue    This field is used only for caching.
  */
 class Cluster extends BaseModel implements TargetAssignable {
     /** @use HasFactory<ClusterFactory> */

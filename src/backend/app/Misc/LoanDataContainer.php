@@ -33,7 +33,7 @@ class LoanDataContainer {
         foreach ($loans as $loan) {
             if ($loan->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 event(new PaymentSuccessEvent(
-                    amount: $this->transaction->amount,
+                    amount: (int) $this->transaction->amount,
                     paymentService: $this->transaction->original_transaction_type,
                     paymentType: 'installment',
                     sender: $this->transaction->sender,

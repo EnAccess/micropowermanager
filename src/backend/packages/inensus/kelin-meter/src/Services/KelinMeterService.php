@@ -220,7 +220,7 @@ class KelinMeterService implements ISynchronizeService {
             $meter->serial_number = $meterSerial;
             $manufacturer = $this->manufacturer->newQuery()->where('name', 'Kelin Meters')->firstOrFail();
             $meter->manufacturer()->associate($manufacturer);
-            $meter->updated_at = date('Y-m-d h:i:s');
+            $meter->updated_at = now();
             $meterType = MeterType::query()->first();
             $meter->meter_type_id = $meterType ? $meterType->id : 1;
             $meter->save();

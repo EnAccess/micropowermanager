@@ -139,7 +139,7 @@ class Transaction extends BaseModel {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->amount;
     }
 
@@ -151,7 +151,7 @@ class Transaction extends BaseModel {
         return $this->sender;
     }
 
-    public function setAmount(int $amount): void {
+    public function setAmount(float $amount): void {
         $this->amount = $amount;
     }
 

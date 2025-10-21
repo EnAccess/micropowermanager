@@ -3,7 +3,7 @@
 namespace Inensus\Ticket\Models;
 
 use App\Models\Base\BaseModel;
-use Database\Factories\Inensus\Ticket\Models\TicketFactory;
+use Database\Factories\Inensus\Ticket\Models\TicketCategoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 class TicketCategory extends BaseModel {
-    /** @use HasFactory<TicketFactory> */
+    /** @use HasFactory<TicketCategoryFactory> */
     use HasFactory;
 
     protected $table = 'ticket_categories';

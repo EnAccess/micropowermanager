@@ -25,6 +25,12 @@ use Illuminate\Support\Carbon;
  * @property-read Agent|null       $agent
  * @property-read Transaction|null $transaction
  * @property-read Model            $trigger
+ *
+ * Special attributes only used for caching services:
+ * @property string $date    This field is used only for caching.
+ * @property string $day     This field is used only for caching.
+ * @property string $period  This field is used only for caching.
+ * @property float  $revenue This field is used only for caching.
  */
 class AgentBalanceHistory extends BaseModel {
     /** @use HasFactory<AgentBalanceHistoryFactory> */
