@@ -21,7 +21,7 @@ class KelinCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): KelinCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'username' => null,
             'password' => null,
@@ -31,7 +31,7 @@ class KelinCredentialService {
         ]);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): ?KelinCredential {
         $credential = $this->credential->newQuery()->first();
 
         if ($credential) {
@@ -50,7 +50,10 @@ class KelinCredentialService {
         return $credential;
     }
 
-    public function updateCredentials(array $data): object {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): KelinCredential {
         $credential = $this->getCredentials();
         $encryptedData = $this->encryptCredentialFields($data, ['username', 'password']);
         $credential->update($encryptedData);

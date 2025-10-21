@@ -4,12 +4,17 @@ namespace Inensus\KelinMeter\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inensus\KelinMeter\Models\KelinSetting;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 
 class KelinSyncSettingService {
-    public function __construct(private KelinSyncSetting $syncSetting, private KelinSetting $setting, private KelinSyncActionService $syncActionService) {}
+    public function __construct(
+        private KelinSyncSetting $syncSetting,
+        private KelinSetting $setting,
+        private KelinSyncActionService $syncActionService,
+    ) {}
 
     public function createDefaultSettings(): void {
         $dayInterval = CarbonInterval::make('1day');
@@ -52,7 +57,12 @@ class KelinSyncSettingService {
         }
     }
 
-    public function updateSyncSettings($syncSettings) {
+    /**
+     * @param array<string, mixed> $syncSettings
+     *
+     * @return Collection<int, KelinSyncSetting>
+     */
+    public function updateSyncSettings(array $syncSettings): Collection {
         foreach ($syncSettings as $setting) {
             $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
             $intervalStr = $setting['sync_in_value_num'].$setting['sync_in_value_str'];
@@ -77,11 +87,14 @@ class KelinSyncSettingService {
         return $this->syncSetting->newQuery()->get();
     }
 
+    /**
+     * @return Collection<int, KelinSyncSetting>
+     */
     public function getSyncSettings() {
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettingsByActionName($actionName) {
+    public function getSyncSettingsByActionName(string $actionName): KelinSyncSetting {
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (\Exception $exception) {

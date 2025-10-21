@@ -36,6 +36,13 @@ return (new PhpCsFixer\Config())
             'on_multiline' => 'ensure_fully_multiline',
         ],
         'single_line_empty_body' => true,
+        'phpdoc_no_alias_tag' => false,
+        'phpdoc_align' => [
+            'tags' => ['method', 'param', 'property', 'property-read', 'return', 'throws', 'type', 'var'],
+        ],
+        'phpdoc_to_comment' => [
+            'allow_before_return_statement' => true,
+        ],
         // disabled for editor integration
         'no_unused_imports' => false,
     ])

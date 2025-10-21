@@ -11,7 +11,7 @@ class KelinSettingCollection extends ResourceCollection {
      *
      * @param Request $request
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($request) {
         return [
