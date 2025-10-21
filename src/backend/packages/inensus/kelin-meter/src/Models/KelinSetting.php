@@ -19,9 +19,10 @@ class KelinSetting extends BaseModel {
     protected $table = 'kelin_settings';
 
     /**
-     * @return MorphTo<Model, $this>
+     * @return MorphTo<KelinSyncSetting, $this>
      */
     public function setting(): MorphTo {
+        /** @var MorphTo<KelinSyncSetting, $this> */
         return $this->morphTo();
     }
 }

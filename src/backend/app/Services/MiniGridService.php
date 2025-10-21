@@ -30,11 +30,10 @@ class MiniGridService implements IBaseService {
     }
 
     /**
+     * @param MiniGrid             $model
      * @param array<string, mixed> $miniGridData
      */
     public function update(Model $model, array $miniGridData): MiniGrid {
-        // Parameter types must be compatible (contravariant).
-        /* @var MiniGrid $model */
         $model->update([
             'name' => $miniGridData['name'] ?? $model->name,
         ]);
