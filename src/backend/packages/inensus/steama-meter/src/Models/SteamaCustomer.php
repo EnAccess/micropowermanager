@@ -4,13 +4,29 @@ namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
- * @property Person         $mpmPerson
- * @property SteamaUserType $userType
+ * @property      int                                 $id
+ * @property      int                                 $site_id
+ * @property      int                                 $user_type_id
+ * @property      int                                 $customer_id
+ * @property      int                                 $mpm_customer_id
+ * @property      float                               $energy_price
+ * @property      float                               $account_balance
+ * @property      float                               $low_balance_warning
+ * @property      string|null                         $hash
+ * @property      Carbon|null                         $created_at
+ * @property      Carbon|null                         $updated_at
+ * @property-read Person|null                         $mpmPerson
+ * @property-read SteamaCustomerBasisPaymentPlan|null $paymentPlans
+ * @property-read SteamaSite|null                     $site
+ * @property-read Collection<int, SteamaMeter>        $stmMeters
+ * @property-read SteamaUserType|null                 $userType
  */
 class SteamaCustomer extends BaseModel {
     protected $table = 'steama_customers';

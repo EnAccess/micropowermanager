@@ -4,7 +4,18 @@ namespace Inensus\Ticket\Models;
 
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property      int             $id
+ * @property      int             $ticket_id
+ * @property      int             $ticket_user_id
+ * @property      string          $comment
+ * @property      Carbon|null     $created_at
+ * @property      Carbon|null     $updated_at
+ * @property-read Ticket|null     $ticket
+ * @property-read TicketUser|null $ticketUser
+ */
 class TicketComment extends BaseModel {
     protected $table = 'ticket_comments';
 

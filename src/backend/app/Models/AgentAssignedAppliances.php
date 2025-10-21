@@ -4,10 +4,25 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use Database\Factories\AgentAssignedAppliancesFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property      int                                 $id
+ * @property      int                                 $agent_id
+ * @property      int                                 $user_id
+ * @property      int                                 $appliance_id
+ * @property      float                               $cost
+ * @property      Carbon|null                         $created_at
+ * @property      Carbon|null                         $updated_at
+ * @property-read Agent|null                          $agent
+ * @property-read Asset|null                          $appliance
+ * @property-read Collection<int, AgentSoldAppliance> $soldAppliance
+ * @property-read User|null                           $user
+ */
 class AgentAssignedAppliances extends BaseModel {
     /** @use HasFactory<AgentAssignedAppliancesFactory> */
     use HasFactory;
