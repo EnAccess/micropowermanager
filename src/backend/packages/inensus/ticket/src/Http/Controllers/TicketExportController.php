@@ -2,9 +2,9 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
-use App\Support\AppStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
 use Inensus\Ticket\Services\TicketService;
@@ -54,15 +54,15 @@ class TicketExportController {
         $disk = config('filesystems.default');
         $relativePath = $report->path;
 
-        if (!AppStorage::exists($relativePath)) {
+        if (!Storage::exists($relativePath)) {
             abort(404, 'Report file not found.');
         }
 
         if ($disk === 'local') {
-            return response()->download(AppStorage::url($relativePath));
+            return response()->download(Storage::disk('local')->path($relativePath));
         }
 
-        $temporaryUrl = AppStorage::temporaryUrl(
+        $temporaryUrl = Storage::temporaryUrl(
             $relativePath,
             now()->addMinutes(5)
         );

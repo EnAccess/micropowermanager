@@ -3,10 +3,10 @@
 namespace App\Jobs;
 
 use App\Models\CompanyDatabase;
-use App\Support\AppStorage;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProspectPush extends AbstractJob {
     /**
@@ -81,7 +81,7 @@ class ProspectPush extends AbstractJob {
             return [];
         }
 
-        $disk = AppStorage::getDefaultDisk('local');
+        $disk = Storage::disk('local');
 
         if (!$disk->exists($filePath)) {
             throw new \Exception("CSV file not found: {$filePath}");
@@ -146,7 +146,7 @@ class ProspectPush extends AbstractJob {
         $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
         $companyDatabaseName = $companyDatabase->getDatabaseName();
         // Get to local file system
-        $disk = AppStorage::getDefaultDisk('local');
+        $disk = Storage::disk('local');
 
         $prospectPath = "prospect/{$companyDatabaseName}/";
         $files = collect($disk->files($prospectPath))
