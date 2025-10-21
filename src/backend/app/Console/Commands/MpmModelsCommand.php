@@ -24,6 +24,10 @@ use Illuminate\Support\Str;
  * - Skip generation of the Eloquent helper file
  * - Omit generic @mixin annotations from models
  * - Hardcode `bit` and `tinyint` as `bool` as this is the behaviour of Laravel with MySQL
+ * - Hardcode `decimal` as `float`
+ *
+ * WARNING: Running this tool is not considered safe. Please always
+ * verify the output.
  */
 class MpmModelsCommand extends ModelsCommand {
     // protected $signature = 'mpm:ide-helper';
@@ -301,7 +305,8 @@ class MpmModelsCommand extends ModelsCommand {
             } else {
                 // Match types to php equivalent
                 $type = match ($column['type_name']) {
-                    // remove `bit` and 'tinyint' from here
+                    // remove `bit` and 'tinyint' from here, as they represent `bool`
+                    // in our code base
                     'integer', 'int', 'int4',
                     'smallint', 'int2',
                     'mediumint',
@@ -312,6 +317,9 @@ class MpmModelsCommand extends ModelsCommand {
 
                     'float', 'real', 'float4',
                     'double', 'float8' => 'float',
+
+                    // "cast" decimals to `float`
+                    'decimal' => 'float',
 
                     default => 'string',
                 };
