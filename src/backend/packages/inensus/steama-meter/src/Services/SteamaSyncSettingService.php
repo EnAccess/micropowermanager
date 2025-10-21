@@ -2,8 +2,8 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-use Carbon\CarbonInterval;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSyncSetting;

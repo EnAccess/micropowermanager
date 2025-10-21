@@ -11,9 +11,9 @@ use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Carbon\Carbon;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
 

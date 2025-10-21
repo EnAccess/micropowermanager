@@ -2,9 +2,9 @@
 
 namespace Inensus\KelinMeter\Services;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
-use Carbon\Carbon;
 use Inensus\KelinMeter\Models\KelinSyncAction;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 

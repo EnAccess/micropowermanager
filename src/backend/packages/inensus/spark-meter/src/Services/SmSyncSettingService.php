@@ -2,9 +2,9 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Carbon\Carbon;
 use Inensus\SparkMeter\Models\SmSetting;
 use Inensus\SparkMeter\Models\SmSyncSetting;
 

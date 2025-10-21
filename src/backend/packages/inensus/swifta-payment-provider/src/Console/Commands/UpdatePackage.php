@@ -3,9 +3,9 @@
 namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;

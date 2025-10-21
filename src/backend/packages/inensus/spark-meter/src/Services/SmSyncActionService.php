@@ -2,8 +2,8 @@
 
 namespace Inensus\SparkMeter\Services;
 
-use Carbon\CarbonInterval;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Inensus\SparkMeter\Models\SmSyncAction;
 
 class SmSyncActionService {

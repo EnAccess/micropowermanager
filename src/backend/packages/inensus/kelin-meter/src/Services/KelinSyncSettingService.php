@@ -2,10 +2,10 @@
 
 namespace Inensus\KelinMeter\Services;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Carbon\Carbon;
 use Inensus\KelinMeter\Models\KelinSetting;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 

@@ -7,8 +7,8 @@ use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
 use App\Services\UserService;
-use Illuminate\Console\Command;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
 use Tymon\JWTAuth\JWTGuard;
 
