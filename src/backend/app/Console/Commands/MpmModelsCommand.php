@@ -25,6 +25,9 @@ use Illuminate\Support\Str;
  * - Omit generic @mixin annotations from models
  * - Hardcode `bit` and `tinyint` as `bool` as this is the behaviour of Laravel with MySQL
  * - Hardcode `decimal` as `float`
+ * - Adds handling for `date` and `datetime` treating them as `timestamp`.
+ *   Note: Should probably be adding $casts to models where the use of `date` or `datetime`
+ *   is actually desired. A good example of this is `birth_date`.
  *
  * WARNING: Running this tool is not considered safe. Please always
  * verify the output.
@@ -320,6 +323,8 @@ class MpmModelsCommand extends ModelsCommand {
 
                     // "cast" decimals to `float`
                     'decimal' => 'float',
+
+                    'date', 'datetime' => $this->dateClass,
 
                     default => 'string',
                 };
