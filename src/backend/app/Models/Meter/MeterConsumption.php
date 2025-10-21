@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
  * @property      float       $total_consumption
  * @property      float       $consumption
  * @property      float       $credit_on_meter
- * @property      string      $reading_date
+ * @property      Carbon      $reading_date
  * @property      Carbon|null $created_at
  * @property      Carbon|null $updated_at
  * @property-read Meter|null  $meter

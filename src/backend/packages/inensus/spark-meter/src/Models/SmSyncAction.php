@@ -9,8 +9,8 @@ use Illuminate\Support\Carbon;
  * @property      int                $id
  * @property      int                $sync_setting_id
  * @property      int                $attempts
- * @property      string|null        $last_sync
- * @property      string|null        $next_sync
+ * @property      Carbon|null        $last_sync
+ * @property      Carbon|null        $next_sync
  * @property      Carbon|null        $created_at
  * @property      Carbon|null        $updated_at
  * @property-read SmSyncSetting|null $synSetting

@@ -26,7 +26,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                $created_at
  * @property      Carbon|null                $updated_at
  * @property      float|null                 $down_payment
- * @property      string|null                $first_payment_date
+ * @property      Carbon|null                $first_payment_date
  * @property      string|null                $device_serial
  * @property-read Asset|null                 $asset
  * @property-read Model                      $creator

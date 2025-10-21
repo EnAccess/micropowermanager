@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
  * Class Target.
  *
  * @property      int                        $id
- * @property      string                     $target_date
+ * @property      Carbon                     $target_date
  * @property      string                     $type
  * @property      string                     $owner_type
  * @property      int                        $owner_id

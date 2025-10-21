@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
  * @property      int             $id
  * @property      int             $meter_id
  * @property      int             $access_rate_id
- * @property      string          $due_date
+ * @property      Carbon          $due_date
  * @property      float           $debt
  * @property      float           $unpaid_in_row
  * @property      Carbon|null     $created_at

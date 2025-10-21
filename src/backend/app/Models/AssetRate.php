@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property      int                  $asset_person_id
  * @property      int                  $rate_cost
  * @property      int                  $remaining
- * @property      string               $due_date
+ * @property      Carbon               $due_date
  * @property      int                  $remind
  * @property      Carbon|null          $created_at
  * @property      Carbon|null          $updated_at
