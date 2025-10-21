@@ -19,6 +19,9 @@ use Illuminate\Support\Carbon;
 class SteamaUserType extends BaseModel {
     protected $table = 'steama_user_types';
 
+    /**
+     * @return BelongsTo<ConnectionType, $this>
+     */
     public function mpmConnectionType(): BelongsTo {
         return $this->belongsTo(ConnectionType::class, 'mpm_connection_type_id');
     }

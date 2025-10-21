@@ -18,7 +18,7 @@ class SteamaCustomerController extends Controller implements IBaseController {
         return new SteamaResource($customers);
     }
 
-    public function get($customerId): SteamaResource {
+    public function get(int $customerId): SteamaResource {
         return new SteamaResource($this->customerService->getSteamaCustomerName($customerId));
     }
 

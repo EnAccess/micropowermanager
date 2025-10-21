@@ -7,9 +7,11 @@ use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 class SteamaBitharvesterService {
     private string $rootUrl = '/bitharvesters';
 
-    public function __construct(private SteamaMeterApiClient $steamaApi) {}
+    public function __construct(
+        private SteamaMeterApiClient $steamaApi,
+    ) {}
 
-    public function getBitharvester($siteId) {
+    public function getBitharvester(int $siteId): mixed {
         $result = $this->steamaApi->get($this->rootUrl);
         $bitHarvesters = $result['results'];
 

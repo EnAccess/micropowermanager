@@ -23,14 +23,23 @@ use Illuminate\Support\Carbon;
 class SteamaSite extends BaseModel {
     protected $table = 'steama_sites';
 
+    /**
+     * @return BelongsTo<MiniGrid, $this>
+     */
     public function mpmMiniGrid(): BelongsTo {
         return $this->belongsTo(MiniGrid::class, 'mpm_mini_grid_id');
     }
 
+    /**
+     * @return HasMany<SteamaSiteLevelPaymentPlan, $this>
+     */
     public function paymentPlans(): HasMany {
         return $this->hasMany(SteamaSiteLevelPaymentPlan::class);
     }
 
+    /**
+     * @return HasMany<SteamaAgent, $this>
+     */
     public function agents(): HasMany {
         return $this->hasMany(SteamaAgent::class);
     }
