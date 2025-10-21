@@ -3,9 +3,9 @@
 namespace Inensus\Ticket\Services;
 
 use App\Services\Interfaces\IBaseService;
-use App\Support\AppStorage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -56,7 +56,7 @@ class TicketOutsourceReportService implements IBaseService {
 
         try {
             $writer->save($tempPath);
-            AppStorage::put($relativePath, file_get_contents($tempPath));
+            Storage::put($relativePath, file_get_contents($tempPath));
             unlink($tempPath);
 
             return $relativePath;

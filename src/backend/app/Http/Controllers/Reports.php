@@ -14,9 +14,9 @@ use App\Models\Report;
 use App\Models\Target;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
-use App\Support\AppStorage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -580,7 +580,7 @@ class Reports {
             $writer = new Xlsx($this->spreadsheet);
             $writer->save($tempFile);
 
-            AppStorage::put($path, file_get_contents($tempFile));
+            Storage::put($path, file_get_contents($tempFile));
             unlink($tempFile);
 
             $user = User::query()->first();

@@ -5,8 +5,8 @@ namespace App\Jobs;
 use App\Models\Address\Address;
 use App\Models\Device;
 use App\Services\CompanyDatabaseService;
-use App\Support\AppStorage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProspectExtract extends AbstractJob {
     /**
@@ -210,7 +210,7 @@ class ProspectExtract extends AbstractJob {
         $companyDatabase = app(CompanyDatabaseService::class)->findByCompanyId($this->companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
         // Get to local file system
-        $disk = AppStorage::getDefaultDisk('local');
+        $disk = Storage::disk('local');
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
 

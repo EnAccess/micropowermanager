@@ -6,11 +6,11 @@ use App\Exceptions\ActiveSheetNotCreatedException;
 use App\Exceptions\Export\CsvNotSavedException;
 use App\Exceptions\Export\SpreadSheetNotCreatedException;
 use App\Exceptions\Export\SpreadSheetNotSavedException;
-use App\Support\AppStorage;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
@@ -118,7 +118,7 @@ abstract class AbstractExportService {
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
             $writer->save($tempPath);
 
-            AppStorage::put($path, file_get_contents($tempPath));
+            Storage::put($path, file_get_contents($tempPath));
             unlink($tempPath);
 
             $this->setRecentlyCreatedSpreadSheetId($uuid);
@@ -142,7 +142,7 @@ abstract class AbstractExportService {
 
             $csvContent = $this->generateCsvContent($headers);
 
-            AppStorage::put($path, $csvContent);
+            Storage::put($path, $csvContent);
 
             return $path;
         } catch (\Exception $e) {

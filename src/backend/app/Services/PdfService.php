@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Support\AppStorage;
 use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\Storage;
 
 class PdfService {
     public function __construct(private PDF $pdf) {}
@@ -16,7 +16,7 @@ class PdfService {
         $timestamp = time();
         $filePath = "non-paying/{$timestamp}.pdf";
 
-        AppStorage::put($filePath, $pdfContent);
+        Storage::put($filePath, $pdfContent);
 
         return $filePath;
     }

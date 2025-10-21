@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Person\Person;
-use App\Support\AppStorage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use Inensus\Ticket\Services\TicketService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -66,7 +66,7 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
             $writer = new Xlsx($this->spreadsheet);
             $writer->save($tempFile);
 
-            AppStorage::put($relativePath, file_get_contents($tempFile));
+            Storage::put($relativePath, file_get_contents($tempFile));
 
             unlink($tempFile);
 

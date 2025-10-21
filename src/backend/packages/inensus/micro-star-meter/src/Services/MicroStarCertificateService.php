@@ -3,8 +3,8 @@
 namespace Inensus\MicroStarMeter\Services;
 
 use App\Services\UserService;
-use App\Support\AppStorage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inensus\MicroStarMeter\Models\MicroStarCredential;
 
 class MicroStarCertificateService {
@@ -14,7 +14,7 @@ class MicroStarCertificateService {
 
         $certificatePath = "certs/companies/{$companyId}";
 
-        AppStorage::putFileAs($certificatePath, $file, $file->getClientOriginalName());
+        Storage::putFileAs($certificatePath, $file, $file->getClientOriginalName());
 
         $credentials->update([
             'certificate_path' => $certificatePath,
@@ -31,7 +31,7 @@ class MicroStarCertificateService {
 
         $filePath = trim($credentials->certificate_path, '/').'/'.$credentials->certificate_file_name;
 
-        if (AppStorage::exists($filePath)) {
+        if (Storage::exists($filePath)) {
             return $credentials->certificate_file_name;
         } else {
             $credentials->update(['certificate_path' => null, 'certificate_file_name' => null]);
