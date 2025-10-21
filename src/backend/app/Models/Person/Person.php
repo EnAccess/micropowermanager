@@ -38,7 +38,7 @@ use Inensus\Ticket\Models\Ticket;
  * @property      string|null                     $education
  * @property      string                          $name
  * @property      string                          $surname
- * @property      string|null                     $birth_date
+ * @property      \Illuminate\Support\Carbon|null $birth_date
  * @property      string|null                     $sex
  * @property      int|null                        $nationality
  * @property      int                             $is_customer
@@ -76,6 +76,10 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /** @var array<string, string> */
     protected $dispatchesEvents = [
         'deleting' => PersonDeleting::class,
+    ];
+
+    protected $casts = [
+        'birth_date' => 'date',
     ];
 
     /**
