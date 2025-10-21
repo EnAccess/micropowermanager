@@ -3,16 +3,21 @@
 namespace Inensus\SteamaMeter\Services;
 
 use App\Models\ConnectionType;
+use App\Models\Meter\MeterTariff;
 use App\Models\SubConnectionType;
 use Inensus\SteamaMeter\Models\SteamaUserType;
 
 class SteamaUserTypeService {
-    public function __construct(private ConnectionType $connectionType, private SteamaUserType $userType, private SubConnectionType $subConnectionType) {}
+    public function __construct(
+        private ConnectionType $connectionType,
+        private SteamaUserType $userType,
+        private SubConnectionType $subConnectionType,
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createUserTypes($tariff): void {
+    public function createUserTypes(MeterTariff $tariff): void {
         $connectionTypes = [
             'NA' => 'Not Specified',
             'RES' => 'Residential',

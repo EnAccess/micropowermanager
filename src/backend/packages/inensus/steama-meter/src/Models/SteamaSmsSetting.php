@@ -3,6 +3,7 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -17,7 +18,10 @@ use Illuminate\Support\Carbon;
 class SteamaSmsSetting extends BaseModel {
     protected $table = 'steama_sms_settings';
 
-    public function setting() {
+    /**
+     * @return MorphOne<SteamaSetting, $this>
+     */
+    public function setting(): MorphOne {
         return $this->morphOne(SteamaSetting::class, 'setting');
     }
 }

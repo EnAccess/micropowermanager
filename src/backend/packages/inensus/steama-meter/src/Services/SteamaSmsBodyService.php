@@ -2,20 +2,31 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Models\SteamaSmsBody;
 
 class SteamaSmsBodyService {
-    public function __construct(private SteamaSmsBody $smsBody) {}
+    public function __construct(
+        private SteamaSmsBody $smsBody,
+    ) {}
 
-    public function getSmsBodyByReference($reference) {
+    public function getSmsBodyByReference(string $reference): SteamaSmsBody {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
     }
 
-    public function getSmsBodies() {
+    /**
+     * @return Collection<int, SteamaSmsBody>
+     */
+    public function getSmsBodies(): Collection {
         return $this->smsBody->newQuery()->get();
     }
 
-    public function updateSmsBodies(array $smsBodiesData) {
+    /**
+     * @param array<string, mixed> $smsBodiesData
+     *
+     * @return Collection<int, SteamaSmsBody>
+     */
+    public function updateSmsBodies(array $smsBodiesData): Collection {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData)->each(function (array $smsBody) use ($smsBodies) {
             $smsBodies->filter(fn (SteamaSmsBody $body): bool => $body['id'] === $smsBody['id'])->first()->update([
@@ -26,7 +37,10 @@ class SteamaSmsBodyService {
         return $smsBodies;
     }
 
-    public function getNullBodies() {
+    /**
+     * @return Collection<int, SteamaSmsBody>
+     */
+    public function getNullBodies(): Collection {
         return $this->smsBody->newQuery()->whereNull('body')->get();
     }
 

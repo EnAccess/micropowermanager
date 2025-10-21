@@ -3,6 +3,8 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -19,11 +21,17 @@ use Illuminate\Support\Carbon;
 class SteamaSyncSetting extends BaseModel {
     protected $table = 'steama_sync_settings';
 
-    public function syncAction() {
+    /**
+     * @return HasOne<SteamaSyncAction, $this>
+     */
+    public function syncAction(): HasOne {
         return $this->hasOne(SteamaSyncAction::class);
     }
 
-    public function setting() {
+    /**
+     * @return MorphOne<SteamaSetting, $this>
+     */
+    public function setting(): MorphOne {
         return $this->morphOne(SteamaSetting::class, 'setting');
     }
 }

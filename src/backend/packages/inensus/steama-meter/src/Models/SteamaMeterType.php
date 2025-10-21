@@ -20,6 +20,9 @@ use Illuminate\Support\Carbon;
 class SteamaMeterType extends BaseModel {
     protected $table = 'steama_meter_types';
 
+    /**
+     * @return BelongsTo<MeterType, $this>
+     */
     public function mpmMeterType(): BelongsTo {
         return $this->belongsTo(MeterType::class, 'mpm_meter_type_id');
     }

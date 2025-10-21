@@ -8,7 +8,10 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Exceptions\CronJobException;
+use Inensus\SteamaMeter\Models\SteamaCustomer;
+use Inensus\SteamaMeter\Models\SteamaSmsNotifiedCustomer;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsNotifiedCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsSettingService;
@@ -33,7 +36,15 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
         parent::__construct();
     }
 
-    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers): void {
+    /**
+     * @param Collection<int, SteamaSmsNotifiedCustomer> $smsNotifiedCustomers
+     * @param Collection<int, SteamaCustomer>            $customers
+     */
+    private function sendTransactionNotifySms(
+        int $transactionMin,
+        Collection $smsNotifiedCustomers,
+        Collection $customers,
+    ): void {
         $this->steamaTransactionService->getSteamaTransactions($transactionMin)
             ->each(function ($steamaTransaction) use (
                 $smsNotifiedCustomers,
@@ -53,14 +64,14 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                 }
 
                 if (
-                    !$notifyCustomer->mpmPerson->addresses
+                    $notifyCustomer->mpmPerson->addresses->count() == 0
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
                 ) {
                     return true;
                 }
                 $this->smsService->sendSms(
-                    $steamaTransaction->thirdPartyTransaction->transaction,
+                    $steamaTransaction->thirdPartyTransaction->transaction->toArray(),
                     SmsTypes::TRANSACTION_CONFIRMATION,
                     SmsConfigs::class
                 );
@@ -74,7 +85,14 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers): void {
+    /**
+     * @param Collection<int, SteamaCustomer>            $customers
+     * @param Collection<int, SteamaSmsNotifiedCustomer> $smsNotifiedCustomers
+     */
+    private function sendLowBalanceWarningNotifySms(
+        Collection $customers,
+        Collection $smsNotifiedCustomers,
+    ): void {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ): true {
@@ -89,13 +107,14 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                $customer->mpmPerson->addresses->count() == 0
+                || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
             $this->smsService->sendSms(
-                $customer,
+                $customer->toArray(),
                 SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
                 SteamaSmsConfig::class
             );
@@ -133,7 +152,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
 
             $lowBalanceMin = $lowBalanceWarningSetting->not_send_elder_than_mins;
             $smsNotifiedCustomers = $this->steamaSmsNotifiedCustomerService->getSteamaSmsNotifiedCustomers();
-            $customers = $this->steamaCustomerService->getSteamaCustomersWithAddress();
+            $customers = $this->steamaCustomerService->getSteamaCustomersWithAddress()->get();
 
             if ($customers->count() && $smsNotifiedCustomers->count()) {
                 $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);

@@ -8,6 +8,7 @@ use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Models\SmsBody;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -39,6 +40,9 @@ class SendSms extends TestCase {
         $this->assertEquals(2, $smsCount);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function initializeData(): array {
         $this->addSmsBodies();
         $this->addFeedBackKeys();
@@ -78,7 +82,10 @@ class SendSms extends TestCase {
         return ['customer' => $p];
     }
 
-    private function addSmsBodies() {
+    /**
+     * @return Collection<int, SmsBody>
+     */
+    private function addSmsBodies(): Collection {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',

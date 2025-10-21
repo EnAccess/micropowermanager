@@ -16,15 +16,21 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null         $created_at
  * @property      Carbon|null         $updated_at
  * @property-read SteamaCustomer|null $customer
- * @property-read Model|\Eloquent     $paymentPlan
+ * @property-read Model               $paymentPlan
  */
 class SteamaCustomerBasisPaymentPlan extends BaseModel {
     protected $table = 'steama_customer_basis_payment_plans';
 
+    /**
+     * @return BelongsTo<SteamaCustomer, $this>
+     */
     public function customer(): BelongsTo {
         return $this->belongsTo(SteamaCustomer::class, 'customer_id');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function paymentPlan(): MorphTo {
         return $this->morphTo();
     }

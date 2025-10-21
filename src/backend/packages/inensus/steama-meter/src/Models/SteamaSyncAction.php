@@ -3,6 +3,7 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -18,7 +19,10 @@ use Illuminate\Support\Carbon;
 class SteamaSyncAction extends BaseModel {
     protected $table = 'steama_sync_actions';
 
-    public function synSetting() {
+    /**
+     * @return BelongsTo<SteamaSyncSetting, $this>
+     */
+    public function synSetting(): BelongsTo {
         return $this->belongsTo(SteamaSyncSetting::class, 'sync_setting_id');
     }
 }

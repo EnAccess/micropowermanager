@@ -4,24 +4,39 @@ namespace Inensus\SteamaMeter\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Models\SteamaSyncAction;
+use Inensus\SteamaMeter\Models\SteamaSyncSetting;
 
 class StemaSyncActionService {
-    public function __construct(private SteamaSyncAction $syncAction) {}
+    public function __construct(
+        private SteamaSyncAction $syncAction,
+    ) {}
 
-    public function createSyncAction(array $syncAction) {
+    /**
+     * @param array<string, mixed> $syncAction
+     */
+    public function createSyncAction(array $syncAction): SteamaSyncAction {
         return $this->syncAction->newQuery()->create($syncAction);
     }
 
-    public function getSyncActionBySynSettingId($settingId) {
-        return $this->syncAction->newQuery()->where('sync_setting_id', $settingId)->first();
+    public function getSyncActionBySynSettingId(int $settingId): ?SteamaSyncAction {
+        return $this->syncAction->newQuery()
+            ->where('sync_setting_id', $settingId)
+            ->first();
     }
 
-    public function getActionsNeedsToSync() {
-        return $this->syncAction->newQuery()->where('next_sync', '<=', Carbon::now())->orderBy('next_sync')->get();
+    /**
+     * @return Collection<int, SteamaSyncAction>
+     */
+    public function getActionsNeedsToSync(): Collection {
+        return $this->syncAction->newQuery()
+            ->where('next_sync', '<=', Carbon::now())
+            ->orderBy('next_sync')
+            ->get();
     }
 
-    public function updateSyncAction($syncAction, $syncSetting, $syncResult) {
+    public function updateSyncAction(SteamaSyncAction $syncAction, SteamaSyncSetting $syncSetting, bool $syncResult): bool {
         if (!$syncResult) {
             return $syncAction->update([
                 'attempts' => $syncAction->attempts + 1,

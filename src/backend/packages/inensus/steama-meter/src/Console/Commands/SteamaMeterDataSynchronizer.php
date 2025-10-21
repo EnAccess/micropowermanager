@@ -10,7 +10,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Inensus\SteamaMeter\Exceptions\CronJobException;
 use Inensus\SteamaMeter\Services\SteamaAgentService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;

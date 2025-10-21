@@ -5,6 +5,7 @@ namespace Inensus\SteamaMeter\Models;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -32,7 +33,10 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 class SteamaTransaction extends BaseManufacturerTransaction {
     protected $table = 'steama_transactions';
 
-    public function site() {
+    /**
+     * @return BelongsTo<SteamaSite, $this>
+     */
+    public function site(): BelongsTo {
         return $this->belongsTo(SteamaSite::class, 'site_id', 'site_id');
     }
 }

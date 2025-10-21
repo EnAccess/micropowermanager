@@ -11,7 +11,7 @@ class SteamaTariffService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createTariff() {
+    public function createTariff(): MeterTariff {
         $meterTariff = $this->meterTariff->newQuery()->where('name', 'Steama External Tariff')->first();
         if (!$meterTariff) {
             $meterTariff = $this->meterTariff->newQuery()->create([

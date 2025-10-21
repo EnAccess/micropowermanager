@@ -14,18 +14,24 @@ class SteamaCredentialResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
      * @return Request
      */
-    public function toArray($request) {
+    public function toArray(Request $request) {
         $credentials = $this->resource->toArray();
         $credentials['alert'] = $this->alertType($this->resource->is_authenticated);
 
         return $credentials;
     }
 
-    private function alertType($authenticationStatus) {
+    /**
+     * @param bool $authenticationStatus
+     *
+     * @return array{
+     *     type: string,
+     *     message: string
+     * }
+     */
+    private function alertType(?bool $authenticationStatus): array {
         return match ($authenticationStatus) {
             true => [
                 'type' => 'success',

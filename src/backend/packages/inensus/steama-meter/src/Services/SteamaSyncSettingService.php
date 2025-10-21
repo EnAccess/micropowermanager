@@ -4,12 +4,17 @@ namespace Inensus\SteamaMeter\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSyncSetting;
 
 class SteamaSyncSettingService {
-    public function __construct(private SteamaSyncSetting $syncSetting, private SteamaSetting $setting, private StemaSyncActionService $syncActionService) {}
+    public function __construct(
+        private SteamaSyncSetting $syncSetting,
+        private SteamaSetting $setting,
+        private StemaSyncActionService $syncActionService,
+    ) {}
 
     public function createDefaultSettings(): void {
         $dayInterval = CarbonInterval::make('1day');
@@ -107,7 +112,12 @@ class SteamaSyncSettingService {
         }
     }
 
-    public function updateSyncSettings($syncSettings) {
+    /**
+     * @param array<string, array<string, mixed>> $syncSettings
+     *
+     * @return Collection<int, SteamaSyncSetting>
+     */
+    public function updateSyncSettings(array $syncSettings): Collection {
         foreach ($syncSettings as $setting) {
             $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
             $intervalStr = $setting['sync_in_value_num'].$setting['sync_in_value_str'];
@@ -132,11 +142,14 @@ class SteamaSyncSettingService {
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettings() {
+    /**
+     * @return Collection<int, SteamaSyncSetting>
+     */
+    public function getSyncSettings(): Collection {
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettingsByActionName($actionName) {
+    public function getSyncSettingsByActionName(string $actionName): SteamaSyncSetting {
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (\Exception $exception) {

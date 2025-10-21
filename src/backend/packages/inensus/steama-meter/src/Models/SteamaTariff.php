@@ -17,6 +17,9 @@ use Illuminate\Support\Carbon;
 class SteamaTariff extends BaseModel {
     protected $table = 'steama_tariffs';
 
+    /**
+     * @return BelongsTo<MeterTariff, $this>
+     */
     public function mpmTariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class, 'mpm_tariff_id');
     }
