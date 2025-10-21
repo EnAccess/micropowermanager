@@ -4,7 +4,6 @@ namespace Inensus\KelinMeter\Models;
 
 use App\Models\Base\BaseModel;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
