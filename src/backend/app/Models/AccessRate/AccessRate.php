@@ -6,18 +6,25 @@ use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterTariff;
 use App\Models\PaymentHistory;
 use Database\Factories\AccessRate\AccessRateFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
 
 /**
  * Class AccessRate.
  *
- * @property int $id
- * @property int $amount
- * @property int $tariff_id
- * @property int $period    when the payment repeats itself
+ * @property      int                                $id
+ * @property      int                                $tariff_id
+ * @property      float                              $amount
+ * @property      int                                $period
+ * @property      Carbon|null                        $created_at
+ * @property      Carbon|null                        $updated_at
+ * @property-read Collection<int, AccessRatePayment> $accessRatePayments
+ * @property-read Collection<int, PaymentHistory>    $paymentHistories
+ * @property-read MeterTariff|null                   $tariff
  */
 class AccessRate extends BaseModel {
     /** @use HasFactory<AccessRateFactory> */

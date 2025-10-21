@@ -4,23 +4,25 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use Database\Factories\ClusterFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use MPM\Target\TargetAssignable;
 
 /**
  * Class Cluster.
  *
- * @property int    $id
- * @property string $name
- * @property int    $manager_id
- * @property string $geo_data
- * @property string $updated_at
- * @property string $created_at
- * @property int    $population
- * @property int    $meterCount
- * @property float  $revenue
+ * @property      int                       $id
+ * @property      string                    $name
+ * @property      int                       $manager_id
+ * @property      array<array-key, mixed>   $geo_data
+ * @property      Carbon|null               $created_at
+ * @property      Carbon|null               $updated_at
+ * @property-read Collection<int, City>     $cities
+ * @property-read User|null                 $manager
+ * @property-read Collection<int, MiniGrid> $miniGrids
  */
 class Cluster extends BaseModel implements TargetAssignable {
     /** @use HasFactory<ClusterFactory> */
