@@ -2,6 +2,7 @@
 
 namespace Inensus\KelinMeter\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inensus\KelinMeter\Models\KelinCredential as KelinCredentialData;
 
@@ -9,7 +10,21 @@ use Inensus\KelinMeter\Models\KelinCredential as KelinCredentialData;
  * @mixin KelinCredentialData
  */
 class KelinCredentialResource extends JsonResource {
-    public function toArray($request) {
+    /**
+     * @return array{
+     *     data: array{
+     *         type: 'credentials',
+     *         id: int,
+     *         attributes: array{
+     *             username: string,
+     *             password: string,
+     *             isAuthenticated: bool,
+     *             alert: array{type: string, message: string}
+     *         }
+     *     }
+     * }
+     */
+    public function toArray(Request $request) {
         return [
             'data' => [
                 'type' => 'credentials',
@@ -24,7 +39,13 @@ class KelinCredentialResource extends JsonResource {
         ];
     }
 
-    private function alertType($authenticationStatus): array {
+    /**
+     * @return array{
+     *     type: string,
+     *     message: string
+     * }
+     */
+    private function alertType(?bool $authenticationStatus): array {
         return match ($authenticationStatus) {
             true => [
                 'type' => 'success',

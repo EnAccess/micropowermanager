@@ -24,6 +24,9 @@ return RectorConfig::configure()
     ->withSkipPath(
         __DIR__.'/bootstrap/cache',
     )
+    ->withSkip([
+        __DIR__.'/app/Console/Commands/MpmModelsCommand.php',
+    ])
     ->withPhpSets(
         php82: true
     )

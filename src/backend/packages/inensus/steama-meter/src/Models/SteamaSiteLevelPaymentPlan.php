@@ -2,6 +2,8 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
+
 class SteamaSiteLevelPaymentPlan extends BaseModel {
     protected $table = 'steama_site_level_payment_plans';
 

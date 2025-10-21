@@ -2,6 +2,7 @@
 
 namespace Inensus\KelinMeter\Services;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
@@ -69,7 +70,13 @@ class MinutelyConsumptionService {
         } while ($result['data']['dataCount'] > 0);
     }
 
-    public function getDailyData($meterAddress, $perPage) {
-        return $this->kelinMeterMinutelyData->newQuery()->where('address_of_meter', $meterAddress)->orderByDesc('id')->paginate($perPage);
+    /**
+     * @return LengthAwarePaginator<int, KelinMeterMinutelyData>
+     */
+    public function getDailyData(string $meterAddress, int $perPage): LengthAwarePaginator {
+        return $this->kelinMeterMinutelyData->newQuery()
+            ->where('address_of_meter', $meterAddress)
+            ->orderByDesc('id')
+            ->paginate($perPage);
     }
 }

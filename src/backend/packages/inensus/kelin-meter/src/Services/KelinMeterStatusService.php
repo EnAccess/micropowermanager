@@ -6,13 +6,14 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
+use Inensus\KelinMeter\Models\KelinMeter;
 
 class KelinMeterStatusService {
     private string $rootUrl = '/getMeterStatus';
 
     public function __construct(private KelinMeterApiClient $kelinApiClient) {}
 
-    public function getStatusOfMeter($meter): \stdClass {
+    public function getStatusOfMeter(KelinMeter $meter): \stdClass {
         try {
             $queryParams = [
                 'meterType' => 1,
@@ -34,7 +35,10 @@ class KelinMeterStatusService {
         }
     }
 
-    public function changeStatusOfMeter($meterAddress, $status): array|string {
+    /**
+     * @return array<string, mixed>|string
+     */
+    public function changeStatusOfMeter(string $meterAddress, string|int|bool $status): array|string {
         try {
             $rootUrl = '/meterRemoteControl';
             $queryParams = [

@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterTariff;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

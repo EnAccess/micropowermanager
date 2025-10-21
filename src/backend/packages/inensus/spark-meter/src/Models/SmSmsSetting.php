@@ -2,6 +2,8 @@
 
 namespace Inensus\SparkMeter\Models;
 
+use App\Models\Base\BaseModel;
+
 class SmSmsSetting extends BaseModel {
     protected $table = 'sm_sms_settings';
 
