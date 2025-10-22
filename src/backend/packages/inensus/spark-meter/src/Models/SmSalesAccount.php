@@ -23,6 +23,9 @@ use Illuminate\Support\Carbon;
 class SmSalesAccount extends BaseModel {
     protected $table = 'sm_sales_accounts';
 
+    /**
+     * @return BelongsTo<SmSite, $this>
+     */
     public function site(): BelongsTo {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
     }
