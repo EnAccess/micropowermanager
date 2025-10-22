@@ -10,7 +10,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Inensus\SparkMeter\Exceptions\CronJobException;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\MeterModelService;

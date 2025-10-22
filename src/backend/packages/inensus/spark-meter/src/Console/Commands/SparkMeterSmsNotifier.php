@@ -8,7 +8,10 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SparkMeter\Exceptions\CronJobException;
+use Inensus\SparkMeter\Models\SmCustomer;
+use Inensus\SparkMeter\Models\SmSmsNotifiedCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\SmSmsNotifiedCustomerService;
 use Inensus\SparkMeter\Services\SmSmsSettingService;
@@ -33,7 +36,15 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
         parent::__construct();
     }
 
-    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers): void {
+    /**
+     * @param Collection<int, SmSmsNotifiedCustomer> $smsNotifiedCustomers
+     * @param Collection<int, SmCustomer>            $customers
+     */
+    private function sendTransactionNotifySms(
+        int $transactionMin,
+        Collection $smsNotifiedCustomers,
+        Collection $customers,
+    ): void {
         $this->smTransactionService->getSparkTransactions($transactionMin)
             ->each(function ($smTransaction) use (
                 $smsNotifiedCustomers,
@@ -53,14 +64,14 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                 }
 
                 if (
-                    !$notifyCustomer->mpmPerson->addresses
+                    $notifyCustomer->mpmPerson->addresses->isEmpty()
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
                 ) {
                     return true;
                 }
                 $this->smsService->sendSms(
-                    $smTransaction->thirdPartyTransaction->transaction,
+                    $smTransaction->thirdPartyTransaction->transaction->toArray(),
                     SmsTypes::TRANSACTION_CONFIRMATION,
                     SmsConfigs::class
                 );
@@ -74,7 +85,11 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers): void {
+    /**
+     * @param Collection<int, SmCustomer>            $customers
+     * @param Collection<int, SmSmsNotifiedCustomer> $smsNotifiedCustomers
+     */
+    private function sendLowBalanceWarningNotifySms($customers, Collection $smsNotifiedCustomers): void {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ): true {
@@ -89,13 +104,14 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                $customer->mpmPerson->addresses->isEmpty()
+                || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
             $this->smsService->sendSms(
-                $customer,
+                $customer->toArray(),
                 SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
                 SparkSmsConfig::class
             );

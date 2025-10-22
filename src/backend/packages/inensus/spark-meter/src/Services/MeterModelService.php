@@ -3,6 +3,8 @@
 namespace Inensus\SparkMeter\Services;
 
 use App\Models\Meter\MeterType;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Helpers\SmTableEncryption;
@@ -11,13 +13,27 @@ use Inensus\SparkMeter\Models\SmMeterModel;
 use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
+/**
+ * @implements ISynchronizeService<SmMeterModel>
+ */
 class MeterModelService implements ISynchronizeService {
     private string $rootUrl = '/meters';
 
-    public function __construct(private SparkMeterApiRequests $sparkMeterApiRequests, private SmTableEncryption $smTableEncryption, private SmMeterModel $smMeterModel, private SmSite $smSite, private MeterType $meterType, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService) {}
+    public function __construct(
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private SmTableEncryption $smTableEncryption,
+        private SmMeterModel $smMeterModel,
+        private SmSite $smSite,
+        private MeterType $meterType,
+        private SmSyncSettingService $smSyncSettingService,
+        private SmSyncActionService $smSyncActionService,
+    ) {}
 
-    public function getSmMeterModels($request) {
-        $perPage = $request->input('per_page') ?? 15;
+    /**
+     * @return LengthAwarePaginator<int, SmMeterModel>
+     */
+    public function getSmMeterModels(Request $request): LengthAwarePaginator {
+        $perPage = (int) $request->input('per_page', 15);
 
         return $this->smMeterModel->newQuery()->with(['meterType', 'site.mpmMiniGrid'])->paginate($perPage);
     }
@@ -26,7 +42,10 @@ class MeterModelService implements ISynchronizeService {
         return count($this->smMeterModel->newQuery()->get());
     }
 
-    public function sync() {
+    /**
+     * @return LengthAwarePaginator<int, SmMeterModel>
+     */
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('MeterModels');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -78,9 +97,9 @@ class MeterModelService implements ISynchronizeService {
     }
 
     /**
-     * @return mixed[]
+     * @return array<string, mixed>
      */
-    public function syncCheck($returnData = false): array {
+    public function syncCheck(bool $returnData = false): array {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
         foreach ($sites as $key => $site) {
@@ -95,6 +114,7 @@ class MeterModelService implements ISynchronizeService {
                 }
                 throw new SparkAPIResponseException($e->getMessage());
             }
+            // @phpstan-ignore argument.templateType,argument.templateType
             $sparkMeterModelsCollection = collect($sparkMeterModels['models']);
 
             $meterModels = $this->smMeterModel->newQuery()->where('site_id', $site->site_id)->get();
@@ -138,7 +158,10 @@ class MeterModelService implements ISynchronizeService {
         return $returnArray;
     }
 
-    public function modelHasher($model, ...$params): string {
+    /**
+     * @param array<string, mixed> $model
+     */
+    public function modelHasher(array $model, ?string ...$params): string {
         return $smModelHash = $this->smTableEncryption->makeHash([
             $model['name'],
             $model['phase_count'],
@@ -147,7 +170,10 @@ class MeterModelService implements ISynchronizeService {
         ]);
     }
 
-    public function syncCheckBySite($siteId): array {
+    /**
+     * @return array{result: bool, message: string}
+     */
+    public function syncCheckBySite(string $siteId): array {
         try {
             $url = $this->rootUrl.'/models';
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
@@ -155,6 +181,7 @@ class MeterModelService implements ISynchronizeService {
             Log::critical('Spark meter meter-models sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
             throw new SparkAPIResponseException($e->getMessage());
         }
+        // @phpstan-ignore argument.templateType,argument.templateType
         $sparkMeterModelsCollection = collect($sparkMeterModels['models']);
 
         $meterModels = $this->smMeterModel->newQuery()->where('site_id', $siteId)->get();
@@ -187,7 +214,10 @@ class MeterModelService implements ISynchronizeService {
         }
     }
 
-    public function createRelatedMeterModel(array $meterModel) {
+    /**
+     * @param array<string, mixed> $meterModel
+     */
+    public function createRelatedMeterModel(array $meterModel): MeterType {
         return $this->meterType->newQuery()->create([
             'online' => 1,
             'phase' => $meterModel['phase_count'],
@@ -195,7 +225,10 @@ class MeterModelService implements ISynchronizeService {
         ]);
     }
 
-    public function updateRelatedMeterModel(array $meterModel, $relatedMeterModel) {
+    /**
+     * @param array<string, mixed> $meterModel
+     */
+    public function updateRelatedMeterModel(array $meterModel, mixed $relatedMeterModel): mixed {
         return $meterModel['relatedMeterModel']->update([
             'phase' => $meterModel['phase_count'],
             'max_current' => $meterModel['continuous_limit'],

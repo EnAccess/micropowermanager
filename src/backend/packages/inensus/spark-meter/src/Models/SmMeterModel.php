@@ -23,10 +23,16 @@ use Illuminate\Support\Carbon;
 class SmMeterModel extends BaseModel {
     protected $table = 'sm_meter_models';
 
+    /**
+     * @return BelongsTo<MeterType, $this>
+     */
     public function meterType(): BelongsTo {
         return $this->belongsTo(MeterType::class, 'mpm_meter_type_id');
     }
 
+    /**
+     * @return BelongsTo<SmSite, $this>
+     */
     public function site(): BelongsTo {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
     }

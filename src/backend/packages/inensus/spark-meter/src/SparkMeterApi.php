@@ -4,6 +4,7 @@ namespace Inensus\SparkMeter;
 
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
+use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
 use GuzzleHttp\Client;
@@ -19,9 +20,16 @@ use Inensus\SparkMeter\Services\TariffService;
 class SparkMeterApi implements IManufacturerAPI {
     private string $rootUrl = '/transaction/';
 
-    public function __construct(protected Client $api, private SparkMeterApiRequests $sparkMeterApiRequests, private TariffService $tariffService, private SmCustomer $smCustomer, private SmTransaction $smTransaction, private SmTariff $smTariff) {}
+    public function __construct(
+        protected Client $api,
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private TariffService $tariffService,
+        private SmCustomer $smCustomer,
+        private SmTransaction $smTransaction,
+        private SmTariff $smTariff,
+    ) {}
 
-    public function chargeDevice($transactionContainer): array {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $tariff = $transactionContainer->tariff;
         $owner = $transactionContainer->device->person;
 
@@ -32,13 +40,13 @@ class SparkMeterApi implements IManufacturerAPI {
         $tariff = $this->tariffService->singleSync($smTariff);
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
         Log::critical('ENERGY TO BE CHARGED float '.
-            (float) $transactionContainer->chargedEnergy.
+            $transactionContainer->chargedEnergy.
             ' Manufacturer => Spark');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => (float) $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;

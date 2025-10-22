@@ -8,7 +8,9 @@ use App\Sms\BodyParsers\SmsBodyParser;
 class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser {
     protected $variables = ['name', 'surname'];
 
-    public function __construct(protected $data) {}
+    public function __construct(
+        protected mixed $data,
+    ) {}
 
     protected function getVariableValue(string $variable): mixed {
         if (!is_array($this->data)) {

@@ -5,6 +5,8 @@ namespace Inensus\SparkMeter\Services;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Meter\MeterTariff;
 use App\Models\TimeOfUsage;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Helpers\SmTableEncryption;
@@ -14,12 +16,26 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Models\SyncStatus;
 
+/**
+ * @implements ISynchronizeService<SmTariff>
+ */
 class TariffService implements ISynchronizeService {
     private string $rootUrl = '/tariffs';
 
-    public function __construct(private SparkMeterApiRequests $sparkMeterApiRequests, private SmTableEncryption $smTableEncryption, private SmMeterModel $smMeterModel, private SmSite $smSite, private SmTariff $smTariff, private MeterTariff $meterTariff, private TimeOfUsage $timeOfUsage, private AccessRate $accessRate, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService) {}
+    public function __construct(
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private SmTableEncryption $smTableEncryption,
+        private SmMeterModel $smMeterModel,
+        private SmSite $smSite,
+        private SmTariff $smTariff,
+        private MeterTariff $meterTariff,
+        private TimeOfUsage $timeOfUsage,
+        private AccessRate $accessRate,
+        private SmSyncSettingService $smSyncSettingService,
+        private SmSyncActionService $smSyncActionService,
+    ) {}
 
-    public function createSmTariff($tariff, $siteId): void {
+    public function createSmTariff(MeterTariff $tariff, string $siteId): void {
         $touEnabled = count($tariff->tou) > 0;
         $maxValue = $this->smMeterModel->newQuery()->max('continuous_limit');
         $tous = [];
@@ -93,8 +109,11 @@ class TariffService implements ISynchronizeService {
         }
     }
 
-    public function getSmTariffs($request) {
-        $perPage = $request->input('per_page') ?? 15;
+    /**
+     * @return LengthAwarePaginator<int, SmTariff>
+     */
+    public function getSmTariffs(Request $request): LengthAwarePaginator {
+        $perPage = (int) $request->input('per_page', 15);
 
         return $this->smTariff->newQuery()->with(['mpmTariff', 'site.mpmMiniGrid'])->paginate($perPage);
     }
@@ -103,7 +122,10 @@ class TariffService implements ISynchronizeService {
         return count($this->smTariff->newQuery()->get());
     }
 
-    public function createRelatedTariff(array $tariff) {
+    /**
+     * @param array<string, mixed> $tariff
+     */
+    public function createRelatedTariff(array $tariff): MeterTariff {
         $meterTariff = $this->meterTariff->newQuery()->create([
             'name' => $tariff['name'],
             'price' => $tariff['flat_price'] * 100,
@@ -125,7 +147,10 @@ class TariffService implements ISynchronizeService {
         return $meterTariff;
     }
 
-    public function updateRelatedTariff(array $model, $tariff): void {
+    /**
+     * @param array<string, mixed> $model
+     */
+    public function updateRelatedTariff(array $model, MeterTariff $tariff): void {
         if (count($model['tous']) === count($tariff->tou)) {
             foreach ($model['tous'] as $key => $tou) {
                 $tariff->tou[$key]->start = $tou['start'];
@@ -168,7 +193,10 @@ class TariffService implements ISynchronizeService {
         }
     }
 
-    private function setAccessRate(array $model, $tariffId, $planEnabled): void {
+    /**
+     * @param array<string, mixed> $model
+     */
+    private function setAccessRate(array $model, int $tariffId, bool $planEnabled): void {
         $accessRate = $this->accessRate->newQuery()->where('tariff_id', $tariffId)->first();
         $duration = array_key_exists('plan_duration', $model) ? $model['plan_duration'] : '1m';
         if ($accessRate) {
@@ -190,7 +218,10 @@ class TariffService implements ISynchronizeService {
         }
     }
 
-    public function getSparkTariffInfo($tariffId) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function getSparkTariffInfo(string $tariffId): array {
         try {
             $smTariff = $this->smTariff->newQuery()->with(['mpmTariff.accessRate', 'site'])->where(
                 'tariff_id',
@@ -205,7 +236,12 @@ class TariffService implements ISynchronizeService {
         }
     }
 
-    public function updateSparkTariffInfo(array $tariffData) {
+    /**
+     * @param array<string, mixed> $tariffData
+     *
+     * @return array<string, mixed>
+     */
+    public function updateSparkTariffInfo(array $tariffData): array {
         try {
             $tariffId = $tariffData['id'];
             $smTariff = $this->smTariff->newQuery()->where('tariff_id', $tariffId)->first();
@@ -239,7 +275,7 @@ class TariffService implements ISynchronizeService {
         }
     }
 
-    public function singleSync($smTariff) {
+    public function singleSync(SmTariff $smTariff): ?MeterTariff {
         $tariff = $this->getSparkTariffInfo($smTariff->tariff_id);
 
         $modelHash = $this->modelHasher($tariff, null);
@@ -271,7 +307,10 @@ class TariffService implements ISynchronizeService {
         return $relatedTariff;
     }
 
-    public function sync() {
+    /**
+     * @return LengthAwarePaginator<int, SmTariff>
+     */
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('Tariffs');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -336,9 +375,9 @@ class TariffService implements ISynchronizeService {
     }
 
     /**
-     * @return mixed[]
+     * @return array<string, mixed>
      */
-    public function syncCheck($returnData = false): array {
+    public function syncCheck(bool $returnData = false): array {
         $returnArray = ['available_site_count' => 0];
 
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
@@ -353,6 +392,7 @@ class TariffService implements ISynchronizeService {
                 }
                 throw new SparkAPIResponseException($e->getMessage());
             }
+            // @phpstan-ignore argument.templateType,argument.templateType
             $sparkTariffsCollection = collect($tariffs['tariffs'])->filter(fn (array $tariff): bool => $tariff['tariff_type'] == 'flat');
             $sparkTariffs = $this->smTariff->newQuery()->where('site_id', $site->site_id)->get();
             $tariffs = $this->meterTariff->newQuery()->get();
@@ -393,7 +433,10 @@ class TariffService implements ISynchronizeService {
         return $returnArray;
     }
 
-    public function modelHasher($model, ...$params): string {
+    /**
+     * @param array<string,mixed> $model
+     */
+    public function modelHasher($model, ?string ...$params): string {
         $modelTouString = '';
         foreach ($model['tous'] as $item) {
             $modelTouString .= $item['start'].$item['end'].floatval($item['value']);
@@ -406,7 +449,10 @@ class TariffService implements ISynchronizeService {
         ]);
     }
 
-    public function syncCheckBySite($siteId): array {
+    /**
+     * @return array{result: bool, message: string}
+     */
+    public function syncCheckBySite(string $siteId): array {
         try {
             $tariffs = $this->sparkMeterApiRequests->get($this->rootUrl, $siteId);
         } catch (SparkAPIResponseException $e) {
@@ -414,6 +460,7 @@ class TariffService implements ISynchronizeService {
             throw new SparkAPIResponseException($e->getMessage());
         }
 
+        // @phpstan-ignore argument.templateType,argument.templateType
         $sparkTariffsCollection = collect($tariffs['tariffs'])->filter(fn (array $tariff): bool => $tariff['tariff_type'] == 'flat');
         $sparkTariffs = $this->smTariff->newQuery()->where('site_id', $siteId)->get();
         $tariffs = $this->smTariff->newQuery()->get();

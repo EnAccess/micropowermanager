@@ -24,10 +24,16 @@ use Illuminate\Support\Carbon;
 class SmTariff extends BaseModel {
     protected $table = 'sm_tariffs';
 
+    /**
+     * @return BelongsTo<MeterTariff, $this>
+     */
     public function mpmTariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class, 'mpm_tariff_id');
     }
 
+    /**
+     * @return BelongsTo<SmSite, $this>
+     */
     public function site(): BelongsTo {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
     }

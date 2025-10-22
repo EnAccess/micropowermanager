@@ -17,7 +17,10 @@ class SparkMeterApiRequests {
         private SmCredential $smCredentail, // FIXME: typo
     ) {}
 
-    public function get(string $url, $siteId): array {
+    /**
+     * @return array<string, mixed>
+     */
+    public function get(string $url, string $siteId): array {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->get(
@@ -41,7 +44,7 @@ class SparkMeterApiRequests {
      *
      * @return array<string, mixed>|string
      */
-    public function post(string $url, ?array $postParams, int $siteId): array|string {
+    public function post(string $url, ?array $postParams, string $siteId): array|string {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->post(
@@ -61,7 +64,12 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function put(string $url, $putParams, $siteId): array {
+    /**
+     * @param array<string, mixed> $putParams
+     *
+     * @return array<string, mixed>
+     */
+    public function put(string $url, array $putParams, string $siteId): array {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->put(
@@ -81,7 +89,12 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function getByParams(string $url, $params, $siteId) {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public function getByParams(string $url, array $params, string $siteId): array {
         try {
             $smSite = $this->getThunderCloudInformation($siteId);
             $apiUrl = $smSite->thundercloud_url.$url.'?';
@@ -108,7 +121,10 @@ class SparkMeterApiRequests {
         }
     }
 
-    public function getInfo(string $url, string $id, $siteId): array {
+    /**
+     * @return array<string, mixed>
+     */
+    public function getInfo(string $url, string $id, string $siteId): array {
         $smSite = $this->getThunderCloudInformation($siteId);
         $apiUrl = $smSite->thundercloud_url.$url.$id;
         try {
@@ -128,6 +144,9 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getFromKoios(string $url): array {
         $smCredential = $this->getCredentials();
         try {
@@ -148,7 +167,12 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function postToKoios(string $url, $postParams): array {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>
+     */
+    public function postToKoios(string $url, array $postParams): array {
         $smCredential = $this->getCredentials();
         try {
             $request = $this->client->post(
@@ -169,11 +193,14 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
+    /**
+     * @return ?SmCredential
+     */
     private function getCredentials() {
         return $this->smCredentail->newQuery()->first();
     }
 
-    private function getThunderCloudInformation($siteId) {
+    private function getThunderCloudInformation(string $siteId): ?SmSite {
         return $this->site->newQuery()->where('site_id', $siteId)->first();
     }
 }

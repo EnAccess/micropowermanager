@@ -3,6 +3,8 @@
 namespace Inensus\SparkMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -19,11 +21,17 @@ use Illuminate\Support\Carbon;
 class SmSyncSetting extends BaseModel {
     protected $table = 'sm_sync_settings';
 
-    public function syncAction() {
+    /**
+     * @return HasOne<SmSyncAction, $this>
+     */
+    public function syncAction(): HasOne {
         return $this->hasOne(SmSyncAction::class);
     }
 
-    public function setting() {
+    /**
+     * @return MorphOne<SmSetting, $this>
+     */
+    public function setting(): MorphOne {
         return $this->morphOne(SmSetting::class, 'setting');
     }
 }

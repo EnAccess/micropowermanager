@@ -23,6 +23,9 @@ use Illuminate\Support\Carbon;
 class SmSite extends BaseModel {
     protected $table = 'sm_sites';
 
+    /**
+     * @return BelongsTo<MiniGrid, $this>
+     */
     public function mpmMiniGrid(): BelongsTo {
         return $this->belongsTo(MiniGrid::class, 'mpm_mini_grid_id');
     }

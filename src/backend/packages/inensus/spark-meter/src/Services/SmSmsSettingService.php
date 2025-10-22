@@ -2,11 +2,15 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SparkMeter\Models\SmSetting;
 use Inensus\SparkMeter\Models\SmSmsSetting;
 
 class SmSmsSettingService {
-    public function __construct(private SmSmsSetting $smsSetting, private SmSetting $setting) {}
+    public function __construct(
+        private SmSmsSetting $smsSetting,
+        private SmSetting $setting,
+    ) {}
 
     public function createDefaultSettings(): void {
         $smsTransaction = $this->smsSetting->newQuery()->where('state', 'Transactions')->first();
@@ -31,7 +35,12 @@ class SmSmsSettingService {
         }
     }
 
-    public function updateSmsSettings($smsSettings) {
+    /**
+     * @param array<string, mixed> $smsSettings
+     *
+     * @return Collection<int, SmSmsSetting>
+     */
+    public function updateSmsSettings(array $smsSettings): Collection {
         foreach ($smsSettings as $setting) {
             $smsSetting = $this->smsSetting->newQuery()->find($setting['id']);
             if ($smsSetting) {
@@ -45,7 +54,10 @@ class SmSmsSettingService {
         return $this->smsSetting->newQuery()->get();
     }
 
-    public function getSmsSettings() {
+    /**
+     * @return Collection<int, SmSmsSetting>
+     */
+    public function getSmsSettings(): Collection {
         return $this->smsSetting->newQuery()->get();
     }
 }

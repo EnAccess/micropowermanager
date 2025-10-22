@@ -3,6 +3,7 @@
 namespace Inensus\SparkMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -17,7 +18,10 @@ use Illuminate\Support\Carbon;
 class SmSmsSetting extends BaseModel {
     protected $table = 'sm_sms_settings';
 
-    public function setting() {
+    /**
+     * @return MorphOne<SmSetting, $this>
+     */
+    public function setting(): MorphOne {
         return $this->morphOne(SmSetting::class, 'setting');
     }
 }

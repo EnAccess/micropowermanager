@@ -3,6 +3,7 @@
 namespace Inensus\SparkMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -18,7 +19,10 @@ use Illuminate\Support\Carbon;
 class SmSyncAction extends BaseModel {
     protected $table = 'sm_sync_actions';
 
-    public function synSetting() {
+    /**
+     * @return BelongsTo<SmSyncSetting, $this>
+     */
+    public function synSetting(): BelongsTo {
         return $this->belongsTo(SmSyncSetting::class, 'sync_setting_id');
     }
 }
