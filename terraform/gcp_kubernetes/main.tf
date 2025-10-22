@@ -102,21 +102,22 @@ resource "google_compute_global_address" "http_loadbalancer_global_address" {
 # Create a proxy-only subnet
 # https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#prepare-environment
 resource "google_compute_subnetwork" "proxy_only_subnet" {
-  count = var.create_internal_loadbalancer_address ? 1 : 0
+  count = var.configure_gcp_project && var.create_internal_loadbalancer_address ? 1 : 0
 
   project = var.gcp_project_id
 
   name   = local.network_internal_proxy_only_subnet_name
   region = var.gcp_region
 
-  # Avoiding: https://cloud.google.com/vpc/docs/subnets#additional-ipv4-considerations
-  ip_cidr_range = "172.16.0.0/23"
+
+  ip_cidr_range = var.network_proxy_only_subnet_cidr_range
   network       = data.google_compute_network.default.id
   purpose       = "REGIONAL_MANAGED_PROXY"
   role          = "ACTIVE"
 }
 
-resource "google_compute_firewall" "rules" {
+# https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#create_a_firewall_rule
+resource "google_compute_firewall" "allow_proxy_connection" {
   count = var.create_internal_loadbalancer_address ? 1 : 0
 
   project = var.gcp_project_id
@@ -130,7 +131,12 @@ resource "google_compute_firewall" "rules" {
     ports    = ["80", "443", "8080", "8443"]
   }
 
-  source_ranges = [google_compute_subnetwork.proxy_only_subnet[0].ip_cidr_range]
+  source_ranges = [var.network_proxy_only_subnet_cidr_range]
+}
+
+moved {
+    from = google_compute_firewall.rules
+    to = google_compute_firewall.allow_proxy_connection
 }
 
 # Static IP address to be used in Kubernetes **Internal** Ingress in a scenario
@@ -143,7 +149,7 @@ resource "google_compute_address" "internal_loadbalancer_address" {
   name         = local.network_internal_loadbalancer_address_name
   region       = var.gcp_region
   address_type = "INTERNAL"
-  address      = var.internal_loadbalancer_address
+  address      = var.network_internal_loadbalancer_address
   purpose      = "SHARED_LOADBALANCER_VIP"
   subnetwork   = "default"
 }

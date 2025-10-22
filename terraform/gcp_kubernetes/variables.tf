@@ -38,7 +38,7 @@ variable "create_internal_loadbalancer_address" {
   default     = false
 }
 
-variable "internal_loadbalancer_address" {
+variable "network_internal_loadbalancer_address" {
   description = <<EOT
 Optional static internal IP address for the load balancer.
 
@@ -54,10 +54,33 @@ EOT
 
   validation {
     condition = (
-      var.internal_loadbalancer_address == null ||
-      can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}$", var.internal_loadbalancer_address))
+      var.network_internal_loadbalancer_address == null ||
+      can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}$", var.network_internal_loadbalancer_address))
     )
-    error_message = "If set, internal_loadbalancer_address must be a valid IPv4 address."
+    error_message = "If set, network_internal_loadbalancer_address must be a valid IPv4 address."
+  }
+}
+
+variable "network_proxy_only_subnet_cidr_range" {
+  description = <<EOT
+CIDR range of the proxy only subnet.
+
+When using internal loadbalancing a proxy only subnet needs to be configured in the project.
+Make sure to avoid: https://cloud.google.com/vpc/docs/subnets#additional-ipv4-considerations
+
+When configure_gcp_project is set, this CIDR range will be used to create the proxy only subnet.
+Otherwise the proxy only subnet with the provided ranges is assumed to be existent.
+EOT
+  type        = string
+  # Avoiding: https://cloud.google.com/vpc/docs/subnets#additional-ipv4-considerations
+  default     = "172.16.0.0/23"
+
+  validation {
+    condition = (
+      var.network_proxy_only_subnet_cidr_range == null ||
+      can(regex("^(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)){3}/([0-9]|[1-2][0-9]|3[0-2])$", var.network_proxy_only_subnet_cidr_range))
+    )
+    error_message = "network_proxy_only_subnet_cidr_range must be a valid IPv4 CIDR range."
   }
 }
 
