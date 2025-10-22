@@ -7,9 +7,17 @@ namespace App\Models;
 use App\Models\Base\BaseModelCentral;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int $fk_company_id
+ * @property      int                  $id
+ * @property      string               $email
+ * @property      int                  $fk_company_id
+ * @property      int                  $fk_company_database_id
+ * @property      Carbon|null          $created_at
+ * @property      Carbon|null          $updated_at
+ * @property-read Company|null         $company
+ * @property-read CompanyDatabase|null $companyDatabase
  */
 class DatabaseProxy extends BaseModelCentral {
     public const COL_DATABASE_CONNECTION = 'database_connection';

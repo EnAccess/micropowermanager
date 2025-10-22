@@ -3,19 +3,31 @@
 namespace Inensus\WaveMoneyPaymentProvider\Models;
 
 use App\Models\Transaction\BasePaymentProviderTransaction;
+use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int         $id
- * @property int         $amount
- * @property string      $currency
- * @property string      $order_id
- * @property string      $reference_id
- * @property int         $status
- * @property string      $external_transaction_id
- * @property int         $customer_id
- * @property string|null $meter_serial
+ * @property      int                                   $id
+ * @property      int                                   $status
+ * @property      float                                 $amount
+ * @property      string                                $order_id
+ * @property      string                                $reference_id
+ * @property      string                                $currency
+ * @property      int                                   $customer_id
+ * @property      string|null                           $meter_serial
+ * @property      string|null                           $external_transaction_id
+ * @property      int                                   $attempts
+ * @property      Carbon|null                           $created_at
+ * @property      Carbon|null                           $updated_at
+ * @property      string|null                           $manufacturer_transaction_type
+ * @property      int|null                              $manufacturer_transaction_id
+ * @property-read Collection<int, TransactionConflicts> $conflicts
+ * @property-read Model|null                            $manufacturerTransaction
+ * @property-read Transaction|null                      $transaction
  */
 class WaveMoneyTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'wave_money_transaction';
@@ -28,8 +40,8 @@ class WaveMoneyTransaction extends BasePaymentProviderTransaction {
 
     protected $table = 'wave_money_transactions';
 
-    public function getAmount(): int {
-        return $this->amount;
+    public function getAmount(): float {
+        return (int) $this->amount;
     }
 
     public function getCurrency(): string {

@@ -119,7 +119,7 @@ class AssetRateChecker extends AbstractSharedCommand {
             content: $description,
             categoryId: $category->id,
             assignedId: $creator->id,
-            dueDate: $assetRate->due_date === '1970-01-01' ? null : $assetRate->due_date,
+            dueDate: $assetRate->due_date->toDateString() === '1970-01-01' ? null : $assetRate->due_date,
             owner: $assetRate->assetPerson()->first()->person()->first(),
         );
     }

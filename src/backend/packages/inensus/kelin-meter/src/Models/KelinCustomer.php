@@ -4,24 +4,22 @@ namespace Inensus\KelinMeter\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int                         $id
- * @property int                         $mpm_customer_id
- * @property string                      $customer_no
- * @property string                      $address
- * @property string                      $mobile
- * @property string                      $hash
- * @property int                         $id
- * @property int                         $id
- * @property Carbon                      $created_at
- * @property Carbon                      $updated_at
- * @property Person                      $mpmPerson
- * @property Collection<int, KelinMeter> $kelinMeters
+ * @property      int                         $id
+ * @property      int                         $mpm_customer_id
+ * @property      string                      $customer_no
+ * @property      string                      $address
+ * @property      string                      $mobile
+ * @property      string|null                 $hash
+ * @property      Carbon|null                 $created_at
+ * @property      Carbon|null                 $updated_at
+ * @property-read Collection<int, KelinMeter> $kelinMeters
+ * @property-read Person|null                 $mpmPerson
  */
 class KelinCustomer extends BaseModel {
     protected $table = 'kelin_customers';

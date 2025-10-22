@@ -3,7 +3,18 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property      int                    $id
+ * @property      int                    $sync_setting_id
+ * @property      int                    $attempts
+ * @property      Carbon|null            $last_sync
+ * @property      Carbon|null            $next_sync
+ * @property      Carbon|null            $created_at
+ * @property      Carbon|null            $updated_at
+ * @property-read SteamaSyncSetting|null $synSetting
+ */
 class SteamaSyncAction extends BaseModel {
     protected $table = 'steama_sync_actions';
 

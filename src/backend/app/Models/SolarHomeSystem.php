@@ -4,16 +4,24 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use Database\Factories\SolarHomeSystemFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int          $id
- * @property string       $serial_number
- * @property Device       $device
- * @property Manufacturer $manufacturer
+ * @property      int                    $id
+ * @property      int                    $asset_id
+ * @property      string                 $serial_number
+ * @property      int                    $manufacturer_id
+ * @property      Carbon|null            $created_at
+ * @property      Carbon|null            $updated_at
+ * @property-read Asset|null             $appliance
+ * @property-read Device|null            $device
+ * @property-read Manufacturer|null      $manufacturer
+ * @property-read Collection<int, Token> $tokens
  */
 class SolarHomeSystem extends BaseModel {
     /** @use HasFactory<SolarHomeSystemFactory> */

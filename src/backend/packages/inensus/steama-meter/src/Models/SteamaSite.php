@@ -4,14 +4,21 @@ namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\MiniGrid;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 
 /**
- * @property MiniGrid                                    $mpmMiniGrid
- * @property Collection<int, SteamaSiteLevelPaymentPlan> $paymentPlans
- * @property Collection<int, SteamaAgent>                $agents
+ * @property      int                                         $id
+ * @property      int                                         $site_id
+ * @property      int                                         $mpm_mini_grid_id
+ * @property      string|null                                 $hash
+ * @property      Carbon|null                                 $created_at
+ * @property      Carbon|null                                 $updated_at
+ * @property-read Collection<int, SteamaAgent>                $agents
+ * @property-read MiniGrid|null                               $mpmMiniGrid
+ * @property-read Collection<int, SteamaSiteLevelPaymentPlan> $paymentPlans
  */
 class SteamaSite extends BaseModel {
     protected $table = 'steama_sites';

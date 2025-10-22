@@ -5,20 +5,28 @@ namespace App\Models;
 use App\Models\Base\BaseModel;
 use Database\Factories\TargetFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Class Target.
  *
- * @property int    $id
- * @property string $start_date
- * @property string $end_date
- * @property int    $city_id
+ * @property      int                        $id
+ * @property      Carbon                     $target_date
+ * @property      string                     $type
+ * @property      string                     $owner_type
+ * @property      int                        $owner_id
+ * @property      Carbon|null                $created_at
+ * @property      Carbon|null                $updated_at
+ * @property-read City|null                  $city
+ * @property-read Model                      $owner
+ * @property-read Collection<int, SubTarget> $subTargets
  */
 class Target extends BaseModel {
     /** @use HasFactory<TargetFactory> */

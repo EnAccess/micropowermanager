@@ -160,7 +160,7 @@ class CustomerService implements ISynchronizeService {
                 $meterModelName
             )->firstOrFail();
             $meter->meterType()->associate($smModel->meterType);
-            $meter->updated_at = date('Y-m-d h:i:s');
+            $meter->updated_at = now();
             $meter->save();
 
             $geoLocation->points = $customer['meters'][0]['coords'];
