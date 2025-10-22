@@ -2,12 +2,18 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Models\SteamaSmsVariableDefaultValue;
 
 class SteamaSmsVariableDefaultValueService {
-    public function __construct(private SteamaSmsVariableDefaultValue $smsVariableDefaultValue) {}
+    public function __construct(
+        private SteamaSmsVariableDefaultValue $smsVariableDefaultValue,
+    ) {}
 
-    public function getSmsVariableDefaultValues() {
+    /**
+     * @return Collection<int, SteamaSmsVariableDefaultValue>
+     */
+    public function getSmsVariableDefaultValues(): Collection {
         return $this->smsVariableDefaultValue->newQuery()->get();
     }
 

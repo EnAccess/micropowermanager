@@ -9,12 +9,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property string $date
- * @property string $day
- * @property string $period
- * @property float  $revenue
+ * @property      int              $id
+ * @property      int              $agent_id
+ * @property      string           $trigger_type
+ * @property      int              $trigger_id
+ * @property      float            $amount
+ * @property      float            $available_balance
+ * @property      float            $due_to_supplier
+ * @property      int|null         $transaction_id
+ * @property      Carbon|null      $created_at
+ * @property      Carbon|null      $updated_at
+ * @property-read Agent|null       $agent
+ * @property-read Transaction|null $transaction
+ * @property-read Model            $trigger
+ *
+ * Special attributes only used for caching services:
+ * @property string $date    This field is used only for caching.
+ * @property string $day     This field is used only for caching.
+ * @property string $period  This field is used only for caching.
+ * @property float  $revenue This field is used only for caching.
  */
 class AgentBalanceHistory extends BaseModel {
     /** @use HasFactory<AgentBalanceHistoryFactory> */

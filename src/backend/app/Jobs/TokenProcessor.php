@@ -125,7 +125,7 @@ class TokenProcessor extends AbstractJob {
         $owner = $this->transactionContainer->device->person;
 
         event(new PaymentSuccessEvent(
-            amount: $this->transactionContainer->transaction->amount,
+            amount: (int) $this->transactionContainer->transaction->amount,
             paymentService: $this->transactionContainer->transaction->original_transaction_type,
             paymentType: 'energy',
             sender: $this->transactionContainer->transaction->sender,

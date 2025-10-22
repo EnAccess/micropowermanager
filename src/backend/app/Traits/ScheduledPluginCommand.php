@@ -10,6 +10,6 @@ trait ScheduledPluginCommand {
     protected function checkForPluginStatusIsActive(int $mpmPluginId): bool {
         $plugin = Plugins::query()->where('mpm_plugin_id', $mpmPluginId)->first();
 
-        return $plugin instanceof Plugins && $plugin->status === self::$ACTIVE;
+        return $plugin instanceof Plugins && $plugin->status == self::$ACTIVE;
     }
 }

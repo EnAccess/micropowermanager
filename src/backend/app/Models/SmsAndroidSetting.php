@@ -6,9 +6,16 @@ use App\Models\Base\BaseModel;
 use Database\Factories\SmsAndroidSettingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
+ * @property int         $id
+ * @property string      $url
+ * @property string|null $token
+ * @property string|null $key
+ * @property string      $callback
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class SmsAndroidSetting extends BaseModel {
     /** @use HasFactory<SmsAndroidSettingFactory> */

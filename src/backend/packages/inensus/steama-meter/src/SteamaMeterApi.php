@@ -17,7 +17,13 @@ use Inensus\SteamaMeter\Services\SteamaCredentialService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 
 class SteamaMeterApi implements IManufacturerAPI {
-    public function __construct(protected Client $api, private SteamaCustomer $steamaCustomer, private SteamaCredentialService $credentialService, private SteamaCustomerService $customerService, private SteamaTransaction $steamaTransaction) {}
+    public function __construct(
+        protected Client $api,
+        private SteamaCustomer $steamaCustomer,
+        private SteamaCredentialService $credentialService,
+        private SteamaCustomerService $customerService,
+        private SteamaTransaction $steamaTransaction,
+    ) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $owner = $transactionContainer->device->person;

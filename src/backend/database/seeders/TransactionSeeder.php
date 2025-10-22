@@ -310,7 +310,7 @@ class TransactionSeeder extends Seeder {
             $transactionData->token = $token;
 
             event(new PaymentSuccessEvent(
-                amount: $transactionData->transaction->amount,
+                amount: (int) $transactionData->transaction->amount,
                 paymentService: $transactionData->transaction->original_transaction_type,
                 paymentType: 'energy',
                 sender: $transactionData->transaction->sender,

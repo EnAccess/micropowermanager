@@ -202,7 +202,6 @@ class TicketSeeder extends Seeder {
                 'created_at' => $demoDate,
                 'updated_at' => $demoDate,
             ]);
-            $randomCategory->out_source = $ticketOutsource->id;
             $randomCategory->save();
         } else {
             $ticket->assigned_id = $ticketUser->id;

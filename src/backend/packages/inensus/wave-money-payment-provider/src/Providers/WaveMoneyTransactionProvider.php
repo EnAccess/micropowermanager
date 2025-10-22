@@ -83,8 +83,8 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         throw new \BadMethodCallException('Method getMessage() not yet implemented.');
     }
 
-    public function getAmount(): int {
-        return $this->getTransaction()->amount;
+    public function getAmount(): float {
+        return (int) $this->getTransaction()->amount;
     }
 
     public function getSender(): string {

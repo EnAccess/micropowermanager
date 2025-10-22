@@ -2,11 +2,15 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSmsSetting;
 
 class SteamaSmsSettingService {
-    public function __construct(private SteamaSmsSetting $smsSetting, private SteamaSetting $setting) {}
+    public function __construct(
+        private SteamaSmsSetting $smsSetting,
+        private SteamaSetting $setting,
+    ) {}
 
     public function createDefaultSettings(): void {
         $smsTransaction = $this->smsSetting->newQuery()->where('state', 'Transactions')->first();
@@ -31,7 +35,12 @@ class SteamaSmsSettingService {
         }
     }
 
-    public function updateSmsSettings($smsSettings) {
+    /**
+     * @param array<int, SteamaSmsSetting> $smsSettings
+     *
+     * @return Collection<int, SteamaSmsSetting>
+     */
+    public function updateSmsSettings(array $smsSettings): Collection {
         foreach ($smsSettings as $setting) {
             $smsSetting = $this->smsSetting->newQuery()->find($setting['id']);
             if ($smsSetting) {
@@ -45,7 +54,10 @@ class SteamaSmsSettingService {
         return $this->smsSetting->newQuery()->get();
     }
 
-    public function getSmsSettings() {
+    /**
+     * @return Collection<int, SteamaSmsSetting>
+     */
+    public function getSmsSettings(): Collection {
         return $this->smsSetting->newQuery()->get();
     }
 }

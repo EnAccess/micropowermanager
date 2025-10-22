@@ -8,7 +8,7 @@ use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRate as AccessRateModel;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class AccessRate {
     private ?AccessRateModel $accessRate = null;
@@ -50,7 +50,7 @@ class AccessRate {
     /**
      * @throws NoAccessRateFound
      */
-    private function getDebt(Meter $meter): int {
+    private function getDebt(Meter $meter): float {
         $accessRate = $meter->accessRatePayment()->first();
         if ($accessRate === null) {
             throw new NoAccessRateFound('no access rate is defined');
@@ -82,9 +82,9 @@ class AccessRate {
                 $transactionData->transaction->amount -= $debt_amount;
             }
             $nonStaticGateway->updatePayment($accessRatePayment, $debt_amount, $satisfied);
-            $transactionData->accessRateDebt = $debt_amount;
+            $transactionData->accessRateDebt = (int) $debt_amount;
             event(new PaymentSuccessEvent(
-                amount: $debt_amount,
+                amount: (int) $debt_amount,
                 paymentService: $transactionData->transaction->original_transaction_type,
                 paymentType: 'access rate',
                 sender: $transactionData->transaction->sender,
@@ -97,7 +97,7 @@ class AccessRate {
         return $transactionData;
     }
 
-    public function updatePayment(AccessRatePayment $accessRatePayment, int $paidAmount, bool $satisfied = false): void {
+    public function updatePayment(AccessRatePayment $accessRatePayment, float $paidAmount, bool $satisfied = false): void {
         $accessRatePayment->debt = $satisfied ? 0 : $accessRatePayment->debt - $paidAmount;
         $accessRatePayment->save();
     }

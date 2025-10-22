@@ -47,7 +47,7 @@ class ApplianceInstallmentPayer {
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
     // If meter number is provided in transaction
-    public function payInstallments(): int {
+    public function payInstallments(): float {
         $customer = $this->customer;
         $appliancePersonIds = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
         $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds->all());
@@ -100,7 +100,7 @@ class ApplianceInstallmentPayer {
         $installments->map(function ($installment) use ($customer): bool {
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 event(new PaymentSuccessEvent(
-                    amount: $this->transaction->amount,
+                    amount: (int) $this->transaction->amount,
                     paymentService: $this->transaction->original_transaction_type,
                     paymentType: 'installment',
                     sender: $this->transaction->sender,

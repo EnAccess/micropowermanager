@@ -8,10 +8,12 @@ use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -30,14 +32,21 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * The `originalTransaction()` method links this system-level transaction to the
  * payment provider-specific transaction.
  *
- * @property int                                                                                                                                $id
- * @property int                                                                                                                                $amount
- * @property string                                                                                                                             $type
- * @property string                                                                                                                             $sender
- * @property string                                                                                                                             $message
- * @property Device                                                                                                                             $device
- * @property string                                                                                                                             $original_transaction_type
- * @property AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction $originalTransaction
+ * @property      int                                                                                                                                $id
+ * @property      int                                                                                                                                $original_transaction_id
+ * @property      string                                                                                                                             $original_transaction_type
+ * @property      float                                                                                                                              $amount
+ * @property      string|null                                                                                                                        $type
+ * @property      string                                                                                                                             $sender
+ * @property      string                                                                                                                             $message
+ * @property      Carbon|null                                                                                                                        $created_at
+ * @property      Carbon|null                                                                                                                        $updated_at
+ * @property-read AssetPerson|null                                                                                                                   $appliance
+ * @property-read Device|null                                                                                                                        $device
+ * @property-read AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction $originalTransaction
+ * @property-read Collection<int, PaymentHistory>                                                                                                    $paymentHistories
+ * @property-read Sms|null                                                                                                                           $sms
+ * @property-read Token|null                                                                                                                         $token
  */
 class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
@@ -130,7 +139,7 @@ class Transaction extends BaseModel {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->amount;
     }
 
@@ -142,7 +151,7 @@ class Transaction extends BaseModel {
         return $this->sender;
     }
 
-    public function setAmount(int $amount): void {
+    public function setAmount(float $amount): void {
         $this->amount = $amount;
     }
 

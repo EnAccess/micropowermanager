@@ -11,7 +11,7 @@ class OverDueAssetRateReminder extends SmsBodyParser {
 
     protected function getVariableValue(string $variable): mixed {
         return match ($variable) {
-            'appliance_type_name' => $this->reminderData->assetPerson->assetType->name,
+            'appliance_type_name' => $this->reminderData->assetPerson->asset->assetType->name,
             'remaining' => $this->reminderData->remaining,
             'due_date' => $this->reminderData->due_date,
             default => $variable,

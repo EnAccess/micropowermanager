@@ -6,16 +6,23 @@ use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
 /**
  * Generic Token Model for all types of tokens i.e meter token, shs token, etc.
  *
- * @property string $token
- * @property string $token_type
- * @property string $token_unit
- * @property float  $token_amount
- * @property int    $transaction_id
- * @property int    $device_id
+ * @property      int                 $id
+ * @property      int                 $transaction_id
+ * @property      string              $token
+ * @property      float               $token_amount
+ * @property      Carbon|null         $created_at
+ * @property      Carbon|null         $updated_at
+ * @property      int|null            $device_id
+ * @property      string|null         $token_type
+ * @property      string|null         $token_unit
+ * @property-read Device|null         $device
+ * @property-read PaymentHistory|null $paymentHistories
+ * @property-read Transaction|null    $transaction
  */
 class Token extends BaseModel {
     public const RELATION_NAME = 'token';

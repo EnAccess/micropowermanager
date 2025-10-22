@@ -265,7 +265,6 @@ class Reports {
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            // @phpstan-ignore instanceof.alwaysTrue
             if (!$transaction->device instanceof Device) {
                 continue;
             }

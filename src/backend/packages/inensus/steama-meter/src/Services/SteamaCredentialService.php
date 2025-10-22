@@ -12,12 +12,15 @@ class SteamaCredentialService {
     use EncryptsCredentials;
     private string $rootUrl = '/get-token/';
 
-    public function __construct(private SteamaCredential $credential, private SteamaMeterApiClient $steamaApi) {}
+    public function __construct(
+        private SteamaCredential $credential,
+        private SteamaMeterApiClient $steamaApi,
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): SteamaCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'username' => null,
             'password' => null,
@@ -27,13 +30,16 @@ class SteamaCredentialService {
         ]);
     }
 
-    public function getCredentials(): ?object {
+    public function getCredentials(): ?SteamaCredential {
         $credential = $this->credential->newQuery()->first();
 
         return $this->decryptCredentialFields($credential, ['username', 'password', 'authentication_token']);
     }
 
-    public function updateCredentials(array $data): object {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): SteamaCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $encryptedData = $this->encryptCredentialFields($data, ['username', 'password']);

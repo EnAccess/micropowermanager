@@ -4,21 +4,21 @@ namespace Inensus\KelinMeter\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int           $id
- * @property int           $mpm_meter_id
- * @property string        $meter_address
- * @property string        $meter_name
- * @property string        $customer_no
- * @property int           $rtuId
- * @property string        $hash
- * @property Carbon        $created_at
- * @property Carbon        $updated_at
- * @property Meter         $mpmMeter
- * @property KelinCustomer $kelinCustomer
+ * @property      int                $id
+ * @property      int                $mpm_meter_id
+ * @property      string             $meter_address
+ * @property      string             $meter_name
+ * @property      string             $customer_no
+ * @property      int                $rtuId
+ * @property      string|null        $hash
+ * @property      Carbon|null        $created_at
+ * @property      Carbon|null        $updated_at
+ * @property-read KelinCustomer|null $kelinCustomer
+ * @property-read Meter|null         $mpmMeter
  */
 class KelinMeter extends BaseModel {
     protected $table = 'kelin_meters';
