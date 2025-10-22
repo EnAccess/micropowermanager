@@ -16,7 +16,7 @@ class RouteServiceProvider extends ServiceProvider {
         $this->mapApiRoutes();
     }
 
-    protected function mapApiRoutes() {
+    protected function mapApiRoutes(): void {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
