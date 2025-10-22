@@ -5,11 +5,12 @@ namespace Inensus\OdysseyDataExport\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\PaymentHistory;
 use Carbon\CarbonImmutable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inensus\OdysseyDataExport\Services\OdysseyPaymentTransformer;
 
 class OdysseyPaymentsController extends Controller {
-    public function index(Request $request, OdysseyPaymentTransformer $transformer) {
+    public function index(Request $request, OdysseyPaymentTransformer $transformer): JsonResponse {
         $fromParam = $request->query('FROM');
         $toParam = $request->query('TO');
         if (!$fromParam || !$toParam) {
