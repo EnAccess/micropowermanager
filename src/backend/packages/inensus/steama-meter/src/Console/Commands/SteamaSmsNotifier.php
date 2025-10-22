@@ -53,7 +53,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                 }
 
                 if (
-                    !$notifyCustomer->mpmPerson->addresses
+                    $notifyCustomer->mpmPerson->addresses->isEmpty()
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
                 ) {
