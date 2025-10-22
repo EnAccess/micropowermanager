@@ -6,7 +6,7 @@ use App\Events\AccessRatePaymentInitialize;
 use App\Exceptions\AccessRates\NoAccessRateFound;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class AccessRateListener {
