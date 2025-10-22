@@ -245,7 +245,7 @@ class OutstandingDebtsSeeder extends Seeder {
             // Partial payments: some overdue rates have partial payments
             $shouldBeOverdue = $isOverdue && rand(0, 1) === 1;
             $hasPartialPayment = $shouldBeOverdue && rand(0, 1) === 1;
-            $remaining = $shouldBeOverdue ? ($hasPartialPayment ? rand(1, $rateAmount - 1) : $rateAmount) : 0;
+            $remaining = $shouldBeOverdue ? ($hasPartialPayment ? rand(1, (int) $rateAmount - 1) : $rateAmount) : 0;
 
             AssetRate::create([
                 'asset_person_id' => $assetPerson->id,

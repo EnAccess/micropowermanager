@@ -228,7 +228,7 @@ class AgentSoldApplianceService implements IBaseService {
         if ($appliancePerson->down_payment > 0) {
             $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($appliancePerson);
             event(new PaymentSuccessEvent(
-                amount: $transaction->amount,
+                amount: (int) $transaction->amount,
                 paymentService: $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
                 paymentType: 'down payment',
                 sender: $transaction->sender,

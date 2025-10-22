@@ -62,7 +62,7 @@ class CashTransactionProvider implements ITransactionProvider {
         return '';
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->transaction->amount;
     }
 

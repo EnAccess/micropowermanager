@@ -3,19 +3,20 @@
 namespace Inensus\Ticket\Models;
 
 use App\Models\Base\BaseModel;
-use Carbon\Carbon;
 use Database\Factories\Inensus\Ticket\Models\TicketUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 
 /**
  * Class UserModel.
  *
- * @property string $user_name
- * @property string $user_tag
- * @property int    $out_source
- * @property int    $id
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property int         $id
+ * @property string      $user_name
+ * @property string|null $phone
+ * @property int         $out_source
+ * @property int|null    $user_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class TicketUser extends BaseModel {
     /** @use HasFactory<TicketUserFactory> */

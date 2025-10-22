@@ -3,19 +3,20 @@
 namespace Inensus\KelinMeter\Models;
 
 use App\Models\Base\BaseModel;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int          $id
- * @property string       $action_name
- * @property string       $sync_in_value_str
- * @property int          $sync_in_value_num
- * @property int          $max_attempts
- * @property Carbon       $created_at
- * @property Carbon       $updated_at
- * @property KelinSetting $setting
+ * @property      int                  $id
+ * @property      string               $action_name
+ * @property      string               $sync_in_value_str
+ * @property      int                  $sync_in_value_num
+ * @property      int                  $max_attempts
+ * @property      Carbon|null          $created_at
+ * @property      Carbon|null          $updated_at
+ * @property-read KelinSetting|null    $setting
+ * @property-read KelinSyncAction|null $syncAction
  */
 class KelinSyncSetting extends BaseModel {
     protected $table = 'kelin_sync_settings';

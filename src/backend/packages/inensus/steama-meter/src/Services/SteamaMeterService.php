@@ -161,7 +161,7 @@ class SteamaMeterService implements ISynchronizeService {
             $meter->serial_number = $meterSerial;
             $manufacturer = $this->manufacturer->newQuery()->where('name', 'Steama Meters')->firstOrFail();
             $meter->manufacturer()->associate($manufacturer);
-            $meter->updated_at = date('Y-m-d h:i:s');
+            $meter->updated_at = now();
             $meter->meterType()->associate($this->getMeterType($stmMeter));
             $meter->save();
             if ($stmCustomer) {
