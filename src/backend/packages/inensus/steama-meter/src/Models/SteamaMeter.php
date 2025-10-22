@@ -22,10 +22,16 @@ use Illuminate\Support\Carbon;
 class SteamaMeter extends BaseModel {
     protected $table = 'steama_meters';
 
+    /**
+     * @return BelongsTo<Meter, $this>
+     */
     public function mpmMeter(): BelongsTo {
         return $this->belongsTo(Meter::class, 'mpm_meter_id');
     }
 
+    /**
+     * @return BelongsTo<SteamaCustomer, $this>
+     */
     public function stmCustomer(): BelongsTo {
         return $this->belongsTo(SteamaCustomer::class, 'customer_id', 'customer_id');
     }
