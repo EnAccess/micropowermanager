@@ -105,7 +105,7 @@
           >
             <div class="md-layout-item md-size-50 md-small-size-100">
               <md-field>
-                <label for="roles">Roles</label>
+                <label for="roles">Roles <span style="color: red;">*</span></label>
                 <md-select id="roles" v-model="selectedRoles" multiple>
                   <md-option
                     v-for="r in roleService.roles"
@@ -115,6 +115,7 @@
                     {{ r.name }}
                   </md-option>
                 </md-select>
+                <span class="md-helper-text">At least one role is required</span>
               </md-field>
             </div>
           </md-card-content>
@@ -173,6 +174,18 @@ export default {
       if (!validation) {
         return
       }
+      
+      // Prevent creating users with no roles
+      if (!this.selectedRoles || this.selectedRoles.length === 0) {
+        this.$notify({
+          group: "notify",
+          type: "error",
+          title: "Validation Error",
+          text: "Users must have at least one role assigned."
+        })
+        return
+      }
+      
       this.$emit("createUser", { roles: this.selectedRoles })
     },
     closeNewUser() {

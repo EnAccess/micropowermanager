@@ -78,15 +78,41 @@ class RoleBasePermissionSeedeer extends Seeder {
             Permission::firstOrCreate($perm);
         }
 
-        // Built-in roles: owner, admin (api guard), field-agent (agent guard)
+        // Built-in roles: owner, admin, editor, reader (api guard), field-agent (agent guard)
         $owner = Role::firstOrCreate(['name' => 'owner', 'guard_name' => 'api']);
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
+        $editor = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'api']);
+        $reader = Role::firstOrCreate(['name' => 'reader', 'guard_name' => 'api']);
         $fieldAgent = Role::firstOrCreate(['name' => 'field-agent', 'guard_name' => 'agent']);
 
-        // Grant all to owner; admin gets all base permissions (can later restrict destructive ops)
+        // Define admin-only permissions (require special privileges)
+        $adminOnlyPermissions = [
+            'roles.manage',
+            'horizon.view',
+            'plugins.manage',
+            'settings.update',
+            'exports.transactions',
+            'exports.customers',
+            'exports.debts',
+            'payments.refund',
+        ];
+
+        // Grant all permissions to owner
         $allPermissions = Permission::where('guard_name', 'api')->pluck('name')->toArray();
         $owner->syncPermissions($allPermissions);
+
+        // Grant all permissions to admin
         $admin->syncPermissions($allPermissions);
+
+        // Grant editor permissions (all except admin-only)
+        $editorPermissions = array_diff($allPermissions, $adminOnlyPermissions);
+        $editor->syncPermissions($editorPermissions);
+
+        // Grant reader permissions (only read/view permissions, excluding admin-only)
+        $readerPermissions = array_filter($allPermissions, function ($permission) use ($adminOnlyPermissions) {
+            return str_ends_with($permission, '.view') && !in_array($permission, $adminOnlyPermissions);
+        });
+        $reader->syncPermissions($readerPermissions);
 
         // Grant agent permissions to field-agent role
         $agentPermissions = Permission::where('guard_name', 'agent')->pluck('name')->toArray();

@@ -93,7 +93,7 @@
                 "
               >
                 <md-field>
-                  <label for="roles">Roles</label>
+                  <label for="roles">Roles <span style="color: red;">*</span></label>
                   <md-select id="roles" v-model="selectedRoles" multiple>
                     <md-option
                       v-for="r in roleService.roles"
@@ -103,6 +103,7 @@
                       {{ r.name }}
                     </md-option>
                   </md-select>
+                  <span class="md-helper-text">At least one role is required</span>
                 </md-field>
               </div>
             </md-card-content>
@@ -177,6 +178,18 @@ export default {
       if (!validation) {
         return
       }
+      
+      // Prevent users from having no roles
+      if (!this.selectedRoles || this.selectedRoles.length === 0) {
+        this.$notify({
+          group: "notify",
+          type: "error",
+          title: "Validation Error",
+          text: "Users must have at least one role assigned."
+        })
+        return
+      }
+      
       this.user.cityId = this.selectedCity
       // Save role changes first, then emit update
       const current = new Set(this.roleService.userRoles)

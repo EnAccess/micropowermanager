@@ -57,7 +57,7 @@ class RoleController extends Controller {
     public function destroy(string $roleIdOrName): JsonResponse {
         $role = $this->resolveRole($roleIdOrName);
         // Prevent deleting built-in roles
-        if (in_array($role->name, ['owner', 'admin'], true)) {
+        if (in_array($role->name, ['owner', 'admin', 'editor', 'reader', 'field-agent'], true)) {
             return response()->json(['message' => 'Cannot delete built-in role'], 422);
         }
         $role->delete();
@@ -103,6 +103,21 @@ class RoleController extends Controller {
         if ($role->guard_name !== 'api') {
             return response()->json(['message' => 'Role guard mismatch'], 422);
         }
+
+        // Prevent removing owner role - ensure at least one owner exists
+        if ($role->name === 'owner') {
+            $ownerCount = User::role('owner')->count();
+            if ($ownerCount <= 1) {
+                return response()->json(['message' => 'Cannot remove the last owner role. At least one owner must exist.'], 422);
+            }
+        }
+
+        // Prevent users from having no roles - ensure at least one role remains
+        $userRoleCount = $user->roles()->count();
+        if ($userRoleCount <= 1) {
+            return response()->json(['message' => 'Cannot remove the last role. Users must have at least one role.'], 422);
+        }
+
         $user->removeRole($role->name);
 
         return response()->json(['removed' => true]);
