@@ -209,12 +209,10 @@ class ProspectExtract extends AbstractJob {
         // Get company database from the current context
         $companyDatabase = app(CompanyDatabaseService::class)->findByCompanyId($this->companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
-        // Get to local file system
-        $disk = Storage::disk('local');
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
 
-        $disk->put($filePath, $csvContent);
+        Storage::put($filePath, $csvContent);
 
         return $filePath;
     }

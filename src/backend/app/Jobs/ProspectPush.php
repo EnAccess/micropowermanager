@@ -81,15 +81,13 @@ class ProspectPush extends AbstractJob {
             return [];
         }
 
-        $disk = Storage::disk('local');
-
-        if (!$disk->exists($filePath)) {
+        if (!Storage::exists($filePath)) {
             throw new \Exception("CSV file not found: {$filePath}");
         }
 
         Log::info('Loading data from: '.basename($filePath));
 
-        $csvContent = $disk->get($filePath);
+        $csvContent = Storage::get($filePath);
         $lines = str_getcsv($csvContent, "\n");
 
         $lines = array_filter($lines, fn ($line): bool => !in_array(trim($line), ['', '0'], true));
@@ -145,13 +143,11 @@ class ProspectPush extends AbstractJob {
         // Get the company database to determine the correct prospect folder path
         $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
         $companyDatabaseName = $companyDatabase->getDatabaseName();
-        // Get to local file system
-        $disk = Storage::disk('local');
 
         $prospectPath = "prospect/{$companyDatabaseName}/";
-        $files = collect($disk->files($prospectPath))
+        $files = collect(Storage::files($prospectPath))
             ->filter(fn ($f): bool => str_ends_with($f, '.csv'))
-            ->sortByDesc(fn ($f) => $disk->lastModified($f))
+            ->sortByDesc(fn ($f) => Storage::lastModified($f))
             ->values();
 
         if ($files->isEmpty()) {
