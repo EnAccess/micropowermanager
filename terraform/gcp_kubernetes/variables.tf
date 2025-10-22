@@ -72,8 +72,8 @@ When configure_gcp_project is set, this CIDR range will be used to create the pr
 Otherwise the proxy only subnet with the provided ranges is assumed to be existent.
 EOT
   type        = string
-  # Avoiding: https://cloud.google.com/vpc/docs/subnets#additional-ipv4-considerations
   default     = "172.16.0.0/23"
+  # Avoiding: https://cloud.google.com/vpc/docs/subnets#additional-ipv4-considerations
 
   validation {
     condition = (

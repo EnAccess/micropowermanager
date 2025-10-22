@@ -135,8 +135,8 @@ resource "google_compute_firewall" "allow_proxy_connection" {
 }
 
 moved {
-    from = google_compute_firewall.rules
-    to = google_compute_firewall.allow_proxy_connection
+  from = google_compute_firewall.rules
+  to   = google_compute_firewall.allow_proxy_connection
 }
 
 # Static IP address to be used in Kubernetes **Internal** Ingress in a scenario
