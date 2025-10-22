@@ -2,7 +2,9 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
 use Inensus\Ticket\Services\TicketService;
@@ -32,19 +34,39 @@ class TicketExportController {
     public function outsource(Request $request): TicketResource {
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
+
         $tickets = $this->ticketService->getForOutsourceReport($startDate, $endDate);
-        $fileName = $this->ticketOutsourceReportService->createExcelSheet($startDate, $endDate, $tickets);
+
+        $filePath = $this->ticketOutsourceReportService->createExcelSheet($startDate, $endDate, $tickets);
+
         $ticketOutsourceReportData = [
             'date' => date('Y-m', strtotime($startDate)),
-            'path' => storage_path('./outsourcing/'.$fileName),
+            'path' => $filePath,
         ];
 
-        return TicketResource::make($this->ticketOutsourceReportService->create($ticketOutsourceReportData));
+        return TicketResource::make(
+            $this->ticketOutsourceReportService->create($ticketOutsourceReportData)
+        );
     }
 
-    public function download(int $id): BinaryFileResponse {
+    public function download(int $id): BinaryFileResponse|RedirectResponse {
         $report = $this->ticketOutsourceReportService->getById($id);
+        $disk = config('filesystems.default');
+        $relativePath = $report->path;
 
-        return response()->download(explode('*', $report->path)[0]);
+        if (!Storage::exists($relativePath)) {
+            abort(404, 'Report file not found.');
+        }
+
+        if ($disk === 'local') {
+            return response()->download(Storage::disk('local')->path($relativePath));
+        }
+
+        $temporaryUrl = Storage::temporaryUrl(
+            $relativePath,
+            now()->addMinutes(5)
+        );
+
+        return redirect()->away($temporaryUrl);
     }
 }

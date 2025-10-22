@@ -6,6 +6,7 @@ use App\Models\CompanyDatabase;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProspectPush extends AbstractJob {
     /**
@@ -80,13 +81,15 @@ class ProspectPush extends AbstractJob {
             return [];
         }
 
-        if (!file_exists($filePath)) {
+        $disk = Storage::disk('local');
+
+        if (!$disk->exists($filePath)) {
             throw new \Exception("CSV file not found: {$filePath}");
         }
 
         Log::info('Loading data from: '.basename($filePath));
 
-        $csvContent = file_get_contents($filePath);
+        $csvContent = $disk->get($filePath);
         $lines = str_getcsv($csvContent, "\n");
 
         $lines = array_filter($lines, fn ($line): bool => !in_array(trim($line), ['', '0'], true));
@@ -142,37 +145,22 @@ class ProspectPush extends AbstractJob {
         // Get the company database to determine the correct prospect folder path
         $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
         $companyDatabaseName = $companyDatabase->getDatabaseName();
+        // Get to local file system
+        $disk = Storage::disk('local');
 
-        $prospectPath = storage_path("app/prospect/{$companyDatabaseName}/");
+        $prospectPath = "prospect/{$companyDatabaseName}/";
+        $files = collect($disk->files($prospectPath))
+            ->filter(fn ($f): bool => str_ends_with($f, '.csv'))
+            ->sortByDesc(fn ($f) => $disk->lastModified($f))
+            ->values();
 
-        if (!is_dir($prospectPath)) {
-            throw new \Exception("Prospect folder not found: {$prospectPath}");
+        if ($files->isEmpty()) {
+            throw new \Exception("No CSV files found in {$prospectPath}");
         }
 
-        $files = glob($prospectPath.'*.csv');
+        $latestFile = $files->first();
 
-        if ($files === [] || $files === false) {
-            Log::info("No CSV files found in prospect folder: {$prospectPath}");
-            throw new \Exception("No CSV files found in prospect folder: {$prospectPath}");
-        }
-
-        // Find the latest file by modification time
-        $latestFile = null;
-        $latestTime = 0;
-
-        foreach ($files as $file) {
-            $fileTime = filemtime($file);
-            if ($fileTime > $latestTime) {
-                $latestTime = $fileTime;
-                $latestFile = $file;
-            }
-        }
-
-        if (!$latestFile) {
-            throw new \Exception('No CSV file found in prospect folder');
-        }
-
-        Log::info('Auto-detected latest CSV: '.basename($latestFile));
+        Log::info('Auto-detected latest CSV: '.$latestFile);
 
         return $latestFile;
     }

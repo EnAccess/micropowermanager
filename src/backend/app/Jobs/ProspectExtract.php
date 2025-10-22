@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\Address\Address;
 use App\Models\Device;
 use App\Services\CompanyDatabaseService;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -210,19 +209,14 @@ class ProspectExtract extends AbstractJob {
         // Get company database from the current context
         $companyDatabase = app(CompanyDatabaseService::class)->findByCompanyId($this->companyId);
         $companyDatabaseName = $companyDatabase->getDatabaseName();
+        // Get to local file system
+        $disk = Storage::disk('local');
 
         $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
 
-        $directory = "prospect/{$companyDatabaseName}";
-        $fullDirectoryPath = storage_path("app/{$directory}");
+        $disk->put($filePath, $csvContent);
 
-        if (!File::isDirectory($fullDirectoryPath)) {
-            File::makeDirectory($fullDirectoryPath, 0775, true);
-        }
-
-        Storage::disk('local')->put($filePath, $csvContent);
-
-        return Storage::disk('local')->path($filePath);
+        return $filePath;
     }
 
     /**
