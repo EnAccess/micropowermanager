@@ -250,33 +250,34 @@ Then test file operations:
 
 ```php
 // Test file storage
-use App\Support\AppStorage;
+use Illuminate\Support\Facades\Storage;
+
 
 // Store a test file
 $testContent = 'This is a test file for storage configuration';
 $testPath = 'test/storage-test.txt';
-$result = AppStorage::put($testPath, $testContent);
+$result = Storage::put($testPath, $testContent);
 
 if ($result) {
     echo "File stored successfully\n";
 
     // Test file retrieval
-    $retrievedContent = AppStorage::get($testPath);
+    $retrievedContent = Storage::get($testPath);
     if ($retrievedContent === $testContent) {
         echo "File retrieved successfully\n";
     }
 
     // Test file existence
-    if (AppStorage::exists($testPath)) {
+    if (Storage::exists($testPath)) {
         echo "File exists\n";
     }
 
     // Test file URL generation
-    $url = AppStorage::url($testPath);
+    $url = Storage::url($testPath);
     echo "File URL: " . $url . "\n";
 
     // Clean up test file
-    AppStorage::delete($testPath);
+    Storage::delete($testPath);
     echo "Test file cleaned up\n";
 } else {
     echo "Failed to store file\n";

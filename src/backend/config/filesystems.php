@@ -1,5 +1,7 @@
 <?php
 
+use League\Flysystem\GoogleCloudStorage\UniformBucketLevelAccessVisibility;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -79,12 +81,13 @@ return [
             ],
             'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', ''),
             'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', ''),
-            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', ''),
-            'storage_api_uri' => env('GOOGLE_CLOUD_STORAGE_API_URI', null),
+            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', null),
+            'storage_api_uri' => env('GOOGLE_CLOUD_STORAGE_API_URI', 'https://storage.googleapis.com'),
             'api_endpoint' => env('GOOGLE_CLOUD_STORAGE_API_ENDPOINT', null),
             'visibility' => 'public',
-            'visibility_handler' => null,
+            'visibility_handler' => UniformBucketLevelAccessVisibility::class,
             'metadata' => ['cacheControl' => 'public,max-age=86400'],
+            'throw' => true,
         ],
     ],
 ];

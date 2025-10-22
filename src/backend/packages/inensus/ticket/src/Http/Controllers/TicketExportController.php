@@ -2,7 +2,6 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Http\Resources\TicketResource;
@@ -49,7 +48,7 @@ class TicketExportController {
         );
     }
 
-    public function download(int $id): BinaryFileResponse|RedirectResponse {
+    public function download(int $id): BinaryFileResponse|\Illuminate\Http\Response {
         $report = $this->ticketOutsourceReportService->getById($id);
         $disk = config('filesystems.default');
         $relativePath = $report->path;
@@ -59,14 +58,17 @@ class TicketExportController {
         }
 
         if ($disk === 'local') {
-            return response()->download(Storage::disk('local')->path($relativePath));
+            $localPath = Storage::disk('local')->path($relativePath);
+
+            return response()->download($localPath);
         }
 
-        $temporaryUrl = Storage::temporaryUrl(
-            $relativePath,
-            now()->addMinutes(5)
-        );
+        $fileContent = Storage::get($relativePath);
+        $fileName = basename($relativePath);
 
-        return redirect()->away($temporaryUrl);
+        return response($fileContent)
+            ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            ->header('Content-Disposition', 'attachment; filename="'.$fileName.'"')
+            ->header('Content-Length', strlen($fileContent));
     }
 }
