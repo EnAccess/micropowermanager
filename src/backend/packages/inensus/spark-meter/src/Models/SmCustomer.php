@@ -23,10 +23,16 @@ use Illuminate\Support\Carbon;
 class SmCustomer extends BaseModel {
     protected $table = 'sm_customers';
 
+    /**
+     * @return BelongsTo<Person, $this>
+     */
     public function mpmPerson(): BelongsTo {
         return $this->belongsTo(Person::class, 'mpm_customer_id');
     }
 
+    /**
+     * @return BelongsTo<SmSite, $this>
+     */
     public function site(): BelongsTo {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
     }

@@ -2,20 +2,31 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SparkMeter\Models\SmSmsBody;
 
 class SmSmsBodyService {
-    public function __construct(private SmSmsBody $smsBody) {}
+    public function __construct(
+        private SmSmsBody $smsBody,
+    ) {}
 
-    public function getSmsBodyByReference($reference) {
+    public function getSmsBodyByReference(string $reference): SmSmsBody {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
     }
 
-    public function getSmsBodies() {
+    /**
+     * @return Collection<int, SmSmsBody>
+     */
+    public function getSmsBodies(): Collection {
         return $this->smsBody->newQuery()->get();
     }
 
-    public function updateSmsBodies($smsBodiesData) {
+    /**
+     * @param array<string, mixed> $smsBodiesData
+     *
+     * @return Collection<int, SmSmsBody>
+     */
+    public function updateSmsBodies(array $smsBodiesData): Collection {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData)->each(function (array $smsBody) use ($smsBodies) {
             $smsBodies->filter(fn (SmSmsBody $body): bool => $body['id'] === $smsBody['id'])->first()->update([
@@ -26,7 +37,10 @@ class SmSmsBodyService {
         return $smsBodies;
     }
 
-    public function getNullBodies() {
+    /**
+     * @return Collection<int, SmSmsBody>
+     */
+    public function getNullBodies(): Collection {
         return $this->smsBody->newQuery()->whereNull('body')->get();
     }
 

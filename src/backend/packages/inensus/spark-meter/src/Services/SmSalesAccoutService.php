@@ -2,6 +2,8 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Helpers\SmTableEncryption;
@@ -10,13 +12,26 @@ use Inensus\SparkMeter\Models\SmSalesAccount;
 use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
+/**
+ * @implements ISynchronizeService<SmSalesAccount>
+ */
 class SmSalesAccoutService implements ISynchronizeService {
     private string $rootUrl = '/sales-accounts';
 
-    public function __construct(private SparkMeterApiRequests $sparkMeterApiRequests, private SmTableEncryption $smTableEncryption, private SmSalesAccount $smSalesAccount, private SmSite $smSite, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService) {}
+    public function __construct(
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private SmTableEncryption $smTableEncryption,
+        private SmSalesAccount $smSalesAccount,
+        private SmSite $smSite,
+        private SmSyncSettingService $smSyncSettingService,
+        private SmSyncActionService $smSyncActionService,
+    ) {}
 
-    public function getSmSalesAccounts($request) {
-        $perPage = $request->input('per_page') ?? 15;
+    /**
+     * @return LengthAwarePaginator<int, SmSalesAccount>
+     */
+    public function getSmSalesAccounts(Request $request): LengthAwarePaginator {
+        $perPage = (int) $request->input('per_page', 15);
 
         return $this->smSalesAccount->newQuery()->with(['site.mpmMiniGrid'])->paginate($perPage);
     }
@@ -25,7 +40,10 @@ class SmSalesAccoutService implements ISynchronizeService {
         return count($this->smSalesAccount->newQuery()->get());
     }
 
-    public function sync() {
+    /**
+     * @return LengthAwarePaginator<int, SmSalesAccount>
+     */
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('SalesAccounts');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -70,9 +88,9 @@ class SmSalesAccoutService implements ISynchronizeService {
     }
 
     /**
-     * @return mixed[]
+     * @return array<string, mixed>
      */
-    public function syncCheck($returnData = false): array {
+    public function syncCheck(bool $returnData = false): array {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
 
@@ -88,6 +106,7 @@ class SmSalesAccoutService implements ISynchronizeService {
                 }
                 throw new SparkAPIResponseException($e->getMessage());
             }
+            // @phpstan-ignore argument.templateType,argument.templateType
             $sparkSalesAccountsCollection = collect($sparkSalesAccounts['accounts']);
             $salesAccounts = $this->smSalesAccount->newQuery()->where('site_id', $site->site_id)->get();
             $sparkSalesAccountsCollection->transform(function (array $salesAccount) use ($salesAccounts): array {
@@ -124,7 +143,10 @@ class SmSalesAccoutService implements ISynchronizeService {
         return $returnArray;
     }
 
-    public function syncCheckBySite($siteId): array {
+    /**
+     * @return array{result: bool, message: string}
+     */
+    public function syncCheckBySite(string $siteId): array {
         try {
             $url = $this->rootUrl;
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
@@ -132,6 +154,7 @@ class SmSalesAccoutService implements ISynchronizeService {
             Log::critical('Spark meter sales-account sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
             throw new SparkAPIResponseException($e->getMessage());
         }
+        // @phpstan-ignore argument.templateType,argument.templateType
         $sparkSalesAccountsCollection = collect($sparkMeterModels['accounts']);
 
         $salesAccounts = $this->smSalesAccount->newQuery()->where('site_id', $siteId)->get();
@@ -160,7 +183,10 @@ class SmSalesAccoutService implements ISynchronizeService {
         }
     }
 
-    public function modelHasher($model, ...$params): string {
+    /**
+     * @param array<string, mixed> $model
+     */
+    public function modelHasher(array $model, ?string ...$params): string {
         return $smModelHash = $this->smTableEncryption->makeHash([
             $model['account_type'],
             $model['active'],
