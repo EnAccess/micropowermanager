@@ -2,26 +2,29 @@
 
 namespace Inensus\Prospect\Jobs;
 
+use App\Jobs\AbstractJob;
 use App\Models\CompanyDatabase;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Inensus\Prospect\Http\Clients\ProspectApiClient;
 
-class PushInstallations implements ShouldQueue {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+class PushInstallations extends AbstractJob {
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(
+        ?int $companyId = null,
+        private ?string $filePath = null,
+    ) {
+        parent::__construct($companyId);
 
-    public string $queue = 'prospect_push';
+        $this->onConnection('redis');
+        $this->onQueue('prospect');
+    }
 
-    public function __construct(private ?string $filePath = null) {}
-
-    public function handle(ProspectApiClient $apiClient): void {
+    /**
+     * Execute the job.
+     */
+    public function executeJob(): void {
         try {
             $data = $this->loadCsvData();
             if ($data === []) {
@@ -30,7 +33,7 @@ class PushInstallations implements ShouldQueue {
                 return;
             }
             $payload = ['data' => $data];
-            $response = $apiClient->postInstallations($payload);
+            $response = app(ProspectApiClient::class)->postInstallations($payload);
 
             if ($response->failed()) {
                 Log::error('Prospect: push failed', ['status' => $response->status(), 'body' => $response->body()]);

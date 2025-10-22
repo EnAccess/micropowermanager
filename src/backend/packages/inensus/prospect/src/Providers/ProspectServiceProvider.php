@@ -22,7 +22,7 @@ class ProspectServiceProvider extends ServiceProvider {
         }
 
         $this->app->booted(function ($app) {
-            $app->make(Schedule::class)->command('prospect:dataSync')->withoutOverlapping(50)
+            $app->make(Schedule::class)->command('prospect:dataSync')->everyMinute()
                 ->appendOutputTo(storage_path('logs/cron.log'));
         });
     }

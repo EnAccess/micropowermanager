@@ -26,13 +26,17 @@ class ProspectDataSynchronizer extends Command {
 
         $syncActions = $this->syncActionService->getActionsNeedsToSync();
 
-        $this->syncSettingService->updateSyncSettings([]); // no-op; ensure service is wired
+        $this->info($syncActions);
+
+        $this->syncSettingService->updateSyncSettings([]);
 
         $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
-            if (!$syncAction) {
-                return true;
-            }
+            // if (!$syncAction) {
+            //     return true;
+            // }
+
+            $this->info('sync action......');
 
             $actionName = strtolower($syncSetting->action_name);
 
