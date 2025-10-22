@@ -10,6 +10,8 @@ return new class extends Migration {
         // Ensure roles exist
         $owner = Role::firstOrCreate(['name' => 'owner', 'guard_name' => 'api']);
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
+        $editor = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'api']);
+        $reader = Role::firstOrCreate(['name' => 'reader', 'guard_name' => 'api']);
         $fieldAgent = Role::firstOrCreate(['name' => 'field-agent', 'guard_name' => 'agent']);
 
         // Get all users
