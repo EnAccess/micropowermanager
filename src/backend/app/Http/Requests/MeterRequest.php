@@ -19,9 +19,9 @@ class MeterRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'serial_number' => 'required|string',
-            'manufacturer_id' => 'required',
-            'meter_type_id' => 'required',
+            'serial_number' => ['required', 'string'],
+            'manufacturer_id' => ['required'],
+            'meter_type_id' => ['required'],
         ];
     }
 }

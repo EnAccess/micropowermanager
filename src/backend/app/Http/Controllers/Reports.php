@@ -103,7 +103,7 @@ class Reports {
 
         $this->styleSheet($sheet, 'A5:'.$sheet->getHighestDataColumn().'5', Border::BORDER_THIN, null);
         foreach ($this->excelColumnRange('A', $sheet->getHighestColumn()) as $col) {
-            if ($col === 'B' || $col === 'C' || $col === 'D') {
+            if (in_array($col, ['B', 'C', 'D'], true)) {
                 continue;
             }
             $sheet
@@ -691,7 +691,7 @@ class Reports {
             ->where('target_date', '>', $endDate)
             ->where('owner_type', 'mini-grid')
             ->where('owner_id', $cityId)
-            ->orderBy('target_date', 'asc')->first();
+            ->oldest('target_date')->first();
 
         if (!$targetData) { // no target is defined for that mini-grid
             return;

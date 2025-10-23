@@ -19,10 +19,10 @@ class CityRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'name' => 'required',
-            'mini_grid_id' => 'required',
-            'cluster_id' => 'required',
-            'country_id' => 'required|integer|exists:tenant.countries,id',
+            'name' => ['required'],
+            'mini_grid_id' => ['required'],
+            'cluster_id' => ['required'],
+            'country_id' => ['required', 'integer', 'exists:tenant.countries,id'],
         ];
     }
 }

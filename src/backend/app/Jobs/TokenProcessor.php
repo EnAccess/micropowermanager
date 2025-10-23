@@ -106,12 +106,7 @@ class TokenProcessor extends AbstractJob {
 
     private function retryTokenGeneration(): void {
         ++$this->counter;
-        self::dispatch(
-            $this->companyId,
-            $this->transactionContainer,
-            false,
-            $this->counter
-        )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
+        dispatch(new self($this->companyId, $this->transactionContainer, false, $this->counter))->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
     }
 
     /**

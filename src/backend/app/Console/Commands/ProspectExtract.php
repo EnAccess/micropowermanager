@@ -38,7 +38,7 @@ class ProspectExtract extends AbstractSharedCommand {
 
             if ($companyId) {
                 $this->info("Dispatching Prospect data extraction job for company ID: {$companyId}");
-                ProspectExtractJob::dispatch((int) $companyId);
+                dispatch(new ProspectExtractJob((int) $companyId));
                 $this->info('Prospect data extraction job has been dispatched successfully!');
             } else {
                 $this->info('Dispatching Prospect data extraction job for all companies...');

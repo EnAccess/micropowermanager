@@ -24,14 +24,14 @@ class SmTariffRequest extends FormRequest {
 
         return [
             'name' => ['required', Rule::unique('tenant.meter_tariffs')->ignore($meterTariff->mpmTariff->id)],
-            'flatPrice' => 'required',
-            'flatLoadLimit' => 'required',
-            'planEnabled' => 'required',
-            'touEnabled' => 'required',
-            'tous' => 'sometimes|array|required_if:touEnabled,1,true',
-            'tous.*.start' => 'required_with:tous',
-            'tous.*.end' => 'required_with:tous',
-            'tous.*.value' => 'required_with:tous',
+            'flatPrice' => ['required'],
+            'flatLoadLimit' => ['required'],
+            'planEnabled' => ['required'],
+            'touEnabled' => ['required'],
+            'tous' => ['sometimes', 'array', 'required_if:touEnabled,1,true'],
+            'tous.*.start' => ['required_with:tous'],
+            'tous.*.end' => ['required_with:tous'],
+            'tous.*.value' => ['required_with:tous'],
         ];
     }
 }

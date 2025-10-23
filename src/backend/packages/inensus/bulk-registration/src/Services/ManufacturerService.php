@@ -38,7 +38,7 @@ class ManufacturerService extends CreatorService {
                 ' is not supported. Supported manufacturers are '.implode(', ', $this->manufacturers);
             throw new ManufacturerNotSupportedException($message);
         }
-        if (strlen(preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']])) > 0) {
+        if ((string) preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']]) !== '') {
             $manufacturerData = [
                 'name' => $csvData[$manufacturerConfig['name']].'s',
                 'api_name' => preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']]).'Api',

@@ -12,8 +12,8 @@ class TicketingUserExternalRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'username' => 'required',
-            'phone' => 'required',
+            'username' => ['required'],
+            'phone' => ['required'],
         ];
     }
 

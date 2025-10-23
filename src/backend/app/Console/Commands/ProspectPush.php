@@ -40,7 +40,7 @@ class ProspectPush extends AbstractSharedCommand {
 
             if ($companyId) {
                 $this->info("Dispatching Prospect push job for company ID: {$companyId}");
-                ProspectPushJob::dispatch((int) $companyId, $filePath);
+                dispatch(new ProspectPushJob((int) $companyId, $filePath));
                 $this->info('Prospect push job has been dispatched successfully!');
             } else {
                 $this->info('Dispatching Prospect push job for all companies...');

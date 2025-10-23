@@ -14,8 +14,8 @@ class VodacomTransactionProcessRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'referenceId' => 'required|string|regex:/^[A-Za-z0-9\-]{5,20}$/',
-            'transactionId' => 'required|string|regex:/^VOD-TXN-[0-9]{6}$/',
+            'referenceId' => ['required', 'string', 'regex:/^[A-Za-z0-9\-]{5,20}$/'],
+            'transactionId' => ['required', 'string', 'regex:/^VOD-TXN-[0-9]{6}$/'],
         ];
     }
 }

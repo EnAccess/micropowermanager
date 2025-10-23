@@ -14,8 +14,8 @@ class SteamaCustomerRequest extends FormRequest {
     public function rules(): array {
         return [
             'id' => ['required', Rule::unique('tenant.steama_customers')->ignore($this->id)],
-            'low_balance_warning' => 'required',
-            'energy_price' => 'required',
+            'low_balance_warning' => ['required'],
+            'energy_price' => ['required'],
         ];
     }
 }

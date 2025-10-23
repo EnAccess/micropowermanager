@@ -13,11 +13,11 @@ use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use MPM\Device\DeviceService;
 
 class AppliancePaymentService {
@@ -169,7 +169,7 @@ class AppliancePaymentService {
             $dueDateSecondRow = Carbon::parse($secondDueDate);
             $dueDateThirdRow = Carbon::parse($thirdDueDate);
 
-            return $dueDateSecondRow->diffInDays($dueDateThirdRow);
+            return (int) $dueDateSecondRow->diffInDays($dueDateThirdRow);
         } catch (\Exception) {
             return 30;
         }

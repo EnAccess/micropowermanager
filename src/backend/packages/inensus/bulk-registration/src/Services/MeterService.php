@@ -18,7 +18,7 @@ class MeterService extends CreatorService {
     public function resolveCsvDataFromComingRow(array $csvData) {
         $meterConfig = config('bulk-registration.csv_fields.meter');
 
-        if (strlen(preg_replace('/\s+/', '', $csvData[$meterConfig['serial_number']])) > 0) {
+        if ((string) preg_replace('/\s+/', '', $csvData[$meterConfig['serial_number']]) !== '') {
             $meterType = $this->meterTypeService->createDefaultMeterTypeIfDoesNotExistAny();
             $meterData = [
                 'serial_number' => $csvData[$meterConfig['serial_number']],

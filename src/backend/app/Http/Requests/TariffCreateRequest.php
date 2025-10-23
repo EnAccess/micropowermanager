@@ -18,20 +18,20 @@ class TariffCreateRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, string>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array {
         return [
-            'name' => 'required',
-            'price' => 'required|numeric', // 100 times of original price to support 2 decimal numbers.
-            'currency' => 'required|string|max:20',
-            'factor' => 'sometimes|integer',
-            'access_rate_period' => 'integer|min:1',
-            'access_rate_amount' => 'integer',
-            'social_tariff' => 'sometimes|required',
-            'components' => 'sometimes|required|array',
-            'tous' => 'sometimes|required|array',
-            'minimum_purchase_amount' => 'numeric',
+            'name' => ['required'],
+            'price' => ['required', 'numeric'], // 100 times of original price to support 2 decimal numbers.
+            'currency' => ['required', 'string', 'max:20'],
+            'factor' => ['sometimes', 'integer'],
+            'access_rate_period' => ['integer', 'min:1'],
+            'access_rate_amount' => ['integer'],
+            'social_tariff' => ['sometimes', 'required'],
+            'components' => ['sometimes', 'required', 'array'],
+            'tous' => ['sometimes', 'required', 'array'],
+            'minimum_purchase_amount' => ['numeric'],
         ];
     }
 

@@ -21,7 +21,7 @@ class SmCredentialRequest extends FormRequest {
     public function rules(): array {
         return [
             'api_key' => ['required', Rule::unique('tenant.sm_api_credentials')->ignore($this->id)],
-            'api_secret' => 'required',
+            'api_secret' => ['required'],
         ];
     }
 }

@@ -21,7 +21,7 @@ class MesombPaymentProviderController extends Controller {
 
         $companyId = $request->attributes->get('companyId') ?? null;
         if ($companyId !== null) {
-            ProcessPayment::dispatch($companyId, $transaction->id);
+            dispatch(new ProcessPayment($companyId, $transaction->id));
         } else {
             Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
         }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -50,7 +51,8 @@ class ApiKey extends BaseModelCentral {
      *
      * @return Builder<ApiKey>
      */
-    protected function scopeActive(Builder $query): Builder {
+    #[Scope]
+    protected function active(Builder $query): Builder {
         return $query->where('active', true);
     }
 }

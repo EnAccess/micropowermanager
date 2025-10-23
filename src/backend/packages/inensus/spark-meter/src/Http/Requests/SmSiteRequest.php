@@ -19,8 +19,8 @@ class SmSiteRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'thundercloud_url' => 'required',
-            'thundercloud_token' => 'required',
+            'thundercloud_url' => ['required'],
+            'thundercloud_token' => ['required'],
         ];
     }
 }

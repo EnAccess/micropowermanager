@@ -12,9 +12,9 @@ class SmsApplianceRemindRateRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'appliance_type_id' => 'required',
-            'overdue_remind_rate' => 'required',
-            'remind_rate' => 'required',
+            'appliance_type_id' => ['required'],
+            'overdue_remind_rate' => ['required'],
+            'remind_rate' => ['required'],
         ];
     }
 }

@@ -36,15 +36,13 @@ class TargetService {
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
-            return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->orderBy(
-                'target_date',
-                'desc'
+            return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->latest(
+                'target_date'
             )->paginate($limit);
         }
 
-        return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->orderBy(
-            'target_date',
-            'desc'
+        return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->latest(
+            'target_date'
         )->get();
     }
 

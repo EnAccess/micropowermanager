@@ -15,7 +15,7 @@ class StronCredentialRequest extends FormRequest {
         return [
             'company_name' => ['required', Rule::unique('tenant.stron_api_credentials')->ignore($this->id)],
             'username' => ['required', Rule::unique('tenant.stron_api_credentials')->ignore($this->id)],
-            'password' => 'required',
+            'password' => ['required'],
         ];
     }
 }

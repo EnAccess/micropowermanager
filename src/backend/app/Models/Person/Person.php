@@ -206,7 +206,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
             return false;
         }
 
-        return Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
+        return (int) Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
     }
 
     /**
