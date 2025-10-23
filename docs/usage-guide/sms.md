@@ -50,7 +50,29 @@ notifications and communications.
 
 ![Short code from Africanstalking](images/africanstalking-sms-shortcode.png)
 
-### Step 4: Register SMS Delivery Callback URL
+### Step 4: Enable AfricasTalking Plugin in MPM
+
+1. Log into your MPM admin panel
+2. Navigate to **Plugins** section
+3. Find the **AfricasTalking** plugin in the available plugins list
+4. Click **Enable** to activate the plugin
+5. Confirm the activation
+
+![Plugin settings page](images/africanstalking-enable-plugin.png)
+
+### Step 5: Configure Plugin Credentials
+
+1. After enabling the plugin, go to **Plugins** → **AfricasTalking** → **Settings**
+2. Enter the following credentials:
+   - **API Key**: Paste the API key generated in Step 2
+   - **Short Code**: Enter the short code obtained in Step 3
+   - **Username**: Your AfricasTalking username
+3. Save the configuration
+4. Test the connection to ensure credentials are valid
+
+![Plugin Overview page](images/africanstalking-cred-overview-page.png)
+
+### Step 6: Register SMS Delivery Callback URL
 
 1. In your AfricasTalking dashboard, go to **SMS** → **Callback URLs**
 2. Set up the delivery callback URL to point to your MPM instance: Copy the url
@@ -63,28 +85,6 @@ notifications and communications.
 3. Enable delivery reports to track SMS delivery status
 
 ![Register callback URL for sms delivery](images/africanstalking-sms-delivery-callback.png)
-
-### Step 5: Enable AfricasTalking Plugin in MPM
-
-1. Log into your MPM admin panel
-2. Navigate to **Plugins** section
-3. Find the **AfricasTalking** plugin in the available plugins list
-4. Click **Enable** to activate the plugin
-5. Confirm the activation
-
-![Plugin settings page](images/africanstalking-enable-plugin.png)
-
-### Step 6: Configure Plugin Credentials
-
-1. After enabling the plugin, go to **Plugins** → **AfricasTalking** → **Settings**
-2. Enter the following credentials:
-   - **API Key**: Paste the API key generated in Step 2
-   - **Short Code**: Enter the short code obtained in Step 3
-   - **Username**: Your AfricasTalking username
-3. Save the configuration
-4. Test the connection to ensure credentials are valid
-
-![Plugin Overview page](images/africanstalking-cred-overview-page.png)
 
 ### Step 7: Test SMS Functionality
 

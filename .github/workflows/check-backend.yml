@@ -49,26 +49,6 @@ jobs:
         run: composer larastan
         working-directory: ./src/backend
 
-  larastan-packages:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          extensions: mbstring, zip
-
-      - name: Install Composer Dependencies
-        run: composer install --no-interaction --prefer-dist
-        working-directory: ./src/backend
-
-      - name: Run PHPStan/Larastan (Packages)
-        run: composer larastan-packages
-        working-directory: ./src/backend
-
   larastan-next:
     runs-on: ubuntu-latest
     steps:

@@ -3,7 +3,7 @@
 namespace Inensus\SparkMeter\Http\Controllers;
 
 interface IBaseController {
-    public function sync();
+    public function sync(): mixed;
 
-    public function checkSync();
+    public function checkSync(): mixed;
 }
