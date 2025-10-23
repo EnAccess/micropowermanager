@@ -11,6 +11,7 @@
     "php": "^8.2",
     "africastalking/africastalking": "^3.0",
     "barryvdh/laravel-dompdf": "^v3.1.1",
+    "barryvdh/laravel-ide-helper": "^3.6",
     "bogdaan/viber-bot-php": "^0.0.15",
     "fakerphp/faker": "^1.24",
     "guzzlehttp/guzzle": "^7.3.0",
@@ -32,7 +33,6 @@
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.5",
-    "barryvdh/laravel-ide-helper": "^3.6",
     "driftingly/rector-laravel": "^2.0",
     "filp/whoops": "^2.0",
     "friendsofphp/php-cs-fixer": "^3.64",
