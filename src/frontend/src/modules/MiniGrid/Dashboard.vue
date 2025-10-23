@@ -161,6 +161,7 @@
           <tickets-overview
             :chart-options="chartOptions"
             :ticketData="openedTicketChartData"
+            ref="ticketsOverview"
           />
         </div>
       </div>
@@ -477,23 +478,21 @@ export default {
       let openedTicketChartData = []
       let closedTicketChartData = []
 
+      // Check if tickets data exists and has categories
+      if (!this.miniGridData.tickets || !this.miniGridData.tickets.categories) {
+        this.openedTicketChartData = []
+        return
+      }
+
       openedTicketChartData.push([i18n.tc("words.period")])
       closedTicketChartData.push([i18n.tc("words.period")])
       for (let category in this.miniGridData.tickets.categories) {
         openedTicketChartData[0].push(
           this.miniGridData.tickets.categories[category].label_name,
         )
-        openedTicketChartData[0].push({
-          type: "string",
-          role: "tooltip",
-        })
         closedTicketChartData[0].push(
           this.miniGridData.tickets.categories[category].label_name,
         )
-        closedTicketChartData[0].push({
-          type: "string",
-          role: "tooltip",
-        })
       }
 
       for (let oT in this.miniGridData.tickets) {
@@ -505,28 +504,16 @@ export default {
         let ticketChartDataOpened = [oT]
         let ticketChartDataClosed = [oT]
 
-        for (let tD in ticketCategoryData) {
-          let ticketData = ticketCategoryData[tD]
-          ticketChartDataOpened.push(
-            ticketData.opened,
-            oT +
-              "\n" +
-              [tD] +
-              " : " +
-              ticketData.opened +
-              " " +
-              i18n.tc("words.open", 2),
-          )
-          ticketChartDataClosed.push(
-            ticketData.closed,
-            oT +
-              "\n" +
-              [tD] +
-              " : " +
-              ticketData.closed +
-              " " +
-              i18n.tc("words.close", 2),
-          )
+        // Ensure we have data for all categories in the same order as the header
+        for (let category in this.miniGridData.tickets.categories) {
+          const categoryName =
+            this.miniGridData.tickets.categories[category].label_name
+          const ticketData = ticketCategoryData[categoryName] || {
+            opened: 0,
+            closed: 0,
+          }
+          ticketChartDataOpened.push(ticketData.opened || 0)
+          ticketChartDataClosed.push(ticketData.closed || 0)
         }
 
         openedTicketChartData.push(ticketChartDataOpened)

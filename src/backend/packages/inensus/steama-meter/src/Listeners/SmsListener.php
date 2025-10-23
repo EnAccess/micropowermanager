@@ -3,6 +3,7 @@
 namespace Inensus\SteamaMeter\Listeners;
 
 use App\Services\SmsService;
+use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
@@ -15,9 +16,9 @@ class SmsListener {
         private SmsService $smsService,
     ) {}
 
-    public function onSmsStored($sender, $message) {
+    public function onSmsStored(string $sender, string $message): void {
         $steamaCustomer = $this->customerService->getSteamaCustomerWithPhone($sender);
-        if (!$steamaCustomer) {
+        if (!$steamaCustomer instanceof SteamaCustomer) {
             return;
         }
         $smsFeedbackWords = $this->smsFeedbackWordService->getSmsFeedbackWords();
@@ -25,7 +26,7 @@ class SmsListener {
         $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
         if ($meterBalance !== false) {
             $this->smsService->sendSms(
-                $steamaCustomer,
+                $steamaCustomer->toArray(),
                 SteamaSmsTypes::BALANCE_FEEDBACK,
                 SteamaSmsConfig::class
             );
@@ -34,7 +35,7 @@ class SmsListener {
         }
     }
 
-    public function handle($sender, $message) {
+    public function handle(string $sender, string $message): void {
         // TODO: Uncomment this when steamaco-meter package is refactored with device->meter approach
         // $this->onSmsStored($sender, $message);
     }

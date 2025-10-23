@@ -2,26 +2,31 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Models\SteamaSmsFeedbackWord;
 
 class SteamaSmsFeedbackWordService {
-    private $smsFeedbackWord;
+    public function __construct(
+        private SteamaSmsFeedbackWord $smsFeedbackWord,
+    ) {}
 
-    public function __construct(SteamaSmsFeedbackWord $smsFeedbackWord) {
-        $this->smsFeedbackWord = $smsFeedbackWord;
-    }
-
-    public function getSmsFeedbackWords() {
+    /**
+     * @return Collection<int, SteamaSmsFeedbackWord>
+     */
+    public function getSmsFeedbackWords(): Collection {
         return $this->smsFeedbackWord->newQuery()->get();
     }
 
-    public function createSmsFeedbackWord() {
+    public function createSmsFeedbackWord(): SteamaSmsFeedbackWord {
         return $this->smsFeedbackWord->newQuery()->firstOrCreate(['id' => 1], [
             'meter_balance' => null,
         ]);
     }
 
-    public function updateSmsFeedbackWord($smsFeedbackWord, $smsFeedbackWordData) {
+    /**
+     * @param array<string, mixed> $smsFeedbackWordData
+     */
+    public function updateSmsFeedbackWord(SteamaSmsFeedbackWord $smsFeedbackWord, array $smsFeedbackWordData): SteamaSmsFeedbackWord {
         $smsFeedbackWord->update([
             'meter_balance' => $smsFeedbackWordData['meter_balance'],
         ]);

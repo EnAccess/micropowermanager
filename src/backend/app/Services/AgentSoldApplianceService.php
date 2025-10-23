@@ -152,7 +152,7 @@ class AgentSoldApplianceService implements IBaseService {
     public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
-        $appliance = $assignedAppliance->appliance()->first();
+        $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
 
@@ -228,7 +228,7 @@ class AgentSoldApplianceService implements IBaseService {
         if ($appliancePerson->down_payment > 0) {
             $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($appliancePerson);
             event(new PaymentSuccessEvent(
-                amount: $transaction->amount,
+                amount: (int) $transaction->amount,
                 paymentService: $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
                 paymentType: 'down payment',
                 sender: $transaction->sender,

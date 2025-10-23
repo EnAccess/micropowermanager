@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\TicketUser;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -16,13 +19,23 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 /**
  * Class User.
  *
- * @property int         $id
- * @property int         $company_id
- * @property string      $name
- * @property string|null $email
+ * @property      int                                      $id
+ * @property      string                                   $name
+ * @property      int                                      $company_id
+ * @property      string                                   $email
+ * @property      string                                   $password
+ * @property      string|null                              $remember_token
+ * @property      Carbon|null                              $created_at
+ * @property      Carbon|null                              $updated_at
+ * @property-read Address|null                             $address
+ * @property-read Address|null                             $addressDetails
+ * @property-read Collection<int, AgentAssignedAppliances> $assignedAppliance
+ * @property-read Collection<int, AgentBalanceHistory>     $balanceHistory
+ * @property-read Company|null                             $company
+ * @property-read TicketUser|null                          $relationTicketUser
  */
 class User extends Authenticatable implements JWTSubject {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'users';
@@ -38,7 +51,7 @@ class User extends Authenticatable implements JWTSubject {
         parent::__construct($attributes);
     }
 
-    public function setPasswordAttribute(string $password): void {
+    protected function setPasswordAttribute(#[\SensitiveParameter] string $password): void {
         $this->attributes['password'] = Hash::make($password);
     }
 
@@ -62,8 +75,6 @@ class User extends Authenticatable implements JWTSubject {
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
      */
     public function getJWTIdentifier(): mixed {
         return $this->getKey();

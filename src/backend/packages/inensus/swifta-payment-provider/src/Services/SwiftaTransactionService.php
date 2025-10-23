@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 /**
  * @implements IBaseService<SwiftaTransaction>
@@ -32,7 +34,12 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         );
     }
 
-    public function initializeTransactionData($data): array {
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array{amount: mixed, cipher: mixed, status: int, timestamp:mixed}
+     */
+    public function initializeTransactionData(array $data): array {
         return [
             'amount' => $data['amount'],
             'cipher' => $data['cipher'],
@@ -41,7 +48,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         ];
     }
 
-    public function setRequestedTransactionsStatusFailed() {
+    public function setRequestedTransactionsStatusFailed(): void {
         $this->swiftaTransaction->newQuery()->where('status', SwiftaTransaction::STATUS_REQUESTED)->get()->each(function ($transaction) {
             $transaction->update([
                 'status' => SwiftaTransaction::STATUS_FAILED,
@@ -55,20 +62,20 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         });
     }
 
-    public function getSwiftaTransaction() {
+    public function getSwiftaTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
         return $this->getPaymentAggregatorTransaction();
     }
 
-    public function getTransactionById($transactionId) {
+    public function getTransactionById(int $transactionId): Transaction {
         try {
             return $this->transaction->newQuery()->findOrFail($transactionId);
         } catch (ModelNotFoundException $exception) {
-            throw new \Exception('transaction_id validation field.');
+            throw new \Exception('transaction_id validation field.', $exception->getCode(), $exception);
         }
     }
 
-    public function checkAmountIsSame($amount, $transaction) {
-        if ($amount != (int) $transaction->amount) {
+    public function checkAmountIsSame(int $amount, Transaction $transaction): void {
+        if ($amount !== (int) $transaction->amount) {
             throw new \Exception('amount validation field.');
         }
     }

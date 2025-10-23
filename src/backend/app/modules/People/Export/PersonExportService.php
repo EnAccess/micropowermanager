@@ -34,8 +34,8 @@ class PersonExportService extends AbstractExportService {
     public function setExportingData(): void {
         $this->exportingData = $this->peopleData->map(function (Person $person): array {
             $primaryAddress = $person->addresses->first();
-            $device = $person->devices->first();
-            $agent = optional($person->agent_sold_appliance?->assigned_appliance?->agent);
+            $devices = $person->devices->pluck('device_serial')->filter()->implode(', ');
+            $agent = optional($person->agentSoldAppliance?->assignedAppliance?->agent);
 
             return [
                 $person->title,
@@ -46,7 +46,7 @@ class PersonExportService extends AbstractExportService {
                 optional($primaryAddress)->email,
                 optional($primaryAddress)->phone,
                 optional($primaryAddress?->city)->name,
-                optional($device)->device_serial,
+                $devices,
                 $agent->person->name ?? '',
             ];
         });

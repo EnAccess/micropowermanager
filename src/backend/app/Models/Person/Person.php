@@ -12,6 +12,7 @@ use App\Models\Base\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
 use App\Models\Device;
+use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
@@ -32,19 +33,34 @@ use Inensus\Ticket\Models\Ticket;
 /**
  * Class Person.
  *
- * @property int                      $id
- * @property string                   $title
- * @property string                   $education
- * @property string                   $name
- * @property string                   $surname
- * @property mixed                    $birth_date
- * @property string                   $sex                  TODO: replace with gender
- * @property int                      $nationality
- * @property int                      $is_customer
- * @property Collection<int, Ticket>  $tickets
- * @property mixed                    $agent_sold_appliance
- * @property Collection<int, Device>  $devices
- * @property Collection<int, Address> $addresses
+ * @property      int                             $id
+ * @property      string|null                     $title
+ * @property      string|null                     $education
+ * @property      string                          $name
+ * @property      string                          $surname
+ * @property      \Illuminate\Support\Carbon|null $birth_date
+ * @property      string|null                     $sex
+ * @property      int|null                        $nationality
+ * @property      int                             $is_customer
+ * @property      string                          $type
+ * @property      int|null                        $mini_grid_id
+ * @property      \Illuminate\Support\Carbon|null $deleted_at
+ * @property      \Illuminate\Support\Carbon|null $created_at
+ * @property      \Illuminate\Support\Carbon|null $updated_at
+ * @property      array<array-key, mixed>|null    $additional_json
+ * @property-read Collection<int, Address>        $addresses
+ * @property-read Agent|null                      $agent
+ * @property-read AgentSoldAppliance|null         $agentSoldAppliance
+ * @property-read Collection<int, AssetPerson>    $assetPerson
+ * @property-read Country|null                    $citizenship
+ * @property-read CustomerGroup|null              $customerGroup
+ * @property-read Collection<int, Device>         $devices
+ * @property-read bool                            $is_active
+ * @property-read PaymentHistory|null             $latestPayment
+ * @property-read MiniGrid|null                   $miniGrid
+ * @property-read Collection<int, PaymentHistory> $payments
+ * @property-read Collection<int, Roles>          $roleOwner
+ * @property-read Collection<int, Ticket>         $tickets
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */
@@ -57,10 +73,6 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
 
     protected $appends = ['is_active'];
 
-    protected $casts = [
-        'additional_json' => 'array',
-    ];
-
     /** @var array<string, string> */
     protected $dispatchesEvents = [
         'deleting' => PersonDeleting::class,
@@ -71,6 +83,27 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
      */
     public function tickets(): MorphMany {
         return $this->morphMany(Ticket::class, 'owner');
+    }
+
+    /**
+     * @return BelongsTo<MiniGrid, $this>
+     */
+    public function miniGrid(): BelongsTo {
+        return $this->belongsTo(MiniGrid::class, 'mini_grid_id', 'id');
+    }
+
+    /**
+     * Check if this person is a maintenance user.
+     */
+    public function isMaintenanceUser(): bool {
+        return $this->type === 'maintenance' && $this->mini_grid_id !== null;
+    }
+
+    /**
+     * Check if this person is an agent.
+     */
+    public function isAgent(): bool {
+        return $this->type === 'agent';
     }
 
     public function saveAddress(Address $address): void {
@@ -166,7 +199,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
         return $this->id;
     }
 
-    public function getIsActiveAttribute(): bool {
+    protected function getIsActiveAttribute(): bool {
         $lastPayment = $this->latestPayment;
 
         if (!$lastPayment) {
@@ -181,5 +214,11 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
      */
     public function latestPayment(): HasOne {
         return $this->hasOne(PaymentHistory::class, 'payer_id')->latestOfMany('created_at');
+    }
+
+    protected function casts(): array {
+        return [
+            'additional_json' => 'array',
+        ];
     }
 }

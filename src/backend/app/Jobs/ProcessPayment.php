@@ -14,25 +14,20 @@ class ProcessPayment extends AbstractJob {
     use Queueable;
     use SerializesModels;
 
-    protected int $transactionId;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(int $companyId, int $transactionId) {
+    public function __construct(int $companyId, protected int $transactionId) {
         $this->onConnection('redis');
         $this->onQueue('payment');
 
         $this->companyId = $companyId;
-        $this->transactionId = $transactionId;
 
         parent::__construct($companyId);
     }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function executeJob(): void {
         TransactionPaymentProcessor::process($this->companyId, $this->transactionId);

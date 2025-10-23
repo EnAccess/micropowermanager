@@ -5,11 +5,21 @@ namespace App\Models;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use Database\Factories\ManufacturerFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
 
 /**
- * @property string $api_name Name of manufacturer that is registed as alias in the Laravel service container. Can be used with `resolve('api_name')`
+ * @property      int                      $id
+ * @property      string                   $type
+ * @property      string                   $name
+ * @property      string|null              $website
+ * @property      string|null              $contact_person
+ * @property      string|null              $api_name
+ * @property      Carbon|null              $created_at
+ * @property      Carbon|null              $updated_at
+ * @property-read Collection<int, Address> $address
  */
 class Manufacturer extends BaseModel {
     /** @use HasFactory<ManufacturerFactory> */

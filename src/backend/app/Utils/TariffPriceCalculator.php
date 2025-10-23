@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Http\Requests\TariffCreateRequest;
 use App\Models\Meter\MeterTariff;
+use App\Models\TimeOfUsage;
 use App\Services\AccessRateService;
 use App\Services\SocialTariffService;
 use App\Services\TariffPricingComponentService;
@@ -93,7 +94,7 @@ class TariffPriceCalculator {
                 $tou = isset($timeOfUsage[$key]['id']) ? $this->timeOfUsageService->getById($timeOfUsage[$key]['id']) :
                     null;
 
-                if ($tou) {
+                if ($tou instanceof TimeOfUsage) {
                     $touData = [
                         'start' => $timeOfUsage[$key]['start'],
                         'end' => $timeOfUsage[$key]['end'],

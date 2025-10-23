@@ -21,13 +21,13 @@
                 <md-icon>add_location_alt</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
-              <md-menu-item @click="replaceRoute('/locations/add-cluster')">
+              <md-menu-item @click="navigateRoute('/locations/add-cluster')">
                 {{ $tc("menu.subMenu.addCluster") }}
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/locations/add-mini-grid')">
+              <md-menu-item @click="navigateRoute('/locations/add-mini-grid')">
                 {{ $tc("menu.subMenu.addMiniGrid") }}
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/locations/add-village')">
+              <md-menu-item @click="navigateRoute('/locations/add-village')">
                 {{ $tc("menu.subMenu.addVillage") }}
               </md-menu-item>
             </md-menu-content>
@@ -46,10 +46,10 @@
                 <md-icon>settings</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
-              <md-menu-item @click="replaceRoute('/settings/configuration')">
+              <md-menu-item @click="navigateRoute('/settings/configuration')">
                 <span>{{ $tc("menu.subMenu.Config") }}</span>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/settings/user-management')">
+              <md-menu-item @click="navigateRoute('/settings/user-management')">
                 {{ $tc("phrases.userManagement") }}
               </md-menu-item>
               <md-menu-item disabled="">
@@ -57,11 +57,13 @@
                 <md-icon>cast</md-icon>
               </md-menu-item>
               <md-menu-item
-                @click="replaceRoute('/settings/connection-groups')"
+                @click="navigateRoute('/settings/connection-groups')"
               >
                 {{ $tc("words.group", 2) }}
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/settings/connection-types')">
+              <md-menu-item
+                @click="navigateRoute('/settings/connection-types')"
+              >
                 {{ $tc("words.type", 2) }}
               </md-menu-item>
             </md-menu-content>
@@ -82,7 +84,7 @@
                 </div>
                 <hr />
               </div>
-              <md-menu-item @click="replaceRoute('/profile')">
+              <md-menu-item @click="navigateRoute('/profile')">
                 {{ $tc("words.profile") }}
               </md-menu-item>
               <md-menu-item @click="logout()">
@@ -118,8 +120,8 @@ export default {
     toggle() {
       this.toggleCard = !this.toggleCard
     },
-    replaceRoute(route) {
-      this.$router.replace(route)
+    navigateRoute(route) {
+      this.$router.push(route)
     },
   },
   computed: {

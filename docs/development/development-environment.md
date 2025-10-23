@@ -124,6 +124,17 @@ pecl install redis
 
 Alternatively [Laravel Herd](https://herd.laravel.com/) can be used.
 
+### Access Docker MySQL database locally
+
+Certain PHP tools (such as migration or seeding utilities) work more conveniently when they can connect directly to the database from your local environment, rather than from inside a Docker container.
+
+To enable this, you can access the Docker-managed MySQL database locally.
+The Docker Compose stack must still be running, but this setup allows you to run PHP commands from your local terminal, providing a smoother development experience.
+
+- Install [direnv](https://direnv.net/)
+- Copy `.envrc.sample` to `.envrc` (and adapt it's values if you run with non-default configuration)
+- Run `direnv allow`
+
 ### Linter configuration
 
 The project uses various linters to ensure a consitent code base across the project.

@@ -3,35 +3,28 @@
 namespace App\Models\Transaction;
 
 use App\Models\Agent;
-use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int    $agent_id
- * @property int    $mobile_device_id
- * @property int    $status
- * @property string $sender
+ * @property      int                                   $id
+ * @property      int                                   $agent_id
+ * @property      string                                $mobile_device_id
+ * @property      int                                   $status
+ * @property      Carbon|null                           $created_at
+ * @property      Carbon|null                           $updated_at
+ * @property      string|null                           $manufacturer_transaction_type
+ * @property      int|null                              $manufacturer_transaction_id
+ * @property-read Agent|null                            $agent
+ * @property-read Collection<int, TransactionConflicts> $conflicts
+ * @property-read Model|null                            $manufacturerTransaction
+ * @property-read Transaction|null                      $transaction
  */
-class AgentTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class AgentTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'agent_transaction';
-
-    /**
-     * @return MorphOne<Transaction, $this>
-     */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
 
     /**
      * @return BelongsTo<Agent, $this>

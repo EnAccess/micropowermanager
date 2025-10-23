@@ -6,29 +6,30 @@ use AfricasTalking\SDK\AfricasTalking;
 use App\Models\Sms;
 use Illuminate\Support\Facades\Log;
 use Inensus\AfricasTalking\Exceptions\MessageNotSentException;
+use Inensus\AfricasTalking\Models\AfricasTalkingCredential;
 use Inensus\AfricasTalking\Services\AfricasTalkingCredentialService;
 use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
 
 class AfricasTalkingGateway {
-    private $africasTalking;
-    private $credentials;
+    private AfricasTalking $africasTalking;
+    private AfricasTalkingCredential $credentials;
 
     public function __construct(
         private AfricasTalkingCredentialService $credentialService,
         private AfricasTalkingMessageService $africasTalkingMessageService,
     ) {
-        $credential = $this->credentialService->getCredentials();
-        $apiKey = $credential->api_key;
-        $username = $credential->username;
-        $this->credentials = $credential;
-        $this->africasTalking = new AfricasTalking($username, $apiKey);
+        $this->credentials = $this->credentialService->getCredentials();
+        $this->africasTalking = new AfricasTalking(
+            $this->credentials->username,
+            $this->credentials->api_key
+        );
     }
 
     public function sendSms(
         string $body,
         string $phoneNumber,
         Sms $registeredSms,
-    ) {
+    ): void {
         try {
             $sms = $this->africasTalking->sms();
             $phoneNumber = str_replace(' ', '', $phoneNumber);

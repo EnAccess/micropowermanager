@@ -7,22 +7,14 @@ use Inensus\SteamaMeter\Models\SteamaCustomer;
 
 class SteamaSmsBalanceFeedbackHeader extends SmsBodyParser {
     protected $variables = ['name', 'surname'];
-    protected $steamaCustomer;
 
-    public function __construct(SteamaCustomer $steamaCustomer) {
-        $this->steamaCustomer = $steamaCustomer;
-    }
+    public function __construct(protected SteamaCustomer $steamaCustomer) {}
 
     protected function getVariableValue(string $variable): mixed {
-        switch ($variable) {
-            case 'name':
-                $variable = $this->steamaCustomer->mpmPerson->name;
-                break;
-            case 'surname':
-                $variable = $this->steamaCustomer->mpmPerson->surname;
-                break;
-        }
-
-        return $variable;
+        return match ($variable) {
+            'name' => $this->steamaCustomer->mpmPerson->name,
+            'surname' => $this->steamaCustomer->mpmPerson->surname,
+            default => $variable,
+        };
     }
 }

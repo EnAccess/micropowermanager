@@ -4,6 +4,9 @@ import Welcome from "./pages/Welcome/index.vue"
 import Login from "./pages/Login/index.vue"
 import Register from "./pages/Register/index.vue"
 import ForgotPassword from "./pages/ForgotPassword/index.vue"
+import ProtectedPagePasswordResetRequest from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetRequest.vue"
+import ProtectedPagePasswordResetConfirm from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetConfirm.vue"
+import UserPasswordResetConfirm from "./modules/UserPasswordReset/UserPasswordResetConfirm.vue"
 
 import ChildRouteWrapper from "./shared/ChildRouteWrapper.vue"
 
@@ -93,6 +96,7 @@ import EBikeList from "./pages/EBikes/index.vue"
 import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
+import OdysseyExportOverview from "./plugins/odyssey-data-export/js/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -128,6 +132,33 @@ export const exportedRoutes = [
     name: "forgot-password",
     components: {
       default: ForgotPassword,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/reset-password",
+    name: "reset-password",
+    components: {
+      default: UserPasswordResetConfirm,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/forgot-protected-password",
+    name: "forgot-protected-password",
+    components: {
+      default: ProtectedPagePasswordResetRequest,
+      header: LoginHeader,
+      footer: LoginFooter,
+    },
+  },
+  {
+    path: "/reset-protected-password",
+    name: "reset-protected-password",
+    components: {
+      default: ProtectedPagePasswordResetConfirm,
       header: LoginHeader,
       footer: LoginFooter,
     },
@@ -1462,6 +1493,30 @@ export const exportedRoutes = [
       {
         path: "chint-overview",
         component: ChintMeterOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/odyssey-data-export",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 23,
+        name: "Odyssey Export",
+        icon: "cloud_upload",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: OdysseyExportOverview,
         meta: {
           layout: "default",
           sidebar: {

@@ -7,13 +7,9 @@ use Carbon\CarbonInterval;
 use Inensus\SparkMeter\Models\SmSyncAction;
 
 class SmSyncActionService {
-    private $syncAction;
+    public function __construct(private SmSyncAction $syncAction) {}
 
-    public function __construct(SmSyncAction $syncAction) {
-        $this->syncAction = $syncAction;
-    }
-
-    public function createSyncAction($syncAction) {
+    public function createSyncAction(array $syncAction) {
         return $this->syncAction->newQuery()->create($syncAction);
     }
 

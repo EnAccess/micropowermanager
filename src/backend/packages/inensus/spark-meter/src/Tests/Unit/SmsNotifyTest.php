@@ -16,9 +16,9 @@ use App\Models\User;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Models\SmSetting;
@@ -36,7 +36,7 @@ class SmsNotifyTest extends TestCase {
     use RefreshDatabase;
 
     /** @test */
-    public function isLowBalanceNotifySend() {
+    public function isLowBalanceNotifySend(): void {
         Queue::fake();
         $this->initializeData();
         $lowBalanceMin = SmSmsSetting::query()->where(
@@ -46,9 +46,7 @@ class SmsNotifyTest extends TestCase {
 
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', function ($q) {
-            return $q->where('is_primary', 1);
-        })->where(
+        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->where(
             'updated_at',
             '>=',
             Carbon::now()->subMinutes($lowBalanceMin)
@@ -57,7 +55,7 @@ class SmsNotifyTest extends TestCase {
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
-        ) {
+        ): true {
             $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
                 'customer_id',
                 $customer->customer_id
@@ -90,7 +88,7 @@ class SmsNotifyTest extends TestCase {
     }
 
     /** @test */
-    public function isTransactionNotifySend() {
+    public function isTransactionNotifySend(): void {
         Queue::fake();
         $data = $this->initializeData();
         $this->initializeSparkTransaction($data['customer']);
@@ -101,9 +99,7 @@ class SmsNotifyTest extends TestCase {
         $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', function ($q) {
-            return $q->where('is_primary', 1);
-        })->get();
+        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->get();
         SmTransaction::query()->with(['thirdPartyTransaction.transaction'])->where(
             'timestamp',
             '>=',
@@ -111,7 +107,7 @@ class SmsNotifyTest extends TestCase {
         )->where('status', 'processed')->get()->each(function ($sparkTransaction) use (
             $smsNotifiedCustomers,
             $customers
-        ) {
+        ): true {
             $smsNotifiedCustomers = $smsNotifiedCustomers->where(
                 'notify_id',
                 $sparkTransaction->id
@@ -119,9 +115,7 @@ class SmsNotifyTest extends TestCase {
             if ($smsNotifiedCustomers) {
                 return true;
             }
-            $notifyCustomer = $customers->filter(function ($customer) use ($sparkTransaction) {
-                return $customer->customer_id == $sparkTransaction->customer_id;
-            })->first();
+            $notifyCustomer = $customers->filter(fn ($customer): bool => $customer->customer_id == $sparkTransaction->customer_id)->first();
             if (!$notifyCustomer) {
                 return true;
             }
@@ -151,7 +145,7 @@ class SmsNotifyTest extends TestCase {
     }
 
     /** @test */
-    public function isMaxAttemptNotifySend() {
+    public function isMaxAttemptNotifySend(): void {
         Queue::fake();
         $this->addSyncSettings();
         $this->initializeAdminData();
@@ -159,7 +153,7 @@ class SmsNotifyTest extends TestCase {
             ->orderBy('next_sync')->get();
         $oldNextSync = $syncActions->first()->next_sync;
         $newNextSync = null;
-        SmSyncSetting::query()->get()->each(function ($syncSetting) use ($syncActions) {
+        SmSyncSetting::query()->get()->each(function ($syncSetting) use ($syncActions): true {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
 
             if (!$syncAction) {
@@ -190,7 +184,7 @@ class SmsNotifyTest extends TestCase {
         $this->assertLessThan($oldNextSync, $newNextSync);
     }
 
-    private function initializeData() {
+    private function initializeData(): array {
         $this->addSmsSettings();
         $this->addSmsBodies();
         // create person
@@ -225,7 +219,7 @@ class SmsNotifyTest extends TestCase {
 
         // associate meter with a person
         $p = Person::query()->first();
-        $m = Meter::query()->create([
+        Meter::query()->create([
             'tariff_id' => 1,
             'meter_id' => 1,
             'connection_type_id' => 1,
@@ -252,7 +246,7 @@ class SmsNotifyTest extends TestCase {
         return ['customer' => $p];
     }
 
-    private function initializeSparkTransaction($customer) {
+    private function initializeSparkTransaction($customer): void {
         $sparkTransaction = SmTransaction::query()->create([
             'site_id' => 1,
             'customer_id' => $customer->id,
@@ -282,7 +276,7 @@ class SmsNotifyTest extends TestCase {
         $transaction->save();
     }
 
-    private function initializeAdminData() {
+    private function initializeAdminData(): void {
         $user = User::factory()->createOne();
         $address = Address::query()->make([
             'phone' => '+905494322161',
@@ -293,7 +287,7 @@ class SmsNotifyTest extends TestCase {
         $address->save();
     }
 
-    private function addSmsSettings() {
+    private function addSmsSettings(): void {
         $smsSetting = SmSetting::query()->make();
 
         $smsTransaction = SmSmsSetting::query()->create([
@@ -317,7 +311,7 @@ class SmsNotifyTest extends TestCase {
         $balanceSetting->save();
     }
 
-    private function addSyncSettings() {
+    private function addSyncSettings(): void {
         $minInterval = CarbonInterval::make('1minute');
         $now = Carbon::now();
         $siteSetting = SmSetting::query()->make();
@@ -456,7 +450,7 @@ class SmsNotifyTest extends TestCase {
                 'title' => 'Sms Footer',
             ],
         ];
-        collect($smsBodies)->each(function ($smsBody) {
+        collect($smsBodies)->each(function (array $smsBody) {
             SmSmsBody::query()->create([
                 'reference' => $smsBody['reference'],
                 'place_holder' => $smsBody['place_holder'],

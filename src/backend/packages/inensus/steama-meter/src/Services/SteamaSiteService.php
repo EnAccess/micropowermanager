@@ -6,6 +6,8 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
@@ -13,58 +15,46 @@ use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaSite;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
+/**
+ * @implements ISynchronizeService<SteamaSite>
+ */
 class SteamaSiteService implements ISynchronizeService {
-    private $site;
-    private $steamaApi;
-    private $apiHelpers;
-    private $rootUrl = '/sites';
-    private $miniGrid;
-    private $cluster;
-    private $geographicalInformation;
-    private $city;
-    private $steamaSyncSettingService;
-    private $steamaSyncActionService;
+    private string $rootUrl = '/sites';
 
     public function __construct(
-        SteamaSite $steamaSiteModel,
-        SteamaMeterApiClient $steamaApi,
-        ApiHelpers $apiHelpers,
-        MiniGrid $miniGrid,
-        Cluster $cluster,
-        GeographicalInformation $geographicalInformation,
-        City $city,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService,
-    ) {
-        $this->site = $steamaSiteModel;
-        $this->steamaApi = $steamaApi;
-        $this->apiHelpers = $apiHelpers;
-        $this->miniGrid = $miniGrid;
-        $this->cluster = $cluster;
-        $this->city = $city;
-        $this->geographicalInformation = $geographicalInformation;
-        $this->steamaSyncSettingService = $steamaSyncSettingService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-    }
+        private SteamaSite $site,
+        private SteamaMeterApiClient $steamaApi,
+        private ApiHelpers $apiHelpers,
+        private MiniGrid $miniGrid,
+        private Cluster $cluster,
+        private GeographicalInformation $geographicalInformation,
+        private City $city,
+        private SteamaSyncSettingService $steamaSyncSettingService,
+        private StemaSyncActionService $steamaSyncActionService,
+    ) {}
 
-    public function getSites($request) {
-        $perPage = $request->input('per_page') ?? 15;
+    /**
+     * @return LengthAwarePaginator<int, SteamaSite>
+     */
+    public function getSites(Request $request): LengthAwarePaginator {
+        $perPage = (int) $request->input('per_page', 15);
 
         return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate($perPage);
     }
 
-    public function getSitesCount() {
+    public function getSitesCount(): int {
         return count($this->site->newQuery()->get());
     }
 
-    public function sync() {
+    /**
+     * @return LengthAwarePaginator<int, SteamaSite>
+     */
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Sites');
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function ($site) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $site) {
                 $miniGrid = $this->creteRelatedMiniGrid($site);
                 $this->site->newQuery()->create([
                     'site_id' => $site['id'],
@@ -74,9 +64,7 @@ class SteamaSiteService implements ISynchronizeService {
                 $this->createOrUpdateGeographicalInformation($miniGrid->id, $site);
             });
 
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function ($site) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $site) {
                 $miniGrid = is_null($site['relatedMiniGrid']) ?
                     $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid($site, $site['relatedMiniGrid']);
                 $this->createOrUpdateGeographicalInformation($miniGrid->id, $site);
@@ -92,11 +80,14 @@ class SteamaSiteService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama sites sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function syncCheck($returnData = false) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function syncCheck(bool $returnData = false): array {
         try {
             $url = $this->rootUrl.'?page=1&page_size=100';
             $result = $this->steamaApi->get($url);
@@ -107,7 +98,7 @@ class SteamaSiteService implements ISynchronizeService {
                 $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $site) {
-                    array_push($sites, $site);
+                    $sites[] = $site;
                 }
             }
         } catch (SteamaApiResponseException $e) {
@@ -116,11 +107,12 @@ class SteamaSiteService implements ISynchronizeService {
             }
             throw new SteamaApiResponseException($e->getMessage());
         }
+        // @phpstan-ignore argument.templateType,argument.templateType
         $sitesCollection = collect($sites);
         $stmSites = $this->site->newQuery()->get();
         $miniGrids = $this->miniGrid->newQuery()->get();
 
-        $sitesCollection->transform(function ($site) use ($stmSites, $miniGrids) {
+        $sitesCollection->transform(function (array $site) use ($stmSites, $miniGrids): array {
             $registeredStmSite = $stmSites->firstWhere('site_id', $site['id']);
             $relatedMiniGrid = null;
             $siteHash = $this->steamaSiteHasher($site);
@@ -146,7 +138,10 @@ class SteamaSiteService implements ISynchronizeService {
         return $returnData ? ['data' => $sitesCollection, 'result' => true] : ['result' => true];
     }
 
-    public function creteRelatedMiniGrid($site) {
+    /**
+     * @param array<string, mixed> $site
+     */
+    public function creteRelatedMiniGrid(array $site): MiniGrid {
         $cluster = $this->cluster->newQuery()->latest('created_at')->first();
         $miniGrid = $this->miniGrid->newQuery()->create([
             'name' => $site['name'],
@@ -161,7 +156,10 @@ class SteamaSiteService implements ISynchronizeService {
         return $miniGrid;
     }
 
-    public function updateRelatedMiniGrid($site, $miniGrid) {
+    /**
+     * @param array<string, mixed> $site
+     */
+    public function updateRelatedMiniGrid(array $site, MiniGrid $miniGrid): MiniGrid {
         $miniGrid->update([
             'name' => $site['name'],
         ]);
@@ -169,7 +167,10 @@ class SteamaSiteService implements ISynchronizeService {
         return $miniGrid->fresh();
     }
 
-    public function createOrUpdateGeographicalInformation($miniGridId, $site) {
+    /**
+     * @param array<string, mixed> $site
+     */
+    public function createOrUpdateGeographicalInformation(int $miniGridId, array $site): void {
         $geographicalInformation = $this->geographicalInformation->newQuery()->whereHasMorph(
             'owner',
             [MiniGrid::class],
@@ -193,11 +194,14 @@ class SteamaSiteService implements ISynchronizeService {
         }
     }
 
-    public function checkLocationAvailability() {
+    public function checkLocationAvailability(): ?Cluster {
         return $this->cluster->newQuery()->latest('created_at')->first();
     }
 
-    private function steamaSiteHasher($steamaSite) {
+    /**
+     * @param array<string, mixed> $steamaSite
+     */
+    private function steamaSiteHasher(array $steamaSite): string {
         return $this->apiHelpers->makeHash([
             $steamaSite['name'],
             $steamaSite['latitude'],

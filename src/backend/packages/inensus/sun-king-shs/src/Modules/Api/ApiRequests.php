@@ -13,7 +13,10 @@ class ApiRequests {
         private Client $httpClient,
     ) {}
 
-    public function authentication($credential): array {
+    /**
+     * @return array{access_token: string, token_expires_in: int}
+     */
+    public function authentication(SunKingCredential $credential): array {
         try {
             $response =
                 $this->httpClient->post($credential->getAuthUrl(), [
@@ -41,7 +44,10 @@ class ApiRequests {
         }
     }
 
-    public function get(SunKingCredential $credentials, array $params, string $slug) {
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function get(SunKingCredential $credentials, array $params, string $slug): mixed {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
@@ -66,7 +72,12 @@ class ApiRequests {
         }
     }
 
-    public function post(SunKingCredential $credentials, array $params, string $slug) {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>|string
+     */
+    public function post(SunKingCredential $credentials, array $params, string $slug): array|string {
         $url = $credentials->getApiUrl().$slug;
         try {
             $request = $this->httpClient->post(

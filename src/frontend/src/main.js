@@ -72,6 +72,8 @@ Vue.component("Chint-Meter", ChintMeter)
 const unauthorizedPaths = [
   "login",
   "forgot-password",
+  "reset-password",
+  "reset-protected-password",
   "welcome",
   "register",
   "/wave-money/payment",

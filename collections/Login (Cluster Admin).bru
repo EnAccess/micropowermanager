@@ -1,0 +1,27 @@
+meta {
+  name: Login (Cluster Admin)
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{mpm_backend_url}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{cluster_admin_email}}",
+    "password": "{{cluster_admin_password}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isString
+}
+
+script:post-response {
+  bru.setEnvVar("jwt_token", res.body.access_token);
+}

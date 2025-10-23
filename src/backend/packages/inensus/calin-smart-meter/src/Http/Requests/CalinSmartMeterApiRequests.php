@@ -14,7 +14,12 @@ class CalinSmartMeterApiRequests {
         private ApiHelpers $apiHelpers,
     ) {}
 
-    public function post($url, $postParams) {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>|string
+     */
+    public function post(string $url, array $postParams): array|string {
         try {
             $request = $this->client->post(
                 $url,

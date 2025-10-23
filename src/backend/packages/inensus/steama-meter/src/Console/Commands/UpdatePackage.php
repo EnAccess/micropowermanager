@@ -5,6 +5,7 @@ namespace Inensus\SteamaMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use Inensus\SteamaMeter\Services\PackageInstallationService;
 
 class UpdatePackage extends Command {
@@ -32,17 +33,17 @@ class UpdatePackage extends Command {
         $this->info('Package updated successfully..');
     }
 
-    private function removeOldVersionOfPackage() {
+    private function removeOldVersionOfPackage(): void {
         $this->info('Removing former version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  remove inensus/steama-meter');
     }
 
-    private function installNewVersionOfPackage() {
+    private function installNewVersionOfPackage(): void {
         $this->info('Installing last version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/steama-meter');
     }
 
-    private function deleteMigration(Filesystem $filesystem) {
+    private function deleteMigration(Filesystem $filesystem): mixed {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_steama_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
@@ -54,23 +55,23 @@ class UpdatePackage extends Command {
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
-    private function publishMigrationsAgain() {
+    private function publishMigrationsAgain(): void {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider",
+            '--provider' => SteamaMeterServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }
 
-    private function updateDatabase() {
+    private function updateDatabase(): void {
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFilesAgain() {
+    private function publishVueFilesAgain(): void {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
-            '--provider' => "Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider",
+            '--provider' => SteamaMeterServiceProvider::class,
             '--tag' => 'vue-components',
             '--force' => true,
         ]);

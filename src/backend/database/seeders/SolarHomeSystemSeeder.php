@@ -27,13 +27,16 @@ class SolarHomeSystemSeeder extends Seeder {
      */
     public function run() {
         // Manufacturer
-        // Here, we adding some fake Manufacturers for seeding.
-        // Additional (actual) manufacturers can be added by
-        // enabling to corresponding plugin in the demo environment.
-        $manufacturers = Manufacturer::factory()
-            ->count(2)
-            ->isShsManufacturer()
-            ->create();
+        // Create demo SHS manufacturer for demo purposes
+        $demoShsManufacturer = Manufacturer::create([
+            'name' => 'Demo SHS Manufacturer',
+            'type' => 'shs',
+            'website' => 'https://demo.micropowermanager.io/',
+            'contact_person' => 'Demo Person',
+            'api_name' => 'DemoShsManufacturerApi',
+        ]);
+
+        $manufacturers = collect([$demoShsManufacturer]);
 
         // Get the SHS asset type
         $assetType = AssetType::where('name', 'Solar Home System')->first();
@@ -73,7 +76,7 @@ class SolarHomeSystemSeeder extends Seeder {
             // Create a Solar Home System
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')
-                ->for(Manufacturer::where('type', 'shs')->get()->random())
+                ->for($demoShsManufacturer)
                 ->create();
 
             // Assign the SHS to the customer by creating a device
@@ -107,7 +110,7 @@ class SolarHomeSystemSeeder extends Seeder {
         for ($i = 1; $i <= 10; ++$i) {
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')
-                ->for(Manufacturer::where('type', 'shs')->get()->random())
+                ->for($demoShsManufacturer)
                 ->create();
 
             $device = Device::factory()

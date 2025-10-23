@@ -10,21 +10,16 @@ use Inensus\SteamaMeter\Helpers\ApiHelpers;
 use Inensus\SteamaMeter\Models\SteamaCredential;
 
 class SteamaMeterApiClient {
-    private $client;
-    private $apiHelpers;
-    private $credential;
-
     public function __construct(
-        Client $httpClient,
-        ApiHelpers $apiHelpers,
-        SteamaCredential $credentialModel,
-    ) {
-        $this->client = $httpClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->credential = $credentialModel;
-    }
+        private Client $client,
+        private ApiHelpers $apiHelpers,
+        private SteamaCredential $credential,
+    ) {}
 
-    public function get($url) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function get(string $url): array {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -47,7 +42,12 @@ class SteamaMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function token($url, $postParams) {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>
+     */
+    public function token(string $url, array $postParams): array {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -70,7 +70,12 @@ class SteamaMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function post($url, $postParams) {
+    /**
+     * @param array<string, mixed> $postParams
+     *
+     * @return array<string, mixed>|string
+     */
+    public function post(string $url, array $postParams): array|string {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {
@@ -94,7 +99,12 @@ class SteamaMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function put($url, $putParams) {
+    /**
+     * @param array<string, mixed> $putParams
+     *
+     * @return array<string, mixed>
+     */
+    public function put(string $url, array $putParams): array {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -119,7 +129,12 @@ class SteamaMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function patch($url, $putParams) {
+    /**
+     * @param array<string, mixed> $putParams
+     *
+     * @return array<string, mixed>
+     */
+    public function patch(string $url, $putParams): array {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -143,7 +158,12 @@ class SteamaMeterApiClient {
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function getByParams($url, $params) {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public function getByParams(string $url, array $params): array {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -172,7 +192,7 @@ class SteamaMeterApiClient {
         return json_decode((string) $request->getBody(), true);
     }
 
-    public function getCredentials() {
+    public function getCredentials(): SteamaCredential {
         return $this->credential->newQuery()->firstOrFail();
     }
 }

@@ -7,24 +7,35 @@ use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use Database\Factories\DeviceFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int                         $connection_group_id
- * @property \Carbon\Carbon              $created_at
- * @property \Carbon\Carbon              $updated_at
- * @property Meter|SolarHomeSystem|EBike $device
- * @property Person                      $person
- * @property Address                     $address
- * @property string                      $device_type
+ * @property      int                          $id
+ * @property      int|null                     $person_id
+ * @property      string                       $device_type
+ * @property      int                          $device_id
+ * @property      string                       $device_serial
+ * @property      Carbon|null                  $created_at
+ * @property      Carbon|null                  $updated_at
+ * @property-read Address|null                 $address
+ * @property-read Asset|null                   $appliance
+ * @property-read AssetPerson|null             $assetPerson
+ * @property-read Meter|SolarHomeSystem|EBike  $device
+ * @property-read Person|null                  $person
+ * @property-read Collection<int, Token>       $tokens
+ * @property-read Collection<int, Transaction> $transactions
  */
 class Device extends BaseModel {
-    /** @use HasFactory<\Database\Factories\DeviceFactory> */
+    /** @use HasFactory<DeviceFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'device';
@@ -58,10 +69,31 @@ class Device extends BaseModel {
     }
 
     /**
-     * @return HasOne<Asset, $this>
+     * @return HasMany<Token, $this>
      */
-    public function appliance(): HasOne {
-        return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
+    public function tokens(): HasMany {
+        return $this->hasMany(Token::class, 'device_id', 'id');
+    }
+
+    /**
+     * @return HasOne<AssetPerson, $this>
+     */
+    public function assetPerson(): HasOne {
+        return $this->hasOne(AssetPerson::class, 'device_serial', 'device_serial');
+    }
+
+    /**
+     * @return HasOneThrough<Asset, AssetPerson, $this>
+     */
+    public function appliance(): HasOneThrough {
+        return $this->hasOneThrough(
+            Asset::class,
+            AssetPerson::class,
+            'device_serial',
+            'id',
+            'device_serial',
+            'asset_id'
+        );
     }
 
     /**

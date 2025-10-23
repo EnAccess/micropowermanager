@@ -3,7 +3,10 @@
 namespace Inensus\SparkMeter\Helpers;
 
 class SmTableEncryption {
-    public function makeHash($data) {
+    /**
+     * @param array<string|int, mixed> $data
+     */
+    public function makeHash(array $data): string {
         return md5(implode('', $data));
     }
 }

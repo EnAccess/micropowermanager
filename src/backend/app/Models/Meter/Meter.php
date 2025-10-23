@@ -11,23 +11,40 @@ use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Database\Factories\Meter\MeterFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int          $id
- * @property string       $serial_number
- * @property bool         $in_use
- * @property Device       $device
- * @property Manufacturer $manufacturer
- * @property MeterTariff  $tariff
+ * @property      int                               $id
+ * @property      string                            $serial_number
+ * @property      int                               $meter_type_id
+ * @property      bool                              $in_use
+ * @property      int                               $manufacturer_id
+ * @property      Carbon|null                       $created_at
+ * @property      Carbon|null                       $updated_at
+ * @property      int                               $connection_type_id
+ * @property      int                               $connection_group_id
+ * @property      int                               $tariff_id
+ * @property-read AccessRatePayment|null            $accessRatePayment
+ * @property-read ConnectionGroup|null              $connectionGroup
+ * @property-read ConnectionType|null               $connectionType
+ * @property-read Collection<int, MeterConsumption> $consumptions
+ * @property-read Device|null                       $device
+ * @property-read Manufacturer|null                 $manufacturer
+ * @property-read MeterType|null                    $meterType
+ * @property-read MeterTariff|null                  $tariff
+ * @property-read Collection<int, Token>            $tokens
+ * @property-read Collection<int, Transaction>      $transactions
  */
 class Meter extends BaseModel {
-    /** @use HasFactory<\Database\Factories\Meter\MeterFactory> */
+    /** @use HasFactory<MeterFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'meter';
@@ -102,9 +119,7 @@ class Meter extends BaseModel {
     }
 
     public function findBySerialNumber(string $meterSerialNumber): ?self {
-        $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
-
-        return $result;
+        return $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
     }
 
     public function getId(): int {

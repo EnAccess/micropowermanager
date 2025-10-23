@@ -6,6 +6,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetPerson;
+use App\Models\Device;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
@@ -46,10 +47,10 @@ class ApplianceInstallmentPayer {
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
     // If meter number is provided in transaction
-    public function payInstallments(): int {
+    public function payInstallments(): float {
         $customer = $this->customer;
         $appliancePersonIds = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
-        $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds->toArray());
+        $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds->all());
         $this->pay($installments, $customer);
 
         return $this->transaction->amount;
@@ -57,7 +58,7 @@ class ApplianceInstallmentPayer {
 
     public function consumeAmount(): float {
         $installments = $this->getInstallments($this->customer);
-        $installments->each(function ($installment) {
+        $installments->each(function ($installment): bool {
             if ($installment->remaining > $this->consumableAmount) {// money is not enough to cover the
                 // whole rate
                 $this->consumableAmount = 0;
@@ -76,7 +77,7 @@ class ApplianceInstallmentPayer {
     private function getCustomerByDeviceSerial(string $serialNumber): Person {
         $device = $this->deviceService->getBySerialNumber($serialNumber);
 
-        if (!$device) {
+        if (!$device instanceof Device) {
             throw new DeviceIsNotAssignedToCustomer('Device is not assigned to customer');
         }
 
@@ -89,17 +90,17 @@ class ApplianceInstallmentPayer {
     private function getInstallments(Person $customer): Collection {
         $loans = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
 
-        return $this->applianceRateService->getByLoanIdsForDueDate($loans->toArray());
+        return $this->applianceRateService->getByLoanIdsForDueDate($loans->all());
     }
 
     /**
      * @param Collection<int, mixed> $installments
      */
     private function pay(Collection $installments, Person $customer): void {
-        $installments->map(function ($installment) use ($customer) {
+        $installments->map(function ($installment) use ($customer): bool {
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 event(new PaymentSuccessEvent(
-                    amount: $this->transaction->amount,
+                    amount: (int) $this->transaction->amount,
                     paymentService: $this->transaction->original_transaction_type,
                     paymentType: 'installment',
                     sender: $this->transaction->sender,

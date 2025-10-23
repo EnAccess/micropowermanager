@@ -3,24 +3,20 @@
 namespace Inensus\KelinMeter\Services;
 
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinMeterDailyData;
 
 class DailyConsumptionService {
-    private $rootUrl = '/getDayData';
-    private $kelinApi;
-    private $kelinMeterDailyData;
+    private string $rootUrl = '/getDayData';
 
     public function __construct(
-        KelinMeterApiClient $kelinApi,
-        KelinMeterDailyData $kelinMeterDailyData,
-    ) {
-        $this->kelinApi = $kelinApi;
-        $this->kelinMeterDailyData = $kelinMeterDailyData;
-    }
+        private KelinMeterApiClient $kelinApi,
+        private KelinMeterDailyData $kelinMeterDailyData,
+    ) {}
 
-    public function getDailyDataFromAPI() {
+    public function getDailyDataFromAPI(): void {
         $startDay = Carbon::now()->subDays(1)->format('Ymd');
         $endDay = Carbon::now()->format('His');
         $pageNo = 1;
@@ -34,7 +30,7 @@ class DailyConsumptionService {
             ];
             try {
                 $result = $this->kelinApi->get($this->rootUrl, $queryParams);
-                collect($result['data']['dayData'])->each(function ($data) {
+                collect($result['data']['dayData'])->each(function (array $data) {
                     KelinMeterDailyData::query()->create([
                         'id_of_terminal' => $data['rtuId'],
                         'id_of_measurement_point' => $data['mpId'],
@@ -71,7 +67,14 @@ class DailyConsumptionService {
         } while ($result['dataCount'] > 0);
     }
 
-    public function getDailyData($meterAddress, $perPage) {
-        return $this->kelinMeterDailyData->newQuery()->where('address_of_meter', $meterAddress)->orderByDesc('id')->paginate($perPage);
+    /**
+     * @return LengthAwarePaginator<int, KelinMeterDailyData>
+     */
+    public function getDailyData(string $meterAddress, int $perPage): LengthAwarePaginator {
+        return $this->kelinMeterDailyData
+            ->newQuery()
+            ->where('address_of_meter', $meterAddress)
+            ->orderByDesc('id')
+            ->paginate($perPage);
     }
 }

@@ -7,9 +7,17 @@ namespace App\Models;
 use App\Models\Base\BaseModelCentral;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int $fk_company_id
+ * @property      int                  $id
+ * @property      string               $email
+ * @property      int                  $fk_company_id
+ * @property      int                  $fk_company_database_id
+ * @property      Carbon|null          $created_at
+ * @property      Carbon|null          $updated_at
+ * @property-read Company|null         $company
+ * @property-read CompanyDatabase|null $companyDatabase
  */
 class DatabaseProxy extends BaseModelCentral {
     public const COL_DATABASE_CONNECTION = 'database_connection';
@@ -30,20 +38,16 @@ class DatabaseProxy extends BaseModelCentral {
     }
 
     public function findByEmail(string $email): DatabaseProxy {
-        $result = $this->buildQuery()
+        return $this->buildQuery()
             ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=', self::COL_COMPANY_ID)
             ->where(self::COL_EMAIL, '=', $email)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function findByCompanyId(int $companyId): DatabaseProxy {
-        $result = $this->buildQuery($companyId)
+        return $this->buildQuery($companyId)
             ->select(CompanyDatabase::COL_DATABASE_NAME)
             ->firstOrFail();
-
-        return $result;
     }
 
     public function getCompanyId(): int {

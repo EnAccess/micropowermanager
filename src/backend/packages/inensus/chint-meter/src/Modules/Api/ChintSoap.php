@@ -13,7 +13,10 @@ class ChintSoap {
         private ?float $amount,
     ) {}
 
-    public function transaction() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function transaction(): array {
         $tid = $this->getCustomOrderID();
         $param = $tid.';'.$this->customerId.';'.number_format($this->amount, 4, '.', '').';';
         $passwordSignature = $this->getPasswordSignature();
@@ -24,7 +27,10 @@ class ChintSoap {
         return $this->parseTransactionResponse($response);
     }
 
-    public function validation() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function validation(): array {
         $param = $this->customerId.';';
         $passwordSignature = $this->getPasswordSignature();
         $paraSignature = $this->getParaSignature($param);
@@ -34,7 +40,7 @@ class ChintSoap {
         return $this->parseValidationResponse($response);
     }
 
-    private function sendSoapRequest(string $xml) {
+    private function sendSoapRequest(string $xml): bool|string {
         $url = $this->credentials->api_url;
         $headers = [
             'Content-Type: text/xml; charset=utf-8',
@@ -51,7 +57,7 @@ class ChintSoap {
 
         $response = curl_exec($ch);
 
-        if (curl_errno($ch)) {
+        if (curl_errno($ch) !== 0) {
             Log::error('ChintMeterApi error: '.curl_error($ch));
             throw new ChintApiResponseException('ChintMeterApi error: '.curl_error($ch));
         }
@@ -61,7 +67,7 @@ class ChintSoap {
         return $response;
     }
 
-    private function createTransactionRequestXml(string $tid, string $paraSignature, string $passwordSignature) {
+    private function createTransactionRequestXml(string $tid, string $paraSignature, string $passwordSignature): string|false {
         $username = $this->credentials->user_name;
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"></soap:Envelope>');
 
@@ -80,7 +86,7 @@ class ChintSoap {
         return $xml->asXML();
     }
 
-    private function createValidationRequestXml(string $passwordSignature, string $paraSignature) {
+    private function createValidationRequestXml(#[\SensitiveParameter] string $passwordSignature, string $paraSignature): string|false {
         $username = $this->credentials->user_name;
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"></soap:Envelope>');
 
@@ -97,7 +103,7 @@ class ChintSoap {
         return $xml->asXML();
     }
 
-    private function getPasswordSignature() {
+    private function getPasswordSignature(): string {
         $password = $this->credentials->user_password;
         $date = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Ymd');
         $msgText = $date.'Chint'.$password;
@@ -105,7 +111,7 @@ class ChintSoap {
         return strtoupper(md5($msgText));
     }
 
-    private function getParaSignature($param) {
+    private function getParaSignature(string $param): string {
         $utc = new \DateTime('now', new \DateTimeZone('UTC'));
         $seconds = $utc->format('H') * 3600 + $utc->format('i') * 60 + $utc->format('s');
         $correctSec = floor($seconds / 40) * 40;
@@ -115,11 +121,14 @@ class ChintSoap {
         return strtoupper(md5($msgText));
     }
 
-    private function getCustomOrderID() {
+    private function getCustomOrderID(): string {
         return (string) microtime(true);
     }
 
-    private function parseTransactionResponse($response) {
+    /**
+     * @return array<string, mixed>
+     */
+    private function parseTransactionResponse(bool|string $response): array {
         try {
             $xml = simplexml_load_string($response);
             $namespaces = $xml->getNamespaces(true);
@@ -144,7 +153,10 @@ class ChintSoap {
         }
     }
 
-    private function parseValidationResponse($response) {
+    /**
+     * @return array<string, mixed>
+     */
+    private function parseValidationResponse(bool|string $response): array {
         try {
             $xml = simplexml_load_string($response);
             $namespaces = $xml->getNamespaces(true);

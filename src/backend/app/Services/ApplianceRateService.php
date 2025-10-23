@@ -142,13 +142,11 @@ class ApplianceRateService {
     }
 
     public function getDownPaymentAsAssetRate(object $assetPerson): ?AssetRate {
-        $result = $this->applianceRate->newQuery()
+        return $this->applianceRate->newQuery()
             ->where('asset_person_id', $assetPerson->id)
             ->where('rate_cost', round($assetPerson->down_payment))
             ->where('remaining', 0)
             ->first();
-
-        return $result;
     }
 
     /**

@@ -4,6 +4,10 @@ namespace App\Models\Role;
 
 use App\Models\Base\BaseModel;
 
+/**
+ * @property int    $id
+ * @property string $role_name
+ */
 class RoleDefinition extends BaseModel {
     public $timestamps = false;
     protected $connection = 'micro_power_manager';

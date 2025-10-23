@@ -3,7 +3,7 @@
 namespace App\Lib;
 
 interface ITransaction {
-    public function getAmount(): int;
+    public function getAmount(): float;
 
     public function getSender(): string;
 

@@ -5,6 +5,8 @@ namespace Inensus\Ticket\Services;
 use App\Models\Agent;
 use App\Services\Interfaces\IAssociative;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\Ticket;
 
 /**
@@ -22,7 +24,7 @@ class TicketService implements IAssociative {
         int $assignedId,
         ?string $dueDate,
         mixed $owner,
-    ) {
+    ): Ticket {
         $ticket = $this->ticket->newQuery()->create(
             [
                 'title' => $title,
@@ -40,7 +42,7 @@ class TicketService implements IAssociative {
         return $ticket;
     }
 
-    public function close($ticketId): Ticket {
+    public function close(int $ticketId): Ticket {
         $ticket = $this->getById($ticketId);
         $ticketData = ['status' => 1];
         $this->update($ticket, $ticketData);
@@ -48,33 +50,46 @@ class TicketService implements IAssociative {
         return $ticket;
     }
 
-    public function getBatch($tickets) {
+    /**
+     * @param LengthAwarePaginator<int, Ticket>|array<int, mixed> $tickets
+     *
+     * @return array<int, mixed>
+     */
+    public function getBatch(LengthAwarePaginator|array $tickets): array {
+        $ticketData = [];
         foreach ($tickets as $index => $ticket) {
-            $tickets[$index]['comments'] = $ticket->comments()->with('ticketUser')->get();
+            $ticketData[$index] = $ticket;
+            $ticketData[$index]['comments'] = $ticket->comments()->with('ticketUser')->get();
         }
 
-        return $tickets;
+        return $ticketData;
     }
 
-    public function getById($ticketId) {
+    public function getById(int $ticketId): ?Ticket {
         return $this->ticket->newQuery()->with(['category', 'owner'])->where('id', $ticketId)->first();
     }
 
-    public function update($ticket, $ticketData) {
+    /**
+     * @param array<int|string, mixed> $ticketData
+     */
+    public function update(Ticket $ticket, array $ticketData): Ticket {
         $ticket->update($ticketData);
         $ticket->fresh();
 
         return $ticket;
     }
 
+    /**
+     * @return LengthAwarePaginator<int, Ticket>|Collection<int, Ticket>
+     */
     public function getAll(
-        $limit = null,
-        $status = null,
-        $agentId = null,
-        $customerId = null,
-        $assignedId = null,
-        $categoryId = null,
-    ) {
+        ?int $limit = null,
+        ?int $status = null,
+        ?int $agentId = null,
+        ?int $customerId = null,
+        ?int $assignedId = null,
+        ?int $categoryId = null,
+    ): LengthAwarePaginator|Collection {
         $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
 
         if ($agentId) {
@@ -105,12 +120,7 @@ class TicketService implements IAssociative {
 
         $query->orderBy('created_at', 'desc');
 
-        if ($limit) {
-            $tickets = $query->paginate($limit);
-        } else {
-            $tickets = $query->paginate();
-        }
-
+        $tickets = $limit ? $query->paginate($limit) : $query->paginate();
         $ticketData = $this->getBatch($tickets);
         $tickets->setCollection(Collection::make($ticketData));
 
@@ -121,11 +131,17 @@ class TicketService implements IAssociative {
         return $this->ticket->newQuery()->make($ticketData);
     }
 
-    public function save($ticket): bool {
+    public function save(Model $ticket): bool {
         return $ticket->save();
     }
 
-    public function getForOutsourceReport($startDate, $endDate) {
+    /**
+     * @param mixed $startDate
+     * @param mixed $endDate
+     *
+     * @return Collection<int, Ticket>
+     */
+    public function getForOutsourceReport($startDate, $endDate): Collection {
         return $this->ticket->newQuery()->with(['outsource', 'assignedTo', 'category'])
             ->whereHas('category', static function ($q) {
                 $q->where('out_source', 1);
@@ -137,6 +153,12 @@ class TicketService implements IAssociative {
             ->get();
     }
 
+    /**
+     * @param mixed $startDate
+     * @param mixed $endDate
+     *
+     * @return Collection<int, Ticket>
+     */
     public function getForOutsourceReportForGeneration($startDate, $endDate) {
         return $this->ticket->newQuery()->with(['outsource', 'owner.person', 'category'])
             ->whereHas('category', static function ($q) {
@@ -146,10 +168,16 @@ class TicketService implements IAssociative {
             ->get();
     }
 
-    public function getForAgent($agentId, $customerId = null) {
+    /**
+     * @return LengthAwarePaginator<int, Ticket>
+     */
+    public function getForAgent(
+        int $agentId,
+        ?int $customerId = null,
+    ): LengthAwarePaginator {
         $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
 
-        if ($agentId) {
+        if ($agentId !== 0) {
             $query->whereHasMorph(
                 'creator',
                 [Agent::class],

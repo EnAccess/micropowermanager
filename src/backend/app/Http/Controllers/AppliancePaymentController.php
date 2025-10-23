@@ -20,7 +20,7 @@ class AppliancePaymentController extends Controller {
             return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

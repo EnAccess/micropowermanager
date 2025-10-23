@@ -14,7 +14,7 @@ abstract class TestCase extends BaseTestCase {
      * if user is not present it tries to generate a token for the first user.
      */
     protected function headers(?User $user = null) {
-        if (!$user) {
+        if (!$user instanceof User) {
             $user = User::create([
                 'name' => 'John Doe',
                 'email' => 'johndoe@example.com',

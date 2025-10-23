@@ -39,9 +39,11 @@ For more details see the corresponding plugin's documentation.
 
 These environment variables control how the MicroPowerManager behaves as an application.
 
-| Environment Variable | Default | Description                                                                                                                                                                                        |
-| -------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MPM_LOAD_DEMO_DATA` | `false` | Whether or not the demo data should be loaded when the MicroPowerManager starts for the first time. Recommended for local development and demo environments. Optional for production environments. |
+| Environment Variable | Default      | Description                                                                                                                                                                                        |
+| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MPM_FRONTEND_URL`   | **Required** | The URL where MicroPowerManager frontend is located, this is **required** for email password reset and other related functionality that requires Knowledge of the frontend.                        |
+| `MPM_LOAD_DEMO_DATA` | `false`      | Whether or not the demo data should be loaded when the MicroPowerManager starts for the first time. Recommended for local development and demo environments. Optional for production environments. |
+| `MPM_FORCE_OPTIMIZE` | `false`      | Force Laravel optimization (`php artisan optimize`) on container startup even when not in production mode. Set to `true` to enable. Optimization runs automatically when `APP_ENV=production`.     |
 
 ### JSON Web Token Authentication (jwt-auth)
 
@@ -124,17 +126,14 @@ Slack
 Configure the following environment variable to enable MicroPowerManager to send email via SMTP.
 These configure instance level email sent to tenants, for example signup confirmation, password reset, etc...
 
-| Environment Variable        | Default                                        | Description                                                                                                                                                                 |
-| --------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MAIL_SMTP_HOST`            | `smtp.mailgun.org`                             | Mail server hostname. For example `smtp.mailserver.com`.                                                                                                                    |
-| `MAIL_SMTP_PORT`            | `587`                                          | Mail server port.                                                                                                                                                           |
-| `MAIL_SMTP_ENCRYPTION`      | `tls`                                          | Mail encryption.                                                                                                                                                            |
-| `MAIL_SMTP_AUTH`            | `false`                                        | Whether to use SMTP Auth.                                                                                                                                                   |
-| `MAIL_USERNAME`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The username used in SMTP Auth.                                                                                                                                             |
-| `MAIL_PASSWORD`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The password used in SMTP Auth.                                                                                                                                             |
-| `MAIL_SMTP_DEFAULT_SENDER`  | **Required**                                   | The email used in `from` and `replyTo` fields of sent email. Note: Depending on the mailserver this might be different from SMTP Auth username.                             |
-| `MAIL_SMTP_DEFAULT_MESSAGE` | `Please do not reply to this email`            | Default message body of emails.                                                                                                                                             |
-| `MAIL_SMTP_DEBUG_LEVEL`     | `0`                                            | Debug level used in [PHPMailer](https://github.com/PHPMailer/PHPMailer/blob/master/src/SMTP.php#L116-L126). `0` No output, `4` Noisy, low-level data output, rarely needed. |
+| Environment Variable | Default             | Description                                                   |
+| -------------------- | ------------------- | ------------------------------------------------------------- |
+| `MAIL_FROM_ADDRESS`  | `hello@example.com` | Global "from" address for all emails sent by the application. |
+| `MAIL_FROM_NAME`     | `Example`           | Global "from" name for all emails sent by the application.    |
+
+Using SMTP Email Service
+
+To Configure email with SMTP follow the official [guidge](https://laravel.com/docs/12.x/mail#driver-prerequisites).
 
 #### Laravel Horizon and Horizon Dashboard
 

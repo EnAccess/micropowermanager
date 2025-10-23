@@ -45,7 +45,7 @@ class AgentTicketController extends Controller {
 
         try {
             $owner = $this->personService->getById($ownerId);
-        } catch (TicketOwnerNotFoundException $e) {
+        } catch (TicketOwnerNotFoundException) {
             throw new TicketOwnerNotFoundException('Ticket owner with following id not found '.$ownerId);
         }
 
@@ -70,6 +70,8 @@ class AgentTicketController extends Controller {
         $this->personTicketService->assign();
         $this->ticketService->save($ticket);
 
-        return TicketResource::make($this->ticketService->getBatch([$ticket]));
+        $tickets = $this->ticketService->getBatch([$ticket]);
+
+        return TicketResource::make($tickets);
     }
 }

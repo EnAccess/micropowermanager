@@ -2,9 +2,12 @@
 
 namespace Inensus\AfricasTalking\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\AfricasTalking\Models\AfricasTalkingCredential;
 
 class AfricasTalkingCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private AfricasTalkingCredential $credential,
     ) {}
@@ -12,7 +15,7 @@ class AfricasTalkingCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): AfricasTalkingCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_key' => null,
             'username' => null,
@@ -20,20 +23,25 @@ class AfricasTalkingCredentialService {
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): ?AfricasTalkingCredential {
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['api_key', 'username', 'short_code']);
     }
 
-    public function updateCredentials($data) {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateCredentials(array $data): AfricasTalkingCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
-        $credential->update([
-            'api_key' => $data['api_key'],
-            'username' => $data['username'],
-            'short_code' => $data['short_code'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'username', 'short_code']);
+
+        $credential->update($encryptedData);
         $credential->save();
 
-        return $credential->fresh();
+        $credential->fresh();
+
+        return $this->decryptCredentialFields($credential, ['api_key', 'username', 'short_code']);
     }
 }

@@ -9,26 +9,17 @@ class SmsTransactionHeader extends SmsBodyParser {
      * @var array<int, string>
      */
     protected $variables = ['name', 'surname', 'transaction_amount'];
-    protected Transaction $transaction;
 
-    public function __construct(Transaction $transaction) {
-        $this->transaction = $transaction;
-    }
+    public function __construct(protected Transaction $transaction) {}
 
     protected function getVariableValue(string $variable): mixed {
         $person = $this->transaction->device->person->first();
-        switch ($variable) {
-            case 'name':
-                $variable = $person->name;
-                break;
-            case 'surname':
-                $variable = $person->surname;
-                break;
-            case 'transaction_amount':
-                $variable = $this->transaction->amount;
-                break;
-        }
 
-        return $variable;
+        return match ($variable) {
+            'name' => $person->name,
+            'surname' => $person->surname,
+            'transaction_amount' => $this->transaction->amount,
+            default => $variable,
+        };
     }
 }

@@ -2,33 +2,40 @@
 
 namespace Inensus\MesombPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
-class MesombTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+/**
+ * @property      int                                   $id
+ * @property      string                                $pk
+ * @property      int                                   $status
+ * @property      string                                $type
+ * @property      float                                 $amount
+ * @property      float|null                            $fees
+ * @property      string                                $b_party
+ * @property      string                                $message
+ * @property      string                                $service
+ * @property      string|null                           $reference
+ * @property      string                                $ts
+ * @property      int                                   $direction
+ * @property      Carbon|null                           $created_at
+ * @property      Carbon|null                           $updated_at
+ * @property-read Collection<int, TransactionConflicts> $conflicts
+ * @property-read Model                                 $manufacturerTransaction
+ * @property-read Transaction|null                      $transaction
+ */
+class MesombTransaction extends BasePaymentProviderTransaction {
     protected $table = 'mesomb_transactions';
     public const RELATION_NAME = 'mesomb_transactions';
 
     /**
-     * @return MorphOne<Transaction, $this>
+     * @return MorphMany<TransactionConflicts, $this>
      */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
-
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }

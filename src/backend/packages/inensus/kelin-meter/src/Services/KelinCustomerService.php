@@ -5,7 +5,8 @@ namespace Inensus\KelinMeter\Services;
 use App\Models\City;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
-use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
@@ -14,40 +15,31 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\SyncStatus;
 
+/**
+ * @implements ISynchronizeService<KelinCustomer>
+ */
 class KelinCustomerService implements ISynchronizeService {
-    private $rootUrl = '/listCons';
-    private $kelinCustomer;
-    private $person;
-    private $kelinApiClient;
-    private $apiHelpers;
-    private $syncSettingService;
-    private $syncActionService;
+    private string $rootUrl = '/listCons';
 
     public function __construct(
-        KelinCustomer $kelinCustomer,
-        Person $person,
-        KelinMeterApiClient $kelinApiClient,
-        ApiHelpers $apiHelpers,
-        KelinSyncSettingService $syncSettingService,
-        KelinSyncActionService $syncActionService,
-    ) {
-        $this->kelinCustomer = $kelinCustomer;
-        $this->person = $person;
-        $this->kelinApiClient = $kelinApiClient;
-        $this->apiHelpers = $apiHelpers;
-        $this->syncActionService = $syncActionService;
-        $this->syncSettingService = $syncSettingService;
-    }
+        private KelinCustomer $kelinCustomer,
+        private Person $person,
+        private KelinMeterApiClient $kelinApiClient,
+        private ApiHelpers $apiHelpers,
+        private KelinSyncSettingService $syncSettingService,
+        private KelinSyncActionService $syncActionService,
+    ) {}
 
-    public function sync() {
+    /**
+     * @return LengthAwarePaginator<int, KelinCustomer>
+     */
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->syncSettingService->getSyncSettingsByActionName('Customers');
         $syncAction = $this->syncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
 
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::EARLY_REGISTERED;
-            })->each(function ($customer) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::EARLY_REGISTERED)->each(function (array $customer) {
                 $person = $this->updateRelatedPerson(
                     $customer,
                     $customer['relatedPerson']
@@ -60,7 +52,7 @@ class KelinCustomerService implements ISynchronizeService {
                         'mobile' => $customer['mobile'],
                         'hash' => $customer['hash'],
                     ]);
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     $phone = ltrim($customer['mobile'], $customer['mobile'][0]);
                     $addresses = DB::table('addresses')->where('phone', 'LIKE', '%'.$phone.'%')->where('owner_type', 'person')
                         ->get();
@@ -73,9 +65,7 @@ class KelinCustomerService implements ISynchronizeService {
                     ]);
                 }
             });
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function ($customer) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $customer) {
                 $person = $this->createRelatedPerson($customer);
 
                 $this->kelinCustomer->newQuery()->create([
@@ -86,9 +76,7 @@ class KelinCustomerService implements ISynchronizeService {
                     'hash' => $customer['hash'],
                 ]);
             });
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function ($customer) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $customer) {
                 $person = is_null($customer['relatedPerson']) ?
                     $this->createRelatedPerson($customer) : $this->updateRelatedPerson(
                         $customer,
@@ -110,11 +98,12 @@ class KelinCustomerService implements ISynchronizeService {
         } catch (\Exception $exception) {
             $this->syncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Kelin customers sync failed.', ['Error :' => $exception->getMessage()]);
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
-    public function syncCheck($returnData = false) {
+    // @phpstan-ignore missingType.iterableValue
+    public function syncCheck(bool $returnData = false): array {
         try {
             $url = $this->rootUrl;
             $result = $this->kelinApiClient->get($url);
@@ -125,18 +114,16 @@ class KelinCustomerService implements ISynchronizeService {
             }
             throw new KelinApiResponseException($exception->getMessage());
         }
-        $customersCollection = collect($customers)->filter(function ($q) {
-            return $q['consNo'] !== '';
-        });
+        $customersCollection = collect($customers)->filter(fn (array $q): bool => $q['consNo'] !== '');
 
         $kelinCustomers = $this->kelinCustomer->newQuery()->get();
         $people = $this->person->newQuery()->get();
 
-        $customersCollection->transform(function ($customer) use ($kelinCustomers, $people) {
+        $customersCollection->transform(function (array $customer) use ($kelinCustomers, $people): array {
             $customerHash = $this->kelinCustomerHasher($customer);
             $earlyRegisteredPerson = $this->findRegisteredCustomer($customer);
             $registeredKelinCustomer = $kelinCustomers->firstWhere('customer_no', $customer['consNo']);
-            if ($earlyRegisteredPerson) {
+            if ($earlyRegisteredPerson instanceof Person) {
                 $customer['hash'] = $customerHash;
                 $customer['syncStatus'] = SyncStatus::EARLY_REGISTERED;
                 if ($registeredKelinCustomer) {
@@ -172,7 +159,10 @@ class KelinCustomerService implements ISynchronizeService {
         return $returnData ? ['data' => $customersCollection, 'result' => true] : ['result' => true];
     }
 
-    public function createRelatedPerson($customer) {
+    /**
+     * @param array<string, mixed> $customer
+     */
+    public function createRelatedPerson(array $customer): Person {
         $names = explode(' ', $customer['consName']);
         $phone = ltrim($customer['mobile'], $customer['mobile'][0]);
 
@@ -197,7 +187,7 @@ class KelinCustomerService implements ISynchronizeService {
             'surname' => $personData['surname'],
             'is_customer' => 1,
         ]);
-        $addressService = App::make(AddressesService::class);
+        $addressService = app()->make(AddressesService::class);
         $city = City::query()->first();
         $addressParams = [
             'phone' => $personData['phone'],
@@ -211,7 +201,10 @@ class KelinCustomerService implements ISynchronizeService {
         return $person;
     }
 
-    public function updateRelatedPerson($customer, $person) {
+    /**
+     * @param array<string, mixed> $customer
+     */
+    public function updateRelatedPerson(array $customer, Person $person): Person {
         $names = explode(' ', $customer['consName']);
         if (count($names) == 1) {
             $name = $customer['consName'];
@@ -237,13 +230,19 @@ class KelinCustomerService implements ISynchronizeService {
         return $person;
     }
 
-    public function getCustomers($request) {
-        $perPage = $request->input('per_page') ?? 15;
+    /**
+     * @return LengthAwarePaginator<int, KelinCustomer>
+     */
+    public function getCustomers(Request $request): LengthAwarePaginator {
+        $perPage = (int) $request->input('per_page', 15);
 
         return $this->kelinCustomer->newQuery()->with(['mpmPerson.addresses'])->paginate($perPage);
     }
 
-    private function kelinCustomerHasher($kelinCustomer) {
+    /**
+     * @param array<string, mixed> $kelinCustomer
+     */
+    private function kelinCustomerHasher(array $kelinCustomer): string {
         $phone = ltrim($kelinCustomer['mobile'], $kelinCustomer['mobile'][0]);
 
         return $this->apiHelpers->makeHash([
@@ -254,7 +253,10 @@ class KelinCustomerService implements ISynchronizeService {
         ]);
     }
 
-    private function findRegisteredCustomer($customer) {
+    /**
+     * @param array<string, mixed> $customer
+     */
+    private function findRegisteredCustomer(array $customer): ?Person {
         return $this->person->newQuery()->where('title', $customer['consNo'])->first();
     }
 }

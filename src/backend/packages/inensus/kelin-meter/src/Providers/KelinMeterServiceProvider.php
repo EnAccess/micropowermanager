@@ -21,7 +21,7 @@ use Inensus\KelinMeter\Models\KelinSyncSetting;
 use Inensus\KelinMeter\Models\KelinTransaction;
 
 class KelinMeterServiceProvider extends ServiceProvider {
-    public function boot(Filesystem $filesystem) {
+    public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -60,13 +60,11 @@ class KelinMeterServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../../config/kelin-meter.php', 'kelin-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind(KelinMeterApi::class, function ($app) {
-            return new KelinMeterApi(
-                $app->make(KelinMeter::class),
-                $app->make(KelinCustomer::class),
-                $app->make(KelinMeterApiClient::class),
-            );
-        });
+        $this->app->bind(KelinMeterApi::class, fn ($app): KelinMeterApi => new KelinMeterApi(
+            $app->make(KelinMeter::class),
+            $app->make(KelinCustomer::class),
+            $app->make(KelinMeterApiClient::class),
+        ));
         $this->app->alias('KelinMeterApi', KelinMeterApi::class);
     }
 

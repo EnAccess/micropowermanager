@@ -2,29 +2,17 @@
 
 namespace App\Sms\BodyParsers;
 
-use App\Models\AssetRate;
-
 class AssetRateReminder extends SmsBodyParser {
     protected $variables = ['appliance_type_name', 'remaining', 'due_date'];
-    protected mixed $reminderData;
 
-    public function __construct(AssetRate $reminderData) {
-        $this->reminderData = $reminderData;
-    }
+    public function __construct(protected mixed $reminderData) {}
 
     protected function getVariableValue(string $variable): mixed {
-        switch ($variable) {
-            case 'appliance_type_name':
-                $variable = $this->reminderData->assetPerson->assetType->name;
-                break;
-            case 'remaining':
-                $variable = $this->reminderData->remaining;
-                break;
-            case 'due_date':
-                $variable = $this->reminderData->due_date;
-                break;
-        }
-
-        return $variable;
+        return match ($variable) {
+            'appliance_type_name' => $this->reminderData->assetPerson->assetType->name,
+            'remaining' => $this->reminderData->remaining,
+            'due_date' => $this->reminderData->due_date,
+            default => $variable,
+        };
     }
 }

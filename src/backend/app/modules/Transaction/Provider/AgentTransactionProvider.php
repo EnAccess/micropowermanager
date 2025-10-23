@@ -39,7 +39,7 @@ class AgentTransactionProvider implements ITransactionProvider {
     private function assignData(array $data): void {
         // provider specific data
         $this->agentTransaction->agent_id = (int) $data['agent_id'];
-        $this->agentTransaction->mobile_device_id = (int) $data['device_id'];
+        $this->agentTransaction->mobile_device_id = $data['device_id'];
 
         // common transaction data
         $this->transaction->amount = (int) $data['amount'];
@@ -54,7 +54,7 @@ class AgentTransactionProvider implements ITransactionProvider {
     }
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
-        $this->agentTransaction->update(['status' => $requestType === true ? 1 : -1]);
+        $this->agentTransaction->update(['status' => $requestType ? 1 : -1]);
         $agent = $this->agentTransaction->agent;
 
         if (!$requestType) {
@@ -151,7 +151,7 @@ class AgentTransactionProvider implements ITransactionProvider {
 
             $query->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
         if ($agentId !== $agent->id) {
             throw new \Exception('Agent authorization failed.');
@@ -169,7 +169,7 @@ class AgentTransactionProvider implements ITransactionProvider {
         return $this->transaction->message;
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->transaction->amount;
     }
 

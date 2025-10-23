@@ -15,13 +15,7 @@ class OutputJob implements ShouldQueue {
     use Queueable;
     use SerializesModels;
 
-    protected int $val;
-    protected string $queue_name;
-
-    public function __construct(string $queue_name, int $val) {
-        $this->queue_name = $queue_name;
-        $this->val = $val;
-    }
+    public function __construct(protected string $queue_name, protected int $val) {}
 
     public function handle(): void {
         Log::critical('redis', ['abc' => 'def', 'Val' => $this->val, 'queue' => $this->queue_name]);

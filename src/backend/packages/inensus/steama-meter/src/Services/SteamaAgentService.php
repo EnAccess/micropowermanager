@@ -7,7 +7,8 @@ use App\Models\Agent;
 use App\Models\AgentCommission;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
-use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
@@ -16,57 +17,42 @@ use Inensus\SteamaMeter\Models\SteamaAgent;
 use Inensus\SteamaMeter\Models\SteamaSite;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
+/**
+ * @implements ISynchronizeService<SteamaAgent>
+ */
 class SteamaAgentService implements ISynchronizeService {
-    private $agentCommission;
-    private $agent;
-    private $stmAgent;
-    private $steamaApi;
-    private $apiHelpers;
-    private $rootUrl = '/agents';
-    private $person;
-    private $site;
-    private $address;
-    private $steamaSyncSettingService;
-    private $steamaSyncActionService;
+    private string $rootUrl = '/agents';
 
     public function __construct(
-        AgentCommission $agentCommissionModel,
-        SteamaAgent $steamaAgentModel,
-        SteamaMeterApiClient $steamaApi,
-        ApiHelpers $apiHelpers,
-        Agent $agent,
-        Person $person,
-        SteamaSite $site,
-        Address $address,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService,
-    ) {
-        $this->agentCommission = $agentCommissionModel;
-        $this->stmAgent = $steamaAgentModel;
-        $this->steamaApi = $steamaApi;
-        $this->apiHelpers = $apiHelpers;
-        $this->agent = $agent;
-        $this->person = $person;
-        $this->site = $site;
-        $this->address = $address;
-        $this->steamaSyncSettingService = $steamaSyncSettingService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
-    }
+        private AgentCommission $agentCommission,
+        private SteamaAgent $stmAgent,
+        private SteamaMeterApiClient $steamaApi,
+        private ApiHelpers $apiHelpers,
+        private Agent $agent,
+        private Person $person,
+        private SteamaSite $site,
+        private Address $address,
+        private SteamaSyncSettingService $steamaSyncSettingService,
+        private StemaSyncActionService $steamaSyncActionService,
+    ) {}
 
-    public function getAgents($request) {
-        $perPage = $request->input('per_page') ?? 15;
+    /**
+     * @return LengthAwarePaginator<int, SteamaAgent>
+     */
+    public function getAgents(Request $request): LengthAwarePaginator {
+        $perPage = (int) $request->input('per_page', 15);
 
         return $this->stmAgent->newQuery()->with(['mpmAgent.person.addresses', 'site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getAgentsCount() {
+    public function getAgentsCount(): int {
         return count($this->agent->newQuery()->get());
     }
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createSteamaAgentCommission() {
+    public function createSteamaAgentCommission(): AgentCommission {
         $agentCommission = $this->agentCommission->newQuery()->where('name', 'Steama Agent Comission')->first();
         if (!$agentCommission) {
             $agentCommission = $this->agentCommission->newQuery()->create([
@@ -80,14 +66,15 @@ class SteamaAgentService implements ISynchronizeService {
         return $agentCommission;
     }
 
-    public function sync() {
+    /**
+     * @return LengthAwarePaginator<int, SteamaAgent>
+     */
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Agents');
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-            })->each(function ($agent) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $agent) {
                 $createdAgent = $this->createRelatedAgent($agent);
                 $this->stmAgent->newQuery()->create([
                     'agent_id' => $agent['id'],
@@ -98,9 +85,7 @@ class SteamaAgentService implements ISynchronizeService {
                     'hash' => $agent['hash'],
                 ]);
             });
-            $syncCheck['data']->filter(function ($value) {
-                return $value['syncStatus'] === SyncStatus::MODIFIED;
-            })->each(function ($agent) {
+            $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $agent) {
                 $relatedAgent = is_null($agent['relatedAgent']) ?
                     $this->createRelatedAgent($agent) : $this->updateRelatedAgent(
                         $agent,
@@ -124,11 +109,14 @@ class SteamaAgentService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama agents sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function syncCheck($returnData = false) {
+    /**
+     * @return array<string, mixed>
+     */
+    public function syncCheck(bool $returnData = false): array {
         try {
             $url = $this->rootUrl.'?page=1&page_size=100';
             $result = $this->steamaApi->get($url);
@@ -137,7 +125,7 @@ class SteamaAgentService implements ISynchronizeService {
                 $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $agent) {
-                    array_push($agents, $agent);
+                    $agents[] = $agent;
                 }
             }
         } catch (SteamaApiResponseException $e) {
@@ -146,10 +134,11 @@ class SteamaAgentService implements ISynchronizeService {
             }
             throw new SteamaApiResponseException($e->getMessage());
         }
+        // @phpstan-ignore argument.templateType,argument.templateType
         $agentsCollection = collect($agents);
         $stmAgents = $this->stmAgent->newQuery()->get();
         $agents = $this->agent->newQuery()->get();
-        $agentsCollection->transform(function ($agent) use ($stmAgents, $agents) {
+        $agentsCollection->transform(function (array $agent) use ($stmAgents, $agents): array {
             $registeredStmAgent = $stmAgents->firstWhere('agent_id', $agent['id']);
 
             $relatedAgent = null;
@@ -176,7 +165,10 @@ class SteamaAgentService implements ISynchronizeService {
         return $returnData ? ['data' => $agentsCollection, 'result' => true] : ['result' => true];
     }
 
-    public function createRelatedAgent($stmAgent) {
+    /**
+     * @param array<string, mixed> $stmAgent
+     */
+    public function createRelatedAgent(array $stmAgent): Agent {
         $person = $this->person->newQuery()->create([
             'name' => $stmAgent['first_name'],
             'surname' => $stmAgent['last_name'],
@@ -186,7 +178,7 @@ class SteamaAgentService implements ISynchronizeService {
 
         $city = $site->mpmMiniGrid->cities->first();
 
-        $addressService = App::make(AddressesService::class);
+        $addressService = app()->make(AddressesService::class);
         $addressParams = [
             'city_id' => $city->id,
             'email' => '',
@@ -212,7 +204,10 @@ class SteamaAgentService implements ISynchronizeService {
         return $agent;
     }
 
-    public function updateRelatedAgent($stmAgent, $agent) {
+    /**
+     * @param array<string, mixed> $stmAgent
+     */
+    public function updateRelatedAgent(array $stmAgent, Agent $agent): Agent {
         $relatedPerson = $agent->person;
         $relatedPerson->update([
             'name' => $stmAgent['first_name'],
@@ -248,7 +243,10 @@ class SteamaAgentService implements ISynchronizeService {
         return $agent;
     }
 
-    private function steamaAgentHasher($steamaAgent) {
+    /**
+     * @param array<string, mixed> $steamaAgent
+     */
+    private function steamaAgentHasher(array $steamaAgent): string {
         return $this->apiHelpers->makeHash([
             $steamaAgent['first_name'],
             $steamaAgent['last_name'],

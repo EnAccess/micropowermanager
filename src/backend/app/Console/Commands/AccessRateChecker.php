@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\AccessRate\AccessRatePayment;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class AccessRateChecker extends AbstractSharedCommand {
     protected $signature = 'accessrate:check';

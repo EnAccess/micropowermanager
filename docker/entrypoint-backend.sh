@@ -37,6 +37,11 @@ mkdir -p \
 chown -R www-data:www-data /var/www/html
 chmod -R 775 /var/www/html/storage
 
+
+# Required for Tinker to work without root access
+mkdir -p /var/www/.config/psysh
+chown -R www-data:www-data /var/www/.config
+
 # DEVCONTAINER PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 cd /var/www/html
@@ -54,6 +59,13 @@ if [ -n "$MPM_LOAD_DEMO_DATA" ] && [ "$MPM_LOAD_DEMO_DATA" != "0" ] && [ "$MPM_L
 fi
 
 echo "Executing command: $@"
+
+# If running in production, generate Laravel caches so the app is optimized.
+# We do this at container startup (not build) so runtime environment variables are available to the framework.
+if [ "$APP_ENV" = "production" ] || ( [ -n "$MPM_FORCE_OPTIMIZE" ] && [ "$MPM_FORCE_OPTIMIZE" != "0" ] && [ "$MPM_FORCE_OPTIMIZE" != "false" ] ); then
+  echo "Optimizing Laravel (caching config, events, routes, views)..."
+  gosu www-data php artisan optimize || echo "php artisan optimize failed"
+fi
 
 # the main image's CMD arguments are somehow not passed to this script
 # so we need to check if there are any arguments and if not, execute apache2-foreground which is the default CMD of the main image

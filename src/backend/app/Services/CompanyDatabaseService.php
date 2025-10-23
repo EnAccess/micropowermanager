@@ -19,9 +19,7 @@ class CompanyDatabaseService implements IBaseService {
     ) {}
 
     public function getById(int $id): CompanyDatabase {
-        $result = $this->companyDatabase->newQuery()->find($id);
-
-        return $result;
+        return $this->companyDatabase->newQuery()->find($id);
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgentPerformanceMetricsController;
+use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetPersonController;
@@ -19,7 +20,6 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\EBikeController;
-use App\Http\Controllers\MailSettingsController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
 use App\Http\Controllers\ManufacturerController;
@@ -39,6 +39,7 @@ use App\Http\Controllers\PersonExportController;
 use App\Http\Controllers\PersonMeterController;
 use App\Http\Controllers\PluginController;
 use App\Http\Controllers\ProtectedPageController;
+use App\Http\Controllers\ProtectedPagePasswordResetController;
 use App\Http\Controllers\RegistrationTailController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RevenueController;
@@ -62,21 +63,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Routes for City resource
-require 'resources/Cities.php';
+require __DIR__.'/resources/Cities.php';
 // Routes for Country resource
-require 'resources/Countries.php';
+require __DIR__.'/resources/Countries.php';
 // Routes for meter resource
-require 'resources/Meters.php';
+require __DIR__.'/resources/Meters.php';
 // Routes for Addresses resource
-require 'resources/Addresses.php';
+require __DIR__.'/resources/Addresses.php';
 // Transaction routes
-require 'api_paths/transactions.php';
+require __DIR__.'/api_paths/transactions.php';
 // Agent routes
-require 'resources/AgentApp.php';
+require __DIR__.'/resources/AgentApp.php';
 // Agent Web panel routes
-require 'resources/AgentWeb.php';
+require __DIR__.'/resources/AgentWeb.php';
 // Routes for CustomerRegistrationApp resource
-require 'resources/CustomerRegistrationApp.php';
+require __DIR__.'/resources/CustomerRegistrationApp.php';
 
 // JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
@@ -102,6 +103,13 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
     });
 });
 Route::post('users/password', [UserPasswordController::class, 'forgotPassword']);
+Route::get('users/password/validate/{token}', [UserPasswordController::class, 'validateResetToken']);
+Route::post('users/password/confirm', [UserPasswordController::class, 'confirmReset']);
+
+// Protected Pages Password reset routes
+Route::post('protected-page-password/reset', [ProtectedPagePasswordResetController::class, 'sendResetEmail']);
+Route::get('protected-page-password/validate/{token}', [ProtectedPagePasswordResetController::class, 'validateToken']);
+Route::post('protected-page-password/confirm', [ProtectedPagePasswordResetController::class, 'resetPassword']);
 
 // Assets
 Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
@@ -233,11 +241,6 @@ Route::group(['prefix' => 'settings'], static function () {
     Route::get('/main', [MainSettingsController::class, 'index']);
     Route::put('/main/{mainSettings}', [MainSettingsController::class, 'update'])
         ->middleware('jwt.verify');
-    Route::get('/mail', [MailSettingsController::class, 'index']);
-    Route::post('/mail', [MailSettingsController::class, 'store'])
-        ->middleware('jwt.verify');
-    Route::put('/mail/{mailSettings}', [MailSettingsController::class, 'update'])
-        ->middleware('jwt.verify');
     Route::get('/currency-list', [CurrencyController::class, 'index']);
 });
 // Sms
@@ -297,7 +300,6 @@ Route::group(['prefix' => 'sms-android-callback'], static function () {
 Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/{connectionTypeId?}', [SubConnectionTypeController::class, 'index']);
     Route::post('/', [SubConnectionTypeController::class, 'store']);
-    Route::get('/{id}', [SubConnectionTypeController::class, 'show']);
     Route::put('/{subConnectionTypeId}', [SubConnectionTypeController::class, 'update']);
 });
 // Targets
@@ -332,9 +334,7 @@ Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], stati
     Route::delete('/{timeOfUsageId}', [TimeOfUsageController::class, 'destroy']);
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', [MpmPluginController::class, 'index']);
@@ -347,6 +347,13 @@ Route::group(['prefix' => 'registration-tails'], static function () {
 Route::group(['prefix' => 'plugins'], static function () {
     Route::get('/', [PluginController::class, 'index']);
     Route::put('/{mpmPluginId}', [PluginController::class, 'update']);
+});
+
+// API Keys management (requires web client auth token)
+Route::group(['middleware' => 'auth:api'], static function () {
+    Route::get('/api-keys', [ApiKeyController::class, 'index']);
+    Route::post('/api-keys', [ApiKeyController::class, 'store']);
+    Route::delete('/api-keys/{id}', [ApiKeyController::class, 'destroy']);
 });
 
 Route::get('/clusterlist', [ClusterController::class, 'index']);

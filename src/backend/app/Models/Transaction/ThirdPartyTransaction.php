@@ -2,28 +2,26 @@
 
 namespace App\Models\Transaction;
 
-use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
-class ThirdPartyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+/**
+ * @property      int                                   $id
+ * @property      string                                $transaction_id
+ * @property      int                                   $status
+ * @property      string|null                           $description
+ * @property      string|null                           $manufacturer_transaction_type
+ * @property      int|null                              $manufacturer_transaction_id
+ * @property      Carbon|null                           $created_at
+ * @property      Carbon|null                           $updated_at
+ * @property-read Collection<int, TransactionConflicts> $conflicts
+ * @property-read Model|null                            $manufacturerTransaction
+ * @property-read Transaction|null                      $transaction
+ */
+class ThirdPartyTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'third_party_transaction';
-
-    /**
-     * @return MorphOne<Transaction, $this>
-     */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
 
     /**
      * @return MorphMany<TransactionConflicts, $this>

@@ -2,16 +2,18 @@
 
 namespace Inensus\KelinMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\KelinMeter\Models\KelinSetting;
 
 class KelinSettingService {
-    private $kelinSetting;
+    public function __construct(
+        private KelinSetting $kelinSetting,
+    ) {}
 
-    public function __construct(KelinSetting $kelinSetting) {
-        $this->kelinSetting = $kelinSetting;
-    }
-
-    public function getSettings() {
+    /**
+     * @return Collection<int, KelinSetting>
+     */
+    public function getSettings(): Collection {
         return $this->kelinSetting->newQuery()->with(['setting'])->get();
     }
 }

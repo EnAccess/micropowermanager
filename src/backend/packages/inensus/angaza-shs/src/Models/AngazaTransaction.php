@@ -2,40 +2,24 @@
 
 namespace Inensus\AngazaSHS\Models;
 
-use App\Models\Base\BaseModel;
 use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\ManufacturerTransactionInterface;
+use App\Models\Transaction\BaseManufacturerTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class AngazaTransaction extends BaseModel implements ManufacturerTransactionInterface {
+/**
+ * @property      int                        $id
+ * @property      Carbon|null                $created_at
+ * @property      Carbon|null                $updated_at
+ * @property-read AgentTransaction|null      $agentTransaction
+ * @property-read MesombTransaction|null     $mesombTransaction
+ * @property-read SwiftaTransaction|null     $swiftaTransaction
+ * @property-read ThirdPartyTransaction|null $thirdPartyTransaction
+ * @property-read WaveMoneyTransaction|null  $waveMoneyTransaction
+ */
+class AngazaTransaction extends BaseManufacturerTransaction {
     protected $table = 'angaza_transactions';
-
-    /** @return MorphOne<AgentTransaction, $this> */
-    public function agentTransaction(): MorphOne {
-        return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
-    }
-
-    /** @return MorphOne<ThirdPartyTransaction, $this> */
-    public function thirdPartyTransaction(): MorphOne {
-        return $this->morphOne(ThirdPartyTransaction::class, 'manufacturer_transaction');
-    }
-
-    /** @return MorphOne<MesombTransaction, $this> */
-    public function mesombTransaction(): MorphOne {
-        return $this->morphOne(MesombTransaction::class, 'manufacturer_transaction');
-    }
-
-    /** @return MorphOne<SwiftaTransaction, $this> */
-    public function swiftaTransaction(): MorphOne {
-        return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
-    }
-
-    /** @return MorphOne<WaveMoneyTransaction, $this> */
-    public function waveMoneyTransaction(): MorphOne {
-        return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');
-    }
 }

@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace Inensus\WavecomPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int    $id
- * @property string $transaction_id
- * @property string $sender
- * @property string $message
- * @property int    $amount
- * @property int    $status
+ * @property      int                                   $id
+ * @property      string                                $transaction_id
+ * @property      string                                $sender
+ * @property      string                                $message
+ * @property      int                                   $amount
+ * @property      int                                   $status
+ * @property      Carbon|null                           $created_at
+ * @property      Carbon|null                           $updated_at
+ * @property      string|null                           $manufacturer_transaction_type
+ * @property      int|null                              $manufacturer_transaction_id
+ * @property-read Collection<int, TransactionConflicts> $conflicts
+ * @property-read Model|null                            $manufacturerTransaction
+ * @property-read Transaction|null                      $transaction
  */
-class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class WaveComTransaction extends BasePaymentProviderTransaction {
     protected $table = 'wavecom_transactions';
     public const RELATION_NAME = 'wavecom_transaction';
     public const STATUS_SUCCESS = 1;
@@ -39,7 +45,7 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
         return $this->message;
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->amount;
     }
 
@@ -60,19 +66,8 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
     }
 
     /**
-     * @return MorphOne<Transaction, $this>
+     * @return MorphMany<TransactionConflicts, $this>
      */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
-
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
@@ -86,7 +81,7 @@ class WaveComTransaction extends BaseModel implements PaymentProviderTransaction
         return $this->getMessage();
     }
 
-    public function setStatus(int $status) {
+    public function setStatus(int $status): void {
         $this->status = $status;
     }
 

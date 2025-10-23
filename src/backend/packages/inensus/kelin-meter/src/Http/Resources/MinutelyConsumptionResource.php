@@ -2,6 +2,7 @@
 
 namespace Inensus\KelinMeter\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inensus\KelinMeter\Models\KelinMeterMinutelyData;
 
@@ -9,7 +10,45 @@ use Inensus\KelinMeter\Models\KelinMeterMinutelyData;
  * @mixin KelinMeterMinutelyData
  */
 class MinutelyConsumptionResource extends JsonResource {
-    public function toArray($request) {
+    /**
+     * @return array{
+     *     data: array{
+     *         type: 'minutely_consumption',
+     *         id: int,
+     *         attributes: array{
+     *             terminalId: int,
+     *             measurementPoint: int,
+     *             meterAddress: string,
+     *             meterName: string,
+     *             dateOfData: int,
+     *             timeOfData: int,
+     *             positiveActiveValue: float,
+     *             positiveReactiveValue:float,
+     *             invertedActiveValue: float,
+     *             invertedReactiveValue: float,
+     *             positiveActiveMinute: float,
+     *             positiveReactiveMinute: float,
+     *             invertedActiveMinute: float,
+     *             invertedReactiveMinute: float,
+     *             voltageOfPhaseA: float,
+     *             voltageOfPhaseB: float,
+     *             voltageOfPhaseC: float,
+     *             power: float,
+     *             powerFactor: float,
+     *             reactivePower: float,
+     *             currentOfPhaseA: float,
+     *             currentOfPhaseB: float,
+     *             currentOfPhaseC: float,
+     *             temperature1: float,
+     *             temperature2: float,
+     *             pressure1: float,
+     *             pressure2: float,
+     *             flowVelocity: float
+     *         }
+     *     }
+     * }
+     */
+    public function toArray(Request $request): array {
         return [
             'data' => [
                 'type' => 'minutely_consumption',

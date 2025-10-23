@@ -5,6 +5,11 @@ namespace Inensus\Ticket\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserTicketCreateRequest extends FormRequest {
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
     public function rules(): array {
         return [];
     }
@@ -21,6 +26,9 @@ class UserTicketCreateRequest extends FormRequest {
         return $this->input('outsourcing');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getMappedArray(): array {
         return [
             'title' => $this->getTitle(),

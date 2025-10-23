@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Collection;
 class OutstandingDebtsExportService extends AbstractExportService {
     public function __construct(
         private readonly UserService $userService,
-        private ApplianceRateService $applianceService,
         private ApplianceRateService $applianceRateService,
         private MailHelper $mailHelper,
     ) {}
@@ -41,15 +40,13 @@ class OutstandingDebtsExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->outstandingDebtsData->map(function (AssetRate $applianceRate): array {
-            return [
-                $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
-                $applianceRate->assetPerson->asset->name,
-                $applianceRate->assetPerson->device_serial,
-                $applianceRate->due_date,
-                $applianceRate->remaining,
-            ];
-        });
+        $this->exportingData = $this->outstandingDebtsData->map(fn (AssetRate $applianceRate): array => [
+            $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
+            $applianceRate->assetPerson->asset->name,
+            $applianceRate->assetPerson->device_serial,
+            $applianceRate->due_date,
+            $applianceRate->remaining,
+        ]);
     }
 
     /**
@@ -66,7 +63,7 @@ class OutstandingDebtsExportService extends AbstractExportService {
     public function createReport(CarbonImmutable $toDate): string {
         $currency = $this->applianceRateService->getCurrencyFromMainSettings();
 
-        $data = $this->applianceService->queryOutstandingDebtsByApplianceRates($toDate)->get();
+        $data = $this->applianceRateService->queryOutstandingDebtsByApplianceRates($toDate)->get();
         $this->createSpreadSheetFromTemplate($this->getTemplatePath());
         $this->setCurrency($currency);
         $this->setOutstandingDebtsData($data);

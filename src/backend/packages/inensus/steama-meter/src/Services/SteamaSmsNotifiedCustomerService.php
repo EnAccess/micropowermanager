@@ -2,22 +2,22 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SteamaMeter\Models\SteamaSmsNotifiedCustomer;
 
 class SteamaSmsNotifiedCustomerService {
-    private $steamaSmsNotifiedCustomer;
-
     public function __construct(
-        SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer,
-    ) {
-        $this->steamaSmsNotifiedCustomer = $steamaSmsNotifiedCustomer;
-    }
+        private SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer,
+    ) {}
 
-    public function getSteamaSmsNotifiedCustomers() {
+    /**
+     * @return Collection<int, SteamaSmsNotifiedCustomer>
+     */
+    public function getSteamaSmsNotifiedCustomers(): Collection {
         return $this->steamaSmsNotifiedCustomer->newQuery()->get();
     }
 
-    public function createTransactionSmsNotify($customerId, $transactionId) {
+    public function createTransactionSmsNotify(int $customerId, int $transactionId): SteamaSmsNotifiedCustomer {
         return $this->steamaSmsNotifiedCustomer->newQuery()->create([
             'customer_id' => $customerId,
             'notify_type' => 'transaction',
@@ -25,14 +25,17 @@ class SteamaSmsNotifiedCustomerService {
         ]);
     }
 
-    public function createLowBalanceSmsNotify($customerId) {
+    public function createLowBalanceSmsNotify(int $customerId): SteamaSmsNotifiedCustomer {
         return $this->steamaSmsNotifiedCustomer->newQuery()->create([
             'customer_id' => $customerId,
             'notify_type' => 'low_balance',
         ]);
     }
 
-    public function removeLowBalancedCustomer($customer) {
+    /**
+     * @param array<string, mixed> $customer
+     */
+    public function removeLowBalancedCustomer(array $customer): bool {
         if ($customer['low_balance_warning'] >= $customer['account_balance']) {
             return false;
         }

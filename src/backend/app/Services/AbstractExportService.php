@@ -78,15 +78,12 @@ abstract class AbstractExportService {
         $decimal = isset($parts[1]) ? substr($parts[1].'00', 0, 2) : '';
 
         // Combine the whole number and decimal parts
-        return $decimal ? "$whole.$decimal" : $whole;
+        return $decimal !== '' && $decimal !== '0' ? "$whole.$decimal" : $whole;
     }
 
     public function convertUtcDateToTimezone(string|\DateTimeInterface|null $utcDate): string {
         // Create a DateTime object with the UTC-based date
         $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
-
-        // Set the desired timezone
-        $dateTimeUtc->setTimezone(new \DateTimeZone($this->timeZone));
 
         // Format the date and time as a string
         return $dateTimeUtc->format('Y-m-d H:i:s');
@@ -140,7 +137,7 @@ abstract class AbstractExportService {
             }
 
             // Write header row
-            if (empty($headers)) {
+            if ($headers === []) {
                 // Use keys from the first row if no custom headers provided
                 fputcsv($handle, array_keys($this->exportingData->first()));
             } else {

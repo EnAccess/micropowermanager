@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Agent;
+use App\Models\Company;
+use App\Models\User;
+
 return [
     'defaults' => [
         'guard' => 'api',
@@ -20,16 +24,24 @@ return [
             'driver' => 'jwt',
             'provider' => 'agents',
         ],
+        'api-key' => [
+            'driver' => 'api-key',
+            'provider' => 'companies',
+        ],
     ],
 
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => User::class,
         ],
         'agents' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Agent::class,
+            'model' => Agent::class,
+        ],
+        'companies' => [
+            'driver' => 'api-key',
+            'model' => Company::class,
         ],
     ],
 

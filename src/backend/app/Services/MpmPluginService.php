@@ -18,10 +18,8 @@ class MpmPluginService implements IBaseService {
     /**
      * @param int|string $id
      */
-    public function getById($id): MpmPlugin {
-        $result = $this->mpmPlugin->newQuery()->findOrFail($id);
-
-        return $result;
+    public function getById($id): ?MpmPlugin {
+        return $this->mpmPlugin->newQuery()->findOrFail($id);
     }
 
     /**

@@ -7,11 +7,6 @@ use Illuminate\Support\Collection;
 
 class TransactionProviderService {
     /**
-     * TransactionProviderService constructor.
-     */
-    public function __construct() {}
-
-    /**
      * @return Collection<int, string>
      */
     public function getTransactionProviders(): Collection {

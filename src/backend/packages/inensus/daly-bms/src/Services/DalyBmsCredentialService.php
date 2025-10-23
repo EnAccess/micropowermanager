@@ -2,9 +2,12 @@
 
 namespace Inensus\DalyBms\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\DalyBms\Models\DalyBmsCredential;
 
 class DalyBmsCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private DalyBmsCredential $credential,
     ) {}
@@ -12,28 +15,62 @@ class DalyBmsCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): DalyBmsCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'user_name' => null,
             'password' => null,
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): ?DalyBmsCredential {
+        $credential = $this->credential->newQuery()->first();
+
+        if ($credential) {
+            // Decrypt sensitive fields
+            if ($credential->user_name) {
+                $credential->user_name = $this->decryptCredentialField($credential->user_name);
+            }
+            if ($credential->password) {
+                $credential->password = $this->decryptCredentialField($credential->password);
+            }
+            if ($credential->access_token) {
+                $credential->access_token = $this->decryptCredentialField($credential->access_token);
+            }
+        }
+
+        return $credential;
     }
 
-    public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+    /**
+     * @param array<string, mixed> $updateData
+     */
+    public function updateCredentials(DalyBmsCredential $credentials, array $updateData): DalyBmsCredential {
+        $encryptedData = $this->encryptCredentialFields($updateData, ['user_name', 'password', 'access_token']);
+        $credentials->update($encryptedData);
 
-        return $credentials->fresh();
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['user_name', 'password', 'access_token']);
     }
 
-    public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
+    public function getById(int $id): DalyBmsCredential {
+        $credential = $this->credential->newQuery()->findOrFail($id);
+
+        // Decrypt sensitive fields
+        if ($credential->user_name) {
+            $credential->user_name = $this->decryptCredentialField($credential->user_name);
+        }
+        if ($credential->password) {
+            $credential->password = $this->decryptCredentialField($credential->password);
+        }
+        if ($credential->access_token) {
+            $credential->access_token = $this->decryptCredentialField($credential->access_token);
+        }
+
+        return $credential;
     }
 
-    public function isAccessTokenValid($credential) {
+    public function isAccessTokenValid(DalyBmsCredential $credential): bool {
         $accessToken = $credential->getAccessToken();
 
         if ($accessToken == null) {
@@ -41,10 +78,6 @@ class DalyBmsCredentialService {
         }
         $tokenExpirationTime = $credential->getExpirationTime();
 
-        if ($tokenExpirationTime == null || $tokenExpirationTime < time()) {
-            return false;
-        }
-
-        return true;
+        return $tokenExpirationTime != null && $tokenExpirationTime >= time();
     }
 }

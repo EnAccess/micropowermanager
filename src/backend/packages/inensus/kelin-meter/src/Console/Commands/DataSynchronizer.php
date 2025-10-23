@@ -9,7 +9,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Inensus\KelinMeter\Exceptions\CronJobException;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 use Inensus\KelinMeter\Services\KelinMeterService;
@@ -47,7 +47,7 @@ class DataSynchronizer extends AbstractSharedCommand {
 
         $syncActions = $this->syncActionService->getActionsNeedsToSync();
         try {
-            $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
+            $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
                 if (!$syncAction) {
                     return true;

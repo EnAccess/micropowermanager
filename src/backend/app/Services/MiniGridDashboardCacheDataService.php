@@ -41,7 +41,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
         } else {
-            list($startDate, $endDate) = $dateRange;
+            [$startDate, $endDate] = $dateRange;
         }
 
         $miniGrids = $this->miniGridService->getAll();
@@ -141,14 +141,15 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     ];
                 }
             }
-            $begin = date_create('2018-08-01');
-            $end = date_create();
+            // Limit ticket data to last 12 months to avoid overwhelming the frontend
+            $begin = date_create($startDate);
+            $end = date_create($endDate);
             $end->add(new \DateInterval('P1D'));
             $i = new \DateInterval('P1W');
             $period = new \DatePeriod($begin, $i, $end);
 
-            $openedTicketsWithCategories = $this->ticket->ticketsOpenedWithCategories($miniGridId);
-            $closedTicketsWithCategories = $this->ticket->ticketsClosedWithCategories($miniGridId);
+            $openedTicketsWithCategories = $this->ticket->ticketsOpenedWithCategories($miniGridId, $startDate, $endDate);
+            $closedTicketsWithCategories = $this->ticket->ticketsClosedWithCategories($miniGridId, $startDate, $endDate);
             $ticketCategories = $this->label->all();
             $result = [];
             $result['categories'] = $ticketCategories->toArray();

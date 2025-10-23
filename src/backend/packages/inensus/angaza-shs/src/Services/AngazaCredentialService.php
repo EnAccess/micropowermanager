@@ -2,9 +2,12 @@
 
 namespace Inensus\AngazaSHS\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\AngazaSHS\Models\AngazaCredential;
 
 class AngazaCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private AngazaCredential $credential,
     ) {}
@@ -12,39 +15,35 @@ class AngazaCredentialService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials() {
+    public function createCredentials(): AngazaCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'client_id' => null,
             'client_secret' => null,
         ]);
     }
 
-    public function getCredentials() {
-        return $this->credential->newQuery()->first();
+    public function getCredentials(): ?AngazaCredential {
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 
-    public function updateCredentials($credentials, $updateData) {
-        $credentials->update($updateData);
+    /**
+     * @param array<string, mixed> $updateData
+     */
+    public function updateCredentials(AngazaCredential $credentials, array $updateData): AngazaCredential {
+        $encryptedData = $this->encryptCredentialFields($updateData, ['client_id', 'client_secret']);
 
-        return $credentials->fresh();
+        $credentials->update($encryptedData);
+
+        $credentials->fresh();
+
+        return $this->decryptCredentialFields($credentials, ['client_id', 'client_secret']);
     }
 
-    public function getById($id) {
-        return $this->credential->newQuery()->findOrFail($id);
-    }
+    public function getById(int $id): AngazaCredential {
+        $credential = $this->credential->newQuery()->findOrFail($id);
 
-    public function isAccessTokenValid($credential) {
-        $accessToken = $credential->getAccessToken();
-
-        if ($accessToken == null) {
-            return false;
-        }
-        $tokenExpirationTime = $credential->getExpirationTime();
-
-        if ($tokenExpirationTime == null || $tokenExpirationTime < time()) {
-            return false;
-        }
-
-        return true;
+        return $this->decryptCredentialFields($credential, ['client_id', 'client_secret']);
     }
 }

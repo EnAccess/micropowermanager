@@ -48,7 +48,7 @@ class TransactionService implements IAssociative, IBaseService {
      * @param array<int> $transactionIds
      */
     private function getTransactionCountByStatus($transactionIds, bool $status): int {
-        $status = $status === true ? 1 : 0;
+        $status = $status ? 1 : 0;
 
         return $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',
@@ -74,16 +74,12 @@ class TransactionService implements IAssociative, IBaseService {
     }
 
     public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService|EBikeTransactionService {
-        switch ($type) {
-            case SolarHomeSystem::RELATION_NAME:
-                return $this->solarHomeSystemTransactionService;
-            case Asset::RELATION_NAME:
-                return $this->applianceTransactionService;
-            case EBike::RELATION_NAME:
-                return $this->eBikeTransactionService;
-            default:
-                return $this->meterTransactionService;
-        }
+        return match ($type) {
+            SolarHomeSystem::RELATION_NAME => $this->solarHomeSystemTransactionService,
+            Asset::RELATION_NAME => $this->applianceTransactionService,
+            EBike::RELATION_NAME => $this->eBikeTransactionService,
+            default => $this->meterTransactionService,
+        };
     }
 
     /**

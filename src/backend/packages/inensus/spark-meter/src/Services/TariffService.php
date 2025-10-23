@@ -15,43 +15,11 @@ use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Models\SyncStatus;
 
 class TariffService implements ISynchronizeService {
-    private $sparkMeterApiRequests;
-    private $rootUrl = '/tariffs';
-    private $smTableEncryption;
-    private $smMeterModel;
-    private $smSite;
-    private $smTariff;
-    private $meterTariff;
-    private $timeOfUsage;
-    private $accessRate;
-    private $smSyncSettingService;
-    private $smSyncActionService;
+    private string $rootUrl = '/tariffs';
 
-    public function __construct(
-        SparkMeterApiRequests $sparkMeterApiRequests,
-        SmTableEncryption $smTableEncryption,
-        SmMeterModel $smMeterModel,
-        SmSite $smSite,
-        SmTariff $smTariff,
-        MeterTariff $meterTariff,
-        TimeOfUsage $timeOfUsage,
-        AccessRate $accessRate,
-        SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService,
-    ) {
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
-        $this->smTableEncryption = $smTableEncryption;
-        $this->smMeterModel = $smMeterModel;
-        $this->smSite = $smSite;
-        $this->smTariff = $smTariff;
-        $this->meterTariff = $meterTariff;
-        $this->timeOfUsage = $timeOfUsage;
-        $this->accessRate = $accessRate;
-        $this->smSyncSettingService = $smSyncSettingService;
-        $this->smSyncActionService = $smSyncActionService;
-    }
+    public function __construct(private SparkMeterApiRequests $sparkMeterApiRequests, private SmTableEncryption $smTableEncryption, private SmMeterModel $smMeterModel, private SmSite $smSite, private SmTariff $smTariff, private MeterTariff $meterTariff, private TimeOfUsage $timeOfUsage, private AccessRate $accessRate, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService) {}
 
-    public function createSmTariff($tariff, $siteId) {
+    public function createSmTariff($tariff, $siteId): void {
         $touEnabled = count($tariff->tou) > 0;
         $maxValue = $this->smMeterModel->newQuery()->max('continuous_limit');
         $tous = [];
@@ -86,7 +54,7 @@ class TariffService implements ISynchronizeService {
         if (!$tariffExists) {
             $modelTouString = '';
             foreach ($tariff->tou as $key => $value) {
-                $modelTouString .= $value->start.$value->end.doubleval($value->value);
+                $modelTouString .= $value->start.$value->end.floatval($value->value);
                 $tous[$key] = [
                     'start' => $value->start,
                     'end' => $value->end,
@@ -131,23 +99,23 @@ class TariffService implements ISynchronizeService {
         return $this->smTariff->newQuery()->with(['mpmTariff', 'site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getSmTariffsCount() {
+    public function getSmTariffsCount(): int {
         return count($this->smTariff->newQuery()->get());
     }
 
-    public function createRelatedTariff($tariff) {
+    public function createRelatedTariff(array $tariff) {
         $meterTariff = $this->meterTariff->newQuery()->create([
             'name' => $tariff['name'],
             'price' => $tariff['flat_price'] * 100,
             'currency' => config('spark.currency'),
             'total_price' => $tariff['flat_price'] * 100,
         ]);
-        foreach ($tariff['tous'] as $key => $tou) {
+        foreach ($tariff['tous'] as $tou) {
             $this->timeOfUsage->newQuery()->create([
                 'tariff_id' => $meterTariff->id,
                 'start' => $tou['start'],
                 'end' => $tou['end'],
-                'value' => doubleval($tou['value']),
+                'value' => floatval($tou['value']),
             ]);
         }
         if ($tariff['plan_enabled'] && $tariff['plan_fixed_fee'] > 0) {
@@ -157,24 +125,24 @@ class TariffService implements ISynchronizeService {
         return $meterTariff;
     }
 
-    public function updateRelatedTariff($model, $tariff) {
+    public function updateRelatedTariff(array $model, $tariff): void {
         if (count($model['tous']) === count($tariff->tou)) {
             foreach ($model['tous'] as $key => $tou) {
                 $tariff->tou[$key]->start = $tou['start'];
                 $tariff->tou[$key]->end = $tou['end'];
-                $tariff->tou[$key]->value = doubleval($tou['value']);
+                $tariff->tou[$key]->value = floatval($tou['value']);
                 $tariff->tou[$key]->update();
             }
         } else {
-            foreach ($tariff->tou as $key => $tou) {
+            foreach ($tariff->tou as $tou) {
                 $tou->delete();
             }
-            foreach ($model['tous'] as $key => $tou) {
+            foreach ($model['tous'] as $tou) {
                 $this->timeOfUsage->newQuery()->create([
                     'tariff_id' => $tariff->id,
                     'start' => $tou['start'],
                     'end' => $tou['end'],
-                    'value' => doubleval($tou['value']),
+                    'value' => floatval($tou['value']),
                 ]);
             }
         }
@@ -200,7 +168,7 @@ class TariffService implements ISynchronizeService {
         }
     }
 
-    private function setAccessRate($model, $tariffId, $planEnabled) {
+    private function setAccessRate(array $model, $tariffId, $planEnabled): void {
         $accessRate = $this->accessRate->newQuery()->where('tariff_id', $tariffId)->first();
         $duration = array_key_exists('plan_duration', $model) ? $model['plan_duration'] : '1m';
         if ($accessRate) {
@@ -213,14 +181,12 @@ class TariffService implements ISynchronizeService {
             } else {
                 $accessRate->delete();
             }
-        } else {
-            if ($planEnabled) {
-                $this->accessRate->newQuery()->create([
-                    'tariff_id' => $tariffId,
-                    'amount' => $model['plan_fixed_fee'],
-                    'period' => $duration === '1m' ? 30 : 1,
-                ]);
-            }
+        } elseif ($planEnabled) {
+            $this->accessRate->newQuery()->create([
+                'tariff_id' => $tariffId,
+                'amount' => $model['plan_fixed_fee'],
+                'period' => $duration === '1m' ? 30 : 1,
+            ]);
         }
     }
 
@@ -235,11 +201,11 @@ class TariffService implements ISynchronizeService {
             return $sparkTariff['tariff'];
         } catch (\Exception $e) {
             Log::critical('Getting tariff info from spark api failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function updateSparkTariffInfo($tariffData) {
+    public function updateSparkTariffInfo(array $tariffData) {
         try {
             $tariffId = $tariffData['id'];
             $smTariff = $this->smTariff->newQuery()->where('tariff_id', $tariffId)->first();
@@ -269,7 +235,7 @@ class TariffService implements ISynchronizeService {
                 'updating tariff info from spark api failed.',
                 ['Error :' => $e->getMessage(), 'data :' => $tariffData]
             );
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -277,7 +243,7 @@ class TariffService implements ISynchronizeService {
         $tariff = $this->getSparkTariffInfo($smTariff->tariff_id);
 
         $modelHash = $this->modelHasher($tariff, null);
-        $isHashChanged = $smTariff->hash === $modelHash ? false : true;
+        $isHashChanged = $smTariff->hash !== $modelHash;
         $relatedTariff = $this->meterTariff->newQuery()->where(
             'id',
             $smTariff->mpm_tariff_id
@@ -311,10 +277,8 @@ class TariffService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
             $tariffsCollection = collect($syncCheck)->except('available_site_count');
-            $tariffsCollection->each(function ($tariffs) {
-                $tariffs['site_data']->filter(function ($tariff) {
-                    return $tariff['syncStatus'] === SyncStatus::NOT_REGISTERED_YET;
-                })->each(function ($tariff) use ($tariffs) {
+            $tariffsCollection->each(function (array $tariffs) {
+                $tariffs['site_data']->filter(fn (array $tariff): bool => $tariff['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $tariff) use ($tariffs) {
                     $meterTariff = $this->createRelatedTariff($tariff);
                     $maxValue = $this->smMeterModel->newQuery()->max('continuous_limit');
                     $this->smTariff->newQuery()->create([
@@ -324,10 +288,7 @@ class TariffService implements ISynchronizeService {
                             'flat_load_limit',
                             $tariff
                         ) ? $tariff['flat_load_limit'] : $maxValue,
-                        'plan_duration' => array_key_exists(
-                            'plan_duration',
-                            $tariff
-                        ) ? $tariff['plan_duration'] : null,
+                        'plan_duration' => $tariff['plan_duration'] ?? null,
                         'plan_price' => array_key_exists(
                             'plan_price',
                             $tariff
@@ -336,9 +297,7 @@ class TariffService implements ISynchronizeService {
                         'hash' => $tariff['hash'],
                     ]);
                 });
-                $tariffs['site_data']->filter(function ($tariff) {
-                    return $tariff['syncStatus'] === SyncStatus::MODIFIED;
-                })->each(function ($tariff) use ($tariffs) {
+                $tariffs['site_data']->filter(fn (array $tariff): bool => $tariff['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $tariff) use ($tariffs) {
                     is_null($tariff['relatedTariff']) ?
                         $this->createRelatedTariff($tariff) : $this->updateRelatedTariff(
                             $tariff,
@@ -372,11 +331,14 @@ class TariffService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark meter tariffs sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function syncCheck($returnData = false) {
+    /**
+     * @return mixed[]
+     */
+    public function syncCheck($returnData = false): array {
         $returnArray = ['available_site_count' => 0];
 
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
@@ -387,19 +349,14 @@ class TariffService implements ISynchronizeService {
             } catch (SparkAPIResponseException $e) {
                 Log::critical('Spark meter tariffs sync-check failed.', ['Error :' => $e->getMessage()]);
                 if ($returnData) {
-                    array_push(
-                        $returnArray,
-                        ['result' => false]
-                    );
+                    $returnArray[] = ['result' => false];
                 }
                 throw new SparkAPIResponseException($e->getMessage());
             }
-            $sparkTariffsCollection = collect($tariffs['tariffs'])->filter(function ($tariff) {
-                return $tariff['tariff_type'] == 'flat';
-            });
+            $sparkTariffsCollection = collect($tariffs['tariffs'])->filter(fn (array $tariff): bool => $tariff['tariff_type'] == 'flat');
             $sparkTariffs = $this->smTariff->newQuery()->where('site_id', $site->site_id)->get();
             $tariffs = $this->meterTariff->newQuery()->get();
-            $sparkTariffsCollection->transform(function ($tariff) use ($sparkTariffs, $tariffs) {
+            $sparkTariffsCollection->transform(function (array $tariff) use ($sparkTariffs, $tariffs): array {
                 $registeredSparkTariff = $sparkTariffs->firstWhere('tariff_id', $tariff['id']);
                 $relatedTariff = null;
                 $tariffHash = $this->modelHasher($tariff, null);
@@ -439,7 +396,7 @@ class TariffService implements ISynchronizeService {
     public function modelHasher($model, ...$params): string {
         $modelTouString = '';
         foreach ($model['tous'] as $item) {
-            $modelTouString .= $item['start'].$item['end'].doubleval($item['value']);
+            $modelTouString .= $item['start'].$item['end'].floatval($item['value']);
         }
 
         return $this->smTableEncryption->makeHash([
@@ -449,7 +406,7 @@ class TariffService implements ISynchronizeService {
         ]);
     }
 
-    public function syncCheckBySite($siteId) {
+    public function syncCheckBySite($siteId): array {
         try {
             $tariffs = $this->sparkMeterApiRequests->get($this->rootUrl, $siteId);
         } catch (SparkAPIResponseException $e) {
@@ -457,12 +414,10 @@ class TariffService implements ISynchronizeService {
             throw new SparkAPIResponseException($e->getMessage());
         }
 
-        $sparkTariffsCollection = collect($tariffs['tariffs'])->filter(function ($tariff) {
-            return $tariff['tariff_type'] == 'flat';
-        });
+        $sparkTariffsCollection = collect($tariffs['tariffs'])->filter(fn (array $tariff): bool => $tariff['tariff_type'] == 'flat');
         $sparkTariffs = $this->smTariff->newQuery()->where('site_id', $siteId)->get();
         $tariffs = $this->smTariff->newQuery()->get();
-        $sparkTariffsCollection->transform(function ($tariff) use ($sparkTariffs, $tariffs) {
+        $sparkTariffsCollection->transform(function (array $tariff) use ($sparkTariffs, $tariffs): array {
             $registeredSparkTariff = $sparkTariffs->firstWhere('tariff_id', $tariff['id']);
             $relatedTariff = null;
             $tariffHash = $this->modelHasher($tariff, null);

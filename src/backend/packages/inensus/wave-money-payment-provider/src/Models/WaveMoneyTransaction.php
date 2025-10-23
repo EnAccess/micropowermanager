@@ -2,26 +2,34 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Models;
 
-use App\Models\Base\BaseModel;
-use App\Models\Transaction\PaymentProviderTransactionInterface;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int         $id
- * @property int         $amount
- * @property string      $currency
- * @property string      $order_id
- * @property string      $reference_id
- * @property int         $status
- * @property string      $external_transaction_id
- * @property int         $customer_id
- * @property string|null $meter_serial
+ * @property      int                                   $id
+ * @property      int                                   $status
+ * @property      float                                 $amount
+ * @property      string                                $order_id
+ * @property      string                                $reference_id
+ * @property      string                                $currency
+ * @property      int                                   $customer_id
+ * @property      string|null                           $meter_serial
+ * @property      string|null                           $external_transaction_id
+ * @property      int                                   $attempts
+ * @property      Carbon|null                           $created_at
+ * @property      Carbon|null                           $updated_at
+ * @property      string|null                           $manufacturer_transaction_type
+ * @property      int|null                              $manufacturer_transaction_id
+ * @property-read Collection<int, TransactionConflicts> $conflicts
+ * @property-read Model|null                            $manufacturerTransaction
+ * @property-read Transaction|null                      $transaction
  */
-class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
+class WaveMoneyTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'wave_money_transaction';
 
     public const STATUS_REQUESTED = 0;
@@ -32,8 +40,8 @@ class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransacti
 
     protected $table = 'wave_money_transactions';
 
-    public function getAmount(): int {
-        return $this->amount;
+    public function getAmount(): float {
+        return (int) $this->amount;
     }
 
     public function getCurrency(): string {
@@ -52,49 +60,38 @@ class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransacti
         return $this->id;
     }
 
-    public function setStatus(int $status) {
+    public function setStatus(int $status): void {
         $this->status = $status;
     }
 
-    public function setExternalTransactionId(string $transactionId) {
+    public function setExternalTransactionId(string $transactionId): void {
         $this->external_transaction_id = $transactionId;
     }
 
-    public function setOrderId(string $orderId) {
+    public function setOrderId(string $orderId): void {
         $this->order_id = $orderId;
     }
 
-    public function setReferenceId(string $referenceId) {
+    public function setReferenceId(string $referenceId): void {
         $this->reference_id = $referenceId;
     }
 
-    public function setCustomerId(int $customerId) {
+    public function setCustomerId(int $customerId): void {
         $this->customer_id = $customerId;
     }
 
-    public function setMeterSerial(string $meterSerialNumber) {
+    public function setMeterSerial(string $meterSerialNumber): void {
         $this->meter_serial = $meterSerialNumber;
     }
 
-    public function setAmount(int $amount) {
+    public function setAmount(int $amount): void {
         $this->amount = $amount;
     }
 
     /**
-     * @return MorphOne<Transaction, $this>
+     * @return MorphMany<TransactionConflicts, $this>
      */
-    public function transaction(): MorphOne {
-        return $this->morphOne(Transaction::class, 'original_transaction');
-    }
-
-    /**
-     * @return MorphTo<Model, $this>
-     */
-    public function manufacturerTransaction(): MorphTo {
-        return $this->morphTo();
-    }
-
-    public function conflicts() {
+    public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 

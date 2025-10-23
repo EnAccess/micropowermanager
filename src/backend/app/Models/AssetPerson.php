@@ -6,21 +6,34 @@ use App\Events\AssetPersonCreated;
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class AssetPerson.
  *
- * @property int                        $asset_type_id
- * @property int                        $person_id
- * @property int                        $total_cost
- * @property int                        $down_payment
- * @property int                        $rate_count
- * @property AssetType|null             $assetType
- * @property Collection<int, AssetRate> $rates
+ * @property      int                        $id
+ * @property      int                        $asset_id
+ * @property      int                        $person_id
+ * @property      float                      $total_cost
+ * @property      int                        $rate_count
+ * @property      string                     $creator_type
+ * @property      int                        $creator_id
+ * @property      Carbon|null                $created_at
+ * @property      Carbon|null                $updated_at
+ * @property      float|null                 $down_payment
+ * @property      Carbon|null                $first_payment_date
+ * @property      string|null                $device_serial
+ * @property-read Asset|null                 $asset
+ * @property-read Model                      $creator
+ * @property-read Device|null                $device
+ * @property-read Collection<int, Log>       $logs
+ * @property-read Person|null                $person
+ * @property-read Collection<int, AssetRate> $rates
  */
 class AssetPerson extends BaseModel {
     /** @var array<string, string> */
@@ -57,7 +70,7 @@ class AssetPerson extends BaseModel {
     }
 
     /**
-     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     * @return MorphTo<Model, $this>
      */
     public function creator(): MorphTo {
         return $this->morphTo();
@@ -67,6 +80,6 @@ class AssetPerson extends BaseModel {
      * @return BelongsTo<Device, $this>
      */
     public function device(): BelongsTo {
-        return $this->belongsTo(Device::class, 'device_serial');
+        return $this->belongsTo(Device::class, 'device_serial', 'device_serial');
     }
 }

@@ -3,11 +3,21 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
- * @property string|null $tail_tag
- * @property string|null $installation_command
+ * @property      int                      $id
+ * @property      string                   $usage_type
+ * @property      string                   $name
+ * @property      string                   $description
+ * @property      Carbon|null              $created_at
+ * @property      Carbon|null              $updated_at
+ * @property      string|null              $tail_tag
+ * @property      string|null              $installation_command
+ * @property      string|null              $root_class
+ * @property-read Collection<int, Plugins> $plugins
  */
 class MpmPlugin extends BaseModelCentral {
     public const SPARK_METER = 1;
@@ -30,6 +40,9 @@ class MpmPlugin extends BaseModelCentral {
     public const AFRICAS_TALKING = 18;
     public const VODACOM_MOBILE_MONEY = 19;
     public const CHINT_METER = 20;
+    public const DEMO_SHS_MANUFACTURER = 22;
+    public const DEMO_METER_MANUFACTURER = 21;
+    public const ODYSSEY_DATA_EXPORT = 23;
 
     protected $table = 'mpm_plugins';
 

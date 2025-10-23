@@ -3,11 +3,24 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property      int         $id
+ * @property      int         $setting_id
+ * @property      string      $setting_type
+ * @property      Carbon|null $created_at
+ * @property      Carbon|null $updated_at
+ * @property-read Model       $setting
+ */
 class SteamaSetting extends BaseModel {
     protected $table = 'steama_settings';
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function setting(): MorphTo {
         return $this->morphTo();
     }

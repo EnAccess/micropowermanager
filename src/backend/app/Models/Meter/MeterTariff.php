@@ -8,27 +8,40 @@ use App\Models\CustomerGroup;
 use App\Models\SocialTariff;
 use App\Models\TariffPricingComponent;
 use App\Models\TimeOfUsage;
+use Database\Factories\Meter\MeterTariffFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Tariff.
  *
- * @property int        $id
- * @property string     $name
- * @property int        $price       (100 times the price. Allows to play with .00 decimals)
- * @property int        $total_price (100 times the price. Allows to play with .00 decimals)
- * @property string     $currency
- * @property int|null   $factor
- * @property AccessRate $accessRate
+ * @property      int                                     $id
+ * @property      string                                  $name
+ * @property      float                                   $price
+ * @property      string                                  $currency
+ * @property      int|null                                $factor
+ * @property      Carbon|null                             $created_at
+ * @property      Carbon|null                             $updated_at
+ * @property      Carbon|null                             $deleted_at
+ * @property      float|null                              $total_price
+ * @property      float                                   $minimum_purchase_amount
+ * @property-read AccessRate|null                         $accessRate
+ * @property-read Collection<int, CustomerGroup>          $customerGroups
+ * @property-read Collection<int, Meter>                  $meters
+ * @property-read Collection<int, Meter>                  $metersCount
+ * @property-read Collection<int, TariffPricingComponent> $pricingComponent
+ * @property-read SocialTariff|null                       $socialTariff
+ * @property-read Collection<int, TimeOfUsage>            $tou
  */
 class MeterTariff extends BaseModel {
     use SoftDeletes;
 
-    /** @use HasFactory<\Database\Factories\Meter\MeterTariffFactory> */
+    /** @use HasFactory<MeterTariffFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'meter_tariff';
