@@ -4,25 +4,21 @@ namespace Inensus\MicroStarMeter\Services;
 
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Inensus\MicroStarMeter\Models\MicroStarCredential;
 
 class MicroStarCertificateService {
     public function upload(Request $request, MicroStarCredential $credentials): MicroStarCredential {
         $file = $request->file('cert');
-        $companyId = app()->make(UserService::class)->getCompanyId();
+        $companyId = app(UserService::class)->getCompanyId();
 
-        if (!File::isDirectory(storage_path("/app/certs/companies/$companyId"))) {
-            File::makeDirectory(storage_path("/app/certs/companies/$companyId"), 0777, true, true);
-        }
+        $certificatePath = "certs/companies/{$companyId}";
 
-        $certificatePath = "/certs/companies/$companyId/";
-        $fileName = $file->getClientOriginalName();
-        Storage::disk('local')->putFileAs($certificatePath, $file, $fileName);
+        Storage::putFileAs($certificatePath, $file, $file->getClientOriginalName());
+
         $credentials->update([
             'certificate_path' => $certificatePath,
-            'certificate_file_name' => $fileName,
+            'certificate_file_name' => $file->getClientOriginalName(),
         ]);
 
         return $credentials;
@@ -33,8 +29,9 @@ class MicroStarCertificateService {
             return '';
         }
 
-        $filePath = storage_path('app'.$credentials->certificate_path.'/'.$credentials->certificate_file_name);
-        if (File::exists($filePath)) {
+        $filePath = trim($credentials->certificate_path, '/').'/'.$credentials->certificate_file_name;
+
+        if (Storage::exists($filePath)) {
             return $credentials->certificate_file_name;
         } else {
             $credentials->update(['certificate_path' => null, 'certificate_file_name' => null]);
