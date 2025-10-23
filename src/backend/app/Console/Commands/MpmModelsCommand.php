@@ -7,6 +7,7 @@ use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -75,7 +76,7 @@ class MpmModelsCommand extends ModelsCommand {
         }
 
         $this->dateClass = class_exists(\Illuminate\Support\Facades\Carbon::class)
-            ? '\\'.get_class(\Illuminate\Support\Facades\Carbon::now())
+            ? '\\'.get_class(Carbon::now())
             : '\Illuminate\Support\Carbon';
 
         $content = $this->generateDocs($model, $ignore);
