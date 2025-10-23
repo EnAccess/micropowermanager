@@ -75,7 +75,7 @@ class MpmModelsCommand extends ModelsCommand {
             }
         }
 
-        $this->dateClass = class_exists(\Illuminate\Support\Facades\Carbon::class)
+        $this->dateClass = class_exists(Carbon::class)
             ? '\\'.get_class(Carbon::now())
             : '\Illuminate\Support\Carbon';
 
