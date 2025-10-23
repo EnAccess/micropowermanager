@@ -116,8 +116,6 @@
     "larastan": "phpstan analyse --memory-limit=2G --no-progress",
     "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=7",
     "larastan-no-cache": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress",
-    "larastan-packages": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=5 packages/inensus/spark-meter/",
-    "larastan-packages-next": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress --level=6 packages/inensus/spark-meter/",
     "rector-fix": "vendor/bin/rector && php-cs-fixer fix",
     "rector-check": "vendor/bin/rector --dry-run",
     "rector-version": "vendor/bin/rector --version"

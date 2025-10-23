@@ -2,12 +2,18 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SparkMeter\Models\SmSmsVariableDefaultValue;
 
 class SmSmsVariableDefaultValueService {
-    public function __construct(private SmSmsVariableDefaultValue $smsVariableDefaultValue) {}
+    public function __construct(
+        private SmSmsVariableDefaultValue $smsVariableDefaultValue,
+    ) {}
 
-    public function getSmsVariableDefaultValues() {
+    /**
+     * @return Collection<int, SmSmsVariableDefaultValue>
+     */
+    public function getSmsVariableDefaultValues(): Collection {
         return $this->smsVariableDefaultValue->newQuery()->get();
     }
 

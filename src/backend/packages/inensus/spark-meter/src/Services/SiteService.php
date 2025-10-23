@@ -7,6 +7,8 @@ use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Helpers\SmTableEncryption;
@@ -14,13 +16,30 @@ use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
+/**
+ * @implements ISynchronizeService<SmSite>
+ */
 class SiteService implements ISynchronizeService {
     private string $rootUrl = '/organizations';
 
-    public function __construct(private SmSite $site, private SparkMeterApiRequests $sparkMeterApiRequests, private SmTableEncryption $smTableEncryption, private OrganizationService $organizationService, private Cluster $cluster, private MiniGrid $miniGrid, private City $city, private GeographicalInformation $geographicalInformation, private SmSyncSettingService $smSyncSettingService, private SmSyncActionService $smSyncActionService) {}
+    public function __construct(
+        private SmSite $site,
+        private SparkMeterApiRequests $sparkMeterApiRequests,
+        private SmTableEncryption $smTableEncryption,
+        private OrganizationService $organizationService,
+        private Cluster $cluster,
+        private MiniGrid $miniGrid,
+        private City $city,
+        private GeographicalInformation $geographicalInformation,
+        private SmSyncSettingService $smSyncSettingService,
+        private SmSyncActionService $smSyncActionService,
+    ) {}
 
-    public function getSmSites($request) {
-        $perPage = $request->input('per_page') ?? 15;
+    /**
+     * @return LengthAwarePaginator<int, SmSite>
+     */
+    public function getSmSites(Request $request): LengthAwarePaginator {
+        $perPage = (int) $request->input('per_page', 15);
         $sites = $this->site->newQuery()->with('mpmMiniGrid')->paginate($perPage);
 
         foreach ($sites as $site) {
@@ -39,7 +58,10 @@ class SiteService implements ISynchronizeService {
         return count($this->site->newQuery()->get());
     }
 
-    public function creteRelatedMiniGrid(array $site) {
+    /**
+     * @param array<string, mixed> $site
+     */
+    public function creteRelatedMiniGrid(array $site): MiniGrid {
         $cluster = $this->cluster->newQuery()->latest('created_at')->first();
         $miniGrid = $this->miniGrid->newQuery()->create([
             'name' => $site['name'],
@@ -56,7 +78,7 @@ class SiteService implements ISynchronizeService {
         return $miniGrid;
     }
 
-    public function updateGeographicalInformation($miniGridId): void {
+    public function updateGeographicalInformation(int $miniGridId): void {
         $geographicalInformation = $this->geographicalInformation->newQuery()->whereHasMorph(
             'owner',
             [MiniGrid::class],
@@ -73,13 +95,19 @@ class SiteService implements ISynchronizeService {
         ]);
     }
 
-    public function updateRelatedMiniGrid(array $site, $miniGrid) {
+    /**
+     * @param array<string, mixed> $site
+     */
+    public function updateRelatedMiniGrid(array $site, MiniGrid $miniGrid): int {
         return $miniGrid->newQuery()->update([
             'name' => $site['name'],
         ]);
     }
 
-    public function update($siteId, array $data) {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function update(int $siteId, array $data): ?SmSite {
         $site = $this->site->newQuery()->find($siteId);
         $site->update([
             'thundercloud_token' => $data['thundercloud_token'],
@@ -104,15 +132,18 @@ class SiteService implements ISynchronizeService {
         return $site->fresh();
     }
 
-    public function getThunderCloudInformation($siteId) {
+    public function getThunderCloudInformation(string $siteId): ?SmSite {
         return $this->site->newQuery()->where('site_id', $siteId)->first();
     }
 
-    public function checkLocationAvailability() {
+    public function checkLocationAvailability(): ?Cluster {
         return $this->cluster->newQuery()->latest('created_at')->first();
     }
 
-    public function sync() {
+    /**
+     * @return LengthAwarePaginator<int, SmSite>
+     */
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('Sites');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -153,9 +184,9 @@ class SiteService implements ISynchronizeService {
     }
 
     /**
-     * @return mixed[]
+     * @return array<string, mixed>
      */
-    public function syncCheck($returnData = false): array {
+    public function syncCheck(bool $returnData = false): array {
         $organizations = $this->organizationService->getOrganizations();
         $sites = [];
         try {
@@ -203,7 +234,10 @@ class SiteService implements ISynchronizeService {
         return $returnData ? ['data' => $sitesCollection, 'result' => true] : ['result' => true];
     }
 
-    public function modelHasher($model, ...$params): string {
+    /**
+     * @param array<string, mixed> $model
+     */
+    public function modelHasher(array $model, ?string ...$params): string {
         return $this->smTableEncryption->makeHash([
             $model['name'],
             $model['display_name'],
@@ -211,7 +245,11 @@ class SiteService implements ISynchronizeService {
         ]);
     }
 
-    public function syncCheckBySite($siteId): void {
+    /**
+     * @return array{result: bool, message: string}
+     */
+    public function syncCheckBySite(string $siteId): array {
         // This function is not using for sites
+        throw new \Exception('Method syncCheckBySite() not yet implemented.');
     }
 }
