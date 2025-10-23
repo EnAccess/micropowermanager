@@ -109,7 +109,6 @@ class UserDefaultDatabaseConnectionMiddleware {
         if ($method === 'GET') {
             return in_array($path, [
                 'api/micro-star-meters/test',
-                'api/mpm-plugins',
                 'api/protected-pages',
                 'api/usage-types',
                 'up',
