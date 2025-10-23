@@ -46,6 +46,11 @@ class PushInstallations extends AbstractJob {
         }
     }
 
+    /**
+     * Load CSV data and return as array of records.
+     *
+     * @return array<int, array<string, string|null>>
+     */
     private function loadCsvData(): array {
         $filePath = $this->filePath ?? $this->getLatestCsvFile();
         if (!is_file($filePath)) {

@@ -9,6 +9,9 @@ use Inensus\Prospect\Services\ProspectCredentialService;
 class ProspectApiClient {
     public function __construct(private ProspectCredentialService $credentialService) {}
 
+    /**
+     * @param array<string, mixed> $payload
+     */
     public function postInstallations(array $payload): Response {
         $cred = $this->credentialService->getCredentials();
         if (!$cred || !$cred->api_url || !$cred->api_token) {

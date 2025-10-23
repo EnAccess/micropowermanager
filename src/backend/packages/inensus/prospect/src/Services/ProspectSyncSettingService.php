@@ -9,6 +9,12 @@ use Inensus\Prospect\Models\ProspectSyncSetting;
 class ProspectSyncSettingService {
     public function __construct(private ProspectSyncSetting $syncSetting, private ProspectSyncActionService $syncActionService) {}
 
+    /**
+     * Update sync settings.
+     *
+     * @param array<int, array<string, mixed>> $syncSettings
+     * @return \Illuminate\Database\Eloquent\Collection<int, ProspectSyncSetting>
+     */
     public function updateSyncSettings(array $syncSettings) {
         foreach ($syncSettings as $setting) {
             $saved = $this->syncSetting->newQuery()->updateOrCreate(
@@ -35,6 +41,11 @@ class ProspectSyncSettingService {
         return $this->syncSetting->newQuery()->get();
     }
 
+    /**
+     * Get all sync settings.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, ProspectSyncSetting>
+     */
     public function getSyncSettings() {
         return $this->syncSetting->newQuery()->get();
     }
@@ -82,7 +93,5 @@ class ProspectSyncSettingService {
                 'next_sync' => $now->add($dayInterval),
             ]);
         }
-
-        // No separate Push seeding; extract and push are handled under Installations
     }
 }

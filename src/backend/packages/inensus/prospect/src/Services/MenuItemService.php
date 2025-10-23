@@ -3,6 +3,11 @@
 namespace Inensus\Prospect\Services;
 
 class MenuItemService {
+    /**
+     * Create menu items structure.
+     *
+     * @return array{menuItem: array<string, string>, subMenuItems: array<int, array<string, string>>}
+     */
     public function createMenuItems(): array {
         $menuItem = [
             'name' => '{{Menu-Item}}',
