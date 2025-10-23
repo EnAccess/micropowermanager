@@ -16,9 +16,10 @@ use App\Models\User;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Models\SmSetting;
@@ -184,6 +185,9 @@ class SmsNotifyTest extends TestCase {
         $this->assertLessThan($oldNextSync, $newNextSync);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function initializeData(): array {
         $this->addSmsSettings();
         $this->addSmsBodies();
@@ -246,7 +250,7 @@ class SmsNotifyTest extends TestCase {
         return ['customer' => $p];
     }
 
-    private function initializeSparkTransaction($customer): void {
+    private function initializeSparkTransaction(Person $customer): void {
         $sparkTransaction = SmTransaction::query()->create([
             'site_id' => 1,
             'customer_id' => $customer->id,
@@ -267,7 +271,7 @@ class SmsNotifyTest extends TestCase {
         $transaction = Transaction::query()->make([
             'amount' => 1000,
             'sender' => '905494322161',
-            'message' => $customer->meters[0]->meter->serial_number,
+            'message' => $customer->devices[0]->device->serial_number,
             'type' => 'energy',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -331,7 +335,10 @@ class SmsNotifyTest extends TestCase {
         SmSyncAction::query()->create($syncAction);
     }
 
-    private function addSmsBodies() {
+    /**
+     * @return Collection<int, SmsBody>
+     */
+    private function addSmsBodies(): Collection {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',

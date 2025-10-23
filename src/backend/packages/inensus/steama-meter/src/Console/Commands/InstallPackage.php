@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Console\Commands;
 
+use App\Models\Cluster;
 use Illuminate\Console\Command;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
 use Inensus\SteamaMeter\Services\PackageInstallationService;
@@ -39,7 +40,7 @@ class InstallPackage extends Command {
         $this->userTypeService->createUserTypes($tariff);
         $this->paymentPlanService->createPaymentPlans();
         $this->agentService->createSteamaAgentCommission();
-        if (!$this->siteService->checkLocationAvailability()) {
+        if (!$this->siteService->checkLocationAvailability() instanceof Cluster) {
             $this->warn('------------------------------');
             $this->warn('Steamaco Meter package needs least one registered Cluster.');
             $this->warn('If you have no Cluster, please navigate to #Locations# section and register your locations.');

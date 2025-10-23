@@ -7,13 +7,18 @@ use Database\Factories\GeographicalInformationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class GeographicalInformation.
  *
- * @property string $points
- * @property Model  $owner
- * @property string $owner_type
+ * @property      int         $id
+ * @property      int         $owner_id
+ * @property      string      $owner_type
+ * @property      string      $points
+ * @property      Carbon|null $created_at
+ * @property      Carbon|null $updated_at
+ * @property-read Model       $owner
  */
 class GeographicalInformation extends BaseModel {
     /** @use HasFactory<GeographicalInformationFactory> */

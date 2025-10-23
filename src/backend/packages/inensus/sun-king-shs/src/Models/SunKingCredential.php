@@ -3,18 +3,18 @@
 namespace Inensus\SunKingSHS\Models;
 
 use App\Models\Base\BaseModel;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int    $id
- * @property string $auth_url
- * @property string $api_url
- * @property string $client_id
- * @property string $client_secret
- * @property string $access_token
- * @property int    $token_expires_in
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property int         $id
+ * @property string      $auth_url
+ * @property string      $api_url
+ * @property string|null $client_id
+ * @property string|null $client_secret
+ * @property string|null $access_token
+ * @property int|null    $token_expires_in
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class SunKingCredential extends BaseModel {
     protected $table = 'sun_king_api_credentials';

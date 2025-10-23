@@ -9,27 +9,33 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Class PaymentHistory.
  *
- * @property int       $amount
- * @property string    $payment_service
- * @property string    $sender
- * @property string    $payment_type
- * @property string    $paid_for_type
- * @property int       $paid_for_id
- * @property string    $payer_type
- * @property int       $payer_id
- * @property int       $transaction_id
- * @property AssetRate $paidFor
- *
  * @phpstan-type PaymentFlowData array{amount: int, payment_type: string, aperiod: string}
  * @phpstan-type PaymentMonthData array{amount: int, month: int}
  * @phpstan-type OverviewData array{total: int, dato: string}
  * @phpstan-type CustomerPaymentData array{customer_id: int}
+ *
+ * @property      int              $id
+ * @property      float            $amount
+ * @property      int              $transaction_id
+ * @property      string           $payment_service
+ * @property      string           $sender
+ * @property      string           $payment_type
+ * @property      string           $paid_for_type
+ * @property      int              $paid_for_id
+ * @property      string           $payer_type
+ * @property      int              $payer_id
+ * @property      Carbon|null      $created_at
+ * @property      Carbon|null      $updated_at
+ * @property-read Model            $paidFor
+ * @property-read Model            $payer
+ * @property-read Transaction|null $transaction
  */
 class PaymentHistory extends BaseModel {
     /**

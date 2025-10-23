@@ -35,7 +35,7 @@ class PersonExportService extends AbstractExportService {
         $this->exportingData = $this->peopleData->map(function (Person $person): array {
             $primaryAddress = $person->addresses->first();
             $devices = $person->devices->pluck('device_serial')->filter()->implode(', ');
-            $agent = optional($person->agent_sold_appliance?->assigned_appliance?->agent);
+            $agent = optional($person->agentSoldAppliance?->assignedAppliance?->agent);
 
             return [
                 $person->title,

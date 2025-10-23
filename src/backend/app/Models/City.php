@@ -5,19 +5,30 @@ namespace App\Models;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use Database\Factories\CityFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
 /**
  * Class City.
  *
- * @property int    $id
- * @property string $name
- * @property int    $country_id
- * @property int    $cluster_id
- * @property int    $mini_grid_id
+ * @property      int                          $id
+ * @property      string                       $name
+ * @property      int                          $country_id
+ * @property      int                          $cluster_id
+ * @property      int                          $mini_grid_id
+ * @property      Carbon|null                  $created_at
+ * @property      Carbon|null                  $updated_at
+ * @property-read Collection<int, Address>     $addresses
+ * @property-read Cluster|null                 $cluster
+ * @property-read Country|null                 $country
+ * @property-read GeographicalInformation|null $geo
+ * @property-read GeographicalInformation|null $location
+ * @property-read MiniGrid|null                $miniGrid
+ * @property-read Collection<int, Target>      $targets
  */
 class City extends BaseModel {
     /** @use HasFactory<CityFactory> */

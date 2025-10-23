@@ -32,17 +32,17 @@
                 <md-icon>add_location_alt</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
-              <md-menu-item @click="replaceRoute('/locations/add-cluster')">
+              <md-menu-item @click="navigateRoute('/locations/add-cluster')">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("menu.subMenu.addCluster") }}
                 </span>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/locations/add-mini-grid')">
+              <md-menu-item @click="navigateRoute('/locations/add-mini-grid')">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("menu.subMenu.addMiniGrid") }}
                 </span>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/locations/add-village')">
+              <md-menu-item @click="navigateRoute('/locations/add-village')">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("menu.subMenu.addVillage") }}
                 </span>
@@ -62,12 +62,12 @@
                 <md-icon>settings</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
-              <md-menu-item @click="replaceRoute('/settings/configuration')">
+              <md-menu-item @click="navigateRoute('/settings/configuration')">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("menu.subMenu.Config") }}
                 </span>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/settings/user-management')">
+              <md-menu-item @click="navigateRoute('/settings/user-management')">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("phrases.userManagement") }}
                 </span>
@@ -79,13 +79,15 @@
                 <md-icon>cast</md-icon>
               </md-menu-item>
               <md-menu-item
-                @click="replaceRoute('/settings/connection-groups')"
+                @click="navigateRoute('/settings/connection-groups')"
               >
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.group", 2) }}
                 </span>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/settings/connection-types')">
+              <md-menu-item
+                @click="navigateRoute('/settings/connection-types')"
+              >
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.type", 2) }}
                 </span>
@@ -114,7 +116,7 @@
               </div>
               <md-menu-item
                 class="mobile-sub-menu-text"
-                @click="replaceRoute('/profile')"
+                @click="navigateRoute('/profile')"
               >
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.profile") }}
@@ -165,8 +167,8 @@ export default {
       this.mobileSidebarVisible = false
       this.$sidebar.displaySidebar(false)
     },
-    replaceRoute(route) {
-      this.$router.replace(route)
+    navigateRoute(route) {
+      this.$router.push(route)
     },
   },
   computed: {

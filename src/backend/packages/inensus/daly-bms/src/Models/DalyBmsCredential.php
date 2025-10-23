@@ -3,17 +3,17 @@
 namespace Inensus\DalyBms\Models;
 
 use App\Models\Base\BaseModel;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int    $id
- * @property string $api_url
- * @property string $user_name
- * @property string $password
- * @property string $access_token
- * @property int    $token_expires_in
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property int         $id
+ * @property string      $api_url
+ * @property string|null $user_name
+ * @property string|null $password
+ * @property string|null $access_token
+ * @property int|null    $token_expires_in
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class DalyBmsCredential extends BaseModel {
     protected $table = 'daly_bms_api_credentials';

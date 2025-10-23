@@ -24,7 +24,7 @@ interface ITransactionProvider {
     public function getMessage(): string;
 
     // sent amount
-    public function getAmount(): int;
+    public function getAmount(): float;
 
     // sender
     public function getSender(): string;

@@ -4,24 +4,34 @@ namespace Inensus\SparkMeter\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SparkMeter\Models\SmSyncAction;
+use Inensus\SparkMeter\Models\SmSyncSetting;
 
 class SmSyncActionService {
-    public function __construct(private SmSyncAction $syncAction) {}
+    public function __construct(
+        private SmSyncAction $syncAction,
+    ) {}
 
-    public function createSyncAction(array $syncAction) {
+    /**
+     * @param array<string, mixed> $syncAction
+     */
+    public function createSyncAction(array $syncAction): SmSyncAction {
         return $this->syncAction->newQuery()->create($syncAction);
     }
 
-    public function getSyncActionBySynSettingId($settingId) {
+    public function getSyncActionBySynSettingId(int $settingId): ?SmSyncAction {
         return $this->syncAction->newQuery()->where('sync_setting_id', $settingId)->first();
     }
 
-    public function getActionsNeedsToSync() {
+    /**
+     * @return Collection<int, SmSyncAction>
+     */
+    public function getActionsNeedsToSync(): Collection {
         return $this->syncAction->newQuery()->where('next_sync', '<=', Carbon::now())->orderBy('next_sync')->get();
     }
 
-    public function updateSyncAction($syncAction, $syncSetting, $syncResult) {
+    public function updateSyncAction(SmSyncAction $syncAction, SmSyncSetting $syncSetting, bool $syncResult): bool {
         if (!$syncResult) {
             return $syncAction->update([
                 'attempts' => $syncAction->attempts + 1,
