@@ -4,6 +4,8 @@ namespace Inensus\Prospect\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
+use Inensus\Prospect\Models\ProspectSyncAction;
 use Inensus\Prospect\Models\ProspectSyncSetting;
 
 class ProspectSyncSettingService {
@@ -14,7 +16,7 @@ class ProspectSyncSettingService {
      *
      * @param array<int, array<string, mixed>> $syncSettings
      *
-     * @return \Illuminate\Database\Eloquent\Collection<int, ProspectSyncSetting>
+     * @return Collection<int, ProspectSyncSetting>
      */
     public function updateSyncSettings(array $syncSettings) {
         foreach ($syncSettings as $setting) {
@@ -30,7 +32,7 @@ class ProspectSyncSettingService {
 
             // Ensure there is a matching sync action; if missing, create one with next_sync scheduled
             $existingAction = $this->syncActionService->getSyncActionBySynSettingId($saved->id);
-            if (!$existingAction) {
+            if (!$existingAction instanceof ProspectSyncAction) {
                 $interval = $this->makeInterval($saved->sync_in_value_str, (int) $saved->sync_in_value_num);
                 $this->syncActionService->createSyncAction([
                     'sync_setting_id' => $saved->id,
@@ -45,7 +47,7 @@ class ProspectSyncSettingService {
     /**
      * Get all sync settings.
      *
-     * @return \Illuminate\Database\Eloquent\Collection<int, ProspectSyncSetting>
+     * @return Collection<int, ProspectSyncSetting>
      */
     public function getSyncSettings() {
         return $this->syncSetting->newQuery()->get();
