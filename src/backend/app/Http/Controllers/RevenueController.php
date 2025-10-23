@@ -12,8 +12,8 @@ use App\Models\Transaction\Transaction;
 use App\Services\MeterRevenueService;
 use App\Services\PeriodService;
 use App\Services\RevenueService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
 
