@@ -97,7 +97,7 @@ class ProspectPush extends AbstractJob {
 
         // Get headers from first line
         $headers = str_getcsv(array_shift($lines));
-        $headers = array_map('trim', $headers);
+        $headers = array_map(trim(...), $headers);
 
         $data = [];
 

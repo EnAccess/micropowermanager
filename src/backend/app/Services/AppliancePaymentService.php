@@ -15,7 +15,6 @@ use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use MPM\Device\DeviceService;
@@ -44,7 +43,7 @@ class AppliancePaymentService {
             $this->cashTransactionService->createCashTransaction($creatorId, $amount, $sender, $deviceSerial);
         $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
         $this->applianceInstallmentsFullFilled = $totalRemainingAmount <= $amount;
-        $applianceDetail->rates->map(fn ($installment) => $this->payInstallment(
+        $applianceDetail->rates->map(fn (AssetRate $installment) => $this->payInstallment(
             $installment,
             $appliancePerson, // Changed from $applianceOwner to $appliancePerson
             $transaction
@@ -106,7 +105,7 @@ class AppliancePaymentService {
         }
     }
 
-    public function payInstallment(Model $installment, AssetPerson $applianceOwner, Transaction $transaction): void {
+    public function payInstallment(AssetRate $installment, AssetPerson $applianceOwner, Transaction $transaction): void {
         if ($installment['remaining'] > 0 && $this->paymentAmount > 0) {
             if ($installment['remaining'] <= $this->paymentAmount) {
                 $this->paymentAmount -= $installment['remaining'];
