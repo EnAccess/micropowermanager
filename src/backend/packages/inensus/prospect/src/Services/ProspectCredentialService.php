@@ -23,6 +23,9 @@ class ProspectCredentialService {
         return $this->credential->newQuery()->first();
     }
 
+    /**
+     * @param array{api_url: string, api_token: string|null} $data
+     */
     public function updateCredentials(array $data): ProspectCredential {
         $credential = $this->credential->newQuery()->first();
 

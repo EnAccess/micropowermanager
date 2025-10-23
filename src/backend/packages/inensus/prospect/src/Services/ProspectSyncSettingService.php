@@ -13,6 +13,7 @@ class ProspectSyncSettingService {
      * Update sync settings.
      *
      * @param array<int, array<string, mixed>> $syncSettings
+     *
      * @return \Illuminate\Database\Eloquent\Collection<int, ProspectSyncSetting>
      */
     public function updateSyncSettings(array $syncSettings) {
