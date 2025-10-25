@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\Prospect\Jobs\ExtractInstallations;
 use Inensus\Prospect\Jobs\PushInstallations;
+use Inensus\Prospect\Models\ProspectSyncSetting;
 use Inensus\Prospect\Services\ProspectSyncActionService;
 use Inensus\Prospect\Services\ProspectSyncSettingService;
 
@@ -30,7 +31,7 @@ class ProspectDataSynchronizer extends Command {
 
         $this->syncSettingService->updateSyncSettings([]);
 
-        $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions): true {
+        $this->syncSettingService->getSyncSettings()->each(function (ProspectSyncSetting $syncSetting) use ($syncActions): true {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
             // if (!$syncAction) {
             //     return true;
@@ -43,8 +44,8 @@ class ProspectDataSynchronizer extends Command {
             $result = false;
             try {
                 if ($actionName === 'installations' || $actionName === 'installation') {
-                    ExtractInstallations::dispatch();
-                    PushInstallations::dispatch();
+                    dispatch(new ExtractInstallations());
+                    dispatch(new PushInstallations());
                     $result = true;
                 }
             } catch (\Exception) {

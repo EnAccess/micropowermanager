@@ -61,7 +61,7 @@ class PushInstallations extends AbstractJob {
         if ($lines === []) {
             return [];
         }
-        $headers = array_map('trim', str_getcsv(array_shift($lines)));
+        $headers = array_map(trim(...), str_getcsv(array_shift($lines)));
         $data = [];
         foreach ($lines as $line) {
             $row = str_getcsv($line);
