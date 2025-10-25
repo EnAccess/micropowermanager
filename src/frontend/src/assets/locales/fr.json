@@ -124,6 +124,7 @@
     "allTransactions": "Toutes les transactions",
     "anyCategory": "Toute catégorie",
     "anyUser": "Tout utilisateur",
+    "apiEndpoint": "API Endpoint",
     "apiKey": "API Key",
     "apiToken": "API Token",
     "appliance": "Appliance | Appliances",

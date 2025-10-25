@@ -40,6 +40,7 @@ class MpmPlugin extends BaseModelCentral {
     public const AFRICAS_TALKING = 18;
     public const VODACOM_MOBILE_MONEY = 19;
     public const CHINT_METER = 20;
+    public const PROSPECT = 24;
     public const DEMO_SHS_MANUFACTURER = 22;
     public const DEMO_METER_MANUFACTURER = 21;
     public const ODYSSEY_DATA_EXPORT = 23;
