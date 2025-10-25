@@ -12,11 +12,11 @@ class CompanyRegistrationRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'name' => 'required',
-            'address' => 'required',
-            'phone' => 'required',
-            'email' => 'required|unique:database_proxies',
-            'protected_page_password' => 'required',
+            'name' => ['required'],
+            'address' => ['required'],
+            'phone' => ['required'],
+            'email' => ['required', 'unique:database_proxies'],
+            'protected_page_password' => ['required'],
         ];
     }
 }

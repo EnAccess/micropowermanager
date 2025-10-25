@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Error;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Sleep;
 use Inensus\SparkMeter\Exceptions\CredentialsNotFoundException;
 use Inensus\SparkMeter\Exceptions\CredentialsNotUpToDateException;
 use Inensus\SparkMeter\Exceptions\NoOnlineSiteRecordException;
@@ -209,7 +210,7 @@ class TransactionService {
                         ]);
                     }
                 }
-                usleep(100000);
+                Sleep::usleep(100000);
 
                 return true;
             });

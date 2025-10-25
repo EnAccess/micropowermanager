@@ -18,6 +18,6 @@ class ImportCertificateRequest extends FormRequest {
      * @return array<string, mixed>
      */
     public function rules(): array {
-        return ['cert' => 'required'];
+        return ['cert' => ['required']];
     }
 }

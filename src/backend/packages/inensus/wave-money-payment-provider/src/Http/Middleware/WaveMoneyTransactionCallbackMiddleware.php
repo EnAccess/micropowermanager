@@ -43,7 +43,7 @@ class WaveMoneyTransactionCallbackMiddleware {
                 // we process the transaction in the background
                 $transaction = $waveMoneyTransaction->transaction()->first();
                 if ($companyId !== null) {
-                    ProcessPayment::dispatch($companyId, $transaction->id);
+                    dispatch(new ProcessPayment($companyId, $transaction->id));
                 } else {
                     Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
                 }

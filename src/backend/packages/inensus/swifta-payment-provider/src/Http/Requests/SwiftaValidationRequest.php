@@ -12,10 +12,10 @@ class SwiftaValidationRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'meter_number' => 'required',
-            'amount' => 'required',
-            'cipher' => 'required',
-            'timestamp' => 'required',
+            'meter_number' => ['required'],
+            'amount' => ['required'],
+            'cipher' => ['required'],
+            'timestamp' => ['required'],
         ];
     }
 }

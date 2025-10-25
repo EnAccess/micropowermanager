@@ -58,7 +58,7 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService {
             TransactionDataContainer::initialize($baseTransaction);
 
             if ($companyId !== null) {
-                ProcessPayment::dispatch($companyId, $baseTransaction->id);
+                dispatch(new ProcessPayment($companyId, $baseTransaction->id));
             } else {
                 Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$baseTransaction->id);
             }

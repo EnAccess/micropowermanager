@@ -46,8 +46,11 @@ class WebhookController extends Controller {
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first()->key;
         $this->bot
             ->onConversation(fn ($event) => (new Text())->setSender($this->botSender)->setText('Can I help you?'))
-            ->onText('|register+.*|si', function ($event) use ($bot, $botSender) {
-                $message = $event->getMessage()->getText();
+            ->onText('|register+.*|si', function (MessageEvent $event) use ($bot, $botSender) {
+                /** @var Text */
+                $viberMessage = $event->getMessage();
+
+                $message = $viberMessage->getText();
 
                 try {
                     $message = explode('+', $message);
@@ -93,7 +96,7 @@ class WebhookController extends Controller {
                     Log::info('Someone who is not a customer tried to register with viber');
                 }
             })
-            ->onText("|$resendInformationKey.*|si", function ($event) use ($bot, $botSender, $resendInformationKey) {
+            ->onText("|$resendInformationKey.*|si", function (MessageEvent $event) use ($bot, $botSender, $resendInformationKey) {
                 if (!$resendInformationKey) {
                     return;
                 }

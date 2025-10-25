@@ -19,7 +19,7 @@ class OdysseyPaymentsController extends Controller {
 
         $from = CarbonImmutable::parse($fromParam);
         $to = CarbonImmutable::parse($toParam);
-        if ($to->diffInHours($from) > 24) {
+        if ((int) $to->diffInHours($from) > 24) {
             return response()->json(['payments' => [], 'errors' => 'Range must be <= 24 hours'], 400);
         }
 
@@ -27,7 +27,7 @@ class OdysseyPaymentsController extends Controller {
             ->with(['paidFor', 'payer.addresses', 'transaction'])
             ->whereBetween('created_at', [$from, $to])
             ->get()
-            ->map(fn (PaymentHistory $p): array => $transformer->transform($p))
+            ->map($transformer->transform(...))
             ->values();
 
         return response()->json([

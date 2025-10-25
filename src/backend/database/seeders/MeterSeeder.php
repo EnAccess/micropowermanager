@@ -149,9 +149,8 @@ class MeterSeeder extends Seeder {
                         ->for($person->addresses->first()->city)
                         ->has(
                             GeographicalInformation::factory()
-                                // Remove this after Laravel 12 upgrade, see
                                 // https://github.com/larastan/larastan/issues/2307
-                                // @phpstan-ignore-next-line
+                                // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
                                     /** @var Device $device */
                                     $device = $address->owner()->first();

@@ -118,7 +118,7 @@ class TicketService implements IAssociative {
             $query->where('assigned_id', $assignedId);
         }
 
-        $query->orderBy('created_at', 'desc');
+        $query->latest();
 
         $tickets = $limit ? $query->paginate($limit) : $query->paginate();
         $ticketData = $this->getBatch($tickets);

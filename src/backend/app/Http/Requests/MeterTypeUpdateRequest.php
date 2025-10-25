@@ -19,9 +19,9 @@ class MeterTypeUpdateRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'max_current' => 'required|numeric|min:1',
-            'phase' => 'required|numeric|min:1',
-            'online' => 'required',
+            'max_current' => ['required', 'numeric', 'min:1'],
+            'phase' => ['required', 'numeric', 'min:1'],
+            'online' => ['required'],
         ];
     }
 }

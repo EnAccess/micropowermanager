@@ -32,17 +32,17 @@ class PersonRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'title' => 'sometimes|nullable|string',
-            'name' => 'required|min:2',
-            'surname' => 'required|min:2',
-            'birth_date' => 'sometimes|nullable|date',
-            'sex' => 'sometimes|nullable|string|in:male,female',
-            'education' => 'sometimes|nullable|string',
-            'city_id' => 'required|integer|exists:tenant.cities,id',
-            'street' => 'sometimes|nullable|string|min:5',
-            'email' => 'sometimes|nullable|email',
-            'phone' => 'required|min:11',
-            'country_code' => 'sometimes|nullable|string',
+            'title' => ['sometimes', 'nullable', 'string'],
+            'name' => ['required', 'min:2'],
+            'surname' => ['required', 'min:2'],
+            'birth_date' => ['sometimes', 'nullable', 'date'],
+            'sex' => ['sometimes', 'nullable', 'string', 'in:male,female'],
+            'education' => ['sometimes', 'nullable', 'string'],
+            'city_id' => ['required', 'integer', 'exists:tenant.cities,id'],
+            'street' => ['sometimes', 'nullable', 'string', 'min:5'],
+            'email' => ['sometimes', 'nullable', 'email'],
+            'phone' => ['required', 'min:11'],
+            'country_code' => ['sometimes', 'nullable', 'string'],
         ];
     }
 }

@@ -13,7 +13,7 @@ class KelinCredentialRequest extends FormRequest {
     public function rules(): array {
         return [
             'username' => ['required'],
-            'password' => 'required',
+            'password' => ['required'],
         ];
     }
 }

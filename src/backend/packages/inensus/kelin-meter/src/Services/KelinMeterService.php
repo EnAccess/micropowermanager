@@ -139,7 +139,7 @@ class KelinMeterService implements ISynchronizeService {
         $kelinMeters = $this->kelinMeter->newQuery()->get();
         $this->getEarlyRegisteredMetersWithChangeSerialNumbersAsSimilarAsKalinMeterData();
         $meters = $this->meter->newQuery()->get();
-        $metersCollection->transform(function ($meter) use ($kelinMeters, $meters): array {
+        $metersCollection->transform(function (array $meter) use ($kelinMeters, $meters): array {
             $meterHash = $this->kelinMeterHasher($meter);
             $earlyRegisteredMeter = $this->findRegisteredMeter($meter);
             $registeredStmMeter = $kelinMeters->firstWhere('meter_address', $meter['meterAddr']);
@@ -333,8 +333,8 @@ class KelinMeterService implements ISynchronizeService {
         $length = strlen($meterAddress);
         $newSerial = $meterAddress[0];
         for ($i = 0; $i < $length; ++$i) {
-            if ($i != 0) {
-                if ($i % 4 == 0) {
+            if ($i !== 0) {
+                if ($i % 4 === 0) {
                     $newSerial .= '-'.$meterAddress[$i];
                 } else {
                     $newSerial .= $meterAddress[$i];

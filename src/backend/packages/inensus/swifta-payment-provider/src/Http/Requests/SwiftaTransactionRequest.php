@@ -12,11 +12,11 @@ class SwiftaTransactionRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'transaction_id' => 'required',
-            'transaction_reference' => 'required',
-            'cipher' => 'required',
-            'amount' => 'required',
-            'timestamp' => 'required',
+            'transaction_id' => ['required'],
+            'transaction_reference' => ['required'],
+            'cipher' => ['required'],
+            'amount' => ['required'],
+            'timestamp' => ['required'],
         ];
     }
 }

@@ -19,8 +19,8 @@ class SmsRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'message' => 'required',
-            'person_id' => 'required_without_all:phone',
+            'message' => ['required'],
+            'person_id' => ['required_without_all:phone'],
         ];
     }
 }

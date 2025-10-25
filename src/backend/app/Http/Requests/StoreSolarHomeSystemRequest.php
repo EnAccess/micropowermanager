@@ -15,13 +15,13 @@ class StoreSolarHomeSystemRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, string>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array {
         return [
-            'serial_number' => 'required|min:8|max:11|unique:tenant.devices,device_serial',
-            'manufacturer_id' => 'required|exists:tenant.manufacturers,id',
-            'asset_id' => 'required|exists:tenant.assets,id',
+            'serial_number' => ['required', 'min:8', 'max:11', 'unique:tenant.devices,device_serial'],
+            'manufacturer_id' => ['required', 'exists:tenant.manufacturers,id'],
+            'asset_id' => ['required', 'exists:tenant.assets,id'],
         ];
     }
 }

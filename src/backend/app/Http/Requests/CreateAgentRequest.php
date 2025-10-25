@@ -22,12 +22,12 @@ class CreateAgentRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'email' => 'required',
-            'name' => 'required|min:3',
-            'surname' => 'required|min:3',
-            'password' => 'required|min:6',
-            'city_id' => 'required',
-            'agent_commission_id' => 'required',
+            'email' => ['required'],
+            'name' => ['required', 'min:3'],
+            'surname' => ['required', 'min:3'],
+            'password' => ['required', 'min:6'],
+            'city_id' => ['required'],
+            'agent_commission_id' => ['required'],
         ];
     }
 }

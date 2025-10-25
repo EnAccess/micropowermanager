@@ -5,6 +5,7 @@ namespace Inensus\SteamaMeter\Services;
 use App\Models\Meter\MeterConsumption;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Sleep;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaMeter;
@@ -43,7 +44,7 @@ class SteamaMeterReadingService {
                             );
                     });
                 }
-                usleep(100000);
+                Sleep::usleep(100000);
             } catch (SteamaApiResponseException $e) {
                 Log::critical('Meter utility reading failed.', ['message' => $e->getMessage()]);
             }
