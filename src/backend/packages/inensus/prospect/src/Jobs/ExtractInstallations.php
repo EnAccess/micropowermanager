@@ -8,6 +8,7 @@ use App\Models\Device;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Inensus\Prospect\Models\ProspectExtractedFile;
 
 class ExtractInstallations extends AbstractJob {
     /**
@@ -37,6 +38,7 @@ class ExtractInstallations extends AbstractJob {
 
             $fileName = $this->generateFileName();
             $filePath = $this->writeCsvFile($data, $fileName);
+            $this->storeExtractedFile($fileName, $filePath, count($data));
 
             Log::info('Prospect installations extraction job completed successfully!', [
                 'file' => basename($filePath),
@@ -241,5 +243,37 @@ class ExtractInstallations extends AbstractJob {
         fclose($output);
 
         return $csvContent;
+    }
+
+    /**
+     * Store extracted file information in database.
+     */
+    private function storeExtractedFile(string $fileName, string $filePath, int $recordsCount): void {
+        try {
+            $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
+            $companyDatabaseName = $companyDatabase->getDatabaseName();
+
+            $relativePath = "prospect/{$companyDatabaseName}/{$fileName}";
+            $fileSize = file_exists($filePath) ? filesize($filePath) : null;
+
+            ProspectExtractedFile::updateOrCreate(
+                ['id' => 1],
+                [
+                    'filename' => $fileName,
+                    'file_path' => $relativePath,
+                    'records_count' => $recordsCount,
+                    'file_size' => $fileSize,
+                    'extracted_at' => now(),
+                    'is_synced' => false,
+                ]
+            );
+
+            Log::info('Updated extracted file information in database', [
+                'filename' => $fileName,
+                'records_count' => $recordsCount,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error storing extracted file information: '.$e->getMessage());
+        }
     }
 }

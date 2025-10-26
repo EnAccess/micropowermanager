@@ -53,6 +53,20 @@ return new class extends Migration {
                 $table->timestamps();
             });
         }
+
+        if (!Schema::connection('tenant')->hasTable('prospect_extracted_files')) {
+            Schema::connection('tenant')->create('prospect_extracted_files', static function (Blueprint $table) {
+                $table->id();
+                $table->string('filename');
+                $table->string('file_path')->nullable();
+                $table->integer('records_count')->default(0);
+                $table->integer('file_size')->nullable();
+                $table->timestamp('extracted_at')->nullable();
+                $table->boolean('is_synced')->default(false);
+                $table->timestamp('synced_at')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -65,5 +79,6 @@ return new class extends Migration {
         Schema::connection('tenant')->dropIfExists('prospect_credentials');
         Schema::connection('tenant')->dropIfExists('prospect_sync_actions');
         Schema::connection('tenant')->dropIfExists('prospect_sync_settings');
+        Schema::connection('tenant')->dropIfExists('prospect_extracted_files');
     }
 };
