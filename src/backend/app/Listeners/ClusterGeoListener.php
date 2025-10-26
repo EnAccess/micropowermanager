@@ -46,7 +46,8 @@ class ClusterGeoListener {
      * @param array<string, mixed> $data
      */
     private function storeData(Cluster $cluster, array $data): void {
-        Storage::disk('local')->put($cluster->name.'.json', json_encode($data));
+        $filePath = $cluster->name.'.json';
+        Storage::put($filePath, json_encode($data));
     }
 
     /**

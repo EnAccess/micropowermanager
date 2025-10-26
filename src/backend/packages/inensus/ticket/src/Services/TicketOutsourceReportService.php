@@ -5,6 +5,7 @@ namespace Inensus\Ticket\Services;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -33,6 +34,7 @@ class TicketOutsourceReportService implements IBaseService {
      */
     public function createExcelSheet(string $startDate, string $endDate, Collection $tickets): string {
         $fileName = 'Outsourcing-'.$startDate.'-'.$endDate.'.xlsx';
+        $relativePath = 'outsourcing/'.$fileName;
 
         $sheet = $this->spreadsheet->getActiveSheet();
         $sheet->setTitle('payments - '.date('Y-m', strtotime($startDate)));
@@ -50,17 +52,18 @@ class TicketOutsourceReportService implements IBaseService {
             $sheet->setCellValue('D'.$row, $t->category->label_name);
         }
         $writer = new Xlsx($this->spreadsheet);
-        $dirPath = storage_path('./outsourcing');
-        if (!file_exists($dirPath)) {
-            mkdir($dirPath, 0774, true);
-        }
+        $tempPath = tempnam(sys_get_temp_dir(), 'xlsx_');
+
         try {
-            $writer->save(storage_path('./outsourcing/'.$fileName));
+            $writer->save($tempPath);
+            Storage::put($relativePath, file_get_contents($tempPath));
+            unlink($tempPath);
+
+            return $relativePath;
         } catch (Exception $e) {
             echo 'error'.$e->getMessage();
+            throw new \Exception('Error creating Excel sheet: '.$e->getMessage(), $e->getCode(), $e);
         }
-
-        return $fileName;
     }
 
     public function create(array $ticketOutsourceReportData): TicketOutsourceReport {
