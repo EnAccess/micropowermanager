@@ -35,37 +35,30 @@ class ProspectSyncSettingService {
      */
     public function updateSyncSettings(array $syncSettings) {
         foreach ($syncSettings as $setting) {
-            $saved = $this->syncSetting->newQuery()->updateOrCreate(
-                ['id' => $setting['id']],
-                [
-                    'action_name' => $setting['action_name'],
+            $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
+            $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($setting['id']);
+
+            if ($syncSetting) {
+                $normalizedUnit = $this->normalizeSyncUnit($setting['sync_in_value_str']);
+                $interval = CarbonInterval::make($setting['sync_in_value_num'].$normalizedUnit);
+
+                $syncSetting->update([
+                    'max_attempts' => $setting['max_attempts'],
                     'sync_in_value_str' => $setting['sync_in_value_str'],
                     'sync_in_value_num' => $setting['sync_in_value_num'],
-                    'max_attempts' => $setting['max_attempts'],
-                ]
-            );
-
-            // Ensure there is a matching sync action; if missing, create one with next_sync scheduled
-            $existingAction = $this->syncActionService->getSyncActionBySynSettingId($saved->id);
-            if (!$existingAction instanceof ProspectSyncAction) {
-                $normalizedUnit = $this->normalizeSyncUnit($saved->sync_in_value_str);
-                $interval = CarbonInterval::make($saved->sync_in_value_num.$normalizedUnit);
-                $this->syncActionService->createSyncAction([
-                    'sync_setting_id' => $saved->id,
-                    'next_sync' => Carbon::now()->add($interval),
                 ]);
-            } else {
-                // Always update next_sync when sync settings change to apply new interval immediately
-                $normalizedUnit = $this->normalizeSyncUnit($saved->sync_in_value_str);
-                $interval = CarbonInterval::make($saved->sync_in_value_num.$normalizedUnit);
 
-                $baseTime = $existingAction->last_sync
-                    ? Carbon::parse($existingAction->last_sync)
-                    : Carbon::now();
-
-                $existingAction->update([
-                    'next_sync' => $baseTime->add($interval),
-                ]);
+                if ($syncSettingAction) {
+                    $syncSettingAction->update([
+                        'next_sync' => Carbon::now()->add($interval),
+                    ]);
+                } else {
+                    // Create sync action if missing
+                    $this->syncActionService->createSyncAction([
+                        'sync_setting_id' => $syncSetting->id,
+                        'next_sync' => Carbon::now()->add($interval),
+                    ]);
+                }
             }
         }
 
