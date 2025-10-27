@@ -89,7 +89,7 @@ export class UserService {
 
     // Update user basic info
     try {
-      const { data, status, error } = await this.repository.put(userDataPm)
+      const { status, error } = await this.repository.put(userDataPm)
       if (status !== 200) {
         return new ErrorHandler(error, "http", status)
       }
