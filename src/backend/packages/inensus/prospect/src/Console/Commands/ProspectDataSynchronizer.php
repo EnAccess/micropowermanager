@@ -2,15 +2,19 @@
 
 namespace Inensus\Prospect\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
+use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Inensus\Prospect\Jobs\ExtractInstallations;
 use Inensus\Prospect\Jobs\PushInstallations;
 use Inensus\Prospect\Models\ProspectSyncSetting;
 use Inensus\Prospect\Services\ProspectSyncActionService;
 use Inensus\Prospect\Services\ProspectSyncSettingService;
 
-class ProspectDataSynchronizer extends Command {
+class ProspectDataSynchronizer extends AbstractSharedCommand {
+    use ScheduledPluginCommand;
+    public const MPM_PLUGIN_ID = 24;
+
     protected $signature = 'prospect:dataSync';
     protected $description = 'Synchronize Prospect data based on saved sync settings';
 
@@ -22,12 +26,17 @@ class ProspectDataSynchronizer extends Command {
     }
 
     public function handle(): void {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
+        $timeStart = microtime(true);
+        $this->info('#############################');
+        $this->info('# Prospect Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('prospect:dataSync started at '.$startedAt);
+        $this->info('dataSync command started at '.$startedAt);
 
         $syncActions = $this->syncActionService->getActionsNeedsToSync();
-
-        $this->info($syncActions);
 
         $this->syncSettingService->updateSyncSettings([]);
 
@@ -37,13 +46,11 @@ class ProspectDataSynchronizer extends Command {
                 return true;
             }
 
-            $this->info('sync action......');
-
             $actionName = strtolower($syncSetting->action_name);
 
             $result = false;
             try {
-                if ($actionName === 'installations' || $actionName === 'installation') {
+                if ($actionName === 'Installations') {
                     dispatch(new ExtractInstallations());
                     dispatch(new PushInstallations());
                     $result = true;
@@ -57,6 +64,9 @@ class ProspectDataSynchronizer extends Command {
             return true;
         });
 
-        $this->info('prospect:dataSync finished');
+        $timeEnd = microtime(true);
+        $totalTime = $timeEnd - $timeStart;
+        $this->info('Took '.$totalTime.' seconds.');
+        $this->info('#############################');
     }
 }
