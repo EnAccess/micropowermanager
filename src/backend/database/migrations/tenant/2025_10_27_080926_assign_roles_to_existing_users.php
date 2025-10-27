@@ -1,18 +1,20 @@
 <?php
 
+use App\Helpers\RolesPermissionsPopulator;
 use App\Models\Agent;
+use App\Models\Auth\Role;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
-use Spatie\Permission\Models\Role;
 
 return new class extends Migration {
     public function up(): void {
-        // Ensure roles exist
-        $owner = Role::firstOrCreate(['name' => 'owner', 'guard_name' => 'api']);
-        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
-        $editor = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'api']);
-        $reader = Role::firstOrCreate(['name' => 'reader', 'guard_name' => 'api']);
-        $fieldAgent = Role::firstOrCreate(['name' => 'field-agent', 'guard_name' => 'agent']);
+        // Populate roles and permissions for existing companies
+        RolesPermissionsPopulator::populate();
+
+        // Get roles
+        $owner = Role::where('name', 'owner')->where('guard_name', 'api')->first();
+        $admin = Role::where('name', 'admin')->where('guard_name', 'api')->first();
+        $fieldAgent = Role::where('name', 'field-agent')->where('guard_name', 'agent')->first();
 
         // Get all users
         $users = User::on('tenant')->orderBy('id')->get();

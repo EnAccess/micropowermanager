@@ -46,7 +46,17 @@ class UserController extends Controller {
     }
 
     public function update(User $user, Request $request): ApiResource {
-        $this->userService->update($user, $request->all());
+        // Update user basic info
+        $this->userService->update($user, $request->only(['name', 'password']));
+
+        // Handle role assignment if provided
+        if ($request->has('roles')) {
+            $roles = (array) $request->input('roles', []);
+            // Ensure user has at least one role
+            if (!empty($roles)) {
+                $user->syncRoles($roles);
+            }
+        }
 
         return new ApiResource($user->fresh());
     }

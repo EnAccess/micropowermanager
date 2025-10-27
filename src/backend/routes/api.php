@@ -247,20 +247,12 @@ Route::group(['prefix' => 'settings'], static function () {
     Route::get('/currency-list', [CurrencyController::class, 'index']);
 });
 
-// Roles (custom role management)
-Route::group(['prefix' => 'roles', 'middleware' => ['jwt.verify', 'permission:roles.manage']], static function () {
+// Roles (read-only role management)
+Route::group(['prefix' => 'roles', 'middleware' => ['jwt.verify']], static function () {
     Route::get('/', [RoleController::class, 'index']);
     Route::get('/permissions', [RoleController::class, 'permissions']);
     Route::get('/details', [RoleController::class, 'details']);
     Route::get('/user/{userId}', [RoleController::class, 'userRoles']);
-    Route::post('/', [RoleController::class, 'store']);
-    Route::put('/{roleIdOrName}', [RoleController::class, 'update']);
-    Route::delete('/{roleIdOrName}', [RoleController::class, 'destroy']);
-    // assignments
-    Route::post('/{roleIdOrName}/assign/user/{userId}', [RoleController::class, 'assignToUser']);
-    Route::delete('/{roleIdOrName}/assign/user/{userId}', [RoleController::class, 'removeFromUser']);
-    Route::post('/{roleIdOrName}/assign/agent/{agentId}', [RoleController::class, 'assignToAgent']);
-    Route::delete('/{roleIdOrName}/assign/agent/{agentId}', [RoleController::class, 'removeFromAgent']);
 });
 // Sms
 Route::group(['prefix' => 'sms-body'], static function () {

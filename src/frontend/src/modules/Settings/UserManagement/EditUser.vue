@@ -196,21 +196,8 @@ export default {
       }
 
       this.user.cityId = this.selectedCity
-      // Save role changes first, then emit update
-      const current = new Set(this.roleService.userRoles)
-      const next = new Set(this.selectedRoles)
-      // assign newly added
-      for (const role of next) {
-        if (!current.has(role)) {
-          await this.roleService.assignToUser(role, this.user.id)
-        }
-      }
-      // remove deleted
-      for (const role of current) {
-        if (!next.has(role)) {
-          await this.roleService.removeFromUser(role, this.user.id)
-        }
-      }
+      // Add roles to user object to be sent with the update
+      this.user.roles = this.selectedRoles
       this.$emit("updateUser", this.user)
     },
     setSelectedCity() {
