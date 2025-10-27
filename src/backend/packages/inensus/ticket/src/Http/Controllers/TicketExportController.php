@@ -3,6 +3,7 @@
 namespace Inensus\Ticket\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
@@ -48,7 +49,7 @@ class TicketExportController {
         );
     }
 
-    public function download(int $id): BinaryFileResponse|\Illuminate\Http\Response {
+    public function download(int $id): BinaryFileResponse|Response {
         $report = $this->ticketOutsourceReportService->getById($id);
         $disk = config('filesystems.default');
         $relativePath = $report->path;
@@ -69,6 +70,6 @@ class TicketExportController {
         return response($fileContent)
             ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             ->header('Content-Disposition', 'attachment; filename="'.$fileName.'"')
-            ->header('Content-Length', strlen($fileContent));
+            ->header('Content-Length', (string) mb_strlen($fileContent, '8bit'));
     }
 }
