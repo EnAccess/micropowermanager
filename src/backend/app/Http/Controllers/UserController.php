@@ -53,7 +53,7 @@ class UserController extends Controller {
         if ($request->has('roles')) {
             $roles = (array) $request->input('roles', []);
             // Ensure user has at least one role
-            if (!empty($roles)) {
+            if ($roles !== []) {
                 $user->syncRoles($roles);
             }
         }
