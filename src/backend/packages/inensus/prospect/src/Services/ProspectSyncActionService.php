@@ -12,6 +12,21 @@ class ProspectSyncActionService {
     public function __construct(private ProspectSyncAction $syncAction) {}
 
     /**
+     * Normalize sync unit string to CarbonInterval compatible format.
+     * Maps adverbs like "hourly", "daily", "weekly" to their base units.
+     */
+    private function normalizeSyncUnit(string $unit): string {
+        return match (strtolower($unit)) {
+            'hourly' => 'hour',
+            'daily' => 'day',
+            'weekly' => 'week',
+            'monthly' => 'month',
+            'yearly' => 'year',
+            default => $unit,
+        };
+    }
+
+    /**
      * @param array<string, mixed> $syncAction
      */
     public function createSyncAction(array $syncAction): ProspectSyncAction {
@@ -36,7 +51,8 @@ class ProspectSyncActionService {
                 'last_sync' => Carbon::now(),
             ]);
         }
-        $interval = CarbonInterval::make($syncSetting->sync_in_value_num.$syncSetting->sync_in_value_str);
+        $normalizedUnit = $this->normalizeSyncUnit($syncSetting->sync_in_value_str);
+        $interval = CarbonInterval::make($syncSetting->sync_in_value_num.$normalizedUnit);
 
         return $syncAction->update([
             'attempts' => 0,

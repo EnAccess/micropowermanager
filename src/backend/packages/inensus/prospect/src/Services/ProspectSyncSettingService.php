@@ -12,6 +12,21 @@ class ProspectSyncSettingService {
     public function __construct(private ProspectSyncSetting $syncSetting, private ProspectSyncActionService $syncActionService) {}
 
     /**
+     * Normalize sync unit string to CarbonInterval compatible format.
+     * Maps adverbs like "hourly", "daily", "weekly" to their base units.
+     */
+    private function normalizeSyncUnit(string $unit): string {
+        return match (strtolower($unit)) {
+            'hourly' => 'hour',
+            'daily' => 'day',
+            'weekly' => 'week',
+            'monthly' => 'month',
+            'yearly' => 'year',
+            default => $unit,
+        };
+    }
+
+    /**
      * Update sync settings.
      *
      * @param array<int, array<string, mixed>> $syncSettings
@@ -33,10 +48,23 @@ class ProspectSyncSettingService {
             // Ensure there is a matching sync action; if missing, create one with next_sync scheduled
             $existingAction = $this->syncActionService->getSyncActionBySynSettingId($saved->id);
             if (!$existingAction instanceof ProspectSyncAction) {
-                $interval = CarbonInterval::make($saved->sync_in_value_num.$saved->sync_in_value_str);
+                $normalizedUnit = $this->normalizeSyncUnit($saved->sync_in_value_str);
+                $interval = CarbonInterval::make($saved->sync_in_value_num.$normalizedUnit);
                 $this->syncActionService->createSyncAction([
                     'sync_setting_id' => $saved->id,
                     'next_sync' => Carbon::now()->add($interval),
+                ]);
+            } else {
+                // Always update next_sync when sync settings change to apply new interval immediately
+                $normalizedUnit = $this->normalizeSyncUnit($saved->sync_in_value_str);
+                $interval = CarbonInterval::make($saved->sync_in_value_num.$normalizedUnit);
+
+                $baseTime = $existingAction->last_sync
+                    ? Carbon::parse($existingAction->last_sync)
+                    : Carbon::now();
+
+                $existingAction->update([
+                    'next_sync' => $baseTime->add($interval),
                 ]);
             }
         }
