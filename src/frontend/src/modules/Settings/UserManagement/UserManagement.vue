@@ -219,6 +219,10 @@ export default {
       if (user.cityId !== 0) {
         this.userService.user.cityId = user.cityId
       }
+      // Set roles if provided
+      if (user.roles) {
+        this.userService.user.roles = user.roles
+      }
       try {
         await this.userService.update()
         this.alertNotify("success", this.$tc("words.profile", 2))

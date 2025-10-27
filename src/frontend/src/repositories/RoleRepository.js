@@ -13,14 +13,4 @@ export default {
   userRoles(userId) {
     return Client.get(`${resource}/user/${userId}`)
   },
-  assignToUser(roleName, userId) {
-    return Client.post(
-      `${resource}/${encodeURIComponent(roleName)}/assign/user/${userId}`,
-    )
-  },
-  removeFromUser(roleName, userId) {
-    return Client.delete(
-      `${resource}/${encodeURIComponent(roleName)}/assign/user/${userId}`,
-    )
-  },
 }

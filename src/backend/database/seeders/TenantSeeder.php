@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\RolesPermissionsPopulator;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\MainSettingsService;
@@ -41,19 +42,19 @@ class TenantSeeder extends Seeder {
             'database_name' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
         ]);
 
-        // Seed roles and permissions first
+        // Populate roles and permissions for the demo company
         $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
-            function () {
-                $this->call(RoleBasePermissionSeedeer::class);
+            function (): void {
+                RolesPermissionsPopulator::populate();
             }
         );
 
-        // Create Admin user and DatabaseProxy
+        // Create Admin user and assign owner role
         $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             function () use ($company) {
-                $user = $this->userService->create(
+                $owner = $this->userService->create(
                     [
                         'name' => 'Demo Company Admin',
                         'email' => DemoCompany::DEMO_COMPANY_ADMIN_EMAIL,
@@ -64,7 +65,43 @@ class TenantSeeder extends Seeder {
                 );
 
                 // Assign 'owner' role to the demo admin user
-                $user->assignRole('owner');
+                $owner->assignRole('owner');
+            }
+        );
+
+        // Create Editor user
+        $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
+            function () use ($company) {
+                $editor = $this->userService->create(
+                    [
+                        'name' => 'Demo Editor',
+                        'email' => DemoCompany::DEMO_COMPANY_EDITOR_EMAIL,
+                        'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
+                        'company_id' => $company->getId(),
+                    ],
+                    $company->getId()
+                );
+
+                $editor->assignRole('editor');
+            }
+        );
+
+        // Create Reader user
+        $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
+            function () use ($company) {
+                $reader = $this->userService->create(
+                    [
+                        'name' => 'Demo Reader',
+                        'email' => DemoCompany::DEMO_COMPANY_READER_EMAIL,
+                        'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
+                        'company_id' => $company->getId(),
+                    ],
+                    $company->getId()
+                );
+
+                $reader->assignRole('reader');
             }
         );
 
