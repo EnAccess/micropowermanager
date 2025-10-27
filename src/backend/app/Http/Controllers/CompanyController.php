@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RolesPermissionsPopulator;
 use App\Http\Requests\CompanyRegistrationRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\User;
@@ -44,6 +45,14 @@ class CompanyController extends Controller {
             'database_name' => str_replace(' ', '', preg_replace('/[^a-z\d_ ]/i', '', $company->getName())).'_'.
                 Carbon::now()->timestamp,
         ]);
+
+        // Populate roles and permissions for the new company
+        $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
+            function (): void {
+                RolesPermissionsPopulator::populate();
+            }
+        );
 
         // Create Admin user and DatabaseProxy, then assign owner role within tenant
         $adminUser = $this->databaseProxyManagerService->runForCompany(
