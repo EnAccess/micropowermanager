@@ -234,11 +234,13 @@ export default {
       }
     },
     confirmDelete() {
+      const agentFullName =
+        `${this.agent.name || ""} ${this.agent.surname || ""}`.trim()
       this.$swal({
         type: "question",
-        title: this.$tc("phrases.deleteAgent"),
+        title: this.$tc("phrases.confirmDeleteAgent"),
         width: "35%",
-        confirmButtonText: this.$tc("words.confirm"),
+        confirmButtonText: this.$tc("words.delete"),
         showCancelButton: true,
         cancelButtonText: this.$tc("words.cancel"),
         focusCancel: true,
@@ -246,17 +248,15 @@ export default {
           '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
           "  <label>" +
           '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-          this.$tc("phrases.deleteAgent", 3, {
-            name: this.agent.name + this.agent.surname,
+          this.$tc("phrases.confirmDeleteAgentText", 1, {
+            name: agentFullName,
           }) +
           "  </label>" +
           "</div>",
       }).then((result) => {
         let answer = document.getElementById("confirmation").checked
-        if ("value" in result) {
-          if (answer) {
-            this.deleteAgent()
-          }
+        if ("value" in result && answer) {
+          this.deleteAgent()
         }
       })
     },
