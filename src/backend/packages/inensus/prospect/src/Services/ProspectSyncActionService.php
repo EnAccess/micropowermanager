@@ -36,39 +36,12 @@ class ProspectSyncActionService {
                 'last_sync' => Carbon::now(),
             ]);
         }
-        $interval = $this->makeInterval($syncSetting->sync_in_value_str, (int) $syncSetting->sync_in_value_num);
+        $interval = CarbonInterval::make($syncSetting->sync_in_value_num.$syncSetting->sync_in_value_str);
 
         return $syncAction->update([
             'attempts' => 0,
             'last_sync' => Carbon::now(),
             'next_sync' => Carbon::now()->add($interval),
         ]);
-    }
-
-    private function makeInterval(string $valueStr, int $valueNum): CarbonInterval {
-        $map = [
-            'everyMinute' => CarbonInterval::minutes(1),
-            'everyFifteenMinutes' => CarbonInterval::minutes(15),
-            'everyHour' => CarbonInterval::hours(1),
-            'daily' => CarbonInterval::days(1),
-            'weekly' => CarbonInterval::weeks(1),
-            'monthly' => CarbonInterval::months(1),
-        ];
-
-        if (isset($map[$valueStr])) {
-            return $map[$valueStr];
-        }
-
-        // Fallback to CarbonInterval::make using canonical units
-        $unit = strtolower($valueStr);
-
-        return match ($unit) {
-            'minute', 'minutes' => CarbonInterval::minutes(max(1, $valueNum)),
-            'hour', 'hours' => CarbonInterval::hours(max(1, $valueNum)),
-            'day', 'days' => CarbonInterval::days(max(1, $valueNum)),
-            'week', 'weeks' => CarbonInterval::weeks(max(1, $valueNum)),
-            'month', 'months' => CarbonInterval::months(max(1, $valueNum)),
-            default => CarbonInterval::minutes(15),
-        };
     }
 }
