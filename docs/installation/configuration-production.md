@@ -114,7 +114,6 @@ MicroPowerManager uses Laravel's Trusted Proxy feature to correctly handle reque
 2. **The application will automatically use this value** via the `src/backend/config/trustedproxy.php` config file.
 
 3. **Recommended values:**
-
    - **GCP:** `35.191.0.0/16,130.211.0.0/22`
    - **AWS:** Use the documented AWS ELB IP ranges or `*` if you are behind a private network
    - **Development:** `127.0.0.1` or your proxy IP
@@ -196,11 +195,11 @@ To use Google Cloud Storage for file storage, configure the following environmen
 
 You can authenticate using either a service account key file or individual credential components:
 
-**Option 1: Service Account Key File**
+#### Option 1: Service Account Key File
 
 - `GOOGLE_CLOUD_KEY_FILE` - Path to your service account JSON key file
 
-**Option 2: Individual Credential Components**
+#### Option 2: Individual Credential Components
 
 - `GOOGLE_CLOUD_ACCOUNT_TYPE` - Service account type (usually `service_account`)
 - `GOOGLE_CLOUD_PRIVATE_KEY_ID` - Private key ID from service account
