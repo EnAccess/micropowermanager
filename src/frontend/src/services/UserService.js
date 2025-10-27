@@ -82,7 +82,7 @@ export class UserService {
       id: this.user.id,
       name: this.user.name,
     }
-    
+
     if (this.user.roles) {
       userDataPm.roles = this.user.roles
     }

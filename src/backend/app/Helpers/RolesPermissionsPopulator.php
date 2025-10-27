@@ -139,9 +139,7 @@ class RolesPermissionsPopulator {
         }
 
         // Grant editor permissions (all except admin-only)
-        $editorPermissions = array_filter($allApiPermissions, function ($permissionId, $permissionName) use ($adminOnlyPermissions) {
-            return !in_array($permissionName, $adminOnlyPermissions);
-        }, ARRAY_FILTER_USE_BOTH);
+        $editorPermissions = array_filter($allApiPermissions, fn($permissionId, $permissionName): bool => !in_array($permissionName, $adminOnlyPermissions), ARRAY_FILTER_USE_BOTH);
 
         foreach ($editorPermissions as $permissionId) {
             DB::connection('tenant')->table($tableNames['role_has_permissions'])->insertOrIgnore([
@@ -151,9 +149,7 @@ class RolesPermissionsPopulator {
         }
 
         // Grant reader permissions (only read/view permissions, excluding admin-only)
-        $readerPermissions = array_filter($allApiPermissions, function ($permissionId, $permissionName) use ($adminOnlyPermissions) {
-            return str_ends_with($permissionName, '.view') && !in_array($permissionName, $adminOnlyPermissions);
-        }, ARRAY_FILTER_USE_BOTH);
+        $readerPermissions = array_filter($allApiPermissions, fn($permissionId, $permissionName): bool => str_ends_with($permissionName, '.view') && !in_array($permissionName, $adminOnlyPermissions), ARRAY_FILTER_USE_BOTH);
 
         foreach ($readerPermissions as $permissionId) {
             DB::connection('tenant')->table($tableNames['role_has_permissions'])->insertOrIgnore([
