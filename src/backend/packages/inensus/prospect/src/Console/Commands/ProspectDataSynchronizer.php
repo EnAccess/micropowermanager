@@ -33,9 +33,9 @@ class ProspectDataSynchronizer extends Command {
 
         $this->syncSettingService->getSyncSettings()->each(function (ProspectSyncSetting $syncSetting) use ($syncActions): true {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
-            // if (!$syncAction) {
-            //     return true;
-            // }
+            if (!$syncAction) {
+                return true;
+            }
 
             $this->info('sync action......');
 
