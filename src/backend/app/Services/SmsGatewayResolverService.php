@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use Inensus\ViberMessaging\Models\ViberContact;
 use App\Exceptions\NoActiveSmsProviderException;
 use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use Illuminate\Support\Facades\Log;
+use Inensus\ViberMessaging\Models\ViberContact;
 use Inensus\ViberMessaging\Services\ViberContactService;
 
 class SmsGatewayResolverService {
@@ -76,6 +76,7 @@ class SmsGatewayResolverService {
         }
 
         $viberMessagingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
+
         return $viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE;
     }
 }
