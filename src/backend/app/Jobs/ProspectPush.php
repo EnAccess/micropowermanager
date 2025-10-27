@@ -147,7 +147,7 @@ class ProspectPush extends AbstractJob {
         $prospectPath = "prospect/{$companyDatabaseName}/";
         $files = collect(Storage::files($prospectPath))
             ->filter(fn ($f): bool => str_ends_with($f, '.csv'))
-            ->sortByDesc(fn ($f) => Storage::lastModified($f))
+            ->sortByDesc(Storage::lastModified(...))
             ->values();
 
         if ($files->isEmpty()) {
