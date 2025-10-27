@@ -128,7 +128,9 @@ MicroPowerManager uses Laravel's Trusted Proxy feature to correctly handle reque
 > [!INFO]
 > This section is optional, but recommended for production environments.
 
-MicroPowerManager supports multiple storage backends for file storage. By default, files are stored locally, but for production environments, it's recommended to use cloud storage for better scalability, reliability, and backup capabilities.
+MicroPowerManager supports multiple storage backends for file storage. By default, files are stored on the local filesystem. This approach works well on Docker Compose based deployments where local filesystem is accessible via a (local) volume mount.
+
+While it is possible to use volume mounts in Kubernetes Cloud deployments too, it's generally recommended to use dedicated Cloud Storage backend for better scalability, reliability, and backup capabilities in these deployment scenarios.
 
 ### Storage Overview
 
@@ -282,14 +284,6 @@ if ($result) {
     echo "Failed to store file\n";
 }
 ```
-
-### Storage Recommendations
-
-- **Development**: Use local storage for simplicity
-- **Production**: Use cloud storage (S3 or GCS) for better reliability and scalability
-- **Backup**: Ensure your cloud storage has appropriate backup and versioning policies
-- **Security**: Use IAM roles and policies to restrict access to only necessary operations
-- **Monitoring**: Set up monitoring and alerting for storage usage and costs
 
 ## Agent Apps
 

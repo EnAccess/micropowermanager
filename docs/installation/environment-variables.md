@@ -107,10 +107,9 @@ MicroPowerManager supports multiple storage backends for file storage. Configure
 
 #### Storage Configuration
 
-| Environment Variable | Default | Description                                                     |
-| -------------------- | ------- | --------------------------------------------------------------- |
-| `FILESYSTEM_DISK`    | `local` | The default storage disk to use (`local`, `s3`, or `gcs`).      |
-| `FILESYSTEM_CLOUD`   | `s3`    | The default cloud storage disk to use when using cloud storage. |
+| Environment Variable | Default | Description                                                |
+| -------------------- | ------- | ---------------------------------------------------------- |
+| `FILESYSTEM_DISK`    | `local` | The default storage disk to use (`local`, `s3`, or `gcs`). |
 
 #### Amazon S3 Storage
 
@@ -141,6 +140,8 @@ MicroPowerManager supports multiple storage backends for file storage. Configure
 | `GOOGLE_CLOUD_STORAGE_PATH_PREFIX`    | `null`  | Optional path prefix for all stored files.                      |
 | `GOOGLE_CLOUD_STORAGE_API_URI`        | `null`  | Custom storage API URI (for custom endpoints).                  |
 | `GOOGLE_CLOUD_STORAGE_API_ENDPOINT`   | `null`  | Custom API endpoint.                                            |
+
+To learn more about working with GCS in Laravel, the official [library](https://github.com/spatie/laravel-google-cloud-storage) will be a vaulable guide.
 
 ### Basic setup
 
