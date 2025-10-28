@@ -50,7 +50,7 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
 
             $result = false;
             try {
-                if ($actionName === 'Installations') {
+                if ($actionName === 'installations') {
                     dispatch(new ExtractInstallations());
                     dispatch(new PushInstallations());
                     $result = true;

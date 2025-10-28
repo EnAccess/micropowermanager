@@ -22,6 +22,7 @@ class ProspectSyncActionService {
             'weekly' => 'week',
             'monthly' => 'month',
             'yearly' => 'year',
+            'minute' => 'minute',
             default => $unit,
         };
     }

@@ -5,7 +5,6 @@ namespace Inensus\Prospect\Services;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
-use Inensus\Prospect\Models\ProspectSyncAction;
 use Inensus\Prospect\Models\ProspectSyncSetting;
 
 class ProspectSyncSettingService {
@@ -22,6 +21,7 @@ class ProspectSyncSettingService {
             'weekly' => 'week',
             'monthly' => 'month',
             'yearly' => 'year',
+            'minute' => 'minute',
             default => $unit,
         };
     }
