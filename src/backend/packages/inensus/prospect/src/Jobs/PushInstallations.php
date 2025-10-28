@@ -40,6 +40,7 @@ class PushInstallations extends AbstractJob {
                 throw new \RuntimeException('Prospect push failed');
             }
             Log::info('Prospect: push success', ['count' => count($data)]);
+            // TODO: Mark the file as synced
         } catch (\Exception $e) {
             Log::error('Prospect: push error '.$e->getMessage());
             throw $e;

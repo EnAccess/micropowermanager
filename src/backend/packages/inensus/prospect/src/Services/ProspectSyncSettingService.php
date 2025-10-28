@@ -49,11 +49,11 @@ class ProspectSyncSettingService {
                 ]);
 
                 if ($syncSettingAction) {
+                    $lastSync = $syncSettingAction->last_sync ?? Carbon::now();
                     $syncSettingAction->update([
-                        'next_sync' => Carbon::now()->add($interval),
+                        'next_sync' => $lastSync->add($interval),
                     ]);
                 } else {
-                    // Create sync action if missing
                     $this->syncActionService->createSyncAction([
                         'sync_setting_id' => $syncSetting->id,
                         'next_sync' => Carbon::now()->add($interval),

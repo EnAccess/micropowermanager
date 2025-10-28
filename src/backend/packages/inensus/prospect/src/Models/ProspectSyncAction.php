@@ -18,6 +18,11 @@ use Illuminate\Support\Carbon;
 class ProspectSyncAction extends BaseModel {
     protected $table = 'prospect_sync_actions';
 
+    protected $casts = [
+        'last_sync' => 'datetime',
+        'next_sync' => 'datetime',
+    ];
+
     /**
      * @return BelongsTo<ProspectSyncSetting, $this>
      */
