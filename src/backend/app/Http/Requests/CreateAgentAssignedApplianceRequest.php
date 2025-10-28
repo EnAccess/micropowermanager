@@ -19,10 +19,10 @@ class CreateAgentAssignedApplianceRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'agent_id' => 'required',
-            'user_id' => 'required',
-            'appliance_id' => 'required',
-            'cost' => 'required|regex:/^\d*(\.\d{1,2})?$/',
+            'agent_id' => ['required'],
+            'user_id' => ['required'],
+            'appliance_id' => ['required'],
+            'cost' => ['required', 'regex:/^\d*(\.\d{1,2})?$/'],
         ];
     }
 }

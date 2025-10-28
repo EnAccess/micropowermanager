@@ -2,7 +2,7 @@
   <widget
     :title="$tc('words.detail', 2)"
     :button="true"
-    :button-text="$tc('phrases.deleteCustomer', 0)"
+    :button-text="$tc('phrases.deleteCustomer', 1)"
     @widgetAction="confirmDelete"
     button-icon="delete"
     :show-spinner="false"
@@ -218,7 +218,7 @@ export default {
     confirmDelete() {
       this.$swal({
         type: "question",
-        title: this.$tc("phrases.deleteCustomer", 0),
+        title: this.$tc("phrases.deleteCustomer", 1),
         width: "35%",
         confirmButtonText: this.$tc("words.confirm"),
         showCancelButton: true,

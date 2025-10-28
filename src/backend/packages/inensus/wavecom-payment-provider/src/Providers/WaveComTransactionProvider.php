@@ -56,7 +56,7 @@ class WaveComTransactionProvider implements ITransactionProvider {
         return $this->getTransaction()->getMessage();
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->getTransaction()->getAmount();
     }
 

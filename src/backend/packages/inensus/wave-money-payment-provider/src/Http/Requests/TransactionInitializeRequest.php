@@ -15,8 +15,8 @@ class TransactionInitializeRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            self::BODY_PARAM_METER_SERIAL => 'required',
-            self::BODY_PARAM_AMOUNT => 'required|numeric',
+            self::BODY_PARAM_METER_SERIAL => ['required'],
+            self::BODY_PARAM_AMOUNT => ['required', 'numeric'],
         ];
     }
 }

@@ -2,16 +2,27 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\SparkMeter\Models\SmOrganization;
 
 class OrganizationService {
-    public function __construct(private SmOrganization $organization) {}
+    public function __construct(
+        private SmOrganization $organization,
+    ) {}
 
-    public function getOrganizations() {
+    /**
+     * @return Collection<int, SmOrganization>
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getOrganizations(): Collection {
         return $this->organization->newQuery()->where('id', '>', 0)->get();
     }
 
-    public function createOrganization(array $organizationData) {
+    /**
+     * @param array<string, mixed> $organizationData
+     */
+    public function createOrganization(array $organizationData): SmOrganization|bool {
         $organization = $this->organization->newQuery()->first();
         if (!$organization) {
             return $this->organization->newQuery()->create([

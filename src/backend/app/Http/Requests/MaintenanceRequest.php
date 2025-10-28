@@ -19,17 +19,17 @@ class MaintenanceRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'title' => 'sometimes|string',
-            'name' => 'required|min:3',
-            'surname' => 'required|min:3',
-            'birth_date' => 'sometimes|date_format:"Y-m-d"',
-            'sex' => 'sometimes|in:male,female',
-            'education' => 'sometimes|min:3',
-            'city_id' => 'sometimes|exists:tenant.cities,id',
-            'street' => 'sometimes|string|min:3',
-            'email' => 'sometimes|email',
-            'phone' => 'required|min:11|regex:(^\+)',
-            'nationality' => 'sometimes|exists:tenant.countries,country_code',
+            'title' => ['sometimes', 'string'],
+            'name' => ['required', 'min:3'],
+            'surname' => ['required', 'min:3'],
+            'birth_date' => ['sometimes', 'date_format:"Y-m-d"'],
+            'sex' => ['sometimes', 'in:male,female'],
+            'education' => ['sometimes', 'min:3'],
+            'city_id' => ['sometimes', 'exists:tenant.cities,id'],
+            'street' => ['sometimes', 'string', 'min:3'],
+            'email' => ['sometimes', 'email'],
+            'phone' => ['required', 'min:11', 'regex:(^\+)'],
+            'nationality' => ['sometimes', 'exists:tenant.countries,country_code'],
         ];
     }
 

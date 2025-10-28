@@ -6,12 +6,14 @@ use App\Models\Address\Address;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use Database\Factories\AgentFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\Ticket;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -19,18 +21,34 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 /**
  * Class Agent.
  *
- * @property int    $id
- * @property int    $person_id
- * @property int    $mini_grid_id
- * @property int    $agent_commission_id
- * @property string $mobile_device_id
- * @property string $email
- * @property string $password
- * @property string $fire_base_token
- * @property float  $balance
- * @property float  $available_balance
- * @property string $remember_token
- * @property int    $company_id
+ * @property      int                                      $id
+ * @property      int                                      $person_id
+ * @property      int                                      $mini_grid_id
+ * @property      int                                      $agent_commission_id
+ * @property      string                                   $mobile_device_id
+ * @property      string                                   $email
+ * @property      string                                   $password
+ * @property      string                                   $fire_base_token
+ * @property      float                                    $balance
+ * @property      float                                    $commission_revenue
+ * @property      float                                    $due_to_energy_supplier
+ * @property      string|null                              $remember_token
+ * @property      Carbon|null                              $created_at
+ * @property      Carbon|null                              $updated_at
+ * @property      string                                   $connection
+ * @property-read Address|null                             $address
+ * @property-read Collection<int, Address>                 $addressDetails
+ * @property-read Collection<int, Address>                 $addresses
+ * @property-read Collection<int, AgentCharge>             $agentCharges
+ * @property-read Collection<int, AgentAssignedAppliances> $assignedAppliance
+ * @property-read Collection<int, AgentBalanceHistory>     $balanceHistory
+ * @property-read AgentCommission|null                     $commission
+ * @property-read MiniGrid|null                            $miniGrid
+ * @property-read Person|null                              $person
+ * @property-read Collection<int, AgentReceipt>            $receipt
+ * @property-read Collection<int, AssetPerson>             $soldAppliances
+ * @property-read Collection<int, Ticket>                  $tickets
+ * @property-read Collection<int, Transaction>             $transaction
  */
 class Agent extends Authenticatable implements JWTSubject {
     /** @use HasFactory<AgentFactory> */

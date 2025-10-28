@@ -5,12 +5,17 @@ namespace Inensus\SteamaMeter\Services;
 use App\Models\Meter\MeterConsumption;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Sleep;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 
 class SteamaMeterReadingService {
-    public function __construct(private SteamaMeter $steamaMeter, private SteamaMeterApiClient $steamaApi, private MeterConsumption $meterConsumtion) {}
+    public function __construct(
+        private SteamaMeter $steamaMeter,
+        private SteamaMeterApiClient $steamaApi,
+        private MeterConsumption $meterConsumtion,
+    ) {}
 
     public function getMeterReadingsThroughHourlyWorkingJob(): void {
         $now = Carbon::now()->toIso8601ZuluString();
@@ -21,6 +26,7 @@ class SteamaMeterReadingService {
                 $result = $this->steamaApi->get($url);
                 $readings = $result['results'];
                 if (count($readings) > 0) {
+                    // @phpstan-ignore argument.templateType,argument.templateType
                     collect($readings)->each(function (array $reading) use ($meter) {
                         $this->meterConsumtion->newQuery()
                             ->updateOrCreate(
@@ -38,7 +44,7 @@ class SteamaMeterReadingService {
                             );
                     });
                 }
-                usleep(100000);
+                Sleep::usleep(100000);
             } catch (SteamaApiResponseException $e) {
                 Log::critical('Meter utility reading failed.', ['message' => $e->getMessage()]);
             }

@@ -3,36 +3,38 @@
 namespace Inensus\Ticket\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Person\Person;
-use Carbon\Carbon;
 use Database\Factories\Inensus\Ticket\Models\TicketFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @property int             $id
- * @property string          $creator_type
- * @property int             $creator_id
- * @property int             $assigned_id
- * @property string          $owner_type
- * @property int             $owner_id
- * @property int             $status
- * @property Carbon          $due_date
- * @property string          $title
- * @property string          $content
- * @property int             $category_id
- * @property TicketUser      $assignedTo
- * @property Carbon          $created_at
- * @property Carbon          $updated_at
- * @property TicketOutsource $outsource
- * @property TicketCategory  $category
- * @property ?Person         $owner
+ * @property      int                            $id
+ * @property      string                         $creator_type
+ * @property      int                            $creator_id
+ * @property      int|null                       $assigned_id
+ * @property      string                         $owner_type
+ * @property      int                            $owner_id
+ * @property      int                            $status
+ * @property      string|null                    $due_date
+ * @property      string                         $title
+ * @property      string                         $content
+ * @property      int                            $category_id
+ * @property      Carbon|null                    $created_at
+ * @property      Carbon|null                    $updated_at
+ * @property-read TicketUser|null                $assignedTo
+ * @property-read TicketCategory|null            $category
+ * @property-read Collection<int, TicketComment> $comments
+ * @property-read Model                          $creator
+ * @property-read TicketOutsource|null           $outsource
+ * @property-read Model                          $owner
  */
 class Ticket extends BaseModel {
     /** @use HasFactory<TicketFactory> */

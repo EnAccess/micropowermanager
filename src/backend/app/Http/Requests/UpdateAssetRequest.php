@@ -15,13 +15,13 @@ class UpdateAssetRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, string>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array {
         return [
-            'asset_type_id' => 'sometimes',
-            'name' => 'sometimes|min:4',
-            'price' => 'sometimes|numeric',
+            'asset_type_id' => ['sometimes'],
+            'name' => ['sometimes', 'min:4'],
+            'price' => ['sometimes', 'numeric'],
         ];
     }
 }

@@ -14,7 +14,7 @@ class VodacomTransactionEnquiryStatusRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'referenceId' => 'required|string|regex:/^[A-Za-z0-9\-]{5,20}$/',
+            'referenceId' => ['required', 'string', 'regex:/^[A-Za-z0-9\-]{5,20}$/'],
         ];
     }
 }

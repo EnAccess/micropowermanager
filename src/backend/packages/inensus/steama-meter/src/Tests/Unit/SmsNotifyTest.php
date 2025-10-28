@@ -16,10 +16,10 @@ use App\Models\User;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
@@ -195,6 +195,9 @@ class SmsNotifyTest extends TestCase {
         $this->assertLessThan($oldNextSync, $newNextSync);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function initializeData(): array {
         $this->addSmsSettings();
         $this->addSmsBodies();
@@ -265,7 +268,7 @@ class SmsNotifyTest extends TestCase {
         return ['customer' => $p, 'meter' => $steamaMeter];
     }
 
-    private function initializeSteamaTransaction($customer, $steamaMeter): void {
+    private function initializeSteamaTransaction(SteamaCustomer $customer, SteamaMeter $steamaMeter): void {
         $steamaTransaction = SteamaTransaction::query()->create([
             'transaction_id' => '1111',
             'site_id' => 1,
@@ -352,7 +355,10 @@ class SmsNotifyTest extends TestCase {
         SteamaSyncAction::query()->create($syncAction);
     }
 
-    private function addSmsBodies() {
+    /**
+     * @return Collection<int, SmsBody>
+     */
+    private function addSmsBodies(): Collection {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',

@@ -76,6 +76,6 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $kWhToBeCharged = 0.0;
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 
-        TokenProcessor::dispatch($this->companyId, $transactionData);
+        dispatch(new TokenProcessor($this->companyId, $transactionData));
     }
 }

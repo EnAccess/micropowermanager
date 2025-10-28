@@ -5,21 +5,28 @@ namespace App\Models;
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
 use Database\Factories\MiniGridFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 use MPM\Target\TargetAssignable;
 
 /**
  * Class MiniGrid.
  *
- * @property int                          $id
- * @property string                       $name
- * @property int                          $cluster_id
- * @property Collection<int, City>        $cities
- * @property Collection<int, Agent>       $agents
+ * @property      int                          $id
+ * @property      int                          $cluster_id
+ * @property      string                       $name
+ * @property      Carbon|null                  $created_at
+ * @property      Carbon|null                  $updated_at
+ * @property-read Collection<int, Agent>       $agents
+ * @property-read Collection<int, City>        $cities
+ * @property-read Cluster|null                 $cluster
+ * @property-read GeographicalInformation|null $location
+ *
+ * Special attributes only used for caching services:
  * @property array{data: float}           $soldEnergy   This field is used only for caching.
  * @property Collection<int, Transaction> $transactions This field is used only for caching.
  * @property array<string, mixed>         $period       This field is used only for caching.

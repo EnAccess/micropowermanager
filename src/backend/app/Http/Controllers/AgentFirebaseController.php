@@ -13,7 +13,7 @@ class AgentFirebaseController extends Controller {
 
     public function update(Request $request): ApiResource {
         $request->validate([
-            'fire_base_token' => 'required|string',
+            'fire_base_token' => ['required', 'string'],
         ]);
 
         $agent = $this->agentService->getByAuthenticatedUser();

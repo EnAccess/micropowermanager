@@ -15,13 +15,13 @@ class SubConnectionTypeCreateRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, string>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array {
         return [
-            'name' => 'required|min:3',
-            'connection_type_id' => 'required|numeric',
-            'tariff_id' => 'required|numeric',
+            'name' => ['required', 'min:3'],
+            'connection_type_id' => ['required', 'numeric'],
+            'tariff_id' => ['required', 'numeric'],
         ];
     }
 }

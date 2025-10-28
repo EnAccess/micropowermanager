@@ -19,8 +19,8 @@ class CreateAgentReceiptRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'agent_id' => 'required',
-            'amount' => 'required',
+            'agent_id' => ['required'],
+            'amount' => ['required'],
         ];
     }
 }

@@ -166,10 +166,10 @@ class KelinCustomerService implements ISynchronizeService {
         $names = explode(' ', $customer['consName']);
         $phone = ltrim($customer['mobile'], $customer['mobile'][0]);
 
-        if (count($names) == 1) {
+        if (count($names) === 1) {
             $name = $customer['consName'];
             $surname = '';
-        } elseif (count($names) == 2) {
+        } elseif (count($names) === 2) {
             $name = $names[0];
             $surname = $names[1];
         } else {
@@ -206,10 +206,10 @@ class KelinCustomerService implements ISynchronizeService {
      */
     public function updateRelatedPerson(array $customer, Person $person): Person {
         $names = explode(' ', $customer['consName']);
-        if (count($names) == 1) {
+        if (count($names) === 1) {
             $name = $customer['consName'];
             $surname = '';
-        } elseif (count($names) == 2) {
+        } elseif (count($names) === 2) {
             $name = $names[0];
             $surname = $names[1];
         } else {

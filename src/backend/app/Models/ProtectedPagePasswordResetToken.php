@@ -3,18 +3,18 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
  * Class ProtectedPagePasswordResetToken.
  *
- * @property int    $id
- * @property string $email
- * @property string $token
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Carbon $expires_at
+ * @property int         $id
+ * @property string      $email
+ * @property string      $token
+ * @property Carbon      $expires_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class ProtectedPagePasswordResetToken extends BaseModel {
     /**

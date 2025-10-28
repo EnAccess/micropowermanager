@@ -131,7 +131,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         throw new \BadMethodCallException('Method getMessage() not yet implemented.');
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         // TODO: Implement getAmount() method.
         throw new \BadMethodCallException('Method getAmount() not yet implemented.');
     }

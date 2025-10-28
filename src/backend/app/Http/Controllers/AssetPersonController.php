@@ -110,7 +110,7 @@ class AssetPersonController extends Controller {
                 );
                 $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($appliancePerson);
                 event(new PaymentSuccessEvent(
-                    amount: $transaction->amount,
+                    amount: (int) $transaction->amount,
                     paymentService: 'web',
                     paymentType: 'down payment',
                     sender: $transaction->sender,

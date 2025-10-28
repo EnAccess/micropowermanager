@@ -114,7 +114,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         throw new \BadMethodCallException('Method getMessage() not yet implemented.');
     }
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->getTransaction()->amount;
     }
 

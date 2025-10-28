@@ -19,11 +19,11 @@ class MailSettingsRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'mail_host' => 'required|min:5',
-            'mail_port' => 'required|numeric',
-            'mail_encryption' => 'required|min:3',
-            'mail_username' => 'required|min:8|email',
-            'mail_password' => 'required|min:3',
+            'mail_host' => ['required', 'min:5'],
+            'mail_port' => ['required', 'numeric'],
+            'mail_encryption' => ['required', 'min:3'],
+            'mail_username' => ['required', 'min:8', 'email'],
+            'mail_password' => ['required', 'min:3'],
         ];
     }
 }
