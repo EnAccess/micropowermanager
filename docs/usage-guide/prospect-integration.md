@@ -14,8 +14,8 @@ Prospect is a data analytics platform that allows you to import, analyze, and vi
 
 - Access to Prospect demo platform
 - Valid login credentials for Prospect
-- API client (Postman, cURL, or similar)
-- Installation data to import
+- MicroPowerManager instance with installation data to export
+- Appropriate permissions to configure plugins in MicroPowerManager
 
 ## Getting Started
 
@@ -111,93 +111,56 @@ After selecting your connection type, you'll see the API configuration page with
 
 ![Data Source Activation](images/prospect-datasource-activation.png)
 
-## Testing the Integration
+## Configuring the MPM Integration
 
-### Step 9: Prepare API Request
+Now that you have obtained the authorization token and API endpoint from Prospect, you need to configure the Prospect plugin in MicroPowerManager.
 
-Use an API client like Postman or cURL to test the data import:
+### Step 9: Enable Prospect Plugin
 
-**Request Configuration:**
+1. Log in to your MicroPowerManager instance
+2. Navigate to **Settings** → **Configuration** → **Plugins**
+3. Locate the **Prospect** plugin
+4. Enable the plugin by toggling the switch to the "On" position
 
-- **Method**: POST
-- **URL**: `https://demo.prospect.energy/api/v1/in/installations`
-- **Headers**:
-  - `Authorization: Bearer 99b90db993b83c303e4f7511977a8d46`
-  - `Content-Type: application/json`
+![Enable Prospect Plugin](images/prospect-enable-plugin.png)
 
-The secret key to be used in the authorization header can also be found here:
+### Step 10: Configure Plugin Settings
 
-![Secret Key](images/prospect-api-access.png)
+After enabling the plugin, you need to configure it with the credentials obtained from Prospect:
 
-### Step 10: Sample Data Payload
+1. Navigate to the **Overview** page (this is typically in the Prospect plugin section)
+2. Enter the **Authorization Token** that you obtained from Step 8 of the Prospect platform
+3. Specify the **BASE_URL** - this should be the API endpoint URL shown in Step 7 (e.g., `https://demo.prospect.energy/api/v1/in/installations`)
+4. **Note**: Currently, we are working with installations data. More data types will be added in future updates
+5. Click **Save** to store your configuration
 
-Use the following JSON structure for your installation data:
+![Configure Token and BASE_URL](images/prospect-configure-settings.png)
 
-```json
-{
-  "data": [
-    {
-      "customer_external_id": "SMU 12 Chinsanka",
-      "seller_agent_external_id": "SMU 12 Chinsanka",
-      "installer_agent_external_id": "SMU 12 Chinsanka",
-      "product_common_id": "Verasol",
-      "device_external_id": "1",
-      "parent_external_id": "1",
-      "account_external_id": "1",
-      "battery_capacity_wh": 500,
-      "usage_category": "household",
-      "usage_sub_category": "farmer",
-      "device_category": "solar_home_system",
-      "ac_input_source": "generator, grid, wind turbine etc..",
-      "dc_input_source": "solar",
-      "firmware_version": "1.2-rc3",
-      "manufacturer": "HOP",
-      "model": "DTZ1737",
-      "primary_use": "cooking",
-      "rated_power_w": 30,
-      "pv_power_w": 50,
-      "serial_number": "A1233754345JL",
-      "site_name": "Hospital Name, Grid Name, etc",
-      "payment_plan_amount_financed_principal": 1500,
-      "payment_plan_amount_financed_interest": 1500,
-      "payment_plan_amount_financed_total": 1500,
-      "payment_plan_amount_down_payment": 1500,
-      "payment_plan_cash_price": 20000,
-      "payment_plan_currency": "ZMW",
-      "payment_plan_installment_amount": 25000,
-      "payment_plan_number_of_installments": 365,
-      "payment_plan_installment_period_days": 180,
-      "payment_plan_days_financed": 3650,
-      "payment_plan_days_down_payment": 30,
-      "payment_plan_category": "paygo",
-      "purchase_date": "2022-01-01",
-      "installation_date": "2022-01-01",
-      "repossession_date": "2022-01-01",
-      "paid_off_date": "2022-01-01",
-      "repossession_category": "swap",
-      "write_off_date": "2022-01-01",
-      "write_off_reason": "Return",
-      "is_test": true,
-      "latitude": 37.775,
-      "longitude": -122.419,
-      "country": "UG",
-      "location_area_1": "Northern",
-      "location_area_2": "Agago",
-      "location_area_3": "Arum",
-      "location_area_4": "Alela",
-      "location_area_5": "Bila"
-    }
-  ]
-}
-```
+### Step 11: Configure Synchronization Schedule
 
-### Step 11: Execute API Test
+Set how often you want MPM to sync data to Prospect:
 
-1. Send the POST request with your configured data
-2. Verify the response indicates successful data import
-3. Check the Prospect platform to confirm data appears correctly
+1. Navigate to the **Settings** page within the Prospect plugin
+2. Configure the synchronization frequency:
+   - **Hourly** - Syncs data every hour
+   - **Daily** - Syncs data once per day
+   - **Weekly** - Syncs data once per week
+   - **Yearly** - Syncs data once per year
+3. Choose the appropriate schedule based on your needs
+4. Save your configuration
 
-![API Testing in Postman](images/prospect-postman-test.png)
+![Configure Schedule](images/prospect-configure-schedule.png)
+
+## How It Works
+
+Once configured, the Prospect plugin will:
+
+1. Automatically extract installation data from your MPM database
+2. Create CSV files containing the installation data
+3. Push the data to Prospect using the configured API endpoint and authentication token
+4. Run according to your specified schedule (hourly, daily, weekly, or yearly)
+
+The integration handles all data synchronization automatically, so you don't need to manually export or import data.
 
 ## Data Field Descriptions
 
@@ -266,20 +229,30 @@ Use the following JSON structure for your installation data:
 
 ### Common Issues
 
-1. **Authentication Errors**
-   - Verify the Bearer token is correctly formatted
+1. **Plugin Not Syncing Data**
+   - Verify that the Prospect plugin is enabled in MPM settings
+   - Check that the API token and BASE_URL are correctly configured
    - Ensure the token hasn't expired
-   - Check that the Authorization header is properly set
+   - Verify network connectivity between MPM and Prospect
 
-2. **Data Format Issues**
-   - Validate JSON syntax
-   - Ensure required fields are included
-   - Check data types match expected formats
+2. **Data Not Appearing in Prospect**
+   - Check MPM logs for any sync errors
+   - Verify that there is installation data available in your MPM database
+   - Confirm that the schedule is correctly configured and the sync has run
+   - Check Prospect platform for any incoming data errors
 
-3. **Connection Problems**
-   - Verify API endpoint URL is correct
-   - Check network connectivity
-   - Confirm data source is activated
+3. **Configuration Issues**
+   - Ensure the BASE_URL matches the API endpoint from your Prospect datasource
+   - Verify the authorization token is correct and up-to-date
+   - Check that you have appropriate permissions to configure plugins
+
+### Checking Sync Status
+
+You can monitor the sync status by:
+
+1. Checking MPM logs for Prospect-related entries
+2. Viewing the sync status in the Prospect plugin settings page
+3. Verifying data appears in your Prospect project dashboard
 
 ### API Documentation
 
@@ -288,10 +261,10 @@ For complete API reference and additional endpoints, visit:
 
 ## Next Steps
 
-1. **S3 Bucket Integration**: Consider migrating to S3 bucket data sources for larger datasets
-2. **Automated Data Sync**: Implement scheduled data synchronization
-3. **Data Validation**: Set up data quality checks and validation rules
-4. **Analytics Setup**: Configure dashboards and reports for imported data
+1. **Monitor Sync Status**: Check that data is being successfully synced to Prospect according to your configured schedule
+2. **Verify Data**: Use the Prospect platform to verify that your installation data appears correctly
+3. **Additional Data Types**: As more data types become available (agents, customers, etc.), you can configure those in the MPM plugin settings
+4. **Analytics Setup**: Configure dashboards and reports in the Prospect platform to analyze your data
 
 ## Support
 
