@@ -76,8 +76,8 @@ Explore MPM's capabilities by
 
 This project
 
-- Is written in PHP 8.0
-- It uses Laravel 11.0
+- Is written in PHP 8.2
+- It uses Laravel 12.0
 - It uses Vue.js 2.6
 - It uses Node 18.20.4
 - It uses MySQL 8.4
