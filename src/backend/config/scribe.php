@@ -19,6 +19,7 @@ use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseAttributes;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseFileTag;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseTag;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseTransformerTags;
+use Knuckles\Scribe\Extracting\Strategies\StaticData;
 use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromLaravelAPI;
 use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamAttribute;
 use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamTag;
@@ -59,9 +60,6 @@ DESC,
 
                 // Match only routes whose domains match this pattern (use * as a wildcard to match any characters). Example: 'api.*'.
                 'domains' => ['*'],
-
-                // [Dingo router only] Match only routes registered under this version. Wildcards are NOT supported.
-                'versions' => ['v1'],
             ],
 
             // Include these routes even if they did not match the rules above.
@@ -256,10 +254,12 @@ INTRO,
             GetFromHeaderAttribute::class,
             GetFromHeaderTag::class,
             [
-                'override',
+                StaticData::class,
                 [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
+                    'data' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
                 ],
             ],
         ],
