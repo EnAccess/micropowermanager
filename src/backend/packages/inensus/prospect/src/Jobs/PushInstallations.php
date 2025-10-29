@@ -6,8 +6,14 @@ use App\Jobs\AbstractJob;
 use App\Models\CompanyDatabase;
 use Illuminate\Support\Facades\Log;
 use Inensus\Prospect\Http\Clients\ProspectApiClient;
+use Inensus\Prospect\Models\ProspectExtractedFile;
 
 class PushInstallations extends AbstractJob {
+    /**
+     * Track the extracted file being processed.
+     */
+    private ?ProspectExtractedFile $extractedFile = null;
+
     /**
      * Create a new job instance.
      */
@@ -40,7 +46,13 @@ class PushInstallations extends AbstractJob {
                 throw new \RuntimeException('Prospect push failed');
             }
             Log::info('Prospect: push success', ['count' => count($data)]);
-            // TODO: Mark the file as synced
+
+            if ($this->extractedFile) {
+                $this->extractedFile->update([
+                    'is_synced' => true,
+                    'synced_at' => now(),
+                ]);
+            }
         } catch (\Exception $e) {
             Log::error('Prospect: push error '.$e->getMessage());
             throw $e;
@@ -85,20 +97,13 @@ class PushInstallations extends AbstractJob {
     }
 
     private function getLatestCsvFile(): string {
-        $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
-        $companyDatabaseName = $companyDatabase->getDatabaseName();
-        $prospectPath = storage_path("app/prospect/{$companyDatabaseName}/");
-        $files = glob($prospectPath.'*.csv') ?: [];
-        $latestFile = '';
-        $latestTime = 0;
-        foreach ($files as $file) {
-            $t = @filemtime($file) ?: 0;
-            if ($t > $latestTime) {
-                $latestTime = $t;
-                $latestFile = $file;
-            }
+        $extractedFile = ProspectExtractedFile::query()->first();
+
+        if (!$extractedFile || !$extractedFile->file_path) {
+            return '';
         }
 
-        return $latestFile;
+        $this->extractedFile = $extractedFile;
+        return storage_path('app/'.$extractedFile->file_path);
     }
 }
