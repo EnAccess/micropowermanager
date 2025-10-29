@@ -4,40 +4,26 @@ namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
 use App\Models\AssetRate;
-use App\Models\MpmPlugin;
-use App\Models\Plugins;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
-use App\Services\PluginsService;
-use App\Sms\AndroidGateway;
+use App\Services\SmsGatewayResolverService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-use Inensus\AfricasTalking\AfricasTalkingGateway;
-use Inensus\ViberMessaging\Services\ViberContactService;
-use Inensus\ViberMessaging\ViberGateway;
 
 abstract class SmsSender {
-    public const VIBER_GATEWAY = 'ViberGateway';
-    public const AFRICAS_TALKING_GATEWAY = 'AfricasTalkingGateway';
-    public const DEFAULT_GATEWAY = 'AndroidGateway';
-
-    public const SMS_GATE_WAY_IDS = [
-        self::VIBER_GATEWAY => MpmPlugin::VIBER_MESSAGING,
-        self::AFRICAS_TALKING_GATEWAY => MpmPlugin::AFRICAS_TALKING,
-        self::DEFAULT_GATEWAY => 2,
-    ];
-
     /** @var array<string, string>|null */
     protected ?array $references = null;
     public string $body = '';
     protected ?string $receiver = null;
     protected ?string $callback = null;
-    private ?string $viberIdOfReceiver = null;
 
     public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath, private mixed $smsAndroidSettings) {}
 
     public function sendSms(): void {
-        $gateway = $this->determineGateway();
+        $gatewayResolver = app()->make(SmsGatewayResolverService::class);
+
+        [$gateway, $viberId] = $gatewayResolver->determineGateway($this->receiver);
+
         $lastRecordedSMS = Sms::query()
             ->where('receiver', $this->receiver)
             ->orWhere('receiver', ltrim($this->receiver, '+'))
@@ -46,38 +32,19 @@ abstract class SmsSender {
                 $this->body
             )->latest()->first();
 
-        switch ($gateway) {
-            case self::VIBER_GATEWAY:
-                resolve(ViberGateway::class)
-                    ->sendSms(
-                        $this->body,
-                        $this->viberIdOfReceiver,
-                        $lastRecordedSMS
-                    );
-                $lastRecordedSMS->gateway_id = self::SMS_GATE_WAY_IDS[self::VIBER_GATEWAY];
-                $lastRecordedSMS->save();
-                break;
+        $resolved = $gatewayResolver->resolveGatewayAndArgs($gateway, $lastRecordedSMS, [
+            'body' => $this->body,
+            'receiver' => $this->receiver,
+            'viberId' => $viberId,
+            'callback' => $this->callback,
+            'smsAndroidSettings' => $this->smsAndroidSettings,
+        ]);
 
-            case self::AFRICAS_TALKING_GATEWAY:
-                resolve(AfricasTalkingGateway::class)
-                    ->sendSms(
-                        $this->body,
-                        $this->receiver,
-                        $lastRecordedSMS
-                    );
-                $lastRecordedSMS->gateway_id = self::SMS_GATE_WAY_IDS[self::AFRICAS_TALKING_GATEWAY];
-                $lastRecordedSMS->save();
-                break;
+        $resolved['gateway']->sendSms(...$resolved['args']);
 
-            default:
-                resolve(AndroidGateway::class)
-                    ->sendSms(
-                        $this->receiver,
-                        $this->body,
-                        $this->callback,
-                        $this->smsAndroidSettings
-                    );
-                break;
+        if ($gateway !== SmsGatewayResolverService::DEFAULT_GATEWAY) {
+            $lastRecordedSMS->gateway_id = $resolved['gatewayId'];
+            $lastRecordedSMS->save();
         }
     }
 
@@ -173,31 +140,5 @@ abstract class SmsSender {
 
     public function setCallback(string $callback, string $uuid): void {
         $this->callback = sprintf($callback, $uuid);
-    }
-
-    private function determineGateway(): string {
-        $pluginsService = app()->make(PluginsService::class);
-        $africasTalkingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
-        $gateway = self::DEFAULT_GATEWAY;
-
-        if ($africasTalkingPlugin && $africasTalkingPlugin->status == Plugins::ACTIVE) {
-            $gateway = self::AFRICAS_TALKING_GATEWAY;
-        }
-
-        $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
-
-        if ($viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE) {
-            $viberContactService = app()->make(ViberContactService::class);
-            $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
-
-            if (!$viberContact) {
-                return $gateway;
-            }
-
-            $this->viberIdOfReceiver = $viberContact->viber_id;
-            $gateway = self::VIBER_GATEWAY;
-        }
-
-        return $gateway;
     }
 }
