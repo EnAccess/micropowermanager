@@ -46,7 +46,7 @@ class PushInstallations extends AbstractJob {
             }
             Log::info('Prospect: push success', ['count' => count($data)]);
 
-            if ($this->extractedFile) {
+            if ($this->extractedFile instanceof ProspectExtractedFile) {
                 $this->extractedFile->update([
                     'is_synced' => true,
                     'synced_at' => now(),
@@ -103,6 +103,7 @@ class PushInstallations extends AbstractJob {
         }
 
         $this->extractedFile = $extractedFile;
+
         return storage_path('app/'.$extractedFile->file_path);
     }
 }

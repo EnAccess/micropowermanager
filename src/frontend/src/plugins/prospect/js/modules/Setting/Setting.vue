@@ -133,7 +133,6 @@ export default {
       settingService: new SettingService(),
       loadingSync: false,
       syncPeriods: [
-        { value: "minute", label: "Minute" },
         { value: "hourly", label: "Hourly" },
         { value: "daily", label: "Daily" },
         { value: "weekly", label: "Weekly" },
