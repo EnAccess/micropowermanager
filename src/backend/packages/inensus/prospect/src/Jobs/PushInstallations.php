@@ -3,7 +3,6 @@
 namespace Inensus\Prospect\Jobs;
 
 use App\Jobs\AbstractJob;
-use App\Models\CompanyDatabase;
 use Illuminate\Support\Facades\Log;
 use Inensus\Prospect\Http\Clients\ProspectApiClient;
 use Inensus\Prospect\Models\ProspectExtractedFile;
