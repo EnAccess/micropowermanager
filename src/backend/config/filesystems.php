@@ -68,17 +68,7 @@ return [
             'driver' => 'gcs',
             'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE', null),
             // either key_file_path or key_file should be provided
-            'key_file' => [
-                'type' => env('GOOGLE_CLOUD_ACCOUNT_TYPE', null),
-                'private_key_id' => env('GOOGLE_CLOUD_PRIVATE_KEY_ID', null),
-                'private_key' => env('GOOGLE_CLOUD_PRIVATE_KEY', null),
-                'client_email' => env('GOOGLE_CLOUD_CLIENT_EMAIL', null),
-                'client_id' => env('GOOGLE_CLOUD_CLIENT_ID', null),
-                'auth_uri' => env('GOOGLE_CLOUD_AUTH_URI', 'https://accounts.google.com/o/oauth2/auth'),
-                'token_uri' => env('GOOGLE_CLOUD_TOKEN_URI', 'https://oauth2.googleapis.com/token'),
-                'auth_provider_x509_cert_url' => env('GOOGLE_CLOUD_AUTH_PROVIDER_CERT_URL', 'https://www.googleapis.com/oauth2/v1/certs'),
-                'client_x509_cert_url' => env('GOOGLE_CLOUD_CLIENT_CERT_URL', null),
-            ],
+            'key_file' => json_decode(env('GOOGLE_CLOUD_KEY_JSON', '[]'), true),
             'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', ''),
             'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', ''),
             'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', null),

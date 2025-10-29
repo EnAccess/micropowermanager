@@ -2,6 +2,7 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -59,7 +60,9 @@ class TicketExportController {
         }
 
         if ($disk === 'local') {
-            $localPath = Storage::disk('local')->path($relativePath);
+            /** @var FilesystemAdapter $localAdapter */
+            $localAdapter = Storage::disk('local');
+            $localPath = $localAdapter->path($relativePath);
 
             return response()->download($localPath);
         }

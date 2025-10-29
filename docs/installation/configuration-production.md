@@ -195,23 +195,15 @@ To use Google Cloud Storage for file storage, configure the following environmen
 
 #### Authentication Options
 
-You can authenticate using either a service account key file or individual credential components:
+You can authenticate using either a service account key file or as a JSON string:
 
 #### Option 1: Service Account Key File
 
 - `GOOGLE_CLOUD_KEY_FILE` - Path to your service account JSON key file
 
-#### Option 2: Individual Credential Components
+#### Option 2: Service Account Key as JSON string
 
-- `GOOGLE_CLOUD_ACCOUNT_TYPE` - Service account type (usually `service_account`)
-- `GOOGLE_CLOUD_PRIVATE_KEY_ID` - Private key ID from service account
-- `GOOGLE_CLOUD_PRIVATE_KEY` - Private key from service account
-- `GOOGLE_CLOUD_CLIENT_EMAIL` - Client email from service account
-- `GOOGLE_CLOUD_CLIENT_ID` - Client ID from service account
-- `GOOGLE_CLOUD_AUTH_URI` - Auth URI (usually `https://accounts.google.com/o/oauth2/auth`)
-- `GOOGLE_CLOUD_TOKEN_URI` - Token URI (usually `https://oauth2.googleapis.com/token`)
-- `GOOGLE_CLOUD_AUTH_PROVIDER_CERT_URL` - Auth provider cert URL
-- `GOOGLE_CLOUD_CLIENT_CERT_URL` - Client cert URL
+- `GOOGLE_CLOUD_KEY_JSON` - Your service account JSON key content as a JSON string
 
 #### Optional GCS Configuration
 
@@ -226,6 +218,7 @@ FILESYSTEM_DISK=gcs
 GOOGLE_CLOUD_PROJECT_ID=my-project-id
 GOOGLE_CLOUD_STORAGE_BUCKET=micropowermanager-files
 GOOGLE_CLOUD_KEY_FILE=/path/to/service-account-key.json
+GOOGLE_CLOUD_KEY_JSON=service-account-key-json-string
 ```
 
 #### GCS Bucket Setup
