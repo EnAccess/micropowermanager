@@ -5,9 +5,14 @@ namespace App\Services;
 use App\Exceptions\NoActiveSmsProviderException;
 use App\Models\MpmPlugin;
 use App\Models\Plugins;
+use App\Models\Sms;
+use App\Models\SmsAndroidSetting;
+use App\Sms\AndroidGateway;
 use Illuminate\Support\Facades\Log;
+use Inensus\AfricasTalking\AfricasTalkingGateway;
 use Inensus\ViberMessaging\Models\ViberContact;
 use Inensus\ViberMessaging\Services\ViberContactService;
+use Inensus\ViberMessaging\ViberGateway;
 
 class SmsGatewayResolverService {
     public const VIBER_GATEWAY = 'ViberGateway';
@@ -78,5 +83,45 @@ class SmsGatewayResolverService {
         $viberMessagingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
 
         return $viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE;
+    }
+
+    /**
+     * Resolve the gateway instance and prepare the arguments for sending SMS.
+     *
+     * @param string                                                                                                                              $gateway Gateway type (VIBER_GATEWAY, AFRICAS_TALKING_GATEWAY, or DEFAULT_GATEWAY)
+     * @param Sms                                                                                                                                 $sms     SMS model instance
+     * @param array{body?: string, receiver?: string, viberId?: string|null, callback?: string|null, smsAndroidSettings?: SmsAndroidSetting|null} $params  Additional parameters
+     *
+     * @return array{gateway: ViberGateway|AfricasTalkingGateway|AndroidGateway, args: array<int, mixed>, gatewayId: int}
+     */
+    public function resolveGatewayAndArgs(string $gateway, Sms $sms, array $params = []): array {
+        $body = $params['body'] ?? $sms->body;
+        $receiver = $params['receiver'] ?? $sms->receiver;
+        $viberId = $params['viberId'] ?? null;
+        $callback = $params['callback'] ?? null;
+        $smsAndroidSettings = $params['smsAndroidSettings'] ?? null;
+
+        return match ($gateway) {
+            self::VIBER_GATEWAY => [
+                'gateway' => resolve(ViberGateway::class),
+                'args' => [$body, $viberId, $sms],
+                'gatewayId' => MpmPlugin::VIBER_MESSAGING,
+            ],
+            self::AFRICAS_TALKING_GATEWAY => [
+                'gateway' => resolve(AfricasTalkingGateway::class),
+                'args' => [$body, $receiver, $sms],
+                'gatewayId' => MpmPlugin::AFRICAS_TALKING,
+            ],
+            default => [
+                'gateway' => resolve(AndroidGateway::class),
+                'args' => [
+                    $receiver,
+                    $body,
+                    $callback ?? sprintf($smsAndroidSettings->callback ?? '', $sms->uuid),
+                    $smsAndroidSettings ?? SmsAndroidSetting::getResponsible(),
+                ],
+                'gatewayId' => ($smsAndroidSettings ?? SmsAndroidSetting::getResponsible())->getId(),
+            ],
+        };
     }
 }

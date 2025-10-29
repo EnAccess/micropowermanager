@@ -7,11 +7,8 @@ use App\Models\AssetRate;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsGatewayResolverService;
-use App\Sms\AndroidGateway;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-use Inensus\AfricasTalking\AfricasTalkingGateway;
-use Inensus\ViberMessaging\ViberGateway;
 
 abstract class SmsSender {
     /** @var array<string, string>|null */
@@ -19,14 +16,13 @@ abstract class SmsSender {
     public string $body = '';
     protected ?string $receiver = null;
     protected ?string $callback = null;
-    private ?string $viberIdOfReceiver = null;
 
     public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath, private mixed $smsAndroidSettings) {}
 
     public function sendSms(): void {
         $gatewayResolver = app()->make(SmsGatewayResolverService::class);
+
         [$gateway, $viberId] = $gatewayResolver->determineGateway($this->receiver);
-        $this->viberIdOfReceiver = $viberId;
 
         $lastRecordedSMS = Sms::query()
             ->where('receiver', $this->receiver)
@@ -36,38 +32,19 @@ abstract class SmsSender {
                 $this->body
             )->latest()->first();
 
-        switch ($gateway) {
-            case SmsGatewayResolverService::VIBER_GATEWAY:
-                resolve(ViberGateway::class)
-                    ->sendSms(
-                        $this->body,
-                        $this->viberIdOfReceiver,
-                        $lastRecordedSMS
-                    );
-                $lastRecordedSMS->gateway_id = $gatewayResolver->getGatewayId($gateway);
-                $lastRecordedSMS->save();
-                break;
+        $resolved = $gatewayResolver->resolveGatewayAndArgs($gateway, $lastRecordedSMS, [
+            'body' => $this->body,
+            'receiver' => $this->receiver,
+            'viberId' => $viberId,
+            'callback' => $this->callback,
+            'smsAndroidSettings' => $this->smsAndroidSettings,
+        ]);
 
-            case SmsGatewayResolverService::AFRICAS_TALKING_GATEWAY:
-                resolve(AfricasTalkingGateway::class)
-                    ->sendSms(
-                        $this->body,
-                        $this->receiver,
-                        $lastRecordedSMS
-                    );
-                $lastRecordedSMS->gateway_id = $gatewayResolver->getGatewayId($gateway);
-                $lastRecordedSMS->save();
-                break;
+        $resolved['gateway']->sendSms(...$resolved['args']);
 
-            default:
-                resolve(AndroidGateway::class)
-                    ->sendSms(
-                        $this->receiver,
-                        $this->body,
-                        $this->callback,
-                        $this->smsAndroidSettings
-                    );
-                break;
+        if ($gateway !== SmsGatewayResolverService::DEFAULT_GATEWAY) {
+            $lastRecordedSMS->gateway_id = $resolved['gatewayId'];
+            $lastRecordedSMS->save();
         }
     }
 
