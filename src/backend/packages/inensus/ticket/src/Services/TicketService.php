@@ -160,7 +160,7 @@ class TicketService implements IAssociative {
      * @return Collection<int, Ticket>
      */
     public function getForOutsourceReportForGeneration($startDate, $endDate) {
-        return $this->ticket->newQuery()->with(['outsource', 'owner.person', 'category'])
+        return $this->ticket->newQuery()->with(['outsource', 'owner', 'category'])
             ->whereHas('category', static function ($q) {
                 $q->where('out_source', 1);
             })
