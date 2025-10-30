@@ -123,12 +123,12 @@ MicroPowerManager supports multiple storage backends for file storage. Configure
 
 #### Google Cloud Storage
 
-| Environment Variable          | Default | Description                                                    |
-| ----------------------------- | ------- | -------------------------------------------------------------- |
-| `GOOGLE_CLOUD_PROJECT_ID`     | `null`  | Your Google Cloud project ID.                                  |
-| `GOOGLE_CLOUD_STORAGE_BUCKET` | `null`  | The name of your GCS bucket.                                   |
-| `GOOGLE_CLOUD_KEY_FILE`       | `null`  | Path to a service account JSON key file.                       |
-| `GOOGLE_CLOUD_KEY_JSON`       | `null`  | Your service account JSON key file content (as a JSON string). |
+| Environment Variable          | Default | Description                                                                                                                  |
+| ----------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `GOOGLE_CLOUD_PROJECT_ID`     | `null`  | Your Google Cloud project ID.                                                                                                |
+| `GOOGLE_CLOUD_STORAGE_BUCKET` | `null`  | The name of your GCS bucket.                                                                                                 |
+| `GOOGLE_CLOUD_KEY_FILE`       | `null`  | Path to a service account JSON key file.                                                                                     |
+| `GOOGLE_CLOUD_KEY_JSON`       | `null`  | Your service account JSON key file content (as a JSON string). Will be used only if `GOOGLE_CLOUD_KEY_FILE` is not provided. |
 
 To learn more about working with GCS in Laravel, the official [library](https://github.com/spatie/laravel-google-cloud-storage) will be a vaulable guide.
 
