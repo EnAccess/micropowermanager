@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\NoActiveSmsProviderException;
 use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
 use App\Exceptions\SmsTypeNotFoundException;
@@ -79,7 +80,8 @@ class SmsService {
         } catch (
             SmsTypeNotFoundException|
             SmsAndroidSettingNotExistingException|
-            SmsBodyParserNotExtendedException $exception) {
+            SmsBodyParserNotExtendedException|
+            NoActiveSmsProviderException $exception) {
                 Log::error('Sms send failed.', ['message : ' => $exception->getMessage()]);
 
                 throw $exception;
