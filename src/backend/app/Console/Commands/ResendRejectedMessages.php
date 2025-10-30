@@ -32,9 +32,6 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
     public function handle(): void {
         if (!$this->gatewayResolver->hasActiveProvider()) {
-            $this->error('No active SMS provider configured. Please enable an SMS provider plugin in the settings.');
-            Log::error('Resend rejected messages command failed: No active SMS provider configured');
-
             return;
         }
 
