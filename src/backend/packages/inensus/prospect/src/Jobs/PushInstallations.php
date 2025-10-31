@@ -66,7 +66,7 @@ class PushInstallations extends AbstractJob {
      */
     private function loadCsvData(): array {
         $filePath = $this->filePath ?? $this->getLatestCsvFile();
-        if (empty($filePath) || !Storage::exists($filePath)) {
+        if ($filePath === '' || $filePath === '0' || !Storage::exists($filePath)) {
             return [];
         }
         $csvContent = Storage::get($filePath) ?: '';
