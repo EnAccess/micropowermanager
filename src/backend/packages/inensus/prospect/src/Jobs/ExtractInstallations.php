@@ -5,7 +5,6 @@ namespace Inensus\Prospect\Jobs;
 use App\Jobs\AbstractJob;
 use App\Models\CompanyDatabase;
 use App\Models\Device;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Prospect\Models\ProspectExtractedFile;
@@ -200,22 +199,19 @@ class ExtractInstallations extends AbstractJob {
 
             $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
             $directory = "prospect/{$companyDatabaseName}";
-            $fullDirectoryPath = storage_path("app/{$directory}");
 
-            if (!File::isDirectory($fullDirectoryPath)) {
-                Log::info('Creating directory: '.$fullDirectoryPath);
-                File::makeDirectory($fullDirectoryPath, 0775, true);
+            if (!Storage::exists($directory)) {
+                Storage::makeDirectory($directory);
             }
 
-            Storage::disk('local')->put($filePath, $csvContent);
+            Storage::put($filePath, $csvContent);
 
-            $fullPath = Storage::disk('local')->path($filePath);
             Log::info('CSV file written successfully', [
-                'file' => basename($fullPath),
-                'size' => filesize($fullPath),
+                'file' => basename($filePath),
+                'size' => strlen($csvContent),
             ]);
 
-            return $fullPath;
+            return $filePath;
         } catch (\Exception $e) {
             Log::error('Error writing CSV file: '.$e->getMessage());
             throw $e;
@@ -250,17 +246,13 @@ class ExtractInstallations extends AbstractJob {
      */
     private function storeExtractedFile(string $fileName, string $filePath, int $recordsCount): void {
         try {
-            $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
-            $companyDatabaseName = $companyDatabase->getDatabaseName();
-
-            $relativePath = "prospect/{$companyDatabaseName}/{$fileName}";
-            $fileSize = file_exists($filePath) ? filesize($filePath) : null;
+            $fileSize = Storage::exists($filePath) ? Storage::size($filePath) : null;
 
             ProspectExtractedFile::updateOrCreate(
                 ['id' => 1],
                 [
                     'filename' => $fileName,
-                    'file_path' => $relativePath,
+                    'file_path' => $filePath,
                     'records_count' => $recordsCount,
                     'file_size' => $fileSize,
                     'extracted_at' => now(),
