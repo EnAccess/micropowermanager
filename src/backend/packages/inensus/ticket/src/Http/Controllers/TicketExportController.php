@@ -2,15 +2,13 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
 use Inensus\Ticket\Services\TicketService;
 use PhpOffice\PhpSpreadsheet\Exception;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TicketExportController {
     public function __construct(
@@ -50,29 +48,14 @@ class TicketExportController {
         );
     }
 
-    public function download(int $id): BinaryFileResponse|Response {
+    public function download(int $id): StreamedResponse {
         $report = $this->ticketOutsourceReportService->getById($id);
-        $disk = config('filesystems.default');
         $relativePath = $report->path;
 
         if (!Storage::exists($relativePath)) {
             abort(404, 'Report file not found.');
         }
 
-        if ($disk === 'local') {
-            /** @var FilesystemAdapter $localAdapter */
-            $localAdapter = Storage::disk('local');
-            $localPath = $localAdapter->path($relativePath);
-
-            return response()->download($localPath);
-        }
-
-        $fileContent = Storage::get($relativePath);
-        $fileName = basename($relativePath);
-
-        return response($fileContent)
-            ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            ->header('Content-Disposition', 'attachment; filename="'.$fileName.'"')
-            ->header('Content-Length', (string) mb_strlen($fileContent, '8bit'));
+        return Storage::download($relativePath);
     }
 }
