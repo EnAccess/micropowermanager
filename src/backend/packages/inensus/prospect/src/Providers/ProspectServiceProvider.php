@@ -13,7 +13,6 @@ class ProspectServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
-            $this->publishConfigFiles();
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class, ProspectDataSynchronizer::class]);
@@ -28,15 +27,8 @@ class ProspectServiceProvider extends ServiceProvider {
     }
 
     public function register(): void {
-        $this->mergeConfigFrom(__DIR__.'/../../config/prospect.php', 'prospect');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-    }
-
-    public function publishConfigFiles(): void {
-        $this->publishes([
-            __DIR__.'/../../config/prospect.php' => config_path('prospect.php'),
-        ]);
     }
 
     public function publishVueFiles(): void {
