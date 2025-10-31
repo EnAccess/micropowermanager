@@ -14,7 +14,7 @@ return new class extends Migration {
         if (!Schema::connection('tenant')->hasTable('prospect_credentials')) {
             Schema::connection('tenant')->create('prospect_credentials', static function (Blueprint $table) {
                 $table->id();
-                $table->string('api_url')->default('https://demo.prospect.energy/api/v1/in/installations');
+                $table->string('api_url')->default(config('services.prospect.default_api_url') . 'installations');
                 $table->string('api_token')->nullable();
                 $table->timestamps();
             });
