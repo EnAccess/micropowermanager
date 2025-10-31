@@ -4,6 +4,7 @@ namespace Inensus\Prospect\Jobs;
 
 use App\Jobs\AbstractJob;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Inensus\Prospect\Http\Clients\ProspectApiClient;
 use Inensus\Prospect\Models\ProspectExtractedFile;
 
@@ -65,10 +66,10 @@ class PushInstallations extends AbstractJob {
      */
     private function loadCsvData(): array {
         $filePath = $this->filePath ?? $this->getLatestCsvFile();
-        if (!is_file($filePath)) {
+        if (empty($filePath) || !Storage::exists($filePath)) {
             return [];
         }
-        $csvContent = file_get_contents($filePath) ?: '';
+        $csvContent = Storage::get($filePath) ?: '';
         $lines = array_values(array_filter(str_getcsv($csvContent, "\n"), fn ($l): bool => trim((string) $l) !== ''));
         if ($lines === []) {
             return [];
@@ -104,6 +105,6 @@ class PushInstallations extends AbstractJob {
 
         $this->extractedFile = $extractedFile;
 
-        return storage_path('app/'.$extractedFile->file_path);
+        return $extractedFile->file_path;
     }
 }
