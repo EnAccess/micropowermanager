@@ -51,6 +51,9 @@ gosu www-data php artisan migrate --force
 echo "Running MicroPowerManager tenant migrations..."
 gosu www-data php artisan migrate-tenant --force
 
+echo "Running system checks..."
+gosu www-data php artisan mpm-system-checks || echo "System checks completed with warnings"
+
 # Check if MPM_LOAD_DEMO_DATA is set and not empty or false-y,
 # only then load the demo data.
 if [ -n "$MPM_LOAD_DEMO_DATA" ] && [ "$MPM_LOAD_DEMO_DATA" != "0" ] && [ "$MPM_LOAD_DEMO_DATA" != "false" ]; then

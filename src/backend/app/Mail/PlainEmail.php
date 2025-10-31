@@ -16,8 +16,10 @@ class PlainEmail extends Mailable {
     }
 
     public function build(): self {
+        // we use html here to workaround the need of using a template for the email body
+        // which laravel demands for the text($this->emailBody) method
         $mail = $this->subject($this->emailSubject)
-            ->text($this->emailBody);
+            ->html($this->emailBody);
 
         if ($this->attachmentPath) {
             $mail->attach($this->attachmentPath);
