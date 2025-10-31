@@ -65,10 +65,20 @@ class PushInstallations extends AbstractJob {
      * @return array<int, array<string, string|null>>
      */
     private function loadCsvData(): array {
-        $filePath = $this->filePath ?? $this->getLatestCsvFile();
-        if ($filePath === '' || $filePath === '0' || !Storage::exists($filePath)) {
+        try {
+            $filePath = $this->filePath ?? $this->getLatestCsvFile();
+        } catch (\Exception $e) {
+            Log::info('No CSV files available for Prospect push: '.$e->getMessage());
+
             return [];
         }
+
+        if (!Storage::exists($filePath)) {
+            throw new \Exception("CSV file not found: {$filePath}");
+        }
+
+        Log::info('Loading data from: '.basename($filePath));
+
         $csvContent = Storage::get($filePath) ?: '';
         $lines = array_values(array_filter(str_getcsv($csvContent, "\n"), fn ($l): bool => trim((string) $l) !== ''));
         if ($lines === []) {

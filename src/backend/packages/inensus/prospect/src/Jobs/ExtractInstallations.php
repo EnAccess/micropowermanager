@@ -198,11 +198,6 @@ class ExtractInstallations extends AbstractJob {
             $companyDatabaseName = $companyDatabase->getDatabaseName();
 
             $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
-            $directory = "prospect/{$companyDatabaseName}";
-
-            if (!Storage::exists($directory)) {
-                Storage::makeDirectory($directory);
-            }
 
             Storage::put($filePath, $csvContent);
 
