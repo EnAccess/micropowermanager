@@ -11,6 +11,9 @@ export default {
     return Client.post(`${resource}`, userData)
   },
   put(userData) {
+    return Client.put(`${resource}/${userData.id}`, userData)
+  },
+  putAddress(userData) {
     return Client.put(`${resource}/${userData.id}/addresses`, userData)
   },
   get(id) {

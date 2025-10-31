@@ -15,6 +15,9 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -34,6 +37,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => AdminJWT::class,
             'jwt.verify' => JwtMiddleware::class,
             'agent.balance' => AgentBalanceMiddleware::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
 
         // additional middleware group to `web` and `api` default groups
