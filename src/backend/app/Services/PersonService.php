@@ -204,17 +204,12 @@ class PersonService implements IBaseService {
     /**
      * @return Collection<int, Person>|array<int, Person>
      */
-    public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null, ?string $status = null): Collection|array {
-        $isActive = $isActive == null ? 1 : $isActive;
+    public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
         $query = $this->person->newQuery()->with([
             'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
-        ])->where('is_customer', $isActive);
-
-        if ($status) {
-            $query->where('status', $status);
-        }
+        ])->where('is_customer', 1);
 
         if ($miniGrid) {
             $query->whereHas('addresses', function ($q) use ($miniGrid) {
@@ -233,6 +228,16 @@ class PersonService implements IBaseService {
         if ($deviceType) {
             $query->whereHas('devices', function ($q) use ($deviceType) {
                 $q->where('device_type', $deviceType);
+            });
+        }
+
+        if ($isActive === true) {
+            $query->whereHas('latestPayment', function ($q) {
+                $q->where('created_at', '>=', Carbon::now()->subDays(25));
+            });
+        } elseif ($isActive === false) {
+            $query->whereDoesntHave('latestPayment', function ($q) {
+                $q->where('created_at', '>=', Carbon::now()->subDays(25));
             });
         }
 
