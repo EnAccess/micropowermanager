@@ -7,8 +7,6 @@ $queues = [
     'token',
     'transaction_appliance',
     'transaction_energy',
-    'prospect_extract',
-    'prospect_push',
     'prospect',
     'emails',
 ];
