@@ -22,10 +22,7 @@
             {{ item.name }}
           </md-table-cell>
           <md-table-cell :md-label="$tc('words.file')">
-            <div
-              style="cursor: pointer"
-              @click="download(item.id, 'download', item.path)"
-            >
+            <div style="cursor: pointer" @click="download(item.id, 'download')">
               <md-icon>save</md-icon>
               <span>{{ $tc("words.download") }}</span>
             </div>
@@ -41,7 +38,7 @@ import Widget from "@/shared/Widget.vue"
 import { EventBus } from "@/shared/eventbus"
 import { ReportsService } from "@/services/ReportsService"
 export default {
-  name: "PeriodicReports",
+  name: "VillageReports",
   components: {
     Widget,
   },
@@ -81,11 +78,29 @@ export default {
         this.reportService.list.length,
       )
     },
-    //workaround!!!
-    download(id, reference, path) {
-      const pathSplitted = path.split("*")
-      const companyId = pathSplitted[1]
-      window.open(this.reportService.exportReport(id, reference, companyId))
+    async download(id) {
+      try {
+        const response = await this.reportService.exportReport(id)
+
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+
+        const contentDisposition = response.headers["content-disposition"]
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          "report.xlsx"
+
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+      } catch (error) {
+        console.log("error", error)
+        this.alertNotify("error", error.message)
+      }
     },
   },
 }
