@@ -330,11 +330,10 @@ export default {
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
       isSearching: false,
-      activeRequest: null, // Track active request to cancel if needed
+      activeRequest: null,
     }
   },
   watch: {
-    // OPTIMIZED: Reduced debounce from 1000ms to 300ms for faster response
     searchTerm: debounce(function () {
       this.handleSearch()
     }, 300),
@@ -342,21 +341,20 @@ export default {
 
   mounted() {
     this.getClientList()
-    
+
     // Load supporting data asynchronously without blocking UI
     this.loadSupportingData()
-    
-    // OPTIMIZED: Only listen to pageLoaded event, handle search internally
+
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("searching", this.onSearchEvent)
     EventBus.$on("end_searching", this.onEndSearchEvent)
   },
-  
+
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
     EventBus.$off("searching", this.onSearchEvent)
     EventBus.$off("end_searching", this.onEndSearchEvent)
-    
+
     // Cancel any pending request
     if (this.activeRequest) {
       this.activeRequest.cancel()
@@ -364,7 +362,6 @@ export default {
   },
 
   methods: {
-    // OPTIMIZED: Unified search handling
     handleSearch() {
       if (this.searchTerm.length > 0) {
         this.performSearch()
@@ -373,7 +370,6 @@ export default {
       }
     },
 
-    // OPTIMIZED: Single search method that properly updates people list
     async performSearch() {
       // Cancel previous request if still pending
       if (this.activeRequest) {
@@ -381,29 +377,29 @@ export default {
       }
 
       this.isSearching = true
-      
+
       try {
         // Create search paginator
         const searchPaginator = new Paginator(resources.person.search)
-        
+
         const params = { term: this.searchTerm }
         if (this.selectedAgentId) {
           params.agent_id = this.selectedAgentId
         }
 
         const response = await searchPaginator.loadPage(1, params)
-        
+
         // Update people list with search results
         this.people.updateList(response.data)
         this.paginator = searchPaginator
-        
+
         EventBus.$emit(
           "widgetContentLoaded",
           this.subscriber,
           this.people.list.length,
         )
       } catch (error) {
-        if (error.message !== 'Request cancelled') {
+        if (error.message !== "Request cancelled") {
           console.error("Search error:", error)
         }
       } finally {
@@ -411,7 +407,6 @@ export default {
       }
     },
 
-    // OPTIMIZED: Handle EventBus search events without duplicate API calls
     onSearchEvent(searchTerm) {
       // Update search term if it came from widget
       if (searchTerm !== this.searchTerm) {
@@ -444,11 +439,11 @@ export default {
 
     async getClientList(pageNumber = 1) {
       const params = {}
-      
+
       if (this.isSearching && this.searchTerm) {
         params.term = this.searchTerm
       }
-      
+
       if (this.selectedAgentId) {
         params.agent_id = this.selectedAgentId
       }
@@ -466,7 +461,6 @@ export default {
       }
     },
 
-    // OPTIMIZED: Extracted pagination update logic
     updateFilteredPagination(count) {
       const filteredPaginator = new Paginator(resources.person.list)
       filteredPaginator.totalEntries = count
@@ -525,7 +519,6 @@ export default {
       }
     },
 
-    // OPTIMIZED: Load supporting data asynchronously
     async loadSupportingData() {
       // Run all these in parallel without blocking
       await Promise.allSettled([
@@ -619,7 +612,6 @@ export default {
       }
     },
 
-    // OPTIMIZED: Simplified filter logic
     filterByAgent() {
       this.paginator = new Paginator(resources.person.list)
       this.paginator.currentPage = 1
