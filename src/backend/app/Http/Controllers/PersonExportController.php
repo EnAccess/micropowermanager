@@ -38,7 +38,7 @@ class PersonExportController extends Controller {
         $this->peopleExportService->writePeopleData();
         $pathToSpreadSheet = $this->peopleExportService->saveSpreadSheet();
 
-        $path = Storage::path($pathToSpreadSheet);
+        $path = Storage::disk('local')->path($pathToSpreadSheet);
 
         return response()->download($path, 'customer_export_'.now()->format('Ymd_His').'.xlsx');
     }
@@ -58,10 +58,8 @@ class PersonExportController extends Controller {
         $headers = ['Title', 'Name', 'Surname', 'Birth Date', 'Sex', 'Email', 'Phone', 'City', 'Device Serial', 'Agent Name'];
         $csvPath = $this->peopleExportService->saveCsv($headers);
 
-        $path = Storage::path($csvPath);
+        $path = Storage::disk('local')->path($csvPath);
 
-        return response()->download($path, 'customer_export_'.now()->format('Ymd_His').'.csv', [
-            'Content-Type' => 'text/csv',
-        ]);
+        return response()->download($path, 'customer_export_'.now()->format('Ymd_His').'.csv');
     }
 }

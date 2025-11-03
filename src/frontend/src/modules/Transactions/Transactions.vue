@@ -569,19 +569,18 @@ export default {
 
         const response =
           await this.transactionExportService.exportTransactions(data)
+
         const blob = new Blob([response.data])
         const downloadUrl = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = downloadUrl
+
         const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          (this.exportFilters.format === "excel" ? "export.xlsx" : "export.csv")
 
-        const defaultFileName =
-          this.exportFilters.format === "xlsx"
-            ? "export_transactions.xlsx"
-            : "export_transactions.csv"
-        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
-
+        a.download = filename
         document.body.appendChild(a)
         a.click()
         a.remove()
