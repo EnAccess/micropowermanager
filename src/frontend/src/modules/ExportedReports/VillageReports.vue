@@ -22,7 +22,7 @@
             {{ item.name }}
           </md-table-cell>
           <md-table-cell :md-label="$tc('words.file')">
-            <div style="cursor: pointer" @click="download(item.id, 'download')">
+            <div style="cursor: pointer" @click="download(item.id)">
               <md-icon>save</md-icon>
               <span>{{ $tc("words.download") }}</span>
             </div>
