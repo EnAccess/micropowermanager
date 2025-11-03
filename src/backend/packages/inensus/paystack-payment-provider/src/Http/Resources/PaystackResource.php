@@ -7,6 +7,9 @@ namespace Inensus\PaystackPaymentProvider\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PaystackResource extends JsonResource {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray($request): array {
         return [
             'redirectionUrl' => $this['redirectionUrl'],

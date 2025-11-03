@@ -44,6 +44,9 @@ class PaystackWebhookService {
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function handleSuccessfulPayment(array $data, int $companyId): void {
         try {
             $reference = $data['reference'] ?? null;
@@ -60,8 +63,8 @@ class PaystackWebhookService {
 
             // Get customer's phone number for sender field
             $customerPhone = $this->transactionService->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
-            $sender = $customerPhone ?: "";
-            
+            $sender = $customerPhone ?: '';
+
             $paystackTransaction->transaction()->create([
                 'amount' => $paystackTransaction->getAmount(),
                 'sender' => $sender,
@@ -78,6 +81,9 @@ class PaystackWebhookService {
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function handleFailedPayment(array $data): void {
         $reference = $data['reference'] ?? null;
         if (!$reference) {

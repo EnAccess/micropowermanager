@@ -72,6 +72,9 @@ class PaystackCredentialController extends Controller {
         return PaystackCredentialResource::make($credential);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function generatePublicUrls(Request $request) {
         $companyId = $request->attributes->get('companyId');
 
@@ -90,6 +93,9 @@ class PaystackCredentialController extends Controller {
         ]);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function generateAgentPaymentUrl(Request $request) {
         $companyId = $request->attributes->get('companyId');
         $customerId = $request->input('customer_id');

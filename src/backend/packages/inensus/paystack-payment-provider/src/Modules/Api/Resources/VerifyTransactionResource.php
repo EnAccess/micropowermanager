@@ -25,10 +25,16 @@ class VerifyTransactionResource extends AbstractApiResource {
         return RequestMethod::GET->value;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getBodyData(): array {
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getHeaders(): array {
         return [
             'Authorization' => 'Bearer '.$this->paystackCredential->getSecretKey(),

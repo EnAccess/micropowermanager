@@ -18,16 +18,23 @@ class InitializeTransactionResource extends AbstractApiResource {
     public function __construct(
         private PaystackCredential $paystackCredential,
         private PaystackTransaction $paystackTransaction,
+        /** @phpstan-ignore-next-line */
+        private ?PaystackCompanyHashService $hashService = null,
+        /** @phpstan-ignore-next-line */
+        private ?int $companyId = null,
     ) {}
 
     public function getRequestMethod(): string {
         return RequestMethod::POST->value;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getBodyData(): array {
         // Use static public result URL as callback if available
         $callbackUrl = $this->getCallbackUrl();
-        
+
         $bodyData = [
             'email' => config('paystack-payment-provider.merchant_email'), // MPM merchant email from config
             'amount' => $this->paystackTransaction->getAmount() * 100, // Paystack expects amount in kobo (smallest currency unit) as integer
@@ -51,6 +58,9 @@ class InitializeTransactionResource extends AbstractApiResource {
         return $bodyData;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getHeaders(): array {
         return [
             'Authorization' => 'Bearer '.$this->paystackCredential->getSecretKey(),
@@ -84,6 +94,9 @@ class InitializeTransactionResource extends AbstractApiResource {
         return $this->paystackCredential->getCallbackUrl();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getMetadata(): array {
         $metadata = [
             'order_id' => $this->paystackTransaction->getOrderId(),
@@ -97,10 +110,9 @@ class InitializeTransactionResource extends AbstractApiResource {
             $metadata['agent_id'] = $transactionMetadata['agent_id'];
         }
 
-        if(isset($transactionMetadata['public_payment']) && $transactionMetadata['public_payment']) {
+        if (isset($transactionMetadata['public_payment']) && $transactionMetadata['public_payment']) {
             $metadata['public_payment'] = $transactionMetadata['public_payment'];
         }
-
 
         return $metadata;
     }

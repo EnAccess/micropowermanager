@@ -10,19 +10,22 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property int id
- * @property int amount
- * @property string currency
- * @property string order_id
- * @property string reference_id
- * @property string status
- * @property string external_transaction_id
- * @property int customer_id
- * @property string|null serial_id
- * @property string|null device_type
- * @property string|null paystack_reference
- * @property string|null payment_url
- * @property array|null metadata
+ * @property int                        $id
+ * @property int                        $amount
+ * @property string                     $currency
+ * @property string                     $order_id
+ * @property string                     $reference_id
+ * @property int                        $status
+ * @property string                     $external_transaction_id
+ * @property int                        $customer_id
+ * @property string|null                $serial_id
+ * @property string|null                $device_type
+ * @property string|null                $paystack_reference
+ * @property string|null                $payment_url
+ * @property array<string, mixed>|null  $metadata
+ * @property int                        $attempts
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
  */
 class PaystackTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'paystack_transaction';
@@ -52,8 +55,11 @@ class PaystackTransaction extends BasePaymentProviderTransaction {
         return $this->order_id;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getMetadata(): array {
-        return $this->metadata;
+        return $this->metadata ?? [];
     }
 
     public function getReferenceId(): string {
@@ -109,7 +115,7 @@ class PaystackTransaction extends BasePaymentProviderTransaction {
     }
 
     public function setAmount(float $amount): void {
-        $this->amount = $amount;
+        $this->amount = (int) $amount;
     }
 
     public function setCurrency(string $currency): void {
@@ -124,6 +130,9 @@ class PaystackTransaction extends BasePaymentProviderTransaction {
         $this->payment_url = $url;
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public function setMetadata(array $metadata): void {
         $this->metadata = $metadata;
     }
@@ -136,6 +145,9 @@ class PaystackTransaction extends BasePaymentProviderTransaction {
         return $this->morphTo();
     }
 
+    /**
+     * @return MorphMany<TransactionConflicts, $this>
+     */
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }

@@ -30,6 +30,9 @@ class PaystackCredentialService {
         ]);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function updateCredentials(array $data): PaystackCredential {
         $credential = $this->getCredentials();
         if (array_key_exists('secret_key', $data)) {

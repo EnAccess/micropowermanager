@@ -2,26 +2,24 @@
 
 namespace Inensus\PaystackPaymentProvider\Services;
 
-
-class MenuItemService
-{
-    public function createMenuItems(): array
-    {
+class MenuItemService {
+    /**
+     * @return array<string, mixed>
+     */
+    public function createMenuItems(): array {
         $menuItem = [
-            'name' =>'{{Menu-Item}}',
-            'url_slug' =>'',
-            'md_icon' =>''
+            'name' => '{{Menu-Item}}',
+            'url_slug' => '',
+            'md_icon' => '',
         ];
-        $subMenuItems= [];
+        $subMenuItems = [];
 
-        $subMenuItem1=[
-            'name' =>'{{Submenu-Item}}',
-            'url_slug' =>'{{menu-item}}/{{submenu-item}}',
+        $subMenuItem1 = [
+            'name' => '{{Submenu-Item}}',
+            'url_slug' => '{{menu-item}}/{{submenu-item}}',
         ];
         $subMenuItems[] = $subMenuItem1;
 
-        return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
-
-
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

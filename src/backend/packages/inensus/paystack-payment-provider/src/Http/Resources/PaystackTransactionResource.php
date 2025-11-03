@@ -5,8 +5,15 @@ declare(strict_types=1);
 namespace Inensus\PaystackPaymentProvider\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 
+/**
+ * @mixin PaystackTransaction
+ */
 class PaystackTransactionResource extends JsonResource {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray($request): array {
         return [
             'id' => $this->id,

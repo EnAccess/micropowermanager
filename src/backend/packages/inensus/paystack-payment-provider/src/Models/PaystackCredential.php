@@ -6,11 +6,11 @@ use App\Models\Base\BaseModel;
 use Illuminate\Support\Facades\Crypt;
 
 /**
- * @property string secret_key
- * @property string public_key
- * @property string|null callback_url
- * @property string|null merchant_name
- * @property string environment
+ * @property string      $secret_key
+ * @property string      $public_key
+ * @property string|null $callback_url
+ * @property string|null $merchant_name
+ * @property string      $environment
  */
 class PaystackCredential extends BaseModel {
     protected $table = 'paystack_credentials';

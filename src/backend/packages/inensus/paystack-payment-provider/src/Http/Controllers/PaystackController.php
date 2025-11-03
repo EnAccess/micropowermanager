@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Http\Controllers;
 
-use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 use Inensus\PaystackPaymentProvider\Http\Requests\TransactionInitializeRequest;
 use Inensus\PaystackPaymentProvider\Http\Resources\PaystackResource;
 use Inensus\PaystackPaymentProvider\Http\Resources\PaystackTransactionResource;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 use Inensus\PaystackPaymentProvider\Services\PaystackWebhookService;
-use Illuminate\Support\Facades\Log;
 
 class PaystackController extends Controller {
     public function __construct(
@@ -28,8 +28,10 @@ class PaystackController extends Controller {
         return PaystackResource::make($this->apiService->initializeTransaction($transaction));
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function webhookCallback(Request $request, int $companyId) {
-
         try {
             // Verify webhook signature
             if (!$this->webhookService->verifyWebhook($request)) {
@@ -43,12 +45,16 @@ class PaystackController extends Controller {
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
         return response()->json(['status' => 'success']);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function verifyTransaction(Request $request, string $reference) {
         $result = $this->apiService->verifyTransaction($reference);
 
@@ -59,13 +65,19 @@ class PaystackController extends Controller {
         return response()->json($result);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getTransactions(Request $request) {
-        $perPage = (int)($request->input('per_page', 15));
+        $perPage = (int) $request->input('per_page', 15);
         $transactions = $this->transactionService->getAll($perPage);
 
         return response()->json($transactions);
     }
 
+    /**
+     * @return PaystackTransactionResource|\Illuminate\Http\JsonResponse
+     */
     public function getTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
 
@@ -76,6 +88,9 @@ class PaystackController extends Controller {
         return PaystackTransactionResource::make($transaction);
     }
 
+    /**
+     * @return PaystackTransactionResource|\Illuminate\Http\JsonResponse
+     */
     public function updateTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
 
@@ -96,6 +111,9 @@ class PaystackController extends Controller {
         return PaystackTransactionResource::make($updatedTransaction);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
 

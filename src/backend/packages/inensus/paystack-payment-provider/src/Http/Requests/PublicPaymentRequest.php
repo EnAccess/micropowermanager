@@ -13,6 +13,9 @@ class PublicPaymentRequest extends FormRequest {
         return true; // Public endpoint, no authentication required
     }
 
+    /**
+     * @return array<string, array<int, string|int>>
+     */
     public function rules(): array {
         return [
             'meter_serial' => ['nullable', 'string', 'min:3', 'max:50'],
@@ -32,6 +35,9 @@ class PublicPaymentRequest extends FormRequest {
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array {
         return [
             'meter_serial.required' => 'Meter serial number is required',

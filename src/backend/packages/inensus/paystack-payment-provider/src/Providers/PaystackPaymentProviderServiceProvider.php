@@ -67,6 +67,7 @@ class PaystackPaymentProviderServiceProvider extends ServiceProvider {
     protected function getMigrationFileName(Filesystem $filesystem, string $migrationName): string {
         $timestamp = date('Y_m_d_His');
 
+        /** @phpstan-ignore-next-line */
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
             ->flatMap(function (string $path) use ($filesystem, $migrationName) {
                 if (count($filesystem->glob($path.'*_'.$migrationName))) {

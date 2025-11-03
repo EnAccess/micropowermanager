@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Console\Commands;
 
-use Inensus\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use Illuminate\Console\Command;
+use Inensus\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
 
 class InstallPackage extends Command {
@@ -22,6 +22,7 @@ class InstallPackage extends Command {
         $this->info('Installing Paystack Payment Provider Package...');
         $this->createCredentials();
         $this->info('Paystack Payment Provider Package installed successfully!');
+
         return 0;
     }
 
@@ -34,6 +35,7 @@ class InstallPackage extends Command {
         }
     }
 
+    /** @phpstan-ignore-next-line */
     private function publishMigrations(): void {
         $this->call('vendor:publish', [
             '--provider' => PaystackPaymentProviderServiceProvider::class,
@@ -41,12 +43,14 @@ class InstallPackage extends Command {
         ]);
     }
 
+    /** @phpstan-ignore-next-line */
     private function createDatabaseTables(): void {
         $this->call('migrate', [
             '--path' => 'vendor/inensus/paystack-payment-provider/database/migrations',
         ]);
     }
 
+    /** @phpstan-ignore-next-line */
     private function createPluginRecord(): void {
         $this->call('plugin:add', [
             'name' => 'Paystack Payment Provider',

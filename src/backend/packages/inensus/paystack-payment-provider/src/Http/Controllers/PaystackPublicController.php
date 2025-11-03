@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Http\Controllers;
 
-use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Services\CompanyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Inensus\PaystackPaymentProvider\Http\Requests\PublicPaymentRequest;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
@@ -39,9 +39,6 @@ class PaystackPublicController extends Controller {
 
             // Check if Paystack is enabled for this company
             $credentials = $this->credentialService->getCredentials();
-            if (!$credentials) {
-                return response()->json(['error' => 'Payment service not available'], 503);
-            }
 
             return response()->json([
                 'company' => [
@@ -77,7 +74,6 @@ class PaystackPublicController extends Controller {
 
             $deviceType = $validatedData['device_type'] ?? 'meter';
 
-
             if ($deviceType === 'shs') {
                 $serial = $validatedData['serial'];
                 $customerId = $this->transactionService->getCustomerIdBySHSSerial($validatedData['serial']);
@@ -87,7 +83,6 @@ class PaystackPublicController extends Controller {
             }
 
             // get customer id from meter serial
-            
 
             // Create Paystack transaction
             $transaction = $this->transactionService->createPublicTransaction([
@@ -155,7 +150,7 @@ class PaystackPublicController extends Controller {
                 // Determine token status based on transaction and token state
                 if ($token) {
                     $tokenStatus = 'generated';
-                } elseif (in_array($mainTransaction->status, [0, 1], true)) {
+                } elseif (in_array($mainTransaction->getAttribute('status'), [0, 1], true)) {
                     // Treat non-generated tokens as processing or pending
                     // requested or success
                     $tokenStatus = 'processing';
@@ -173,8 +168,8 @@ class PaystackPublicController extends Controller {
                     'amount' => $transaction->getAmount(),
                     'currency' => $transaction->getCurrency(),
                     'serial_id' => $transaction->getDeviceSerial(),
-                    'status' => $transaction->status,
-                    'created_at' => $transaction->created_at,
+                    'status' => $transaction->getStatus(),
+                    'created_at' => $transaction->getAttribute('created_at'),
                 ],
                 'verification' => $verification,
                 'success' => $verification['status'] === 'success',

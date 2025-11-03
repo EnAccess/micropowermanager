@@ -38,6 +38,9 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function initializeTransactionData(): array {
         $orderId = Uuid::uuid4()->toString();
         $referenceId = Uuid::uuid4()->toString();
@@ -69,6 +72,9 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         return $this->paystackTransaction->newQuery()->where('paystack_reference', '=', $reference)->first();
     }
 
+    /**
+     * @return Collection<int, PaystackTransaction>
+     */
     public function getByStatus(int $status): Collection {
         return $this->paystackTransaction->newQuery()->where('status', '=', $status)->get();
     }
@@ -126,11 +132,14 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
 
     public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
         $id = $transaction->transaction->id;
-        dispatch(new \App\Jobs\ProcessPayment($companyId, $id));
+        dispatch(new ProcessPayment($companyId, $id));
         $transaction->setStatus(PaystackTransaction::STATUS_SUCCESS);
         $transaction->save();
     }
 
+    /**
+     * @param array<string, mixed> $transactionData
+     */
     public function createPublicTransaction(array $transactionData): PaystackTransaction {
         // Create Paystack transaction without customer association
         $transactionData['status'] = PaystackTransaction::STATUS_REQUESTED;

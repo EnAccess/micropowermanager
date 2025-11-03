@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Providers;
 
+use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsService;
@@ -23,6 +24,9 @@ class PaystackTransactionProvider implements ITransactionProvider {
         private TransactionConflicts $transactionConflicts,
     ) {}
 
+    /**
+     * @param mixed $request
+     */
     public function validateRequest($request): void {
         $meterSerial = $request->input('meterSerial');
         $amount = $request->input('amount');
@@ -45,14 +49,15 @@ class PaystackTransactionProvider implements ITransactionProvider {
     }
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
+        /** @var PaystackTransaction|ThirdPartyTransaction|null $paystackTransaction */
         $paystackTransaction = $transaction->originalTransaction()->first();
-        if ($requestType) {
+        if ($requestType && $paystackTransaction !== null && $paystackTransaction instanceof PaystackTransaction) {
             $updateData = [
                 'status' => PaystackTransaction::STATUS_SUCCESS,
             ];
-            $this->paystackTransactionService->update($paystackTransaction, $updateData);
+            $this->paystackTransactionService->update($this->paystackTransaction, $updateData);
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms($transaction->toArray(), SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::error('paystack transaction is been cancelled');
         }
@@ -70,14 +75,18 @@ class PaystackTransactionProvider implements ITransactionProvider {
         return $this->transaction;
     }
 
-    public function setValidData($paystackTransactionData)
-    {
-    }
+    /**
+     * @param mixed $paystackTransactionData
+     */
+    public function setValidData($paystackTransactionData): void {}
 
     public function getSubTransaction(): PaystackTransaction {
         return $this->paystackTransactionService->getPaystackTransaction();
     }
 
+    /**
+     * @param mixed $transaction
+     */
     public function init($transaction): void {
         $this->paystackTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
@@ -92,8 +101,8 @@ class PaystackTransactionProvider implements ITransactionProvider {
         throw new \BadMethodCallException('Method getMessage() not yet implemented.');
     }
 
-    public function getAmount(): int {
-        return $this->getTransaction()->amount;
+    public function getAmount(): float {
+        return (float) $this->getTransaction()->amount;
     }
 
     public function getSender(): string {

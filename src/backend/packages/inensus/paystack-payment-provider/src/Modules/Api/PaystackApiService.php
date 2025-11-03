@@ -10,8 +10,8 @@ use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Modules\Api\Exceptions\PaystackApiException;
 use Inensus\PaystackPaymentProvider\Modules\Api\Resources\InitializeTransactionResource;
 use Inensus\PaystackPaymentProvider\Modules\Api\Resources\VerifyTransactionResource;
-use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
+use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
 
 class PaystackApiService {
     public function __construct(
@@ -20,6 +20,9 @@ class PaystackApiService {
         private PaystackCompanyHashService $hashService,
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function initializeTransaction(PaystackTransaction $transaction, ?int $companyId = null): array {
         $credential = $this->credentialService->getCredentials();
         $transactionResource = new InitializeTransactionResource($credential, $transaction, $this->hashService, $companyId);
@@ -73,7 +76,7 @@ class PaystackApiService {
             return [
                 'redirectionUrl' => null,
                 'reference' => null,
-                'error' => 'Failed to initialize transaction: ' . ($body['message'] ?? 'Unknown error'),
+                'error' => 'Failed to initialize transaction: '.($body['message'] ?? 'Unknown error'),
             ];
         } catch (GuzzleException|PaystackApiException $exception) {
             Log::error('Paystack Transaction Initialize Exception', [
@@ -94,6 +97,9 @@ class PaystackApiService {
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function verifyTransaction(string $reference): array {
         $credential = $this->credentialService->getCredentials();
         $transactionResource = new VerifyTransactionResource($credential, $reference);
@@ -133,13 +139,18 @@ class PaystackApiService {
     }
 
     /**
-     * Sanitize headers to remove sensitive information from logs
+     * Sanitize headers to remove sensitive information from logs.
+     *
+     * @param array<string, mixed> $headers
+     *
+     * @return array<string, mixed>
      */
     private function sanitizeHeaders(array $headers): array {
         $sanitized = $headers;
         if (isset($sanitized['Authorization'])) {
             $sanitized['Authorization'] = 'Bearer ****';
         }
+
         return $sanitized;
     }
 }
