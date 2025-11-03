@@ -25,7 +25,7 @@ Route::prefix('paystack')->group(function () {
 
     // Public payment pages (no authentication required)
     Route::prefix('public')->group(function () {
-        // New tokenized routes: use ?ct=<encrypted token> to avoid exposing company ID
+        // New tokenized routes: use ?ct=<hashed company id> to avoid exposing company ID
         Route::get('/payment/{companyHash}', [PaystackPublicController::class, 'showPaymentForm']);
         Route::post('/payment/{companyHash}', [PaystackPublicController::class, 'initiatePayment']);
         Route::get('/result/{companyHash}', [PaystackPublicController::class, 'showResult']);
