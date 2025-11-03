@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Modules\Api\Resources;
 
-use Inensus\PaystackPaymentProvider\Modules\Api\RequestMethod;
-
 abstract class AbstractApiResource {
     protected string $body = '';
 

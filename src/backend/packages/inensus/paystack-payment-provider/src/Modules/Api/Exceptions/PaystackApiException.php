@@ -1,10 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Inensus\PaystackPaymentProvider\Modules\Api\Exceptions;
-
-use Exception;
 
 class PaystackApiException extends \Exception {
     public function __construct(

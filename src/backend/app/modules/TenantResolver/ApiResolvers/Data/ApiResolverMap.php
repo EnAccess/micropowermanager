@@ -9,12 +9,12 @@ use MPM\TenantResolver\ApiResolvers\AndroidGatewayCallbackApiResolver;
 use MPM\TenantResolver\ApiResolvers\DataExportResolver;
 use MPM\TenantResolver\ApiResolvers\DownloadingReportsResolver;
 use MPM\TenantResolver\ApiResolvers\OdysseyPaymentApiResolver;
+use MPM\TenantResolver\ApiResolvers\PaystackApiResolver;
 use MPM\TenantResolver\ApiResolvers\SwiftaPaymentApiResolver;
 use MPM\TenantResolver\ApiResolvers\TestApiResolver;
 use MPM\TenantResolver\ApiResolvers\ViberMessagingApiResolver;
 use MPM\TenantResolver\ApiResolvers\VodacomMobileMoneyApiResolver;
 use MPM\TenantResolver\ApiResolvers\WaveMoneyApiResolver;
-use MPM\TenantResolver\ApiResolvers\PaystackApiResolver;
 
 class ApiResolverMap {
     public const VIBER_API = 'api/viber-messaging/webhook';

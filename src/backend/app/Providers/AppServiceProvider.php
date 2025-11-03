@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\TransactionSuccessfulEvent;
+use App\Listeners\TransactionSuccessfulListener;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
@@ -40,9 +42,6 @@ use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
 use MPM\User\Events\UserCreatedEvent;
 use MPM\User\UserListener;
-use App\Events\TransactionSuccessfulEvent;
-use App\Listeners\TransactionSuccessfulListener;
-
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -114,7 +113,7 @@ class AppServiceProvider extends ServiceProvider {
         );
 
         // App\Listeners namespace
-        // manually register TransactionSuccessfulEvent to listener. 
+        // manually register TransactionSuccessfulEvent to listener.
         // because TransactionSuccessfulEvent is also registered in SparkMeter namespace.
         Event::listen(
             TransactionSuccessfulEvent::class,

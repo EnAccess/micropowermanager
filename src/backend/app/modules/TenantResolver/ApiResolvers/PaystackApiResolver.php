@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MPM\TenantResolver\ApiResolvers;
 
-use Tymon\JWTAuth\JWTGuard;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
+use Tymon\JWTAuth\JWTGuard;
 
 class PaystackApiResolver implements ApiResolverInterface {
     public function __construct(
@@ -74,14 +74,14 @@ class PaystackApiResolver implements ApiResolverInterface {
         return (int) $companyId;
     }
 
-    private function resolveFromJWT(): int
-    {
+    private function resolveFromJWT(): int {
         /** @var JWTGuard $guard */
         $guard = auth('api');
         $companyId = $guard->payload()->get('companyId');
         if (!is_numeric($companyId)) {
             throw ValidationException::withMessages(['authentication' => 'JWT token required for Paystack API access']);
         }
+
         return (int) $companyId;
     }
 }

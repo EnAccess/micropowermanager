@@ -5,7 +5,6 @@ namespace Inensus\PaystackPaymentProvider\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
-use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 
 class PaystackWebhookService {
     public function __construct(
