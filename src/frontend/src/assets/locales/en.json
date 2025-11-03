@@ -192,6 +192,7 @@
     "expireSessionLabel": "If you want to extend your session for the next 60(sixty) minutes, please confirm this window. | Your session expires in {expires_in} seconds.",
     "exportAllCustomers": "Export All Customers",
     "exportCustomers": "Export Customers",
+    "exportCustomersDebts": "Export Customers' Debts",
     "exportTransactions": "Export Transactions",
     "financeOverview": "Finance Overview (Period:{period})",
     "flatLoadLimit": "Flat Load Limit",

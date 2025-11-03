@@ -192,6 +192,7 @@
     "expireSessionLabel": "Si vous souhaitez prolonger votre session pour les 60 (soixante) minutes suivantes, veuillez confirmer cette fenêtre. | Votre session va expirer dans {expires_in} secondes.",
     "exportAllCustomers": "Exporter tous les clients",
     "exportCustomers": "Exporter les clients",
+    "exportCustomersDebts": "Exporter les dettes du clients",
     "exportTransactions": "Exporter les transactions",
     "financeOverview": "Aperçu des finances (Période:{period})",
     "flatLoadLimit": "Limite de charge forfaitaire",

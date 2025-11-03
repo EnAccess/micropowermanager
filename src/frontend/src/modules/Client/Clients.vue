@@ -35,10 +35,13 @@
               </md-button>
             </div>
             <div class="export-section">
-              <span class="download-debts-span">
-                You can download customers' outstanding debts from
-                <a style="cursor: pointer" @click="exportDebts">here</a>
-              </span>
+              <md-button
+                class="md-raised md-default export-csv-button"
+                @click="exportDebts"
+              >
+                <md-icon>download</md-icon>
+                {{ $tc("phrases.exportCustomersDebts") }}
+              </md-button>
               <md-button
                 class="md-raised md-primary export-csv-button"
                 @click="showExportModal = true"
@@ -498,15 +501,18 @@ export default {
       try {
         const response =
           await this.outstandingDebtsExportService.exportOutstandingDebts()
+
         const blob = new Blob([response.data])
         const downloadUrl = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = downloadUrl
+
         const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
-        a.download = fileNameMatch
-          ? fileNameMatch[1]
-          : "export_customers_debts.xlsx"
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          "export.xlsx"
+
+        a.download = filename
         document.body.appendChild(a)
         a.click()
         a.remove()
@@ -588,19 +594,18 @@ export default {
         }
 
         const response = await this.customerExportService.exportCustomers(data)
+
         const blob = new Blob([response.data])
         const downloadUrl = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = downloadUrl
+
         const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          (this.exportFilters.format === "excel" ? "export.xlsx" : "export.csv")
 
-        const defaultFileName =
-          this.exportFilters.format === "excel"
-            ? "export_customers.xlsx"
-            : "export_customers.csv"
-        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
-
+        a.download = filename
         document.body.appendChild(a)
         a.click()
         a.remove()
