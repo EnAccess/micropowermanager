@@ -35,30 +35,31 @@ class ProspectSyncSettingService {
      */
     public function updateSyncSettings(array $syncSettings) {
         foreach ($syncSettings as $setting) {
-            $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
-            $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($setting['id']);
+            $normalizedUnit = $this->normalizeSyncUnit($setting['sync_in_value_str']);
+            $interval = CarbonInterval::make($setting['sync_in_value_num'].$normalizedUnit);
 
-            if ($syncSetting) {
-                $normalizedUnit = $this->normalizeSyncUnit($setting['sync_in_value_str']);
-                $interval = CarbonInterval::make($setting['sync_in_value_num'].$normalizedUnit);
-
-                $syncSetting->update([
-                    'max_attempts' => $setting['max_attempts'],
+            // Use updateOrCreate with action_name as the unique identifier
+            $syncSetting = $this->syncSetting->newQuery()->updateOrCreate(
+                ['action_name' => $setting['action_name']],
+                [
                     'sync_in_value_str' => $setting['sync_in_value_str'],
                     'sync_in_value_num' => $setting['sync_in_value_num'],
-                ]);
+                    'max_attempts' => $setting['max_attempts'],
+                ]
+            );
 
-                if ($syncSettingAction instanceof ProspectSyncAction) {
-                    $lastSync = $syncSettingAction->last_sync ?? Carbon::now();
-                    $syncSettingAction->update([
-                        'next_sync' => $lastSync->add($interval),
-                    ]);
-                } else {
-                    $this->syncActionService->createSyncAction([
-                        'sync_setting_id' => $syncSetting->id,
-                        'next_sync' => Carbon::now()->add($interval),
-                    ]);
-                }
+            $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($syncSetting->id);
+            if ($syncSettingAction instanceof ProspectSyncAction) {
+                $lastSync = $syncSettingAction->last_sync ?? Carbon::now();
+                $syncSettingAction->update([
+                    'next_sync' => $lastSync->add($interval),
+                ]);
+            } else {
+                $now = Carbon::now();
+                $this->syncActionService->createSyncAction([
+                    'sync_setting_id' => $syncSetting->id,
+                    'next_sync' => $now->add($interval),
+                ]);
             }
         }
 
