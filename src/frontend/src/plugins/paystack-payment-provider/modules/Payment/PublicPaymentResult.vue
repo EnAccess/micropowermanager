@@ -318,7 +318,9 @@ export default {
           params: {
             companyHash: this.companyHash,
           },
-          query: Object.fromEntries(new URLSearchParams(window.location.search)),
+          query: Object.fromEntries(
+            new URLSearchParams(window.location.search),
+          ),
         })
       }
     },

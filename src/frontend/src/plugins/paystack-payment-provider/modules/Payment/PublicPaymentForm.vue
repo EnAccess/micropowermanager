@@ -9,7 +9,8 @@
       <p class="cloud-description">
         On this page, you can make your online payment for energy or SHS credit.
         MicroPowerManager uses Paystack to process your payment securely. Please
-        select a device type, enter its serial number, and the amount you want to pay.
+        select a device type, enter its serial number, and the amount you want
+        to pay.
       </p>
 
       <form
@@ -155,13 +156,13 @@ export default {
       return this.$route.query.ct
     },
     serialLabel() {
-      if (this.paymentService.paymentRequest.deviceType === 'shs') {
-        return 'SHS Serial Number'
+      if (this.paymentService.paymentRequest.deviceType === "shs") {
+        return "SHS Serial Number"
       }
-      return 'Meter Serial Number'
+      return "Meter Serial Number"
     },
     shouldShowValidation() {
-      return this.paymentService.paymentRequest.deviceType === 'meter'
+      return this.paymentService.paymentRequest.deviceType === "meter"
     },
     selectedCurrency() {
       return this.paymentService.paymentRequest.currency || "NGN"
@@ -172,7 +173,8 @@ export default {
         this.paymentService.paymentRequest.amount &&
         this.paymentService.paymentRequest.amount > 0 &&
         this.paymentService.paymentRequest.currency &&
-        (this.paymentService.paymentRequest.deviceType !== 'meter' || this.meterValidation.valid === true)
+        (this.paymentService.paymentRequest.deviceType !== "meter" ||
+          this.meterValidation.valid === true)
       )
     },
   },
@@ -198,7 +200,7 @@ export default {
       }
     },
     async validateMeter() {
-      if (this.paymentService.paymentRequest.deviceType !== 'meter') {
+      if (this.paymentService.paymentRequest.deviceType !== "meter") {
         // Skip remote validation for non-meter devices
         this.meterValidation.valid = true
         return
