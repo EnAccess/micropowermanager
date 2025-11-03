@@ -8,7 +8,6 @@ namespace Inensus\PaystackPaymentProvider\Services;
 
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
-use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;

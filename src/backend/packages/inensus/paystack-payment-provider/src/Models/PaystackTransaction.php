@@ -8,24 +8,25 @@ use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @property int                        $id
- * @property int                        $amount
- * @property string                     $currency
- * @property string                     $order_id
- * @property string                     $reference_id
- * @property int                        $status
- * @property string                     $external_transaction_id
- * @property int                        $customer_id
- * @property string|null                $serial_id
- * @property string|null                $device_type
- * @property string|null                $paystack_reference
- * @property string|null                $payment_url
- * @property array<string, mixed>|null  $metadata
- * @property int                        $attempts
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property int                       $id
+ * @property int                       $amount
+ * @property string                    $currency
+ * @property string                    $order_id
+ * @property string                    $reference_id
+ * @property int                       $status
+ * @property string                    $external_transaction_id
+ * @property int                       $customer_id
+ * @property string|null               $serial_id
+ * @property string|null               $device_type
+ * @property string|null               $paystack_reference
+ * @property string|null               $payment_url
+ * @property array<string, mixed>|null $metadata
+ * @property int                       $attempts
+ * @property Carbon                    $created_at
+ * @property Carbon                    $updated_at
  */
 class PaystackTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'paystack_transaction';
