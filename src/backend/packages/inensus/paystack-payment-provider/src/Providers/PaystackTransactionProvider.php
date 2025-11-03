@@ -16,8 +16,6 @@ use Inensus\PaystackPaymentProvider\Services\PaystackTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
 class PaystackTransactionProvider implements ITransactionProvider {
-    private $validData = [];
-
     public function __construct(
         private PaystackTransaction $paystackTransaction,
         private Transaction $transaction,
@@ -36,7 +34,7 @@ class PaystackTransactionProvider implements ITransactionProvider {
             // We need to make sure that the payment is fully processable from our end .
             $this->paystackTransactionService->imitateTransactionForValidation($paystackTransactionData);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $this->setValidData($paystackTransactionData);
@@ -72,11 +70,11 @@ class PaystackTransactionProvider implements ITransactionProvider {
         return $this->transaction;
     }
 
-    public function setValidData($paystackTransactionData) {
-        $this->validData = $paystackTransactionData;
+    public function setValidData($paystackTransactionData)
+    {
     }
 
-    public function getSubTransaction() {
+    public function getSubTransaction(): PaystackTransaction {
         return $this->paystackTransactionService->getPaystackTransaction();
     }
 

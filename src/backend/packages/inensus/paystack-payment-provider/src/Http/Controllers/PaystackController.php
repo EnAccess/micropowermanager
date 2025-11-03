@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Http\Controllers;
 
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inensus\PaystackPaymentProvider\Http\Requests\TransactionInitializeRequest;
@@ -68,7 +69,7 @@ class PaystackController extends Controller {
     public function getTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
 
-        if (!$transaction) {
+        if (!$transaction instanceof PaystackTransaction) {
             return response()->json(['error' => 'Transaction not found'], 404);
         }
 
@@ -78,14 +79,14 @@ class PaystackController extends Controller {
     public function updateTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
 
-        if (!$transaction) {
+        if (!$transaction instanceof PaystackTransaction) {
             return response()->json(['error' => 'Transaction not found'], 404);
         }
 
         $request->validate([
-            'amount' => 'sometimes|numeric|min:0',
-            'currency' => 'sometimes|string|in:NGN,USD,GHS,KES,ZAR',
-            'status' => 'sometimes|integer|in:0,1,2,3',
+            'amount' => ['sometimes', 'numeric', 'min:0'],
+            'currency' => ['sometimes', 'string', 'in:NGN,USD,GHS,KES,ZAR'],
+            'status' => ['sometimes', 'integer', 'in:0,1,2,3'],
         ]);
 
         $updatedTransaction = $this->transactionService->update($transaction, $request->only([
@@ -98,7 +99,7 @@ class PaystackController extends Controller {
     public function deleteTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
 
-        if (!$transaction) {
+        if (!$transaction instanceof PaystackTransaction) {
             return response()->json(['error' => 'Transaction not found'], 404);
         }
 

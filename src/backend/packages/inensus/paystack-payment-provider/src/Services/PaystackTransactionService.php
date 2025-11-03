@@ -24,22 +24,12 @@ use Ramsey\Uuid\Uuid;
  * @implements IBaseService<PaystackTransaction>
  */
 class PaystackTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
-    private Meter $meter;
-    private Address $address;
-    private Transaction $transaction;
-    private PaystackTransaction $paystackTransaction;
-
     public function __construct(
-        Meter $meter,
-        Address $address,
-        Transaction $transaction,
-        PaystackTransaction $paystackTransaction,
+        private Meter $meter,
+        private Address $address,
+        private Transaction $transaction,
+        private PaystackTransaction $paystackTransaction,
     ) {
-        $this->transaction = $transaction;
-        $this->address = $address;
-        $this->meter = $meter;
-        $this->paystackTransaction = $paystackTransaction;
-
         parent::__construct(
             $this->meter,
             $this->address,
@@ -136,7 +126,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
 
     public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
         $id = $transaction->transaction->id;
-        ProcessPayment::dispatch($companyId, $id);
+        dispatch(new \App\Jobs\ProcessPayment($companyId, $id));
         $transaction->setStatus(PaystackTransaction::STATUS_SUCCESS);
         $transaction->save();
     }
@@ -223,7 +213,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
             $person = $personService->getById($customerId);
 
             return $person->addresses->first()->phone;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
     }

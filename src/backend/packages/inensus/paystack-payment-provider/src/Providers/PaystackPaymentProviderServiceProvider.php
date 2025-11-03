@@ -46,19 +46,19 @@ class PaystackPaymentProviderServiceProvider extends ServiceProvider {
         $this->app->singleton('PaystackPaymentProvider', PaystackTransactionProvider::class);
     }
 
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__.'/../../config/paystack-payment-provider.php', 'paystack-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
     }
 
-    public function publishConfigFiles() {
+    public function publishConfigFiles(): void {
         $this->publishes([
             __DIR__.'/../../config/paystack-payment-provider.php' => config_path('paystack-payment-provider.php'),
         ], 'paystack-payment-provider-config');
     }
 
-    public function publishMigrations($filesystem) {
+    public function publishMigrations(Filesystem $filesystem): void {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_paystack_payment_provider_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_paystack_payment_provider_tables.php'),
         ], 'migrations');
@@ -68,7 +68,7 @@ class PaystackPaymentProviderServiceProvider extends ServiceProvider {
         $timestamp = date('Y_m_d_His');
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
-            ->flatMap(function ($path) use ($filesystem, $migrationName) {
+            ->flatMap(function (string $path) use ($filesystem, $migrationName) {
                 if (count($filesystem->glob($path.'*_'.$migrationName))) {
                     $file = $filesystem->glob($path.'*_'.$migrationName)[0];
                     file_put_contents(

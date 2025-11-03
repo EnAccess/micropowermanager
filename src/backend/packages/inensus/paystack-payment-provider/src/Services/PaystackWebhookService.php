@@ -17,7 +17,7 @@ class PaystackWebhookService {
         $credential = $this->credentialService->getCredentials();
         $secretKey = $credential->getSecretKey();
 
-        if (empty($secretKey)) {
+        if ($secretKey === '' || $secretKey === '0') {
             return false;
         }
 
@@ -52,7 +52,7 @@ class PaystackWebhookService {
             }
 
             $paystackTransaction = $this->transactionService->getByPaystackReference($reference);
-            if (!$paystackTransaction) {
+            if (!$paystackTransaction instanceof PaystackTransaction) {
                 return;
             }
 
@@ -85,7 +85,7 @@ class PaystackWebhookService {
         }
 
         $paystackTransaction = $this->transactionService->getByPaystackReference($reference);
-        if (!$paystackTransaction) {
+        if (!$paystackTransaction instanceof PaystackTransaction) {
             return;
         }
 

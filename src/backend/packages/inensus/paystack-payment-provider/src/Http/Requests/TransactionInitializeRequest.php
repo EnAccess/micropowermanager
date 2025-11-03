@@ -15,11 +15,11 @@ class TransactionInitializeRequest extends FormRequest {
 
     public function rules(): array {
         return [
-            'amount' => 'required|numeric|min:0',
-            'device_serial' => 'required|string',
-            'customer_id' => 'required|integer',
-            'currency' => 'string|in:NGN,GHS,KES',
-            'device_type' => 'string|in:meter,solar_home_system',
+            'amount' => ['required', 'numeric', 'min:0'],
+            'device_serial' => ['required', 'string'],
+            'customer_id' => ['required', 'integer'],
+            'currency' => ['string', 'in:NGN,GHS,KES'],
+            'device_type' => ['string', 'in:meter,solar_home_system'],
         ];
     }
 

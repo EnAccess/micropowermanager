@@ -9,12 +9,12 @@ class RouteServiceProvider extends ServiceProvider
 {
     protected $namespace = 'Inensus\PaystackPaymentProvider\Http\Controllers';
 
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
     }
 
-    public function map()
+    public function map(): void
     {
         $this->mapApiRoutes();
     }

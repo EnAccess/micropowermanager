@@ -18,8 +18,6 @@ class InitializeTransactionResource extends AbstractApiResource {
     public function __construct(
         private PaystackCredential $paystackCredential,
         private PaystackTransaction $paystackTransaction,
-        private ?PaystackCompanyHashService $hashService = null,
-        private ?int $companyId = null,
     ) {}
 
     public function getRequestMethod(): string {
@@ -32,7 +30,7 @@ class InitializeTransactionResource extends AbstractApiResource {
         
         $bodyData = [
             'email' => config('paystack-payment-provider.merchant_email'), // MPM merchant email from config
-            'amount' => (int) ($this->paystackTransaction->getAmount() * 100), // Paystack expects amount in kobo (smallest currency unit) as integer
+            'amount' => $this->paystackTransaction->getAmount() * 100, // Paystack expects amount in kobo (smallest currency unit) as integer
             'reference' => $this->paystackTransaction->getReferenceId(),
             'callback_url' => $callbackUrl,
             'currency' => $this->paystackTransaction->getCurrency(),

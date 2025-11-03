@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Console\Commands;
 
+use Inensus\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use Illuminate\Console\Command;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
 
@@ -35,7 +36,7 @@ class InstallPackage extends Command {
 
     private function publishMigrations(): void {
         $this->call('vendor:publish', [
-            '--provider' => 'Inensus\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider',
+            '--provider' => PaystackPaymentProviderServiceProvider::class,
             '--tag' => 'migrations',
         ]);
     }

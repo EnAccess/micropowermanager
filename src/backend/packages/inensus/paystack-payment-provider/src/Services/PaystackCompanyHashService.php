@@ -100,7 +100,7 @@ class PaystackCompanyHashService {
             $params['agent'] = $agentId;
         }
 
-        if (!empty($params)) {
+        if ($params !== []) {
             $url .= '?'.http_build_query($params);
         }
 
@@ -145,7 +145,7 @@ class PaystackCompanyHashService {
     }
 
     private function getHashids(): Hashids {
-        $salt = (string) $this->getHashSalt();
+        $salt = $this->getHashSalt();
 
         return new Hashids($salt, 8);
     }

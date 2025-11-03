@@ -29,11 +29,11 @@ class PaystackCredentialController extends Controller {
 
     public function update(Request $request): PaystackCredentialResource {
         $request->validate([
-            'secret_key' => 'required|string|min:3',
-            'public_key' => 'required|string|min:3',
-            'callback_url' => 'required|url',
-            'merchant_name' => 'required|string|min:2',
-            'environment' => 'required|in:test,live',
+            'secret_key' => ['required', 'string', 'min:3'],
+            'public_key' => ['required', 'string', 'min:3'],
+            'callback_url' => ['required', 'url'],
+            'merchant_name' => ['required', 'string', 'min:2'],
+            'environment' => ['required', 'in:test,live'],
         ]);
 
         $credential = $this->credentialService->updateCredentials([
@@ -47,7 +47,7 @@ class PaystackCredentialController extends Controller {
         // Mark Paystack step as adjusted in Registration Tail (credentials fully provided)
         try {
             $registrationTail = $this->registrationTailService->getFirst();
-            $tailArray = !empty($registrationTail->tail) ? json_decode($registrationTail->tail, true) : [];
+            $tailArray = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
             $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PAYSTACK_PAYMENT_PROVIDER);
             $paystackTag = $mpmPlugin->tail_tag;
@@ -65,7 +65,7 @@ class PaystackCredentialController extends Controller {
             if ($updated) {
                 $this->registrationTailService->update($registrationTail, ['tail' => json_encode($tailArray)]);
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // Fail silently; tail update should not block credential updates
         }
 

@@ -7,12 +7,12 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class PaystackTransactionTest extends BaseTestCase {
     /** @test */
-    public function itReturnsCorrectTransactionName() {
+    public function itReturnsCorrectTransactionName(): void {
         $this->assertEquals('paystack_transaction', PaystackTransaction::getTransactionName());
     }
 
     /** @test */
-    public function itHasCorrectStatusConstants() {
+    public function itHasCorrectStatusConstants(): void {
         $this->assertEquals(0, PaystackTransaction::STATUS_REQUESTED);
         $this->assertEquals(1, PaystackTransaction::STATUS_SUCCESS);
         $this->assertEquals(2, PaystackTransaction::STATUS_COMPLETED);
@@ -22,7 +22,7 @@ class PaystackTransactionTest extends BaseTestCase {
     }
 
     /** @test */
-    public function itHasCorrectRelationName() {
+    public function itHasCorrectRelationName(): void {
         $this->assertEquals('paystack_transaction', PaystackTransaction::RELATION_NAME);
     }
 }
