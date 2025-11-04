@@ -6,6 +6,8 @@ use App\Exceptions\ActiveSheetNotCreatedException;
 use App\Exceptions\Export\CsvNotSavedException;
 use App\Exceptions\Export\SpreadSheetNotCreatedException;
 use App\Exceptions\Export\SpreadSheetNotSavedException;
+use App\Models\DatabaseProxy;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
@@ -101,7 +103,11 @@ abstract class AbstractExportService {
 
     public function saveSpreadSheet(): string {
         try {
-            $directory = 'export';
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
+            $directory = "export/{$companyId}";
             $fileName = $this->getPrefix().'-'.now()->format('Ymd_His_u').'.xlsx';
             $path = "{$directory}/{$fileName}";
 
@@ -124,7 +130,11 @@ abstract class AbstractExportService {
      */
     public function saveCsv(array $headers = []): string {
         try {
-            $directory = 'export';
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
+            $directory = "export/{$companyId}";
             $fileName = $this->getPrefix().'-'.now()->format('Ymd_His_u').'.csv';
             $path = "{$directory}/{$fileName}";
 

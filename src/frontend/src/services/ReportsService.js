@@ -8,7 +8,6 @@ export class ReportsService {
     this.report = {
       id: null,
       name: null,
-      path: null,
       date: null,
       type: null,
     }
@@ -22,7 +21,6 @@ export class ReportsService {
       return {
         id: report.id,
         name: report.name,
-        path: report.path,
         date: report.date,
         type: report.type,
       }
@@ -30,7 +28,7 @@ export class ReportsService {
     return this.list
   }
 
-  exportReport(id, reference, companyId) {
-    return this.repository.download(id, reference, companyId)
+  async exportReport(id) {
+    return this.repository.download(id)
   }
 }
