@@ -59,11 +59,6 @@ class Agent extends Authenticatable implements JWTSubject {
     public const RELATION_NAME = 'agent';
 
     /**
-     * Guard name for Spatie Permission.
-     */
-    protected string $guard_name = 'agent';
-
-    /**
      * @param array<string, mixed> $attributes
      */
     public function __construct(array $attributes = []) {
