@@ -35,13 +35,18 @@ export class SettingService {
 
   async getSettings() {
     try {
-      const response = await this.syncSettingsService.repository.getSyncSettings()
-      if (response.status === 200 && response.data?.data && response.data.data.length > 0) {
+      const response =
+        await this.syncSettingsService.repository.getSyncSettings()
+      if (
+        response.status === 200 &&
+        response.data?.data &&
+        response.data.data.length > 0
+      ) {
         const settings = response.data.data
         if (settings[0]?.data?.attributes) {
           this.updateSyncList(settings)
         } else {
-          this.list = settings.map(item => ({
+          this.list = settings.map((item) => ({
             id: item.id,
             actionName: item.action_name,
             syncInValueStr: item.sync_in_value_str,
