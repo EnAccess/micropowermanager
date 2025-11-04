@@ -87,9 +87,6 @@ class AgentSeeder extends Seeder {
                     'password' => $firstAgent ? DemoCompany::DEMO_COMPANY_PASSWORD : fake()->password(),
                 ]);
 
-            // Assign field-agent role to the agent
-            $agent->assignRole('field-agent');
-
             $firstAgent = false; // Ensure only one agent gets the test email
 
             // Give our Agent some balance

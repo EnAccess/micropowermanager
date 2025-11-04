@@ -11,19 +11,28 @@ class RolesPermissionsPopulator {
         // Check if roles and permissions already exist - if so, skip population
         $existingRolesCount = DB::connection('tenant')
             ->table($tableNames['roles'])
-            ->whereIn('name', ['owner', 'admin', 'editor', 'reader', 'field-agent'])
+            ->whereIn('name', ['owner', 'admin', 'financial-manager', 'user'])
             ->count();
 
-        if ($existingRolesCount >= 5) {
+        if ($existingRolesCount >= 4) {
             // All roles already exist, skip population
             return;
         }
 
         // Base permission set
         $permissions = [
+            // user account management
+            ['name' => 'users.view', 'guard_name' => 'api'],
+            ['name' => 'users.create', 'guard_name' => 'api'],
+            ['name' => 'users.update', 'guard_name' => 'api'],
+            ['name' => 'users.delete', 'guard_name' => 'api'],
+            ['name' => 'users.manage-owner', 'guard_name' => 'api'], // Only owner can manage owner accounts
+            ['name' => 'users.manage-admin', 'guard_name' => 'api'], // Owner and admin can manage admin accounts
             // settings
             ['name' => 'settings.view', 'guard_name' => 'api'],
             ['name' => 'settings.update', 'guard_name' => 'api'],
+            ['name' => 'settings.api-keys', 'guard_name' => 'api'], // API keys management (admin only)
+            ['name' => 'settings.passwords', 'guard_name' => 'api'], // Password management (admin only)
             // role management
             ['name' => 'roles.manage', 'guard_name' => 'api'],
             // horizon
@@ -44,9 +53,12 @@ class RolesPermissionsPopulator {
             ['name' => 'tickets.update', 'guard_name' => 'api'],
             ['name' => 'tickets.delete', 'guard_name' => 'api'],
             ['name' => 'tickets.export', 'guard_name' => 'api'],
-            // payments/transactions
+            // payments/transactions (financial data)
             ['name' => 'payments.view', 'guard_name' => 'api'],
+            ['name' => 'payments.create', 'guard_name' => 'api'],
             ['name' => 'payments.refund', 'guard_name' => 'api'],
+            ['name' => 'transactions.view', 'guard_name' => 'api'],
+            ['name' => 'transactions.create', 'guard_name' => 'api'],
             // reports & exports
             ['name' => 'reports.view', 'guard_name' => 'api'],
             ['name' => 'exports.transactions', 'guard_name' => 'api'],
@@ -56,14 +68,6 @@ class RolesPermissionsPopulator {
             ['name' => 'plugins.manage', 'guard_name' => 'api'],
             // pages
             ['name' => 'page.view:/settings', 'guard_name' => 'api'],
-            // agent permissions
-            ['name' => 'customers.view', 'guard_name' => 'agent'],
-            ['name' => 'customers.create', 'guard_name' => 'agent'],
-            ['name' => 'customers.update', 'guard_name' => 'agent'],
-            ['name' => 'tickets.view', 'guard_name' => 'agent'],
-            ['name' => 'tickets.create', 'guard_name' => 'agent'],
-            ['name' => 'tickets.update', 'guard_name' => 'agent'],
-            ['name' => 'payments.view', 'guard_name' => 'agent'],
         ];
 
         foreach ($permissions as $perm) {
@@ -75,31 +79,21 @@ class RolesPermissionsPopulator {
             ]);
         }
 
-        // Built-in roles: owner, admin, editor, reader (api guard), field-agent (agent guard)
+        // Built-in roles based on hierarchy:
+        // Level 1: Owner - Full control, including managing administrators
+        // Level 2: Administrator - Manage all data/settings except owner accounts
+        // Level 3: Financial Manager - Manage customers + financial data, no system settings
+        // Level 4: User - Manage customers, no financial data
         $roles = [
             ['name' => 'owner', 'guard_name' => 'api', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'admin', 'guard_name' => 'api', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'editor', 'guard_name' => 'api', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'reader', 'guard_name' => 'api', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'field-agent', 'guard_name' => 'agent', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'financial-manager', 'guard_name' => 'api', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'user', 'guard_name' => 'api', 'created_at' => now(), 'updated_at' => now()],
         ];
 
         foreach ($roles as $role) {
             DB::connection('tenant')->table($tableNames['roles'])->insertOrIgnore($role);
         }
-
-        // Define admin-only permissions (require special privileges)
-        $adminOnlyPermissions = [
-            'roles.manage',
-            'horizon.view',
-            'plugins.manage',
-            'settings.update',
-            'settings.view',
-            'exports.transactions',
-            'exports.customers',
-            'exports.debts',
-            'payments.refund',
-        ];
 
         // Get all API permissions
         $allApiPermissions = DB::connection('tenant')
@@ -108,21 +102,15 @@ class RolesPermissionsPopulator {
             ->pluck('id', 'name')
             ->toArray();
 
-        // Get all agent permissions
-        $allAgentPermissions = DB::connection('tenant')
-            ->table($tableNames['permissions'])
-            ->where('guard_name', 'agent')
-            ->pluck('id', 'name')
-            ->toArray();
-
         // Get roles
         $ownerRoleId = DB::connection('tenant')->table($tableNames['roles'])->where('name', 'owner')->value('id');
         $adminRoleId = DB::connection('tenant')->table($tableNames['roles'])->where('name', 'admin')->value('id');
-        $editorRoleId = DB::connection('tenant')->table($tableNames['roles'])->where('name', 'editor')->value('id');
-        $readerRoleId = DB::connection('tenant')->table($tableNames['roles'])->where('name', 'reader')->value('id');
-        $fieldAgentRoleId = DB::connection('tenant')->table($tableNames['roles'])->where('name', 'field-agent')->value('id');
+        $financialManagerRoleId = DB::connection('tenant')->table($tableNames['roles'])->where('name', 'financial-manager')->value('id');
+        $userRoleId = DB::connection('tenant')->table($tableNames['roles'])->where('name', 'user')->value('id');
 
-        // Grant all API permissions to owner
+        // LEVEL 1: OWNER - Full control over the entire system
+        // Can manage all accounts including creating/removing administrators
+        // Cannot delete other owners (enforced at application level)
         foreach ($allApiPermissions as $permissionId) {
             DB::connection('tenant')->table($tableNames['role_has_permissions'])->insertOrIgnore([
                 'permission_id' => $permissionId,
@@ -130,39 +118,77 @@ class RolesPermissionsPopulator {
             ]);
         }
 
-        // Grant all API permissions to admin
-        foreach ($allApiPermissions as $permissionId) {
+        // LEVEL 2: ADMINISTRATOR - Manage all system data and settings
+        // Can manage admin accounts and lower levels, but NOT owner accounts
+        $adminPermissions = array_filter($allApiPermissions, fn ($permissionId, $permissionName): bool => $permissionName !== 'users.manage-owner', ARRAY_FILTER_USE_BOTH);
+
+        foreach ($adminPermissions as $permissionId) {
             DB::connection('tenant')->table($tableNames['role_has_permissions'])->insertOrIgnore([
                 'permission_id' => $permissionId,
                 'role_id' => $adminRoleId,
             ]);
         }
 
-        // Grant editor permissions (all except admin-only)
-        $editorPermissions = array_filter($allApiPermissions, fn ($permissionId, $permissionName): bool => !in_array($permissionName, $adminOnlyPermissions), ARRAY_FILTER_USE_BOTH);
+        // LEVEL 3: FINANCIAL MANAGER - Manage customers + financial/transaction data
+        // Cannot change system settings like API keys or passwords
+        $financialManagerPermissionNames = [
+            'customers.view',
+            'customers.create',
+            'customers.update',
+            'customers.delete',
+            'assets.view',
+            'assets.create',
+            'assets.update',
+            'assets.delete',
+            'tickets.view',
+            'tickets.create',
+            'tickets.update',
+            'tickets.delete',
+            'tickets.export',
+            'payments.view',
+            'payments.create',
+            'payments.refund',
+            'transactions.view',
+            'transactions.create',
+            'reports.view',
+            'exports.transactions',
+            'exports.customers',
+            'exports.debts',
+        ];
 
-        foreach ($editorPermissions as $permissionId) {
+        $financialManagerPermissions = array_filter($allApiPermissions, fn ($permissionId, $permissionName): bool => in_array($permissionName, $financialManagerPermissionNames), ARRAY_FILTER_USE_BOTH);
+
+        foreach ($financialManagerPermissions as $permissionId) {
             DB::connection('tenant')->table($tableNames['role_has_permissions'])->insertOrIgnore([
                 'permission_id' => $permissionId,
-                'role_id' => $editorRoleId,
+                'role_id' => $financialManagerRoleId,
             ]);
         }
 
-        // Grant reader permissions (only read/view permissions, excluding admin-only)
-        $readerPermissions = array_filter($allApiPermissions, fn ($permissionId, $permissionName): bool => str_ends_with($permissionName, '.view') && !in_array($permissionName, $adminOnlyPermissions), ARRAY_FILTER_USE_BOTH);
+        // LEVEL 4: USER - Manage customers and related data only
+        // Cannot access financial or transaction information
+        $userPermissionNames = [
+            'customers.view',
+            'customers.create',
+            'customers.update',
+            'customers.delete',
+            'assets.view',
+            'assets.create',
+            'assets.update',
+            'assets.delete',
+            'tickets.view',
+            'tickets.create',
+            'tickets.update',
+            'tickets.delete',
+            'tickets.export',
+        ];
 
-        foreach ($readerPermissions as $permissionId) {
+        $userPermissions = array_filter($allApiPermissions, fn ($permissionId, $permissionName): bool => in_array($permissionName, $userPermissionNames), ARRAY_FILTER_USE_BOTH);
+
+        foreach ($userPermissions as $permissionId) {
             DB::connection('tenant')->table($tableNames['role_has_permissions'])->insertOrIgnore([
                 'permission_id' => $permissionId,
-                'role_id' => $readerRoleId,
-            ]);
-        }
-
-        // Grant agent permissions to field-agent role
-        foreach ($allAgentPermissions as $permissionId) {
-            DB::connection('tenant')->table($tableNames['role_has_permissions'])->insertOrIgnore([
-                'permission_id' => $permissionId,
-                'role_id' => $fieldAgentRoleId,
+                'role_id' => $userRoleId,
             ]);
         }
     }

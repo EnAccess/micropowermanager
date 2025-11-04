@@ -76,14 +76,14 @@ class TenantSeeder extends Seeder {
                 $editor = $this->userService->create(
                     [
                         'name' => 'Demo Editor',
-                        'email' => DemoCompany::DEMO_COMPANY_EDITOR_EMAIL,
+                        'email' => DemoCompany::DEMO_COMPANY_FINANCIAL_MANAGER_EMAIL,
                         'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                         'company_id' => $company->getId(),
                     ],
                     $company->getId()
                 );
 
-                $editor->assignRole('editor');
+                $editor->assignRole('financial-manager');
             }
         );
 
@@ -94,14 +94,14 @@ class TenantSeeder extends Seeder {
                 $reader = $this->userService->create(
                     [
                         'name' => 'Demo Reader',
-                        'email' => DemoCompany::DEMO_COMPANY_READER_EMAIL,
+                        'email' => DemoCompany::DEMO_COMPANY_REGULAR_USER_EMAIL,
                         'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                         'company_id' => $company->getId(),
                     ],
                     $company->getId()
                 );
 
-                $reader->assignRole('reader');
+                $reader->assignRole('user');
             }
         );
 
