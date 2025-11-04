@@ -6,14 +6,18 @@ use Inensus\Prospect\Http\Controllers\ProspectSyncSettingController;
 
 Route::group(['prefix' => 'prospect'], function () {
     Route::group(['prefix' => 'credential'], function () {
-        Route::get('/',
-        [ProspectCredentialController::class, 'show'] );
+        Route::get(
+            '/',
+            [ProspectCredentialController::class, 'show']
+        );
         Route::put('/', [ProspectCredentialController::class, 'update']);
     });
     Route::group(['prefix' => 'prospect-setting'], function () {
         Route::group(['prefix' => 'sync-setting'], function () {
-            Route::put('/',
-            [ProspectSyncSettingController::class, 'update']);
+            Route::put(
+                '/',
+                [ProspectSyncSettingController::class, 'update']
+            );
         });
     });
 });
