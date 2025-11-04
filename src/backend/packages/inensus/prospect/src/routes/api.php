@@ -14,6 +14,10 @@ Route::group(['prefix' => 'prospect'], function () {
     });
     Route::group(['prefix' => 'prospect-setting'], function () {
         Route::group(['prefix' => 'sync-setting'], function () {
+            Route::get(
+                '/',
+                [ProspectSyncSettingController::class, 'index']
+            );
             Route::put(
                 '/',
                 [ProspectSyncSettingController::class, 'update']

@@ -5,6 +5,9 @@ import Client from "@/repositories/Client/AxiosClient"
 const resource = `${baseUrl}/api/prospect/prospect-setting/sync-setting`
 
 export default {
+  getSyncSettings() {
+    return Client.get(`${resource}`)
+  },
   updateSyncSettings(syncListPayload) {
     // Send raw array payload like other meter plugins
     return Client.put(`${resource}`, syncListPayload)

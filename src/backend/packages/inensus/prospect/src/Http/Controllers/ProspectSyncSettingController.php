@@ -10,6 +10,10 @@ use Inensus\Prospect\Services\ProspectSyncSettingService;
 class ProspectSyncSettingController extends Controller {
     public function __construct(private ProspectSyncSettingService $syncSettingService) {}
 
+    public function index(): ProspectResource {
+        return new ProspectResource($this->syncSettingService->getSyncSettings());
+    }
+
     public function update(Request $request): ProspectResource {
         return new ProspectResource($this->syncSettingService->updateSyncSettings($request->all()));
     }
