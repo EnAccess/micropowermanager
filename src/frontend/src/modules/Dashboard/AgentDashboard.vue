@@ -261,10 +261,14 @@ export default {
     EventBus.$on("closed", () => {
       this.showNewAgentModal = false
     })
+    EventBus.$on("agentCreated", () => {
+      this.loadAgentData()
+    })
   },
   beforeDestroy() {
     // Clean up event listener
     EventBus.$off("closed")
+    EventBus.$off("agentCreated")
   },
 }
 </script>
