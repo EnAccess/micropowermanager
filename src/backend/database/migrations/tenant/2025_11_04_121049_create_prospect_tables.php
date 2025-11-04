@@ -14,8 +14,8 @@ return new class extends Migration {
         if (!Schema::connection('tenant')->hasTable('prospect_credentials')) {
             Schema::connection('tenant')->create('prospect_credentials', static function (Blueprint $table) {
                 $table->id();
-                $table->string('api_url')->nullable();
-                $table->string('api_token')->nullable();
+                $table->string('api_url', 500)->nullable();
+                $table->string('api_token', 500)->nullable();
                 $table->timestamps();
             });
         }

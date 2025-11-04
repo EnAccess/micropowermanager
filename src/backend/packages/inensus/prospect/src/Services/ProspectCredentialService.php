@@ -2,9 +2,12 @@
 
 namespace Inensus\Prospect\Services;
 
+use App\Traits\EncryptsCredentials;
 use Inensus\Prospect\Models\ProspectCredential;
 
 class ProspectCredentialService {
+    use EncryptsCredentials;
+
     public function __construct(
         private ProspectCredential $credential,
     ) {}
@@ -20,7 +23,9 @@ class ProspectCredentialService {
     }
 
     public function getCredentials(): ?ProspectCredential {
-        return $this->credential->newQuery()->first();
+        $credential = $this->credential->newQuery()->first();
+
+        return $this->decryptCredentialFields($credential, ['api_url', 'api_token']);
     }
 
     /**
@@ -33,11 +38,11 @@ class ProspectCredentialService {
             $credential = $this->createCredentials();
         }
 
-        $credential->update([
-            'api_url' => $data['api_url'],
-            'api_token' => $data['api_token'],
-        ]);
+        $encryptedData = $this->encryptCredentialFields($data, ['api_url', 'api_token']);
+        $credential->update($encryptedData);
 
-        return $credential->fresh();
+        $credential->fresh();
+
+        return $this->decryptCredentialFields($credential, ['api_url', 'api_token']);
     }
 }

@@ -32,7 +32,8 @@ export class CredentialService {
     try {
       const params = convertObjectKeysToSnakeCase(this.credential)
       const { data, status, error } = await this.repository.update(params)
-      if (status !== 200) return new ErrorHandler(error, "http", status)
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
       this.credential = convertObjectKeysToCamelCase(data.data)
 
       return this.credential
