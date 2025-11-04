@@ -29,8 +29,8 @@ class ReportController {
         $request->get('endDate');
 
         $reports = match ($type) {
-            'weekly' => $this->getWeeklyReports(),
-            'monthly' => $this->getMonthlyReports(),
+            'weekly' => $this->getVillageReportsWeekly(),
+            'monthly' => $this->getVillageReportsMonthly(),
             default => $this->getAllReports(),
         };
 
@@ -40,14 +40,14 @@ class ReportController {
     /**
      * @return LengthAwarePaginator<int, Report>
      */
-    private function getWeeklyReports(): LengthAwarePaginator {
+    private function getVillageReportsWeekly(): LengthAwarePaginator {
         return $this->report->where('type', 'weekly')->paginate(15);
     }
 
     /**
      * @return LengthAwarePaginator<int, Report>
      */
-    private function getMonthlyReports(): LengthAwarePaginator {
+    private function getVillageReportsMonthly(): LengthAwarePaginator {
         return $this->report->where('type', 'monthly')
             ->paginate(15);
     }

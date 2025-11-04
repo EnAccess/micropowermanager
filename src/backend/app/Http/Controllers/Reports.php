@@ -573,7 +573,7 @@ class Reports {
 
         try {
             $fileName = Str::slug("{$reportType}-{$cityName}-{$dateRange}").'.xlsx';
-            $path = "{$reportType}/{$fileName}";
+            $path = "reports/village_report_{$reportType}/{$fileName}";
 
             // Save to a temporary local file
             $tempFile = tempnam(sys_get_temp_dir(), 'city_report_').'.xlsx';
