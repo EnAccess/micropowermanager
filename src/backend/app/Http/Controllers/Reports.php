@@ -572,8 +572,12 @@ class Reports {
         }
 
         try {
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
             $fileName = Str::slug("{$reportType}-{$cityName}-{$dateRange}").'.xlsx';
-            $path = "reports/village_report_{$reportType}/{$fileName}";
+            $path = "reports/{$companyId}/village_report_{$reportType}/{$fileName}";
 
             // Save to a temporary local file
             $tempFile = tempnam(sys_get_temp_dir(), 'city_report_').'.xlsx';
@@ -582,10 +586,6 @@ class Reports {
 
             Storage::put($path, file_get_contents($tempFile));
             unlink($tempFile);
-
-            $user = User::query()->first();
-            $databaseProxy = app(DatabaseProxy::class);
-            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
             // Save report metadata
             $this->report->create([
