@@ -75,7 +75,7 @@ class TenantSeeder extends Seeder {
             function () use ($company) {
                 $editor = $this->userService->create(
                     [
-                        'name' => 'Demo Editor',
+                        'name' => 'Demo Manager',
                         'email' => DemoCompany::DEMO_COMPANY_FINANCIAL_MANAGER_EMAIL,
                         'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                         'company_id' => $company->getId(),
@@ -93,7 +93,7 @@ class TenantSeeder extends Seeder {
             function () use ($company) {
                 $reader = $this->userService->create(
                     [
-                        'name' => 'Demo Reader',
+                        'name' => 'Demo User',
                         'email' => DemoCompany::DEMO_COMPANY_REGULAR_USER_EMAIL,
                         'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                         'company_id' => $company->getId(),
