@@ -5,12 +5,7 @@ namespace Inensus\Ticket\Services;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Storage;
-use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketOutsourcePayoutReport;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Exception;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * @implements IBaseService<TicketOutsourcePayoutReport>
@@ -18,7 +13,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class TicketOutsourcePayoutReportService implements IBaseService {
     public function __construct(
         private TicketOutsourcePayoutReport $TicketOutsourcePayoutReport,
-        private Spreadsheet $spreadsheet,
     ) {}
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {

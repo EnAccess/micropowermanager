@@ -6,14 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourcePayoutReportService;
-use Inensus\Ticket\Services\TicketService;
-use PhpOffice\PhpSpreadsheet\Exception;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TicketOutsourcePayoutReportController {
     public function __construct(
         private TicketOutsourcePayoutReportService $TicketOutsourcePayoutReportService,
-        private TicketService $ticketService,
     ) {}
 
     /**
