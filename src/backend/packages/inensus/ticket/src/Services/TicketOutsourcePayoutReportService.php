@@ -7,26 +7,26 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Models\TicketOutsourceReport;
+use Inensus\Ticket\Models\TicketOutsourcePayoutReport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
- * @implements IBaseService<TicketOutsourceReport>
+ * @implements IBaseService<TicketOutsourcePayoutReport>
  */
-class TicketOutsourceReportService implements IBaseService {
+class TicketOutsourcePayoutReportService implements IBaseService {
     public function __construct(
-        private TicketOutsourceReport $ticketOutsourceReport,
+        private TicketOutsourcePayoutReport $TicketOutsourcePayoutReport,
         private Spreadsheet $spreadsheet,
     ) {}
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
-            return $this->ticketOutsourceReport->newQuery()->paginate($limit);
+            return $this->TicketOutsourcePayoutReport->newQuery()->paginate($limit);
         }
 
-        return $this->ticketOutsourceReport->newQuery()->get();
+        return $this->TicketOutsourcePayoutReport->newQuery()->get();
     }
 
     /**
@@ -66,15 +66,15 @@ class TicketOutsourceReportService implements IBaseService {
         }
     }
 
-    public function create(array $ticketOutsourceReportData): TicketOutsourceReport {
-        return $this->ticketOutsourceReport->newQuery()->create($ticketOutsourceReportData);
+    public function create(array $TicketOutsourcePayoutReportData): TicketOutsourcePayoutReport {
+        return $this->TicketOutsourcePayoutReport->newQuery()->create($TicketOutsourcePayoutReportData);
     }
 
-    public function getById(int $outsourceReportId): TicketOutsourceReport {
-        return $this->ticketOutsourceReport->newQuery()->find($outsourceReportId);
+    public function getById(int $outsourceReportId): TicketOutsourcePayoutReport {
+        return $this->TicketOutsourcePayoutReport->newQuery()->find($outsourceReportId);
     }
 
-    public function update($model, array $data): TicketOutsourceReport {
+    public function update($model, array $data): TicketOutsourcePayoutReport {
         throw new \Exception('Method update() not yet implemented.');
     }
 
