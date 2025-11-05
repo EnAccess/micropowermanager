@@ -114,7 +114,6 @@ MicroPowerManager uses Laravel's Trusted Proxy feature to correctly handle reque
 2. **The application will automatically use this value** via the `src/backend/config/trustedproxy.php` config file.
 
 3. **Recommended values:**
-
    - **GCP:** `35.191.0.0/16,130.211.0.0/22`
    - **AWS:** Use the documented AWS ELB IP ranges or `*` if you are behind a private network
    - **Development:** `127.0.0.1` or your proxy IP
