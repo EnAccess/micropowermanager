@@ -1,9 +1,9 @@
 <template>
   <div>
     <widget
-      :id="'book-keeping'"
-      :title="$tc('phrases.paymentRequests')"
-      :paginator="bookKeepingService.paginator"
+      :id="'ticket-outsource-payout-report'"
+      :title="$tc('phrases.ticketOutsourcePayoutReports')"
+      :paginator="ticketOursourcePayoutReportsService.paginator"
       :search="false"
       :subscriber="subscriber"
     >
@@ -32,11 +32,11 @@
 <script>
 import Widget from "@/shared/Widget.vue"
 import { EventBus } from "@/shared/eventbus"
-import { BookKeepingService } from "@/services/BookKeepingService"
+import { TicketOursourcePayoutReportsService } from "@/services/TicketOursourcePayoutReportsService"
 import { notify } from "@/mixins/notify"
 
 export default {
-  name: "BookKeeping",
+  name: "TicketOursourcePayoutReports",
   mixins: [notify],
   components: {
     Widget,
@@ -49,30 +49,42 @@ export default {
   },
   data() {
     return {
-      bookKeepingService: new BookKeepingService(),
+      ticketOursourcePayoutReportsService:
+        new TicketOursourcePayoutReportsService(),
       list: [],
-      subscriber: "bookKeeping",
+      subscriber: "ticketOutsourcePayoutReports",
       headers: [this.$tc("words.date"), this.$tc("words.file")],
     }
   },
   methods: {
     reloadList(subscriber, data) {
       if (subscriber === this.subscriber) {
-        this.list = this.bookKeepingService.updateList(data)
+        this.list = this.ticketOursourcePayoutReportsService.updateList(data)
         EventBus.$emit("widgetContentLoaded", this.subscriber, this.list.length)
       }
     },
-    endSearching() {
-      this.bookKeeping.showAll()
-    },
     async download(id) {
       try {
-        const response = await this.bookKeepingService.exportBookKeeping(id)
-        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const response =
+          await this.ticketOursourcePayoutReportsService.exportTicketOutsourcePayoutReport(
+            id,
+          )
+
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
-        a.href = url
-        a.download = "payment-requests.xlsx"
+        a.href = downloadUrl
+
+        const contentDisposition = response.headers["content-disposition"]
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          "report.xlsx"
+
+        a.download = filename
+        document.body.appendChild(a)
         a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
       } catch (error) {
         console.log("error", error)
         this.alertNotify("error", error.message)

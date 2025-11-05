@@ -17,19 +17,19 @@
       />
     </div>
     <div class="md-layout-item md-size-50 md-small-size-100">
-      <BookKeeping />
+      <TicketOursourcePayoutReports />
     </div>
   </div>
 </template>
 
 <script>
-import BookKeeping from "@/modules/ExportedReports/BookKeeping"
+import TicketOursourcePayoutReports from "@/modules/ExportedReports/TicketOursourcePayoutReports"
 import { ReportsService } from "@/services/ReportsService"
 import VillageReports from "@/modules/ExportedReports/VillageReports.vue"
 
 export default {
   name: "Reports",
-  components: { VillageReports, BookKeeping },
+  components: { VillageReports, TicketOursourcePayoutReports },
   data() {
     return {
       reportService: new ReportsService(),
