@@ -3,8 +3,9 @@
 namespace Inensus\Prospect\Jobs;
 
 use App\Jobs\AbstractJob;
-use App\Models\CompanyDatabase;
+use App\Models\DatabaseProxy;
 use App\Models\Device;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Prospect\Models\ProspectExtractedFile;
@@ -123,10 +124,11 @@ class ExtractInstallations extends AbstractJob {
             $headers = array_keys($data[0]);
             $csvContent = $this->arrayToCsv($data, $headers);
 
-            $companyDatabase = app(CompanyDatabase::class)->newQuery()->first();
-            $companyDatabaseName = $companyDatabase->getDatabaseName();
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-            $filePath = "prospect/{$companyDatabaseName}/{$fileName}";
+            $filePath = "prospect/{$companyId}/{$fileName}";
 
             Storage::put($filePath, $csvContent);
 
