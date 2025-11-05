@@ -21,8 +21,9 @@ Prospect is a data analytics platform that allows you to import, analyze, and vi
 
 ### Step 1: Access Prospect Platform
 
-1. Navigate to the Prospect demo platform: [https://demo.prospect.energy/](https://demo.prospect.energy/)
-2. Login using your provided email and password credentials
+1. Registrations are done on request to the Prospect team, who will provide the login details to access the platform.
+2. Navigate to the Prospect platform: [https://app.prospect.energy/](https://app.prospect.energy/)
+3. Login using your provided email and password credentials
 
 ![Prospect Login Page](images/prospect-login-page.png)
 
@@ -126,7 +127,7 @@ After enabling the plugin, you need to configure it with the credentials obtaine
 
 1. Navigate to the **Overview** page (this is typically in the Prospect plugin section)
 2. Enter the **Authorization Token** that you obtained from Step 8 of the Prospect platform
-3. Specify the **BASE_URL** - this should be the API endpoint URL shown in Step 7 (e.g., `https://demo.prospect.energy/api/v1/in/`)
+3. Specify the **BASE_URL** - this should be the API endpoint URL shown in Step 7 (e.g., `https://app.prospect.energy/api/v1/in/`)
 4. **Note**: Currently, we are working with installations data. More data types will be added in future updates
 5. Click **Save** to store your configuration
 
@@ -199,7 +200,7 @@ You can monitor the sync status by:
 ### API Documentation
 
 For complete API reference and additional endpoints, visit:
-`https://demo.prospect.energy/api-docs/index.html`
+`https://app.prospect.energy/api-docs/index.html`
 
 ## Next Steps
 
