@@ -5,12 +5,7 @@ namespace Inensus\Ticket\Services;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Storage;
-use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketOutsourcePayoutReport;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Exception;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * @implements IBaseService<TicketOutsourcePayoutReport>
@@ -18,7 +13,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class TicketOutsourcePayoutReportService implements IBaseService {
     public function __construct(
         private TicketOutsourcePayoutReport $TicketOutsourcePayoutReport,
-        private Spreadsheet $spreadsheet,
     ) {}
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
@@ -27,43 +21,6 @@ class TicketOutsourcePayoutReportService implements IBaseService {
         }
 
         return $this->TicketOutsourcePayoutReport->newQuery()->get();
-    }
-
-    /**
-     * @param Collection<int, Ticket> $tickets
-     */
-    public function createExcelSheet(string $startDate, string $endDate, Collection $tickets): string {
-        $fileName = 'Outsourcing-'.$startDate.'-'.$endDate.'.xlsx';
-        $relativePath = 'outsourcing/'.$fileName;
-
-        $sheet = $this->spreadsheet->getActiveSheet();
-        $sheet->setTitle('payments - '.date('Y-m', strtotime($startDate)));
-
-        $sheet->setCellValue('A1', 'Name');
-        $sheet->setCellValue('B1', 'Date');
-        $sheet->setCellValue('C1', 'Amount');
-        $sheet->setCellValue('D1', 'Category');
-
-        $row = 3;
-        foreach ($tickets as $t) {
-            $sheet->setCellValue('A'.$row, $t->assignedTo->user_name);
-            $sheet->setCellValue('B'.$row, $t->created_at);
-            $sheet->setCellValue('C'.$row, $t->outsource->amount);
-            $sheet->setCellValue('D'.$row, $t->category->label_name);
-        }
-        $writer = new Xlsx($this->spreadsheet);
-        $tempPath = tempnam(sys_get_temp_dir(), 'xlsx_');
-
-        try {
-            $writer->save($tempPath);
-            Storage::put($relativePath, file_get_contents($tempPath));
-            unlink($tempPath);
-
-            return $relativePath;
-        } catch (Exception $e) {
-            echo 'error'.$e->getMessage();
-            throw new \Exception('Error creating Excel sheet: '.$e->getMessage(), $e->getCode(), $e);
-        }
     }
 
     public function create(array $TicketOutsourcePayoutReportData): TicketOutsourcePayoutReport {
