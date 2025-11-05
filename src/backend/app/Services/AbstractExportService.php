@@ -6,12 +6,13 @@ use App\Exceptions\ActiveSheetNotCreatedException;
 use App\Exceptions\Export\CsvNotSavedException;
 use App\Exceptions\Export\SpreadSheetNotCreatedException;
 use App\Exceptions\Export\SpreadSheetNotSavedException;
+use App\Models\DatabaseProxy;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -25,7 +26,6 @@ abstract class AbstractExportService {
     protected Collection $exportingData;
     protected string $currency;
     protected string $timeZone;
-    protected string $recentlyCreatedSpreadSheetId;
 
     abstract public function setExportingData(): void;
 
@@ -90,10 +90,6 @@ abstract class AbstractExportService {
         return $dateTimeUtc->format('Y-m-d H:i:s');
     }
 
-    public function setRecentlyCreatedSpreadSheetId(string $id): void {
-        $this->recentlyCreatedSpreadSheetId = $id;
-    }
-
     public function setActivatedSheet(string $sheetName): void {
         try {
             $this->worksheet = $this->spreadsheet->setActiveSheetIndexByName($sheetName);
@@ -107,10 +103,12 @@ abstract class AbstractExportService {
 
     public function saveSpreadSheet(): string {
         try {
-            $uuid = Str::uuid()->toString();
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-            $directory = 'appliance';
-            $fileName = $this->getPrefix().'-'.$uuid.'.xlsx';
+            $directory = "export/{$companyId}";
+            $fileName = $this->getPrefix().'-'.now()->format('Ymd_His_u').'.xlsx';
             $path = "{$directory}/{$fileName}";
 
             // Save spreadsheet to a temporary stream (in memory)
@@ -120,8 +118,6 @@ abstract class AbstractExportService {
 
             Storage::disk('local')->put($path, file_get_contents($tempPath));
             unlink($tempPath);
-
-            $this->setRecentlyCreatedSpreadSheetId($uuid);
 
             return $path;
         } catch (\Exception $e) {
@@ -134,10 +130,12 @@ abstract class AbstractExportService {
      */
     public function saveCsv(array $headers = []): string {
         try {
-            $uuid = Str::uuid()->toString();
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-            $directory = 'appliance';
-            $fileName = $this->getPrefix().'-'.$uuid.'.csv';
+            $directory = "export/{$companyId}";
+            $fileName = $this->getPrefix().'-'.now()->format('Ymd_His_u').'.csv';
             $path = "{$directory}/{$fileName}";
 
             $csvContent = $this->generateCsvContent($headers);

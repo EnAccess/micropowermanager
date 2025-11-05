@@ -35,10 +35,13 @@
               </md-button>
             </div>
             <div class="export-section">
-              <span class="download-debts-span">
-                You can download customers' outstanding debts from
-                <a style="cursor: pointer" @click="exportDebts">here</a>
-              </span>
+              <md-button
+                class="md-raised md-default export-csv-button"
+                @click="exportDebts"
+              >
+                <md-icon>download</md-icon>
+                {{ $tc("phrases.exportCustomersDebts") }}
+              </md-button>
               <md-button
                 class="md-raised md-primary export-csv-button"
                 @click="showExportModal = true"
@@ -308,15 +311,8 @@ export default {
     return {
       subscriber: "client.list",
       people: new People(),
-      clientList: null,
-      tmpClientList: null,
       paginator: new Paginator(resources.person.list),
       searchTerm: "",
-      currentFrom: 0,
-      currentTo: 0,
-      total: 0,
-      currentPage: 0,
-      totalPages: 0,
       showAddClient: false,
       key: 0,
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
@@ -336,35 +332,97 @@ export default {
       },
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
+      isSearching: false,
+      activeRequest: null,
     }
   },
   watch: {
     searchTerm: debounce(function () {
-      if (this.searchTerm.length > 0) {
-        this.doSearch(this.searchTerm)
-      } else {
-        this.showAllEntries()
-      }
-    }, 1000),
+      this.handleSearch()
+    }, 300),
   },
 
   mounted() {
     this.getClientList()
-    this.loadMainSettings()
-    this.loadAgents()
-    this.loadMiniGrids()
-    this.loadCities()
+
+    // Load supporting data asynchronously without blocking UI
+    this.loadSupportingData()
+
     EventBus.$on("pageLoaded", this.reloadList)
-    EventBus.$on("searching", this.searching)
-    EventBus.$on("end_searching", this.endSearching)
+    EventBus.$on("searching", this.onSearchEvent)
+    EventBus.$on("end_searching", this.onEndSearchEvent)
   },
+
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
-    EventBus.$off("searching", this.searching)
-    EventBus.$off("end_searching", this.endSearching)
+    EventBus.$off("searching", this.onSearchEvent)
+    EventBus.$off("end_searching", this.onEndSearchEvent)
+
+    // Cancel any pending request
+    if (this.activeRequest) {
+      this.activeRequest.cancel()
+    }
   },
 
   methods: {
+    handleSearch() {
+      if (this.searchTerm.length > 0) {
+        this.performSearch()
+      } else {
+        this.showAllEntries()
+      }
+    },
+
+    async performSearch() {
+      // Cancel previous request if still pending
+      if (this.activeRequest) {
+        this.activeRequest.cancel()
+      }
+
+      this.isSearching = true
+
+      try {
+        // Create search paginator
+        const searchPaginator = new Paginator(resources.person.search)
+
+        const params = { term: this.searchTerm }
+        if (this.selectedAgentId) {
+          params.agent_id = this.selectedAgentId
+        }
+
+        const response = await searchPaginator.loadPage(1, params)
+
+        // Update people list with search results
+        this.people.updateList(response.data)
+        this.paginator = searchPaginator
+
+        EventBus.$emit(
+          "widgetContentLoaded",
+          this.subscriber,
+          this.people.list.length,
+        )
+      } catch (error) {
+        if (error.message !== "Request cancelled") {
+          console.error("Search error:", error)
+        }
+      } finally {
+        this.isSearching = false
+      }
+    },
+
+    onSearchEvent(searchTerm) {
+      // Update search term if it came from widget
+      if (searchTerm !== this.searchTerm) {
+        this.searchTerm = searchTerm
+      }
+      // The watch on searchTerm will handle the actual search
+    },
+
+    onEndSearchEvent() {
+      this.searchTerm = ""
+      // The watch will trigger showAllEntries
+    },
+
     reloadList(subscriber, data) {
       if (subscriber !== this.subscriber) {
         return
@@ -377,56 +435,48 @@ export default {
         this.people.list.length,
       )
     },
-    searching(searchTerm) {
-      this.people.search(searchTerm)
-    },
-    endSearching() {
-      this.people.showAll()
-    },
+
     detail(id) {
       this.$router.push({ path: "/people/" + id })
     },
-    getClientList(pageNumber = 1) {
-      const params = this.searching ? { term: this.searchTerm } : {}
+
+    async getClientList(pageNumber = 1) {
+      const params = {}
+
+      if (this.isSearching && this.searchTerm) {
+        params.term = this.searchTerm
+      }
+
       if (this.selectedAgentId) {
         params.agent_id = this.selectedAgentId
       }
 
-      this.paginator
-        .loadPage(pageNumber, params)
-        .then((response) => {
-          this.people.updateList(response.data)
+      try {
+        const response = await this.paginator.loadPage(pageNumber, params)
+        this.people.updateList(response.data)
 
-          // Update pagination data when filtering by agent
-          if (this.selectedAgentId) {
-            // For filtered results, update pagination to reflect actual filtered count
-            this.paginator.totalEntries = response.data.length
-            this.paginator.currentPage = 1
-            this.paginator.perPage = response.data.length
-            this.paginator.totalPage = 1
-            this.paginator.from = 1
-            this.paginator.to = response.data.length
-
-            // Create a proper Paginator instance for the people to force Widget re-render
-            const filteredPaginator = new Paginator(resources.person.list)
-            filteredPaginator.totalEntries = response.data.length
-            filteredPaginator.currentPage = 1
-            filteredPaginator.perPage = response.data.length
-            filteredPaginator.totalPage = 1
-            filteredPaginator.from = 1
-            filteredPaginator.to = response.data.length
-
-            // Force the paginator to be reactive
-            this.$set(this.people, "paginator", filteredPaginator)
-
-            // Force a re-render by updating the key
-            this.key++
-          }
-        })
-        .catch((error) => {
-          console.error("Error loading client list:", error)
-        })
+        if (this.selectedAgentId) {
+          // Update pagination for filtered results
+          this.updateFilteredPagination(response.data.length)
+        }
+      } catch (error) {
+        console.error("Error loading client list:", error)
+      }
     },
+
+    updateFilteredPagination(count) {
+      const filteredPaginator = new Paginator(resources.person.list)
+      filteredPaginator.totalEntries = count
+      filteredPaginator.currentPage = 1
+      filteredPaginator.perPage = count
+      filteredPaginator.totalPage = 1
+      filteredPaginator.from = 1
+      filteredPaginator.to = count
+
+      this.$set(this.people, "paginator", filteredPaginator)
+      this.widgetKey++
+    },
+
     deviceList(devices) {
       return devices.reduce((acc, curr, index, arr) => {
         if (index !== arr.length - 1) {
@@ -440,38 +490,29 @@ export default {
       }, "")
     },
 
-    doSearch(searchTerm) {
-      this.searching = true
-
-      this.paginator = new Paginator(resources.person.search)
-
-      this.paginator.loadPage(1, { term: searchTerm }).then((response) => {
-        this.clientList = response.data
-      })
-    },
     showAllEntries() {
       this.searchTerm = ""
       this.paginator = new Paginator(resources.person.list)
-      this.searching = false
-      this.currentPage = 0
+      this.isSearching = false
       this.getClientList()
     },
-    clearSearch() {
-      this.searchTerm = ""
-    },
+
     async exportDebts() {
       try {
         const response =
           await this.outstandingDebtsExportService.exportOutstandingDebts()
+
         const blob = new Blob([response.data])
         const downloadUrl = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = downloadUrl
+
         const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
-        a.download = fileNameMatch
-          ? fileNameMatch[1]
-          : "export_customers_debts.xlsx"
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          "export.xlsx"
+
+        a.download = filename
         document.body.appendChild(a)
         a.click()
         a.remove()
@@ -483,15 +524,27 @@ export default {
         )
       }
     },
+
+    async loadSupportingData() {
+      // Run all these in parallel without blocking
+      await Promise.allSettled([
+        this.loadMainSettings(),
+        this.loadAgents(),
+        this.loadMiniGrids(),
+        this.loadCities(),
+      ])
+    },
+
     async loadMainSettings() {
       try {
         const settings = await this.mainSettingsService.list()
         this.exportFilters.currency = settings.currency || "TSZ"
-        this.exportFilters.timeZone = "UTC" // Default timezone
+        this.exportFilters.timeZone = "UTC"
       } catch (e) {
         console.error("Failed to load main settings:", e)
       }
     },
+
     async loadAgents() {
       try {
         const response = await this.agentService.repository.list()
@@ -501,6 +554,7 @@ export default {
         console.error("Failed to load agents:", e)
       }
     },
+
     async loadMiniGrids() {
       try {
         await this.miniGridService.getMiniGrids()
@@ -508,6 +562,7 @@ export default {
         console.error("Failed to load mini grids:", error)
       }
     },
+
     async loadCities() {
       try {
         await this.cityService.getCities()
@@ -515,13 +570,13 @@ export default {
         console.error("Failed to load cities:", error)
       }
     },
+
     async exportCustomers() {
       try {
         const data = {
           format: this.exportFilters.format,
         }
 
-        // Add optional filters if they are set (check for empty strings)
         if (this.exportFilters.isActive !== "") {
           data.isActive = this.exportFilters.isActive
         }
@@ -539,19 +594,18 @@ export default {
         }
 
         const response = await this.customerExportService.exportCustomers(data)
+
         const blob = new Blob([response.data])
         const downloadUrl = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = downloadUrl
+
         const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          (this.exportFilters.format === "excel" ? "export.xlsx" : "export.csv")
 
-        const defaultFileName =
-          this.exportFilters.format === "excel"
-            ? "export_customers.xlsx"
-            : "export_customers.csv"
-        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
-
+        a.download = filename
         document.body.appendChild(a)
         a.click()
         a.remove()
@@ -562,21 +616,14 @@ export default {
         this.alertNotify("error", "Error occurred while exporting customers")
       }
     },
+
     filterByAgent() {
-      if (this.selectedAgentId) {
-        // Reset pagination when filtering
-        this.paginator.currentPage = 1
-        this.getClientList(1)
-      } else {
-        // When clearing filter, restore normal pagination
-        this.paginator = new Paginator(resources.person.list)
-        // Also reset the people paginator to restore normal pagination display
-        this.people.paginator = this.paginator
-        this.getClientList(1)
-      }
-      // Force widget re-render to update pagination display
+      this.paginator = new Paginator(resources.person.list)
+      this.paginator.currentPage = 1
+      this.getClientList(1)
       this.widgetKey++
     },
+
     getAgentName(client) {
       if (
         client.agent_sold_appliance &&
@@ -584,13 +631,11 @@ export default {
         client.agent_sold_appliance.assigned_appliance.agent
       ) {
         const agentId = client.agent_sold_appliance.assigned_appliance.agent.id
-        // Find the agent in our loaded agent list
         const agent = this.agentService.list.find((a) => a.id === agentId)
         if (agent) {
-          const agentName = agent.person
+          return agent.person
             ? `${agent.person.name} ${agent.person.surname}`
             : agent.email || "-"
-          return agentName
         }
       }
       return "-"
@@ -605,7 +650,6 @@ export default {
   border: 1px solid rgba(#000, 0.12);
 }
 
-// Demo purposes only
 .md-drawer {
   width: 230px;
   max-width: calc(100vw - 125px);

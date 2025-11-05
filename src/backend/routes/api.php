@@ -269,9 +269,7 @@ Route::group(['prefix' => 'sms-variable-default-value'], static function () {
 // Reports
 Route::group(['prefix' => 'reports', 'middleware' => 'jwt.verify'], function () {
     Route::get('/', [ReportController::class, 'index']);
-});
-Route::group(['prefix' => 'report-downloading'], function () {
-    Route::get('/{id}/download/{slug}', [ReportController::class, 'download']);
+    Route::get('/download/{id}', [ReportController::class, 'download']);
 });
 // Revenue
 Route::group(['prefix' => 'revenue', 'middleware' => 'jwt.verify'], static function () {

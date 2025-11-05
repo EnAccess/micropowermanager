@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Storage;
 use MPM\OutstandingDebts\OutstandingDebtsExportService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -14,8 +15,10 @@ class OutstandingDebtsExportController {
     ) {}
 
     public function download(): BinaryFileResponse {
-        $path = $this->outstandingDebtsExportService->createReport(CarbonImmutable::now());
+        $pathToSpreadSheet = $this->outstandingDebtsExportService->createReport(CarbonImmutable::now());
 
-        return response()->download($path);
+        $path = Storage::disk('local')->path($pathToSpreadSheet);
+
+        return response()->download($path, 'outstanding_debts_export_'.now()->format('Ymd_His').'.xlsx');
     }
 }
