@@ -114,6 +114,7 @@ MicroPowerManager uses Laravel's Trusted Proxy feature to correctly handle reque
 2. **The application will automatically use this value** via the `src/backend/config/trustedproxy.php` config file.
 
 3. **Recommended values:**
+
    - **GCP:** `35.191.0.0/16,130.211.0.0/22`
    - **AWS:** Use the documented AWS ELB IP ranges or `*` if you are behind a private network
    - **Development:** `127.0.0.1` or your proxy IP
@@ -136,12 +137,10 @@ While it is possible to use volume mounts in Kubernetes Cloud deployments too, i
 
 MicroPowerManager stores various types of files including:
 
-- **Reports and Exports**: CSV and Excel files generated for data exports
-- **PDF Documents**: Generated reports and invoices
+- **Reports and Exports**: CSV and Excel files generated for periodic data reports and exports
+- **Ticket Reports**: Outsourced ticket payout reports
 - **Certificates**: SSL certificates for device integrations (e.g., MicroStar meters)
-- **Geographic Data**: Cluster location and mapping data
 - **Prospect Data**: Customer prospect files and extracts
-- **Ticket Reports**: Outsourced ticket reports
 
 ### Storage Configuration
 
