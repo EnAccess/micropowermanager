@@ -25,29 +25,6 @@ class TicketOutsourcePayoutReportController {
         return TicketResource::make($this->TicketOutsourcePayoutReportService->getAll($limit));
     }
 
-    /**
-     * Generates a Ticket Outsource Payout report file and stores it.
-     *
-     * @throws Exception
-     */
-    public function outsource(Request $request): TicketResource {
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-
-        $tickets = $this->ticketService->getForOutsourceReport($startDate, $endDate);
-
-        $filePath = $this->TicketOutsourcePayoutReportService->createExcelSheet($startDate, $endDate, $tickets);
-
-        $TicketOutsourcePayoutReportData = [
-            'date' => date('Y-m', strtotime($startDate)),
-            'path' => $filePath,
-        ];
-
-        return TicketResource::make(
-            $this->TicketOutsourcePayoutReportService->create($TicketOutsourcePayoutReportData)
-        );
-    }
-
     public function download(int $id): StreamedResponse {
         $report = $this->TicketOutsourcePayoutReportService->getById($id);
         $relativePath = $report->path;
