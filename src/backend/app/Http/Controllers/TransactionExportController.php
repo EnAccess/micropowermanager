@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\MainSettingsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use MPM\Transaction\Export\TransactionExportService;
 use MPM\Transaction\TransactionService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -43,7 +44,7 @@ class TransactionExportController {
             $serialNumber,
             $tariffId,
             $transactionProvider,
-            $status,
+            (int) $status,
             $fromDate,
             $toDate,
         );
@@ -51,9 +52,11 @@ class TransactionExportController {
         $this->transactionExportService->setTransactionData($data);
         $this->transactionExportService->setExportingData();
         $this->transactionExportService->writeTransactionData();
-        $path = $this->transactionExportService->saveSpreadSheet();
+        $pathToSpreadSheet = $this->transactionExportService->saveSpreadSheet();
 
-        return response()->download($path, 'transactions'.$fromDate.'-'.$toDate.'.xlsx');
+        $path = Storage::disk('local')->path($pathToSpreadSheet);
+
+        return response()->download($path, 'transaction_export_'.now()->format('Ymd_His').'.xlsx');
     }
 
     public function downloadCsv(Request $request): BinaryFileResponse {
@@ -67,8 +70,10 @@ class TransactionExportController {
         $this->transactionExportService->setCurrency($mainSettings->currency);
         $transactionService = $this->transactionService->getRelatedService($type);
         $data = $transactionService->search(
+            null,
+            null,
             $transactionProvider,
-            $status,
+            (int) $status,
             $fromDate,
             $toDate,
         );
@@ -77,8 +82,8 @@ class TransactionExportController {
         $headers = ['Status', 'Payment Service', 'Customer', 'Serial Number', 'Amount', 'Type', 'Date'];
         $csvPath = $this->transactionExportService->saveCsv($headers);
 
-        return response()->download($csvPath, 'transactions'.$fromDate.'-'.$toDate.'.csv', [
-            'Content-Type' => 'text/csv',
-        ]);
+        $path = Storage::disk('local')->path($csvPath);
+
+        return response()->download($path, 'transaction_export_'.now()->format('Ymd_His').'.csv');
     }
 }

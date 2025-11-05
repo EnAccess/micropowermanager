@@ -61,16 +61,14 @@
                     <md-option value="" disabled selected>
                       -- {{ $tc("words.select") }} --
                     </md-option>
-                    <template v-for="employee in employees">
-                      <md-option
-                        :key="employee.id"
-                        v-if="employee.person"
-                        :value="employee.id"
-                      >
-                        {{ employee.person.name }}
-                        {{ employee.person.surname }}
-                      </md-option>
-                    </template>
+                    <md-option
+                      v-for="employee in employees"
+                      :key="employee.id"
+                      :value="employee.id"
+                    >
+                      {{ employee.name }}
+                      {{ employee.surname }}
+                    </md-option>
                   </md-select>
                   <span class="md-error">
                     {{ errors.first($tc("words.employee")) }}

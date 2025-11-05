@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\People\Export\PersonExportService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PersonExportController extends Controller {
@@ -28,13 +29,16 @@ class PersonExportController extends Controller {
         $village = $request->get('village');
         $deviceType = $request->get('deviceType');
         $isActive = $request->get('isActive');
-        $status = $request->get('status');
-        $people = $this->personService->getAllForExport($miniGrid, $village, $deviceType, $isActive, $status);
+        $isActive = $isActive === 'true' ? true : ($isActive === 'false' ? false : null);
+
+        $people = $this->personService->getAllForExport($miniGrid, $village, $deviceType, $isActive);
         $this->peopleExportService->createSpreadSheetFromTemplate($this->peopleExportService->getTemplatePath());
         $this->peopleExportService->setPeopleData($people);
         $this->peopleExportService->setExportingData();
         $this->peopleExportService->writePeopleData();
-        $path = $this->peopleExportService->saveSpreadSheet();
+        $pathToSpreadSheet = $this->peopleExportService->saveSpreadSheet();
+
+        $path = Storage::disk('local')->path($pathToSpreadSheet);
 
         return response()->download($path, 'customer_export_'.now()->format('Ymd_His').'.xlsx');
     }
@@ -44,17 +48,18 @@ class PersonExportController extends Controller {
         $village = $request->get('village');
         $deviceType = $request->get('deviceType');
         $isActive = $request->get('isActive');
-        $status = $request->get('status');
 
-        $people = $this->personService->getAllForExport($miniGrid, $village, $deviceType, $isActive, $status);
+        $isActive = $isActive === 'true' ? true : ($isActive === 'false' ? false : null);
+
+        $people = $this->personService->getAllForExport($miniGrid, $village, $deviceType, $isActive);
 
         $this->peopleExportService->setPeopleData($people);
         $this->peopleExportService->setExportingData();
         $headers = ['Title', 'Name', 'Surname', 'Birth Date', 'Sex', 'Email', 'Phone', 'City', 'Device Serial', 'Agent Name'];
         $csvPath = $this->peopleExportService->saveCsv($headers);
 
-        return response()->download($csvPath, 'customer_export_'.now()->format('Ymd_His').'.csv', [
-            'Content-Type' => 'text/csv',
-        ]);
+        $path = Storage::disk('local')->path($csvPath);
+
+        return response()->download($path, 'customer_export_'.now()->format('Ymd_His').'.csv');
     }
 }

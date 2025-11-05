@@ -135,28 +135,14 @@
                 </div>
 
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('birthDate'),
-                    }"
-                  >
-                    <md-datepicker
-                      id="birth-date"
-                      name="birthDate"
-                      md-immediately
-                      v-model="agentService.agent.birthday"
-                      v-validate="'required|date_format:YYYY-MM-DD'"
-                      :data-vv-as="$tc('words.birthday')"
-                      :md-close-on-blur="false"
-                    >
-                      <label for="birth-date">
-                        {{ $tc("words.birthday") }} :
-                      </label>
-                    </md-datepicker>
-                    <span class="md-error">
-                      {{ errors.first("birthDate") }}
-                    </span>
-                  </md-field>
+                  <label>{{ $tc("words.birthday") }}</label>
+                  <md-datepicker
+                    id="birth-date"
+                    name="birthDate"
+                    md-immediately
+                    v-model="agentService.agent.birthday"
+                    :md-close-on-blur="false"
+                  ></md-datepicker>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
@@ -372,23 +358,58 @@ export default {
     async selectNationality(miniGridId) {
       this.selectedMiniGridId = miniGridId
     },
+    normalizeDateToISO(date) {
+      if (!date) return null
+      if (date instanceof Date && !isNaN(date.getTime())) {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, "0")
+        const day = String(date.getDate()).padStart(2, "0")
+        return `${year}-${month}-${day}`
+      }
+      if (typeof date === "string") {
+        const s = date.trim()
+        if (!s) return null
+        if (s.toLowerCase().includes("invalid")) return null
+        const parsed = new Date(s)
+        if (!isNaN(parsed.getTime())) {
+          const year = parsed.getFullYear()
+          const month = String(parsed.getMonth() + 1).padStart(2, "0")
+          const day = String(parsed.getDate()).padStart(2, "0")
+          return `${year}-${month}-${day}`
+        }
+      }
+      return null
+    },
+
     async saveAgent() {
       this.firstStepClicked = true
       let validator = await this.$validator.validateAll()
       if (!this.phone.valid) return
-      if (validator) {
-        this.loading = true
-        try {
-          await this.agentService.createAgent()
-          this.loading = false
-          this.hide()
-          this.alertNotify("success", this.$tc("phrases.newAgent", 1))
-        } catch (e) {
-          this.loading = false
-          this.alertNotify("error", e.message)
+      if (!validator) return
+
+      this.loading = true
+      try {
+        const normalized = this.normalizeDateToISO(
+          this.agentService.agent.birthday,
+        )
+        this.agentService.agent.birth_date = normalized
+        if ("birthday" in this.agentService.agent) {
+          delete this.agentService.agent.birthday
         }
+
+        const created = await this.agentService.createAgent()
+        this.$emit("agent-added", created)
+        EventBus.$emit("agentCreated", created)
+
+        this.alertNotify("success", this.$tc("phrases.agentCreatedSuccess"))
         this.$refs["agentForm"].reset()
         this.confirmPassword = null
+        this.agentService.agent = {}
+        this.hide()
+      } catch (e) {
+        this.alertNotify("error", e.message || e)
+      } finally {
+        this.loading = false
       }
     },
     validatePhone(phone) {

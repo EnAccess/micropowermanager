@@ -101,6 +101,37 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 | `PUSHER_APP_SECRET`  | **Required** (If Pusher is used) | Pusher App secret.                    |
 | `PUSHER_APP_CLUSTER` | **Required** (If Pusher is used) | Pusher App cluster. For example `eu`. |
 
+### File Storage
+
+MicroPowerManager supports multiple storage backends for file storage. Configure the following environment variables based on your chosen storage provider.
+
+#### Storage Configuration
+
+| Environment Variable | Default | Description                                                |
+| -------------------- | ------- | ---------------------------------------------------------- |
+| `FILESYSTEM_DISK`    | `local` | The default storage disk to use (`local`, `s3`, or `gcs`). |
+
+#### Amazon S3 Storage
+
+| Environment Variable          | Default | Description                                                                 |
+| ----------------------------- | ------- | --------------------------------------------------------------------------- |
+| `AWS_ACCESS_KEY_ID`           | `null`  | Your AWS access key ID.                                                     |
+| `AWS_SECRET_ACCESS_KEY`       | `null`  | Your AWS secret access key.                                                 |
+| `AWS_DEFAULT_REGION`          | `null`  | The AWS region where your S3 bucket is located.                             |
+| `AWS_BUCKET`                  | `null`  | The name of your S3 bucket.                                                 |
+| `AWS_USE_PATH_STYLE_ENDPOINT` | `false` | Set to `true` if using S3-compatible services that require path-style URLs. |
+
+#### Google Cloud Storage
+
+| Environment Variable          | Default | Description                                                                                                                  |
+| ----------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `GOOGLE_CLOUD_PROJECT_ID`     | `null`  | Your Google Cloud project ID.                                                                                                |
+| `GOOGLE_CLOUD_STORAGE_BUCKET` | `null`  | The name of your GCS bucket.                                                                                                 |
+| `GOOGLE_CLOUD_KEY_FILE`       | `null`  | Path to a service account JSON key file.                                                                                     |
+| `GOOGLE_CLOUD_KEY_JSON`       | `null`  | Your service account JSON key file content (as a JSON string). Will be used only if `GOOGLE_CLOUD_KEY_FILE` is not provided. |
+
+To learn more about working with GCS in Laravel, the official [library](https://github.com/spatie/laravel-google-cloud-storage) will be a vaulable guide.
+
 ### Basic setup
 
 #### Logging

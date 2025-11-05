@@ -2,14 +2,13 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketOutsourceReportService;
 use Inensus\Ticket\Services\TicketService;
 use PhpOffice\PhpSpreadsheet\Exception;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TicketExportController {
     public function __construct(
@@ -49,24 +48,14 @@ class TicketExportController {
         );
     }
 
-    public function download(int $id): BinaryFileResponse|RedirectResponse {
+    public function download(int $id): StreamedResponse {
         $report = $this->ticketOutsourceReportService->getById($id);
-        $disk = config('filesystems.default');
         $relativePath = $report->path;
 
         if (!Storage::exists($relativePath)) {
             abort(404, 'Report file not found.');
         }
 
-        if ($disk === 'local') {
-            return response()->download(Storage::disk('local')->path($relativePath));
-        }
-
-        $temporaryUrl = Storage::temporaryUrl(
-            $relativePath,
-            now()->addMinutes(5)
-        );
-
-        return redirect()->away($temporaryUrl);
+        return Storage::download($relativePath);
     }
 }

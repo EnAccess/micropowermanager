@@ -20,18 +20,33 @@ For that reason from now on, every registered person will be mentioned as a **cu
 > This is so because originally MPM software was developed exclusively for mini-grid operations.
 > Further development work could now entail changing the name of the layer "mini-grid project" to "device catchment area".
 
-## Register a customer & device
+## Registering customers
 
-**Registering new mini-grid customers (electricity meter devices):** To register new mini-grid customers, the Customer Registration App has to be used.
-After introducing the customer’s basic details (name, phone number, etc.), the app allows you to select the village where the customer lives, the meter manufacturer and the energy tariff that should be assigned to the meter.
+New customers in MicroPowerManager can be registered using one of the following ways:
+
+1. **Customer Registration App:** After introducing the customer’s basic details (name, phone number, etc.), the app allows you to select the village where the customer lives, the meter manufacturer and the energy tariff that should be assigned to the meter.
+2. **MicroPowerManager's Web UI**: In the `Customer` section, click the ":heavy_plus_sign:" button and provide all relevant users details.
+3. **BulkRegistration plugin:** The [BulkRegistration plugin](/usage-guide/plugin-overview.html) allows users to upload a CSV file of customer data.
+4. **Third Party Plugins:** Some Third Party tools contain customer data, for example Meter manufacturer AMI's like SteamaCo or SparkMeter. Using MicroPowerManager's third party plugins for these users can import this users data into MicroPowerManager.
+
+## Registering Meters
 
 > [!NOTE]
-> While new customers can be created via the website interface and existing meter devices can be re-assigned to customers, new meter devices can only be registered via the mentioned Customer Registration App.
+> While new customers can be created via the website interface and existing meter devices can be re-assigned to customers, **new meter** devices can only be registered as described below.
+
+1. **Customer Registration App:** When the Customer Registration App is used to register a customer (see above) users have to option to also register a Meter at the same time by providing a Meter serial number.
+2. **BulkRegistration plugin:** The [BulkRegistration plugin](/usage-guide/plugin-overview.html) allows users to upload a CSV file of customer data. This will create Meter devices as applicable.
+3. **Third Party Plugins:** Some Third Party tools contain customer data, for example Meter manufacturer AMI's like SteamaCo or SparkMeter. Using MicroPowerManager's third party plugins for these users can import this users data into MicroPowerManager.
+
+## Registering devices
 
 **Registering SHSs and e-bike devices:** Registration of these devices can be done both via the Customer Registration App as well as the website interface.
 
-If user wants to use the app, there are two relevant inputs (on top of the usual customer data): 1) a dropdown menu listing all manufacturers integrated with MicroPowerManager (including both SHS and electricity meter manufacturers) and 2) an input field to insert the device serial number (kindly note that the app requests for "meter serial number" but in fact also refers to "SHS serial number" or "e-bike serial number", as applicable).
-Future development work would entail adapting this field name to a more generic "device serial number".
+If user wants to use the app, there are two relevant inputs (on top of the usual customer data):
+
+1. a dropdown menu listing all manufacturers integrated with MicroPowerManager (including both SHS and electricity meter manufacturers)
+2. an input field to insert the device serial number (kindly note that the app requests for "meter serial number" but in fact also refers to "SHS serial number" or "e-bike serial number", as applicable).
+   Future development work would entail adapting this field name to a more generic "device serial number".
 
 If user wants to register a new SHS or e-bike device via the website interface, applicable menu section should be clicked (left side bar, click on "Solar Home System" or "e-bike").
 Then click on the ":heavy_plus_sign:" button at the top right corner of the applicable screen and introduce requested data (device serial number, manufacturer, appliance (device) type.) Kindly check the "Solar Home Systems" and "E-bike" sections of the documentation to see a screenshot of the applicable menus.
