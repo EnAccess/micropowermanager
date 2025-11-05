@@ -17,7 +17,7 @@ class TicketOutsourcePayoutReportController {
     ) {}
 
     /**
-     * A list of stored book keeping data.
+     * A list of stored Ticket Outsource Payout reports.
      */
     public function index(Request $request): TicketResource {
         $limit = $request->input('per_page');
@@ -26,7 +26,7 @@ class TicketOutsourcePayoutReportController {
     }
 
     /**
-     * Generates a book keeping file and stores it.
+     * Generates a Ticket Outsource Payout report file and stores it.
      *
      * @throws Exception
      */
