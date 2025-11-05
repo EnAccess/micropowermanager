@@ -691,7 +691,7 @@ trait CreateEnvironments {
         }
     }
 
-    protected function createTicketOutsourceReport($ticketOutSourceReportCount = 1) {}
+    protected function createTicketOutsourcePayoutReport($TicketOutsourcePayoutReportCount = 1) {}
 
     protected function createTicketUser($ticketUserCount = 1, $tag = 'inensusinensus') {
         $ticketUserService = app()->make(TicketUserService::class);
