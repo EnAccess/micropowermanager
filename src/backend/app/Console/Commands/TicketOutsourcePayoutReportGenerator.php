@@ -2,24 +2,26 @@
 
 namespace App\Console\Commands;
 
+use App\Models\DatabaseProxy;
 use App\Models\Person\Person;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Inensus\Ticket\Models\TicketOutsourceReport;
+use Inensus\Ticket\Models\TicketOutsourcePayoutReport;
 use Inensus\Ticket\Services\TicketService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class OutsourceReportGenerator extends AbstractSharedCommand {
-    protected $signature = 'reports:outsource {--start-date=}';
-    protected $description = 'Create outsource reports';
+class TicketOutsourcePayoutReportGenerator extends AbstractSharedCommand {
+    protected $signature = 'reports:ticket-outsource-payout {--start-date=}';
+    protected $description = 'Create Ticket Outsource Payout reports';
 
     public function __construct(
         private TicketService $ticketService,
         private Spreadsheet $spreadsheet,
-        private TicketOutsourceReport $outsourceReport,
+        private TicketOutsourcePayoutReport $outsourceReport,
     ) {
         parent::__construct();
     }
@@ -34,9 +36,14 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
             ->format('Y-m-d');
 
         try {
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
+            $fileName = "ticket_outsource_payout_report-{$startDay}-{$toDay}.xlsx";
+            $path = "reports/{$companyId}/ticket_outsource_payout/{$fileName}";
+
             $tickets = $this->ticketService->getForOutsourceReportForGeneration($startDay, $toDay);
-            $fileName = "Outsourcing-{$startDay}-{$toDay}.xlsx";
-            $relativePath = "outsourcing/{$fileName}";
 
             $sheet = $this->spreadsheet->getActiveSheet();
             $sheet->setTitle('payments - '.date('Y-m', strtotime($startDay)));
@@ -66,12 +73,12 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
             $writer = new Xlsx($this->spreadsheet);
             $writer->save($tempFile);
 
-            Storage::put($relativePath, file_get_contents($tempFile));
+            Storage::put($path, file_get_contents($tempFile));
 
             unlink($tempFile);
 
             $this->outsourceReport->date = "{$startDay}---{$toDay}";
-            $this->outsourceReport->path = $relativePath;
+            $this->outsourceReport->path = $path;
             $this->outsourceReport->save();
 
             $this->info("Outsource report successfully generated: {$fileName}");

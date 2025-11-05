@@ -1,8 +1,4 @@
 export let resources = {
-  bookKeeping: {
-    list: "/tickets/api/export",
-    download: "/tickets/api/export/download/", //{id}/book-keeping
-  },
   sms: {
     list: "/api/sms",
     byPhone: "/api/sms/phone",
@@ -19,7 +15,7 @@ export let resources = {
     monthly: {
       list: "/api/reports?type=monthly",
     },
-    download: "/api/reports/", //{id}/download
+    download: "/api/reports/", //download/{id}
   },
   user: {
     list: "/api/users",
@@ -35,7 +31,6 @@ export let resources = {
     list: "/api/cities",
     create: "/api/cities",
   },
-
   admin: {
     list: "/api/users",
     login: "/api/auth/login",
@@ -71,7 +66,10 @@ export let resources = {
     labels: "/tickets/api/labels",
     comments: "/tickets/api/tickets/comments",
   },
-
+  ticketOursourcePayoutReports: {
+    list: "/tickets/api/reports",
+    download: "/tickets/api/reports/download/", //{id}
+  },
   transactions: {
     list: {
       all: "/api/transactions",

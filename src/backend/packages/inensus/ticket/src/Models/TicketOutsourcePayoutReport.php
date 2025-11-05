@@ -3,7 +3,7 @@
 namespace Inensus\Ticket\Models;
 
 use App\Models\Base\BaseModel;
-use Database\Factories\Inensus\Ticket\Models\TicketOutsourceReportFactory;
+use Database\Factories\Inensus\Ticket\Models\TicketOutsourcePayoutReportFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
@@ -16,9 +16,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class TicketOutsourceReport extends BaseModel {
-    /** @use HasFactory<TicketOutsourceReportFactory> */
+class TicketOutsourcePayoutReport extends BaseModel {
+    /** @use HasFactory<TicketOutsourcePayoutReportFactory> */
     use HasFactory;
 
-    protected $table = 'ticket_outsource_reports';
+    protected $table = 'ticket_outsource_payout_reports';
 }

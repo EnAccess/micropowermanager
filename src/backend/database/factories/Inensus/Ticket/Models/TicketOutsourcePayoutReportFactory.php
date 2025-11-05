@@ -3,11 +3,11 @@
 namespace Database\Factories\Inensus\Ticket\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Inensus\Ticket\Models\TicketOutsourceReport;
+use Inensus\Ticket\Models\TicketOutsourcePayoutReport;
 
-/** @extends Factory<TicketOutsourceReport> */
-class TicketOutsourceReportFactory extends Factory {
-    protected $model = TicketOutsourceReport::class;
+/** @extends Factory<TicketOutsourcePayoutReport> */
+class TicketOutsourcePayoutReportFactory extends Factory {
+    protected $model = TicketOutsourcePayoutReport::class;
 
     /**
      * Define the model's default state.
