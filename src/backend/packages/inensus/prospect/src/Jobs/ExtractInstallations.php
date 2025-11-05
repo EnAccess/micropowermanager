@@ -8,6 +8,7 @@ use App\Models\Device;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Prospect\Models\ProspectExtractedFile;
+use Inensus\Prospect\Services\ProspectInstallationTransformer;
 
 class ExtractInstallations extends AbstractJob {
     /**
@@ -73,95 +74,23 @@ class ExtractInstallations extends AbstractJob {
             $devices = $query->get();
             Log::info('Found '.$devices->count().' devices to process');
 
+            $transformer = app(ProspectInstallationTransformer::class);
             $installations = [];
 
             foreach ($devices as $device) {
                 if (!$device->device()->exists()) {
                     continue;
                 }
-                $deviceData = $device->device;
-                $deviceData->load('manufacturer');
 
-                $person = $device->person()->first();
-                $assetPerson = $device->assetPerson;
-                $customerIdentifier = $person ? trim(($person->name ?? '').' '.($person->surname ?? '')) : 'Unknown Customer';
-
-                $primaryAddress = null;
-                if ($person && $person->addresses()->exists()) {
-                    $primaryAddress = $person->addresses->where('is_primary', 1)->first() ?: $person->addresses->first();
+                try {
+                    $installations[] = $transformer->transform($device);
+                } catch (\Exception $e) {
+                    Log::warning('Failed to transform device', [
+                        'device_id' => $device->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                    continue;
                 }
-
-                $latitude = null;
-                $longitude = null;
-
-                $geoInfo = $primaryAddress ? $primaryAddress->geo : null;
-                if ($geoInfo && $geoInfo->points) {
-                    $coordinates = explode(',', $geoInfo->points);
-                    if (count($coordinates) >= 2) {
-                        $latitude = (float) trim($coordinates[0]);
-                        $longitude = (float) trim($coordinates[1]);
-                    }
-                }
-
-                $deviceCategory = match ($device->device_type) {
-                    'meter' => 'meter',
-                    'solar_home_system' => 'solar_home_system',
-                    default => 'other',
-                };
-
-                $manufacturer = $deviceData->manufacturer ?? null;
-
-                $installations[] = [
-                    'customer_external_id' => $customerIdentifier,
-                    'seller_agent_external_id' => $customerIdentifier,
-                    'installer_agent_external_id' => $customerIdentifier,
-                    'product_common_id' => null,
-                    'device_external_id' => (string) $device->id,
-                    'parent_external_id' => null,
-                    'account_external_id' => null,
-                    'battery_capacity_wh' => null,
-                    'usage_category' => 'household',
-                    'usage_sub_category' => null,
-                    'device_category' => $deviceCategory,
-                    'ac_input_source' => null,
-                    'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
-                    'firmware_version' => null,
-                    'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
-                    'model' => null,
-                    'primary_use' => null,
-                    'rated_power_w' => null,
-                    'pv_power_w' => null,
-                    'serial_number' => $deviceData->serial_number ?? '',
-                    'site_name' => $primaryAddress->street ?? null,
-                    'payment_plan_amount_financed_principal' => null,
-                    'payment_plan_amount_financed_interest' => null,
-                    'payment_plan_amount_financed_total' => null,
-                    'payment_plan_amount_down_payment' => $assetPerson->down_payment ?? null,
-                    'payment_plan_cash_price' => $assetPerson->total_cost ?? null,
-                    'payment_plan_currency' => null,
-                    'payment_plan_installment_amount' => null,
-                    'payment_plan_number_of_installments' => $assetPerson->rate_count ?? null,
-                    'payment_plan_installment_period_days' => null,
-                    'payment_plan_days_financed' => null,
-                    'payment_plan_days_down_payment' => null,
-                    'payment_plan_category' => 'paygo',
-                    'purchase_date' => $device->created_at->format('Y-m-d'),
-                    'installation_date' => $device->created_at->format('Y-m-d'),
-                    'repossession_date' => null,
-                    'paid_off_date' => null,
-                    'repossession_category' => null,
-                    'write_off_date' => null,
-                    'write_off_reason' => null,
-                    'is_test' => false,
-                    'latitude' => $latitude,
-                    'longitude' => $longitude,
-                    'country' => $primaryAddress->city->country->country_code ?? null,
-                    'location_area_1' => $primaryAddress->city->country->country_name ?? null,
-                    'location_area_2' => $primaryAddress->city->name ?? null,
-                    'location_area_3' => null,
-                    'location_area_4' => null,
-                    'location_area_5' => null,
-                ];
             }
 
             Log::info('Successfully processed '.count($installations).' installations');
