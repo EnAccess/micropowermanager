@@ -93,11 +93,7 @@ After selecting your connection type, you'll see the API configuration page with
 
 ![API Configuration](images/prospect-api-configuration.png)
 
-**Key Information Displayed:**
-
-- POST URL: `https://demo.prospect.energy/api/in/installations`
-- Authorization Header: `Bearer 99b90db993b83c303e4f7511977a8d46`
-- API Documentation: `https://demo.prospect.energy/api-docs/index.html`
+This page displays the key information you'll need to configure the integration, including the POST URL endpoint for sending data, the authorization bearer token required for API authentication, and a link to the complete API documentation.
 
 ### Step 8: Activate Data Source
 
@@ -130,7 +126,7 @@ After enabling the plugin, you need to configure it with the credentials obtaine
 
 1. Navigate to the **Overview** page (this is typically in the Prospect plugin section)
 2. Enter the **Authorization Token** that you obtained from Step 8 of the Prospect platform
-3. Specify the **BASE_URL** - this should be the API endpoint URL shown in Step 7 (e.g., `https://demo.prospect.energy/api/v1/in/installations`)
+3. Specify the **BASE_URL** - this should be the API endpoint URL shown in Step 7 (e.g., `https://demo.prospect.energy/api/v1/in/`)
 4. **Note**: Currently, we are working with installations data. More data types will be added in future updates
 5. Click **Save** to store your configuration
 
@@ -161,59 +157,6 @@ Once configured, the Prospect plugin will:
 4. Run according to your specified schedule (hourly, daily, weekly, or yearly)
 
 The integration handles all data synchronization automatically, so you don't need to manually export or import data.
-
-## Data Field Descriptions
-
-### Customer & Agent Information
-
-- `customer_external_id`: Unique identifier for the customer
-- `seller_agent_external_id`: ID of the selling agent
-- `installer_agent_external_id`: ID of the installation agent
-
-### Device Specifications
-
-- `device_external_id`: Unique device identifier
-- `product_common_id`: Product model/type identifier
-- `battery_capacity_wh`: Battery capacity in watt-hours
-- `rated_power_w`: Device power rating in watts
-- `pv_power_w`: Solar panel power capacity
-- `serial_number`: Device serial number
-- `manufacturer`: Device manufacturer name
-- `model`: Device model number
-- `firmware_version`: Current firmware version
-
-### Usage Information
-
-- `usage_category`: Primary usage type (e.g., household, commercial)
-- `usage_sub_category`: Specific use case (e.g., farmer, clinic)
-- `device_category`: Device type (e.g., solar_home_system)
-- `primary_use`: Main application (e.g., cooking, lighting)
-
-### Payment Plan Details
-
-- `payment_plan_cash_price`: Full cash price
-- `payment_plan_amount_financed_principal`: Principal amount financed
-- `payment_plan_amount_financed_interest`: Interest amount
-- `payment_plan_amount_down_payment`: Down payment amount
-- `payment_plan_currency`: Currency code (e.g., ZMW, USD)
-- `payment_plan_installment_amount`: Individual installment amount
-- `payment_plan_number_of_installments`: Total number of payments
-- `payment_plan_category`: Payment type (e.g., paygo, loan)
-
-### Important Dates
-
-- `purchase_date`: Date of purchase
-- `installation_date`: Date of installation
-- `paid_off_date`: Date fully paid (if applicable)
-- `repossession_date`: Date of repossession (if applicable)
-- `write_off_date`: Date of write-off (if applicable)
-
-### Location Data
-
-- `latitude`: GPS latitude coordinate
-- `longitude`: GPS longitude coordinate
-- `country`: Country code
-- `location_area_1` through `location_area_5`: Hierarchical location data
 
 ## Project Management
 
@@ -251,8 +194,7 @@ The integration handles all data synchronization automatically, so you don't nee
 You can monitor the sync status by:
 
 1. Checking MPM logs for Prospect-related entries
-2. Viewing the sync status in the Prospect plugin settings page
-3. Verifying data appears in your Prospect project dashboard
+2. Verifying data appears in your Prospect project dashboard
 
 ### API Documentation
 
@@ -272,7 +214,7 @@ For technical support or questions regarding Prospect integration:
 
 - Review the API documentation
 - Check the Prospect platform help resources
-- Contact your system administrator for access-related issues
+- Contact the Prospect team for access-related issues
 
 ---
 
