@@ -7,6 +7,7 @@ namespace Inensus\PaystackPaymentProvider\Http\Controllers;
 use App\Models\MpmPlugin;
 use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inensus\PaystackPaymentProvider\Http\Resources\PaystackCredentialResource;
@@ -73,7 +74,7 @@ class PaystackCredentialController extends Controller {
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function generatePublicUrls(Request $request) {
         $companyId = $request->attributes->get('companyId');
@@ -94,7 +95,7 @@ class PaystackCredentialController extends Controller {
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function generateAgentPaymentUrl(Request $request) {
         $companyId = $request->attributes->get('companyId');

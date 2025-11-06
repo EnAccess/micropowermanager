@@ -126,19 +126,17 @@ class PaystackCompanyHashService {
     public function generateHashFromCompanyId(int $companyId): string {
         $hashids = $this->getHashids();
 
-        /** @phpstan-ignore-next-line */
         return $hashids->encode($companyId);
     }
 
     public function parseHashFromCompanyId(string $hash): ?int {
         try {
             $hashids = $this->getHashids();
-            /** @phpstan-ignore-next-line */
             $decoded = $hashids->decode($hash);
-            if (!is_array($decoded) || count($decoded) === 0) {
+            if (count($decoded) === 0) {
                 return null;
             }
-            $companyId = (int) $decoded[0];
+            $companyId = $decoded[0];
 
             return $companyId > 0 ? $companyId : null;
         } catch (\Throwable) {
@@ -146,15 +144,9 @@ class PaystackCompanyHashService {
         }
     }
 
-    /**
-     * @return Hashids
-     *
-     * @phpstan-ignore-next-line
-     */
     private function getHashids(): Hashids {
         $salt = $this->getHashSalt();
 
-        /** @phpstan-ignore-next-line */
         return new Hashids($salt, 8);
     }
 }

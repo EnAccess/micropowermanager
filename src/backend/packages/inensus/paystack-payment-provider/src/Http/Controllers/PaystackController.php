@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inensus\PaystackPaymentProvider\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class PaystackController extends Controller {
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function webhookCallback(Request $request, int $companyId) {
         try {
@@ -53,7 +54,7 @@ class PaystackController extends Controller {
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function verifyTransaction(Request $request, string $reference) {
         $result = $this->apiService->verifyTransaction($reference);
@@ -66,7 +67,7 @@ class PaystackController extends Controller {
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getTransactions(Request $request) {
         $perPage = (int) $request->input('per_page', 15);
@@ -76,7 +77,7 @@ class PaystackController extends Controller {
     }
 
     /**
-     * @return PaystackTransactionResource|\Illuminate\Http\JsonResponse
+     * @return PaystackTransactionResource|JsonResponse
      */
     public function getTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
@@ -89,7 +90,7 @@ class PaystackController extends Controller {
     }
 
     /**
-     * @return PaystackTransactionResource|\Illuminate\Http\JsonResponse
+     * @return PaystackTransactionResource|JsonResponse
      */
     public function updateTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);
@@ -112,7 +113,7 @@ class PaystackController extends Controller {
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function deleteTransaction(Request $request, int $id) {
         $transaction = $this->transactionService->getById($id);

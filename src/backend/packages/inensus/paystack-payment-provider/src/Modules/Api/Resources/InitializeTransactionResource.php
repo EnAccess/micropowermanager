@@ -7,7 +7,6 @@ namespace Inensus\PaystackPaymentProvider\Modules\Api\Resources;
 use Inensus\PaystackPaymentProvider\Models\PaystackCredential;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Modules\Api\RequestMethod;
-use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 
 class InitializeTransactionResource extends AbstractApiResource {
     public const RESPONSE_SUCCESS = true;
@@ -18,10 +17,6 @@ class InitializeTransactionResource extends AbstractApiResource {
     public function __construct(
         private PaystackCredential $paystackCredential,
         private PaystackTransaction $paystackTransaction,
-        /** @phpstan-ignore-next-line */
-        private ?PaystackCompanyHashService $hashService = null,
-        /** @phpstan-ignore-next-line */
-        private ?int $companyId = null,
     ) {}
 
     public function getRequestMethod(): string {
