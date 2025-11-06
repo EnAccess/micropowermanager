@@ -215,6 +215,8 @@
     "incomingTransactions": "Transactions entrantes",
     "isPrimary": "Est primaire",
     "jobTitle": "Titre du poste",
+    "generatePaymentLink": "Générer un lien de paiement",
+    "generatePaystackPaymentLink": "Générer un lien de paiement Paystack",
     "lastDataReceived": "Last Data Received",
     "lastPayment": "Dernier paiement",
     "lastReceipts": "Derniers reçus",

@@ -215,6 +215,8 @@
     "incomingTransactions": "အဝင် ေငလွ ဲမX 6များ",
     "isPrimary": "မူလ ြဖစ်ပါသလား",
     "jobTitle": "အလပု ်အကိုင်အမည်",
+    "generatePaymentLink": "ငွေပေးငွေယူလင့်ခ်ကို ဖန်တီးရန်",
+    "generatePaystackPaymentLink": "Paystack ငွေပေးငွေယူလင့်ခ်ကို ဖန်တီးရန်",
     "lastDataReceived": "Last Data Received",
     "lastPayment": "ေနာက်ဆံုးေငေွပးေချမ6",
     "lastReceipts": "ေနာက်ဆံုး လက်ခံြဖတ်ပိုင်းများ",

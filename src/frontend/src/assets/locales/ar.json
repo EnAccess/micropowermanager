@@ -215,6 +215,8 @@
     "incomingTransactions": "المعاملات الواردة",
     "isPrimary": "هو أساسي",
     "jobTitle": "اسم الوظيفة",
+    "generatePaymentLink": "إنشاء رابط الدفع",
+    "generatePaystackPaymentLink": "إنشاء رابط دفع Paystack",
     "lastDataReceived": "آخر بيانات تم استلامها",
     "lastPayment": "آخر دفعة",
     "lastReceipts": "آخر الإيصالات",

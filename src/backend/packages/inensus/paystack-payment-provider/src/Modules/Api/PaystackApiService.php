@@ -10,7 +10,6 @@ use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\PaystackPaymentProvider\Modules\Api\Exceptions\PaystackApiException;
 use Inensus\PaystackPaymentProvider\Modules\Api\Resources\InitializeTransactionResource;
 use Inensus\PaystackPaymentProvider\Modules\Api\Resources\VerifyTransactionResource;
-use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 use Inensus\PaystackPaymentProvider\Services\PaystackCredentialService;
 
 class PaystackApiService {
