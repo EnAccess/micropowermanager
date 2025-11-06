@@ -538,7 +538,7 @@ export default {
     async loadMainSettings() {
       try {
         const settings = await this.mainSettingsService.list()
-        this.exportFilters.currency = settings.currency || "TSZ"
+        this.exportFilters.currency = settings.currency || "TZS"
         this.exportFilters.timeZone = "UTC"
       } catch (e) {
         console.error("Failed to load main settings:", e)
