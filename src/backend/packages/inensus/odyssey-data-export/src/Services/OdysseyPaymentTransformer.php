@@ -22,7 +22,6 @@ class OdysseyPaymentTransformer {
         $latitude = null;
         $longitude = null;
         $customerCategory = null;
-        $siteId = null;
 
         /** @var Token|AssetRate|AccessRate|null $paidFor */
         $paidFor = $payment->paidFor;
@@ -41,19 +40,14 @@ class OdysseyPaymentTransformer {
                     $serialNumber = $underlying->serial_number;
                 }
 
-                // Get site ID (mini-grid name) from device owner
-                if ($device->person?->miniGrid?->name) {
-                    $siteId = $device->person->miniGrid->name;
-                }
-
                 // Geo
                 $geo = optional($device->address->geo);
                 if ($geo && !empty($geo->points)) {
                     // Expecting "lat,lng" or "lng,lat"; we assume "lat,lng"
                     $parts = explode(',', $geo->points);
                     if (count($parts) === 2) {
-                        $latitude = is_numeric($parts[0]) ? (string) $parts[0] : null;
-                        $longitude = is_numeric($parts[1]) ? (string) $parts[1] : null;
+                        $latitude = is_numeric($parts[0]) ? $parts[0] : null;
+                        $longitude = is_numeric($parts[1]) ? $parts[1] : null;
                     }
                 }
             }
@@ -71,17 +65,12 @@ class OdysseyPaymentTransformer {
                     $customerCategory = $underlying->connectionType?->name;
                 }
 
-                // Get site ID (mini-grid name) from device owner
-                if (!$siteId && $device->person?->miniGrid?->name) {
-                    $siteId = $device->person->miniGrid->name;
-                }
-
                 $geo = optional($device->address->geo);
                 if ($geo && !empty($geo->points)) {
                     $parts = explode(',', $geo->points);
                     if (count($parts) === 2) {
-                        $latitude = is_numeric($parts[0]) ? (string) $parts[0] : null;
-                        $longitude = is_numeric($parts[1]) ? (string) $parts[1] : null;
+                        $latitude = is_numeric($parts[0]) ? $parts[0] : null;
+                        $longitude = is_numeric($parts[1]) ? $parts[1] : null;
                     }
                 }
             }
@@ -106,11 +95,6 @@ class OdysseyPaymentTransformer {
                 if ($firstDevice && $firstDevice->device instanceof Meter) {
                     $customerCategory = $firstDevice->device->connectionType?->name;
                 }
-            }
-
-            // Fallback: use payer's mini-grid name as siteId if not set from device
-            if (!$siteId && $payer->miniGrid?->name) {
-                $siteId = $payer->miniGrid->name;
             }
         }
 
@@ -155,9 +139,6 @@ class OdysseyPaymentTransformer {
         }
         if ($longitude !== null) {
             $response['longitude'] = $longitude;
-        }
-        if ($siteId !== null) {
-            $response['siteId'] = $siteId;
         }
 
         return $response;
