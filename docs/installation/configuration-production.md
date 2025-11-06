@@ -136,12 +136,10 @@ While it is possible to use volume mounts in Kubernetes Cloud deployments too, i
 
 MicroPowerManager stores various types of files including:
 
-- **Reports and Exports**: CSV and Excel files generated for data exports
-- **PDF Documents**: Generated reports and invoices
+- **Reports and Exports**: CSV and Excel files generated for periodic data reports and exports
+- **Ticket Reports**: Outsourced ticket payout reports
 - **Certificates**: SSL certificates for device integrations (e.g., MicroStar meters)
-- **Geographic Data**: Cluster location and mapping data
 - **Prospect Data**: Customer prospect files and extracts
-- **Ticket Reports**: Outsourced ticket reports
 
 ### Storage Configuration
 
