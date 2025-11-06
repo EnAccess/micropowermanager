@@ -26,7 +26,3 @@ spec:
             - name: storage-data
               mountPath: /var/www/html/storage
               subPath: ""
-      volumes:
-        - name: storage-data
-          persistentVolumeClaim:
-            claimName: mpm-storage-pvc

@@ -8,7 +8,6 @@ resources:
   - deployments/mpm-frontend.yaml
   - deployments/mpm-scheduler.yaml
   - volume/mpm-storage-class.yaml
-  - volume/mpm-storage-pvc.yaml
   - deployments/redis.yaml
   - services/mpm-backend.yaml
   - services/mpm-frontend.yaml
