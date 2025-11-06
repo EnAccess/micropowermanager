@@ -81,23 +81,4 @@ abstract class AbstractSharedCommand extends Command {
             parent::execute($input, $output);
         });
     }
-
-    /**
-     * Get the company database.
-     */
-    protected function getCompanyDatabase(?string $companyId = null): CompanyDatabase {
-        try {
-            if ($companyId === null) {
-                $companyId = $this->option('company-id');
-            }
-
-            if ($companyId) {
-                return app(CompanyDatabase::class)->findByCompanyId((int) $companyId);
-            }
-
-            return app(CompanyDatabase::class)->newQuery()->first();
-        } catch (\Exception $e) {
-            throw new \Exception('Unable to find company database: '.$e->getMessage(), $e->getCode(), $e);
-        }
-    }
 }
