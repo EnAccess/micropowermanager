@@ -68,7 +68,7 @@ export class CredentialService {
 
         // Convert validation errors to user-friendly messages
         for (const field in validationErrors) {
-          if (validationErrors.hasOwnProperty(field)) {
+          if (Object.prototype.hasOwnProperty.call(validationErrors, field)) {
             errorMessages.push(...validationErrors[field])
           }
         }

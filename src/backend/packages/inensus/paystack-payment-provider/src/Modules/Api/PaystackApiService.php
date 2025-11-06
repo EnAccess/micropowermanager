@@ -17,7 +17,6 @@ class PaystackApiService {
     public function __construct(
         private PaystackApi $api,
         private PaystackCredentialService $credentialService,
-        private PaystackCompanyHashService $hashService,
     ) {}
 
     /**
@@ -25,27 +24,11 @@ class PaystackApiService {
      */
     public function initializeTransaction(PaystackTransaction $transaction, ?int $companyId = null): array {
         $credential = $this->credentialService->getCredentials();
-        $transactionResource = new InitializeTransactionResource($credential, $transaction, $this->hashService, $companyId);
-
-        // Log the outgoing request details
-        Log::info('Paystack Transaction Initialize Request', [
-            'url' => $transactionResource->getPaymentUri(),
-            'method' => $transactionResource->getRequestMethod(),
-            'headers' => $this->sanitizeHeaders($transactionResource->getHeaders()),
-            'body' => $transactionResource->getBodyData(),
-            'transaction_reference' => $transaction->getReferenceId(),
-            'transaction_amount' => $transaction->getAmount(),
-        ]);
+        $transactionResource = new InitializeTransactionResource($credential, $transaction);
 
         try {
             $response = $this->api->doRequest($transactionResource);
             $body = $response->getBodyAsArray();
-
-            // Log the response details
-            Log::info('Paystack Transaction Initialize Response', [
-                'body' => $body,
-                'transaction_reference' => $transaction->getReferenceId(),
-            ]);
 
             if ($body['status'] === InitializeTransactionResource::RESPONSE_SUCCESS) {
                 $reference = $body['data']['reference'] ?? '';
@@ -67,11 +50,6 @@ class PaystackApiService {
                     'error' => null,
                 ];
             }
-
-            Log::warning('Paystack Transaction Initialize Failed', [
-                'response_body' => $body,
-                'transaction_reference' => $transaction->getReferenceId(),
-            ]);
 
             return [
                 'redirectionUrl' => null,
@@ -136,21 +114,5 @@ class PaystackApiService {
                 'error' => $exception->getMessage(),
             ];
         }
-    }
-
-    /**
-     * Sanitize headers to remove sensitive information from logs.
-     *
-     * @param array<string, mixed> $headers
-     *
-     * @return array<string, mixed>
-     */
-    private function sanitizeHeaders(array $headers): array {
-        $sanitized = $headers;
-        if (isset($sanitized['Authorization'])) {
-            $sanitized['Authorization'] = 'Bearer ****';
-        }
-
-        return $sanitized;
     }
 }

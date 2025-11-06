@@ -17,6 +17,7 @@ class InitializeTransactionResource extends AbstractApiResource {
     public function __construct(
         private PaystackCredential $paystackCredential,
         private PaystackTransaction $paystackTransaction,
+        private ?int $companyId = null,
     ) {}
 
     public function getRequestMethod(): string {
@@ -97,6 +98,7 @@ class InitializeTransactionResource extends AbstractApiResource {
             'order_id' => $this->paystackTransaction->getOrderId(),
             'serial_id' => $this->paystackTransaction->getDeviceSerial(),
             'customer_id' => $this->paystackTransaction->getCustomerId(),
+            'company_id' => $this->companyId,
         ];
 
         // Add agent_id from transaction metadata if available
