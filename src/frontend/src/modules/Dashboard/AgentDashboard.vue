@@ -243,7 +243,7 @@ export default {
     },
     formatCurrency(amount) {
       const currency =
-        this.$store.getters["settings/getMainSettings"]?.currency || "TSZ"
+        this.$store.getters["settings/getMainSettings"]?.currency || "TZS"
       return this.readable(amount) + currency
     },
     // Add these new methods

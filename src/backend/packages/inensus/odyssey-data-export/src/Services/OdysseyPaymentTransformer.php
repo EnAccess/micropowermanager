@@ -19,7 +19,6 @@ class OdysseyPaymentTransformer {
     public function transform(PaymentHistory $payment): array {
         $serialNumber = 'N/A';
         $meterId = null;
-        $transactionKwh = null;
         $latitude = null;
         $longitude = null;
         $customerCategory = null;
@@ -29,9 +28,6 @@ class OdysseyPaymentTransformer {
 
         if ($paidFor instanceof Token) {
             $device = $paidFor->device; // App\Models\Device
-            if ($paidFor->token_type === Token::TYPE_ENERGY && $paidFor->token_unit === Token::UNIT_KWH) {
-                $transactionKwh = (float) $paidFor->token_amount;
-            }
 
             if ($device) {
                 // Resolve underlying device model for serials
@@ -50,8 +46,8 @@ class OdysseyPaymentTransformer {
                     // Expecting "lat,lng" or "lng,lat"; we assume "lat,lng"
                     $parts = explode(',', $geo->points);
                     if (count($parts) === 2) {
-                        $latitude = is_numeric($parts[0]) ? (float) $parts[0] : null;
-                        $longitude = is_numeric($parts[1]) ? (float) $parts[1] : null;
+                        $latitude = is_numeric($parts[0]) ? $parts[0] : null;
+                        $longitude = is_numeric($parts[1]) ? $parts[1] : null;
                     }
                 }
             }
@@ -73,8 +69,8 @@ class OdysseyPaymentTransformer {
                 if ($geo && !empty($geo->points)) {
                     $parts = explode(',', $geo->points);
                     if (count($parts) === 2) {
-                        $latitude = is_numeric($parts[0]) ? (float) $parts[0] : null;
-                        $longitude = is_numeric($parts[1]) ? (float) $parts[1] : null;
+                        $latitude = is_numeric($parts[0]) ? $parts[0] : null;
+                        $longitude = is_numeric($parts[1]) ? $parts[1] : null;
                     }
                 }
             }
@@ -111,26 +107,41 @@ class OdysseyPaymentTransformer {
             $agentId = $original->agent_id;
         }
 
-        return [
+        // Build response with only non-null values
+        $response = [
             'timestamp' => $payment->created_at?->toISOString(),
             'amount' => (int) $payment->amount,
             'currency' => $currency,
             'transactionType' => $this->mapTransactionType($payment),
             'transactionId' => (string) $payment->transaction_id,
             'serialNumber' => $serialNumber,
-            'meterId' => $meterId,
             'customerId' => $customerId,
-            'transactionKwh' => $transactionKwh,
-            'customerName' => $customerName ?: null,
-            'customerPhone' => $customerPhone,
-            'customerCategory' => $customerCategory,
-            'financingId' => null,
-            'agentId' => $agentId,
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'utilityId' => null,
-            'failedBatteryCapacityCount' => null,
         ];
+
+        // Only include optional fields if they have meaningful values
+        if ($meterId !== null) {
+            $response['meterId'] = $meterId;
+        }
+        if ($customerName) {
+            $response['customerName'] = $customerName;
+        }
+        if ($customerPhone !== null) {
+            $response['customerPhone'] = $customerPhone;
+        }
+        if ($customerCategory !== null) {
+            $response['customerCategory'] = $customerCategory;
+        }
+        if ($agentId !== null) {
+            $response['agentId'] = $agentId;
+        }
+        if ($latitude !== null) {
+            $response['latitude'] = $latitude;
+        }
+        if ($longitude !== null) {
+            $response['longitude'] = $longitude;
+        }
+
+        return $response;
     }
 
     private function mapTransactionType(PaymentHistory $payment): string {

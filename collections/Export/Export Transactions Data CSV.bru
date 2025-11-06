@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{mpm_backend_url}}/api/export/transactions?format=csv&deviceType=meter&serial_number=a98c04c2-470c-31c1-8b6a-c32e038b436b&provider=wave_money_transaction&status=1&currency=TSZ&timeZone=UTC
+  url: {{mpm_backend_url}}/api/export/transactions?format=csv&deviceType=meter&serial_number=a98c04c2-470c-31c1-8b6a-c32e038b436b&provider=wave_money_transaction&status=1&currency=TZS&timeZone=UTC
   body: multipartForm
   auth: inherit
 }
@@ -16,6 +16,6 @@ params:query {
   serial_number: a98c04c2-470c-31c1-8b6a-c32e038b436b
   provider: wave_money_transaction
   status: 1
-  currency: TSZ
+  currency: TZS
   timeZone: UTC
 }
