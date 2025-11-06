@@ -8,7 +8,7 @@ class PackageGenerator extends Command {
     protected $signature = 'micropowermanager:new-package {package-name} {--description= : Optional description for the plugin}';
     protected $description = 'Creates a new plugin package with automatic integration setup';
 
-    public function handle(): void {
+    public function handle(): int {
         $packageNameArg = $this->argument('package-name');
         $packageName = strtolower($packageNameArg);
         $nameSpace = '';
@@ -16,6 +16,23 @@ class PackageGenerator extends Command {
         $firstCapitals = array_map(ucfirst(...), $strings);
         foreach ($firstCapitals as $item) {
             $nameSpace .= $item;
+        }
+
+        $isInDocker = file_exists('/.dockerenv')
+            || (file_exists('/proc/1/cgroup') && str_contains(file_get_contents('/proc/1/cgroup'), 'docker'));
+
+        if ($isInDocker) {
+            $this->warn('⚠️  It looks like you are running this command inside a Docker container.');
+            $this->warn('');
+            $this->warn('Package creation requires access to both the frontend and backend code.');
+            $this->warn('Running inside the MicroPowerManager backend development container is not supported,');
+            $this->warn('because it only has access to the backend source code.');
+
+            if (!$this->confirm('Do you want to proceed anyway?', false)) {
+                $this->info('Command aborted.');
+
+                return Command::FAILURE;
+            }
         }
 
         $description = $this->option('description') ?: "This plugin developed for {$nameSpace} functionality.";
@@ -40,5 +57,7 @@ class PackageGenerator extends Command {
         }
 
         $this->info('Package generation completed!');
+
+        return Command::SUCCESS;
     }
 }

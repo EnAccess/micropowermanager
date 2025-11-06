@@ -41,7 +41,7 @@ echo "Next available plugin ID: $nextPluginId"
 # Create the package directory and clone starter pack
 cd packages/inensus
 mkdir $packageName
-git clone https://github.com/inensus/Package-Development-Starter-Pack $packageName
+cp -r ../../../plugin-template/. $packageName
 
 ##    Step1: Rename default config file to <package-name>.php  ##
 cd $packageName/config

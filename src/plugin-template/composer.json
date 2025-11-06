@@ -1,0 +1,27 @@
+{
+  "name": "inensus/{{package-name}}",
+  "description": "Package description",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "author",
+      "email": "email",
+      "role": "role"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\{{Package-Name}}\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\{{Package-Name}}\\Providers\\ServiceProvider"
+      ]
+    }
+  }
+}
