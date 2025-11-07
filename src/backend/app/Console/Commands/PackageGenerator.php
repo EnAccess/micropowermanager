@@ -13,8 +13,6 @@ class PackageGenerator extends Command {
      * Helper function to replace placeholders in files similar to `sed`.
      *
      * @param array<string, string> $replacements
-     *
-     * @return void
      */
     public function replaceInFile(string $path, array $replacements): void {
         $content = File::get($path);
