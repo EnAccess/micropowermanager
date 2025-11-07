@@ -9,8 +9,14 @@ class PackageGenerator extends Command {
     protected $signature = 'micropowermanager:new-package {package-name} {--description= : Optional description for the plugin}';
     protected $description = 'Creates a new plugin package with automatic integration setup';
 
-    // Helper: replace placeholders in files similar to `sed`
-    public function replaceInFile($path, array $replacements) {
+    /**
+     * Helper function to replace placeholders in files similar to `sed`.
+     *
+     * @param array<string, string> $replacements
+     *
+     * @return void
+     */
+    public function replaceInFile(string $path, array $replacements): void {
         $content = File::get($path);
         foreach ($replacements as $search => $replace) {
             $content = str_replace($search, $replace, $content);
@@ -59,7 +65,7 @@ class PackageGenerator extends Command {
         $mpmPluginPath = "{$projectRoot}/app/Models/MpmPlugin.php";
         $content = File::get($mpmPluginPath);
         preg_match_all('/public const .*?= (\d+);/', $content, $matches);
-        $currentMaxId = collect($matches[1])->map(fn ($id) => (int) $id)->max();
+        $currentMaxId = collect($matches[1])->map(fn ($id): int => (int) $id)->max();
         $nextPluginId = $currentMaxId + 1;
 
         $this->info("Next available plugin ID: {$nextPluginId}");
