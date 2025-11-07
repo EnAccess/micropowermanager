@@ -47,10 +47,7 @@ To allow Odyssey to securely access your MicroPowerManager data:
 
 1. In your Odyssey dashboard, navigate to the **Data Integration** section
 2. Select **Add New Data Source**
-3. Choose **MicroPowerManager** as the integration type
-
-![Odyssey API Integration](images/odyssey-api-integration.png)
-
+3. Choose **Odyssey** as the data provider
 4. Enter the following configuration details:
 
    - **API Key**: Paste the API key you generated in Step 3
@@ -58,6 +55,8 @@ To allow Odyssey to securely access your MicroPowerManager data:
    - **Site ID** (optional): If you want to filter data by specific mini-grid, enter the mini-grid name
 
 5. Click **Save** to activate the integration
+
+![Odyssey API Integration](images/odyssey-api-integration.png)
 
 ## Step 5: Verify Data Integration
 
