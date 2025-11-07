@@ -91,14 +91,15 @@ class OdysseyPaymentTransformer {
 
             // Fallback: if no category yet, try payer's device connection type
             if (!$customerCategory) {
-                $firstDevice = $payer->devices()->with('device.connectionType')->first();
+                $firstDevice = $payer->devices()->with('device')->first();
                 if ($firstDevice && $firstDevice->device instanceof Meter) {
+                    $firstDevice->device->load('connectionType');
                     $customerCategory = $firstDevice->device->connectionType?->name;
                 }
             }
         }
 
-        $currency = (string) (MainSettings::query()->value('currency') ?? '');
+        $currency = MainSettings::query()->value('currency') ?? '';
 
         // Agent info if originated by AgentTransaction
         $agentId = null;
