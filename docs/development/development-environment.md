@@ -113,12 +113,22 @@ Configurations for a different editor will work a like.
 
 For local development and editor integration it can be helpful to have a local instance of PHP.
 This will allow you to run composer scripts like `larastan` without the need to use Docker.
+Also, a local PHP installation is pre-requisite for MicroPowerManager plugin development.
 
-These steps are highly dependant on your system setup.
+Install the following tools
+
+- [PHP](https://www.php.net/)
+- [Composer](https://getcomposer.org/)
+- [PhpRedis](https://github.com/phpredis/phpredis)
+
+The actual steps for installation are highly dependant on your system setup.
+Please refer to the individual tools documentation.
+
 For example using `brew` on MacOS
 
 ```sh
 brew install php@8.2
+brew install composer
 pecl install redis
 ```
 
