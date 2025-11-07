@@ -1,6 +1,6 @@
 ## Package-Development-Starter-Pack
 
-### Starter pack for package development to MicroPowerManager.
+### Starter pack for package development to MicroPowerManager
 
 - This repo has created by the MicroPowerManager development team for developers who will develop a new package for MicroPowerManager.
 - The team suggests developers use this repo when they decide to develop new packages to MicroPowerManager.
