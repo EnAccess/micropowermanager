@@ -88,7 +88,8 @@ class TenantSeeder extends Seeder {
                     MpmPlugin::DEMO_SHS_MANUFACTURER,
                 ];
 
-                $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => true]];
+                $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => true],
+                    ['tag' => 'DemoMeterManufacturer', 'component' => 'DemoMeterManufacturer', 'adjusted' => true], ['tag' => 'DemoShsManufacturer', 'component' => 'DemoShsManufacturer', 'adjusted' => true]];
 
                 foreach ($demoPlugins as $pluginId) {
                     try {
