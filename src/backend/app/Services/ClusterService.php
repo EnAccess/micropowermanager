@@ -49,7 +49,7 @@ class ClusterService implements IBaseService {
     }
 
     public function getGeoLocationById(int $clusterId): mixed {
-        return $this->cluster->newQuery()->select('geo_data')->find($clusterId)->geo_data;
+        return $this->cluster->newQuery()->select('geo_json')->find($clusterId)->geo_json;
     }
 
     /**
