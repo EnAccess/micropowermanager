@@ -49,7 +49,6 @@ To allow Odyssey to securely access your MicroPowerManager data:
 2. Select **Add New Data Source**
 3. Choose **Odyssey** as the data provider
 4. Enter the following configuration details:
-
    - **API Key**: Paste the API key you generated in Step 3
    - **Base URL**: Enter your MicroPowerManager instance URL (e.g., `https://your-mpm-instance.com/api`)
    - **Site ID** (optional): If you want to filter data by specific mini-grid, enter the mini-grid name
@@ -87,13 +86,11 @@ The Odyssey integration works by:
 ### Common Issues
 
 1. **No Data Appearing in Odyssey**
-
    - Verify the Odyssey plugin is enabled in MicroPowerManager
    - Check that the API key is valid and correctly entered in Odyssey
    - Ensure your MicroPowerManager instance is accessible from Odyssey's servers
 
 2. **Authentication Errors**
-
    - Regenerate the API key in MicroPowerManager
    - Update the API key in Odyssey's configuration
 
