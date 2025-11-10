@@ -11,7 +11,6 @@ class InstallPackage extends Command {
 
     public function handle(): void {
         $this->info('Installing Prospect Integration Package');
-        $this->call('migrate');
         $this->info('Package installed successfully..');
     }
 }
