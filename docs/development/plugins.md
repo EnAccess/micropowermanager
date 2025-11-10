@@ -23,10 +23,14 @@ Each plugin consists of:
 
 2. **Create Plugin Template**
 
+   From the root directory of MicroPowerManager in your local development environment, run the following command:
+
    ```bash
-   # Generate plugin template
+   cd src/backend
    php artisan micropowermanager:new-package {plugin-name}
    ```
+
+   Replace `{plugin-name}` with the desired name of your plugin.
 
    This command:
    - Creates backend package in `src/backend/packages/inensus/{plugin-name}`
