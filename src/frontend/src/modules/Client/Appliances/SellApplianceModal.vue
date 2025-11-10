@@ -148,35 +148,6 @@
                     </span>
                   </md-field>
                 </div>
-                <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('count-based-form.address'),
-                    }"
-                  >
-                    <label for="address">
-                      {{ $tc("words.address") }}
-                    </label>
-                    <md-select
-                      id="address"
-                      name="address"
-                      v-model="selectedAddressId"
-                      v-validate="'required'"
-                    >
-                      <md-option
-                        v-for="(adr, index) in person.addresses"
-                        :key="index"
-                        :value="adr.id"
-                      >
-                        {{ adr.city.name }}
-                        {{ adr.street }}
-                      </md-option>
-                    </md-select>
-                    <span class="md-error">
-                      {{ errors.first("count-based-form.address") }}
-                    </span>
-                  </md-field>
-                </div>
               </form>
             </md-tab>
             <md-tab
@@ -314,35 +285,6 @@
                     </span>
                   </md-field>
                 </div>
-                <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('cost-based-form.address'),
-                    }"
-                  >
-                    <label for="address">
-                      {{ $tc("words.address") }}
-                    </label>
-                    <md-select
-                      id="address"
-                      name="address"
-                      v-model="selectedAddressId"
-                      v-validate="'required'"
-                    >
-                      <md-option
-                        v-for="(adr, index) in person.addresses"
-                        :key="index"
-                        :value="adr.id"
-                      >
-                        {{ adr.city.name }}
-                        {{ adr.street }}
-                      </md-option>
-                    </md-select>
-                    <span class="md-error">
-                      {{ errors.first("cost-based-form.address") }}
-                    </span>
-                  </md-field>
-                </div>
                 <div class="md-layout-item md-size-100 md-small-size-100">
                   <md-field>
                     <label for="minimumPayableAmount">
@@ -404,10 +346,7 @@
                 </span>
               </md-field>
             </template>
-            <div
-              class="coordinate-section"
-              :class="{ 'coordinate-section--disabled': !selectedAddressId }"
-            >
+            <div class="coordinate-section">
               <div class="md-layout md-gutter">
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field>
@@ -439,14 +378,13 @@
               <md-button
                 class="md-primary md-raised coordinate-button"
                 type="button"
-                :disabled="!selectedAddressId"
                 @click="openLocationPicker"
               >
                 Set Device Location
               </md-button>
               <p class="coordinate-hint">
-                Device location defaults to the selected address. Use the map to
-                adjust the coordinates if needed.
+                Device location defaults to the customer's primary address. Use
+                the map to adjust these coordinates if needed.
               </p>
             </div>
           </div>
@@ -589,7 +527,6 @@ export default {
       showRates: false,
       loading: false,
       tabName: "count-based",
-      selectedAddressId: null,
       deviceLocation: null,
       pendingDeviceLocation: null,
       showLocationPicker: false,
@@ -675,10 +612,6 @@ export default {
       return null
     },
     openLocationPicker() {
-      if (!this.selectedAddressId) {
-        this.alertNotify("warn", "Please select an address first")
-        return
-      }
       if (!this.deviceLocation) {
         this.initializeDeviceLocation()
       }
@@ -740,9 +673,12 @@ export default {
       }
     },
     getSelectedAddress() {
-      if (!this.selectedAddressId) return null
-      return this.person.addresses.find(
-        (address) => address.id === this.selectedAddressId,
+      if (!this.person.addresses || !this.person.addresses.length) {
+        return null
+      }
+      return (
+        this.person.addresses.find((address) => address.isPrimary) ||
+        this.person.addresses[0]
       )
     },
     getFallbackLocationFromSelectedAddress() {
@@ -946,9 +882,6 @@ export default {
         this.selectedDeviceSerial = null
         this.resetDeviceSelectionValidation()
       }
-      this.initializeDeviceLocation()
-    },
-    selectedAddressId() {
       this.initializeDeviceLocation()
     },
   },
