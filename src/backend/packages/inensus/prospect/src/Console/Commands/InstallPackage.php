@@ -3,7 +3,6 @@
 namespace Inensus\Prospect\Console\Commands;
 
 use Illuminate\Console\Command;
-use Inensus\Prospect\Providers\ProspectServiceProvider;
 
 class InstallPackage extends Command {
     protected $signature = 'prospect:install';
