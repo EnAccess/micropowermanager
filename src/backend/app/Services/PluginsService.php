@@ -13,6 +13,7 @@ class PluginsService {
     public function __construct(
         private Plugins $plugin,
         private MpmPluginService $mpmPluginService,
+        private RegistrationTailService $registrationTailService,
     ) {}
 
     /**
@@ -65,6 +66,35 @@ class PluginsService {
         return $this->create($pluginData);
     }
 
+    /**
+     * Enable a plugin by creating DB entry, adding registration tail, and running installation command.
+     *
+     * @throws \Exception
+     */
+    public function enablePlugin(int $mpmPluginId): Plugins {
+        // Get the MpmPlugin from central database
+        $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
+        if (!$mpmPlugin instanceof MpmPlugin) {
+            throw new \Exception("Plugin with ID {$mpmPluginId} not found");
+        }
+
+        // 1. Create the plugin DB entry
+        $pluginData = [
+            'mpm_plugin_id' => $mpmPluginId,
+            'status' => 1,
+        ];
+        $plugin = $this->create($pluginData);
+
+        // 2. Add registration tail (if exists)
+        $registrationTail = $this->registrationTailService->getFirst();
+        $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
+
+        // 3. Run installation command
+        Artisan::call($mpmPlugin->installation_command);
+
+        return $plugin;
+    }
+
     public function setupDemoManufacturerPlugins(): void {
         // Enable demo manufacturer plugins by default
         $demoPlugins = [
@@ -74,19 +104,7 @@ class PluginsService {
 
         foreach ($demoPlugins as $pluginId) {
             try {
-                // Check if plugin exists in central database
-                $mpmPlugin = $this->mpmPluginService->getById($pluginId);
-                if ($mpmPlugin instanceof MpmPlugin) {
-                    // Activate plugin for this company
-                    $pluginData = [
-                        'mpm_plugin_id' => $pluginId,
-                        'status' => 1,
-                    ];
-                    $this->create($pluginData);
-
-                    // Run installation command to register manufacturer APIs
-                    Artisan::call($mpmPlugin->installation_command);
-                }
+                $this->enablePlugin($pluginId);
             } catch (\Exception $e) {
                 // Plugin might not be available, continue with others
                 Log::info("Demo plugin {$pluginId} not available: ".$e->getMessage());
