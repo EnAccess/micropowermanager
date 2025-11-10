@@ -57,6 +57,26 @@ export class MappingService {
     this.searchedOrDrawnItems = []
   }
 
+  computeGeoJsonCenter(geoJson) {
+    // Calculate center point from coordinates
+    let clusterLat = 0
+    let clusterLon = 0
+    if (geoJson.coordinates && geoJson.coordinates[0]) {
+      const coords = geoJson.coordinates[0]
+      const count = coords.length
+      coords.forEach((coord) => {
+        clusterLat += coord[1]
+        clusterLon += coord[0]
+      })
+      clusterLat = clusterLat / count
+      clusterLon = clusterLon / count
+    }
+    return {
+      clusterLat,
+      clusterLon,
+    }
+  }
+
   async getSearchResult(name, filteredTypes) {
     try {
       const { data, error, status } = await this.repository.get(name)
