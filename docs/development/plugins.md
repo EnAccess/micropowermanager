@@ -18,19 +18,19 @@ Each plugin consists of:
 ## Quick Start
 
 1. **Prerequisites**
-   - Running MPM development environment
-   - Docker installed and running
+   - Running [advanced development environment](development-environment.md#advanced-development-environment) with local PHP installation
    - Basic knowledge of Laravel and Vue.js
 
 2. **Create Plugin Template**
 
-   ```bash
-   # Access the backend container
-   docker exec -it -u www-data backend-dev bash
+   From the root directory of MicroPowerManager in your local development environment, run the following command:
 
-   # Generate plugin template
+   ```bash
+   cd src/backend
    php artisan micropowermanager:new-package {plugin-name}
    ```
+
+   Replace `{plugin-name}` with the desired name of your plugin.
 
    This command:
    - Creates backend package in `src/backend/packages/inensus/{plugin-name}`
