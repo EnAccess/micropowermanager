@@ -50,7 +50,7 @@ To allow Odyssey to securely access your MicroPowerManager data:
 3. Choose **Odyssey** as the data provider
 4. Enter the following configuration details:
    - **API Key**: Paste the API key you generated in Step 3
-   - **Base URL**: Enter your MicroPowerManager instance URL (e.g., `https://your-mpm-instance.com/api`)
+   - **Base URL**: Enter your MicroPowerManager instance URL (e.g., `https://api.cloud.micropowermanager.io/api/odyssey/payments`)
    - **Site ID** (optional): If you want to filter data by specific mini-grid, enter the mini-grid name
 
 5. Click **Save** to activate the integration
