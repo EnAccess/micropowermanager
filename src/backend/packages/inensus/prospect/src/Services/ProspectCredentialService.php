@@ -17,7 +17,7 @@ class ProspectCredentialService {
      */
     public function createCredentials(): ProspectCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
-            'api_url' => config('services.prospect.default_api_url').'installations',
+            'api_url' => null,
             'api_token' => null,
         ]);
     }
