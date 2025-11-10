@@ -2,13 +2,18 @@
 
 namespace App\Services;
 
+use App\Models\MpmPlugin;
 use App\Models\Plugins;
+use App\Services\MpmPluginService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class PluginsService {
     public function __construct(
         private Plugins $plugin,
+        private MpmPluginService $mpmPluginService,
     ) {}
 
     /**
@@ -59,5 +64,34 @@ class PluginsService {
         ];
 
         return $this->create($pluginData);
+    }
+
+    public function setupDemoManufacturerPlugins(): void {
+        // Enable demo manufacturer plugins by default
+        $demoPlugins = [
+            MpmPlugin::DEMO_METER_MANUFACTURER,
+            MpmPlugin::DEMO_SHS_MANUFACTURER,
+        ];
+
+        foreach ($demoPlugins as $pluginId) {
+            try {
+                // Check if plugin exists in central database
+                $mpmPlugin = $this->mpmPluginService->getById($pluginId);
+                if ($mpmPlugin) {
+                    // Activate plugin for this company
+                    $pluginData = [
+                        'mpm_plugin_id' => $pluginId,
+                        'status' => 1,
+                    ];
+                    $this->create($pluginData);
+
+                    // Run installation command to register manufacturer APIs
+                    Artisan::call($mpmPlugin->installation_command);
+                }
+            } catch (\Exception $e) {
+                // Plugin might not be available, continue with others
+                Log::info("Demo plugin {$pluginId} not available: ".$e->getMessage());
+            }
+        }
     }
 }
