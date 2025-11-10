@@ -116,11 +116,6 @@ class PackageGenerator extends Command {
             '{{package-name}}' => $packageName,
         ]);
 
-        // Step 5: Update MenuItemService.php
-        $this->replaceInFile("{$packagePath}/src/Services/MenuItemService.php", [
-            '{{Package-Name}}' => $nameSpace,
-        ]);
-
         // Step 6: Update composer.json inside the plugin
         $this->replaceInFile("{$packagePath}/composer.json", [
             '{{Package-Name}}' => $nameSpace,
