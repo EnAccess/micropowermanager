@@ -113,7 +113,6 @@ return new class extends Migration {
             'viber_credentials' => ['api_token', 'webhook_url', 'deep_link'],
             'wave_money_credentials' => ['merchant_id', 'merchant_name', 'secret_key', 'callback_url', 'payment_url', 'result_url'],
             'gome_long_api_credentials' => ['user_id', 'user_password'],
-            'prospect_credentials' => ['api_token'],
         ];
 
         foreach ($credentialTables as $tableName => $fields) {
