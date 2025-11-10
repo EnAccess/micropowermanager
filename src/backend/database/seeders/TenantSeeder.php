@@ -6,7 +6,6 @@ use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\MainSettingsService;
 use App\Services\PluginsService;
-use App\Services\RegistrationTailService;
 use App\Services\UserService;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
