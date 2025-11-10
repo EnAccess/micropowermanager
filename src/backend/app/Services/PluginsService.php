@@ -2,13 +2,18 @@
 
 namespace App\Services;
 
+use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class PluginsService {
     public function __construct(
         private Plugins $plugin,
+        private MpmPluginService $mpmPluginService,
+        private RegistrationTailService $registrationTailService,
     ) {}
 
     /**
@@ -59,5 +64,51 @@ class PluginsService {
         ];
 
         return $this->create($pluginData);
+    }
+
+    /**
+     * Enable a plugin by creating DB entry, adding registration tail, and running installation command.
+     *
+     * @throws \Exception
+     */
+    public function enablePlugin(int $mpmPluginId): Plugins {
+        // Get the MpmPlugin from central database
+        $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
+        if (!$mpmPlugin instanceof MpmPlugin) {
+            throw new \Exception("Plugin with ID {$mpmPluginId} not found");
+        }
+
+        // 1. Create the plugin DB entry
+        $pluginData = [
+            'mpm_plugin_id' => $mpmPluginId,
+            'status' => 1,
+        ];
+        $plugin = $this->create($pluginData);
+
+        // 2. Add registration tail (if exists)
+        $registrationTail = $this->registrationTailService->getFirst();
+        $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
+
+        // 3. Run installation command
+        Artisan::call($mpmPlugin->installation_command);
+
+        return $plugin;
+    }
+
+    public function setupDemoManufacturerPlugins(): void {
+        // Enable demo manufacturer plugins by default
+        $demoPlugins = [
+            MpmPlugin::DEMO_METER_MANUFACTURER,
+            MpmPlugin::DEMO_SHS_MANUFACTURER,
+        ];
+
+        foreach ($demoPlugins as $pluginId) {
+            try {
+                $this->enablePlugin($pluginId);
+            } catch (\Exception $e) {
+                // Plugin might not be available, continue with others
+                Log::info("Demo plugin {$pluginId} not available: ".$e->getMessage());
+            }
+        }
     }
 }

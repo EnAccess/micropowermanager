@@ -2,18 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\MpmPlugin;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\MainSettingsService;
-use App\Services\MpmPluginService;
 use App\Services\PluginsService;
-use App\Services\RegistrationTailService;
 use App\Services\UserService;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TenantSeeder extends Seeder {
@@ -22,10 +17,8 @@ class TenantSeeder extends Seeder {
         private CompanyService $companyService,
         private UserService $userService,
         private DatabaseProxyManagerService $databaseProxyManagerService,
-        private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
         private PluginsService $pluginsService,
-        private MpmPluginService $mpmPluginService,
     ) {}
 
     /**
@@ -82,36 +75,7 @@ class TenantSeeder extends Seeder {
         $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             function () {
-                // Enable demo manufacturer plugins by default
-                $demoPlugins = [
-                    MpmPlugin::DEMO_METER_MANUFACTURER,
-                    MpmPlugin::DEMO_SHS_MANUFACTURER,
-                ];
-
-                $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => true]];
-
-                foreach ($demoPlugins as $pluginId) {
-                    try {
-                        // Check if plugin exists in central database
-                        $mpmPlugin = $this->mpmPluginService->getById($pluginId);
-                        if ($mpmPlugin) {
-                            // Activate plugin for this company
-                            $pluginData = [
-                                'mpm_plugin_id' => $pluginId,
-                                'status' => 1,
-                            ];
-                            $this->pluginsService->create($pluginData);
-
-                            // Run installation command to register manufacturer APIs
-                            Artisan::call($mpmPlugin->installation_command);
-                        }
-                    } catch (\Exception $e) {
-                        // Plugin might not be available, continue with others
-                        Log::info("Demo plugin {$pluginId} not available: ".$e->getMessage());
-                    }
-                }
-
-                $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
+                $this->pluginsService->setupDemoManufacturerPlugins();
             }
         );
     }
