@@ -76,7 +76,7 @@ class PluginsService {
             try {
                 // Check if plugin exists in central database
                 $mpmPlugin = $this->mpmPluginService->getById($pluginId);
-                if ($mpmPlugin) {
+                if ($mpmPlugin instanceof MpmPlugin) {
                     // Activate plugin for this company
                     $pluginData = [
                         'mpm_plugin_id' => $pluginId,
