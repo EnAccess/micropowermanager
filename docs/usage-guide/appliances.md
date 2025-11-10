@@ -4,7 +4,7 @@ order: 21
 
 # Appliances
 
-MicroPowerManager supports the management two kinds of appliance sales.
+MicroPowerManager supports the management of two kinds of appliance sales.
 
 1. PayGO enabled device sales
 2. Non-PayGO appliance sales
