@@ -80,10 +80,6 @@ class PackageGenerator extends Command {
 
         File::copyDirectory($sourceTemplate, $packagePath);
 
-        // Step 1: Rename config file
-        $configDir = "{$packagePath}/config";
-        File::move("{$configDir}/{{package-name}}-integration.php", "{$configDir}/{$packageName}.php");
-
         // Step 2: Update InstallPackage.php
         $this->replaceInFile("{$packagePath}/src/Console/Commands/InstallPackage.php", [
             '{{Package-Name}}' => $nameSpace,
@@ -173,41 +169,18 @@ class PackageGenerator extends Command {
         $this->info('Generating database migration for plugin registration...');
         $timestamp = now()->format('Y_m_d_His');
         $migrationName = "add_{$packageName}_to_mpm_plugin_table";
+        $migrationSourceDir = "{$packagePath}/database/migrations";
         $migrationFile = "{$projectRoot}/database/migrations/{$timestamp}_{$migrationName}.php";
 
         // Create the migration file directly since make:migration is causing issues
         $this->info("Creating migration file: $migrationFile");
-        $migrationContent = <<<PHP
-<?php
-
-use App\Models\MpmPlugin;
-use Carbon\Carbon;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
-
-return new class extends Migration {
-    public function up(): void {
-        DB::table('mpm_plugins')->insert([
-            [
-                'id' => MpmPlugin::{$constantName},
-                'name' => '{$nameSpace}',
-                'description' => '{$description}',
-                'tail_tag' => '{$nameSpace}',
-                'installation_command' => '{$packageName}:install',
-                'root_class' => '{$nameSpace}',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
+        File::move("{$migrationSourceDir}/add_{{package_name}}_to_mpm_plugin_table.php", $migrationFile);
+        $this->replaceInFile($migrationFile, [
+            '{{constantName}}' => $constantName,
+            '{{description}}' => $description,
+            '{{Package-Name}}' => $nameSpace,
+            '{{package-name}}' => $packageName,
         ]);
-    }
-
-    public function down(): void {
-        DB::table('mpm_plugins')->where('id', MpmPlugin::{$constantName})->delete();
-    }
-};
-PHP;
-
-        File::put($migrationFile, $migrationContent);
         $this->info('Migration file created successfully!');
 
         // Step 11: Run composer dump-autoload
