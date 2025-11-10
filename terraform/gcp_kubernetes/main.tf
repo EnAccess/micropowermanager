@@ -8,8 +8,8 @@ locals {
   network_global_address_name                = "${var.resoure_prefix}loadbalancer-global-address${var.resoure_suffix}"
   network_internal_loadbalancer_address_name = "${var.resoure_prefix}internal-loadbalancer-address${var.resoure_suffix}"
   network_internal_proxy_only_subnet_name    = "${var.resoure_prefix}proxy-only-subnet${var.resoure_suffix}"
-  storage_bucket_name                        = "mpm-backend-storage${var.resoure_suffix}"
-  service_account_name                       = "mpm-service-account${var.resoure_suffix}"
+  storage_bucket_name                        = "${var.resoure_prefix}mpm-backend-storage${var.resoure_suffix}"
+  service_account_name                       = "${var.resoure_prefix}mpm-service-account${var.resoure_suffix}"
 }
 
 data "google_project" "gcp_project" {}
