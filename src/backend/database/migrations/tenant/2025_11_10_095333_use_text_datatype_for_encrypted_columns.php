@@ -2,8 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -13,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        // Define credential tables and their fields that need encryption
+        // Define credential tables and their encrypted fields that need to be changed to text
         $credentialTables = [
             'africas_talking_credentials' => ['api_key', 'username', 'short_code'],
             'angaza_api_credentials' => ['client_id', 'client_secret'],
@@ -29,65 +27,21 @@ return new class extends Migration {
             'sun_king_api_credentials' => ['client_id', 'client_secret', 'access_token'],
             'viber_credentials' => ['api_token', 'webhook_url', 'deep_link'],
             'wave_money_credentials' => ['merchant_id', 'merchant_name', 'secret_key', 'callback_url', 'payment_url', 'result_url'],
+            'gome_long_api_credentials' => ['user_id', 'user_password'],
+            'prospect_credentials' => ['api_token', 'api_url'],
         ];
 
         foreach ($credentialTables as $tableName => $fields) {
             if (Schema::connection('tenant')->hasTable($tableName)) {
-                // Change column type to text for all credential fields
                 Schema::connection('tenant')->table($tableName, function (Blueprint $table) use ($fields) {
                     foreach ($fields as $field) {
-                        $table->text($field)->nullable()->change();
+                        if (Schema::connection('tenant')->hasColumn($table->getTable(), $field)) {
+                            $table->text($field)->nullable()->change();
+                        }
                     }
                 });
-
-                // Encrypt existing data
-                $this->encryptExistingCredentials($tableName, $fields);
             }
         }
-    }
-
-    /**
-     * Encrypt existing credentials in the database.
-     *
-     * @param string        $tableName
-     * @param array<string> $fields
-     *
-     * @return void
-     */
-    private function encryptExistingCredentials(string $tableName, array $fields): void {
-        $records = DB::connection('tenant')->table($tableName)->get();
-
-        foreach ($records as $record) {
-            $updateData = [];
-
-            foreach ($fields as $field) {
-                $value = $record->$field;
-
-                // Only encrypt if the value is not null and not already encrypted
-                if ($value !== null && !$this->isEncrypted($value)) {
-                    try {
-                        $updateData[$field] = Crypt::encryptString($value);
-                    } catch (Exception $e) {
-                        // Skip encryption if there's an error
-                        continue;
-                    }
-                }
-            }
-
-            if (!empty($updateData)) {
-                DB::connection('tenant')->table($tableName)
-                    ->where('id', $record->id)
-                    ->update($updateData);
-            }
-        }
-    }
-
-    /**
-     * Check if a value is already encrypted.
-     */
-    private function isEncrypted(string $value): bool {
-        // Laravel encrypted strings typically start with "eyJpdiI6"
-        return str_starts_with($value, 'eyJpdiI6') || str_starts_with($value, 'eyJ');
     }
 
     /**
@@ -96,7 +50,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        // Define credential tables and their fields that need decryption
+        // Define credential tables and their encrypted fields to revert to string(500)
         $credentialTables = [
             'africas_talking_credentials' => ['api_key', 'username', 'short_code'],
             'angaza_api_credentials' => ['client_id', 'client_secret'],
@@ -117,44 +71,13 @@ return new class extends Migration {
 
         foreach ($credentialTables as $tableName => $fields) {
             if (Schema::connection('tenant')->hasTable($tableName)) {
-                // Decrypt existing data
-                $this->decryptExistingCredentials($tableName, $fields);
-            }
-        }
-    }
-
-    /**
-     * Decrypt existing credentials in the database.
-     *
-     * @param string        $tableName
-     * @param array<string> $fields
-     *
-     * @return void
-     */
-    private function decryptExistingCredentials(string $tableName, array $fields): void {
-        $records = DB::connection('tenant')->table($tableName)->get();
-
-        foreach ($records as $record) {
-            $updateData = [];
-
-            foreach ($fields as $field) {
-                $value = $record->$field;
-
-                // Only decrypt if the value is not null and appears to be encrypted
-                if ($value !== null && $this->isEncrypted($value)) {
-                    try {
-                        $updateData[$field] = Crypt::decryptString($value);
-                    } catch (Exception $e) {
-                        // Skip decryption if there's an error
-                        continue;
+                Schema::connection('tenant')->table($tableName, function (Blueprint $table) use ($fields) {
+                    foreach ($fields as $field) {
+                        if (Schema::connection('tenant')->hasColumn($table->getTable(), $field)) {
+                            $table->string($field, 500)->nullable()->change();
+                        }
                     }
-                }
-            }
-
-            if (!empty($updateData)) {
-                DB::connection('tenant')->table($tableName)
-                    ->where('id', $record->id)
-                    ->update($updateData);
+                });
             }
         }
     }
