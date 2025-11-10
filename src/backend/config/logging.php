@@ -80,7 +80,7 @@ return [
             'driver' => 'monolog',
             'handler' => FilterHandler::class,
             'with' => [
-                'handler' => fn (): StreamHandler => new StreamHandler('php://stdout'),
+                'handler' => new StreamHandler('php://stdout'),
                 'minLevelOrList' => max(Logger::toMonologLevel('debug'), Logger::toMonologLevel(env('LOG_LEVEL', 'debug'))),
                 'maxLevel' => Logger::toMonologLevel('notice'),
             ],
@@ -90,7 +90,7 @@ return [
             'driver' => 'monolog',
             'handler' => FilterHandler::class,
             'with' => [
-                'handler' => fn (): StreamHandler => new StreamHandler('php://stderr'),
+                'handler' => new StreamHandler('php://stderr'),
                 'minLevelOrList' => max(Logger::toMonologLevel('warning'), Logger::toMonologLevel(env('LOG_LEVEL', 'debug'))),
                 'maxLevel' => Logger::toMonologLevel('emergency'),
             ],
