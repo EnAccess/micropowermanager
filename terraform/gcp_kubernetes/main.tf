@@ -268,8 +268,8 @@ resource "google_storage_bucket" "mpm-backend-storage" {
 
 resource "google_service_account" "mpm_service_account" {
   account_id   = local.service_account_name
-  display_name = "MPM ${var.resoure_suffix} Storage Environment Account"
-  description  = "Service account for ${var.resoure_suffix}  environment"
+  display_name = "MPM Service Account - ${title(replace(var.resoure_suffix, "-", ""))}"
+  description  = "Service account for ${title(replace(var.resoure_suffix, "-", ""))} environment"
 }
 
 resource "google_storage_bucket_iam_member" "mpm_storage_permission" {
@@ -278,7 +278,6 @@ resource "google_storage_bucket_iam_member" "mpm_storage_permission" {
   member = "serviceAccount:${google_service_account.mpm_service_account.email}"
 }
 
-# 
 #
 # Redis
 #
