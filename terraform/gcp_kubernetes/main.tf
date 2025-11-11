@@ -8,6 +8,8 @@ locals {
   network_global_address_name                = "${var.resoure_prefix}loadbalancer-global-address${var.resoure_suffix}"
   network_internal_loadbalancer_address_name = "${var.resoure_prefix}internal-loadbalancer-address${var.resoure_suffix}"
   network_internal_proxy_only_subnet_name    = "${var.resoure_prefix}proxy-only-subnet${var.resoure_suffix}"
+  storage_bucket_name                        = "${var.resoure_prefix}mpm-backend-storage${var.resoure_suffix}"
+  service_account_name                       = "${var.resoure_prefix}mpm-service-account${var.resoure_suffix}"
 }
 
 data "google_project" "gcp_project" {}
@@ -255,6 +257,28 @@ resource "google_sql_database" "database" {
   instance = google_sql_database_instance.mysql.name
 }
 
+resource "google_storage_bucket" "mpm-backend-storage" {
+  name          = local.storage_bucket_name
+  location      = "EU"
+  storage_class = "STANDARD"
+
+
+  uniform_bucket_level_access = true
+}
+
+resource "google_service_account" "mpm_service_account" {
+  account_id   = local.service_account_name
+  display_name = "MPM ${var.resoure_suffix} Storage Environment Account"
+  description  = "Service account for ${var.resoure_suffix}  environment"
+}
+
+resource "google_storage_bucket_iam_member" "mpm_storage_permission" {
+  bucket = google_storage_bucket.mpm-backend-storage.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.mpm_service_account.email}"
+}
+
+# 
 #
 # Redis
 #
