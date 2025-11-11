@@ -460,6 +460,7 @@
         </p>
         <DeviceLocationPickerMap
           v-if="showLocationPicker"
+          :key="locationPickerKey"
           :mapping-service="mappingService"
           :marker="true"
           :marker-count="1"
@@ -530,11 +531,13 @@ export default {
       deviceLocation: null,
       pendingDeviceLocation: null,
       showLocationPicker: false,
+      locationPickerKey: 0,
     }
   },
   beforeMount() {
     this.getApplianceList()
     this.deviceService.getDevices()
+    this.initializeDeviceLocation()
   },
   methods: {
     async getApplianceList() {
@@ -582,9 +585,7 @@ export default {
               points: points,
               userId: this.user.id,
               deviceSerial: this.selectedDeviceSerial,
-              address: this.person.addresses.find(
-                (x) => x.id === this.selectedAddressId,
-              ),
+              address: this.getSelectedAddress(),
             }
             const soldAppliance =
               await this.assetPersonService.sellAppliance(soldApplianceParams)
@@ -632,6 +633,7 @@ export default {
       } else {
         this.pendingDeviceLocation = null
       }
+      this.locationPickerKey += 1
       this.showLocationPicker = true
     },
     closeLocationPicker() {
@@ -673,13 +675,12 @@ export default {
       }
     },
     getSelectedAddress() {
-      if (!this.person.addresses || !this.person.addresses.length) {
-        return null
-      }
-      return (
-        this.person.addresses.find((address) => address.isPrimary) ||
-        this.person.addresses[0]
+      const addresses = this.person.addresses || []
+      if (!addresses.length) return null
+      const primaryAddress = addresses.find(
+        (address) => address.isPrimary || address.is_primary,
       )
+      return primaryAddress || addresses[0]
     },
     getFallbackLocationFromSelectedAddress() {
       const address = this.getSelectedAddress()
@@ -762,7 +763,7 @@ export default {
     },
     updateDeviceMarkerIcon(appliance) {
       if (!appliance) {
-        this.mappingService.setMarkerUrl(null)
+        this.mappingService.setMarkerUrl(ICONS.METER)
         return
       }
       switch (appliance.assetTypeId) {
@@ -773,7 +774,7 @@ export default {
           this.mappingService.setMarkerUrl(ICONS.E_BIKE)
           break
         default:
-          this.mappingService.setMarkerUrl(null)
+          this.mappingService.setMarkerUrl(ICONS.METER)
       }
     },
     getRate(index, rateCount, cost) {
@@ -827,7 +828,11 @@ export default {
       )
     },
     isDeviceBindingRequired(appliance) {
-      return !!appliance
+      if (!appliance) return false
+      return (
+        appliance.assetTypeId === APPLIANCE_TYPE_SHS_ID ||
+        appliance.assetTypeId === APPLIANCE_TYPE_E_BIKE_ID
+      )
     },
   },
   computed: {
@@ -868,7 +873,7 @@ export default {
         (x) => x.id === this.applianceService.appliance.id,
       )
       this.updateDeviceMarkerIcon(appliance)
-      if (appliance) {
+      if (this.isDeviceBindingRequired(appliance)) {
         this.isDeviceSelectionRequired = true
         this.deviceSelectionList = this.getDeviceSelectionList(
           appliance,
@@ -891,10 +896,6 @@ export default {
 <style scoped>
 .coordinate-section {
   margin-top: 1rem;
-}
-
-.coordinate-section--disabled {
-  opacity: 0.6;
 }
 
 .coordinate-button {
