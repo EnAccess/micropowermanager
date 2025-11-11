@@ -8,13 +8,13 @@ variable "gcp_region" {
   type        = string
 }
 
-variable "resoure_prefix" {
+variable "resource_prefix" {
   description = "Prefix used in resource creation. This can be useful to identify resources."
   type        = string
   default     = ""
 }
 
-variable "resoure_suffix" {
+variable "resource_suffix" {
   description = "Suffix used in resource creation. This can be useful to distinguish between different environments like `development` and `production`."
   type        = string
   default     = ""

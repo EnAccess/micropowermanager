@@ -1,7 +1,7 @@
 locals {
-  gateway_external_ip_name = "${var.resoure_prefix}ipsec-gateway-external-ip${var.resoure_suffix}"
-  internal_ip_name         = "${var.resoure_prefix}ipsec-internal-ip${var.resoure_suffix}"
-  gke_instance_name        = "${var.resoure_prefix}ipsec-gateway${var.resoure_suffix}"
+  gateway_external_ip_name = "${var.resource_prefix}ipsec-gateway-external-ip${var.resource_suffix}"
+  internal_ip_name         = "${var.resource_prefix}ipsec-internal-ip${var.resource_suffix}"
+  gke_instance_name        = "${var.resource_prefix}ipsec-gateway${var.resource_suffix}"
 }
 
 data "google_project" "gcp_project" {}

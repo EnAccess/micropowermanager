@@ -2,12 +2,14 @@
 # Pre-amble
 #
 locals {
-  k8s_cluster_name                           = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
-  db_instance_name                           = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
+  k8s_cluster_name                           = "${var.resource_prefix}micropowermanager${var.resource_suffix}"
+  db_instance_name                           = "${var.resource_prefix}micropowermanager${var.resource_suffix}"
   db_name                                    = "micro_power_manager"
-  network_global_address_name                = "${var.resoure_prefix}loadbalancer-global-address${var.resoure_suffix}"
-  network_internal_loadbalancer_address_name = "${var.resoure_prefix}internal-loadbalancer-address${var.resoure_suffix}"
-  network_internal_proxy_only_subnet_name    = "${var.resoure_prefix}proxy-only-subnet${var.resoure_suffix}"
+  network_global_address_name                = "${var.resource_prefix}loadbalancer-global-address${var.resource_suffix}"
+  network_internal_loadbalancer_address_name = "${var.resource_prefix}internal-loadbalancer-address${var.resource_suffix}"
+  network_internal_proxy_only_subnet_name    = "${var.resource_prefix}proxy-only-subnet${var.resource_suffix}"
+  storage_bucket_name                        = "${var.resource_prefix}mpm-backend-storage${var.resource_suffix}"
+  service_account_name                       = "${var.resource_prefix}mpm-service-account${var.resource_suffix}"
 }
 
 data "google_project" "gcp_project" {}
@@ -122,7 +124,7 @@ resource "google_compute_firewall" "allow_proxy_connection" {
 
   project = var.gcp_project_id
 
-  name        = "${var.resoure_prefix}allow-proxy-connection${var.resoure_suffix}"
+  name        = "${var.resource_prefix}allow-proxy-connection${var.resource_suffix}"
   description = "Firewall rule to allow connections from the load balancer proxies in the proxy-only subnet"
   network     = "default"
 
@@ -253,6 +255,27 @@ resource "google_sql_database" "database" {
 
   name     = local.db_name
   instance = google_sql_database_instance.mysql.name
+}
+
+resource "google_storage_bucket" "mpm-backend-storage" {
+  name          = local.storage_bucket_name
+  location      = "EU"
+  storage_class = "STANDARD"
+
+
+  uniform_bucket_level_access = true
+}
+
+resource "google_service_account" "mpm_service_account" {
+  account_id   = local.service_account_name
+  display_name = "MPM Service Account - ${title(replace(var.resource_suffix, "-", ""))}"
+  description  = "Service account for ${title(replace(var.resource_suffix, "-", ""))} environment"
+}
+
+resource "google_storage_bucket_iam_member" "mpm_storage_permission" {
+  bucket = google_storage_bucket.mpm-backend-storage.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.mpm_service_account.email}"
 }
 
 #
