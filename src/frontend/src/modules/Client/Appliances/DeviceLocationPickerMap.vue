@@ -1,12 +1,13 @@
 <template>
-  <div class="device-location-map">
-    <div id="map"></div>
+  <div class="device-location-map" :id="mapWrapperId">
+    <div :id="mapContainerId"></div>
   </div>
 </template>
 
 <script>
 import { sharedMap, notify } from "@/mixins"
 import { ICON_OPTIONS } from "@/services/MappingService"
+import defaultMarker from "leaflet/dist/images/marker-icon.png"
 import markerShadow from "leaflet/dist/images/marker-shadow.png"
 import L from "leaflet"
 
@@ -18,6 +19,10 @@ export default {
       type: Array,
       required: false,
       default: null,
+    },
+    mapContainerId: {
+      type: String,
+      default: "map",
     },
   },
   created() {
@@ -33,9 +38,14 @@ export default {
     }
   },
   beforeDestroy() {
-    this.map.off("click", this.onMapClick)
-    this.map.off("draw:created", this.onDrawCreated)
-    this.map.off("draw:deleted", this.onDrawDeleted)
+    if (this.map) {
+      this.map.off("click", this.onMapClick)
+      this.map.off("draw:created", this.onDrawCreated)
+      this.map.off("draw:deleted", this.onDrawDeleted)
+      this.map.remove()
+      this.map = null
+    }
+    this.resetLeafletContainer()
   },
   watch: {
     initialLocation(newLocation) {
@@ -47,10 +57,22 @@ export default {
       }
     },
   },
+  computed: {
+    mapWrapperId() {
+      return `${this.mapContainerId}-wrapper`
+    },
+  },
   methods: {
+    resetLeafletContainer() {
+      if (typeof window === "undefined") return
+      const container = L.DomUtil.get(this.mapContainerId)
+      if (container && container._leaflet_id) {
+        container._leaflet_id = null
+      }
+    },
     ensureMarkerIcon() {
       if (!this.mappingService.markerUrl) {
-        this.mappingService.setMarkerUrl(this.defaultMarkerIconUrl)
+        this.mappingService.setMarkerUrl(defaultMarker)
       }
     },
     onMapClick(event) {
@@ -77,19 +99,16 @@ export default {
     },
     setMarker(location) {
       this.clearMarkers()
-      const markerIcon = this.mappingService.markerUrl
-        ? L.icon({
-            ...ICON_OPTIONS,
-            iconUrl: this.mappingService.markerUrl,
-          })
-        : new L.Icon({
-            iconUrl: this.defaultMarkerIconUrl,
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowUrl: markerShadow,
-            shadowSize: [41, 41],
-          })
+      const iconUrl = this.mappingService.markerUrl || defaultMarker
+      const markerIcon = L.icon({
+        ...ICON_OPTIONS,
+        iconUrl: iconUrl,
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowUrl: markerShadow,
+        shadowSize: [41, 41],
+      })
       const marker = L.marker(location, {
         icon: markerIcon,
         draggable: false,
@@ -107,7 +126,11 @@ export default {
 </script>
 
 <style scoped>
-#map {
+.device-location-map {
+  width: 100%;
+}
+
+.device-location-map div {
   width: 100%;
   height: 450px;
 }

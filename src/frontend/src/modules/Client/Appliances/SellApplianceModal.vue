@@ -1,7 +1,8 @@
 <template>
   <div>
     <md-dialog
-      :md-active.sync="showSellApplianceModal"
+      :md-active="internalDialogVisible"
+      @update:mdActive="handleDialogActive"
       style="max-width: 60rem; margin: auto"
     >
       <md-dialog-title>Sell Appliance</md-dialog-title>
@@ -462,6 +463,7 @@
           v-if="showLocationPicker"
           :key="locationPickerKey"
           :mapping-service="mappingService"
+          :map-container-id="locationPickerMapId"
           :marker="true"
           :marker-count="1"
           :initial-location="initialDeviceLocationArray"
@@ -532,7 +534,13 @@ export default {
       pendingDeviceLocation: null,
       showLocationPicker: false,
       locationPickerKey: 0,
+      locationPickerMapId: "",
+      internalDialogVisible: false,
     }
+  },
+  created() {
+    this.locationPickerMapId = `device-location-map-${this._uid}`
+    this.internalDialogVisible = this.showSellApplianceModal
   },
   beforeMount() {
     this.getApplianceList()
@@ -540,6 +548,12 @@ export default {
     this.initializeDeviceLocation()
   },
   methods: {
+    handleDialogActive(value) {
+      this.internalDialogVisible = value
+      if (!value) {
+        this.$emit("hideModal")
+      }
+    },
     async getApplianceList() {
       try {
         await this.applianceService.getAppliances()
@@ -616,6 +630,7 @@ export default {
       if (!this.deviceLocation) {
         this.initializeDeviceLocation()
       }
+      this.locationPickerKey += 1
       const fallbackLocation = this.getFallbackLocationFromSelectedAddress()
       const center = this.deviceCoordinatesAvailable
         ? [this.deviceLocation.lat, this.deviceLocation.lon]
@@ -633,12 +648,12 @@ export default {
       } else {
         this.pendingDeviceLocation = null
       }
-      this.locationPickerKey += 1
       this.showLocationPicker = true
     },
     closeLocationPicker() {
       this.showLocationPicker = false
       this.pendingDeviceLocation = null
+      this.locationPickerKey += 1
     },
     handleLocationSelected(location) {
       this.pendingDeviceLocation = location
@@ -864,6 +879,12 @@ export default {
     },
   },
   watch: {
+    showSellApplianceModal(value) {
+      this.internalDialogVisible = value
+      if (value) {
+        this.locationPickerKey += 1
+      }
+    },
     async selectedApplianceId() {
       this.applianceService.appliance.id = this.selectedApplianceId
       const availableDevices = this.deviceService.list.filter(
