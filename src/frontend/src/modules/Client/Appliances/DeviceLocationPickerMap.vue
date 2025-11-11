@@ -71,9 +71,8 @@ export default {
       }
     },
     ensureMarkerIcon() {
-      if (!this.mappingService.markerUrl) {
-        this.mappingService.setMarkerUrl(defaultMarker)
-      }
+      this.mappingService.setMarkerUrl(defaultMarker)
+      this.markerUrl = defaultMarker
     },
     onMapClick(event) {
       const { lat, lng } = event.latlng
@@ -99,7 +98,7 @@ export default {
     },
     setMarker(location) {
       this.clearMarkers()
-      const iconUrl = this.mappingService.markerUrl || defaultMarker
+      const iconUrl = defaultMarker
       const markerIcon = L.icon({
         ...ICON_OPTIONS,
         iconUrl: iconUrl,
