@@ -28,7 +28,7 @@ class ConnectionTypeGroupSeeder extends Seeder {
                 ['name' => 'Household'],
                 ['name' => 'Institutional'],
                 ['name' => 'Commercial'],
-                ['name' => 'Productive Use'],
+                ['name' => 'Productive Use / Industrial'],
                 ['name' => 'Not Specified'],
             )
             ->create();
