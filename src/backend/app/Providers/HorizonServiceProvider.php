@@ -38,7 +38,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider {
             }
 
             // If user is authenticated and has permission, allow
-            if ($user && method_exists($user, 'can') && $user->can('horizon.view')) {
+            if ($user && method_exists($user, 'can') && $user->can('horizon')) {
                 return true;
             }
 

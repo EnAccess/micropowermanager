@@ -54,11 +54,7 @@
                 <md-table-cell>{{ user.email }}</md-table-cell>
                 <md-table-cell>{{ user.phone }}</md-table-cell>
                 <md-table-cell
-                  v-if="
-                    $store.getters['auth/getPermissions'].includes(
-                      'roles.manage',
-                    )
-                  "
+                  v-if="$store.getters['auth/getPermissions'].includes('roles')"
                 >
                   {{ (user.roles || []).join(", ") }}
                 </md-table-cell>

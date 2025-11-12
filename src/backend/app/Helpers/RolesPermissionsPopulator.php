@@ -19,55 +19,24 @@ class RolesPermissionsPopulator {
             return;
         }
 
-        // Base permission set
+        // Base permission set - simplified to domain-level permissions
         $permissions = [
-            // user account management
-            ['name' => 'users.view', 'guard_name' => 'api'],
-            ['name' => 'users.create', 'guard_name' => 'api'],
-            ['name' => 'users.update', 'guard_name' => 'api'],
-            ['name' => 'users.delete', 'guard_name' => 'api'],
-            ['name' => 'users.manage-owner', 'guard_name' => 'api'], // Only owner can manage owner accounts
-            ['name' => 'users.manage-admin', 'guard_name' => 'api'], // Owner and admin can manage admin accounts
-            // settings
-            ['name' => 'settings.view', 'guard_name' => 'api'],
-            ['name' => 'settings.update', 'guard_name' => 'api'],
-            ['name' => 'settings.api-keys', 'guard_name' => 'api'], // API keys management (admin only)
-            ['name' => 'settings.passwords', 'guard_name' => 'api'], // Password management (admin only)
-            // role management
-            ['name' => 'roles.manage', 'guard_name' => 'api'],
-            // horizon
-            ['name' => 'horizon.view', 'guard_name' => 'api'],
-            // customers
-            ['name' => 'customers.view', 'guard_name' => 'api'],
-            ['name' => 'customers.create', 'guard_name' => 'api'],
-            ['name' => 'customers.update', 'guard_name' => 'api'],
-            ['name' => 'customers.delete', 'guard_name' => 'api'],
-            // assets
-            ['name' => 'assets.view', 'guard_name' => 'api'],
-            ['name' => 'assets.create', 'guard_name' => 'api'],
-            ['name' => 'assets.update', 'guard_name' => 'api'],
-            ['name' => 'assets.delete', 'guard_name' => 'api'],
-            // tickets
-            ['name' => 'tickets.view', 'guard_name' => 'api'],
-            ['name' => 'tickets.create', 'guard_name' => 'api'],
-            ['name' => 'tickets.update', 'guard_name' => 'api'],
-            ['name' => 'tickets.delete', 'guard_name' => 'api'],
-            ['name' => 'tickets.export', 'guard_name' => 'api'],
-            // payments/transactions (financial data)
-            ['name' => 'payments.view', 'guard_name' => 'api'],
-            ['name' => 'payments.create', 'guard_name' => 'api'],
-            ['name' => 'payments.refund', 'guard_name' => 'api'],
-            ['name' => 'transactions.view', 'guard_name' => 'api'],
-            ['name' => 'transactions.create', 'guard_name' => 'api'],
-            // reports & exports
-            ['name' => 'reports.view', 'guard_name' => 'api'],
-            ['name' => 'exports.transactions', 'guard_name' => 'api'],
-            ['name' => 'exports.customers', 'guard_name' => 'api'],
-            ['name' => 'exports.debts', 'guard_name' => 'api'],
-            // plugins
-            ['name' => 'plugins.manage', 'guard_name' => 'api'],
-            // pages
-            ['name' => 'page.view:/settings', 'guard_name' => 'api'],
+            // user account management (fine-grained for role hierarchy)
+            ['name' => 'users', 'guard_name' => 'api'],
+            ['name' => 'users.manage-admin', 'guard_name' => 'api'],
+            ['name' => 'users.manage-owner', 'guard_name' => 'api'],
+            ['name' => 'settings', 'guard_name' => 'api'],
+            ['name' => 'settings.api-keys', 'guard_name' => 'api'], // Only owner and admin
+            ['name' => 'roles', 'guard_name' => 'api'],
+            ['name' => 'horizon', 'guard_name' => 'api'],
+            ['name' => 'customers', 'guard_name' => 'api'],
+            ['name' => 'assets', 'guard_name' => 'api'],
+            ['name' => 'tickets', 'guard_name' => 'api'],
+            ['name' => 'payments', 'guard_name' => 'api'],
+            ['name' => 'transactions', 'guard_name' => 'api'],
+            ['name' => 'reports', 'guard_name' => 'api'],
+            ['name' => 'exports', 'guard_name' => 'api'],
+            ['name' => 'plugins', 'guard_name' => 'api'],
         ];
 
         foreach ($permissions as $perm) {
@@ -130,30 +99,15 @@ class RolesPermissionsPopulator {
         }
 
         // LEVEL 3: FINANCIAL MANAGER - Manage customers + financial/transaction data
-        // Cannot change system settings like API keys or passwords
+        // Cannot change system settings or manage users
         $financialManagerPermissionNames = [
-            'customers.view',
-            'customers.create',
-            'customers.update',
-            'customers.delete',
-            'assets.view',
-            'assets.create',
-            'assets.update',
-            'assets.delete',
-            'tickets.view',
-            'tickets.create',
-            'tickets.update',
-            'tickets.delete',
-            'tickets.export',
-            'payments.view',
-            'payments.create',
-            'payments.refund',
-            'transactions.view',
-            'transactions.create',
-            'reports.view',
-            'exports.transactions',
-            'exports.customers',
-            'exports.debts',
+            'customers',
+            'assets',
+            'tickets',
+            'payments',
+            'transactions',
+            'reports',
+            'exports',
         ];
 
         $financialManagerPermissions = array_filter($allApiPermissions, fn ($permissionId, $permissionName): bool => in_array($permissionName, $financialManagerPermissionNames), ARRAY_FILTER_USE_BOTH);
@@ -166,21 +120,11 @@ class RolesPermissionsPopulator {
         }
 
         // LEVEL 4: USER - Manage customers and related data only
-        // Cannot access financial or transaction information
+        // Cannot access financial information, transactions, or system administration
         $userPermissionNames = [
-            'customers.view',
-            'customers.create',
-            'customers.update',
-            'customers.delete',
-            'assets.view',
-            'assets.create',
-            'assets.update',
-            'assets.delete',
-            'tickets.view',
-            'tickets.create',
-            'tickets.update',
-            'tickets.delete',
-            'tickets.export',
+            'customers',
+            'assets',
+            'tickets',
         ];
 
         $userPermissions = array_filter($allApiPermissions, fn ($permissionId, $permissionName): bool => in_array($permissionName, $userPermissionNames), ARRAY_FILTER_USE_BOTH);

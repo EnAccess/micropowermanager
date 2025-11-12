@@ -99,9 +99,7 @@
           </md-card-content>
           <md-card-content
             class="md-layout md-gutter"
-            v-if="
-              $store.getters['auth/getPermissions'].includes('roles.manage')
-            "
+            v-if="$store.getters['auth/getPermissions'].includes('roles')"
           >
             <div class="md-layout-item md-size-50 md-small-size-100">
               <md-field>
