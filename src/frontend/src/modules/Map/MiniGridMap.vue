@@ -327,8 +327,7 @@ export default {
         await this.clusterService.getClusterGeoLocation(clusterId)
       // clusterGeoData is now { geo_json: {...} }
       const geoJson = clusterGeoData.geo_json
-      const { lon, lat } =
-        this.mappingService.computeGeoJsonCenter(geoJson)
+      const { lon, lat } = this.mappingService.computeGeoJsonCenter(geoJson)
       this.mappingService.setCenter([lat, lon])
       // Add metadata to geo_json
       const geoDataWithMetadata = {

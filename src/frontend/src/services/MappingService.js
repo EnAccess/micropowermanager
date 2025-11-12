@@ -7,7 +7,6 @@ import miniGridIcon from "@/assets/icons/miniGrid.png"
 import villageMarkerIcon from "@/assets/icons/village.png"
 import eBikeIcon from "@/assets/icons/ebike.png"
 
-
 import MappingRepository from "@/repositories/MappingRepository"
 
 export const MARKER_TYPE = {
