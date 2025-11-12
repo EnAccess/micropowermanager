@@ -45,8 +45,8 @@ class PaystackPublicController extends Controller {
                     'id' => $company->getId(),
                     'name' => $company->getName(),
                 ],
-                'supported_currencies' => ['NGN', 'GHS', 'KES', 'ZAR'],
-                'default_currency' => 'NGN',
+                'supported_currencies' => config('paystack-payment-provider.currency.supported', ['NGN', 'GHS', 'KES', 'ZAR']),
+                'default_currency' => config('paystack-payment-provider.currency.default', 'NGN'),
             ]);
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to show payment form', [
@@ -66,29 +66,27 @@ class PaystackPublicController extends Controller {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
-            // Validate meter serial and amount
+            // Validate device serial and amount
             $validatedData = $request->validated();
 
             // Get agent_id from query parameters if present
             $agentId = $request->query('agent');
 
             $deviceType = $validatedData['device_type'] ?? 'meter';
+            $deviceSerial = $validatedData['device_serial'];
 
+            // Get customer ID based on device type
             if ($deviceType === 'shs') {
-                $serial = $validatedData['serial'];
-                $customerId = $this->transactionService->getCustomerIdBySHSSerial($validatedData['serial']);
+                $customerId = $this->transactionService->getCustomerIdBySHSSerial($deviceSerial);
             } else {
-                $serial = $validatedData['meter_serial'];
-                $customerId = $this->transactionService->getCustomerIdByMeterSerial($validatedData['meter_serial']);
+                $customerId = $this->transactionService->getCustomerIdByMeterSerial($deviceSerial);
             }
-
-            // get customer id from meter serial
 
             // Create Paystack transaction
             $transaction = $this->transactionService->createPublicTransaction([
                 'amount' => $validatedData['amount'],
                 'currency' => $validatedData['currency'],
-                'serial_id' => $serial,
+                'serial_id' => $deviceSerial,
                 'device_type' => $deviceType,
                 'customer_id' => $customerId,
                 'order_id' => Uuid::uuid4()->toString(),
@@ -168,6 +166,7 @@ class PaystackPublicController extends Controller {
                     'amount' => $transaction->getAmount(),
                     'currency' => $transaction->getCurrency(),
                     'serial_id' => $transaction->getDeviceSerial(),
+                    'device_type' => $transaction->getDeviceType(),
                     'status' => $transaction->getStatus(),
                     'created_at' => $transaction->getAttribute('created_at'),
                 ],
@@ -237,27 +236,31 @@ class PaystackPublicController extends Controller {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
-            $meterSerial = $request->input('meter_serial');
-            if (!$meterSerial) {
-                return response()->json(['error' => 'Meter serial required'], 400);
+            $deviceSerial = $request->input('device_serial') ?? $request->input('meter_serial');
+            $deviceType = $request->input('device_type', 'meter');
+
+            if (!$deviceSerial) {
+                return response()->json(['error' => 'Device serial required'], 400);
             }
 
-            // Validate meter exists and is active
-            $isValid = $this->transactionService->validateMeterSerial($meterSerial);
+            // Validate device exists and is active
+            $isValid = $this->transactionService->validateDeviceSerial($deviceSerial, $deviceType);
 
             return response()->json([
                 'valid' => $isValid,
-                'meter_serial' => $meterSerial,
+                'device_serial' => $deviceSerial,
+                'device_type' => $deviceType,
             ]);
         } catch (\Exception $e) {
-            Log::error('PaystackPublicController: Failed to validate meter', [
+            Log::error('PaystackPublicController: Failed to validate device', [
                 'error' => $e->getMessage(),
                 'company_hash' => $companyHash,
                 'company_id' => $companyId,
-                'meter_serial' => $request->input('meter_serial'),
+                'device_serial' => $request->input('device_serial') ?? $request->input('meter_serial'),
+                'device_type' => $request->input('device_type', 'meter'),
             ]);
 
-            return response()->json(['error' => 'Failed to validate meter'], 500);
+            return response()->json(['error' => 'Failed to validate device'], 500);
         }
     }
 }

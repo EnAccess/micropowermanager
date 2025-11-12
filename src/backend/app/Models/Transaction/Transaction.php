@@ -56,7 +56,7 @@ class Transaction extends BaseModel {
     /**
      * Get the payment provider-specific transaction linked to this system transaction.
      *
-     * @phpstan-return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction, $this>
+     * @return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction, $this>
      */
     public function originalTransaction(): MorphTo {
         /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction, $this> $relation */

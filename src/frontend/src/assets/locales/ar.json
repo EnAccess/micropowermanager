@@ -245,6 +245,7 @@
     "maxCurrent": "أقصى تيار",
     "merchantId": "معرف التاجر",
     "merchantName": "اسم التاجر",
+    "merchantEmail": "البريد الإلكتروني للتاجر",
     "messageNotify": "يجب أن تحتوي الرسالة على أكثر من 3 حروف",
     "messageText": "نص الرسالة",
     "meterDetail": "تفاصيل العدادات | تفاصيل العداد ",

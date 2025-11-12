@@ -104,6 +104,29 @@
                 <div
                   class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
                 >
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has('Credential-Form.merchantEmail'),
+                    }"
+                  >
+                    <label for="merchantEmail">
+                      {{ $tc("phrases.merchantEmail") }}
+                    </label>
+                    <md-input
+                      id="merchantEmail"
+                      name="merchantEmail"
+                      v-model="credentialService.credential.merchantEmail"
+                      v-validate="'required|email'"
+                      type="email"
+                    />
+                    <span class="md-error">
+                      {{ errors.first("Credential-Form.merchantEmail") }}
+                    </span>
+                  </md-field>
+                </div>
+                <div
+                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
+                >
                   <md-field>
                     <label for="environment">
                       {{ $tc("phrases.environment") }}

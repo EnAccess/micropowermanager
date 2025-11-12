@@ -20,8 +20,7 @@
           <md-icon class="success-icon">check_circle</md-icon>
           <h2 class="success-title">Payment Successful!</h2>
           <p class="success-message">
-            Your payment has been processed successfully. Your meter has been
-            credited.
+            {{ successMessage }}
           </p>
 
           <div class="payment-details">
@@ -30,10 +29,14 @@
               <span class="value">{{ paymentResult.transaction.id }}</span>
             </div>
             <div class="detail-row">
-              <span class="label">Meter Serial:</span>
+              <span class="label">{{ deviceLabel }}:</span>
               <span class="value">
                 {{ paymentResult.transaction.serial_id }}
               </span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Device Type:</span>
+              <span class="value">{{ deviceTypeName }}</span>
             </div>
             <div class="detail-row">
               <span class="label">Amount Paid:</span>
@@ -54,10 +57,10 @@
             </div>
           </div>
 
-          <!-- Energy Token Information -->
+          <!-- Token Information -->
           <div class="token-container">
             <div class="token-header">
-              <h3 class="token-title">Energy Token</h3>
+              <h3 class="token-title">{{ tokenTitle }}</h3>
               <div class="token-status">
                 <span
                   class="status-indicator"
@@ -96,7 +99,7 @@
                 </span>
               </div>
               <div class="token-row">
-                <span class="token-label">Energy Amount:</span>
+                <span class="token-label">{{ creditAmountLabel }}:</span>
                 <span class="token-value">
                   {{ paymentResult.token.token_amount }}
                   {{ paymentResult.token.token_unit }}
@@ -118,8 +121,8 @@
               >
                 <md-icon class="processing-icon">hourglass_empty</md-icon>
                 <p>
-                  Your energy token is being generated. Please wait a moment and
-                  refresh to check the status.
+                  Your {{ tokenTypeText }} is being generated. Please wait a
+                  moment and refresh to check the status.
                 </p>
               </div>
               <div
@@ -154,8 +157,7 @@
             >
               <p class="instruction-text">
                 <strong>Instructions:</strong>
-                Enter this token code into your meter to receive your energy
-                credit.
+                {{ tokenInstructions }}
               </p>
             </div>
           </div>
@@ -178,10 +180,14 @@
               <span class="value">{{ paymentResult.transaction.id }}</span>
             </div>
             <div class="detail-row">
-              <span class="label">Meter Serial:</span>
+              <span class="label">{{ deviceLabel }}:</span>
               <span class="value">
                 {{ paymentResult.transaction.serial_id }}
               </span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Device Type:</span>
+              <span class="value">{{ deviceTypeName }}</span>
             </div>
             <div class="detail-row">
               <span class="label">Amount:</span>
@@ -251,14 +257,54 @@ export default {
       return this.$route.params.companyHash
     },
     companyIdToken() {
-      return this.$route.query.ct
+      // Try to get from query params first, fallback to sessionStorage
+      return (
+        this.$route.query.ct || sessionStorage.getItem("paystack_company_token")
+      )
     },
     reference() {
       const urlParams = new URLSearchParams(window.location.search)
       return urlParams.get("reference")
     },
+    deviceType() {
+      return this.paymentResult?.transaction?.device_type || "meter"
+    },
+    isSHS() {
+      return this.deviceType === "shs"
+    },
+    deviceTypeName() {
+      return this.isSHS ? "Solar Home System" : "Meter"
+    },
+    deviceLabel() {
+      return this.isSHS ? "SHS Serial" : "Meter Serial"
+    },
+    tokenTitle() {
+      return this.isSHS ? "Appliance Token" : "Energy Token"
+    },
+    tokenTypeText() {
+      return this.isSHS ? "appliance token" : "energy token"
+    },
+    creditAmountLabel() {
+      return this.isSHS ? "Token Amount" : "Energy Amount"
+    },
+    successMessage() {
+      if (this.isSHS) {
+        return "Your payment has been processed successfully. Your appliance token will be generated shortly."
+      }
+      return "Your payment has been processed successfully. Your meter has been credited."
+    },
+    tokenInstructions() {
+      if (this.isSHS) {
+        return "Enter this token code into your Solar Home System device to activate your appliance."
+      }
+      return "Enter this token code into your meter to receive your energy credit."
+    },
   },
   async mounted() {
+    // Store company token in sessionStorage if present (for refreshes)
+    if (this.companyIdToken) {
+      sessionStorage.setItem("paystack_company_token", this.companyIdToken)
+    }
     await this.loadCompanyInfo()
     await this.verifyPayment()
   },
@@ -299,28 +345,34 @@ export default {
       await this.verifyPayment()
     },
     retryPayment() {
-      // Navigate back to payment form
+      // Navigate back to payment form with company token
+      const ct =
+        this.companyIdToken || sessionStorage.getItem("paystack_company_token")
       this.$router.push({
         name: "/paystack/public/payment",
         params: {
           companyHash: this.companyHash,
         },
-        query: Object.fromEntries(new URLSearchParams(window.location.search)),
+        query: ct ? { ct } : {},
       })
     },
     goHome() {
+      // Clean up sessionStorage when user completes the flow
+      sessionStorage.removeItem("paystack_company_token")
+
       // Navigate back to payment form or close window
       if (window.opener) {
         window.close()
       } else {
+        const ct =
+          this.companyIdToken ||
+          sessionStorage.getItem("paystack_company_token")
         this.$router.push({
           name: "/paystack/public/payment",
           params: {
             companyHash: this.companyHash,
           },
-          query: Object.fromEntries(
-            new URLSearchParams(window.location.search),
-          ),
+          query: ct ? { ct } : {},
         })
       }
     },

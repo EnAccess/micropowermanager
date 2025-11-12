@@ -3,7 +3,7 @@ import Client, { baseUrl } from "@/repositories/Client/AxiosClient"
 export class PublicPaymentService {
   constructor() {
     this.paymentRequest = {
-      meterSerial: null,
+      deviceSerial: null,
       deviceType: "meter",
       amount: null,
       currency: "NGN",
@@ -19,13 +19,14 @@ export class PublicPaymentService {
     return response.data
   }
 
-  async validateMeter(companyHash, companyIdToken, meterSerial) {
+  async validateDevice(companyHash, companyIdToken, deviceSerial, deviceType) {
     const response = await Client.post(
       `${baseUrl}/api/paystack/public/validate-meter/${companyHash}?ct=${encodeURIComponent(
         companyIdToken,
       )}`,
       {
-        meter_serial: meterSerial,
+        device_serial: deviceSerial,
+        device_type: deviceType,
       },
     )
     return response.data
@@ -37,8 +38,7 @@ export class PublicPaymentService {
         companyIdToken,
       )}`,
       {
-        meter_serial: paymentData.meterSerial,
-        serial: paymentData.meterSerial,
+        device_serial: paymentData.deviceSerial,
         device_type: paymentData.deviceType,
         amount: parseFloat(paymentData.amount),
         currency: paymentData.currency,

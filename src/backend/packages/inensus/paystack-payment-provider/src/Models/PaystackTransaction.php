@@ -80,7 +80,7 @@ class PaystackTransaction extends BasePaymentProviderTransaction {
     }
 
     public function getDeviceType(): string {
-        return $this->device_type;
+        return $this->device_type ?? 'meter';
     }
 
     public function getStatus(): int {

@@ -166,6 +166,24 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         return $meter !== null;
     }
 
+    public function validateSHSSerial(string $serialId): bool {
+        // Check if SHS exists
+        $shs = app()->make(SolarHomeSystem::class)
+            ->newQuery()
+            ->where('serial_number', $serialId)
+            ->first();
+
+        return $shs !== null;
+    }
+
+    public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
+        if ($deviceType === 'shs') {
+            return $this->validateSHSSerial($serialId);
+        }
+
+        return $this->validateMeterSerial($serialId);
+    }
+
     public function validatePaymentOwner(string $serialId, float $amount): void {
         // For public payments, we only validate that the meter exists
         if (!$this->validateMeterSerial($serialId)) {

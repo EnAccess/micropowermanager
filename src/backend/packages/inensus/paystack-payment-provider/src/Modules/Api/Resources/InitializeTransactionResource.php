@@ -31,8 +31,12 @@ class InitializeTransactionResource extends AbstractApiResource {
         // Use static public result URL as callback if available
         $callbackUrl = $this->getCallbackUrl();
 
+        // Get merchant email from credentials (tenant-specific) or fallback to config
+        $merchantEmail = $this->paystackCredential->getMerchantEmail() 
+            ?? config('paystack-payment-provider.merchant_email');
+
         $bodyData = [
-            'email' => config('paystack-payment-provider.merchant_email'), // MPM merchant email from config
+            'email' => $merchantEmail, // MPM merchant email from tenant credentials
             'amount' => $this->paystackTransaction->getAmount() * 100, // Paystack expects amount in kobo (smallest currency unit) as integer
             'reference' => $this->paystackTransaction->getReferenceId(),
             'callback_url' => $callbackUrl,

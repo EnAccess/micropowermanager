@@ -26,6 +26,7 @@ class PaystackCredentialService {
             'public_key' => '',
             'callback_url' => '',
             'merchant_name' => 'Paystack',
+            'merchant_email' => null,
             'environment' => 'test',
         ]);
     }

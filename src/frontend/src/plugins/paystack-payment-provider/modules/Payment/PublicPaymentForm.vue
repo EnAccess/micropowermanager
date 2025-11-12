@@ -34,40 +34,40 @@
 
           <md-field
             :class="{
-              'md-invalid': errors.has('Payment-Form.meterSerial'),
+              'md-invalid': errors.has('Payment-Form.deviceSerial'),
             }"
           >
-            <label for="meterSerial">{{ serialLabel }}</label>
+            <label for="deviceSerial">{{ serialLabel }}</label>
             <md-input
-              id="meterSerial"
-              name="meterSerial"
-              v-model="paymentService.paymentRequest.meterSerial"
+              id="deviceSerial"
+              name="deviceSerial"
+              v-model="paymentService.paymentRequest.deviceSerial"
               v-validate="'required|min:3'"
-              @blur="validateMeter"
+              @blur="validateDevice"
             />
             <span class="md-error">
-              {{ errors.first("Payment-Form.meterSerial") }}
+              {{ errors.first("Payment-Form.deviceSerial") }}
             </span>
-            <div v-if="meterValidation.loading" class="validation-loading">
+            <div v-if="deviceValidation.loading" class="validation-loading">
               <md-progress-spinner
                 md-diameter="20"
                 md-stroke="2"
               ></md-progress-spinner>
-              <span>Validating meter...</span>
+              <span>{{ validatingMessage }}</span>
             </div>
             <div
-              v-if="shouldShowValidation && meterValidation.valid === true"
+              v-if="deviceValidation.valid === true"
               class="validation-success"
             >
               <md-icon>check_circle</md-icon>
-              <span>Serial is valid</span>
+              <span>{{ validMessage }}</span>
             </div>
             <div
-              v-if="shouldShowValidation && meterValidation.valid === false"
+              v-if="deviceValidation.valid === false"
               class="validation-error"
             >
               <md-icon>error</md-icon>
-              <span>Invalid serial number</span>
+              <span>{{ invalidMessage }}</span>
             </div>
           </md-field>
 
@@ -141,8 +141,8 @@ export default {
       paymentService: new PublicPaymentService(),
       loading: false,
       companyName: "",
-      supportedCurrencies: ["NGN", "GHS", "KES", "ZAR"],
-      meterValidation: {
+      supportedCurrencies: [],
+      deviceValidation: {
         loading: false,
         valid: null,
       },
@@ -153,7 +153,10 @@ export default {
       return this.$route.params.companyHash
     },
     companyIdToken() {
-      return this.$route.query.ct
+      // Try to get from query params first, fallback to sessionStorage
+      return (
+        this.$route.query.ct || sessionStorage.getItem("paystack_company_token")
+      )
     },
     serialLabel() {
       if (this.paymentService.paymentRequest.deviceType === "shs") {
@@ -161,30 +164,52 @@ export default {
       }
       return "Meter Serial Number"
     },
-    shouldShowValidation() {
-      return this.paymentService.paymentRequest.deviceType === "meter"
+    validatingMessage() {
+      if (this.paymentService.paymentRequest.deviceType === "shs") {
+        return "Validating SHS..."
+      }
+      return "Validating meter..."
+    },
+    validMessage() {
+      if (this.paymentService.paymentRequest.deviceType === "shs") {
+        return "SHS is valid"
+      }
+      return "Meter is valid"
+    },
+    invalidMessage() {
+      if (this.paymentService.paymentRequest.deviceType === "shs") {
+        return "Invalid SHS serial number"
+      }
+      return "Invalid meter serial number"
     },
     selectedCurrency() {
       return this.paymentService.paymentRequest.currency || "NGN"
     },
     isFormValid() {
       return (
-        this.paymentService.paymentRequest.meterSerial &&
+        this.paymentService.paymentRequest.deviceSerial &&
         this.paymentService.paymentRequest.amount &&
         this.paymentService.paymentRequest.amount > 0 &&
         this.paymentService.paymentRequest.currency &&
-        (this.paymentService.paymentRequest.deviceType !== "meter" ||
-          this.meterValidation.valid === true)
+        this.deviceValidation.valid === true
       )
     },
   },
   async mounted() {
+    // Store company token in sessionStorage for use after Paystack redirect
+    if (this.companyIdToken) {
+      sessionStorage.setItem("paystack_company_token", this.companyIdToken)
+    }
     await this.loadCompanyInfo()
   },
   methods: {
     onDeviceTypeChange() {
       // Reset validation state when device type changes
-      this.meterValidation.valid = null
+      this.deviceValidation.valid = null
+      // Trigger validation if device serial is already entered
+      if (this.paymentService.paymentRequest.deviceSerial?.length >= 3) {
+        this.validateDevice()
+      }
     },
     async loadCompanyInfo() {
       try {
@@ -193,39 +218,41 @@ export default {
           this.companyIdToken,
         )
         this.companyName = response.company.name
-        this.supportedCurrencies = response.supported_currencies
-        this.paymentService.paymentRequest.currency = response.default_currency
+        this.supportedCurrencies = response.supported_currencies || [
+          "NGN",
+          "GHS",
+          "KES",
+          "ZAR",
+        ]
+        this.paymentService.paymentRequest.currency =
+          response.default_currency || "NGN"
       } catch (error) {
         this.alertNotify("error", "Failed to load company information")
       }
     },
-    async validateMeter() {
-      if (this.paymentService.paymentRequest.deviceType !== "meter") {
-        // Skip remote validation for non-meter devices
-        this.meterValidation.valid = true
-        return
-      }
+    async validateDevice() {
       if (
-        !this.paymentService.paymentRequest.meterSerial ||
-        this.paymentService.paymentRequest.meterSerial.length < 3
+        !this.paymentService.paymentRequest.deviceSerial ||
+        this.paymentService.paymentRequest.deviceSerial.length < 3
       ) {
-        this.meterValidation.valid = null
+        this.deviceValidation.valid = null
         return
       }
 
-      this.meterValidation.loading = true
+      this.deviceValidation.loading = true
       try {
-        const response = await this.paymentService.validateMeter(
+        const response = await this.paymentService.validateDevice(
           this.companyHash,
           this.companyIdToken,
-          this.paymentService.paymentRequest.meterSerial,
+          this.paymentService.paymentRequest.deviceSerial,
+          this.paymentService.paymentRequest.deviceType,
         )
-        this.meterValidation.valid = response.valid
+        this.deviceValidation.valid = response.valid
       } catch (error) {
-        this.meterValidation.valid = false
-        console.error("Meter validation error:", error)
+        this.deviceValidation.valid = false
+        console.error("Device validation error:", error)
       } finally {
-        this.meterValidation.loading = false
+        this.deviceValidation.loading = false
       }
     },
     async submitPaymentRequestForm() {
@@ -234,10 +261,14 @@ export default {
         return
       }
 
-      if (this.meterValidation.valid !== true) {
+      if (this.deviceValidation.valid !== true) {
+        const deviceName =
+          this.paymentService.paymentRequest.deviceType === "shs"
+            ? "SHS"
+            : "meter"
         this.$swal({
           title: "Error!",
-          text: "Please enter a valid meter serial number",
+          text: `Please enter a valid ${deviceName} serial number`,
           icon: "error",
         })
         return

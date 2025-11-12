@@ -21,13 +21,6 @@ This package provides the backend functionality for integrating Paystack payment
 - **Credential Management** with secure storage
 - **API Endpoints** for all operations
 
-## Requirements
-
-- PHP 8.1+
-- Laravel 10+
-- MicroPowerManager 2.0+
-- Paystack account with API keys
-
 ## Installation
 
 ### 1. Install the Package
@@ -54,7 +47,6 @@ This command will:
 Add the following to your `.env` file:
 
 ```env
-PAYSTACK_API_BASE_URL=https://api.paystack.co
 PAYSTACK_API_TIMEOUT=30
 PAYSTACK_VERIFY_WEBHOOK_SIGNATURE=true
 ```

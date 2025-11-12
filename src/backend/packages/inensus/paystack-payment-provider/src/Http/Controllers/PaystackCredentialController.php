@@ -34,6 +34,7 @@ class PaystackCredentialController extends Controller {
             'public_key' => ['required', 'string', 'min:3'],
             'callback_url' => ['required', 'url'],
             'merchant_name' => ['required', 'string', 'min:2'],
+            'merchant_email' => ['required', 'email'],
             'environment' => ['required', 'in:test,live'],
         ]);
 
@@ -42,6 +43,7 @@ class PaystackCredentialController extends Controller {
             'public_key' => $request->input('public_key'),
             'callback_url' => $request->input('callback_url'),
             'merchant_name' => $request->input('merchant_name'),
+            'merchant_email' => $request->input('merchant_email'),
             'environment' => $request->input('environment'),
         ]);
 

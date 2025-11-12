@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Crypt;
  * @property string      $public_key
  * @property string|null $callback_url
  * @property string|null $merchant_name
+ * @property string|null $merchant_email
  * @property string      $environment
  */
 class PaystackCredential extends BaseModel {
@@ -33,6 +34,10 @@ class PaystackCredential extends BaseModel {
 
     public function getMerchantName(): ?string {
         return $this->merchant_name;
+    }
+
+    public function getMerchantEmail(): ?string {
+        return $this->merchant_email;
     }
 
     public function getCallbackUrl(): ?string {

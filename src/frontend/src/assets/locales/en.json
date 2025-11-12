@@ -245,6 +245,7 @@
     "maxCurrent": "Max Current",
     "merchantId": "Merchant ID",
     "merchantName": "Merchant Name",
+    "merchantEmail": "Merchant Email",
     "messageNotify": "Message should contain more than 3 letters",
     "messageText": "Message Text",
     "meterDetail": "Meter Detail | Meter Details",

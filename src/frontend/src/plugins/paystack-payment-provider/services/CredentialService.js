@@ -10,6 +10,7 @@ export class CredentialService {
       publicKey: "",
       callbackUrl: "",
       merchantName: "",
+      merchantEmail: "",
       environment: "test",
     }
   }
@@ -21,6 +22,7 @@ export class CredentialService {
       publicKey: credentialData.public_key,
       callbackUrl: credentialData.callback_url,
       merchantName: credentialData.merchant_name,
+      merchantEmail: credentialData.merchant_email,
       environment: credentialData.environment,
     }
     return this.credential
@@ -50,6 +52,7 @@ export class CredentialService {
         public_key: this.credential.publicKey,
         callback_url: this.credential.callbackUrl,
         merchant_name: this.credential.merchantName,
+        merchant_email: this.credential.merchantEmail,
         environment: this.credential.environment,
       }
 

@@ -21,6 +21,7 @@ class PaystackCredentialResource extends JsonResource {
             'public_key' => $this->resource->getAttribute('public_key'),
             'callback_url' => $this->resource->getAttribute('callback_url'),
             'merchant_name' => $this->resource->getAttribute('merchant_name'),
+            'merchant_email' => $this->resource->getAttribute('merchant_email'),
             'environment' => $this->resource->getAttribute('environment'),
             'created_at' => $this->resource->getAttribute('created_at'),
             'updated_at' => $this->resource->getAttribute('updated_at'),

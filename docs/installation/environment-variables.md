@@ -211,10 +211,10 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 
 For detailed information see [Paystack Developer Documentation](https://paystack.com/docs)
 
-| Environment Variable                | Default                         | Description                                                                              |
-| ----------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------- |
-| `PAYSTACK_API_URL`                  | `https://api.paystack.co`       | Paystack API URL. The same URL is used for both test and production environments.        |
-| `PAYSTACK_MERCHANT_EMAIL`           | `noreply@micropowermanager.com` | Default merchant email used for Paystack transactions.                                   |
-| `PAYSTACK_COMPANY_HASH_SALT`        | `APP_KEY`                       | Salt used for generating company-specific payment URLs. Defaults to the application key. |
-| `PAYSTACK_API_TIMEOUT`              | `30`                            | API request timeout in seconds.                                                          |
-| `PAYSTACK_VERIFY_WEBHOOK_SIGNATURE` | `true`                          | Whether to verify Paystack webhook signatures for security.                              |
+| Environment Variable                | Default           | Description                                                                              |
+| ----------------------------------- | ----------------- | ---------------------------------------------------------------------------------------- |
+| `PAYSTACK_COMPANY_HASH_SALT`        | `APP_KEY`         | Salt used for generating company-specific payment URLs. Defaults to the application key. |
+| `PAYSTACK_API_TIMEOUT`              | `30`              | API request timeout in seconds.                                                          |
+| `PAYSTACK_VERIFY_WEBHOOK_SIGNATURE` | `true`            | Whether to verify Paystack webhook signatures for security.                              |
+| `PAYSTACK_DEFAULT_CURRENCY`         | `NGN`             | Default currency for Paystack transactions.                                              |
+| `PAYSTACK_SUPPORTED_CURRENCIES`     | `NGN,GHS,KES,ZAR` | Comma-separated list of supported currencies for Paystack transactions.                  |

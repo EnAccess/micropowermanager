@@ -245,6 +245,7 @@
     "maxCurrent": "Courant maximal",
     "merchantId": "Merchant ID",
     "merchantName": "Nom du commerçant",
+    "merchantEmail": "Email du commerçant",
     "messageNotify": "Le message doit contenir plus de 3 lettres.",
     "messageText": "Texte du message",
     "meterDetail": "Détail du compteur | Détails du compteur",
