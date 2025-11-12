@@ -89,7 +89,7 @@ export default {
         if (data.geo_json !== null) {
           const clusterGeo = data.geo_json
           // Calculate center point from coordinates
-          const { lat, lon } =
+          const { lon, lat } =
             this.mappingService.computeGeoJsonCenter(clusterGeo)
           this.mappingService.setCenter([lat, lon])
           const geoDataWithMetadata = {

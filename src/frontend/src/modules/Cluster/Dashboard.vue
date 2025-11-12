@@ -103,7 +103,7 @@ export default {
       const markingInfos = []
       const clusterGeoData = this.clusterData.geo_json
       // Calculate center point from coordinates
-      const { lat, lon } =
+      const { lon, lat } =
         this.mappingService.computeGeoJsonCenter(clusterGeoData)
       this.mappingService.setCenter([lat, lon])
       const geoDataWithMetadata = {

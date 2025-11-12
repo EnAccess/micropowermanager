@@ -26,11 +26,29 @@ return new class extends Migration {
         foreach ($clusters as $cluster) {
             $geoData = json_decode($cluster->geo_data, true);
             if (isset($geoData['geojson'])) {
+                $geoJson = $geoData['geojson'];
+
+                // Ensure polygon coordinates form a closed plane
+                if (isset($geoJson['type']) && $geoJson['type'] === 'Polygon' && isset($geoJson['coordinates'])) {
+                    foreach ($geoJson['coordinates'] as $ringIndex => $ring) {
+                        if (is_array($ring) && count($ring) > 0) {
+                            $firstCoord = $ring[0];
+                            $lastCoord = $ring[count($ring) - 1];
+
+                            // Check if the polygon is closed (first and last coordinates are the same)
+                            if ($firstCoord !== $lastCoord) {
+                                // Close the polygon by appending the first coordinate
+                                $geoJson['coordinates'][$ringIndex][] = $firstCoord;
+                            }
+                        }
+                    }
+                }
+
                 DB::connection('tenant')
                     ->table('clusters')
                     ->where('id', $cluster->id)
                     ->update([
-                        'geo_json' => json_encode($geoData['geojson']),
+                        'geo_json' => json_encode($geoJson),
                     ]);
             }
         }
@@ -67,6 +85,22 @@ return new class extends Migration {
 
         foreach ($clusters as $cluster) {
             $geoJson = json_decode($cluster->geo_json, true);
+
+            // Ensure polygon coordinates form a closed plane
+            if (isset($geoJson['type']) && $geoJson['type'] === 'Polygon' && isset($geoJson['coordinates'])) {
+                foreach ($geoJson['coordinates'] as $ringIndex => $ring) {
+                    if (is_array($ring) && count($ring) > 0) {
+                        $firstCoord = $ring[0];
+                        $lastCoord = $ring[count($ring) - 1];
+
+                        // Check if the polygon is closed (first and last coordinates are the same)
+                        if ($firstCoord !== $lastCoord) {
+                            // Close the polygon by appending the first coordinate
+                            $geoJson['coordinates'][$ringIndex][] = $firstCoord;
+                        }
+                    }
+                }
+            }
 
             // Calculate center point from coordinates
             $lat = 0;

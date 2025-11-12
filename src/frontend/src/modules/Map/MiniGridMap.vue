@@ -327,16 +327,16 @@ export default {
         await this.clusterService.getClusterGeoLocation(clusterId)
       // clusterGeoData is now { geo_json: {...} }
       const geoJson = clusterGeoData.geo_json
-      const { clusterLat, clusterLon } =
+      const { lon, lat } =
         this.mappingService.computeGeoJsonCenter(geoJson)
-      this.mappingService.setCenter([clusterLat, clusterLon])
+      this.mappingService.setCenter([lat, lon])
       // Add metadata to geo_json
       const geoDataWithMetadata = {
         ...geoJson,
         clusterId: clusterId,
         clusterName: miniGridWithGeoData.cluster?.name || "",
-        lat: clusterLat,
-        lon: clusterLon,
+        lat: lat,
+        lon: lon,
       }
       this.mappingService.setGeoData(geoDataWithMetadata)
       markingInfos.push({
