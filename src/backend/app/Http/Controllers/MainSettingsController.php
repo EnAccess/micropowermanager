@@ -13,7 +13,6 @@ class MainSettingsController extends Controller {
     ) {}
 
     public function index(): ApiResource {
-        $this->authorize('view', MainSettings::class);
         $mainSettings = $this->mainSettingsService->getAll()->first();
         if ($mainSettings) {
             unset($mainSettings['protected_page_password']);
@@ -23,7 +22,6 @@ class MainSettingsController extends Controller {
     }
 
     public function update(MainSettings $mainSettings, Request $request): ApiResource {
-        $this->authorize('update', $mainSettings);
         $mainSettingsData = $request->only([
             'site_title',
             'company_name',
