@@ -50,7 +50,7 @@
             step="any"
             @change="setCenterPoints"
             maxlength="9"
-            v-validate="'required|decimal:5|max:8'"
+            v-validate="'required|decimal:6'"
           />
           <span class="md-error">
             {{ errors.first($tc("words.latitude")) }}
@@ -72,7 +72,7 @@
             step="any"
             @change="setCenterPoints"
             maxlength="9"
-            v-validate="'required|decimal:5|max:8'"
+            v-validate="'required|decimal:6'"
           />
           <span class="md-error">
             {{ errors.first($tc("words.longitude")) }}

@@ -78,7 +78,7 @@
                       maxlength="8"
                       step="any"
                       v-model="miniGridLatLng.lat"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     ></md-input>
                     <span class="md-error">
                       {{ errors.first($tc("words.latitude")) }}
@@ -100,7 +100,7 @@
                       step="any"
                       maxlength="8"
                       v-model="miniGridLatLng.lon"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     ></md-input>
                     <span class="md-error">
                       {{ errors.first($tc("words.longitude")) }}
