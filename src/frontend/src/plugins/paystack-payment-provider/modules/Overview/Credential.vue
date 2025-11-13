@@ -289,103 +289,6 @@
               agent-generated links.
             </p>
           </div>
-
-          <!-- Agent Payment URL Generator -->
-          <div class="url-item agent-url">
-            <label class="url-label">
-              <md-icon class="url-icon">person</md-icon>
-              Generate Agent Payment Link:
-            </label>
-
-            <div class="agent-generator">
-              <md-field>
-                <label>Select Customer (Optional)</label>
-                <md-select
-                  v-model="agentCustomerId"
-                  placeholder="Choose a customer to pre-fill"
-                  :disabled="loadingCustomers"
-                >
-                  <md-option
-                    v-for="customer in customers"
-                    :key="customer.id"
-                    :value="customer.id"
-                  >
-                    {{ customer.name }} {{ customer.surname }}
-                    <span
-                      v-if="customer.addresses && customer.addresses.length > 0"
-                    >
-                      ({{ customer.addresses[0].phone }})
-                    </span>
-                  </md-option>
-                </md-select>
-              </md-field>
-
-              <md-field>
-                <label>Select Agent (Optional)</label>
-                <md-select
-                  v-model="agentId"
-                  placeholder="Choose an agent to associate with the link"
-                  :disabled="loadingAgents"
-                >
-                  <md-option v-if="loadingAgents" disabled>
-                    Loading agents...
-                  </md-option>
-                  <md-option v-else-if="agents.length === 0" disabled>
-                    No agents found
-                  </md-option>
-                  <md-option
-                    v-for="agent in agents"
-                    :key="agent.id"
-                    :value="agent.id"
-                  >
-                    {{ agent.name || agent.person?.name }}
-                    {{ agent.surname || agent.person?.surname }}
-                    <span
-                      v-if="agent.phone || agent.person?.addresses?.[0]?.phone"
-                    >
-                      ({{ agent.phone || agent.person?.addresses?.[0]?.phone }})
-                    </span>
-                  </md-option>
-                </md-select>
-              </md-field>
-
-              <div class="url-container">
-                <md-input
-                  v-model="agentPaymentUrl"
-                  readonly
-                  class="url-input"
-                  placeholder="Click 'Generate' to create agent payment link"
-                />
-                <md-button
-                  class="md-icon-button md-primary"
-                  @click="copyToClipboard(agentPaymentUrl)"
-                  :disabled="!agentPaymentUrl"
-                >
-                  <md-icon>content_copy</md-icon>
-                </md-button>
-              </div>
-
-              <md-button
-                class="md-raised md-primary"
-                @click="generateAgentUrl"
-                :disabled="loadingAgentUrl"
-              >
-                <md-progress-spinner
-                  v-if="loadingAgentUrl"
-                  md-diameter="20"
-                  md-stroke="2"
-                  style="margin-right: 8px"
-                ></md-progress-spinner>
-                {{ loadingAgentUrl ? "Generating..." : "Generate Agent URL" }}
-              </md-button>
-            </div>
-
-            <p class="url-description">
-              <md-icon>info</md-icon>
-              Generate a time-limited payment link for specific customers.
-              Expires in 24 hours.
-            </p>
-          </div>
         </div>
 
         <div class="url-actions">
@@ -419,11 +322,8 @@
 
 <script>
 import { CredentialService } from "../../services/CredentialService"
-import { PersonService } from "@/services/PersonService"
-import { AgentService } from "@/services/AgentService"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"
-import AgentRepository from "@/repositories/AgentRepository"
 
 export default {
   name: "Credential",
@@ -433,16 +333,6 @@ export default {
       credentialService: new CredentialService(),
       loading: false,
       loadingUrls: false,
-      loadingAgentUrl: false,
-      loadingCustomers: false,
-      loadingAgents: false,
-      agentCustomerId: null,
-      agentId: null,
-      agentPaymentUrl: "",
-      customers: [],
-      agents: [],
-      personService: new PersonService(),
-      agentService: new AgentService(),
       publicUrls: {
         permanent_payment_url: "",
         time_based_payment_url: "",
@@ -454,8 +344,6 @@ export default {
   mounted() {
     this.getCredential()
     this.generateUrls()
-    this.loadCustomers()
-    this.loadAgents()
   },
   methods: {
     async getCredential() {
@@ -525,70 +413,6 @@ export default {
         document.execCommand("copy")
         document.body.removeChild(textArea)
         this.alertNotify("success", "URL copied to clipboard")
-      }
-    },
-    async loadCustomers() {
-      this.loadingCustomers = true
-      try {
-        const response = await this.personService.searchPerson({ limit: 100 })
-        if (response && response.data) {
-          this.customers = response.data.data || []
-        }
-      } catch (error) {
-        console.error("Error loading customers:", error)
-        this.alertNotify("error", "Failed to load customers")
-      } finally {
-        this.loadingCustomers = false
-      }
-    },
-
-    async loadAgents() {
-      this.loadingAgents = true
-      try {
-        // Use direct API call with proper error handling
-        const response = await AgentRepository.list()
-
-        // Handle different response structures
-        let agentsData = []
-        if (response.data && response.data.data) {
-          agentsData = response.data.data
-        } else if (response.data && Array.isArray(response.data)) {
-          agentsData = response.data
-        } else if (Array.isArray(response)) {
-          agentsData = response
-        }
-
-        this.agents = agentsData
-
-        if (this.agents.length === 0) {
-          this.alertNotify("warning", "No agents found in the system")
-        }
-      } catch (error) {
-        console.error("Error loading agents:", error)
-        this.alertNotify(
-          "error",
-          "Failed to load agents: " + (error.message || "Unknown error"),
-        )
-      } finally {
-        this.loadingAgents = false
-      }
-    },
-
-    async generateAgentUrl() {
-      this.loadingAgentUrl = true
-      try {
-        const response = await this.credentialService.generateAgentPaymentUrl(
-          this.agentCustomerId,
-          this.agentId,
-        )
-        this.agentPaymentUrl = this.addFrontendPrefix(
-          response.agent_payment_url,
-        )
-        this.alertNotify("success", "Agent payment URL generated successfully")
-      } catch (error) {
-        this.alertNotify("error", "Failed to generate agent payment URL")
-      } finally {
-        this.loadingAgentUrl = false
       }
     },
     openPaymentPage() {
@@ -669,14 +493,6 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-.agent-url {
-  border-left: 4px solid #2196f3;
-  padding-left: 1rem;
-  background-color: #e3f2fd;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-}
-
 .url-icon {
   margin-right: 8px;
   vertical-align: middle;
@@ -706,20 +522,6 @@ export default {
 .url-description .md-icon {
   margin-right: 4px;
   font-size: 16px;
-}
-
-.agent-generator {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.agent-generator .md-field {
-  margin-bottom: 0;
-}
-
-.agent-generator .url-container {
-  margin-top: 0.5rem;
 }
 
 /* Callback URL Section Styles */

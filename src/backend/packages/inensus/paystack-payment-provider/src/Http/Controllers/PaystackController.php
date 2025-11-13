@@ -37,9 +37,7 @@ class PaystackController extends Controller {
             // Verify webhook signature
             if (!$this->webhookService->verifyWebhook($request)) {
                 return response()->json(['error' => 'Invalid webhook signature'], 401);
-            }
-            Log::info('PaystackWebhookService: Request', ['request' => $request->all()]);
-            // Process the webhook
+            }            // Process the webhook
             $this->webhookService->processWebhook($request, $companyId);
         } catch (\Exception $e) {
             Log::info('PaystackWebhookService: Failed to verify webhook', [
