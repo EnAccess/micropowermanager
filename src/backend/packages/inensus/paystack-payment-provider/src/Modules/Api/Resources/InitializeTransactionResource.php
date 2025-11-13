@@ -32,7 +32,7 @@ class InitializeTransactionResource extends AbstractApiResource {
         $callbackUrl = $this->getCallbackUrl();
 
         // Get merchant email from credentials (tenant-specific) or fallback to config
-        $merchantEmail = $this->paystackCredential->getMerchantEmail() 
+        $merchantEmail = $this->paystackCredential->getMerchantEmail()
             ?? config('paystack-payment-provider.merchant_email');
 
         $bodyData = [

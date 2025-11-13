@@ -85,7 +85,7 @@ class TransactionDataContainer {
      */
     private function handleSHSDevice(SolarHomeSystem $shs): void {
         $this->manufacturer = $shs->manufacturer()->first();
-        // Add any SHS-specific initialization here        
+        // Add any SHS-specific initialization here
     }
 
     /**
