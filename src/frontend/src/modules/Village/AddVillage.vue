@@ -106,7 +106,7 @@
                       v-model="cityLatLng.lat"
                       step="any"
                       maxlength="8"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     />
                     <span class="md-error">
                       {{ errors.first($tc("words.latitude")) }}
@@ -128,7 +128,7 @@
                       v-model="cityLatLng.lon"
                       step="any"
                       maxlength="8"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     />
                     <span class="md-error">
                       {{ errors.first($tc("words.longitude")) }}
