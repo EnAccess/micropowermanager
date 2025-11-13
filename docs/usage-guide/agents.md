@@ -47,11 +47,11 @@ These records track money given to and returned by agents, keeping their balance
 
 ### Agent Charges
 
-An **agent charge** represents money the company gives to the agent so that they can continue serving customers. Charges are created from the web panel (`Agents` → `Charge` → `+`). When a charge is saved, a matching balance entry is added so the credit appears in the agent’s ledger.
+An **agent charge** represents money the company gives to the agent so that they can continue serving customers. Charges are created from the web panel (`Agents` → `Commission Types` → `+`). When a charge is saved, a matching balance entry is added so the credit appears in the agent’s ledger.
 
 ### Agent Receipts
 
-An **agent receipt** records money collected back from the agent. You create receipts from the agent profile (`Agents` → `Receipts` → `+`). When a receipt is saved, the system will:
+An **agent receipt** records money collected back from the agent. You create receipts from the agent profile (`Agents` → `Receipt` → `+`). When a receipt is saved, the system will:
 
 - capture the latest snapshot in the agent’s balance history,
 - compute how much was already owed, what was collected since the last visit, and any prior difference,
@@ -62,3 +62,7 @@ Receipts therefore do the opposite of charges: they settle the debt the agent ow
 Each receipt automatically creates a detailed breakdown showing how the payment was calculated. It explains what the agent already owed before this visit, how much cash they just handed in, how much additional sales activity happened since the last time they checked in, any older outstanding amounts from before that, and the remaining balance after applying the payment (which never goes below zero).
 
 You can view these details in the receipts tab of an agent profile to understand how the receipt amount was calculated.
+
+![Agent balance history](images/agent-balance-history.png)
+
+The balance history panel summarizes the flow of charges, commissions, and receipts for the selected agent so you can reconcile the current balance at a glance.
