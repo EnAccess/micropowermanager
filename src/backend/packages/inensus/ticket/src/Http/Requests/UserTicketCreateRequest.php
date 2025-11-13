@@ -12,11 +12,11 @@ class UserTicketCreateRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'label' => 'required|integer',
-            'assignedPerson' => 'nullable|integer',
-            'dueDate' => 'nullable|date',
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'label' => ['required', 'integer'],
+            'assignedPerson' => ['nullable', 'integer'],
+            'dueDate' => ['nullable', 'date'],
         ];
     }
 
