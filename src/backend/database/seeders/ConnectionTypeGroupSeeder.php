@@ -28,7 +28,8 @@ class ConnectionTypeGroupSeeder extends Seeder {
 
         // Connection Group / Connection Type
         $connectionTypes = ConnectionType::factory()
-            ->forEachSequence(
+            ->count(5)
+            ->sequence(
                 ['name' => 'Household'],
                 ['name' => 'Institutional'],
                 ['name' => 'Commercial'],
