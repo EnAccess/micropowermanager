@@ -26,9 +26,9 @@ export const ICONS = {
   E_BIKE: eBikeIcon,
 }
 export const ICON_OPTIONS = {
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
+  iconSize: [40.4, 44],
+  iconAnchor: [20, 43],
+  popupAnchor: [0, -51],
 }
 
 export class MappingService {

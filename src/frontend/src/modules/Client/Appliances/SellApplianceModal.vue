@@ -464,9 +464,8 @@
           :key="locationPickerKey"
           :mapping-service="mappingService"
           :map-container-id="locationPickerMapId"
-          :marker="true"
-          :marker-count="1"
           :initial-location="initialDeviceLocationArray"
+          :marker-icon="getMarkerIconForAppliance(currentAppliance)"
           @location-selected="handleLocationSelected"
           @location-cleared="handleLocationCleared"
         />
@@ -497,6 +496,7 @@ import { MappingService, ICONS } from "@/services/MappingService"
 import { mapGetters } from "vuex"
 import Loader from "@/shared/Loader.vue"
 import DeviceLocationPickerMap from "./DeviceLocationPickerMap.vue"
+import defaultMarker from "leaflet/dist/images/marker-icon.png"
 
 const APPLIANCE_TYPE_SHS_ID = 1
 const APPLIANCE_TYPE_E_BIKE_ID = 2
@@ -548,6 +548,19 @@ export default {
     this.initializeDeviceLocation()
   },
   methods: {
+    getMarkerIconForAppliance(appliance) {
+      if (!appliance) {
+        return defaultMarker
+      }
+      switch (appliance.assetTypeId) {
+        case APPLIANCE_TYPE_SHS_ID:
+          return ICONS.SHS
+        case APPLIANCE_TYPE_E_BIKE_ID:
+          return ICONS.E_BIKE
+        default:
+          return ICONS.METER
+      }
+    },
     handleDialogActive(value) {
       this.internalDialogVisible = value
       if (!value) {
@@ -777,20 +790,9 @@ export default {
       return true
     },
     updateDeviceMarkerIcon(appliance) {
-      if (!appliance) {
-        this.mappingService.setMarkerUrl(ICONS.METER)
-        return
-      }
-      switch (appliance.assetTypeId) {
-        case APPLIANCE_TYPE_SHS_ID:
-          this.mappingService.setMarkerUrl(ICONS.SHS)
-          break
-        case APPLIANCE_TYPE_E_BIKE_ID:
-          this.mappingService.setMarkerUrl(ICONS.E_BIKE)
-          break
-        default:
-          this.mappingService.setMarkerUrl(ICONS.METER)
-      }
+      const icon = this.getMarkerIconForAppliance(appliance)
+      this.mappingService.setMarkerUrl(icon)
+      this.locationPickerKey += 1
     },
     getRate(index, rateCount, cost) {
       if (index === parseInt(rateCount)) {
@@ -855,6 +857,13 @@ export default {
       settings: "settings/getMainSettings",
       user: "auth/getAuthenticateUser",
     }),
+    currentAppliance() {
+      return (
+        this.applianceService.list.find(
+          (x) => x.id === this.applianceService.appliance.id,
+        ) || null
+      )
+    },
     showRatesButton() {
       return this.applianceService.appliance.rate > 1
     },

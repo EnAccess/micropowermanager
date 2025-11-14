@@ -24,6 +24,10 @@ export default {
       type: String,
       default: "map",
     },
+    markerIcon: {
+      type: String,
+      default: defaultMarker,
+    },
   },
   created() {
     this.ensureMarkerIcon()
@@ -71,8 +75,8 @@ export default {
       }
     },
     ensureMarkerIcon() {
-      this.mappingService.setMarkerUrl(defaultMarker)
-      this.markerUrl = defaultMarker
+      this.mappingService.setMarkerUrl(this.markerIcon)
+      this.markerUrl = this.markerIcon
     },
     onMapClick(event) {
       const { lat, lng } = event.latlng
@@ -98,16 +102,26 @@ export default {
     },
     setMarker(location) {
       this.clearMarkers()
-      const iconUrl = defaultMarker
-      const markerIcon = L.icon({
-        ...ICON_OPTIONS,
-        iconUrl: iconUrl,
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowUrl: markerShadow,
-        shadowSize: [41, 41],
-      })
+      const iconUrl = this.markerIcon
+      const isDefaultMarker = iconUrl === defaultMarker
+
+      const iconOptions = isDefaultMarker
+        ? {
+            iconUrl: iconUrl,
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowUrl: markerShadow,
+            shadowSize: [41, 41],
+          }
+        : {
+            ...ICON_OPTIONS,
+            iconUrl: iconUrl,
+            shadowUrl: markerShadow,
+          }
+
+      const markerIcon = L.icon(iconOptions)
+
       const marker = L.marker(location, {
         icon: markerIcon,
         draggable: false,
