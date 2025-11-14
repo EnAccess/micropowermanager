@@ -13,8 +13,8 @@ export default {
     drawClusters() {
       this.editableLayer.clearLayers()
       this.mappingService.geoData.map((geoData) => {
-        const geoType = geoData.geojson.type
-        const coordinatesClone = geoData.geojson.coordinates[0].reduce(
+        const geoType = geoData.type
+        const coordinatesClone = geoData.coordinates[0].reduce(
           (acc, coord) => {
             acc[0].push([coord[1], coord[0]])
             return acc
@@ -33,28 +33,28 @@ export default {
             {
               type: "Feature",
               properties: {
-                popupContent: geoData.display_name,
+                popupContent: geoData.clusterName,
                 draw_type:
                   geoData.draw_type === undefined ? "set" : geoData.draw_type,
                 selected:
                   geoData.selected === undefined ? false : geoData.selected,
                 clusterId:
                   geoData.clusterId === undefined ? -1 : geoData.clusterId,
-                clusterDisplayName:
-                  geoData.display_name === undefined
-                    ? -1
-                    : geoData.display_name,
+                clusterName:
+                  geoData.clusterName === undefined ? "" : geoData.clusterName,
               },
               geometry: {
                 type: geoType,
                 coordinates: geoData.searched
-                  ? geoData.geojson.coordinates
+                  ? geoData.coordinates
                   : coordinatesClone,
               },
             },
           ],
         }
-        const polygonColor = this.mappingService.strToHex(geoData.display_name)
+        const polygonColor = this.mappingService.strToHex(
+          geoData.clusterName || "default",
+        )
         // "this"  cannot be used inside the L.geoJson function
         const editableLayer = this.editableLayer
         const geoDataItems = this.geoDataItems
@@ -73,21 +73,18 @@ export default {
             editableLayer.addLayer(layer)
             layer.bindTooltip(
               "<strong>Cluster:</strong> " +
-                layer.feature.properties.clusterDisplayName,
+                layer.feature.properties.clusterName,
               { sticky: true, offset: [10, 10] },
             )
             const geoDataItem = {
               leaflet_id: layer._leaflet_id,
-              type: "manual",
-              geojson: {
-                type: geoData.geojson.type,
-                coordinates:
-                  geoData.searched === true
-                    ? coordinatesClone
-                    : geoData.geojson.coordinates,
-              },
+              type: geoData.type,
+              coordinates:
+                geoData.searched === true
+                  ? coordinatesClone
+                  : geoData.coordinates,
               searched: false,
-              display_name: geoData.display_name,
+              clusterName: geoData.clusterName,
               selected: feature.properties.selected,
               draw_type: feature.properties.draw_type,
               lat: geoData.lat,
@@ -116,7 +113,7 @@ export default {
           let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
           if (markingInfo.clusterId !== undefined) {
             tooltip +=
-              "<br><strong>Cluster:</strong> " + markingInfo.clusterDisplayName
+              "<br><strong>Cluster:</strong> " + markingInfo.clusterName
           }
           miniGridMarker.bindTooltip(tooltip, {
             sticky: true,
