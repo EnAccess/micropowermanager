@@ -365,7 +365,7 @@
     "thisPeriod": "Période actuelle",
     "ticketCategories": "Catégories de tickets",
     "ticketDetails": "Détails des tickets",
-    "ticketLabels": "Ces tickets seront payés à un tiers (Non-employé). | En cas de questions, veuillez prendre contact avec {email}.",
+    "ticketLabels": "Ces tickets seront payés à un tiers (Non-employé).",
     "ticketNotify": "Le ticket a été fermé avec succès ! | Commentaire envoyé avec succès !",
     "ticketOutsourcePayoutReports": "Rapports de paiement de Ticket Outsourcing",
     "ticketUserNotify": "Utilisateur ajouté avec succès ! | {tag} introuvable dans le système de tickets !",

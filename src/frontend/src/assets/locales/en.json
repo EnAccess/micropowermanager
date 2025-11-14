@@ -366,7 +366,7 @@
     "thisPeriod": "This Period",
     "ticketCategories": "Ticket Categories",
     "ticketDetails": "Ticket Details",
-    "ticketLabels": "That tickets will be payed out to a third party person (non Employee) | By any question please get in touch with {email}",
+    "ticketLabels": "That tickets will be payed out to a third party person (non Employee)",
     "ticketNotify": "Ticket closed successfully. | Comment send successfully.",
     "ticketOutsourcePayoutReports": "Ticket Outsource Payout Reports",
     "ticketUserNotify": "User added successfully. | {tag} not found in the Ticketing system!",
