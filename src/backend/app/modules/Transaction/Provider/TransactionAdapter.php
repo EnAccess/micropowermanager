@@ -3,6 +3,7 @@
 namespace MPM\Transaction\Provider;
 
 use App\Models\Transaction\AgentTransaction;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -29,6 +30,11 @@ class TransactionAdapter {
             return $baseTransaction;
         } elseif ($transactionProvider instanceof SwiftaTransaction) {
             $baseTransaction = resolve(SwiftaTransactionProvider::class);
+            $baseTransaction->init($transactionProvider);
+
+            return $baseTransaction;
+        } elseif ($transactionProvider instanceof PaystackTransaction) {
+            $baseTransaction = resolve('PaystackPaymentProvider');
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;

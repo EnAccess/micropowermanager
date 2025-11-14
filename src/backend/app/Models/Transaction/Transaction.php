@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
@@ -32,21 +33,21 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * The `originalTransaction()` method links this system-level transaction to the
  * payment provider-specific transaction.
  *
- * @property      int                                                                                                                                $id
- * @property      int                                                                                                                                $original_transaction_id
- * @property      string                                                                                                                             $original_transaction_type
- * @property      float                                                                                                                              $amount
- * @property      string|null                                                                                                                        $type
- * @property      string                                                                                                                             $sender
- * @property      string                                                                                                                             $message
- * @property      Carbon|null                                                                                                                        $created_at
- * @property      Carbon|null                                                                                                                        $updated_at
- * @property-read AssetPerson|null                                                                                                                   $appliance
- * @property-read Device|null                                                                                                                        $device
- * @property-read AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction $originalTransaction
- * @property-read Collection<int, PaymentHistory>                                                                                                    $paymentHistories
- * @property-read Sms|null                                                                                                                           $sms
- * @property-read Token|null                                                                                                                         $token
+ * @property      int                                                                                                                                                    $id
+ * @property      int                                                                                                                                                    $original_transaction_id
+ * @property      string                                                                                                                                                 $original_transaction_type
+ * @property      float                                                                                                                                                  $amount
+ * @property      string|null                                                                                                                                            $type
+ * @property      string                                                                                                                                                 $sender
+ * @property      string                                                                                                                                                 $message
+ * @property      Carbon|null                                                                                                                                            $created_at
+ * @property      Carbon|null                                                                                                                                            $updated_at
+ * @property-read AssetPerson|null                                                                                                                                       $appliance
+ * @property-read Device|null                                                                                                                                            $device
+ * @property-read AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction $originalTransaction
+ * @property-read Collection<int, PaymentHistory>                                                                                                                        $paymentHistories
+ * @property-read Sms|null                                                                                                                                               $sms
+ * @property-read Token|null                                                                                                                                             $token
  */
 class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
@@ -55,10 +56,10 @@ class Transaction extends BaseModel {
     /**
      * Get the payment provider-specific transaction linked to this system transaction.
      *
-     * @return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this>
+     * @return MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction, $this>
      */
     public function originalTransaction(): MorphTo {
-        /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction, $this> $relation */
+        /** @var MorphTo<AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction, $this> $relation */
         $relation = $this->morphTo();
 
         return $relation;

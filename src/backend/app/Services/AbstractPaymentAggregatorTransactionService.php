@@ -10,6 +10,7 @@ use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Utils\MinimumPurchaseAmountValidator;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -27,7 +28,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction $paymentAggregatorTransaction,
+        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction $paymentAggregatorTransaction,
     ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
@@ -144,7 +145,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         return $this->minimumPurchaseAmount;
     }
 
-    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
+    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction {
         return $this->paymentAggregatorTransaction;
     }
 }

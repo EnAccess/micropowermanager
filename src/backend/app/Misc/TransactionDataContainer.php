@@ -29,7 +29,7 @@ class TransactionDataContainer {
     public float $rawAmount;
     public ?AssetPerson $appliancePerson = null;
     public ?Meter $meter = null;
-    public float $installmentCost;
+    public float $installmentCost = 0;
     public float $dayDifferenceBetweenTwoInstallments;
     public bool $applianceInstallmentsFullFilled;
 

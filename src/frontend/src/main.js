@@ -29,12 +29,14 @@ import SunKing from "@/plugins/sun-king-shs/js/modules/Overview/Credential"
 import WaveMoney from "@/plugins/wave-money-payment-provider/js/modules/Overview/Credential"
 import GomeLong from "@/plugins/gome-long-meter/js/modules/Overview/Credential"
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/js/modules/Component"
+import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component"
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail"
 import AirtelTransactionDetail from "@/modules/Transactions/AirtelTransactionDetail"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail"
 import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail"
 import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail"
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail"
+import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
 import Angaza from "@/plugins/angaza-shs/js/modules/Overview/Credential"
 import DalyBms from "@/plugins/daly-bms/js/modules/Overview/Credential"
@@ -42,6 +44,7 @@ import AfricasTalking from "@/plugins/africas-talking/js/modules/Overview/Creden
 import Snackbar from "@/shared/Snackbar.vue"
 import ChintMeter from "@/plugins/chint-meter/js/modules/Overview/Credential"
 import Prospect from "@/plugins/prospect/js/modules/Overview/Credential"
+import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 
 Vue.component("default", Default)
 Vue.component("Spark-Meter", Spark)
@@ -63,13 +66,16 @@ Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
 Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
 Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
+Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
+Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
 Vue.component("Africas-Talking", AfricasTalking)
 Vue.component("Snackbar", Snackbar)
 Vue.component("Chint-Meter", ChintMeter)
 Vue.component("Prospect", Prospect)
+Vue.component("Paystack", Paystack)
 
 const unauthorizedPaths = [
   "login",
@@ -80,6 +86,8 @@ const unauthorizedPaths = [
   "register",
   "/wave-money/payment",
   "/wave-money/result",
+  "/paystack/public/payment",
+  "/paystack/public/result",
 ]
 
 router.beforeEach((to, from, next) => {

@@ -18,6 +18,7 @@ use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
 use Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
 use Inensus\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
+use Inensus\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use Inensus\Prospect\Providers\ProspectServiceProvider;
 use Inensus\SparkMeter\Providers\SparkMeterServiceProvider;
 use Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider;
@@ -60,4 +61,5 @@ return [
     OdysseyDataExportServiceProvider::class,
     DemoMeterManufacturerServiceProvider::class,
     DemoShsManufacturerServiceProvider::class,
+    PaystackPaymentProviderServiceProvider::class,
 ];
