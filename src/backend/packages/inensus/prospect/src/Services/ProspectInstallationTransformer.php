@@ -3,8 +3,10 @@
 namespace Inensus\Prospect\Services;
 
 use App\Models\Address\Address;
+use App\Models\DatabaseProxy;
 use App\Models\Device;
 use App\Models\Person\Person;
+use App\Models\User;
 
 class ProspectInstallationTransformer {
     /**
@@ -22,6 +24,7 @@ class ProspectInstallationTransformer {
 
         $person = $device->person()->first();
         $assetPerson = $device->assetPerson;
+        $appliance = $device->appliance;
         $customerIdentifier = $person ? trim(($person->name ?? '').' '.($person->surname ?? '')) : 'Unknown Customer';
 
         $primaryAddress = $this->getPrimaryAddress($person);
@@ -35,14 +38,20 @@ class ProspectInstallationTransformer {
         $deviceCategory = $this->mapDeviceCategory($device->device_type);
         $manufacturer = $deviceData->manufacturer ?? null;
 
+        $user = User::query()->first();
+        $databaseProxy = app(DatabaseProxy::class);
+        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
         return [
-            'customer_external_id' => $customerIdentifier,
+            'customer_external_id' => $person?->id,
+            'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
+            'serial_number' => $deviceData->serial_number ?? '',
             'seller_agent_external_id' => $customerIdentifier,
             'installer_agent_external_id' => $customerIdentifier,
-            'product_common_id' => null,
+            'product_common_id' => $appliance?->id ? (string) $appliance->id : null,
             'device_external_id' => (string) $device->id,
-            'parent_external_id' => null,
-            'account_external_id' => null,
+            'parent_customer_external_id' => (string) $primaryAddress?->city?->mini_grid_id,
+            'account_external_id' => $companyId,
             'battery_capacity_wh' => null,
             'usage_category' => 'household',
             'usage_sub_category' => null,
@@ -50,12 +59,10 @@ class ProspectInstallationTransformer {
             'ac_input_source' => null,
             'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
             'firmware_version' => null,
-            'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
             'model' => null,
             'primary_use' => null,
             'rated_power_w' => null,
             'pv_power_w' => null,
-            'serial_number' => $deviceData->serial_number ?? '',
             'site_name' => $primaryAddress?->street,
             'payment_plan_amount_financed_principal' => null,
             'payment_plan_amount_financed_interest' => null,
