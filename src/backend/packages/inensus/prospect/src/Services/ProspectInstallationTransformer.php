@@ -3,8 +3,10 @@
 namespace Inensus\Prospect\Services;
 
 use App\Models\Address\Address;
+use App\Models\DatabaseProxy;
 use App\Models\Device;
 use App\Models\Person\Person;
+use App\Models\User;
 
 class ProspectInstallationTransformer {
     /**
@@ -36,6 +38,10 @@ class ProspectInstallationTransformer {
         $deviceCategory = $this->mapDeviceCategory($device->device_type);
         $manufacturer = $deviceData->manufacturer ?? null;
 
+        $user = User::query()->first();
+        $databaseProxy = app(DatabaseProxy::class);
+        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
         return [
             'customer_external_id' => $person?->id,
             'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
@@ -45,7 +51,7 @@ class ProspectInstallationTransformer {
             'product_common_id' => $appliance?->id ? (string) $appliance->id : null,
             'device_external_id' => (string) $device->id,
             'parent_customer_external_id' => (string) $primaryAddress?->city?->mini_grid_id,
-            'account_external_id' => null,
+            'account_external_id' => $companyId,
             'battery_capacity_wh' => null,
             'usage_category' => 'household',
             'usage_sub_category' => null,
