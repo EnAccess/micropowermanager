@@ -37,6 +37,8 @@ class ProspectInstallationTransformer {
 
         return [
             'customer_external_id' => $person?->id,
+            'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
+            'serial_number' => $deviceData->serial_number ?? '',
             'seller_agent_external_id' => $customerIdentifier,
             'installer_agent_external_id' => $customerIdentifier,
             'product_common_id' => null,
@@ -50,12 +52,10 @@ class ProspectInstallationTransformer {
             'ac_input_source' => null,
             'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
             'firmware_version' => null,
-            'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
             'model' => null,
             'primary_use' => null,
             'rated_power_w' => null,
             'pv_power_w' => null,
-            'serial_number' => $deviceData->serial_number ?? '',
             'site_name' => $primaryAddress?->street,
             'payment_plan_amount_financed_principal' => null,
             'payment_plan_amount_financed_interest' => null,
