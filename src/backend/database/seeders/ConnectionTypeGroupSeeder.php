@@ -21,6 +21,11 @@ class ConnectionTypeGroupSeeder extends Seeder {
      * @return void
      */
     public function run() {
+        // Delete defaults provided by migration
+        ConnectionType::truncate();
+        SubConnectionType::truncate();
+        ConnectionGroup::truncate();
+
         // Connection Group / Connection Type
         $connectionTypes = ConnectionType::factory()
             ->count(5)
@@ -41,9 +46,8 @@ class ConnectionTypeGroupSeeder extends Seeder {
 
             if ($type->name === 'Institutional') {
                 SubConnectionType::factory()
-                    ->count(10)
                     ->for($type, 'connectionType')
-                    ->sequence(
+                    ->forEachSequence(
                         ['name' => 'Primary school'],
                         ['name' => 'Secondary school'],
                         ['name' => 'Health clinic'],
@@ -60,9 +64,8 @@ class ConnectionTypeGroupSeeder extends Seeder {
 
             if ($type->name === 'Commercial') {
                 SubConnectionType::factory()
-                    ->count(12)
                     ->for($type, 'connectionType')
-                    ->sequence(
+                    ->forEachSequence(
                         ['name' => 'Retail shop / kiosk'],
                         ['name' => 'Bar / restaurant / café'],
                         ['name' => 'Guesthouse / lodge'],
@@ -81,9 +84,8 @@ class ConnectionTypeGroupSeeder extends Seeder {
 
             if ($type->name === 'Productive Use / Industrial') {
                 SubConnectionType::factory()
-                    ->count(5)
                     ->for($type, 'connectionType')
-                    ->sequence(
+                    ->forEachSequence(
                         ['name' => 'Ice-making plant'],
                         ['name' => 'Welding workshop'],
                         ['name' => 'Water purification plant'],
@@ -95,8 +97,7 @@ class ConnectionTypeGroupSeeder extends Seeder {
         }
 
         ConnectionGroup::factory()
-            ->count(8)
-            ->sequence(
+            ->forEachSequence(
                 ['name' => 'Pilot Mini-grid A (Lakeview)'],
                 ['name' => 'Pilot Mini-grid B (Hilltop)'],
                 ['name' => 'Institutional Electrification Program 2025'],
