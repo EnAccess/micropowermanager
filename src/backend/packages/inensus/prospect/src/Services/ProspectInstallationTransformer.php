@@ -44,7 +44,7 @@ class ProspectInstallationTransformer {
             'installer_agent_external_id' => $customerIdentifier,
             'product_common_id' => $appliance?->id ? (string) $appliance->id : null,
             'device_external_id' => (string) $device->id,
-            'parent_external_id' => null,
+            'parent_customer_external_id' => (string) $primaryAddress?->city?->mini_grid_id,
             'account_external_id' => null,
             'battery_capacity_wh' => null,
             'usage_category' => 'household',
