@@ -36,7 +36,7 @@ class ProspectInstallationTransformer {
         $manufacturer = $deviceData->manufacturer ?? null;
 
         return [
-            'customer_external_id' => $customerIdentifier,
+            'customer_external_id' => $person?->id,
             'seller_agent_external_id' => $customerIdentifier,
             'installer_agent_external_id' => $customerIdentifier,
             'product_common_id' => null,
