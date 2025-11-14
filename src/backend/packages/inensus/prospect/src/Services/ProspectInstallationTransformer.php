@@ -22,6 +22,7 @@ class ProspectInstallationTransformer {
 
         $person = $device->person()->first();
         $assetPerson = $device->assetPerson;
+        $appliance = $device->appliance;
         $customerIdentifier = $person ? trim(($person->name ?? '').' '.($person->surname ?? '')) : 'Unknown Customer';
 
         $primaryAddress = $this->getPrimaryAddress($person);
@@ -41,7 +42,7 @@ class ProspectInstallationTransformer {
             'serial_number' => $deviceData->serial_number ?? '',
             'seller_agent_external_id' => $customerIdentifier,
             'installer_agent_external_id' => $customerIdentifier,
-            'product_common_id' => null,
+            'product_common_id' => $appliance?->id ? (string) $appliance->id : null,
             'device_external_id' => (string) $device->id,
             'parent_external_id' => null,
             'account_external_id' => null,
