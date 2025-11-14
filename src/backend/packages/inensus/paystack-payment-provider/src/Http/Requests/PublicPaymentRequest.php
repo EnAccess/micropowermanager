@@ -17,6 +17,8 @@ class PublicPaymentRequest extends FormRequest {
      * @return array<string, array<int, string|int>>
      */
     public function rules(): array {
+        $supportedCurrencies = config('paystack-payment-provider.currency.supported', ['NGN', 'GHS', 'KES', 'ZAR']);
+
         return [
             'device_serial' => ['required', 'string', 'min:3', 'max:50'],
             'device_type' => ['nullable', 'string', 'in:meter,shs,other'],
@@ -29,7 +31,7 @@ class PublicPaymentRequest extends FormRequest {
             'currency' => [
                 'required',
                 'string',
-                'in:NGN,GHS,KES,ZAR',
+                'in:'.implode(',', $supportedCurrencies),
             ],
         ];
     }
@@ -38,6 +40,8 @@ class PublicPaymentRequest extends FormRequest {
      * @return array<string, string>
      */
     public function messages(): array {
+        $supportedCurrencies = config('paystack-payment-provider.currency.supported');
+
         return [
             'device_serial.required' => 'Device serial number is required',
             'device_serial.min' => 'Device serial number must be at least 3 characters',
@@ -47,7 +51,7 @@ class PublicPaymentRequest extends FormRequest {
             'amount.min' => 'Payment amount must be at least 1',
             'amount.max' => 'Payment amount cannot exceed 1,000,000',
             'currency.required' => 'Currency is required',
-            'currency.in' => 'Currency must be one of: NGN, GHS, KES, ZAR',
+            'currency.in' => 'Currency must be one of: '.implode(', ', $supportedCurrencies),
         ];
     }
 
