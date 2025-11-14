@@ -64,7 +64,7 @@ export class MappingService {
       this.searchedOrDrawnItems = this.filterResultsOut(data, filteredTypes)
       return this.searchedOrDrawnItems
     } catch (e) {
-      const errorMessage = e.response.data.message
+      const errorMessage = e.response.data.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
