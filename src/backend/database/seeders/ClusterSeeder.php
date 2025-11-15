@@ -31,6 +31,9 @@ class ClusterSeeder extends Seeder {
                 'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
             ]);
 
+        // Assign admin role to cluster admin
+        $clusterAdmin->assignRole('admin');
+
         $clusters = Cluster::factory()
             ->count(2)
             ->for($clusterAdmin, 'manager')

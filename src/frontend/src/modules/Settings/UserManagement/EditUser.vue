@@ -86,6 +86,29 @@
                   </span>
                 </md-field>
               </div>
+              <div
+                class="md-layout-item md-size-50 md-small-size-100"
+                v-if="$store.getters['auth/getPermissions'].includes('roles')"
+              >
+                <md-field>
+                  <label for="roles">
+                    Roles
+                    <span style="color: red">*</span>
+                  </label>
+                  <md-select id="roles" v-model="selectedRoles" multiple>
+                    <md-option
+                      v-for="r in roleService.roles"
+                      :key="r.name"
+                      :value="r.name"
+                    >
+                      {{ r.name }}
+                    </md-option>
+                  </md-select>
+                  <span class="md-helper-text">
+                    At least one role is required
+                  </span>
+                </md-field>
+              </div>
             </md-card-content>
             <md-card-actions>
               <md-button class="md-raised md-primary" @click="updateUser()">
@@ -105,6 +128,7 @@
 <script>
 import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify"
+import { RoleService } from "@/services/RoleService"
 export default {
   components: { Widget },
   name: "EditUser",
@@ -131,12 +155,25 @@ export default {
         valid: true,
       },
       firstStepClicked: false,
+      roleService: new RoleService(),
+      selectedRoles: [],
     }
   },
   mounted() {
     this.setSelectedCity()
   },
   methods: {
+    async loadRoles() {
+      try {
+        await this.roleService.fetchAll()
+        if (this.user.id) {
+          await this.roleService.fetchUserRoles(this.user.id)
+          this.selectedRoles = [...this.roleService.userRoles]
+        }
+      } catch (e) {
+        // silent
+      }
+    },
     async updateUser() {
       this.firstStepClicked = true
       const validation = await this.$validator.validateAll("Edit-Form")
@@ -144,7 +181,21 @@ export default {
       if (!validation) {
         return
       }
+
+      // Prevent users from having no roles
+      if (!this.selectedRoles || this.selectedRoles.length === 0) {
+        this.$notify({
+          group: "notify",
+          type: "error",
+          title: "Validation Error",
+          text: "Users must have at least one role assigned.",
+        })
+        return
+      }
+
       this.user.cityId = this.selectedCity
+      // Add roles to user object to be sent with the update
+      this.user.roles = this.selectedRoles
       this.$emit("updateUser", this.user)
     },
     setSelectedCity() {
@@ -167,6 +218,7 @@ export default {
   watch: {
     showEditUser() {
       this.setSelectedCity()
+      this.loadRoles()
     },
   },
 }

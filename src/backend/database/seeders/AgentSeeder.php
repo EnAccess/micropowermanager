@@ -86,6 +86,7 @@ class AgentSeeder extends Seeder {
                     'email' => $firstAgent ? DemoCompany::DEMO_COMPANY_AGENT_EMAIL : fake()->safeEmail(),
                     'password' => $firstAgent ? DemoCompany::DEMO_COMPANY_PASSWORD : fake()->password(),
                 ]);
+
             $firstAgent = false; // Ensure only one agent gets the test email
 
             // Give our Agent some balance
