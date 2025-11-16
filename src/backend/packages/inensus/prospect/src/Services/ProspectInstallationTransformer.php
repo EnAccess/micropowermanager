@@ -5,6 +5,7 @@ namespace Inensus\Prospect\Services;
 use App\Models\Address\Address;
 use App\Models\DatabaseProxy;
 use App\Models\Device;
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\User;
 
@@ -37,6 +38,7 @@ class ProspectInstallationTransformer {
 
         $deviceCategory = $this->mapDeviceCategory($device->device_type);
         $manufacturer = $deviceData->manufacturer ?? null;
+        $usageCategory = $this->mapUsageCategory($device, $deviceData);
 
         $user = User::query()->first();
         $databaseProxy = app(DatabaseProxy::class);
@@ -53,7 +55,7 @@ class ProspectInstallationTransformer {
             'parent_customer_external_id' => (string) $primaryAddress?->city?->mini_grid_id,
             'account_external_id' => $companyId,
             'battery_capacity_wh' => null,
-            'usage_category' => 'household',
+            'usage_category' => $usageCategory,
             'usage_sub_category' => null,
             'device_category' => $deviceCategory,
             'ac_input_source' => null,
@@ -136,5 +138,37 @@ class ProspectInstallationTransformer {
             'solar_home_system' => 'solar_home_system',
             default => 'other',
         };
+    }
+
+    /**
+     * Map connection type to Prospect usage_category enum (household, institutional, commercial).
+     */
+    private function mapUsageCategory(Device $device, $deviceData): ?string {
+        if ($device->device_type === 'meter' && $deviceData instanceof Meter) {
+            $deviceData->load('connectionType');
+            $category = $deviceData->connectionType?->name;
+        } else {
+            return null;
+        }
+
+        if (empty($category)) {
+            return null;
+        }
+
+        $normalized = strtolower(trim($category));
+
+        if (str_contains($normalized, 'household')) {
+            return 'household';
+        }
+
+        if (str_contains($normalized, 'institutional') || str_contains($normalized, 'institution')) {
+            return 'institutional';
+        }
+
+        if (str_contains($normalized, 'commercial')) {
+            return 'commercial';
+        }
+
+        return null;
     }
 }
