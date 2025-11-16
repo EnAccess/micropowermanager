@@ -101,10 +101,7 @@
           ></box-group>
         </div>
 
-        <div
-          class="md-layout-item md-layout md-gutter md-size-100"
-          style="z-index: -1"
-        >
+        <div class="md-layout-item md-layout md-gutter md-size-100">
           <div
             class="md-layout-item md-medium-size-100 md-size-33"
             style="min-height: 500px"
@@ -407,7 +404,7 @@ export default {
       )
       this.targetRevenueChartData =
         this.batchRevenueService.initializeColumnChart(this.miniGridData)
-      this.setDonutChartOptions(this.donutData)
+      this.setDonutChartOptions()
       this.fillTicketChart()
       this.fillRevenueTrendsOverView()
       this.fillRevenueTrends(this.tab)
@@ -427,38 +424,11 @@ export default {
       }
       this.setPeriod = !this.setPeriod
     },
-    setDonutChartOptions(donutData) {
-      let value = donutData.reduce((acc, curr) => {
-        if (curr[1] > 0) {
-          acc = true
-        }
-        return acc
-      }, false)
-      if (value) {
-        this.donutChartOptions = {
-          pieHole: 1,
-          legend: "bottom",
-          height: 500,
-        }
-      } else {
-        this.donutData = []
-        this.donutData.push([
-          this.$tc("words.connection"),
-          this.$tc("words.revenue"),
-        ])
-        this.donutData.push(["", { v: 1, f: this.$tc("phrases.noData") }])
-        this.donutChartOptions.chartArea = {
-          left: "15%",
-        }
-        this.donutChartOptions.colors = ["transparent"]
-        this.donutChartOptions.pieSliceBorderColor = "#9e9e9e"
-        this.donutChartOptions.pieSliceText = "value"
-        this.donutChartOptions.pieSliceTextStyle = {
-          color: "#9e9e9e",
-        }
-        this.donutChartOptions.tooltip = {
-          trigger: "none",
-        }
+    setDonutChartOptions() {
+      this.donutChartOptions = {
+        pieHole: 1,
+        legend: "bottom",
+        height: 500,
       }
     },
     calculateAverages(list) {
@@ -598,7 +568,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .map-area {
   z-index: 1 !important;
 }
@@ -625,174 +595,6 @@ export default {
   position: absolute;
   top: 1.5rem;
 }
-
-.progress {
-  height: 10px;
-  background: #333;
-  border-radius: 0;
-  box-shadow: none;
-  margin-bottom: 30px;
-  overflow: visible;
-}
-
-.progress .progress-bar {
-  position: relative;
-  -webkit-animation: animate-positive 2s;
-  animation: animate-positive 2s;
-}
-
-.progress .progress-bar:after {
-  content: "";
-  display: inline-block;
-  width: 9px;
-  background: #fff;
-  position: absolute;
-  top: -10px;
-  bottom: -10px;
-  right: -1px;
-  z-index: 1;
-  transform: rotate(35deg);
-}
-
-.progress .progress-value {
-  display: block;
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  position: absolute;
-  top: -30px;
-  right: -25px;
-}
-
-.tooltip .tooltip-inner {
-  background: black;
-  color: white;
-  border-radius: 16px;
-  padding: 5px 10px 4px;
-}
-
-.tooltip .tooltip-arrow {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  position: absolute;
-  margin: 5px;
-  border-color: black;
-  z-index: 1;
-}
-
-.tooltip[x-placement^="top"] .tooltip-arrow {
-  border-width: 5px 5px 0 5px;
-  border-left-color: transparent !important;
-  border-right-color: transparent !important;
-  border-bottom-color: transparent !important;
-  bottom: -5px;
-  left: calc(50% - 5px);
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.tooltip[x-placement^="bottom"] .tooltip-arrow {
-  border-width: 0 5px 5px 5px;
-  border-left-color: transparent !important;
-  border-right-color: transparent !important;
-  border-top-color: transparent !important;
-  top: -5px;
-  left: calc(50% - 5px);
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.tooltip[x-placement^="right"] .tooltip-arrow {
-  border-width: 5px 5px 5px 0;
-  border-left-color: transparent !important;
-  border-top-color: transparent !important;
-  border-bottom-color: transparent !important;
-  left: -5px;
-  top: calc(50% - 5px);
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.tooltip[x-placement^="left"] .tooltip-arrow {
-  border-width: 5px 0 5px 5px;
-  border-top-color: transparent !important;
-  border-right-color: transparent !important;
-  border-bottom-color: transparent !important;
-  right: -5px;
-  top: calc(50% - 5px);
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.tooltip.popover .popover-inner {
-  background: #f9f9f9;
-  color: black;
-  padding: 24px;
-  border-radius: 5px;
-  box-shadow: 0 5px 30px rgba(black, 0.1);
-}
-
-.tooltip.popover .popover-arrow {
-  border-color: #f9f9f9;
-}
-
-.modal-mask {
-  position: fixed;
-  z-index: 1001;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
-  max-height: 85%;
-  overflow-y: scroll;
-}
-
-@media only screen and (max-width: 1024px) {
-  .modal-container {
-    width: 99% !important;
-  }
-}
-
-@media only screen and (min-width: 1024px) {
-  .modal-container {
-    width: 55% !important;
-  }
-}
-
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
-
-.data-stream-switch {
-  margin-left: 3rem !important;
-}
-
 .vdp-datepicker__calendar .cell.selected {
   background: #90caf9 !important;
 }

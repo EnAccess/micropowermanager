@@ -72,6 +72,10 @@ export const sharedMap = {
       type: Boolean,
       default: false,
     },
+    mapContainerId: {
+      type: String,
+      default: "map",
+    },
   },
   data() {
     return {
@@ -112,7 +116,10 @@ export const sharedMap = {
           edit: this.edit,
         },
       }
-      this.map = L.map("map").setView(this.mappingService.center, this.zoom)
+      this.map = L.map(this.mapContainerId).setView(
+        this.mappingService.center,
+        this.zoom,
+      )
       this.setTileLayer()
       if (drawingOptions.draw.marker) {
         const marker = L.Icon.extend({

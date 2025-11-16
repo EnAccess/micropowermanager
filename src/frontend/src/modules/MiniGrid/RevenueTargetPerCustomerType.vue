@@ -53,7 +53,6 @@ export default {
           },
         },
         tooltip: { isHtml: true },
-        title: this.$tc("phrases.revenueTargetsPerCustomerType"),
         vAxis: {
           viewWindow: {
             min: 0,

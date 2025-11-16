@@ -68,16 +68,7 @@
           </div>
           <div class="md-layout">
             <span class="md-subheader">
-              {{ $tc("phrases.ticketLabels", 1) }}
-            </span>
-          </div>
-          <div class="md-layout">
-            <span class="md-subheader">
-              {{
-                $tc("phrases.ticketLabels", 2, {
-                  email: " ako@inensus.com",
-                })
-              }}
+              {{ $tc("phrases.ticketLabels") }}
             </span>
           </div>
         </md-card-content>

@@ -127,10 +127,8 @@ export default {
         },
       },
       chartOptions: {
-        chart: {
-          title: "",
-          subtitle: "",
-        },
+        title: "",
+        subtitle: "",
       },
     }
   },
@@ -219,7 +217,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .datepicker-right .vdp-datepicker__calendar {
   right: 0;
 }

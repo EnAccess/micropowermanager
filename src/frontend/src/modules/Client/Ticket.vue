@@ -21,16 +21,24 @@
     <md-dialog :md-active.sync="showModal">
       <md-dialog-title>{{ $tc("phrases.newTicket") }}</md-dialog-title>
       <md-dialog-content class="md-scrollbar">
-        <form novalidate class="md-layout md-gutter">
+        <form class="md-layout md-gutter">
           <div class="md-layout-item md-size-100">
-            <md-field name="title">
+            <md-field
+              :class="{
+                'md-invalid': errors.has($tc('words.title')),
+              }"
+            >
               <label for="title">{{ $tc("words.title") }}</label>
               <md-input
                 type="text"
                 v-model="newTicket.title"
                 id="title"
-                name="title"
+                :name="$tc('words.title')"
+                v-validate="'required|min:3'"
               />
+              <span class="md-error">
+                {{ errors.first($tc("words.title")) }}
+              </span>
             </md-field>
           </div>
 
@@ -47,14 +55,19 @@
             </md-datepicker>
           </div>
           <div class="md-layout-item md-size-100">
-            <md-field name="ticketPriority">
+            <md-field
+              :class="{
+                'md-invalid': errors.has($tc('words.category')),
+              }"
+            >
               <label for="ticketPriority">
                 {{ $tc("words.category") }}
               </label>
               <md-select
                 v-model="newTicket.label"
-                name="ticketPriority"
+                :name="$tc('words.category')"
                 id="ticketPriority"
+                v-validate="'required'"
               >
                 <md-option value="0" disabled>
                   -- {{ $tc("words.select") }} --
@@ -67,6 +80,9 @@
                   {{ label.label_name }}
                 </md-option>
               </md-select>
+              <span class="md-error">
+                {{ errors.first($tc("words.category")) }}
+              </span>
             </md-field>
           </div>
 
@@ -95,16 +111,24 @@
           </div>
 
           <div class="md-layout-item md-size-100">
-            <md-field>
+            <md-field
+              :class="{
+                'md-invalid': errors.has($tc('words.description')),
+              }"
+            >
               <label for="description">
                 {{ $tc("words.description") }}
               </label>
               <md-textarea
                 type="text"
                 id="description"
-                name="description"
+                :name="$tc('words.description')"
                 v-model="newTicket.description"
+                v-validate="'required|min:3'"
               />
+              <span class="md-error">
+                {{ errors.first($tc("words.description")) }}
+              </span>
             </md-field>
           </div>
           <md-dialog-actions class="md-layout-item md-size-100">
@@ -226,6 +250,7 @@ export default {
     closeModal() {
       this.showModal = false
       this.resetForm()
+      this.$validator.reset()
     },
     resetForm() {
       this.newTicket = {
@@ -271,6 +296,12 @@ export default {
     },
 
     async saveTicket() {
+      // Validate all fields
+      const validator = await this.$validator.validateAll()
+      if (!validator) {
+        return
+      }
+
       //validate ticket
       if (this.showPriceInput && this.newTicket.outsourcing === 0) {
         this.$swal({

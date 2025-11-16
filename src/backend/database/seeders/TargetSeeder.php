@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ConnectionGroup;
+use App\Models\MiniGrid;
 use App\Models\SubTarget;
 use App\Models\Target;
 use Illuminate\Database\Seeder;
@@ -21,13 +22,25 @@ class TargetSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        $connections = ConnectionGroup::all();
+        $connectionGroups = ConnectionGroup::all();
 
-        $targets = Target::factory()->count(8)->create();
+        // Get available MiniGrids
+        $miniGrids = MiniGrid::all();
 
-        foreach ($targets as $target) {
-            $randomConnection = $connections->random();
-            SubTarget::factory()->create(['target_id' => $target->id, 'connection_id' => $randomConnection->id]);
+        // Setting Revenue Targets for each Mini Grids as these are shown on the dashboard
+        foreach ($miniGrids as $miniGrid) {
+            $current_target = Target::factory()
+                ->for($miniGrid, 'owner')
+                ->createOne();
+
+            // For each connection group, create a sub-target
+            foreach ($connectionGroups as $connectionGroup) {
+                SubTarget::factory()
+                    ->for($current_target)
+                    ->for($connectionGroup, 'connectionType')
+                    ->state(['revenue' => 500000])
+                    ->createOne();
+            }
         }
     }
 }
