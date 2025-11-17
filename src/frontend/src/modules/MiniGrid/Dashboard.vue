@@ -584,6 +584,10 @@ export default {
   margin-right: 1rem;
   margin-top: 3rem;
 }
+.md-toolbar {
+  position: relative;
+  z-index: 10000 !important;
+}
 
 .close-period > button {
   font-size: 2rem;
