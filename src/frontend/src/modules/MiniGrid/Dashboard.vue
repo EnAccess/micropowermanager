@@ -36,62 +36,62 @@
               >
                 <md-icon>calendar_today</md-icon>
               </md-button>
-              <div v-if="setPeriod" class="period-selector">
-                <p>{{ $tc("phrases.selectPeriod") }}</p>
-                <div class="md-layout md-gutter">
-                  <div class="md-layout-item md-size-100">
-                    <md-datepicker
-                      :class="{
-                        'md-invalid': errors.has($tc('phrases.fromDate')),
-                      }"
-                      :name="$tc('phrases.fromDate')"
-                      md-immediately
-                      v-model="period.from"
-                      v-validate="'required'"
-                      :md-close-on-blur="false"
-                    >
-                      <label>
-                        {{ $tc("phrases.fromDate") }}
-                      </label>
-                      <span class="md-error">
-                        {{ errors.first($tc("phrases.fromDate")) }}
-                      </span>
-                    </md-datepicker>
-                  </div>
-                  <div class="md-layout-item md-size-100">
-                    <md-datepicker
-                      :class="{
-                        'md-invalid': errors.has($tc('phrases.toDate')),
-                      }"
-                      :name="$tc('phrases.toDate')"
-                      md-immediately
-                      v-model="period.to"
-                      v-validate="'required'"
-                      :md-close-on-blur="false"
-                    >
-                      <label>
-                        {{ $tc("phrases.toDate") }}
-                      </label>
-                      <span class="md-error">
-                        {{ errors.first($tc("phrases.toDate")) }}
-                      </span>
-                    </md-datepicker>
-                  </div>
-                </div>
-                <div style="margin-top: 5px">
-                  <md-progress-bar md-mode="indeterminate" v-if="loading" />
-                  <button
-                    style="width: 100%"
-                    v-if="!loading"
-                    class="btn btn-primary"
-                    @click="onPeriodChange"
-                  >
-                    {{ $tc("words.send") }}
-                  </button>
-                </div>
-              </div>
             </div>
           </md-toolbar>
+          <div v-if="setPeriod" class="period-selector">
+            <p>{{ $tc("phrases.selectPeriod") }}</p>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-100 page-a-datepicker-fix">
+                <md-datepicker
+                  :class="{
+                    'md-invalid': errors.has($tc('phrases.fromDate')),
+                  }"
+                  :name="$tc('phrases.fromDate')"
+                  md-immediately
+                  v-model="period.from"
+                  v-validate="'required'"
+                  :md-close-on-blur="false"
+                >
+                  <label>
+                    {{ $tc("phrases.fromDate") }}
+                  </label>
+                  <span class="md-error">
+                    {{ errors.first($tc("phrases.fromDate")) }}
+                  </span>
+                </md-datepicker>
+              </div>
+              <div class="md-layout-item md-size-100 page-a-datepicker-fix">
+                <md-datepicker
+                  :class="{
+                    'md-invalid': errors.has($tc('phrases.toDate')),
+                  }"
+                  :name="$tc('phrases.toDate')"
+                  md-immediately
+                  v-model="period.to"
+                  v-validate="'required'"
+                  :md-close-on-blur="false"
+                >
+                  <label>
+                    {{ $tc("phrases.toDate") }}
+                  </label>
+                  <span class="md-error">
+                    {{ errors.first($tc("phrases.toDate")) }}
+                  </span>
+                </md-datepicker>
+              </div>
+            </div>
+            <div style="margin-top: 5px">
+              <md-progress-bar md-mode="indeterminate" v-if="loading" />
+              <button
+                style="width: 100%"
+                v-if="!loading"
+                class="btn btn-primary"
+                @click="onPeriodChange"
+              >
+                {{ $tc("words.send") }}
+              </button>
+            </div>
+          </div>
         </div>
         <div class="md-layout-item md-size-100">
           <box-group
@@ -572,21 +572,16 @@ export default {
 .map-area {
   z-index: 1 !important;
 }
-
 .period-selector {
   position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 9999;
+  top: 120px;
+  right: 20px;
+  z-index: 10;
   padding: 15px;
   background-color: white;
   border: 1px solid #ccc;
   margin-right: 1rem;
-  margin-top: 3rem;
-}
-.md-toolbar {
-  position: relative;
-  z-index: 10000 !important;
+  margin-top: 2rem;
 }
 
 .close-period > button {
