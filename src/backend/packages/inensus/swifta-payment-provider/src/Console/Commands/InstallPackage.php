@@ -37,10 +37,16 @@ class InstallPackage extends Command {
         $password = $this->generateRandomNumber();
         $companyId = app()->make(UserService::class)->getCompanyId();
         $company = $this->companyService->getById($companyId);
+
+        // Generate a valid email address by sanitizing the company name
+        $sanitizedCompanyName = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $company->getName()));
+        $email = 'swifta-user-'.Carbon::now()->timestamp.'@'.$sanitizedCompanyName.'.local';
+
+        /** @var User $user */
         $user = $this->user->newQuery()->firstOrCreate([
             'name' => 'swifta-user',
             'password' => $password,
-            'email' => $company->getName().'-swifta-user-'.Carbon::now()->timestamp,
+            'email' => $email,
             'company_id' => $companyId,
         ]);
         $companyDatabase = $this->companyDatabaseService->getById($companyId);
