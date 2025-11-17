@@ -40,11 +40,14 @@ class UserListener {
         $company = $this->companyService->getById($event->user->getCompanyId());
         $this->ticketUserService->findOrCreateByUser($event->user);
 
-        $this->mailHelper->sendViaTemplate(
-            $event->user->getEmail(),
-            'Welcome to MicroPowerManager',
-            'templates.mail.register_welcome',
-            ['userName' => $event->user->getName(), 'companyName' => $company->getName()]
-        );
+        // Only send welcome email if the email address is valid
+        if (filter_var($event->user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+            $this->mailHelper->sendViaTemplate(
+                $event->user->getEmail(),
+                'Welcome to MicroPowerManager',
+                'templates.mail.register_welcome',
+                ['userName' => $event->user->getName(), 'companyName' => $company->getName()]
+            );
+        }
     }
 }
