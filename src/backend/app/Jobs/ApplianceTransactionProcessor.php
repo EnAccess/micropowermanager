@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\TransactionFailedEvent;
+use App\Exceptions\ApplianceTokenNotProcessedException;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
@@ -37,6 +38,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
         } catch (\Exception $e) {
             Log::info('Transaction failed.: '.$e->getMessage());
             event(new TransactionFailedEvent($this->transaction, $e->getMessage()));
+            throw new ApplianceTokenNotProcessedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

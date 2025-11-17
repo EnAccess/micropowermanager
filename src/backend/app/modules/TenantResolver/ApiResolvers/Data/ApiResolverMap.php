@@ -9,6 +9,7 @@ use MPM\TenantResolver\ApiResolvers\AndroidGatewayCallbackApiResolver;
 use MPM\TenantResolver\ApiResolvers\DataExportResolver;
 use MPM\TenantResolver\ApiResolvers\DownloadingReportsResolver;
 use MPM\TenantResolver\ApiResolvers\OdysseyPaymentApiResolver;
+use MPM\TenantResolver\ApiResolvers\PaystackApiResolver;
 use MPM\TenantResolver\ApiResolvers\SwiftaPaymentApiResolver;
 use MPM\TenantResolver\ApiResolvers\TestApiResolver;
 use MPM\TenantResolver\ApiResolvers\ViberMessagingApiResolver;
@@ -26,6 +27,7 @@ class ApiResolverMap {
     public const ODYSSEY_PAYMENTS_API = 'api/odyssey';
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
     public const VODACOM_MOBILE_MONEY = 'api/vodacom/';
+    public const PAYSTACK_API = 'api/paystack/';
 
     public const RESOLVABLE_APIS = [
         self::TEST_API,
@@ -38,6 +40,7 @@ class ApiResolverMap {
         self::AFRICAS_TALKING_API,
         self::VODACOM_MOBILE_MONEY,
         self::ODYSSEY_PAYMENTS_API,
+        self::PAYSTACK_API,
     ];
 
     private const API_RESOLVER = [
@@ -51,6 +54,7 @@ class ApiResolverMap {
         self::AFRICAS_TALKING_API => AfricasTalkingApiResolver::class,
         self::VODACOM_MOBILE_MONEY => VodacomMobileMoneyApiResolver::class,
         self::ODYSSEY_PAYMENTS_API => OdysseyPaymentApiResolver::class,
+        self::PAYSTACK_API => PaystackApiResolver::class,
     ];
 
     /**

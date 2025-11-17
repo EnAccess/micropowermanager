@@ -64,11 +64,12 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
                 SmsConfigs::class
             );
         } else {
+            $originalTransaction = $transaction->originalTransaction()->first();
             Log::critical(
                 'WaveMoney transaction is been cancelled from MicroPowerManager.',
                 [
-                    'transaction_id' => $transaction->id,
-                    'original_transaction_id' => $transaction->originalTransaction()->first()->id,
+                    'transaction_id' => $transaction->getAttribute('id'),
+                    'original_transaction_id' => $originalTransaction ? $originalTransaction->getAttribute('id') : null,
                 ]
             );
         }

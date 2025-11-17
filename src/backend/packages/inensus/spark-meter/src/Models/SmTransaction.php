@@ -44,6 +44,6 @@ class SmTransaction extends BaseManufacturerTransaction {
      * @return BelongsTo<Transaction, $this>
      */
     public function mpmTransaction(): BelongsTo {
-        return $this->belongsTo(Transaction::class, 'mpm_transaction_id');
+        return $this->belongsTo(Transaction::class, 'original_transaction_id');
     }
 }

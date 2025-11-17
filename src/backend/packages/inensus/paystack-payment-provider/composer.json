@@ -1,0 +1,24 @@
+{
+    "name": "inensus/paystack-payment-provider",
+    "description": "Paystack payment provider integration for MicroPowerManager",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "EnAccess Foundation"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Inensus\\PaystackPaymentProvider\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Inensus\\PaystackPaymentProvider\\Providers\\PaystackPaymentProviderServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}

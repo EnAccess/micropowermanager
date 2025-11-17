@@ -318,6 +318,11 @@
                     :src="waveComLogo"
                     style="max-height: 32px"
                   />
+                  <img
+                    v-if="transaction.service === 'paystack_transaction'"
+                    :src="paystackLogo"
+                    style="max-height: 32px; max-width: 100px"
+                  />
                 </md-table-cell>
                 <md-table-cell>
                   {{ transaction.sender }}
@@ -383,6 +388,8 @@
                 <md-option value="vodacom_transaction">Vodacom</md-option>
                 <md-option value="airtel_transaction">Airtel</md-option>
                 <md-option value="wave_money_transaction">Wave Money</md-option>
+                <md-option value="swifta_transaction">Swifta</md-option>
+                <md-option value="paystack_transaction">Paystack</md-option>
                 <md-option value="agent_transaction">Agent</md-option>
                 <md-option value="cash_transaction">Cash</md-option>
               </md-select>
@@ -442,6 +449,7 @@ import agentIcon from "@/assets/icons/agent-icon.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
 import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
 import WaveComLogo from "@/assets/icons/WaveComLogo.png"
+import paystackLogo from "@/assets/icons/Paystack.png"
 import { notify } from "@/mixins/notify"
 
 export default {
@@ -484,6 +492,7 @@ export default {
       moneyIcon: moneyIcon,
       swiftaLogo: swifta,
       waveComLogo: WaveComLogo,
+      paystackLogo: paystackLogo,
     }
   },
   mounted() {
