@@ -59,11 +59,19 @@ Vue.use(VeeValidate, {
 })
 
 /**
- * VueGoogleCharts
+ * ECharts (vue-echarts 4.x with ECharts 4.x)
  */
-import VueGoogleCharts from "vue-google-charts"
+import ECharts from "vue-echarts"
+import "echarts/lib/chart/bar"
+import "echarts/lib/chart/line"
+import "echarts/lib/chart/pie"
+import "echarts/lib/component/tooltip"
+import "echarts/lib/component/legend"
+import "echarts/lib/component/legendScroll"
+import "echarts/lib/component/toolbox"
+import "echarts/lib/echarts"
 
-Vue.use(VueGoogleCharts)
+Vue.component("v-chart", ECharts)
 
 /**
  * moment

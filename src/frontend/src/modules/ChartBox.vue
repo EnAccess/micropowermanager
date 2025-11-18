@@ -2,12 +2,16 @@
   <md-card>
     <md-card-header>
       <div class="chart-box-header">
-        <GChart
-          :type="chartType"
-          :data="data"
-          :options="setChartBackGroundColor()"
-          :resizeDebounce="500"
-        />
+        <div style="height: 300px; width: 100%; position: relative">
+          <v-chart
+            v-if="
+              echartsOption && echartsOption.series && echartsOption.series[0]
+            "
+            :options="echartsOption"
+            :autoresize="true"
+            style="height: 300px; width: 100%; min-height: 300px"
+          />
+        </div>
       </div>
     </md-card-header>
     <md-card-content>
@@ -35,24 +39,7 @@ export default {
     },
     chartOptions: {
       type: Object,
-      default: () => ({
-        hAxis: {
-          textStyle: {
-            color: "#f8dedd",
-          },
-        },
-        vAxis: {
-          textStyle: {
-            color: "#f8dedd",
-          },
-        },
-        legend: {
-          position: "none",
-          textStyle: {
-            color: "#f8dedd",
-          },
-        },
-      }),
+      default: () => ({}),
     },
     gradientStart: {
       type: String,
@@ -63,29 +50,69 @@ export default {
       default: "#ffffff",
     },
   },
-  methods: {
-    setChartBackGroundColor() {
-      this.chartOptions["backgroundColor"] = {
-        gradient: {
-          // Start color for gradient.
-          color1: this.gradientStart, //'#fbf6a7',
-          // Finish color for gradient.
-          color2: this.gradientEnd, //'#33b679',
-          // Where on the boundary to start and
-          // end the color1/color2 gradient,
-          // relative to the upper left corner
-          // of the boundary.
-          x1: "0%",
-          y1: "0%",
-          x2: "100%",
-          y2: "100%",
-          // If true, the boundary for x1,
-          // y1, x2, and y2 is the box. If
-          // false, it's the entire chart.
-          useObjectBoundingBoxUnits: true,
-        },
+  computed: {
+    echartsOption() {
+      if (!this.data || !Array.isArray(this.data) || this.data.length < 2) {
+        return null
       }
-      return this.chartOptions
+
+      const headers = this.data[0] || []
+      const isLineChart = this.chartType === "LineChart"
+      const seriesNames = headers.slice(1)
+
+      const categories = this.data.slice(1).map((row) => row[0] || "")
+
+      const series = seriesNames.map((name, index) => {
+        const seriesIndex = index + 1
+        return {
+          name: String(name || `Series ${index + 1}`),
+          type: isLineChart ? "line" : "bar",
+          data: this.data
+            .slice(1)
+            .map((row) => parseFloat(row[seriesIndex]) || 0),
+          smooth: isLineChart,
+        }
+      })
+
+      return {
+        backgroundColor: {
+          type: "linear",
+          x: 0,
+          y: 0,
+          x2: 1,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: this.gradientStart },
+            { offset: 1, color: this.gradientEnd },
+          ],
+        },
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {
+          show: false,
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: categories,
+          axisLabel: {
+            color: "#f8dedd",
+          },
+        },
+        yAxis: {
+          type: "value",
+          axisLabel: {
+            color: "#f8dedd",
+          },
+        },
+        series: series,
+      }
     },
   },
 }

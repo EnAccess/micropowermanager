@@ -1,11 +1,31 @@
 <template>
-  <div>
-    <GChart
-      v-if="donutData.length > 0"
-      type="PieChart"
-      :data="donutData"
-      :options="donutChartOptions"
+  <div style="height: 300px; width: 100%; position: relative">
+    <v-chart
+      v-if="
+        echartsOption &&
+        echartsOption.series &&
+        echartsOption.series[0] &&
+        echartsOption.series[0].data &&
+        echartsOption.series[0].data.length > 0
+      "
+      :options="echartsOption"
+      :autoresize="true"
+      style="height: 300px; width: 100%; min-height: 300px"
     />
+    <div
+      v-else
+      style="
+        padding: 2rem;
+        text-align: center;
+        color: #999;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      {{ $tc("phrases.noData") || "No Data Available" }}
+    </div>
   </div>
 </template>
 
@@ -16,19 +36,83 @@ export default {
   data() {
     return {
       donutData: [["Paid For", "Amount"]],
-      donutChartOptions: {
-        title: this.$tc("phrases.paymentDistribution"),
-        pieHole: 0.4,
-        legend: "left",
-        height: 300,
-        pieSliceTextStyle: {
-          color: "white",
-        },
-      },
     }
+  },
+  computed: {
+    echartsOption() {
+      if (
+        !this.donutData ||
+        !Array.isArray(this.donutData) ||
+        this.donutData.length < 2
+      ) {
+        return null
+      }
+
+      const headers = this.donutData[0]
+      const labelHeader = headers[0] || "Paid For"
+      const valueHeader = headers[1] || "Amount"
+
+      const data = this.donutData.slice(1).map((row) => ({
+        name: String(row[0] || ""),
+        value: parseFloat(row[1]) || 0,
+      }))
+
+      const validData = data.filter((item) => item.value > 0)
+
+      if (validData.length === 0) {
+        return null
+      }
+
+      return {
+        title: {
+          text: this.$tc("phrases.paymentDistribution"),
+          left: "center",
+          top: 10,
+        },
+        tooltip: {
+          trigger: "item",
+          formatter: (params) => {
+            if (!params || !params.data) return ""
+            const percent = (params.percent || 0).toFixed(1)
+            return `${params.name}<br/>${valueHeader}: ${params.value}<br/>${percent}%`
+          },
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+          top: "middle",
+        },
+        series: [
+          {
+            name: labelHeader,
+            type: "pie",
+            radius: ["40%", "70%"],
+            center: ["60%", "50%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: true,
+              color: "white",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 20,
+                fontWeight: "bold",
+              },
+            },
+            data: validData,
+          },
+        ],
+      }
+    },
   },
   methods: {
     prepareChartData() {
+      this.donutData = [["Paid For", "Amount"]]
       for (let i in this.paymentdata) {
         this.donutData.push([
           this.paymentdata[i].payment_type,
