@@ -5,6 +5,7 @@ namespace Inensus\Prospect\Services;
 use App\Models\Address\Address;
 use App\Models\DatabaseProxy;
 use App\Models\Device;
+use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\User;
@@ -71,13 +72,13 @@ class ProspectInstallationTransformer {
             'payment_plan_amount_financed_total' => null,
             'payment_plan_amount_down_payment' => $assetPerson->down_payment ?? null,
             'payment_plan_cash_price' => $assetPerson->total_cost ?? null,
-            'payment_plan_currency' => null,
+            'payment_plan_currency' => MainSettings::query()->first()?->currency,
             'payment_plan_installment_amount' => null,
             'payment_plan_number_of_installments' => $assetPerson->rate_count ?? null,
             'payment_plan_installment_period_days' => null,
             'payment_plan_days_financed' => null,
             'payment_plan_days_down_payment' => null,
-            'payment_plan_category' => 'paygo',
+            'payment_plan_category' => $assetPerson ? 'paygo' : null,
             'purchase_date' => $device->created_at->format('Y-m-d'),
             'installation_date' => $device->created_at->format('Y-m-d'),
             'repossession_date' => null,
