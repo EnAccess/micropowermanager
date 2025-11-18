@@ -42,6 +42,13 @@ class AssetPerson extends BaseModel {
     ];
 
     /**
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'first_payment_date' => 'datetime',
+    ];
+
+    /**
      * @return BelongsTo<Person, $this>
      */
     public function person(): BelongsTo {

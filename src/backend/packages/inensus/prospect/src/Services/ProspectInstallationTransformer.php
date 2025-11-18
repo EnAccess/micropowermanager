@@ -3,6 +3,7 @@
 namespace Inensus\Prospect\Services;
 
 use App\Models\Address\Address;
+use App\Models\AssetPerson;
 use App\Models\DatabaseProxy;
 use App\Models\Device;
 use App\Models\MainSettings;
@@ -45,6 +46,23 @@ class ProspectInstallationTransformer {
         $databaseProxy = app(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
+        $paymentPlanData = [
+            'payment_plan_amount_financed_principal' => null,
+            'payment_plan_amount_financed_total' => null,
+            'payment_plan_cash_price' => $assetPerson?->total_cost,
+            'payment_plan_installment_amount' => null,
+            'payment_plan_installment_period_days' => null,
+            'payment_plan_days_financed' => null,
+            'payment_plan_days_down_payment' => null,
+        ];
+
+        if ($deviceCategory === 'solar_home_system') {
+            $paymentPlanData = array_merge(
+                $paymentPlanData,
+                $this->buildSolarHomeSystemPaymentPlanData($device, $assetPerson)
+            );
+        }
+
         return [
             'customer_external_id' => $person?->id,
             'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
@@ -67,17 +85,17 @@ class ProspectInstallationTransformer {
             'rated_power_w' => null,
             'pv_power_w' => null,
             'site_name' => $primaryAddress?->street,
-            'payment_plan_amount_financed_principal' => null,
+            'payment_plan_amount_financed_principal' => $paymentPlanData['payment_plan_amount_financed_principal'],
             'payment_plan_amount_financed_interest' => null,
-            'payment_plan_amount_financed_total' => null,
+            'payment_plan_amount_financed_total' => $paymentPlanData['payment_plan_amount_financed_total'],
             'payment_plan_amount_down_payment' => $assetPerson->down_payment ?? null,
-            'payment_plan_cash_price' => $assetPerson->total_cost ?? null,
+            'payment_plan_cash_price' => $paymentPlanData['payment_plan_cash_price'],
             'payment_plan_currency' => MainSettings::query()->first()?->currency,
-            'payment_plan_installment_amount' => null,
+            'payment_plan_installment_amount' => $paymentPlanData['payment_plan_installment_amount'],
             'payment_plan_number_of_installments' => $assetPerson->rate_count ?? null,
-            'payment_plan_installment_period_days' => null,
-            'payment_plan_days_financed' => null,
-            'payment_plan_days_down_payment' => null,
+            'payment_plan_installment_period_days' => $paymentPlanData['payment_plan_installment_period_days'],
+            'payment_plan_days_financed' => $paymentPlanData['payment_plan_days_financed'],
+            'payment_plan_days_down_payment' => $paymentPlanData['payment_plan_days_down_payment'],
             'payment_plan_category' => $assetPerson ? 'paygo' : null,
             'purchase_date' => $device->created_at->format('Y-m-d'),
             'installation_date' => $device->created_at->format('Y-m-d'),
@@ -95,6 +113,65 @@ class ProspectInstallationTransformer {
             'location_area_3' => null,
             'location_area_4' => null,
             'location_area_5' => null,
+        ];
+    }
+
+    /**
+     * Build payment plan data for solar home system devices.
+     *
+     * @return array<string, float|int|null>
+     */
+    private function buildSolarHomeSystemPaymentPlanData(Device $device, ?AssetPerson $assetPerson): array {
+        if (!$assetPerson) {
+            return [];
+        }
+
+        $totalCost = $assetPerson->total_cost;
+        $downPayment = $assetPerson->down_payment ?? 0.0;
+        $rateCount = $assetPerson->rate_count ?? null;
+        $rates = $assetPerson->rates()->orderBy('due_date')->get();
+
+        $firstRate = $rates->first();
+        $secondRate = $rates->skip(1)->first();
+        $firstDueDate = $firstRate?->due_date;
+        $secondDueDate = $secondRate?->due_date;
+
+        $installmentPeriodDays = null;
+        if ($firstDueDate && $secondDueDate) {
+            $installmentPeriodDays = $firstDueDate->diffInDays($secondDueDate);
+        }
+
+        $startDate = $assetPerson->first_payment_date ?? $device->created_at;
+        $daysDownPayment = null;
+        if ($firstDueDate && $startDate) {
+            $daysDownPayment = $startDate->diffInDays($firstDueDate);
+        }
+
+        $financedPrincipal = null;
+        if ($totalCost !== null && $assetPerson->down_payment !== null) {
+            $financedPrincipal = max($totalCost - $assetPerson->down_payment, 0.0);
+        }
+
+        $financedTotal = $totalCost !== null ? max($totalCost - $downPayment, 0.0) : null;
+
+        $installmentAmount = null;
+        if ($financedTotal !== null && $rateCount && $rateCount > 0) {
+            $installmentAmount = $financedTotal / $rateCount;
+        }
+
+        $daysFinanced = null;
+        if ($installmentPeriodDays !== null && $rateCount) {
+            $daysFinanced = $installmentPeriodDays * $rateCount;
+        }
+
+        return [
+            'payment_plan_amount_financed_principal' => $financedPrincipal,
+            'payment_plan_amount_financed_total' => $financedTotal,
+            'payment_plan_cash_price' => $totalCost,
+            'payment_plan_installment_amount' => $installmentAmount,
+            'payment_plan_installment_period_days' => $installmentPeriodDays,
+            'payment_plan_days_financed' => $daysFinanced,
+            'payment_plan_days_down_payment' => $daysDownPayment,
         ];
     }
 

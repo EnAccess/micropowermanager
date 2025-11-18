@@ -38,6 +38,13 @@ class AssetRate extends BaseModel {
     ];
 
     /**
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'due_date' => 'datetime',
+    ];
+
+    /**
      * @return BelongsTo<AssetPerson, $this>
      */
     public function assetPerson(): BelongsTo {
