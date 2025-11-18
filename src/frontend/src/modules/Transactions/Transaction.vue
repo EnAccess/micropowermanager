@@ -360,6 +360,8 @@ export default {
           return "SwiftaTransactionDetail"
         case "wavecom_transaction":
           return "WaveComTransactionDetail"
+        case "paystack_transaction":
+          return "PaystackTransactionDetail"
         default:
           return null
       }

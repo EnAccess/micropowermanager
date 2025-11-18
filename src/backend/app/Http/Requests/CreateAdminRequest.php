@@ -22,7 +22,7 @@ class CreateAdminRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'email' => ['required'],
+            'email' => ['required', 'email'],
             'name' => ['required', 'min:3'],
             'password' => ['required', 'min:6'],
         ];

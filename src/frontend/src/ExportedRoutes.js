@@ -89,6 +89,11 @@ import WaveMoneyOverview from "./plugins/wave-money-payment-provider/js/modules/
 // https://github.com/EnAccess/micropowermanager/issues/142
 import WaveMoneyResult from "./plugins/wave-money-payment-provider/js/modules/Payment/Result"
 import WaveMoneyPayment from "./plugins/wave-money-payment-provider/js/modules/Payment/Payment"
+import PaystackOverview from "./plugins/paystack-payment-provider/modules/Overview/Overview.vue"
+import PaystackCredential from "./plugins/paystack-payment-provider/modules/Overview/Credential.vue"
+import PaystackTransaction from "./plugins/paystack-payment-provider/modules/Transaction/Transaction.vue"
+import PaystackPublicPayment from "./plugins/paystack-payment-provider/modules/Payment/PublicPaymentForm.vue"
+import PaystackPublicResult from "./plugins/paystack-payment-provider/modules/Payment/PublicPaymentResult.vue"
 import MicroStarMeterOverview from "./plugins/micro-star-meter/js/modules/Overview/Overview"
 import SwiftaOverview from "./plugins/swifta-payment-provider/js/modules/Overview/Overview"
 import SunKingShsOverview from "./plugins/sun-king-shs/js/modules/Overview/Overview"
@@ -1330,6 +1335,68 @@ export const exportedRoutes = [
           default: WaveMoneyResult,
           header: LoginHeader,
           footer: LoginFooter,
+        },
+      },
+    ],
+  },
+  {
+    path: "/paystack/public",
+    component: ChildRouteWrapper,
+    children: [
+      {
+        path: "payment/:companyHash",
+        component: PaystackPublicPayment,
+        name: "/paystack/public/payment",
+      },
+      {
+        path: "result/:companyHash",
+        name: "/paystack/public/result",
+        component: PaystackPublicResult,
+      },
+    ],
+  },
+  {
+    path: "/paystack",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 25,
+        name: "Paystack",
+        icon: "payment",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: PaystackOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "credential",
+        component: PaystackCredential,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Credentials",
+          },
+        },
+      },
+      {
+        path: "transactions",
+        component: PaystackTransaction,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
+          },
         },
       },
     ],

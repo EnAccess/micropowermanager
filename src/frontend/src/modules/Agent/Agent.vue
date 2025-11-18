@@ -61,6 +61,7 @@ export default {
   created() {
     this.agentId = this.$route.params.id
   },
+  methods: {},
 }
 </script>
 <style scoped></style>
