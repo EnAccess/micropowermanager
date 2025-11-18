@@ -143,7 +143,7 @@ class ProspectInstallationTransformer {
     /**
      * Map connection type to Prospect usage_category enum (household, institutional, commercial).
      */
-    private function mapUsageCategory(Device $device, $deviceData): ?string {
+    private function mapUsageCategory(Device $device, mixed $deviceData): ?string {
         if ($device->device_type === 'meter' && $deviceData instanceof Meter) {
             $deviceData->load('connectionType');
             $category = $deviceData->connectionType?->name;
