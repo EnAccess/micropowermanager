@@ -9,6 +9,7 @@ use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
+use App\Models\SubConnectionType;
 use App\Models\User;
 
 class ProspectInstallationTransformer {
@@ -28,7 +29,6 @@ class ProspectInstallationTransformer {
         $person = $device->person()->first();
         $assetPerson = $device->assetPerson;
         $appliance = $device->appliance;
-        $customerIdentifier = $person ? trim(($person->name ?? '').' '.($person->surname ?? '')) : 'Unknown Customer';
 
         $primaryAddress = $this->getPrimaryAddress($person);
         $latitude = null;
@@ -41,6 +41,7 @@ class ProspectInstallationTransformer {
         $deviceCategory = $this->mapDeviceCategory($device->device_type);
         $manufacturer = $deviceData->manufacturer ?? null;
         $usageCategory = $this->mapUsageCategory($device, $deviceData);
+        $usageSubCategory = $this->mapUsageSubCategory($device, $deviceData, $usageCategory);
 
         $user = User::query()->first();
         $databaseProxy = app(DatabaseProxy::class);
@@ -75,15 +76,15 @@ class ProspectInstallationTransformer {
             'customer_external_id' => $person?->id,
             'manufacturer' => $manufacturer ? $manufacturer->name : 'Unknown',
             'serial_number' => $deviceData->serial_number ?? '',
-            'seller_agent_external_id' => $customerIdentifier,
-            'installer_agent_external_id' => $customerIdentifier,
+            'seller_agent_external_id' => ($assetPerson?->creator_type === 'agent') ? $assetPerson->creator_id : null,
+            'installer_agent_external_id' => null,
             'product_common_id' => $appliance?->id ? (string) $appliance->id : null,
             'device_external_id' => (string) $device->id,
             'parent_customer_external_id' => (string) $primaryAddress?->city?->mini_grid_id,
             'account_external_id' => $companyId,
             'battery_capacity_wh' => null,
             'usage_category' => $usageCategory,
-            'usage_sub_category' => null,
+            'usage_sub_category' => $usageSubCategory,
             'device_category' => $deviceCategory,
             'ac_input_source' => null,
             'dc_input_source' => ($deviceCategory === 'solar_home_system') ? 'solar' : null,
@@ -260,6 +261,25 @@ class ProspectInstallationTransformer {
 
         if (str_contains($normalized, 'commercial')) {
             return 'commercial';
+        }
+
+        return null;
+    }
+
+    /**
+     * Map sub connection type to Prospect usage_sub_category for non-household connections.
+     */
+    private function mapUsageSubCategory(Device $device, mixed $deviceData, ?string $usageCategory): ?string {
+        if ($usageCategory === 'household' || $usageCategory === null) {
+            return null;
+        }
+
+        if ($device->device_type === 'meter' && $deviceData instanceof Meter) {
+            $subConnectionType = SubConnectionType::query()
+                ->where('connection_type_id', $deviceData->connection_type_id)
+                ->first();
+
+            return $subConnectionType?->name;
         }
 
         return null;
