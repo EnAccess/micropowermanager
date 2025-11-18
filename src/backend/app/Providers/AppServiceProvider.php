@@ -34,6 +34,7 @@ use App\Models\User;
 use App\Policies\MainSettingsPolicy;
 use App\Policies\TicketPolicy;
 use App\Policies\TransactionPolicy;
+use App\Policies\UserPolicy;
 use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
@@ -58,6 +59,7 @@ class AppServiceProvider extends ServiceProvider {
         Gate::policy(MainSettings::class, MainSettingsPolicy::class);
         Gate::policy(Ticket::class, TicketPolicy::class);
         Gate::policy(Transaction::class, TransactionPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
         // Maria DB work-around
         Schema::defaultStringLength(191);
 
