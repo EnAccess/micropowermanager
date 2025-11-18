@@ -46,6 +46,13 @@ class ProspectInstallationTransformer {
         $databaseProxy = app(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
+        $purchaseDate = null;
+        if ($deviceCategory !== 'meter') {
+            $purchaseDate = $assetPerson?->created_at ?? $device->created_at;
+        }
+
+        $installationDate = $device->created_at?->format('Y-m-d');
+
         $paymentPlanData = [
             'payment_plan_amount_financed_principal' => null,
             'payment_plan_amount_financed_total' => null,
@@ -54,6 +61,7 @@ class ProspectInstallationTransformer {
             'payment_plan_installment_period_days' => null,
             'payment_plan_days_financed' => null,
             'payment_plan_days_down_payment' => null,
+            'paid_off_date' => null,
         ];
 
         if ($deviceCategory === 'solar_home_system') {
@@ -97,10 +105,10 @@ class ProspectInstallationTransformer {
             'payment_plan_days_financed' => $paymentPlanData['payment_plan_days_financed'],
             'payment_plan_days_down_payment' => $paymentPlanData['payment_plan_days_down_payment'],
             'payment_plan_category' => $assetPerson ? 'paygo' : null,
-            'purchase_date' => $device->created_at->format('Y-m-d'),
-            'installation_date' => $device->created_at->format('Y-m-d'),
+            'purchase_date' => $purchaseDate?->format('Y-m-d'),
+            'installation_date' => $installationDate,
             'repossession_date' => null,
-            'paid_off_date' => null,
+            'paid_off_date' => $paymentPlanData['paid_off_date'],
             'repossession_category' => null,
             'write_off_date' => null,
             'write_off_reason' => null,
@@ -108,8 +116,8 @@ class ProspectInstallationTransformer {
             'latitude' => $latitude,
             'longitude' => $longitude,
             'country' => $primaryAddress?->city?->country?->country_code,
-            'location_area_1' => $primaryAddress?->city?->country?->country_name,
-            'location_area_2' => $primaryAddress?->city?->name,
+            'location_area_1' => null,
+            'location_area_2' => null,
             'location_area_3' => null,
             'location_area_4' => null,
             'location_area_5' => null,
@@ -164,6 +172,12 @@ class ProspectInstallationTransformer {
             $daysFinanced = $installmentPeriodDays * $rateCount;
         }
 
+        $paidOffDate = null;
+        $lastRate = $rates->last();
+        if ($lastRate && (float) $lastRate->remaining <= 0 && $lastRate->due_date) {
+            $paidOffDate = $lastRate->due_date->format('Y-m-d');
+        }
+
         return [
             'payment_plan_amount_financed_principal' => $financedPrincipal,
             'payment_plan_amount_financed_total' => $financedTotal,
@@ -172,6 +186,7 @@ class ProspectInstallationTransformer {
             'payment_plan_installment_period_days' => $installmentPeriodDays,
             'payment_plan_days_financed' => $daysFinanced,
             'payment_plan_days_down_payment' => $daysDownPayment,
+            'paid_off_date' => $paidOffDate,
         ];
     }
 
