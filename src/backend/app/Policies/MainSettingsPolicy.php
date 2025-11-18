@@ -7,10 +7,10 @@ use App\Models\User;
 
 class MainSettingsPolicy {
     public function view(User $user): bool {
-        return $user->can('settings.view');
+        return $user->can('settings');
     }
 
     public function update(User $user, MainSettings $settings): bool {
-        return $user->can('settings.update');
+        return $user->can('settings');
     }
 }

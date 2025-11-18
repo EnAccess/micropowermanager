@@ -7,10 +7,10 @@ use App\Models\User;
 
 class TransactionPolicy {
     public function view(User $user, Transaction $transaction): bool {
-        return $user->can('payments.view');
+        return $user->can('payments');
     }
 
     public function refund(User $user, Transaction $transaction): bool {
-        return $user->can('payments.refund');
+        return $user->can('payments');
     }
 }

@@ -7,22 +7,22 @@ use Inensus\Ticket\Models\Ticket;
 
 class TicketPolicy {
     public function view(User $user, Ticket $ticket): bool {
-        return $user->can('tickets.view');
+        return $user->can('tickets');
     }
 
     public function create(User $user): bool {
-        return $user->can('tickets.create');
+        return $user->can('tickets');
     }
 
     public function update(User $user, Ticket $ticket): bool {
-        return $user->can('tickets.update');
+        return $user->can('tickets');
     }
 
     public function delete(User $user, Ticket $ticket): bool {
-        return $user->can('tickets.delete');
+        return $user->can('tickets');
     }
 
     public function export(User $user): bool {
-        return $user->can('tickets.export');
+        return $user->can('tickets');
     }
 }

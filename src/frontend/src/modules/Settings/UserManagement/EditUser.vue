@@ -31,6 +31,7 @@
                 >
                   <vue-tel-input
                     id="phone"
+                    :key="user.id"
                     :validCharactersOnly="true"
                     mode="international"
                     invalidMsg="invalid phone number"
@@ -211,6 +212,10 @@ export default {
     onPhoneInput(_, phone) {
       this.phone = phone
     },
+    resetPhoneValidation() {
+      this.phone = { valid: true }
+      this.firstStepClicked = false
+    },
     closeEditUser() {
       this.$emit("editUserClosed")
     },
@@ -219,6 +224,13 @@ export default {
     showEditUser() {
       this.setSelectedCity()
       this.loadRoles()
+      this.resetPhoneValidation()
+    },
+    "user.id"() {
+      // Reload roles and reset validation when switching between users
+      this.setSelectedCity()
+      this.loadRoles()
+      this.resetPhoneValidation()
     },
   },
 }
