@@ -75,7 +75,6 @@ export default {
       }
 
       const data = this.targetRevenueChartData
-      const headers = data[0] || []
       const categoryIndex = 0
       const valueIndex = 1
 
