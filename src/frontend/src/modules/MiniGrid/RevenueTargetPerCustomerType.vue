@@ -117,8 +117,8 @@ export default {
             },
           },
           name:
-            this.$tc("phrases.percentageOfTargetedRevenue %") ||
-            "Percentage of Targeted Revenue %",
+            (this.$tc("phrases.percentageOfTargetedRevenue") ||
+              "Percentage of Targeted Revenue") + " %",
           nameLocation: "middle",
           nameGap: 50,
         },

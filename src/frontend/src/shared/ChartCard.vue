@@ -131,9 +131,19 @@ export default {
           tooltip: {
             trigger: "item",
             formatter: (params) => {
-              if (!params || !params.data) return ""
               const percent = (params.percent || 0).toFixed(1)
-              return `${params.name}<br/>${params.value}<br/>${percent}%`
+              const colorDot = `<span style="
+    background:${params.color};
+    width:10px;height:10px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:6px;"></span>`
+
+              return `
+    ${colorDot}${params.name}<br/>
+    Revenue: ${params.value.toLocaleString()}<br/>
+    ${percent}%
+  `
             },
           },
           legend: {

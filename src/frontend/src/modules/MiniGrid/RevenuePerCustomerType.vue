@@ -120,7 +120,7 @@ export default {
         },
         legend: {
           orient: "horizontal",
-          bottom: 10,
+          bottom: 30,
           type: "scroll",
           data: validData.map((item) => item.name),
           pageButtonItemGap: 5,
@@ -143,33 +143,29 @@ export default {
           {
             name: labelHeader,
             type: "pie",
-            radius: "50%",
-            center: ["50%", "45%"],
-            avoidLabelOverlap: false,
+            radius: "55%",
+            center: ["50%", "42%"],
+            avoidLabelOverlap: true,
             itemStyle: {
               borderColor: "#fff",
               borderWidth: 2,
             },
             label: {
               show: true,
-              position: "inside",
-              alignTo: "edge",
+              position: "outside",
               formatter: (params) => {
-                // Only show percentage if slice is bigger than 5%
-                return params.percent > 5 ? `${params.percent.toFixed(1)}%` : ""
-              },
+                const name =
+                  params.name.length > 12
+                    ? params.name.substring(0, 12) + "…"
+                    : params.name
 
+                return `${name}: ${params.percent}%`
+              },
               fontSize: 11,
-              color: "#fff",
-            },
-            labelLayout: {
-              hideOverlap: true,
-              moveOverlap: "shiftY",
             },
             emphasis: {
               label: {
-                show: false,
-
+                show: true,
                 fontSize: 12,
                 fontWeight: "bold",
                 formatter: (params) => {
@@ -183,7 +179,9 @@ export default {
               },
             },
             labelLine: {
-              show: false,
+              show: true,
+              length: 10,
+              length2: 10,
             },
             data: validData,
           },
