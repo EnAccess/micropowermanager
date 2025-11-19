@@ -25,6 +25,7 @@ use Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use Inensus\StronMeter\Providers\StronMeterServiceProvider;
 use Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
+use Inensus\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
 use Inensus\Ticket\Providers\TicketServiceProvider;
 use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
@@ -62,4 +63,5 @@ return [
     DemoMeterManufacturerServiceProvider::class,
     DemoShsManufacturerServiceProvider::class,
     PaystackPaymentProviderServiceProvider::class,
+    TextbeeSmsGatewayServiceProvider::class,
 ];

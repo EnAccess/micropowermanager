@@ -10,6 +10,7 @@ use App\Models\SmsAndroidSetting;
 use App\Sms\AndroidGateway;
 use Illuminate\Support\Facades\Log;
 use Inensus\AfricasTalking\AfricasTalkingGateway;
+use Inensus\TextbeeSmsGateway\TextbeeSmsGateway;
 use Inensus\ViberMessaging\Models\ViberContact;
 use Inensus\ViberMessaging\Services\ViberContactService;
 use Inensus\ViberMessaging\ViberGateway;
@@ -17,12 +18,15 @@ use Inensus\ViberMessaging\ViberGateway;
 class SmsGatewayResolverService {
     public const VIBER_GATEWAY = 'ViberGateway';
     public const AFRICAS_TALKING_GATEWAY = 'AfricasTalkingGateway';
+    public const TEXTBEE_GATEWAY = 'TextbeeSmsGateway';
     public const DEFAULT_GATEWAY = 'AndroidGateway';
+    public const DEFAULT_GATEWAY_ID = 2;
 
     public const SMS_GATEWAY_IDS = [
         self::VIBER_GATEWAY => MpmPlugin::VIBER_MESSAGING,
         self::AFRICAS_TALKING_GATEWAY => MpmPlugin::AFRICAS_TALKING,
-        self::DEFAULT_GATEWAY => 2,
+        self::TEXTBEE_GATEWAY => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+        self::DEFAULT_GATEWAY => self::DEFAULT_GATEWAY_ID,
     ];
 
     public function __construct(
@@ -46,6 +50,12 @@ class SmsGatewayResolverService {
             $gateway = self::AFRICAS_TALKING_GATEWAY;
         }
 
+        $textbeePlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::TEXTBEE_SMS_GATEWAY);
+
+        if ($textbeePlugin && $textbeePlugin->status == Plugins::ACTIVE) {
+            $gateway = self::TEXTBEE_GATEWAY;
+        }
+
         $viberMessagingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
 
         if ($viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE) {
@@ -60,7 +70,7 @@ class SmsGatewayResolverService {
         if ($gateway === null) {
             Log::error('No active SMS provider configured', ['receiver' => $receiver]);
 
-            throw new NoActiveSmsProviderException('No active SMS provider is configured. Please enable AfricasTalking or Viber Messaging plugin.');
+            throw new NoActiveSmsProviderException('No active SMS provider is configured. Please enable AfricasTalking, TextBee, or Viber Messaging plugin.');
         }
 
         return [$gateway, $viberId];
@@ -80,6 +90,12 @@ class SmsGatewayResolverService {
             return true;
         }
 
+        $textbeePlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::TEXTBEE_SMS_GATEWAY);
+
+        if ($textbeePlugin && $textbeePlugin->status == Plugins::ACTIVE) {
+            return true;
+        }
+
         $viberMessagingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
 
         return $viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE;
@@ -88,11 +104,11 @@ class SmsGatewayResolverService {
     /**
      * Resolve the gateway instance and prepare the arguments for sending SMS.
      *
-     * @param string                                                                                                                              $gateway Gateway type (VIBER_GATEWAY, AFRICAS_TALKING_GATEWAY, or DEFAULT_GATEWAY)
+     * @param string                                                                                                                              $gateway Gateway type (VIBER_GATEWAY, AFRICAS_TALKING_GATEWAY, TEXTBEE_GATEWAY, or DEFAULT_GATEWAY)
      * @param Sms                                                                                                                                 $sms     SMS model instance
      * @param array{body?: string, receiver?: string, viberId?: string|null, callback?: string|null, smsAndroidSettings?: SmsAndroidSetting|null} $params  Additional parameters
      *
-     * @return array{gateway: ViberGateway|AfricasTalkingGateway|AndroidGateway, args: array<int, mixed>, gatewayId: int}
+     * @return array{gateway: ViberGateway|AfricasTalkingGateway|TextbeeSmsGateway|AndroidGateway, args: array<int, mixed>, gatewayId: int}
      */
     public function resolveGatewayAndArgs(string $gateway, Sms $sms, array $params = []): array {
         $body = $params['body'] ?? $sms->body;
@@ -112,6 +128,11 @@ class SmsGatewayResolverService {
                 'args' => [$body, $receiver, $sms],
                 'gatewayId' => MpmPlugin::AFRICAS_TALKING,
             ],
+            self::TEXTBEE_GATEWAY => [
+                'gateway' => resolve(TextbeeSmsGateway::class),
+                'args' => [$body, $receiver, $sms],
+                'gatewayId' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+            ],
             default => [
                 'gateway' => resolve(AndroidGateway::class),
                 'args' => [
@@ -120,7 +141,7 @@ class SmsGatewayResolverService {
                     $callback ?? sprintf($smsAndroidSettings->callback ?? '', $sms->uuid),
                     $smsAndroidSettings ?? SmsAndroidSetting::getResponsible(),
                 ],
-                'gatewayId' => ($smsAndroidSettings ?? SmsAndroidSetting::getResponsible())->getId(),
+                'gatewayId' => self::DEFAULT_GATEWAY_ID,
             ],
         };
     }
