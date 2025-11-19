@@ -143,7 +143,7 @@ export default {
           {
             name: labelHeader,
             type: "pie",
-            radius: ["40%", "70%"],
+            radius: "50%",
             center: ["50%", "45%"],
             avoidLabelOverlap: false,
             itemStyle: {
@@ -151,12 +151,26 @@ export default {
               borderWidth: 2,
             },
             label: {
-              show: false,
+              show: true,
+              position: "inside",
+              alignTo: "edge",
+              formatter: (params) => {
+                // Only show percentage if slice is bigger than 5%
+                return params.percent > 5 ? `${params.percent.toFixed(1)}%` : ""
+              },
+
+              fontSize: 11,
+              color: "#fff",
+            },
+            labelLayout: {
+              hideOverlap: true,
+              moveOverlap: "shiftY",
             },
             emphasis: {
               label: {
-                show: true,
-                fontSize: 20,
+                show: false,
+
+                fontSize: 12,
                 fontWeight: "bold",
                 formatter: (params) => {
                   return `${params.name}\n${this.formatValue(params.value)}`

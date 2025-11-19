@@ -23,14 +23,14 @@
         <div v-if="loading">
           <loader size="sm" />
         </div>
-        <div v-else style="height: 400px; width: 100%; position: relative">
+        <div v-else style="height: 250px; width: 100%; position: relative">
           <v-chart
             v-if="
               echartsOption && echartsOption.series && echartsOption.series[0]
             "
             :options="echartsOption"
             :autoresize="true"
-            style="height: 400px; width: 100%; min-height: 400px"
+            style="height: 250px; width: 100%; min-height: 250px"
           />
           <div
             v-else

@@ -117,7 +117,7 @@ export default {
             },
           },
           name:
-            this.$tc("phrases.percentageOfTargetedRevenue") ||
+            this.$tc("phrases.percentageOfTargetedRevenue %") ||
             "Percentage of Targeted Revenue %",
           nameLocation: "middle",
           nameGap: 50,
@@ -129,7 +129,26 @@ export default {
             type: "bar",
             data: values,
             itemStyle: {
-              color: "#4caf50",
+              color: (params) => {
+                const colors = [
+                  "#5470c6",
+                  "#91cc75",
+                  "#fac858",
+                  "#ee6666",
+                  "#73c0de",
+                  "#3ba272",
+                  "#fc8452",
+                  "#9a60b4",
+                  "#ea7ccc",
+                  "#5470c6",
+                  "#91cc75",
+                  "#fac858",
+                  "#ee6666",
+                  "#73c0de",
+                  "#3ba272",
+                ]
+                return colors[params.dataIndex % colors.length]
+              },
             },
           },
         ],
