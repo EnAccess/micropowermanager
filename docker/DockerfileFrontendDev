@@ -4,10 +4,9 @@ WORKDIR /app
 
 # install JavaScript dependencies
 COPY src/frontend/package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 # get MicroPowerManager source code and configuration
-# node_modules is excluded via .dockerignore
 COPY src/frontend .
 VOLUME ["/app/"]
 
