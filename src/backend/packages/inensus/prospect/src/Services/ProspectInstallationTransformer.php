@@ -49,7 +49,7 @@ class ProspectInstallationTransformer {
 
         $purchaseDate = null;
         if ($deviceCategory !== 'meter') {
-            $purchaseDate = $assetPerson?->created_at ?? $device->created_at;
+            $purchaseDate = ($assetPerson ? $assetPerson->created_at : null) ?? $device->created_at;
         }
 
         $installationDate = $device->created_at?->format('Y-m-d');
@@ -128,17 +128,17 @@ class ProspectInstallationTransformer {
     /**
      * Build payment plan data for solar home system devices.
      *
-     * @return array<string, float|int|null>
+     * @return array<string, float|int|string|null>
      */
     private function buildSolarHomeSystemPaymentPlanData(Device $device, ?AssetPerson $assetPerson): array {
-        if (!$assetPerson) {
+        if (!$assetPerson instanceof AssetPerson) {
             return [];
         }
 
         $totalCost = $assetPerson->total_cost;
         $downPayment = $assetPerson->down_payment ?? 0.0;
         $rateCount = $assetPerson->rate_count ?? null;
-        $rates = $assetPerson->rates()->orderBy('due_date')->get();
+        $rates = $assetPerson->rates()->oldest('due_date')->get();
 
         $firstRate = $rates->first();
         $secondRate = $rates->skip(1)->first();
@@ -157,11 +157,11 @@ class ProspectInstallationTransformer {
         }
 
         $financedPrincipal = null;
-        if ($totalCost !== null && $assetPerson->down_payment !== null) {
+        if ($assetPerson->down_payment !== null) {
             $financedPrincipal = max($totalCost - $assetPerson->down_payment, 0.0);
         }
 
-        $financedTotal = $totalCost !== null ? max($totalCost - $downPayment, 0.0) : null;
+        $financedTotal = max($totalCost - $downPayment, 0.0);
 
         $installmentAmount = null;
         if ($financedTotal !== null && $rateCount && $rateCount > 0) {
@@ -175,7 +175,7 @@ class ProspectInstallationTransformer {
 
         $paidOffDate = null;
         $lastRate = $rates->last();
-        if ($lastRate && (float) $lastRate->remaining <= 0 && $lastRate->due_date) {
+        if ($lastRate && (float) $lastRate->remaining <= 0) {
             $paidOffDate = $lastRate->due_date->format('Y-m-d');
         }
 
