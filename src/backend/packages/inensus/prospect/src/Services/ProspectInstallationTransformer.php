@@ -295,7 +295,7 @@ class ProspectInstallationTransformer {
         if (is_string($value) && $value !== '') {
             try {
                 return Carbon::parse($value);
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 return null;
             }
         }
