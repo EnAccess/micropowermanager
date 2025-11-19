@@ -18,13 +18,15 @@ MicroPowerManager supports multiple SMS gateway options:
 
 1. **AfricasTalking** - Traditional SMS provider with wide coverage across Africa
 2. **TextBee SMS Gateway** - Cost-effective solution using your own Android device
-3. **Android Gateway** - Built-in fallback using local Android device
+3. **Android Gateway** - ⚠️ **DEPRECATED** - Legacy fallback option (use TextBee instead)
+
+> **⚠️ Important Note:** The built-in Android Gateway is deprecated and will be removed in a future release. We strongly recommend using **TextBee SMS Gateway** as a modern, more reliable alternative for Android-based SMS delivery. TextBee offers better reliability, monitoring, and support compared to the legacy Android Gateway.
 
 ## Setup SMS Delivery using TextBee SMS Gateway (Cost-Effective)
 
 TextBee allows you to use your own Android device as an SMS gateway, providing up to 98% cost savings compared to traditional SMS providers. This is ideal for organizations looking to minimize SMS costs while maintaining reliable delivery.
 
-### Prerequisites
+### TextBee Prerequisites
 
 - Access to MPM admin panel
 - An Android device (Android 7.0+)
@@ -62,7 +64,7 @@ TextBee allows you to use your own Android device as an SMS gateway, providing u
 4. Toggle the switch to **Enable** the plugin
 5. Confirm the activation
 
-### Step 5: Configure Plugin Credentials
+### Step 5: Configure TextBee Credentials
 
 1. After enabling the plugin, click on **TextBee SMS Gateway** in the sidebar
 2. Click on **Overview** to access the configuration page
@@ -90,7 +92,7 @@ TextBee allows you to use your own Android device as an SMS gateway, providing u
 
 Visit [TextBee Pricing](https://textbee.dev/) for more details.
 
-### Troubleshooting
+### TextBee Troubleshooting
 
 **Common Issues:**
 
@@ -112,7 +114,7 @@ Visit [TextBee Pricing](https://textbee.dev/) for more details.
 3. Verify your TextBee account hasn't exceeded message limits
 4. Test with different phone numbers to ensure compatibility
 
-### Production Considerations
+### TextBee Production Considerations
 
 For production deployment:
 
@@ -131,7 +133,7 @@ This guide will walk you through the complete setup process for integrating
 AfricasTalking SMS service with MicroPowerManager (MPM) to enable SMS
 notifications and communications.
 
-### Prerequisites
+### AfricasTalking Prerequisites
 
 - Access to MPM admin panel
 - AfricasTalking account (free sandbox account is sufficient for testing)
@@ -173,7 +175,7 @@ notifications and communications.
 
 ![Plugin settings page](images/africanstalking-enable-plugin.png)
 
-### Step 5: Configure Plugin Credentials
+### Step 5: Configure AfricasTalking Credentials
 
 1. After enabling the plugin, go to **Plugins** → **AfricasTalking** → **Settings**
 2. Enter the following credentials:
@@ -211,7 +213,7 @@ notifications and communications.
 
 ![Customer detail page](images/customer-add-sms-history.png)
 
-### Troubleshooting
+### AfricasTalking Troubleshooting
 
 **Common Issues:**
 
@@ -227,7 +229,7 @@ notifications and communications.
 2. Verify SMS delivery in AfricasTalking dashboard
 3. Test with different phone numbers to ensure compatibility
 
-### Production Considerations
+### AfricasTalking Production Considerations
 
 When moving from sandbox to production:
 
@@ -246,28 +248,24 @@ When multiple SMS gateways are enabled, MPM uses the following priority order:
 1. **AfricasTalking** - Checked first if enabled
 2. **TextBee SMS Gateway** - Checked second if enabled
 3. **Viber Messaging** - Used if recipient has Viber and plugin is enabled
-4. **Android Gateway** - Default fallback option
+4. **Android Gateway** - ⚠️ **DEPRECATED** - Legacy fallback (not recommended)
 
 You can have multiple gateways enabled simultaneously. MPM will automatically use the first available active gateway based on the priority order above.
 
+> **⚠️ Migration Notice:** If you are currently using the Android Gateway, please migrate to TextBee SMS Gateway. TextBee provides the same Android-based SMS functionality with improved reliability, better monitoring, and active support. The migration process is simple and can be completed in under 10 minutes.
+
 ## Choosing the Right SMS Gateway
 
-### Use AfricasTalking if:
+### Use AfricasTalking if
 
 - You need high-volume SMS delivery (1000+ messages/month)
 - You require guaranteed delivery rates
 - You need delivery reports and analytics
 - You have budget for per-message costs
 
-### Use TextBee SMS Gateway if:
+### Use TextBee SMS Gateway if
 
 - You want to minimize SMS costs (up to 98% savings)
 - You have a reliable Android device available
 - Your message volume is moderate (under 5000/month)
 - You want full control over your SMS infrastructure
-
-### Use Both Together:
-
-- Use TextBee for routine notifications to save costs
-- Use AfricasTalking as a backup for critical messages
-- Enable both plugins for redundancy and reliability
