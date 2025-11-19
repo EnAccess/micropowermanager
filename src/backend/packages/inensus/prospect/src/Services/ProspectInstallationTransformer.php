@@ -11,6 +11,7 @@ use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\SubConnectionType;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 
 class ProspectInstallationTransformer {
     /**
@@ -142,15 +143,15 @@ class ProspectInstallationTransformer {
 
         $firstRate = $rates->first();
         $secondRate = $rates->skip(1)->first();
-        $firstDueDate = $firstRate?->due_date;
-        $secondDueDate = $secondRate?->due_date;
+        $firstDueDate = $this->parseDate($firstRate?->due_date);
+        $secondDueDate = $this->parseDate($secondRate?->due_date);
 
         $installmentPeriodDays = null;
         if ($firstDueDate && $secondDueDate) {
             $installmentPeriodDays = $firstDueDate->diffInDays($secondDueDate);
         }
 
-        $startDate = $assetPerson->first_payment_date ?? $device->created_at;
+        $startDate = $this->parseDate($assetPerson->first_payment_date) ?? $device->created_at;
         $daysDownPayment = null;
         if ($firstDueDate && $startDate) {
             $daysDownPayment = $startDate->diffInDays($firstDueDate);
@@ -176,7 +177,8 @@ class ProspectInstallationTransformer {
         $paidOffDate = null;
         $lastRate = $rates->last();
         if ($lastRate && (float) $lastRate->remaining <= 0) {
-            $paidOffDate = $lastRate->due_date->format('Y-m-d');
+            $lastDueDate = $this->parseDate($lastRate->due_date);
+            $paidOffDate = $lastDueDate?->format('Y-m-d');
         }
 
         return [
@@ -280,6 +282,22 @@ class ProspectInstallationTransformer {
                 ->first();
 
             return $subConnectionType?->name;
+        }
+
+        return null;
+    }
+
+    private function parseDate(mixed $value): ?Carbon {
+        if ($value instanceof Carbon) {
+            return $value;
+        }
+
+        if (is_string($value) && $value !== '') {
+            try {
+                return Carbon::parse($value);
+            } catch (\Throwable $e) {
+                return null;
+            }
         }
 
         return null;
