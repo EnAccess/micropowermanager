@@ -164,7 +164,7 @@ class ProspectInstallationTransformer {
         $financedTotal = max($totalCost - $downPayment, 0.0);
 
         $installmentAmount = null;
-        if ($financedTotal !== null && $rateCount && $rateCount > 0) {
+        if ($rateCount && $rateCount > 0) {
             $installmentAmount = $financedTotal / $rateCount;
         }
 
