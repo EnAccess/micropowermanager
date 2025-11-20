@@ -2,6 +2,7 @@ import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
 import TicketRepository from "@/repositories/TicketRepository"
+import Client from "@/repositories/Client/AxiosClient"
 
 export class Ticket {
   constructor() {
@@ -98,7 +99,7 @@ export class UserTickets {
   }
 
   newComment(commentData) {
-    axios.post(resources.ticket.comments, commentData)
+    Client.post(resources.ticket.comments, commentData)
   }
 }
 

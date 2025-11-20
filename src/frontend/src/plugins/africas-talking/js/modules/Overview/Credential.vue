@@ -118,7 +118,7 @@
 <script>
 import { CredentialService } from "../../services/CredentialService"
 import { EventBus } from "@/shared/eventbus"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import { baseUrlExternal } from "@/repositories/Client/AxiosClient"
 import { mapGetters } from "vuex"
 import { notify } from "@/mixins/notify"
 
@@ -159,10 +159,10 @@ export default {
       authUser: "auth/getAuthenticateUser",
     }),
     incomingMessagesUrl() {
-      return `${baseUrl}/api/africas-talking/callback/${this.authUser.companyId}/incoming-messages`
+      return `${baseUrlExternal}/api/africas-talking/callback/${this.authUser.companyId}/incoming-messages`
     },
     deliveryReportsUrl() {
-      return `${baseUrl}/api/africas-talking/callback/${this.authUser.companyId}/delivery-reports`
+      return `${baseUrlExternal}/api/africas-talking/callback/${this.authUser.companyId}/delivery-reports`
     },
   },
 }

@@ -1,6 +1,6 @@
 import Client, { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/api-keys`
+const resource = `/api/api-keys`
 
 export default {
   list() {
