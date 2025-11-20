@@ -50,7 +50,6 @@ export default {
 
       const headers = this.donutData[0]
       const labelHeader = headers[0] || "Paid For"
-      const valueHeader = headers[1] || "Amount"
 
       const data = this.donutData.slice(1).map((row) => ({
         name: String(row[0] || ""),
