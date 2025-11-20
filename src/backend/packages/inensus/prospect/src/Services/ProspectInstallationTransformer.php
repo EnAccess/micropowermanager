@@ -21,7 +21,7 @@ class ProspectInstallationTransformer {
         $deviceData->load('manufacturer');
 
         $person = $device->person()->first();
-        $assetPerson = $device->assetPerson;
+        $appliancePerson = $device->appliancePerson;
         $customerIdentifier = $person ? trim(($person->name ?? '').' '.($person->surname ?? '')) : 'Unknown Customer';
 
         $primaryAddress = $this->getPrimaryAddress($person);
@@ -60,11 +60,11 @@ class ProspectInstallationTransformer {
             'payment_plan_amount_financed_principal' => null,
             'payment_plan_amount_financed_interest' => null,
             'payment_plan_amount_financed_total' => null,
-            'payment_plan_amount_down_payment' => $assetPerson->down_payment ?? null,
-            'payment_plan_cash_price' => $assetPerson->total_cost ?? null,
+            'payment_plan_amount_down_payment' => $appliancePerson->down_payment ?? null,
+            'payment_plan_cash_price' => $appliancePerson->total_cost ?? null,
             'payment_plan_currency' => null,
             'payment_plan_installment_amount' => null,
-            'payment_plan_number_of_installments' => $assetPerson->rate_count ?? null,
+            'payment_plan_number_of_installments' => $appliancePerson->rate_count ?? null,
             'payment_plan_installment_period_days' => null,
             'payment_plan_days_financed' => null,
             'payment_plan_days_down_payment' => null,

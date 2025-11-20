@@ -7,7 +7,7 @@ use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use App\Models\Base\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
@@ -51,7 +51,7 @@ use Inensus\Ticket\Models\Ticket;
  * @property-read Collection<int, Address>        $addresses
  * @property-read Agent|null                      $agent
  * @property-read AgentSoldAppliance|null         $agentSoldAppliance
- * @property-read Collection<int, AssetPerson>    $assetPerson
+ * @property-read Collection<int, AppliancePerson>    $appliancePerson
  * @property-read Country|null                    $citizenship
  * @property-read CustomerGroup|null              $customerGroup
  * @property-read Collection<int, Device>         $devices
@@ -167,10 +167,10 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return HasMany<AssetPerson, $this>
+     * @return HasMany<AppliancePerson, $this>
      */
-    public function assetPerson(): HasMany {
-        return $this->HasMany(AssetPerson::class, 'person_id', 'id');
+    public function appliancePerson(): HasMany {
+        return $this->HasMany(AppliancePerson::class, 'person_id', 'id');
     }
 
     public function __toString(): string {

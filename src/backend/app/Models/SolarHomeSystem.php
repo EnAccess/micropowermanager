@@ -13,12 +13,12 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property      int                    $id
- * @property      int                    $asset_id
+ * @property      int                    $appliance_id
  * @property      string                 $serial_number
  * @property      int                    $manufacturer_id
  * @property      Carbon|null            $created_at
  * @property      Carbon|null            $updated_at
- * @property-read Asset|null             $appliance
+ * @property-read Appliance|null             $appliance
  * @property-read Device|null            $device
  * @property-read Manufacturer|null      $manufacturer
  * @property-read Collection<int, Token> $tokens
@@ -45,10 +45,10 @@ class SolarHomeSystem extends BaseModel {
     }
 
     /**
-     * @return BelongsTo<Asset, $this>
+     * @return BelongsTo<Appliance, $this>
      */
     public function appliance(): BelongsTo {
-        return $this->belongsTo(Asset::class, 'asset_id', 'id');
+        return $this->belongsTo(Appliance::class, 'appliance_id', 'id');
     }
 
     /**

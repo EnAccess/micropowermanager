@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Asset;
-use App\Models\AssetType;
+use App\Models\Appliance;
+use App\Models\ApplianceType;
 
 class ApplianceSkuSeeder extends Seeder
 {
@@ -15,22 +15,22 @@ class ApplianceSkuSeeder extends Seeder
      */
     public function run()
     {
-        $electronicsType = AssetType::where('name', 'Electronics')->first();
-        $goodsType       = AssetType::where('name', 'Goods')->first();
+        $electronicsType = ApplianceType::where('name', 'Electronics')->first();
+        $goodsType       = ApplianceType::where('name', 'Goods')->first();
 
         if (!$electronicsType || !$goodsType) {
-            $this->command->warn('Required Asset Types (Electronics, Goods) not found. Skipping ApplianceSkuSeeder.');
+            $this->command->warn('Required Appliance Types (Electronics, Goods) not found. Skipping ApplianceSkuSeeder.');
             return;
         }
 
-        Asset::factory()->create([
-            'asset_type_id' => $electronicsType->id,
+        Appliance::factory()->create([
+            'appliance_type_id' => $electronicsType->id,
             'name'          => 'SuperVision HD TV ',
             'price'         => 250000,
         ]);
 
-        Asset::factory()->create([
-            'asset_type_id' => $goodsType->id,
+        Appliance::factory()->create([
+            'appliance_type_id' => $goodsType->id,
             'name'          => 'Ice Cubes (5kg)',
             'price'         => 5000,
         ]);

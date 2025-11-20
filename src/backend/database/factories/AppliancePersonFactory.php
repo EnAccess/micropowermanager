@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<AssetPerson> */
+/** @extends Factory<AppliancePerson> */
 class AppliancePersonFactory extends Factory {
-    protected $model = AssetPerson::class;
+    protected $model = AppliancePerson::class;
 
     /**
      * Define the model's default state.

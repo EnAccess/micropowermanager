@@ -83,18 +83,18 @@ export let resources = {
   },
   paymenthistories: "/api/paymenthistories/",
   debt: "/api/paymenthistories/debt/",
-  assets: {
-    list: "/api/assets",
+  appliances: {
+    list: "/api/appliances",
     type: {
-      list: "/api/assets/types",
-      store: "/api/assets/types",
-      update: "/api/assets/types",
-      delete: "/api/assets/types",
-      sell: "/api/assets/types/",
-      person: "/api/assets/types/people/",
+      list: "/api/appliances/types",
+      store: "/api/appliances/types",
+      update: "/api/appliances/types",
+      delete: "/api/appliances/types",
+      sell: "/api/appliances/types/",
+      person: "/api/appliances/types/people/",
     },
     rate: {
-      update: "/api/assets/rates/",
+      update: "/api/appliances/rates/",
     },
   },
   meters: {

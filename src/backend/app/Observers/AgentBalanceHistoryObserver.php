@@ -16,7 +16,7 @@ class AgentBalanceHistoryObserver {
     ) {}
 
     /**
-     * Handle the asset person "updated" event.
+     * Handle the appliance person "updated" event.
      */
     public function created(AgentBalanceHistory $agentBalanceHistory): void {
         $trigger = $agentBalanceHistory->trigger()->first();

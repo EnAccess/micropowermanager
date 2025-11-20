@@ -25,11 +25,11 @@ class AgentAssignedApplianceWebTest extends TestCase {
         $agentCount = 1;
         $this->createAgent($agentCount);
         $applianceCount = 1;
-        $this->createAssetType($applianceCount);
+        $this->createApplianceType($applianceCount);
         $postData = [
             'agent_id' => $this->agents[0]->id,
             'user_id' => $this->user->id,
-            'appliance_type_id' => $this->assetTypes[0]->id,
+            'appliance_type_id' => $this->applianceTypes[0]->id,
             'cost' => $this->faker->randomFloat(2, 1, 100),
         ];
 

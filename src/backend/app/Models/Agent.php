@@ -46,7 +46,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read MiniGrid|null                            $miniGrid
  * @property-read Person|null                              $person
  * @property-read Collection<int, AgentReceipt>            $receipt
- * @property-read Collection<int, AssetPerson>             $soldAppliances
+ * @property-read Collection<int, AppliancePerson>             $soldAppliances
  * @property-read Collection<int, Ticket>                  $tickets
  * @property-read Collection<int, Transaction>             $transaction
  */
@@ -161,10 +161,10 @@ class Agent extends Authenticatable implements JWTSubject {
     }
 
     /**
-     * @return MorphMany<AssetPerson, $this>
+     * @return MorphMany<AppliancePerson, $this>
      */
     public function soldAppliances(): MorphMany {
-        return $this->morphMany(AssetPerson::class, 'creator');
+        return $this->morphMany(AppliancePerson::class, 'creator');
     }
 
     /**

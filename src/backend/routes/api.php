@@ -3,10 +3,10 @@
 use App\Http\Controllers\AgentPerformanceMetricsController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\AppliancePaymentController;
-use App\Http\Controllers\AssetController;
-use App\Http\Controllers\AssetPersonController;
-use App\Http\Controllers\AssetRateController;
-use App\Http\Controllers\AssetTypeController;
+use App\Http\Controllers\ApplianceController;
+use App\Http\Controllers\AppliancePersonController;
+use App\Http\Controllers\ApplianceRateController;
+use App\Http\Controllers\ApplianceTypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\ClusterMiniGridRevenueController;
@@ -111,26 +111,26 @@ Route::post('protected-page-password/reset', [ProtectedPagePasswordResetControll
 Route::get('protected-page-password/validate/{token}', [ProtectedPagePasswordResetController::class, 'validateToken']);
 Route::post('protected-page-password/confirm', [ProtectedPagePasswordResetController::class, 'resetPassword']);
 
-// Assets
-Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
-    Route::get('/', [AssetController::class, 'index']);
-    Route::post('/', [AssetController::class, 'store']);
-    Route::put('/{asset}', [AssetController::class, 'update']);
-    Route::delete('/{asset}', [AssetController::class, 'destroy']);
+// Appliances
+Route::group(['prefix' => 'appliances', 'middleware' => 'jwt.verify'], function () {
+    Route::get('/', [ApplianceController::class, 'index']);
+    Route::post('/', [ApplianceController::class, 'store']);
+    Route::put('/{appliance}', [ApplianceController::class, 'update']);
+    Route::delete('/{appliance}', [ApplianceController::class, 'destroy']);
     Route::group(['prefix' => 'person'], function () {
-        Route::post('/{asset}/people/{person}', [AssetPersonController::class, 'store']);
-        Route::get('/people/{person}', [AssetPersonController::class, 'index']);
-        Route::get('/people/detail/{applianceId}', [AssetPersonController::class, 'show']);
+        Route::post('/{appliance}/people/{person}', [AppliancePersonController::class, 'store']);
+        Route::get('/people/{person}', [AppliancePersonController::class, 'index']);
+        Route::get('/people/detail/{applianceId}', [AppliancePersonController::class, 'show']);
     });
     Route::group(['prefix' => 'types'], function () {
-        Route::get('/', [AssetTypeController::class, 'index']);
-        Route::post('/', [AssetTypeController::class, 'store']);
-        Route::put('/{asset_type}', [AssetTypeController::class, 'update']);
-        Route::delete('/{asset_type}', [AssetTypeController::class, 'destroy']);
+        Route::get('/', [ApplianceTypeController::class, 'index']);
+        Route::post('/', [ApplianceTypeController::class, 'store']);
+        Route::put('/{appliance_type}', [ApplianceTypeController::class, 'update']);
+        Route::delete('/{appliance_type}', [ApplianceTypeController::class, 'destroy']);
     });
 
     Route::group(['prefix' => 'rates'], static function () {
-        Route::put('/{appliance_rate}', [AssetRateController::class, 'update']);
+        Route::put('/{appliance_rate}', [ApplianceRateController::class, 'update']);
     });
 
     Route::group(['prefix' => 'payment'], static function () {

@@ -12,8 +12,8 @@ use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCharge;
 use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
-use App\Models\Asset;
-use App\Models\AssetRate;
+use App\Models\Appliance;
+use App\Models\ApplianceRate;
 use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
@@ -59,14 +59,14 @@ class AppServiceProvider extends ServiceProvider {
                 Transaction::RELATION_NAME => Transaction::class,
                 AgentTransaction::RELATION_NAME => AgentTransaction::class,
                 AccessRate::RELATION_NAME => AccessRate::class,
-                AssetRate::RELATION_NAME => AssetRate::class,
+                ApplianceRate::RELATION_NAME => ApplianceRate::class,
                 Cluster::RELATION_NAME => Cluster::class,
                 MiniGrid::RELATION_NAME => MiniGrid::class,
                 AgentCommission::RELATION_NAME => AgentCommission::class,
                 AgentAssignedAppliances::RELATION_NAME => AgentAssignedAppliances::class,
                 Agent::RELATION_NAME => Agent::class,
                 User::RELATION_NAME => User::class,
-                Asset::RELATION_NAME => Asset::class,
+                Appliance::RELATION_NAME => Appliance::class,
                 AgentReceipt::RELATION_NAME => AgentReceipt::class,
                 AgentCharge::RELATION_NAME => AgentCharge::class,
                 MeterTariff::RELATION_NAME => MeterTariff::class,
