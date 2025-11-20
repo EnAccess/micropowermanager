@@ -202,6 +202,39 @@ And configure the following database connection
 
 ![SQL Editor database connection](/screenshots/sql-editor-database-connection.png)
 
+### API Gateway with `ngrok`
+
+When working with external API's that use callbacks and webhook it can be helpful to have a local installation of MicroPowerManager be available through an internet gateway.
+
+- Install [ngrok](https://ngrok.com/download/)
+
+Usage of `ngrok` requires an account.
+The free version usually suffices.
+
+Once `ngrok` is installed and authentication, open a new terminal an run
+
+```sh
+ngrok http 8000
+```
+
+This will expose your local MicroPowerManager backend via ngrok gateway.
+
+You should see an output like this
+
+```sh
+Session Status                online
+Account                       Developer Name (Plan: Free)
+Version                       3.33.0
+Region                        Europe (eu)
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    https://randomly-generated-url.ngrok-free.dev -> http://localhost:8000
+
+Connections                   ttl     opn     rt1     rt5     p50     p90
+                              0       0       0.00    0.00    0.00    0.00
+```
+
+Take note of `<https://randomly-generated-url.ngrok-free.dev>`.
+
 ### Vue Developer Tools
 
 For frontend developmenet it can be helpful to use the Vue DevTools.
