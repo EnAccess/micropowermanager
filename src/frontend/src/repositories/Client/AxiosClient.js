@@ -16,9 +16,6 @@ function loadCustomHeadersFromEnv() {
     if (typeof parsed !== "object" || Array.isArray(parsed)) {
       throw new Error("CUSTOM_HEADERS_JSON must be an object")
     }
-
-    console.log(parsed)
-
     return parsed
   } catch (err) {
     console.error("Failed to parse CUSTOM_HEADERS_JSON:", err.message)
