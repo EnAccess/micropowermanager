@@ -79,3 +79,4 @@ gha-creds-*.json
 
 # envrc
 .envrc
+.env.override*

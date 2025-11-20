@@ -1,6 +1,6 @@
-import Client, { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/export/transactions`
+const resource = `/api/export/transactions`
 export default {
   async download(slug) {
     return Client.get(`${resource}?${slug}`, {

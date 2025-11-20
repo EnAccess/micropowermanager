@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/dashboard/agents`
+const resource = `/api/dashboard/agents`
 
 export default {
   getAgentPerformanceMetrics(
@@ -17,6 +16,6 @@ export default {
   },
 
   getAgentList() {
-    return Client.get(`${baseUrl}/api/agents`)
+    return Client.get(`/api/agents`)
   },
 }

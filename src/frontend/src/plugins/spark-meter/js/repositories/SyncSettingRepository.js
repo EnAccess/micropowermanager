@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/spark-meters/sm-setting/sync-setting`
+const resource = `/api/spark-meters/sm-setting/sync-setting`
 
 export default {
   update(syncListPM) {

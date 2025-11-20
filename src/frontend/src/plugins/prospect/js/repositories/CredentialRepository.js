@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/prospect/credential`
+const resource = `/api/prospect/credential`
 
 export default {
   get() {

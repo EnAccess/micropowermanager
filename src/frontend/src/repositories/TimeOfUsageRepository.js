@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/time-of-usages`
+const resource = `/api/time-of-usages`
 
 export default {
   delete(id) {

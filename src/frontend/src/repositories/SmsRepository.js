@@ -1,13 +1,13 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+
 const resource = {
-  list: `${baseUrl}/api/sms`,
-  byPhone: `${baseUrl}/api/sms/phone`,
-  search: `${baseUrl}/api/sms/search/`,
-  groups: `${baseUrl}/api/connection-groups`,
-  types: `${baseUrl}/api/connection-types`,
-  send: `${baseUrl}/api/sms/storeandsend`,
-  bulk: `${baseUrl}/api/sms/bulk`,
+  list: `/api/sms`,
+  byPhone: `/api/sms/phone`,
+  search: `/api/sms/search/`,
+  groups: `/api/connection-groups`,
+  types: `/api/connection-types`,
+  send: `/api/sms/storeandsend`,
+  bulk: `/api/sms/bulk`,
 }
 
 export default {

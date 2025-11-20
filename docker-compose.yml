@@ -4,7 +4,11 @@ services:
     container_name: backend-dev
     build:
       dockerfile: docker/DockerfileBackendDev
-    env_file: ./dev/.env.micropowermanager-backend
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
     depends_on:
       mysql:
         condition: service_healthy
@@ -31,7 +35,11 @@ services:
     container_name: frontend-dev
     build:
       dockerfile: docker/DockerfileFrontendDev
-    env_file: ./dev/.env.micropowermanager-frontend
+    env_file:
+      - path: ./dev/.env.micropowermanager-frontend
+        required: true
+      - path: .env.override.micropowermanager-frontend
+        required: false
     ports:
       - 8001:8080
     volumes:
@@ -43,7 +51,11 @@ services:
     build:
       dockerfile: docker/DockerfileSchedulerDev
     # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
-    env_file: ./dev/.env.micropowermanager-backend
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
     depends_on:
       mysql:
         condition: service_healthy
@@ -62,7 +74,11 @@ services:
     build:
       dockerfile: docker/DockerfileQueueWorkerDev
     # micropowermanager-queue-worker is a backend service and uses the same configuration as micropowermanager-backend
-    env_file: ./dev/.env.micropowermanager-backend
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
     depends_on:
       mysql:
         condition: service_healthy
@@ -87,7 +103,11 @@ services:
   mysql:
     container_name: mysql
     image: mysql:8.4
-    env_file: ./dev/.env.mysql
+    env_file:
+      - path: ./dev/.env.mysql
+        required: true
+      - path: .env.override.mysql
+        required: false
     volumes:
       - mysql_data:/var/lib/mysql
     ports:

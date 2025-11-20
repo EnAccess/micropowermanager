@@ -1,4 +1,4 @@
-import Client, { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient"
 
 export class PublicPaymentService {
   constructor() {
@@ -12,7 +12,7 @@ export class PublicPaymentService {
 
   async getCompanyInfo(companyHash, companyIdToken) {
     const response = await Client.get(
-      `${baseUrl}/api/paystack/public/payment/${companyHash}?ct=${encodeURIComponent(
+      `/api/paystack/public/payment/${companyHash}?ct=${encodeURIComponent(
         companyIdToken,
       )}`,
     )
@@ -21,7 +21,7 @@ export class PublicPaymentService {
 
   async validateDevice(companyHash, companyIdToken, deviceSerial, deviceType) {
     const response = await Client.post(
-      `${baseUrl}/api/paystack/public/validate-meter/${companyHash}?ct=${encodeURIComponent(
+      `/api/paystack/public/validate-meter/${companyHash}?ct=${encodeURIComponent(
         companyIdToken,
       )}`,
       {
@@ -34,7 +34,7 @@ export class PublicPaymentService {
 
   async initiatePayment(companyHash, companyIdToken, paymentData) {
     const response = await Client.post(
-      `${baseUrl}/api/paystack/public/payment/${companyHash}?ct=${encodeURIComponent(
+      `/api/paystack/public/payment/${companyHash}?ct=${encodeURIComponent(
         companyIdToken,
       )}`,
       {
@@ -49,7 +49,7 @@ export class PublicPaymentService {
 
   async getPaymentResult(companyHash, companyIdToken, reference) {
     const response = await Client.get(
-      `${baseUrl}/api/paystack/public/result/${companyHash}?ct=${encodeURIComponent(
+      `/api/paystack/public/result/${companyHash}?ct=${encodeURIComponent(
         companyIdToken,
       )}`,
       {
@@ -63,7 +63,7 @@ export class PublicPaymentService {
 
   async verifyTransaction(companyHash, companyIdToken, reference) {
     const response = await Client.get(
-      `${baseUrl}/api/paystack/public/verify/${companyHash}?ct=${encodeURIComponent(
+      `/api/paystack/public/verify/${companyHash}?ct=${encodeURIComponent(
         companyIdToken,
       )}`,
       {

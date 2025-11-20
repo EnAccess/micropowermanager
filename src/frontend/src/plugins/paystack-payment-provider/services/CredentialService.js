@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/paystack/credential`
+const resource = `/api/paystack/credential`
 
 export class CredentialService {
   constructor() {

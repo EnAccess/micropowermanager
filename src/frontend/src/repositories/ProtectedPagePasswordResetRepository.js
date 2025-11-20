@@ -1,31 +1,18 @@
-import axios from "axios"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient"
 
 class ProtectedPagePasswordResetRepository {
-  constructor() {
-    this.baseUrl = baseUrl
-  }
-
   async sendResetEmail(email) {
-    return await axios.post(
-      `${this.baseUrl}/api/protected-page-password/reset`,
-      {
-        email,
-      },
-    )
+    return await Client.post(`/api/protected-page-password/reset`, {
+      email,
+    })
   }
 
   async validateToken(token) {
-    return await axios.get(
-      `${this.baseUrl}/api/protected-page-password/validate/${token}`,
-    )
+    return await Client.get(`/api/protected-page-password/validate/${token}`)
   }
 
   async resetPassword(data) {
-    return await axios.post(
-      `${this.baseUrl}/api/protected-page-password/confirm`,
-      data,
-    )
+    return await Client.post(`/api/protected-page-password/confirm`, data)
   }
 }
 

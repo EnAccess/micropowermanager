@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/steama-meters/steama-setting/feedback-word`
+const resource = `/api/steama-meters/steama-setting/feedback-word`
 
 export default {
   list() {

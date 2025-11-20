@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/sun-king-shs/sun-king-credential`
+const resource = `/api/sun-king-shs/sun-king-credential`
 
 export default {
   get() {

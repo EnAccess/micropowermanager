@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/kelin-meters/kelin-customer`
+const resource = `/api/kelin-meters/kelin-customer`
 
 export default {
   list() {

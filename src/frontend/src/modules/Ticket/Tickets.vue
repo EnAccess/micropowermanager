@@ -57,7 +57,7 @@ import { EventBus } from "@/shared/eventbus"
 import Filtering from "@/modules/Ticket/Filtering"
 import { resources } from "@/resources"
 import { TicketService } from "@/services/TicketService"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+
 export default {
   name: "Tickets",
   components: { Filtering, Widget, TicketItem },
@@ -121,14 +121,14 @@ export default {
       )
     },
     filtered(data) {
-      this.ticketService.openedPaginator.setPaginationBaseUrl(
-        baseUrl + resources.ticket.list + "?status=0" + data,
+      this.ticketService.openedPaginator.setPaginationResource(
+        resources.ticket.list + "?status=0" + data,
       )
       this.ticketService.openedPaginator.loadPage(1).then((response) => {
         this.reloadList(this.subscriber.opened, response.data)
       })
-      this.ticketService.closedPaginator.setPaginationBaseUrl(
-        baseUrl + resources.ticket.list + "?status=1" + data,
+      this.ticketService.closedPaginator.setPaginationResource(
+        resources.ticket.list + "?status=1" + data,
       )
       this.ticketService.closedPaginator.loadPage(1).then((response) => {
         this.reloadList(this.subscriber.closed, response.data)

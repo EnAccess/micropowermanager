@@ -311,9 +311,9 @@ import {
 } from "@/services/ConnectionTypeService"
 import { currency } from "@/mixins/currency"
 import { Targets } from "@/services/TargetService"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import { resources } from "@/resources"
 import { notify } from "@/mixins/notify"
+import Client from "@/repositories/Client/AxiosClient"
 
 export default {
   name: "NewTarget",
@@ -401,15 +401,15 @@ export default {
       this.dataIsLoading = true
       if (value === "mini-grid") {
         //get list of mini-grids
-        this.updateTargetDestination(baseUrl + resources.miniGrids.list)
+        this.updateTargetDestination(resources.miniGrids.list)
       } else {
         //get list of clusters
-        this.updateTargetDestination(baseUrl + resources.clusters.list)
+        this.updateTargetDestination(resources.clusters.list)
       }
     },
 
-    updateTargetDestination(url) {
-      axios.get(url).then((response) => {
+    updateTargetDestination(resource) {
+      Client.get(resource).then((response) => {
         this.targetDestinations = response.data.data
         this.dataIsLoading = false // hide progress bar
       })

@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-export const resource = `${baseUrl}/api/mpm-plugins`
+export const resource = `/api/mpm-plugins`
 
 export default {
   list() {
