@@ -51,11 +51,11 @@ export class Ticket {
   }
 
   close() {
-    axios
-      .delete(resources.ticket.close, { data: { ticketId: this.id } })
-      .then(() => {
+    Client.delete(resources.ticket.close, { data: { ticketId: this.id } }).then(
+      () => {
         this.closed = true
-      })
+      },
+    )
   }
 }
 
