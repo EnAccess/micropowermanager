@@ -84,8 +84,6 @@ export default {
 
       const headers = this.donutData[0]
       const labelHeader = headers[0] || "Connection"
-      const valueHeader = headers[1] || "Revenue"
-
       const data = this.donutData.slice(1).map((row) => ({
         name: String(row[0] || ""),
         value: parseFloat(row[1]) || 0,
