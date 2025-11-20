@@ -40,7 +40,7 @@ export class Paginator {
     localParam["page"] = page
     localParam["per_page"] = this.perPage
 
-    return Client.get(this.url, {
+    return Client.get(this.resource, {
       params: localParam,
     }).then((response) => {
       let data = response.data
