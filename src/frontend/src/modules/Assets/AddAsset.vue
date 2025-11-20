@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :hidden="!addNewAsset" title="Add Appliance" color="red">
+    <widget :hidden="!addNewAsset" title="Add Appliance SKU" color="red">
       <md-card>
         <div class="md-layout md-gutter">
           <div
@@ -14,8 +14,8 @@
                       'md-invalid': errors.has($tc('words.appliance')),
                     }"
                   >
-                    <label for="appliance">
-                      {{ $tc("words.appliance") }}
+                    <label for="applianceType">
+                      {{ $tc("phrases.applianceType",0) }}
                     </label>
                     <md-select
                       :name="$tc('words.appliance')"
@@ -34,7 +34,7 @@
                       </md-option>
                     </md-select>
                     <span class="md-error">
-                      {{ errors.first($tc("words.appliance")) }}
+                      {{ errors.first($tc("phrases.applianceType", 0)) }}
                     </span>
                   </md-field>
                 </div>

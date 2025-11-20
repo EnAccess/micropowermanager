@@ -88,7 +88,7 @@ export default {
         await this.assetTypeService.createAssetType()
 
         this.loading = false
-        this.alertNotify("success", this.$tc("phrases.newAppliance", 1))
+        this.alertNotify("success", this.$tc("phrases.newApplianceSku", 1))
         EventBus.$emit("AssetTypeAdded")
       } catch (e) {
         this.loading = false

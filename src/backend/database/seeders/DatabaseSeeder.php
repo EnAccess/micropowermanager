@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder {
                 CustomerSeeder::class,
                 MeterSeeder::class,
                 SolarHomeSystemSeeder::class,
+                ApplianceSkuSeeder::class,
                 AgentSeeder::class,
                 TicketSeeder::class,
                 TransactionSeeder::class,

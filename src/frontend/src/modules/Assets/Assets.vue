@@ -6,7 +6,7 @@
     <div class="md-layout-item md-small-size-100 md-size-50">
       <add-asset :addNewAsset="addNewAsset" />
       <widget
-        :title="$tc('menu.Appliances')"
+        :title="$tc('phrases.applianceSku',2)"
         :subscriber="subscriber"
         :route_name="'/assets'"
         :button="true"

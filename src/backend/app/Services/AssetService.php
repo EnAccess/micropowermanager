@@ -36,8 +36,12 @@ class AssetService {
         return $asset;
     }
 
-    public function deleteAsset(Asset $asset): bool {
-        return $asset->delete();
+    public function deleteAsset(Asset $asset): Asset
+    {
+        $assetCopy = clone $asset;
+        $asset->delete();
+
+        return $assetCopy;
     }
 
     public function getById(int $id): ?Asset {

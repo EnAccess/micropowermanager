@@ -19,6 +19,7 @@ export class AssetTypeService {
     return {
       id: data.id,
       name: data.name,
+      paygoEnabled: data.paygo_enabled,
       updatedAt: data.updated_at
         .toString()
         .replace(/T/, " ")
@@ -31,6 +32,7 @@ export class AssetTypeService {
       return {
         id: asset.id,
         name: asset.name,
+        paygoEnabled: asset.paygo_enabled,
         updated_at: asset.updated_at
           ? asset.updated_at.toString().replace(/T/, " ").replace(/\..+/, "")
           : "",

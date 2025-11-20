@@ -41,6 +41,7 @@
             <div class="md-layout-item" v-else>{{ assetType.name }}&nbsp;</div>
           </md-table-cell>
 
+          <md-table-cell><md-icon :class="assetType.paygoEnabled ? 'md-primary' : 'md-accent'">{{ assetType.paygoEnabled ? 'check' : 'close' }}</md-icon></md-table-cell>
           <md-table-cell>{{ assetType.updatedAt }}</md-table-cell>
         </md-table-row>
       </md-table>
@@ -65,7 +66,7 @@ export default {
       addNewAssetType: false,
       subscriber: "assetTypeList",
       assetTypeService: new AssetTypeService(),
-      headers: [this.$tc("words.name"), this.$tc("phrases.lastUpdate")],
+      headers: [this.$tc("words.name"), this.$tc("phrases.paygoEnabled"), this.$tc("phrases.lastUpdate")],
       resetKey: 0,
       loading: false,
       updateAppliance: null,
