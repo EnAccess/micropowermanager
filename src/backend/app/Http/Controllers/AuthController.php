@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\JWTGuard;
 
@@ -40,7 +41,25 @@ class AuthController extends Controller {
      * Get the authenticated User.
      */
     public function me(): JsonResponse {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        if (method_exists($user, 'getRoleNames')) {
+            /** @var User $user */
+            $roles = $user->getRoleNames()->toArray();
+        } else {
+            $roles = [];
+        }
+        if (method_exists($user, 'getAllPermissions')) {
+            /** @var User $user */
+            $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+        } else {
+            $permissions = [];
+        }
+
+        return response()->json([
+            'user' => $user,
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
@@ -73,13 +92,18 @@ class AuthController extends Controller {
         /** @var JWTGuard $guard */
         $guard = auth()->guard('api');
 
-        return response()->json(
-            [
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => $guard->factory()->getTTL() * 60,
-                'user' => auth('api')->user(),
-            ]
-        );
+        /** @var User $user */
+        $user = auth('api')->user();
+        $roles = $user->getRoleNames()->toArray();
+        $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $guard->factory()->getTTL() * 60,
+            'user' => $user,
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
     }
 }
