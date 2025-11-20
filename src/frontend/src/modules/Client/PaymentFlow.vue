@@ -28,7 +28,7 @@
                   echartsOption.series &&
                   echartsOption.series[0]
                 "
-                :options="echartsOption"
+                :option="echartsOption"
                 :autoresize="true"
                 style="height: 400px; width: 100%; min-height: 400px"
               />

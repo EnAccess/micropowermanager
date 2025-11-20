@@ -28,7 +28,7 @@
             v-if="
               echartsOption && echartsOption.series && echartsOption.series[0]
             "
-            :options="echartsOption"
+            :option="echartsOption"
             :autoresize="true"
             style="height: 250px; width: 100%; min-height: 250px"
           />

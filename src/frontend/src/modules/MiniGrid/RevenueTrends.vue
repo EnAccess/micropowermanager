@@ -17,7 +17,7 @@
                 columnChartOption.series[0].data &&
                 columnChartOption.series[0].data.length > 0
               "
-              :options="columnChartOption"
+              :option="columnChartOption"
               :autoresize="true"
               style="height: 600px; width: 100%; min-height: 600px"
             />
@@ -49,7 +49,7 @@
                 lineChartOption.series[0].data &&
                 lineChartOption.series[0].data.length > 0
               "
-              :options="lineChartOption"
+              :option="lineChartOption"
               :autoresize="true"
               style="height: 600px; width: 100%; min-height: 600px"
             />

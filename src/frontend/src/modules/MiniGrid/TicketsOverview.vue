@@ -21,7 +21,7 @@
                 echartsOption.series[0].data &&
                 echartsOption.series[0].data.length > 0
               "
-              :options="echartsOption"
+              :option="echartsOption"
               :autoresize="true"
               style="height: 600px; width: 100%; min-height: 600px"
             />

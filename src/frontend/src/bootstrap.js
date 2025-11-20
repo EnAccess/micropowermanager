@@ -59,19 +59,36 @@ Vue.use(VeeValidate, {
 })
 
 /**
- * ECharts (vue-echarts 4.x with ECharts 4.x)
+ * ECharts (vue-echarts 7.x with ECharts 5.x)
  */
-import ECharts from "vue-echarts"
-import "echarts/lib/chart/bar"
-import "echarts/lib/chart/line"
-import "echarts/lib/chart/pie"
-import "echarts/lib/component/tooltip"
-import "echarts/lib/component/legend"
-import "echarts/lib/component/legendScroll"
-import "echarts/lib/component/toolbox"
-import "echarts/lib/echarts"
+import { use } from "echarts/core"
+import { CanvasRenderer } from "echarts/renderers"
 
-Vue.component("v-chart", ECharts)
+import { BarChart, LineChart, PieChart } from "echarts/charts"
+
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  ToolboxComponent,
+} from "echarts/components"
+
+import VChart from "vue-echarts"
+
+use([
+  CanvasRenderer,
+  BarChart,
+  LineChart,
+  PieChart,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  ToolboxComponent,
+])
+
+Vue.component("v-chart", VChart)
 
 /**
  * moment
