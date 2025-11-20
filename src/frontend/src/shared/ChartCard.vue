@@ -130,21 +130,6 @@ export default {
         return {
           tooltip: {
             trigger: "item",
-            formatter: (params) => {
-              const percent = (params.percent || 0).toFixed(1)
-              const colorDot = `<span style="
-    background:${params.color};
-    width:10px;height:10px;
-    border-radius:50%;
-    display:inline-block;
-    margin-right:6px;"></span>`
-
-              return `
-    ${colorDot}${params.name}<br/>
-    Revenue: ${params.value.toLocaleString()}<br/>
-    ${percent}%
-  `
-            },
           },
           legend: {
             orient: "vertical",

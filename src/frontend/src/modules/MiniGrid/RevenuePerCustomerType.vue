@@ -110,13 +110,6 @@ export default {
       const option = {
         tooltip: {
           trigger: "item",
-          formatter: (params) => {
-            if (!params || !params.data) return ""
-            const percent = (params.percent || 0).toFixed(1)
-            return `${params.name}<br/>${valueHeader}: ${this.formatValue(
-              params.value || params.data.value,
-            )}<br/>${percent}%`
-          },
         },
         legend: {
           orient: "horizontal",
@@ -168,9 +161,6 @@ export default {
                 show: true,
                 fontSize: 12,
                 fontWeight: "bold",
-                formatter: (params) => {
-                  return `${params.name}\n${this.formatValue(params.value)}`
-                },
               },
               itemStyle: {
                 shadowBlur: 10,

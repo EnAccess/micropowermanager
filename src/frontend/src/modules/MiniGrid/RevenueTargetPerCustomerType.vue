@@ -86,11 +86,6 @@ export default {
       return {
         tooltip: {
           trigger: "axis",
-          formatter: (params) => {
-            if (!params || !params[0]) return ""
-            const value = (params[0].value * 100).toFixed(2)
-            return `${params[0].name}<br/>${this.$tc("phrases.percentageOfTargetedRevenue") || "Percentage"}: ${value}%`
-          },
         },
         grid: {
           left: "3%",

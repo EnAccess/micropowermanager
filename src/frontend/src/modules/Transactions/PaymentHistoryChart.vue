@@ -71,11 +71,6 @@ export default {
         },
         tooltip: {
           trigger: "item",
-          formatter: (params) => {
-            if (!params || !params.data) return ""
-            const percent = (params.percent || 0).toFixed(1)
-            return `${params.name}<br/>${valueHeader}: ${params.value}<br/>${percent}%`
-          },
         },
         legend: {
           orient: "vertical",
