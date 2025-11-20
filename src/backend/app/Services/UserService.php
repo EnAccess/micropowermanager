@@ -43,10 +43,20 @@ class UserService {
     }
 
     /**
-     * @param array{password: string} $data
+     * @param array{password?: string, name?: string} $data
      */
     public function update(User $user, array $data): User {
-        $user->update(['password' => $data['password']]);
+        $updateData = [];
+        if (isset($data['password'])) {
+            $updateData['password'] = $data['password'];
+        }
+        if (isset($data['name'])) {
+            $updateData['name'] = $data['name'];
+        }
+
+        if (!empty($updateData)) {
+            $user->update($updateData);
+        }
 
         return $user->fresh();
     }

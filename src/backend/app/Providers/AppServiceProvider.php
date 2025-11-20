@@ -18,6 +18,7 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\EBike;
+use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
@@ -30,6 +31,10 @@ use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
+use App\Policies\MainSettingsPolicy;
+use App\Policies\TicketPolicy;
+use App\Policies\TransactionPolicy;
+use App\Policies\UserPolicy;
 use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
@@ -37,8 +42,10 @@ use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Inensus\Ticket\Models\Ticket;
 use MPM\Transaction\Provider\AgentTransactionProvider;
 use MPM\User\Events\UserCreatedEvent;
 use MPM\User\UserListener;
@@ -48,6 +55,11 @@ class AppServiceProvider extends ServiceProvider {
      * Bootstrap any application services.
      */
     public function boot(): void {
+        // Policies
+        Gate::policy(MainSettings::class, MainSettingsPolicy::class);
+        Gate::policy(Ticket::class, TicketPolicy::class);
+        Gate::policy(Transaction::class, TransactionPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
         // Maria DB work-around
         Schema::defaultStringLength(191);
 
