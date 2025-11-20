@@ -16,6 +16,6 @@ export default {
   },
 
   getAgentList() {
-    return Client.get(`${baseUrl}/api/agents`)
+    return Client.get(`/api/agents`)
   },
 }
