@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property string      $language
  * @property float|null  $vat_energy
  * @property float|null  $vat_appliance
+ * @property int|null    $sms_gateway_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $protected_page_password
