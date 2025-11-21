@@ -243,6 +243,8 @@ Route::group(['prefix' => 'settings'], static function () {
     // update requires auth and permission
     Route::put('/main/{mainSettings}', [MainSettingsController::class, 'update'])
         ->middleware(['jwt.verify', 'permission:settings']);
+    Route::get('/sms-gateways', [MainSettingsController::class, 'getAvailableSmsGateways'])
+        ->middleware('permission:settings');
     Route::get('/currency-list', [CurrencyController::class, 'index']);
 });
 
