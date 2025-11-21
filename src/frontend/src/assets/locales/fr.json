@@ -368,6 +368,7 @@
     "selectDevice": "Select a Device to bind with this appliance",
     "selectMiniGrid": "Sélectionnez un mini-réseau | L'enregistreur des données du mini-réseau est actif.",
     "selectPeriod": "Sélectionner une période pour les données",
+    "sellAppliance": "Vendre un appareil | Nouvel appareil vendu avec succès. | Êtes-vous sûr de vouloir vendre l’appareil pour {cost} ? ",
     "sellAsset": "Vendre un bien | Nouveau bien vendu avec succès. | Êtes-vous sûr(e) de vouloir vendre le bien au prix de {cost}",
     "sentDate": "Date d'envoi",
     "serialNumber": "Numéro de série",
