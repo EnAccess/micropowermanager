@@ -2,8 +2,8 @@
 
 namespace Inensus\Prospect\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Inensus\Prospect\Http\Requests\ProspectCredentialRequest;
 use Inensus\Prospect\Http\Resources\ProspectResource;
 use Inensus\Prospect\Services\ProspectCredentialService;
 
@@ -12,21 +12,23 @@ class ProspectCredentialController extends Controller {
         private ProspectCredentialService $credentialService,
     ) {}
 
-    public function show(): ProspectResource {
-        return ProspectResource::make($this->credentialService->getCredentials());
+    public function show() {
+        $credentials = $this->credentialService->getCredentials();
+        if ($credentials === null) {
+            return new ProspectResource(null);
+        }
+        return ProspectResource::collection($credentials);
     }
 
-    public function update(ProspectCredentialRequest $request): ProspectResource {
-        $apiUrl = $request->input('api_url');
-        $apiToken = $request->input('api_token');
-        $id = $request->input('id');
-
-        $credentials = $this->credentialService->updateCredentials([
-            'id' => $id,
-            'api_url' => $apiUrl,
-            'api_token' => $apiToken,
+    public function update(Request $request) {
+        $request->validate([
+            '*.id' => ['nullable', 'integer'],
+            '*.api_url' => ['required', 'string'],
+            '*.api_token' => ['required', 'string', 'min:3'],
         ]);
 
-        return ProspectResource::make($credentials);
+        $credentials = $this->credentialService->updateCredentials($request->all());
+
+        return ProspectResource::collection($credentials);
     }
 }

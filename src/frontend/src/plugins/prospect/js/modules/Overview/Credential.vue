@@ -49,21 +49,21 @@
               <md-field
                 :class="{
                   'md-invalid':
-                    submitted && errors.has('Credential-Form.apiToken'),
+                    submitted && errors.has('Credential-Form.installationsApiToken'),
                 }"
               >
-                <label for="apiToken">
+                <label for="installationsApiToken">
                   {{ $tc("phrases.apiToken") }}
                 </label>
                 <md-input
-                  id="apiToken"
-                  name="apiToken"
+                  id="installationsApiToken"
+                  name="installationsApiToken"
                   type="password"
-                  v-model="credentialService.credential.apiToken"
+                  v-model="installationsCredential.apiToken"
                   v-validate="'required|min:3'"
                 />
                 <span class="md-error" v-if="submitted">
-                  {{ errors.first("Credential-Form.apiToken") }}
+                  {{ errors.first("Credential-Form.installationsApiToken") }}
                 </span>
               </md-field>
             </div>
@@ -93,7 +93,7 @@
                   id="paymentsApiToken"
                   name="paymentsApiToken"
                   type="password"
-                  v-model="credentialService.credential.paymentsApiToken"
+                  v-model="paymentsCredential.apiToken"
                   v-validate="'required|min:3'"
                 />
                 <span class="md-error" v-if="submitted">
@@ -128,7 +128,16 @@ export default {
       loading: false,
       submitted: false,
       baseUrl: "",
-      endpointType: "installations",
+      installationsCredential: {
+        id: null,
+        apiUrl: null,
+        apiToken: null,
+      },
+      paymentsCredential: {
+        id: null,
+        apiUrl: null,
+        apiToken: null,
+      },
     }
   },
   mounted() {
@@ -137,7 +146,19 @@ export default {
   methods: {
     async getCredential() {
       await this.credentialService.getCredential()
-      const fullUrl = this.credentialService.credential.apiUrl || ""
+      
+      const installations = this.credentialService.list.find(
+        (c) => c.apiUrl && c.apiUrl.includes('/installations')
+      ) || this.credentialService.list[0] || { id: null, apiUrl: null, apiToken: null }
+      
+      const payments = this.credentialService.list.find(
+        (c) => c.apiUrl && c.apiUrl.includes('/payments_ts')
+      ) || this.credentialService.list[1] || { id: null, apiUrl: null, apiToken: null }
+      
+      this.installationsCredential = { ...installations }
+      this.paymentsCredential = { ...payments }
+      
+      const fullUrl = this.installationsCredential.apiUrl || ""
       this.baseUrl = this.extractBaseUrl(fullUrl)
     },
     extractBaseUrl(fullUrl) {
@@ -150,9 +171,16 @@ export default {
     },
 
     buildFullUrl(baseUrl, endpoint) {
-      return baseUrl.endsWith("/")
-        ? `${baseUrl}${endpoint}`
-        : `${baseUrl}/${endpoint}`
+      if (!baseUrl) return ""
+      
+      let url = baseUrl.trim()
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = `https://${url}`
+      }
+      
+      return url.endsWith("/")
+        ? `${url}${endpoint}`
+        : `${url}/${endpoint}`
     },
     async submitCredentialForm() {
       this.submitted = true
@@ -163,8 +191,21 @@ export default {
       try {
         this.loading = true
 
-        const fullUrl = this.buildFullUrl(this.baseUrl, this.endpointType)
-        this.credentialService.credential.apiUrl = fullUrl
+        const installationsUrl = this.buildFullUrl(this.baseUrl, "installations")
+        const paymentsUrl = this.buildFullUrl(this.baseUrl, "payments_ts")
+
+        this.credentialService.list = [
+          {
+            id: this.installationsCredential.id,
+            apiUrl: installationsUrl,
+            apiToken: this.installationsCredential.apiToken,
+          },
+          {
+            id: this.paymentsCredential.id,
+            apiUrl: paymentsUrl,
+            apiToken: this.paymentsCredential.apiToken,
+          },
+        ]
 
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Updated successfully")
