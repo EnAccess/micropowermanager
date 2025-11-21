@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\TicketOwnerNotFoundException;
 use App\Http\Requests\CreateAgentTicketRequest;
 use App\Http\Resources\ApiResource;
+use App\Http\Resources\TicketResource;
 use App\Services\AgentService;
 use App\Services\AgentTicketService;
 use App\Services\PersonService;
 use App\Services\PersonTicketService;
-use Illuminate\Http\Request;
-use App\Exceptions\TicketOwnerNotFoundException;
-use App\Http\Resources\TicketResource;
 use App\Services\TicketService;
+use Illuminate\Http\Request;
 
 class AgentTicketController extends Controller {
     public function __construct(

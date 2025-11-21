@@ -22,4 +22,3 @@ class TicketOutsourcePayoutReport extends BaseModel {
 
     protected $table = 'ticket_outsource_payout_reports';
 }
-

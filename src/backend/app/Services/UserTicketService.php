@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Ticket\Ticket;
 use App\Models\User;
 use App\Services\Interfaces\IAssignationService;
-use App\Models\Ticket\Ticket;
 
 /**
  * @implements IAssignationService<Ticket, User>

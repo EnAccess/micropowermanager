@@ -33,4 +33,3 @@ class TicketComment extends BaseModel {
         return $this->belongsTo(TicketUser::class, 'ticket_user_id', 'id');
     }
 }
-

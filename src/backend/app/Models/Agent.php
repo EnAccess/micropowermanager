@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Person\Person;
+use App\Models\Ticket\Ticket;
 use App\Models\Transaction\Transaction;
 use Database\Factories\AgentFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Ticket\Ticket;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 

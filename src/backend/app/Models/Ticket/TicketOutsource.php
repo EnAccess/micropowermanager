@@ -29,4 +29,3 @@ class TicketOutsource extends BaseModel {
         return $this->belongsTo(Ticket::class);
     }
 }
-

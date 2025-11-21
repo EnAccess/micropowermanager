@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Events\PaymentSuccessEvent;
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
+use App\Services\TicketUserService;
 use Database\Factories\AgentAssignedAppliancesFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
 use Database\Factories\AgentCommissionFactory;
@@ -37,7 +38,6 @@ use Database\Factories\TicketUserFactory;
 use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
-use App\Services\TicketUserService;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 

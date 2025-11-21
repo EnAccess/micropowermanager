@@ -21,4 +21,3 @@ class TicketCategory extends BaseModel {
 
     protected $table = 'ticket_categories';
 }
-
