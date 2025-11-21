@@ -16,6 +16,7 @@ use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
+use App\Models\Ticket\Ticket;
 use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,7 +29,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
-use Inensus\Ticket\Models\Ticket;
 
 /**
  * Class Person.
