@@ -37,8 +37,8 @@ use Database\Factories\TicketUserFactory;
 use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
+use App\Services\TicketUserService;
 use Illuminate\Foundation\Testing\WithFaker;
-use Inensus\Ticket\Services\TicketUserService;
 use Tests\RefreshMultipleDatabases;
 
 trait CreateEnvironments {

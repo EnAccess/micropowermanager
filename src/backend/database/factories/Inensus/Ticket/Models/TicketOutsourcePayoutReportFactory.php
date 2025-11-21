@@ -2,8 +2,8 @@
 
 namespace Database\Factories\Inensus\Ticket\Models;
 
+use App\Models\Ticket\TicketOutsourcePayoutReport;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Inensus\Ticket\Models\TicketOutsourcePayoutReport;
 
 /** @extends Factory<TicketOutsourcePayoutReport> */
 class TicketOutsourcePayoutReportFactory extends Factory {

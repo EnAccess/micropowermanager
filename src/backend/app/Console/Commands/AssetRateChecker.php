@@ -11,8 +11,8 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Collection;
-use Inensus\Ticket\Models\TicketCategory;
-use Inensus\Ticket\Services\TicketService;
+use App\Models\Ticket\TicketCategory;
+use App\Services\TicketService;
 
 class AssetRateChecker extends AbstractSharedCommand {
     protected $signature = 'asset-rate:check';

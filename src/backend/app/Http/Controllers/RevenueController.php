@@ -14,8 +14,8 @@ use App\Services\PeriodService;
 use App\Services\RevenueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Models\TicketCategory;
+use App\Models\Ticket\Ticket;
+use App\Models\Ticket\TicketCategory;
 
 class RevenueController extends Controller {
     public function __construct(

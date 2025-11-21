@@ -1,6 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `/tickets/api/tickets/comments`
+const resource = `/api/tickets/comments`
 
 export default {
   create(commentPm) {

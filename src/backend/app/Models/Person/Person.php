@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
-use Inensus\Ticket\Models\Ticket;
+use App\Models\Ticket\Ticket;
 
 /**
  * Class Person.

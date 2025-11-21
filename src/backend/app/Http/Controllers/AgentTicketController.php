@@ -9,9 +9,9 @@ use App\Services\AgentTicketService;
 use App\Services\PersonService;
 use App\Services\PersonTicketService;
 use Illuminate\Http\Request;
-use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
-use Inensus\Ticket\Http\Resources\TicketResource;
-use Inensus\Ticket\Services\TicketService;
+use App\Exceptions\TicketOwnerNotFoundException;
+use App\Http\Resources\TicketResource;
+use App\Services\TicketService;
 
 class AgentTicketController extends Controller {
     public function __construct(

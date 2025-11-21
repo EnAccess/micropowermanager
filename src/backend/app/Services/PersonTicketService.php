@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Person\Person;
 use App\Services\Interfaces\IAssignationService;
-use Inensus\Ticket\Models\Ticket;
+use App\Models\Ticket\Ticket;
 
 /**
  * @implements IAssignationService<Ticket, Person>

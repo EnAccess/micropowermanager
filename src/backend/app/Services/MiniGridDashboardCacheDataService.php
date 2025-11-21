@@ -7,8 +7,8 @@ use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\Target;
 use Illuminate\Support\Facades\Cache;
-use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Models\TicketCategory;
+use App\Models\Ticket\Ticket;
+use App\Models\Ticket\TicketCategory;
 use MPM\Device\MiniGridDeviceService;
 use Nette\Utils\DateTime;
 
