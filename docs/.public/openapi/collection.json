@@ -11,7 +11,7 @@
     "info": {
         "name": "MicroPowerManager API docs",
         "_postman_id": "306e91d7-3194-47ef-9b36-382158f72941",
-        "description": "\n![MPM Logo](https:\/\/micropowermanager.com\/assets\/images\/Website_Illustrations_Logo.png)\n\n<p align=\"center\">\n    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.<\/em>\n<\/p>\n\n---\n\n# \ud83d\udcab Overview\nThis documentation will provide all the information you need to work with our API.\n\nAs you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).\nYou can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).",
+        "description": "\n![MPM Logo](https:\/\/micropowermanager.com\/appliances\/images\/Website_Illustrations_Logo.png)\n\n<p align=\"center\">\n    <em>Decentralized utility management made simple. Manage customers, revenues and appliances with this all-in one open source platform.<\/em>\n<\/p>\n\n---\n\n# \ud83d\udcab Overview\nThis documentation will provide all the information you need to work with our API.\n\nAs you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).\nYou can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
@@ -3938,9 +3938,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets",
+                            "path": "api\/appliances",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets"
+                            "raw": "{{baseUrl}}\/api\/appliances"
                         },
                         "method": "GET",
                         "header": [
@@ -3982,13 +3982,13 @@
                     ]
                 },
                 {
-                    "name": "POST api\/assets",
+                    "name": "POST api\/appliances",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets",
+                            "path": "api\/appliances",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets"
+                            "raw": "{{baseUrl}}\/api\/appliances"
                         },
                         "method": "POST",
                         "header": [
@@ -4003,7 +4003,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"asset_type_id\":\"non\",\"name\":\"uzfjprvvyzlsjnusczahijubzpmr\",\"price\":66}"
+                            "raw": "{\"appliance_type_id\":\"non\",\"name\":\"uzfjprvvyzlsjnusczahijubzpmr\",\"price\":66}"
                         },
                         "description": "",
                         "auth": {
@@ -4013,19 +4013,19 @@
                     "response": []
                 },
                 {
-                    "name": "PUT api\/assets\/{asset_id}",
+                    "name": "PUT api\/appliances\/{appliance_id}",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/:asset_id",
+                            "path": "api\/appliances\/:appliance_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/:asset_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/:appliance_id",
                             "variable": [
                                 {
-                                    "id": "asset_id",
-                                    "key": "asset_id",
+                                    "id": "appliance_id",
+                                    "key": "appliance_id",
                                     "value": "1",
-                                    "description": "The ID of the asset."
+                                    "description": "The ID of the appliance."
                                 }
                             ]
                         },
@@ -4052,19 +4052,19 @@
                     "response": []
                 },
                 {
-                    "name": "DELETE api\/assets\/{asset_id}",
+                    "name": "DELETE api\/appliances\/{appliance_id}",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/:asset_id",
+                            "path": "api\/appliances\/:appliance_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/:asset_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/:appliance_id",
                             "variable": [
                                 {
-                                    "id": "asset_id",
-                                    "key": "asset_id",
+                                    "id": "appliance_id",
+                                    "key": "appliance_id",
                                     "value": "1",
-                                    "description": "The ID of the asset."
+                                    "description": "The ID of the appliance."
                                 }
                             ]
                         },
@@ -4092,15 +4092,15 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/person\/:asset_id\/people\/:person_id",
+                            "path": "api\/appliances\/person\/:appliance_id\/people\/:person_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/person\/:asset_id\/people\/:person_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/person\/:appliance_id\/people\/:person_id",
                             "variable": [
                                 {
-                                    "id": "asset_id",
-                                    "key": "asset_id",
+                                    "id": "appliance_id",
+                                    "key": "appliance_id",
                                     "value": "1",
-                                    "description": "The ID of the asset."
+                                    "description": "The ID of the appliance."
                                 },
                                 {
                                     "id": "person_id",
@@ -4134,9 +4134,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/person\/people\/:person_id",
+                            "path": "api\/appliances\/person\/people\/:person_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/person\/people\/:person_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/person\/people\/:person_id",
                             "variable": [
                                 {
                                     "id": "person_id",
@@ -4186,13 +4186,13 @@
                     ]
                 },
                 {
-                    "name": "GET api\/assets\/person\/people\/detail\/{applianceId}",
+                    "name": "GET api\/appliances\/person\/people\/detail\/{applianceId}",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/person\/people\/detail\/:applianceId",
+                            "path": "api\/appliances\/person\/people\/detail\/:applianceId",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/person\/people\/detail\/:applianceId",
+                            "raw": "{{baseUrl}}\/api\/appliances\/person\/people\/detail\/:applianceId",
                             "variable": [
                                 {
                                     "id": "applianceId",
@@ -4246,9 +4246,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/types",
+                            "path": "api\/appliances\/types",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/types"
+                            "raw": "{{baseUrl}}\/api\/appliances\/types"
                         },
                         "method": "GET",
                         "header": [
@@ -4294,9 +4294,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/types",
+                            "path": "api\/appliances\/types",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/types"
+                            "raw": "{{baseUrl}}\/api\/appliances\/types"
                         },
                         "method": "POST",
                         "header": [
@@ -4325,15 +4325,15 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/types\/:asset_type_id",
+                            "path": "api\/appliances\/types\/:appliance_type_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/types\/:asset_type_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/types\/:appliance_type_id",
                             "variable": [
                                 {
-                                    "id": "asset_type_id",
-                                    "key": "asset_type_id",
+                                    "id": "appliance_type_id",
+                                    "key": "appliance_type_id",
                                     "value": "quam",
-                                    "description": "The ID of the asset type."
+                                    "description": "The ID of the appliance type."
                                 }
                             ]
                         },
@@ -4364,15 +4364,15 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/types\/:asset_type_id",
+                            "path": "api\/appliances\/types\/:appliance_type_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/types\/:asset_type_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/types\/:appliance_type_id",
                             "variable": [
                                 {
-                                    "id": "asset_type_id",
-                                    "key": "asset_type_id",
+                                    "id": "appliance_type_id",
+                                    "key": "appliance_type_id",
                                     "value": "fuga",
-                                    "description": "The ID of the asset type."
+                                    "description": "The ID of the appliance type."
                                 }
                             ]
                         },
@@ -4396,13 +4396,13 @@
                     "response": []
                 },
                 {
-                    "name": "PUT api\/assets\/rates\/{appliance_rate_id}",
+                    "name": "PUT api\/appliances\/rates\/{appliance_rate_id}",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/rates\/:appliance_rate_id",
+                            "path": "api\/appliances\/rates\/:appliance_rate_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/rates\/:appliance_rate_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/rates\/:appliance_rate_id",
                             "variable": [
                                 {
                                     "id": "appliance_rate_id",
@@ -4432,13 +4432,13 @@
                     "response": []
                 },
                 {
-                    "name": "POST api\/assets\/payment\/{appliance_person_id}",
+                    "name": "POST api\/appliances\/payment\/{appliance_person_id}",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/assets\/payment\/:appliance_person_id",
+                            "path": "api\/appliances\/payment\/:appliance_person_id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/assets\/payment\/:appliance_person_id",
+                            "raw": "{{baseUrl}}\/api\/appliances\/payment\/:appliance_person_id",
                             "variable": [
                                 {
                                     "id": "appliance_person_id",
@@ -9131,7 +9131,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"as\",\"manufacturer_id\":\"corrupti\",\"asset_id\":\"laborum\"}"
+                            "raw": "{\"serial_number\":\"as\",\"manufacturer_id\":\"corrupti\",\"appliance_id\":\"laborum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -9258,7 +9258,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"f\",\"manufacturer_id\":\"hic\",\"asset_id\":\"dolore\"}"
+                            "raw": "{\"serial_number\":\"f\",\"manufacturer_id\":\"hic\",\"appliance_id\":\"dolore\"}"
                         },
                         "description": "",
                         "auth": {
@@ -15534,7 +15534,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 79474,\n            \"amount\": 10000,\n            \"payment_service\": \"xyt_transaction\",\n            \"sender\": \"255769644521\",\n            \"payment_type\": \"installment\",\n            \"paid_for_type\": \"asset_loan\",\n            \"paid_for_id\": 1,\n            \"payer_type\": \"person\",\n            \"payer_id\": 1,\n            \"transaction_id\": 86064,\n            \"created_at\": \"2020-02-11 12:19:58\",\n            \"updated_at\": \"2020-02-11 12:19:58\",\n            \"transaction\": {\n                \"id\": 86064,\n                \"original_transaction_id\": 80277,\n                \"original_transaction_type\": \"xyt_transaction\",\n                \"amount\": 10000,\n                \"type\": \"energy\",\n                \"sender\": \"111111111\",\n                \"message\": \"123123123\",\n                \"created_at\": \"2020-02-11 12:19:56\",\n                \"updated_at\": \"2020-02-11 12:19:57\",\n                \"token\": null\n            }\n        }\n    ],\n    \"first_page_url\": \"http:\\\/\\\/localhost:8000\\\/api\\\/people\\\/1\\\/transactions?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http:\\\/\\\/localhost:8000\\\/api\\\/people\\\/1\\\/transactions?page=1\",\n    \"next_page_url\": null,\n    \"path\": \"http:\\\/\\\/localhost:8000\\\/api\\\/people\\\/1\\\/transactions\",\n    \"per_page\": 7,\n    \"prev_page_url\": null,\n    \"to\": 6,\n    \"total\": 6\n}\n",
+                            "body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 79474,\n            \"amount\": 10000,\n            \"payment_service\": \"xyt_transaction\",\n            \"sender\": \"255769644521\",\n            \"payment_type\": \"installment\",\n            \"paid_for_type\": \"appliance_loan\",\n            \"paid_for_id\": 1,\n            \"payer_type\": \"person\",\n            \"payer_id\": 1,\n            \"transaction_id\": 86064,\n            \"created_at\": \"2020-02-11 12:19:58\",\n            \"updated_at\": \"2020-02-11 12:19:58\",\n            \"transaction\": {\n                \"id\": 86064,\n                \"original_transaction_id\": 80277,\n                \"original_transaction_type\": \"xyt_transaction\",\n                \"amount\": 10000,\n                \"type\": \"energy\",\n                \"sender\": \"111111111\",\n                \"message\": \"123123123\",\n                \"created_at\": \"2020-02-11 12:19:56\",\n                \"updated_at\": \"2020-02-11 12:19:57\",\n                \"token\": null\n            }\n        }\n    ],\n    \"first_page_url\": \"http:\\\/\\\/localhost:8000\\\/api\\\/people\\\/1\\\/transactions?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http:\\\/\\\/localhost:8000\\\/api\\\/people\\\/1\\\/transactions?page=1\",\n    \"next_page_url\": null,\n    \"path\": \"http:\\\/\\\/localhost:8000\\\/api\\\/people\\\/1\\\/transactions\",\n    \"per_page\": 7,\n    \"prev_page_url\": null,\n    \"to\": 6,\n    \"total\": 6\n}\n",
                             "name": ""
                         }
                     ]

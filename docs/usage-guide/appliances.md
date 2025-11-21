@@ -68,7 +68,7 @@ Kindly note that appliances can also be sold through the Agent App (see [Android
 
 The process for selling a PayGO enabled device through MicroPowerManager is similar to selling a non-PayGO appliance.
 
-However, before a PayGO enable device can be sold through MicroPowerManager the device has to exist in MicroPowerManager.
+However, before a PayGO enabled device can be sold through MicroPowerManager the device has to exist in MicroPowerManager.
 
 1. To to "Solar Home System" (or "E-Bike") section and confirm the device exists.
 2. If it doesn't, follow the steps outlines in [Solar Home Systems](solar-home-systems.md) to create one.

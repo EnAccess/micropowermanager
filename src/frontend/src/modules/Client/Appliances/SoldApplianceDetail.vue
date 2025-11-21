@@ -232,7 +232,7 @@
                 <div
                   v-if="
                     rate.rate_cost === rate.remaining &&
-                    soldAppliance.applianceType.asset_type_id !== 1
+                    soldAppliance.applianceType.appliance_type_id !== 1
                   "
                 >
                   <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
@@ -315,11 +315,11 @@
 import ConfirmationBox from "@/shared/ConfirmationBox"
 import ClientDetailCard from "@/shared/ClientDetailCard"
 import SoldAppliancesList from "./SoldAppliancesList"
-import { AssetPersonService } from "@/services/AssetPersonService"
+import { AppliancePersonService } from "@/services/AppliancePersonService"
 import { PersonService } from "@/services/PersonService"
 import Widget from "@/shared/Widget.vue"
 import { currency, notify } from "@/mixins"
-import { AssetRateService } from "@/services/AssetRateService"
+import { ApplianceRateService } from "@/services/ApplianceRateService"
 import moment from "moment"
 import { EventBus } from "@/shared/eventbus"
 import { AppliancePaymentService } from "@/services/AppliancePaymentService"
@@ -336,8 +336,8 @@ export default {
   data() {
     return {
       appliancePayment: new AppliancePaymentService(),
-      assetRateService: new AssetRateService(),
-      assetPersonService: new AssetPersonService(),
+      applianceRateService: new ApplianceRateService(),
+      appliancePersonService: new AppliancePersonService(),
       personService: new PersonService(),
       soldAppliance: {
         applianceType: {
@@ -419,7 +419,7 @@ export default {
       let validator = await this.$validator.validateAll()
       if (validator) {
         try {
-          await this.assetRateService.editAssetRate(
+          await this.applianceRateService.editApplianceRate(
             data,
             this.adminId,
             this.personId,
@@ -436,7 +436,7 @@ export default {
     async getSoldApplianceDetail() {
       this.progress = true
       try {
-        this.soldAppliance = await this.assetPersonService.show(
+        this.soldAppliance = await this.appliancePersonService.show(
           this.selectedApplianceId,
         )
         this.personId = this.soldAppliance.personId
@@ -488,7 +488,7 @@ export default {
     },
     async getPersonSoldAppliances() {
       try {
-        this.soldAppliancesList = await this.assetPersonService.getPersonAssets(
+        this.soldAppliancesList = await this.appliancePersonService.getPersonAppliances(
           this.personId,
         )
         this.updateList++

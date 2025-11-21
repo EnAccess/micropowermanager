@@ -4,7 +4,7 @@ namespace Inensus\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Events\NewLogEvent;
-use App\Models\AssetRate;
+use App\Models\ApplianceRate;
 use App\Models\User;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
@@ -21,7 +21,7 @@ class CheckPayments extends AbstractSharedCommand {
     protected $description = 'Checks payments for e-bikes.';
 
     public function __construct(
-        private AssetRate $assetRate,
+        private ApplianceRate $applianceRate,
         private DalyBmsApi $dalyBmsApi,
         private EBikeService $eBikeService,
         private User $user,
@@ -41,18 +41,18 @@ class CheckPayments extends AbstractSharedCommand {
         $this->info('check-payments command started at '.$startedAt);
 
         try {
-            $this->assetRate::with([
-                'assetPerson.asset.smsReminderRate',
-                'assetPerson.person.addresses',
-                'assetPerson.asset',
+            $this->applianceRate::with([
+                'appliancePerson.appliance.smsReminderRate',
+                'appliancePerson.person.addresses',
+                'appliancePerson.appliance',
             ])
-                ->whereHas('assetPerson.asset', function ($q) {
-                    $q->where('asset_type_id', self::E_BIKE);
+                ->whereHas('appliancePerson.appliance', function ($q) {
+                    $q->where('appliance_type_id', self::E_BIKE);
                 })
                 ->whereDate('due_date', '>=', now()->format('Y-m-d'))
                 ->where('remaining', '>', 0)
                 ->where('remind', '>', 0)
-                ->each(fn (AssetRate $installment): bool => $this->lockTheBike($installment));
+                ->each(fn (ApplianceRate $installment): bool => $this->lockTheBike($installment));
         } catch (\Exception $e) {
             $this->warn('check-payments command is failed. message => '.$e->getMessage());
         }
@@ -63,8 +63,8 @@ class CheckPayments extends AbstractSharedCommand {
         $this->info('#############################');
     }
 
-    private function lockTheBike(AssetRate $installment): bool {
-        $eBike = $this->eBikeService->getBySerialNumber($installment->assetPerson->device_serial);
+    private function lockTheBike(ApplianceRate $installment): bool {
+        $eBike = $this->eBikeService->getBySerialNumber($installment->appliancePerson->device_serial);
 
         if ($eBike->manufacturer->name != self::MANUFACTURER_NAME) {
             return false;

@@ -490,7 +490,7 @@
 <script>
 import { currency, notify } from "@/mixins"
 import { ApplianceService } from "@/services/ApplianceService"
-import { AssetPersonService } from "@/services/AssetPersonService"
+import { AppliancePersonService } from "@/services/AppliancePersonService"
 import { DeviceService } from "@/services/DeviceService"
 import { MappingService, ICONS } from "@/services/MappingService"
 import { mapGetters } from "vuex"
@@ -519,7 +519,7 @@ export default {
   data() {
     return {
       applianceService: new ApplianceService(),
-      assetPersonService: new AssetPersonService(),
+      appliancePersonService: new AppliancePersonService(),
       deviceService: new DeviceService(),
       mappingService: new MappingService(),
       selectedApplianceId: null,
@@ -552,7 +552,7 @@ export default {
       if (!appliance) {
         return defaultMarker
       }
-      switch (appliance.assetTypeId) {
+      switch (appliance.applianceTypeId) {
         case APPLIANCE_TYPE_SHS_ID:
           return ICONS.SHS
         case APPLIANCE_TYPE_E_BIKE_ID:
@@ -593,8 +593,8 @@ export default {
       }
       this.$swal({
         type: "question",
-        title: this.$tc("phrases.sellAsset", 0),
-        text: this.$tc("phrases.sellAsset", 2, {
+        title: this.$tc("phrases.sellAppliance", 0),
+        text: this.$tc("phrases.sellAppliance", 2, {
           cost: this.moneyFormat(this.applianceService.appliance.cost),
         }),
         showCancelButton: true,
@@ -615,8 +615,8 @@ export default {
               address: this.getSelectedAddress(),
             }
             const soldAppliance =
-              await this.assetPersonService.sellAppliance(soldApplianceParams)
-            this.alertNotify("success", this.$tc("phrases.sellAsset", 1))
+              await this.appliancePersonService.sellAppliance(soldApplianceParams)
+            this.alertNotify("success", this.$tc("phrases.sellAppliance", 1))
             await this.$router.push(
               "/sold-appliance-detail/" + soldAppliance.id,
             )
@@ -735,25 +735,25 @@ export default {
     getDeviceSelectionList(appliance, availableDevices) {
       return availableDevices
         .filter((device) => {
-          const assetId =
-            device.device?.assetId ||
-            device.device?.asset?.id ||
-            device.assetId ||
+          const applianceId =
+            device.device?.applianceId ||
+            device.device?.appliance?.id ||
+            device.applianceId ||
             null
-          if (!assetId) return false
-          switch (appliance.assetTypeId) {
+          if (!applianceId) return false
+          switch (appliance.applianceTypeId) {
             case APPLIANCE_TYPE_SHS_ID:
               return (
                 device.deviceType === "solar_home_system" &&
-                assetId === this.selectedApplianceId
+                applianceId === this.selectedApplianceId
               )
             case APPLIANCE_TYPE_E_BIKE_ID:
               return (
                 device.deviceType === "e_bike" &&
-                assetId === this.selectedApplianceId
+                applianceId === this.selectedApplianceId
               )
             default:
-              return assetId === this.selectedApplianceId
+              return applianceId === this.selectedApplianceId
           }
         })
         .map((device) => {
@@ -847,8 +847,8 @@ export default {
     isDeviceBindingRequired(appliance) {
       if (!appliance) return false
       return (
-        appliance.assetTypeId === APPLIANCE_TYPE_SHS_ID ||
-        appliance.assetTypeId === APPLIANCE_TYPE_E_BIKE_ID
+        appliance.applianceTypeId === APPLIANCE_TYPE_SHS_ID ||
+        appliance.applianceTypeId === APPLIANCE_TYPE_E_BIKE_ID
       )
     },
   },

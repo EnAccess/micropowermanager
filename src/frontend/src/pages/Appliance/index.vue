@@ -1,11 +1,11 @@
 <template>
-  <Assets />
+  <Appliances />
 </template>
 
 <script>
-import Assets from "@/modules/Assets/Assets"
+import Appliances from "@/modules/Appliances/Appliances"
 export default {
   name: "AppliancesPage",
-  components: { Assets },
+  components: { Appliances },
 }
 </script>

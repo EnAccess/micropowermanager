@@ -5,8 +5,8 @@ namespace App\Misc;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
 use App\Exceptions\Meters\MeterIsNotInUse;
-use App\Models\AssetPerson;
-use App\Models\AssetRate;
+use App\Models\AppliancePerson;
+use App\Models\ApplianceRate;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
@@ -18,7 +18,7 @@ class LoanDataContainer {
     private Transaction $transaction;
 
     /**
-     * @var array<int, array{asset_type_name: string, paid: float}>
+     * @var array<int, array{appliance_type_name: string, paid: float}>
      */
     public array $paid_rates = [];
 
@@ -46,7 +46,7 @@ class LoanDataContainer {
                 );
 
                 $this->paid_rates[] = [
-                    'asset_type_name' => $loan->assetPerson->asset->assetType->name,
+                    'appliance_type_name' => $loan->appliancePerson->appliance->applianceType->name,
                     'paid' => $this->transaction->amount,
                 ];
 
@@ -63,7 +63,7 @@ class LoanDataContainer {
                     transaction: $this->transaction,
                 ));
                 $this->paid_rates[] = [
-                    'asset_type_name' => $loan->assetPerson->asset->assetType->name,
+                    'appliance_type_name' => $loan->appliancePerson->appliance->applianceType->name,
                     'paid' => $loan->remaining,
                 ];
                 $this->transaction->amount -= $loan->remaining;
@@ -76,13 +76,13 @@ class LoanDataContainer {
     }
 
     /**
-     * @return Collection<int, AssetRate>
+     * @return Collection<int, ApplianceRate>
      */
     private function getCustomerDueRates(Person $owner): Collection {
-        $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
+        $loans = AppliancePerson::query()->where('person_id', $owner->id)->pluck('id');
 
-        return AssetRate::with('assetPerson.device')
-            ->whereIn('asset_person_id', $loans)
+        return ApplianceRate::with('appliancePerson.device')
+            ->whereIn('appliance_person_id', $loans)
             ->where('remaining', '>', 0)
             ->whereDate('due_date', '<', date('Y-m-d'))
             ->get();
