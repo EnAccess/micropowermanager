@@ -184,4 +184,3 @@ class Ticket extends BaseModel {
         return $this->hasMany(TicketComment::class, 'ticket_id', 'id');
     }
 }
-

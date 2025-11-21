@@ -30,4 +30,3 @@ class TicketUser extends BaseModel {
         return $this->id;
     }
 }
-

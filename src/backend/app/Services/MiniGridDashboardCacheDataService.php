@@ -5,9 +5,9 @@ namespace App\Services;
 use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\Target;
-use Illuminate\Support\Facades\Cache;
 use App\Models\Ticket\Ticket;
 use App\Models\Ticket\TicketCategory;
+use Illuminate\Support\Facades\Cache;
 use MPM\Device\MiniGridDeviceService;
 use Nette\Utils\DateTime;
 

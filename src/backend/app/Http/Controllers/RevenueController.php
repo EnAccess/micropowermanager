@@ -8,14 +8,14 @@ use App\Models\Cluster;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Target;
+use App\Models\Ticket\Ticket;
+use App\Models\Ticket\TicketCategory;
 use App\Models\Transaction\Transaction;
 use App\Services\MeterRevenueService;
 use App\Services\PeriodService;
 use App\Services\RevenueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Models\Ticket\Ticket;
-use App\Models\Ticket\TicketCategory;
 
 class RevenueController extends Controller {
     public function __construct(
