@@ -68,6 +68,40 @@
               </md-field>
             </div>
           </div>
+
+          <div class="md-layout md-gutter">
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field>
+                <label>Payments</label>
+                <md-input value="Payments" disabled />
+              </md-field>
+            </div>
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field
+                :class="{
+                  'md-invalid':
+                    submitted &&
+                    errors.has('Credential-Form.paymentsApiToken'),
+                }"
+              >
+                <label for="paymentsApiToken">Payments Token</label>
+                <md-input
+                  id="paymentsApiToken"
+                  name="paymentsApiToken"
+                  type="password"
+                  v-model="credentialService.credential.paymentsApiToken"
+                  v-validate="'required|min:3'"
+                />
+                <span class="md-error" v-if="submitted">
+                  {{ errors.first("Credential-Form.paymentsApiToken") }}
+                </span>
+              </md-field>
+            </div>
+          </div>
         </md-card-content>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
         <md-card-actions>
