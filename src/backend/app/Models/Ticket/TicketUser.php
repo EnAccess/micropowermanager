@@ -3,7 +3,7 @@
 namespace App\Models\Ticket;
 
 use App\Models\Base\BaseModel;
-use Database\Factories\Inensus\Ticket\Models\TicketUserFactory;
+use Database\Factories\Ticket\TicketUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
