@@ -55,20 +55,20 @@ export let resources = {
     create: "/api/tariffs",
   },
   ticket: {
-    list: "/tickets/api/ticket",
-    detail: "/tickets/api/ticket/",
-    close: "/tickets/api/ticket",
-    create: "/tickets/api/ticket",
-    createMaintenance: "/tickets/api/ticket",
-    getUser: "/tickets/api/tickets/user/",
-    users: "/tickets/api/users/",
-    createUserTicket: "/tickets/api/tickets/users",
-    labels: "/tickets/api/labels",
-    comments: "/tickets/api/tickets/comments",
+    list: "/api/tickets/ticket",
+    detail: "/api/tickets/ticket/",
+    close: "/api/tickets/ticket",
+    create: "/api/tickets/ticket",
+    createMaintenance: "/api/tickets/ticket",
+    getUser: "/api/tickets/user/",
+    users: "/api/tickets/users/",
+    createUserTicket: "/api/tickets/users",
+    labels: "/api/tickets/labels",
+    comments: "/api/tickets/comments",
   },
   ticketOursourcePayoutReports: {
-    list: "/tickets/api/reports",
-    download: "/tickets/api/reports/download/", //{id}
+    list: "/api/reports",
+    download: "/api/reports/download/", //{id}
   },
   transactions: {
     list: {
@@ -159,7 +159,7 @@ export let resources = {
     balance_histories: "/api/agents/balance/history/",
     sold_appliances: "/api/agents/sold/",
     transactions: "/api/agents/transactions/",
-    tickets: "/tickets/api/agents",
+    tickets: "/api/tickets/agents",
     receipts: "/api/agents/receipt",
   },
   solarHomeSystems: {

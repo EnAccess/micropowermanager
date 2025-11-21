@@ -79,6 +79,8 @@ require __DIR__.'/resources/AgentApp.php';
 require __DIR__.'/resources/AgentWeb.php';
 // Routes for CustomerRegistrationApp resource
 require __DIR__.'/resources/CustomerRegistrationApp.php';
+// Routes for Ticket Web panel routes
+require __DIR__.'/resources/TicketWeb.php';
 
 // JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {

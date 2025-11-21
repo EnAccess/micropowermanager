@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Services\AgentService;
 use Illuminate\Http\Request;
-use Inensus\Ticket\Services\TicketService;
+use App\Services\TicketService;
 
 class AgentCustomerTicketController extends Controller {
     public function __construct(private AgentService $agentService, private TicketService $ticketService) {}
