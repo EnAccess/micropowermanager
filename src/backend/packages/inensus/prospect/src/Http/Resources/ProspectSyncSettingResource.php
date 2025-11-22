@@ -4,12 +4,12 @@ namespace Inensus\Prospect\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Inensus\Prospect\Models\ProspectCredential;
+use Inensus\Prospect\Models\ProspectSyncSetting;
 
 /**
- * @mixin ProspectCredential
+ * @mixin ProspectSyncSetting
  */
-class ProspectResource extends JsonResource {
+class ProspectSyncSettingResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -20,12 +20,14 @@ class ProspectResource extends JsonResource {
     public function toArray($request): array {
         return [
             'data' => [
-                'type' => 'credential',
+                'type' => 'sync_setting',
                 'id' => $this->id,
                 'attributes' => [
                     'id' => $this->id,
-                    'apiUrl' => $this->api_url,
-                    'apiToken' => $this->api_token,
+                    'actionName' => $this->action_name,
+                    'syncInValueStr' => $this->sync_in_value_str,
+                    'syncInValueNum' => $this->sync_in_value_num,
+                    'maxAttempts' => $this->max_attempts,
                 ],
             ],
         ];
