@@ -14,7 +14,7 @@ export class CredentialService {
       for (let c in data) {
         const item = data[c]
         let attrs, id
-        
+
         if (item.data) {
           attrs = item.data.attributes || item.data
           id = item.data.id || attrs?.id
@@ -22,7 +22,7 @@ export class CredentialService {
           attrs = item
           id = item.id
         }
-        
+
         const credential = convertObjectKeysToCamelCase(attrs)
         credential.id = id || credential.id
         this.list.push(credential)
@@ -37,8 +37,9 @@ export class CredentialService {
         },
         {
           id: credential.id,
-          apiUrl: credential.apiUrl?.replace('/installations', '/payments_ts') || '',
-          apiToken: credential.paymentsApiToken || '',
+          apiUrl:
+            credential.apiUrl?.replace("/installations", "/payments_ts") || "",
+          apiToken: credential.paymentsApiToken || "",
         },
       ]
     }
@@ -48,7 +49,7 @@ export class CredentialService {
     try {
       const { data, status, error } = await this.repository.get()
       if (status !== 200) return new ErrorHandler(error, "http", status)
-      
+
       if (data.data) {
         if (Array.isArray(data.data)) {
           this.updateCredentialList(data.data)
@@ -74,11 +75,11 @@ export class CredentialService {
           api_token: this.list[c].apiToken,
         })
       }
-      
+
       const { data, status, error } = await this.repository.update(payload)
       if (status !== 200 && status !== 201)
         return new ErrorHandler(error, "http", status)
-      
+
       if (data.data) {
         if (Array.isArray(data.data)) {
           this.updateCredentialList(data.data)

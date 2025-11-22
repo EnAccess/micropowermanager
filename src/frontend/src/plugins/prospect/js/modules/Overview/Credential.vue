@@ -49,7 +49,8 @@
               <md-field
                 :class="{
                   'md-invalid':
-                    submitted && errors.has('Credential-Form.installationsApiToken'),
+                    submitted &&
+                    errors.has('Credential-Form.installationsApiToken'),
                 }"
               >
                 <label for="installationsApiToken">
@@ -84,8 +85,7 @@
               <md-field
                 :class="{
                   'md-invalid':
-                    submitted &&
-                    errors.has('Credential-Form.paymentsApiToken'),
+                    submitted && errors.has('Credential-Form.paymentsApiToken'),
                 }"
               >
                 <label for="paymentsApiToken">Payments Token</label>
@@ -146,18 +146,28 @@ export default {
   methods: {
     async getCredential() {
       await this.credentialService.getCredential()
-      
+
       const installations = this.credentialService.list.find(
-        (c) => c.apiUrl && c.apiUrl.includes('/installations')
-      ) || this.credentialService.list[0] || { id: null, apiUrl: null, apiToken: null }
-      
+        (c) => c.apiUrl && c.apiUrl.includes("/installations"),
+      ) ||
+        this.credentialService.list[0] || {
+          id: null,
+          apiUrl: null,
+          apiToken: null,
+        }
+
       const payments = this.credentialService.list.find(
-        (c) => c.apiUrl && c.apiUrl.includes('/payments_ts')
-      ) || this.credentialService.list[1] || { id: null, apiUrl: null, apiToken: null }
-      
+        (c) => c.apiUrl && c.apiUrl.includes("/payments_ts"),
+      ) ||
+        this.credentialService.list[1] || {
+          id: null,
+          apiUrl: null,
+          apiToken: null,
+        }
+
       this.installationsCredential = { ...installations }
       this.paymentsCredential = { ...payments }
-      
+
       const fullUrl = this.installationsCredential.apiUrl || ""
       this.baseUrl = this.extractBaseUrl(fullUrl)
     },
@@ -172,15 +182,13 @@ export default {
 
     buildFullUrl(baseUrl, endpoint) {
       if (!baseUrl) return ""
-      
+
       let url = baseUrl.trim()
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
         url = `https://${url}`
       }
-      
-      return url.endsWith("/")
-        ? `${url}${endpoint}`
-        : `${url}/${endpoint}`
+
+      return url.endsWith("/") ? `${url}${endpoint}` : `${url}/${endpoint}`
     },
     async submitCredentialForm() {
       this.submitted = true
@@ -191,7 +199,10 @@ export default {
       try {
         this.loading = true
 
-        const installationsUrl = this.buildFullUrl(this.baseUrl, "installations")
+        const installationsUrl = this.buildFullUrl(
+          this.baseUrl,
+          "installations",
+        )
         const paymentsUrl = this.buildFullUrl(this.baseUrl, "payments_ts")
 
         this.credentialService.list = [
