@@ -33,12 +33,14 @@ class ClusterController extends Controller {
             $this->clusterService->getDateRangeFromRequest($request->get('start_date'), $request->get('end_date'));
         $cluster = $this->clusterService->getById($clusterId);
 
-        return ApiResource::make($this->clusterService->getCluster(
+        $clusterData = $this->clusterService->getClusterWithComputedData(
             $cluster,
             $this->clusterMetersService->getCountById($cluster->id),
             $this->clusterTransactionsService->getById($cluster->id, $dateRange),
             $this->clusterPopulationService->getById($cluster->id)
-        ));
+        );
+
+        return ApiResource::make($clusterData->toArray());
     }
 
     public function showGeo(int $clusterId): ApiResource {
