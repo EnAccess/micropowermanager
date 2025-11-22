@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\ClusterDashboardData;
 use App\Models\Cluster;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,29 +16,22 @@ class ClusterService implements IBaseService {
         private Cluster $cluster,
     ) {}
 
-    protected function setClusterMeterCount(Cluster $cluster, int $meterCount): void {
-        $cluster->meterCount = $meterCount;
-    }
-
-    protected function setRevenue(Cluster $cluster, float $totalTransactionsAmount): void {
-        $cluster->revenue = $totalTransactionsAmount;
-    }
-
-    protected function setPopulation(Cluster $cluster, int $populationCount): void {
-        $cluster->population = $populationCount;
-    }
-
-    public function getCluster(
+    /**
+     * Creates a cluster dashboard data container with computed fields.
+     * This method does not mutate the cluster model.
+     */
+    public function getClusterWithComputedData(
         Cluster $cluster,
         int $meterCount,
         float $totalTransactionsAmount,
         int $populationCount,
-    ): Cluster {
-        $this->setClusterMeterCount($cluster, $meterCount);
-        $this->setRevenue($cluster, $totalTransactionsAmount);
-        $this->setPopulation($cluster, $populationCount);
-
-        return $cluster;
+    ): ClusterDashboardData {
+        return new ClusterDashboardData(
+            cluster: $cluster,
+            meterCount: $meterCount,
+            revenue: $totalTransactionsAmount,
+            population: $populationCount,
+        );
     }
 
     public function getClusterCities(int $clusterId): ?Cluster {

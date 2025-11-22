@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\ClusterDashboardData;
 use App\Http\Resources\ApiResource;
 use App\Services\ClustersDashboardCacheDataService;
 use Illuminate\Http\Request;
@@ -12,19 +13,27 @@ class ClustersDashboardCacheDataController extends Controller {
     ) {}
 
     public function index(): ApiResource {
+        /** @var array<ClusterDashboardData> $cachedData */
         $cachedData = $this->clustersDashboardCacheDataService->getData();
+        $serializedData = array_map(fn (ClusterDashboardData $dto): array => $dto->toArray(), $cachedData);
 
         // If cache is empty, initialize it before returning
         if ($cachedData === []) {
             $this->clustersDashboardCacheDataService->setData();
+            /** @var array<ClusterDashboardData> $cachedData */
             $cachedData = $this->clustersDashboardCacheDataService->getData();
+            $serializedData = array_map(fn (ClusterDashboardData $dto): array => $dto->toArray(), $cachedData);
         }
 
-        return ApiResource::make($cachedData);
+        return ApiResource::make($serializedData);
     }
 
     public function show(int $clusterId): ApiResource {
-        return ApiResource::make($this->clustersDashboardCacheDataService->getDataById($clusterId));
+        /** @var array<ClusterDashboardData> $cachedData */
+        $cachedData = $this->clustersDashboardCacheDataService->getDataById($clusterId);
+        $serializedData = array_map(fn (ClusterDashboardData $dto): array => $dto->toArray(), $cachedData);
+
+        return ApiResource::make($serializedData);
     }
 
     /**
@@ -40,6 +49,10 @@ class ClustersDashboardCacheDataController extends Controller {
             $this->clustersDashboardCacheDataService->setData();
         }
 
-        return ['data' => $this->clustersDashboardCacheDataService->getData()];
+        /** @var array<ClusterDashboardData> $cachedData */
+        $cachedData = $this->clustersDashboardCacheDataService->getData();
+        $serializedData = array_map(fn (ClusterDashboardData $dto): array => $dto->toArray(), $cachedData);
+
+        return ['data' => $serializedData];
     }
 }
