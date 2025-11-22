@@ -34,9 +34,7 @@ class ProspectCredentialService {
             return null;
         }
 
-        return $credentials->map(function ($credential) {
-            return $this->decryptCredentialFields($credential, ['api_url', 'api_token']);
-        });
+        return $credentials->map(fn (?object $credential): ?object => $this->decryptCredentialFields($credential, ['api_url', 'api_token']));
     }
 
     /**

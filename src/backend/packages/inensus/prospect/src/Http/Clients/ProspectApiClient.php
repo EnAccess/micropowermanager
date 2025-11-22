@@ -18,9 +18,7 @@ class ProspectApiClient {
             throw new \RuntimeException('Prospect credentials are not configured');
         }
 
-        $cred = $credentials->first(function ($credential) {
-            return $credential->api_url && str_contains($credential->api_url, '/installations');
-        });
+        $cred = $credentials->first(fn ($credential): bool => $credential->api_url && str_contains($credential->api_url, '/installations'));
 
         if (!$cred) {
             $cred = $credentials->first();

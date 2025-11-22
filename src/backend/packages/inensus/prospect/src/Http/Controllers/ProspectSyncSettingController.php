@@ -16,6 +16,7 @@ class ProspectSyncSettingController extends Controller {
 
     public function update(Request $request) {
         $payload = $request->json()->all() ?? $request->all();
+
         return ProspectSyncSettingResource::collection($this->syncSettingService->updateSyncSettings($payload));
     }
 }

@@ -17,6 +17,7 @@ class ProspectCredentialController extends Controller {
         if ($credentials === null) {
             return new ProspectResource(null);
         }
+
         return ProspectResource::collection($credentials);
     }
 
