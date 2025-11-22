@@ -24,7 +24,7 @@ class ProspectApiClient {
             $cred = $credentials->first();
         }
 
-        if (!$cred || !$cred->api_url || !$cred->api_token) {
+        if (!$cred->api_url || !$cred->api_token) {
             throw new \RuntimeException('Prospect installations credentials are not configured');
         }
 

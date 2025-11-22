@@ -4,7 +4,11 @@ namespace Inensus\Prospect\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inensus\Prospect\Models\ProspectSyncSetting;
 
+/**
+ * @mixin ProspectSyncSetting
+ */
 class ProspectSyncSettingResource extends JsonResource {
     /**
      * Transform the resource into an array.
