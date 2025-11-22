@@ -13,9 +13,21 @@ class ProspectApiClient {
      * @param array<string, mixed> $payload
      */
     public function postInstallations(array $payload): Response {
-        $cred = $this->credentialService->getCredentials();
-        if (!$cred || !$cred->api_url || !$cred->api_token) {
+        $credentials = $this->credentialService->getCredentials();
+        if (!$credentials || $credentials->isEmpty()) {
             throw new \RuntimeException('Prospect credentials are not configured');
+        }
+
+        $cred = $credentials->first(function ($credential) {
+            return $credential->api_url && str_contains($credential->api_url, '/installations');
+        });
+
+        if (!$cred) {
+            $cred = $credentials->first();
+        }
+
+        if (!$cred || !$cred->api_url || !$cred->api_token) {
+            throw new \RuntimeException('Prospect installations credentials are not configured');
         }
 
         return Http::withHeaders([
