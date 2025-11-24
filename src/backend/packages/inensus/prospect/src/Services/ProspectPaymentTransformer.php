@@ -84,7 +84,7 @@ class ProspectPaymentTransformer {
         if (!$accountExternalId && $payer instanceof Person) {
             // Fallback: use person ID as account_external_id if no device found
             $accountExternalId = (string) $payer->id;
-            $accountOrigin = $accountOrigin ?? 'meters'; // Default to meters
+            $accountOrigin ??= 'meters'; // Default to meters
         }
 
         $currency = MainSettings::query()->value('currency') ?? '';
