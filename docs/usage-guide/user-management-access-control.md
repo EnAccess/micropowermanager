@@ -61,11 +61,3 @@ Key permission areas:
 - `assets`, `customers`, `payments`, `transactions`, `reports`, `exports`, `tickets` – Operational domains.
 
 Pages that were previously guarded by the Protected Pages Password now rely on these permissions. Unauthorized users automatically see an **Unauthorized** screen and the sidebar hides links they cannot access.
-
-## Summary
-
-| Feature          | Who it applies to         | Notes                                                                |
-| ---------------- | ------------------------- | -------------------------------------------------------------------- |
-| **User Account** | Individual employees      | Used to log into web and Customer Registration app                   |
-| **RBAC Roles**   | Owner / Admin / FM / User | Determines which menus, APIs, and plugins are available              |
-| **Permissions**  | Granted through roles     | Checked on both the frontend (navigation) and backend (API requests) |
