@@ -45,11 +45,36 @@ Vue.use(VeeValidate, {
 })
 
 /**
- * VueGoogleCharts
+ * ECharts (vue-echarts 7.x with ECharts 5.x)
  */
-import VueGoogleCharts from "vue-google-charts"
+import { use } from "echarts/core"
+import { CanvasRenderer } from "echarts/renderers"
 
-Vue.use(VueGoogleCharts)
+import { BarChart, LineChart, PieChart } from "echarts/charts"
+
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  ToolboxComponent,
+} from "echarts/components"
+
+import VChart from "vue-echarts"
+
+use([
+  CanvasRenderer,
+  BarChart,
+  LineChart,
+  PieChart,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  ToolboxComponent,
+])
+
+Vue.component("v-chart", VChart)
 
 /**
  * moment
