@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
-            $table->unsignedInteger('sms_gateway_id')->nullable()->comment('Selected SMS gateway ID: 2=AndroidGateway, 10=ViberGateway, 18=AfricasTalkingGateway, 26=TextbeeSmsGateway');
+            $table->unsignedInteger('sms_gateway_id')->nullable();
         });
     }
 

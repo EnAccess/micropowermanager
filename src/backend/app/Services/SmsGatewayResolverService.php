@@ -122,29 +122,6 @@ class SmsGatewayResolverService {
             }
         }
 
-        // Fallback: If no gateway configured or Viber fallback, use first available gateway
-        if ($gateway === null) {
-            $availableGateways = $this->getAvailableSmsGateways();
-            if (count($availableGateways) > 0) {
-                // Use the first available gateway (excluding Viber to avoid infinite loop)
-                foreach ($availableGateways as $availableGateway) {
-                    if ($availableGateway['name'] !== self::VIBER_GATEWAY) {
-                        $gateway = $availableGateway['name'];
-
-                        break;
-                    }
-                }
-                // If only Viber is available, try to use it
-                if ($gateway === null && count($availableGateways) === 1 && $availableGateways[0]['name'] === self::VIBER_GATEWAY) {
-                    $viberContact = $this->viberContactService->getByReceiverPhoneNumber($receiver);
-                    if ($viberContact instanceof ViberContact) {
-                        $gateway = self::VIBER_GATEWAY;
-                        $viberId = $viberContact->viber_id;
-                    }
-                }
-            }
-        }
-
         if ($gateway === null) {
             Log::error('No active SMS provider configured', ['receiver' => $receiver]);
 
