@@ -145,6 +145,8 @@
     "avgRevenue": "ပျမ်းမRဝင်ေင ",
     "avgRevenuePerConnection": "ချတိ ်ဆက်မ6တစ်ခုအတကွ ် ပျမ်းမRဝင်ေင ွ",
     "balanceHistories": "လက်ကျနမ် ှတ်တမ်းများ",
+    "batteryLevel": "ဘက်ထရီအဆင့်",
+    "batteryVoltage": "ဘက်ထရီဗို့တိတ်",
     "bulkSms": "အစုလိကု ်စာတို SMS |sms အများအြပားပUိရန် ေသချာပါသလား? | Sms(es)ေတွ ပUိ ေနတယ် ",
     "businessNumber": "လပု်ငနး်နပံါတ်",
     "callbackUrl": "ပြန်ခေါ် URL",
