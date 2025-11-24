@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use App\DTO\LoanDataContainer;
 use App\Events\TransactionSuccessfulEvent;
 use App\Listeners\TransactionSuccessfulListener;
-use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
 use App\Models\Agent;

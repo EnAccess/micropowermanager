@@ -155,7 +155,7 @@ import moment from "moment"
 import { TicketUserService } from "@/services/TicketUserService"
 import { TicketLabelService } from "@/services/TicketLabelService"
 import TicketItem from "../../shared/TicketItem"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient"
 import { notify } from "@/mixins/notify"
 
 export default {
@@ -320,7 +320,7 @@ export default {
       }
 
       try {
-        await axios.post(baseUrl + resources.ticket.create, newTicketParams)
+        await Client.post(resources.ticket.create, newTicketParams)
         this.alertNotify("success", "Ticket created successfully.")
         // Refresh ticket list
         EventBus.$emit(

@@ -2,8 +2,8 @@
 
 namespace App\Utils;
 
+use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
-use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentService;

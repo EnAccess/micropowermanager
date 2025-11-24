@@ -1,0 +1,27 @@
+{
+  "name": "inensus/textbee-sms-gateway",
+  "description": "TextBee SMS gateway Micropowermanager plugin that routes your sms through your android device",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Obinna Ikeh",
+      "email": "obinna@enaccess.org",
+      "role": "role"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\TextbeeSmsGateway\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\TextbeeSmsGateway\\Providers\\ServiceProvider"
+      ]
+    }
+  }
+}

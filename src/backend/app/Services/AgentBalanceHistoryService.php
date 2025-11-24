@@ -9,6 +9,7 @@ use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -90,6 +91,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     public function getGraphValues(Agent $agent, string $lastReceiptDate): array {
         $periodDate = $lastReceiptDate;
         $period = $this->getPeriod($agent, $periodDate);
+        /** @var SupportCollection<int, object{date: string, id: int, trigger_type: string, amount: float, available_balance: float, due_to_supplier: float}> $history */
         $history = $this->agentBalanceHistory->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as date,id,trigger_Type,amount,'.
                 'available_balance,due_to_supplier')
@@ -100,8 +102,10 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
                     'available_balance,due_to_supplier'))->get();
 
         if (count($history) === 1 && $history[0]->trigger_type === 'agent_receipt') {
-            $period[$history[0]->date]['balance'] = -1 * ($history[0]->due_to_supplier - $history[0]->amount);
-            $period[$history[0]->date]['due'] = $history[0]->due_to_supplier - $history[0]->amount;
+            /** @var object{date: string, trigger_type: string, amount: float, due_to_supplier: float} $firstHistory */
+            $firstHistory = $history[0];
+            $period[$firstHistory->date]['balance'] = -1 * ($firstHistory->due_to_supplier - $firstHistory->amount);
+            $period[$firstHistory->date]['due'] = $firstHistory->due_to_supplier - $firstHistory->amount;
         } elseif (count($history) === 0) {
             $date = new \DateTime();
             $key = $date->format('Y-m-d');
@@ -113,8 +117,10 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             return $period;
         } else {
             foreach (array_keys($period) as $key) {
+                /** @var object{date: string, trigger_type: string, amount: float, available_balance: float, due_to_supplier: float} $h */
                 foreach ($history as $h) {
                     if ($key === $h->date) {
+                        /** @var object{date: string, trigger_type: string, amount: float, available_balance: float, due_to_supplier: float}|null $lastRow */
                         $lastRow = $history->where('trigger_Type', '!=', 'agent_commission')
                             ->where('trigger_Type', '!=', 'agent_receipt')
                             ->where(
@@ -146,6 +152,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
      * @return array<string, array{balance: int, due: int}>
      */
     public function getPeriod(Agent $agent, string $date): array {
+        /** @var SupportCollection<int, object{day: string}> $days */
         $days = $this->agentBalanceHistory->newQuery()->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as day')
             ->where('agent_id', $agent->id)
             ->where(
@@ -156,6 +163,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
             ->get();
         $period = [];
+        /** @var object{day: string} $item */
         foreach ($days as $item) {
             $period[$item->day] = [
                 'balance' => 0,
@@ -172,6 +180,8 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     public function getAgentRevenuesWeekly(Agent $agent): array {
         $startDate = date('Y-m-d', strtotime('-3 months'));
         $endDate = date('Y-m-d');
+
+        /** @var SupportCollection<int, object{period: string, revenue: float}> $Revenues */
         $Revenues = $this->agentBalanceHistory->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%u\') as period, SUM(amount) as revenue')
             ->where('trigger_type', 'agent_commission')
@@ -181,6 +191,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->get();
 
         $p = $this->periodService->generatePeriodicList($startDate, $endDate, 'weekly', ['revenue' => 0]);
+
         foreach ($Revenues as $revenue) {
             $p[$revenue->period]['revenue'] = $revenue->revenue;
         }

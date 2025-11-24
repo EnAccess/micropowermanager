@@ -2,9 +2,9 @@
 
 namespace App\Utils;
 
+use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
-use App\Misc\TransactionDataContainer;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Person\Person;

@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/chint-meters/chint-credential`
+const resource = `/api/chint-meters/chint-credential`
 
 export default {
   get() {

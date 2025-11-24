@@ -251,7 +251,7 @@ class TransactionSeeder extends Seeder {
 
         try {
             // create an object for the token job
-            $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
+            $transactionData = \App\DTO\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
             event(new TransactionFailedEvent($transaction, $exception->getMessage()));
             throw $exception;
@@ -273,7 +273,7 @@ class TransactionSeeder extends Seeder {
         $transactionData->paidRates = $applianceInstallmentPayer->paidRates;
 
         // FIXME:
-        // Access to an undefined property App\Misc\TransactionDataContainer::$shsLoan.
+        // Access to an undefined property App\DTO\TransactionDataContainer::$shsLoan.
         // $transactionData->shsLoan = $applianceInstallmentPayer->shsLoan;
 
         // generate random token
