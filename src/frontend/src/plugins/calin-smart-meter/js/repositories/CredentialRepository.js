@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/calin-smart-meters/calin-smart-credential`
+const resource = `/api/calin-smart-meters/calin-smart-credential`
 
 export default {
   get() {

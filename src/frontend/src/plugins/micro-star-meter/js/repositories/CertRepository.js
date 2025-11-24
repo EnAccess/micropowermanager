@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/micro-star-meters/micro-star-cert`
+const resource = `/api/micro-star-meters/micro-star-cert`
 
 export default {
   post(cert) {

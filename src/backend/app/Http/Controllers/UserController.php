@@ -25,6 +25,11 @@ class UserController extends Controller {
 
     public function store(CreateAdminRequest $request): ApiResource {
         $user = $this->userService->create($request->only(['name', 'password', 'email']));
+        // Optionally assign roles provided by frontend (if any)
+        $roles = (array) $request->input('roles', []);
+        if ($roles !== []) {
+            $user->syncRoles($roles);
+        }
         $companyDatabase = $this->companyDatabaseService->findByCompanyId($user->getCompanyId());
         $databaseProxyData = [
             'email' => $user->getEmail(),
@@ -41,7 +46,25 @@ class UserController extends Controller {
     }
 
     public function update(User $user, Request $request): ApiResource {
-        $this->userService->update($user, $request->all());
+        // Update user basic info
+        $this->userService->update($user, $request->only(['name', 'password']));
+
+        // Handle role assignment if provided
+        if ($request->has('roles')) {
+            $roles = (array) $request->input('roles', []);
+
+            // Validate each role assignment permission
+            foreach ($roles as $roleName) {
+                if (!$request->user()->can('assignRole', [User::class, $roleName])) {
+                    abort(403, "You don't have permission to assign the role: {$roleName}");
+                }
+            }
+
+            // Ensure user has at least one role
+            if ($roles !== []) {
+                $user->syncRoles($roles);
+            }
+        }
 
         return new ApiResource($user->fresh());
     }

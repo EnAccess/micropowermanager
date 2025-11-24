@@ -85,6 +85,12 @@ export const getters = {
   getIntervalId: (state) => {
     return state.authenticateUser.intervalId
   },
+  getRoles: (state) => {
+    return state.authenticateUser.roles || []
+  },
+  getPermissions: (state) => {
+    return state.authenticateUser.permissions || []
+  },
   authenticationService: (state) => state.service,
   getStatus: (state) => state.status,
 }

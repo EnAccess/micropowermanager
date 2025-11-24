@@ -51,9 +51,10 @@ export class UserService {
       return new ErrorHandler(e, "http")
     }
   }
-  async create() {
+  async create(payload = {}) {
     try {
-      const { data, status, error } = await this.repository.create(this.user)
+      const requestBody = { ...this.user, ...payload }
+      const { data, status, error } = await this.repository.create(requestBody)
       if (status !== 200) {
         return new ErrorHandler(error, status)
       }
@@ -79,22 +80,43 @@ export class UserService {
   async update() {
     const userDataPm = {
       id: this.user.id,
-      phone: this.user.phone,
-      street: this.user.street,
-      city_id: this.user.cityId,
       name: this.user.name,
     }
+
+    if (this.user.roles) {
+      userDataPm.roles = this.user.roles
+    }
+
+    // Update user basic info
     try {
-      const { data, status, error } = await this.repository.put(userDataPm)
-      if (!status === 200) {
+      const { status, error } = await this.repository.put(userDataPm)
+      if (status !== 200) {
         return new ErrorHandler(error, "http", status)
       }
-      this.resetUser()
-      return this.fromJson(data.data)
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message || e.message
       return new ErrorHandler(errorMessage, "http")
     }
+
+    // Update address separately if needed
+    if (this.user.phone || this.user.street || this.user.cityId) {
+      const addressData = {
+        id: this.user.id,
+        name: this.user.name,
+        phone: this.user.phone,
+        street: this.user.street,
+        city_id: this.user.cityId,
+      }
+      try {
+        await this.repository.putAddress(addressData)
+      } catch (e) {
+        let errorMessage = e.response?.data?.message || e.message
+        return new ErrorHandler(errorMessage, "http")
+      }
+    }
+
+    this.resetUser()
+    return this.user
   }
   resetUser() {
     this.user = {

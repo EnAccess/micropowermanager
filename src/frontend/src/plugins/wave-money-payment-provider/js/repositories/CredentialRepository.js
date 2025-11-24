@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/wave-money/wave-money-credential`
+const resource = `/api/wave-money/wave-money-credential`
 
 export default {
   get() {

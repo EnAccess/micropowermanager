@@ -53,6 +53,11 @@
                 <md-table-cell>{{ user.name }}</md-table-cell>
                 <md-table-cell>{{ user.email }}</md-table-cell>
                 <md-table-cell>{{ user.phone }}</md-table-cell>
+                <md-table-cell
+                  v-if="$store.getters['auth/getPermissions'].includes('roles')"
+                >
+                  {{ (user.roles || []).join(", ") }}
+                </md-table-cell>
               </md-table-row>
             </md-table>
             <md-button
@@ -210,6 +215,10 @@ export default {
       if (user.cityId !== 0) {
         this.userService.user.cityId = user.cityId
       }
+      // Set roles if provided
+      if (user.roles) {
+        this.userService.user.roles = user.roles
+      }
       try {
         await this.userService.update()
         this.alertNotify("success", this.$tc("words.profile", 2))
@@ -220,10 +229,10 @@ export default {
       }
       this.sending = false
     },
-    async createUser() {
+    async createUser(payload) {
       this.sending = true
       try {
-        await this.userService.create()
+        await this.userService.create(payload)
         this.alertNotify("success", this.$tc("phrases.newUser", 2))
         this.showNewUser = false
         this.resetKey++
