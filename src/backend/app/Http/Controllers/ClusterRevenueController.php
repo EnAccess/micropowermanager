@@ -47,10 +47,14 @@ class ClusterRevenueController extends Controller {
         $dateRange =
             $this->clusterRevenueService->setDateRangeForRequest($request->get('startDate'), $request->get('endDate'));
         $cluster = $this->clusterService->getById($clusterId);
-        $cluster->meterCount = $this->clusterMeterService->getCountById($cluster->id);
-        $cluster->revenue = $this->clusterTransactionService->getById($cluster->id, $dateRange);
-        $cluster->population = $this->clusterPopulationService->getById($cluster->id);
 
-        return ApiResource::make($cluster);
+        $clusterData = $this->clusterService->getClusterWithComputedData(
+            $cluster,
+            $this->clusterMeterService->getCountById($cluster->id),
+            $this->clusterTransactionService->getById($cluster->id, $dateRange),
+            $this->clusterPopulationService->getById($cluster->id)
+        );
+
+        return ApiResource::make($clusterData->toArray());
     }
 }
