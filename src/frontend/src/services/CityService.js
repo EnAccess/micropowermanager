@@ -1,5 +1,6 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
+import Client from "@/repositories/Client/AxiosClient"
 
 import CityRepository from "@/repositories/CityRepository"
 
@@ -68,8 +69,7 @@ export class City {
   }
 
   getCities() {
-    return axios
-      .get(resources.city.list)
+    return Client.get(resources.city.list)
       .then((response) => {
         return response.data.data
       })

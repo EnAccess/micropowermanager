@@ -1,7 +1,7 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { resources } from "@/resources"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import ManufacturerRepository from "@/repositories/ManufacturerRepository"
+import Client from "@/repositories/Client/AxiosClient"
 
 export class Manufacturer {
   constructor(id = 0, name = "") {
@@ -23,16 +23,14 @@ export class Manufacturers {
   }
 
   async getList() {
-    return await axios
-      .get(`${baseUrl}${resources.manufacturer.list}`)
-      .then((response) => {
-        let data = response.data.data
-        for (let m in data) {
-          let manufacturer = new Manufacturer()
-          this.list.push(manufacturer.fromJson(data[m]))
-        }
-        return this.list
-      })
+    return await Client.get(resources.manufacturer.list).then((response) => {
+      let data = response.data.data
+      for (let m in data) {
+        let manufacturer = new Manufacturer()
+        this.list.push(manufacturer.fromJson(data[m]))
+      }
+      return this.list
+    })
   }
 
   findById() {

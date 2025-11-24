@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/spark-meters/sm-site`
+const resource = `/api/spark-meters/sm-site`
 
 export default {
   list() {

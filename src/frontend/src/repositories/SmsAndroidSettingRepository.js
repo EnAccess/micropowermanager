@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/sms-android-setting`
+const resource = `/api/sms-android-setting`
 
 export default {
   list() {

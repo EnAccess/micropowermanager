@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/dashboard/mini-grids`
+const resource = `/api/dashboard/mini-grids`
 
 export default {
   list() {
