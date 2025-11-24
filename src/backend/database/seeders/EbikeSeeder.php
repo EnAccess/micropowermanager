@@ -20,6 +20,11 @@ class EbikeSeeder extends Seeder {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function run() {
         $demoManufacturer = Manufacturer::create([
             'name' => 'Demo E-bike Manufacturer',
@@ -28,7 +33,6 @@ class EbikeSeeder extends Seeder {
             'contact_person' => 'Demo Ebike Person',
             'api_name' => 'DemoEbikeManufacturerApi',
         ]);
-
 
         $assetType = AssetType::where('name', 'E-bike')->first();
 
@@ -61,12 +65,13 @@ class EbikeSeeder extends Seeder {
                         ->for($person->addresses->first()->city)
                         ->has(
                             GeographicalInformation::factory()
+                                // https://github.com/larastan/larastan/issues/2307
+                                // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
+                                    /** @var Device $device */
                                     $device = $address->owner()->first();
 
-                                    return [
-                                        'points' => $device->person->addresses->first()->geo->points
-                                    ];
+                                    return ['points' => $device->person->addresses->first()->geo->points];
                                 })
                                 ->randomizePointsInHousehold(),
                             'geo'
@@ -77,7 +82,7 @@ class EbikeSeeder extends Seeder {
                 ]);
         }
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; ++$i) {
             $ebike = EBike::factory()
                 ->for($ebikeAssets->random(), 'appliance')
                 ->for($demoManufacturer)
@@ -89,6 +94,5 @@ class EbikeSeeder extends Seeder {
                     'device_serial' => $ebike->serial_number,
                 ]);
         }
-
     }
 }
