@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Misc;
+namespace App\DTO;
 
 use App\Models\AssetPerson;
 use App\Models\Device;

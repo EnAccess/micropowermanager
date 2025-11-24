@@ -12,114 +12,85 @@ That is the reason why `SMS` is listed in the sidebar as an extra service.
 
 The manager/admin can send SMS's to the customers of a specific Mini-Grid, to a specific customer group/type or single customers.
 
-## Setup SMS Delivery using AfricasTalking on MPM
+## SMS Gateway Options
 
-This guide will walk you through the complete setup process for integrating
-AfricasTalking SMS service with MicroPowerManager (MPM) to enable SMS
-notifications and communications.
+MicroPowerManager supports multiple SMS gateway options:
 
-### Prerequisites
+1. **AfricasTalking** - Traditional SMS provider with wide coverage across Africa
+2. **TextBee SMS Gateway** - Cost-effective solution using your own Android device
+3. **Android Gateway** - ⚠️ **DEPRECATED** - Legacy fallback option (use TextBee instead)
 
-- Access to MPM admin panel
-- AfricasTalking account (free sandbox account is sufficient for testing)
-- Basic understanding of API integrations
+> **⚠️ Important Note:** The built-in Android Gateway is deprecated and will be removed in a future release. We strongly recommend using **TextBee SMS Gateway** as a modern, more reliable alternative for Android-based SMS delivery. TextBee offers better reliability, monitoring, and support compared to the legacy Android Gateway.
 
-### Step 1: Create AfricasTalking Account
+## SMS Gateway Setup Guides
 
-1. Visit [AfricasTalking](https://account.africastalking.com/auth/register)
-2. Fill in your details and verify your email address
-3. Complete the account setup process
+Choose your preferred SMS gateway and follow the detailed setup guide:
 
-![Register Africanstalking account](images/africanstalking-account-register.png)
+### TextBee SMS Gateway (Cost-Effective)
 
-### Step 2: Generate API Key for Plugin
+TextBee allows you to use your own Android device as an SMS gateway, providing up to 98% cost savings compared to traditional SMS providers.
 
-1. Log into your AfricasTalking dashboard
-2. Navigate to **Settings** → **API Key**
-3. Click **Request**
-4. Copy the generated API key - you'll need this for MPM configuration
+**Key Features:**
 
-![Request API Key](images/africanstalking-api-key.png)
+- Up to 98% cost savings
+- Uses your own Android device
+- Free plan: 300 messages/month
+- Pro plan: 5,000 messages/month
 
-### Step 3: Set Up SMS Short Code
+👉 [Complete TextBee Setup Guide](/usage-guide/textbee-setup)
 
-1. In your AfricasTalking dashboard, go to **SMS** → **Short Codes**
-2. Request a short code for your application
-3. Note down the assigned short code number
-4. Configure the short code settings as needed for your use case
+---
 
-![Short code from Africanstalking](images/africanstalking-sms-shortcode.png)
+### AfricasTalking (Recommended for High Volume)
 
-### Step 4: Enable AfricasTalking Plugin in MPM
+AfricasTalking provides reliable, high-volume SMS delivery with wide coverage across Africa and detailed analytics.
 
-1. Log into your MPM admin panel
-2. Navigate to **Plugins** section
-3. Find the **AfricasTalking** plugin in the available plugins list
-4. Click **Enable** to activate the plugin
-5. Confirm the activation
+**Key Features:**
 
-![Plugin settings page](images/africanstalking-enable-plugin.png)
+- High-volume capacity (1000+ messages/month)
+- 99.9% uptime guarantee
+- Detailed delivery reports
+- Wide coverage across Africa
+- Additional services (USSD, Voice, Airtime)
 
-### Step 5: Configure Plugin Credentials
+👉 [Complete AfricasTalking Setup Guide](/usage-guide/africastalking-setup)
 
-1. After enabling the plugin, go to **Plugins** → **AfricasTalking** → **Settings**
-2. Enter the following credentials:
-   - **API Key**: Paste the API key generated in Step 2
-   - **Short Code**: Enter the short code obtained in Step 3
-   - **Username**: Your AfricasTalking username
-3. Save the configuration
-4. Test the connection to ensure credentials are valid
+---
 
-![Plugin Overview page](images/africanstalking-cred-overview-page.png)
+## Configuring Your SMS Gateway
 
-### Step 6: Register SMS Delivery Callback URL
+After enabling and configuring one or more SMS gateway plugins, you must select which gateway to use for sending messages.
 
-1. In your AfricasTalking dashboard, go to **SMS** → **Callback URLs**
-2. Set up the delivery callback URL to point to your MPM instance: Copy the url
-   from the plugin overview page
+### Setting Your Preferred SMS Gateway
 
-   ```bash
-   https://your-mpm-domain.com/api/africas-talking/callback/1/delivery-reports
-   ```
+1. Navigate to **Settings** → **Configuration** → **Main Settings**
+2. Scroll to the **SMS Gateway** dropdown field
+3. Select your preferred gateway from the available options:
+   - **Africa's Talking** - Available when the AfricasTalking plugin is enabled
+   - **TextBee SMS Gateway** - Available when the TextBee plugin is enabled
+   - **Viber Messaging** - Available when the Viber plugin is enabled
+4. Click **Save** to apply your selection
 
-3. Enable delivery reports to track SMS delivery status
+![SMS Gateway Selection](images/sms-gateway-selection.png)
 
-![Register callback URL for sms delivery](images/africanstalking-sms-delivery-callback.png)
+> **Important:** You must have at least one SMS gateway plugin enabled and configured before you can select it in the settings. The dropdown will only show gateways that are currently active.
 
-### Step 7: Test SMS Functionality
+### Legacy Android Gateway
 
-1. Navigate to **Customers** in your MPM dashboard
-2. Select a customer to view their details
-3. Ensure the customer Primary toggle is on i.e customer is a primary customer.
-4. On the customer detail page, locate the **Send SMS** option
-5. Compose a test message
-6. Send the SMS to verify the integration is working
-7. Check the delivery status in both MPM and AfricasTalking dashboard
+> **⚠️ Migration Notice:** The built-in Android Gateway is deprecated and no longer available for selection. If you are currently using the Android Gateway, please migrate to **TextBee SMS Gateway**. TextBee provides the same Android-based SMS functionality with improved reliability, better monitoring, and active support. The migration process is simple and can be completed in under 10 minutes.
 
-![Customer detail page](images/customer-add-sms-history.png)
+## Choosing the Right SMS Gateway
 
-### Troubleshooting
+### Use AfricasTalking if
 
-**Common Issues:**
+- You need high-volume SMS delivery (1000+ messages/month)
+- You require guaranteed delivery rates
+- You need delivery reports and analytics
+- You have budget for per-message costs
 
-- **SMS not sending**: Verify API credentials and check if the plugin is
-  properly enabled
-- **Delivery reports not updating**: Ensure callback URL is
-  correctly configured and accessible
-- **Authentication errors**: Double-check API key and username in plugin settings
+### Use TextBee SMS Gateway if
 
-**Verification Steps:**
-
-1. Check MPM logs for any error messages
-2. Verify SMS delivery in AfricasTalking dashboard
-3. Test with different phone numbers to ensure compatibility
-
-### Production Considerations
-
-When moving from sandbox to production:
-
-1. Update API key to production environment in AfricasTalking
-2. Update credentials in MPM plugin settings
-3. Test thoroughly with real phone numbers
-4. Monitor SMS delivery rates and costs
-5. Set up proper error handling and logging
+- You want to minimize SMS costs (up to 98% savings)
+- You have a reliable Android device available
+- Your message volume is moderate (under 5000/month)
+- You want full control over your SMS infrastructure

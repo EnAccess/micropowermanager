@@ -2,7 +2,7 @@ import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
 
-import Client, { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient"
 
 import ConnectionTypeRepository from "@/repositories/ConnectionTypeRepository"
 
@@ -29,7 +29,7 @@ export class ConnectionsType {
   }
 
   store() {
-    return Client.post(baseUrl + resources.connections.store, {
+    return Client.post(resources.connections.store, {
       name: this.name,
     })
   }
@@ -47,16 +47,14 @@ export class ConnectionTypes {
   }
 
   getConnectionTypes() {
-    Client.get(baseUrl + resources.connections.list + "?paginate=1").then(
-      (response) => {
-        this.fromJson(response.data.data)
-        return this.list
-      },
-    )
+    Client.get(resources.connections.list + "?paginate=1").then((response) => {
+      this.fromJson(response.data.data)
+      return this.list
+    })
   }
 
   getSubConnectionTypes() {
-    Client.get(baseUrl + resources.connections.sublist + "?paginate=1").then(
+    Client.get(resources.connections.sublist + "?paginate=1").then(
       (response) => {
         this.fromJson(response.data.data)
         return this.list
@@ -184,11 +182,9 @@ export class NumberOfCustomers {
   }
 
   getList() {
-    Client.get(baseUrl + resources.connections.number_of_customers).then(
-      (response) => {
-        this.fromJson(response.data.data)
-      },
-    )
+    Client.get(resources.connections.number_of_customers).then((response) => {
+      this.fromJson(response.data.data)
+    })
   }
 
   fromJson(jsonData) {

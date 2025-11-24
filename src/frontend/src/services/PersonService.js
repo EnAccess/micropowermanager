@@ -2,6 +2,7 @@ import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import moment from "moment"
 import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
 import { resources } from "@/resources"
+import Client from "@/repositories/Client/AxiosClient"
 
 import { Paginator } from "@/Helpers/Paginator"
 import { EventBus } from "@/shared/eventbus"
@@ -95,7 +96,7 @@ export class Person {
     if (this.birthDate !== null) {
       this.birthDate = this.isoYear(this.birthDate)
     }
-    axios.put(resources.person.update + this.id, this.toJson())
+    Client.put(resources.person.update + this.id, this.toJson())
   }
 
   getFullName() {

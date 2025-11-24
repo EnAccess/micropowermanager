@@ -2,9 +2,9 @@
 
 namespace Inensus\MicroStarMeter\Modules\Api;
 
+use App\DTO\TransactionDataContainer;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
-use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
 use Illuminate\Support\Facades\Log;

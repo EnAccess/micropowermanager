@@ -21,11 +21,32 @@
       <md-card-content>
         <div class="md-layout">
           <div class="md-layout-item md-size-100">
-            <GChart
-              type="ColumnChart"
-              :data="paymentService.chartData"
-              :options="chartOptions"
-            />
+            <div style="height: 400px; width: 100%; position: relative">
+              <v-chart
+                v-if="
+                  echartsOption &&
+                  echartsOption.series &&
+                  echartsOption.series[0]
+                "
+                :option="echartsOption"
+                :autoresize="true"
+                style="height: 400px; width: 100%; min-height: 400px"
+              />
+              <div
+                v-else
+                style="
+                  padding: 2rem;
+                  text-align: center;
+                  color: #999;
+                  height: 100%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                {{ $tc("phrases.noData") || "No Data Available" }}
+              </div>
+            </div>
           </div>
           <div class="md-layout-item md-size-100">
             {{ $tc("phrases.averagePeriod") }}
@@ -75,7 +96,6 @@
 
 <script>
 import { currency } from "@/mixins/currency"
-import { GChart } from "vue-google-charts"
 import Widget from "@/shared/Widget.vue"
 import { PaymentService } from "@/services/PaymentService"
 import { EventBus } from "@/shared/eventbus"
@@ -85,7 +105,6 @@ export default {
   name: "PaymentFlow",
   components: {
     Widget,
-    GChart,
   },
   mixins: [currency, notify],
   data() {
@@ -106,12 +125,6 @@ export default {
         "Nov",
         "Dec",
       ],
-      chartOptions: {
-        chart: {
-          title: this.$tc("phrases.paymentFlow"),
-        },
-        colors: ["#1b9e77", "#d95f02", "#7570b3"],
-      },
       lastPayment: null,
       paymentPeriod: 0,
       loaded: false,
@@ -144,6 +157,61 @@ export default {
       let paymentFlow = [this.readable(result) + cur, paidMonths.toString()]
 
       return paymentFlow
+    },
+    echartsOption() {
+      if (
+        !this.paymentService.chartData ||
+        !Array.isArray(this.paymentService.chartData) ||
+        this.paymentService.chartData.length < 2
+      ) {
+        return null
+      }
+
+      const data = this.paymentService.chartData
+      const headers = data[0] || []
+      const seriesNames = headers.slice(1)
+      const categories = data.slice(1).map((row) => row[0] || "")
+
+      const colors = ["#1b9e77", "#d95f02", "#7570b3"]
+
+      const series = seriesNames.map((name, index) => {
+        const seriesIndex = index + 1
+        return {
+          name: String(name || `Series ${index + 1}`),
+          type: "bar",
+          data: data.slice(1).map((row) => parseFloat(row[seriesIndex]) || 0),
+          itemStyle: {
+            color: colors[index % colors.length],
+          },
+        }
+      })
+
+      return {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {
+          data: seriesNames.map((name) => String(name)),
+          top: 10,
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: categories,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: series,
+      }
     },
   },
   created() {

@@ -2,8 +2,8 @@
 
 namespace Inensus\CalinSmartMeter;
 
+use App\DTO\TransactionDataContainer;
 use App\Lib\IManufacturerAPI;
-use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 use App\Models\Token;
 use GuzzleHttp\Client;

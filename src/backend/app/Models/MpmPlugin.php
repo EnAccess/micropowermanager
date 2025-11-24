@@ -45,6 +45,7 @@ class MpmPlugin extends BaseModelCentral {
     public const ODYSSEY_DATA_EXPORT = 23;
     public const PROSPECT = 24;
     public const PAYSTACK_PAYMENT_PROVIDER = 25;
+    public const TEXTBEE_SMS_GATEWAY = 26;
 
     protected $table = 'mpm_plugins';
 

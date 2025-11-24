@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/solar-home-systems`
+const resource = `/api/solar-home-systems`
 
 export default {
   create(shs) {
