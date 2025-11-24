@@ -121,4 +121,3 @@ class PushPayments extends AbstractJob {
         return $extractedFile->file_path;
     }
 }
-

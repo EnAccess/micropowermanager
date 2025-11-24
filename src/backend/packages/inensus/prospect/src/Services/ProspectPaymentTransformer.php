@@ -224,8 +224,8 @@ class ProspectPaymentTransformer {
             return 'cash';
         }
 
-        if (str_contains($type, 'mesomb') || str_contains($type, 'swifta') ||
-            str_contains($type, 'wavecom') || str_contains($type, 'wavemoney')) {
+        if (str_contains($type, 'mesomb') || str_contains($type, 'swifta')
+            || str_contains($type, 'wavecom') || str_contains($type, 'wavemoney')) {
             return 'mobile money';
         }
 

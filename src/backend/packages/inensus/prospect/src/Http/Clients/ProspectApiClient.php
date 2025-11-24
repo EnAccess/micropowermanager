@@ -10,7 +10,7 @@ class ProspectApiClient {
     public function __construct(private ProspectCredentialService $credentialService) {}
 
     /**
-     * @param array<string, mixed> $payload
+     * @param array<string, mixed>       $payload
      * @param 'installations'|'payments' $type
      */
     public function postData(array $payload, string $type): Response {
