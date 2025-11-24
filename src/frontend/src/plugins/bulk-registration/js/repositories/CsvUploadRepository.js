@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/bulk-register/import-csv`
+const resource = `/api/bulk-register/import-csv`
 
 export default {
   post(csvData) {

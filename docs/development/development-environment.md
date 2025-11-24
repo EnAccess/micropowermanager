@@ -202,6 +202,62 @@ And configure the following database connection
 
 ![SQL Editor database connection](/screenshots/sql-editor-database-connection.png)
 
+### API Gateway with `ngrok`
+
+When working with external API's that use callbacks and webhook it can be helpful to have a local installation of MicroPowerManager be available through an internet gateway.
+
+- Install [ngrok](https://ngrok.com/download/)
+
+Usage of `ngrok` requires an account.
+The free version usually suffices.
+
+Once `ngrok` is installed and authentication, open a new terminal an run
+
+```sh
+ngrok http 8000
+```
+
+This will expose your local MicroPowerManager backend via ngrok gateway.
+
+You should see an output like this
+
+```sh
+Session Status                online
+Account                       Developer Name (Plan: Free)
+Version                       3.33.0
+Region                        Europe (eu)
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    https://randomly-generated-url.ngrok-free.dev -> http://localhost:8000
+
+Connections                   ttl     opn     rt1     rt5     p50     p90
+                              0       0       0.00    0.00    0.00    0.00
+```
+
+Take note of `<https://randomly-generated-url.ngrok-free.dev>`.
+
+#### Use a local Frontend with backend server via ngrok
+
+Create (or modify) the following two files at the root directory:
+
+```sh
+# .env.override.micropowermanager-backend
+APP_URL=https://randomly-generated-url.ngrok-free.dev
+```
+
+```sh
+# .env.override.micropowermanager-frontend
+MPM_BACKEND_URL=https://randomly-generated-url.ngrok-free.dev
+VUE_APP_CUSTOM_HEADERS={"ngrok-skip-browser-warning": true}
+```
+
+#### Expose external API's via ngrok
+
+Create (or modify) the following file at the root directory:
+
+```sh
+VUE_APP_MPM_BACKEND_URL_EXTERNAL=https://randomly-generated-url.ngrok-free.dev
+```
+
 ### Vue Developer Tools
 
 For frontend developmenet it can be helpful to use the Vue DevTools.

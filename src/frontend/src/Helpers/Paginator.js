@@ -1,9 +1,8 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient"
 
 export class Paginator {
-  constructor(url) {
-    //when the consumer passes a fully qualified url use it, otherwise use the base url from axiosClient
-    this.url = url.startsWith("http") ? url : `${baseUrl}${url}`
+  constructor(resource) {
+    this.resource = resource
     this._initialize()
     this.postData = null
   }
@@ -17,8 +16,8 @@ export class Paginator {
     this.perPage = 15
   }
 
-  setPaginationBaseUrl(url) {
-    this.url = url
+  setPaginationResource(resource) {
+    this.resource = resource
   }
 
   setPostData(data) {
@@ -41,19 +40,17 @@ export class Paginator {
     localParam["page"] = page
     localParam["per_page"] = this.perPage
 
-    return axios
-      .get(this.url, {
-        params: localParam,
-      })
-      .then((response) => {
-        let data = response.data
-        this.from = data.from
-        this.to = data.to
-        this.totalPage = data.last_page
-        this.currentPage = data.current_page
-        this.totalEntries = data.total
+    return Client.get(this.resource, {
+      params: localParam,
+    }).then((response) => {
+      let data = response.data
+      this.from = data.from
+      this.to = data.to
+      this.totalPage = data.last_page
+      this.currentPage = data.current_page
+      this.totalEntries = data.total
 
-        return data
-      })
+      return data
+    })
   }
 }

@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/agents/charge`
+const resource = `/api/agents/charge`
 
 export default {
   create(balance) {

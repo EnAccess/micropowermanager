@@ -142,6 +142,25 @@
         </md-field>
         <span class="md-error">{{ errors.first("usage_type") }}</span>
       </div>
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <md-field>
+          <label for="sms_gateway">SMS Gateway</label>
+          <md-select
+            name="sms_gateway"
+            id="sms_gateway"
+            v-model="mainSettingsService.mainSettings.smsGatewayId"
+          >
+            <md-option disabled :value="null">Select SMS Gateway</md-option>
+            <md-option
+              v-for="gateway in smsGatewayService.availableGateways"
+              :key="gateway.id"
+              :value="gateway.id"
+            >
+              {{ gateway.label }}
+            </md-option>
+          </md-select>
+        </md-field>
+      </div>
       <div class="md-layout md-alignment-bottom-right">
         <md-button
           class="md-primary md-dense md-raised"
@@ -160,6 +179,7 @@ import { CurrencyListService } from "@/services/CurrencyListService"
 import CountryService from "@/services/CountryService"
 import { UsageTypeListService } from "@/services/UsageTypeListService"
 import { MainSettingsService } from "@/services/MainSettingsService"
+import { SmsGatewayService } from "@/services/SmsGatewayService"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"
 
@@ -177,6 +197,7 @@ export default {
       currencyListService: new CurrencyListService(),
       countryListService: new CountryService(),
       usageTypeListService: new UsageTypeListService(),
+      smsGatewayService: new SmsGatewayService(),
       currencyList: [],
       languagesList: ["ar", "bu", "en", "fr"],
       countryList: [],
@@ -194,6 +215,7 @@ export default {
     this.getCurrencyList()
     this.getCountryList()
     this.getUsageTypeList()
+    this.getAvailableSmsGateways()
   },
   methods: {
     fetchMainSettings() {
@@ -216,6 +238,13 @@ export default {
     async getUsageTypeList() {
       try {
         await this.usageTypeListService.getUsageTypes()
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
+    async getAvailableSmsGateways() {
+      try {
+        await this.smsGatewayService.getAvailableGateways()
       } catch (e) {
         this.alertNotify("error", e.message)
       }

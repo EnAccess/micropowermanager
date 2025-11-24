@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/sub-connection-types`
+const resource = `/api/sub-connection-types`
 
 export default {
   index(connectionTypeId) {

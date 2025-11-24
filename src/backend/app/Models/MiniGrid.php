@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Transaction\Transaction;
 use Database\Factories\MiniGridFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,13 +24,6 @@ use MPM\Target\TargetAssignable;
  * @property-read Collection<int, City>        $cities
  * @property-read Cluster|null                 $cluster
  * @property-read GeographicalInformation|null $location
- *
- * Special attributes only used for caching services:
- * @property array{data: float}           $soldEnergy   This field is used only for caching.
- * @property Collection<int, Transaction> $transactions This field is used only for caching.
- * @property array<string, mixed>         $period       This field is used only for caching.
- * @property array<string, mixed>         $tickets      This field is used only for caching.
- * @property array<string, mixed>         $revenueList  This field is used only for caching.
  */
 class MiniGrid extends BaseModel implements TargetAssignable {
     /** @use HasFactory<MiniGridFactory> */

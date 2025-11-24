@@ -23,15 +23,29 @@
         <div v-if="loading">
           <loader size="sm" />
         </div>
-        <div v-else>
-          <GChart
-            :type="type"
-            :data="chartData"
-            :options="chartOptions"
-            :resizeDebounce="500"
-            ref="gChart"
-            :events="chartEvents"
+        <div v-else style="height: 250px; width: 100%; position: relative">
+          <v-chart
+            v-if="
+              echartsOption && echartsOption.series && echartsOption.series[0]
+            "
+            :option="echartsOption"
+            :autoresize="true"
+            style="height: 250px; width: 100%; min-height: 250px"
           />
+          <div
+            v-else
+            style="
+              padding: 2rem;
+              text-align: center;
+              color: #999;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            No Data Available
+          </div>
         </div>
       </md-card-content>
     </md-card>
@@ -70,18 +84,6 @@ export default {
   },
   data: () => ({
     loading: false,
-    chartEvents: {
-      select: () => {},
-      click: () => {
-        let parent = this
-        setTimeout(function () {
-          if (parent.clicks >= 2) {
-            parent.chartType = parent.toggleChartType()
-          }
-          parent.clicks = 0
-        }, 250)
-      },
-    },
     fullScreen: false,
   }),
   mounted() {
@@ -98,6 +100,97 @@ export default {
   computed: {
     wide() {
       return this.fullScreen
+    },
+    echartsOption() {
+      if (
+        !this.chartData ||
+        !Array.isArray(this.chartData) ||
+        this.chartData.length < 2
+      ) {
+        return null
+      }
+
+      const headers = this.chartData[0] || []
+      const isLineChart = this.type === "LineChart"
+      const isPieChart = this.type === "PieChart"
+      const seriesNames = headers.slice(1)
+
+      if (isPieChart) {
+        const data = this.chartData.slice(1).map((row) => ({
+          name: String(row[0] || ""),
+          value: parseFloat(row[1]) || 0,
+        }))
+
+        const validData = data.filter((item) => item.value > 0)
+
+        if (validData.length === 0) {
+          return null
+        }
+
+        return {
+          tooltip: {
+            trigger: "item",
+          },
+          legend: {
+            orient: "vertical",
+            left: "left",
+          },
+          series: [
+            {
+              name: headers[0] || "Category",
+              type: "pie",
+              radius: "50%",
+              data: validData,
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: "rgba(0, 0, 0, 0.5)",
+                },
+              },
+            },
+          ],
+        }
+      }
+
+      const categories = this.chartData.slice(1).map((row) => row[0] || "")
+
+      const series = seriesNames.map((name, index) => {
+        const seriesIndex = index + 1
+        return {
+          name: String(name || `Series ${index + 1}`),
+          type: isLineChart ? "line" : "bar",
+          data: this.chartData
+            .slice(1)
+            .map((row) => parseFloat(row[seriesIndex]) || 0),
+          smooth: isLineChart,
+        }
+      })
+
+      return {
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {
+          data: seriesNames.map((name) => String(name)),
+          top: 10,
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: categories,
+          boundaryGap: isLineChart ? false : true,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: series,
+      }
     },
   },
 }

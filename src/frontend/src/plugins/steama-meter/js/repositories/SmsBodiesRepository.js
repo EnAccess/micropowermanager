@@ -1,7 +1,6 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/steama-meters/steama-setting/sms-setting/sms-body`
+const resource = `/api/steama-meters/steama-setting/sms-setting/sms-body`
 
 export default {
   list() {

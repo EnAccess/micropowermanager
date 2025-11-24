@@ -1,7 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
 
-const resource = `${baseUrl}/api/paymenthistories`
+const resource = `/api/paymenthistories`
 
 export default {
   getPaymentDetail(personId, period) {
