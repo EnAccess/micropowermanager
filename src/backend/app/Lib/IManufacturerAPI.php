@@ -2,8 +2,8 @@
 
 namespace App\Lib;
 
+use App\DTO\TransactionDataContainer;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 
 interface IManufacturerAPI {

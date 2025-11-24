@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\DTO\TransactionDataContainer;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
-use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;

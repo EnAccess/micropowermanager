@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Inensus\WavecomPaymentProvider\Services;
 
+use App\DTO\TransactionDataContainer;
 use App\Jobs\ProcessPayment;
-use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use Illuminate\Database\QueryException;

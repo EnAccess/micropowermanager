@@ -2,9 +2,9 @@
 
 namespace App\PaymentHandler;
 
+use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\AccessRates\NoAccessRateFound;
-use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRate as AccessRateModel;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
