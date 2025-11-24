@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agent;
 use App\Services\AgentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -63,7 +64,25 @@ class AgentAuthController extends Controller {
      * @return JsonResponse
      */
     public function me() {
-        return response()->json(auth('agent_api')->user());
+        $agent = auth('agent_api')->user();
+        if (method_exists($agent, 'getRoleNames')) {
+            /** @var Agent $agent */
+            $roles = $agent->getRoleNames()->toArray();
+        } else {
+            $roles = [];
+        }
+        if (method_exists($agent, 'getAllPermissions')) {
+            /** @var Agent $agent */
+            $permissions = $agent->getAllPermissions()->pluck('name')->toArray();
+        } else {
+            $permissions = [];
+        }
+
+        return response()->json([
+            'agent' => $agent,
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
@@ -95,13 +114,18 @@ class AgentAuthController extends Controller {
      * @return JsonResponse
      */
     protected function respondWithToken($token) {
-        return response()->json(
-            [
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => $this->guard()->factory()->getTTL() * 60,
-                'agent' => $this->guard()->user(),
-            ]
-        );
+        /** @var Agent $agent */
+        $agent = $this->guard()->user();
+        $roles = $agent->getRoleNames()->toArray();
+        $permissions = $agent->getAllPermissions()->pluck('name')->toArray();
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60,
+            'agent' => $agent,
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
     }
 }

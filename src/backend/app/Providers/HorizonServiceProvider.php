@@ -37,6 +37,11 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider {
                 return true;
             }
 
+            // If user is authenticated and has permission, allow
+            if ($user && method_exists($user, 'can') && $user->can('horizon')) {
+                return true;
+            }
+
             if (empty($horizon_username) || empty($horizon_password)) {
                 abort(403, 'Horizon access not configured.');
             }
