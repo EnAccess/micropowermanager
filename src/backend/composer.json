@@ -93,7 +93,8 @@
       "Inensus\\Prospect\\": "packages/inensus/prospect/src",
       "Inensus\\DemoShsManufacturer\\": "packages/inensus/demo-shs-manufacturer/src",
       "Inensus\\DemoMeterManufacturer\\": "packages/inensus/demo-meter-manufacturer/src",
-      "Inensus\\PaystackPaymentProvider\\": "packages/inensus/paystack-payment-provider/src"
+      "Inensus\\PaystackPaymentProvider\\": "packages/inensus/paystack-payment-provider/src",
+      "Inensus\\TextbeeSmsGateway\\": "packages/inensus/textbee-sms-gateway/src"
     }
   },
   "autoload-dev": {

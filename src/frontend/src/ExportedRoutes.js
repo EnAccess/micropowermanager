@@ -82,6 +82,7 @@ import StronMeterOverview from "./plugins/stron-meter/js/modules/Overview/Overvi
 import BulkRegistrationCsv from "./plugins/bulk-registration/js/modules/Csv"
 import ViberMessagingOverview from "./plugins/viber-messaging/js/modules/Overview/Overview"
 import AfricasTalkingOverview from "./plugins/africas-talking/js/modules/Overview/Overview"
+import TextbeeSmsGatewayOverview from "./plugins/textbee-sms-gateway/js/modules/Overview/Overview"
 import ProspectOverview from "./plugins/prospect/js/modules/Overview/Overview"
 import ProspectSettings from "./plugins/prospect/js/modules/Setting/Setting"
 import WaveMoneyOverview from "./plugins/wave-money-payment-provider/js/modules/Overview/Overview"
@@ -1550,6 +1551,30 @@ export const exportedRoutes = [
       {
         path: "africas-talking-overview",
         component: AfricasTalkingOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/textbee-sms-gateway",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 26,
+        name: "TextBee SMS Gateway",
+        icon: "sms",
+      },
+    },
+    children: [
+      {
+        path: "textbee-sms-gateway-overview",
+        component: TextbeeSmsGatewayOverview,
         meta: {
           layout: "default",
           sidebar: {
