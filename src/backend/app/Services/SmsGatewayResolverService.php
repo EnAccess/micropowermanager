@@ -32,48 +32,116 @@ class SmsGatewayResolverService {
     public function __construct(
         private PluginsService $pluginsService,
         private ViberContactService $viberContactService,
+        private MainSettingsService $mainSettingsService,
     ) {}
 
     /**
+     * Get available SMS gateways based on active plugins.
+     *
+     * @return array<int, array{id: int, name: string, label: string, is_active: bool}>
+     */
+    public function getAvailableSmsGateways(): array {
+        $gateways = [];
+
+        // Always include AndroidGateway (default, legacy)
+        $gateways[] = [
+            'id' => self::DEFAULT_GATEWAY_ID,
+            'name' => self::DEFAULT_GATEWAY,
+            'label' => 'Android Gateway (DEPRECATED)',
+            'is_active' => true,
+        ];
+
+        // Check AfricasTalking
+        $africasTalkingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
+        if ($africasTalkingPlugin && $africasTalkingPlugin->status == Plugins::ACTIVE) {
+            $gateways[] = [
+                'id' => MpmPlugin::AFRICAS_TALKING,
+                'name' => self::AFRICAS_TALKING_GATEWAY,
+                'label' => "Africa's Talking",
+                'is_active' => true,
+            ];
+        }
+
+        // Check TextBee
+        $textbeePlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::TEXTBEE_SMS_GATEWAY);
+        if ($textbeePlugin && $textbeePlugin->status == Plugins::ACTIVE) {
+            $gateways[] = [
+                'id' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+                'name' => self::TEXTBEE_GATEWAY,
+                'label' => 'TextBee SMS Gateway',
+                'is_active' => true,
+            ];
+        }
+
+        // Check Viber
+        $viberMessagingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
+        if ($viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE) {
+            $gateways[] = [
+                'id' => MpmPlugin::VIBER_MESSAGING,
+                'name' => self::VIBER_GATEWAY,
+                'label' => 'Viber Messaging',
+                'is_active' => true,
+            ];
+        }
+
+        return $gateways;
+    }
+
+    /**
      * Determine the appropriate gateway for the given receiver.
+     * Uses the configured gateway from main settings, with fallback to legacy behavior.
      *
      * @return array{0: string, 1: string|null} [gateway, viberId]
      *
      * @throws NoActiveSmsProviderException
      */
     public function determineGateway(string $receiver): array {
-        $africasTalkingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
         $gateway = null;
         $viberId = null;
 
-        if ($africasTalkingPlugin && $africasTalkingPlugin->status == Plugins::ACTIVE) {
-            $gateway = self::AFRICAS_TALKING_GATEWAY;
-        }
+        // Get the configured gateway from main settings
+        $mainSettings = $this->mainSettingsService->getAll()->first();
+        $configuredGatewayId = $mainSettings?->sms_gateway_id;
 
-        $textbeePlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::TEXTBEE_SMS_GATEWAY);
+        // If a gateway is configured in settings, use it
+        if ($configuredGatewayId) {
+            $gateway = $this->getGatewayNameById($configuredGatewayId);
 
-        if ($textbeePlugin && $textbeePlugin->status == Plugins::ACTIVE) {
-            $gateway = self::TEXTBEE_GATEWAY;
-        }
-
-        $viberMessagingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
-
-        if ($viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE) {
-            $viberContact = $this->viberContactService->getByReceiverPhoneNumber($receiver);
-
-            if ($viberContact instanceof ViberContact) {
-                $gateway = self::VIBER_GATEWAY;
-                $viberId = $viberContact->viber_id;
+            // Special handling for Viber: check if receiver has Viber contact
+            if ($gateway === self::VIBER_GATEWAY) {
+                $viberContact = $this->viberContactService->getByReceiverPhoneNumber($receiver);
+                if (!($viberContact instanceof ViberContact)) {
+                    // Fall back to next available gateway if receiver doesn't have Viber
+                    Log::warning('Receiver does not have Viber contact, falling back to alternative gateway', [
+                        'receiver' => $receiver,
+                    ]);
+                    $gateway = null;
+                } else {
+                    $viberId = $viberContact->viber_id;
+                }
             }
         }
 
         if ($gateway === null) {
             Log::error('No active SMS provider configured', ['receiver' => $receiver]);
 
-            throw new NoActiveSmsProviderException('No active SMS provider is configured. Please enable AfricasTalking, TextBee, or Viber Messaging plugin.');
+            throw new NoActiveSmsProviderException('No active SMS provider is configured. Please configure an SMS gateway in Main Settings or enable a plugin (AfricasTalking, TextBee, or Viber Messaging).');
         }
 
         return [$gateway, $viberId];
+    }
+
+    /**
+     * Get gateway name by ID.
+     */
+    private function getGatewayNameById(int $gatewayId): ?string {
+        return match ($gatewayId) {
+            self::DEFAULT_GATEWAY_ID => self::DEFAULT_GATEWAY,
+            MpmPlugin::VIBER_MESSAGING => self::VIBER_GATEWAY,
+            MpmPlugin::AFRICAS_TALKING => self::AFRICAS_TALKING_GATEWAY,
+            MpmPlugin::TEXTBEE_SMS_GATEWAY => self::TEXTBEE_GATEWAY,
+            default => null,
+        };
     }
 
     public function getGatewayId(string $gateway): int {
@@ -84,21 +152,9 @@ class SmsGatewayResolverService {
      * Check if at least one SMS provider is configured and active.
      */
     public function hasActiveProvider(): bool {
-        $africasTalkingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
+        $availableGateways = $this->getAvailableSmsGateways();
 
-        if ($africasTalkingPlugin && $africasTalkingPlugin->status == Plugins::ACTIVE) {
-            return true;
-        }
-
-        $textbeePlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::TEXTBEE_SMS_GATEWAY);
-
-        if ($textbeePlugin && $textbeePlugin->status == Plugins::ACTIVE) {
-            return true;
-        }
-
-        $viberMessagingPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
-
-        return $viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE;
+        return count($availableGateways) > 0;
     }
 
     /**
