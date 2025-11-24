@@ -314,7 +314,7 @@ export default {
       paginator: new Paginator(resources.person.list),
       searchTerm: "",
       showAddClient: false,
-      key: 0,
+      key: 1,
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
       customerExportService: new CustomerExportService(),
       mainSettingsService: new MainSettingsService(),
