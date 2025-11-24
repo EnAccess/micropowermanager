@@ -2,11 +2,11 @@
 
 namespace App\Jobs;
 
+use App\DTO\TransactionDataContainer;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
-use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;

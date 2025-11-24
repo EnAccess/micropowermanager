@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Misc;
+namespace App\DTO;
 
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;

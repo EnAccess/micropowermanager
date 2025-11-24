@@ -2,10 +2,10 @@
 
 namespace Inensus\MesombPaymentProvider\Tests\Unit;
 
+use App\DTO\TransactionDataContainer;
 use App\Jobs\EnergyTransactionProcessor;
 use App\Jobs\ProcessPayment;
 use App\Jobs\TokenProcessor;
-use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
