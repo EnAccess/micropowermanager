@@ -125,7 +125,7 @@ export class UserService {
       email: null,
       phone: null,
       street: null,
-      city_id: null,
+      cityId: null,
     }
   }
 }

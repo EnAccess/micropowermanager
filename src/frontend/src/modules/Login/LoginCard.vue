@@ -117,8 +117,6 @@ export default {
           password,
         })
         await this.$store.dispatch("registrationTail/getRegistrationTail")
-        await this.$store.dispatch("protection/getProtectedPages")
-        await this.$store.dispatch("protection/getProtectedPagePassword")
 
         this.sending = false
         this.$router.push("/")

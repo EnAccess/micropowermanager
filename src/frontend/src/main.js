@@ -4,8 +4,6 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import { EventBus } from "@/shared/eventbus"
-
 require("./bootstrap")
 import router from "./routes"
 import App from "./App"
@@ -45,6 +43,10 @@ import Snackbar from "@/shared/Snackbar.vue"
 import ChintMeter from "@/plugins/chint-meter/js/modules/Overview/Credential"
 import Prospect from "@/plugins/prospect/js/modules/Overview/Credential"
 import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
+import {
+  getPermissionsForRoute,
+  userHasPermissions,
+} from "@/Helpers/PermissionGuard"
 
 Vue.component("default", Default)
 Vue.component("Spark-Meter", Spark)
@@ -77,42 +79,75 @@ Vue.component("Chint-Meter", ChintMeter)
 Vue.component("Prospect", Prospect)
 Vue.component("Paystack", Paystack)
 
-const unauthorizedPaths = [
+const toArray = (value) => {
+  if (!value) {
+    return []
+  }
+  return Array.isArray(value) ? value : [value]
+}
+
+Vue.mixin({
+  computed: {
+    $permissions() {
+      return store.getters["auth/getPermissions"] || []
+    },
+  },
+  methods: {
+    $can(required) {
+      return userHasPermissions(this.$permissions, toArray(required))
+    },
+    $canAny(required) {
+      const permissions = toArray(required)
+      if (!permissions.length) {
+        return true
+      }
+      return permissions.some((permission) =>
+        this.$permissions.includes(permission),
+      )
+    },
+  },
+})
+
+const publicRouteNames = new Set([
   "login",
   "forgot-password",
   "reset-password",
-  "reset-protected-password",
   "welcome",
   "register",
   "/wave-money/payment",
   "/wave-money/result",
   "/paystack/public/payment",
   "/paystack/public/result",
-]
+])
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authToken = store.getters["auth/getToken"]
   const intervalId = store.getters["auth/getIntervalId"]
-  if (unauthorizedPaths.includes(to.name)) {
-    EventBus.$emit("checkPageProtection", to)
+  if (publicRouteNames.has(to.name) || publicRouteNames.has(to.path)) {
     return next()
   }
-  if (authToken === undefined || authToken === "") {
+  if (!authToken) {
     return next({ name: "welcome" })
   }
 
-  store
-    .dispatch("auth/refreshToken", authToken, intervalId)
-    .then((result) => {
-      if (result) {
-        EventBus.$emit("checkPageProtection", to)
-        return next()
-      }
-      next({ name: "login" })
-    })
-    .catch(() => {
-      return next({ name: "welcome" })
-    })
+  try {
+    const result = await store.dispatch(
+      "auth/refreshToken",
+      authToken,
+      intervalId,
+    )
+    if (!result) {
+      return next({ name: "login" })
+    }
+    const userPermissions = store.getters["auth/getPermissions"] || []
+    const requiredPermissions = getPermissionsForRoute(to)
+    if (!userHasPermissions(userPermissions, requiredPermissions)) {
+      return next({ path: "/unauthorized" })
+    }
+    return next()
+  } catch (error) {
+    return next({ name: "welcome" })
+  }
 })
 
 /*eslint-disable */

@@ -4,9 +4,8 @@ import Welcome from "./pages/Welcome/index.vue"
 import Login from "./pages/Login/index.vue"
 import Register from "./pages/Register/index.vue"
 import ForgotPassword from "./pages/ForgotPassword/index.vue"
-import ProtectedPagePasswordResetRequest from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetRequest.vue"
-import ProtectedPagePasswordResetConfirm from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetConfirm.vue"
 import UserPasswordResetConfirm from "./modules/UserPasswordReset/UserPasswordResetConfirm.vue"
+import UnauthorizedPage from "./pages/Unauthorized/index.vue"
 
 import ChildRouteWrapper from "./shared/ChildRouteWrapper.vue"
 
@@ -154,24 +153,6 @@ export const exportedRoutes = [
       footer: LoginFooter,
     },
   },
-  {
-    path: "/forgot-protected-password",
-    name: "forgot-protected-password",
-    components: {
-      default: ProtectedPagePasswordResetRequest,
-      header: LoginHeader,
-      footer: LoginFooter,
-    },
-  },
-  {
-    path: "/reset-protected-password",
-    name: "reset-protected-password",
-    components: {
-      default: ProtectedPagePasswordResetConfirm,
-      header: LoginHeader,
-      footer: LoginFooter,
-    },
-  },
   // Top bar routes
   {
     // TBD: root route currently shows nothing
@@ -284,6 +265,13 @@ export const exportedRoutes = [
   {
     path: "/profile",
     component: ProfilePage,
+    meta: {
+      layout: "default",
+    },
+  },
+  {
+    path: "/unauthorized",
+    component: UnauthorizedPage,
     meta: {
       layout: "default",
     },

@@ -41,7 +41,6 @@
       </md-dialog-actions>
     </md-dialog>
     <tail-wizard :show-wizard="showWizard" :tail="tail" />
-    <password-protection />
   </div>
 </template>
 <script>
@@ -52,12 +51,10 @@ import SideBar from "@/modules/Sidebar/SideBar"
 import MobileTopNavbar from "./MobileTopNavbar"
 import TailWizard from "@/shared/TailWizard"
 import { mapGetters } from "vuex"
-import PasswordProtection from "@/shared/PasswordProtection"
 
 export default {
   name: "default",
   components: {
-    PasswordProtection,
     TopNavbar,
     FooterBar,
     SideBar,
