@@ -96,7 +96,7 @@ class AppliancePaymentService {
             throw new PaymentAmountBiggerThanTotalRemainingAmount('Payment Amount can not bigger than Total Remaining Amount');
         }
 
-        if ($amount < $installmentCost) {
+        if ($amount < $installmentCost && $amount != $totalRemainingAmount) {
             throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than installment cost');
         }
 
