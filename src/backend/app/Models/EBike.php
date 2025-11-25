@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\EBikeFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
@@ -28,6 +30,8 @@ use Illuminate\Support\Carbon;
  * @property-read Manufacturer|null $manufacturer
  */
 class EBike extends BaseModel {
+    /** @use HasFactory<EBikeFactory> */
+    use HasFactory;
     public const RELATION_NAME = 'e_bike';
     protected $table = 'e_bikes';
 
