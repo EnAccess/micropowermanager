@@ -19,6 +19,7 @@ class ManufacturerService extends CreatorService {
         'SunKing SHS',
         'Demo Meter Manufacturer',
         'Demo SHS Manufacturer',
+        'Demo E-bike Manufacturer',
     ];
 
     public function __construct(
