@@ -33,34 +33,34 @@ use Inensus\Ticket\Models\Ticket;
 /**
  * Class Person.
  *
- * @property      int                             $id
- * @property      string|null                     $title
- * @property      string|null                     $education
- * @property      string                          $name
- * @property      string                          $surname
- * @property      \Illuminate\Support\Carbon|null $birth_date
- * @property      string|null                     $sex
- * @property      int|null                        $nationality
- * @property      int                             $is_customer
- * @property      string                          $type
- * @property      int|null                        $mini_grid_id
- * @property      \Illuminate\Support\Carbon|null $deleted_at
- * @property      \Illuminate\Support\Carbon|null $created_at
- * @property      \Illuminate\Support\Carbon|null $updated_at
- * @property      array<array-key, mixed>|null    $additional_json
- * @property-read Collection<int, Address>        $addresses
- * @property-read Agent|null                      $agent
- * @property-read AgentSoldAppliance|null         $agentSoldAppliance
- * @property-read Collection<int, AppliancePerson>    $appliancePerson
- * @property-read Country|null                    $citizenship
- * @property-read CustomerGroup|null              $customerGroup
- * @property-read Collection<int, Device>         $devices
- * @property-read bool                            $is_active
- * @property-read PaymentHistory|null             $latestPayment
- * @property-read MiniGrid|null                   $miniGrid
- * @property-read Collection<int, PaymentHistory> $payments
- * @property-read Collection<int, Roles>          $roleOwner
- * @property-read Collection<int, Ticket>         $tickets
+ * @property      int                              $id
+ * @property      string|null                      $title
+ * @property      string|null                      $education
+ * @property      string                           $name
+ * @property      string                           $surname
+ * @property      \Illuminate\Support\Carbon|null  $birth_date
+ * @property      string|null                      $sex
+ * @property      int|null                         $nationality
+ * @property      int                              $is_customer
+ * @property      string                           $type
+ * @property      int|null                         $mini_grid_id
+ * @property      \Illuminate\Support\Carbon|null  $deleted_at
+ * @property      \Illuminate\Support\Carbon|null  $created_at
+ * @property      \Illuminate\Support\Carbon|null  $updated_at
+ * @property      array<array-key, mixed>|null     $additional_json
+ * @property-read Collection<int, Address>         $addresses
+ * @property-read Agent|null                       $agent
+ * @property-read AgentSoldAppliance|null          $agentSoldAppliance
+ * @property-read Collection<int, AppliancePerson> $appliancePerson
+ * @property-read Country|null                     $citizenship
+ * @property-read CustomerGroup|null               $customerGroup
+ * @property-read Collection<int, Device>          $devices
+ * @property-read bool                             $is_active
+ * @property-read PaymentHistory|null              $latestPayment
+ * @property-read MiniGrid|null                    $miniGrid
+ * @property-read Collection<int, PaymentHistory>  $payments
+ * @property-read Collection<int, Roles>           $roleOwner
+ * @property-read Collection<int, Ticket>          $tickets
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */

@@ -21,8 +21,8 @@ use Illuminate\Support\Carbon;
  * @property      int                  $remind
  * @property      Carbon|null          $created_at
  * @property      Carbon|null          $updated_at
- * @property-read ApplianceType|null       $appliance
- * @property-read AppliancePerson|null     $appliancePerson
+ * @property-read ApplianceType|null   $appliance
+ * @property-read AppliancePerson|null $appliancePerson
  * @property-read Collection<int, Log> $logs
  * @property-read PaymentHistory|null  $paymentHistory
  */

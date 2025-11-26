@@ -19,8 +19,8 @@ export class AppliancePaymentService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.message[0]
-      return new ErrorHandler(errorMessage, "http")
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http", e.response.status)
     }
   }
 }

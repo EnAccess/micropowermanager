@@ -42,7 +42,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property      string                                                                                                                                                 $message
  * @property      Carbon|null                                                                                                                                            $created_at
  * @property      Carbon|null                                                                                                                                            $updated_at
- * @property-read AppliancePerson|null                                                                                                                                       $appliance
+ * @property-read AppliancePerson|null                                                                                                                                   $appliance
  * @property-read Device|null                                                                                                                                            $device
  * @property-read AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction $originalTransaction
  * @property-read Collection<int, PaymentHistory>                                                                                                                        $paymentHistories

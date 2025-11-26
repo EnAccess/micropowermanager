@@ -47,7 +47,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read MiniGrid|null                            $miniGrid
  * @property-read Person|null                              $person
  * @property-read Collection<int, AgentReceipt>            $receipt
- * @property-read Collection<int, AppliancePerson>             $soldAppliances
+ * @property-read Collection<int, AppliancePerson>         $soldAppliances
  * @property-read Collection<int, Ticket>                  $tickets
  * @property-read Collection<int, Transaction>             $transaction
  */

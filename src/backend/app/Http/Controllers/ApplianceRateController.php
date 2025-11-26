@@ -12,7 +12,7 @@ class ApplianceRateController extends Controller {
         /**
          * Update the specified resource in storage.
          *
-         * @param Request   $request
+         * @param Request       $request
          * @param ApplianceRate $applianceRate
          *
          * @return ApiResource

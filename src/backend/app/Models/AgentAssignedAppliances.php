@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                         $created_at
  * @property      Carbon|null                         $updated_at
  * @property-read Agent|null                          $agent
- * @property-read Appliance|null                          $appliance
+ * @property-read Appliance|null                      $appliance
  * @property-read Collection<int, AgentSoldAppliance> $soldAppliance
  * @property-read User|null                           $user
  */

@@ -36,8 +36,7 @@ class ApplianceService {
         return $appliance;
     }
 
-    public function deleteAppliance(Appliance $appliance): Appliance
-    {
+    public function deleteAppliance(Appliance $appliance): Appliance {
         $applianceCopy = clone $appliance;
         $appliance->delete();
 

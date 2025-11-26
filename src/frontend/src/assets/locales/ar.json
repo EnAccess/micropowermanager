@@ -146,6 +146,8 @@
     "avgRevenue": "متوسط الإيرادات",
     "avgRevenuePerConnection": "متوسط الإيرادات لكل اتصال",
     "balanceHistories": "سجلات الرصيد",
+    "batteryLevel": "مستوى البطارية",
+    "batteryVoltage": "جهد البطارية",
     "bulkSms": "تم إرسال الرسائل بنجاح | هل أنت متأكد من إرسال الرسائل الجماعية؟ | رسائل قصيرة جماعية",
     "businessNumber": "رقم العمل",
     "callbackUrl": "رابط الاستدعاء",

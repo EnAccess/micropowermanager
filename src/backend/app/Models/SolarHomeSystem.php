@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
  * @property      int                    $manufacturer_id
  * @property      Carbon|null            $created_at
  * @property      Carbon|null            $updated_at
- * @property-read Appliance|null             $appliance
+ * @property-read Appliance|null         $appliance
  * @property-read Device|null            $device
  * @property-read Manufacturer|null      $manufacturer
  * @property-read Collection<int, Token> $tokens

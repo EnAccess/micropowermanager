@@ -146,6 +146,8 @@
     "avgRevenue": "Revenu moyen",
     "avgRevenuePerConnection": "Revenu moyen par connexion",
     "balanceHistories": "Historique des soldes",
+    "batteryLevel": "Niveau de la batterie",
+    "batteryVoltage": "Tension de la batterie",
     "bulkSms": "SMS en vrac |  Êtes-vous sûr(e) de vouloir envoyer les SMS en vrac ? | Les SMS sont envoyés.",
     "businessNumber": "Numéro de l'entreprise",
     "callbackUrl": "URL de rappel",

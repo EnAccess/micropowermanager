@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\AgentPerformanceMetricsController;
 use App\Http\Controllers\ApiKeyController;
-use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\ApplianceController;
+use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AppliancePersonController;
 use App\Http\Controllers\ApplianceRateController;
 use App\Http\Controllers\ApplianceTypeController;

@@ -93,7 +93,7 @@
               </span>
             </md-field>
             <md-content class="md-accent" v-if="errorLabel">
-              Amount is not bigger than total remaining amount !!!
+              Payment Amount can not bigger than Total Remaining Amount !!!
             </md-content>
           </div>
           <md-progress-bar
@@ -499,27 +499,8 @@ export default {
     async getAppliancePayment() {
       const validator = await this.$validator.validateAll()
       if (validator) {
-        if (this.checkPaymentForTotalRemaining()) {
-          return
-        }
         this.paymentProgress = true
         try {
-          const rates = this.getApplianceRates()
-
-          if (rates.length) {
-            const installmentCost = rates[1].rate_cost
-            if (this.payment < installmentCost) {
-              this.alertNotify(
-                "info",
-                this.$tc("messages.paymentAmountCannotBeLess", {
-                  amount: installmentCost,
-                }),
-              )
-              this.paymentProgress = false
-              return
-            }
-          }
-
           const payment = {
             personId: this.personId,
             adminId: this.adminId,

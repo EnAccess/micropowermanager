@@ -4,10 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    public function up(): void
-    {
+return new class extends Migration {
+    public function up(): void {
         Schema::connection('tenant')->rename('assets', 'appliances');
         Schema::connection('tenant')->rename('asset_types', 'appliance_types');
         Schema::connection('tenant')->rename('asset_people', 'appliance_people');
@@ -18,7 +16,6 @@ return new class extends Migration
                 $table->renameColumn('asset_type_id', 'appliance_type_id');
             }
         });
-
 
         Schema::connection('tenant')->table('appliance_people', function (Blueprint $table) {
             if (Schema::hasColumn('appliance_people', 'asset_type_id')) {
@@ -41,20 +38,50 @@ return new class extends Migration
             }
         });
 
+        Schema::connection('tenant')->table('e_bikes', function (Blueprint $table) {
+            if (Schema::hasColumn('e_bikes', 'asset_id')) {
+                $table->renameColumn('asset_id', 'appliance_id');
+            }
+        });
     }
 
-    public function down(): void
-    {
+    public function down(): void {
+        Schema::connection('tenant')->table('appliance_people', function (Blueprint $table) {
+            if (Schema::hasColumn('appliance_people', 'appliance_type_id')) {
+                $table->renameColumn('appliance_type_id', 'asset_type_id');
+            }
+            if (Schema::hasColumn('appliance_people', 'appliance_id')) {
+                $table->renameColumn('appliance_id', 'asset_id');
+            }
+        });
+
+        Schema::connection('tenant')->table('appliance_rates', function (Blueprint $table) {
+            if (Schema::hasColumn('appliance_rates', 'appliance_person_id')) {
+                $table->renameColumn('appliance_person_id', 'asset_person_id');
+            }
+        });
+
+        Schema::connection('tenant')->table('solar_home_systems', function (Blueprint $table) {
+            if (Schema::hasColumn('solar_home_systems', 'appliance_id')) {
+                $table->renameColumn('appliance_id', 'asset_id');
+            }
+        });
+
+        Schema::connection('tenant')->table('e_bikes', function (Blueprint $table) {
+            if (Schema::hasColumn('e_bikes', 'appliance_id')) {
+                $table->renameColumn('appliance_id', 'asset_id');
+            }
+        });
+
         Schema::connection('tenant')->table('appliances', function (Blueprint $table) {
             if (Schema::hasColumn('appliances', 'appliance_type_id')) {
                 $table->renameColumn('appliance_type_id', 'asset_type_id');
             }
         });
 
+        Schema::connection('tenant')->rename('appliance_rates', 'asset_rates');
+        Schema::connection('tenant')->rename('appliance_people', 'asset_people');
         Schema::connection('tenant')->rename('appliance_types', 'asset_types');
         Schema::connection('tenant')->rename('appliances', 'assets');
-        Schema::connection('tenant')->rename('appliance_people', 'asset_people');
-        Schema::connection('tenant')->rename('appliance_rates', 'asset_rates');
-
     }
 };

@@ -146,6 +146,8 @@
     "avgRevenue": "Avg Revenue",
     "avgRevenuePerConnection": "Avg Revenue Per Connection",
     "balanceHistories": "Balance Histories",
+    "batteryLevel": "Battery Level",
+    "batteryVoltage": "Battery Voltage",
     "bulkSms": "Bulk SMS | Are you sure to send the bulk SMS? | The SMS(es) are send out",
     "businessNumber": "Business Number",
     "callbackUrl": "Callback URL",

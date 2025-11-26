@@ -347,7 +347,7 @@ class OutstandingDebtsSeeder extends Seeder {
      * Create historical payment transactions to simulate customer payment history.
      *
      * @param Collection<int, AppliancePerson> $appliancePersons
-     * @param User                         $demoUser
+     * @param User                             $demoUser
      */
     private function createHistoricalPaymentTransactions(Collection $appliancePersons, User $demoUser): void {
         $historicalTransactionCount = 0;

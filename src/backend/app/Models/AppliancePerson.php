@@ -16,23 +16,23 @@ use Illuminate\Support\Carbon;
 /**
  * Class AppliancePerson.
  *
- * @property      int                        $id
- * @property      int                        $appliance_id
- * @property      int                        $person_id
- * @property      float                      $total_cost
- * @property      int                        $rate_count
- * @property      string                     $creator_type
- * @property      int                        $creator_id
- * @property      Carbon|null                $created_at
- * @property      Carbon|null                $updated_at
- * @property      float|null                 $down_payment
- * @property      Carbon|null                $first_payment_date
- * @property      string|null                $device_serial
+ * @property      int                            $id
+ * @property      int                            $appliance_id
+ * @property      int                            $person_id
+ * @property      float                          $total_cost
+ * @property      int                            $rate_count
+ * @property      string                         $creator_type
+ * @property      int                            $creator_id
+ * @property      Carbon|null                    $created_at
+ * @property      Carbon|null                    $updated_at
+ * @property      float|null                     $down_payment
+ * @property      Carbon|null                    $first_payment_date
+ * @property      string|null                    $device_serial
  * @property-read Appliance|null                 $appliance
- * @property-read Model                      $creator
- * @property-read Device|null                $device
- * @property-read Collection<int, Log>       $logs
- * @property-read Person|null                $person
+ * @property-read Model                          $creator
+ * @property-read Device|null                    $device
+ * @property-read Collection<int, Log>           $logs
+ * @property-read Person|null                    $person
  * @property-read Collection<int, ApplianceRate> $rates
  */
 class AppliancePerson extends BaseModel {

@@ -27,8 +27,8 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
  * @property-read Address|null                 $address
- * @property-read Appliance|null                   $appliance
- * @property-read AppliancePerson|null             $appliancePerson
+ * @property-read Appliance|null               $appliance
+ * @property-read AppliancePerson|null         $appliancePerson
  * @property-read Meter|SolarHomeSystem|EBike  $device
  * @property-read Person|null                  $person
  * @property-read Collection<int, Token>       $tokens

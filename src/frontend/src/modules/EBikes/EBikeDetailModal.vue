@@ -35,7 +35,7 @@
               :box-color="'orange'"
               :center-text="true"
               :header-text="$tc('words.speed')"
-              :sub-text="eBike.speed"
+              :sub-text="eBike.speed + ' km/h'"
               :box-icon="'speed'"
             />
           </div>
@@ -68,7 +68,7 @@
               <div class="txt-bold-and-big">
                 {{ $tc("phrases.batteryLevel") }}:
                 <span :class="'txt-color-red txt-description'">
-                  {{ eBike.batteryLevel }}
+                  {{ eBike.batteryLevel }} %
                 </span>
               </div>
             </div>

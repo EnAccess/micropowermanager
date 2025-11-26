@@ -3,15 +3,13 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return  new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         DB::connection('tenant')->table('sms_bodies')
             ->where('reference', 'OverdueAssetRateReminder')
             ->update(['reference' => 'OverdueApplianceRateReminder']);
@@ -30,8 +28,7 @@ return  new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         DB::connection('tenant')->table('sms_bodies')
             ->where('reference', 'OverdueApplianceRateReminder')
             ->update(['reference' => 'OverdueAssetRateReminder']);
