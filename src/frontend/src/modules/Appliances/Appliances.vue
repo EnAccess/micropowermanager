@@ -6,7 +6,7 @@
     <div class="md-layout-item md-small-size-100 md-size-50">
       <add-appliance :addNewAppliance="addNewAppliance" />
       <widget
-        :title="$tc('phrases.applianceSku',2)"
+        :title="$tc('phrases.applianceSku', 2)"
         :subscriber="subscriber"
         :route_name="'/appliances'"
         :button="true"
@@ -27,7 +27,9 @@
             :key="index"
           >
             <md-table-cell>
-              <div class="md-layout-item">{{ appliance.applianceTypeName }}&nbsp;</div>
+              <div class="md-layout-item">
+                {{ appliance.applianceTypeName }}&nbsp;
+              </div>
             </md-table-cell>
 
             <md-table-cell>
@@ -49,7 +51,9 @@
                   </span>
                 </md-field>
               </div>
-              <div class="md-layout-item" v-else>{{ appliance.name }}&nbsp;</div>
+              <div class="md-layout-item" v-else>
+                {{ appliance.name }}&nbsp;
+              </div>
             </md-table-cell>
             <md-table-cell>
               <div class="md-layout" v-if="updatingAppliance === index">
@@ -70,7 +74,9 @@
                   </span>
                 </md-field>
               </div>
-              <div class="md-layout-item" v-else>{{ appliance.price }}&nbsp;</div>
+              <div class="md-layout-item" v-else>
+                {{ appliance.price }}&nbsp;
+              </div>
             </md-table-cell>
             <md-table-cell>{{ appliance.updatedAt }}</md-table-cell>
             <md-table-cell>

@@ -34,7 +34,10 @@ export class ApplianceTypeService {
         name: appliance.name,
         paygoEnabled: appliance.paygo_enabled,
         updated_at: appliance.updated_at
-          ? appliance.updated_at.toString().replace(/T/, " ").replace(/\..+/, "")
+          ? appliance.updated_at
+              .toString()
+              .replace(/T/, " ")
+              .replace(/\..+/, "")
           : "",
         edit: false,
       }

@@ -615,7 +615,9 @@ export default {
               address: this.getSelectedAddress(),
             }
             const soldAppliance =
-              await this.appliancePersonService.sellAppliance(soldApplianceParams)
+              await this.appliancePersonService.sellAppliance(
+                soldApplianceParams,
+              )
             this.alertNotify("success", this.$tc("phrases.sellAppliance", 1))
             await this.$router.push(
               "/sold-appliance-detail/" + soldAppliance.id,

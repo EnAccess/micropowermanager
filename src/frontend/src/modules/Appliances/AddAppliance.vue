@@ -15,7 +15,7 @@
                     }"
                   >
                     <label for="applianceType">
-                      {{ $tc("phrases.applianceType",0) }}
+                      {{ $tc("phrases.applianceType", 0) }}
                     </label>
                     <md-select
                       :name="$tc('words.appliance')"

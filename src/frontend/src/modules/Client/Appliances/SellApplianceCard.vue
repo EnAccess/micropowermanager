@@ -398,13 +398,17 @@ export default {
                   )
                 }
 
-                let soldAppliance = await this.appliancePersonService.saveAppliance(
-                  this.newAppliance.id,
-                  this.personId,
-                  this.newAppliance,
-                  this.adminId,
+                let soldAppliance =
+                  await this.appliancePersonService.saveAppliance(
+                    this.newAppliance.id,
+                    this.personId,
+                    this.newAppliance,
+                    this.adminId,
+                  )
+                this.alertNotify(
+                  "success",
+                  this.$tc("phrases.sellAppliance", 1),
                 )
-                this.alertNotify("success", this.$tc("phrases.sellAppliance", 1))
                 await this.$router.push(
                   "/sold-appliance-detail/" + soldAppliance.id,
                 )

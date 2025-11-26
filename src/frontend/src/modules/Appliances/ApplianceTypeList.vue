@@ -38,10 +38,18 @@
                 </span>
               </md-field>
             </div>
-            <div class="md-layout-item" v-else>{{ applianceType.name }}&nbsp;</div>
+            <div class="md-layout-item" v-else>
+              {{ applianceType.name }}&nbsp;
+            </div>
           </md-table-cell>
 
-          <md-table-cell><md-icon :class="applianceType.paygoEnabled ? 'md-primary' : 'md-accent'">{{ applianceType.paygoEnabled ? 'check' : 'close' }}</md-icon></md-table-cell>
+          <md-table-cell>
+            <md-icon
+              :class="applianceType.paygoEnabled ? 'md-primary' : 'md-accent'"
+            >
+              {{ applianceType.paygoEnabled ? "check" : "close" }}
+            </md-icon>
+          </md-table-cell>
           <md-table-cell>{{ applianceType.updatedAt }}</md-table-cell>
         </md-table-row>
       </md-table>
@@ -66,7 +74,11 @@ export default {
       addNewApplianceType: false,
       subscriber: "applianceTypeList",
       applianceTypeService: new ApplianceTypeService(),
-      headers: [this.$tc("words.name"), this.$tc("phrases.paygoEnabled"), this.$tc("phrases.lastUpdate")],
+      headers: [
+        this.$tc("words.name"),
+        this.$tc("phrases.paygoEnabled"),
+        this.$tc("phrases.lastUpdate"),
+      ],
       resetKey: 0,
       loading: false,
       updateAppliance: null,
@@ -147,7 +159,10 @@ export default {
             this.loading = true
             await this.applianceTypeService.deleteApplianceType(applianceType)
             this.loading = false
-            this.alertNotify("success", this.$tc("phrases.deleteApplianceType", 1))
+            this.alertNotify(
+              "success",
+              this.$tc("phrases.deleteApplianceType", 1),
+            )
             await this.getApplianceTypes()
             this.resetKey++
           } catch (e) {

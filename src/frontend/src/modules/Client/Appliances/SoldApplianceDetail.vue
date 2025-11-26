@@ -488,9 +488,8 @@ export default {
     },
     async getPersonSoldAppliances() {
       try {
-        this.soldAppliancesList = await this.appliancePersonService.getPersonAppliances(
-          this.personId,
-        )
+        this.soldAppliancesList =
+          await this.appliancePersonService.getPersonAppliances(this.personId)
         this.updateList++
       } catch (e) {
         this.alertNotify("error", e.message)
