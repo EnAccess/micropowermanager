@@ -34,7 +34,7 @@ class PushInstallations extends AbstractJob {
         try {
             $data = $this->loadCsvData();
             if ($data === []) {
-                Log::info('Prospect: no data to push');
+                Log::info('Prospect: no installations data to push');
 
                 return;
             }
@@ -43,10 +43,10 @@ class PushInstallations extends AbstractJob {
             $response = app(ProspectApiClient::class)->postInstallations($payload);
 
             if ($response->failed()) {
-                Log::error('Prospect: push failed', ['status' => $response->status(), 'body' => $response->body()]);
+                Log::error('Prospect: push installations failed', ['status' => $response->status(), 'body' => $response->body()]);
                 throw new \RuntimeException('Prospect push failed');
             }
-            Log::info('Prospect: push success', ['count' => count($data)]);
+            Log::info('Prospect: push installations success', ['count' => count($data)]);
 
             if ($this->extractedFile instanceof ProspectExtractedFile) {
                 $this->extractedFile->update([
