@@ -39,6 +39,7 @@ class PushInstallations extends AbstractJob {
                 return;
             }
             $payload = ['data' => $data];
+            Log::info('Prospect: pushing data', ['count' => count($data)]);
             $response = app(ProspectApiClient::class)->postInstallations($payload);
 
             if ($response->failed()) {
@@ -113,7 +114,7 @@ class PushInstallations extends AbstractJob {
             ->first();
 
         if (!$extractedFile || !$extractedFile->file_path) {
-            return '';
+            throw new \Exception('No CSV file found for Prospect installations');
         }
 
         $this->extractedFile = $extractedFile;
