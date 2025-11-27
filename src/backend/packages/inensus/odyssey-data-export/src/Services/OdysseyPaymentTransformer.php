@@ -3,7 +3,7 @@
 namespace Inensus\OdysseyDataExport\Services;
 
 use App\Models\AccessRate\AccessRate;
-use App\Models\AssetRate;
+use App\Models\ApplianceRate;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
@@ -23,7 +23,7 @@ class OdysseyPaymentTransformer {
         $longitude = null;
         $customerCategory = null;
 
-        /** @var Token|AssetRate|AccessRate|null $paidFor */
+        /** @var Token|ApplianceRate|AccessRate|null $paidFor */
         $paidFor = $payment->paidFor;
 
         if ($paidFor instanceof Token) {
@@ -52,11 +52,11 @@ class OdysseyPaymentTransformer {
                 }
             }
         }
-        // Handle appliance installment payments paid against AssetRate
-        elseif ($paidFor instanceof AssetRate) {
-            $assetPerson = $paidFor->assetPerson()->with('device.device', 'device.address.geo')->first();
-            if ($assetPerson && $assetPerson->device) {
-                $device = $assetPerson->device;
+        // Handle appliance installment payments paid against ApplianceRate
+        elseif ($paidFor instanceof ApplianceRate) {
+            $appliancePerson = $paidFor->appliancePerson()->with('device.device', 'device.address.geo')->first();
+            if ($appliancePerson && $appliancePerson->device) {
+                $device = $appliancePerson->device;
                 $underlying = $device->device;
                 if ($underlying instanceof SolarHomeSystem) {
                     $serialNumber = $underlying->serial_number;

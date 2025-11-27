@@ -2,16 +2,16 @@
 
 namespace Inensus\BulkRegistration\Services;
 
-use App\Models\AssetType;
+use App\Models\ApplianceType;
 
 class ApplianceTypeService extends CreatorService {
-    public function __construct(AssetType $assetType) {
-        parent::__construct($assetType);
+    public function __construct(ApplianceType $applianceType) {
+        parent::__construct($applianceType);
     }
 
     public function createRelatedDataIfDoesNotExists($appliances): void {
         foreach ($appliances as $appliance) {
-            AssetType::query()->firstOrCreate($appliance, $appliance);
+            ApplianceType::query()->firstOrCreate($appliance, $appliance);
         }
     }
 

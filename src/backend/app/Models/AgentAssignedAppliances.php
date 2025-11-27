@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                         $created_at
  * @property      Carbon|null                         $updated_at
  * @property-read Agent|null                          $agent
- * @property-read Asset|null                          $appliance
+ * @property-read Appliance|null                      $appliance
  * @property-read Collection<int, AgentSoldAppliance> $soldAppliance
  * @property-read User|null                           $user
  */
@@ -45,10 +45,10 @@ class AgentAssignedAppliances extends BaseModel {
     }
 
     /**
-     * @return BelongsTo<Asset, $this>
+     * @return BelongsTo<Appliance, $this>
      */
     public function appliance(): BelongsTo {
-        return $this->belongsTo(Asset::class, 'appliance_id', 'id');
+        return $this->belongsTo(Appliance::class, 'appliance_id', 'id');
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace MPM\Transaction;
 
-use App\Models\Asset;
+use App\Models\Appliance;
 use App\Models\EBike;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
@@ -76,7 +76,7 @@ class TransactionService implements IAssociative, IBaseService {
     public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService|EBikeTransactionService {
         return match ($type) {
             SolarHomeSystem::RELATION_NAME => $this->solarHomeSystemTransactionService,
-            Asset::RELATION_NAME => $this->applianceTransactionService,
+            Appliance::RELATION_NAME => $this->applianceTransactionService,
             EBike::RELATION_NAME => $this->eBikeTransactionService,
             default => $this->meterTransactionService,
         };
