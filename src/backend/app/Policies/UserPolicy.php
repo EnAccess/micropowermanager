@@ -18,7 +18,8 @@ class UserPolicy {
     }
 
     public function update(User $currentUser, User $targetUser): bool {
-        // Users can't update themselves to prevent privilege escalation
+        // Users can update themselves but not change their own role
+        // roles can be changed by the owner or admin
         if ($currentUser->id === $targetUser->id) {
             return true;
         }
