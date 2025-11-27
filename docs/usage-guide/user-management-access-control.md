@@ -44,7 +44,7 @@ This ensures:
 
 ### Role-Based Permissions (RBAC)
 
-MicroPowerManager now uses **Role-Based Access Control (RBAC)** to decide who can perform administrative tasks. Every authenticated request carries a JWT token populated with the user’s **roles** and the derived **permissions**. Both the API and the web UI validate those permissions before rendering sensitive features.
+MicroPowerManager uses **Role-Based Access Control (RBAC)** to decide who can perform administrative tasks. Every authenticated request carries a JWT token populated with the user’s **roles** and the derived **permissions**. Both the API and the web UI validate those permissions before rendering sensitive features.
 
 Built-in roles:
 
@@ -60,4 +60,5 @@ Key permission areas:
 - `plugins` – Enable/disable and configure plugins.
 - `assets`, `customers`, `payments`, `transactions`, `reports`, `exports`, `tickets` – Operational domains.
 
-Pages that were previously guarded by the Protected Pages Password now rely on these permissions. Unauthorized users automatically see an **Unauthorized** screen and the sidebar hides links they cannot access.
+> [!INFO]
+> Pages that were previously guarded by the Protected Pages Password now rely on these permissions.

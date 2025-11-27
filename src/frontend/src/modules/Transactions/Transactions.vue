@@ -1,7 +1,6 @@
 <template>
   <div>
-    <unauthorized-page v-if="!canViewTransactions" />
-    <div v-else>
+    <div>
       <div :class="{ 'box-margin': showBoxes }">
         <md-toolbar class="md-dense">
           <div class="md-toolbar-section-start md-small-size-100">
@@ -471,13 +470,11 @@ import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
 import WaveComLogo from "@/assets/icons/WaveComLogo.png"
 import paystackLogo from "@/assets/icons/Paystack.png"
 import { notify } from "@/mixins/notify"
-import { mapGetters } from "vuex"
-import UnauthorizedPage from "@/pages/Unauthorized/index.vue"
 
 export default {
   name: "Transactions.vue",
   mixins: [timing, currency, notify],
-  components: { Box, FilterTransaction, Widget, UnauthorizedPage },
+  components: { Box, FilterTransaction, Widget },
   data() {
     return {
       transactionService: new TransactionService(),
@@ -517,18 +514,7 @@ export default {
       paystackLogo: paystackLogo,
     }
   },
-  computed: {
-    ...mapGetters({
-      userPermissions: "auth/getPermissions",
-    }),
-    canViewTransactions() {
-      return this.userPermissions.includes("transactions")
-    },
-  },
   mounted() {
-    if (!this.canViewTransactions) {
-      return
-    }
     this.checkRouteChanges()
     this.loadAnalytics()
     this.getPeriod()
@@ -536,9 +522,6 @@ export default {
     EventBus.$on("transactionFilterClosed", this.closeFilter)
   },
   beforeDestroy() {
-    if (!this.canViewTransactions) {
-      return
-    }
     EventBus.$off("pageLoaded", this.reloadList)
     EventBus.$off("searching", this.searching)
   },
@@ -676,9 +659,6 @@ export default {
   watch: {
     //for query param filtering
     $route() {
-      if (!this.canViewTransactions) {
-        return
-      }
       this.checkRouteChanges()
     },
   },
