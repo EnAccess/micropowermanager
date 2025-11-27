@@ -1,7 +1,6 @@
 <template>
   <div>
-    <unauthorized-page v-if="!canViewReports" />
-    <div v-else class="md-layout md-gutter">
+    <div class="md-layout md-gutter">
       <div class="md-layout-item md-size-50 md-small-size-100">
         <VillageReports
           :id="'monthly-report'"
@@ -29,28 +28,17 @@
 import TicketOursourcePayoutReports from "@/modules/ExportedReports/TicketOursourcePayoutReports"
 import { ReportsService } from "@/services/ReportsService"
 import VillageReports from "@/modules/ExportedReports/VillageReports.vue"
-import UnauthorizedPage from "@/pages/Unauthorized/index.vue"
-import { mapGetters } from "vuex"
 
 export default {
   name: "Reports",
   components: {
     VillageReports,
     TicketOursourcePayoutReports,
-    UnauthorizedPage,
   },
   data() {
     return {
       reportService: new ReportsService(),
     }
-  },
-  computed: {
-    ...mapGetters({
-      userPermissions: "auth/getPermissions",
-    }),
-    canViewReports() {
-      return this.userPermissions.includes("reports")
-    },
   },
 }
 </script>

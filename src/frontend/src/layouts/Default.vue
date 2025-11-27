@@ -40,7 +40,11 @@
         </md-button>
       </md-dialog-actions>
     </md-dialog>
-    <tail-wizard :show-wizard="showWizard" :tail="tail" />
+    <tail-wizard
+      v-if="hasSettingsPermission"
+      :show-wizard="showWizard"
+      :tail="tail"
+    />
   </div>
 </template>
 <script>
@@ -62,6 +66,9 @@ export default {
     TailWizard,
   },
   created() {
+    if (!this.hasSettingsPermission) {
+      return
+    }
     if (this.status !== "") {
       const tail = JSON.parse(this.registrationTail.tail)
       for (const tailElement of tail) {
@@ -112,7 +119,11 @@ export default {
       status: "auth/getStatus",
       registrationTail: "registrationTail/getTail",
       isWizardShown: "registrationTail/getIsWizardShown",
+      permissions: "auth/getPermissions",
     }),
+    hasSettingsPermission() {
+      return (this.permissions || []).includes("settings")
+    },
   },
 }
 </script>

@@ -7,11 +7,10 @@
     />
     <h1>{{ $tc("words.unauthorized") }}</h1>
     <p>
-      You don’t have the required permission to view this section. Reach out to
-      your administrator if you believe this is a mistake.
+      {{ $tc("phrases.unauthorizedDescription") }}
     </p>
     <md-button class="md-primary md-raised" @click="$router.push('/')">
-      Go back home
+      {{ $tc("phrases.goBackHome") }}
     </md-button>
   </div>
 </template>
