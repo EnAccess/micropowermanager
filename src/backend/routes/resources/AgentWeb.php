@@ -30,7 +30,7 @@ Route::group([
     Route::group(['prefix' => 'sold'], function () {
         Route::get('/{agentId}', [AgentSoldApplianceWebController::class, 'index']);
     });
-    Route::group(['prefix' => 'commissions'], function () {
+    Route::group(['prefix' => 'commissions', 'middleware' => 'permission:settings'], function () {
         Route::get('/', [AgentCommissionWebController::class, 'index']);
         Route::post('/', [AgentCommissionWebController::class, 'store']);
         Route::delete('/{agentCommissionId}', [AgentCommissionWebController::class, 'destroy']);

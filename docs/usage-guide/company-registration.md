@@ -8,7 +8,7 @@ order: 3
 
 1. During the sign-up process, you will be required to select the plug-ins relevant to your company (for further information on plug-ins, see further below on this page).
 2. Create users under that company account.
-3. Create a password for [Password Protected Pages](/usage-guide/user-management-access-control#protected-pages-password), so that only the team members with knowledge of the password can access sensitive information.
+3. Assign each user an appropriate role (Owner, Admin, Financial Manager, User) so that the RBAC system automatically restricts access to administrative areas.
 4. Create the locations (under "Settings") where your systems/devices are to be located (every device must be assigned to a cluster, mini-grid and village).
 5. Register your customers (with applicable device numbers) and assign them appliances (where applicable), as follows:
    1. To register new mini-grid customers, the Customer Registration App is required.

@@ -6,6 +6,10 @@ use App\Models\User;
 
 class UserPolicy {
     public function view(User $currentUser, User $targetUser): bool {
+        if ($currentUser->id === $targetUser->id) {
+            return true;
+        }
+
         return $currentUser->can('users');
     }
 
@@ -14,9 +18,10 @@ class UserPolicy {
     }
 
     public function update(User $currentUser, User $targetUser): bool {
-        // Users can't update themselves to prevent privilege escalation
+        // Users can update themselves but not change their own role
+        // roles can be changed by the owner or admin
         if ($currentUser->id === $targetUser->id) {
-            return false;
+            return true;
         }
 
         // Check if target user is an owner

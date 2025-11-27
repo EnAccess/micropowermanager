@@ -22,7 +22,6 @@ use Illuminate\Support\Carbon;
  * @property int|null    $sms_gateway_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property string|null $protected_page_password
  */
 class MainSettings extends BaseModel {
     /** @use HasFactory<MainSettingsFactory> */
