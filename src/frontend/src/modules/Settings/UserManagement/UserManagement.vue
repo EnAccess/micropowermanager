@@ -39,6 +39,9 @@
                   {{ $tc("words.email") }}
                 </md-table-head>
                 <md-table-head>
+                  {{ $tc("words.role") }}
+                </md-table-head>
+                <md-table-head>
                   {{ $tc("words.phone") }}
                 </md-table-head>
               </md-table-row>
@@ -52,12 +55,8 @@
                 <md-table-cell>{{ user.id }}</md-table-cell>
                 <md-table-cell>{{ user.name }}</md-table-cell>
                 <md-table-cell>{{ user.email }}</md-table-cell>
+                <md-table-cell>{{ user.roles.join(", ") }}</md-table-cell>
                 <md-table-cell>{{ user.phone }}</md-table-cell>
-                <md-table-cell
-                  v-if="$store.getters['auth/getPermissions'].includes('roles')"
-                >
-                  {{ (user.roles || []).join(", ") }}
-                </md-table-cell>
               </md-table-row>
             </md-table>
           </div>
@@ -129,7 +128,7 @@ export default {
         await this.userService.get(user.id)
         this.showEditUser = true
       } catch (error) {
-        this.alertNotify("error", error)
+        this.alertNotify("error", error.message)
       }
     },
     async updateUser(user) {
@@ -147,7 +146,7 @@ export default {
         this.showEditUser = false
         this.resetKey++
       } catch (error) {
-        this.alertNotify("error", error)
+        this.alertNotify("error", error.message)
       }
       this.sending = false
     },
