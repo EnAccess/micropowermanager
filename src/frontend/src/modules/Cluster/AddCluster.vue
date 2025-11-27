@@ -28,11 +28,6 @@
             <div
               class="md-layout-item md-large-size-33 md-medium-size-33 md-small-size-100"
             >
-              <user-list @userSelected="userSelected"></user-list>
-            </div>
-            <div
-              class="md-layout-item md-large-size-33 md-medium-size-33 md-small-size-100"
-            >
               <md-button
                 class="md-raised md-primary"
                 @click="handleSearchClick()"
@@ -49,10 +44,9 @@
             <div
               class="md-layout-item md-large-size-33 md-medium-size-33 md-small-size-100"
             >
-              <md-button class="md-primary save-button" @click="saveCluster()">
-                {{ $tc("words.save") }}
-              </md-button>
+              <user-list @userSelected="userSelected"></user-list>
             </div>
+
             <div class="md-layout-item md-size-100">
               <md-list>
                 <div v-if="mappingService.searchedOrDrawnItems.length > 0">
@@ -102,6 +96,11 @@
                   </h4>
                 </div>
               </md-list>
+            </div>
+            <div class="md-layout-item md-size-100 save-button-container">
+              <md-button class="md-primary save-button" @click="saveCluster()">
+                {{ $tc("words.saveCluster") }}
+              </md-button>
             </div>
             <div class="md-layout-item md-size-100 map-area">
               <cluster-map
@@ -344,8 +343,16 @@ export default {
 .save-button {
   background-color: #325932 !important;
   color: #fefefe !important;
-  top: 0.5rem;
-  float: right;
+
+  margin-right: 0 !important;
+}
+.save-button-container {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
 .selected-list-item {
