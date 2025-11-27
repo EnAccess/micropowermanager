@@ -113,9 +113,9 @@ export default {
   methods: {
     drawCluster() {
       this.editableLayer.clearLayers()
-      const geoData = this.mappingService.geoData.geo_data
-      const geoType = geoData.geojson.type
-      const coordinatesClone = geoData.geojson.coordinates[0].reduce(
+      const geoData = this.mappingService.geoData
+      const geoType = geoData.type
+      const coordinatesClone = geoData.coordinates[0].reduce(
         (acc, coord) => {
           acc[0].push([coord[1], coord[0]])
           return acc
@@ -134,26 +134,28 @@ export default {
           {
             type: "Feature",
             properties: {
-              popupContent: geoData.display_name,
+              popupContent: geoData.clusterName,
               draw_type:
                 geoData.draw_type === undefined ? "set" : geoData.draw_type,
               selected:
                 geoData.selected === undefined ? false : geoData.selected,
               clusterId:
                 geoData.clusterId === undefined ? -1 : geoData.clusterId,
-              clusterDisplayName:
-                geoData.display_name === undefined ? -1 : geoData.display_name,
+              clusterName:
+                geoData.clusterName === undefined ? "" : geoData.clusterName,
             },
             geometry: {
               type: geoType,
               coordinates: geoData.searched
-                ? geoData.geojson.coordinates
+                ? geoData.coordinates
                 : coordinatesClone,
             },
           },
         ],
       }
-      const polygonColor = this.mappingService.strToHex(geoData.display_name)
+      const polygonColor = this.mappingService.strToHex(
+        geoData.clusterName || "default",
+      )
       // "this"  cannot be used inside the L.geoJson function
 
       const nonEditableLayers = this.nonEditableLayer
@@ -176,23 +178,19 @@ export default {
           nonEditableLayers.addLayer(layer)
           map.addLayer(nonEditableLayers)
           layer.bindTooltip(
-            "<strong>Cluster:</strong> " +
-              layer.feature.properties.clusterDisplayName,
+            "<strong>Cluster:</strong> " + layer.feature.properties.clusterName,
             { sticky: true, offset: [10, 10] },
           )
 
           const geoDataItem = {
             leaflet_id: layer._leaflet_id,
-            type: "manual",
-            geojson: {
-              type: geoData.geojson.type,
-              coordinates:
-                geoData.searched === true
-                  ? coordinatesClone
-                  : geoData.geojson.coordinates,
-            },
+            type: geoData.type,
+            coordinates:
+              geoData.searched === true
+                ? coordinatesClone
+                : geoData.coordinates,
             searched: false,
-            display_name: geoData.display_name,
+            clusterName: geoData.clusterName,
             selected: feature.properties.selected,
             draw_type: feature.properties.draw_type,
             lat: geoData.lat,
@@ -220,7 +218,7 @@ export default {
           let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
           if (markingInfo.clusterId !== undefined) {
             tooltip +=
-              "<br><strong>Cluster:</strong> " + markingInfo.clusterDisplayName
+              "<br><strong>Cluster:</strong> " + markingInfo.clusterName
           }
           miniGridMarker.bindTooltip(tooltip, {
             sticky: true,
@@ -322,19 +320,30 @@ export default {
         this.alertNotify("error", "Mini-Grid has no location")
         return
       }
-      const lat = parseFloat(points[0])
-      const lon = parseFloat(points[1])
+      const miniGridLat = parseFloat(points[0])
+      const miniGridLon = parseFloat(points[1])
       const clusterId = miniGridWithGeoData.cluster_id
       const clusterGeoData =
         await this.clusterService.getClusterGeoLocation(clusterId)
-      this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
-      this.mappingService.setGeoData(clusterGeoData)
+      // clusterGeoData is now { geo_json: {...} }
+      const geoJson = clusterGeoData.geo_json
+      const { lon, lat } = this.mappingService.computeGeoJsonCenter(geoJson)
+      this.mappingService.setCenter([lat, lon])
+      // Add metadata to geo_json
+      const geoDataWithMetadata = {
+        ...geoJson,
+        clusterId: clusterId,
+        clusterName: miniGridWithGeoData.cluster?.name || "",
+        lat: lat,
+        lon: lon,
+      }
+      this.mappingService.setGeoData(geoDataWithMetadata)
       markingInfos.push({
         id: miniGridWithGeoData.id,
         name: miniGridWithGeoData.name,
         serialNumber: null,
-        lat: lat,
-        lon: lon,
+        lat: miniGridLat,
+        lon: miniGridLon,
         deviceType: null,
         markerType: MARKER_TYPE.MINI_GRID,
       })

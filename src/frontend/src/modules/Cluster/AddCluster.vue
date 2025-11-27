@@ -66,7 +66,7 @@
                     </md-icon>
 
                     <span class="md-list-item-text">
-                      {{ geo.display_name }}
+                      {{ geo.clusterName }}
                     </span>
                   </md-list-item>
                 </div>
@@ -203,7 +203,7 @@ export default {
     async locationSelected(geoDataItem) {
       this.mappingService.searchedOrDrawnItems =
         this.mappingService.searchedOrDrawnItems.map((item) => {
-          item.selected = item.display_name === geoDataItem.display_name
+          item.selected = item.clusterName === geoDataItem.clusterName
           return item
         })
       this.selectedCluster = geoDataItem
@@ -234,8 +234,10 @@ export default {
       }
       try {
         const cluster = {
-          geoType: this.selectedCluster.type,
-          geoData: this.selectedCluster,
+          geoJson: {
+            type: this.selectedCluster.type,
+            coordinates: this.selectedCluster.coordinates,
+          },
           name: this.clusterName,
           managerId: this.user,
         }
@@ -250,7 +252,7 @@ export default {
       this.user = user
     },
     customClusterDrawnSet(geoDataItem) {
-      geoDataItem.display_name =
+      geoDataItem.clusterName =
         this.clusterName === "" ? "Unnamed" : this.clusterName
       this.typed = false
       this.mappingService.searchedOrDrawnItems.push(geoDataItem)
@@ -265,11 +267,9 @@ export default {
     customDrawnDeletedSet(deletedItems) {
       this.mappingService.searchedOrDrawnItems =
         this.mappingService.searchedOrDrawnItems.filter((item) => {
-          const drawnItemCoordinates = item.geojson.coordinates[0].map(
-            (coord) => {
-              return [coord[1], coord[0]]
-            },
-          )
+          const drawnItemCoordinates = item.coordinates[0].map((coord) => {
+            return [coord[1], coord[0]]
+          })
           return !deletedItems.some(
             (deletedItem) =>
               JSON.stringify(drawnItemCoordinates) ===
@@ -286,7 +286,7 @@ export default {
           (x) => x.type === item.type,
         )
         if (editedGeoDataItem) {
-          editedGeoDataItem.geojson.coordinates = item.geojson.coordinates
+          editedGeoDataItem.coordinates = item.coordinates
           editedGeoDataItem.lat = item.lat
           editedGeoDataItem.lon = item.lon
         }
@@ -299,11 +299,8 @@ export default {
         let selectedCluster = this.geoDataItems.filter(
           (x) => x.selected === true,
         )[0]
-        if (
-          selectedCluster !== undefined &&
-          selectedCluster.display_name === ""
-        ) {
-          selectedCluster.display_name = this.clusterName
+        if (selectedCluster !== undefined && !selectedCluster.clusterName) {
+          selectedCluster.clusterName = this.clusterName
         } else {
           this.typed = true
           await this.searchGeoDataByName()

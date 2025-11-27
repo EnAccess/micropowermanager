@@ -86,11 +86,20 @@ export default {
       const markingInfos = []
       const clustersGeoData = []
       this.clustersData.map((data) => {
-        if (data.geo_data !== null) {
-          const clusterGeo = data.geo_data
-          this.mappingService.setCenter([clusterGeo.lat, clusterGeo.lon])
-          clusterGeo.clusterId = data.id
-          clustersGeoData.push(clusterGeo)
+        if (data.geo_json !== null) {
+          const clusterGeo = data.geo_json
+          // Calculate center point from coordinates
+          const { lon, lat } =
+            this.mappingService.computeGeoJsonCenter(clusterGeo)
+          this.mappingService.setCenter([lat, lon])
+          const geoDataWithMetadata = {
+            ...clusterGeo,
+            clusterId: data.id,
+            clusterName: data.name,
+            lat: lat,
+            lon: lon,
+          }
+          clustersGeoData.push(geoDataWithMetadata)
           const miniGridsOfCluster = data.clusterData.mini_grids
           miniGridsOfCluster.map((miniGrid) => {
             const points = miniGrid.location.points.split(",")
@@ -98,18 +107,18 @@ export default {
               this.alertNotify("error", "Mini-Grid has no location")
               return
             }
-            const lat = parseFloat(points[0])
-            const lon = parseFloat(points[1])
+            const miniGridLat = parseFloat(points[0])
+            const miniGridLon = parseFloat(points[1])
             markingInfos.push({
               id: miniGrid.id,
               name: miniGrid.name,
               serialNumber: null,
-              lat: lat,
-              lon: lon,
+              lat: miniGridLat,
+              lon: miniGridLon,
               deviceType: null,
               markerType: MARKER_TYPE.MINI_GRID,
-              clusterId: clusterGeo.clusterId,
-              clusterDisplayName: clusterGeo.display_name,
+              clusterId: data.id,
+              clusterName: data.name,
             })
           })
         }
