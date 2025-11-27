@@ -2,12 +2,12 @@
 
 namespace App\Events;
 
+use App\Models\Ticket\Ticket;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Inensus\Ticket\Models\Ticket;
 
 class NewTicket implements ShouldBroadcast {
     use Dispatchable;

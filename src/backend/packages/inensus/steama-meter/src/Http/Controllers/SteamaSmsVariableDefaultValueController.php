@@ -2,9 +2,9 @@
 
 namespace Inensus\SteamaMeter\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaSmsVariableDefaultValueService;
-use Inensus\Ticket\Http\Controllers\Controller;
 
 class SteamaSmsVariableDefaultValueController extends Controller {
     public function __construct(private SteamaSmsVariableDefaultValueService $smsVariableDefaultSValueService) {}

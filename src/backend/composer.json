@@ -69,7 +69,6 @@
       "Database\\Factories\\": "database/factories/",
       "Database\\Seeders\\": "database/seeders/",
       "MPM\\": "app/modules",
-      "Inensus\\Ticket\\": "packages/inensus/ticket/src",
       "Inensus\\SparkMeter\\": "packages/inensus/spark-meter/src",
       "Inensus\\SteamaMeter\\": "packages/inensus/steama-meter/src",
       "Inensus\\KelinMeter\\": "packages/inensus/kelin-meter/src",
