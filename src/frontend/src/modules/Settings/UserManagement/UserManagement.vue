@@ -55,7 +55,15 @@
                 <md-table-cell>{{ user.id }}</md-table-cell>
                 <md-table-cell>{{ user.name }}</md-table-cell>
                 <md-table-cell>{{ user.email }}</md-table-cell>
-                <md-table-cell>{{ user.roles.join(", ") }}</md-table-cell>
+                <md-table-cell>
+                  <md-chip
+                    v-for="(role, index) in user.roles"
+                    :key="index"
+                    class="md-warn"
+                  >
+                    {{ role }}
+                  </md-chip>
+                </md-table-cell>
                 <md-table-cell>{{ user.phone }}</md-table-cell>
               </md-table-row>
             </md-table>

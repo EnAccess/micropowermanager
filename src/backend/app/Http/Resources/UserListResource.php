@@ -19,7 +19,7 @@ class UserListResource extends JsonResource {
             'name' => $this->name,
             'email' => $this->email,
             'roles' => $this->roles->pluck('name'),
-            'address_details' => $this->addressDetails->toArray(),
+            'address_details' => $this->addressDetails?->toArray() ?? [],
         ];
     }
 }
