@@ -15,6 +15,7 @@ export class UserService {
       phone: null,
       street: null,
       cityId: null,
+      roles: [],
     }
   }
   fromJson(user) {
@@ -28,6 +29,7 @@ export class UserService {
         user.address_details && user.address_details.city
           ? user.address_details.city.id
           : null,
+      roles: user.roles,
     }
     return this.user
   }
