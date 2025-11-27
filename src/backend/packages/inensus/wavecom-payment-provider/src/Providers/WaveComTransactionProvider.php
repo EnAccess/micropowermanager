@@ -7,6 +7,7 @@ namespace Inensus\WavecomPaymentProvider\Providers;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Services\Interfaces\ITransactionProvider;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -15,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WavecomPaymentProvider\Services\TransactionService;
-use MPM\Transaction\Provider\ITransactionProvider;
 
 class WaveComTransactionProvider implements ITransactionProvider {
     private Transaction $transaction;

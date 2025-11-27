@@ -5,12 +5,12 @@ namespace Database\Seeders;
 use App\Helpers\RolesPermissionsPopulator;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
+use App\Services\DatabaseProxyManagerService;
 use App\Services\MainSettingsService;
 use App\Services\PluginsService;
 use App\Services\UserService;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TenantSeeder extends Seeder {
     public function __construct(

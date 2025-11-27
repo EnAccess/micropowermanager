@@ -10,8 +10,8 @@ use App\Models\EBike;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Person\Person;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class EbikeSeeder extends Seeder {
     public function __construct(

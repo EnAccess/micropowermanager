@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\ApplianceRateService;
+use App\Services\OutstandingDebtsExportService;
 use Carbon\CarbonImmutable;
-use MPM\OutstandingDebts\OutstandingDebtsExportService;
 
 class MailApplianceDebtsCommand extends AbstractSharedCommand {
     protected $signature = 'mail:appliance-debts';

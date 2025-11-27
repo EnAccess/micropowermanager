@@ -14,10 +14,10 @@ use App\Models\SolarHomeSystem;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
+use App\Services\DatabaseProxyManagerService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class OutstandingDebtsSeeder extends Seeder {
     public function __construct(

@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\DTO\LoanDataContainer;
 use App\Events\TransactionSuccessfulEvent;
+use App\Events\UserCreatedEvent;
 use App\Listeners\TransactionSuccessfulListener;
+use App\Listeners\UserListener;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
 use App\Models\Agent;
@@ -46,9 +48,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Inensus\Ticket\Models\Ticket;
-use MPM\Transaction\Provider\AgentTransactionProvider;
-use MPM\User\Events\UserCreatedEvent;
-use MPM\User\UserListener;
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -118,7 +117,6 @@ class AppServiceProvider extends ServiceProvider {
 
         // Register custom MPM Events
 
-        // MPM\User namespace
         Event::listen(
             UserCreatedEvent::class,
             UserListener::class

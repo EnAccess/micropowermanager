@@ -7,6 +7,7 @@ use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\User;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,6 @@ use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Models\TicketOutsource;
 use Inensus\Ticket\Models\TicketUser;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {
     public function __construct(

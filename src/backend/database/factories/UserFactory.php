@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Events\UserCreatedEvent;
 use App\Models\User;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use MPM\User\Events\UserCreatedEvent;
 
 /** @extends Factory<User> */
 class UserFactory extends Factory {

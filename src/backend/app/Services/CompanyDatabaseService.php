@@ -7,7 +7,6 @@ use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 /**
  * @implements IBaseService<CompanyDatabase>

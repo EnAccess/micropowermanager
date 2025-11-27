@@ -3,9 +3,9 @@
 namespace App\Events;
 
 use App\Models\Transaction\Transaction;
+use App\Services\Interfaces\ITransactionProvider;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use MPM\Transaction\Provider\ITransactionProvider;
 
 /**
  * TransactionSavedEvent.
