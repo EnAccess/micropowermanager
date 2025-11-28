@@ -32,7 +32,6 @@ class CompanyController extends Controller {
 
     public function store(CompanyRegistrationRequest $request): JsonResponse {
         $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id']);
-        $protectedPagePassword = $request->input('protected_page_password');
         $adminData = $request->input('user');
         $plugins = $request->input('plugins');
         $usageType = $request->input('usage_type');
@@ -80,16 +79,13 @@ class CompanyController extends Controller {
         );
 
         // Set some meaningful settings by default
-        $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
-            function () use ($company, $usageType, $protectedPagePassword) {
-                $mainSettings = $this->mainSettingsService->getAll()->first();
-                $this->mainSettingsService->update(
-                    $mainSettings,
-                    ['company_name' => $company->name, 'usage_type' => $usageType, 'protected_page_password' => $protectedPagePassword]
-                );
-            }
-        );
+        $this->databaseProxyManagerService->runForCompany($company->getId(), function () use ($company, $usageType) {
+            $mainSettings = $this->mainSettingsService->getAll()->first();
+            $this->mainSettingsService->update(
+                $mainSettings,
+                ['company_name' => $company->name, 'usage_type' => $usageType]
+            );
+        });
 
         // Plugin and Registration Tail magic
         return $this->databaseProxyManagerService->runForCompany(

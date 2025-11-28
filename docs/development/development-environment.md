@@ -66,7 +66,7 @@ username: demo_company_admin@example.com
 password: 123123
 ```
 
-The Demo Company protected page password of this company is `123123`.
+The seeded admin account holds the **Owner** role, so it can access every page secured by RBAC.
 
 ## Running `artisan` commands
 

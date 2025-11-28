@@ -6,14 +6,14 @@ use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
+use App\Models\Ticket\Ticket;
+use App\Models\Ticket\TicketCategory;
+use App\Models\Ticket\TicketOutsource;
+use App\Models\Ticket\TicketUser;
 use App\Models\User;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Models\TicketCategory;
-use Inensus\Ticket\Models\TicketOutsource;
-use Inensus\Ticket\Models\TicketUser;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {

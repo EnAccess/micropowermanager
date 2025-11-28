@@ -4,12 +4,12 @@ namespace App\Console\Commands;
 
 use App\Models\DatabaseProxy;
 use App\Models\Person\Person;
+use App\Models\Ticket\TicketOutsourcePayoutReport;
 use App\Models\User;
+use App\Services\TicketService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Inensus\Ticket\Models\TicketOutsourcePayoutReport;
-use Inensus\Ticket\Services\TicketService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;

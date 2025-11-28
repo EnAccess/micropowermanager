@@ -8,7 +8,6 @@ import * as breadcrumb from "@/store/modules/breadcrumb"
 import * as registrationTail from "@/store/modules/registrationTail"
 import * as clusterDashboard from "@/store/modules/clusterDashboard"
 import * as miniGridDashboard from "@/store/modules/miniGridDashboard"
-import * as protection from "@/store/modules/protection"
 import * as device from "@/store/modules/device"
 import VuexPersist from "vuex-persist"
 
@@ -38,10 +37,6 @@ const vuexLocalStorage = new VuexPersist({
       registrationTail: state.registrationTail.registrationTail,
       isWizardShown: state.registrationTail.isWizardShown,
     },
-    protection: {
-      protectedPages: state.protection.protectedPages,
-      password: state.protection.password,
-    },
     miniGridsDashboard: {
       miniGridsCacheData: state.miniGridsCacheData,
     },
@@ -57,7 +52,6 @@ export default new Vuex.Store({
     breadcrumb,
     clusterDashboard,
     registrationTail,
-    protection,
     miniGridDashboard,
     device,
   },

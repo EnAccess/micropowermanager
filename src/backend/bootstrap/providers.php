@@ -26,7 +26,6 @@ use Inensus\StronMeter\Providers\StronMeterServiceProvider;
 use Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
 use Inensus\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
-use Inensus\Ticket\Providers\TicketServiceProvider;
 use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
 use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
@@ -53,7 +52,6 @@ return [
     StronMeterServiceProvider::class,
     SunKingSHSServiceProvider::class,
     SwiftaServiceProvider::class,
-    TicketServiceProvider::class,
     ViberMessagingServiceProvider::class,
     VodacomMobileMoneyServiceProvider::class,
     WaveMoneyPaymentProviderServiceProvider::class,

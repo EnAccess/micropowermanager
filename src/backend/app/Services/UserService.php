@@ -98,7 +98,7 @@ class UserService {
     public function list(): LengthAwarePaginator {
         return $this->user->newQuery()
             ->select('id', 'name', 'email')
-            ->with(['addressDetails'])
+            ->with(['addressDetails', 'roles:name'])
             ->paginate();
     }
 

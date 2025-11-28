@@ -6,14 +6,12 @@ use App\Models\MainSettings;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Crypt;
 
 /**
  * @phpstan-type MainSettingsData array{
  *     name?: string,
  *     value?: string,
  *     description?: string,
- *     protected_page_password?: string,
  *     is_active?: bool,
  *     created_at?: string,
  *     updated_at?: string
@@ -35,18 +33,10 @@ class MainSettingsService implements IBaseService {
      * @param MainSettingsData $data
      */
     public function create(array $data): MainSettings {
-        if (isset($data['protected_page_password'])) {
-            $data['protected_page_password'] = Crypt::encrypt($data['protected_page_password']);
-        }
-
         return $this->mainSettings->newQuery()->create($data);
     }
 
     public function update($mainSettings, $mainSettingsData): MainSettings {
-        if (isset($mainSettingsData['protected_page_password'])) {
-            $mainSettingsData['protected_page_password'] = Crypt::encrypt($mainSettingsData['protected_page_password']);
-        }
-
         $mainSettings->update($mainSettingsData);
         $mainSettings->fresh();
 

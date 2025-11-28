@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\Ticket\Ticket;
 use App\Models\User;
-use Inensus\Ticket\Models\Ticket;
 
 class TicketPolicy {
     public function view(User $user, Ticket $ticket): bool {

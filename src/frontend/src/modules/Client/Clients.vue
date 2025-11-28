@@ -14,7 +14,6 @@
       @widgetAction="
         () => {
           showAddClient = true
-          this.key++
         }
       "
     >
@@ -192,7 +191,6 @@
     <add-client-modal
       :showAddClient="showAddClient"
       @hideAddCustomer="() => (showAddClient = false)"
-      :key="key"
     />
 
     <!-- Updated Export Modal for Customer Export -->
@@ -314,7 +312,6 @@ export default {
       paginator: new Paginator(resources.person.list),
       searchTerm: "",
       showAddClient: false,
-      key: 0,
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
       customerExportService: new CustomerExportService(),
       mainSettingsService: new MainSettingsService(),

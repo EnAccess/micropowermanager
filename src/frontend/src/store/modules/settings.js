@@ -58,7 +58,11 @@ export const actions = {
         })
     })
   },
-  fetchPlugins({ commit }) {
+  fetchPlugins({ commit, rootGetters }) {
+    const permissions = rootGetters["auth/getPermissions"] || []
+    if (!permissions.includes("plugins")) {
+      return Promise.resolve([])
+    }
     return new Promise((resolve, reject) => {
       servicePlugin
         .getPlugins()
