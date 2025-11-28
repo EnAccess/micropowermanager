@@ -91,5 +91,18 @@ class ProspectSyncSettingService {
                 'next_sync' => $now->add($dayInterval),
             ]);
         }
+
+        $payments = $this->syncSetting->newQuery()->where('action_name', 'Payments')->first();
+        if (!$payments) {
+            $payments = $this->syncSetting->newQuery()->create([
+                'action_name' => 'Payments',
+                'sync_in_value_str' => 'day',
+                'sync_in_value_num' => 1,
+            ]);
+            $this->syncActionService->createSyncAction([
+                'sync_setting_id' => $payments->id,
+                'next_sync' => $now->add($dayInterval),
+            ]);
+        }
     }
 }

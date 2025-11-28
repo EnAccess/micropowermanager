@@ -232,7 +232,8 @@ class ProspectInstallationTransformer {
         return match ($deviceType) {
             'meter' => 'meter',
             'solar_home_system' => 'solar_home_system',
-            default => 'other',
+            'e_bike' => 'other_production_use',
+            default => 'other_production_use',
         };
     }
 
