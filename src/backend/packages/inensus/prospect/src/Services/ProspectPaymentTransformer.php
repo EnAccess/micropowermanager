@@ -122,8 +122,7 @@ class ProspectPaymentTransformer {
             ? $payment->created_at->setTimezone('UTC')->format('Y-m-d H:i:s.v').'Z'
             : null;
 
-        // Build the payment time series data
-        $data = [
+        return [
             'payment_external_id' => $paymentExternalId,
             'purpose' => $purpose,
             'paid_at' => $paidAt,
@@ -131,42 +130,15 @@ class ProspectPaymentTransformer {
             'currency' => $currency,
             'account_origin' => $accountOrigin ?? 'meters',
             'account_external_id' => $accountExternalId ?? '',
+            'paid_until' => $paidUntil,
+            'purchase_item' => $purchaseItem,
+            'purchase_unit' => $purchaseUnit,
+            'purchase_quantity' => $purchaseQuantity !== null ? (float) $purchaseQuantity : null,
+            'provider_name' => $providerName,
+            'provider_category' => $providerCategory,
+            'provider_transaction_id' => $providerTransactionId,
+            'days_active' => $daysActive !== null ? (float) $daysActive : null,
         ];
-
-        // Add optional fields if they have values
-        if ($paidUntil !== null) {
-            $data['paid_until'] = $paidUntil;
-        }
-
-        if ($purchaseItem !== null) {
-            $data['purchase_item'] = $purchaseItem;
-        }
-
-        if ($purchaseUnit !== null) {
-            $data['purchase_unit'] = $purchaseUnit;
-        }
-
-        if ($purchaseQuantity !== null) {
-            $data['purchase_quantity'] = (float) $purchaseQuantity;
-        }
-
-        if ($providerName !== null) {
-            $data['provider_name'] = $providerName;
-        }
-
-        if ($providerCategory !== null) {
-            $data['provider_category'] = $providerCategory;
-        }
-
-        if ($providerTransactionId !== null) {
-            $data['provider_transaction_id'] = $providerTransactionId;
-        }
-
-        if ($daysActive !== null) {
-            $data['days_active'] = (float) $daysActive;
-        }
-
-        return $data;
     }
 
     /**
