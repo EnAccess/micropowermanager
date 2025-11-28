@@ -115,7 +115,6 @@ class TenantSeeder extends Seeder {
                     [
                         'company_name' => DemoCompany::DEMO_COMPANY_NAME,
                         'currency' => DemoCompany::DEMO_COMPANY_CURRENCY,
-                        'protected_page_password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                     ]
                 );
             }

@@ -4,15 +4,15 @@ namespace App\Console\Commands;
 
 use App\Models\AssetRate;
 use App\Models\SmsApplianceRemindRate;
+use App\Models\Ticket\TicketCategory;
 use App\Models\User;
 use App\Services\MainSettingsService;
 use App\Services\SmsApplianceRemindRateService;
 use App\Services\SmsService;
+use App\Services\TicketService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Collection;
-use Inensus\Ticket\Models\TicketCategory;
-use Inensus\Ticket\Services\TicketService;
 
 class AssetRateChecker extends AbstractSharedCommand {
     protected $signature = 'asset-rate:check';

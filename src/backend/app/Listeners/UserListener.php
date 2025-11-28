@@ -9,7 +9,7 @@ use App\Helpers\MailHelper;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
-use Inensus\Ticket\Services\TicketUserService;
+use App\Services\TicketUserService;
 
 class UserListener {
     public function __construct(

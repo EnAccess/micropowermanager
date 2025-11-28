@@ -12,6 +12,7 @@ use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Services\SmsService;
+use App\Services\TicketCommentService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -19,7 +20,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Inensus\Ticket\Services\TicketCommentService;
 
 class SmsController extends Controller {
     public function __construct(

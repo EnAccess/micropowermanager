@@ -28,15 +28,25 @@
             <div
               class="md-layout-item md-large-size-33 md-medium-size-33 md-small-size-100"
             >
-              <user-list @userSelected="userSelected"></user-list>
+              <md-button
+                class="md-raised md-primary"
+                @click="handleSearchClick()"
+                :disabled="
+                  !clusterName || clusterName.length < 3 || isSearching
+                "
+              >
+                <md-icon>search</md-icon>
+                {{
+                  isSearching ? "Searching..." : $tc("words.search", "Search")
+                }}
+              </md-button>
             </div>
             <div
               class="md-layout-item md-large-size-33 md-medium-size-33 md-small-size-100"
             >
-              <md-button class="md-primary save-button" @click="saveCluster()">
-                {{ $tc("words.save") }}
-              </md-button>
+              <user-list @userSelected="userSelected"></user-list>
             </div>
+
             <div class="md-layout-item md-size-100">
               <md-list>
                 <div v-if="mappingService.searchedOrDrawnItems.length > 0">
@@ -86,6 +96,11 @@
                   </h4>
                 </div>
               </md-list>
+            </div>
+            <div class="md-layout-item md-size-100 save-button-container">
+              <md-button class="md-primary save-button" @click="saveCluster()">
+                {{ $tc("words.saveCluster") }}
+              </md-button>
             </div>
             <div class="md-layout-item md-size-100 map-area">
               <cluster-map
@@ -180,8 +195,10 @@ export default {
       selectedCluster: null,
       geoDataItems: [],
       typed: false,
-      filteredTypes: { polygon: true },
+      filteredTypes: { polygon: true, multipolygon: true },
       dialogActive: false,
+      isSearching: false,
+      lastSearchTime: 0,
     }
   },
   mounted() {
@@ -199,6 +216,28 @@ export default {
         this.clusterName,
         this.filteredTypes,
       )
+    },
+    async handleSearchClick() {
+      if (this.isSearching) return
+
+      const now = Date.now()
+      const timeSinceLastSearch = now - this.lastSearchTime
+      if (timeSinceLastSearch < 1000) {
+        const waitTime = 1000 - timeSinceLastSearch
+        await new Promise((resolve) => setTimeout(resolve, waitTime))
+      }
+
+      this.isSearching = true
+      this.typed = true
+      this.lastSearchTime = Date.now()
+
+      try {
+        await this.searchGeoDataByName()
+      } catch (error) {
+        console.error("Search error:", error)
+      } finally {
+        this.isSearching = false
+      }
     },
     async locationSelected(geoDataItem) {
       this.mappingService.searchedOrDrawnItems =
@@ -293,24 +332,6 @@ export default {
       })
     },
   },
-  watch: {
-    async clusterName() {
-      if (this.clusterName.length > 3) {
-        let selectedCluster = this.geoDataItems.filter(
-          (x) => x.selected === true,
-        )[0]
-        if (
-          selectedCluster !== undefined &&
-          selectedCluster.display_name === ""
-        ) {
-          selectedCluster.display_name = this.clusterName
-        } else {
-          this.typed = true
-          await this.searchGeoDataByName()
-        }
-      }
-    },
-  },
 }
 </script>
 
@@ -322,8 +343,16 @@ export default {
 .save-button {
   background-color: #325932 !important;
   color: #fefefe !important;
-  top: 0.5rem;
-  float: right;
+
+  margin-right: 0 !important;
+}
+.save-button-container {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
 .selected-list-item {
