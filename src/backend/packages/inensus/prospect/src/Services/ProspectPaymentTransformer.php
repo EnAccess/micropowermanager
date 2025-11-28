@@ -47,7 +47,7 @@ class ProspectPaymentTransformer {
         } elseif ($paidFor instanceof AccessRate) {
             $meter = $this->resolveMeterFromTransaction($payment->transaction);
 
-            if (!$meter) {
+            if (!$meter instanceof Meter) {
                 $meter = $paidFor->accessRatePayments()
                     ->with('meter')
                     ->first()?->meter;
