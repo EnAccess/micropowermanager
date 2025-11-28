@@ -9,6 +9,8 @@ use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
+use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\CashTransaction;
 
 class ProspectPaymentTransformer {
     /**
@@ -80,18 +82,9 @@ class ProspectPaymentTransformer {
         if ($transaction) {
             $originalTransaction = $transaction->originalTransaction;
             if ($originalTransaction) {
-                // Map original_transaction_type to provider name
                 $providerName = $this->mapProviderName($transaction->original_transaction_type);
                 $providerCategory = $this->mapProviderCategory($transaction->original_transaction_type);
-
-                // Get provider transaction ID from original transaction
-                if (method_exists($originalTransaction, 'getTransactionId')) {
-                    $providerTransactionId = $originalTransaction->getTransactionId();
-                } elseif (isset($originalTransaction->transaction_id)) {
-                    $providerTransactionId = $originalTransaction->transaction_id;
-                } elseif (isset($originalTransaction->id)) {
-                    $providerTransactionId = (string) $originalTransaction->id;
-                }
+                $providerTransactionId = $this->resolveProviderTransactionId($originalTransaction);
             }
         }
 
@@ -190,5 +183,39 @@ class ProspectPaymentTransformer {
         }
 
         return 'other';
+    }
+
+    /**
+     * Derive the provider transaction identifier from the original transaction payload.
+     */
+    private function resolveProviderTransactionId(mixed $originalTransaction): ?string {
+        if (!$originalTransaction) {
+            return null;
+        }
+
+        if (method_exists($originalTransaction, 'getTransactionId')) {
+            $externalReference = $originalTransaction->getTransactionId();
+            if ($externalReference !== null && $externalReference !== '') {
+                return (string) $externalReference;
+            }
+        }
+
+        if (isset($originalTransaction->transaction_id) && $originalTransaction->transaction_id !== null) {
+            return (string) $originalTransaction->transaction_id;
+        }
+
+        if ($originalTransaction instanceof AgentTransaction) {
+            return 'mpm_agent_transaction_'.$originalTransaction->id;
+        }
+
+        if ($originalTransaction instanceof CashTransaction) {
+            return 'mpm_cash_transaction_'.$originalTransaction->id;
+        }
+
+        if (isset($originalTransaction->id)) {
+            return (string) $originalTransaction->id;
+        }
+
+        return null;
     }
 }
