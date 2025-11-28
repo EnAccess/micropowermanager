@@ -7,11 +7,11 @@ use App\Http\Requests\UserChangePasswordRequest;
 use App\Http\Requests\UserPasswordResetConfirmRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\User;
+use App\Services\DatabaseProxyManagerService;
 use App\Services\UserPasswordResetService;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class UserPasswordController extends Controller {
     public function __construct(private UserService $userService, private DatabaseProxyManagerService $databaseProxyManagerService, private UserPasswordResetService $userPasswordResetService) {}

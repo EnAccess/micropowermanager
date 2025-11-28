@@ -3,11 +3,11 @@
 namespace Inensus\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Services\DeviceAddressService;
+use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
-use MPM\Device\DeviceAddressService;
-use MPM\EBike\EBikeService;
 
 class SyncBikes extends AbstractSharedCommand {
     use ScheduledPluginCommand;

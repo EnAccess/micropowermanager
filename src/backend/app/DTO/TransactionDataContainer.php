@@ -11,8 +11,8 @@ use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
+use App\Services\DeviceService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use MPM\Device\DeviceService;
 
 class TransactionDataContainer {
     public int $accessRateDebt;

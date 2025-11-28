@@ -11,10 +11,10 @@ use App\Models\Ticket\TicketCategory;
 use App\Models\Ticket\TicketOutsource;
 use App\Models\Ticket\TicketUser;
 use App\Models\User;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {
     public function __construct(

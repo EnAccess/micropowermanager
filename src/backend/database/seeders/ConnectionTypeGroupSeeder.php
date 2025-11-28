@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\SubConnectionType;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ConnectionTypeGroupSeeder extends Seeder {
     public function __construct(

@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Models\Target;
+use App\Services\Interfaces\ITargetAssignable;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use MPM\Target\TargetAssignable;
 
 class TargetService {
     public function __construct(private Target $target) {}
@@ -17,7 +17,7 @@ class TargetService {
         return $this->target->newQuery()->with(['subTargets', 'city'])->find($targetId);
     }
 
-    public function create(CarbonImmutable $period, string $targetForType, TargetAssignable $targetOwner): Target {
+    public function create(CarbonImmutable $period, string $targetForType, ITargetAssignable $targetOwner): Target {
         $target = $this->target->newQuery()->make([
             'target_date' => $period->format('Y-m-d'),
             'type' => $targetForType,

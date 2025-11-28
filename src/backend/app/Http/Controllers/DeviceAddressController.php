@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Events\NewLogEvent;
 use App\Http\Resources\ApiResource;
+use App\Services\DeviceAddressService;
+use App\Services\DeviceService;
 use Illuminate\Http\Request;
-use MPM\Device\DeviceAddressService;
-use MPM\Device\DeviceService;
 
 class DeviceAddressController extends Controller {
     public function __construct(

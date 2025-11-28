@@ -3,10 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\PaymentProviderNotIdentified;
+use App\Providers\AgentTransactionProvider;
+use App\Services\Interfaces\ITransactionProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use MPM\Transaction\Provider\AgentTransactionProvider;
-use MPM\Transaction\Provider\ITransactionProvider;
 
 class Transaction {
     public function handle(Request $request, \Closure $next): mixed {

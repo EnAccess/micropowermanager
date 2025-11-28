@@ -6,8 +6,8 @@ use App\Models\ConnectionGroup;
 use App\Models\MiniGrid;
 use App\Models\SubTarget;
 use App\Models\Target;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TargetSeeder extends Seeder {
     public function __construct(

@@ -12,8 +12,8 @@ use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
+use App\Services\DeviceService;
 use Illuminate\Support\Collection;
-use MPM\Device\DeviceService;
 
 class ApplianceInstallmentPayer {
     private Person $customer;

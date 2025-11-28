@@ -6,10 +6,10 @@ use App\Console\Commands\AbstractSharedCommand;
 use App\Events\NewLogEvent;
 use App\Models\AssetRate;
 use App\Models\User;
+use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
-use MPM\EBike\EBikeService;
 
 class CheckPayments extends AbstractSharedCommand {
     use ScheduledPluginCommand;

@@ -8,6 +8,7 @@ use App\Http\Resources\ApiResource;
 use App\Models\User;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
+use App\Services\DatabaseProxyManagerService;
 use App\Services\MainSettingsService;
 use App\Services\MpmPluginService;
 use App\Services\PluginsService;
@@ -16,7 +17,6 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Artisan;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CompanyController extends Controller {
     public function __construct(

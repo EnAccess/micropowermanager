@@ -10,8 +10,8 @@ use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class SolarHomeSystemSeeder extends Seeder {
     public function __construct(

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
-use MPM\Transaction\TransactionService;
 
 class TransactionAdvancedController extends Controller {
     public function __construct(

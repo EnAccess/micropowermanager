@@ -2,12 +2,12 @@
 
 namespace Inensus\ViberMessaging\Http\Controllers;
 
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\URL;
 use Inensus\ViberMessaging\Http\Requests\ViberCredentialRequest;
 use Inensus\ViberMessaging\Http\Resources\ViberResource;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ViberCredentialController extends Controller {
     public function __construct(

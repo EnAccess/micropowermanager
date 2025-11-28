@@ -4,8 +4,8 @@ namespace App\Listeners;
 
 use App\Events\TransactionFailedEvent;
 use App\Models\Transaction\Transaction;
-use MPM\Transaction\Provider\ITransactionProvider;
-use MPM\Transaction\Provider\TransactionAdapter;
+use App\Services\Helpers\TransactionAdapter;
+use App\Services\Interfaces\ITransactionProvider;
 
 class TransactionFailedListener {
     public function onTransactionFailed(Transaction $transaction, ?string $message = null): void {

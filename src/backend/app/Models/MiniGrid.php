@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use App\Services\Interfaces\ITargetAssignable;
 use Database\Factories\MiniGridFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
-use MPM\Target\TargetAssignable;
 
 /**
  * Class MiniGrid.
@@ -25,7 +25,7 @@ use MPM\Target\TargetAssignable;
  * @property-read Cluster|null                 $cluster
  * @property-read GeographicalInformation|null $location
  */
-class MiniGrid extends BaseModel implements TargetAssignable {
+class MiniGrid extends BaseModel implements ITargetAssignable {
     /** @use HasFactory<MiniGridFactory> */
     use HasFactory;
 

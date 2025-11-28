@@ -82,7 +82,7 @@ If your plugin needs to handle API requests (e.g., webhooks, custom endpoints),
 register your route resolver:
 
 ```php
-// src/backend/app/modules/TenantResolver/ApiResolvers/Data/ApiResolvers
+// src/backend/app/Services/ApiResolvers/Data/ApiResolvers
 
 class ApiResolverMap {
     // ...other API constants

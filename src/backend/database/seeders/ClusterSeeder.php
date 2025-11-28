@@ -7,9 +7,9 @@ use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\User;
+use App\Services\DatabaseProxyManagerService;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ClusterSeeder extends Seeder {
     public function __construct(

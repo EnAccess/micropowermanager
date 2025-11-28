@@ -52,7 +52,7 @@ php artisan model:show-tenant "Meter\Meter"
 As a first step in a Tinker shell configure the DemoCompany `tenant` connection like so:
 
 ```php
-$databaseProxyManagerService = app(\MPM\DatabaseProxy\DatabaseProxyManagerService::class);
+$databaseProxyManagerService = app(\App\Services\DatabaseProxyManagerService::class);
 $databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
 ```
 

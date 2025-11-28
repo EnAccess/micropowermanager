@@ -6,7 +6,7 @@ use App\Events\NewLogEvent;
 use App\Http\Requests\UpdateDeviceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Device;
-use MPM\Device\DeviceService;
+use App\Services\DeviceService;
 
 class DeviceController extends Controller {
     public function __construct(private DeviceService $deviceService) {}

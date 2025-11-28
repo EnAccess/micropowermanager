@@ -4,6 +4,7 @@ namespace Inensus\SwiftaPaymentProvider\Providers;
 
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Services\Interfaces\ITransactionProvider;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -14,7 +15,6 @@ use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use MPM\Transaction\Provider\ITransactionProvider;
 
 class SwiftaTransactionProvider implements ITransactionProvider {
     /** @var array<string, mixed> */

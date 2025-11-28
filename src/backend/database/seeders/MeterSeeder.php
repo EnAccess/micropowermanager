@@ -14,8 +14,8 @@ use App\Models\Meter\MeterConsumption;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class MeterSeeder extends Seeder {
     public function __construct(
