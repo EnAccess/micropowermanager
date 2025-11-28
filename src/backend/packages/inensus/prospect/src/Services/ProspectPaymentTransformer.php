@@ -11,6 +11,7 @@ use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\CashTransaction;
+use App\Models\Transaction\Transaction;
 
 class ProspectPaymentTransformer {
     /**
@@ -23,8 +24,6 @@ class ProspectPaymentTransformer {
 
         /** @var Token|AssetRate|AccessRate|null $paidFor */
         $paidFor = $payment->paidFor;
-
-        // Determine account_origin and account_external_id
         if ($paidFor instanceof Token) {
             $device = $paidFor->device;
             if ($device) {
@@ -46,7 +45,14 @@ class ProspectPaymentTransformer {
                 }
             }
         } elseif ($paidFor instanceof AccessRate) {
-            $meter = $paidFor->meter;
+            $meter = $this->resolveMeterFromTransaction($payment->transaction);
+
+            if (!$meter) {
+                $meter = $paidFor->accessRatePayments()
+                    ->with('meter')
+                    ->first()?->meter;
+            }
+
             if ($meter) {
                 $accountExternalId = $meter->serial_number;
             }
@@ -60,6 +66,7 @@ class ProspectPaymentTransformer {
         $providerTransactionId = null;
         $transaction = $payment->transaction;
         if ($transaction) {
+            /** @var object|null $originalTransaction */
             $originalTransaction = $transaction->originalTransaction;
             if ($originalTransaction) {
                 $providerName = $this->mapProviderName($transaction->original_transaction_type);
@@ -178,7 +185,7 @@ class ProspectPaymentTransformer {
             }
         }
 
-        if (isset($originalTransaction->transaction_id) && $originalTransaction->transaction_id !== null) {
+        if (isset($originalTransaction->transaction_id)) {
             return (string) $originalTransaction->transaction_id;
         }
 
@@ -195,5 +202,12 @@ class ProspectPaymentTransformer {
         }
 
         return null;
+    }
+
+    private function resolveMeterFromTransaction(?Transaction $transaction): ?Meter {
+        $device = $transaction?->device;
+        $underlying = $device?->device;
+
+        return $underlying instanceof Meter ? $underlying : null;
     }
 }
