@@ -20,10 +20,6 @@ class ProspectPaymentTransformer {
      */
     public function transform(PaymentHistory $payment): array {
         $accountExternalId = null;
-        $purchaseItem = null;
-        $purchaseUnit = null;
-        $purchaseQuantity = null;
-        $paidUntil = null;
 
         /** @var Token|AssetRate|AccessRate|null $paidFor */
         $paidFor = $payment->paidFor;
@@ -35,20 +31,11 @@ class ProspectPaymentTransformer {
                 $underlying = $device->device;
                 if ($underlying instanceof Meter) {
                     $accountExternalId = $underlying->serial_number;
-                    // For meter tokens, purchase_item is typically "Energy"
-                    $purchaseItem = 'Energy';
-                    $purchaseUnit = $paidFor->token_unit ?? 'kWh';
-                    $purchaseQuantity = $paidFor->token_amount ?? null;
                 } elseif ($underlying instanceof SolarHomeSystem) {
                     $accountExternalId = $underlying->serial_number;
-                    // For SHS tokens, purchase_item is typically "Uptime"
-                    $purchaseItem = 'Uptime';
-                    $purchaseUnit = $paidFor->token_unit ?? 'days';
-                    $purchaseQuantity = $paidFor->token_amount ?? null;
                 }
             }
         } elseif ($paidFor instanceof AssetRate) {
-            // Appliance installment payments
             $assetPerson = $paidFor->assetPerson()->with('device.device')->first();
             if ($assetPerson && $assetPerson->device) {
                 $underlying = $assetPerson->device->device;
@@ -57,18 +44,11 @@ class ProspectPaymentTransformer {
                 } elseif ($underlying instanceof Meter) {
                     $accountExternalId = $underlying->serial_number;
                 }
-                $purchaseItem = $assetPerson->asset->name ?? 'Appliance';
-                $purchaseUnit = 'pcs';
-                $purchaseQuantity = 1.0;
             }
         } elseif ($paidFor instanceof AccessRate) {
-            // Access rate payments (typically for meters)
             $meter = $paidFor->meter;
             if ($meter) {
                 $accountExternalId = $meter->serial_number;
-                $purchaseItem = 'Access Rate';
-                $purchaseUnit = 'pcs';
-                $purchaseQuantity = 1.0;
             }
         }
 
@@ -108,13 +88,13 @@ class ProspectPaymentTransformer {
             'account_external_id' => $accountExternalId,
             'days_active' => null,
             'reverted_at' => null,
-            'paid_until' => $paidUntil,
-            'purchase_item' => $purchaseItem,
-            'purchase_unit' => $purchaseUnit,
-            'purchase_quantity' => $purchaseQuantity !== null ? (float) $purchaseQuantity : null,
-            'provider_name' => $providerName,
-            'provider_category' => $providerCategory,
             'provider_transaction_id' => $providerTransactionId,
+            'provider_category' => $providerCategory,
+            'provider_name' => $providerName,
+            'purchase_quantity' => null,
+            'purchase_unit' => null,
+            'purchase_item' => null,
+            'paid_until' => null,
         ];
     }
 
