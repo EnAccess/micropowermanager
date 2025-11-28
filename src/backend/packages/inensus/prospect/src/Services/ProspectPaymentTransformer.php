@@ -7,7 +7,6 @@ use App\Models\AssetRate;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
-use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 
@@ -18,13 +17,11 @@ class ProspectPaymentTransformer {
      * @return array<string, mixed>
      */
     public function transform(PaymentHistory $payment): array {
-        $accountOrigin = null;
         $accountExternalId = null;
         $purchaseItem = null;
         $purchaseUnit = null;
         $purchaseQuantity = null;
         $paidUntil = null;
-        $daysActive = null;
 
         /** @var Token|AssetRate|AccessRate|null $paidFor */
         $paidFor = $payment->paidFor;
@@ -35,14 +32,12 @@ class ProspectPaymentTransformer {
             if ($device) {
                 $underlying = $device->device;
                 if ($underlying instanceof Meter) {
-                    $accountOrigin = 'meters';
                     $accountExternalId = $underlying->serial_number;
                     // For meter tokens, purchase_item is typically "Energy"
                     $purchaseItem = 'Energy';
                     $purchaseUnit = $paidFor->token_unit ?? 'kWh';
                     $purchaseQuantity = $paidFor->token_amount ?? null;
                 } elseif ($underlying instanceof SolarHomeSystem) {
-                    $accountOrigin = 'shs';
                     $accountExternalId = $underlying->serial_number;
                     // For SHS tokens, purchase_item is typically "Uptime"
                     $purchaseItem = 'Uptime';
@@ -56,10 +51,8 @@ class ProspectPaymentTransformer {
             if ($assetPerson && $assetPerson->device) {
                 $underlying = $assetPerson->device->device;
                 if ($underlying instanceof SolarHomeSystem) {
-                    $accountOrigin = 'shs';
                     $accountExternalId = $underlying->serial_number;
                 } elseif ($underlying instanceof Meter) {
-                    $accountOrigin = 'meters';
                     $accountExternalId = $underlying->serial_number;
                 }
                 $purchaseItem = $assetPerson->asset->name ?? 'Appliance';
@@ -70,21 +63,11 @@ class ProspectPaymentTransformer {
             // Access rate payments (typically for meters)
             $meter = $paidFor->meter;
             if ($meter) {
-                $accountOrigin = 'meters';
                 $accountExternalId = $meter->serial_number;
                 $purchaseItem = 'Access Rate';
                 $purchaseUnit = 'pcs';
                 $purchaseQuantity = 1.0;
             }
-        }
-
-        // Get payer information for account_external_id fallback
-        /** @var Person|null $payer */
-        $payer = $payment->payer;
-        if (!$accountExternalId && $payer instanceof Person) {
-            // Fallback: use person ID as account_external_id if no device found
-            $accountExternalId = (string) $payer->id;
-            $accountOrigin ??= 'meters'; // Default to meters
         }
 
         $currency = MainSettings::query()->value('currency') ?? '';
@@ -112,24 +95,26 @@ class ProspectPaymentTransformer {
             }
         }
 
+        $transactionAmount = $transaction?->amount;
+
         // Map payment_type to purpose
         $purpose = $this->mapPurpose($payment->payment_type);
-
-        // Generate payment_external_id (use payment ID or transaction ID)
-        $paymentExternalId = 'PAY-'.$payment->id;
 
         $paidAt = $payment->created_at
             ? $payment->created_at->setTimezone('UTC')->format('Y-m-d H:i:s.v').'Z'
             : null;
 
+
         return [
-            'payment_external_id' => $paymentExternalId,
-            'purpose' => $purpose,
+            'payment_external_id' => (string) $payment->transaction->id,
             'paid_at' => $paidAt,
-            'amount' => (float) $payment->amount,
+            'purpose' => $purpose,
+            'amount' => (float) ($transactionAmount ?? $payment->amount),
             'currency' => $currency,
-            'account_origin' => $accountOrigin ?? 'meters',
-            'account_external_id' => $accountExternalId ?? '',
+            'account_origin' => 'installations',
+            'account_external_id' => $accountExternalId,
+            'days_active' => null,
+            'reverted_at' => null,
             'paid_until' => $paidUntil,
             'purchase_item' => $purchaseItem,
             'purchase_unit' => $purchaseUnit,
@@ -137,7 +122,6 @@ class ProspectPaymentTransformer {
             'provider_name' => $providerName,
             'provider_category' => $providerCategory,
             'provider_transaction_id' => $providerTransactionId,
-            'days_active' => $daysActive !== null ? (float) $daysActive : null,
         ];
     }
 
