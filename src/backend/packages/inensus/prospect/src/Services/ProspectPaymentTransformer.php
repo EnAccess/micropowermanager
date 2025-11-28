@@ -70,18 +70,15 @@ class ProspectPaymentTransformer {
 
         $transactionAmount = $transaction?->amount;
 
-        // Map payment_type to purpose
-        $purpose = $this->mapPurpose($payment->payment_type);
+        $purpose = $this->mapTransactionPurpose($transaction?->type);
 
         $paidAt = $payment->created_at
             ? $payment->created_at->setTimezone('UTC')->format('Y-m-d H:i:s.v').'Z'
             : null;
 
-
         return [
             'payment_external_id' => (string) $payment->transaction->id,
             'paid_at' => $paidAt,
-            'purpose' => $purpose,
             'amount' => (float) ($transactionAmount ?? $payment->amount),
             'currency' => $currency,
             'account_origin' => 'installations',
@@ -95,17 +92,18 @@ class ProspectPaymentTransformer {
             'purchase_unit' => null,
             'purchase_item' => null,
             'paid_until' => null,
+            'purpose' => $purpose,
         ];
     }
 
     /**
-     * Map payment_type to purpose string.
+     * Map transaction type to Prospect purpose string.
      */
-    private function mapPurpose(?string $paymentType): string {
-        return match ($paymentType) {
+    private function mapTransactionPurpose(?string $transactionType): string {
+        return match ($transactionType) {
             'energy' => 'Paygo Payment',
-            'loan', 'installment' => 'Loan repayment',
-            'access_rate' => 'Access Rate Payment',
+            'deferred_payment', 'loan', 'installment' => 'Loan repayment',
+            'access_rate' => 'Access rate payment',
             default => 'Paygo Payment',
         };
     }
