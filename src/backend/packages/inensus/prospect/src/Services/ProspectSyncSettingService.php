@@ -104,5 +104,18 @@ class ProspectSyncSettingService {
                 'next_sync' => $now->add($dayInterval),
             ]);
         }
+
+        $customers = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
+        if (!$customers) {
+            $customers = $this->syncSetting->newQuery()->create([
+                'action_name' => 'Customers',
+                'sync_in_value_str' => 'day',
+                'sync_in_value_num' => 1,
+            ]);
+            $this->syncActionService->createSyncAction([
+                'sync_setting_id' => $customers->id,
+                'next_sync' => $now->add($dayInterval),
+            ]);
+        }
     }
 }
