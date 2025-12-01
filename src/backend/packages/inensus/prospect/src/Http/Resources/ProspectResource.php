@@ -21,6 +21,7 @@ class ProspectResource extends JsonResource {
         if ($this->resource === null) {
             return [];
         }
+
         return [
             'data' => [
                 'type' => 'credential',
