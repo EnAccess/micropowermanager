@@ -252,7 +252,7 @@ export default {
               "<br>" +
               "<strong>Type:</strong> " +
               markingInfo.deviceType,
-            { sticky: true, offset: [10, 10] },
+            { sticky: true, offset: [10, 10], permanent: false },
           )
 
           if (markingInfo.markerType === MARKER_TYPE.METER) {
