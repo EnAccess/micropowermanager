@@ -53,9 +53,7 @@
                     errors.has('Credential-Form.installationsApiToken'),
                 }"
               >
-                <label for="installationsApiToken">
-                  Secret
-                </label>
+                <label for="installationsApiToken">Secret</label>
                 <md-input
                   id="installationsApiToken"
                   name="installationsApiToken"
