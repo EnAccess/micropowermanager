@@ -18,6 +18,9 @@ class ProspectResource extends JsonResource {
      * @return array<string, mixed>
      */
     public function toArray($request): array {
+        if ($this->resource === null) {
+            return [];
+        }
         return [
             'data' => [
                 'type' => 'credential',
