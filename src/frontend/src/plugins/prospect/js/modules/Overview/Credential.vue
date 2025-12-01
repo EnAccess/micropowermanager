@@ -54,7 +54,7 @@
                 }"
               >
                 <label for="installationsApiToken">
-                  {{ $tc("phrases.apiToken") }}
+                  Secret
                 </label>
                 <md-input
                   id="installationsApiToken"
@@ -88,7 +88,7 @@
                     submitted && errors.has('Credential-Form.paymentsApiToken'),
                 }"
               >
-                <label for="paymentsApiToken">Payments Token</label>
+                <label for="paymentsApiToken">Secret</label>
                 <md-input
                   id="paymentsApiToken"
                   name="paymentsApiToken"
