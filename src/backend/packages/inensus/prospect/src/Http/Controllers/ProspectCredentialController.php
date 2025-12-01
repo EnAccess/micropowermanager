@@ -16,7 +16,7 @@ class ProspectCredentialController extends Controller {
     public function show(): JsonResource {
         $credentials = $this->credentialService->getCredentials();
         if ($credentials === null) {
-            return new ProspectResource(null);
+            return ProspectResource::collection([]);
         }
 
         return ProspectResource::collection($credentials);
