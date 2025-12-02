@@ -32,7 +32,7 @@ class OutstandingDebtsSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        $this->command->info('Creating demo data for OutstandingDebts feature...');
+        $this->command->outputComponents()->info('Creating demo data for OutstandingDebts feature...');
 
         // Get existing customers and assets
         $customers = Person::where('is_customer', true)->get();
@@ -40,7 +40,7 @@ class OutstandingDebtsSeeder extends Seeder {
         $assets = Asset::where('asset_type_id', $assetType->id)->get();
 
         if ($customers->isEmpty() || $assets->isEmpty()) {
-            $this->command->warn('No customers or assets found. Skipping OutstandingDebts seeder.');
+            $this->command->outputComponents()->warn('No customers or assets found. Skipping OutstandingDebts seeder.');
 
             return;
         }
@@ -51,7 +51,7 @@ class OutstandingDebtsSeeder extends Seeder {
         // Generate payment transactions to simulate ApplianceInstallmentPayer
         $this->generatePaymentTransactions();
 
-        $this->command->info('OutstandingDebts demo data created successfully!');
+        $this->command->outputComponents()->success('OutstandingDebts demo data created successfully!');
     }
 
     /**
@@ -67,7 +67,7 @@ class OutstandingDebtsSeeder extends Seeder {
             ->get();
 
         if ($devices->isEmpty()) {
-            $this->command->warn('No devices found with customers. Skipping OutstandingDebts seeder.');
+            $this->command->outputComponents()->warn('No devices found with customers. Skipping OutstandingDebts seeder.');
 
             return;
         }
@@ -290,7 +290,7 @@ class OutstandingDebtsSeeder extends Seeder {
      * Generate payment transactions to simulate ApplianceInstallmentPayer functionality.
      */
     private function generatePaymentTransactions(): void {
-        $this->command->info('Generating payment transactions for outstanding debts...');
+        $this->command->outputComponents()->info('Generating payment transactions for outstanding debts...');
 
         // Get all AssetPerson records with outstanding debts
         $assetPersons = AssetPerson::whereHas('rates', function ($query) {
@@ -298,19 +298,19 @@ class OutstandingDebtsSeeder extends Seeder {
         })->with(['rates', 'person'])->get();
 
         if ($assetPersons->isEmpty()) {
-            $this->command->warn('No AssetPerson records with outstanding debts found. Skipping payment transaction generation.');
+            $this->command->outputComponents()->warn('No AssetPerson records with outstanding debts found. Skipping payment transaction generation.');
 
             return;
         }
 
-        $this->command->info("Found {$assetPersons->count()} AssetPerson records with outstanding debts.");
+        $this->command->outputComponents()->info("Found {$assetPersons->count()} AssetPerson records with outstanding debts.");
 
         $demoUser = User::first();
 
         $transactionCount = 0;
         $maxTransactions = min(50, $assetPersons->count() * 2);
 
-        $this->command->info("Will generate up to {$maxTransactions} payment transactions.");
+        $this->command->outputComponents()->info("Will generate up to {$maxTransactions} payment transactions.");
 
         foreach ($assetPersons as $assetPerson) {
             if ($transactionCount >= $maxTransactions) {
@@ -318,7 +318,10 @@ class OutstandingDebtsSeeder extends Seeder {
             }
 
             $outstandingRates = $assetPerson->rates()->where('remaining', '>', 0)->get();
-            $this->command->line("AssetPerson {$assetPerson->id} has {$outstandingRates->count()} outstanding rates.");
+            $this->command->outputComponents()->twoColumnDetail(
+                "AssetPerson {$assetPerson->id}",
+                "{$outstandingRates->count()} outstanding rates"
+            );
 
             foreach ($outstandingRates as $rate) {
                 if ($transactionCount >= $maxTransactions) {
@@ -340,7 +343,7 @@ class OutstandingDebtsSeeder extends Seeder {
         // Create historical payment transactions to simulate payment history
         $this->createHistoricalPaymentTransactions($assetPersons, $demoUser);
 
-        $this->command->info("Generated {$transactionCount} payment transactions for outstanding debts.");
+        $this->command->outputComponents()->info("Generated {$transactionCount} payment transactions for outstanding debts.");
     }
 
     /**
@@ -371,7 +374,7 @@ class OutstandingDebtsSeeder extends Seeder {
             }
         }
 
-        $this->command->info("Created {$historicalTransactionCount} historical payment transactions.");
+        $this->command->outputComponents()->info("Created {$historicalTransactionCount} historical payment transactions.");
     }
 
     /**
@@ -446,7 +449,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 transaction: $transaction,
             ));
         } catch (\Exception $e) {
-            $this->command->warn('Failed to create historical payment transaction: '.$e->getMessage());
+            $this->command->outputComponents()->warn('Failed to create historical payment transaction: '.$e->getMessage());
         }
     }
 
@@ -500,7 +503,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 transaction: $transaction,
             ));
         } catch (\Exception $e) {
-            $this->command->warn('Failed to create partial payment transaction: '.$e->getMessage());
+            $this->command->outputComponents()->warn('Failed to create partial payment transaction: '.$e->getMessage());
         }
     }
 
@@ -550,7 +553,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 transaction: $transaction,
             ));
         } catch (\Exception $e) {
-            $this->command->warn('Failed to create full payment transaction: '.$e->getMessage());
+            $this->command->outputComponents()->warn('Failed to create full payment transaction: '.$e->getMessage());
         }
     }
 }
