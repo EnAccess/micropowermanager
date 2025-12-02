@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Models\Agent;
 use App\Models\Person\Person;
-use Illuminate\Support\Facades\Log;
 
 class AgentObserver {
     public function created(Agent $agent): void {}

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Services\CompanyService;
 use App\Utils\DemoCompany;
-use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder {

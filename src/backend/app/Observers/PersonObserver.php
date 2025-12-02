@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
-use Illuminate\Support\Facades\Log;
 
 class PersonObserver {
     /**
