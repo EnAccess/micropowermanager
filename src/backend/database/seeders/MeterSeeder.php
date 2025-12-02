@@ -149,7 +149,5 @@ class MeterSeeder extends Seeder {
             'consumption' => $consumption,
             'credit_on_meter' => $creditOnMeter,
         ]);
-
-        echo "Created meter consumption data for meter ID: {$meterId}\n";
     }
 }
