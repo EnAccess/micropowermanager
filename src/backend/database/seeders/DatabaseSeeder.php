@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder {
                 == DemoCompany::DEMO_COMPANY_NAME
             );
             if ($demo_data_already_loaded) {
-                (new Info($this->command->getOutput()))->render(
+                $this->command->outputComponents()->success(
                     'Demo data has been loaded previously. Nothing to seed.'
                 );
             } else {
