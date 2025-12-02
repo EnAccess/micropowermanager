@@ -51,7 +51,7 @@ class PaystackTransaction extends BasePaymentProviderTransaction {
         'metadata' => 'array',
     ];
 
-    public function getAmount(): int {
+    public function getAmount(): float {
         return $this->amount;
     }
 
