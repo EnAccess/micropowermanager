@@ -7,7 +7,7 @@ namespace Inensus\WavecomPaymentProvider\Providers;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
-use App\Services\Interfaces\ITransactionProvider;
+use App\Providers\Interfaces\ITransactionProvider;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;

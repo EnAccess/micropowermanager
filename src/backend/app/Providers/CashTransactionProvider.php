@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
-use App\Services\Interfaces\ITransactionProvider;
+use App\Providers\Interfaces\ITransactionProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 

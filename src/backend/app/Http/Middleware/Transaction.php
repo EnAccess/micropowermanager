@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\PaymentProviderNotIdentified;
 use App\Providers\AgentTransactionProvider;
-use App\Services\Interfaces\ITransactionProvider;
+use App\Providers\Interfaces\ITransactionProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 

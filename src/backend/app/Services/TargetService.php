@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Interfaces\ITargetAssignable;
 use App\Models\Target;
-use App\Services\Interfaces\ITargetAssignable;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;

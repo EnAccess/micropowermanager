@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\Helpers;
+namespace App\Providers\Helpers;
 
 use App\Models\Transaction\AgentTransaction;
 use App\Providers\AgentTransactionProvider;
-use App\Services\Interfaces\ITransactionProvider;
+use App\Providers\Interfaces\ITransactionProvider;
 use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
