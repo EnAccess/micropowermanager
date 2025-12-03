@@ -8,6 +8,7 @@ use App\Models\Transaction\ThirdPartyTransaction;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
+use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
@@ -25,6 +26,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property      Carbon|null                $updated_at
  * @property-read AgentTransaction|null      $agentTransaction
  * @property-read MesombTransaction|null     $mesombTransaction
+ * @property-read PaystackTransaction|null   $paystackTransaction
  * @property-read SteamaSite|null            $site
  * @property-read SwiftaTransaction|null     $swiftaTransaction
  * @property-read ThirdPartyTransaction|null $thirdPartyTransaction

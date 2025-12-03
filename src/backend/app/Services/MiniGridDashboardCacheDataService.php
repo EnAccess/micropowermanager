@@ -9,7 +9,6 @@ use App\Models\Target;
 use App\Models\Ticket\Ticket;
 use App\Models\Ticket\TicketCategory;
 use Illuminate\Support\Facades\Cache;
-use MPM\Device\MiniGridDeviceService;
 use Nette\Utils\DateTime;
 
 class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataService {

@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\CompanyDatabase;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

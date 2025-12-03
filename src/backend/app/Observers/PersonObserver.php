@@ -4,15 +4,12 @@ namespace App\Observers;
 
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
-use Illuminate\Support\Facades\Log;
 
 class PersonObserver {
     /**
      * Handle the Person "updated" event.
      */
-    public function updated(Person $person): void {
-        Log::debug($person->id.'updated');
-    }
+    public function updated(Person $person): void {}
 
     /**
      * Handle the User "deleted" event.

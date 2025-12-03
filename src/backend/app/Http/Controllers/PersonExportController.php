@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\People\Export\PersonExportService;
+use App\Services\PersonExportService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;

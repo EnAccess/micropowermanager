@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Console\Command;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ModelShowTenant extends Command {
     /**

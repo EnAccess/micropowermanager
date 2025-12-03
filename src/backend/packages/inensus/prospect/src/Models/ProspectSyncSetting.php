@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
  * @property string      $action_name
  * @property string      $sync_in_value_str
  * @property int         $sync_in_value_num
- * @property int|null    $max_attempts
+ * @property int         $max_attempts
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use App\Models\Interfaces\ITargetAssignable;
 use Database\Factories\ClusterFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use MPM\Target\TargetAssignable;
 
 /**
  * Class Cluster.
@@ -24,7 +24,7 @@ use MPM\Target\TargetAssignable;
  * @property-read User|null                 $manager
  * @property-read Collection<int, MiniGrid> $miniGrids
  */
-class Cluster extends BaseModel implements TargetAssignable {
+class Cluster extends BaseModel implements ITargetAssignable {
     /** @use HasFactory<ClusterFactory> */
     use HasFactory;
 

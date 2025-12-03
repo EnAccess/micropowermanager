@@ -11,10 +11,8 @@ use App\Models\Ticket\TicketCategory;
 use App\Models\Ticket\TicketOutsource;
 use App\Models\Ticket\TicketUser;
 use App\Models\User;
-use Illuminate\Console\View\Components\Info;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {
     public function __construct(
@@ -31,10 +29,6 @@ class TicketSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        (new Info($this->command->getOutput()))->render(
-            "Running TransactionSeeder to generate $this->amount tickets. This may take some time."
-        );
-
         // Create Ticket categories
         TicketCategory::factory()
             ->count(12)
@@ -149,16 +143,15 @@ class TicketSeeder extends Seeder {
         }
 
         // Seed tickets
-        for ($i = 1; $i <= $this->amount; ++$i) {
-            try {
-                DB::connection('tenant')->beginTransaction();
-                $this->generateTicket();
-                DB::connection('tenant')->commit();
-            } catch (\Exception $e) {
-                DB::connection('tenant')->rollBack();
-                echo $e->getMessage();
-            }
-        }
+        $this->command->outputComponents()->info(
+            "Running TicketSeeder to generate $this->amount tickets. This may take some time."
+        );
+
+        $this->command->withProgressBar(
+            range(1, $this->amount),
+            fn () => $this->generateTicket()
+        );
+        $this->command->newLine(2);
     }
 
     private function generateTicket(): void {
