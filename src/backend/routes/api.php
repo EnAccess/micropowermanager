@@ -38,8 +38,6 @@ use App\Http\Controllers\PersonController;
 use App\Http\Controllers\PersonExportController;
 use App\Http\Controllers\PersonMeterController;
 use App\Http\Controllers\PluginController;
-use App\Http\Controllers\ProtectedPageController;
-use App\Http\Controllers\ProtectedPagePasswordResetController;
 use App\Http\Controllers\RegistrationTailController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RevenueController;
@@ -79,6 +77,8 @@ require __DIR__.'/resources/AgentApp.php';
 require __DIR__.'/resources/AgentWeb.php';
 // Routes for CustomerRegistrationApp resource
 require __DIR__.'/resources/CustomerRegistrationApp.php';
+// Routes for Ticket Web panel routes
+require __DIR__.'/resources/TicketWeb.php';
 
 // JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
@@ -90,14 +90,14 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
 // user
 Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static function () {
     Route::post('/', [UserController::class, 'store'])->middleware('permission:users');
-    Route::put('/{user}', [UserController::class, 'update'])->middleware('permission:users');
-    Route::get('/{user}', [UserController::class, 'show'])->middleware('permission:users');
+    Route::put('/{user}', [UserController::class, 'update'])->middleware('can:update,user');
+    Route::get('/{user}', [UserController::class, 'show'])->middleware('can:view,user');
     Route::get('/', [UserController::class, 'index'])->middleware('permission:users');
 
     Route::group(['prefix' => '/{user}/addresses'], static function () {
         Route::post('/', [UserAddressController::class, 'store'])->middleware('permission:users');
-        Route::put('/', [UserAddressController::class, 'update'])->middleware('permission:users');
-        Route::get('/', [UserAddressController::class, 'show'])->middleware('permission:users');
+        Route::put('/', [UserAddressController::class, 'update'])->middleware('can:update,user');
+        Route::get('/', [UserAddressController::class, 'show'])->middleware('can:view,user');
     });
     Route::group(['prefix' => '/password'], static function () {
         Route::put('/{user}', [UserPasswordController::class, 'update'])->middleware('permission:users');
@@ -106,11 +106,6 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
 Route::post('users/password', [UserPasswordController::class, 'forgotPassword']);
 Route::get('users/password/validate/{token}', [UserPasswordController::class, 'validateResetToken']);
 Route::post('users/password/confirm', [UserPasswordController::class, 'confirmReset']);
-
-// Protected Pages Password reset routes
-Route::post('protected-page-password/reset', [ProtectedPagePasswordResetController::class, 'sendResetEmail']);
-Route::get('protected-page-password/validate/{token}', [ProtectedPagePasswordResetController::class, 'validateToken']);
-Route::post('protected-page-password/confirm', [ProtectedPagePasswordResetController::class, 'resetPassword']);
 
 // Appliances
 Route::group(['prefix' => 'appliances', 'middleware' => 'jwt.verify'], function () {
@@ -142,7 +137,7 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'jwt.verify'], function 
 Route::group(['prefix' => '/clusters', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', [ClusterController::class, 'index']);
     Route::get('/{clusterId}', [ClusterController::class, 'show'])->where('clusterId', '[0-9]+');
-    Route::post('/', [ClusterController::class, 'store']);
+    Route::post('/', [ClusterController::class, 'store'])->middleware('permission:settings');
     Route::get('/{clusterId}/geo', [ClusterController::class, 'showGeo']);
     Route::get('/revenue', [ClusterRevenueController::class, 'index']);
     Route::get('/{clusterId}/revenue', [ClusterRevenueController::class, 'show']);
@@ -160,14 +155,14 @@ Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static fu
     Route::get('/agents', [AgentPerformanceMetricsController::class, 'index']);
 });
 // Connection-Groups
-Route::group(['prefix' => 'connection-groups', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'connection-groups', 'middleware' => ['jwt.verify', 'permission:settings']], static function () {
     Route::get('/', [ConnectionGroupController::class, 'index']);
     Route::post('/', [ConnectionGroupController::class, 'store']);
     Route::put('/{connectionGroupId}', [ConnectionGroupController::class, 'update']);
     Route::get('/{connectionGroupId}', [ConnectionGroupController::class, 'show']);
 });
 // Connection-Types
-Route::group(['prefix' => 'connection-types', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'connection-types', 'middleware' => ['jwt.verify', 'permission:settings']], static function () {
     Route::get('/', [ConnectionTypeController::class, 'index']);
     Route::post('/', [ConnectionTypeController::class, 'store']);
     Route::get('/{connectionTypeId?}', [ConnectionTypeController::class, 'show']);
@@ -187,7 +182,7 @@ Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static
 // Mini-Grids
 Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', [MiniGridController::class, 'index']);
-    Route::post('/', [MiniGridController::class, 'store']);
+    Route::post('/', [MiniGridController::class, 'store'])->middleware('permission:settings');
     Route::get('/{miniGridId}', [MiniGridController::class, 'show']);
 
     Route::post('/{miniGridId}/transactions', [MiniGridRevenueController::class, 'show']);
@@ -239,7 +234,7 @@ Route::group(['prefix' => 'map-settings'], static function () {
 
 // Settings
 Route::group(['prefix' => 'settings'], static function () {
-    Route::get('/main', [MainSettingsController::class, 'index'])->middleware('permission:settings');
+    Route::get('/main', [MainSettingsController::class, 'index'])->middleware('jwt.verify');
     // update requires auth and permission
     Route::put('/main/{mainSettings}', [MainSettingsController::class, 'update'])
         ->middleware(['jwt.verify', 'permission:settings']);
@@ -313,14 +308,14 @@ Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'],
     Route::put('/{subConnectionTypeId}', [SubConnectionTypeController::class, 'update']);
 });
 // Targets
-Route::group(['prefix' => 'targets', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'targets', 'middleware' => ['jwt.verify', 'permission:settings']], static function () {
     Route::get('/', [TargetController::class, 'index']);
     Route::post('/', [TargetController::class, 'store']);
     Route::get('/{targetId}', [TargetController::class, 'show']);
     Route::post('/slots', [TargetController::class, 'getSlotsForDate']);
 });
 // Tariffs
-Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static function () {
+Route::group(['middleware' => ['jwt.verify', 'permission:settings'], 'prefix' => 'tariffs'], static function () {
     Route::get('/', [MeterTariffController::class, 'index']);
     Route::get('/{meterTariffId}', [MeterTariffController::class, 'show']);
     Route::post('/', [MeterTariffController::class, 'store']);
@@ -367,11 +362,6 @@ Route::group(['middleware' => ['auth:api', 'permission:settings.api-keys']], sta
 });
 
 Route::get('/clusterlist', [ClusterController::class, 'index']);
-
-Route::group(['prefix' => 'protected-pages'], static function () {
-    Route::get('/', [ProtectedPageController::class, 'index']);
-    Route::post('/compare', [ProtectedPageController::class, 'compareProtectedPagePassword']);
-});
 
 Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', [CompanyController::class, 'store']);

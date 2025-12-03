@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\DTO\ClusterDashboardData;
 use Illuminate\Support\Facades\Cache;
-use MPM\Device\ClusterDeviceService;
 use Nette\Utils\DateTime;
 
 class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataService {

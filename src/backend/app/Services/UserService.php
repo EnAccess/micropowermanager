@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Events\UserCreatedEvent;
 use App\Exceptions\MailNotSentException;
 use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use MPM\User\Events\UserCreatedEvent;
 use Tymon\JWTAuth\JWTGuard;
 
 class UserService {
@@ -98,7 +98,7 @@ class UserService {
     public function list(): LengthAwarePaginator {
         return $this->user->newQuery()
             ->select('id', 'name', 'email')
-            ->with(['addressDetails'])
+            ->with(['addressDetails', 'roles:name'])
             ->paginate();
     }
 

@@ -1,6 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `/tickets/api`
+const resource = `/api/tickets/`
 
 export default {
   list() {

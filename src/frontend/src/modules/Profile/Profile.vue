@@ -8,7 +8,7 @@
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
-                    'md-invalid': errors.has($tc('words.name')),
+                    'md-invalid': errors.has('address.' + $tc('words.name')),
                   }"
                 >
                   <label>{{ $tc("words.name") }}</label>
@@ -20,7 +20,7 @@
                   />
                   <md-icon>create</md-icon>
                   <span class="md-error">
-                    {{ errors.first($tc("words.name")) }}
+                    {{ errors.first("address." + $tc("words.name")) }}
                   </span>
                 </md-field>
               </div>
@@ -41,6 +41,7 @@
                 <template>
                   <vue-tel-input
                     id="phone"
+                    :key="`phone-${userService.user.id}-${refreshKey}`"
                     :validCharactersOnly="true"
                     mode="international"
                     invalidMsg="invalid phone number"
@@ -52,7 +53,9 @@
                     autocomplete="off"
                     :name="$tc('words.phone')"
                     enabledCountryCode="true"
+                    v-model="userService.user.phone"
                     @validate="validatePhone"
+                    @input="onPhoneInput"
                   ></vue-tel-input>
                   <span
                     v-if="!phone.valid && firstStepClicked"
@@ -74,7 +77,7 @@
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
-                    'md-invalid': errors.has($tc('words.city')),
+                    'md-invalid': errors.has('address.' + $tc('words.city')),
                   }"
                 >
                   <label for="city">
@@ -85,10 +88,7 @@
                     required
                     :name="$tc('words.city')"
                     id="city"
-                    v-validate.initial="'required'"
-                    :class="{
-                      'md-invalid': errors.has($tc('words.city')),
-                    }"
+                    v-validate="'required'"
                   >
                     <md-option
                       v-for="c in cityService.cities"
@@ -99,7 +99,7 @@
                     </md-option>
                   </md-select>
                   <span class="md-error">
-                    {{ errors.first($tc("words.city")) }}
+                    {{ errors.first("address." + $tc("words.city")) }}
                   </span>
                 </md-field>
               </div>
@@ -165,7 +165,9 @@
                 name="confirmChangePassword"
                 id="confirmChangePassword"
                 v-model="passwordService.user.confirmPassword"
-                v-validate="'required|confirmed:changePasswordRef|min:3|max:15'"
+                v-validate="
+                  'required|confirmed:changePasswordRef|min:3|max:128'
+                "
               />
               <span class="md-error">
                 {{ errors.first("confirmChangePassword") }}
@@ -205,6 +207,8 @@ export default {
       sending: false,
       modalVisibility: false,
       selectedCity: "",
+      firstStepClicked: false,
+      refreshKey: 0,
       userService: new UserService(),
       cityService: new CityService(),
       passwordService: new UserPasswordService(),
@@ -225,9 +229,9 @@ export default {
       },
     },
   },
-  mounted() {
-    this.getCities()
-    this.getUser()
+  async mounted() {
+    await this.getCities()
+    await this.getUser()
     if (
       !this.userService.user.phone ||
       typeof this.userService.user.phone !== "string"
@@ -239,11 +243,15 @@ export default {
     async getCities() {
       try {
         await this.cityService.getCities()
+        this.setSelectedCity()
       } catch (error) {
         this.alertNotify("error", error.message)
       }
     },
     validatePhone(phone) {
+      this.phone = phone
+    },
+    onPhoneInput(_, phone) {
       this.phone = phone
     },
     async getUser() {
@@ -257,30 +265,46 @@ export default {
         ) {
           this.userService.user.phone = ""
         }
-        if (this.userService.user.cityId !== undefined) {
-          this.selectedCity = this.cityService.cities
-            .filter((x) => x.id === this.userService.user.cityId)
-            .map((x) => x.id)[0]
-        }
+        this.setSelectedCity()
       } catch (error) {
         this.alertNotify("error", error.message)
       }
     },
+    setSelectedCity() {
+      if (
+        this.userService.user.cityId !== undefined &&
+        this.userService.user.cityId !== null
+      ) {
+        // If cities are loaded, verify the city exists in the list
+        if (this.cityService.cities.length > 0) {
+          const city = this.cityService.cities.find(
+            (x) => x.id === this.userService.user.cityId,
+          )
+          this.selectedCity = city ? city.id : this.userService.user.cityId
+        } else {
+          // If cities not loaded yet, set directly (will be validated when cities load)
+          this.selectedCity = this.userService.user.cityId
+        }
+      }
+    },
     async updateDetails() {
+      this.firstStepClicked = true
       this.sending = true
       let validation = await this.$validator.validateAll("address")
-      if (!validation) {
+      if (!validation || !this.phone.valid) {
         this.sending = false
         return
       }
       if (this.selectedCity !== undefined) {
-        this.userService.user.city_id = this.selectedCity
+        this.userService.user.cityId = this.selectedCity
       }
       try {
         await this.userService.update()
         this.alertNotify("success", this.$tc("words.profile", 2))
+        // Refresh user data after successful update
+        await this.getUser()
       } catch (error) {
-        this.alertNotify("error", error)
+        this.alertNotify("error", error.message)
       }
       this.sending = false
     },

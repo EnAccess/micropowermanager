@@ -13,13 +13,13 @@ use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\ApplianceService;
 use App\Services\CashTransactionService;
+use App\Services\DeviceAddressService;
+use App\Services\DeviceService;
 use App\Services\GeographicalInformationService;
 use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use MPM\Device\DeviceAddressService;
-use MPM\Device\DeviceService;
 
 class AppliancePersonController extends Controller {
     public function __construct(

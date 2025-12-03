@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAdminRequest;
 use App\Http\Resources\ApiResource;
+use App\Http\Resources\UserListResource;
 use App\Models\User;
 use App\Services\CompanyDatabaseService;
 use App\Services\DatabaseProxyService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller {
     public function __construct(
@@ -17,10 +19,10 @@ class UserController extends Controller {
         private CompanyDatabaseService $companyDatabaseService,
     ) {}
 
-    public function index(Request $request): ApiResource {
+    public function index(Request $request): AnonymousResourceCollection {
         $users = $this->userService->list();
 
-        return new ApiResource($users);
+        return UserListResource::collection($users);
     }
 
     public function store(CreateAdminRequest $request): ApiResource {

@@ -24,7 +24,7 @@ class AgentApplianceSalesSeeder extends Seeder {
         // Fetch Existing Agents
         $agents = Agent::all();
         if ($agents->isEmpty()) {
-            $this->command->warn('No existing agents found. Skipping seeder.');
+            $this->command->outputComponents()->warn('No existing agents found. Skipping seeder.');
 
             return;
         }
@@ -32,7 +32,7 @@ class AgentApplianceSalesSeeder extends Seeder {
         // Fetch Existing Customers
         $customers = Person::where('is_customer', true)->get();
         if ($customers->isEmpty()) {
-            $this->command->warn('No existing customers found. Skipping seeder.');
+            $this->command->outputComponents()->warn('No existing customers found. Skipping seeder.');
 
             return;
         }
@@ -41,7 +41,7 @@ class AgentApplianceSalesSeeder extends Seeder {
         $applianceType = ApplianceType::where('name', 'Solar Home System')->first();
         $appliances = Appliance::where('appliance_type_id', $applianceType->id)->get();
         if ($appliances->isEmpty()) {
-            $this->command->warn('No existing appliances found. Skipping seeder.');
+            $this->command->outputComponents()->warn('No existing appliances found. Skipping seeder.');
 
             return;
         }
@@ -85,6 +85,6 @@ class AgentApplianceSalesSeeder extends Seeder {
             ]);
         });
 
-        $this->command->info('Agent Appliance Sales Seeded Successfully!');
+        $this->command->outputComponents()->success('Agent Appliance Sales Seeded Successfully!');
     }
 }

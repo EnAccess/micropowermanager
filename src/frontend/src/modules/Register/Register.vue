@@ -123,31 +123,6 @@
                       </span>
                     </md-field>
                   </div>
-                  <div class="md-layout-item md-size-100">
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has(
-                          'Company-Form.protected_page_password',
-                        ),
-                      }"
-                    >
-                      <label for="protected_page_password">
-                        Password for protected pages
-                      </label>
-                      <md-input
-                        type="password"
-                        name="protected_page_password"
-                        id="protected_page_password"
-                        v-validate="'required|min:3|max:50'"
-                        v-model="companyForm.protected_page_password"
-                      />
-                      <span class="md-error">
-                        {{
-                          errors.first("Company-Form.protected_page_password")
-                        }}
-                      </span>
-                    </md-field>
-                  </div>
                 </form>
               </div>
               <div class="md-layout-item md-size-100 exclamation-div">
@@ -361,7 +336,7 @@
                         id="confirmPassword"
                         v-model="companyForm.user.confirmPassword"
                         v-validate="
-                          'required|confirmed:passwordRef|min:3|max:15'
+                          'required|confirmed:passwordRef|min:3|max:128'
                         "
                       />
                       <span class="md-error">
@@ -466,7 +441,6 @@ export default {
         address: "",
         phone: "",
         email: "",
-        protected_page_password: "",
         user: {
           name: "",
           email: "",

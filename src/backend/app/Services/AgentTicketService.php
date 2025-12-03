@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Agent;
+use App\Models\Ticket\Ticket;
 use App\Services\Interfaces\IAssignationService;
-use Inensus\Ticket\Models\Ticket;
 
 /**
  * @implements IAssignationService<Ticket, Agent>

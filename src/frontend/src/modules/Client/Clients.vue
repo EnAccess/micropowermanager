@@ -14,7 +14,6 @@
       @widgetAction="
         () => {
           showAddClient = true
-          this.key++
         }
       "
     >
@@ -192,7 +191,6 @@
     <add-client-modal
       :showAddClient="showAddClient"
       @hideAddCustomer="() => (showAddClient = false)"
-      :key="key"
     />
 
     <!-- Updated Export Modal for Customer Export -->
@@ -314,7 +312,6 @@ export default {
       paginator: new Paginator(resources.person.list),
       searchTerm: "",
       showAddClient: false,
-      key: 0,
       outstandingDebtsExportService: new OutstandingDebtsExportService(),
       customerExportService: new CustomerExportService(),
       mainSettingsService: new MainSettingsService(),
@@ -428,7 +425,6 @@ export default {
         return
       }
       this.people.updateList(data)
-
       EventBus.$emit(
         "widgetContentLoaded",
         this.subscriber,
@@ -454,6 +450,16 @@ export default {
       try {
         const response = await this.paginator.loadPage(pageNumber, params)
         this.people.updateList(response.data)
+
+        // Keep widget content state in sync with the actual list length.
+        // This ensures that after clearing a search (especially one that returned no results),
+        // the customer list becomes visible again instead of staying empty while
+        // the paginator still shows existing entries.
+        EventBus.$emit(
+          "widgetContentLoaded",
+          this.subscriber,
+          this.people.list.length,
+        )
 
         if (this.selectedAgentId) {
           // Update pagination for filtered results

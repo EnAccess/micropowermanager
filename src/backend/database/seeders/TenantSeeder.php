@@ -5,12 +5,12 @@ namespace Database\Seeders;
 use App\Helpers\RolesPermissionsPopulator;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
+use App\Services\DatabaseProxyManagerService;
 use App\Services\MainSettingsService;
 use App\Services\PluginsService;
 use App\Services\UserService;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TenantSeeder extends Seeder {
     public function __construct(
@@ -115,7 +115,6 @@ class TenantSeeder extends Seeder {
                     [
                         'company_name' => DemoCompany::DEMO_COMPANY_NAME,
                         'currency' => DemoCompany::DEMO_COMPANY_CURRENCY,
-                        'protected_page_password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                     ]
                 );
             }
