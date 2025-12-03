@@ -10,6 +10,7 @@ use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
+use App\Services\DatabaseProxyManagerService;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use Database\Factories\AgentTransactionFactory;
@@ -24,7 +25,6 @@ use Inensus\SunKingSHS\Models\SunKingTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TransactionSeeder extends Seeder {
     public function __construct(

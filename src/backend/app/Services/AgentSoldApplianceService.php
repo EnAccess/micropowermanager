@@ -10,9 +10,6 @@ use App\Services\Interfaces\IBaseService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use MPM\Device\DeviceAddressService;
-use MPM\Device\DeviceService;
-use MPM\Transaction\TransactionService;
 
 /**
  * @implements IBaseService<AgentSoldAppliance>
