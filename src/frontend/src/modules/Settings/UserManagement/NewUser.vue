@@ -59,7 +59,7 @@
                   type="password"
                   :name="$tc('words.password')"
                   id="password"
-                  v-validate="'required|min:3|max:15'"
+                  v-validate="'required|min:3|max:128'"
                   v-model="user.password"
                   ref="passwordRef"
                 />
@@ -85,7 +85,7 @@
                   :name="$tc('phrases.confirmPassword')"
                   id="confirmPassword"
                   v-model="user.confirmPassword"
-                  v-validate="'required|min:3|max:15'"
+                  v-validate="'required|min:3|max:128'"
                 />
                 <span class="md-error">
                   {{
