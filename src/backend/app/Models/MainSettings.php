@@ -19,9 +19,9 @@ use Illuminate\Support\Carbon;
  * @property string      $language
  * @property float|null  $vat_energy
  * @property float|null  $vat_appliance
- * @property int|null    $sms_gateway_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null    $sms_gateway_id
  */
 class MainSettings extends BaseModel {
     /** @use HasFactory<MainSettingsFactory> */

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use App\Models\Auth\Permission;
+use App\Models\Auth\Role;
 use App\Models\Ticket\TicketUser;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -33,7 +35,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read Collection<int, AgentAssignedAppliances> $assignedAppliance
  * @property-read Collection<int, AgentBalanceHistory>     $balanceHistory
  * @property-read Company|null                             $company
+ * @property-read Collection<int, Permission>              $permissions
  * @property-read TicketUser|null                          $relationTicketUser
+ * @property-read Collection<int, Role>                    $roles
  */
 class User extends Authenticatable implements JWTSubject {
     /** @use HasFactory<UserFactory> */

@@ -3,16 +3,19 @@
 namespace Inensus\Prospect\Models;
 
 use App\Models\Base\BaseModel;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 /**
+ * @property int         $id
  * @property string      $filename
  * @property string|null $file_path
  * @property int         $records_count
  * @property int|null    $file_size
- * @property Carbon|null $extracted_at
+ * @property string|null $extracted_at
  * @property bool        $is_synced
- * @property Carbon|null $synced_at
+ * @property string|null $synced_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class ProspectExtractedFile extends BaseModel {
     protected $table = 'prospect_extracted_files';

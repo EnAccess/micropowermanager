@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use App\Models\Auth\Permission;
+use App\Models\Auth\Role;
 use App\Models\Person\Person;
 use App\Models\Ticket\Ticket;
 use App\Models\Transaction\Transaction;
@@ -45,8 +47,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read Collection<int, AgentBalanceHistory>     $balanceHistory
  * @property-read AgentCommission|null                     $commission
  * @property-read MiniGrid|null                            $miniGrid
+ * @property-read Collection<int, Permission>              $permissions
  * @property-read Person|null                              $person
  * @property-read Collection<int, AgentReceipt>            $receipt
+ * @property-read Collection<int, Role>                    $roles
  * @property-read Collection<int, AssetPerson>             $soldAppliances
  * @property-read Collection<int, Ticket>                  $tickets
  * @property-read Collection<int, Transaction>             $transaction
