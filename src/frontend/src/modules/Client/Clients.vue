@@ -6,7 +6,7 @@
       :search="true"
       :subscriber="subscriber"
       :button="true"
-      :paginator="people.paginator"
+      :paginator="paginator"
       :route_name="'/people'"
       color="green"
       :button-text="$tc('phrases.addCustomer')"
@@ -363,10 +363,8 @@ export default {
 
   methods: {
     handleSearch() {
-      if (this.searchTerm.length > 0) {
+      if (this.searchTerm.length > 2) {
         this.performSearch()
-      } else {
-        this.showAllEntries()
       }
     },
 
@@ -408,16 +406,12 @@ export default {
     },
 
     onSearchEvent(searchTerm) {
-      // Update search term if it came from widget
-      if (searchTerm !== this.searchTerm) {
-        this.searchTerm = searchTerm
-      }
-      // The watch on searchTerm will handle the actual search
+      this.searchTerm = searchTerm
     },
 
     onEndSearchEvent() {
       this.searchTerm = ""
-      // The watch will trigger showAllEntries
+      this.showAllEntries()
     },
 
     reloadList(subscriber, data) {
