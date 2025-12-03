@@ -21,6 +21,7 @@ class TransactionExportService extends AbstractExportService {
             $this->worksheet->setCellValue('E'.($key + 2), $value[4]);
             $this->worksheet->setCellValue('F'.($key + 2), $value[5]);
             $this->worksheet->setCellValue('G'.($key + 2), $value[6]);
+            $this->worksheet->setCellValue('H'.($key + 2), $value[7]);
         }
 
         foreach ($this->worksheet->getColumnIterator() as $column) {
@@ -38,6 +39,7 @@ class TransactionExportService extends AbstractExportService {
                 $transaction->original_transaction_type,
                 $transaction->device->person->name.' '.$transaction->device->person->surname,
                 $transaction->message,
+                $transaction->device->device_type,
                 $readableAmount.$this->currency,
                 $transaction->type,
                 $this->convertUtcDateToTimezone($transaction->created_at),

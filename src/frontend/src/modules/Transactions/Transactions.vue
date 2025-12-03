@@ -382,10 +382,13 @@
               <md-field>
                 <label>{{ $tc("words.deviceType") }}</label>
                 <md-select v-model="exportFilters.deviceType">
-                  <md-option value="">{{ $tc("words.all") }}</md-option>
-                  <md-option value="meter">{{ $tc("words.meter") }}</md-option>
-                  <md-option value="appliance">
-                    {{ $tc("words.appliance") }}
+                  <md-option value="all">{{ $tc("words.all") }}</md-option>
+                  <md-option
+                    v-for="device in deviceTypes"
+                    :value="device.type"
+                    :key="device.type"
+                  >
+                    {{ device.display }}
                   </md-option>
                 </md-select>
               </md-field>
@@ -456,6 +459,7 @@ import { EventBus } from "@/shared/eventbus"
 import Widget from "@/shared/Widget.vue"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction"
 import Box from "@/shared/Box"
+import { mapGetters } from "vuex"
 import { TransactionService } from "@/services/TransactionService"
 import { TransactionExportService } from "@/services/TransactionExportService"
 import { MainSettingsService } from "@/services/MainSettingsService"
@@ -499,7 +503,7 @@ export default {
       ],
       exportFilters: {
         format: "csv",
-        deviceType: "",
+        deviceType: "all",
         provider: "",
         status: "",
       },
@@ -655,6 +659,11 @@ export default {
 
       this.loadAnalytics()
     },
+  },
+  computed: {
+    ...mapGetters({
+      deviceTypes: "device/getDeviceTypes",
+    }),
   },
   watch: {
     //for query param filtering

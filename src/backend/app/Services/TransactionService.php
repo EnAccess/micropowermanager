@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Asset;
-use App\Models\EBike;
-use App\Models\SolarHomeSystem;
+use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
@@ -25,10 +23,6 @@ class TransactionService implements IAssociative, IBaseService {
 
     public function __construct(
         private Transaction $transaction,
-        private MeterTransactionService $meterTransactionService,
-        private SolarHomeSystemTransactionService $solarHomeSystemTransactionService,
-        private ApplianceTransactionService $applianceTransactionService,
-        private EBikeTransactionService $eBikeTransactionService,
     ) {}
 
     /**
@@ -73,13 +67,70 @@ class TransactionService implements IAssociative, IBaseService {
         return round($percentage - 100, 2);
     }
 
-    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService|EBikeTransactionService {
-        return match ($type) {
-            SolarHomeSystem::RELATION_NAME => $this->solarHomeSystemTransactionService,
-            Asset::RELATION_NAME => $this->applianceTransactionService,
-            EBike::RELATION_NAME => $this->eBikeTransactionService,
-            default => $this->meterTransactionService,
-        };
+    /**
+     * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
+     */
+    public function search(
+        string $deviceType = 'all',
+        ?string $serialNumber = null,
+        ?int $tariffId = null,
+        ?string $transactionProvider = null,
+        ?int $status = null,
+        ?string $fromDate = null,
+        ?string $toDate = null,
+        ?int $limit = null,
+        bool $whereApplied = false,
+    ) {
+        $query = $this->transaction->newQuery()->with('originalTransaction');
+
+        if ($deviceType != 'all') {
+            $query->whereHas(
+                'device',
+                fn ($q) => $q->whereHasMorph('device', $deviceType)
+            );
+        }
+
+        if ($serialNumber) {
+            $query->where('message', 'LIKE', '%'.$serialNumber.'%');
+            $whereApplied = true;
+        }
+
+        // Tariff only for Meter
+        if ($tariffId) {
+            if ($whereApplied) {
+                $query->orWhereHas(
+                    'device',
+                    fn ($q) => $q->whereHasMorph('device', Meter::class, fn ($q) => $q->where('tariff_id', $tariffId))
+                );
+            } else {
+                $whereApplied = true;
+                $query->whereHas(
+                    'device',
+                    fn ($q) => $q->whereHasMorph('device', Meter::class, fn ($q) => $q->where('tariff_id', $tariffId))
+                );
+            }
+        }
+        if ($transactionProvider) {
+            $query->where(fn ($q) => $q->whereHasMorph('originalTransaction', $transactionProvider, fn ($q) => $q->whereNotNull('id')));
+        }
+
+        if ($status) {
+            $query->whereHasMorph('originalTransaction', ($transactionProvider !== '-1') ? $transactionProvider : '*', fn ($q) => $q->where('status', $status));
+        }
+
+        if ($fromDate) {
+            $query->where('created_at', '>=', $fromDate);
+        }
+
+        if ($toDate) {
+            $query->where('created_at', '<=', $toDate);
+        }
+
+        if ($limit) {
+            return $query->latest()->paginate($limit);
+        }
+
+        return $query->get();
     }
 
     /**

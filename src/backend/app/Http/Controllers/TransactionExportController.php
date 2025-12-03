@@ -29,7 +29,7 @@ class TransactionExportController {
     public function downloadExcel(
         Request $request,
     ): BinaryFileResponse {
-        $type = $request->get('deviceType') ?: 'meter';
+        $deviceType = $request->get('deviceType') ?: 'all';
         $serialNumber = $request->get('serial_number');
         $tariffId = $request->get('tariff');
         $transactionProvider = $request->get('provider');
@@ -39,8 +39,8 @@ class TransactionExportController {
 
         $mainSettings = $this->mainSettingsService->getAll()->first();
         $this->transactionExportService->setCurrency($mainSettings->currency);
-        $transactionService = $this->transactionService->getRelatedService($type);
-        $data = $transactionService->search(
+        $data = $this->transactionService->search(
+            $deviceType,
             $serialNumber,
             $tariffId,
             $transactionProvider,
@@ -60,7 +60,7 @@ class TransactionExportController {
     }
 
     public function downloadCsv(Request $request): BinaryFileResponse {
-        $type = $request->get('deviceType') ?: 'meter';
+        $deviceType = $request->get('deviceType') ?: 'all';
         $transactionProvider = $request->get('provider');
         $status = $request->get('status');
         $fromDate = $request->get('from');
@@ -68,8 +68,8 @@ class TransactionExportController {
 
         $mainSettings = $this->mainSettingsService->getAll()->first();
         $this->transactionExportService->setCurrency($mainSettings->currency);
-        $transactionService = $this->transactionService->getRelatedService($type);
-        $data = $transactionService->search(
+        $data = $this->transactionService->search(
+            $deviceType,
             null,
             null,
             $transactionProvider,
@@ -79,7 +79,7 @@ class TransactionExportController {
         );
         $this->transactionExportService->setTransactionData($data);
         $this->transactionExportService->setExportingData();
-        $headers = ['Status', 'Payment Service', 'Customer', 'Serial Number', 'Amount', 'Type', 'Date'];
+        $headers = ['Status', 'Payment Service', 'Customer', 'Device Serial Number', 'Device Type', 'Amount', 'Type', 'Date'];
         $csvPath = $this->transactionExportService->saveCsv($headers);
 
         $path = Storage::disk('local')->path($csvPath);
