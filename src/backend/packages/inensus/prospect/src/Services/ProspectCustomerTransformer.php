@@ -16,7 +16,6 @@ class ProspectCustomerTransformer {
     public function transform(Person $person): array {
         $primaryAddress = $this->getPrimaryAddress($person);
         $secondaryAddress = $this->getSecondaryAddress($person);
-        $additionalData = $person->additional_json ?? [];
 
         $externalId = (string) $person->id;
         $fullName = trim(($person->name ?? '').' '.($person->surname ?? ''));
@@ -39,14 +38,14 @@ class ProspectCustomerTransformer {
 
         return [
             'external_id' => $externalId,
-            'profession' => $additionalData['profession'] ?? null,
+            'profession' => null,
             'phone_2' => $secondaryAddress?->phone ?? null,
             'phone' => $primaryAddress?->phone ?? null,
-            'identification_number' => $additionalData['identification_number'] ?? null,
-            'identification_type' => $additionalData['identification_type'] ?? null,
-            'household_size' => isset($additionalData['household_size']) ? (int) $additionalData['household_size'] : null,
+            'identification_number' => null,
+            'identification_type' => null,
+            'household_size' => null,
             'gender' => $gender,
-            'former_electricity_source' => $additionalData['former_electricity_source'] ?? null,
+            'former_electricity_source' => null,
             'email' => $primaryAddress?->email ?? null,
             'country' => $countryCode,
             'birth_year' => $birthYear,
@@ -96,8 +95,8 @@ class ProspectCustomerTransformer {
         $normalized = strtolower(trim($sex));
 
         return match ($normalized) {
-            'male', 'm' => 'M',
-            'female', 'f' => 'F',
+            'male', 'm', '1' => 'M',
+            'female', 'f', '0' => 'F',
             'other', 'o' => 'O',
             default => null,
         };
