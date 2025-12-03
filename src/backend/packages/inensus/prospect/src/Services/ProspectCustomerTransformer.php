@@ -38,7 +38,7 @@ class ProspectCustomerTransformer {
 
         return [
             'external_id' => $externalId,
-            'profession' => null,
+            'profession' => $person?->education,
             'phone_2' => $secondaryAddress?->phone ?? null,
             'phone' => $primaryAddress?->phone ?? null,
             'identification_number' => null,
