@@ -71,7 +71,7 @@ class TransactionService implements IAssociative, IBaseService {
      * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function search(
-        string $deviceType = 'all',
+        ?string $deviceType = 'all',
         ?string $serialNumber = null,
         ?int $tariffId = null,
         ?string $transactionProvider = null,
@@ -79,7 +79,7 @@ class TransactionService implements IAssociative, IBaseService {
         ?string $fromDate = null,
         ?string $toDate = null,
         ?int $limit = null,
-        bool $whereApplied = false,
+        ?bool $whereApplied = false,
     ) {
         $query = $this->transaction->newQuery()->with('originalTransaction');
 
