@@ -9,11 +9,11 @@ use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Models\User;
+use App\Services\EBikeService;
 use Illuminate\Support\Facades\Log;
 use Inensus\DalyBms\Exceptions\DalyBmsApiResponseException;
 use Inensus\DalyBms\Models\DalyBmsTransaction;
 use Inensus\DalyBms\Services\DalyBmsCredentialService;
-use MPM\EBike\EBikeService;
 
 class DalyBmsApi implements IManufacturerAPI {
     // works with query params

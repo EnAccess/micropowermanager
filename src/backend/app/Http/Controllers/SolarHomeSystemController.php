@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSolarHomeSystemRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\DeviceService;
 use App\Services\PaymentHistoryService;
+use App\Services\SolarHomeSystemDeviceService;
+use App\Services\SolarHomeSystemService;
 use Illuminate\Http\Request;
-use MPM\Device\DeviceService;
-use MPM\SolarHomeSystem\SolarHomeSystemDeviceService;
-use MPM\SolarHomeSystem\SolarHomeSystemService;
 
 class SolarHomeSystemController extends Controller {
     public function __construct(

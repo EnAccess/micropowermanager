@@ -3,15 +3,19 @@
 namespace Inensus\PaystackPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 
 /**
+ * @property int         $id
  * @property string      $secret_key
  * @property string      $public_key
  * @property string|null $callback_url
- * @property string|null $merchant_name
+ * @property string      $merchant_name
  * @property string|null $merchant_email
  * @property string      $environment
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class PaystackCredential extends BaseModel {
     protected $table = 'paystack_credentials';

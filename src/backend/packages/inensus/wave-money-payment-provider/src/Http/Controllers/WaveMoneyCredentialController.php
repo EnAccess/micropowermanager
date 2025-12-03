@@ -3,12 +3,12 @@
 namespace Inensus\WaveMoneyPaymentProvider\Http\Controllers;
 
 use App\Services\CompanyService;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\URL;
 use Inensus\WaveMoneyPaymentProvider\Http\Requests\WaveMoneyCredentialRequest;
 use Inensus\WaveMoneyPaymentProvider\Http\Resources\WaveMoneyResource;
 use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class WaveMoneyCredentialController extends Controller {
     public function __construct(
