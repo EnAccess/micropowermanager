@@ -17,6 +17,7 @@ use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
 use App\Models\Ticket\Ticket;
+use App\Traits\SortModelQuery;
 use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -62,10 +63,21 @@ use Illuminate\Support\Facades\DB;
  * @property-read Collection<int, Roles>          $roleOwner
  * @property-read Collection<int, Ticket>         $tickets
  */
-class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
+class Person extends BaseModel implements \Stringable, HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
+    /** @use SortModelQuery<Person> */
+    use SortModelQuery;
+
+    /** @var array<int, string>|null */
+    protected $sortable = ['id', 'created_at', 'name'];
+
+    /** @var string|null */
+    protected $defaultSortField = 'created_at';
+
+    /** @var string */
+    protected $defaultSortDirection = 'desc';
 
     public const RELATION_NAME = 'person';
 

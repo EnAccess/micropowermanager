@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @implements IBaseService<Person>
@@ -23,7 +24,7 @@ class PersonService implements IBaseService {
      * @return Collection<int, Person>|array<int, Person>
      */
     public function getAllRegisteredPeople(): Collection|array {
-        return $this->person->newQuery()->get();
+        return $this->person->newQuery()->sortFromRequest()->get();
     }
 
     // associates the person with a country
@@ -170,13 +171,14 @@ class PersonService implements IBaseService {
      * @return LengthAwarePaginator<int, Person>
      */
     public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
-        $query = $this->person->newQuery()->with([
-            'addresses' => fn ($q) => $q->where('is_primary', 1),
-            'addresses.city',
-            'devices',
-            'agentSoldAppliance.assignedAppliance.agent',
-            'latestPayment',
-        ])->where('is_customer', $customerType);
+        $query = $this->person->newQuery()
+            ->with([
+                'addresses.city',
+                'devices',
+                'agentSoldAppliance',
+                'latestPayment',
+            ])
+            ->where('people.is_customer', $customerType);
 
         if ($agentId) {
             $query->whereHas('agentSoldAppliance.assignedAppliance.agent', function ($q) use ($agentId) {
@@ -198,7 +200,51 @@ class PersonService implements IBaseService {
             }
         }
 
-        return $query->paginate($limit);
+        return $query->sortFromRequest(function ($query, $sortBy, $sortDirection): bool {
+            switch ($sortBy) {
+                case 'agent':
+                    $query->orderBy(
+                        DB::raw('(SELECT CONCAT(agent_person.name, " ", agent_person.surname)
+                            FROM agent_sold_appliances AS asa
+                            INNER JOIN agent_assigned_appliances AS aaa ON aaa.id = asa.agent_assigned_appliance_id
+                            INNER JOIN agents AS ag ON ag.id = aaa.agent_id
+                            INNER JOIN people AS agent_person ON agent_person.id = ag.person_id
+                            WHERE asa.person_id = people.id
+                            LIMIT 1)'),
+                        $sortDirection
+                    );
+
+                    return true;
+
+                case 'city':
+                    $query->orderBy(
+                        DB::raw('(SELECT c.name
+                            FROM addresses AS addr
+                            INNER JOIN cities AS c ON c.id = addr.city_id
+                            WHERE addr.owner_id = people.id
+                                AND addr.owner_type = "person"
+                                AND addr.is_primary = 1
+                            LIMIT 1)'),
+                        $sortDirection
+                    );
+
+                    return true;
+
+                case 'device':
+                    $query->orderBy(
+                        DB::raw('(SELECT device_serial
+                            FROM devices
+                            WHERE person_id = people.id
+                            ORDER BY id ASC
+                            LIMIT 1)'),
+                        $sortDirection
+                    );
+
+                    return true;
+            }
+
+            return false;
+        })->paginate($limit);
     }
 
     /**
@@ -241,7 +287,7 @@ class PersonService implements IBaseService {
             });
         }
 
-        return $query->get();
+        return $query->sortFromRequest()->get();
     }
 
     public function createFromRequest(Request $request): Person {

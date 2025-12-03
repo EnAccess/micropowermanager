@@ -8,6 +8,7 @@ use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
+use App\Traits\SortModelQuery;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -50,6 +51,18 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property-read Token|null                                                                                                                                             $token
  */
 class Transaction extends BaseModel {
+    /** @use SortModelQuery<Transaction> */
+    use SortModelQuery;
+
+    /** @var array<int, string>|null */
+    protected $sortable = ['id', 'created_at', 'amount', 'sender', 'message', 'original_transaction_type'];
+
+    /** @var string|null */
+    protected $defaultSortField = 'created_at';
+
+    /** @var string */
+    protected $defaultSortDirection = 'desc';
+
     public const RELATION_NAME = 'transaction';
     public const TYPE_IMPORTED = 'imported';
 

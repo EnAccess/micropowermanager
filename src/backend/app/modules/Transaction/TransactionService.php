@@ -286,10 +286,10 @@ class TransactionService implements IAssociative, IBaseService {
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
-            return $this->transaction->newQuery()->with(['originalTransaction'])->latest()->paginate($limit);
+            return $this->transaction->newQuery()->with(['originalTransaction'])->sortFromRequest()->paginate($limit);
         }
 
-        return $this->transaction->newQuery()->latest()->get();
+        return $this->transaction->newQuery()->sortFromRequest()->get();
     }
 
     /**
