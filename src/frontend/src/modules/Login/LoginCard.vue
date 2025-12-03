@@ -50,7 +50,7 @@
                 id="password"
                 v-model="form.password"
                 :disabled="sending"
-                v-validate="'required|min:6|max:15'"
+                v-validate="'required|min:6|max:128'"
               />
               <span class="md-error">
                 {{ errors.first($tc("words.password")) }}
