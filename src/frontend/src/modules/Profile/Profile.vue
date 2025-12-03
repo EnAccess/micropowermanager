@@ -165,7 +165,9 @@
                 name="confirmChangePassword"
                 id="confirmChangePassword"
                 v-model="passwordService.user.confirmPassword"
-                v-validate="'required|confirmed:changePasswordRef|min:3|max:128'"
+                v-validate="
+                  'required|confirmed:changePasswordRef|min:3|max:128'
+                "
               />
               <span class="md-error">
                 {{ errors.first("confirmChangePassword") }}
