@@ -80,10 +80,10 @@ class TransactionService implements IAssociative, IBaseService {
         ?string $toDate = null,
         ?int $limit = null,
         ?bool $whereApplied = false,
-    ) {
+    ): LengthAwarePaginator|Collection {
         $query = $this->transaction->newQuery()->with('originalTransaction');
 
-        if ($deviceType != 'all') {
+        if ($deviceType !== 'all') {
             $query->whereHas(
                 'device',
                 fn ($q) => $q->whereHasMorph('device', $deviceType)
