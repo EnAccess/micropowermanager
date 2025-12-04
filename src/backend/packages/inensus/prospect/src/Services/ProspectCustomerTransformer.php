@@ -41,7 +41,7 @@ class ProspectCustomerTransformer {
             'profession' => $person?->education,
             'phone_2' => $secondaryAddress?->phone ?? null,
             'phone' => $primaryAddress?->phone ?? null,
-            'identification_number' => null,
+            'identification_number' => $person?->personDocument?->id,
             'identification_type' => null,
             'household_size' => null,
             'gender' => $gender,
