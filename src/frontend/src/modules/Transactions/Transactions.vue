@@ -288,13 +288,6 @@
                       style="max-height: 20px"
                     />
                     <img
-                      v-if="transaction.service === 'airtel_transaction'"
-                      class="logo"
-                      alt="logo"
-                      :src="airtelLogo"
-                      style="max-height: 32px"
-                    />
-                    <img
                       v-if="transaction.service === 'third_party_transaction'"
                       class="logo"
                       alt="logo"
@@ -398,15 +391,13 @@
                 <label>{{ $tc("words.provider") }}</label>
                 <md-select v-model="exportFilters.provider">
                   <md-option value="">{{ $tc("words.all") }}</md-option>
-                  <md-option value="vodacom_transaction">Vodacom</md-option>
-                  <md-option value="airtel_transaction">Airtel</md-option>
-                  <md-option value="wave_money_transaction">
-                    Wave Money
+                  <md-option
+                    v-for="(p, i) in transactionProviders"
+                    :key="i"
+                    :value="p.value"
+                  >
+                    {{ p.name }}
                   </md-option>
-                  <md-option value="swifta_transaction">Swifta</md-option>
-                  <md-option value="paystack_transaction">Paystack</md-option>
-                  <md-option value="agent_transaction">Agent</md-option>
-                  <md-option value="cash_transaction">Cash</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -461,10 +452,10 @@ import FilterTransaction from "@/modules/Transactions/FilterTransaction"
 import Box from "@/shared/Box"
 import { mapGetters } from "vuex"
 import { TransactionService } from "@/services/TransactionService"
+import { TransactionProviderService } from "@/services/TransactionProviderService"
 import { TransactionExportService } from "@/services/TransactionExportService"
 import { MainSettingsService } from "@/services/MainSettingsService"
 
-import airtelLogo from "@/assets/icons/airtel.png"
 import vodacomLogo from "@/assets/icons/vodacom.png"
 import waveMoneyLogo from "@/assets/icons/WaveMoney.png"
 import swifta from "@/assets/icons/Swifta.png"
@@ -482,6 +473,7 @@ export default {
   data() {
     return {
       transactionService: new TransactionService(),
+      transactionProviderService: new TransactionProviderService(),
       transactionExportService: new TransactionExportService(),
       mainSettingsService: new MainSettingsService(),
       period: "Yesterday",
@@ -507,7 +499,7 @@ export default {
         provider: "",
         status: "",
       },
-      airtelLogo: airtelLogo,
+      transactionProviders: [],
       vodacomLogo: vodacomLogo,
       thirdPartyLogo: thirdPartyLogo,
       waveMoneyLogo: waveMoneyLogo,
@@ -522,6 +514,7 @@ export default {
     this.checkRouteChanges()
     this.loadAnalytics()
     this.getPeriod()
+    this.getTransactionProviders()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("transactionFilterClosed", this.closeFilter)
   },
@@ -658,6 +651,10 @@ export default {
       }
 
       this.loadAnalytics()
+    },
+    async getTransactionProviders() {
+      this.transactionProviders =
+        await this.transactionProviderService.getTransactionProviders()
     },
   },
   computed: {
