@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SmsStoredEvent;
+use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Http\Requests\SmsRequest;
 use App\Http\Requests\StoreSmsRequest;
 use App\Http\Resources\ApiResource;
@@ -11,6 +12,7 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Sms;
+use App\Services\SmsGatewayResolverService;
 use App\Services\SmsService;
 use App\Services\TicketCommentService;
 use App\Sms\Senders\SmsConfigs;
@@ -28,7 +30,14 @@ class SmsController extends Controller {
         private Meter $meter,
         private SmsService $smsService,
         private TicketCommentService $commentService,
+        private SmsGatewayResolverService $smsGatewayResolverService,
     ) {}
+
+    private function ensureSmsGatewayIsConfigured(): void {
+        if (!$this->smsGatewayResolverService->isSmsGatewayConfigured()) {
+            throw new SmsGatewayNotConfiguredException();
+        }
+    }
 
     public function index(): ApiResource {
         $list = $this->sms::with('address.owner')
@@ -40,6 +49,8 @@ class SmsController extends Controller {
     }
 
     public function storeBulk(Request $request): void {
+        $this->ensureSmsGatewayIsConfigured();
+
         $type = $request->get('type');
         $receivers = $request->get('receivers');
         $message = $request->get('message');
@@ -178,6 +189,8 @@ class SmsController extends Controller {
     }
 
     public function storeAndSend(SmsRequest $request): ApiResource {
+        $this->ensureSmsGatewayIsConfigured();
+
         $personId = $request->get('person_id');
         $message = $request->get('message');
         $senderId = $request->get('senderId');
