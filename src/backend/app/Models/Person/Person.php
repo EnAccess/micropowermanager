@@ -14,6 +14,7 @@ use App\Models\CustomerGroup;
 use App\Models\Device;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
+use App\Models\PersonDocument;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
 use App\Models\Ticket\Ticket;
@@ -59,6 +60,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read PaymentHistory|null             $latestPayment
  * @property-read MiniGrid|null                   $miniGrid
  * @property-read Collection<int, PaymentHistory> $payments
+ * @property-read PersonDocument|null             $personDocument
  * @property-read Collection<int, Roles>          $roleOwner
  * @property-read Collection<int, Ticket>         $tickets
  */
@@ -171,6 +173,13 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
      */
     public function assetPerson(): HasMany {
         return $this->HasMany(AssetPerson::class, 'person_id', 'id');
+    }
+
+    /**
+     * @return HasOne<PersonDocument, $this>
+     */
+    public function personDocument(): HasOne {
+        return $this->hasOne(PersonDocument::class, 'person_id', 'id');
     }
 
     public function __toString(): string {
