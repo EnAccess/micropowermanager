@@ -66,7 +66,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'status_code' => 422,
         ], 422));
         $exceptions->render(fn (SmsGatewayNotConfiguredException $e) => response()->json([
-            'message' => 'No active SMS provider is configured. Please configure an SMS gateway in Main Settings i.e enable a sms gateway plugin (AfricasTalking or TextBee).',
+            'message' => 'No active SMS provider is configured. Please configure an SMS gateway in Main Settings like AfricasTalking or TextBee.',
             'status_code' => 422,
         ], 422));
     })
