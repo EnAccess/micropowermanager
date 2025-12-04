@@ -29,6 +29,13 @@ export class SettingService {
         syncInValueNum: 1,
         maxAttempts: 3,
       },
+      {
+        id: 2,
+        actionName: "Payments",
+        syncInValueStr: "weekly",
+        syncInValueNum: 1,
+        maxAttempts: 3,
+      },
     ]
     this.syncList = this.list
   }

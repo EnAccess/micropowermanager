@@ -6,7 +6,9 @@ use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Inensus\Prospect\Jobs\ExtractInstallations;
+use Inensus\Prospect\Jobs\ExtractPayments;
 use Inensus\Prospect\Jobs\PushInstallations;
+use Inensus\Prospect\Jobs\PushPayments;
 use Inensus\Prospect\Models\ProspectSyncSetting;
 use Inensus\Prospect\Services\ProspectSyncActionService;
 use Inensus\Prospect\Services\ProspectSyncSettingService;
@@ -53,6 +55,10 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
                 if ($actionName === 'installations') {
                     dispatch(new ExtractInstallations());
                     dispatch(new PushInstallations());
+                    $result = true;
+                } elseif ($actionName === 'payments') {
+                    dispatch(new ExtractPayments());
+                    dispatch(new PushPayments());
                     $result = true;
                 }
             } catch (\Exception) {

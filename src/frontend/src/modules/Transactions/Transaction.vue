@@ -348,8 +348,6 @@ export default {
       switch (transactionType) {
         case "vodacom_transaction":
           return "VodacomTransactionDetail"
-        case "airtel_transaction":
-          return "AirtelTransactionDetail"
         case "agent_transaction":
           return "AgentTransactionDetail"
         case "third_party_transaction":
