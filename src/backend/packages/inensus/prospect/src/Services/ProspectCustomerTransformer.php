@@ -29,17 +29,17 @@ class ProspectCustomerTransformer {
         }
         $addressString = empty($addressParts) ? null : implode(', ', $addressParts);
 
-        $countryCode = $primaryAddress?->city?->country?->country_code ?? null;
+        $countryCode = $primaryAddress?->city?->country->country_code ?? null;
 
         $birthYear = $this->extractBirthYear($person->birth_date);
 
         return [
             'external_id' => $externalId,
-            'profession' => $person?->education,
+            'profession' => $person->education,
             'phone_2' => $secondaryAddress?->phone,
             'phone' => $primaryAddress?->phone,
-            'identification_number' => $person?->personDocument?->id,
-            'identification_type' => $person?->personDocument?->type,
+            'identification_number' => $person->personDocument?->id,
+            'identification_type' => $person->personDocument?->type,
             'household_size' => null,
             'gender' => null,
             'former_electricity_source' => null,
