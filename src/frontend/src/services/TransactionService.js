@@ -140,10 +140,6 @@ export class TransactionService {
     if (transactionData.original_transaction !== undefined) {
       return transactionData.original_transaction
     } else if (
-      transactionData.original_transaction_type === "airtel_transaction"
-    ) {
-      return transactionData.original_airtel
-    } else if (
       transactionData.original_transaction_type === "vodacom_transaction"
     ) {
       return transactionData.original_vodacom

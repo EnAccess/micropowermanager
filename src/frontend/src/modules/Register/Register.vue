@@ -336,7 +336,7 @@
                         id="confirmPassword"
                         v-model="companyForm.user.confirmPassword"
                         v-validate="
-                          'required|confirmed:passwordRef|min:3|max:15'
+                          'required|confirmed:passwordRef|min:3|max:128'
                         "
                       />
                       <span class="md-error">
