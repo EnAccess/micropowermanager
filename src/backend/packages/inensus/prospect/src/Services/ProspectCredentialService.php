@@ -3,6 +3,8 @@
 namespace Inensus\Prospect\Services;
 
 use App\Traits\EncryptsCredentials;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection;
 use Inensus\Prospect\Models\ProspectCredential;
 
 class ProspectCredentialService {
@@ -22,27 +24,47 @@ class ProspectCredentialService {
         ]);
     }
 
-    public function getCredentials(): ?ProspectCredential {
-        $credential = $this->credential->newQuery()->first();
+    /**
+     * @return EloquentCollection<int, ProspectCredential>|null
+     */
+    public function getCredentials() {
+        $credentials = $this->credential->newQuery()->get();
 
-        return $this->decryptCredentialFields($credential, ['api_url', 'api_token']);
+        if ($credentials->isEmpty()) {
+            return null;
+        }
+
+        return $credentials->map(fn (?object $credential): ?object => $this->decryptCredentialFields($credential, ['api_url', 'api_token']));
     }
 
     /**
-     * @param array{api_url: string, api_token: string|null} $data
+     * @param array<int, array{id?: int, api_url: string, api_token: string}> $credentialsData
+     *
+     * @return Collection<int, ProspectCredential>
      */
-    public function updateCredentials(array $data): ProspectCredential {
-        $credential = $this->credential->newQuery()->first();
+    public function updateCredentials(array $credentialsData): Collection {
+        $updatedCredentials = collect();
 
-        if (!$credential) {
-            $credential = $this->createCredentials();
+        foreach ($credentialsData as $data) {
+            $id = $data['id'] ?? null;
+            $encryptedData = $this->encryptCredentialFields($data, ['api_url', 'api_token']);
+
+            if ($id) {
+                $credential = $this->credential->newQuery()->updateOrCreate(
+                    ['id' => $id],
+                    $encryptedData
+                );
+            } else {
+                $credential = $this->credential->newQuery()->create($encryptedData);
+            }
+
+            $credential->fresh();
+
+            $updatedCredentials->push(
+                $this->decryptCredentialFields($credential, ['api_url', 'api_token'])
+            );
         }
 
-        $encryptedData = $this->encryptCredentialFields($data, ['api_url', 'api_token']);
-        $credential->update($encryptedData);
-
-        $credential->fresh();
-
-        return $this->decryptCredentialFields($credential, ['api_url', 'api_token']);
+        return $updatedCredentials;
     }
 }

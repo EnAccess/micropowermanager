@@ -4,14 +4,15 @@ namespace Inensus\Prospect\Jobs;
 
 use App\Jobs\AbstractJob;
 use App\Models\DatabaseProxy;
-use App\Models\Device;
+use App\Models\PaymentHistory;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inensus\Prospect\Models\ProspectExtractedFile;
-use Inensus\Prospect\Services\ProspectInstallationTransformer;
+use Inensus\Prospect\Services\ProspectPaymentTransformer;
 
-class ExtractInstallations extends AbstractJob {
+class ExtractPayments extends AbstractJob {
     /**
      * Create a new job instance.
      */
@@ -27,12 +28,12 @@ class ExtractInstallations extends AbstractJob {
      */
     public function executeJob(): void {
         try {
-            Log::info('Starting Prospect installations extraction job...');
+            Log::info('Starting Prospect payments extraction job...');
 
             $data = $this->extractDataFromDatabase();
 
             if ($data === []) {
-                Log::warning('No data to extract for Prospect installations. This may be because no devices are available.');
+                Log::warning('No data to extract for Prospect payments. This may be because no payments are available.');
 
                 return;
             }
@@ -41,12 +42,12 @@ class ExtractInstallations extends AbstractJob {
             $filePath = $this->writeCsvFile($data, $fileName);
             $this->storeExtractedFile($fileName, $filePath, count($data));
 
-            Log::info('Prospect installations extraction job completed successfully!', [
+            Log::info('Prospect payments extraction job completed successfully!', [
                 'file' => basename($filePath),
                 'records_count' => count($data),
             ]);
         } catch (\Exception $e) {
-            Log::error('Error during Prospect installations extraction job: '.$e->getMessage(), [
+            Log::error('Error during Prospect payments extraction job: '.$e->getMessage(), [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -55,48 +56,45 @@ class ExtractInstallations extends AbstractJob {
     }
 
     /**
-     * Extract installation data from database.
+     * Extract payment data from database.
      *
      * @return array<int, array<string, mixed>>
      */
     private function extractDataFromDatabase(): array {
         try {
-            Log::info('Extracting device data from database...');
+            Log::info('Extracting payment data from database...');
 
-            $query = Device::query()->with([
-                'device',
-                'person.addresses.geo',
-                'person.addresses.city.country',
-                'tokens.transaction',
-                'appliance',
-                'assetPerson',
+            $query = PaymentHistory::query()->with([
+                'paidFor' => function ($morphTo) {
+                    $morphTo->morphWith([
+                        Token::class => ['device.person.miniGrid', 'device.device'],
+                    ]);
+                },
+                'payer',
+                'transaction.originalTransaction',
             ]);
 
-            $devices = $query->get();
-            Log::info('Found '.$devices->count().' devices to process');
+            $payments = $query->get();
+            Log::info('Found '.$payments->count().' payments to process');
 
-            $transformer = app(ProspectInstallationTransformer::class);
-            $installations = [];
+            $transformer = app(ProspectPaymentTransformer::class);
+            $paymentData = [];
 
-            foreach ($devices as $device) {
-                if (!$device->device()->exists()) {
-                    continue;
-                }
-
+            foreach ($payments as $payment) {
                 try {
-                    $installations[] = $transformer->transform($device);
+                    $paymentData[] = $transformer->transform($payment);
                 } catch (\Exception $e) {
-                    Log::warning('Failed to transform device', [
-                        'device_id' => $device->id,
+                    Log::warning('Failed to transform payment', [
+                        'payment_id' => $payment->id,
                         'error' => $e->getMessage(),
                     ]);
                     continue;
                 }
             }
 
-            Log::info('Successfully processed '.count($installations).' installations');
+            Log::info('Successfully processed '.count($paymentData).' payments');
 
-            return $installations;
+            return $paymentData;
         } catch (\Exception $e) {
             Log::error('Error extracting data from database: '.$e->getMessage());
             throw $e;
@@ -128,7 +126,7 @@ class ExtractInstallations extends AbstractJob {
             $databaseProxy = app(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-            $filePath = "prospect/{$companyId}/installations/{$fileName}";
+            $filePath = "prospect/{$companyId}/payments/{$fileName}";
 
             Storage::put($filePath, $csvContent);
 
@@ -176,7 +174,7 @@ class ExtractInstallations extends AbstractJob {
 
             $existingFile = ProspectExtractedFile::query()
                 ->whereNotNull('file_path')
-                ->where('file_path', 'like', '%/installations/%')
+                ->where('file_path', 'like', '%/payments/%')
                 ->first();
 
             ProspectExtractedFile::updateOrCreate(

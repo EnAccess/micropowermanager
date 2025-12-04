@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Inensus\Prospect\Http\Clients\ProspectApiClient;
 use Inensus\Prospect\Models\ProspectExtractedFile;
 
-class PushInstallations extends AbstractJob {
+class PushPayments extends AbstractJob {
     /**
      * Track the extracted file being processed.
      */
@@ -34,19 +34,18 @@ class PushInstallations extends AbstractJob {
         try {
             $data = $this->loadCsvData();
             if ($data === []) {
-                Log::info('Prospect: no installations data to push');
+                Log::info('Prospect: no payment data to push');
 
                 return;
             }
             $payload = ['data' => $data];
-            Log::info('Prospect: pushing data', ['count' => count($data)]);
-            $response = app(ProspectApiClient::class)->postInstallations($payload);
+            $response = app(ProspectApiClient::class)->postPayments($payload);
 
             if ($response->failed()) {
-                Log::error('Prospect: push installations failed', ['status' => $response->status(), 'body' => $response->body()]);
-                throw new \RuntimeException('Prospect push failed');
+                Log::error('Prospect: push payments failed', ['status' => $response->status(), 'body' => $response->body()]);
+                throw new \RuntimeException('Prospect push payments failed');
             }
-            Log::info('Prospect: push installations success', ['count' => count($data)]);
+            Log::info('Prospect: push payments success', ['count' => count($data)]);
 
             if ($this->extractedFile instanceof ProspectExtractedFile) {
                 $this->extractedFile->update([
@@ -55,7 +54,7 @@ class PushInstallations extends AbstractJob {
                 ]);
             }
         } catch (\Exception $e) {
-            Log::error('Prospect: push error '.$e->getMessage());
+            Log::error('Prospect: push payments error '.$e->getMessage());
             throw $e;
         }
     }
@@ -78,7 +77,7 @@ class PushInstallations extends AbstractJob {
             throw new \Exception("CSV file not found: {$filePath}");
         }
 
-        Log::info('Loading data from: '.basename($filePath));
+        Log::info('Loading payment data from: '.basename($filePath));
 
         $csvContent = Storage::get($filePath) ?: '';
         $lines = array_values(array_filter(str_getcsv($csvContent, "\n"), fn ($l): bool => trim((string) $l) !== ''));
@@ -98,7 +97,7 @@ class PushInstallations extends AbstractJob {
 
                 return $v === '' ? null : $v;
             }, $record);
-            if (empty($record['customer_external_id']) || empty($record['serial_number'])) {
+            if (empty($record['payment_external_id']) || empty($record['account_external_id'])) {
                 continue;
             }
             $data[] = $record;
@@ -110,11 +109,11 @@ class PushInstallations extends AbstractJob {
     private function getLatestCsvFile(): string {
         $extractedFile = ProspectExtractedFile::query()
             ->whereNotNull('file_path')
-            ->where('file_path', 'like', '%/installations/%')
+            ->where('file_path', 'like', '%/payments/%')
             ->first();
 
         if (!$extractedFile || !$extractedFile->file_path) {
-            throw new \Exception('No CSV file found for Prospect installations');
+            return '';
         }
 
         $this->extractedFile = $extractedFile;
