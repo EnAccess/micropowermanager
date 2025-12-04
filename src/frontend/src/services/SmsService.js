@@ -168,7 +168,18 @@ export class SmsService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      return new ErrorHandler(e, "http")
+      if (e.response.status === 422) {
+        return new ErrorHandler(
+          e.response.data.message,
+          "http",
+          e.response.status,
+        )
+      }
+      return new ErrorHandler(
+        e.response.data.message,
+        "http",
+        e.response.status,
+      )
     }
   }
 
@@ -186,7 +197,18 @@ export class SmsService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      return new ErrorHandler(e, "http")
+      if (e.response.status === 422) {
+        return new ErrorHandler(
+          e.response.data.message,
+          "http",
+          e.response.status,
+        )
+      }
+      return new ErrorHandler(
+        e.response.data.message,
+        "http",
+        e.response.status,
+      )
     }
   }
 
