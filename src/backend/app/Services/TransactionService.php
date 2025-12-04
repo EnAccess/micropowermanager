@@ -74,7 +74,7 @@ class TransactionService implements IAssociative, IBaseService {
         ?string $deviceType = 'all',
         ?string $serialNumber = null,
         ?int $tariffId = null,
-        ?string $transactionProvider = null,
+        ?string $transactionProvider = 'all',
         ?int $status = null,
         ?string $fromDate = null,
         ?string $toDate = null,
@@ -110,12 +110,17 @@ class TransactionService implements IAssociative, IBaseService {
                 );
             }
         }
-        if ($transactionProvider) {
+
+        if ($transactionProvider !== 'all') {
             $query->where(fn ($q) => $q->whereHasMorph('originalTransaction', $transactionProvider, fn ($q) => $q->whereNotNull('id')));
         }
 
-        if ($status) {
-            $query->whereHasMorph('originalTransaction', ($transactionProvider !== '-1') ? $transactionProvider : '*', fn ($q) => $q->where('status', $status));
+        if ($status !== null) {
+            $query->whereHasMorph(
+                'originalTransaction',
+                ($transactionProvider !== 'all') ? $transactionProvider : '*',
+                fn ($q) => $q->where('status', $status)
+            );
         }
 
         if ($fromDate) {

@@ -29,10 +29,10 @@ class TransactionExportController {
     public function downloadExcel(
         Request $request,
     ): BinaryFileResponse {
-        $deviceType = $request->get('deviceType') ?: 'all';
+        $deviceType = $request->get('deviceType', 'all');
         $serialNumber = $request->get('serial_number');
         $tariffId = $request->get('tariff');
-        $transactionProvider = $request->get('provider');
+        $transactionProvider = $request->get('provider', 'all');
         $status = $request->get('status');
         $fromDate = $request->get('from');
         $toDate = $request->get('to');
@@ -60,8 +60,8 @@ class TransactionExportController {
     }
 
     public function downloadCsv(Request $request): BinaryFileResponse {
-        $deviceType = $request->get('deviceType') ?: 'all';
-        $transactionProvider = $request->get('provider');
+        $deviceType = $request->get('deviceType', 'all');
+        $transactionProvider = $request->get('provider', 'all');
         $status = $request->get('status');
         $fromDate = $request->get('from');
         $toDate = $request->get('to');
