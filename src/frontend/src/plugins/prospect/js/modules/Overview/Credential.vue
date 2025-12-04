@@ -116,7 +116,8 @@
               <md-field
                 :class="{
                   'md-invalid':
-                    submitted && errors.has('Credential-Form.customersApiToken'),
+                    submitted &&
+                    errors.has('Credential-Form.customersApiToken'),
                 }"
               >
                 <label for="customersApiToken">Secret</label>
