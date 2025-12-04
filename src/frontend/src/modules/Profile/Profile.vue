@@ -143,7 +143,7 @@
                 type="password"
                 name="changePassword"
                 id="changePassword"
-                v-validate="'required|min:3|max:15'"
+                v-validate="'required|min:3|max:128'"
                 v-model="passwordService.user.password"
                 ref="changePasswordRef"
               />

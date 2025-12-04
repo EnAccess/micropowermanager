@@ -307,7 +307,7 @@
                         type="password"
                         :name="$tc('words.password')"
                         id="password"
-                        v-validate="'required|min:3|max:15'"
+                        v-validate="'required|min:3|max:128'"
                         v-model="companyForm.user.password"
                         ref="passwordRef"
                       />

@@ -218,7 +218,7 @@
                       id="password"
                       :name="$tc('words.password')"
                       v-model="agentService.agent.password"
-                      v-validate="'required|min:3|max:15'"
+                      v-validate="'required|min:3|max:128'"
                       ref="passwordRef"
                       type="password"
                     />
