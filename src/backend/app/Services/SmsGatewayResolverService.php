@@ -136,6 +136,7 @@ class SmsGatewayResolverService {
             // Get the configured gateway from main settings
             $mainSettings = $this->mainSettingsService->getAll()->first();
             $configuredGatewayId = $mainSettings?->sms_gateway_id;
+
             return (bool) $configuredGatewayId;
         } catch (\Exception $e) {
             Log::error('Error while checking if SMS gateway is configured', ['error' => $e->getMessage()]);
