@@ -32,21 +32,19 @@ class ProspectCustomerTransformer {
 
         $countryCode = $primaryAddress?->city?->country?->country_code ?? null;
 
-        $gender = $this->mapGender($person->sex);
-
         $birthYear = $this->extractBirthYear($person->birth_date);
 
         return [
             'external_id' => $externalId,
             'profession' => $person?->education,
-            'phone_2' => $secondaryAddress?->phone ?? null,
-            'phone' => $primaryAddress?->phone ?? null,
+            'phone_2' => $secondaryAddress?->phone,
+            'phone' => $primaryAddress?->phone,
             'identification_number' => $person?->personDocument?->id,
-            'identification_type' => null,
+            'identification_type' => $person?->personDocument?->type,
             'household_size' => null,
-            'gender' => $gender,
+            'gender' => null,
             'former_electricity_source' => null,
-            'email' => $primaryAddress?->email ?? null,
+            'email' => $primaryAddress?->email,
             'country' => $countryCode,
             'birth_year' => $birthYear,
             'address' => $addressString,
@@ -82,24 +80,6 @@ class ProspectCustomerTransformer {
             ->where('phone', '!=', '')
             ->with(['city.country', 'geo'])
             ->first();
-    }
-
-    /**
-     * Map sex field to Prospect gender enum (M, F, O).
-     */
-    private function mapGender(?string $sex): ?string {
-        if (!$sex) {
-            return null;
-        }
-
-        $normalized = strtolower(trim($sex));
-
-        return match ($normalized) {
-            'male', 'm', '1' => 'M',
-            'female', 'f', '0' => 'F',
-            'other', 'o' => 'O',
-            default => null,
-        };
     }
 
     /**
