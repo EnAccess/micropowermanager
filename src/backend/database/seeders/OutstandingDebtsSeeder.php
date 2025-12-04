@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use App\Events\PaymentSuccessEvent;
-use App\Models\Asset;
-use App\Models\AssetPerson;
-use App\Models\AssetRate;
-use App\Models\AssetType;
+use App\Models\Appliance;
+use App\Models\AppliancePerson;
+use App\Models\ApplianceRate;
+use App\Models\ApplianceType;
 use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
@@ -34,19 +34,19 @@ class OutstandingDebtsSeeder extends Seeder {
     public function run() {
         $this->command->outputComponents()->info('Creating demo data for OutstandingDebts feature...');
 
-        // Get existing customers and assets
+        // Get existing customers and appliances
         $customers = Person::where('is_customer', true)->get();
-        $assetType = AssetType::where('name', 'Solar Home System')->first();
-        $assets = Asset::where('asset_type_id', $assetType->id)->get();
+        $applianceType = ApplianceType::where('name', 'Solar Home System')->first();
+        $appliances = Appliance::where('appliance_type_id', $applianceType->id)->get();
 
-        if ($customers->isEmpty() || $assets->isEmpty()) {
-            $this->command->outputComponents()->warn('No customers or assets found. Skipping OutstandingDebts seeder.');
+        if ($customers->isEmpty() || $appliances->isEmpty()) {
+            $this->command->outputComponents()->warn('No customers or appliances found. Skipping OutstandingDebts seeder.');
 
             return;
         }
 
-        // Create AssetPerson records with outstanding debts
-        $this->createAssetPersonWithOutstandingDebts($assets);
+        // Create AppliancePerson records with outstanding debts
+        $this->createAppliancePersonWithOutstandingDebts($appliances);
 
         // Generate payment transactions to simulate ApplianceInstallmentPayer
         $this->generatePaymentTransactions();
@@ -55,9 +55,9 @@ class OutstandingDebtsSeeder extends Seeder {
     }
 
     /**
-     * @param Collection<int, Asset> $assets
+     * @param Collection<int, Appliance> $appliances
      */
-    private function createAssetPersonWithOutstandingDebts(Collection $assets): void {
+    private function createAppliancePersonWithOutstandingDebts(Collection $appliances): void {
         // Get existing devices (meters and SHS) that have customers
         $devices = Device::whereHasMorph('device', [Meter::class, SolarHomeSystem::class])
             ->whereHas('person', function ($query) {
@@ -72,14 +72,14 @@ class OutstandingDebtsSeeder extends Seeder {
             return;
         }
 
-        // Create 15-25 AssetPerson records with outstanding debts
+        // Create 15-25 AppliancePerson records with outstanding debts
         $count = rand(15, 25);
 
         for ($i = 0; $i < $count; ++$i) {
             $device = $devices->random();
             $customer = $device->person;
-            /** @var Asset $asset */
-            $asset = $assets->random();
+            /** @var Appliance $appliance */
+            $appliance = $appliances->random();
 
             // Create different scenarios for demo
             $scenario = rand(1, 4);
@@ -87,30 +87,30 @@ class OutstandingDebtsSeeder extends Seeder {
             switch ($scenario) {
                 case 1:
                     // Scenario 1: Recent purchase with some overdue payments
-                    $this->createRecentPurchaseScenario($customer, $asset, $device);
+                    $this->createRecentPurchaseScenario($customer, $appliance, $device);
                     break;
                 case 2:
                     // Scenario 2: Long-term debt with multiple overdue payments
-                    $this->createLongTermDebtScenario($customer, $asset, $device);
+                    $this->createLongTermDebtScenario($customer, $appliance, $device);
                     break;
                 case 3:
                     // Scenario 3: Partial payments with remaining balance
-                    $this->createPartialPaymentScenario($customer, $asset, $device);
+                    $this->createPartialPaymentScenario($customer, $appliance, $device);
                     break;
                 case 4:
                     // Scenario 4: Almost paid off but with overdue final payments
-                    $this->createAlmostPaidScenario($customer, $asset, $device);
+                    $this->createAlmostPaidScenario($customer, $appliance, $device);
                     break;
             }
         }
     }
 
-    private function createRecentPurchaseScenario(Person $customer, Asset $asset, Device $device): void {
-        $assetPerson = AssetPerson::create([
-            'asset_id' => $asset->id,
+    private function createRecentPurchaseScenario(Person $customer, Appliance $appliance, Device $device): void {
+        $appliancePerson = AppliancePerson::create([
+            'appliance_id' => $appliance->id,
             'person_id' => $customer->id,
             'device_serial' => $device->device_serial,
-            'total_cost' => $asset->price,
+            'total_cost' => $appliance->price,
             'rate_count' => 12,
             'down_payment' => 0,
             'first_payment_date' => Carbon::now()->subMonths(3),
@@ -118,15 +118,15 @@ class OutstandingDebtsSeeder extends Seeder {
             'creator_id' => 1,
         ]);
 
-        $this->createAssetRatesWithRecentOverdue($assetPerson);
+        $this->createApplianceRatesWithRecentOverdue($appliancePerson);
     }
 
-    private function createLongTermDebtScenario(Person $customer, Asset $asset, Device $device): void {
-        $assetPerson = AssetPerson::create([
-            'asset_id' => $asset->id,
+    private function createLongTermDebtScenario(Person $customer, Appliance $appliance, Device $device): void {
+        $appliancePerson = AppliancePerson::create([
+            'appliance_id' => $appliance->id,
             'person_id' => $customer->id,
             'device_serial' => $device->device_serial,
-            'total_cost' => $asset->price,
+            'total_cost' => $appliance->price,
             'rate_count' => 24,
             'down_payment' => 0,
             'first_payment_date' => Carbon::now()->subMonths(18),
@@ -134,15 +134,15 @@ class OutstandingDebtsSeeder extends Seeder {
             'creator_id' => 1,
         ]);
 
-        $this->createAssetRatesWithLongTermDebt($assetPerson);
+        $this->createApplianceRatesWithLongTermDebt($appliancePerson);
     }
 
-    private function createPartialPaymentScenario(Person $customer, Asset $asset, Device $device): void {
-        $assetPerson = AssetPerson::create([
-            'asset_id' => $asset->id,
+    private function createPartialPaymentScenario(Person $customer, Appliance $appliance, Device $device): void {
+        $appliancePerson = AppliancePerson::create([
+            'appliance_id' => $appliance->id,
             'person_id' => $customer->id,
             'device_serial' => $device->device_serial,
-            'total_cost' => $asset->price,
+            'total_cost' => $appliance->price,
             'rate_count' => 12,
             'down_payment' => 0,
             'first_payment_date' => Carbon::now()->subMonths(8),
@@ -150,15 +150,15 @@ class OutstandingDebtsSeeder extends Seeder {
             'creator_id' => 1,
         ]);
 
-        $this->createAssetRatesWithPartialPayments($assetPerson);
+        $this->createApplianceRatesWithPartialPayments($appliancePerson);
     }
 
-    private function createAlmostPaidScenario(Person $customer, Asset $asset, Device $device): void {
-        $assetPerson = AssetPerson::create([
-            'asset_id' => $asset->id,
+    private function createAlmostPaidScenario(Person $customer, Appliance $appliance, Device $device): void {
+        $appliancePerson = AppliancePerson::create([
+            'appliance_id' => $appliance->id,
             'person_id' => $customer->id,
             'device_serial' => $device->device_serial,
-            'total_cost' => $asset->price,
+            'total_cost' => $appliance->price,
             'rate_count' => 12,
             'down_payment' => 0,
             'first_payment_date' => Carbon::now()->subMonths(10),
@@ -166,30 +166,30 @@ class OutstandingDebtsSeeder extends Seeder {
             'creator_id' => 1,
         ]);
 
-        $this->createAssetRatesAlmostPaid($assetPerson);
+        $this->createApplianceRatesAlmostPaid($appliancePerson);
     }
 
-    private function createAssetRatesWithRecentOverdue(AssetPerson $assetPerson): void {
-        $monthlyRate = floor($assetPerson->total_cost / $assetPerson->rate_count);
-        $remainingAmount = $assetPerson->total_cost;
+    private function createApplianceRatesWithRecentOverdue(AppliancePerson $appliancePerson): void {
+        $monthlyRate = floor($appliancePerson->total_cost / $appliancePerson->rate_count);
+        $remainingAmount = $appliancePerson->total_cost;
 
-        for ($month = 1; $month <= $assetPerson->rate_count; ++$month) {
-            if ($month === $assetPerson->rate_count) {
+        for ($month = 1; $month <= $appliancePerson->rate_count; ++$month) {
+            if ($month === $appliancePerson->rate_count) {
                 $rateAmount = $remainingAmount;
             } else {
                 $rateAmount = $monthlyRate;
                 $remainingAmount -= $monthlyRate;
             }
 
-            $dueDate = Carbon::parse($assetPerson->first_payment_date)->addMonths($month);
+            $dueDate = Carbon::parse($appliancePerson->first_payment_date)->addMonths($month);
             $isOverdue = $dueDate->isPast();
 
             // Recent purchase: only last 1-2 payments are overdue
-            $shouldBeOverdue = $isOverdue && $month >= ($assetPerson->rate_count - 2);
+            $shouldBeOverdue = $isOverdue && $month >= ($appliancePerson->rate_count - 2);
             $remaining = $shouldBeOverdue ? $rateAmount : 0;
 
-            AssetRate::create([
-                'asset_person_id' => $assetPerson->id,
+            ApplianceRate::create([
+                'appliance_person_id' => $appliancePerson->id,
                 'rate_cost' => $rateAmount,
                 'remaining' => $remaining,
                 'due_date' => $dueDate->format('Y-m-d'),
@@ -198,27 +198,27 @@ class OutstandingDebtsSeeder extends Seeder {
         }
     }
 
-    private function createAssetRatesWithLongTermDebt(AssetPerson $assetPerson): void {
-        $monthlyRate = floor($assetPerson->total_cost / $assetPerson->rate_count);
-        $remainingAmount = $assetPerson->total_cost;
+    private function createApplianceRatesWithLongTermDebt(AppliancePerson $appliancePerson): void {
+        $monthlyRate = floor($appliancePerson->total_cost / $appliancePerson->rate_count);
+        $remainingAmount = $appliancePerson->total_cost;
 
-        for ($month = 1; $month <= $assetPerson->rate_count; ++$month) {
-            if ($month === $assetPerson->rate_count) {
+        for ($month = 1; $month <= $appliancePerson->rate_count; ++$month) {
+            if ($month === $appliancePerson->rate_count) {
                 $rateAmount = $remainingAmount;
             } else {
                 $rateAmount = $monthlyRate;
                 $remainingAmount -= $monthlyRate;
             }
 
-            $dueDate = Carbon::parse($assetPerson->first_payment_date)->addMonths($month);
+            $dueDate = Carbon::parse($appliancePerson->first_payment_date)->addMonths($month);
             $isOverdue = $dueDate->isPast();
 
             // Long-term debt: multiple overdue payments with high reminder counts
             $shouldBeOverdue = $isOverdue && rand(0, 1) === 1; // 50% chance of being overdue
             $remaining = $shouldBeOverdue ? $rateAmount : 0;
 
-            AssetRate::create([
-                'asset_person_id' => $assetPerson->id,
+            ApplianceRate::create([
+                'appliance_person_id' => $appliancePerson->id,
                 'rate_cost' => $rateAmount,
                 'remaining' => $remaining,
                 'due_date' => $dueDate->format('Y-m-d'),
@@ -227,19 +227,19 @@ class OutstandingDebtsSeeder extends Seeder {
         }
     }
 
-    private function createAssetRatesWithPartialPayments(AssetPerson $assetPerson): void {
-        $monthlyRate = floor($assetPerson->total_cost / $assetPerson->rate_count);
-        $remainingAmount = $assetPerson->total_cost;
+    private function createApplianceRatesWithPartialPayments(AppliancePerson $appliancePerson): void {
+        $monthlyRate = floor($appliancePerson->total_cost / $appliancePerson->rate_count);
+        $remainingAmount = $appliancePerson->total_cost;
 
-        for ($month = 1; $month <= $assetPerson->rate_count; ++$month) {
-            if ($month === $assetPerson->rate_count) {
+        for ($month = 1; $month <= $appliancePerson->rate_count; ++$month) {
+            if ($month === $appliancePerson->rate_count) {
                 $rateAmount = $remainingAmount;
             } else {
                 $rateAmount = $monthlyRate;
                 $remainingAmount -= $monthlyRate;
             }
 
-            $dueDate = Carbon::parse($assetPerson->first_payment_date)->addMonths($month);
+            $dueDate = Carbon::parse($appliancePerson->first_payment_date)->addMonths($month);
             $isOverdue = $dueDate->isPast();
 
             // Partial payments: some overdue rates have partial payments
@@ -247,8 +247,8 @@ class OutstandingDebtsSeeder extends Seeder {
             $hasPartialPayment = $shouldBeOverdue && rand(0, 1) === 1;
             $remaining = $shouldBeOverdue ? ($hasPartialPayment ? rand(1, (int) $rateAmount - 1) : $rateAmount) : 0;
 
-            AssetRate::create([
-                'asset_person_id' => $assetPerson->id,
+            ApplianceRate::create([
+                'appliance_person_id' => $appliancePerson->id,
                 'rate_cost' => $rateAmount,
                 'remaining' => $remaining,
                 'due_date' => $dueDate->format('Y-m-d'),
@@ -257,27 +257,27 @@ class OutstandingDebtsSeeder extends Seeder {
         }
     }
 
-    private function createAssetRatesAlmostPaid(AssetPerson $assetPerson): void {
-        $monthlyRate = floor($assetPerson->total_cost / $assetPerson->rate_count);
-        $remainingAmount = $assetPerson->total_cost;
+    private function createApplianceRatesAlmostPaid(AppliancePerson $appliancePerson): void {
+        $monthlyRate = floor($appliancePerson->total_cost / $appliancePerson->rate_count);
+        $remainingAmount = $appliancePerson->total_cost;
 
-        for ($month = 1; $month <= $assetPerson->rate_count; ++$month) {
-            if ($month === $assetPerson->rate_count) {
+        for ($month = 1; $month <= $appliancePerson->rate_count; ++$month) {
+            if ($month === $appliancePerson->rate_count) {
                 $rateAmount = $remainingAmount;
             } else {
                 $rateAmount = $monthlyRate;
                 $remainingAmount -= $monthlyRate;
             }
 
-            $dueDate = Carbon::parse($assetPerson->first_payment_date)->addMonths($month);
+            $dueDate = Carbon::parse($appliancePerson->first_payment_date)->addMonths($month);
             $isOverdue = $dueDate->isPast();
 
             // Almost paid: only last 1-2 payments are overdue
-            $shouldBeOverdue = $isOverdue && $month >= ($assetPerson->rate_count - 1);
+            $shouldBeOverdue = $isOverdue && $month >= ($appliancePerson->rate_count - 1);
             $remaining = $shouldBeOverdue ? $rateAmount : 0;
 
-            AssetRate::create([
-                'asset_person_id' => $assetPerson->id,
+            ApplianceRate::create([
+                'appliance_person_id' => $appliancePerson->id,
                 'rate_cost' => $rateAmount,
                 'remaining' => $remaining,
                 'due_date' => $dueDate->format('Y-m-d'),
@@ -292,34 +292,34 @@ class OutstandingDebtsSeeder extends Seeder {
     private function generatePaymentTransactions(): void {
         $this->command->outputComponents()->info('Generating payment transactions for outstanding debts...');
 
-        // Get all AssetPerson records with outstanding debts
-        $assetPersons = AssetPerson::whereHas('rates', function ($query) {
+        // Get all AppliancePerson records with outstanding debts
+        $appliancePersons = AppliancePerson::whereHas('rates', function ($query) {
             $query->where('remaining', '>', 0);
         })->with(['rates', 'person'])->get();
 
-        if ($assetPersons->isEmpty()) {
-            $this->command->outputComponents()->warn('No AssetPerson records with outstanding debts found. Skipping payment transaction generation.');
+        if ($appliancePersons->isEmpty()) {
+            $this->command->outputComponents()->warn('No AppliancePerson records with outstanding debts found. Skipping payment transaction generation.');
 
             return;
         }
 
-        $this->command->outputComponents()->info("Found {$assetPersons->count()} AssetPerson records with outstanding debts.");
+        $this->command->outputComponents()->info("Found {$appliancePersons->count()} AppliancePerson records with outstanding debts.");
 
         $demoUser = User::first();
 
         $transactionCount = 0;
-        $maxTransactions = min(50, $assetPersons->count() * 2);
+        $maxTransactions = min(50, $appliancePersons->count() * 2);
 
         $this->command->outputComponents()->info("Will generate up to {$maxTransactions} payment transactions.");
 
-        foreach ($assetPersons as $assetPerson) {
+        foreach ($appliancePersons as $appliancePerson) {
             if ($transactionCount >= $maxTransactions) {
                 break;
             }
 
-            $outstandingRates = $assetPerson->rates()->where('remaining', '>', 0)->get();
+            $outstandingRates = $appliancePerson->rates()->where('remaining', '>', 0)->get();
             $this->command->outputComponents()->twoColumnDetail(
-                "AssetPerson {$assetPerson->id}",
+                "AppliancePerson {$appliancePerson->id}",
                 "{$outstandingRates->count()} outstanding rates"
             );
 
@@ -329,19 +329,19 @@ class OutstandingDebtsSeeder extends Seeder {
                 }
 
                 // Create partial payment transactions (simulating customer payments)
-                $this->createPartialPaymentTransaction($assetPerson, $rate, $demoUser);
+                $this->createPartialPaymentTransaction($appliancePerson, $rate, $demoUser);
                 ++$transactionCount;
 
                 // Sometimes create full payment transactions
                 if (rand(0, 3) === 0) {
-                    $this->createFullPaymentTransaction($assetPerson, $rate, $demoUser);
+                    $this->createFullPaymentTransaction($appliancePerson, $rate, $demoUser);
                     ++$transactionCount;
                 }
             }
         }
 
         // Create historical payment transactions to simulate payment history
-        $this->createHistoricalPaymentTransactions($assetPersons, $demoUser);
+        $this->createHistoricalPaymentTransactions($appliancePersons, $demoUser);
 
         $this->command->outputComponents()->info("Generated {$transactionCount} payment transactions for outstanding debts.");
     }
@@ -349,19 +349,19 @@ class OutstandingDebtsSeeder extends Seeder {
     /**
      * Create historical payment transactions to simulate customer payment history.
      *
-     * @param Collection<int, AssetPerson> $assetPersons
-     * @param User                         $demoUser
+     * @param Collection<int, AppliancePerson> $appliancePersons
+     * @param User                             $demoUser
      */
-    private function createHistoricalPaymentTransactions(Collection $assetPersons, User $demoUser): void {
+    private function createHistoricalPaymentTransactions(Collection $appliancePersons, User $demoUser): void {
         $historicalTransactionCount = 0;
         $maxHistoricalTransactions = 30;
 
-        foreach ($assetPersons as $assetPerson) {
+        foreach ($appliancePersons as $appliancePerson) {
             if ($historicalTransactionCount >= $maxHistoricalTransactions) {
                 break;
             }
 
-            // Create 1-3 historical payments per asset person
+            // Create 1-3 historical payments per appliance person
             $historicalPayments = rand(1, 3);
 
             for ($i = 0; $i < $historicalPayments; ++$i) {
@@ -369,7 +369,7 @@ class OutstandingDebtsSeeder extends Seeder {
                     break;
                 }
 
-                $this->createHistoricalPaymentTransaction($assetPerson, $demoUser, $i);
+                $this->createHistoricalPaymentTransaction($appliancePerson, $demoUser, $i);
                 ++$historicalTransactionCount;
             }
         }
@@ -380,14 +380,14 @@ class OutstandingDebtsSeeder extends Seeder {
     /**
      * Create a historical payment transaction.
      */
-    private function createHistoricalPaymentTransaction(AssetPerson $assetPerson, User $demoUser, int $paymentIndex): void {
+    private function createHistoricalPaymentTransaction(AppliancePerson $appliancePerson, User $demoUser, int $paymentIndex): void {
         try {
             // Calculate a historical date (1-12 months ago)
             $monthsAgo = rand(1, 12);
             $historicalDate = Carbon::now()->subMonths($monthsAgo);
 
             // Get sender information
-            $sender = $assetPerson->person->phone ?? $assetPerson->person->email ?? 'Customer-'.$assetPerson->person->id;
+            $sender = $appliancePerson->person->phone ?? $appliancePerson->person->email ?? 'Customer-'.$appliancePerson->person->id;
 
             // Create a random payment amount (simulating what was paid historically)
             $paymentAmount = rand(5000, 25000); // Random amount between 5-25 units
@@ -407,7 +407,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 'amount' => $paymentAmount,
                 'type' => 'deferred_payment',
                 'sender' => $sender,
-                'message' => $assetPerson->device_serial,
+                'message' => $appliancePerson->device_serial,
                 'created_at' => $historicalDate,
                 'updated_at' => $historicalDate,
             ]);
@@ -417,18 +417,18 @@ class OutstandingDebtsSeeder extends Seeder {
             $transaction->save();
 
             // Find a rate that would have been due around this time
-            $dueDate = Carbon::parse($assetPerson->first_payment_date)->addMonths($paymentIndex + 1);
+            $dueDate = Carbon::parse($appliancePerson->first_payment_date)->addMonths($paymentIndex + 1);
 
-            // Create a historical AssetRate record if it doesn't exist
-            $historicalRate = AssetRate::where('asset_person_id', $assetPerson->id)
+            // Create a historical ApplianceRate record if it doesn't exist
+            $historicalRate = ApplianceRate::where('appliance_person_id', $appliancePerson->id)
                 ->where('due_date', $dueDate->format('Y-m-d'))
                 ->first();
 
             if (!$historicalRate) {
                 // Create a historical rate record
-                $monthlyRate = floor($assetPerson->total_cost / $assetPerson->rate_count);
-                $historicalRate = AssetRate::create([
-                    'asset_person_id' => $assetPerson->id,
+                $monthlyRate = floor($appliancePerson->total_cost / $appliancePerson->rate_count);
+                $historicalRate = ApplianceRate::create([
+                    'appliance_person_id' => $appliancePerson->id,
                     'rate_cost' => $monthlyRate,
                     'remaining' => 0, // This was paid historically
                     'due_date' => $dueDate->format('Y-m-d'),
@@ -445,7 +445,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 paymentType: 'installment',
                 sender: $sender,
                 paidFor: $historicalRate,
-                payer: $assetPerson->person,
+                payer: $appliancePerson->person,
                 transaction: $transaction,
             ));
         } catch (\Exception $e) {
@@ -456,7 +456,7 @@ class OutstandingDebtsSeeder extends Seeder {
     /**
      * Create a partial payment transaction for an overdue rate.
      */
-    private function createPartialPaymentTransaction(AssetPerson $assetPerson, AssetRate $rate, User $demoUser): void {
+    private function createPartialPaymentTransaction(AppliancePerson $appliancePerson, ApplianceRate $rate, User $demoUser): void {
         // Calculate payment amount (partial payment)
         $paymentAmount = min(
             rand((int) floor($rate->remaining * 0.3), (int) floor($rate->remaining * 0.7)), // 30-70% of remaining
@@ -476,13 +476,13 @@ class OutstandingDebtsSeeder extends Seeder {
                 'manufacturer_transaction_type' => null,
             ]);
 
-            $sender = $assetPerson->person->phone ?? $assetPerson->person->email ?? 'Customer-'.$assetPerson->person->id;
+            $sender = $appliancePerson->person->phone ?? $appliancePerson->person->email ?? 'Customer-'.$appliancePerson->person->id;
 
             $transaction = new Transaction([
                 'amount' => $paymentAmount,
                 'type' => 'deferred_payment',
                 'sender' => $sender,
-                'message' => $assetPerson->device_serial,
+                'message' => $appliancePerson->device_serial,
             ]);
 
             $transaction->originalTransaction()->associate($cashTransaction);
@@ -499,7 +499,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 paymentType: 'installment',
                 sender: $sender,
                 paidFor: $rate,
-                payer: $assetPerson->person,
+                payer: $appliancePerson->person,
                 transaction: $transaction,
             ));
         } catch (\Exception $e) {
@@ -510,7 +510,7 @@ class OutstandingDebtsSeeder extends Seeder {
     /**
      * Create a full payment transaction for an overdue rate.
      */
-    private function createFullPaymentTransaction(AssetPerson $assetPerson, AssetRate $rate, User $demoUser): void {
+    private function createFullPaymentTransaction(AppliancePerson $appliancePerson, ApplianceRate $rate, User $demoUser): void {
         if ($rate->remaining <= 0) {
             return;
         }
@@ -526,13 +526,13 @@ class OutstandingDebtsSeeder extends Seeder {
                 'manufacturer_transaction_type' => null,
             ]);
 
-            $sender = $assetPerson->person->phone ?? $assetPerson->person->email ?? 'Customer-'.$assetPerson->person->id;
+            $sender = $appliancePerson->person->phone ?? $appliancePerson->person->email ?? 'Customer-'.$appliancePerson->person->id;
 
             $transaction = new Transaction([
                 'amount' => $paymentAmount,
                 'type' => 'deferred_payment',
                 'sender' => $sender,
-                'message' => $assetPerson->device_serial,
+                'message' => $appliancePerson->device_serial,
             ]);
 
             $transaction->originalTransaction()->associate($cashTransaction);
@@ -549,7 +549,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 paymentType: 'installment',
                 sender: $sender,
                 paidFor: $rate,
-                payer: $assetPerson->person,
+                payer: $appliancePerson->person,
                 transaction: $transaction,
             ));
         } catch (\Exception $e) {

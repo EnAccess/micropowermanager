@@ -6,7 +6,7 @@ use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCommission;
 use App\Models\AgentSoldAppliance;
-use App\Models\Asset;
+use App\Models\Appliance;
 use App\Models\Cluster;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
@@ -92,10 +92,10 @@ class AgentSellApplianceTest extends TestCase {
             'risk_balance' => -3,
         ]);
 
-        Asset::query()->create([
+        Appliance::query()->create([
             'name' => 'test',
             'price' => 100,
-            'asset_type_id' => 1,
+            'appliance_type_id' => 1,
         ]);
 
         AgentAssignedAppliances::query()->create([

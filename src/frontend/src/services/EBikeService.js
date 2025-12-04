@@ -14,7 +14,7 @@ export class EBikeService {
     this.list = []
     this.eBike = {
       serialNumber: null,
-      assetId: null,
+      applianceId: null,
       manufacturerId: null,
       receiveTime: null,
       lat: null,

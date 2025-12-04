@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\MailHelper;
-use App\Models\AssetRate;
+use App\Models\ApplianceRate;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,7 +16,7 @@ class OutstandingDebtsExportService extends AbstractExportService {
     ) {}
 
     /**
-     * @var Collection<int, AssetRate>
+     * @var Collection<int, ApplianceRate>
      */
     private Collection $outstandingDebtsData;
 
@@ -37,17 +37,17 @@ class OutstandingDebtsExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->outstandingDebtsData->map(fn (AssetRate $applianceRate): array => [
-            $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
-            $applianceRate->assetPerson->asset->name,
-            $applianceRate->assetPerson->device_serial,
+        $this->exportingData = $this->outstandingDebtsData->map(fn (ApplianceRate $applianceRate): array => [
+            $applianceRate->appliancePerson->person->name.' '.$applianceRate->appliancePerson->person->surname,
+            $applianceRate->appliancePerson->appliance->name,
+            $applianceRate->appliancePerson->device_serial,
             $applianceRate->due_date,
             $applianceRate->remaining,
         ]);
     }
 
     /**
-     * @param Collection<int, AssetRate> $outstandingDebtsData
+     * @param Collection<int, ApplianceRate> $outstandingDebtsData
      */
     public function setOutstandingDebtsData(Collection $outstandingDebtsData): void {
         $this->outstandingDebtsData = $outstandingDebtsData;

@@ -6,7 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
-use App\Models\AssetRate;
+use App\Models\ApplianceRate;
 use App\Models\Token;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -140,10 +140,10 @@ class TokenProcessor extends AbstractJob {
     private function handleRollbackInFailure(): void {
         $paidRates = $this->transactionContainer->paidRates;
         collect($paidRates)->map(function (array $paidRate) {
-            $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);
-            $assetRate->remaining += $paidRate['paid'];
-            $assetRate->update();
-            $assetRate->save();
+            $applianceRate = ApplianceRate::query()->find($paidRate['appliance_rate_id']);
+            $applianceRate->remaining += $paidRate['paid'];
+            $applianceRate->update();
+            $applianceRate->save();
         });
         $paymentHistories = $this->transactionContainer->transaction->paymentHistories()->get();
         $paymentHistories->map(function ($paymentHistory) {

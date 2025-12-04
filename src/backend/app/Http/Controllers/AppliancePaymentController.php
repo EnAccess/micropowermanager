@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use App\Services\AppliancePaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class AppliancePaymentController extends Controller {
     public function __construct(private AppliancePaymentService $appliancePaymentService) {}
 
-    public function store(AssetPerson $appliancePerson, Request $request): ApiResource {
+    public function store(AppliancePerson $appliancePerson, Request $request): ApiResource {
         try {
             DB::connection('tenant')->beginTransaction();
             $this->appliancePaymentService->getPaymentForAppliance($request, $appliancePerson);

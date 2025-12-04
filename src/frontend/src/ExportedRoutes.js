@@ -752,9 +752,9 @@ export const exportedRoutes = [
     },
   },
   {
-    path: "/assets",
+    path: "/appliances",
     component: ApplianceList,
-    name: "asset",
+    name: "appliance",
     meta: {
       layout: "default",
       sidebar: {
