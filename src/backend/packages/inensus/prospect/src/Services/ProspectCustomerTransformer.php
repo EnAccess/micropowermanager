@@ -7,7 +7,6 @@ use App\Models\Person\Person;
 use Illuminate\Support\Carbon;
 
 class ProspectCustomerTransformer {
-
     /**
      * Transform a Person model into a Prospect customer array.
      *
@@ -28,7 +27,7 @@ class ProspectCustomerTransformer {
         if ($primaryAddress?->city?->name) {
             $addressParts[] = $primaryAddress->city->name;
         }
-        $addressString = !empty($addressParts) ? implode(', ', $addressParts) : null;
+        $addressString = empty($addressParts) ? null : implode(', ', $addressParts);
 
         $countryCode = $primaryAddress?->city?->country?->country_code ?? null;
 
@@ -48,7 +47,7 @@ class ProspectCustomerTransformer {
             'country' => $countryCode,
             'birth_year' => $birthYear,
             'address' => $addressString,
-            'name' => $fullName ?: null
+            'name' => $fullName ?: null,
         ];
     }
 
@@ -56,7 +55,7 @@ class ProspectCustomerTransformer {
      * Get the primary address for a person.
      */
     private function getPrimaryAddress(?Person $person): ?Address {
-        if (!$person) {
+        if (!$person instanceof Person) {
             return null;
         }
 
@@ -70,7 +69,7 @@ class ProspectCustomerTransformer {
      * Get a secondary address for a person (for phone_2).
      */
     private function getSecondaryAddress(?Person $person): ?Address {
-        if (!$person) {
+        if (!$person instanceof Person) {
             return null;
         }
 
@@ -97,8 +96,9 @@ class ProspectCustomerTransformer {
         if (is_string($birthDate)) {
             try {
                 $parsed = Carbon::parse($birthDate);
+
                 return (int) $parsed->year;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return null;
             }
         }

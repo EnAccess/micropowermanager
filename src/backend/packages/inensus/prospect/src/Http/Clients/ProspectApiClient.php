@@ -10,8 +10,8 @@ class ProspectApiClient {
     public function __construct(private ProspectCredentialService $credentialService) {}
 
     /**
-     * @param array<string, mixed>                      $payload
-     * @param 'installations'|'payments'|'customers'    $type
+     * @param array<string, mixed>                   $payload
+     * @param 'installations'|'payments'|'customers' $type
      */
     public function postData(array $payload, string $type): Response {
         $credentials = $this->credentialService->getCredentials();
