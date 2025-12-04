@@ -113,13 +113,6 @@
       </md-card-content>
       <md-card-actions>
         <md-button
-          class="md-raised md-secondary"
-          v-if="!loading"
-          @click="exportTransactions"
-        >
-          <md-icon>download</md-icon>
-        </md-button>
-        <md-button
           class="md-raised md-primary"
           v-if="!loading"
           @click="submitFilter"
@@ -141,7 +134,6 @@ import { TariffService } from "@/services/TariffService"
 import { EventBus } from "@/shared/eventbus"
 import { TransactionProviderService } from "@/services/TransactionProviderService"
 import { mapGetters } from "vuex"
-import moment from "moment-timezone"
 import store from "@/store/store"
 import { TransactionExportService } from "@/services/TransactionExportService"
 import { notify } from "@/mixins"
@@ -260,50 +252,6 @@ export default {
       this.loading = true
       this.adjustFilter()
       this.$emit("searchSubmit", this.filter)
-    },
-    async exportTransactions() {
-      this.adjustFilter()
-      const data = {
-        ...this.filter,
-        format: this.exportFilters.format,
-        currency:
-          this.exportFilters.currency ||
-          store.getters["settings/getMainSettings"].currency,
-        timeZone: this.exportFilters.timeZone || moment.tz.guess(),
-        deviceType: this.exportFilters.deviceType,
-        provider: this.exportFilters.provider,
-        status: this.exportFilters.status,
-      }
-
-      // Remove null/empty values
-      Object.keys(data).forEach((key) => {
-        if (data[key] === null || data[key] === "") {
-          delete data[key]
-        }
-      })
-
-      try {
-        const response =
-          await this.transactionExportService.exportTransactions(data)
-
-        const blob = new Blob([response.data])
-        const downloadUrl = window.URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = downloadUrl
-
-        const contentDisposition = response.headers["content-disposition"]
-        const filename =
-          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
-          (data.format === "excel" ? "export.xlsx" : "export.csv")
-
-        a.download = filename
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        window.URL.revokeObjectURL(downloadUrl)
-      } catch (e) {
-        this.alertNotify("error", "Error occurred while exporting transactions")
-      }
     },
     getSearch() {
       let search = this.$store.getters.search

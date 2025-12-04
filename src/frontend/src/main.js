@@ -29,7 +29,6 @@ import GomeLong from "@/plugins/gome-long-meter/js/modules/Overview/Credential"
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/js/modules/Component"
 import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component"
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail"
-import AirtelTransactionDetail from "@/modules/Transactions/AirtelTransactionDetail"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail"
 import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail"
 import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail"
@@ -63,7 +62,6 @@ Vue.component("SunKing-SHS", SunKing)
 Vue.component("GomeLong-Meter", GomeLong)
 Vue.component("WaveComTransaction", WaveComTransaction)
 Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
-Vue.component("AirtelTransactionDetail", AirtelTransactionDetail)
 Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
 Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
 Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
