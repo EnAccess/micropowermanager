@@ -108,6 +108,7 @@
                       enabledCountryCode="true"
                       v-model="maintenanceService.personData.phone"
                       @validate="validatePhone"
+                      @input="onPhoneInput"
                     ></vue-tel-input>
                     <span
                       v-if="!phone.valid && firstStepClicked"
@@ -241,6 +242,9 @@ export default {
       }
     },
     validatePhone(phone) {
+      this.phone = phone
+    },
+    onPhoneInput(_, phone) {
       this.phone = phone
     },
     async submitNewUserForm() {

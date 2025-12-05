@@ -1,7 +1,7 @@
 {
   "errors": {
     "alreadyUsedCompanyEmail": "Company with email already exists",
-    "alreadyUserAdminEmail": "Admin with email already exists"
+    "alreadyUserAdminEmail": "Admin Owner with email already exists"
   },
   "menu": {
     "Agents": "ေအးဂျင်မ့ ျား ",

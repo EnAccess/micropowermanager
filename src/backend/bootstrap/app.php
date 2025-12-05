@@ -1,6 +1,8 @@
 <?php
 
 use App\Console\Commands\MailApplianceDebtsCommand;
+use App\Exceptions\CompanyAlreadyExistsException;
+use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
 use App\Http\Middleware\JwtMiddleware;
@@ -62,6 +64,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(fn (ValidationException $e) => response()->json([
             'message' => 'Validation failed',
             'errors' => $e->errors(),
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (CompanyAlreadyExistsException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (OwnerEmailAlreadyExistsException $e) => response()->json([
+            'message' => $e->getMessage(),
             'status_code' => 422,
         ], 422));
     })
