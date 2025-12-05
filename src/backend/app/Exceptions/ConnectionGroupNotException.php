@@ -2,4 +2,4 @@
 
 namespace App\Exceptions;
 
-class ConnectionGroupNotFound extends \Exception {}
+class ConnectionGroupNotFoundException extends \Exception {}
