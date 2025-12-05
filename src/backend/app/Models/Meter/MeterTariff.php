@@ -4,7 +4,6 @@ namespace App\Models\Meter;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\Base\BaseModel;
-use App\Models\CustomerGroup;
 use App\Models\SocialTariff;
 use App\Models\TariffPricingComponent;
 use App\Models\TimeOfUsage;
@@ -31,7 +30,6 @@ use Illuminate\Support\Carbon;
  * @property      float|null                              $total_price
  * @property      float                                   $minimum_purchase_amount
  * @property-read AccessRate|null                         $accessRate
- * @property-read Collection<int, CustomerGroup>          $customerGroups
  * @property-read Collection<int, Meter>                  $meters
  * @property-read Collection<int, Meter>                  $metersCount
  * @property-read Collection<int, TariffPricingComponent> $pricingComponent
@@ -61,11 +59,6 @@ class MeterTariff extends BaseModel {
         return $this->meters()
             ->selectRaw('tariff_id, count(*) as aggregate')
             ->groupBy('tariff_id');
-    }
-
-    /** @return HasMany<CustomerGroup, $this> */
-    public function customerGroups(): HasMany {
-        return $this->hasMany(CustomerGroup::class, 'tariff_id');
     }
 
     /** @return HasOne<AccessRate, $this> */

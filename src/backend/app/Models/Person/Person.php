@@ -10,7 +10,6 @@ use App\Models\AgentSoldAppliance;
 use App\Models\AppliancePerson;
 use App\Models\Base\BaseModel;
 use App\Models\Country;
-use App\Models\CustomerGroup;
 use App\Models\Device;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
@@ -53,7 +52,6 @@ use Illuminate\Support\Facades\DB;
  * @property-read AgentSoldAppliance|null          $agentSoldAppliance
  * @property-read Collection<int, AppliancePerson> $appliancePerson
  * @property-read Country|null                     $citizenship
- * @property-read CustomerGroup|null               $customerGroup
  * @property-read Collection<int, Device>          $devices
  * @property-read bool                             $is_active
  * @property-read PaymentHistory|null              $latestPayment
@@ -62,7 +60,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read Collection<int, Roles>           $roleOwner
  * @property-read Collection<int, Ticket>          $tickets
  */
-class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
+class Person extends BaseModel implements \Stringable, HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -143,13 +141,6 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
      */
     public function payments(): MorphMany {
         return $this->morphMany(PaymentHistory::class, 'payer');
-    }
-
-    /**
-     * @return BelongsTo<CustomerGroup, $this>
-     */
-    public function customerGroup(): BelongsTo {
-        return $this->belongsTo(CustomerGroup::class);
     }
 
     /**
