@@ -1,56 +1,56 @@
 import LoginHeader from "@/modules/Login/LoginHeader"
 import LoginFooter from "@/modules/Login/LoginFooter"
-import Welcome from "./pages/Welcome/index.vue"
-import Login from "./pages/Login/index.vue"
-import Register from "./pages/Register/index.vue"
-import ForgotPassword from "./pages/ForgotPassword/index.vue"
+import Welcome from "@/modules/Welcome/index.vue"
+import Login from "@/modules/Login/Login.vue"
+import Register from "@/modules/Register/Register.vue"
+import ForgotPassword from "@/modules/ForgotPassword/ForgotPassword.vue"
 import UserPasswordResetConfirm from "./modules/UserPasswordReset/UserPasswordResetConfirm.vue"
-import UnauthorizedPage from "./pages/Unauthorized/index.vue"
+import UnauthorizedPage from "@/modules/Unauthorized/index.vue"
 
 import ChildRouteWrapper from "./shared/ChildRouteWrapper.vue"
 
-import ClusterOverviewPage from "./pages/Dashboard/index.vue"
-import ClusterDetailPage from "./pages/Dashboard/Cluster/_id.vue"
+import ClusterOverviewPage from "@/modules/Dashboard/Dashboard.vue"
+import ClusterDetailPage from "@/modules/Cluster/Dashboard.vue"
 // MiniGridOverviewPage just redirects to MiniGridDetailPage for first Mini-Grid
-import MiniGridOverviewPage from "./pages/Dashboard/MiniGrid/index.vue"
-import MiniGridDetailPage from "./pages/Dashboard/MiniGrid/_id.vue"
-import AgentDashboardPage from "./pages/Dashboard/Agents/index.vue"
-import AgentPerformanceDashboardPage from "./pages/Dashboard/AgentPerformance/index.vue"
-import AddCluster from "./pages/Location/Cluster/New/index.vue"
-import AddVillage from "./pages/Location/Village/New/index.vue"
-import AddMiniGrid from "./pages/Location/MiniGrid/New/index.vue"
-import SettingsPage from "./pages/Settings/Configuration/index.vue"
-import ProfilePage from "./pages/Profile/index.vue"
-import UserManagementPage from "./pages/Settings/UserManagement/index.vue"
-import Reports from "./pages/Report/index.vue"
+import MiniGridOverviewPage from "./modules/MiniGrid/MiniGridOverviewPage.vue"
+import MiniGridDetailPage from "@/modules/MiniGrid/Dashboard.vue"
+import AgentDashboardPage from "@/modules/Dashboard/AgentDashboard.vue"
+import AgentPerformanceDashboardPage from "@/modules/Dashboard/AgentPerformanceDashboard.vue"
+import AddCluster from "@/modules/Cluster/AddCluster.vue"
+import AddVillage from "@/modules/Village/AddVillage.vue"
+import AddMiniGrid from "@/modules/MiniGrid/AddMiniGrid.vue"
+import SettingsPage from "@/modules/Settings/Configuration/Configuration.vue"
+import ProfilePage from "@/modules/Profile/Profile.vue"
+import UserManagementPage from "@/modules/Settings/UserManagement/UserManagement.vue"
+import Reports from "@/modules/ExportedReports/Reports.vue"
 // FIXME: https://github.com/EnAccess/micropowermanager/issues/143
-import CustomerList from "./pages/Client/index.vue"
-import CustomerDetail from "./pages/Client/_id.vue"
-import TransactionList from "./pages/Transaction/index.vue"
-import TransactionSearch from "./pages/Transaction/index.vue"
-import TransactionDetail from "./pages/Transaction/_id.vue"
-import TicketList from "./pages/Ticket/index.vue"
-import TicketSettingsCategories from "./pages/Ticket/Setting/Category/index.vue"
-import TariffList from "./pages/Tariff/index.vue"
-import TariffDetail from "./pages/Tariff/_id.vue"
-import MeterList from "./pages/Meter/index.vue"
-import MeterDetail from "./pages/Meter/_id.vue"
-import MeterTypeList from "./pages/MeterType/index.vue"
-import SolarHomeSystem from "./pages/SolarHomeSystem/index.vue"
-import SolarHomeSystemDetail from "./pages/SolarHomeSystem/_id.vue"
-import TargetList from "./pages/Target/index.vue"
-import TargetNew from "./pages/Target/New/index.vue"
-import ConnectionTypeList from "./pages/Connection/Type/index.vue"
-import ConnectionTypeDetail from "./pages/Connection/Type/_id.vue"
-import ConnectionTypeNew from "./pages/Connection/Type/New/index.vue"
-import ConnectionGroupList from "./pages/Connection/Group/index.vue"
-import MessageList from "./pages/Sms/index.vue"
-import MessageNew from "./pages/Sms/New/index.vue"
-import Maintenance from "./pages/Maintenance/index.vue"
-import ApplianceList from "./pages/Appliance/index.vue"
-import AgentCommissionTypeList from "./pages/Agent/Commission/index.vue"
-import AgentDetail from "./pages/Agent/_id.vue"
-import SoldApplianceDetail from "./pages/Client/Appliance/_id.vue"
+import CustomerList from "@/modules/Client/Clients.vue"
+import CustomerDetail from "@/modules/Client/Client.vue"
+import TransactionList from "@/modules/Transactions/Transactions.vue"
+import TransactionDetail from "@/modules/Transactions/Transaction.vue"
+import TicketList from "@/modules/Ticket/Tickets.vue"
+import TicketSettingsCategories from "@/modules/Ticket/CategoryManagement.vue"
+import TicketSettingsUserManagement from "@/modules/Ticket/UserManagement.vue"
+import TariffList from "@/modules/Tariff/Tariffs.vue"
+import TariffDetail from "@/modules/Tariff/Tariff.vue"
+import MeterList from "@/modules/Meter/Meters.vue"
+import MeterDetail from "./modules/Meter/MeterDetail.vue"
+import MeterTypeList from "@/modules/MeterType/MeterTypes.vue"
+import SolarHomeSystem from "@/modules/SolarHomeSystem/SolarHomeSystems.vue"
+import SolarHomeSystemDetail from "@/modules/SolarHomeSystem/SolarHomeSystemDetail.vue"
+import TargetList from "@/modules/Target/TargetList.vue"
+import TargetNew from "@/modules/Target/NewTarget.vue"
+import ConnectionTypeList from "@/modules/ConnectionTypes/ConnectionTypesList.vue"
+import ConnectionTypeDetail from "@/modules/ConnectionTypes/ConnectionTypeDetail.vue"
+import ConnectionTypeNew from "@/modules/ConnectionTypes/NewConnectionType.vue"
+import ConnectionGroupList from "@/modules/ConnectionGroups/ConnectionGroupsList.vue"
+import MessageList from "@/modules/Sms/List.vue"
+import MessageNew from "@/modules/Sms/NewSms.vue"
+import Maintenance from "@/modules/Maintenance/Maintenance.vue"
+import ApplianceList from "@/modules/Appliances/Appliances.vue"
+import AgentCommissionTypeList from "@/modules/Agent/Commission/AgentCommissionList.vue"
+import AgentDetail from "@/modules/Agent/Agent.vue"
+import SoldApplianceDetail from "@/modules/Client/Appliances/SoldApplianceDetail.vue"
 
 // Former plugins
 import CalinMeterOverview from "./plugins/calin-meter/js/modules/Overview/Overview"
@@ -100,7 +100,7 @@ import SunKingShsOverview from "./plugins/sun-king-shs/js/modules/Overview/Overv
 import GomeLongOverview from "./plugins/gome-long-meter/js/modules/Overview/Overview"
 import WavecomTransactionUpload from "./plugins/wavecom-payment-provider/js/modules/Component.vue"
 // FIXME: Move e-Bikes higher, it's not a Plugin
-import EBikeList from "./pages/EBikes/index.vue"
+import EBikeList from "@/modules/EBikes/EBikes.vue"
 import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
@@ -486,15 +486,6 @@ export const exportedRoutes = [
         },
       },
       {
-        // transaction list
-        // TODO: Why is this here? Doesn't seem to be used
-        path: "search",
-        component: TransactionSearch,
-        meta: {
-          layout: "default",
-        },
-      },
-      {
         path: ":id",
         component: TransactionDetail,
         meta: {
@@ -539,6 +530,17 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Categories",
+          },
+        },
+      },
+      {
+        path: "tickets-settings/user-management",
+        component: TicketSettingsUserManagement,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "User Management",
           },
         },
       },
