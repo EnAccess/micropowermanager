@@ -40,11 +40,54 @@ class ClusterSeeder extends Seeder {
             ->sequence(
                 [
                     'name' => 'Cluster Mafia Island',
-                    'geo_data' => json_decode('{"leaflet_id": 110,"type": "manual","geojson": {"type": "Polygon","coordinates": [[[-7.630225,39.961513],[-7.652002,39.631923],[-7.910525,39.549526],[-8.125383,39.631923],[-8.092754,39.934047],[-7.869716,39.988979],[-7.630225,39.961513]]]},"display_name": "Cluster Mafia Island","selected": false,"draw_type": "draw","lat": -7.317921,"lon": 39.985283}'),
+                    'geo_json' => json_encode(
+                        '{
+                            "type": "Feature",
+                            "properties": {
+                                "name": "Cluster Mafia Island"
+                            },
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [-7.630225, 39.961513],
+                                        [-7.652002, 39.631923],
+                                        [-7.910525, 39.549526],
+                                        [-8.125383, 39.631923],
+                                        [-8.092754, 39.934047],
+                                        [-7.869716, 39.988979],
+                                        [-7.630225, 39.961513]
+                                    ]
+                                ],
+                            }  
+                    }'
+                    ),
                 ],
                 [
                     'name' => 'Cluster Pemba Island',
-                    'geo_data' => json_decode('{"leaflet_id": 111,"type": "manual","geojson":{"type": "Polygon","coordinates":[[[-4.800463,39.770765],[-4.937297,39.520826],[-5.421455,39.545546],[-5.582757,39.647169],[-5.448798,39.905348],[-5.194467,39.95204],[-4.86341,39.899855],[-4.800463,39.770765]]]},"display_name": "Cluster Pemba Island","selected": false,"draw_type": "draw","lat": -4.902953,"lon": 39.774662}'),
+                    'geo_json' => json_decode(
+                        '{
+                            "type": "Feature",
+                            "properties": {
+                                "name": "Cluster Pemba Island"
+                            },
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [-4.800463, 39.770765],
+                                        [-4.937297, 39.520826],
+                                        [-5.421455, 39.545546],
+                                        [-5.582757, 39.647169],
+                                        [-5.448798, 39.905348],
+                                        [-5.194467, 39.95204],
+                                        [-4.86341, 39.899855],
+                                        [-4.800463, 39.770765]
+                                    ]
+                                ],
+                            }
+                    }'
+                    ),
                 ],
             )
             ->create();
