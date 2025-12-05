@@ -342,7 +342,7 @@ Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], stati
 Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
-    Route::get('/', [MpmPluginController::class, 'index'])->middleware('permission:plugins');
+    Route::get('/', [MpmPluginController::class, 'index']);
 });
 
 Route::group(['prefix' => 'registration-tails'], static function () {

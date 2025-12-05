@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Exceptions\CompanyAlreadyExistsException;
 use App\Models\Company;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 /**
  * @implements IBaseService<Company>
@@ -30,7 +32,11 @@ class CompanyService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function create(array $data): Company {
-        return $this->company->newQuery()->create($data);
+        try {
+            return $this->company->newQuery()->create($data);
+        } catch (UniqueConstraintViolationException) {
+            throw new CompanyAlreadyExistsException('Company already exists');
+        }
     }
 
     /**

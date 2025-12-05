@@ -102,6 +102,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             'horizon',
             'laravel-erd',
             'api/users/password',
+            'api/mpm-plugins',
         ])) {
             return true;
         }
