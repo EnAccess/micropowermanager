@@ -537,9 +537,7 @@ export default {
         this.loading = false
 
         // set appropriate error message
-        if (
-          e?.message === "Owner account email already exists"
-        ) {
+        if (e?.message === "Owner account email already exists") {
           this.errorMessage = this.$tc("errors.alreadyUserAdminEmail")
         } else if (e?.message === "Company already exists") {
           this.errorMessage = this.$tc("errors.alreadyUsedCompanyEmail")
