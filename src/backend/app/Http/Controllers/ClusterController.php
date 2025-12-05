@@ -44,11 +44,11 @@ class ClusterController extends Controller {
     }
 
     public function showGeo(int $clusterId): ApiResource {
-        return ApiResource::make(['geo_data' => $this->clusterService->getGeoLocationById($clusterId)]);
+        return ApiResource::make(['geo_json' => $this->clusterService->getGeoLocationById($clusterId)]);
     }
 
     public function store(ClusterRequest $request): ApiResource {
-        $clusterData = $request->only(['name', 'manager_id', 'geo_data']);
+        $clusterData = $request->only(['name', 'manager_id', 'geo_json']);
 
         return ApiResource::make($this->clusterService->create($clusterData));
     }
