@@ -59,7 +59,7 @@ class ClusterSeeder extends Seeder {
                                        [39.961513, -7.630225]
                                     ]
                                 ]
-                            }  
+                            }
                     }'
                     ),
                 ],
