@@ -246,7 +246,8 @@ export default {
           return item
         })
       this.selectedCluster = geoDataItem
-      this.mappingService.geoData = geoDataItem
+      // Store the GeoJSON Feature
+      this.mappingService.geoData = geoDataItem.feature || geoDataItem
       this.$refs.clusterMapRef.drawCluster()
     },
     async saveCluster() {
@@ -272,11 +273,16 @@ export default {
         return
       }
       try {
+        // Extract GeoJSON geometry from selected cluster
+        const feature = this.selectedCluster.feature
+        if (!feature || feature.type !== "Feature") {
+          throw new Error("Selected cluster must be a GeoJSON Feature")
+        }
+
         const cluster = {
-          geoType: this.selectedCluster.type,
-          geoData: this.selectedCluster,
+          geo_json: feature,
           name: this.clusterName,
-          managerId: this.user,
+          manager_id: this.user,
         }
         await this.clusterService.createCluster(cluster)
         this.alertNotify("success", this.$tc("phrases.newClusterNotify2", 2))
