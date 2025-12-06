@@ -6,7 +6,7 @@ const resource = {
 export default {
   get(name) {
     return Client.get(
-      `${resource.openStreetSearch + name + "&polygon_geojson=1&format=json"}`,
+      `${resource.openStreetSearch + name + "&polygon_geojson=1&format=geojson"}`,
     )
   },
 }

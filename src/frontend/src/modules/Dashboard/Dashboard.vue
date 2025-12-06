@@ -86,12 +86,39 @@ export default {
       const markingInfos = []
       const clustersGeoData = []
       this.clustersData.map((data) => {
-        if (data.geo_data !== null) {
-          const clusterGeo = data.geo_data
-          this.mappingService.setCenter([clusterGeo.lat, clusterGeo.lon])
-          clusterGeo.clusterId = data.id
-          clustersGeoData.push(clusterGeo)
-          const miniGridsOfCluster = data.clusterData.mini_grids
+        // Use geo_json from clusterData (the cluster model)
+        const cluster = data.clusterData || data
+        if (cluster.geo_json !== null && cluster.geo_json !== undefined) {
+          // Convert geo_json to GeoJSON Feature with cluster properties
+          let geoJsonFeature
+          if (cluster.geo_json.type === "Feature") {
+            geoJsonFeature = {
+              ...cluster.geo_json,
+              properties: {
+                ...cluster.geo_json.properties,
+                clusterId: data.id,
+                clusterDisplayName: cluster.name || "",
+              },
+            }
+          } else if (cluster.geo_json.type === "FeatureCollection") {
+            // Use first feature from collection
+            geoJsonFeature = {
+              ...cluster.geo_json.features[0],
+              properties: {
+                ...cluster.geo_json.features[0].properties,
+                clusterId: data.id,
+                clusterDisplayName: cluster.name || "",
+              },
+            }
+          } else {
+            throw new Error(
+              "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
+            )
+          }
+
+          clustersGeoData.push(geoJsonFeature)
+
+          const miniGridsOfCluster = data.clusterData?.mini_grids || []
           miniGridsOfCluster.map((miniGrid) => {
             const points = miniGrid.location.points.split(",")
             if (points.length !== 2) {
@@ -108,8 +135,8 @@ export default {
               lon: lon,
               deviceType: null,
               markerType: MARKER_TYPE.MINI_GRID,
-              clusterId: clusterGeo.clusterId,
-              clusterDisplayName: clusterGeo.display_name,
+              clusterId: data.id,
+              clusterDisplayName: cluster.name || "",
             })
           })
         }
