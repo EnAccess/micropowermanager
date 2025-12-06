@@ -25,25 +25,36 @@ return new class extends Migration {
 
         foreach ($clusters as $cluster) {
             $geoData = json_decode($cluster->geo_data, true);
+            $geoData = json_decode($cluster->geo_data, true);
+
             if (isset($geoData['geojson'])) {
                 $geoJson = $geoData['geojson'];
 
-                // Ensure polygon coordinates form a closed plane
-                if (isset($geoJson['type']) && $geoJson['type'] === 'Polygon' && isset($geoJson['coordinates'])) {
+                // Ensure type is Polygon
+                if (($geoJson['type'] ?? null) === 'Polygon' && isset($geoJson['coordinates'])) {
                     foreach ($geoJson['coordinates'] as $ringIndex => $ring) {
-                        if (is_array($ring) && count($ring) > 0) {
-                            $firstCoord = $ring[0];
-                            $lastCoord = $ring[count($ring) - 1];
+                        // Swap lat,lon → lon,lat for each coordinate
+                        foreach ($ring as $coordIndex => $coord) {
+                            if (is_array($coord) && count($coord) === 2) {
+                                $lat = $coord[0];   // first value originally latitude
+                                $lon = $coord[1];   // second value originally longitude
 
-                            // Check if the polygon is closed (first and last coordinates are the same)
-                            if ($firstCoord !== $lastCoord) {
-                                // Close the polygon by appending the first coordinate
-                                $geoJson['coordinates'][$ringIndex][] = $firstCoord;
+                                // Set swapped coordinate
+                                $geoJson['coordinates'][$ringIndex][$coordIndex] = [$lon, $lat];
                             }
+                        }
+
+                        // Ensure polygon is closed (first == last)
+                        $first = $geoJson['coordinates'][$ringIndex][0];
+                        $last = end($geoJson['coordinates'][$ringIndex]);
+
+                        if ($first !== $last) {
+                            $geoJson['coordinates'][$ringIndex][] = $first;
                         }
                     }
                 }
 
+                // Update in database
                 DB::connection('tenant')
                     ->table('clusters')
                     ->where('id', $cluster->id)
