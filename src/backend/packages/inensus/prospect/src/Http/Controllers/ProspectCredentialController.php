@@ -2,6 +2,9 @@
 
 namespace Inensus\Prospect\Http\Controllers;
 
+use App\Models\MpmPlugin;
+use App\Services\MpmPluginService;
+use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controller;
@@ -11,6 +14,8 @@ use Inensus\Prospect\Services\ProspectCredentialService;
 class ProspectCredentialController extends Controller {
     public function __construct(
         private ProspectCredentialService $credentialService,
+        private RegistrationTailService $registrationTailService,
+        private MpmPluginService $mpmPluginService,
     ) {}
 
     public function show(): JsonResource {
@@ -30,6 +35,31 @@ class ProspectCredentialController extends Controller {
         ]);
 
         $credentials = $this->credentialService->updateCredentials($request->all());
+
+        // Mark Prospect step as adjusted in Registration Tail (credentials fully provided)
+        try {
+            $registrationTail = $this->registrationTailService->getFirst();
+            $tailArray = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
+
+            $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PROSPECT);
+            $prospectTag = $mpmPlugin->tail_tag;
+
+            $updated = false;
+            foreach ($tailArray as &$item) {
+                if (isset($item['tag']) && $item['tag'] === $prospectTag) {
+                    $item['adjusted'] = true;
+                    $updated = true;
+                    break;
+                }
+            }
+            unset($item);
+
+            if ($updated) {
+                $this->registrationTailService->update($registrationTail, ['tail' => json_encode($tailArray)]);
+            }
+        } catch (\Throwable) {
+            // Fail silently; tail update should not block credential updates
+        }
 
         return ProspectResource::collection($credentials);
     }
