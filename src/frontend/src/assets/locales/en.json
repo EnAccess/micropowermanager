@@ -445,7 +445,9 @@
     "writeMessage": "Write a message...",
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "yourMessage": "Your message will seen like that"
+    "yourMessage": "Your message will seen like that",
+    "ecreeeTokenSwitch": "By activating this switch you will send meter number and transaction data to the ECREEE server for milestone verification of your grant on request of the server. After activating the switch, please copy the token below and paste it under the CRM Management page of your ECREEE account.",
+    "tokenLabel": "Token"
   },
   "words": {
     "access": "Access",
