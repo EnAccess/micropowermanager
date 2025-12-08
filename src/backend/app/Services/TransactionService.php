@@ -8,6 +8,7 @@ use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * @implements IAssociative<Transaction>
@@ -341,11 +342,19 @@ class TransactionService implements IAssociative, IBaseService {
      * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
+        $query = $this->transaction->newQuery()->with(['originalTransaction']);
+
         if ($limit) {
-            return $this->transaction->newQuery()->with(['originalTransaction'])->latest()->paginate($limit);
+            return QueryBuilder::for($query)
+                ->allowedSorts(['id', 'created_at', 'amount', 'sender', 'message', 'original_transaction_type'])
+                ->defaultSort('-created_at')
+                ->paginate($limit);
         }
 
-        return $this->transaction->newQuery()->latest()->get();
+        return QueryBuilder::for($query)
+            ->allowedSorts(['id', 'created_at', 'amount', 'sender', 'message', 'original_transaction_type'])
+            ->defaultSort('-created_at')
+            ->get();
     }
 
     /**
