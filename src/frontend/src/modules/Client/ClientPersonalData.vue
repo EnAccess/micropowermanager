@@ -219,41 +219,32 @@ export default {
       this.$swal({
         type: "question",
         title: this.$tc("phrases.deleteCustomer", 1),
+        text: this.$tc("phrases.deleteCustomerNotify", 0, {
+          name: this.personService.person.name,
+          surname: this.personService.person.surname,
+        }),
         width: "35%",
         confirmButtonText: this.$tc("words.confirm"),
         showCancelButton: true,
         cancelButtonText: this.$tc("words.cancel"),
         focusCancel: true,
-        html:
-          '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
-          "  <label>" +
-          '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-          this.$tc("phrases.deleteCustomerNotify", 0, {
-            name: this.personService.person.name,
-            surname: this.personService.person.surname,
-          }) +
-          "  </label>" +
-          "</div>",
       }).then((result) => {
-        let answer = document.getElementById("confirmation").checked
-        if ("value" in result) {
-          //delete customer
-          if (answer) {
-            this.deletePerson()
-          } else {
-            //not confirmed
-          }
+        if (result.value) {
+          this.deletePerson()
         }
       })
     },
-    deletePerson() {
-      this.personService
-        .deletePerson(this.personService.person.id)
-        .then((response) => {
-          if (response.status === 200) {
-            this.showConfirmation()
-          }
+    async deletePerson() {
+      try {
+        await this.personService.deletePerson(this.personService.person.id)
+        this.showConfirmation()
+      } catch (error) {
+        this.$swal({
+          type: "error",
+          title: this.$tc("phrases.error"),
+          text: error.message || "Failed to delete customer",
         })
+      }
     },
     showConfirmation() {
       const Toast = this.$swal.mixin({
