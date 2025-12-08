@@ -376,7 +376,15 @@ export default {
           )
         }
       } catch (e) {
-        this.alertNotify("error", e.message)
+        if (e.response && e.response.status === 403) {
+          this.alertNotify(
+            "error",
+            "You do not have permission to view this transaction",
+          )
+          this.$router.push({ path: "/transactions" })
+        } else {
+          this.alertNotify("error", e.message)
+        }
       }
     },
     async getRelatedPerson(personId) {
@@ -385,7 +393,11 @@ export default {
         this.personName = person.name + " " + person.surname
         this.personId = person.id
       } catch (e) {
-        this.alertNotify("error", e.message)
+        if (e.response && e.response.status === 403) {
+          console.warn("Customer details: Insufficient permissions")
+        } else {
+          this.alertNotify("error", e.message)
+        }
       }
     },
   },

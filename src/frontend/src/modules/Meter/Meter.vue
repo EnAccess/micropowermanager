@@ -15,7 +15,10 @@
           </div>
         </div>
       </div>
-      <div class="md-layout-item md-size-100 md-small-size-100">
+      <div
+        class="md-layout-item md-size-100 md-small-size-100"
+        v-if="$can('transactions')"
+      >
         <meter-transactions :transactions="transactions" />
       </div>
       <div class="md-layout-item md-size-100 md-small-size-100">
