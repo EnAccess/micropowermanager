@@ -22,7 +22,9 @@ class EcreeeTokenService {
         return $ecreeeToken->fresh();
     }
 
-
+    /**
+     * @param array<string, mixed> $ecreeeTokenData
+     */
     public function update(EcreeeToken $ecreeeToken, array $ecreeeTokenData): EcreeeToken {
         $ecreeeToken->update($ecreeeTokenData);
         $ecreeeToken->fresh();

@@ -26,6 +26,7 @@ class EcreeeMeterDataController extends Controller {
         $endDate = $request->query('endDate');
 
         $meterData = $this->ecreeeMeterDataService->getMeterData($startDate, $endDate);
+
         return response()->json(['data' => $meterData]);
     }
 }

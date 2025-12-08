@@ -411,6 +411,7 @@
     "ticketingSystemTag": "Ticketing System Tag",
     "ticketsOverview": "Tickets Overview | Opened Tickets are on the left side and resolved tickets on the right side",
     "toDate": "To Date",
+    "tokenLabel": "Token",
     "topPerformingAgents": "Top Performing Agents",
     "topUp": "Top Up",
     "totalAgents": "Total Agents",
@@ -446,7 +447,6 @@
     "writeMessage": "Write a message...",
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "tokenLabel": "Token",
     "yourMessage": "Your message will seen like that"
   },
   "words": {
