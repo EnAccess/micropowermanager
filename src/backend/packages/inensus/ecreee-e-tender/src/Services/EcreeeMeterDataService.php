@@ -1,6 +1,6 @@
 <?php
 
-namespace MPM\Ecreee;
+namespace Inensus\EcreeeETender\Services;
 
 use App\Services\TokenService;
 

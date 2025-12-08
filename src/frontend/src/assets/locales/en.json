@@ -192,6 +192,7 @@
     "distributeThis": "Please distribute this to your customers and ask them to send their meter number to register our Viber communication system.",
     "downPayment": "Down Payment",
     "dueDate": "Due Date",
+    "ecreeeTokenSwitch": "By activating this switch you will send meter number and transaction data to the ECREEE server for milestone verification of your grant on request of the server. After activating the switch, please copy the token below and paste it under the CRM Management page of your ECREEE account.",
     "editConnectionGroup": "Edit Connection Group | Are you sure to changing this connection group name ? | Connection Group Updated Successfully",
     "editConnectionType": "Edit Connection Type",
     "editConnectionTypeNotify": "Connection Type Name Updated Successfully | Are you sure to change of connection type name for {name} ?",
@@ -445,9 +446,8 @@
     "writeMessage": "Write a message...",
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "yourMessage": "Your message will seen like that",
-    "ecreeeTokenSwitch": "By activating this switch you will send meter number and transaction data to the ECREEE server for milestone verification of your grant on request of the server. After activating the switch, please copy the token below and paste it under the CRM Management page of your ECREEE account.",
-    "tokenLabel": "Token"
+    "tokenLabel": "Token",
+    "yourMessage": "Your message will seen like that"
   },
   "words": {
     "access": "Access",

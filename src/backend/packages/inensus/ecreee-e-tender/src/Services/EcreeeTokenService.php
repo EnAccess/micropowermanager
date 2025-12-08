@@ -22,6 +22,7 @@ class EcreeeTokenService {
         return $ecreeeToken->fresh();
     }
 
+
     public function update(EcreeeToken $ecreeeToken, array $ecreeeTokenData): EcreeeToken {
         $ecreeeToken->update($ecreeeTokenData);
         $ecreeeToken->fresh();
@@ -29,7 +30,7 @@ class EcreeeTokenService {
         return $ecreeeToken;
     }
 
-    public function getFirst(): EcreeeToken {
+    public function getFirst(): ?EcreeeToken {
         return $this->ecreeeToken->newQuery()->first();
     }
 
@@ -41,7 +42,7 @@ class EcreeeTokenService {
         return hash('sha256', $companyId.'|'.$randomString).'|'.$randomString;
     }
 
-    public function getByToken($token) {
+    public function getByToken(?string $token): ?EcreeeToken {
         return $this->ecreeeToken->newQuery()->where('token', $token)->first();
     }
 }

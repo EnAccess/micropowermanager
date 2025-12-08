@@ -2,10 +2,11 @@
 
 namespace Inensus\EcreeeETender\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use MPM\Ecreee\EcreeeMeterDataService;
-use MPM\Ecreee\EcreeeTokenService;
+use Inensus\EcreeeETender\Services\EcreeeMeterDataService;
+use Inensus\EcreeeETender\Services\EcreeeTokenService;
 
 class EcreeeMeterDataController extends Controller {
     public function __construct(
@@ -13,7 +14,7 @@ class EcreeeMeterDataController extends Controller {
         private EcreeeTokenService $tokenService,
     ) {}
 
-    public function index(Request $request) {
+    public function index(Request $request): JsonResponse {
         $token = $request->query('token');
         $ecreeeToken = $this->tokenService->getByToken($token);
 
@@ -24,6 +25,7 @@ class EcreeeMeterDataController extends Controller {
         $startDate = $request->query('startDate');
         $endDate = $request->query('endDate');
 
-        return $this->ecreeeMeterDataService->getMeterData($startDate, $endDate);
+        $meterData = $this->ecreeeMeterDataService->getMeterData($startDate, $endDate);
+        return response()->json(['data' => $meterData]);
     }
 }

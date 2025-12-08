@@ -14,11 +14,7 @@ class EcreeeTokenController extends Controller {
     public function get(): EcreeeTokenResource {
         $ecreeeToken = $this->ecreeeTokenService->getFirst();
 
-        if ($ecreeeToken) {
-            return EcreeeTokenResource::make($ecreeeToken);
-        }
-
-        return EcreeeTokenResource::make(null);
+        return EcreeeTokenResource::make($ecreeeToken);
     }
 
     public function store(): EcreeeTokenResource {
