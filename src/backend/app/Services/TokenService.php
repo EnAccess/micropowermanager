@@ -45,6 +45,9 @@ class TokenService implements IBaseService {
         return $this->token->newQuery()->get();
     }
 
+    /**
+     * @return Collection<int, Token>
+     */
     public function getTokensInRange(?string $startDate, ?string $endDate): Collection {
         return $this->token->newQuery()->with(['transaction.device'])
             ->whereHas('transaction.device', function ($query) {

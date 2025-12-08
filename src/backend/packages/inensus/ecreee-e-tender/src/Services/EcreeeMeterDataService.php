@@ -2,6 +2,7 @@
 
 namespace Inensus\EcreeeETender\Services;
 
+use App\Models\Token;
 use App\Services\TokenService;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -10,6 +11,9 @@ class EcreeeMeterDataService {
         private TokenService $tokenService,
     ) {}
 
+    /**
+     * @return Collection<int, Token>
+     */
     public function getMeterData(?string $startDate, ?string $endDate): Collection {
         return $this->tokenService->getTokensInRange($startDate, $endDate);
     }
