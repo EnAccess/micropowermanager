@@ -53,7 +53,9 @@ export default {
   },
   created() {
     this.getMeterDetails()
-    this.transactions = new Transactions(this.$route.params.id)
+    if (this.$can("transactions")) {
+      this.transactions = new Transactions(this.$route.params.id)
+    }
   },
   methods: {
     async getMeterDetails() {
