@@ -1,36 +1,14 @@
 <template>
   <div>
-    <Loader />
+    <mini-grid-dashboard />
   </div>
 </template>
 
 <script>
-import { MiniGridService } from "@/services/MiniGridService"
-import Loader from "@/shared/Loader.vue"
+import MiniGridDashboard from "@/modules/Dashboard/MiniGridDashboard.vue"
 
 export default {
-  name: "MiniGridsPage",
-  components: { Loader },
-  created() {
-    const miniGridId = this.$route.params.id
-    if (miniGridId === undefined) {
-      this.redirectToFirstMiniGrid()
-    }
-  },
-  data() {
-    return {
-      miniGridService: new MiniGridService(),
-    }
-  },
-  methods: {
-    async redirectToFirstMiniGrid() {
-      const miniGrids = await this.miniGridService.getMiniGrids()
-      if (miniGrids.length > 0) {
-        this.$router.replace("/dashboards/mini-grid/" + miniGrids[0].id)
-      }
-    },
-  },
+  name: "MiniGridDashboardPage",
+  components: { MiniGridDashboard },
 }
 </script>
-
-<style scoped></style>

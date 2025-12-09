@@ -344,48 +344,6 @@ export const exportedRoutes = [
         ],
       },
       {
-        path: "dashboards/mini-grid",
-        component: ChildRouteWrapper,
-        meta: {
-          sidebar: {
-            enabled: true,
-            name: "Mini-Grid",
-          },
-        },
-        children: [
-          {
-            path: "",
-            component: MiniGridOverviewPage,
-            meta: {
-              layout: "default",
-              breadcrumb: {
-                level: "base",
-                name: "Mini-Grids",
-                link: "/dashboards/mini-grid",
-              },
-              sidebar: {
-                enabled: true,
-                name: "Mini-Grid",
-              },
-            },
-          },
-          {
-            path: ":id",
-            component: MiniGridDetailPage,
-            meta: {
-              layout: "default",
-              breadcrumb: {
-                level: "detail",
-                name: "Mini-Grid",
-                link: "/dashboards/mini-grid",
-                target: "id",
-              },
-            },
-          },
-        ],
-      },
-
-      {
         path: "dashboards/agent-performance",
         component: ChildRouteWrapper,
         meta: {
@@ -819,6 +777,61 @@ export const exportedRoutes = [
             name: "Commission Types",
           },
         },
+      },
+    ],
+  },
+  {
+    path: "",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled: true,
+        name: "Mini-Grid",
+        icon: "bolt",
+      },
+    },
+    children: [
+      {
+        path: "mini-grids",
+        component: ChildRouteWrapper,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+        children: [
+          {
+            path: "",
+            component: MiniGridOverviewPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Mini-Grids",
+                link: "/mini-grids",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Overview",
+              },
+            },
+          },
+          {
+            path: ":id",
+            component: MiniGridDetailPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Mini-Grid",
+                link: "/mini-grids",
+                target: "id",
+              },
+            },
+          },
+        ],
       },
     ],
   },

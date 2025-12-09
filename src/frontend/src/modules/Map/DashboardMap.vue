@@ -125,7 +125,7 @@ export default {
 
           const parent = this
           miniGridMarker.on("click", function () {
-            parent.routeToDetail("/dashboards/mini-grid", markingInfo.id)
+            parent.routeToDetail("/mini-grids", markingInfo.id)
           })
 
           miniGridMarker.addTo(this.markersLayer)

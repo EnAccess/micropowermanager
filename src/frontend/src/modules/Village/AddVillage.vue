@@ -300,7 +300,7 @@ export default {
           this.alertNotify("success", this.$tc("phrases.newVillageNotify", 1))
           this.loading = false
           await this.$router.replace(
-            `/dashboards/mini-grid/${this.selectedMiniGridId}`,
+            `/mini-grids/${this.selectedMiniGridId}`,
           )
         } catch (e) {
           this.loading = false

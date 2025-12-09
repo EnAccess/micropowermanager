@@ -418,7 +418,7 @@ export default {
       }
     },
     setMiniGrid(miniGridId) {
-      this.$router.replace("/dashboards/mini-grid/" + miniGridId)
+      this.$router.replace("/mini-grids/" + miniGridId)
     },
     togglePeriod() {
       this.period = {
