@@ -1,9 +1,9 @@
 <?php
 
 use App\Console\Commands\MailApplianceDebtsCommand;
-use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Exceptions\CompanyAlreadyExistsException;
 use App\Exceptions\OwnerEmailAlreadyExistsException;
+use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
 use App\Http\Middleware\JwtMiddleware;
