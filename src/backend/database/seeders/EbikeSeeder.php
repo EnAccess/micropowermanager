@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Address\Address;
-use App\Models\Asset;
-use App\Models\AssetType;
+use App\Models\Appliance;
+use App\Models\ApplianceType;
 use App\Models\Device;
 use App\Models\EBike;
 use App\Models\GeographicalInformation;
@@ -34,11 +34,11 @@ class EbikeSeeder extends Seeder {
             'api_name' => 'DemoEbikeManufacturerApi',
         ]);
 
-        $assetType = AssetType::where('name', 'E-bike')->first();
+        $applianceType = ApplianceType::where('name', 'E-bike')->first();
 
-        $ebikeAssets = Asset::factory()
+        $ebikeAppliances = Appliance::factory()
             ->count(3)
-            ->for($assetType)
+            ->for($applianceType)
             ->sequence(
                 ['name' => 'EcoMotion CityPro',   'price' => 180000],
                 ['name' => 'TerraCharge TrailMaster', 'price' => 320000],
@@ -53,7 +53,7 @@ class EbikeSeeder extends Seeder {
 
         foreach ($selectedPersons as $person) {
             $ebike = EBike::factory()
-                ->for($ebikeAssets->random(), 'appliance')
+                ->for($ebikeAppliances->random(), 'appliance')
                 ->for($demoManufacturer)
                 ->create();
 
@@ -84,7 +84,7 @@ class EbikeSeeder extends Seeder {
 
         for ($i = 1; $i <= 5; ++$i) {
             $ebike = EBike::factory()
-                ->for($ebikeAssets->random(), 'appliance')
+                ->for($ebikeAppliances->random(), 'appliance')
                 ->for($demoManufacturer)
                 ->create();
 

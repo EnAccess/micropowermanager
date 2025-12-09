@@ -11,15 +11,15 @@ export class ApplianceService {
       id: null,
       name: null,
       edit: false,
-      assetTypeId: null,
-      assetTypeName: null,
+      applianceTypeId: null,
+      applianceTypeName: null,
       price: null,
       downPayment: null,
       rate: null,
       rateType: "monthly",
       rateCost: null,
     }
-    this.paginator = new Paginator(resources.assets.list)
+    this.paginator = new Paginator(resources.appliances.list)
   }
 
   fromJson(data) {
@@ -27,8 +27,8 @@ export class ApplianceService {
       id: data.id,
       name: data.name,
       edit: false,
-      assetTypeId: data.asset_type_id,
-      assetTypeName: data.asset_type.name,
+      applianceTypeId: data.appliance_type_id,
+      applianceTypeName: data.appliance_type.name,
       price: data.price,
     }
   }
@@ -59,14 +59,14 @@ export class ApplianceService {
 
   updateList(data) {
     this.list = []
-    this.list = data.map((asset) => {
+    this.list = data.map((appliance) => {
       return {
-        id: asset.id,
-        name: asset.name,
-        price: asset.price,
-        assetTypeId: asset.asset_type.id,
-        assetTypeName: asset.asset_type.name,
-        updatedAt: asset.updated_at
+        id: appliance.id,
+        name: appliance.name,
+        price: appliance.price,
+        applianceTypeId: appliance.appliance_type.id,
+        applianceTypeName: appliance.appliance_type.name,
+        updatedAt: appliance.updated_at
           .toString()
           .replace(/T/, " ")
           .replace(/\..+/, ""),

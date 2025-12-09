@@ -7,7 +7,7 @@ use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use App\Models\Base\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
@@ -33,34 +33,34 @@ use Illuminate\Support\Facades\DB;
 /**
  * Class Person.
  *
- * @property      int                             $id
- * @property      string|null                     $title
- * @property      string|null                     $education
- * @property      string                          $name
- * @property      string                          $surname
- * @property      \Illuminate\Support\Carbon|null $birth_date
- * @property      string|null                     $sex
- * @property      int|null                        $nationality
- * @property      int                             $is_customer
- * @property      string                          $type
- * @property      int|null                        $mini_grid_id
- * @property      \Illuminate\Support\Carbon|null $deleted_at
- * @property      \Illuminate\Support\Carbon|null $created_at
- * @property      \Illuminate\Support\Carbon|null $updated_at
- * @property      array<array-key, mixed>|null    $additional_json
- * @property-read Collection<int, Address>        $addresses
- * @property-read Agent|null                      $agent
- * @property-read AgentSoldAppliance|null         $agentSoldAppliance
- * @property-read Collection<int, AssetPerson>    $assetPerson
- * @property-read Country|null                    $citizenship
- * @property-read CustomerGroup|null              $customerGroup
- * @property-read Collection<int, Device>         $devices
- * @property-read bool                            $is_active
- * @property-read PaymentHistory|null             $latestPayment
- * @property-read MiniGrid|null                   $miniGrid
- * @property-read Collection<int, PaymentHistory> $payments
- * @property-read Collection<int, Roles>          $roleOwner
- * @property-read Collection<int, Ticket>         $tickets
+ * @property      int                              $id
+ * @property      string|null                      $title
+ * @property      string|null                      $education
+ * @property      string                           $name
+ * @property      string                           $surname
+ * @property      \Illuminate\Support\Carbon|null  $birth_date
+ * @property      string|null                      $sex
+ * @property      int|null                         $nationality
+ * @property      int                              $is_customer
+ * @property      string                           $type
+ * @property      int|null                         $mini_grid_id
+ * @property      \Illuminate\Support\Carbon|null  $deleted_at
+ * @property      \Illuminate\Support\Carbon|null  $created_at
+ * @property      \Illuminate\Support\Carbon|null  $updated_at
+ * @property      array<array-key, mixed>|null     $additional_json
+ * @property-read Collection<int, Address>         $addresses
+ * @property-read Agent|null                       $agent
+ * @property-read AgentSoldAppliance|null          $agentSoldAppliance
+ * @property-read Collection<int, AppliancePerson> $appliancePerson
+ * @property-read Country|null                     $citizenship
+ * @property-read CustomerGroup|null               $customerGroup
+ * @property-read Collection<int, Device>          $devices
+ * @property-read bool                             $is_active
+ * @property-read PaymentHistory|null              $latestPayment
+ * @property-read MiniGrid|null                    $miniGrid
+ * @property-read Collection<int, PaymentHistory>  $payments
+ * @property-read Collection<int, Roles>           $roleOwner
+ * @property-read Collection<int, Ticket>          $tickets
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */
@@ -167,10 +167,10 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return HasMany<AssetPerson, $this>
+     * @return HasMany<AppliancePerson, $this>
      */
-    public function assetPerson(): HasMany {
-        return $this->HasMany(AssetPerson::class, 'person_id', 'id');
+    public function appliancePerson(): HasMany {
+        return $this->HasMany(AppliancePerson::class, 'person_id', 'id');
     }
 
     public function __toString(): string {

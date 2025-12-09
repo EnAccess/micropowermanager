@@ -3,7 +3,7 @@
 namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
-use App\Models\AssetRate;
+use App\Models\ApplianceRate;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsGatewayResolverService;
@@ -105,7 +105,7 @@ abstract class SmsSender {
     }
 
     public function validateReferences(): void {
-        if (($this->data instanceof Transaction) || ($this->data instanceof AssetRate)) {
+        if (($this->data instanceof Transaction) || ($this->data instanceof ApplianceRate)) {
             $nullSmsBodies = $this->smsBodyService->getNullBodies();
             if (count($nullSmsBodies) > 0) {
                 Log::critical('Send sms rejected, some of sms bodies are null', ['Sms Bodies' => $nullSmsBodies]);
@@ -126,9 +126,9 @@ abstract class SmsSender {
     public function getReceiver(): string {
         if ($this->data instanceof Transaction) {
             $this->receiver = str_starts_with($this->data->sender, '+') ? $this->data->sender : '+'.$this->data->sender;
-        } elseif ($this->data instanceof AssetRate) {
-            $this->receiver = str_starts_with($this->data->assetPerson->person->addresses->first()->phone, '+') ? $this->data->assetPerson->person->addresses->first()->phone
-                : '+'.$this->data->assetPerson->person->addresses->first()->phone;
+        } elseif ($this->data instanceof ApplianceRate) {
+            $this->receiver = str_starts_with($this->data->appliancePerson->person->addresses->first()->phone, '+') ? $this->data->appliancePerson->person->addresses->first()->phone
+                : '+'.$this->data->appliancePerson->person->addresses->first()->phone;
         } elseif (!is_array($this->data) && $this->data->mpmPerson) {
             $this->receiver = str_starts_with($this->data->mpmPerson->addresses[0]->phone, '+') ? $this->data->mpmPerson->addresses[0]->phone : '+'.$this->data->mpmPerson->addresses[0]->phone;
         } else {

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Events\PaymentSuccessEvent;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use App\Services\Interfaces\IBaseService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -30,7 +30,7 @@ class AgentSoldApplianceService implements IBaseService {
         private AgentTransactionTransactionService $agentTransactionTransactionService,
         private AppliancePersonService $appliancePersonService,
         private ApplianceRateService $applianceRateService,
-        private AssetPerson $assetPerson,
+        private AppliancePerson $appliancePerson,
         private DeviceAddressService $deviceAddressService,
         private DeviceService $deviceService,
         private GeographicalInformationService $geographicalInformationService,
@@ -46,10 +46,10 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AssetPerson>|LengthAwarePaginator<int, AssetPerson>
+     * @return Collection<int, AppliancePerson>|LengthAwarePaginator<int, AppliancePerson>
      */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
-        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
+        return $this->appliancePerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
@@ -78,7 +78,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<int, AgentSoldAppliance>|LengthAwarePaginator<int, AssetPerson>
+     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<int, AgentSoldAppliance>|LengthAwarePaginator<int, AppliancePerson>
      */
     public function getAll(
         ?int $limit = null,
@@ -92,7 +92,7 @@ class AgentSoldApplianceService implements IBaseService {
 
         $query = $this->agentSoldAppliance->newQuery()->with([
             'assignedAppliance',
-            'assignedAppliance.appliance.assetType',
+            'assignedAppliance.appliance.applianceType',
             'person',
         ]);
 
@@ -120,10 +120,10 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return LengthAwarePaginator<int, AssetPerson>
+     * @return LengthAwarePaginator<int, AppliancePerson>
      */
     public function list(int $agentId): LengthAwarePaginator {
-        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates', 'asset.assetType'])
+        return $this->appliancePerson->newQuery()->with(['person', 'device', 'rates', 'appliance.applianceType'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
@@ -182,7 +182,7 @@ class AgentSoldApplianceService implements IBaseService {
             'rate_count' => $requestData['tenure'],
             'total_cost' => $assignedAppliance->cost,
             'down_payment' => $requestData['down_payment'],
-            'asset_id' => $assignedAppliance->appliance->id,
+            'appliance_id' => $assignedAppliance->appliance->id,
             'device_serial' => $deviceSerial,
         ];
 
@@ -223,7 +223,7 @@ class AgentSoldApplianceService implements IBaseService {
         $this->applianceRateService->create($appliancePerson);
 
         if ($appliancePerson->down_payment > 0) {
-            $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($appliancePerson);
+            $applianceRate = $this->applianceRateService->getDownPaymentAsApplianceRate($appliancePerson);
             event(new PaymentSuccessEvent(
                 amount: (int) $transaction->amount,
                 paymentService: $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
