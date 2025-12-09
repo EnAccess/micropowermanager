@@ -17,7 +17,7 @@ class ApplianceSkuSeeder extends Seeder {
         $goodsType = ApplianceType::where('name', 'Goods')->first();
 
         if (!$electronicsType || !$goodsType) {
-            $this->command->warn('Required Appliance Types (Electronics, Goods) not found. Skipping ApplianceSkuSeeder.');
+            $this->command->outputComponents()->warn('Required Appliance Types (Electronics, Goods) not found. Skipping ApplianceSkuSeeder.');
 
             return;
         }
@@ -34,6 +34,6 @@ class ApplianceSkuSeeder extends Seeder {
             'price' => 5000,
         ]);
 
-        $this->command->info('Appliance SKUs (Electronics & Goods) seeded successfully!');
+        $this->command->outputComponents()->info('Appliance SKUs (Electronics & Goods) seeded successfully!');
     }
 }
