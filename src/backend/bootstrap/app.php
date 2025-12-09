@@ -1,6 +1,8 @@
 <?php
 
 use App\Console\Commands\MailApplianceDebtsCommand;
+use App\Exceptions\CompanyAlreadyExistsException;
+use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
@@ -67,6 +69,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ], 422));
         $exceptions->render(fn (SmsGatewayNotConfiguredException $e) => response()->json([
             'message' => 'No active SMS provider is configured. Please configure an SMS gateway in Main Settings like AfricasTalking or TextBee.',
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (CompanyAlreadyExistsException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (OwnerEmailAlreadyExistsException $e) => response()->json([
+            'message' => $e->getMessage(),
             'status_code' => 422,
         ], 422));
     })

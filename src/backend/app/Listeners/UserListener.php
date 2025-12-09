@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\UserCreatedEvent;
+use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Helpers\MailHelper;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
 use App\Services\TicketUserService;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 class UserListener {
     public function __construct(
@@ -33,8 +35,12 @@ class UserListener {
                 'fk_company_id' => $event->user->getCompanyId(),
                 'fk_company_database_id' => $companyDatabase->getId(),
             ];
-
-            $this->databaseProxyService->create($databaseProxyData);
+            // check if owner account email already exists in db proxy
+            try {
+                $this->databaseProxyService->create($databaseProxyData);
+            } catch (UniqueConstraintViolationException) {
+                throw new OwnerEmailAlreadyExistsException('Owner account email already exists');
+            }
         }
 
         $company = $this->companyService->getById($event->user->getCompanyId());
