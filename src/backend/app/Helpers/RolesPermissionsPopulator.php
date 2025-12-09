@@ -26,7 +26,7 @@ class RolesPermissionsPopulator {
             'roles',
             'horizon',
             'customers',
-            'assets',
+            'appliances',
             'tickets',
             'payments',
             'transactions',
@@ -67,7 +67,7 @@ class RolesPermissionsPopulator {
         $financialManagerRole = Role::firstOrCreate(['name' => 'financial-manager', 'guard_name' => 'api']);
         $financialManagerPermissionNames = [
             'customers',
-            'assets',
+            'appliances',
             'tickets',
             'payments',
             'transactions',
@@ -84,7 +84,7 @@ class RolesPermissionsPopulator {
         $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'api']);
         $userPermissionNames = [
             'customers',
-            'assets',
+            'appliances',
             'tickets',
         ];
         $userPermissions = Permission::whereIn('name', $userPermissionNames)

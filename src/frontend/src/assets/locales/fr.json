@@ -1,7 +1,7 @@
 {
   "errors": {
     "alreadyUsedCompanyEmail": "Company with email already exists",
-    "alreadyUserAdminEmail": "Admin with email already exists"
+    "alreadyUserAdminEmail": "Admin Owner with email already exists"
   },
   "menu": {
     "Agents": "Agents",
@@ -132,8 +132,9 @@
     "apiEndpoint": "API Endpoint",
     "apiKey": "API Key",
     "apiToken": "API Token",
-    "appliance": "Appliance | Appliances",
+    "appliance": "Appareil | Appareils",
     "applianceCommission": "Commission de l'appareil",
+    "applianceSku": "Référence d'appareil | Références d'appareil",
     "applianceType": "Type d'appareil | Types d'appareils | Ajouter un type d'appareil",
     "assignAppliance": "Attribuer un appareil | Appareils attribués | Appareil(s) attribué(s) avec succès !",
     "assignClusterManager": "Désigner un responsable d'un regroupement de mini-réseaux",
@@ -182,6 +183,7 @@
     "deleteAgent": "Delete Agent | Agent Deleted Successfully | Agent Updated Successfully |  I confirm that {name} will be deleted",
     "deleteAgentCommission": "Delete Agent Commission | I confirm that {commissionName} will be deleted ",
     "deleteAppliance": "Delete Appliance",
+    "deleteApplianceSku": "Delete Appliance SKU",
     "deleteAssetType": "Delete Asset Type | Asset Type Deleted Successfully | Are you sure to delete the asset type ? | Asset Type Updated Successfully",
     "deleteCustomer": "Delete Customer",
     "deleteCustomerNotify": "I confirm that {name} {surname} will be deleted",
@@ -270,6 +272,7 @@
     "newAddress": "New Address",
     "newAgent": "New Agent | Agent Added Successfully",
     "newAppliance": "New Appliance | Appliance Registered Successfully",
+    "newApplianceSku": "New Appliance SKU | Appliance SKU Registered Successfully",
     "newAssetType": "New Asset Type | Asset Type Registered Successfully",
     "newCategory": "New Category | New category added successfully.",
     "newCluster": "New Cluster | There is no result for {clusterName}. Please use Draw a polygon tool for draw your cluster area.",
@@ -311,6 +314,7 @@
     "overDueReminderRate": "Over Due Reminder Rate (Day)",
     "paginateLabels": "Affichage de {from} à {to} des {total} entrées",
     "paidFor": "Payé",
+    "paygoEnabled": "PayGo activé",
     "paymentDistribution": "Répartition des paiements",
     "paymentFlow": "Flux de paiement | {currency} moyenne mensuelle pendant {count} mois",
     "paymentLink": "Lien de paiement",
@@ -366,6 +370,7 @@
     "selectDevice": "Select a Device to bind with this appliance",
     "selectMiniGrid": "Select Mini-Grid | MiniGrid Data-logger is active",
     "selectPeriod": "Select a period for data",
+    "sellAppliance": "Sell Appliance | New appliance sold successfully. | Are you sure to sell the appliance for {cost} ? ",
     "sellAsset": "Sell Asset | New asset sold successfully. | Are you sure to sell the asset for {cost} ? ",
     "sentDate": "Sent Date",
     "serialNumber": "Serial Number",

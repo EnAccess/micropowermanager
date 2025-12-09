@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
@@ -27,7 +27,7 @@ class TransactionDataContainer {
     public float $amount;
     public float $totalAmount;
     public float $rawAmount;
-    public ?AssetPerson $appliancePerson = null;
+    public ?AppliancePerson $appliancePerson = null;
     public ?Meter $meter = null;
     public float $installmentCost = 0;
     public float $dayDifferenceBetweenTwoInstallments;

@@ -178,9 +178,20 @@ class PersonController extends Controller {
      */
     public function destroy(
         int $personId,
-    ): ApiResource {
+    ): JsonResponse {
         $person = $this->personService->getById($personId);
 
-        return ApiResource::make($this->personService->delete($person));
+        $deleted = $this->personService->delete($person);
+
+        if (!$deleted) {
+            return response()->json([
+                'message' => 'Failed to delete person',
+            ], 500);
+        }
+
+        return ApiResource::make([
+            'message' => 'Person deleted successfully',
+            'data' => $person,
+        ])->response()->setStatusCode(200);
     }
 }

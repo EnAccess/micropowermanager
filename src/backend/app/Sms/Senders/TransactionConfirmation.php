@@ -18,7 +18,7 @@ class TransactionConfirmation extends SmsSender {
     ];
     public const ENERGY_CONFIRMATION = 'energy';
     public const ACCESS_RATE_PAYMENT = 'access rate';
-    public const ASSET_RATE_PAYMENT = 'loan rate';
+    public const APPLIANCE_RATE_PAYMENT = 'loan rate';
 
     public function prepareBody(): void {
         $this->data->paymentHistories()->each(function ($payment) {
@@ -29,8 +29,8 @@ class TransactionConfirmation extends SmsSender {
                 case self::ACCESS_RATE_PAYMENT:
                     $this->prepareBodyByClassReference('AccessRateConfirmation', $payment);
                     break;
-                case self::ASSET_RATE_PAYMENT:
-                    $this->prepareBodyByClassReference('AssetRatePayment', $payment);
+                case self::APPLIANCE_RATE_PAYMENT:
+                    $this->prepareBodyByClassReference('ApplianceRatePayment', $payment);
                     break;
             }
         });

@@ -2,7 +2,7 @@
 
 namespace App\Models\Transaction;
 
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use App\Models\Base\BaseModel;
 use App\Models\Device;
 use App\Models\PaymentHistory;
@@ -42,7 +42,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property      string                                                                                                                                                 $message
  * @property      Carbon|null                                                                                                                                            $created_at
  * @property      Carbon|null                                                                                                                                            $updated_at
- * @property-read AssetPerson|null                                                                                                                                       $appliance
+ * @property-read AppliancePerson|null                                                                                                                                   $appliance
  * @property-read Device|null                                                                                                                                            $device
  * @property-read AgentTransaction|CashTransaction|ThirdPartyTransaction|MesombTransaction|SwiftaTransaction|WaveComTransaction|WaveMoneyTransaction|PaystackTransaction $originalTransaction
  * @property-read Collection<int, PaymentHistory>                                                                                                                        $paymentHistories
@@ -94,10 +94,10 @@ class Transaction extends BaseModel {
     }
 
     /**
-     * @return HasOne<AssetPerson, $this>
+     * @return HasOne<AppliancePerson, $this>
      */
     public function appliance(): HasOne {
-        return $this->hasOne(AssetPerson::class, 'device_serial', 'message');
+        return $this->hasOne(AppliancePerson::class, 'device_serial', 'message');
     }
 
     /**
