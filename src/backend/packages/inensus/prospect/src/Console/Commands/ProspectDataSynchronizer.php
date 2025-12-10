@@ -9,6 +9,7 @@ use Inensus\Prospect\Jobs\ExtractAgents;
 use Inensus\Prospect\Jobs\ExtractCustomers;
 use Inensus\Prospect\Jobs\ExtractInstallations;
 use Inensus\Prospect\Jobs\ExtractPayments;
+use Inensus\Prospect\Jobs\PushAgents;
 use Inensus\Prospect\Jobs\PushCustomers;
 use Inensus\Prospect\Jobs\PushInstallations;
 use Inensus\Prospect\Jobs\PushPayments;
@@ -69,6 +70,7 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
                     $result = true;
                 } elseif ($actionName === 'agents') {
                     dispatch(new ExtractAgents());
+                    dispatch(new PushAgents());
                     $result = true;
                 }
             } catch (\Exception) {
