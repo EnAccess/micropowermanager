@@ -62,6 +62,7 @@
             <span>{{ agent.birthday }}</span>
           </div>
           <div
+            v-if="$can('settings')"
             class="md-layout-item md-size-25 md-small-size-50 detail-card-second-row"
           >
             <label>
@@ -125,7 +126,7 @@
                     </md-select>
                   </md-field>
 
-                  <md-field>
+                  <md-field v-if="$can('settings')">
                     <label for="commission">
                       {{ $tc("phrases.commissionType") }}:
                     </label>
@@ -219,10 +220,17 @@ export default {
 
   methods: {
     async getAgentCommissions() {
+      if (!this.$can("settings")) {
+        return
+      }
       try {
         this.agentCommissions =
           await this.agentCommissionService.getAgentCommissions()
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Agent commissions: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },

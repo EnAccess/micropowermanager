@@ -148,6 +148,9 @@ export default {
   },
   methods: {
     async getFlow(period = "M") {
+      if (!this.$can("payments")) {
+        return
+      }
       switch (period) {
         case "Y":
           this.periodName = this.$tc("words.annually")
@@ -170,6 +173,10 @@ export default {
           this.paymentService.paymentDetailData.length,
         )
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment detail: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },

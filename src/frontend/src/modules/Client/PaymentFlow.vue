@@ -221,6 +221,9 @@ export default {
   },
   methods: {
     async getFlow(personId) {
+      if (!this.$can("payments")) {
+        return
+      }
       try {
         await this.paymentService.getPaymentFlow(personId)
         EventBus.$emit(
@@ -229,24 +232,42 @@ export default {
           this.paymentService.chartData.length,
         )
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment flow: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
     async getPeriod(personId) {
+      if (!this.$can("payments")) {
+        return
+      }
       try {
         let data = await this.paymentService.getPeriod(personId)
         this.paymentPeriod = data.difference
         this.lastPayment = data.lastTransaction
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment period: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
     async getDebt(personId) {
+      if (!this.$can("payments")) {
+        return
+      }
       try {
         let data = await this.paymentService.getDebt(personId)
         this.accessDebt = data.access_rate
         this.deferredDebt = data.deferred
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment debt: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
