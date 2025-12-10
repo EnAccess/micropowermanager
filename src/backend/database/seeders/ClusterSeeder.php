@@ -68,9 +68,7 @@ class ClusterSeeder extends Seeder {
                     'geo_json' => json_decode(
                         '{
                             "type": "Feature",
-                            "properties": {
-                                "name": "Cluster Pemba Island"
-                            },
+                            "properties": {},
                             "geometry": {
                                 "type": "Polygon",
                                 "coordinates": [
