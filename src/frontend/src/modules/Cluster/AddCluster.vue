@@ -273,10 +273,32 @@ export default {
         return
       }
       try {
-        // Extract GeoJSON geometry from selected cluster
-        const feature = this.selectedCluster.feature
+        // Extract GeoJSON Feature from selected cluster
+        let feature = this.selectedCluster.feature
+
+        // If no feature property exists but we have geojson (for manual draws), create the feature
+        if (
+          !feature &&
+          this.selectedCluster.geojson &&
+          this.selectedCluster.type === "manual"
+        ) {
+          feature = {
+            type: "Feature",
+            geometry: this.selectedCluster.geojson,
+            properties: {},
+          }
+        }
+
         if (!feature || feature.type !== "Feature") {
-          throw new Error("Selected cluster must be a GeoJSON Feature")
+          throw new Error("Selected cluster must be a valid GeoJSON Feature")
+        }
+
+        if (
+          !feature.geometry ||
+          !feature.geometry.type ||
+          !feature.geometry.coordinates
+        ) {
+          throw new Error("Feature must contain valid geometry")
         }
 
         const cluster = {
@@ -310,15 +332,10 @@ export default {
     customDrawnDeletedSet(deletedItems) {
       this.mappingService.searchedOrDrawnItems =
         this.mappingService.searchedOrDrawnItems.filter((item) => {
-          const drawnItemCoordinates = item.geojson.coordinates[0].map(
-            (coord) => {
-              return [coord[1], coord[0]]
-            },
-          )
           return !deletedItems.some(
             (deletedItem) =>
-              JSON.stringify(drawnItemCoordinates) ===
-              JSON.stringify(deletedItem.feature.geometry.coordinates[0]),
+              JSON.stringify(item.geojson.coordinates) ===
+              JSON.stringify(deletedItem.feature.geometry.coordinates),
           )
         })
       if (this.mappingService.searchedOrDrawnItems.length === 0) {
