@@ -52,8 +52,6 @@ export default {
   },
   methods: {
     async reloadList(subscriber, data) {
-      console.log("subscriber", subscriber)
-      console.log("data", data)
       if (subscriber !== this.subscriber) {
         return
       }
