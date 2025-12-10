@@ -22,6 +22,12 @@ export default {
       props.selected = false
       drawingLayer.addLayer(layer)
 
+      // Convert Leaflet latlngs to GeoJSON coordinates format
+      // GeoJSON uses [longitude, latitude] and needs nested array for Polygon
+      const geoJsonCoordinates = [
+        layer._latlngs[0].map((latlng) => [latlng.lng, latlng.lat]),
+      ]
+
       const { sumLat, sumLon } = layer._latlngs[0].reduce(
         (acc, coordinates) => {
           acc.sumLat += coordinates.lat
@@ -38,7 +44,7 @@ export default {
         type: "manual",
         geojson: {
           type: "Polygon",
-          coordinates: layer._latlngs,
+          coordinates: geoJsonCoordinates,
         },
         display_name: "",
         selected: false,
@@ -61,6 +67,12 @@ export default {
       const editedItems = []
       const editedLayers = item.layers
       editedLayers.eachLayer((layer) => {
+        // Convert Leaflet latlngs to GeoJSON coordinates format
+        // GeoJSON uses [longitude, latitude] and needs nested array for Polygon
+        const geoJsonCoordinates = [
+          layer._latlngs[0].map((latlng) => [latlng.lng, latlng.lat]),
+        ]
+
         const { sumLat, sumLon } = layer._latlngs[0].reduce(
           (acc, coordinates) => {
             acc.sumLat += coordinates.lat
@@ -77,7 +89,7 @@ export default {
           type: "manual",
           geojson: {
             type: "Polygon",
-            coordinates: layer._latlngs,
+            coordinates: geoJsonCoordinates,
           },
           display_name: "",
           selected: false,
@@ -101,9 +113,26 @@ export default {
       const featureCollection = {
         type: "FeatureCollection",
         features: features.map((feature) => {
+          // Convert manual drawn items to proper GeoJSON Features
+          if (feature.type === "manual" && feature.geojson) {
+            return {
+              type: "Feature",
+              geometry: feature.geojson,
+              properties: {
+                clusterId: -1,
+                clusterDisplayName: feature.display_name || "",
+                name: feature.display_name || "",
+                draw_type: feature.draw_type || "draw",
+              },
+            }
+          }
+
+          // Validate it's a proper Feature
           if (feature.type !== "Feature") {
             throw new Error("Expected GeoJSON Feature, got: " + feature.type)
           }
+
+          // Return Feature with enhanced properties
           return {
             ...feature,
             properties: {
