@@ -20,6 +20,9 @@ parameters:
     # Level 9 is the highest level
     level: 6
 
+    # Ensure PHPStan scans vendor for class discovery
+    scanDirectories:
+        - vendor/spatie/laravel-query-builder
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
 #
