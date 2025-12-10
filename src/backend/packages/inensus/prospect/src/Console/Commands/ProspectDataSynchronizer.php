@@ -5,6 +5,7 @@ namespace Inensus\Prospect\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
+use Inensus\Prospect\Jobs\ExtractAgents;
 use Inensus\Prospect\Jobs\ExtractCustomers;
 use Inensus\Prospect\Jobs\ExtractInstallations;
 use Inensus\Prospect\Jobs\ExtractPayments;
@@ -65,6 +66,9 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
                 } elseif ($actionName === 'customers') {
                     dispatch(new ExtractCustomers());
                     dispatch(new PushCustomers());
+                    $result = true;
+                } elseif ($actionName === 'agents') {
+                    dispatch(new ExtractAgents());
                     $result = true;
                 }
             } catch (\Exception) {
