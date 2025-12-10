@@ -26,7 +26,7 @@ class PersonService implements IBaseService {
      * @return Collection<int, Person>|array<int, Person>
      */
     public function getAllRegisteredPeople(): Collection|array {
-        return QueryBuilder::for(Person::class)
+        return QueryBuilder::for($this->person->newQuery())
             ->allowedSorts(['id', 'created_at', 'name'])
             ->defaultSort('-created_at')
             ->get();
@@ -176,7 +176,7 @@ class PersonService implements IBaseService {
      * @return LengthAwarePaginator<int, Person>
      */
     public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
-        $query = Person::query()
+        $query = $this->person->newQuery()
             ->with([
                 'addresses.city',
                 'devices',
@@ -259,7 +259,7 @@ class PersonService implements IBaseService {
      * @return Collection<int, Person>|array<int, Person>
      */
     public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
-        $query = Person::query()->with([
+        $query = $this->person->newQuery()->with([
             'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
