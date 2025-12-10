@@ -62,7 +62,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read Collection<int, Roles>           $roleOwner
  * @property-read Collection<int, Ticket>          $tickets
  */
-class Person extends BaseModel implements \Stringable, HasAddressesInterface, RoleInterface {
+class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
