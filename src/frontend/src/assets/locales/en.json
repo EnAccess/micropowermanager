@@ -71,7 +71,8 @@
       "Users": "Users",
       "addCluster": "Add Cluster",
       "addMiniGrid": "Add MiniGrid",
-      "addVillage": "Add Village"
+      "addVillage": "Add Village",
+      "userManagement": "User Management"
     }
   },
   "messages": {

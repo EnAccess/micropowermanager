@@ -30,7 +30,6 @@ import TransactionList from "@/modules/Transactions/Transactions.vue"
 import TransactionDetail from "@/modules/Transactions/Transaction.vue"
 import TicketList from "@/modules/Ticket/Tickets.vue"
 import TicketSettingsCategories from "@/modules/Ticket/CategoryManagement.vue"
-import TicketSettingsUserManagement from "@/modules/Ticket/UserManagement.vue"
 import TariffList from "@/modules/Tariff/Tariffs.vue"
 import TariffDetail from "@/modules/Tariff/Tariff.vue"
 import MeterList from "@/modules/Meter/Meters.vue"
@@ -535,12 +534,12 @@ export const exportedRoutes = [
       },
       {
         path: "tickets-settings/user-management",
-        component: TicketSettingsUserManagement,
+        component: UserManagementPage,
         meta: {
           layout: "default",
           sidebar: {
             enabled: true,
-            name: "User Management",
+            name: "userManagement",
           },
         },
       },
