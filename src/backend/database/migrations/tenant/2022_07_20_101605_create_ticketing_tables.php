@@ -11,7 +11,17 @@ class CreateTicketingTables extends Migration {
      * @return void
      */
     public function up() {
-        $tableNames = config('tickets.table_names');
+        $tableNames = [
+            'board' => 'ticket_boards',
+            'board_categories' => 'ticket_board_categories',
+            'card' => 'ticket_cards',
+            'ticket' => 'tickets',
+            'user' => 'ticket_users',
+            'ticket_categories' => 'ticket_categories',
+            'ticket_outsource' => 'ticket_outsources',
+            'outsource_reports' => 'ticket_outsource_reports',
+            'ticket_comments' => 'ticket_comments',
+        ];
 
         Schema::connection('tenant')->create($tableNames['ticket'], function (Blueprint $table) {
             $table->increments('id');
@@ -72,7 +82,18 @@ class CreateTicketingTables extends Migration {
      * @return void
      */
     public function down() {
-        $tableNames = config('tickets.table_names');
+        $tableNames = [
+            'board' => 'ticket_boards',
+            'board_categories' => 'ticket_board_categories',
+            'card' => 'ticket_cards',
+            'ticket' => 'tickets',
+            'user' => 'ticket_users',
+            'ticket_categories' => 'ticket_categories',
+            'ticket_outsource' => 'ticket_outsources',
+            'outsource_reports' => 'ticket_outsource_reports',
+            'ticket_comments' => 'ticket_comments',
+        ];
+
         Schema::connection('tenant')->drop($tableNames['ticket']);
         Schema::connection('tenant')->drop($tableNames['user']);
         Schema::connection('tenant')->drop($tableNames['ticket_categories']);
