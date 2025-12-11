@@ -46,7 +46,7 @@ class SmsController extends Controller {
             ->groupBy('receiver')
             ->paginate(20);
 
-        $transformedData = $list->through(fn ($item) => SmsDataContainer::fromQuery($item)->toArray());
+        $transformedData = $list->through(fn (object $item): array => SmsDataContainer::fromQuery($item)->toArray());
 
         return new ApiResource($transformedData);
     }

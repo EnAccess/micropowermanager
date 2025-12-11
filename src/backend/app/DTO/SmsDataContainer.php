@@ -11,9 +11,6 @@ use App\Models\Person\Person;
  */
 class SmsDataContainer {
     /**
-     * @param string              $receiver
-     * @param int                 $total
-     * @param Address|null        $address
      * @param array<string,mixed> $owner
      */
     public function __construct(
@@ -25,8 +22,6 @@ class SmsDataContainer {
 
     /**
      * Create from grouped SMS query result.
-     *
-     * @param object $smsData
      */
     public static function fromQuery(object $smsData): self {
         $address = $smsData->address ?? null;
