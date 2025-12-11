@@ -87,7 +87,7 @@ export default {
     showAddUser() {
       this.showNewUser = true
     },
-    async onUserCreated(newUser) {
+    async onUserCreated() {
       await this.getUsers()
       this.showNewUser = false
     },
