@@ -13,8 +13,6 @@ use App\Models\Country;
 use App\Models\Device;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
-use App\Models\Role\RoleInterface;
-use App\Models\Role\Roles;
 use App\Models\Ticket\Ticket;
 use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
@@ -57,10 +55,9 @@ use Illuminate\Support\Facades\DB;
  * @property-read PaymentHistory|null              $latestPayment
  * @property-read MiniGrid|null                    $miniGrid
  * @property-read Collection<int, PaymentHistory>  $payments
- * @property-read Collection<int, Roles>           $roleOwner
  * @property-read Collection<int, Ticket>          $tickets
  */
-class Person extends BaseModel implements \Stringable, HasAddressesInterface, RoleInterface {
+class Person extends BaseModel implements \Stringable, HasAddressesInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -127,13 +124,6 @@ class Person extends BaseModel implements \Stringable, HasAddressesInterface, Ro
      */
     public function devices(): HasMany {
         return $this->hasMany(Device::class);
-    }
-
-    /**
-     * @return MorphMany<Roles, $this>
-     */
-    public function roleOwner(): MorphMany {
-        return $this->morphMany(Roles::class, 'role_owner');
     }
 
     /**
