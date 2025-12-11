@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property      int                       $id
  * @property      string                    $name
  * @property      int                       $manager_id
- * @property      array<array-key, mixed>   $geo_data
+ * @property      array<array-key, mixed>   $geo_json
  * @property      Carbon|null               $created_at
  * @property      Carbon|null               $updated_at
  * @property-read Collection<int, City>     $cities
@@ -47,7 +47,7 @@ class Cluster extends BaseModel implements ITargetAssignable {
 
     protected function casts(): array {
         return [
-            'geo_data' => 'array',
+            'geo_json' => 'array',
         ];
     }
 }
