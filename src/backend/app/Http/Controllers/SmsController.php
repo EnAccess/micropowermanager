@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\SmsDataContainer;
 use App\Events\SmsStoredEvent;
 use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Http\Requests\SmsRequest;
@@ -45,7 +46,9 @@ class SmsController extends Controller {
             ->groupBy('receiver')
             ->paginate(20);
 
-        return new ApiResource($list);
+        $transformedData = $list->through(fn ($item) => SmsDataContainer::fromQuery($item)->toArray());
+
+        return new ApiResource($transformedData);
     }
 
     public function storeBulk(Request $request): void {
