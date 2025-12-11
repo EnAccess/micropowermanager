@@ -50,6 +50,7 @@ export class TicketUserService {
         : "-",
     }
   }
+
   async createExternalUser(name, phone) {
     try {
       const user = {
@@ -59,12 +60,13 @@ export class TicketUserService {
 
       let response = await this.repository.createExternal(user)
       if (response.status === 200 || response.status === 201) {
-        return response.data.data
+        const result = response.data.data || response.data || { success: true }
+        return result
       } else {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message || e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
