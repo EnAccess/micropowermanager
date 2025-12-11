@@ -22,6 +22,7 @@ import AddMiniGrid from "@/modules/MiniGrid/AddMiniGrid.vue"
 import SettingsPage from "@/modules/Settings/Configuration/Configuration.vue"
 import ProfilePage from "@/modules/Profile/Profile.vue"
 import UserManagementPage from "@/modules/Settings/UserManagement/UserManagement.vue"
+import TicketSettingsUserManagement from "@/modules/Ticket/UserManagement.vue"
 import Reports from "@/modules/ExportedReports/Reports.vue"
 // FIXME: https://github.com/EnAccess/micropowermanager/issues/143
 import CustomerList from "@/modules/Client/Clients.vue"
@@ -534,7 +535,7 @@ export const exportedRoutes = [
       },
       {
         path: "tickets-settings/user-management",
-        component: UserManagementPage,
+        component: TicketSettingsUserManagement,
         meta: {
           layout: "default",
           sidebar: {
