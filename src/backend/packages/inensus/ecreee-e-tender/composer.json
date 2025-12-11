@@ -1,0 +1,27 @@
+{
+  "name": "inensus/ecreee-e-tender",
+  "description": "Integration of Ecreee e-tender platform with MicroPowerManager Mini-Grid management system.",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "inensus",
+      "email": "developer@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\EcreeeETender\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\EcreeeETender\\Providers\\EcreeeETenderServiceProvider"
+      ]
+    }
+  }
+}

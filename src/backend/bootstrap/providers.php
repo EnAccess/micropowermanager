@@ -13,6 +13,7 @@ use Inensus\ChintMeter\Providers\ChintMeterServiceProvider;
 use Inensus\DalyBms\Providers\DalyBmsServiceProvider;
 use Inensus\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
 use Inensus\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
+use Inensus\EcreeeETender\Providers\EcreeeETenderServiceProvider;
 use Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
 use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
@@ -62,4 +63,5 @@ return [
     DemoShsManufacturerServiceProvider::class,
     PaystackPaymentProviderServiceProvider::class,
     TextbeeSmsGatewayServiceProvider::class,
+    EcreeeETenderServiceProvider::class,
 ];

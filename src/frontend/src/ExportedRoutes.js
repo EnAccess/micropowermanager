@@ -105,6 +105,7 @@ import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
 import OdysseyExportOverview from "./plugins/odyssey-data-export/js/modules/Overview/Overview"
+import EcreeeETenderOverview from "./plugins/ecreee-e-tender/js/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1646,6 +1647,30 @@ export const exportedRoutes = [
       {
         path: "overview",
         component: OdysseyExportOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/ecreee-e-tender",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 27,
+        name: "Ecreee E Tender",
+        icon: "key",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: EcreeeETenderOverview,
         meta: {
           layout: "default",
           sidebar: {
