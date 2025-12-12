@@ -101,6 +101,9 @@ export default {
       this.$router.push("/sold-appliance-detail/" + this.selectedAppliance.id)
     },
     async getApplianceList() {
+      if (!this.$can("appliances")) {
+        return
+      }
       try {
         await this.appliancePersonService.getPersonAppliances(this.personId)
         EventBus.$emit(
@@ -109,6 +112,10 @@ export default {
           this.appliancePersonService.list.length,
         )
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Assets/Deferred payments: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },

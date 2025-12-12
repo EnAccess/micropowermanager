@@ -296,6 +296,14 @@ export default {
     },
 
     async saveTicket() {
+      if (!this.$can("tickets")) {
+        this.alertNotify(
+          "error",
+          "You do not have permission to create tickets",
+        )
+        return
+      }
+
       // Validate all fields
       const validator = await this.$validator.validateAll()
       if (!validator) {
@@ -334,7 +342,14 @@ export default {
         this.closeModal()
       } catch (error) {
         console.error("Error creating ticket:", error)
-        this.alertNotify("error", error.message)
+        if (error.response && error.response.status === 403) {
+          this.alertNotify(
+            "error",
+            "You do not have permission to create tickets",
+          )
+        } else {
+          this.alertNotify("error", error.message)
+        }
       }
     },
   },

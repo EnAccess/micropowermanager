@@ -1,5 +1,5 @@
 import { Paginator } from "@/Helpers/Paginator"
-
+import { resources } from "@/resources"
 import AgentBalanceHistoryRepository from "@/repositories/AgentBalanceHistoryRepository"
 
 export class AgentBalanceHistoryService {

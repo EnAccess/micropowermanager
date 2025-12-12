@@ -5,17 +5,17 @@ meta {
 }
 
 get {
-  url: {{mpm_backend_url}}/api/export/transactions?format=csv&deviceType=all
+  url: {{mpm_backend_url}}/api/export/transactions?format=csv&deviceType=solar_home_system
   body: multipartForm
   auth: inherit
 }
 
 params:query {
   format: csv
-  deviceType: all
-  ~status: 0
+  deviceType: solar_home_system
+  ~status: 1
+  ~provider: wave_money_transaction
   ~serial_number: 4f3a0cdc-7728-31d7-98f9-aaa25f00b2f0
   ~currency: TZS
   ~timeZone: UTC
-  ~provider: agent_transaction
 }

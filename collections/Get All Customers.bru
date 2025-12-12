@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: {{mpm_backend_url}}/api/people?limit=4
+  url: {{mpm_backend_url}}/api/people?limit=15&sort_by=agent
   body: none
   auth: inherit
 }
 
 params:query {
-  limit: 4
+  limit: 15
+  sort_by: agent
   ~active_customer: 1
   ~agent_id: 1
 }
