@@ -90,7 +90,12 @@ class ProspectAgentTransformer {
             return null;
         }
 
-        return $agent->addresses()
+        $person = $agent->person;
+        if (!$person) {
+            return null;
+        }
+
+        return $person->addresses()
             ->where('is_primary', true)
             ->with(['city.country', 'city.cluster', 'geo'])
             ->first();
