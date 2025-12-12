@@ -61,13 +61,15 @@ class ProspectAgentTransformer {
             $locationArea2 = $city->name ?? null;
         }
 
+        $agentType = $this->determineAgentType($agent);
+
         return [
             'external_id' => $externalId,
             'name' => $fullName,
             'company' => $companyName,
             'address' => $addressString,
             'email' => $email,
-            'agent_type' => 'sales_agent',
+            'agent_type' => $agentType,
             'gender' => null,
             'phone' => $phone,
             'country' => $countryCode,
@@ -119,5 +121,18 @@ class ProspectAgentTransformer {
         } catch (\Exception) {
             return null;
         }
+    }
+
+    /**
+     * Determine the agent type based on their activities.
+     * If an agent has sold appliances, they are a sales_agent.
+     * Otherwise, they are an installer.
+     *
+     * @return 'sales_agent'|'installer'
+     */
+    private function determineAgentType(Agent $agent): string {
+        $hasSoldAppliances = $agent->soldAppliances()->count() > 0;
+
+        return $hasSoldAppliances ? 'sales_agent' : 'installer';
     }
 }
