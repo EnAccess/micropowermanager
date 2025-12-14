@@ -47,6 +47,11 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
         $this->syncSettingService->updateSyncSettings([]);
 
         $this->syncSettingService->getSyncSettings()->each(function (ProspectSyncSetting $syncSetting) use ($syncActions): true {
+            // Skip sync if disabled
+            if (!$syncSetting->is_enabled) {
+                return true;
+            }
+
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
             if (!$syncAction) {
                 return true;

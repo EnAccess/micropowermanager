@@ -25,6 +25,7 @@ class ProspectSyncSettingResource extends JsonResource {
                 'attributes' => [
                     'id' => $this->id,
                     'actionName' => $this->action_name,
+                    'isEnabled' => $this->is_enabled ?? true,
                     'syncInValueStr' => $this->sync_in_value_str,
                     'syncInValueNum' => $this->sync_in_value_num,
                     'maxAttempts' => $this->max_attempts,
