@@ -56,7 +56,7 @@ class ProspectCredentialService {
 
         foreach ($credentialsData as $data) {
             $id = $data['id'] ?? null;
-            $apiUrl = $data['api_url'] ?? null;
+            $apiUrl = $data['api_url'];
             $encryptedData = $this->encryptCredentialFields($data, ['api_url', 'api_token']);
 
             if (!$id && $apiUrl && isset($apiUrlMap[$apiUrl])) {
