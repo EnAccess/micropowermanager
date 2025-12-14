@@ -150,8 +150,7 @@
               <md-field
                 :class="{
                   'md-invalid':
-                    submitted &&
-                    errors.has('Credential-Form.agentsApiToken'),
+                    submitted && errors.has('Credential-Form.agentsApiToken'),
                 }"
               >
                 <label for="agentsApiToken">Secret</label>
@@ -327,10 +326,13 @@ export default {
         ]
 
         await this.credentialService.updateCredential()
-        this.credentialService.list.forEach(c => {
-          if (c.apiUrl?.includes("/installations")) this.installationsCredential.id = c.id
-          if (c.apiUrl?.includes("/payments_ts")) this.paymentsCredential.id = c.id
-          if (c.apiUrl?.includes("/customers")) this.customersCredential.id = c.id
+        this.credentialService.list.forEach((c) => {
+          if (c.apiUrl?.includes("/installations"))
+            this.installationsCredential.id = c.id
+          if (c.apiUrl?.includes("/payments_ts"))
+            this.paymentsCredential.id = c.id
+          if (c.apiUrl?.includes("/customers"))
+            this.customersCredential.id = c.id
           if (c.apiUrl?.includes("/agents")) this.agentsCredential.id = c.id
         })
         this.alertNotify("success", "Updated successfully")
