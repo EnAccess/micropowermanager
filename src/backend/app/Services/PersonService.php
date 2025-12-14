@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * @implements IBaseService<Person>
@@ -23,7 +26,10 @@ class PersonService implements IBaseService {
      * @return Collection<int, Person>|array<int, Person>
      */
     public function getAllRegisteredPeople(): Collection|array {
-        return $this->person->newQuery()->get();
+        return QueryBuilder::for($this->person->newQuery())
+            ->allowedSorts(['id', 'created_at', 'name'])
+            ->defaultSort('-created_at')
+            ->get();
     }
 
     // associates the person with a country
@@ -170,13 +176,14 @@ class PersonService implements IBaseService {
      * @return LengthAwarePaginator<int, Person>
      */
     public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
-        $query = $this->person->newQuery()->with([
-            'addresses' => fn ($q) => $q->where('is_primary', 1),
-            'addresses.city',
-            'devices',
-            'agentSoldAppliance.assignedAppliance.agent',
-            'latestPayment',
-        ])->where('is_customer', $customerType);
+        $query = $this->person->newQuery()
+            ->with([
+                'addresses.city',
+                'devices',
+                'agentSoldAppliance',
+                'latestPayment',
+            ])
+            ->where('people.is_customer', $customerType);
 
         if ($agentId) {
             $query->whereHas('agentSoldAppliance.assignedAppliance.agent', function ($q) use ($agentId) {
@@ -198,7 +205,54 @@ class PersonService implements IBaseService {
             }
         }
 
-        return $query->paginate($limit);
+        return QueryBuilder::for($query)
+            ->allowedSorts([
+                'id',
+                'created_at',
+                'name',
+                AllowedSort::callback('agent', function (Builder $query, bool $descending, string $property) {
+                    $direction = $descending ? 'desc' : 'asc';
+
+                    $subquery = DB::table('agent_sold_appliances', 'asa')
+                        ->selectRaw('CONCAT(agent_person.name, " ", agent_person.surname)')
+                        ->join('agent_assigned_appliances as aaa', 'aaa.id', '=', 'asa.agent_assigned_appliance_id')
+                        ->join('agents as ag', 'ag.id', '=', 'aaa.agent_id')
+                        ->join('people as agent_person', 'agent_person.id', '=', 'ag.person_id')
+                        ->whereColumn('asa.person_id', 'people.id')
+                        ->limit(1);
+
+                    $query->orderByRaw('('.$subquery->toSql().') '.$direction)
+                        ->addBinding($subquery->getBindings(), 'order');
+                }),
+                AllowedSort::callback('city', function (Builder $query, bool $descending, string $property) {
+                    $direction = $descending ? 'desc' : 'asc';
+
+                    $subquery = DB::table('addresses', 'addr')
+                        ->select('c.name')
+                        ->join('cities as c', 'c.id', '=', 'addr.city_id')
+                        ->whereColumn('addr.owner_id', 'people.id')
+                        ->where('addr.owner_type', 'person')
+                        ->where('addr.is_primary', 1)
+                        ->limit(1);
+
+                    $query->orderByRaw('('.$subquery->toSql().') '.$direction)
+                        ->addBinding($subquery->getBindings(), 'order');
+                }),
+                AllowedSort::callback('device', function (Builder $query, bool $descending, string $property) {
+                    $direction = $descending ? 'desc' : 'asc';
+
+                    $subquery = DB::table('devices')
+                        ->select('device_serial')
+                        ->whereColumn('person_id', 'people.id')
+                        ->orderBy('id', 'asc')
+                        ->limit(1);
+
+                    $query->orderByRaw('('.$subquery->toSql().') '.$direction)
+                        ->addBinding($subquery->getBindings(), 'order');
+                }),
+            ])
+            ->defaultSort('-created_at')
+            ->paginate($limit);
     }
 
     /**
@@ -241,7 +295,10 @@ class PersonService implements IBaseService {
             });
         }
 
-        return $query->get();
+        return QueryBuilder::for($query)
+            ->allowedSorts(['id', 'created_at', 'name'])
+            ->defaultSort('-created_at')
+            ->get();
     }
 
     public function createFromRequest(Request $request): Person {

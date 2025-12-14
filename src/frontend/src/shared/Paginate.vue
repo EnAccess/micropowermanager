@@ -200,10 +200,30 @@ export default {
       }
       if (this.goPage !== pageNumber) this.goPage = pageNumber
       this.loading = true
-      this.paginator.loadPage(pageNumber, this.term).then((response) => {
-        this.loading = false
-        EventBus.$emit("pageLoaded", this.subscriber, response.data)
-      })
+      this.paginator
+        .loadPage(pageNumber, this.term)
+        .then((response) => {
+          this.loading = false
+          EventBus.$emit("pageLoaded", this.subscriber, response.data)
+        })
+        .catch((error) => {
+          this.loading = false
+          if (error.response && error.response.status === 403) {
+            console.warn(
+              `Permission denied for ${this.subscriber}:`,
+              error.message,
+            )
+            // Emit empty data to trigger empty state instead of infinite loading
+            EventBus.$emit("pageLoaded", this.subscriber, [])
+          } else {
+            this.alertNotify(
+              "error",
+              error.response?.data?.message || error.message,
+            )
+            // Emit empty data to prevent infinite loading
+            EventBus.$emit("pageLoaded", this.subscriber, [])
+          }
+        })
     },
     formatTotalPages(pageNumber) {
       return pageNumber.toLocaleString()

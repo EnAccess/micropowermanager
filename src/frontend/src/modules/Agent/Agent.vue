@@ -21,11 +21,15 @@
       <div
         class="md-layout-item md-large-size-50 md-medium-size-50 md-xlarge-size-50 md-small-size-100 md-small-size-100"
       >
-        <assigned-appliance-list :agent-id="agentId" />
-        <sold-appliance-list :agent-id="agentId" />
-        <agent-ticket-list :agent-id="agentId" />
+        <assigned-appliance-list
+          v-if="$can('appliances')"
+          :agent-id="agentId"
+        />
+        <sold-appliance-list v-if="$can('appliances')" :agent-id="agentId" />
+        <agent-ticket-list v-if="$can('tickets')" :agent-id="agentId" />
       </div>
       <div
+        v-if="$can('transactions')"
         class="md-layout-item md-large-size-100 md-medium-size-100 md-xlarge-size-100 md-small-size-100 md-small-size-100"
       >
         <agent-transaction-list :agent-id="agentId" />

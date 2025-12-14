@@ -1,0 +1,17 @@
+meta {
+  name: Get All Transactions
+  type: http
+  seq: 30
+}
+
+get {
+  url: {{mpm_backend_url}}/api/transactions?page=1&per_page=15&sort_by=id
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  per_page: 15
+  sort_by: id
+}

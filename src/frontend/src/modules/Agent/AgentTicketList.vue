@@ -17,7 +17,6 @@
 import Widget from "@/shared/Widget.vue"
 import { AgentTicketService } from "@/services/AgentTicketService"
 import { EventBus } from "@/shared/eventbus"
-import { UserTickets } from "@/services/TicketService"
 import TicketItem from "../../shared/TicketItem"
 
 export default {
@@ -34,7 +33,6 @@ export default {
         this.$tc("words.status"),
         this.$tc("words.date"),
       ],
-      tickets: new UserTickets(this.$store.getters.person.id),
     }
   },
   components: {
