@@ -125,14 +125,19 @@ class ProspectAgentTransformer {
 
     /**
      * Determine the agent type based on their activities.
-     * If an agent has sold appliances, they are a sales_agent.
-     * Otherwise, they are an installer.
+     * If an agent has created maintenance requests (tickets with categories like
+     * "Installing Meters", "System Troubleshoot", etc. where out_source = 1),
+     * they are an installer. Otherwise, they are a sales_agent.
      *
      * @return 'sales_agent'|'installer'
      */
     private function determineAgentType(Agent $agent): string {
-        $hasSoldAppliances = $agent->soldAppliances()->count() > 0;
+        $hasMaintenanceRequests = $agent->tickets()
+            ->whereHas('category', function ($query) {
+                $query->where('out_source', 1);
+            })
+            ->exists();
 
-        return $hasSoldAppliances ? 'sales_agent' : 'installer';
+        return $hasMaintenanceRequests ? 'installer' : 'sales_agent';
     }
 }
