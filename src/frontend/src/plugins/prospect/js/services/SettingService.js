@@ -15,7 +15,6 @@ export class SettingService {
     this.syncList = []
     for (let s in data) {
       const attrs = data[s].data.attributes
-      // Ensure isEnabled defaults to true if not present
       if (attrs.isEnabled === undefined) {
         attrs.isEnabled = true
       }
