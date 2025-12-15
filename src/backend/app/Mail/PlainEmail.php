@@ -5,6 +5,7 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
 class PlainEmail extends Mailable {
     use Queueable;
@@ -21,8 +22,9 @@ class PlainEmail extends Mailable {
         $mail = $this->subject($this->emailSubject)
             ->html($this->emailBody);
 
-        if ($this->attachmentPath) {
-            $mail->attachFromStorageDisk('local', $this->attachmentPath);
+        if ($this->attachmentPath && Storage::disk('local')->exists($this->attachmentPath)) {
+            $fullPath = Storage::disk('local')->path($this->attachmentPath);
+            $mail->attach($fullPath);
         }
 
         return $mail;

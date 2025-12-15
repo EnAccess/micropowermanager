@@ -156,4 +156,13 @@ class UserService {
     public function getUsers(): Collection {
         return $this->user->newQuery()->get();
     }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersToSendOutstandingDebtsReport(): Collection {
+        return $this->user->newQuery()->whereHas('roles', function ($query) {
+            $query->whereIn('name', ['admin', 'owner', 'financial-manager']);
+        })->get();
+    }
 }
