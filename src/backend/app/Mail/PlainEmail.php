@@ -22,8 +22,10 @@ class PlainEmail extends Mailable {
         $mail = $this->subject($this->emailSubject)
             ->html($this->emailBody);
 
-        if ($this->attachmentPath && Storage::disk('local')->exists($this->attachmentPath)) {
-            $fullPath = Storage::disk('local')->path($this->attachmentPath);
+        $storage = Storage::disk(config('filesystems.default'));
+
+        if ($this->attachmentPath && $storage->exists($this->attachmentPath)) {
+            $fullPath = $storage->path($this->attachmentPath);
             $mail->attach($fullPath);
         }
 

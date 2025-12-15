@@ -9,6 +9,7 @@ use App\Exceptions\Export\SpreadSheetNotSavedException;
 use App\Models\DatabaseProxy;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -101,7 +102,8 @@ abstract class AbstractExportService {
         }
     }
 
-    public function saveSpreadSheet(): string {
+    public function saveSpreadSheet(?Filesystem $storage = null): string {
+        $storage = $storage ?? Storage::disk('local');
         try {
             $user = User::query()->first();
             $databaseProxy = app(DatabaseProxy::class);
@@ -116,7 +118,7 @@ abstract class AbstractExportService {
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
             $writer->save($tempPath);
 
-            Storage::disk('local')->put($path, file_get_contents($tempPath));
+            $storage->put($path, file_get_contents($tempPath));
             unlink($tempPath);
 
             return $path;
@@ -128,7 +130,8 @@ abstract class AbstractExportService {
     /**
      * @param array<int, string> $headers
      */
-    public function saveCsv(array $headers = []): string {
+    public function saveCsv(array $headers = [], ?Filesystem $storage = null): string {
+        $storage = $storage ?? Storage::disk('local');
         try {
             $user = User::query()->first();
             $databaseProxy = app(DatabaseProxy::class);
@@ -140,7 +143,7 @@ abstract class AbstractExportService {
 
             $csvContent = $this->generateCsvContent($headers);
 
-            Storage::disk('local')->put($path, $csvContent);
+            $storage->put($path, $csvContent);
 
             return $path;
         } catch (\Exception $e) {
