@@ -13,6 +13,8 @@ use App\Models\Country;
 use App\Models\Device;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
+use App\Models\PersonDocument;
+use App\Models\Role\Roles;
 use App\Models\Ticket\Ticket;
 use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
@@ -55,6 +57,11 @@ use Illuminate\Support\Facades\DB;
  * @property-read PaymentHistory|null              $latestPayment
  * @property-read MiniGrid|null                    $miniGrid
  * @property-read Collection<int, PaymentHistory>  $payments
+ *                                                                     <<<<<<< HEAD
+ *                                                                     =======
+ * @property-read PersonDocument|null              $personDocument
+ * @property-read Collection<int, Roles>           $roleOwner
+ *                                                                     >>>>>>> main
  * @property-read Collection<int, Ticket>          $tickets
  */
 class Person extends BaseModel implements \Stringable, HasAddressesInterface {
@@ -152,6 +159,13 @@ class Person extends BaseModel implements \Stringable, HasAddressesInterface {
      */
     public function appliancePerson(): HasMany {
         return $this->HasMany(AppliancePerson::class, 'person_id', 'id');
+    }
+
+    /**
+     * @return HasOne<PersonDocument, $this>
+     */
+    public function personDocument(): HasOne {
+        return $this->hasOne(PersonDocument::class, 'person_id', 'id');
     }
 
     public function __toString(): string {

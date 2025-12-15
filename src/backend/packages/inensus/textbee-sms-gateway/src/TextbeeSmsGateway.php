@@ -64,19 +64,14 @@ class TextbeeSmsGateway {
                 throw new MessageNotSentException('TextBee response missing data field');
             }
 
-            $messageId = $data['id'] ?? null;
-            $status = $data['status'] ?? null;
-            $createdAt = $data['createdAt'] ?? null;
-
-            if (!$messageId) {
-                throw new MessageNotSentException('TextBee response missing message ID');
-            }
+            $messageId = $data['smsBatchId'] ?? '';
+            $status = $data['success'] ?? 'PENDING';
 
             $textbeeMessage = [
-                'status' => $status ?? 'PENDING',
+                'status' => $status,
                 'message_id' => $messageId,
                 'sms_id' => $registeredSms->id,
-                'created_at_textbee' => $createdAt,
+                'created_at_textbee' => null,
             ];
 
             $this->textbeeMessageService->create($textbeeMessage);
