@@ -96,6 +96,10 @@ export let resources = {
     rate: {
       update: "/api/appliances/rates/",
     },
+    person: {
+      rates: "/api/appliances/person/",
+      logs: "/api/appliances/person/",
+    },
   },
   meters: {
     list: "/api/meters",

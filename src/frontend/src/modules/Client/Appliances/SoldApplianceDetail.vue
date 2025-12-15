@@ -155,7 +155,7 @@
             <widget
               title="Payment Plan"
               color="green"
-              :paginator="applianceRatesLogsService.ratesPaginator"
+              :paginator="applianceRateService.paginator"
               :subscriber="ratesSubscriber"
             >
               <md-table
@@ -193,10 +193,7 @@
                   :key="rate.id"
                 >
                   <md-table-cell>
-                    {{
-                      (applianceRatesLogsService.ratesPaginator.from || 0) +
-                      index
-                    }}
+                    {{ (applianceRateService.paginator.from || 0) + index }}
                     <md-icon v-if="rate.remaining === 0">
                       check
                       <md-tooltip md-direction="top">Paid</md-tooltip>
@@ -279,7 +276,7 @@
             <widget
               title="History"
               color="green"
-              :paginator="applianceRatesLogsService.logsPaginator"
+              :paginator="applianceLogService.paginator"
               :subscriber="logsSubscriber"
             >
               <md-table
@@ -295,10 +292,7 @@
                   :key="log.id"
                 >
                   <md-table-cell>
-                    {{
-                      (applianceRatesLogsService.logsPaginator.from || 0) +
-                      index
-                    }}
+                    {{ (applianceLogService.paginator.from || 0) + index }}
                   </md-table-cell>
                   <md-table-cell>{{ log.action }}</md-table-cell>
                   <md-table-cell>
@@ -323,7 +317,7 @@ import { PersonService } from "@/services/PersonService"
 import Widget from "@/shared/Widget.vue"
 import { currency, notify } from "@/mixins"
 import { ApplianceRateService } from "@/services/ApplianceRateService"
-import { ApplianceRatesLogsService } from "@/services/ApplianceRatesLogsService"
+import { ApplianceLogService } from "@/services/ApplianceLogService"
 import moment from "moment"
 import { EventBus } from "@/shared/eventbus"
 import { AppliancePaymentService } from "@/services/AppliancePaymentService"
@@ -340,10 +334,10 @@ export default {
   data() {
     return {
       appliancePayment: new AppliancePaymentService(),
-      applianceRateService: new ApplianceRateService(),
+      applianceRateService: null,
+      applianceLogService: null,
       appliancePersonService: new AppliancePersonService(),
       personService: new PersonService(),
-      applianceRatesLogsService: null,
       soldAppliance: {
         applianceType: {
           name: "",
@@ -392,9 +386,10 @@ export default {
   },
   created() {
     this.selectedApplianceId = this.$route.params.id
-    this.applianceRatesLogsService = new ApplianceRatesLogsService(
+    this.applianceRateService = new ApplianceRateService(
       this.selectedApplianceId,
     )
+    this.applianceLogService = new ApplianceLogService(this.selectedApplianceId)
     this.getSoldApplianceDetail()
   },
   mounted() {
@@ -407,15 +402,14 @@ export default {
     reloadRatesOrLogs(subscriber, data) {
       if (subscriber === this.ratesSubscriber) {
         this.soldAppliance.rates =
-          this.applianceRatesLogsService.updateRatesList(data)
+          this.applianceRateService.updateRatesList(data)
         EventBus.$emit(
           "widgetContentLoaded",
           this.ratesSubscriber,
           this.soldAppliance.rates.length,
         )
       } else if (subscriber === this.logsSubscriber) {
-        this.soldAppliance.logs =
-          this.applianceRatesLogsService.updateLogsList(data)
+        this.soldAppliance.logs = this.applianceLogService.updateLogsList(data)
         EventBus.$emit(
           "widgetContentLoaded",
           this.logsSubscriber,
