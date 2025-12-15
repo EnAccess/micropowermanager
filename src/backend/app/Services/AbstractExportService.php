@@ -103,7 +103,7 @@ abstract class AbstractExportService {
     }
 
     public function saveSpreadSheet(?Filesystem $storage = null): string {
-        $storage = $storage ?? Storage::disk('local');
+        $storage ??= Storage::disk('local');
         try {
             $user = User::query()->first();
             $databaseProxy = app(DatabaseProxy::class);
@@ -131,7 +131,7 @@ abstract class AbstractExportService {
      * @param array<int, string> $headers
      */
     public function saveCsv(array $headers = [], ?Filesystem $storage = null): string {
-        $storage = $storage ?? Storage::disk('local');
+        $storage ??= Storage::disk('local');
         try {
             $user = User::query()->first();
             $databaseProxy = app(DatabaseProxy::class);
