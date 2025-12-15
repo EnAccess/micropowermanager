@@ -58,7 +58,6 @@ use Illuminate\Support\Facades\DB;
  * @property-read MiniGrid|null                    $miniGrid
  * @property-read Collection<int, PaymentHistory>  $payments
  * @property-read PersonDocument|null              $personDocument
- * @property-read Collection<int, Roles>           $roleOwner
  * @property-read Collection<int, Ticket>          $tickets
  */
 class Person extends BaseModel implements \Stringable, HasAddressesInterface {
