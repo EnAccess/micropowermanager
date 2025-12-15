@@ -7,7 +7,6 @@ export class ApplianceLogService {
     this.appliancePersonId = appliancePersonId
     this.logsList = []
 
-    // Create paginator for logs
     this.paginator = new Paginator(
       `${resources.appliances.person.logs}${appliancePersonId}/logs`,
     )
