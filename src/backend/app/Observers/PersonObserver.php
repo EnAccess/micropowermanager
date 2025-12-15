@@ -15,9 +15,6 @@ class PersonObserver {
      * Handle the User "deleted" event.
      */
     public function deleted(Person $person): void {
-        // delete all associated roles
-        $person->roleOwner()->get();
-
         /*
         in order to fire the deleted event on relation models,
         the model should be pulled first and deleted afterwards.
