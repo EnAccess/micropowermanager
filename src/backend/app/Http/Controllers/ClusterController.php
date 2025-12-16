@@ -48,7 +48,7 @@ class ClusterController extends Controller {
     }
 
     public function store(ClusterRequest $request): ApiResource {
-        $clusterData = $request->only(['name', 'manager_id', 'geo_json']);
+        $clusterData = $request->getClusterData();
 
         return ApiResource::make($this->clusterService->create($clusterData));
     }

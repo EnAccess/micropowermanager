@@ -24,9 +24,21 @@ export default {
 
       // Convert Leaflet latlngs to GeoJSON coordinates format
       // GeoJSON uses [longitude, latitude] and needs nested array for Polygon
-      const geoJsonCoordinates = [
-        layer._latlngs[0].map((latlng) => [latlng.lng, latlng.lat]),
-      ]
+      const coordinates = layer._latlngs[0].map((latlng) => [
+        latlng.lng,
+        latlng.lat,
+      ])
+
+      // GeoJSON Polygon specification requires the first and last coordinates to be identical (closed polygon)
+      if (
+        coordinates.length > 0 &&
+        (coordinates[0][0] !== coordinates[coordinates.length - 1][0] ||
+          coordinates[0][1] !== coordinates[coordinates.length - 1][1])
+      ) {
+        coordinates.push([...coordinates[0]])
+      }
+
+      const geoJsonCoordinates = [coordinates]
 
       const { sumLat, sumLon } = layer._latlngs[0].reduce(
         (acc, coordinates) => {
@@ -69,9 +81,21 @@ export default {
       editedLayers.eachLayer((layer) => {
         // Convert Leaflet latlngs to GeoJSON coordinates format
         // GeoJSON uses [longitude, latitude] and needs nested array for Polygon
-        const geoJsonCoordinates = [
-          layer._latlngs[0].map((latlng) => [latlng.lng, latlng.lat]),
-        ]
+        const coordinates = layer._latlngs[0].map((latlng) => [
+          latlng.lng,
+          latlng.lat,
+        ])
+
+        // GeoJSON Polygon specification requires the first and last coordinates to be identical (closed polygon)
+        if (
+          coordinates.length > 0 &&
+          (coordinates[0][0] !== coordinates[coordinates.length - 1][0] ||
+            coordinates[0][1] !== coordinates[coordinates.length - 1][1])
+        ) {
+          coordinates.push([...coordinates[0]])
+        }
+
+        const geoJsonCoordinates = [coordinates]
 
         const { sumLat, sumLon } = layer._latlngs[0].reduce(
           (acc, coordinates) => {

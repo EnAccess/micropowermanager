@@ -47,7 +47,7 @@ class Cluster extends BaseModel implements ITargetAssignable {
 
     protected function casts(): array {
         return [
-            'geo_json' => 'array',
+            'geo_json' => 'object',
         ];
     }
 }
