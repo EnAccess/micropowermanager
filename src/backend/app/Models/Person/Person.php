@@ -10,13 +10,10 @@ use App\Models\AgentSoldAppliance;
 use App\Models\AppliancePerson;
 use App\Models\Base\BaseModel;
 use App\Models\Country;
-use App\Models\CustomerGroup;
 use App\Models\Device;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
 use App\Models\PersonDocument;
-use App\Models\Role\RoleInterface;
-use App\Models\Role\Roles;
 use App\Models\Ticket\Ticket;
 use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
@@ -54,17 +51,15 @@ use Illuminate\Support\Facades\DB;
  * @property-read AgentSoldAppliance|null          $agentSoldAppliance
  * @property-read Collection<int, AppliancePerson> $appliancePerson
  * @property-read Country|null                     $citizenship
- * @property-read CustomerGroup|null               $customerGroup
  * @property-read Collection<int, Device>          $devices
  * @property-read bool                             $is_active
  * @property-read PaymentHistory|null              $latestPayment
  * @property-read MiniGrid|null                    $miniGrid
  * @property-read Collection<int, PaymentHistory>  $payments
  * @property-read PersonDocument|null              $personDocument
- * @property-read Collection<int, Roles>           $roleOwner
  * @property-read Collection<int, Ticket>          $tickets
  */
-class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
+class Person extends BaseModel implements \Stringable, HasAddressesInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -134,24 +129,10 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return MorphMany<Roles, $this>
-     */
-    public function roleOwner(): MorphMany {
-        return $this->morphMany(Roles::class, 'role_owner');
-    }
-
-    /**
      * @return MorphMany<PaymentHistory, $this>
      */
     public function payments(): MorphMany {
         return $this->morphMany(PaymentHistory::class, 'payer');
-    }
-
-    /**
-     * @return BelongsTo<CustomerGroup, $this>
-     */
-    public function customerGroup(): BelongsTo {
-        return $this->belongsTo(CustomerGroup::class);
     }
 
     /**
