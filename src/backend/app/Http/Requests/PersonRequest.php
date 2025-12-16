@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @bodyParam name string required. Example: John
  * @bodyParam surname string required. Example: Doe
  * @bodyParam birth_date string optional. Example: 1970-01-01
- * @bodyParam sex string optional Example: male
+ * @bodyParam gender string optional Example: male
  * @bodyParam education string optional. Example: University
  * @bodyParam city_id int optional. Example: 1
  * @bodyParam street string optional. Example: Some Street 1/13
@@ -36,7 +36,7 @@ class PersonRequest extends FormRequest {
             'name' => ['required', 'min:2'],
             'surname' => ['required', 'min:2'],
             'birth_date' => ['sometimes', 'nullable', 'date'],
-            'sex' => ['sometimes', 'nullable', 'string', 'in:male,female'],
+            'gender' => ['sometimes', 'nullable', 'string', 'in:male,female'],
             'education' => ['sometimes', 'nullable', 'string'],
             'city_id' => ['sometimes', 'integer', 'exists:tenant.cities,id'],
             'street' => ['sometimes', 'nullable', 'string', 'min:5'],

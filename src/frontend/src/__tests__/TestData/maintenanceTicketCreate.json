@@ -5,7 +5,7 @@
   "phone": null,
   "city_id": null,
   "mini_grid_id": null,
-  "sex": "male",
+  "gender": "male",
   "creator": 22,
   "title": "test",
   "category": 18,

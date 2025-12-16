@@ -330,7 +330,7 @@ export default {
                 "YYYY-MM-DD HH:mm:ss",
               )
             : null,
-          sex: this.personService.person.gender,
+          gender: this.personService.person.gender,
           isCustomer: true,
         }
         const person = await this.personService.createPerson(personParams)

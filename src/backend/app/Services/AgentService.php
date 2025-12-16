@@ -152,7 +152,7 @@ class AgentService implements IBaseService {
         $personData = [
             'name' => $agentData['name'],
             'surname' => $agentData['surname'],
-            'sex' => $agentData['gender'],
+            'gender' => $agentData['gender'],
             'birth_date' => $agentData['birthday'],
         ];
         $person = $this->personService->update($person, $personData);

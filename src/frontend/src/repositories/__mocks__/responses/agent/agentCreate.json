@@ -16,7 +16,7 @@
         "name": "testName",
         "surname": "testSurname",
         "birth_date": "2021-04-03",
-        "sex": "male",
+        "gender": "male",
         "nationality": null,
         "created_at": "2021-04-16T00:18:13.000000Z",
         "updated_at": "2021-04-16T00:18:13.000000Z",

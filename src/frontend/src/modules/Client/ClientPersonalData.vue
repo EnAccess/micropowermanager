@@ -210,7 +210,7 @@ export default {
         title: this.personService.person.title,
         education: this.personService.person.education,
         birthDate: this.personService.person.birthDate,
-        sex: this.personService.person.gender,
+        gender: this.personService.person.gender,
       }
       await this.personService.updatePerson(personParams)
       this.editPerson = false

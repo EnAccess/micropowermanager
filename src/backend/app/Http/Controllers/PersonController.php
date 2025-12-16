@@ -108,7 +108,7 @@ class PersonController extends Controller {
      * @bodyParam name string. The title of the person. Example: Dr.
      * @bodyParam surname string. The title of the person. Example: Dr.
      * @bodyParam birth_date string. The title of the person. Example: Dr.
-     * @bodyParam sex string. The title of the person. Example: Dr.
+     * @bodyParam gender string. The title of the person. Example: Dr.
      * @bodyParam education string. The title of the person. Example: Dr.
      *
      * @apiResourceModel App\Models\Person\Person
