@@ -6,16 +6,14 @@ import { resources } from "@/resources"
 import ApplianceRateRepository from "@/repositories/ApplianceRateRepository"
 
 export class ApplianceRateService {
-  constructor(appliancePersonId = null) {
+  constructor(appliancePersonId) {
     this.repository = ApplianceRateRepository
     this.ratesList = []
 
-    if (appliancePersonId) {
-      this.paginator = new Paginator(
-        `${resources.appliances.person.rates}${appliancePersonId}/rates`,
-      )
-      this.paginator.perPage = 15
-    }
+    this.paginator = new Paginator(
+      `${resources.appliances.person.rates}${appliancePersonId}/rates`,
+    )
+    this.paginator.perPage = 15
   }
 
   async editApplianceRate(rate, adminId, personId) {
