@@ -17,6 +17,8 @@ export class SettingService {
       const attrs = data[s].data.attributes
       if (attrs.isEnabled === undefined) {
         attrs.isEnabled = true
+      } else {
+        attrs.isEnabled = Boolean(attrs.isEnabled)
       }
       this.list.push(attrs)
       this.syncList.push(attrs)
