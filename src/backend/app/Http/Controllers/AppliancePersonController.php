@@ -144,4 +144,26 @@ class AppliancePersonController extends Controller {
 
         return ApiResource::make($appliance);
     }
+
+    public function getRates(int $appliancePersonId, Request $request): ApiResource {
+        $perPage = $request->get('per_page', 15);
+
+        $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
+
+        return ApiResource::make($appliancePerson->rates()
+            ->with('logs.owner')
+            ->orderBy('due_date', 'asc')
+            ->paginate($perPage));
+    }
+
+    public function getLogs(int $appliancePersonId, Request $request): ApiResource {
+        $perPage = $request->get('per_page', 10);
+
+        $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
+
+        return ApiResource::make($appliancePerson->logs()
+            ->with('owner')
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage));
+    }
 }
