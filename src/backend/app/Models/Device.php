@@ -24,6 +24,7 @@ use Illuminate\Support\Carbon;
  * @property      string                       $device_type
  * @property      int                          $device_id
  * @property      string                       $device_serial
+ * @property      string|null                  $model
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
  * @property-read Address|null                 $address

@@ -33,6 +33,13 @@
                 {{ item.device_serial }}
               </md-table-cell>
               <md-table-cell
+                :md-label="$tc('words.model')"
+                md-sort-by="model"
+                @click.native="navigateToDeviceDetail(item)"
+              >
+                {{ item.model || "-" }}
+              </md-table-cell>
+              <md-table-cell
                 :md-label="$tc('words.deviceType')"
                 md-sort-by="device_type"
                 @click.native="navigateToDeviceDetail(item)"

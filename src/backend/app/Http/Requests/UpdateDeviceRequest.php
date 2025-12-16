@@ -24,6 +24,7 @@ class UpdateDeviceRequest extends FormRequest {
             'device_type' => ['required'],
             'device_serial' => ['required'],
             'device_id' => ['required', 'numeric'],
+            'model' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
