@@ -8,6 +8,7 @@ use App\Services\ApiResolvers\AfricasTalkingApiResolver;
 use App\Services\ApiResolvers\AndroidGatewayCallbackApiResolver;
 use App\Services\ApiResolvers\DataExportResolver;
 use App\Services\ApiResolvers\DownloadingReportsResolver;
+use App\Services\ApiResolvers\EcreeeMeterDataApiResolver;
 use App\Services\ApiResolvers\OdysseyPaymentApiResolver;
 use App\Services\ApiResolvers\PaystackApiResolver;
 use App\Services\ApiResolvers\SwiftaPaymentApiResolver;
@@ -15,7 +16,6 @@ use App\Services\ApiResolvers\TestApiResolver;
 use App\Services\ApiResolvers\ViberMessagingApiResolver;
 use App\Services\ApiResolvers\VodacomMobileMoneyApiResolver;
 use App\Services\ApiResolvers\WaveMoneyApiResolver;
-use App\Services\ApiResolvers\EcreeeMeterDataApiResolver;
 
 class ApiResolverMap {
     public const VIBER_API = 'api/viber-messaging/webhook';

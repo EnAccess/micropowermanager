@@ -4,14 +4,18 @@
       <div class="md-layout md-gutter">
         <div class="md-layout-item md-small-size-100 md-size-60">
           <md-card>
-            <md-card-header>Ecreee E-Tender Platform Data Export</md-card-header>
+            <md-card-header>
+              Ecreee E-Tender Platform Data Export
+            </md-card-header>
             <md-card-content>
               <p class="hint">
                 Authentication: Bearer token generated in Settings → API Keys.
               </p>
               <p class="mt-1">Example:</p>
               <pre class="code">
-GET {{ endpointUrl }}?startDate=2025-01-01T00:00:00Z&endDate=2025-01-01T23:59:59Z</pre
+GET {{
+                  endpointUrl
+                }}?startDate=2025-01-01T00:00:00Z&endDate=2025-01-01T23:59:59Z</pre
               >
             </md-card-content>
           </md-card>
