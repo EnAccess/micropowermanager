@@ -32,7 +32,7 @@
                 <span
                   style="cursor: pointer"
                   @click="editTariff = true"
-                  v-if="meter.tariff.factor !== 2"
+                  v-if="meter.tariff.factor !== 2 && $can('transactions')"
                 >
                   <md-icon>edit</md-icon>
                 </span>
@@ -74,6 +74,7 @@
                 <span
                   style="cursor: pointer"
                   @click="editConnectionGroup = true"
+                  v-if="$can('transactions')"
                 >
                   <md-icon>edit</md-icon>
                 </span>
@@ -123,6 +124,7 @@
                 <span
                   style="cursor: pointer"
                   @click="editConnectionType = true"
+                  v-if="$can('transactions')"
                 >
                   <md-icon>edit</md-icon>
                 </span>
@@ -187,9 +189,13 @@ export default {
     },
   },
   mounted() {
-    this.getTariffs()
-    this.getConnectionGroups()
-    this.getConnectionTypes()
+    if (this.$can("transactions")) {
+      this.getTariffs()
+    }
+    if (this.$can("settings")) {
+      this.getConnectionGroups()
+      this.getConnectionTypes()
+    }
     this.$emit("widget-loaded", "meter-detail")
   },
   data() {

@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div class="md-layout md-gutter">
+    <div class="md-layout md-gutter" v-if="$can('transactions')">
       <div class="md-layout-item md-size-100">
         <transactions
           :transactions="transactions"

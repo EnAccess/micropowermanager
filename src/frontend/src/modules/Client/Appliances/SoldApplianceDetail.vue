@@ -152,158 +152,155 @@
             </div>
           </div>
           <div class="md-layout-item md-size-100">
-            <md-table v-if="soldAppliance.rateCount > 0">
-              <md-table-toolbar>
-                <div class="md-toolbar-section-start">
-                  <h1 class="md-title">Payment Plan</h1>
-                </div>
-                <div class="md-toolbar-section-end">
-                  <md-button
-                    class="md-primary md-raised md-dense"
-                    @click="getPayment = true"
-                    :disabled="!soldAppliance.totalRemainingAmount"
-                  >
-                    <md-icon style="color: white">payments</md-icon>
-                    Get Payment
-                  </md-button>
-                </div>
-              </md-table-toolbar>
-              <md-table-row>
-                <md-table-head>ID</md-table-head>
-                <md-table-head>
-                  <strong>{{ $tc("words.cost") }}</strong>
-                </md-table-head>
-                <md-table-head>
-                  <strong>
-                    {{ $tc("phrases.remainingAmount") }}
-                  </strong>
-                </md-table-head>
-                <md-table-head>
-                  <strong>
-                    {{ $tc("phrases.dueDate") }}
-                  </strong>
-                </md-table-head>
-                <md-table-head>
-                  <strong>Edit Rate</strong>
-                </md-table-head>
-              </md-table-row>
-              <md-table-row
-                v-for="(rate, index) in getApplianceRates()"
-                :key="rate.id"
+            <widget
+              title="Payment Plan"
+              color="green"
+              :paginator="applianceRateService.paginator"
+              :subscriber="ratesSubscriber"
+            >
+              <md-table
+                v-if="soldAppliance.rates && soldAppliance.rates.length > 0"
               >
-                <md-table-cell>
-                  {{ index + 1 }}
-                  <md-icon v-if="rate.remaining === 0">
-                    check
-                    <md-tooltip md-direction="top">Paid</md-tooltip>
-                  </md-icon>
-                </md-table-cell>
-                <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has($tc('words.cost')),
-                    }"
-                  >
-                    <span class="md-prefix">
-                      {{ currency }}
-                    </span>
-                    <md-input
-                      :id="$tc('words.cost')"
-                      :name="$tc('words.cost')"
-                      v-model="tempCost"
-                      v-validate="'required|numeric|min_value:0'"
-                      type="number"
-                    />
-                    <span class="md-error">
-                      {{ errors.first($tc("words.cost")) }}
-                    </span>
-                  </md-field>
-                </md-table-cell>
-                <md-table-cell v-else>
-                  {{ moneyFormat(rate.rate_cost) }}
-                </md-table-cell>
-                <md-table-cell>
-                  {{ moneyFormat(rate.remaining) }}
-                </md-table-cell>
-
-                <md-table-cell>
-                  {{ formatReadableDate(rate.due_date) }}
-                </md-table-cell>
-                <div
-                  v-if="
-                    rate.rate_cost === rate.remaining &&
-                    soldAppliance.applianceType.asset_type_id !== 1
-                  "
+                <md-table-toolbar>
+                  <div class="md-toolbar-section-end" style="margin-left: auto">
+                    <md-button
+                      class="md-primary md-raised md-dense"
+                      @click="getPayment = true"
+                      :disabled="!soldAppliance.totalRemainingAmount"
+                    >
+                      <md-icon style="color: white">payments</md-icon>
+                      Get Payment
+                    </md-button>
+                  </div>
+                </md-table-toolbar>
+                <md-table-row>
+                  <md-table-head>ID</md-table-head>
+                  <md-table-head>
+                    <strong>{{ $tc("words.cost") }}</strong>
+                  </md-table-head>
+                  <md-table-head>
+                    <strong>{{ $tc("phrases.remainingAmount") }}</strong>
+                  </md-table-head>
+                  <md-table-head>
+                    <strong>{{ $tc("phrases.dueDate") }}</strong>
+                  </md-table-head>
+                  <md-table-head>
+                    <strong>Edit Rate</strong>
+                  </md-table-head>
+                </md-table-row>
+                <md-table-row
+                  v-for="(rate, index) in soldAppliance.rates"
+                  :key="rate.id"
                 >
+                  <md-table-cell>
+                    {{ (applianceRateService.paginator.from || 0) + index }}
+                    <md-icon v-if="rate.remaining === 0">
+                      check
+                      <md-tooltip md-direction="top">Paid</md-tooltip>
+                    </md-icon>
+                  </md-table-cell>
                   <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
-                    <md-button
-                      class="md-icon-button"
-                      @click="showConfirm(rate)"
+                    <md-field
+                      :class="{ 'md-invalid': errors.has($tc('words.cost')) }"
                     >
-                      <md-icon style="color: green">save</md-icon>
-                    </md-button>
-                    <md-button
-                      class="md-icon-button"
-                      @click="closeEditRateAmount(rate.rate_cost)"
-                    >
-                      <md-icon style="color: red">cancel</md-icon>
-                    </md-button>
+                      <span class="md-prefix">{{ currency }}</span>
+                      <md-input
+                        :id="$tc('words.cost')"
+                        :name="$tc('words.cost')"
+                        v-model="tempCost"
+                        v-validate="'required|numeric|min_value:0'"
+                        type="number"
+                      />
+                      <span class="md-error">
+                        {{ errors.first($tc("words.cost")) }}
+                      </span>
+                    </md-field>
                   </md-table-cell>
                   <md-table-cell v-else>
-                    <md-button
-                      class="md-icon-button"
-                      @click="changeRateAmount(rate.id, rate.rate_cost)"
-                    >
-                      <md-icon>edit</md-icon>
-                    </md-button>
+                    {{ moneyFormat(rate.rateCost || rate.rate_cost) }}
                   </md-table-cell>
-                </div>
-                <div v-else>
                   <md-table-cell>
-                    <md-button class="md-icon-button" disabled="">
-                      <md-icon>edit_off</md-icon>
-                    </md-button>
+                    {{ moneyFormat(rate.remaining) }}
                   </md-table-cell>
-                </div>
-              </md-table-row>
-            </md-table>
-            <div v-else>
-              <span class="md-subheader md-layout-item">
-                <h1>
-                  <md-icon>price_check</md-icon>
-                  Fully paid.
-                </h1>
-              </span>
-            </div>
-            <md-progress-bar
-              v-if="progress"
-              md-mode="indeterminate"
-            ></md-progress-bar>
+                  <md-table-cell>
+                    {{ formatReadableDate(rate.dueDate || rate.due_date) }}
+                  </md-table-cell>
+                  <div
+                    v-if="
+                      (rate.rateCost || rate.rate_cost) === rate.remaining &&
+                      soldAppliance.applianceType.appliance_type_id !== 1
+                    "
+                  >
+                    <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
+                      <md-button
+                        class="md-icon-button"
+                        @click="showConfirm(rate)"
+                      >
+                        <md-icon style="color: green">save</md-icon>
+                      </md-button>
+                      <md-button
+                        class="md-icon-button"
+                        @click="
+                          closeEditRateAmount(rate.rateCost || rate.rate_cost)
+                        "
+                      >
+                        <md-icon style="color: red">cancel</md-icon>
+                      </md-button>
+                    </md-table-cell>
+                    <md-table-cell v-else>
+                      <md-button
+                        class="md-icon-button"
+                        @click="
+                          changeRateAmount(
+                            rate.id,
+                            rate.rateCost || rate.rate_cost,
+                          )
+                        "
+                      >
+                        <md-icon>edit</md-icon>
+                      </md-button>
+                    </md-table-cell>
+                  </div>
+                  <div v-else>
+                    <md-table-cell>
+                      <md-button class="md-icon-button" disabled="">
+                        <md-icon>edit_off</md-icon>
+                      </md-button>
+                    </md-table-cell>
+                  </div>
+                </md-table-row>
+              </md-table>
+            </widget>
           </div>
-          <div
-            class="md-layout-item md-size-100"
-            v-if="soldAppliance.logs.length > 0"
-          >
-            <md-table>
-              <md-table-toolbar>
-                <h1 class="md-title">History</h1>
-              </md-table-toolbar>
-              <md-table-row>
-                <md-table-cell>#</md-table-cell>
-                <md-table-cell>Log</md-table-cell>
-                <md-table-cell>Date</md-table-cell>
-              </md-table-row>
-              <md-table-row
-                v-for="(log, index) in soldAppliance.logs"
-                :key="log.id"
+          <div class="md-layout-item md-size-100">
+            <widget
+              title="History"
+              color="green"
+              :paginator="applianceLogService.paginator"
+              :subscriber="logsSubscriber"
+            >
+              <md-table
+                v-if="soldAppliance.logs && soldAppliance.logs.length > 0"
               >
-                <md-table-cell>{{ index + 1 }}</md-table-cell>
-                <md-table-cell>{{ log.action }}</md-table-cell>
-                <md-table-cell>
-                  {{ formatReadableDate(log.created_at) }}
-                </md-table-cell>
-              </md-table-row>
-            </md-table>
+                <md-table-row>
+                  <md-table-cell>#</md-table-cell>
+                  <md-table-cell>Log</md-table-cell>
+                  <md-table-cell>Date</md-table-cell>
+                </md-table-row>
+                <md-table-row
+                  v-for="(log, index) in soldAppliance.logs"
+                  :key="log.id"
+                >
+                  <md-table-cell>
+                    {{ (applianceLogService.paginator.from || 0) + index }}
+                  </md-table-cell>
+                  <md-table-cell>{{ log.action }}</md-table-cell>
+                  <md-table-cell>
+                    {{ formatReadableDate(log.createdAt || log.created_at) }}
+                  </md-table-cell>
+                </md-table-row>
+              </md-table>
+            </widget>
           </div>
         </div>
       </widget>
@@ -315,11 +312,12 @@
 import ConfirmationBox from "@/shared/ConfirmationBox"
 import ClientDetailCard from "@/shared/ClientDetailCard"
 import SoldAppliancesList from "./SoldAppliancesList"
-import { AssetPersonService } from "@/services/AssetPersonService"
+import { AppliancePersonService } from "@/services/AppliancePersonService"
 import { PersonService } from "@/services/PersonService"
 import Widget from "@/shared/Widget.vue"
 import { currency, notify } from "@/mixins"
-import { AssetRateService } from "@/services/AssetRateService"
+import { ApplianceRateService } from "@/services/ApplianceRateService"
+import { ApplianceLogService } from "@/services/ApplianceLogService"
 import moment from "moment"
 import { EventBus } from "@/shared/eventbus"
 import { AppliancePaymentService } from "@/services/AppliancePaymentService"
@@ -336,32 +334,36 @@ export default {
   data() {
     return {
       appliancePayment: new AppliancePaymentService(),
-      assetRateService: new AssetRateService(),
-      assetPersonService: new AssetPersonService(),
+      applianceRateService: null,
+      applianceLogService: null,
+      appliancePersonService: new AppliancePersonService(),
       personService: new PersonService(),
       soldAppliance: {
         applianceType: {
           name: "",
         },
         logs: [],
+        rates: [],
         device: null,
       },
       adminId:
         this.$store.getters["auth/authenticationService"].authenticateUser.id,
       personId: null,
       getPayment: false,
-      editRow: null,
       errorLabel: false,
       progress: false,
       updateList: 0,
-      tempCost: null,
       soldAppliancesList: [],
       payment: null,
       paymentProgress: false,
       updateDetail: 0,
       subscriber: "sold-appliance-detail",
+      ratesSubscriber: "sold-appliance-rates",
+      logsSubscriber: "sold-appliance-logs",
       currency: this.$store.getters["settings/getMainSettings"].currency,
       detailedDeviceInfo: null,
+      editRow: null,
+      tempCost: null,
     }
   },
   computed: {
@@ -384,14 +386,35 @@ export default {
   },
   created() {
     this.selectedApplianceId = this.$route.params.id
+    this.applianceRateService = new ApplianceRateService(
+      this.selectedApplianceId,
+    )
+    this.applianceLogService = new ApplianceLogService(this.selectedApplianceId)
     this.getSoldApplianceDetail()
   },
+  mounted() {
+    EventBus.$on("pageLoaded", this.reloadRatesOrLogs)
+  },
+  beforeDestroy() {
+    EventBus.$off("pageLoaded", this.reloadRatesOrLogs)
+  },
   methods: {
-    getApplianceRates() {
-      if (this.soldAppliance.downPayment > 0) {
-        return this.soldAppliance.rates.slice(1)
-      } else {
-        return this.soldAppliance.rates
+    reloadRatesOrLogs(subscriber, data) {
+      if (subscriber === this.ratesSubscriber) {
+        this.soldAppliance.rates =
+          this.applianceRateService.updateRatesList(data)
+        EventBus.$emit(
+          "widgetContentLoaded",
+          this.ratesSubscriber,
+          this.soldAppliance.rates.length,
+        )
+      } else if (subscriber === this.logsSubscriber) {
+        this.soldAppliance.logs = this.applianceLogService.updateLogsList(data)
+        EventBus.$emit(
+          "widgetContentLoaded",
+          this.logsSubscriber,
+          this.soldAppliance.logs.length,
+        )
       }
     },
     showConfirm(data) {
@@ -419,7 +442,7 @@ export default {
       let validator = await this.$validator.validateAll()
       if (validator) {
         try {
-          await this.assetRateService.editAssetRate(
+          await this.applianceRateService.editApplianceRate(
             data,
             this.adminId,
             this.personId,
@@ -430,13 +453,14 @@ export default {
           await this.getSoldApplianceDetail()
         } catch (e) {
           this.alertNotify("error", e.message)
+          this.progress = false
         }
       }
     },
     async getSoldApplianceDetail() {
       this.progress = true
       try {
-        this.soldAppliance = await this.assetPersonService.show(
+        this.soldAppliance = await this.appliancePersonService.show(
           this.selectedApplianceId,
         )
         this.personId = this.soldAppliance.personId
@@ -488,9 +512,8 @@ export default {
     },
     async getPersonSoldAppliances() {
       try {
-        this.soldAppliancesList = await this.assetPersonService.getPersonAssets(
-          this.personId,
-        )
+        this.soldAppliancesList =
+          await this.appliancePersonService.getPersonAppliances(this.personId)
         this.updateList++
       } catch (e) {
         this.alertNotify("error", e.message)

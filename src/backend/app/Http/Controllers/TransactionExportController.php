@@ -44,7 +44,7 @@ class TransactionExportController {
             $serialNumber,
             $tariffId,
             $transactionProvider,
-            (int) $status,
+            is_null($status) ? null : (int) $status,
             $fromDate,
             $toDate,
         );
@@ -73,7 +73,7 @@ class TransactionExportController {
             null,
             null,
             $transactionProvider,
-            (int) $status,
+            is_null($status) ? null : (int) $status,
             $fromDate,
             $toDate,
         );

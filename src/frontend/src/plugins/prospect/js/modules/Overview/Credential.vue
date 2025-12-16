@@ -100,6 +100,73 @@
               </md-field>
             </div>
           </div>
+
+          <div class="md-layout md-gutter">
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field>
+                <label>Customers</label>
+                <md-input value="Customers" disabled />
+              </md-field>
+            </div>
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field
+                :class="{
+                  'md-invalid':
+                    submitted &&
+                    errors.has('Credential-Form.customersApiToken'),
+                }"
+              >
+                <label for="customersApiToken">Secret</label>
+                <md-input
+                  id="customersApiToken"
+                  name="customersApiToken"
+                  type="password"
+                  v-model="customersCredential.apiToken"
+                  v-validate="'required|min:3'"
+                />
+                <span class="md-error" v-if="submitted">
+                  {{ errors.first("Credential-Form.customersApiToken") }}
+                </span>
+              </md-field>
+            </div>
+          </div>
+
+          <div class="md-layout md-gutter">
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field>
+                <label>Agents</label>
+                <md-input value="Agents" disabled />
+              </md-field>
+            </div>
+            <div
+              class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+            >
+              <md-field
+                :class="{
+                  'md-invalid':
+                    submitted && errors.has('Credential-Form.agentsApiToken'),
+                }"
+              >
+                <label for="agentsApiToken">Secret</label>
+                <md-input
+                  id="agentsApiToken"
+                  name="agentsApiToken"
+                  type="password"
+                  v-model="agentsCredential.apiToken"
+                  v-validate="'required|min:3'"
+                />
+                <span class="md-error" v-if="submitted">
+                  {{ errors.first("Credential-Form.agentsApiToken") }}
+                </span>
+              </md-field>
+            </div>
+          </div>
         </md-card-content>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
         <md-card-actions>
@@ -136,6 +203,16 @@ export default {
         apiUrl: null,
         apiToken: null,
       },
+      customersCredential: {
+        id: null,
+        apiUrl: null,
+        apiToken: null,
+      },
+      agentsCredential: {
+        id: null,
+        apiUrl: null,
+        apiToken: null,
+      },
     }
   },
   mounted() {
@@ -163,8 +240,28 @@ export default {
           apiToken: null,
         }
 
+      const customers = this.credentialService.list.find(
+        (c) => c.apiUrl && c.apiUrl.includes("/customers"),
+      ) ||
+        this.credentialService.list[2] || {
+          id: null,
+          apiUrl: null,
+          apiToken: null,
+        }
+
+      const agents = this.credentialService.list.find(
+        (c) => c.apiUrl && c.apiUrl.includes("/agents"),
+      ) ||
+        this.credentialService.list[3] || {
+          id: null,
+          apiUrl: null,
+          apiToken: null,
+        }
+
       this.installationsCredential = { ...installations }
       this.paymentsCredential = { ...payments }
+      this.customersCredential = { ...customers }
+      this.agentsCredential = { ...agents }
 
       const fullUrl = this.installationsCredential.apiUrl || ""
       this.baseUrl = this.extractBaseUrl(fullUrl)
@@ -202,6 +299,8 @@ export default {
           "installations",
         )
         const paymentsUrl = this.buildFullUrl(this.baseUrl, "payments_ts")
+        const customersUrl = this.buildFullUrl(this.baseUrl, "customers")
+        const agentsUrl = this.buildFullUrl(this.baseUrl, "agents")
 
         this.credentialService.list = [
           {
@@ -214,9 +313,28 @@ export default {
             apiUrl: paymentsUrl,
             apiToken: this.paymentsCredential.apiToken,
           },
+          {
+            id: this.customersCredential.id,
+            apiUrl: customersUrl,
+            apiToken: this.customersCredential.apiToken,
+          },
+          {
+            id: this.agentsCredential.id,
+            apiUrl: agentsUrl,
+            apiToken: this.agentsCredential.apiToken,
+          },
         ]
 
         await this.credentialService.updateCredential()
+        this.credentialService.list.forEach((c) => {
+          if (c.apiUrl?.includes("/installations"))
+            this.installationsCredential.id = c.id
+          if (c.apiUrl?.includes("/payments_ts"))
+            this.paymentsCredential.id = c.id
+          if (c.apiUrl?.includes("/customers"))
+            this.customersCredential.id = c.id
+          if (c.apiUrl?.includes("/agents")) this.agentsCredential.id = c.id
+        })
         this.alertNotify("success", "Updated successfully")
         EventBus.$emit("Prospect")
       } catch (e) {

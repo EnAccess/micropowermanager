@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\AgentPerformanceMetricsController;
 use App\Http\Controllers\ApiKeyController;
+use App\Http\Controllers\ApplianceController;
 use App\Http\Controllers\AppliancePaymentController;
-use App\Http\Controllers\AssetController;
-use App\Http\Controllers\AssetPersonController;
-use App\Http\Controllers\AssetRateController;
-use App\Http\Controllers\AssetTypeController;
+use App\Http\Controllers\AppliancePersonController;
+use App\Http\Controllers\ApplianceRateController;
+use App\Http\Controllers\ApplianceTypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\ClusterMiniGridRevenueController;
@@ -107,26 +107,28 @@ Route::post('users/password', [UserPasswordController::class, 'forgotPassword'])
 Route::get('users/password/validate/{token}', [UserPasswordController::class, 'validateResetToken']);
 Route::post('users/password/confirm', [UserPasswordController::class, 'confirmReset']);
 
-// Assets
-Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
-    Route::get('/', [AssetController::class, 'index'])->middleware('permission:assets');
-    Route::post('/', [AssetController::class, 'store'])->middleware('permission:assets');
-    Route::put('/{asset}', [AssetController::class, 'update'])->middleware('permission:assets');
-    Route::delete('/{asset}', [AssetController::class, 'destroy'])->middleware('permission:assets');
+// Appliances
+Route::group(['prefix' => 'appliances', 'middleware' => 'jwt.verify'], function () {
+    Route::get('/', [ApplianceController::class, 'index'])->middleware('permission:appliances');
+    Route::post('/', [ApplianceController::class, 'store'])->middleware('permission:appliances');
+    Route::put('/{appliance}', [ApplianceController::class, 'update'])->middleware('permission:appliances');
+    Route::delete('/{appliance}', [ApplianceController::class, 'destroy'])->middleware('permission:appliances');
     Route::group(['prefix' => 'person'], function () {
-        Route::post('/{asset}/people/{person}', [AssetPersonController::class, 'store'])->middleware('permission:assets');
-        Route::get('/people/{person}', [AssetPersonController::class, 'index'])->middleware('permission:assets');
-        Route::get('/people/detail/{applianceId}', [AssetPersonController::class, 'show'])->middleware('permission:assets');
+        Route::post('/{appliance}/people/{person}', [AppliancePersonController::class, 'store'])->middleware('permission:appliances');
+        Route::get('/people/{person}', [AppliancePersonController::class, 'index'])->middleware('permission:appliances');
+        Route::get('/people/detail/{applianceId}', [AppliancePersonController::class, 'show'])->middleware('permission:appliances');
+        Route::get('/{appliancePersonId}/rates', [AppliancePersonController::class, 'getRates'])->middleware('permission:appliances');
+        Route::get('/{appliancePersonId}/logs', [AppliancePersonController::class, 'getLogs'])->middleware('permission:appliances');
     });
     Route::group(['prefix' => 'types'], function () {
-        Route::get('/', [AssetTypeController::class, 'index'])->middleware('permission:assets');
-        Route::post('/', [AssetTypeController::class, 'store'])->middleware('permission:assets');
-        Route::put('/{asset_type}', [AssetTypeController::class, 'update'])->middleware('permission:assets');
-        Route::delete('/{asset_type}', [AssetTypeController::class, 'destroy'])->middleware('permission:assets');
+        Route::get('/', [ApplianceTypeController::class, 'index'])->middleware('permission:appliances');
+        Route::post('/', [ApplianceTypeController::class, 'store'])->middleware('permission:appliances');
+        Route::put('/{appliance_type}', [ApplianceTypeController::class, 'update'])->middleware('permission:appliances');
+        Route::delete('/{appliance_type}', [ApplianceTypeController::class, 'destroy'])->middleware('permission:appliances');
     });
 
     Route::group(['prefix' => 'rates'], static function () {
-        Route::put('/{appliance_rate}', [AssetRateController::class, 'update'])->middleware('permission:assets');
+        Route::put('/{appliance_rate}', [ApplianceRateController::class, 'update'])->middleware('permission:appliances');
     });
 
     Route::group(['prefix' => 'payment'], static function () {
@@ -342,7 +344,7 @@ Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], stati
 Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
-    Route::get('/', [MpmPluginController::class, 'index'])->middleware('permission:plugins');
+    Route::get('/', [MpmPluginController::class, 'index']);
 });
 
 Route::group(['prefix' => 'registration-tails'], static function () {

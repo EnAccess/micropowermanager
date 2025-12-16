@@ -3,7 +3,7 @@
 namespace Inensus\Prospect\Services;
 
 use App\Models\AccessRate\AccessRate;
-use App\Models\AssetRate;
+use App\Models\ApplianceRate;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
@@ -22,7 +22,7 @@ class ProspectPaymentTransformer {
     public function transform(PaymentHistory $payment): array {
         $accountExternalId = null;
 
-        /** @var Token|AssetRate|AccessRate|null $paidFor */
+        /** @var Token|ApplianceRate|AccessRate|null $paidFor */
         $paidFor = $payment->paidFor;
         if ($paidFor instanceof Token) {
             $device = $paidFor->device;
@@ -34,10 +34,10 @@ class ProspectPaymentTransformer {
                     $accountExternalId = $underlying->serial_number;
                 }
             }
-        } elseif ($paidFor instanceof AssetRate) {
-            $assetPerson = $paidFor->assetPerson()->with('device.device')->first();
-            if ($assetPerson && $assetPerson->device) {
-                $underlying = $assetPerson->device->device;
+        } elseif ($paidFor instanceof ApplianceRate) {
+            $appliancePerson = $paidFor->appliancePerson()->with('device.device')->first();
+            if ($appliancePerson && $appliancePerson->device) {
+                $underlying = $appliancePerson->device->device;
                 if ($underlying instanceof SolarHomeSystem) {
                     $accountExternalId = $underlying->serial_number;
                 } elseif ($underlying instanceof Meter) {

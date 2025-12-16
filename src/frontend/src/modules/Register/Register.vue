@@ -64,6 +64,7 @@
                         enabledCountryCode="true"
                         v-model="companyForm.phone"
                         @validate="validatePhone"
+                        @input="onPhoneInput"
                       ></vue-tel-input>
                       <span
                         v-if="!phone.valid && firstStepClicked"
@@ -240,7 +241,7 @@
             <div>
               <div class="md-layout-item md-size-100 exclamation-div">
                 <h2 class="stepper-title">
-                  Please create a user for MicroPowerManager
+                  Please create owner account for MicroPowerManager
                 </h2>
               </div>
               <div class="md-layout-item md-size-100">
@@ -418,9 +419,11 @@
 import { MpmPluginService } from "@/services/MpmPluginService"
 import { CompanyService } from "@/services/CompanyService"
 import { UsageTypeListService } from "@/services/UsageTypeListService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Register",
+  mixins: [notify],
   data() {
     return {
       mpmPluginsService: new MpmPluginService(),
@@ -499,6 +502,10 @@ export default {
     },
 
     validatePhone(phone) {
+      console.log(phone)
+      this.phone = phone
+    },
+    onPhoneInput(_, phone) {
       this.phone = phone
     },
     async register() {
@@ -530,14 +537,15 @@ export default {
         this.loading = false
 
         // set appropriate error message
-        if (e?.message === "validation.unique") {
-          this.errorMessage = this.$tc("errors.alreadyUsedCompanyEmail")
-        } else if (
-          e?.message &&
-          e?.message.includes("Integrity constraint violation")
-        ) {
+        if (e?.message === "Owner account email already exists") {
           this.errorMessage = this.$tc("errors.alreadyUserAdminEmail")
+        } else if (e?.message === "Company already exists") {
+          this.errorMessage = this.$tc("errors.alreadyUsedCompanyEmail")
+        } else {
+          this.errorMessage = this.$tc("phrases.somethingWentWrong")
         }
+
+        this.alertNotify("error", e.response?.data?.message || e.message)
       }
     },
     validUsageType(plugin_usage_type, customer_usage_types) {

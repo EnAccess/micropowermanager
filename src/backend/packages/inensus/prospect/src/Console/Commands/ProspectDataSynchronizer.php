@@ -5,8 +5,12 @@ namespace Inensus\Prospect\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
+use Inensus\Prospect\Jobs\ExtractAgents;
+use Inensus\Prospect\Jobs\ExtractCustomers;
 use Inensus\Prospect\Jobs\ExtractInstallations;
 use Inensus\Prospect\Jobs\ExtractPayments;
+use Inensus\Prospect\Jobs\PushAgents;
+use Inensus\Prospect\Jobs\PushCustomers;
 use Inensus\Prospect\Jobs\PushInstallations;
 use Inensus\Prospect\Jobs\PushPayments;
 use Inensus\Prospect\Models\ProspectSyncSetting;
@@ -43,6 +47,10 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
         $this->syncSettingService->updateSyncSettings([]);
 
         $this->syncSettingService->getSyncSettings()->each(function (ProspectSyncSetting $syncSetting) use ($syncActions): true {
+            if (!$syncSetting->is_enabled) {
+                return true;
+            }
+
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
             if (!$syncAction) {
                 return true;
@@ -59,6 +67,14 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
                 } elseif ($actionName === 'payments') {
                     dispatch(new ExtractPayments());
                     dispatch(new PushPayments());
+                    $result = true;
+                } elseif ($actionName === 'customers') {
+                    dispatch(new ExtractCustomers());
+                    dispatch(new PushCustomers());
+                    $result = true;
+                } elseif ($actionName === 'agents') {
+                    dispatch(new ExtractAgents());
+                    dispatch(new PushAgents());
                     $result = true;
                 }
             } catch (\Exception) {

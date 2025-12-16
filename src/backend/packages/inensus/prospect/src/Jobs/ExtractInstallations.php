@@ -69,7 +69,7 @@ class ExtractInstallations extends AbstractJob {
                 'person.addresses.city.country',
                 'tokens.transaction',
                 'appliance',
-                'assetPerson',
+                'appliancePerson',
             ]);
 
             $devices = $query->get();

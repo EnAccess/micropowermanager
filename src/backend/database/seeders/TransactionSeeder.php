@@ -50,7 +50,7 @@ class TransactionSeeder extends Seeder {
      */
     public function run() {
         $this->command->outputComponents()->info(
-            "Running TransactionSeeder to generate $this->amount tickets. This may take some time."
+            "Running TransactionSeeder to generate $this->amount transactions. This may take some time."
         );
 
         $this->command->withProgressBar(

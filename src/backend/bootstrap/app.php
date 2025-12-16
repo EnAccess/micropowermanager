@@ -1,6 +1,8 @@
 <?php
 
 use App\Console\Commands\MailApplianceDebtsCommand;
+use App\Exceptions\CompanyAlreadyExistsException;
+use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
@@ -69,6 +71,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'message' => 'No active SMS provider is configured. Please configure an SMS gateway in Main Settings like AfricasTalking or TextBee.',
             'status_code' => 422,
         ], 422));
+        $exceptions->render(fn (CompanyAlreadyExistsException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (OwnerEmailAlreadyExistsException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 422,
+        ], 422));
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');
@@ -76,7 +86,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('reports:ticket-outsource-payout')->monthlyOn(1, '3:30');
         $schedule->command('sms:resend-rejected 5')->everyMinute();
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
-        $schedule->command('asset-rate:check')->dailyAt('00:00');
+        $schedule->command('appliance-rate:check')->dailyAt('00:00');
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');
     })

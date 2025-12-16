@@ -10,8 +10,8 @@ class ProspectApiClient {
     public function __construct(private ProspectCredentialService $credentialService) {}
 
     /**
-     * @param array<string, mixed>       $payload
-     * @param 'installations'|'payments' $type
+     * @param array<string, mixed>                            $payload
+     * @param 'installations'|'payments'|'customers'|'agents' $type
      */
     public function postData(array $payload, string $type): Response {
         $credentials = $this->credentialService->getCredentials();
@@ -48,5 +48,19 @@ class ProspectApiClient {
      */
     public function postPayments(array $payload): Response {
         return $this->postData($payload, 'payments');
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
+    public function postCustomers(array $payload): Response {
+        return $this->postData($payload, 'customers');
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
+    public function postAgents(array $payload): Response {
+        return $this->postData($payload, 'agents');
     }
 }

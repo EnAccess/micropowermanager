@@ -1,7 +1,7 @@
 {
   "errors": {
     "alreadyUsedCompanyEmail": "Company with email already exists",
-    "alreadyUserAdminEmail": "Admin with email already exists"
+    "alreadyUserAdminEmail": "Admin Owner with email already exists"
   },
   "menu": {
     "Agents": "Agents",
@@ -71,7 +71,8 @@
       "Users": "Users",
       "addCluster": "Add Cluster",
       "addMiniGrid": "Add MiniGrid",
-      "addVillage": "Add Village"
+      "addVillage": "Add Village",
+      "userManagement": "User Management"
     }
   },
   "messages": {
@@ -134,6 +135,7 @@
     "apiToken": "API Token",
     "appliance": "Appliance | Appliances",
     "applianceCommission": "Appliance Commission (sample 0.1)",
+    "applianceSku": "Appliance SKU | Appliance SKUs",
     "applianceType": "Appliance Type | Appliance Types | Add Appliance Type",
     "assignAppliance": "Assign Appliance | Assigned Appliances | Appliance Assigned successfully",
     "assignClusterManager": "Assign Cluster Manager",
@@ -182,6 +184,7 @@
     "deleteAgent": "Delete Agent | Agent Deleted Successfully | Agent Updated Successfully |  I confirm that {name} will be deleted",
     "deleteAgentCommission": "Delete Agent Commission | I confirm that {commissionName} will be deleted ",
     "deleteAppliance": "Delete Appliance",
+    "deleteApplianceSku": "Delete Appliance SKU",
     "deleteAssetType": "Delete Asset Type | Asset Type Deleted Successfully | Are you sure to delete the asset type ? | Asset Type Updated Successfully",
     "deleteCustomer": "Delete Customer",
     "deleteCustomerNotify": "I confirm that {name} {surname} will be deleted",
@@ -271,6 +274,7 @@
     "newAddress": "New Address",
     "newAgent": "New Agent | Agent Added Successfully",
     "newAppliance": "New Appliance | Appliance Registered Successfully",
+    "newApplianceSku": "New Appliance SKU | Appliance SKU Registered Successfully",
     "newAssetType": "New Asset Type | Asset Type Registered Successfully",
     "newCategory": "New Category | New category added successfully.",
     "newCluster": "New Cluster | There is no result for {clusterName}. Please use Draw a polygon tool for draw your cluster area.",
@@ -312,6 +316,7 @@
     "overDueReminderRate": "Over Due Reminder Rate (Day)",
     "paginateLabels": "Showing {from} to {to} of {total} entries",
     "paidFor": "Paid For",
+    "paygoEnabled": "PayGo Enabled",
     "paymentDistribution": "Payment Distribution",
     "paymentFlow": "Payment Flow | Monthly Avg. {currency} over {count} Months",
     "paymentLink": "Payment Link",
@@ -337,7 +342,7 @@
     "purchaseCode": "Purchase Code",
     "qrCode": "QR Code",
     "rateType": "Rate Type",
-    "ratesCount": "Installment count | Asset Rate updated successfully.",
+    "ratesCount": "Installment count | Appliance Rate updated successfully.",
     "receiveEnergyCredit": "Your energy credit will be applied automatically",
     "recentPaymentLinks": "Recent Payment Links",
     "redirectLabel": "You have to add {imperativeItem} for using this place.",
@@ -367,6 +372,7 @@
     "selectDevice": "Select a Device to bind with this appliance",
     "selectMiniGrid": "Select Mini-Grid | MiniGrid Data-logger is active",
     "selectPeriod": "Select a period for data",
+    "sellAppliance": "Sell Appliance | New appliance sold successfully. | Are you sure to sell the appliance for {cost} ? ",
     "sellAsset": "Sell Asset | New asset sold successfully. | Are you sure to sell the asset for {cost} ? ",
     "sentDate": "Sent Date",
     "serialNumber": "Serial Number",

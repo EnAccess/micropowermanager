@@ -42,6 +42,7 @@ class ProspectSyncSettingService {
             $syncSetting = $this->syncSetting->newQuery()->updateOrCreate(
                 ['action_name' => $setting['action_name']],
                 [
+                    'is_enabled' => $setting['is_enabled'] ?? true,
                     'sync_in_value_str' => $setting['sync_in_value_str'],
                     'sync_in_value_num' => $setting['sync_in_value_num'],
                     'max_attempts' => $setting['max_attempts'],
@@ -83,6 +84,7 @@ class ProspectSyncSettingService {
         if (!$installations) {
             $installations = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Installations',
+                'is_enabled' => true,
                 'sync_in_value_str' => 'day',
                 'sync_in_value_num' => 1,
             ]);
@@ -96,11 +98,40 @@ class ProspectSyncSettingService {
         if (!$payments) {
             $payments = $this->syncSetting->newQuery()->create([
                 'action_name' => 'Payments',
+                'is_enabled' => true,
                 'sync_in_value_str' => 'day',
                 'sync_in_value_num' => 1,
             ]);
             $this->syncActionService->createSyncAction([
                 'sync_setting_id' => $payments->id,
+                'next_sync' => $now->add($dayInterval),
+            ]);
+        }
+
+        $customers = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
+        if (!$customers) {
+            $customers = $this->syncSetting->newQuery()->create([
+                'action_name' => 'Customers',
+                'is_enabled' => true,
+                'sync_in_value_str' => 'day',
+                'sync_in_value_num' => 1,
+            ]);
+            $this->syncActionService->createSyncAction([
+                'sync_setting_id' => $customers->id,
+                'next_sync' => $now->add($dayInterval),
+            ]);
+        }
+
+        $agents = $this->syncSetting->newQuery()->where('action_name', 'Agents')->first();
+        if (!$agents) {
+            $agents = $this->syncSetting->newQuery()->create([
+                'action_name' => 'Agents',
+                'is_enabled' => true,
+                'sync_in_value_str' => 'day',
+                'sync_in_value_num' => 1,
+            ]);
+            $this->syncActionService->createSyncAction([
+                'sync_setting_id' => $agents->id,
                 'next_sync' => $now->add($dayInterval),
             ]);
         }
