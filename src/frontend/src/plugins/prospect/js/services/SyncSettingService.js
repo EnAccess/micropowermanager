@@ -14,6 +14,7 @@ export class SyncSettingService {
         payload.push({
           id: syncList[s].id,
           action_name: syncList[s].actionName,
+          is_enabled: syncList[s].isEnabled ?? true,
           sync_in_value_str: syncList[s].syncInValueStr,
           sync_in_value_num: syncList[s].syncInValueNum,
           max_attempts: syncList[s].maxAttempts,

@@ -15,6 +15,9 @@ export class SettingService {
     this.syncList = []
     for (let s in data) {
       const attrs = data[s].data.attributes
+      if (attrs.isEnabled === undefined) {
+        attrs.isEnabled = true
+      }
       this.list.push(attrs)
       this.syncList.push(attrs)
     }
@@ -25,6 +28,7 @@ export class SettingService {
       {
         id: 1,
         actionName: "Installations",
+        isEnabled: true,
         syncInValueStr: "weekly",
         syncInValueNum: 1,
         maxAttempts: 3,
@@ -32,6 +36,7 @@ export class SettingService {
       {
         id: 2,
         actionName: "Payments",
+        isEnabled: true,
         syncInValueStr: "weekly",
         syncInValueNum: 1,
         maxAttempts: 3,
@@ -39,6 +44,22 @@ export class SettingService {
       {
         id: 3,
         actionName: "Customers",
+        isEnabled: true,
+        syncInValueStr: "weekly",
+        syncInValueNum: 1,
+        maxAttempts: 3,
+      },
+      {
+        id: 4,
+        actionName: "Agents",
+        isEnabled: true,
+        syncInValueStr: "weekly",
+        syncInValueNum: 1,
+        maxAttempts: 3,
+      },
+      {
+        id: 4,
+        actionName: "Agents",
         syncInValueStr: "weekly",
         syncInValueNum: 1,
         maxAttempts: 3,
@@ -63,6 +84,7 @@ export class SettingService {
           this.list = settings.map((item) => ({
             id: item.id,
             actionName: item.action_name,
+            isEnabled: item.is_enabled !== undefined ? item.is_enabled : true,
             syncInValueStr: item.sync_in_value_str,
             syncInValueNum: item.sync_in_value_num,
             maxAttempts: item.max_attempts,

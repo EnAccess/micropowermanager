@@ -134,8 +134,8 @@ export default {
   },
   mounted() {
     //load the first page
-    let pageNumber = this.$route.query.page
-    this.term = this.$route.query
+    let pageNumber = this.route_name ? this.$route.query.page : 1
+    this.term = this.route_name ? this.$route.query : {}
     this.loadPage(pageNumber)
     EventBus.$on("loadPage", this.eventLoadPage)
   },
@@ -144,7 +144,9 @@ export default {
   },
   watch: {
     $route() {
-      this.loadPage(this.currentPage)
+      if (this.route_name) {
+        this.loadPage(this.currentPage)
+      }
     },
     paginatorReference: {
       handler(newPaginator) {
@@ -166,18 +168,22 @@ export default {
           return
         }
         this.currentPage = pageNumber
-        this.$router
-          .push({
-            query: Object.assign({}, this.term, {
-              page: pageNumber,
-              per_page: this.paginator.perPage,
-            }),
-          })
-          .catch((error) => {
-            if (error.name !== "NavigationDuplicated") {
-              throw error
-            }
-          })
+        if (this.route_name) {
+          this.$router
+            .push({
+              query: Object.assign({}, this.term, {
+                page: pageNumber,
+                per_page: this.paginator.perPage,
+              }),
+            })
+            .catch((error) => {
+              if (error.name !== "NavigationDuplicated") {
+                throw error
+              }
+            })
+        } else {
+          this.loadPage(pageNumber)
+        }
       } else {
         this.alertNotify("error", "Page is not a Number")
       }

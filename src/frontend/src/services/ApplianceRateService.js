@@ -1,10 +1,19 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
+import { Paginator } from "@/Helpers/Paginator"
+import { convertObjectKeysToCamelCase } from "@/Helpers/Utils"
+import { resources } from "@/resources"
 
 import ApplianceRateRepository from "@/repositories/ApplianceRateRepository"
 
 export class ApplianceRateService {
-  constructor() {
+  constructor(appliancePersonId) {
     this.repository = ApplianceRateRepository
+    this.ratesList = []
+
+    this.paginator = new Paginator(
+      `${resources.appliances.person.rates}${appliancePersonId}/rates`,
+    )
+    this.paginator.perPage = 15
   }
 
   async editApplianceRate(rate, adminId, personId) {
@@ -27,5 +36,12 @@ export class ApplianceRateService {
       let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
+  }
+
+  updateRatesList(ratesData) {
+    this.ratesList = ratesData.map((rate) => {
+      return convertObjectKeysToCamelCase(rate)
+    })
+    return this.ratesList
   }
 }

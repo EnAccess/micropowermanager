@@ -12,13 +12,23 @@
                 <div v-for="(setting, i) in settingService.list" :key="i">
                   <div class="md-layout md-gutter">
                     <div
-                      class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
+                      class="md-layout-item md-xlarge-size-20 md-large-size-20 md-medium-size-20 md-small-size-20"
                     >
                       <md-field>
                         <label>
                           {{ setting.actionName }}
                         </label>
                       </md-field>
+                    </div>
+                    <div
+                      class="md-layout-item md-xlarge-size-5 md-large-size-5 md-medium-size-5 md-small-size-5"
+                      style="
+                        display: flex;
+                        align-items: center;
+                        padding-top: 1rem;
+                      "
+                    >
+                      <md-switch v-model="setting.isEnabled"></md-switch>
                     </div>
                     <div
                       class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
@@ -38,6 +48,7 @@
                           v-model="setting.syncInValueNum"
                           type="number"
                           v-validate="'required|min_value:1'"
+                          :disabled="!setting.isEnabled"
                         />
                         <span class="md-error">
                           {{
@@ -60,6 +71,7 @@
                           v-model="setting.syncInValueStr"
                           id="period"
                           v-validate="'required'"
+                          :disabled="!setting.isEnabled"
                         >
                           <md-option
                             v-for="(p, i) in syncPeriods"
@@ -89,6 +101,7 @@
                           type="number"
                           min="1"
                           v-validate="'required|min_value:1'"
+                          :disabled="!setting.isEnabled"
                         />
                         <span class="md-error">
                           {{

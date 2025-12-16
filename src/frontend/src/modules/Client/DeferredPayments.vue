@@ -56,7 +56,6 @@
 </template>
 
 <script>
-import { ApplianceRateService } from "@/services/ApplianceRateService"
 import { AppliancePersonService } from "@/services/AppliancePersonService"
 import { currency, notify } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
@@ -80,7 +79,6 @@ export default {
   data() {
     return {
       subscriber: "person-appliance",
-      applianceRateService: new ApplianceRateService(),
       appliancePersonService: new AppliancePersonService(),
       adminId:
         this.$store.getters["auth/authenticationService"].authenticateUser.id,
