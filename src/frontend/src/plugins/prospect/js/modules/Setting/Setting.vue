@@ -22,7 +22,11 @@
                     </div>
                     <div
                       class="md-layout-item md-xlarge-size-5 md-large-size-5 md-medium-size-5 md-small-size-5"
-                      style="display: flex; align-items: center; padding-top: 1rem;"
+                      style="
+                        display: flex;
+                        align-items: center;
+                        padding-top: 1rem;
+                      "
                     >
                       <md-switch v-model="setting.isEnabled"></md-switch>
                     </div>
