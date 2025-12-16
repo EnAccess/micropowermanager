@@ -53,6 +53,8 @@ class TokenService implements IBaseService {
             ->whereHas('transaction.device', function ($query) {
                 $query->where('device_type', 'meter');
             })
-            ->where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->get();
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at', 'asc')
+            ->get();
     }
 }

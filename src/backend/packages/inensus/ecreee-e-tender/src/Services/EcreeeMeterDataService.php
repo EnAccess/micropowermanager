@@ -14,7 +14,7 @@ class EcreeeMeterDataService {
     /**
      * @return Collection<int, Token>
      */
-    public function getMeterData(?string $startDate, ?string $endDate): Collection {
+    public function getMeterData(string $startDate, string $endDate): Collection {
         return $this->tokenService->getTokensInRange($startDate, $endDate);
     }
 }

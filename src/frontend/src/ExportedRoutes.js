@@ -1666,7 +1666,7 @@ export const exportedRoutes = [
       sidebar: {
         enabled_by_mpm_plugin_id: 27,
         name: "Ecreee E Tender",
-        icon: "key",
+        icon: "cloud_upload",
       },
     },
     children: [

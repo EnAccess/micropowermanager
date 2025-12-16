@@ -1,15 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Inensus\EcreeeETender\Http\Controllers\EcreeeMeterDataController;
 
-Route::group(['prefix' => 'ecreee-e-tender'], static function () {
-    Route::group(['prefix' => 'ecreee-token', 'middleware' => 'jwt.verify'], static function () {
-        Route::get('/', 'EcreeeTokenController@get');
-        Route::post('/', 'EcreeeTokenController@store');
-        Route::put('/{ecreeeTokenId}', 'EcreeeTokenController@update');
-    });
 
-    Route::group(['prefix' => 'ecreee-meter-data'], static function () {
-        Route::get('/', 'EcreeeMeterDataController@index');
+Route::prefix('/ecreee-e-tender')
+    ->middleware('auth:api-key')
+    ->group(function () {
+        Route::get('/ecreee-meter-data', [EcreeeMeterDataController::class, 'index']);
     });
-});

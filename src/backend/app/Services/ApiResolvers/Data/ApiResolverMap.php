@@ -15,6 +15,7 @@ use App\Services\ApiResolvers\TestApiResolver;
 use App\Services\ApiResolvers\ViberMessagingApiResolver;
 use App\Services\ApiResolvers\VodacomMobileMoneyApiResolver;
 use App\Services\ApiResolvers\WaveMoneyApiResolver;
+use App\Services\ApiResolvers\EcreeeMeterDataApiResolver;
 
 class ApiResolverMap {
     public const VIBER_API = 'api/viber-messaging/webhook';
@@ -28,6 +29,7 @@ class ApiResolverMap {
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
     public const VODACOM_MOBILE_MONEY = 'api/vodacom/';
     public const PAYSTACK_API = 'api/paystack/';
+    public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
 
     public const RESOLVABLE_APIS = [
         self::TEST_API,
@@ -41,6 +43,7 @@ class ApiResolverMap {
         self::VODACOM_MOBILE_MONEY,
         self::ODYSSEY_PAYMENTS_API,
         self::PAYSTACK_API,
+        self::ECREEE_METER_DATA_API,
     ];
 
     private const API_RESOLVER = [
@@ -55,6 +58,7 @@ class ApiResolverMap {
         self::VODACOM_MOBILE_MONEY => VodacomMobileMoneyApiResolver::class,
         self::ODYSSEY_PAYMENTS_API => OdysseyPaymentApiResolver::class,
         self::PAYSTACK_API => PaystackApiResolver::class,
+        self::ECREEE_METER_DATA_API => EcreeeMeterDataApiResolver::class,
     ];
 
     /**
