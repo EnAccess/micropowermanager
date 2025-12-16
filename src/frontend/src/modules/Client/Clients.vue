@@ -114,26 +114,50 @@
         <div class="md-layout-item md-size-100" v-if="people.list.length > 0">
           <md-table md-card style="margin-left: 0">
             <md-table-row>
-              <md-table-head>
+              <md-table-head
+                @click.native="handleColumnSort('name')"
+                class="sortable-header"
+              >
                 {{ $tc("words.name") }}
+                <md-icon class="sort-icon">{{ getSortIcon("name") }}</md-icon>
               </md-table-head>
+
               <md-table-head>
                 {{ $tc("words.phone") }}
               </md-table-head>
-              <md-table-head>
+
+              <md-table-head
+                @click.native="handleColumnSort('city')"
+                class="sortable-header"
+              >
                 {{ $tc("words.city") }}
+                <md-icon class="sort-icon">{{ getSortIcon("city") }}</md-icon>
               </md-table-head>
+
               <md-table-head>
                 {{ $tc("words.isActive") }}
               </md-table-head>
+
               <md-table-head>
                 {{ $tc("words.device") }}
               </md-table-head>
-              <md-table-head>
+
+              <md-table-head
+                @click.native="handleColumnSort('agent')"
+                class="sortable-header"
+              >
                 {{ $tc("words.agent") }}
+                <md-icon class="sort-icon">{{ getSortIcon("agent") }}</md-icon>
               </md-table-head>
-              <md-table-head>
+
+              <md-table-head
+                @click.native="handleColumnSort('created_at')"
+                class="sortable-header"
+              >
                 {{ $tc("phrases.lastUpdate") }}
+                <md-icon class="sort-icon">
+                  {{ getSortIcon("created_at") }}
+                </md-icon>
               </md-table-head>
             </md-table-row>
             <md-table-row
@@ -320,6 +344,8 @@ export default {
       selectedAgentId: null,
       widgetKey: 0,
       showFilter: false,
+      currentSortField: null,
+      currentSortOrder: "asc",
       exportFilters: {
         format: "csv",
         isActive: "",
@@ -367,6 +393,27 @@ export default {
         this.performSearch()
       }
     },
+    handleColumnSort(columnField) {
+      if (this.currentSortField === columnField) {
+        if (this.currentSortOrder === "asc") {
+          this.currentSortOrder = "desc"
+        } else {
+          this.currentSortField = null
+          this.currentSortOrder = "asc"
+        }
+      } else {
+        this.currentSortField = columnField
+        this.currentSortOrder = "asc"
+      }
+      this.getClientList(1)
+    },
+
+    getSortIcon(columnField) {
+      if (this.currentSortField !== columnField) {
+        return "unfold_more"
+      }
+      return this.currentSortOrder === "asc" ? "arrow_upward" : "arrow_downward"
+    },
 
     async performSearch() {
       // Cancel previous request if still pending
@@ -381,6 +428,10 @@ export default {
         const searchPaginator = new Paginator(resources.person.search)
 
         const params = { term: this.searchTerm }
+        if (this.currentSortField) {
+          const prefix = this.currentSortOrder === "desc" ? "-" : ""
+          params.sort_by = `${prefix}${this.currentSortField}`
+        }
         if (this.selectedAgentId) {
           params.agent_id = this.selectedAgentId
         }
@@ -432,6 +483,10 @@ export default {
 
     async getClientList(pageNumber = 1) {
       const params = {}
+      if (this.currentSortField) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        params.sort_by = `${prefix}${this.currentSortField}`
+      }
 
       if (this.isSearching && this.searchTerm) {
         params.term = this.searchTerm
@@ -648,6 +703,27 @@ export default {
 .md-app {
   min-height: 100vh;
   border: 1px solid rgba(#000, 0.12);
+}
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .sort-icon {
+    font-size: 16px !important;
+    margin-left: 4px;
+    vertical-align: middle;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  &:hover .sort-icon {
+    opacity: 1;
+  }
 }
 
 .md-drawer {
