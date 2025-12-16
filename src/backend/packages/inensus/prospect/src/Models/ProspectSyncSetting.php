@@ -21,6 +21,7 @@ class ProspectSyncSetting extends BaseModel {
     protected $connection = 'tenant';
     protected $fillable = [
         'action_name',
+        'is_enabled',
         'sync_in_value_str',
         'sync_in_value_num',
         'max_attempts',
