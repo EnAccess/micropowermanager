@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Transaction\Transaction;
 use Illuminate\Support\Collection;
 
 class TransactionExportService extends AbstractExportService {
     /**
-     * @var Collection<int, mixed>
+     * @var Collection<int, Transaction>
      */
     private Collection $transactionData;
 
@@ -30,8 +31,8 @@ class TransactionExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->transactionData->map(function ($transaction): array {
-            $status = $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->status == 0 ? 'Pending' : 'Failed');
+        $this->exportingData = $this->transactionData->map(function (Transaction $transaction): array {
+            $status = $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->originalTransaction->status == 0 ? 'Pending' : 'Failed');
             $readableAmount = $this->readable($transaction->amount);
 
             return [
@@ -48,7 +49,7 @@ class TransactionExportService extends AbstractExportService {
     }
 
     /**
-     * @param Collection<int,  mixed> $transactionData
+     * @param Collection<int, Transaction> $transactionData
      */
     public function setTransactionData(Collection $transactionData): void {
         $this->transactionData = $transactionData;
