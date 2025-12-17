@@ -6,9 +6,7 @@ use App\Helpers\MailHelper;
 use App\Models\ApplianceRate;
 use App\Models\User;
 use Carbon\CarbonImmutable;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Storage;
 
 class OutstandingDebtsExportService extends AbstractExportService {
     public function __construct(
@@ -59,7 +57,7 @@ class OutstandingDebtsExportService extends AbstractExportService {
         return resource_path('templates/export_outstanding_debts_template.xlsx');
     }
 
-    public function createReport(CarbonImmutable $toDate, ?Filesystem $storage = null): string {
+    public function createReport(CarbonImmutable $toDate): string {
         $currency = $this->applianceRateService->getCurrencyFromMainSettings();
 
         $data = $this->applianceRateService->queryOutstandingDebtsByApplianceRates($toDate)->get();
@@ -69,13 +67,12 @@ class OutstandingDebtsExportService extends AbstractExportService {
         $this->setExportingData();
         $this->writeOutstandingDebtsData();
 
-        return $this->saveSpreadSheet($storage);
+        return $this->saveSpreadSheet();
     }
 
     public function sendApplianceDebtsAsEmail(): void {
         $reportDate = CarbonImmutable::now()->endOfWeek()->endOfDay();
-        $storage = Storage::disk(config('filesystems.default'));
-        $path = $this->createReport($reportDate, $storage);
+        $path = $this->createReport($reportDate);
 
         $this->userService->getUsersToSendOutstandingDebtsReport()
             ->each(function (User $user) use ($path, $reportDate) {
