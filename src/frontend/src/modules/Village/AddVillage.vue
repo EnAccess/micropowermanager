@@ -345,8 +345,54 @@ export default {
       const lon = parseFloat(points[1])
       const clusterId = miniGridWithGeoData.cluster_id
       const clusterGeoData = await this.getClusterGeoData(clusterId)
-      this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
-      this.mappingService.setGeoData(clusterGeoData)
+
+      if (!clusterGeoData || !clusterGeoData.geo_json) {
+        this.alertNotify("error", "Cluster has no geo data")
+        return
+      }
+
+      // Extract geo_json and convert to Feature if needed
+      let geoJsonFeature
+      if (clusterGeoData.geo_json.type === "Feature") {
+        geoJsonFeature = clusterGeoData.geo_json
+      } else if (clusterGeoData.geo_json.type === "FeatureCollection") {
+        geoJsonFeature = clusterGeoData.geo_json.features[0]
+      } else {
+        throw new Error(
+          "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
+        )
+      }
+
+      // Calculate center from GeoJSON bounds or geometry
+      let centerLat, centerLon
+      if (geoJsonFeature.bbox && geoJsonFeature.bbox.length >= 4) {
+        centerLon = (geoJsonFeature.bbox[0] + geoJsonFeature.bbox[2]) / 2
+        centerLat = (geoJsonFeature.bbox[1] + geoJsonFeature.bbox[3]) / 2
+      } else if (geoJsonFeature.geometry) {
+        const coords = geoJsonFeature.geometry.coordinates
+        if (geoJsonFeature.geometry.type === "Point") {
+          centerLon = coords[0]
+          centerLat = coords[1]
+        } else if (
+          geoJsonFeature.geometry.type === "Polygon" &&
+          coords[0] &&
+          coords[0][0]
+        ) {
+          // Use first coordinate
+          centerLon = coords[0][0][0]
+          centerLat = coords[0][0][1]
+        } else {
+          // Fallback to first available coordinate
+          centerLon = coords[0]?.[0]?.[0] || 0
+          centerLat = coords[0]?.[0]?.[1] || 0
+        }
+      }
+
+      if (centerLat && centerLon) {
+        this.mappingService.setCenter([centerLat, centerLon])
+      }
+
+      this.mappingService.setGeoData(geoJsonFeature)
       markingInfos.push({
         id: miniGridWithGeoData.id,
         name: miniGridWithGeoData.name,

@@ -20,7 +20,7 @@ class HtmlEmail extends Mailable {
             ->html($this->htmlContent);
 
         if ($this->attachmentPath) {
-            $mail->attachFromStorageDisk('local', $this->attachmentPath);
+            $mail->attachFromStorage($this->attachmentPath);
         }
 
         return $mail;

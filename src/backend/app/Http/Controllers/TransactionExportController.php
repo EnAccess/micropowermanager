@@ -7,7 +7,7 @@ use App\Services\TransactionExportService;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionExportController {
     public function __construct(
@@ -16,7 +16,7 @@ class TransactionExportController {
         private MainSettingsService $mainSettingsService,
     ) {}
 
-    public function download(Request $request): BinaryFileResponse {
+    public function download(Request $request): StreamedResponse {
         $format = $request->get('format', 'excel');
 
         if ($format === 'csv') {
@@ -28,7 +28,7 @@ class TransactionExportController {
 
     public function downloadExcel(
         Request $request,
-    ): BinaryFileResponse {
+    ): StreamedResponse {
         $deviceType = $request->get('deviceType', 'all');
         $serialNumber = $request->get('serial_number');
         $tariffId = $request->get('tariff');
@@ -54,12 +54,10 @@ class TransactionExportController {
         $this->transactionExportService->writeTransactionData();
         $pathToSpreadSheet = $this->transactionExportService->saveSpreadSheet();
 
-        $path = Storage::disk('local')->path($pathToSpreadSheet);
-
-        return response()->download($path, 'transaction_export_'.now()->format('Ymd_His').'.xlsx');
+        return Storage::download($pathToSpreadSheet, 'transaction_export_'.now()->format('Ymd_His').'.xlsx');
     }
 
-    public function downloadCsv(Request $request): BinaryFileResponse {
+    public function downloadCsv(Request $request): StreamedResponse {
         $deviceType = $request->get('deviceType', 'all');
         $transactionProvider = $request->get('provider', 'all');
         $status = $request->get('status');
@@ -82,8 +80,6 @@ class TransactionExportController {
         $headers = ['Status', 'Payment Service', 'Customer', 'Device Serial Number', 'Device Type', 'Amount', 'Type', 'Date'];
         $csvPath = $this->transactionExportService->saveCsv($headers);
 
-        $path = Storage::disk('local')->path($csvPath);
-
-        return response()->download($path, 'transaction_export_'.now()->format('Ymd_His').'.csv');
+        return Storage::download($csvPath, 'transaction_export_'.now()->format('Ymd_His').'.csv');
     }
 }

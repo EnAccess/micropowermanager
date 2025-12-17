@@ -5,6 +5,7 @@ namespace Inensus\KelinMeter\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Models\Address\Address;
 use App\Models\Cluster;
+use App\Models\User;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -56,10 +57,19 @@ class DataSynchronizer extends AbstractSharedCommand {
                     $nextSync = Carbon::parse($syncAction->next_sync)->addHours(2);
                     $syncAction->next_sync = $nextSync;
                     $cluster = $this->cluster->newQuery()->with('manager')->first();
-                    if (!$cluster) {
+                    if (!$cluster || !$cluster->manager) {
                         return true;
                     }
-                    $adminAddress = $this->address->whereHasMorph('owner', [$cluster->manager])->first();
+
+                    $adminId = $cluster->manager->id;
+                    $adminAddress = $this->address->whereHasMorph(
+                        'owner',
+                        [User::class],
+                        static function ($q) use ($adminId) {
+                            $q->where('id', $adminId);
+                        }
+                    )->first();
+
                     if (!$adminAddress) {
                         return true;
                     }

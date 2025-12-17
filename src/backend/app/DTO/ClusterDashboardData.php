@@ -37,7 +37,6 @@ class ClusterDashboardData {
             'id' => $this->cluster->id,
             'name' => $this->cluster->name,
             'manager_id' => $this->cluster->manager_id,
-            'geo_data' => $this->cluster->geo_data,
             'created_at' => $this->cluster->created_at,
             'updated_at' => $this->cluster->updated_at,
             'deviceCount' => $this->deviceCount,
