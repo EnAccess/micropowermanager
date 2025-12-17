@@ -3,7 +3,7 @@
     <!-- Fixed logo section that won't scroll -->
     <div class="logo fixed-logo">
       <div class="brand-column">
-        <img class="logo" alt="logo" :src="imgLogo" />
+        <img class="logo icon" alt="logo" :src="imgLogo" />
         <div class="company-header">
           {{ $store.getters["settings/getMainSettings"].companyName }}
           <br />
@@ -110,7 +110,7 @@ export default {
     },
     imgLogo: {
       type: String,
-      default: require("@/assets/images/Logo1.png"),
+      default: require("@/assets/images/mpmlogo_stylized.svg"),
     },
     sidebarItemColor: {
       type: String,
@@ -255,6 +255,11 @@ export default {
   padding: 15px 0;
   width: 100%;
 }
+
+.logo.icon {
+  max-width: 64px;
+}
+
 .sidebar-bottom-buffer {
   height: 30px;
 }
@@ -295,7 +300,7 @@ export default {
   background: #6b6a6a !important;
   position: relative;
   width: calc(100%) !important;
-  border-right: 5px solid #9d302a;
+  border-right: 5px solid #1b75ba;
 }
 
 .no-bg {
