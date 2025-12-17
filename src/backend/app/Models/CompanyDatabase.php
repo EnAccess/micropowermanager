@@ -53,7 +53,7 @@ class CompanyDatabase extends BaseModelCentral {
     public function findByCompanyId(int $companyId): CompanyDatabase {
         $cacheKey = self::CACHE_KEY_PREFIX.':'.$companyId;
 
-        return Cache::remember($cacheKey, self::CACHE_TTL, fn() => $this->newQuery()
+        return Cache::remember($cacheKey, self::CACHE_TTL, fn () => $this->newQuery()
             ->where(self::COL_COMPANY_ID, '=', $companyId)
             ->firstOrFail());
     }

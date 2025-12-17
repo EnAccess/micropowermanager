@@ -53,7 +53,7 @@ class DatabaseProxy extends BaseModelCentral {
     public function findByEmail(string $email): DatabaseProxy {
         $cacheKey = self::CACHE_KEY_PREFIX.':'.md5($email);
 
-        return Cache::remember($cacheKey, self::CACHE_TTL, fn() => $this->buildQuery()
+        return Cache::remember($cacheKey, self::CACHE_TTL, fn () => $this->buildQuery()
             ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=', self::COL_COMPANY_ID)
             ->where(self::COL_EMAIL, '=', $email)
             ->firstOrFail());
