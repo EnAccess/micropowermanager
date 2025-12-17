@@ -36,7 +36,7 @@ class PersonRequest extends FormRequest {
             'name' => ['required', 'min:2'],
             'surname' => ['required', 'min:2'],
             'birth_date' => ['sometimes', 'nullable', 'date'],
-            'gender' => ['sometimes', 'nullable', 'string', 'in:male,female'],
+            'gender' => ['sometimes', 'nullable', 'string'],
             'education' => ['sometimes', 'nullable', 'string'],
             'city_id' => ['sometimes', 'integer', 'exists:tenant.cities,id'],
             'street' => ['sometimes', 'nullable', 'string', 'min:5'],
