@@ -18,7 +18,7 @@
       :button="true"
       :button-text="$tc('phrases.newShs')"
       :route_name="'/solar-home-systems'"
-      color="green"
+      color="primary"
       @widgetAction="
         () => {
           showAddSolarHomeSystem = true

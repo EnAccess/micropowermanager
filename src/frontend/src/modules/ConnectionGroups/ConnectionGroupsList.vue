@@ -9,7 +9,7 @@
       :button="true"
       :button-text="$tc('phrases.newConnectionGroup')"
       @widgetAction="addNew"
-      :color="'green'"
+      :color="'primary'"
     >
       <md-table md-card style="margin-left: 0">
         <md-table-row>

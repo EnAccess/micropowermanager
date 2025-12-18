@@ -114,7 +114,7 @@ export default {
     },
     sidebarItemColor: {
       type: String,
-      default: "green",
+      default: "primary",
     },
     autoClose: {
       type: Boolean,
@@ -208,7 +208,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .sidebar {
   background: #2b2b2b;
   position: fixed;
@@ -300,7 +300,7 @@ export default {
   background: #6b6a6a !important;
   position: relative;
   width: calc(100%) !important;
-  border-right: 5px solid #1b75ba;
+  border-right: 5px solid $brand-primary-dark;
 }
 
 .no-bg {

@@ -4,7 +4,7 @@
       :id="'revenue-targets'"
       :headless="true"
       :title="$tc('phrases.revenueTargetsPerCustomerType')"
-      color="green"
+      color="primary"
     >
       <div v-if="loading">
         <loader size="sm" />

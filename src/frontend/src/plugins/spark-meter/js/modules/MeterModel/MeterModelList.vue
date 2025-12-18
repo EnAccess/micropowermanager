@@ -8,7 +8,7 @@
       :route_name="meterModelService.routeName"
       :show_per_page="true"
       :subscriber="subscriber"
-      color="green"
+      color="primary"
       @widgetAction="syncMeterModels()"
       :button="true"
       buttonIcon="cloud_download"

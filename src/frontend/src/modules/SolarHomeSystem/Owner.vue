@@ -1,5 +1,5 @@
 <template>
-  <widget :title="$tc('words.owner')" color="green" :subscriber="'shs-owner'">
+  <widget :title="$tc('words.owner')" color="primary" :subscriber="'shs-owner'">
     <md-list class="md-double-line">
       <md-list-item :to="`/people/${person.id}`">
         <div class="md-list-item-text">

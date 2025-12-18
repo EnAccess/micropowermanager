@@ -8,7 +8,7 @@
       :route_name="siteService.routeName"
       :show_per_page="true"
       :subscriber="subscriber"
-      color="green"
+      color="primary"
       @widgetAction="syncSites()"
       :button="true"
       buttonIcon="cloud_download"

@@ -2,9 +2,8 @@
   <div class="welcome">
     <div class="content">
       <div class="title">
-        Welcome to the
+        Welcome to
         <span class="title highlight">MicroPowerManager</span>
-        cloud version
       </div>
 
       <p class="cloud-description">
@@ -98,13 +97,21 @@ export default {
 }
 
 .highlight {
-  color: #ffc107;
+  color: #fab158;
 }
 
 .router-box {
   display: flex;
   flex-direction: column;
   margin-top: 1rem;
+}
+
+.welcome {
+  background: linear-gradient(
+    to right,
+    #e0f7fa,
+    /* var(--md-theme-default-primary), */ #ffffff
+  ); /* Light blue to white */
 }
 
 .router-box p {
