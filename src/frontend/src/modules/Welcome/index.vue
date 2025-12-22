@@ -10,21 +10,19 @@
         This is the cloud version of the MicroPowerManager. It is a web
         application that allows you to manage your MiniGrids easily.
       </p>
-      <div class="router-box">
-        <p>
-          You can register for a free account on
-          <router-link to="/register">
-            <i class="fa fa-user"></i>
-            register
-          </router-link>
-        </p>
-        <p>
-          If you already have an account, you can
-          <router-link to="/login">
-            <i class="fa fa-sign-in"></i>
-            login
-          </router-link>
-        </p>
+      <div class="md-layout md-gutter">
+        <div class="md-layout-item">
+          <md-button class="md-accent md-raised" to="/register">
+            <md-icon>person_add</md-icon>
+            Register
+          </md-button>
+        </div>
+        <div class="md-layout-item">
+          <md-button class="md-primary md-raised" to="/login">
+            <md-icon>login</md-icon>
+            {{ $tc("phrases.signIn") }}
+          </md-button>
+        </div>
       </div>
 
       <p class="cloud-description">
@@ -65,11 +63,19 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .welcome {
+  background: linear-gradient(
+    to right,
+    $brand-background-dark,
+    $brand-background
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  width: 100vw;
+  min-height: 100vh;
 }
 
 .content {
@@ -97,21 +103,13 @@ export default {
 }
 
 .highlight {
-  color: #fab158;
+  color: $brand-secondary;
 }
 
 .router-box {
   display: flex;
   flex-direction: column;
   margin-top: 1rem;
-}
-
-.welcome {
-  background: linear-gradient(
-    to right,
-    #e0f7fa,
-    /* var(--md-theme-default-primary), */ #ffffff
-  ); /* Light blue to white */
 }
 
 .router-box p {
