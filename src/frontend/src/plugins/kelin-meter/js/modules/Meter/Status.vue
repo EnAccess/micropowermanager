@@ -43,7 +43,7 @@
                       v-model="statusOfMeter"
                       @change="changeMeterStatus($event)"
                       :disabled="switching"
-                      class="data-stream-switch"
+                      class="md-primary data-stream-switch"
                     ></md-switch>
                   </div>
                 </div>
