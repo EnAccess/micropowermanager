@@ -59,13 +59,6 @@ export class SettingService {
         syncInValueNum: 1,
         maxAttempts: 3,
       },
-      {
-        id: 4,
-        actionName: "Agents",
-        syncInValueStr: "weekly",
-        syncInValueNum: 1,
-        maxAttempts: 3,
-      },
     ]
     this.syncList = this.list
   }
