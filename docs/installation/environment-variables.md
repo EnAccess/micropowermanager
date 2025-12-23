@@ -187,6 +187,18 @@ Configure Horizon notifications
 | --------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `HORIZON_SLACK_WEBHOOK_URL` | `null`  | Slack Webhook URL for Horizon notifications. This requires a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `HORIZON_SLACK_WEBHOOK_URL` is provided Horizon Slack notifications will be enabled. **Note:** Can be the same webhook as `LOG_SLACK_WEBHOOK_URL`. |
 
+#### Laravel Telescope and Telescope Dashboard
+
+MicroPowerManager internally uses [Laravel Telescope](https://laravel.com/docs/12.x/telescope) for peformance monitoring and debugging.
+
+By default Telescope will be disabled. Configure the below environment variables to enable Telescope and secure the dashboard with HTTP Basic Auth.
+
+| Environment Variable            | Default | Description                                                |
+| ------------------------------- | ------- | ---------------------------------------------------------- |
+| `TELESCOPE_ENABLED`             | `false` | Enable or disable Telescope data collection and dashboard. |
+| `TELESCOPE_BASIC_AUTH_USERNAME` | `null`  | HTTP Basic Auth Username for Telescope Dashboard.          |
+| `TELESCOPE_BASIC_AUTH_PASSWORD` | `null`  | HTTP Basic Auth Password for Telescope Dashboard.          |
+
 ### MPM Plugins
 
 Certain MicroPowerManager plugins require configuration before they can be used.

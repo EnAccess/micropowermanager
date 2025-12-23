@@ -7,6 +7,7 @@ use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
 use App\Http\Middleware\JwtMiddleware;
+use App\Http\Middleware\TelescopeBasicAuthMiddleware;
 use App\Http\Middleware\Transaction;
 use App\Http\Middleware\TransactionRequest;
 use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
@@ -43,6 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'telescope.auth' => TelescopeBasicAuthMiddleware::class,
         ]);
 
         // additional middleware group to `web` and `api` default groups
@@ -89,5 +91,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('appliance-rate:check')->dailyAt('00:00');
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');
+        // prune telescope data older than 48 hours
+        $schedule->command('telescope:prune --hours=48')->daily();
     })
     ->create();
