@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="$tc('phrases.newMiniGrid')" color="green">
+    <widget :title="$tc('phrases.newMiniGrid')" color="primary">
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter md-size-100">

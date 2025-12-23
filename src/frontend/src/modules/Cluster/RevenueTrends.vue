@@ -111,8 +111,6 @@ export default {
 
       const dates = data.slice(1).map((row) => row[dateIndex] || "")
 
-      const colors = ["#739e73", "#3276b1", "#78002e", "#dce775"]
-
       const series = seriesNames.map((name, index) => {
         const seriesIndex = index + 1
         return {
@@ -120,9 +118,6 @@ export default {
           type: "bar",
           stack: "total",
           data: data.slice(1).map((row) => parseFloat(row[seriesIndex]) || 0),
-          itemStyle: {
-            color: colors[index % colors.length],
-          },
         }
       })
 
@@ -174,8 +169,6 @@ export default {
 
       const dates = data.slice(1).map((row) => row[dateIndex] || "")
 
-      const colors = ["#739e73", "#3276b1", "#78002e", "#dce775"]
-
       const series = seriesNames.map((name, index) => {
         const seriesIndex = index + 1
         return {
@@ -183,9 +176,6 @@ export default {
           type: "line",
           data: data.slice(1).map((row) => parseFloat(row[seriesIndex]) || 0),
           smooth: true,
-          itemStyle: {
-            color: colors[index % colors.length],
-          },
         }
       })
 

@@ -7,7 +7,7 @@
     :paginator="transactions.paginator"
     :subscriber="subscriber"
     :show_per_page="true"
-    color="green"
+    color="primary"
   >
     <md-card>
       <md-card-content>

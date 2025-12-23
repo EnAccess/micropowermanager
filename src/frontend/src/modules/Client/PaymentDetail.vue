@@ -95,17 +95,12 @@ export default {
       const seriesNames = headers.slice(1)
       const categories = data.slice(1).map((row) => row[0] || "")
 
-      const colors = ["#0b920b", "#8b2621", "#0c7cd5", "#aad4df"]
-
       const series = seriesNames.map((name, index) => {
         const seriesIndex = index + 1
         return {
           name: String(name || `Series ${index + 1}`),
           type: "bar",
           data: data.slice(1).map((row) => parseFloat(row[seriesIndex]) || 0),
-          itemStyle: {
-            color: colors[index % colors.length],
-          },
         }
       })
 

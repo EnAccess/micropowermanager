@@ -9,7 +9,7 @@
             <widget
               :title="$tc('phrases.providerSpecificInformation')"
               :show-spinner="false"
-              color="green"
+              color="primary"
             >
               <md-card>
                 <md-card-content>
@@ -174,7 +174,7 @@
             <widget
               title="Transaction Processing"
               :show-spinner="false"
-              color="green"
+              color="primary"
             >
               <md-card>
                 <div

@@ -7,16 +7,15 @@ export class TicketLabelService {
     this.list = []
     this.colors = {
       nocolor: "null",
-      yellow: "#ffff00",
-      purple: "#cc00ff",
-      blue: "#0000cc",
-      red: "#ff0000",
-      green: "#00ff00",
-      orange: "#ffb700",
-      black: "#000000",
-      sky: "#00b7cc",
-      pink: "#cc0555",
-      lime: "#bfe61f",
+      blue: "#5470c6",
+      lime: "#91cc75",
+      yellow: "#fac858",
+      red: "#ee6666",
+      sky: "#73c0de",
+      green: "#3ba272",
+      purple: "#9a60b4",
+      orange: "#fc8452",
+      pink: "#ea7ccc",
     }
     this.newLabelName = ""
     this.currentColor = null

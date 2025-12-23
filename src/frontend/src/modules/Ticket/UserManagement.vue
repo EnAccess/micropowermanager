@@ -12,7 +12,7 @@
       :button="true"
       button-text="Add new User"
       @widgetAction="showAddUser"
-      color="green"
+      color="primary"
       :subscriber="subscriber"
     >
       <md-table v-model="userList" md-sort="name" md-sort-order="asc" md-card>

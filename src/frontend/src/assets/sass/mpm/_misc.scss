@@ -71,7 +71,12 @@ h6,
   border-bottom-right-radius: 6px;
 }
 
-a {
+/*
+Only apply to <a> that is NOT inside a button/
+Else the button style looks odd when using
+https://www.creative-tim.com/vuematerial/components/button
+*/
+a:not(.md-button) {
   color: $link-color;
 
   &:hover,

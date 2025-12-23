@@ -100,7 +100,7 @@
           newLabel = true
         }
       "
-      color="green"
+      color="primary"
       :subscriber="subscriber"
     >
       <md-card>

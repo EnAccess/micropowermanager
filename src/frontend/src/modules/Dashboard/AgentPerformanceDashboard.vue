@@ -221,7 +221,6 @@ export default {
         vAxis: {
           title: this.$tc("words.value"),
         },
-        colors: ["#26c6da", "#ffa726"],
         legend: { position: "top" },
         height: 400,
         width: "100%",

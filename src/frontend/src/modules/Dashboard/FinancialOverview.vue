@@ -5,6 +5,7 @@
     button
     button-text="Set Period"
     button-color="red"
+    color="primary"
     @widgetAction="showPeriod"
     button-icon="calendar_today"
   >

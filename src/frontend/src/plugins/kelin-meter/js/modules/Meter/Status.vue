@@ -3,7 +3,7 @@
     <widget
       id="meter-status"
       :title="title"
-      color="green"
+      color="primary"
       :newRecordButton="false"
     >
       <div class="md-layout md-gutter">
@@ -43,7 +43,7 @@
                       v-model="statusOfMeter"
                       @change="changeMeterStatus($event)"
                       :disabled="switching"
-                      class="data-stream-switch"
+                      class="md-primary data-stream-switch"
                     ></md-switch>
                   </div>
                 </div>

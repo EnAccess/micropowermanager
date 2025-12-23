@@ -1,5 +1,5 @@
 <template>
-  <widget :title="$tc('Meter Detail')" color="green">
+  <widget :title="$tc('Meter Detail')" color="primary">
     <div class="meter-overview-card">
       <div
         class="meter-overview-detail"

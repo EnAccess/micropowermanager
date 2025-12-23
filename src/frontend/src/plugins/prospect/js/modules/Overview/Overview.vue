@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget color="green" title="Prospect Overview">
+    <widget color="primary" title="Prospect Overview">
       <div class="md-layout md-gutter">
         <div
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
