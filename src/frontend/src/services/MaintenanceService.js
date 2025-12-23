@@ -24,7 +24,7 @@ export class MaintenanceService {
       phone: null,
       city_id: null,
       mini_grid_id: null,
-      sex: "male",
+      gender: "male",
     }
   }
 
@@ -82,7 +82,7 @@ export class MaintenanceService {
       phone: null,
       city_id: null,
       mini_grid_id: null,
-      sex: "male",
+      gender: "male",
     }
   }
 }

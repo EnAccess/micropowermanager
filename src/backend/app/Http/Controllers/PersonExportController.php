@@ -55,7 +55,7 @@ class PersonExportController extends Controller {
 
         $this->peopleExportService->setPeopleData($people);
         $this->peopleExportService->setExportingData();
-        $headers = ['Title', 'Name', 'Surname', 'Birth Date', 'Sex', 'Email', 'Phone', 'City', 'Device Serial', 'Agent Name'];
+        $headers = ['Title', 'Name', 'Surname', 'Birth Date', 'Gender', 'Email', 'Phone', 'City', 'Device Serial', 'Agent Name'];
         $csvPath = $this->peopleExportService->saveCsv($headers);
 
         $path = Storage::path($csvPath);

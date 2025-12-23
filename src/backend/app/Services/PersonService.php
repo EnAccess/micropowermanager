@@ -136,7 +136,7 @@ class PersonService implements IBaseService {
             'name' => $request->get('name'),
             'surname' => $request->get('surname'),
             'birth_date' => $request->get('birth_date'),
-            'sex' => $request->get('sex'),
+            'gender' => $request->get('gender'),
             'is_customer' => $request->get('is_customer') ?? 0,
             'mini_grid_id' => $request->get('mini_grid_id'),
         ];
@@ -307,7 +307,7 @@ class PersonService implements IBaseService {
             'name',
             'surname',
             'birth_date',
-            'sex',
+            'gender',
             'is_customer',
         ]));
 
