@@ -37,14 +37,23 @@ class TokenService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    /**
-     * @return Collection<int, Token>|LengthAwarePaginator<int, Token>
-     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->token->newQuery()->paginate($limit);
         }
 
         return $this->token->newQuery()->get();
+    }
+
+    /**
+     * @return Collection<int, Token>
+     */
+    public function getTokensInRange(?string $startDate, ?string $endDate): Collection {
+        return $this->token->newQuery()->with(['transaction.device'])
+            ->whereHas('transaction.device', function ($query) {
+                $query->where('device_type', 'meter');
+            })
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
     }
 }
