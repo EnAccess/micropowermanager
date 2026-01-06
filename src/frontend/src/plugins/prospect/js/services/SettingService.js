@@ -17,6 +17,8 @@ export class SettingService {
       const attrs = data[s].data.attributes
       if (attrs.isEnabled === undefined) {
         attrs.isEnabled = true
+      } else {
+        attrs.isEnabled = Boolean(attrs.isEnabled)
       }
       this.list.push(attrs)
       this.syncList.push(attrs)
@@ -53,13 +55,6 @@ export class SettingService {
         id: 4,
         actionName: "Agents",
         isEnabled: true,
-        syncInValueStr: "weekly",
-        syncInValueNum: 1,
-        maxAttempts: 3,
-      },
-      {
-        id: 4,
-        actionName: "Agents",
         syncInValueStr: "weekly",
         syncInValueNum: 1,
         maxAttempts: 3,

@@ -64,12 +64,25 @@ class AgentSellApplianceTest extends TestCase {
         Cluster::query()->create([
             'name' => 'Test Cluster',
             'manager_id' => 1,
-            'geo_data' => '{"leaflet_id":903,"type":"manual","geojson":{"type":"Polygon",
-            "coordinates":[[[-3.204747603780925,37.937924389032375],
-            [-3.4220930701917984,37.93779565098191],
-            [-3.2492230959644415,38.24208948955007]]]},
-            "searched":false,"display_name":"test","selected":true,"draw_type":"draw","lat":-3.2920212566457216,"lon":38.039269843188116}',
+            'geo_json' => json_encode([
+                'type' => 'Feature',
+                'properties' => [
+                    'name' => 'Test Cluster',
+                ],
+                'geometry' => [
+                    'type' => 'Polygon',
+                    'coordinates' => [
+                        [
+                            [37.937924389032375, -3.204747603780925],
+                            [37.93779565098191, -3.4220930701917984],
+                            [38.24208948955007, -3.2492230959644415],
+                            [37.937924389032375, -3.204747603780925],
+                        ],
+                    ],
+                ],
+            ]),
         ]);
+
         MiniGrid::query()->create([
             'cluster_id' => 1,
             'name' => 'Test-Grid',

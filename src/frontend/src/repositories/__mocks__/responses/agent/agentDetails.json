@@ -20,7 +20,7 @@
         "name": "testName",
         "surname": "tests",
         "birth_date": "2000-01-02",
-        "sex": "female",
+        "gender": "female",
         "nationality": null,
         "created_at": "2021-04-16T00:17:05.000000Z",
         "updated_at": "2021-04-16T00:49:02.000000Z",

@@ -116,7 +116,7 @@ abstract class AbstractExportService {
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
             $writer->save($tempPath);
 
-            Storage::disk('local')->put($path, file_get_contents($tempPath));
+            Storage::put($path, file_get_contents($tempPath));
             unlink($tempPath);
 
             return $path;
@@ -140,7 +140,7 @@ abstract class AbstractExportService {
 
             $csvContent = $this->generateCsvContent($headers);
 
-            Storage::disk('local')->put($path, $csvContent);
+            Storage::put($path, $csvContent);
 
             return $path;
         } catch (\Exception $e) {

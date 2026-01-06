@@ -58,7 +58,7 @@
             "name": "testname",
             "surname": "testsurname",
             "birth_date": null,
-            "sex": null,
+            "gender": null,
             "nationality": null,
             "created_at": "2018-08-15T14:35:23.000000Z",
             "updated_at": "2020-03-04T19:58:57.000000Z",

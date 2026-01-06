@@ -9,9 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @urlParam  lang The language.
  *
  * @bodyParam name string required The name  of the cluster.
- * @bodyParam geo_type string required. Describes if the polygon created manually or fetched from the internet.
- * @bodyParam geo_data string required. Coordinates or the external url  that contains a geojson.
- * @bodyParam cities array[int] required. The id's of the cities which belong to the cluster.
+ * @bodyParam geo_json string required. GeoJSON polygon coordinates.
  * @bodyParam manager_id int required. The id of the user who is responsible for the cluster.
  */
 class ClusterRequest extends FormRequest {
@@ -30,9 +28,26 @@ class ClusterRequest extends FormRequest {
     public function rules(): array {
         return [
             'name' => ['required'],
-            'geo_type' => ['required'],
-            'geo_data' => ['required'],
+            'geo_json' => ['required'],
             'manager_id' => ['required'],
         ];
+    }
+
+    /**
+     * Get the cluster data from the request.
+     *
+     * @return array<string, mixed>
+     */
+    public function getClusterData(): array {
+        $data = $this->only(['name', 'manager_id', 'geo_json']);
+
+        // Fix empty properties to be an object
+        if (isset($data['geo_json']['properties'])
+            && is_array($data['geo_json']['properties'])
+            && empty($data['geo_json']['properties'])) {
+            $data['geo_json']['properties'] = new \stdClass();
+        }
+
+        return $data;
     }
 }

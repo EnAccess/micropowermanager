@@ -44,7 +44,7 @@ export class AgentService {
       surname: data.person.surname,
       email: data.email,
       balance: data.balance,
-      gender: data.person.sex,
+      gender: data.person.gender,
       phone: data.person.addresses[0].phone,
       birthday: data.person.birth_date,
       commissionType: data.commission.name,
@@ -94,7 +94,7 @@ export class AgentService {
         agent_commission_id: this.agent.commissionTypeId,
         password: this.agent.password,
         birth_date: moment(this.agent.birthday).format("YYYY-MM-DD HH:mm:ss"),
-        sex: this.agent.gender,
+        gender: this.agent.gender,
       }
       let response = await this.repository.create(agentPM)
       if (response.status === 201) {

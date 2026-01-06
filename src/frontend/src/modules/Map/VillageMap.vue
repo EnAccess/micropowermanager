@@ -48,84 +48,63 @@ export default {
   methods: {
     drawCluster() {
       this.editableLayer.clearLayers()
-      const geoData = this.mappingService.geoData.geo_data
-      const geoType = geoData.geojson.type
-      const coordinatesClone = geoData.geojson.coordinates[0].reduce(
-        (acc, coord) => {
-          acc[0].push([coord[1], coord[0]])
-          return acc
-        },
-        [[]],
-      )
-      const drawing = {
-        type: "FeatureCollection",
-        crs: {
-          type: "name",
-          properties: {
-            name: "urn:ogc:def:crs:OGC:1.3:CRS84",
-          },
-        },
-        features: [
-          {
-            type: "Feature",
-            properties: {
-              popupContent: geoData.display_name,
-              draw_type:
-                geoData.draw_type === undefined ? "set" : geoData.draw_type,
-              selected:
-                geoData.selected === undefined ? false : geoData.selected,
-              clusterId:
-                geoData.clusterId === undefined ? -1 : geoData.clusterId,
-            },
-            geometry: {
-              type: geoType,
-              coordinates: geoData.searched
-                ? geoData.geojson.coordinates
-                : coordinatesClone,
-            },
-          },
-        ],
+      const geoData = this.mappingService.geoData
+
+      // Handle both single feature and array of features
+      const features = Array.isArray(geoData) ? geoData : [geoData]
+
+      // Get the first feature (for Village, we typically have one cluster)
+      const feature = features[0]
+
+      if (feature.type !== "Feature") {
+        throw new Error("Expected GeoJSON Feature, got: " + feature.type)
       }
-      const polygonColor = this.mappingService.strToHex(geoData.display_name)
-      // "this"  cannot be used inside the L.geoJson function
+
+      const featureCollection = {
+        type: "FeatureCollection",
+        features: [feature],
+      }
+
+      const polygonColor = this.mappingService.strToHex(
+        feature.properties?.display_name || feature.properties?.name || "",
+      )
+
       const editableLayer = this.editableLayer
       const geoDataItems = this.geoDataItems
-      const drawnCluster = L.geoJson(drawing, {
+      const parent = this
+
+      const drawnCluster = L.geoJSON(featureCollection, {
         style: { fillColor: polygonColor, color: polygonColor },
         onEachFeature: function (feature, layer) {
-          const type = layer.feature.geometry.type
-          const clusterId = layer.feature.properties.clusterId
-          if (type === "Polygon" && clusterId !== -1) {
+          const clusterId = feature.properties?.clusterId || -1
+          const displayName =
+            feature.properties?.display_name || feature.properties?.name || ""
+
+          if (feature.geometry.type === "Polygon" && clusterId !== -1) {
             layer.on("click", () => {
-              this.$router.push({
+              parent.$router.push({
                 path: "/clusters/" + clusterId,
               })
             })
           }
+
           editableLayer.addLayer(layer)
 
           const geoDataItem = {
             leaflet_id: layer._leaflet_id,
             type: "manual",
-            geojson: {
-              type: geoData.geojson.type,
-              coordinates:
-                geoData.searched === true
-                  ? coordinatesClone
-                  : geoData.geojson.coordinates,
-            },
-            searched: false,
-            display_name: geoData.display_name,
-            selected: feature.properties.selected,
-            draw_type: feature.properties.draw_type,
-            lat: geoData.lat,
-            lon: geoData.lon,
+            geojson: feature.geometry,
+            display_name: displayName,
+            clusterId: clusterId,
           }
           geoDataItems.push(geoDataItem)
         },
       })
+
       const bounds = drawnCluster.getBounds()
-      this.map.fitBounds(bounds)
+      if (bounds.isValid()) {
+        this.map.fitBounds(bounds)
+      }
     },
     setMiniGridMarker() {
       this.mappingService.markingInfos
