@@ -75,7 +75,7 @@ return [
 
     'storage' => [
         'database' => [
-            'connection' => env('DB_CONNECTION', 'micro_power_manager'),
+            'connection' => 'micro_power_manager',
             'chunk' => 1000,
         ],
     ],
