@@ -183,7 +183,7 @@ class SendSms extends TestCase {
             [
                 'reference' => 'OverdueApplianceRateReminder',
                 'place_holder' => 'you forgot to pay the rate of [appliance_type_name] ( [remaining] )
-                 on [due_date]. Please pay it as soon as possible, unless you wont be able to buy energy.',
+                on [due_date]. Please pay it as soon as possible, unless you wont be able to buy energy.',
                 'variables' => 'appliance_type_name,remaining,due_date',
                 'title' => 'Overdue Appliance Payment Reminder',
             ],

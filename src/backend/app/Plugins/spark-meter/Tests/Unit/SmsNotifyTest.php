@@ -172,8 +172,7 @@ class SmsNotifyTest extends TestCase {
                 }
                 $data = [
                     'message' => $syncSetting->action_name.
-                        ' synchronization has failed by unrealizable reason that occurred on source API.
-                         It is going to be retried at '.$nextSync,
+                        ' synchronization has failed by unrealizable reason that occurred on source API. It is going to be retried at '.$nextSync,
                     'phone' => $adminAddress->phone,
                 ];
                 $smsService = app()->make(SmsService::class);
@@ -385,7 +384,7 @@ class SmsNotifyTest extends TestCase {
             [
                 'reference' => 'OverdueApplianceRateReminder',
                 'place_holder' => 'you forgot to pay the rate of [appliance_type_name] ( [remaining] )
-                 on [due_date]. Please pay it as soon as possible, unless you wont be able to buy energy.',
+                on [due_date]. Please pay it as soon as possible, unless you wont be able to buy energy.',
                 'variables' => 'appliance_type_name,remaining,due_date',
                 'title' => 'Overdue Appliance Payment Reminder',
             ],
@@ -446,7 +445,7 @@ class SmsNotifyTest extends TestCase {
             [
                 'reference' => 'SparkSmsLowBalanceBody',
                 'place_holder' => 'your credit balance has reduced under [low_balance_limit],
-                 your currently balance is [credit_balance]',
+                your currently balance is [credit_balance]',
                 'variables' => 'low_balance_limit,credit_balance',
                 'title' => 'Low Balance Limit Notify',
             ],

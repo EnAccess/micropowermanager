@@ -80,8 +80,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
                     }
                     $data = [
                         'message' => '~ Steamaco-Meter Package ~ '.$syncSetting->action_name.
-                            ' synchronization has failed by unrealizable reason that occurred
-                             on Steamaco Meter API. '.$syncSetting->action_name.' synchronization is going to be retried at '.
+                            ' synchronization has failed by unrealizable reason that occurred on Steamaco Meter API. '.$syncSetting->action_name.' synchronization is going to be retried at '.
                             $nextSync,
                         'phone' => $adminAddress->phone,
                     ];

@@ -81,8 +81,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
                     }
                     $data = [
                         'message' => '~ Spark-Meter Package ~ '.$syncSetting->action_name.
-                            ' synchronization has failed by unrealizable reason that occurred
-                             on Spark Meter API. '
+                            ' synchronization has failed by unrealizable reason that occurred on Spark Meter API. '
                             .$syncSetting->action_name.' synchronization is going to be retried at '.
                             $nextSync,
                         'phone' => $adminAddress->phone,

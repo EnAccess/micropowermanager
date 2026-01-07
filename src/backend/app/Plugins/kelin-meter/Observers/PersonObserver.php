@@ -23,16 +23,16 @@ class PersonObserver {
                     'addresses' => fn ($q) => $q->where('is_primary', 1),
                 ])->where('id', $personId)->first();
 
-            /*      $customerData = [
-                      'id' => $smCustomer->customer_id,
-                      'active' => true,
-                      'meter_tariff_name' => $customer->meters[0]->tariff->name,
-                      'name' => $person->name . ' ' . $person->surname,
-                      'code' => strval($person->id),
-                      'phone_number' => $customer->addresses[0]->phone,
-                      'coords' => $customer->meters[0]->geo->points,
-                      'address' => $customer->addresses[0]->street
-                  ];*/
+            // $customerData = [
+            //     'id' => $smCustomer->customer_id,
+            //     'active' => true,
+            //     'meter_tariff_name' => $customer->meters[0]->tariff->name,
+            //     'name' => $person->name.' '.$person->surname,
+            //     'code' => strval($person->id),
+            //     'phone_number' => $customer->addresses[0]->phone,
+            //     'coords' => $customer->meters[0]->geo->points,
+            //     'address' => $customer->addresses[0]->street,
+            // ];
 
             // $this->customerService->updateSparkCustomerInfo($customerData, $siteId);
 

@@ -56,10 +56,10 @@ class KelinMeterApiClient {
             if ($queryParams) {
                 $requestingUri .= '&param='.urlencode(json_encode($queryParams));
             }
-            /*  $test ='%7B%22meterType%22%3A1%2C%22startYmd%22%3A%2220200801%22%2C%22startHms%22%3A%220%22%2C%22endYmd%22%3A%2220200801%22%2C%22endHms%22%3A%22235900%22%2C%22pageNo%22%3A%221%22%2C%22pageSize%22%3A%22500%22%7D';
-             if ($queryParams) {
-                 $requestingUri .= '&param=' . $test;
-             }*/
+            // $test ='%7B%22meterType%22%3A1%2C%22startYmd%22%3A%2220200801%22%2C%22startHms%22%3A%220%22%2C%22endYmd%22%3A%2220200801%22%2C%22endHms%22%3A%22235900%22%2C%22pageNo%22%3A%221%22%2C%22pageSize%22%3A%22500%22%7D';
+            // if ($queryParams) {
+            //     $requestingUri .= '&param=' . $test;
+            //  }
             $response = $this->client->request('GET', $requestingUri);
         } catch (GuzzleException $exception) {
             throw new KelinApiResponseException($exception->getMessage());
