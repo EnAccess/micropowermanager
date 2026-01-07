@@ -13,14 +13,7 @@ class BulkRegistrationServiceProvider extends ServiceProvider {
     }
 
     public function register(): void {
-        $this->mergeConfigFrom(
-            __DIR__.'/../../config/bulk-registration.php',
-            'bulk-registration'
-        );
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        /*     $this->app->bind(GeographicalLocationFinder::class,function($app){
-                 return
-             });*/
     }
 }

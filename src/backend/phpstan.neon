@@ -5,11 +5,10 @@ includes:
 parameters:
 
     paths:
-        - app/
-        - bootstrap/
-        - config/
+        - app
+        - bootstrap
+        - config
         - database
-        - packages
         - public
         - resources
         - routes
