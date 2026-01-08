@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\DB;
  * @property      string                           $name
  * @property      string                           $surname
  * @property      \Illuminate\Support\Carbon|null  $birth_date
- * @property      string|null                      $sex
+ * @property      string|null                      $gender
  * @property      int|null                         $nationality
  * @property      int                              $is_customer
  * @property      string                           $type

@@ -1,72 +1,84 @@
 <template>
-  <div class="md-layout">
-    <div class="md-layout-item md-size-100">
-      <widget title="Customer Detail">
-        <div class="md-layout md-gutter">
-          <div
-            class="md-layout-item"
-            :class="showCustomerInformation ? 'md-size-20' : 'md-size-100'"
-            align="center"
-          >
-            <md-icon class="md-size-4x">account_circle</md-icon>
-            <h1>
-              {{ this.person.title }} {{ this.person.name }}
-              {{ this.person.surname }}
-            </h1>
+  <widget title="Customer Detail">
+    <md-card>
+      <md-card-content>
+        <div class="md-layout md-gutter md-alignment-center">
+          <div class="md-layout-item md-size-20">
+            <md-avatar class="md-avatar-icon md-large">
+              {{ initials }}
+            </md-avatar>
           </div>
-          <div class="md-layout-item md-size-80" v-if="showCustomerInformation">
-            <div class="md-layout-item md-layout md-size-100">
-              <div
-                class="md-layout-item md-layout md-gutter md-size-100"
-                style="margin-bottom: 3vh"
-              >
-                <div class="md-layout-item md-size-35">
-                  <h4>
-                    <md-icon>wc</md-icon>
-                    {{ $tc("words.gender") }}:{{ this.person.gender }}
-                  </h4>
-                </div>
-                <div class="md-layout-item md-size-35">
-                  <h4>
-                    <md-icon>school</md-icon>
-                    &nbsp;{{ $tc("words.education") }}:
-                    {{ this.person.education }}
-                  </h4>
-                </div>
+          <div class="md-layout-item">
+            <h2>
+              {{ this.person.title }}
+              {{ this.person.name }}
+              {{ this.person.surname }}
+            </h2>
+          </div>
 
-                <div class="md-layout-item md-size-30">
-                  <h4>
-                    <md-icon>cake</md-icon>
-                    &nbsp;{{ $tc("words.birthday") }}:
-                    {{ this.person.birthDate }}
-                  </h4>
-                </div>
-              </div>
-              <div
-                class="md-layout-item md-layout md-gutter md-size-100"
-                v-if="person.addresses.length > 0"
-              >
-                <div class="md-layout-item md-size-35">
-                  <h4>
+          <div
+            class="md-layout-item md-size-100"
+            v-if="showCustomerInformation"
+          >
+            <div class="md-layout-item md-size-100">
+              <md-list class="md-double-line">
+                <md-list-item>
+                  <md-icon>wc</md-icon>
+                  <div class="md-list-item-text">
+                    <span>{{ $tc("words.gender") }}</span>
+                    <span>{{ this.person.gender || "N/A" }}</span>
+                  </div>
+                </md-list-item>
+                <md-divider></md-divider>
+                <md-list-item>
+                  <md-icon>school</md-icon>
+                  <div class="md-list-item-text">
+                    <span>{{ $tc("words.education") }}</span>
+                    <span>
+                      {{ this.person.education || "N/A" }}
+                    </span>
+                  </div>
+                </md-list-item>
+                <md-divider></md-divider>
+                <md-list-item>
+                  <md-icon>cake</md-icon>
+                  <div class="md-list-item-text">
+                    <span>{{ $tc("words.birthday") }}</span>
+                    <span>
+                      {{ this.personService.person.birthDate || "N/A" }}
+                    </span>
+                  </div>
+                </md-list-item>
+
+                <div class="md-layout-item" v-if="person.addresses.length > 0">
+                  <md-divider></md-divider>
+                  <md-list-item>
                     <md-icon>email</md-icon>
-                    &nbsp;{{ $tc("words.email") }}:
-                    {{ person.addresses[0].email }}
-                  </h4>
-                </div>
-                <div class="md-layout-item md-size-35">
-                  <h4>
+                    <div class="md-list-item-text">
+                      <span>{{ $tc("words.email") }}</span>
+                      <span>
+                        {{ person.addresses[0].email || "N/A" }}
+                      </span>
+                    </div>
+                  </md-list-item>
+                  <md-divider></md-divider>
+                  <md-list-item>
                     <md-icon>phone</md-icon>
-                    &nbsp;{{ $tc("words.phone") }}:
-                    {{ person.addresses[0].phone }}
-                  </h4>
+                    <div class="md-list-item-text">
+                      <span>{{ $tc("words.phone") }}</span>
+                      <span>
+                        {{ person.addresses[0].phone || "N/A" }}
+                      </span>
+                    </div>
+                  </md-list-item>
                 </div>
-              </div>
+              </md-list>
             </div>
           </div>
         </div>
-      </widget>
-    </div>
-  </div>
+      </md-card-content>
+    </md-card>
+  </widget>
 </template>
 
 <script>
@@ -95,6 +107,17 @@ export default {
   },
   created() {
     this.getPersonDetail(this.personId)
+  },
+  computed: {
+    initials() {
+      const person = this.person
+      if (!person) return ""
+
+      const first = person.name?.charAt(0) ?? ""
+      const last = person.surname?.charAt(0) ?? ""
+
+      return (first + last).toUpperCase()
+    },
   },
   methods: {
     async getPersonDetail(personId) {

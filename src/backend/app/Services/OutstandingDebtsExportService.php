@@ -74,7 +74,7 @@ class OutstandingDebtsExportService extends AbstractExportService {
         $reportDate = CarbonImmutable::now()->endOfWeek()->endOfDay();
         $path = $this->createReport($reportDate);
 
-        $this->userService->getUsers()
+        $this->userService->getUsersToSendOutstandingDebtsReport()
             ->each(function (User $user) use ($path, $reportDate) {
                 $this->mailHelper->sendPlain(
                     $user->email,

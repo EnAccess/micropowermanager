@@ -100,6 +100,7 @@ class UserDefaultDatabaseConnectionMiddleware {
 
         if (Str::startsWith($path, [
             'horizon',
+            'telescope',
             'laravel-erd',
             'api/users/password',
             'api/mpm-plugins',

@@ -22,7 +22,7 @@ class PlainEmail extends Mailable {
             ->html($this->emailBody);
 
         if ($this->attachmentPath) {
-            $mail->attachFromStorageDisk('local', $this->attachmentPath);
+            $mail->attachFromStorage($this->attachmentPath);
         }
 
         return $mail;

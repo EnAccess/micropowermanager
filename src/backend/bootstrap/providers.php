@@ -13,6 +13,7 @@ use Inensus\ChintMeter\Providers\ChintMeterServiceProvider;
 use Inensus\DalyBms\Providers\DalyBmsServiceProvider;
 use Inensus\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
 use Inensus\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
+use Inensus\EcreeeETender\Providers\EcreeeETenderServiceProvider;
 use Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
 use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
 use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
@@ -32,8 +33,8 @@ use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvid
 use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
 
 return [
-    AppServiceProvider::class,
     ApiKeyServiceProvider::class,
+    AppServiceProvider::class,
     HorizonServiceProvider::class,
     ServicesProvider::class,
     AfricasTalkingServiceProvider::class,
@@ -43,23 +44,24 @@ return [
     CalinSmartMeterServiceProvider::class,
     ChintMeterServiceProvider::class,
     DalyBmsServiceProvider::class,
+    DemoMeterManufacturerServiceProvider::class,
+    DemoShsManufacturerServiceProvider::class,
     GomeLongMeterServiceProvider::class,
     KelinMeterServiceProvider::class,
     MesombServiceProvider::class,
     MicroStarMeterServiceProvider::class,
+    OdysseyDataExportServiceProvider::class,
+    PaystackPaymentProviderServiceProvider::class,
+    ProspectServiceProvider::class,
     SparkMeterServiceProvider::class,
     SteamaMeterServiceProvider::class,
     StronMeterServiceProvider::class,
     SunKingSHSServiceProvider::class,
     SwiftaServiceProvider::class,
+    TextbeeSmsGatewayServiceProvider::class,
     ViberMessagingServiceProvider::class,
     VodacomMobileMoneyServiceProvider::class,
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
-    ProspectServiceProvider::class,
-    OdysseyDataExportServiceProvider::class,
-    DemoMeterManufacturerServiceProvider::class,
-    DemoShsManufacturerServiceProvider::class,
-    PaystackPaymentProviderServiceProvider::class,
-    TextbeeSmsGatewayServiceProvider::class,
+    EcreeeETenderServiceProvider::class,
 ];

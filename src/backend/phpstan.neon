@@ -13,7 +13,6 @@ parameters:
         - public
         - resources
         - routes
-        - storage
         - stubs
         # - tests
 

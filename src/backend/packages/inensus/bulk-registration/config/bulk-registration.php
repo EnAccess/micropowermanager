@@ -20,7 +20,7 @@ return [
             'name' => 'First Name',
             'm-name' => 'Middle Name',
             'surname' => 'Surname',
-            'sex' => 'Gender',
+            'gender' => 'Gender',
             'birth_date' => 'Date of birth',
         ],
 
