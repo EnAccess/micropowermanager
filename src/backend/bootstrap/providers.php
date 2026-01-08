@@ -4,7 +4,6 @@ use App\Providers\ApiKeyServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\ServicesProvider;
-use App\Providers\TelescopeServiceProvider;
 use Inensus\AfricasTalking\Providers\AfricasTalkingServiceProvider;
 use Inensus\AngazaSHS\Providers\AngazaSHSServiceProvider;
 use Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider;
@@ -38,7 +37,6 @@ return [
     AppServiceProvider::class,
     HorizonServiceProvider::class,
     ServicesProvider::class,
-    TelescopeServiceProvider::class,
     AfricasTalkingServiceProvider::class,
     AngazaSHSServiceProvider::class,
     BulkRegistrationServiceProvider::class,
