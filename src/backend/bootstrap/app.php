@@ -91,7 +91,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('appliance-rate:check')->dailyAt('00:00');
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');
-        // prune telescope data older than 48 hours
-        $schedule->command('telescope:prune --hours=48')->daily();
+        // prune telescope data based on configured retention period
+        $schedule->command('telescope:prune --hours='.config('telescope.prune_hours'))->daily();
     })
     ->create();

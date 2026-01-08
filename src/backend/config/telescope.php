@@ -154,6 +154,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Telescope Data Retention
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the number of hours to retain Telescope data before
+    | it is pruned. Adjust this value based on your debugging needs. Higher
+    | values provide longer history but consume more storage.
+    |
+    */
+
+    'prune_hours' => env('TELESCOPE_PRUNE_HOURS', 48),
+
+    /*
+    |--------------------------------------------------------------------------
     | Telescope Watchers
     |--------------------------------------------------------------------------
     |

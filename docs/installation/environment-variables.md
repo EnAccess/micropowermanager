@@ -193,11 +193,12 @@ MicroPowerManager internally uses [Laravel Telescope](https://laravel.com/docs/1
 
 By default Telescope will be disabled. Configure the below environment variables to enable Telescope and secure the dashboard with HTTP Basic Auth.
 
-| Environment Variable            | Default | Description                                                |
-| ------------------------------- | ------- | ---------------------------------------------------------- |
-| `TELESCOPE_ENABLED`             | `false` | Enable or disable Telescope data collection and dashboard. |
-| `TELESCOPE_BASIC_AUTH_USERNAME` | `null`  | HTTP Basic Auth Username for Telescope Dashboard.          |
-| `TELESCOPE_BASIC_AUTH_PASSWORD` | `null`  | HTTP Basic Auth Password for Telescope Dashboard.          |
+| Environment Variable            | Default | Description                                                                                                                                   |
+| ------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TELESCOPE_ENABLED`             | `false` | Enable or disable Telescope data collection and dashboard.                                                                                    |
+| `TELESCOPE_BASIC_AUTH_USERNAME` | `null`  | HTTP Basic Auth Username for Telescope Dashboard.                                                                                             |
+| `TELESCOPE_BASIC_AUTH_PASSWORD` | `null`  | HTTP Basic Auth Password for Telescope Dashboard.                                                                                             |
+| `TELESCOPE_PRUNE_HOURS`         | `48`    | Number of hours to retain Telescope data before pruning. Increase for extended debugging periods (e.g., `168` for 7 days, `336` for 14 days). |
 
 ### MPM Plugins
 
