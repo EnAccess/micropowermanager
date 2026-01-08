@@ -14,14 +14,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider {
     public function register(): void {
         $this->hideSensitiveRequestDetails();
 
-        $isLocal = $this->app->environment('development');
-
-        Telescope::filter(fn (IncomingEntry $entry): bool => $isLocal
-            || $entry->isReportableException()
-            || $entry->isFailedRequest()
-            || $entry->isFailedJob()
-            || $entry->isScheduledTask()
-            || $entry->hasMonitoredTag());
+        // filter telemetry entry using Telescope::filter()
     }
 
     /**
