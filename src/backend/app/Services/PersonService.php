@@ -61,18 +61,18 @@ class PersonService implements IBaseService {
      *
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
-    public function searchPerson(string $searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
+    public function searchPerson(string $searchTerm, $paginate, int $per_page): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
+            fn ($q) => $q->where('phone', 'LIKE', $searchTerm.'%')
         )->orWhereHas(
             'devices',
-            fn ($q) => $q->where('device_serial', 'LIKE', '%'.$searchTerm.'%')
-        )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
-            ->orWhere('surname', 'LIKE', '%'.$searchTerm.'%');
+            fn ($q) => $q->where('device_serial', 'LIKE', $searchTerm.'%')
+        )->orWhere('name', 'LIKE', $searchTerm.'%')
+            ->orWhere('surname', 'LIKE', $searchTerm.'%');
 
         if ($paginate === 1) {
-            return $query->paginate(15);
+            return $query->paginate($per_page);
         }
 
         return $query->get();
