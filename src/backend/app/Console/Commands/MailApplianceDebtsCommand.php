@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\ApplianceRateService;
-use App\Services\OutstandingDebtsExportService;
+use App\Services\ExportServices\OutstandingDebtsExportService;
 use Carbon\CarbonImmutable;
 
 class MailApplianceDebtsCommand extends AbstractSharedCommand {

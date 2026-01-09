@@ -3,12 +3,14 @@
 use App\Http\Controllers\AgentPerformanceMetricsController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\ApplianceController;
+use App\Http\Controllers\ApplianceExportController;
 use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AppliancePersonController;
 use App\Http\Controllers\ApplianceRateController;
 use App\Http\Controllers\ApplianceTypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClusterController;
+use App\Http\Controllers\ClusterExportController;
 use App\Http\Controllers\ClusterMiniGridRevenueController;
 use App\Http\Controllers\ClusterRevenueAnalysisController;
 use App\Http\Controllers\ClusterRevenueController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\ConnectionTypeController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\EBikeController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
@@ -394,6 +397,9 @@ Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
     Route::get('/transactions', [TransactionExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/debts', [OutstandingDebtsExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/customers', [PersonExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/devices', [DeviceExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/appliances', [ApplianceExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/clusters', [ClusterExportController::class, 'download'])->middleware('permission:exports');
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);

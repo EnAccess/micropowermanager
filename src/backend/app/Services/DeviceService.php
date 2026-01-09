@@ -71,4 +71,17 @@ class DeviceService implements IBaseService, IAssociative {
 
         return $this->device->newQuery()->with(['person', 'device'])->get();
     }
+
+    /**
+     * @return Collection<int, Device>
+     */
+    public function getAllForExport(): Collection {
+        return $this->device->newQuery()->with([
+            'person',
+            'device.manufacturer',
+            'address.city',
+            'tokens',
+            'appliance.applianceType',
+        ])->get();
+    }
 }

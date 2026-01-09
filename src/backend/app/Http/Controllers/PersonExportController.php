@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PersonExportService;
+use App\Services\ExportServices\PersonExportService;
 use App\Services\PersonService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -14,11 +15,15 @@ class PersonExportController extends Controller {
         private PersonExportService $peopleExportService,
     ) {}
 
-    public function download(Request $request): BinaryFileResponse {
+    public function download(Request $request): BinaryFileResponse|JsonResponse {
         $format = $request->get('format', 'excel');
 
         if ($format === 'csv') {
             return $this->downloadCsv($request);
+        }
+
+        if ($format === 'json') {
+            return $this->downloadJson($request);
         }
 
         return $this->downloadExcel($request);
@@ -61,5 +66,33 @@ class PersonExportController extends Controller {
         $path = Storage::path($csvPath);
 
         return response()->download($path, 'customer_export_'.now()->format('Ymd_His').'.csv');
+    }
+
+    public function downloadJson(Request $request): JsonResponse {
+        $miniGrid = $request->get('miniGrid');
+        $village = $request->get('village');
+        $deviceType = $request->get('deviceType');
+        $isActive = $request->get('isActive');
+
+        $isActive = $isActive === 'true' ? true : ($isActive === 'false' ? false : null);
+
+        $people = $this->personService->getAllForExport($miniGrid, $village, $deviceType, $isActive);
+
+        $this->peopleExportService->setPeopleData($people);
+        $jsonData = $this->peopleExportService->exportDataToArray();
+
+        return response()->json([
+            'data' => $jsonData,
+            'meta' => [
+                'total' => count($jsonData),
+                'filters' => [
+                    'mini_grid' => $miniGrid,
+                    'village' => $village,
+                    'device_type' => $deviceType,
+                    'is_active' => $isActive,
+                ],
+                'exported_at' => now()->toISOString(),
+            ],
+        ]);
     }
 }

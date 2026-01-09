@@ -46,4 +46,15 @@ class ApplianceService {
     public function getById(int $id): ?Appliance {
         return $this->appliance->newQuery()->with(['applianceType'])->find($id);
     }
+
+    /**
+     * @return Collection<int, Appliance>
+     */
+    public function getAllForExport(): Collection {
+        return $this->appliance->newQuery()->with([
+            'applianceType',
+            'agentAssignedAppliance',
+            'rates',
+        ])->get();
+    }
 }
