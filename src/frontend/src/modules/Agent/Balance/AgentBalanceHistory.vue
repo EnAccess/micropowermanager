@@ -12,7 +12,7 @@
       :subscriber="subscriber"
       :resetKey="resetKey"
       :show_per_page="true"
-      color="green"
+      color="primary"
     >
       <div>
         <md-table md-sort="id" md-sort-order="asc">

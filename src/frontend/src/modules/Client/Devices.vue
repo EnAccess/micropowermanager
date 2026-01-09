@@ -2,7 +2,7 @@
   <div>
     <widget
       :title="$tc('words.devices')"
-      color="green"
+      color="primary"
       :subscriber="subscriber"
     >
       <div class="md-layout md-gutter">

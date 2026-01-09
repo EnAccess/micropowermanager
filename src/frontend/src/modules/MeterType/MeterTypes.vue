@@ -72,7 +72,7 @@
       :subscriber="subscriber"
       :buttonText="$tc('phrases.newMeterType')"
       @widgetAction="showNewType"
-      color="green"
+      color="primary"
     >
       <md-table>
         <md-table-row>

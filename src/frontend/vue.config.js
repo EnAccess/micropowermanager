@@ -5,6 +5,13 @@ module.exports = {
   devServer: {
     allowedHosts: "all",
   },
+  css: {
+    loaderOptions: {
+      scss: {
+        prependData: `@use "@/assets/sass/brand" as *;`,
+      },
+    },
+  },
   configureWebpack: {
     performance: {
       hints: false,

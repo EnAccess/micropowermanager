@@ -89,7 +89,7 @@ export default {
     showed: false,
     confirmed: false,
     expires_in: null,
-    sidebarBackground: "green",
+    sidebarBackground: "primary",
     sidebarBackgroundImage: null,
     showWizard: false,
     tail: [],

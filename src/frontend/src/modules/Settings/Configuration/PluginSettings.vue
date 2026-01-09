@@ -21,7 +21,7 @@
         <md-switch
           v-model="plugin.checked"
           @change="onSwitchChange($event, plugin)"
-          class="data-stream-switch"
+          class="md-primary data-stream-switch"
           :disabled="switching"
         />
       </div>
