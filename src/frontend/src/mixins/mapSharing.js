@@ -116,10 +116,12 @@ export const sharedMap = {
           edit: this.edit,
         },
       }
-      this.map = L.map(this.mapContainerId).setView(
-        this.mappingService.center,
-        this.zoom,
-      )
+      this.map = L.map(this.mapContainerId, {
+        zoomAnimation: true,
+        fadeAnimation: true,
+        markerZoomAnimation: true,
+        preferCanvas: true,
+      }).setView(this.mappingService.center, this.zoom)
       this.setTileLayer()
       if (drawingOptions.draw.marker) {
         const marker = L.Icon.extend({
@@ -131,6 +133,10 @@ export const sharedMap = {
       this.markersLayer = new L.markerClusterGroup({
         chunkedLoading: true,
         spiderfyOnMaxZoom: true,
+        disableClusteringAtZoom: 18,
+        maxClusterRadius: 80,
+        animate: true,
+        animateAddingMarkers: false,
       })
       const drawControl = new L.Control.Draw(drawingOptions)
       this.map.addLayer(drawingOptions.edit.featureGroup)
@@ -157,15 +163,20 @@ export const sharedMap = {
       this.map.setView([newLat, newLng], this.zoom)
     },
     getLatLng() {
-      let zoom
-      this.map.on("move", function (e) {
-        zoom = Math.round(e.target._zoom)
+      console.log("🔵 getLatLng called") // Add this to see if method is called
+
+      this.map.off("moveend")
+
+      this.map.on("moveend", (e) => {
+        console.log("🟢 moveend fired") // Add this to see how often it fires
+        const zoom = Math.round(e.target._zoom)
         EventBus.$emit("mapZoom", zoom)
       })
+
       return {
         lat: this.map.getCenter().lat.toFixed(5),
         lng: this.map.getCenter().lng.toFixed(5),
-        zoom: zoom,
+        zoom: this.map.zoom || this.zoom,
       }
     },
     removeExistingMarkers() {
