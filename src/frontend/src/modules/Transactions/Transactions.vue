@@ -209,69 +209,29 @@
                   {{ $tc("phrases.exportTransactions") }}
                 </md-button>
               </div>
-              <md-table style="width: 100%" md-card>
-                <md-table-row>
-                  <md-table-head>
-                    {{ $tc("words.status") }}
-                  </md-table-head>
-                  <md-table-head>
-                    <md-icon>person</md-icon>
-                    {{ $tc("words.service") }}
-                  </md-table-head>
-                  <md-table-head>
-                    <md-icon>phone</md-icon>
-                    {{ $tc("words.sender") }}
-                  </md-table-head>
-                  <md-table-head>
-                    <md-icon>money</md-icon>
-                    {{ $tc("words.amount") }}
-                  </md-table-head>
-                  <md-table-head>
-                    {{ $tc("words.type") }}
-                  </md-table-head>
-                  <md-table-head>
-                    {{ $tc("words.message") }}
-                  </md-table-head>
-                  <md-table-head>
-                    <md-icon>calendar_today</md-icon>
-                    {{ $tc("phrases.sentDate") }}
-                  </md-table-head>
-                  <md-table-head>
-                    <md-icon>calendar_view_day</md-icon>
-                    {{ $tc("phrases.processTime") }}
-                  </md-table-head>
-                </md-table-row>
-
-                <md-table-row
-                  v-for="transaction in transactionService.list"
-                  :key="transaction.id"
-                  style="cursor: pointer"
-                  @click="transactionDetail(transaction.id)"
-                >
-                  <md-table-cell>
-                    <md-icon
-                      v-if="transaction.status === 1"
-                      style="color: green"
-                      md-toolt
-                    >
+              <md-table
+                v-model="transactionService.list"
+                style="width: 100%"
+                md-card
+                md-sort="created_at"
+                md-sort-order="desc"
+                @md-sorted="onSort"
+              >
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                  <md-table-cell :md-label="$tc('words.status')">
+                    <md-icon v-if="item.status === 1" style="color: green">
                       check_circle_outline
                       <md-tooltip md-direction="right">
                         {{ $tc("words.confirm", 2) }}
                       </md-tooltip>
                     </md-icon>
-                    <md-icon
-                      v-if="transaction.status === 0"
-                      style="color: goldenrod"
-                    >
+                    <md-icon v-if="item.status === 0" style="color: goldenrod">
                       contact_support
                       <md-tooltip md-direction="right">
                         {{ $tc("words.process", 3) }}
                       </md-tooltip>
                     </md-icon>
-                    <md-icon
-                      v-if="transaction.status === -1"
-                      style="color: red"
-                    >
+                    <md-icon v-if="item.status === -1" style="color: red">
                       cancel
                       <md-tooltip md-direction="right">
                         {{ $tc("words.reject", 2) }}
@@ -279,80 +239,102 @@
                     </md-icon>
                   </md-table-cell>
 
-                  <md-table-cell style="text-align: center !important">
+                  <md-table-cell
+                    :md-label="$tc('words.service')"
+                    style="text-align: center !important"
+                  >
                     <img
-                      v-if="transaction.service === 'vodacom_transaction'"
+                      v-if="item.service === 'vodacom_transaction'"
                       class="logo"
                       alt="logo"
                       :src="vodacomLogo"
                       style="max-height: 20px"
                     />
                     <img
-                      v-if="transaction.service === 'third_party_transaction'"
+                      v-if="item.service === 'third_party_transaction'"
                       class="logo"
                       alt="logo"
                       :src="thirdPartyLogo"
                       style="max-height: 24px"
                     />
                     <img
-                      v-if="transaction.service === 'agent_transaction'"
+                      v-if="item.service === 'agent_transaction'"
                       :src="agentIcon"
                       style="max-height: 32px"
                     />
                     <img
-                      v-if="transaction.service === 'cash_transaction'"
+                      v-if="item.service === 'cash_transaction'"
                       :src="moneyIcon"
                       style="max-height: 32px"
                     />
                     <img
-                      v-if="transaction.service === 'wave_money_transaction'"
+                      v-if="item.service === 'wave_money_transaction'"
                       :src="waveMoneyLogo"
                       style="max-height: 34px"
                     />
                     <img
-                      v-if="transaction.service === 'swifta_transaction'"
+                      v-if="item.service === 'swifta_transaction'"
                       :src="swiftaLogo"
                       style="max-height: 20px"
                     />
                     <img
-                      v-if="transaction.service === 'wavecom_transaction'"
+                      v-if="item.service === 'wavecom_transaction'"
                       :src="waveComLogo"
                       style="max-height: 32px"
                     />
                     <img
-                      v-if="transaction.service === 'paystack_transaction'"
+                      v-if="item.service === 'paystack_transaction'"
                       :src="paystackLogo"
                       style="max-height: 32px; max-width: 100px"
                     />
                   </md-table-cell>
-                  <md-table-cell>
-                    {{ transaction.sender }}
+
+                  <md-table-cell
+                    :md-label="$tc('words.sender')"
+                    md-sort-by="sender"
+                  >
+                    {{ item.sender }}
                   </md-table-cell>
-                  <md-table-cell>
-                    {{ moneyFormat(transaction.amount) }}
+
+                  <md-table-cell
+                    :md-label="$tc('words.amount')"
+                    md-sort-by="amount"
+                    md-numeric
+                  >
+                    {{ moneyFormat(item.amount) }}
                   </md-table-cell>
-                  <md-table-cell>
-                    {{ transaction.type }}
+
+                  <md-table-cell
+                    :md-label="$tc('words.type')"
+                    md-sort-by="original_transaction_type"
+                  >
+                    {{ item.type }}
                   </md-table-cell>
-                  <md-table-cell>
-                    {{ transaction.message }}
+
+                  <md-table-cell
+                    :md-label="$tc('words.message')"
+                    md-sort-by="message"
+                  >
+                    {{ item.message }}
                   </md-table-cell>
-                  <md-table-cell>
-                    <div v-if="transaction != undefined">
-                      {{ timeForHuman(transaction.sentDate) }}
+
+                  <md-table-cell
+                    :md-label="$tc('phrases.sentDate')"
+                    md-sort-by="created_at"
+                  >
+                    <div v-if="item != undefined">
+                      {{ timeForHuman(item.sentDate) }}
                       <small style="margin-left: 0.2rem">
-                        ({{ timeForTimeZone(transaction.sentDate) }})
+                        ({{ timeForTimeZone(item.sentDate) }})
                       </small>
                     </div>
                   </md-table-cell>
-                  <md-table-cell>
-                    <div v-if="transaction != undefined">
+
+                  <md-table-cell :md-label="$tc('phrases.processTime')">
+                    <div v-if="item != undefined">
                       {{
                         $tc("phrases.inXSeconds", 1, {
-                          x: timeDiffForHuman(
-                            transaction.sentDate,
-                            transaction.lastUpdate,
-                          ),
+                          x: timeDiffForHuman(item.sentDate, item.lastUpdate),
                         })
                       }}
                     </div>
@@ -487,6 +469,8 @@ export default {
       showFilter: false,
       showBoxes: true,
       showExportModal: false,
+      currentSortBy: null,
+      currentSortOrder: "desc",
       analyticsPeriods: [
         "Yesterday",
         "Same day last week",
@@ -540,6 +524,45 @@ export default {
     closeFilter() {
       this.showFilter = false
     },
+    onSort(sortData) {
+      this.currentSortBy = sortData && sortData.name ? sortData.name : null
+      this.currentSortOrder = sortData && sortData.type ? sortData.type : "desc"
+      this.loadTransactionsWithSort()
+    },
+    async loadTransactionsWithSort(page = 1) {
+      try {
+        const params = {
+          page: page,
+          per_page: this.$route.query.per_page || 15,
+        }
+
+        if (this.currentSortBy) {
+          const prefix = this.currentSortOrder === "desc" ? "-" : ""
+          params.sort_by = `${prefix}${this.currentSortBy}`
+        }
+
+        const queryParams = this.$route.query
+        for (let k of Object.keys(queryParams)) {
+          if (k !== "page" && k !== "per_page") {
+            params[k] = queryParams[k]
+          }
+        }
+
+        const response = await this.transactionService.paginator.loadPage(
+          page,
+          params,
+        )
+        this.transactionService.updateList(response.data)
+
+        EventBus.$emit(
+          "widgetContentLoaded",
+          this.subscriber,
+          this.transactionService.list.length,
+        )
+      } catch (error) {
+        this.alertNotify("error", "Failed to load transactions")
+      }
+    },
     filterTransaction(filterData) {
       let data = {}
       for (let i in filterData) {
@@ -566,7 +589,11 @@ export default {
     },
     reloadList(sub, data) {
       if (sub !== this.subscriber) return
-      this.transactionService.updateList(data)
+      if (this.currentSortBy) {
+        this.loadTransactionsWithSort()
+      } else {
+        this.transactionService.updateList(data)
+      }
       EventBus.$emit("dataLoaded")
       EventBus.$emit(
         "widgetContentLoaded",
