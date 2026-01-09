@@ -91,7 +91,6 @@ class TransactionExportController {
     public function downloadJson(Request $request): JsonResponse {
         $deviceType = $request->get('deviceType', 'all');
         $serialNumber = $request->get('serial_number');
-        $tariffId = $request->get('tariff');
         $transactionProvider = $request->get('provider', 'all');
         $status = $request->get('status');
         $fromDate = $request->get('from');
@@ -102,7 +101,7 @@ class TransactionExportController {
         $data = $this->transactionService->search(
             $deviceType,
             $serialNumber,
-            $tariffId,
+            null,
             $transactionProvider,
             is_null($status) ? null : (int) $status,
             $fromDate,
@@ -119,7 +118,6 @@ class TransactionExportController {
                 'filters' => [
                     'device_type' => $deviceType,
                     'serial_number' => $serialNumber,
-                    'tariff_id' => $tariffId,
                     'provider' => $transactionProvider,
                     'status' => $status,
                     'from_date' => $fromDate,

@@ -75,13 +75,45 @@ class DeviceService implements IBaseService, IAssociative {
     /**
      * @return Collection<int, Device>
      */
-    public function getAllForExport(): Collection {
-        return $this->device->newQuery()->with([
+    public function getAllForExport(?string $miniGridName = null, ?string $villageName = null, ?string $deviceType = null, ?string $manufacturerName = null): Collection {
+        $query = $this->device->newQuery()->with([
             'person',
             'device.manufacturer',
             'address.city',
             'tokens',
             'appliance.applianceType',
-        ])->get();
+        ]);
+
+        if ($miniGridName) {
+            $query->whereHas('address', function ($q) use ($miniGridName) {
+                $q->whereHas('city', function ($q) use ($miniGridName) {
+                    $q->whereHas('miniGrid', function ($q) use ($miniGridName) {
+                        $q->where('name', 'LIKE', '%'.$miniGridName.'%');
+                    });
+                });
+            });
+        }
+
+        if ($villageName) {
+            $query->whereHas('address', function ($q) use ($villageName) {
+                $q->whereHas('city', function ($q) use ($villageName) {
+                    $q->where('name', 'LIKE', '%'.$villageName.'%');
+                });
+            });
+        }
+
+        if ($deviceType) {
+            $query->where('device_type', $deviceType);
+        }
+
+        if ($manufacturerName) {
+            $query->whereHasMorph('device', '*', function ($q) use ($manufacturerName) {
+                $q->whereHas('manufacturer', function ($q) use ($manufacturerName) {
+                    $q->where('name', 'LIKE', '%'.$manufacturerName.'%');
+                });
+            });
+        }
+
+        return $query->get();
     }
 }

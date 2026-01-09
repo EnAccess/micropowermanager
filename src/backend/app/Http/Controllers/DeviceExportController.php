@@ -31,7 +31,12 @@ class DeviceExportController extends Controller {
     }
 
     public function downloadExcel(Request $request): BinaryFileResponse {
-        $devices = $this->deviceService->getAllForExport();
+        $miniGridName = $request->get('miniGrid');
+        $villageName = $request->get('village');
+        $deviceType = $request->get('deviceType');
+        $manufacturerName = $request->get('manufacturer');
+
+        $devices = $this->deviceService->getAllForExport($miniGridName, $villageName, $deviceType, $manufacturerName);
         $this->deviceExportService->createSpreadSheetFromTemplate($this->deviceExportService->getTemplatePath());
         $this->deviceExportService->setDeviceData($devices);
         $this->deviceExportService->setExportingData();
@@ -44,7 +49,12 @@ class DeviceExportController extends Controller {
     }
 
     public function downloadCsv(Request $request): BinaryFileResponse {
-        $devices = $this->deviceService->getAllForExport();
+        $miniGridName = $request->get('miniGrid');
+        $villageName = $request->get('village');
+        $deviceType = $request->get('deviceType');
+        $manufacturerName = $request->get('manufacturer');
+
+        $devices = $this->deviceService->getAllForExport($miniGridName, $villageName, $deviceType, $manufacturerName);
 
         $this->deviceExportService->setDeviceData($devices);
         $this->deviceExportService->setExportingData();
@@ -57,7 +67,12 @@ class DeviceExportController extends Controller {
     }
 
     public function downloadJson(Request $request): JsonResponse {
-        $devices = $this->deviceService->getAllForExport();
+        $miniGridName = $request->get('miniGrid');
+        $villageName = $request->get('village');
+        $deviceType = $request->get('deviceType');
+        $manufacturerName = $request->get('manufacturer');
+
+        $devices = $this->deviceService->getAllForExport($miniGridName, $villageName, $deviceType, $manufacturerName);
 
         $this->deviceExportService->setDeviceData($devices);
         $jsonData = $this->deviceExportService->exportDataToArray();
@@ -66,6 +81,12 @@ class DeviceExportController extends Controller {
             'data' => $jsonData,
             'meta' => [
                 'total' => count($jsonData),
+                'filters' => [
+                    'mini_grid' => $miniGridName,
+                    'village' => $villageName,
+                    'device_type' => $deviceType,
+                    'manufacturer' => $manufacturerName,
+                ],
                 'exported_at' => now()->toISOString(),
             ],
         ]);

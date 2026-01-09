@@ -84,7 +84,9 @@ class DeviceExportService extends AbstractExportService {
             $tokens = $device->tokens->map(function ($token) {
                 return [
                     'token' => $token->token ?? '',
-                    'load' => $token->load ?? 0,
+                    'amount' => $token->token_amount ?? 0,
+                    'type' => $token->token_type ?? '',
+                    'unit' => $token->token_unit ?? '',
                     'created_at' => $this->convertUtcDateToTimezone($token->created_at),
                 ];
             })->toArray();
