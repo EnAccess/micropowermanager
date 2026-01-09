@@ -1,0 +1,15 @@
+meta {
+  name: Export Clusters Data CSV
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/clusters?format=csv
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: csv
+}

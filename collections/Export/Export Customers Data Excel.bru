@@ -1,17 +1,16 @@
 meta {
-  name: Export Customers Data CSV
+  name: Export Customers Data Excel
   type: http
-  seq: 4
+  seq: 5
 }
 
 get {
-  url: {{mpm_backend_url}}/api/export/customers?format=csv
+  url: {{mpm_backend_url}}/api/export/customers
   body: none
   auth: inherit
 }
 
 params:query {
-  format: csv
   ~miniGrid: Main Grid
   ~village: Village Name
   ~deviceType: meter
