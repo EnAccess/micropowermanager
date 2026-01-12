@@ -126,7 +126,7 @@
     "rector-fix": "vendor/bin/rector && php-cs-fixer fix",
     "rector-check": "vendor/bin/rector --dry-run",
     "rector-version": "vendor/bin/rector --version",
-    "ci": [
+    "quality:check": [
       "@php-cs-fixer-check",
       "@larastan",
       "@rector-check"
