@@ -125,6 +125,11 @@
     "larastan-no-cache": "vendor/bin/phpstan clear-result-cache && phpstan analyse --memory-limit=2G --no-progress",
     "rector-fix": "vendor/bin/rector && php-cs-fixer fix",
     "rector-check": "vendor/bin/rector --dry-run",
-    "rector-version": "vendor/bin/rector --version"
+    "rector-version": "vendor/bin/rector --version",
+    "ci": [
+      "@php-cs-fixer-check",
+      "@larastan",
+      "@rector-check"
+    ]
   }
 }
