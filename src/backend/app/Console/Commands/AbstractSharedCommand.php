@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 
 abstract class AbstractSharedCommand extends Command {
     protected const EXECUTE_FOR_ONE = 1;
