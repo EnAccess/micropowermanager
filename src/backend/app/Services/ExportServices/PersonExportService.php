@@ -94,6 +94,6 @@ class PersonExportService extends AbstractExportService {
             ];
         });
 
-        return $jsonDataTransform->toArray();
+        return $jsonDataTransform->all();
     }
 }

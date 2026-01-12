@@ -100,17 +100,15 @@ class OutstandingDebtsExportService extends AbstractExportService {
         }
         // TODO: support some form of pagination to limit the data to be exported using json
         // transform exporting data to JSON structure for outstanding debts export
-        $jsonDataTransform = $this->outstandingDebtsData->map(function (ApplianceRate $applianceRate): array {
-            return [
-                'customer' => $applianceRate->appliancePerson->person->name.' '.$applianceRate->appliancePerson->person->surname,
-                'appliance' => $applianceRate->appliancePerson->appliance->name,
-                'device_serial' => $applianceRate->appliancePerson->device_serial,
-                'due_date' => $applianceRate->due_date,
-                'remaining' => $this->readable($applianceRate->remaining),
-                'currency' => $this->currency,
-            ];
-        });
+        $jsonDataTransform = $this->outstandingDebtsData->map(fn (ApplianceRate $applianceRate): array => [
+            'customer' => $applianceRate->appliancePerson->person->name.' '.$applianceRate->appliancePerson->person->surname,
+            'appliance' => $applianceRate->appliancePerson->appliance->name,
+            'device_serial' => $applianceRate->appliancePerson->device_serial,
+            'due_date' => $applianceRate->due_date,
+            'remaining' => $this->readable($applianceRate->remaining),
+            'currency' => $this->currency,
+        ]);
 
-        return $jsonDataTransform->toArray();
+        return $jsonDataTransform->all();
     }
 }

@@ -72,19 +72,17 @@ class TransactionExportService extends AbstractExportService {
         }
         // TODO: support some form of pagination to limit the data to be exported using json
         // transform exporting data to JSON structure for transaction export
-        $jsonDataTransform = $this->transactionData->map(function (Transaction $transaction): array {
-            return [
-                'status' => $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->originalTransaction->status == 0 ? 'Pending' : 'Failed'),
-                'transaction_type' => $transaction->original_transaction_type,
-                'customer' => $transaction->device->person->name.' '.$transaction->device->person->surname,
-                'device_id' => $transaction->device->device_serial,
-                'device_type' => $transaction->device->device_type,
-                'currency' => $this->currency,
-                'amount' => $this->readable($transaction->amount).$this->currency,
-                'sent_date' => $this->convertUtcDateToTimezone($transaction->created_at),
-            ];
-        });
+        $jsonDataTransform = $this->transactionData->map(fn (Transaction $transaction): array => [
+            'status' => $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->originalTransaction->status == 0 ? 'Pending' : 'Failed'),
+            'transaction_type' => $transaction->original_transaction_type,
+            'customer' => $transaction->device->person->name.' '.$transaction->device->person->surname,
+            'device_id' => $transaction->device->device_serial,
+            'device_type' => $transaction->device->device_type,
+            'currency' => $this->currency,
+            'amount' => $this->readable($transaction->amount).$this->currency,
+            'sent_date' => $this->convertUtcDateToTimezone($transaction->created_at),
+        ]);
 
-        return $jsonDataTransform->toArray();
+        return $jsonDataTransform->all();
     }
 }

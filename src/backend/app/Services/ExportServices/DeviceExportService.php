@@ -29,8 +29,8 @@ class DeviceExportService extends AbstractExportService {
 
     public function setExportingData(): void {
         $this->exportingData = $this->deviceData->map(function (Device $device): array {
-            $personName = optional($device->person)->name ?? '';
-            $personSurname = optional($device->person)->surname ?? '';
+            $personName = $device->person?->name ?? '';
+            $personSurname = $device->person?->surname ?? '';
             $fullName = trim($personName.' '.$personSurname);
             $address = $device->address?->city->name ?? '';
 
@@ -71,8 +71,8 @@ class DeviceExportService extends AbstractExportService {
         // TODO: support some form of pagination to limit the data to be exported using json
         // transform exporting data to JSON structure for device export
         $jsonDataTransform = $this->deviceData->map(function (Device $device): array {
-            $personName = optional($device->person)->name ?? '';
-            $personSurname = optional($device->person)->surname ?? '';
+            $personName = $device->person?->name ?? '';
+            $personSurname = $device->person?->surname ?? '';
             $fullName = trim($personName.' '.$personSurname);
             $manufacturer = $device->device->manufacturer->name ?? '';
 
@@ -84,15 +84,13 @@ class DeviceExportService extends AbstractExportService {
             ];
 
             // Get tokens
-            $tokens = $device->tokens->map(function ($token) {
-                return [
-                    'token' => $token->token ?? '',
-                    'amount' => $token->token_amount ?? 0,
-                    'type' => $token->token_type ?? '',
-                    'unit' => $token->token_unit ?? '',
-                    'created_at' => $this->convertUtcDateToTimezone($token->created_at),
-                ];
-            })->toArray();
+            $tokens = $device->tokens->map(fn ($token): array => [
+                'token' => $token->token ?? '',
+                'amount' => $token->token_amount ?? 0,
+                'type' => $token->token_type ?? '',
+                'unit' => $token->token_unit ?? '',
+                'created_at' => $this->convertUtcDateToTimezone($token->created_at),
+            ])->all();
 
             // Get address details
             $address = null;
@@ -114,6 +112,6 @@ class DeviceExportService extends AbstractExportService {
             ];
         });
 
-        return $jsonDataTransform->toArray();
+        return $jsonDataTransform->all();
     }
 }
