@@ -1,0 +1,22 @@
+@import "brand.scss";
+
+// Apply the color scheme to theme
+@import "~vue-material/dist/theme/engine"; // Import the theme engine
+
+@include md-register-theme(
+  "selection-black",
+  (
+    accent: md-get-palette-color(black, 500),
+  )
+);
+
+@include md-register-theme(
+  "default",
+  (
+    primary: $brand-primary,
+    accent: $brand-secondary,
+    theme: light,
+  )
+);
+
+@import "~vue-material/dist/theme/all"; // Apply the theme

@@ -1,416 +1,430 @@
 <template>
   <div class="register">
-    <div class="header">
-      <h1 class="title">MicroPowerManager</h1>
-      <div class="title-divider">&nbsp;</div>
-    </div>
-    <div class="content">
-      <md-steppers
-        class="register-stepper"
-        :md-active-step.sync="activeStep"
-        md-linear
-      >
-        <md-step
-          class="stepper-step"
-          id="Company-Form"
-          md-label="Company Form"
-          :md-done.sync="firstStep"
+    <div>
+      <div class="header">
+        <h1 class="title">MicroPowerManager</h1>
+        <div class="title-divider">&nbsp;</div>
+      </div>
+      <div class="content">
+        <md-steppers
+          class="register-stepper"
+          :md-active-step.sync="activeStep"
+          md-linear
         >
-          <div class="exclamation">
-            <div>
-              <div class="md-layout-item md-size-100 exclamation-div">
-                <h2 class="stepper-title">
-                  Please fill your company specific information's
-                </h2>
-              </div>
-              <div class="md-layout-item md-size-100">
-                <form class="md-layout md-gutter" data-vv-scope="Company-Form">
-                  <div class="md-layout-item md-size-50 md-small-size-100">
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has(
-                          'Company-Form.' + $tc('words.name'),
-                        ),
-                      }"
-                    >
-                      <label for="name">
-                        {{ $tc("words.name") }}
-                      </label>
-                      <md-input
-                        type="text"
-                        :name="$tc('words.name')"
-                        :id="$tc('words.name')"
-                        v-model="companyForm.name"
-                        v-validate="'required|min:3|max:50'"
-                      />
-                      <span class="md-error">
-                        {{ errors.first("Company-Form." + $tc("words.name")) }}
-                      </span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-size-50 md-small-size-100">
-                    <template>
-                      <vue-tel-input
-                        :validCharactersOnly="true"
-                        mode="international"
-                        invalidMsg="invalid phone number"
-                        :disabledFetchingCountry="false"
-                        :disabledFormatting="false"
-                        placeholder="Enter a phone number"
-                        :required="true"
-                        :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
-                        autocomplete="off"
-                        name="telephone"
-                        enabledCountryCode="true"
-                        v-model="companyForm.phone"
-                        @validate="validatePhone"
-                        @input="onPhoneInput"
-                      ></vue-tel-input>
-                      <span
-                        v-if="!phone.valid && firstStepClicked"
-                        style="color: red"
-                        class="md-error"
+          <md-step
+            class="stepper-step"
+            id="Company-Form"
+            md-label="Company Form"
+            :md-done.sync="firstStep"
+          >
+            <div class="exclamation">
+              <div>
+                <div class="md-layout-item md-size-100 exclamation-div">
+                  <h2 class="stepper-title">
+                    Please fill your company specific information's
+                  </h2>
+                </div>
+                <div class="md-layout-item md-size-100">
+                  <form
+                    class="md-layout md-gutter"
+                    data-vv-scope="Company-Form"
+                  >
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Company-Form.' + $tc('words.name'),
+                          ),
+                        }"
                       >
-                        invalid phone number
-                      </span>
-                    </template>
-                  </div>
+                        <label for="name">
+                          {{ $tc("words.name") }}
+                        </label>
+                        <md-input
+                          type="text"
+                          :name="$tc('words.name')"
+                          :id="$tc('words.name')"
+                          v-model="companyForm.name"
+                          v-validate="'required|min:3|max:50'"
+                        />
+                        <span class="md-error">
+                          {{
+                            errors.first("Company-Form." + $tc("words.name"))
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <template>
+                        <vue-tel-input
+                          :validCharactersOnly="true"
+                          mode="international"
+                          invalidMsg="invalid phone number"
+                          :disabledFetchingCountry="false"
+                          :disabledFormatting="false"
+                          placeholder="Enter a phone number"
+                          :required="true"
+                          :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                          autocomplete="off"
+                          name="telephone"
+                          enabledCountryCode="true"
+                          v-model="companyForm.phone"
+                          @validate="validatePhone"
+                          @input="onPhoneInput"
+                        ></vue-tel-input>
+                        <span
+                          v-if="!phone.valid && firstStepClicked"
+                          style="color: red"
+                          class="md-error"
+                        >
+                          invalid phone number
+                        </span>
+                      </template>
+                    </div>
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Company-Form.' + $tc('words.address'),
+                          ),
+                        }"
+                      >
+                        <label for="address">
+                          {{ $tc("words.address") }}
+                        </label>
+                        <md-input
+                          type="text"
+                          :name="$tc('words.address')"
+                          :id="$tc('words.address')"
+                          v-validate="'required'"
+                          v-model="companyForm.address"
+                        />
+                        <span class="md-error">
+                          {{
+                            errors.first("Company-Form." + $tc("words.address"))
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Company-Form.' + $tc('words.email'),
+                          ),
+                        }"
+                      >
+                        <label for="email">
+                          {{ $tc("words.email") }}
+                        </label>
+                        <md-input
+                          type="email"
+                          :name="$tc('words.email')"
+                          :id="$tc('words.email')"
+                          autocomplete="email"
+                          v-validate="'required|email'"
+                          v-model="companyForm.email"
+                        />
+                        <span class="md-error">
+                          {{
+                            errors.first("Company-Form." + $tc("words.email"))
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
+                  </form>
+                </div>
+                <div class="md-layout-item md-size-100 exclamation-div">
+                  <md-button
+                    class="md-raised md-primary"
+                    v-if="!loadingNextStep"
+                    @click="nextStep('Company-Form', 'Plugins')"
+                  >
+                    {{ $tc("words.continue") }}
+                  </md-button>
+                  <md-progress-bar md-mode="indeterminate" v-else />
+                </div>
+              </div>
+            </div>
+          </md-step>
+          <md-step
+            class="stepper-step"
+            id="Plugins"
+            md-label="Plugin Selection"
+            :md-done.sync="secondStep"
+          >
+            <div class="exclamation">
+              <div>
+                <div class="md-layout-item md-size-100 exclamation-div">
+                  <h2 class="stepper-title">
+                    Please select usage type and the plugin(s) you would like to
+                    use with your MicroPowerManager
+                  </h2>
+                </div>
+                <form data-vv-scope="Plugins">
                   <div class="md-layout-item md-size-50 md-small-size-100">
                     <md-field
                       :class="{
-                        'md-invalid': errors.has(
-                          'Company-Form.' + $tc('words.address'),
-                        ),
+                        'md-invalid': errors.has('Plugins.usage_type'),
                       }"
                     >
-                      <label for="address">
-                        {{ $tc("words.address") }}
-                      </label>
-                      <md-input
-                        type="text"
-                        :name="$tc('words.address')"
-                        :id="$tc('words.address')"
+                      <label for="usage_type">Usage Type</label>
+                      <md-select
+                        name="usage_type"
+                        id="usage_type"
+                        v-model="companyForm.usage_type"
+                        required
                         v-validate="'required'"
-                        v-model="companyForm.address"
-                      />
-                      <span class="md-error">
-                        {{
-                          errors.first("Company-Form." + $tc("words.address"))
-                        }}
-                      </span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-size-50 md-small-size-100">
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has(
-                          'Company-Form.' + $tc('words.email'),
-                        ),
-                      }"
-                    >
-                      <label for="email">
-                        {{ $tc("words.email") }}
-                      </label>
-                      <md-input
-                        type="email"
-                        :name="$tc('words.email')"
-                        :id="$tc('words.email')"
-                        autocomplete="email"
-                        v-validate="'required|email'"
-                        v-model="companyForm.email"
-                      />
-                      <span class="md-error">
-                        {{ errors.first("Company-Form." + $tc("words.email")) }}
-                      </span>
-                    </md-field>
-                  </div>
-                </form>
-              </div>
-              <div class="md-layout-item md-size-100 exclamation-div">
-                <md-button
-                  class="md-raised md-primary"
-                  v-if="!loadingNextStep"
-                  @click="nextStep('Company-Form', 'Plugins')"
-                >
-                  {{ $tc("words.continue") }}
-                </md-button>
-                <md-progress-bar md-mode="indeterminate" v-else />
-              </div>
-            </div>
-          </div>
-        </md-step>
-        <md-step
-          class="stepper-step"
-          id="Plugins"
-          md-label="Plugin Selection"
-          :md-done.sync="secondStep"
-        >
-          <div class="exclamation">
-            <div>
-              <div class="md-layout-item md-size-100 exclamation-div">
-                <h2 class="stepper-title">
-                  Please select usage type and the plugin(s) you would like to
-                  use with your MicroPowerManager
-                </h2>
-              </div>
-              <form data-vv-scope="Plugins">
-                <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Plugins.usage_type'),
-                    }"
-                  >
-                    <label for="usage_type">Usage Type</label>
-                    <md-select
-                      name="usage_type"
-                      id="usage_type"
-                      v-model="companyForm.usage_type"
-                      required
-                      v-validate="'required'"
-                    >
-                      <md-option disabled>Select Usage Types</md-option>
-                      <md-option
-                        v-for="ut in usageTypeListService.list"
-                        :key="ut.id"
-                        :value="ut.value"
                       >
-                        {{ ut.name }}
-                      </md-option>
-                    </md-select>
-                    <span class="md-error">
-                      {{ errors.first("Plugins.usage_type") }}
-                    </span>
-                  </md-field>
-                </div>
-              </form>
-              <div class="md-layout md-gutter">
-                <div
-                  v-for="plugin in mpmPluginsService.list.filter(
-                    (p) =>
-                      validUsageType(p.usage_type, companyForm.usage_type) ||
-                      p.checked,
-                  )"
-                  :key="plugin.id"
-                  class="box md-layout-item md-size-25 md-small-size-50"
-                >
-                  <div class="header-text">
-                    {{ plugin.name }}
-                  </div>
-                  <div
-                    class="usage-type-warning"
-                    v-if="
-                      plugin.checked &&
-                      !validUsageType(plugin.usage_type, companyForm.usage_type)
-                    "
-                  >
-                    ⚠️ Plugin not supported for current usageType. It is
-                    recommended that you disable this plugin.
-                  </div>
-                  <small class="sub-text">
-                    {{ plugin.description }}
-                  </small>
-                  <div class="sub-text">
-                    Usage type: {{ plugin.usage_type }}
-                  </div>
-                  <md-switch
-                    v-model="plugin.checked"
-                    class="plugin-selector-switch"
-                  />
-                </div>
-              </div>
-              <div class="md-layout-item md-size-100 exclamation-div">
-                <md-button
-                  class="md-raised md-primary"
-                  v-if="!loadingNextStep"
-                  @click="nextStep('Plugins', 'Create-Form')"
-                >
-                  {{ $tc("words.continue") }}
-                </md-button>
-                <md-progress-bar md-mode="indeterminate" v-else />
-              </div>
-            </div>
-          </div>
-        </md-step>
-        <md-step
-          class="stepper-step"
-          id="Create-Form"
-          md-label="User Creation"
-          :md-done.sync="thirdStep"
-        >
-          <div class="exclamation">
-            <div>
-              <div class="md-layout-item md-size-100 exclamation-div">
-                <h2 class="stepper-title">
-                  Please create owner account for MicroPowerManager
-                </h2>
-              </div>
-              <div class="md-layout-item md-size-100">
-                <form data-vv-scope="Create-Form" class="md-layout md-gutter">
-                  <div class="md-layout-item md-size-50 md-small-size-100">
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has(
-                          'Create-Form.' + $tc('words.name'),
-                        ),
-                      }"
-                    >
-                      <label>
-                        {{ $tc("words.name") }}
-                      </label>
-                      <md-input
-                        v-model="companyForm.user.name"
-                        v-validate="'required|min:2|max:20'"
-                        :name="$tc('words.name')"
-                        id="name"
-                      />
-                      <md-icon>create</md-icon>
+                        <md-option disabled>Select Usage Types</md-option>
+                        <md-option
+                          v-for="ut in usageTypeListService.list"
+                          :key="ut.id"
+                          :value="ut.value"
+                        >
+                          {{ ut.name }}
+                        </md-option>
+                      </md-select>
                       <span class="md-error">
-                        {{ errors.first("Create-Form." + $tc("words.name")) }}
-                      </span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-size-50 md-small-size-100">
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has(
-                          'Create-Form.' + $tc('words.email'),
-                        ),
-                      }"
-                    >
-                      <label>
-                        {{ $tc("words.email") }}
-                      </label>
-                      <md-input
-                        type="text"
-                        :name="$tc('words.email')"
-                        id="email"
-                        v-model="companyForm.user.email"
-                        v-validate="'required|email'"
-                      />
-                      <md-icon>email</md-icon>
-                      <span class="md-error">
-                        {{ errors.first("Create-Form." + $tc("words.email")) }}
-                      </span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-size-50 md-small-size-100">
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has(
-                          'Create-Form.' + $tc('words.password'),
-                        ),
-                      }"
-                    >
-                      <label for="password">
-                        {{ $tc("words.password") }}
-                      </label>
-                      <md-input
-                        type="password"
-                        :name="$tc('words.password')"
-                        id="password"
-                        v-validate="'required|min:3|max:128'"
-                        v-model="companyForm.user.password"
-                        ref="passwordRef"
-                      />
-
-                      <span class="md-error">
-                        {{
-                          errors.first("Create-Form." + $tc("words.password"))
-                        }}
-                      </span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-size-50 md-small-size-100">
-                    <md-field
-                      :class="{
-                        'md-invalid': errors.has(
-                          'Create-Form.' + $tc('phrases.confirmPassword'),
-                        ),
-                      }"
-                    >
-                      <label for="confirmPassword">
-                        {{ $tc("phrases.confirmPassword") }}
-                      </label>
-                      <md-input
-                        type="password"
-                        :name="$tc('phrases.confirmPassword')"
-                        id="confirmPassword"
-                        v-model="companyForm.user.confirmPassword"
-                        v-validate="
-                          'required|confirmed:passwordRef|min:3|max:128'
-                        "
-                      />
-                      <span class="md-error">
-                        {{
-                          errors.first(
-                            "Create-Form." + $tc("phrases.confirmPassword"),
-                          )
-                        }}
+                        {{ errors.first("Plugins.usage_type") }}
                       </span>
                     </md-field>
                   </div>
                 </form>
+                <div class="md-layout md-gutter">
+                  <div
+                    v-for="plugin in mpmPluginsService.list.filter(
+                      (p) =>
+                        validUsageType(p.usage_type, companyForm.usage_type) ||
+                        p.checked,
+                    )"
+                    :key="plugin.id"
+                    class="box md-layout-item md-size-25 md-small-size-50"
+                  >
+                    <div class="header-text">
+                      {{ plugin.name }}
+                    </div>
+                    <div
+                      class="usage-type-warning"
+                      v-if="
+                        plugin.checked &&
+                        !validUsageType(
+                          plugin.usage_type,
+                          companyForm.usage_type,
+                        )
+                      "
+                    >
+                      ⚠️ Plugin not supported for current usageType. It is
+                      recommended that you disable this plugin.
+                    </div>
+                    <small class="sub-text">
+                      {{ plugin.description }}
+                    </small>
+                    <div class="sub-text">
+                      Usage type: {{ plugin.usage_type }}
+                    </div>
+                    <md-switch
+                      v-model="plugin.checked"
+                      class="md-primary plugin-selector-switch"
+                    />
+                  </div>
+                </div>
+                <div class="md-layout-item md-size-100 exclamation-div">
+                  <md-button
+                    class="md-raised md-primary"
+                    v-if="!loadingNextStep"
+                    @click="nextStep('Plugins', 'Create-Form')"
+                  >
+                    {{ $tc("words.continue") }}
+                  </md-button>
+                  <md-progress-bar md-mode="indeterminate" v-else />
+                </div>
               </div>
-              <div class="md-layout-item md-size-100 exclamation-div">
-                <md-button
-                  class="md-raised md-primary"
-                  v-if="!loadingNextStep"
-                  @click="nextStep('Create-Form', 'Complete')"
+            </div>
+          </md-step>
+          <md-step
+            class="stepper-step"
+            id="Create-Form"
+            md-label="User Creation"
+            :md-done.sync="thirdStep"
+          >
+            <div class="exclamation">
+              <div>
+                <div class="md-layout-item md-size-100 exclamation-div">
+                  <h2 class="stepper-title">
+                    Please create owner account for MicroPowerManager
+                  </h2>
+                </div>
+                <div class="md-layout-item md-size-100">
+                  <form data-vv-scope="Create-Form" class="md-layout md-gutter">
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Create-Form.' + $tc('words.name'),
+                          ),
+                        }"
+                      >
+                        <label>
+                          {{ $tc("words.name") }}
+                        </label>
+                        <md-input
+                          v-model="companyForm.user.name"
+                          v-validate="'required|min:2|max:20'"
+                          :name="$tc('words.name')"
+                          id="name"
+                        />
+                        <md-icon>create</md-icon>
+                        <span class="md-error">
+                          {{ errors.first("Create-Form." + $tc("words.name")) }}
+                        </span>
+                      </md-field>
+                    </div>
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Create-Form.' + $tc('words.email'),
+                          ),
+                        }"
+                      >
+                        <label>
+                          {{ $tc("words.email") }}
+                        </label>
+                        <md-input
+                          type="text"
+                          :name="$tc('words.email')"
+                          id="email"
+                          v-model="companyForm.user.email"
+                          v-validate="'required|email'"
+                        />
+                        <md-icon>email</md-icon>
+                        <span class="md-error">
+                          {{
+                            errors.first("Create-Form." + $tc("words.email"))
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Create-Form.' + $tc('words.password'),
+                          ),
+                        }"
+                      >
+                        <label for="password">
+                          {{ $tc("words.password") }}
+                        </label>
+                        <md-input
+                          type="password"
+                          :name="$tc('words.password')"
+                          id="password"
+                          v-validate="'required|min:3|max:128'"
+                          v-model="companyForm.user.password"
+                          ref="passwordRef"
+                        />
+
+                        <span class="md-error">
+                          {{
+                            errors.first("Create-Form." + $tc("words.password"))
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
+                    <div class="md-layout-item md-size-50 md-small-size-100">
+                      <md-field
+                        :class="{
+                          'md-invalid': errors.has(
+                            'Create-Form.' + $tc('phrases.confirmPassword'),
+                          ),
+                        }"
+                      >
+                        <label for="confirmPassword">
+                          {{ $tc("phrases.confirmPassword") }}
+                        </label>
+                        <md-input
+                          type="password"
+                          :name="$tc('phrases.confirmPassword')"
+                          id="confirmPassword"
+                          v-model="companyForm.user.confirmPassword"
+                          v-validate="
+                            'required|confirmed:passwordRef|min:3|max:128'
+                          "
+                        />
+                        <span class="md-error">
+                          {{
+                            errors.first(
+                              "Create-Form." + $tc("phrases.confirmPassword"),
+                            )
+                          }}
+                        </span>
+                      </md-field>
+                    </div>
+                  </form>
+                </div>
+                <div class="md-layout-item md-size-100 exclamation-div">
+                  <md-button
+                    class="md-raised md-primary"
+                    v-if="!loadingNextStep"
+                    @click="nextStep('Create-Form', 'Complete')"
+                  >
+                    {{ $tc("words.continue") }}
+                  </md-button>
+                  <md-progress-bar md-mode="indeterminate" v-else />
+                </div>
+              </div>
+            </div>
+          </md-step>
+          <md-step
+            class="stepper-step"
+            id="Complete"
+            md-label="Complete"
+            :md-done.sync="fourthStep"
+          >
+            <div class="exclamation">
+              <div>
+                <div
+                  class="md-layout-item md-size-100"
+                  id="logger-done-success"
+                  v-if="succeed"
                 >
-                  {{ $tc("words.continue") }}
-                </md-button>
-                <md-progress-bar md-mode="indeterminate" v-else />
-              </div>
-            </div>
-          </div>
-        </md-step>
-        <md-step
-          class="stepper-step"
-          id="Complete"
-          md-label="Complete"
-          :md-done.sync="fourthStep"
-        >
-          <div class="exclamation">
-            <div>
-              <div
-                class="md-layout-item md-size-100"
-                id="logger-done-success"
-                v-if="succeed"
-              >
-                <span class="success-span">
-                  {{ $tc("words.successful") }}
-                  <md-icon style="color: green">check</md-icon>
-                </span>
-
-                <div class="md-layout-item md-size-100 exclamation-div">
-                  <span>
-                    Congratulations! you have registered to MicroPowerManager
-                    successfully. You will be redirected to login page in
-                    seconds..
+                  <span class="success-span">
+                    {{ $tc("words.successful") }}
+                    <md-icon style="color: green">check</md-icon>
                   </span>
+
+                  <div class="md-layout-item md-size-100 exclamation-div">
+                    <span>
+                      Congratulations! you have registered to MicroPowerManager
+                      successfully. You will be redirected to login page in
+                      seconds..
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div
-                class="md-layout-item md-size-100"
-                id="logger-done-fail"
-                v-if="!succeed"
-              >
-                <span class="failure-span">
-                  {{ errorMessage }}
-                  <md-icon style="color: red">priority_high</md-icon>
-                </span>
-
-                <div class="md-layout-item md-size-100 exclamation-div">
-                  <span>
-                    Unexpected error occurred during registration please reach
-                    to system admin.
+                <div
+                  class="md-layout-item md-size-100"
+                  id="logger-done-fail"
+                  v-if="!succeed"
+                >
+                  <span class="failure-span">
+                    {{ errorMessage }}
+                    <md-icon style="color: red">priority_high</md-icon>
                   </span>
+
+                  <div class="md-layout-item md-size-100 exclamation-div">
+                    <span>
+                      Unexpected error occurred during registration please reach
+                      to system admin.
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </md-step>
-      </md-steppers>
+          </md-step>
+        </md-steppers>
+      </div>
     </div>
   </div>
 </template>
@@ -559,11 +573,39 @@ export default {
 </script>
 <style scoped lang="scss">
 .register {
+  background: linear-gradient(
+    to right,
+    $brand-background-dark,
+    $brand-background
+  );
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  max-width: 1024px;
-  margin: auto;
+
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.title {
+  text-align: center;
+  font-size: x-large;
+  padding: 1rem 1rem 0 1rem;
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.subtitle {
+  text-align: center;
+  color: #8c8c8c;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.title-divider {
+  border-bottom: solid 2px #f9b839;
+  line-height: 2px;
+  margin: 0.5rem 0 2rem 0;
 }
 
 .content {
@@ -575,21 +617,8 @@ export default {
   text-align: center;
 }
 
-.header {
-  margin-top: 14rem;
-  width: 100%;
-}
-
 .register-stepper {
   width: 100%;
-}
-
-.stepper-step {
-  text-align: center !important;
-}
-
-.md-stepper-content .md-active {
-  text-align: center !important;
 }
 
 .success-span {
@@ -631,6 +660,10 @@ export default {
     0 1px 5px -2px rgb(53 53 53 / 30%),
     0 0px 4px 0 rgb(0 0 0 / 12%),
     0 0px 0px -5px #8e8e8e;
+}
+
+.header {
+  width: 100%;
 }
 
 .header-text {
