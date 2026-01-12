@@ -10,6 +10,7 @@
       "
       :title="$tc('words.ticket', 2)"
       button-icon="filter_list"
+      color="primary"
     >
       <div class="md-layout-item" v-if="filterTicket">
         <filtering @filtering="filtered"></filtering>
@@ -21,7 +22,7 @@
             :subscriber="subscriber.opened"
             :paginator="ticketService.openedPaginator"
             :resetKey="resetKey"
-            color="green"
+            color="accent"
           >
             <ticket-item
               :allow-comment="true"
@@ -36,7 +37,7 @@
             :subscriber="subscriber.closed"
             :paginator="ticketService.closedPaginator"
             :resetKey="resetKey"
-            color="red"
+            color="secondary"
           >
             <ticket-item
               :allow-comment="true"

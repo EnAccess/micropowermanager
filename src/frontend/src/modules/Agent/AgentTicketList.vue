@@ -3,7 +3,7 @@
     :subscriber="subscriber"
     :title="$tc('phrases.agentTicket', 1)"
     :paginator="agentTicketService.paginator"
-    color="green"
+    color="primary"
   >
     <ticket-item
       :allow-comment="true"
