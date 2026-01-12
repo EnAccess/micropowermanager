@@ -6,9 +6,11 @@ use App\Models\CompanyDatabase;
 use App\Services\DatabaseProxyManagerService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 abstract class AbstractSharedCommand extends Command {
     protected const EXECUTE_FOR_ONE = 1;
@@ -35,10 +37,23 @@ abstract class AbstractSharedCommand extends Command {
 
         $companyId = $this->option('company-id');
 
-        if ($companyId) {
-            $this->runForCompany($databaseProxyManagerService, (int) $companyId, $input, $output);
-        } else {
-            $this->runForAllTenants($databaseProxyManagerService, $input, $output);
+        try {
+            if ($companyId) {
+                $this->runForCompany($databaseProxyManagerService, (int) $companyId, $input, $output);
+            } else {
+                $this->runForAllTenants($databaseProxyManagerService, $input, $output);
+            }
+        } catch (\Throwable $e) {
+            Log::error('Command ['.$this->name.'] failed', [
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            $this->error('Command failed: '.$e->getMessage());
+
+            throw $e;
         }
 
         return $this->EXECUTION_TYPE;
@@ -77,8 +92,21 @@ abstract class AbstractSharedCommand extends Command {
         OutputInterface $output,
     ): void {
         $this->info('Running '.$this->name.' for company ID : '.$companyId);
-        $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {
-            parent::execute($input, $output);
-        });
+
+        try {
+            $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {
+                parent::execute($input, $output);
+            });
+        } catch (\Throwable $e) {
+            Log::error('Command ['.$this->name.'] failed for company ID: '.$companyId, [
+                'company_id' => $companyId,
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            throw $e;
+        }
     }
 }
