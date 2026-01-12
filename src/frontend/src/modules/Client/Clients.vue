@@ -131,9 +131,7 @@
               </md-table-cell>
 
               <md-table-cell :md-label="$tc('words.phone')">
-                {{
-                  item.addresses.length > 0 ? item.addresses[0].phone : "-"
-                }}
+                {{ item.addresses.length > 0 ? item.addresses[0].phone : "-" }}
               </md-table-cell>
 
               <md-table-cell
@@ -153,9 +151,7 @@
               </md-table-cell>
 
               <md-table-cell :md-label="$tc('words.device')">
-                {{
-                  item.devices.length > 0 ? deviceList(item.devices) : "-"
-                }}
+                {{ item.devices.length > 0 ? deviceList(item.devices) : "-" }}
               </md-table-cell>
 
               <md-table-cell :md-label="$tc('words.agent')" md-sort-by="agent">
