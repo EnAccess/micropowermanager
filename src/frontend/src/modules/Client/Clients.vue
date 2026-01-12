@@ -112,99 +112,62 @@
         </div>
 
         <div class="md-layout-item md-size-100" v-if="people.list.length > 0">
-          <md-table md-card style="margin-left: 0">
-            <md-table-row>
-              <md-table-head
-                @click.native="handleColumnSort('name')"
-                class="sortable-header"
-              >
-                {{ $tc("words.name") }}
-                <md-icon class="sort-icon">{{ getSortIcon("name") }}</md-icon>
-              </md-table-head>
-
-              <md-table-head>
-                {{ $tc("words.phone") }}
-              </md-table-head>
-
-              <md-table-head
-                @click.native="handleColumnSort('city')"
-                class="sortable-header"
-              >
-                {{ $tc("words.city") }}
-                <md-icon class="sort-icon">{{ getSortIcon("city") }}</md-icon>
-              </md-table-head>
-
-              <md-table-head>
-                {{ $tc("words.isActive") }}
-              </md-table-head>
-
-              <md-table-head>
-                {{ $tc("words.device") }}
-              </md-table-head>
-
-              <md-table-head
-                @click.native="handleColumnSort('agent')"
-                class="sortable-header"
-              >
-                {{ $tc("words.agent") }}
-                <md-icon class="sort-icon">{{ getSortIcon("agent") }}</md-icon>
-              </md-table-head>
-
-              <md-table-head
-                @click.native="handleColumnSort('created_at')"
-                class="sortable-header"
-              >
-                {{ $tc("phrases.lastUpdate") }}
-                <md-icon class="sort-icon">
-                  {{ getSortIcon("created_at") }}
-                </md-icon>
-              </md-table-head>
-            </md-table-row>
+          <md-table
+            v-model="people.list"
+            md-card
+            style="margin-left: 0"
+            md-sort="created_at"
+            md-sort-order="desc"
+            @md-sorted="onSort"
+          >
             <md-table-row
-              v-for="client in people.list"
-              :key="client.id"
-              @click="detail(client.id)"
+              slot="md-table-row"
+              slot-scope="{ item }"
+              @click="detail(item.id)"
               style="cursor: pointer"
             >
-              <md-table-cell>
-                {{ client.name }} {{ client.surname }}
+              <md-table-cell :md-label="$tc('words.name')" md-sort-by="name">
+                {{ item.name }} {{ item.surname }}
               </md-table-cell>
-              <md-table-cell>
+
+              <md-table-cell :md-label="$tc('words.phone')">
                 {{
-                  client.addresses.length > 0 ? client.addresses[0].phone : "-"
+                  item.addresses.length > 0 ? item.addresses[0].phone : "-"
                 }}
               </md-table-cell>
-              <md-table-cell class="hidden-xs">
+
+              <md-table-cell
+                :md-label="$tc('words.city')"
+                md-sort-by="city"
+                class="hidden-xs"
+              >
                 {{
-                  client.addresses.length > 0 && client.addresses[0].city
-                    ? client.addresses[0].city.name
+                  item.addresses.length > 0 && item.addresses[0].city
+                    ? item.addresses[0].city.name
                     : "-"
                 }}
               </md-table-cell>
-              <md-table-cell>
-                {{ client.is_active ? $tc("words.yes") : $tc("words.no") }}
+
+              <md-table-cell :md-label="$tc('words.isActive')">
+                {{ item.is_active ? $tc("words.yes") : $tc("words.no") }}
               </md-table-cell>
-              <md-table-cell>
+
+              <md-table-cell :md-label="$tc('words.device')">
                 {{
-                  client.devices.length > 0 ? deviceList(client.devices) : "-"
+                  item.devices.length > 0 ? deviceList(item.devices) : "-"
                 }}
               </md-table-cell>
-              <md-table-cell>
-                {{ getAgentName(client) }}
+
+              <md-table-cell :md-label="$tc('words.agent')" md-sort-by="agent">
+                {{ getAgentName(item) }}
               </md-table-cell>
-              <md-table-cell class="hidden-xs">
-                {{ timeForTimeZone(client.lastUpdate) }}
-              </md-table-cell>
-            </md-table-row>
-            <!-- No customers found message -->
-            <md-table-row v-if="people.list.length === 0">
+
               <md-table-cell
-                colspan="7"
-                style="text-align: center; padding: 2rem"
+                :md-label="$tc('phrases.lastUpdate')"
+                md-sort-by="created_at"
+                class="hidden-xs"
               >
-                <div style="color: #666; font-style: italic">
-                  No customers found
-                </div>
+                {{ timeForTimeZone(item.lastUpdate) }}
               </md-table-cell>
             </md-table-row>
           </md-table>
@@ -344,8 +307,8 @@ export default {
       selectedAgentId: null,
       widgetKey: 0,
       showFilter: false,
-      currentSortField: null,
-      currentSortOrder: "asc",
+      currentSortBy: "created_at",
+      currentSortOrder: "desc",
       exportFilters: {
         format: "csv",
         isActive: "",
@@ -393,26 +356,12 @@ export default {
         this.performSearch()
       }
     },
-    handleColumnSort(columnField) {
-      if (this.currentSortField === columnField) {
-        if (this.currentSortOrder === "asc") {
-          this.currentSortOrder = "desc"
-        } else {
-          this.currentSortField = null
-          this.currentSortOrder = "asc"
-        }
-      } else {
-        this.currentSortField = columnField
-        this.currentSortOrder = "asc"
-      }
-      this.getClientList(1)
-    },
 
-    getSortIcon(columnField) {
-      if (this.currentSortField !== columnField) {
-        return "unfold_more"
-      }
-      return this.currentSortOrder === "asc" ? "arrow_upward" : "arrow_downward"
+    onSort(sortData) {
+      // Vue Material calls this with {name: 'field_name', type: 'asc'|'desc'}
+      this.currentSortBy = sortData && sortData.name ? sortData.name : null
+      this.currentSortOrder = sortData && sortData.type ? sortData.type : "desc"
+      this.getClientList(1)
     },
 
     async performSearch() {
@@ -428,9 +377,9 @@ export default {
         const searchPaginator = new Paginator(resources.person.search)
 
         const params = { term: this.searchTerm }
-        if (this.currentSortField) {
+        if (this.currentSortBy) {
           const prefix = this.currentSortOrder === "desc" ? "-" : ""
-          params.sort_by = `${prefix}${this.currentSortField}`
+          params.sort_by = `${prefix}${this.currentSortBy}`
         }
         if (this.selectedAgentId) {
           params.agent_id = this.selectedAgentId
@@ -469,12 +418,17 @@ export default {
       if (subscriber !== this.subscriber) {
         return
       }
-      this.people.updateList(data)
-      EventBus.$emit(
-        "widgetContentLoaded",
-        this.subscriber,
-        this.people.list.length,
-      )
+      if (this.currentSortBy) {
+        // If we have active sorting, reload with sort instead of just updating list
+        this.getClientList(1)
+      } else {
+        this.people.updateList(data)
+        EventBus.$emit(
+          "widgetContentLoaded",
+          this.subscriber,
+          this.people.list.length,
+        )
+      }
     },
 
     detail(id) {
@@ -483,9 +437,9 @@ export default {
 
     async getClientList(pageNumber = 1) {
       const params = {}
-      if (this.currentSortField) {
+      if (this.currentSortBy) {
         const prefix = this.currentSortOrder === "desc" ? "-" : ""
-        params.sort_by = `${prefix}${this.currentSortField}`
+        params.sort_by = `${prefix}${this.currentSortBy}`
       }
 
       if (this.isSearching && this.searchTerm) {
@@ -703,27 +657,6 @@ export default {
 .md-app {
   min-height: 100vh;
   border: 1px solid rgba(#000, 0.12);
-}
-.sortable-header {
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-
-  .sort-icon {
-    font-size: 16px !important;
-    margin-left: 4px;
-    vertical-align: middle;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-  }
-
-  &:hover .sort-icon {
-    opacity: 1;
-  }
 }
 
 .md-drawer {
