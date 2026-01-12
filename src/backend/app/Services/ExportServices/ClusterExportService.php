@@ -30,7 +30,7 @@ class ClusterExportService extends AbstractExportService {
         $this->exportingData = $this->clusterData->map(function (Cluster $cluster): array {
             $miniGridCount = $cluster->miniGrids->count();
             $cityCount = $cluster->cities->count();
-            $managerName = $cluster->manager?->name ?? '';
+            $managerName = $cluster->manager->name ?? '';
 
             return [
                 $cluster->name,
@@ -70,7 +70,7 @@ class ClusterExportService extends AbstractExportService {
         $jsonDataTransform = $this->clusterData->map(function (Cluster $cluster): array {
             $miniGrids = $cluster->miniGrids->pluck('name')->filter()->implode(', ');
             $cities = $cluster->cities->pluck('name')->filter()->implode(', ');
-            $managerName = $cluster->manager?->name ?? '';
+            $managerName = $cluster->manager->name ?? '';
 
             return [
                 'cluster_name' => $cluster->name,

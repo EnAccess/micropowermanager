@@ -29,7 +29,7 @@ class ApplianceExportService extends AbstractExportService {
 
     public function setExportingData(): void {
         $this->exportingData = $this->applianceData->map(function (Appliance $appliance): array {
-            $applianceTypeName = $appliance->applianceType?->name ?? '';
+            $applianceTypeName = $appliance->applianceType->name ?? '';
             $totalSold = $appliance->agentAssignedAppliance->sum('sold_count') ?? 0;
             $totalRates = $appliance->rates->count();
 
@@ -70,7 +70,7 @@ class ApplianceExportService extends AbstractExportService {
         // TODO: support some form of pagination to limit the data to be exported using json
         // transform exporting data to JSON structure for appliance export
         $jsonDataTransform = $this->applianceData->map(function (Appliance $appliance): array {
-            $applianceTypeName = $appliance->applianceType?->name ?? '';
+            $applianceTypeName = $appliance->applianceType->name ?? '';
             $totalSold = $appliance->agentAssignedAppliance->sum('sold_count') ?? 0;
             $paymentPlans = $appliance->rates->map(fn ($rate): array => [
                 'total_cost' => $this->readable($rate->total_cost),

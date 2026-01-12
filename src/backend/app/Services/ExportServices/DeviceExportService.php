@@ -29,8 +29,8 @@ class DeviceExportService extends AbstractExportService {
 
     public function setExportingData(): void {
         $this->exportingData = $this->deviceData->map(function (Device $device): array {
-            $personName = $device->person?->name ?? '';
-            $personSurname = $device->person?->surname ?? '';
+            $personName = $device->person->name ?? '';
+            $personSurname = $device->person->surname ?? '';
             $fullName = trim($personName.' '.$personSurname);
             $address = $device->address?->city->name ?? '';
 
@@ -71,8 +71,8 @@ class DeviceExportService extends AbstractExportService {
         // TODO: support some form of pagination to limit the data to be exported using json
         // transform exporting data to JSON structure for device export
         $jsonDataTransform = $this->deviceData->map(function (Device $device): array {
-            $personName = $device->person?->name ?? '';
-            $personSurname = $device->person?->surname ?? '';
+            $personName = $device->person->name ?? '';
+            $personSurname = $device->person->surname ?? '';
             $fullName = trim($personName.' '.$personSurname);
             $manufacturer = $device->device->manufacturer->name ?? '';
 
