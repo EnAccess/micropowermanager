@@ -32,14 +32,14 @@ class DeviceExportService extends AbstractExportService {
             $personName = optional($device->person)->name ?? '';
             $personSurname = optional($device->person)->surname ?? '';
             $fullName = trim($personName.' '.$personSurname);
-            $address = $device->address?->city?->name ?? '';
+            $address = $device->address?->city->name ?? '';
 
             return [
                 $device->device_serial,
                 $device->device_type,
                 $fullName,
                 $address,
-                $device->device->manufacturer?->name ?? '',
+                $device->device->manufacturer->name ?? '',
                 $this->convertUtcDateToTimezone($device->created_at),
                 $this->convertUtcDateToTimezone($device->updated_at),
             ];
@@ -61,6 +61,9 @@ class DeviceExportService extends AbstractExportService {
         return 'DeviceExport';
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function exportDataToArray(): array {
         if ($this->deviceData->isEmpty()) {
             return [];
@@ -71,7 +74,7 @@ class DeviceExportService extends AbstractExportService {
             $personName = optional($device->person)->name ?? '';
             $personSurname = optional($device->person)->surname ?? '';
             $fullName = trim($personName.' '.$personSurname);
-            $manufacturer = $device->device->manufacturer?->name ?? '';
+            $manufacturer = $device->device->manufacturer->name ?? '';
 
             // Get device details
             $deviceDetails = [
@@ -95,7 +98,7 @@ class DeviceExportService extends AbstractExportService {
             $address = null;
             if ($device->address) {
                 $address = [
-                    'city' => $device->address->city?->name ?? '',
+                    'city' => $device->address->city->name ?? '',
                     'street' => $device->address->street ?? '',
                 ];
             }

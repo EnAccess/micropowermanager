@@ -66,6 +66,9 @@ class PersonExportService extends AbstractExportService {
         return 'CustomerExport';
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function exportDataToArray(): array {
         if ($this->peopleData->isEmpty()) {
             return [];

@@ -6,7 +6,6 @@ use App\Helpers\MailHelper;
 use App\Models\ApplianceRate;
 use App\Models\User;
 use App\Services\ApplianceRateService;
-use App\Services\ExportServices\AbstractExportService;
 use App\Services\UserService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
@@ -92,6 +91,9 @@ class OutstandingDebtsExportService extends AbstractExportService {
         return 'OutstandingDebtsExport';
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function exportDataToArray(): array {
         if ($this->outstandingDebtsData->isEmpty()) {
             return [];

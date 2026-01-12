@@ -188,6 +188,9 @@ abstract class AbstractExportService {
         }
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function exportDataToArray(): array {
         return $this->exportingData->toArray();
     }

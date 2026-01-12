@@ -58,6 +58,9 @@ class ClusterExportService extends AbstractExportService {
         return 'ClusterExport';
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function exportDataToArray(): array {
         if ($this->clusterData->isEmpty()) {
             return [];
@@ -82,4 +85,3 @@ class ClusterExportService extends AbstractExportService {
         return $jsonDataTransform->toArray();
     }
 }
-

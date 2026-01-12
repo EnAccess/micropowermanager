@@ -60,6 +60,9 @@ class ApplianceExportService extends AbstractExportService {
         return 'ApplianceExport';
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function exportDataToArray(): array {
         if ($this->applianceData->isEmpty()) {
             return [];
@@ -92,4 +95,3 @@ class ApplianceExportService extends AbstractExportService {
         return $jsonDataTransform->toArray();
     }
 }
-

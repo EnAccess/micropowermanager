@@ -63,6 +63,9 @@ class TransactionExportService extends AbstractExportService {
         return 'TransactionExport';
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function exportDataToArray(): array {
         if ($this->transactionData->isEmpty()) {
             return [];
