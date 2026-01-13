@@ -97,7 +97,7 @@ class PluginGenerator extends Command {
             '{{plugin-name}}' => $pluginName,
         ]);
 
-        // Step 3: Providers
+        // Step 3: Providers and routes
         $providersDir = "{$pluginPath}/Providers";
         foreach (['EventServiceProvider', 'ObserverServiceProvider', 'RouteServiceProvider'] as $file) {
             $this->replaceInFile("{$providersDir}/{$file}.php", ['{{Plugin-Name}}' => $nameSpace]);

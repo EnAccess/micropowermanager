@@ -1,10 +1,10 @@
 <?php
 use Illuminate\Support\ServiceProvider;
-use Inensus\{{Package-Name}}\Providers\EventServiceProvider;
-use Inensus\{{Package-Name}}\Providers\RouteServiceProvider;
-use Inensus\{{Package-Name}}\Providers\ObserverServiceProvider;
+use Inensus\{{Plugin-Name}}\Providers\EventServiceProvider;
+use Inensus\{{Plugin-Name}}\Providers\RouteServiceProvider;
+use Inensus\{{Plugin-Name}}\Providers\ObserverServiceProvider;
 
-class {{Package-Name}}ServiceProvider extends ServiceProvider
+class {{Plugin-Name}}ServiceProvider extends ServiceProvider
 {
     public function boot()
     {

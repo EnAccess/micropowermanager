@@ -1,12 +1,12 @@
 <?php
-namespace Inensus\{{Package-Name}}\Console\Commands;
+namespace Inensus\{{Plugin-Name}}\Console\Commands;
 
 use Illuminate\Console\Command;
 
 class InstallPackage extends Command
 {
     protected $signature = '{{package-name}}:install';
-    protected $description = 'Install {{Package-Name}} Package';
+    protected $description = 'Install {{Plugin-Name}} Package';
 
     public function __construct() {
         parent::__construct();
@@ -14,7 +14,7 @@ class InstallPackage extends Command
 
     public function handle(): void
     {
-        $this->info('Installing {{Package-Name}} Integration Package\n');
+        $this->info('Installing {{Plugin-Name}} Integration Package\n');
 
         // Here you can add plugin initialisation code.
         // For example creating initial plugin credentials in the database

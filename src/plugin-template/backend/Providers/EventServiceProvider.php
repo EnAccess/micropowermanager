@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\{{Package-Name}}\Providers;
+namespace Inensus\{{Plugin-Name}}\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

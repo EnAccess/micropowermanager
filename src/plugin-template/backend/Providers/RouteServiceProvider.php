@@ -1,13 +1,13 @@
 <?php
 
-namespace Inensus\{{Package-Name}}\Providers;
+namespace Inensus\{{Plugin-Name}}\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected $namespace = 'Inensus\{{Package-Name}}\Http\Controllers';
+    protected $namespace = 'Inensus\{{Plugin-Name}}\Http\Controllers';
 
     public function boot()
     {
