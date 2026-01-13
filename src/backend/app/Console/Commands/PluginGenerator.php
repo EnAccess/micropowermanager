@@ -91,15 +91,13 @@ class PluginGenerator extends Command {
 
         File::copyDirectory($sourceTemplate, $pluginPath);
 
-        // Step 2: Update InstallPackage.php
+        // Step 2: Update InstallPackage CLI command
         $this->replaceInFile("{$pluginPath}/Console/Commands/InstallPackage.php", [
             '{{Plugin-Name}}' => $nameSpace,
             '{{plugin-name}}' => $pluginName,
         ]);
 
-        // Step 3: Providers and routes
-
-        // Update providers
+        // Step 3: Update Providers
         $providersDir = "{$pluginPath}/Providers";
         foreach (['EventServiceProvider', 'ObserverServiceProvider', 'RouteServiceProvider'] as $file) {
             $this->replaceInFile("{$providersDir}/{$file}.php", [
@@ -127,7 +125,7 @@ class PluginGenerator extends Command {
         );
         File::put($mainProviderNew, $providerContent);
 
-        // Update routes
+        // Step 4: Update routes
         $routesDir = "{$pluginPath}/routes";
         foreach (['api'] as $file) {
             $this->replaceInFile("{$routesDir}/{$file}.php", [
@@ -136,7 +134,7 @@ class PluginGenerator extends Command {
             ]);
         }
 
-        // Step 4: Update frontend and frontend routes
+        // Step 5: Update frontend and frontend routes
         $projectRootFrontend = join(
             DIRECTORY_SEPARATOR,
             [dirname(base_path()), 'frontend']
