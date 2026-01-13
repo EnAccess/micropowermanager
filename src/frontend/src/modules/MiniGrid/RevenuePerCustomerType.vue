@@ -4,7 +4,6 @@
       :id="'revenue-pie'"
       :headless="true"
       :title="$tc('phrases.revenuePerCustomerType')"
-      color="red"
     >
       <div v-if="loading">
         <loader size="sm" />

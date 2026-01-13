@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget color="green" title="Prospect Settings">
+    <widget color="primary" title="Prospect Settings">
       <div class="md-layout md-gutter">
         <div
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
@@ -28,7 +28,10 @@
                         padding-top: 1rem;
                       "
                     >
-                      <md-switch v-model="setting.isEnabled"></md-switch>
+                      <md-switch
+                        class="md-primary"
+                        v-model="setting.isEnabled"
+                      ></md-switch>
                     </div>
                     <div
                       class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"

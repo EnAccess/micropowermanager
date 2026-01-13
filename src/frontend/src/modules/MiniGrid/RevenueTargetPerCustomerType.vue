@@ -4,7 +4,7 @@
       :id="'revenue-targets'"
       :headless="true"
       :title="$tc('phrases.revenueTargetsPerCustomerType')"
-      color="green"
+      color="primary"
     >
       <div v-if="loading">
         <loader size="sm" />
@@ -123,28 +123,6 @@ export default {
               this.$tc("phrases.percentageOfTargetedRevenue") || "Percentage",
             type: "bar",
             data: values,
-            itemStyle: {
-              color: (params) => {
-                const colors = [
-                  "#5470c6",
-                  "#91cc75",
-                  "#fac858",
-                  "#ee6666",
-                  "#73c0de",
-                  "#3ba272",
-                  "#fc8452",
-                  "#9a60b4",
-                  "#ea7ccc",
-                  "#5470c6",
-                  "#91cc75",
-                  "#fac858",
-                  "#ee6666",
-                  "#73c0de",
-                  "#3ba272",
-                ]
-                return colors[params.dataIndex % colors.length]
-              },
-            },
           },
         ],
       }
