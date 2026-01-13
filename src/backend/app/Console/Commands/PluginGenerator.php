@@ -139,7 +139,7 @@ class PluginGenerator extends Command {
         File::copyDirectory($sourceTemplateFrontend, $pluginPathFrontend);
 
         // Step 7: Register provider
-        $this->outputComponents()->outputComponents()->info('Registering ServiceProvider in bootstrap/providers.php...');
+        $this->outputComponents()->info('Registering ServiceProvider in bootstrap/providers.php...');
         $providersFile = "{$projectRoot}/bootstrap/providers.php";
         $providersContent = File::get($providersFile);
 
@@ -215,18 +215,16 @@ class PluginGenerator extends Command {
             $this->outputComponents()->error('Failed to run composer dump-autoload.');
         }
 
-        $this->info("\n==================================================");
-        $this->info("Plugin '{$pluginName}' created successfully!");
-        $this->info('==================================================');
-        $this->outputComponents()->line('info', 'Next steps:');
-        $this->outputComponents()->line('info', "1. Review the generated files in app/Plugins/{$pluginName}");
-        // $this->line("2. Move the UI folder to src/frontend/src/plugins/{$pluginName}");
-        // $this->line('3. Add frontend routes to src/frontend/src/ExportedRoutes.js');
-        $this->outputComponents()->line('info', '4. Run migration: php artisan migrate');
-        // $this->line("5. Install plugin: php artisan {$pluginName}:install");
-        $this->info('==================================================');
+        $this->outputComponents()->success("Plugin '{$pluginName}' created successfully!");
 
-        $this->outputComponents()->success('Plugin generation completed!');
+        $this->outputComponents()->line('info', 'Next steps:');
+        $this->outputComponents()->bulletList([
+            "Review the generated files in app/Plugins/{$pluginName}",
+            // "Move the UI folder to src/frontend/src/plugins/{$pluginName}",
+            // 'Add frontend routes to src/frontend/src/ExportedRoutes.js',
+            'Run migration: php artisan migrate',
+            // "Install plugin: php artisan {$pluginName}:install",
+        ]);
 
         return Command::SUCCESS;
     }
