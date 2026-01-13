@@ -5,7 +5,7 @@ use Illuminate\Console\Command;
 
 class InstallPackage extends Command
 {
-    protected $signature = '{{package-name}}:install';
+    protected $signature = '{{plugin-name}}:install';
     protected $description = 'Install {{Plugin-Name}} Package';
 
     public function __construct() {
