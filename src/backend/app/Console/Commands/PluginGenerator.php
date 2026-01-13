@@ -5,8 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-use function Laravel\Prompts\table;
-
 class PluginGenerator extends Command {
     protected $signature = 'micropowermanager:new-plugin {plugin-name} {--description= : Optional description for the plugin}';
     protected $description = 'Creates a new MicroPowerManager plugin';
@@ -78,7 +76,7 @@ class PluginGenerator extends Command {
 
         // Step 1: Clone backend template
         $pluginPath = "{$projectRoot}/app/Plugins/{$pluginName}";
-        $sourceTemplate = join(
+        $sourceTemplate = implode(
             DIRECTORY_SEPARATOR,
             [dirname($projectRoot), 'plugin-template', 'backend']
         );
@@ -135,15 +133,15 @@ class PluginGenerator extends Command {
         }
 
         // Step 5: Update frontend and frontend routes
-        $projectRootFrontend = join(
+        $projectRootFrontend = implode(
             DIRECTORY_SEPARATOR,
             [dirname(base_path()), 'frontend']
         );
-        $pluginPathFrontend = join(
+        $pluginPathFrontend = implode(
             DIRECTORY_SEPARATOR,
             [$projectRootFrontend, 'src', 'plugins', $pluginName]
         );
-        $sourceTemplateFrontend = join(
+        $sourceTemplateFrontend = implode(
             DIRECTORY_SEPARATOR,
             [dirname($projectRootFrontend), 'plugin-template', 'frontend']
         );
@@ -192,7 +190,7 @@ class PluginGenerator extends Command {
         $this->outputComponents()->info('Generating database migration for plugin registration...');
         $timestamp = now()->format('Y_m_d_His');
         $migrationName = "add_{$pluginName}_to_mpm_plugin_table";
-        $migrationTemplateDir = join(
+        $migrationTemplateDir = implode(
             DIRECTORY_SEPARATOR,
             [dirname($projectRoot), 'plugin-template', 'migrations']
         );
