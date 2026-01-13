@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
+use function Laravel\Prompts\table;
+
 class PluginGenerator extends Command {
     protected $signature = 'micropowermanager:new-plugin {plugin-name} {--description= : Optional description for the plugin}';
     protected $description = 'Creates a new MicroPowerManager plugin';
@@ -36,14 +38,17 @@ class PluginGenerator extends Command {
             || (file_exists('/proc/1/cgroup') && str_contains(file_get_contents('/proc/1/cgroup'), 'docker'));
 
         if ($isInDocker) {
-            $this->warn('⚠️  It looks like you are running this command inside a Docker container.');
-            $this->warn('');
-            $this->warn('Plugin creation requires access to both the frontend and backend code.');
-            $this->warn('Running inside the MicroPowerManager backend development container is not supported,');
-            $this->warn('because it only has access to the backend source code.');
+            $this->outputComponents()->warn(
+                'It looks like you are running this command inside a Docker container.'
+            );
+            $this->outputComponents()->info(
+                'Plugin creation requires access to both the frontend and backend code.
+                Running inside the MicroPowerManager backend development container is not supported,
+                because it only has access to the backend source code.'
+            );
 
-            if (!$this->confirm('Do you want to proceed anyway?', false)) {
-                $this->info('Command aborted.');
+            if (!$this->outputComponents()->confirm('Do you want to proceed anyway?', false)) {
+                $this->outputComponents()->error('Command aborted.');
 
                 return Command::FAILURE;
             }
@@ -51,10 +56,13 @@ class PluginGenerator extends Command {
 
         $description = $this->option('description') ?: "This plugin adds {$nameSpace} functionality to MicroPowerManager.";
 
-        $this->info("Creating plugin: {$pluginName} with namespace: {$nameSpace}");
-        $this->info("Description: {$description}");
+        $this->outputComponents()->info('Creating plugin with following information:');
 
-        $this->info('Running plugin generation script...');
+        $this->outputComponents()->twoColumnDetail('Plugin name:', $pluginName);
+        $this->outputComponents()->twoColumnDetail('Plugin namespace:', $nameSpace);
+        $this->outputComponents()->twoColumnDetail('Description:', $description);
+
+        $this->outputComponents()->info('Running plugin generation script...');
 
         // Determine project root
         $projectRoot = File::isDirectory('/var/www/html') ? '/var/www/html' : base_path();
@@ -66,7 +74,7 @@ class PluginGenerator extends Command {
         $currentMaxId = collect($matches[1])->map(fn ($id): int => (int) $id)->max();
         $nextPluginId = $currentMaxId + 1;
 
-        $this->info("Next available plugin ID: {$nextPluginId}");
+        $this->outputComponents()->info("Next available plugin ID: {$nextPluginId}");
 
         // Step 1: Clone backend template
         $pluginPath = "{$projectRoot}/app/Plugins/{$pluginName}";
@@ -76,7 +84,7 @@ class PluginGenerator extends Command {
         );
 
         if (!File::exists($sourceTemplate)) {
-            $this->error("Template not found at: {$sourceTemplate}");
+            $this->outputComponents()->error("Template not found at: {$sourceTemplate}");
 
             return 1;
         }
@@ -131,7 +139,7 @@ class PluginGenerator extends Command {
         File::copyDirectory($sourceTemplateFrontend, $pluginPathFrontend);
 
         // Step 7: Register provider
-        $this->info('Registering ServiceProvider in bootstrap/providers.php...');
+        $this->outputComponents()->outputComponents()->info('Registering ServiceProvider in bootstrap/providers.php...');
         $providersFile = "{$projectRoot}/bootstrap/providers.php";
         $providersContent = File::get($providersFile);
 
@@ -154,7 +162,7 @@ class PluginGenerator extends Command {
         File::put($providersFile, $providersContent);
 
         // Step 9: Add plugin constant
-        $this->info('Adding plugin constant to MpmPlugin model...');
+        $this->outputComponents()->info('Adding plugin constant to MpmPlugin model...');
         $constantName = strtoupper(ltrim(preg_replace('/([A-Z])/', '_$1', $nameSpace), '_'));
         $lines = explode("\n", $content);
         $lastConst = null;
@@ -169,7 +177,7 @@ class PluginGenerator extends Command {
         }
 
         // Step 10: Create migration
-        $this->info('Generating database migration for plugin registration...');
+        $this->outputComponents()->info('Generating database migration for plugin registration...');
         $timestamp = now()->format('Y_m_d_His');
         $migrationName = "add_{$pluginName}_to_mpm_plugin_table";
         $migrationTemplateDir = join(
@@ -179,7 +187,7 @@ class PluginGenerator extends Command {
         $migrationFile = "{$projectRoot}/database/migrations/{$timestamp}_{$migrationName}.php";
 
         // Create the migration file directly since make:migration is causing issues
-        $this->info("Creating migration file: $migrationFile");
+        $this->outputComponents()->info("Creating migration file: $migrationFile");
         File::copy(
             "{$migrationTemplateDir}/add_{{plugin_name}}_to_mpm_plugin_table.php",
             $migrationFile
@@ -190,35 +198,35 @@ class PluginGenerator extends Command {
             '{{Plugin-Name}}' => $nameSpace,
             '{{plugin-name}}' => $pluginName,
         ]);
-        $this->info('Migration file created successfully!');
+        $this->outputComponents()->success('Migration file created successfully!');
 
         // Step 11: Run composer dump-autoload
-        $this->info('Running composer dump-autoload...');
+        $this->outputComponents()->info('Running composer dump-autoload...');
         exec('composer dump-autoload', $output, $resultCode);
 
         if ($resultCode !== 0) {
-            $this->warn('Composer not found in PATH, trying php composer.phar dump-autoload...');
+            $this->outputComponents()->warn('Composer not found in PATH, trying php composer.phar dump-autoload...');
             exec('php composer.phar dump-autoload', $output, $resultCode);
         }
 
         if ($resultCode === 0) {
-            $this->info('Composer autoload dump complete.');
+            $this->outputComponents()->success('Composer autoload dump complete.');
         } else {
-            $this->error('Failed to run composer dump-autoload.');
+            $this->outputComponents()->error('Failed to run composer dump-autoload.');
         }
 
         $this->info("\n==================================================");
         $this->info("Plugin '{$pluginName}' created successfully!");
         $this->info('==================================================');
-        $this->line('Next steps:');
-        $this->line("1. Review the generated files in app/Plugins/{$pluginName}");
+        $this->outputComponents()->line('info', 'Next steps:');
+        $this->outputComponents()->line('info', "1. Review the generated files in app/Plugins/{$pluginName}");
         // $this->line("2. Move the UI folder to src/frontend/src/plugins/{$pluginName}");
         // $this->line('3. Add frontend routes to src/frontend/src/ExportedRoutes.js');
-        $this->line('4. Run migration: php artisan migrate');
+        $this->outputComponents()->line('info', '4. Run migration: php artisan migrate');
         // $this->line("5. Install plugin: php artisan {$pluginName}:install");
         $this->info('==================================================');
 
-        $this->info('Plugin generation completed!');
+        $this->outputComponents()->success('Plugin generation completed!');
 
         return Command::SUCCESS;
     }
