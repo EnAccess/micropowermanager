@@ -141,7 +141,7 @@ class PluginGenerator extends Command {
         );
         $pluginPathFrontend = join(
             DIRECTORY_SEPARATOR,
-            [$projectRootFrontend, 'src', 'plugins']
+            [$projectRootFrontend, 'src', 'plugins', $pluginName]
         );
         $sourceTemplateFrontend = join(
             DIRECTORY_SEPARATOR,
