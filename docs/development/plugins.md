@@ -12,7 +12,7 @@ integrating a plugin for MicroPowerManager (MPM).
 Plugins are modular components that extend MPM's functionality.
 Each plugin consists of:
 
-- Backend package (`src/backend/packages/inensus/{plugin-name}`)
+- Backend package (`src/backend/app/Plugins/{plugin-name}`)
 - Frontend module (`src/frontend/src/plugins/{plugin-name}`)
 
 ## Quick Start
@@ -28,20 +28,20 @@ Each plugin consists of:
 
    ```bash
    cd src/backend
-   php artisan micropowermanager:new-package {plugin-name}
+   php artisan micropowermanager:new-plugin {plugin-name}
    ```
 
    Replace `{plugin-name}` with the desired name of your plugin.
 
    This command:
 
-   - Creates backend package in `src/backend/packages/inensus/{plugin-name}`
-   - Generates frontend module template
-   - Sets up basic file structure
+   - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
+   - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
+   - Automatically generates and registers a new plugin id
+   - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
 3. **Post-Creation Setup**
 
-   - Move the generated UI folder to `src/frontend/src/plugins/{plugin-name}`
    - Review generated code structure
    - Follow integration steps below
 
