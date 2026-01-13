@@ -18,6 +18,7 @@ Each plugin consists of:
 ## Quick Start
 
 1. **Prerequisites**
+
    - Running [advanced development environment](development-environment.md#advanced-development-environment) with local PHP installation
    - Basic knowledge of Laravel and Vue.js
 
@@ -33,11 +34,13 @@ Each plugin consists of:
    Replace `{plugin-name}` with the desired name of your plugin.
 
    This command:
+
    - Creates backend package in `src/backend/packages/inensus/{plugin-name}`
    - Generates frontend module template
    - Sets up basic file structure
 
 3. **Post-Creation Setup**
+
    - Move the generated UI folder to `src/frontend/src/plugins/{plugin-name}`
    - Review generated code structure
    - Follow integration steps below
@@ -325,7 +328,7 @@ Add your plugin's routes to the exported routes:
 ```js
 // src/frontend/src/ExportedRoutes.js
 
-import YourPluginOverview from "./plugins/your-plugin/js/modules/Overview/Overview"
+import YourPluginOverview from "./plugins/your-plugin/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // ...other routes
@@ -364,7 +367,7 @@ Register your plugin's Vue components in the main app:
 ```js
 // src/frontend/src/main.js
 
-import YourPlugin from "@/plugins/your-plugin/js/modules/Overview/Component"
+import YourPlugin from "@/plugins/your-plugin/modules/Overview/Component"
 
 Vue.component("Your-Plugin", YourPlugin)
 ```
@@ -378,6 +381,7 @@ Vue.component("Your-Plugin", YourPlugin)
    ```
 
 2. Verify database setup:
+
    - Check migrations ran successfully
    - Verify tables were created
    - Ensure plugin is registered in `mpm_plugins`
@@ -390,11 +394,13 @@ Vue.component("Your-Plugin", YourPlugin)
 ## Best Practices
 
 1. **Code Organization**
+
    - Keep your plugin self-contained as much as possible
    - Follow the established directory structure for consistency
    - Use the MPM core services when appropriate to maintain integration
 
 2. **Testing**
+
    - Test all features thoroughly
    - Verify database operations
    - Check frontend functionality
