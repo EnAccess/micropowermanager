@@ -304,9 +304,9 @@ class InstallPackage extends Command {
 Add your plugin's namespace to composer's autoload configuration:
 
 ```json
-"autoload-dev": {
+"autoload": {
   "psr-4": {
-    "Inensus\\YourPlugin\\": "packages/inensus/your-plugin/src",
+    "Inensus\\YourPlugin\\": "app/Plugins/your-plugin",
   }
 }
 ```

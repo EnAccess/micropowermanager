@@ -210,7 +210,22 @@ class PluginGenerator extends Command {
         ]);
         $this->outputComponents()->success('Migration file created successfully!');
 
-        // Step 11: Run composer dump-autoload
+        // Step 11: Add PSR-4 autoloading config
+        $composerFile = $projectRoot.DIRECTORY_SEPARATOR.'composer.json';
+        $composer = json_decode(file_get_contents($composerFile), true);
+        $composer['autoload']['psr-4']["Inensus\\{$nameSpace}\\"] = "app/Plugins/{$pluginName}";
+
+        file_put_contents(
+            $composerFile,
+            // Custom to get 2 space indentation
+            preg_replace(
+                '/^(  +?)\\1(?=[^ ])/m',
+                '$1',
+                json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES).PHP_EOL
+            )
+        );
+
+        // Step 12: Run composer dump-autoload
         $this->outputComponents()->info('Running composer dump-autoload...');
         exec('composer dump-autoload', $output, $resultCode);
 
