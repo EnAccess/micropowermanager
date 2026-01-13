@@ -4,8 +4,7 @@ import { withMermaid } from "vitepress-plugin-mermaid"
 
 // https://vitepress-sidebar.jooy2.com/getting-started
 const vitepressSidebarOptions = {
-  excludePattern: ["README.md"],
-  excludeFolders: ["roadmap"],
+  excludePattern: ["README.md", "roadmap.md"],
   excludeFilesByFrontmatterFieldName: "exclude_from_sidebar",
   sortMenusByFrontmatterOrder: true,
   useFolderTitleFromIndexFile: true,
@@ -60,7 +59,7 @@ export default withMermaid(
       nav: [
         { text: "Home", link: "/" },
         { text: "Docs", link: "/get-started" },
-        { text: "Roadmap", link: "/roadmap/" },
+        { text: "Roadmap", link: "/roadmap" },
       ],
       footer: {
         message: [
