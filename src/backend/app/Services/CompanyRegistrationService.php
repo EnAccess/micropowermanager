@@ -248,7 +248,7 @@ class CompanyRegistrationService {
     private function rollbackTransactions(): void {
         try {
             DB::connection('micro_power_manager')->rollBack();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Transaction may not be active, ignore
         }
 
