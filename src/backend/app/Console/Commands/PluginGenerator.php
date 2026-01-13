@@ -98,9 +98,14 @@ class PluginGenerator extends Command {
         ]);
 
         // Step 3: Providers and routes
+
+        // Update providers
         $providersDir = "{$pluginPath}/Providers";
         foreach (['EventServiceProvider', 'ObserverServiceProvider', 'RouteServiceProvider'] as $file) {
-            $this->replaceInFile("{$providersDir}/{$file}.php", ['{{Plugin-Name}}' => $nameSpace]);
+            $this->replaceInFile("{$providersDir}/{$file}.php", [
+                '{{Plugin-Name}}' => $nameSpace,
+                '{{plugin-name}}' => $pluginName,
+            ]);
         }
 
         // Rename and update main provider
@@ -121,6 +126,15 @@ class PluginGenerator extends Command {
             $providerContent
         );
         File::put($mainProviderNew, $providerContent);
+
+        // Update routes
+        $routesDir = "{$pluginPath}/routes";
+        foreach (['api'] as $file) {
+            $this->replaceInFile("{$routesDir}/{$file}.php", [
+                '{{Plugin-Name}}' => $nameSpace,
+                '{{plugin-name}}' => $pluginName,
+            ]);
+        }
 
         // Step 4: Update frontend and frontend routes
         $projectRootFrontend = join(
