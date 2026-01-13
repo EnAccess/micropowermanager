@@ -10,11 +10,11 @@ return new class extends Migration {
         DB::table('mpm_plugins')->insert([
             [
                 'id' => MpmPlugin::{{constantName}},
-                'name' => '{{Package-Name}}',
+                'name' => '{{Plugin-Name}}',
                 'description' => '{{description}}',
-                'tail_tag' => '{{Package-Name}}',
-                'installation_command' => '{{package-name}}:install',
-                'root_class' => '{{Package-Name}}',
+                'tail_tag' => '{{Plugin-Name}}',
+                'installation_command' => '{{plugin-name}}:install',
+                'root_class' => '{{Plugin-Name}}',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

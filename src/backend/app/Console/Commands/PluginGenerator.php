@@ -5,9 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class PackageGenerator extends Command {
-    protected $signature = 'micropowermanager:new-package {package-name} {--description= : Optional description for the plugin}';
-    protected $description = 'Creates a new plugin package with automatic integration setup';
+class PluginGenerator extends Command {
+    protected $signature = 'micropowermanager:new-plugin {plugin-name} {--description= : Optional description for the plugin}';
+    protected $description = 'Creates a new MicroPowerManager plugin';
 
     /**
      * Helper function to replace placeholders in files similar to `sed`.
@@ -23,10 +23,10 @@ class PackageGenerator extends Command {
     }
 
     public function handle(): int {
-        $packageNameArg = $this->argument('package-name');
-        $packageName = strtolower($packageNameArg);
+        $pluginNameArg = $this->argument('plugin-name');
+        $pluginName = strtolower($pluginNameArg);
         $nameSpace = '';
-        $strings = preg_split('/([-.*\/])/', $packageNameArg);
+        $strings = preg_split('/([-.*\/])/', $pluginNameArg);
         $firstCapitals = array_map(ucfirst(...), $strings);
         foreach ($firstCapitals as $item) {
             $nameSpace .= $item;
@@ -38,7 +38,7 @@ class PackageGenerator extends Command {
         if ($isInDocker) {
             $this->warn('⚠️  It looks like you are running this command inside a Docker container.');
             $this->warn('');
-            $this->warn('Package creation requires access to both the frontend and backend code.');
+            $this->warn('Plugin creation requires access to both the frontend and backend code.');
             $this->warn('Running inside the MicroPowerManager backend development container is not supported,');
             $this->warn('because it only has access to the backend source code.');
 
@@ -49,12 +49,12 @@ class PackageGenerator extends Command {
             }
         }
 
-        $description = $this->option('description') ?: "This plugin developed for {$nameSpace} functionality.";
+        $description = $this->option('description') ?: "This plugin adds {$nameSpace} functionality to MicroPowerManager.";
 
-        $this->info("Creating package: {$packageName} with namespace: {$nameSpace}");
+        $this->info("Creating plugin: {$pluginName} with namespace: {$nameSpace}");
         $this->info("Description: {$description}");
 
-        $this->info('Running package generation script...');
+        $this->info('Running plugin generation script...');
 
         // Determine project root
         $projectRoot = File::isDirectory('/var/www/html') ? '/var/www/html' : base_path();
@@ -68,9 +68,12 @@ class PackageGenerator extends Command {
 
         $this->info("Next available plugin ID: {$nextPluginId}");
 
-        // Clone template
-        $packagePath = "{$projectRoot}/packages/inensus/{$packageName}";
-        $sourceTemplate = dirname($projectRoot).DIRECTORY_SEPARATOR.'plugin-template';
+        // Step 1: Clone backend template
+        $pluginPath = "{$projectRoot}/app/Plugins/{$pluginName}";
+        $sourceTemplate = join(
+            DIRECTORY_SEPARATOR,
+            [dirname($projectRoot), 'plugin-template', 'backend']
+        );
 
         if (!File::exists($sourceTemplate)) {
             $this->error("Template not found at: {$sourceTemplate}");
@@ -78,28 +81,28 @@ class PackageGenerator extends Command {
             return 1;
         }
 
-        File::copyDirectory($sourceTemplate, $packagePath);
+        File::copyDirectory($sourceTemplate, $pluginPath);
 
         // Step 2: Update InstallPackage.php
-        $this->replaceInFile("{$packagePath}/src/Console/Commands/InstallPackage.php", [
-            '{{Package-Name}}' => $nameSpace,
-            '{{package-name}}' => $packageName,
+        $this->replaceInFile("{$pluginPath}/Console/Commands/InstallPackage.php", [
+            '{{Plugin-Name}}' => $nameSpace,
+            '{{plugin-name}}' => $pluginName,
         ]);
 
         // Step 3: Providers
-        $providersDir = "{$packagePath}/src/Providers";
+        $providersDir = "{$pluginPath}/Providers";
         foreach (['EventServiceProvider', 'ObserverServiceProvider', 'RouteServiceProvider'] as $file) {
-            $this->replaceInFile("{$providersDir}/{$file}.php", ['{{Package-Name}}' => $nameSpace]);
+            $this->replaceInFile("{$providersDir}/{$file}.php", ['{{Plugin-Name}}' => $nameSpace]);
         }
 
         // Rename and update main provider
-        $mainProviderOld = "{$providersDir}/{{Package-Name}}ServiceProvider.php";
+        $mainProviderOld = "{$providersDir}/{{Plugin-Name}}ServiceProvider.php";
         $mainProviderNew = "{$providersDir}/{$nameSpace}ServiceProvider.php";
         File::move($mainProviderOld, $mainProviderNew);
 
         $this->replaceInFile($mainProviderNew, [
-            '{{Package-Name}}' => $nameSpace,
-            '{{package-name}}' => $packageName,
+            '{{Plugin-Name}}' => $nameSpace,
+            '{{plugin-name}}' => $pluginName,
         ]);
 
         // Add namespace declaration
@@ -111,16 +114,21 @@ class PackageGenerator extends Command {
         );
         File::put($mainProviderNew, $providerContent);
 
-        // Step 4: Update frontend routes
-        $this->replaceInFile("{$packagePath}/src/resources/assets/js/routes.js", [
-            '{{package-name}}' => $packageName,
-        ]);
+        // Step 4: Update frontend and frontend routes
+        $projectRootFrontend = join(
+            DIRECTORY_SEPARATOR,
+            [dirname(base_path()), 'frontend']
+        );
+        $pluginPathFrontend = join(
+            DIRECTORY_SEPARATOR,
+            [$projectRootFrontend, 'src', 'plugins']
+        );
+        $sourceTemplateFrontend = join(
+            DIRECTORY_SEPARATOR,
+            [dirname($projectRootFrontend), 'plugin-template', 'frontend']
+        );
 
-        // Step 6: Update composer.json inside the plugin
-        $this->replaceInFile("{$packagePath}/composer.json", [
-            '{{Package-Name}}' => $nameSpace,
-            '{{package-name}}' => $packageName,
-        ]);
+        File::copyDirectory($sourceTemplateFrontend, $pluginPathFrontend);
 
         // Step 7: Register provider
         $this->info('Registering ServiceProvider in bootstrap/providers.php...');
@@ -163,18 +171,24 @@ class PackageGenerator extends Command {
         // Step 10: Create migration
         $this->info('Generating database migration for plugin registration...');
         $timestamp = now()->format('Y_m_d_His');
-        $migrationName = "add_{$packageName}_to_mpm_plugin_table";
-        $migrationSourceDir = "{$packagePath}/database/migrations";
+        $migrationName = "add_{$pluginName}_to_mpm_plugin_table";
+        $migrationTemplateDir = join(
+            DIRECTORY_SEPARATOR,
+            [dirname($projectRoot), 'plugin-template', 'migrations']
+        );
         $migrationFile = "{$projectRoot}/database/migrations/{$timestamp}_{$migrationName}.php";
 
         // Create the migration file directly since make:migration is causing issues
         $this->info("Creating migration file: $migrationFile");
-        File::move("{$migrationSourceDir}/add_{{package_name}}_to_mpm_plugin_table.php", $migrationFile);
+        File::copy(
+            "{$migrationTemplateDir}/add_{{plugin_name}}_to_mpm_plugin_table.php",
+            $migrationFile
+        );
         $this->replaceInFile($migrationFile, [
             '{{constantName}}' => $constantName,
             '{{description}}' => $description,
-            '{{Package-Name}}' => $nameSpace,
-            '{{package-name}}' => $packageName,
+            '{{Plugin-Name}}' => $nameSpace,
+            '{{plugin-name}}' => $pluginName,
         ]);
         $this->info('Migration file created successfully!');
 
@@ -194,17 +208,17 @@ class PackageGenerator extends Command {
         }
 
         $this->info("\n==================================================");
-        $this->info("Package '{$packageName}' created successfully!");
+        $this->info("Plugin '{$pluginName}' created successfully!");
         $this->info('==================================================');
         $this->line('Next steps:');
-        $this->line("1. Review the generated files in packages/inensus/{$packageName}");
-        $this->line("2. Move the UI folder to src/frontend/src/plugins/{$packageName}");
-        $this->line('3. Add frontend routes to src/frontend/src/ExportedRoutes.js');
+        $this->line("1. Review the generated files in app/Plugins/{$pluginName}");
+        // $this->line("2. Move the UI folder to src/frontend/src/plugins/{$pluginName}");
+        // $this->line('3. Add frontend routes to src/frontend/src/ExportedRoutes.js');
         $this->line('4. Run migration: php artisan migrate');
-        $this->line("5. Install plugin: php artisan {$packageName}:install");
+        // $this->line("5. Install plugin: php artisan {$pluginName}:install");
         $this->info('==================================================');
 
-        $this->info('Package generation completed!');
+        $this->info('Plugin generation completed!');
 
         return Command::SUCCESS;
     }
