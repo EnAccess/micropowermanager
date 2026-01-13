@@ -1683,4 +1683,5 @@ export const exportedRoutes = [
       },
     ],
   },
+  // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 ]

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget color="primary" title="{{ PluginName }} Overview">
+    <widget color="primary" title="{{Plugin-Name}} Overview">
       <div class="md-layout md-gutter">
         <div
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"

@@ -28,9 +28,8 @@ class PluginGenerator extends Command {
         $nameSpace = '';
         $strings = preg_split('/([-.*\/])/', $pluginNameArg);
         $firstCapitals = array_map(ucfirst(...), $strings);
-        foreach ($firstCapitals as $item) {
-            $nameSpace .= $item;
-        }
+        $nameSpace = implode('', $firstCapitals);
+        $pluginNameHumanReadable = implode(' ', $firstCapitals);
 
         $isInDocker = file_exists('/.dockerenv')
             || (file_exists('/proc/1/cgroup') && str_contains(file_get_contents('/proc/1/cgroup'), 'docker'));
@@ -148,6 +147,63 @@ class PluginGenerator extends Command {
 
         File::copyDirectory($sourceTemplateFrontend, $pluginPathFrontend);
 
+        // Add stuff to ExportedRoutes.js
+        $exportedRoutesFile = "{$projectRootFrontend}/src/ExportedRoutes.js";
+        $exportedRoutesFileContent = File::get($exportedRoutesFile);
+
+        $importStatement = "import {$nameSpace}Overview from \"./plugins/{$pluginName}/modules/Overview/Overview\"";
+        if (!str_contains($exportedRoutesFileContent, $importStatement)) {
+            $exportedRoutesFileContent = preg_replace(
+                '/(import.*from "\\.\\/plugins\\/\\S*)(?!import.*)/s',
+                "$1\n{$importStatement}",
+                $exportedRoutesFileContent
+            );
+        }
+
+        $exportedRoutesSnippet = <<<JS
+{
+    path: "/{$pluginName}",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: {$nextPluginId},
+        name: "{$pluginNameHumanReadable}",
+        icon: "cloud_upload",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: {$nameSpace}Overview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+JS;
+
+        $exportedRoutesFileContent = preg_replace(
+            '/^(\s*)(\/\/ NEW PLUGIN PLACEHOLDER \(DO NOT REMOVE THIS LINE\))/m',
+            '$1'.$exportedRoutesSnippet."\n".'$1$2',
+            $exportedRoutesFileContent,
+            1,
+        );
+
+        File::put($exportedRoutesFile, $exportedRoutesFileContent);
+
+        // Step 6.5: Update Frontend files with placeholders
+        foreach (['modules/Overview/Overview.vue'] as $file) {
+            $this->replaceInFile("{$pluginPathFrontend}/{$file}", [
+                '{{Plugin-Name}}' => $nameSpace,
+                '{{plugin-name}}' => $pluginName,
+            ]);
+        }
+
         // Step 7: Register provider
         $this->outputComponents()->info('Registering ServiceProvider in bootstrap/providers.php...');
         $providersFile = "{$projectRoot}/bootstrap/providers.php";
@@ -166,7 +222,7 @@ class PluginGenerator extends Command {
         $providersContent = preg_replace(
             '/];\s*$/m',
             "    {$nameSpace}ServiceProvider::class,\n];",
-            $providersContent
+            $providersContent.PHP_EOL
         );
 
         File::put($providersFile, $providersContent);
