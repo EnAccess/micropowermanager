@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\ServiceProvider;
+use Inensus\{{Plugin-Name}}\Console\Commands\InstallPackage;
 use Inensus\{{Plugin-Name}}\Providers\EventServiceProvider;
 use Inensus\{{Plugin-Name}}\Providers\RouteServiceProvider;
 use Inensus\{{Plugin-Name}}\Providers\ObserverServiceProvider;
