@@ -33,6 +33,4 @@ export default {
 }
 </script>
 
-<style scoped>
-/* Add any styles needed for overview content */
-</style>
+<style scoped></style>
