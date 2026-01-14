@@ -10,6 +10,12 @@ use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
+use App\Plugins\AngazaSHS\Models\AngazaTransaction;
+use App\Plugins\CalinMeter\Models\CalinTransaction;
+use App\Plugins\SunKingSHS\Models\SunKingTransaction;
+use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
+use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Services\DatabaseProxyManagerService;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
@@ -19,12 +25,6 @@ use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use Inensus\AngazaSHS\Models\AngazaTransaction;
-use Inensus\CalinMeter\Models\CalinTransaction;
-use Inensus\SunKingSHS\Models\SunKingTransaction;
-use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 class TransactionSeeder extends Seeder {
     public function __construct(

@@ -205,7 +205,7 @@ class PluginGenerator extends Command {
         $providersFile = "{$projectRootBackend}/bootstrap/providers.php";
         $providersContent = File::get($providersFile);
 
-        $useStatement = "use Inensus\\{$nameSpace}\\Providers\\{$nameSpace}ServiceProvider;";
+        $useStatement = "use App\Plugins\\{$nameSpace}\\Providers\\{$nameSpace}ServiceProvider;";
         if (!str_contains($providersContent, $useStatement)) {
             $providersContent = preg_replace(
                 '/(use Inensus.*ServiceProvider;)(?!.*use Inensus)/s',

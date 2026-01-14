@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\Prospect\Http\Requests;
+namespace App\Plugins\Prospect\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

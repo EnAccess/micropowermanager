@@ -1,15 +1,15 @@
 <?php
 
-namespace Inensus\Prospect\Http\Controllers;
+namespace App\Plugins\Prospect\Http\Controllers;
 
 use App\Models\MpmPlugin;
+use App\Plugins\Prospect\Http\Resources\ProspectResource;
+use App\Plugins\Prospect\Services\ProspectCredentialService;
 use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controller;
-use Inensus\Prospect\Http\Resources\ProspectResource;
-use Inensus\Prospect\Services\ProspectCredentialService;
 
 class ProspectCredentialController extends Controller {
     public function __construct(

@@ -1,11 +1,11 @@
 <?php
 
-namespace Inensus\Prospect\Services;
+namespace App\Plugins\Prospect\Services;
 
+use App\Plugins\Prospect\Models\ProspectCredential;
 use App\Traits\EncryptsCredentials;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
-use Inensus\Prospect\Models\ProspectCredential;
 
 class ProspectCredentialService {
     use EncryptsCredentials;

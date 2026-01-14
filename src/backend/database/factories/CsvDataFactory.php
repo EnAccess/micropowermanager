@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Plugins\BulkRegistration\Models\CsvData;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Inensus\BulkRegistration\Models\CsvData;
 
 /** @extends Factory<CsvData> */
 class CsvDataFactory extends Factory {

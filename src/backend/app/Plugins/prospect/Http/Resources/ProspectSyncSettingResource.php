@@ -1,10 +1,10 @@
 <?php
 
-namespace Inensus\Prospect\Http\Resources;
+namespace App\Plugins\Prospect\Http\Resources;
 
+use App\Plugins\Prospect\Models\ProspectSyncSetting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Inensus\Prospect\Models\ProspectSyncSetting;
 
 /**
  * @mixin ProspectSyncSetting

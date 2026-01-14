@@ -1,8 +1,8 @@
 <?php
 
+use App\Plugins\Prospect\Http\Controllers\ProspectCredentialController;
+use App\Plugins\Prospect\Http\Controllers\ProspectSyncSettingController;
 use Illuminate\Support\Facades\Route;
-use Inensus\Prospect\Http\Controllers\ProspectCredentialController;
-use Inensus\Prospect\Http\Controllers\ProspectSyncSettingController;
 
 Route::group(['prefix' => 'prospect'], function () {
     Route::group(['prefix' => 'credential'], function () {

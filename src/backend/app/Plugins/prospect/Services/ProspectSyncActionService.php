@@ -1,12 +1,12 @@
 <?php
 
-namespace Inensus\Prospect\Services;
+namespace App\Plugins\Prospect\Services;
 
+use App\Plugins\Prospect\Models\ProspectSyncAction;
+use App\Plugins\Prospect\Models\ProspectSyncSetting;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
-use Inensus\Prospect\Models\ProspectSyncAction;
-use Inensus\Prospect\Models\ProspectSyncSetting;
 
 class ProspectSyncActionService {
     public function __construct(private ProspectSyncAction $syncAction) {}

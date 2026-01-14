@@ -1,12 +1,12 @@
 <?php
 
-namespace Inensus\Prospect\Jobs;
+namespace App\Plugins\Prospect\Jobs;
 
 use App\Jobs\AbstractJob;
+use App\Plugins\Prospect\Http\Clients\ProspectApiClient;
+use App\Plugins\Prospect\Models\ProspectExtractedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Inensus\Prospect\Http\Clients\ProspectApiClient;
-use Inensus\Prospect\Models\ProspectExtractedFile;
 
 class PushInstallations extends AbstractJob {
     /**

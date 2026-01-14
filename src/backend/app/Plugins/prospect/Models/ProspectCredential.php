@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\Prospect\Models;
+namespace App\Plugins\Prospect\Models;
 
 use App\Models\Base\BaseModel;
 use Illuminate\Support\Carbon;

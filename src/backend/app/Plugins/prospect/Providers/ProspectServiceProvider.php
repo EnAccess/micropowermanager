@@ -1,12 +1,12 @@
 <?php
 
-namespace Inensus\Prospect\Providers;
+namespace App\Plugins\Prospect\Providers;
 
+use App\Plugins\Prospect\Console\Commands\InstallPackage;
+use App\Plugins\Prospect\Console\Commands\ProspectDataSynchronizer;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use Inensus\Prospect\Console\Commands\InstallPackage;
-use Inensus\Prospect\Console\Commands\ProspectDataSynchronizer;
 
 class ProspectServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem): void {
