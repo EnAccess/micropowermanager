@@ -37,7 +37,7 @@ class TenantSeeder extends Seeder {
             'email' => DemoCompany::DEMO_COMPANY_ADMIN_EMAIL,
         ]);
 
-        $companyDatabase = $this->companyDatabaseService->create([
+        $this->companyDatabaseService->create([
             'company_id' => $company->getId(),
             'database_name' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
         ]);

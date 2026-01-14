@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="$tc('phrases.newCluster', 1)" color="green">
+    <widget :title="$tc('phrases.newCluster', 1)" color="primary">
       <md-card class="md-layout-item md-size-100">
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -246,7 +246,8 @@ export default {
           return item
         })
       this.selectedCluster = geoDataItem
-      this.mappingService.geoData = geoDataItem
+      // Store the GeoJSON Feature
+      this.mappingService.geoData = geoDataItem.feature || geoDataItem
       this.$refs.clusterMapRef.drawCluster()
     },
     async saveCluster() {
@@ -272,11 +273,38 @@ export default {
         return
       }
       try {
+        // Extract GeoJSON Feature from selected cluster
+        let feature = this.selectedCluster.feature
+
+        // If no feature property exists but we have geojson (for manual draws), create the feature
+        if (
+          !feature &&
+          this.selectedCluster.geojson &&
+          this.selectedCluster.type === "manual"
+        ) {
+          feature = {
+            type: "Feature",
+            geometry: this.selectedCluster.geojson,
+            properties: {},
+          }
+        }
+
+        if (!feature || feature.type !== "Feature") {
+          throw new Error("Selected cluster must be a valid GeoJSON Feature")
+        }
+
+        if (
+          !feature.geometry ||
+          !feature.geometry.type ||
+          !feature.geometry.coordinates
+        ) {
+          throw new Error("Feature must contain valid geometry")
+        }
+
         const cluster = {
-          geoType: this.selectedCluster.type,
-          geoData: this.selectedCluster,
+          geo_json: feature,
           name: this.clusterName,
-          managerId: this.user,
+          manager_id: this.user,
         }
         await this.clusterService.createCluster(cluster)
         this.alertNotify("success", this.$tc("phrases.newClusterNotify2", 2))
@@ -304,15 +332,10 @@ export default {
     customDrawnDeletedSet(deletedItems) {
       this.mappingService.searchedOrDrawnItems =
         this.mappingService.searchedOrDrawnItems.filter((item) => {
-          const drawnItemCoordinates = item.geojson.coordinates[0].map(
-            (coord) => {
-              return [coord[1], coord[0]]
-            },
-          )
           return !deletedItems.some(
             (deletedItem) =>
-              JSON.stringify(drawnItemCoordinates) ===
-              JSON.stringify(deletedItem.feature.geometry.coordinates[0]),
+              JSON.stringify(item.geojson.coordinates) ===
+              JSON.stringify(deletedItem.feature.geometry.coordinates),
           )
         })
       if (this.mappingService.searchedOrDrawnItems.length === 0) {

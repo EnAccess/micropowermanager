@@ -2,7 +2,7 @@
   <widget
     :title="$tc('phrases.lastTransactions')"
     :paginator="userTransactionsService.paginator"
-    color="green"
+    color="primary"
     :subscriber="subscriber"
   >
     <md-table

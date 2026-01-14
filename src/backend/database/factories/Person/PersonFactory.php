@@ -52,10 +52,7 @@ class PersonFactory extends Factory {
      * @return array<string, mixed>
      */
     public function definition(): array {
-        $sex = fake()->randomKey(['male', 'female']);
-        $gender = $sex === 0
-            ? 'male'
-            : 'female';
+        $gender = fake()->randomElement(['male', 'female']);
 
         return [
             'title' => fake()->title($gender),
@@ -63,7 +60,7 @@ class PersonFactory extends Factory {
             'name' => fake()->firstName($gender),
             'surname' => fake()->lastName(),
             'birth_date' => fake()->date(),
-            'sex' => $sex,
+            'gender' => $gender,
             'is_customer' => 0,
         ];
     }

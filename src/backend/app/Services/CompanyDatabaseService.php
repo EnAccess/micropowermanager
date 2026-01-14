@@ -52,6 +52,16 @@ class CompanyDatabaseService implements IBaseService {
     }
 
     /**
+     * Creates only the CompanyDatabase record without setting up the physical database.
+     * Use this when you need more control over the database creation process (e.g., within transactions).
+     *
+     * @param array<string, mixed> $data
+     */
+    public function createRecord(array $data): CompanyDatabase {
+        return $this->companyDatabase->newQuery()->create($data);
+    }
+
+    /**
      * @param array<string, mixed> $data
      */
     public function update($model, array $data): CompanyDatabase {

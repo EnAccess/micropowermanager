@@ -77,7 +77,7 @@ class AgentTest extends TestCase {
         $response->assertStatus(200);
         $this->assertEquals($putData['name'], $response['data']['name']);
         $this->assertEquals($putData['phone'], $response['data']['person']['addresses'][0]['phone']);
-        $this->assertEquals($putData['gender'], $response['data']['person']['sex']);
+        $this->assertEquals($putData['gender'], $response['data']['person']['gender']);
     }
 
     public function testUserCanResetsAgentsPassword(): void {

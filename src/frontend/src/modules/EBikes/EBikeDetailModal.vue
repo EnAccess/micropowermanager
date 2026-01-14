@@ -99,7 +99,7 @@
               >
                 <md-switch
                   v-model="statusOn"
-                  class="data-stream-switch"
+                  class="md-primary data-stream-switch"
                   :disabled="loading"
                 >
                   <span v-if="eBike.statusOn">

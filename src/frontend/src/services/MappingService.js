@@ -61,7 +61,22 @@ export class MappingService {
     try {
       const { data, error, status } = await this.repository.get(name)
       if (status !== 200) return new ErrorHandler(error, "http", status)
-      this.searchedOrDrawnItems = this.filterResultsOut(data, filteredTypes)
+
+      // Filter GeoJSON features by type
+      const features = data.features || []
+      const filteredFeatures = this.filterGeoJSONFeatures(
+        features,
+        filteredTypes,
+      )
+
+      // Store for list display
+      this.searchedOrDrawnItems = filteredFeatures.map((feature) => ({
+        feature: feature,
+        display_name:
+          feature.properties?.display_name || feature.properties?.name || "",
+        searched: true,
+      }))
+
       return this.searchedOrDrawnItems
     } catch (e) {
       const errorMessage = e.response.data.data.message
@@ -69,19 +84,14 @@ export class MappingService {
     }
   }
 
-  filterResultsOut(geoData, filteredTypes) {
-    this.searchedOrDrawnItems = []
-    return geoData.filter((data) => {
-      const geoType = data.geojson.type.toLowerCase()
+  filterGeoJSONFeatures(features, filteredTypes) {
+    if (Object.keys(filteredTypes).length === 0) {
+      return features
+    }
 
-      if (
-        Object.keys(filteredTypes).length > 0 &&
-        !(geoType in filteredTypes)
-      ) {
-        return false
-      }
-      data.searched = true
-      return true
+    return features.filter((feature) => {
+      const geoType = feature.geometry?.type?.toLowerCase()
+      return geoType && geoType in filteredTypes
     })
   }
 
@@ -152,7 +162,18 @@ export class MappingService {
   }
 
   setGeoData(geoData) {
-    this.geoData = geoData
+    // geoData must be a GeoJSON Feature, FeatureCollection, or array of Features
+    if (Array.isArray(geoData)) {
+      this.geoData = geoData
+    } else if (geoData.type === "FeatureCollection") {
+      this.geoData = geoData.features || []
+    } else if (geoData.type === "Feature") {
+      this.geoData = [geoData]
+    } else {
+      throw new Error(
+        "geoData must be a GeoJSON Feature, FeatureCollection, or array of Features",
+      )
+    }
   }
 
   setConstantMarkerUrl(constantMarkerUrl) {

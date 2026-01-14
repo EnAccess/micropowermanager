@@ -1,7 +1,7 @@
 {
   "Exclude": [
-    "src/backend/packages/inensus/",
     "src/backend/bootstrap/cache/",
+    "src/backend/app/Plugins/micro-star-meter/Modules/Api/Certs/",
     "composer.phar",
     "vendor",
     "node_modules",
