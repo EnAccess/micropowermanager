@@ -18,6 +18,7 @@ Each plugin consists of:
 ## Quick Start
 
 1. **Prerequisites**
+
    - Running [advanced development environment](development-environment.md#advanced-development-environment) with local PHP installation
    - Basic knowledge of Laravel and Vue.js
 
@@ -33,12 +34,14 @@ Each plugin consists of:
    Replace `{plugin-name}` with the desired name of your plugin.
 
    This command:
+
    - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
    - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
    - Automatically generates and registers a new plugin id
    - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
 3. **Post-Creation Setup**
+
    - Review generated code structure
    - Follow integration steps below
 
@@ -50,7 +53,8 @@ Each plugin consists of:
 
 ## Integration Steps
 
-Follow these steps in order to integrate your plugin with MPM:
+The following steps describe how your plugin is integrated with MPM.
+Most of these steps are automatically executed when you run the `artisan micropowermanager:new-plugin` command.
 
 ### Step 1: Backend Integration
 
@@ -139,77 +143,22 @@ class MpmPlugin extends BaseModelCore {
 
 Your plugin will need several database migrations to integrate with MPM:
 
-##### a. Register Plugin Pages
+##### a. Create Plugin Tables
 
-First, register your plugin's pages to make them accessible:
-
-Create a migration to register your plugin's overview page:
-
-```php
-<?php
-
-use Carbon\Carbon;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
-
-return new class extends Migration {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
-        DB::table('protected_pages')->insert([
-            [
-                'name' => '/your-plugin/your-plugin-overview',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
-        DB::table('protected_pages')->where('name', '/your-plugin/your-plugin-overview')->delete();
-    }
-};
-```
-
-##### b. Create and Publish Plugin Tables
-
-Next, create the database tables should be created in the package `database/migrations`
-folder as stubs to be pulished:
+If your plugin needs to create database tables the migrations should be created core `database/migrations`
+folder:
 
 ```bash
 src
 └── backend
-    └── packages
-        └── inensus
-            └── your_plugin_example
-                └── database
-                    └── migrations
-                        └── create_custom_tables.php.stub
+    └── database
+        └── migrations
+            └── tenant
+                └── create_custom_plugin_table.php
 
 ```
 
-The generated migrations and other assets will be stored in your plugin's directory.
-To make them available to the core application,
-publish them using Laravel's vendor:publish command:
-
-```bash
-# Publish migrations
-php artisan vendor:publish
---provider="Inensus\YourPlugin\Providers\YourPluginServiceProvider" --tag="migrations"
-
-# You can also publish other assets like config files, views, etc.
-# Just add the appropriate tags in your ServiceProvider
-```
-
-##### c. Register Plugin in System
+##### b. Register Plugin in System
 
 Finally, add your plugin to MPM's plugin registry:
 
@@ -369,13 +318,23 @@ import YourPlugin from "@/plugins/your-plugin/modules/Overview/Component"
 Vue.component("Your-Plugin", YourPlugin)
 ```
 
-### Step 3: Testing Your Plugin
+## Advanced configurations
+
+> [!WARNING]
+> This section needs expansion.
+
+- Add plugin pages to Role-based access control (RBAC)
+- Creating external endpoints and using access keys
+
+## Testing Your Plugin
 
 1. Install the plugin:
 
    ```bash
    php artisan your-plugin:install
    ```
+
+   or enable the plugin via the Settings UI.
 
 2. Verify database setup:
    - Check migrations ran successfully
