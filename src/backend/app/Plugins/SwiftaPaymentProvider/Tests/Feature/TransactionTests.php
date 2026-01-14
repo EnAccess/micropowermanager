@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\MesombPaymentProvider\Tests\Feature;
+namespace App\Plugins\SwiftaPaymentProvider\Tests\Feature;
 
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;

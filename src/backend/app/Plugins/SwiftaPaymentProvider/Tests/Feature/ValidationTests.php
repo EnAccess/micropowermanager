@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\MesombPaymentProvider\Tests\Feature;
+namespace App\Plugins\SwiftaPaymentProvider\Tests\Feature;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
