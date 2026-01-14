@@ -354,9 +354,24 @@ export default {
     },
 
     onSort(sortData) {
-      // Vue Material calls this with {name: 'field_name', type: 'asc'|'desc'}
-      this.currentSortBy = sortData && sortData.name ? sortData.name : null
-      this.currentSortOrder = sortData && sortData.type ? sortData.type : "desc"
+      if (typeof sortData === "string") {
+        this.currentSortBy = sortData
+        if (
+          this.currentSortBy === sortData &&
+          this.currentSortOrder === "asc"
+        ) {
+          this.currentSortOrder = "desc"
+        } else {
+          this.currentSortOrder = "asc"
+        }
+      } else if (sortData && typeof sortData === "object") {
+        this.currentSortBy = sortData.name || null
+        this.currentSortOrder = sortData.type || "desc"
+      } else {
+        this.currentSortBy = null
+        this.currentSortOrder = "desc"
+      }
+
       this.getClientList(1)
     },
 
@@ -702,5 +717,37 @@ export default {
 
 .export-dialog .md-dialog-content {
   padding: 20px;
+}
+
+::v-deep .md-table-sortable-icon {
+  opacity: 1 !important;
+  transition: opacity 0.2s ease;
+
+  svg {
+    fill: rgba(0, 0, 0, 0.54) !important;
+  }
+}
+::v-deep .md-table-head.md-sorted .md-table-sortable-icon {
+  opacity: 1 !important;
+
+  svg {
+    fill: #448aff !important;
+  }
+}
+
+::v-deep .md-table-head:hover .md-table-sortable-icon {
+  opacity: 1 !important;
+
+  svg {
+    fill: rgba(0, 0, 0, 0.87) !important;
+  }
+}
+
+::v-deep .md-table-head.md-sorted:hover .md-table-sortable-icon {
+  opacity: 1 !important;
+
+  svg {
+    fill: #448aff !important;
+  }
 }
 </style>
