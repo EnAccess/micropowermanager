@@ -61,7 +61,7 @@
     <div class="release-nav">
       <button
         :class="['release-nav-btn', { active: activeRelease === 'all' }]"
-        @click="activeRelease = 'all'"
+        @click="navigateToRelease('all')"
       >
         <span class="release-version">All Versions</span>
         <span class="release-target">Full Roadmap</span>
@@ -73,7 +73,7 @@
           'release-nav-btn',
           { active: activeRelease === release.version },
         ]"
-        @click="activeRelease = release.version"
+        @click="navigateToRelease(release.version)"
       >
         <span class="release-version">{{ release.version }}</span>
         <span class="release-target">{{ release.target }}</span>
@@ -85,6 +85,7 @@
       <div
         v-for="release in filteredReleases"
         :key="release.version"
+        :id="getVersionId(release.version)"
         class="release-block"
       >
         <div class="release-header">
@@ -92,7 +93,14 @@
             <span class="badge-dot"></span>
             {{ getReleaseStatusLabel(release) }}
           </div>
-          <h2 class="release-title">{{ release.version }}</h2>
+          <h2 class="release-title">
+            <a
+              :href="`#${getVersionId(release.version)}`"
+              class="header-anchor"
+            >
+              {{ release.version }}
+            </a>
+          </h2>
           <p class="release-subtitle">{{ release.title }}</p>
           <p class="release-target-date">
             <svg
@@ -374,6 +382,34 @@ const getReleaseStatusLabel = (release: Release): string => {
   }
   return labels[status] || "Upcoming"
 }
+
+const getVersionId = (version: string): string => {
+  return version
+    .toLowerCase()
+    .replace(/mpm\s+/i, "")
+    .replace(/\s+/g, "-")
+}
+
+const navigateToRelease = (version: string | "all") => {
+  activeRelease.value = version
+
+  if (version !== "all") {
+    // Scroll to the version section
+    const elementId = getVersionId(version)
+    setTimeout(() => {
+      const element = document.getElementById(elementId)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" })
+        // Update URL hash without triggering page reload
+        window.history.pushState(null, "", `#${elementId}`)
+      }
+    }, 100) // Small delay to ensure DOM is updated after filter
+  } else {
+    // Remove hash from URL and scroll to top
+    window.history.pushState(null, "", window.location.pathname)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -628,6 +664,29 @@ $mobile: 419px;
   font-weight: 800;
   color: var(--vp-c-text-1);
   margin: 0.5rem 0;
+
+  .header-anchor {
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+
+    &:hover {
+      color: var(--vp-c-brand-1);
+    }
+
+    &::before {
+      content: "#";
+      position: absolute;
+      left: -1.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      color: var(--vp-c-brand-1);
+    }
+
+    &:hover::before {
+      opacity: 1;
+    }
+  }
 }
 
 .release-subtitle {
