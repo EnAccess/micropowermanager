@@ -18,7 +18,6 @@ Each plugin consists of:
 ## Quick Start
 
 1. **Prerequisites**
-
    - Running [advanced development environment](development-environment.md#advanced-development-environment) with local PHP installation
    - Basic knowledge of Laravel and Vue.js
 
@@ -34,14 +33,12 @@ Each plugin consists of:
    Replace `{plugin-name}` with the desired name of your plugin.
 
    This command:
-
    - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
    - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
    - Automatically generates and registers a new plugin id
    - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
 3. **Post-Creation Setup**
-
    - Review generated code structure
    - Follow integration steps below
 
