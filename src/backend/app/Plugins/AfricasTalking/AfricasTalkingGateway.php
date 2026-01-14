@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\AfricasTalking;
+namespace App\Plugins\AfricasTalking;
 
 use AfricasTalking\SDK\AfricasTalking;
 use App\Models\Sms;
