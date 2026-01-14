@@ -394,18 +394,15 @@ const navigateToRelease = (version: string | "all") => {
   activeRelease.value = version
 
   if (version !== "all") {
-    // Scroll to the version section
     const elementId = getVersionId(version)
     setTimeout(() => {
       const element = document.getElementById(elementId)
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "start" })
-        // Update URL hash without triggering page reload
         window.history.pushState(null, "", `#${elementId}`)
       }
-    }, 100) // Small delay to ensure DOM is updated after filter
+    }, 100)
   } else {
-    // Remove hash from URL and scroll to top
     window.history.pushState(null, "", window.location.pathname)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
