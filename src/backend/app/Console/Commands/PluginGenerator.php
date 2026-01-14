@@ -300,11 +300,10 @@ JS;
 
         $this->outputComponents()->line('info', 'Next steps:');
         $this->outputComponents()->bulletList([
-            "Review the generated files in app/Plugins/{$pluginName}",
-            // "Move the UI folder to src/frontend/src/plugins/{$pluginName}",
-            // 'Add frontend routes to src/frontend/src/ExportedRoutes.js',
-            'Run migration: php artisan migrate',
-            // "Install plugin: php artisan {$pluginName}:install",
+            "Review the generated backend files in src/backend/app/Plugins/{$pluginName}",
+            "Review the generated frontend files in src/frontend/src/plugins/{$pluginName}",
+            'Run migration: `php artisan migrate`',
+            'Start developing your new plugin. See the Plugin Development guide for more! https://micropowermanager.io/development/plugins.html',
         ]);
 
         return Command::SUCCESS;
