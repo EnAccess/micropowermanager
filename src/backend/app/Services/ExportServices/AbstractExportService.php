@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\ExportServices;
 
 use App\Exceptions\ActiveSheetNotCreatedException;
 use App\Exceptions\Export\CsvNotSavedException;
@@ -186,5 +186,12 @@ abstract class AbstractExportService {
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0775, true);
         }
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function exportDataToArray(): array {
+        return $this->exportingData->toArray();
     }
 }

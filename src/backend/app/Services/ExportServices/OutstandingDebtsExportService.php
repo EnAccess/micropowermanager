@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\ExportServices;
 
 use App\Helpers\MailHelper;
 use App\Models\ApplianceRate;
 use App\Models\User;
+use App\Services\ApplianceRateService;
+use App\Services\UserService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -87,5 +89,26 @@ class OutstandingDebtsExportService extends AbstractExportService {
 
     public function getPrefix(): string {
         return 'OutstandingDebtsExport';
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function exportDataToArray(): array {
+        if ($this->outstandingDebtsData->isEmpty()) {
+            return [];
+        }
+        // TODO: support some form of pagination to limit the data to be exported using json
+        // transform exporting data to JSON structure for outstanding debts export
+        $jsonDataTransform = $this->outstandingDebtsData->map(fn (ApplianceRate $applianceRate): array => [
+            'customer' => $applianceRate->appliancePerson->person->name.' '.$applianceRate->appliancePerson->person->surname,
+            'appliance' => $applianceRate->appliancePerson->appliance->name,
+            'device_serial' => $applianceRate->appliancePerson->device_serial,
+            'due_date' => $applianceRate->due_date,
+            'remaining' => $this->readable($applianceRate->remaining),
+            'currency' => $this->currency,
+        ]);
+
+        return $jsonDataTransform->all();
     }
 }

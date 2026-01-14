@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\ExportServices;
 
 use App\Models\Person\Person;
 use Illuminate\Support\Collection;
@@ -64,5 +64,36 @@ class PersonExportService extends AbstractExportService {
 
     public function getPrefix(): string {
         return 'CustomerExport';
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function exportDataToArray(): array {
+        if ($this->peopleData->isEmpty()) {
+            return [];
+        }
+        // TODO: support some form of pagination to limit the data to be exported using json
+        // transform exporting data to JSON structure for person export
+        $jsonDataTransform = $this->peopleData->map(function (Person $person): array {
+            $primaryAddress = $person->addresses->first();
+            $devices = $person->devices->pluck('device_serial')->filter()->implode(', ');
+            $agent = optional($person->agentSoldAppliance?->assignedAppliance?->agent);
+
+            return [
+                'title' => $person->title,
+                'name' => $person->name,
+                'surname' => $person->surname,
+                'birth_date' => $person->birth_date,
+                'gender' => $person->gender,
+                'email' => $primaryAddress?->email,
+                'phone' => $primaryAddress?->phone,
+                'city' => $primaryAddress?->city?->name,
+                'devices' => $devices,
+                'agent' => $agent->person->name ?? '',
+            ];
+        });
+
+        return $jsonDataTransform->all();
     }
 }

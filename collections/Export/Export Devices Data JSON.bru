@@ -1,19 +1,19 @@
 meta {
-  name: Export Customers Data CSV
+  name: Export Devices Data JSON
   type: http
-  seq: 4
+  seq: 11
 }
 
 get {
-  url: {{mpm_backend_url}}/api/export/customers?format=csv
+  url: {{mpm_backend_url}}/api/export/devices?format=json
   body: none
   auth: inherit
 }
 
 params:query {
-  format: csv
+  format: json
   ~miniGrid: Main Grid
   ~village: Village Name
   ~deviceType: meter
-  ~isActive: true
+  ~manufacturer: Spark Meter
 }
