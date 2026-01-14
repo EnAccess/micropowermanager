@@ -16,15 +16,15 @@ If you prefer to install dependencies manually or need to add additional package
    docker exec -it -u www-data backend-dev bash
    ```
 
-2. Run the following command to install dependencies, replacing {package-name} with the actual name of the package:
+2. Run the following command to install dependencies, replacing {plugin-name} with the actual name of the package:
 
    ```bash
-    ./composer.phar install {package-name}
+    ./composer.phar install {plugin-name}
    ```
 
 These steps ensure that you can manage dependencies either automatically during the initial docker-compose up or
 manually when needed.
-Make sure to replace `{package-name}` with the actual name of the package you want to install.
+Make sure to replace `{plugin-name}` with the actual name of the package you want to install.
 
 We followed the laravel folder structure for the backend.
 If you want to learn more about the folder structure, you can check the [Laravel documentation](https://laravel.com/docs/9.x/structure).
