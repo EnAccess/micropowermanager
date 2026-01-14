@@ -2,10 +2,20 @@
   <div>
     <widget color="primary" title="{{Plugin-Name}} Overview">
       <div class="md-layout md-gutter">
-        <div
-          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-        >
-          <Credential />
+        <div class="md-layout-item md-size-100">
+          <md-empty-state
+            md-label="{{Plugin-Name}} MicroPowerManager plugin "
+            md-description="Your plugin was created successfully 🎉. Replace this page with your own implementation and extend the platform with custom functionality."
+          >
+            <md-button
+              class="md-primary md-raised"
+              href="https://micropowermanager.io/development/plugins.html"
+              target="_blank"
+              rel="noopener"
+            >
+              Plugin Development Guide
+            </md-button>
+          </md-empty-state>
         </div>
       </div>
     </widget>

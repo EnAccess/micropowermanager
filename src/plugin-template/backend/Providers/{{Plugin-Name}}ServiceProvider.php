@@ -1,4 +1,7 @@
 <?php
+
+namespace Inensus\{{Plugin-Name}}\Providers;
+
 use Illuminate\Support\ServiceProvider;
 use Inensus\{{Plugin-Name}}\Console\Commands\InstallPackage;
 use Inensus\{{Plugin-Name}}\Providers\EventServiceProvider;
