@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\Prospect\Console\Commands;
+namespace App\Plugins\Prospect\Console\Commands;
 
 use Illuminate\Console\Command;
 

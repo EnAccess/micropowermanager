@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\{{Plugin-Name}}\Providers;
+namespace App\Plugins\{{Plugin-Name}}\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;

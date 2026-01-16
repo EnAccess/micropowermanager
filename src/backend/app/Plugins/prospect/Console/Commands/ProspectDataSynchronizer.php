@@ -1,21 +1,21 @@
 <?php
 
-namespace Inensus\Prospect\Console\Commands;
+namespace App\Plugins\Prospect\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Plugins\Prospect\Jobs\ExtractAgents;
+use App\Plugins\Prospect\Jobs\ExtractCustomers;
+use App\Plugins\Prospect\Jobs\ExtractInstallations;
+use App\Plugins\Prospect\Jobs\ExtractPayments;
+use App\Plugins\Prospect\Jobs\PushAgents;
+use App\Plugins\Prospect\Jobs\PushCustomers;
+use App\Plugins\Prospect\Jobs\PushInstallations;
+use App\Plugins\Prospect\Jobs\PushPayments;
+use App\Plugins\Prospect\Models\ProspectSyncSetting;
+use App\Plugins\Prospect\Services\ProspectSyncActionService;
+use App\Plugins\Prospect\Services\ProspectSyncSettingService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
-use Inensus\Prospect\Jobs\ExtractAgents;
-use Inensus\Prospect\Jobs\ExtractCustomers;
-use Inensus\Prospect\Jobs\ExtractInstallations;
-use Inensus\Prospect\Jobs\ExtractPayments;
-use Inensus\Prospect\Jobs\PushAgents;
-use Inensus\Prospect\Jobs\PushCustomers;
-use Inensus\Prospect\Jobs\PushInstallations;
-use Inensus\Prospect\Jobs\PushPayments;
-use Inensus\Prospect\Models\ProspectSyncSetting;
-use Inensus\Prospect\Services\ProspectSyncActionService;
-use Inensus\Prospect\Services\ProspectSyncSettingService;
 
 class ProspectDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;

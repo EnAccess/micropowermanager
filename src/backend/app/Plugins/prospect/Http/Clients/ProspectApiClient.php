@@ -1,10 +1,10 @@
 <?php
 
-namespace Inensus\Prospect\Http\Clients;
+namespace App\Plugins\Prospect\Http\Clients;
 
+use App\Plugins\Prospect\Services\ProspectCredentialService;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
-use Inensus\Prospect\Services\ProspectCredentialService;
 
 class ProspectApiClient {
     public function __construct(private ProspectCredentialService $credentialService) {}

@@ -1,16 +1,16 @@
 <?php
 
-namespace Inensus\Prospect\Jobs;
+namespace App\Plugins\Prospect\Jobs;
 
 use App\Jobs\AbstractJob;
 use App\Models\DatabaseProxy;
 use App\Models\PaymentHistory;
 use App\Models\Token;
 use App\Models\User;
+use App\Plugins\Prospect\Models\ProspectExtractedFile;
+use App\Plugins\Prospect\Services\ProspectPaymentTransformer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Inensus\Prospect\Models\ProspectExtractedFile;
-use Inensus\Prospect\Services\ProspectPaymentTransformer;
 
 class ExtractPayments extends AbstractJob {
     /**

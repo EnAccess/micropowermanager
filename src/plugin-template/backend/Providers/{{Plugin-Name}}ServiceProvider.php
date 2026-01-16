@@ -1,12 +1,12 @@
 <?php
 
-namespace Inensus\{{Plugin-Name}}\Providers;
+namespace App\Plugins\{{Plugin-Name}}\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Inensus\{{Plugin-Name}}\Console\Commands\InstallPackage;
-use Inensus\{{Plugin-Name}}\Providers\EventServiceProvider;
-use Inensus\{{Plugin-Name}}\Providers\RouteServiceProvider;
-use Inensus\{{Plugin-Name}}\Providers\ObserverServiceProvider;
+use App\Plugins\{{Plugin-Name}}\Console\Commands\InstallPackage;
+use App\Plugins\{{Plugin-Name}}\Providers\EventServiceProvider;
+use App\Plugins\{{Plugin-Name}}\Providers\RouteServiceProvider;
+use App\Plugins\{{Plugin-Name}}\Providers\ObserverServiceProvider;
 
 class {{Plugin-Name}}ServiceProvider extends ServiceProvider
 {

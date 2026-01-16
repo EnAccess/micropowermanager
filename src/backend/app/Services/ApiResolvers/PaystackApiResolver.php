@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services\ApiResolvers;
 
+use App\Plugins\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 use App\Services\Interfaces\IApiResolver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Inensus\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 use Tymon\JWTAuth\JWTGuard;
 
 class PaystackApiResolver implements IApiResolver {

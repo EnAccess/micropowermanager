@@ -1,15 +1,15 @@
 <?php
 
-namespace Inensus\Prospect\Jobs;
+namespace App\Plugins\Prospect\Jobs;
 
 use App\Jobs\AbstractJob;
 use App\Models\Agent;
 use App\Models\DatabaseProxy;
 use App\Models\User;
+use App\Plugins\Prospect\Models\ProspectExtractedFile;
+use App\Plugins\Prospect\Services\ProspectAgentTransformer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Inensus\Prospect\Models\ProspectExtractedFile;
-use Inensus\Prospect\Services\ProspectAgentTransformer;
 
 class ExtractAgents extends AbstractJob {
     /**

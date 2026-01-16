@@ -100,7 +100,7 @@ class PluginGenerator extends Command {
         // copy template
         $pluginPathBackend = implode(
             DIRECTORY_SEPARATOR,
-            [$projectRootBackend, 'app', 'Plugins', $pluginName]
+            [$projectRootBackend, 'app', 'Plugins', $nameSpace]
         );
         $sourceTemplateBackend = implode(
             DIRECTORY_SEPARATOR,
@@ -205,7 +205,7 @@ class PluginGenerator extends Command {
         $providersFile = "{$projectRootBackend}/bootstrap/providers.php";
         $providersContent = File::get($providersFile);
 
-        $useStatement = "use Inensus\\{$nameSpace}\\Providers\\{$nameSpace}ServiceProvider;";
+        $useStatement = "use App\Plugins\\{$nameSpace}\\Providers\\{$nameSpace}ServiceProvider;";
         if (!str_contains($providersContent, $useStatement)) {
             $providersContent = preg_replace(
                 '/(use Inensus.*ServiceProvider;)(?!.*use Inensus)/s',
@@ -225,24 +225,7 @@ class PluginGenerator extends Command {
 
         $this->outputComponents()->success("Plugin provider {$nameSpace}ServiceProvider added to {$providersFile}.");
 
-        // Step 3.2: Add PSR-4 autoloading config
-        $composerFile = $projectRootBackend.DIRECTORY_SEPARATOR.'composer.json';
-        $composer = json_decode(file_get_contents($composerFile), true);
-        $composer['autoload']['psr-4']["Inensus\\{$nameSpace}\\"] = "app/Plugins/{$pluginName}";
-
-        file_put_contents(
-            $composerFile,
-            // Custom to get 2 space indentation
-            preg_replace(
-                '/^(  +?)\\1(?=[^ ])/m',
-                '$1',
-                json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES).PHP_EOL
-            )
-        );
-
-        $this->outputComponents()->success("PSR-4 autoload configuration added to {$composerFile}.");
-
-        // Step 3.3: Add plugin UI component to ExportedRoutes.js (this generates the sidebar entry)
+        // Step 3.2: Add plugin UI component to ExportedRoutes.js (this generates the sidebar entry)
         $exportedRoutesFile = "{$projectRootFrontend}/src/ExportedRoutes.js";
         $exportedRoutesFileContent = File::get($exportedRoutesFile);
 

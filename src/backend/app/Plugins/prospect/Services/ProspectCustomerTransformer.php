@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\Prospect\Services;
+namespace App\Plugins\Prospect\Services;
 
 use App\Models\Address\Address;
 use App\Models\Person\Person;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\Prospect\Models;
+namespace App\Plugins\Prospect\Models;
 
 use App\Models\Base\BaseModel;
 use Illuminate\Support\Carbon;
@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int         $id
  * @property string      $action_name
+ * @property bool        $is_enabled
  * @property string      $sync_in_value_str
  * @property int         $sync_in_value_num
  * @property int         $max_attempts

@@ -3,15 +3,15 @@
 namespace App\Providers\Helpers;
 
 use App\Models\Transaction\AgentTransaction;
+use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use App\Plugins\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
+use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
+use App\Plugins\WavecomPaymentProvider\Providers\WaveComTransactionProvider;
+use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 use App\Providers\AgentTransactionProvider;
 use App\Providers\Interfaces\ITransactionProvider;
-use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
-use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use Inensus\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
-use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
-use Inensus\WavecomPaymentProvider\Providers\WaveComTransactionProvider;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 
 class TransactionAdapter {
     /**

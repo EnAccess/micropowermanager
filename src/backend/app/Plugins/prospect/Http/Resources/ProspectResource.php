@@ -1,10 +1,10 @@
 <?php
 
-namespace Inensus\Prospect\Http\Resources;
+namespace App\Plugins\Prospect\Http\Resources;
 
+use App\Plugins\Prospect\Models\ProspectCredential;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Inensus\Prospect\Models\ProspectCredential;
 
 /**
  * @mixin ProspectCredential

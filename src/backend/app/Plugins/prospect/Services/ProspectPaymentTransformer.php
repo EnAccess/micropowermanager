@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\Prospect\Services;
+namespace App\Plugins\Prospect\Services;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\ApplianceRate;
