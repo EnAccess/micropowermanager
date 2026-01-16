@@ -1,6 +1,6 @@
 locals {
   gateway_external_ip_name = "${var.resource_prefix}ipsec-gateway-external-ip${var.resource_suffix}"
-  internal_ip_name         = "${var.resource_prefix}ipsec-internal-ip${var.resource_suffix}"
+  gateway_internal_ip_name         = "${var.resource_prefix}ipsec-internal-ip${var.resource_suffix}"
   gke_instance_name        = "${var.resource_prefix}ipsec-gateway${var.resource_suffix}"
 }
 
@@ -14,6 +14,14 @@ resource "google_compute_address" "ipsec_gateway_external_ip" {
   project = var.gcp_project_id
 
   name   = local.gateway_external_ip_name
+  region = var.gcp_region
+}
+
+resource "google_compute_address" "ipsec_gateway_internal_ip" {
+  project = var.gcp_project_id
+
+  name   = local.gateway_internal_ip_name
+  address_type = "INTERNAL"
   region = var.gcp_region
 }
 
@@ -58,6 +66,8 @@ resource "google_compute_instance" "ipsec_gateway" {
     access_config {
       nat_ip = google_compute_address.ipsec_gateway_external_ip.address
     }
+
+    network_ip = google_compute_address.ipsec_gateway_internal_ip.address
   }
 
   metadata = {
