@@ -84,6 +84,19 @@ EOT
   }
 }
 
+variable "create_internal_loadbalancer_tls" {
+  description = "Determines whether an self-signed certificate will be created and uploaded to GCP Certificate Manager. This certificate can be used in the internal LB in scenarios where there is the additional requirement to serve trafficIPSec tunnels are to be established."
+  type        = bool
+  default     = false
+
+  validation {
+    condition = (
+      !var.create_internal_loadbalancer_tls || var.create_internal_loadbalancer_address
+    )
+    error_message = "create_internal_loadbalancer_address must be true when create_internal_loadbalancer_tls is enabled."
+  }
+}
+
 variable "db_tier" {
   description = "The machine type to use for the Cloud SQL database. See tiers for more details and supported versions."
   type        = string

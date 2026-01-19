@@ -7,6 +7,9 @@ module "micropowermanager_cloud" {
   configure_gcp_project = true
   create_k8s_cluster    = true
 
+  create_internal_loadbalancer_address = true
+  create_internal_loadbalancer_tls     = true
+
   resource_prefix = ""
   resource_suffix = "-cloud"
 
