@@ -25,3 +25,17 @@ variable "gke_machine_type" {
   type        = string
   default     = "e2-small"
 }
+
+variable "compute_routes_to_right_side" {
+  description = "List of destination IP ranges (CIDR blocks) in the right subnets. For each entry, a Google Compute Route will be provisioned."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for cidr in var.compute_routes_to_right_side :
+      can(cidrnetmask(cidr))
+    ])
+    error_message = "All entries in compute_routes_to_right_side must be valid CIDR blocks (e.g. 10.0.0.0/16)."
+  }
+}
