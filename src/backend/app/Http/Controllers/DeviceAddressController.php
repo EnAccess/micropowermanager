@@ -21,8 +21,7 @@ class DeviceAddressController extends Controller {
             $serialNumber = $deviceData['serial_number'];
             $device = $this->deviceService->getBySerialNumber($serialNumber);
             $previousDataOfDevice = json_encode($device->toArray());
-            $deviceAddress = $this->deviceAddressService->getAddressByDevice($device);
-            $this->deviceAddressService->updateDeviceAddress($deviceAddress, $deviceData);
+            $this->deviceAddressService->updateDeviceAddress($device, $deviceData);
             $updatedDevice = $this->deviceService->getBySerialNumber($serialNumber);
             $updatedDataOfDevice = json_encode($updatedDevice->toArray());
             event(new NewLogEvent([

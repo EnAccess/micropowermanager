@@ -75,12 +75,12 @@ class SyncBikes extends AbstractSharedCommand {
             $updatingData
         );
 
-        $address = $this->deviceAddressService->getAddressByDevice($eBike->device);
+        $device = $eBike->device;
         $geoData = [
             'points' => $updatingData['lat'].','.$updatingData['lng'],
         ];
 
-        $address->geo->points = $geoData['points'];
-        $address->geo->save();
+        $device->geo->points = $geoData['points'];
+        $device->geo->save();
     }
 }

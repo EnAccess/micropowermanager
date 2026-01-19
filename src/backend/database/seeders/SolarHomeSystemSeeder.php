@@ -86,19 +86,16 @@ class SolarHomeSystemSeeder extends Seeder {
                 ->has(
                     Address::factory()
                         ->for($person->addresses->first()->city)
-                        ->has(
-                            GeographicalInformation::factory()
-                                // https://github.com/larastan/larastan/issues/2307
-                                // @phpstan-ignore argument.type
-                                ->state(function (array $attributes, Address $address) {
-                                    /** @var Device $device */
-                                    $device = $address->owner()->first();
-
-                                    return ['points' => $device->person->addresses->first()->geo->points];
-                                })
-                                ->randomizePointsInHousehold(),
-                            'geo'
-                        )
+                )
+                ->has(
+                    GeographicalInformation::factory()
+                        // https://github.com/larastan/larastan/issues/2307
+                        // @phpstan-ignore argument.type
+                        ->state(function (array $attributes, Device $device) {
+                            return ['points' => $device->person->addresses->first()->geo->points];
+                        })
+                        ->randomizePointsInHousehold(),
+                    'geo'
                 )
                 ->create([
                     'device_serial' => $solarHomeSystem->serial_number,

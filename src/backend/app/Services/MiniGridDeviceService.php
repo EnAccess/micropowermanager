@@ -28,7 +28,7 @@ class MiniGridDeviceService {
      */
     public function getDevicesByMiniGridId(int $miniGridId): Collection {
         return $this->device->newQuery()
-            ->with(['device', 'address.geo'])
+            ->with(['device', 'geo'])
             ->whereHasMorph(
                 'device',
                 '*'

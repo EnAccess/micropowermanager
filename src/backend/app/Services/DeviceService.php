@@ -26,7 +26,7 @@ class DeviceService implements IBaseService, IAssociative {
 
     public function getBySerialNumber(string $serialNumber): ?Device {
         return $this->device->newQuery()
-            ->with(['address.geo', 'device.manufacturer', 'person'])
+            ->with(['address', 'geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)
             ->first();
     }
