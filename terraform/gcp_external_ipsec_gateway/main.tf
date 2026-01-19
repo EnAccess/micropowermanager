@@ -1,6 +1,6 @@
 locals {
   gateway_external_ip_name      = "${var.resource_prefix}ipsec-gateway-external-ip${var.resource_suffix}"
-  internal_ip_name              = "${var.resource_prefix}ipsec-internal-ip${var.resource_suffix}"
+  gateway_internal_ip_name      = "${var.resource_prefix}ipsec-gateway-internal-ip${var.resource_suffix}"
   gke_instance_name             = "${var.resource_prefix}ipsec-gateway${var.resource_suffix}"
   compute_route_to_right_subnet = "${var.resource_prefix}to-right${var.resource_suffix}"
 }
@@ -16,6 +16,15 @@ resource "google_compute_address" "ipsec_gateway_external_ip" {
 
   name   = local.gateway_external_ip_name
   region = var.gcp_region
+}
+
+resource "google_compute_address" "ipsec_gateway_internal_ip" {
+  project = var.gcp_project_id
+
+  name   = local.gateway_internal_ip_name
+  region = var.gcp_region
+
+  address_type = "INTERNAL"
 }
 
 #
@@ -57,28 +66,12 @@ resource "google_compute_instance" "ipsec_gateway" {
 
   network_interface {
     network = "default"
+
+    network_ip = google_compute_address.ipsec_gateway_internal_ip.address
+
     access_config {
       nat_ip = google_compute_address.ipsec_gateway_external_ip.address
     }
-  }
-
-  metadata = {
-    startup-script = <<-EOT
-      #!/bin/bash
-      set -e
-
-      echo "Updating packages..."
-      apt update -y
-
-      echo "Installing HAProxy and StrongSwan..."
-      apt install -y haproxy strongswan
-
-      echo "Enabling and starting services..."
-      systemctl enable haproxy strongswan
-      systemctl start haproxy strongswan
-
-      echo "Setup complete."
-    EOT
   }
 }
 
