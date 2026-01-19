@@ -3,8 +3,6 @@
 namespace App\Plugins\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Plugins\DalyBms\Modules\Api\DalyBmsApi;
-use App\Services\DeviceAddressService;
 use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
@@ -20,7 +18,6 @@ class SyncBikes extends AbstractSharedCommand {
     public function __construct(
         private EBikeService $eBikeService,
         private DalyBmsApi $dalyBmsApi,
-        private DeviceAddressService $deviceAddressService,
     ) {
         parent::__construct();
     }
