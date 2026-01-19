@@ -1,8 +1,8 @@
 locals {
-  gateway_external_ip_name       = "${var.resource_prefix}ipsec-gateway-external-ip${var.resource_suffix}"
-  internal_ip_name               = "${var.resource_prefix}ipsec-internal-ip${var.resource_suffix}"
-  gke_instance_name              = "${var.resource_prefix}ipsec-gateway${var.resource_suffix}"
-  compute_route_to_right_subnet  = "${var.resource_prefix}to-right${var.resource_suffix}"
+  gateway_external_ip_name      = "${var.resource_prefix}ipsec-gateway-external-ip${var.resource_suffix}"
+  internal_ip_name              = "${var.resource_prefix}ipsec-internal-ip${var.resource_suffix}"
+  gke_instance_name             = "${var.resource_prefix}ipsec-gateway${var.resource_suffix}"
+  compute_route_to_right_subnet = "${var.resource_prefix}to-right${var.resource_suffix}"
 }
 
 data "google_project" "gcp_project" {}
@@ -95,13 +95,13 @@ resource "google_compute_route" "compute_routes_to_right_side" {
     0,
     63
   )
-  network = "default"
+  network    = "default"
   dest_range = each.value
 
-  next_hop_instance = google_compute_instance.ipsec_gateway.self_link
+  next_hop_instance      = google_compute_instance.ipsec_gateway.self_link
   next_hop_instance_zone = google_compute_instance.ipsec_gateway.zone
 
-  priority    = 999
+  priority = 999
 }
 
 #
