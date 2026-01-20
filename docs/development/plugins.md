@@ -219,10 +219,10 @@ The installation command typically runs after publishing assets:
 ```php
 <?php
 
-namespace Inensus\YourPlugin\Console\Commands;
+namespace App\Plugins\YourPlugin\Console\Commands;
 
 use Illuminate\Console\Command;
-use Inensus\YourPlugin\Services\YourPluginService;
+use App\Plugins\YourPlugin\Services\YourPluginService;
 
 class InstallPackage extends Command {
     protected $signature = 'your-plugin:install';

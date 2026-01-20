@@ -3,11 +3,11 @@
 namespace App\Models\Transaction;
 
 use App\Models\Base\BaseModel;
+use App\Plugins\MesombPaymentProvider\Models\MesombTransaction;
+use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Inensus\MesombPaymentProvider\Models\MesombTransaction;
-use Inensus\PaystackPaymentProvider\Models\PaystackTransaction;
-use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 /**
  * Base class for manufacturer transaction models.

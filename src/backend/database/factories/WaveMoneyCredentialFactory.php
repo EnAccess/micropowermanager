@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 
 /** @extends Factory<WaveMoneyCredential> */
 class WaveMoneyCredentialFactory extends Factory {
