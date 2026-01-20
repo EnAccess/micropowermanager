@@ -4,28 +4,37 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class  extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up(): void {
+        // OPTION 1:
+        // Use this block if the table belongs to the CENTRAL database
+        // (e.g. shared configuration, global entities)
         Schema::connection('micropowermanager')->table('{{ table }}', function (Blueprint $table) {
+            //
+        });
+        // OPTION 2:
+        // Use this block if the table belongs to TENANT databases
+        // (e.g. tenant-specific data)
+        Schema::connection('tenant')->table('{{ table }}', function (Blueprint $table) {
             //
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down(): void {
+        // OPTION 1:
+        // CENTRAL database
         Schema::connection('micropowermanager')->table('{{ table }}', function (Blueprint $table) {
+            //
+        });
+        // OPTION 2:
+        // TENANT databases
+        Schema::connection('tenant')->table('{{ table }}', function (Blueprint $table) {
             //
         });
     }
