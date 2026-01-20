@@ -210,7 +210,7 @@ class PluginGenerator extends Command {
         $useStatement = "use App\Plugins\\{$nameSpace}\\Providers\\{$nameSpace}ServiceProvider;";
         if (!str_contains($providersContent, $useStatement)) {
             $providersContent = preg_replace(
-                '/(use Inensus.*ServiceProvider;)(?!.*use Inensus)/s',
+                '/(use App\\\Plugins\\\\\S*ServiceProvider;)(?!.*use App\\\Plugins\\\)/s',
                 "$1\n{$useStatement}",
                 $providersContent
             );
@@ -219,8 +219,8 @@ class PluginGenerator extends Command {
         // Add to providers array before closing bracket
         $providersContent = preg_replace(
             '/];\s*$/m',
-            "    {$nameSpace}ServiceProvider::class,\n];",
-            $providersContent.PHP_EOL
+            "    {$nameSpace}ServiceProvider::class,\n];\n",
+            $providersContent
         );
 
         File::put($providersFile, $providersContent);
