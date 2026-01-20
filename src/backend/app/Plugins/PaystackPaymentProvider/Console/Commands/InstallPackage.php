@@ -34,28 +34,4 @@ class InstallPackage extends Command {
             $this->info('Paystack credentials already exist.');
         }
     }
-
-    /** @phpstan-ignore-next-line */
-    private function publishMigrations(): void {
-        $this->call('vendor:publish', [
-            '--provider' => PaystackPaymentProviderServiceProvider::class,
-            '--tag' => 'migrations',
-        ]);
-    }
-
-    /** @phpstan-ignore-next-line */
-    private function createDatabaseTables(): void {
-        $this->call('migrate', [
-            '--path' => 'vendor/inensus/paystack-payment-provider/database/migrations',
-        ]);
-    }
-
-    /** @phpstan-ignore-next-line */
-    private function createPluginRecord(): void {
-        $this->call('plugin:add', [
-            'name' => 'Paystack Payment Provider',
-            'composer_name' => 'inensus/paystack-payment-provider',
-            'description' => 'Paystack Payment Provider integration for MicroPowerManager',
-        ]);
-    }
 }

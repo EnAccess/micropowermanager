@@ -147,7 +147,6 @@ return [
 
     'model_locations' => [
         'app',
-        'packages/inensus/*/src',
     ],
 
     /*
