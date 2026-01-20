@@ -6,7 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
 class PluginGenerator extends Command {
-    protected $signature = 'micropowermanager:new-plugin {plugin-name} {--description= : Optional description for the plugin}';
+    protected $signature = 'micropowermanager:new-plugin
+        {plugin-name : Name of the new plugin. Use kebab-case (words separated by hyphens), e.g. `my-new-plugin`}
+        {--description= : Optional description for the plugin}';
     protected $description = 'Creates a new MicroPowerManager plugin';
 
     /**
@@ -295,8 +297,8 @@ JS;
 
         $this->outputComponents()->line('info', 'Next steps:');
         $this->outputComponents()->bulletList([
-            "Review the generated backend files in src/backend/app/Plugins/{$pluginName}",
-            "Review the generated frontend files in src/frontend/src/plugins/{$pluginName}",
+            "Review the generated backend files in {$pluginPathBackend}",
+            "Review the generated frontend files in {$pluginPathFrontend}",
             'Run migration: `php artisan migrate`',
             'Start developing your new plugin. See the Plugin Development guide for more! https://micropowermanager.io/development/plugins.html',
         ]);
