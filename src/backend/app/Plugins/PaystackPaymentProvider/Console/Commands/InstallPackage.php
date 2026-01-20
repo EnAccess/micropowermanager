@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Plugins\PaystackPaymentProvider\Console\Commands;
 
-use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackCredentialService;
 use Illuminate\Console\Command;
 
