@@ -15,6 +15,6 @@ class SparkSmsConfig extends SmsConfigsCore {
         SparkSmsTypes::BALANCE_FEEDBACK => BalanceFeedback::class,
         SparkSmsTypes::METER_RESET_FEEDBACK => MeterResetFeedback::class,
     ];
-    public string $bodyParsersPath = 'Inensus\\SparkMeter\\Sms\\BodyParsers\\';
+    public string $bodyParsersPath = 'App\\Plugins\\SparkMeter\\Sms\\BodyParsers\\';
     public string $servicePath = SmSmsBodyService::class;
 }

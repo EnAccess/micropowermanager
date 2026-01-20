@@ -72,7 +72,7 @@ return [
     App\Providers\AppServiceProvider::class,
 
     // ...other providers
-    Inensus\YourPlugin\Providers\YourPluginServiceProvider::class,
+    App\Plugins\YourPlugin\Providers\YourPluginServiceProvider::class,
 ];
 
 ```
@@ -240,24 +240,6 @@ class InstallPackage extends Command {
         $this->info('Package installed successfully..');
     }
 }
-```
-
-#### 1.6 Configure Autoloading
-
-Add your plugin's namespace to composer's autoload configuration:
-
-```json
-"autoload": {
-  "psr-4": {
-    "Inensus\\YourPlugin\\": "app/Plugins/your-plugin",
-  }
-}
-```
-
-After adding the autoload entry, run:
-
-```bash
-composer dump-autoload
 ```
 
 ### Step 2: Frontend Integration
