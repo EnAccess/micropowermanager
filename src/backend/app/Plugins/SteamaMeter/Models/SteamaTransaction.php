@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property      float                      $amount
  * @property      string                     $category
  * @property      string                     $provider
- * @property      string                     $timestamp
+ * @property      Carbon                     $timestamp
  * @property      string                     $synchronization_status
  * @property      Carbon|null                $created_at
  * @property      Carbon|null                $updated_at
