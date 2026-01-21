@@ -133,10 +133,16 @@ class TransactionService implements IAssociative, IBaseService {
         }
 
         if ($limit) {
-            return $query->latest()->paginate($limit);
+            return QueryBuilder::for($query)
+                ->allowedSorts(['id', 'created_at', 'amount', 'sender', 'message', 'original_transaction_type'])
+                ->defaultSort('-created_at')
+                ->paginate($limit);
         }
 
-        return $query->get();
+        return QueryBuilder::for($query)
+            ->allowedSorts(['id', 'created_at', 'amount', 'sender', 'message', 'original_transaction_type'])
+            ->defaultSort('-created_at')
+            ->get();
     }
 
     /**
