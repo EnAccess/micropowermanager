@@ -61,18 +61,18 @@ class PersonService implements IBaseService {
      *
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
-    public function searchPerson(string $searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
+    public function searchPerson(string $searchTerm, $paginate, int $per_page): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
+            fn ($q) => $q->where('phone', 'LIKE', $searchTerm.'%')
         )->orWhereHas(
             'devices',
-            fn ($q) => $q->where('device_serial', 'LIKE', '%'.$searchTerm.'%')
-        )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
-            ->orWhere('surname', 'LIKE', '%'.$searchTerm.'%');
+            fn ($q) => $q->where('device_serial', 'LIKE', $searchTerm.'%')
+        )->orWhere('name', 'LIKE', $searchTerm.'%')
+            ->orWhere('surname', 'LIKE', $searchTerm.'%');
 
         if ($paginate === 1) {
-            return $query->paginate(15);
+            return $query->paginate($per_page);
         }
 
         return $query->get();
@@ -257,24 +257,28 @@ class PersonService implements IBaseService {
     /**
      * @return Collection<int, Person>|array<int, Person>
      */
-    public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
+    public function getAllForExport(?string $miniGridName = null, ?string $villageName = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
         $query = $this->person->newQuery()->with([
             'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
         ])->where('is_customer', 1);
 
-        if ($miniGrid) {
-            $query->whereHas('addresses', function ($q) use ($miniGrid) {
-                $q->whereHas('city', function ($q) use ($miniGrid) {
-                    $q->where('mini_grid_id', $miniGrid);
+        if ($miniGridName) {
+            $query->whereHas('addresses', function ($q) use ($miniGridName) {
+                $q->whereHas('city', function ($q) use ($miniGridName) {
+                    $q->whereHas('miniGrid', function ($q) use ($miniGridName) {
+                        $q->where('name', 'LIKE', '%'.$miniGridName.'%');
+                    });
                 });
             });
         }
 
-        if ($village) {
-            $query->whereHas('addresses', function ($q) use ($village) {
-                $q->where('city_id', $village);
+        if ($villageName) {
+            $query->whereHas('addresses', function ($q) use ($villageName) {
+                $q->whereHas('city', function ($q) use ($villageName) {
+                    $q->where('name', 'LIKE', '%'.$villageName.'%');
+                });
             });
         }
 

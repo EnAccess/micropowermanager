@@ -22,4 +22,12 @@ module "micropowermanager_cloud_vodacom_mz" {
 
   resource_prefix = "vodacom-mz-"
   resource_suffix = "-cloud"
+
+  compute_routes_to_right_side = [
+    # Staging
+    "10.10.0.10/32",
+    # Production
+    "10.20.0.10/32",
+    "10.20.0.11/32"
+  ]
 }

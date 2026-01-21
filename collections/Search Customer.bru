@@ -1,0 +1,17 @@
+meta {
+  name: Search Customer
+  type: http
+  seq: 31
+}
+
+get {
+  url: {{mpm_backend_url}}/api/people/search?term=swift&page=1&per_page=15
+  body: none
+  auth: inherit
+}
+
+params:query {
+  term: swift
+  page: 1
+  per_page: 15
+}

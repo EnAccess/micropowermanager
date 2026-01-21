@@ -112,75 +112,58 @@
         </div>
 
         <div class="md-layout-item md-size-100" v-if="people.list.length > 0">
-          <md-table md-card style="margin-left: 0">
-            <md-table-row>
-              <md-table-head>
-                {{ $tc("words.name") }}
-              </md-table-head>
-              <md-table-head>
-                {{ $tc("words.phone") }}
-              </md-table-head>
-              <md-table-head>
-                {{ $tc("words.city") }}
-              </md-table-head>
-              <md-table-head>
-                {{ $tc("words.isActive") }}
-              </md-table-head>
-              <md-table-head>
-                {{ $tc("words.device") }}
-              </md-table-head>
-              <md-table-head>
-                {{ $tc("words.agent") }}
-              </md-table-head>
-              <md-table-head>
-                {{ $tc("phrases.lastUpdate") }}
-              </md-table-head>
-            </md-table-row>
+          <md-table
+            v-model="people.list"
+            md-card
+            style="margin-left: 0"
+            md-sort="created_at"
+            md-sort-order="desc"
+            @md-sorted="onSort"
+          >
             <md-table-row
-              v-for="client in people.list"
-              :key="client.id"
-              @click="detail(client.id)"
+              slot="md-table-row"
+              slot-scope="{ item }"
+              @click="detail(item.id)"
               style="cursor: pointer"
             >
-              <md-table-cell>
-                {{ client.name }} {{ client.surname }}
+              <md-table-cell :md-label="$tc('words.name')" md-sort-by="name">
+                {{ item.name }} {{ item.surname }}
               </md-table-cell>
-              <md-table-cell>
-                {{
-                  client.addresses.length > 0 ? client.addresses[0].phone : "-"
-                }}
+
+              <md-table-cell :md-label="$tc('words.phone')">
+                {{ item.addresses.length > 0 ? item.addresses[0].phone : "-" }}
               </md-table-cell>
-              <md-table-cell class="hidden-xs">
+
+              <md-table-cell
+                :md-label="$tc('words.city')"
+                md-sort-by="city"
+                class="hidden-xs"
+              >
                 {{
-                  client.addresses.length > 0 && client.addresses[0].city
-                    ? client.addresses[0].city.name
+                  item.addresses.length > 0 && item.addresses[0].city
+                    ? item.addresses[0].city.name
                     : "-"
                 }}
               </md-table-cell>
-              <md-table-cell>
-                {{ client.is_active ? $tc("words.yes") : $tc("words.no") }}
+
+              <md-table-cell :md-label="$tc('words.isActive')">
+                {{ item.is_active ? $tc("words.yes") : $tc("words.no") }}
               </md-table-cell>
-              <md-table-cell>
-                {{
-                  client.devices.length > 0 ? deviceList(client.devices) : "-"
-                }}
+
+              <md-table-cell :md-label="$tc('words.device')">
+                {{ item.devices.length > 0 ? deviceList(item.devices) : "-" }}
               </md-table-cell>
-              <md-table-cell>
-                {{ getAgentName(client) }}
+
+              <md-table-cell :md-label="$tc('words.agent')" md-sort-by="agent">
+                {{ getAgentName(item) }}
               </md-table-cell>
-              <md-table-cell class="hidden-xs">
-                {{ timeForTimeZone(client.lastUpdate) }}
-              </md-table-cell>
-            </md-table-row>
-            <!-- No customers found message -->
-            <md-table-row v-if="people.list.length === 0">
+
               <md-table-cell
-                colspan="7"
-                style="text-align: center; padding: 2rem"
+                :md-label="$tc('phrases.lastUpdate')"
+                md-sort-by="created_at"
+                class="hidden-xs"
               >
-                <div style="color: #666; font-style: italic">
-                  No customers found
-                </div>
+                {{ timeForTimeZone(item.lastUpdate) }}
               </md-table-cell>
             </md-table-row>
           </md-table>
@@ -320,6 +303,8 @@ export default {
       selectedAgentId: null,
       widgetKey: 0,
       showFilter: false,
+      currentSortBy: "created_at",
+      currentSortOrder: "desc",
       exportFilters: {
         format: "csv",
         isActive: "",
@@ -368,6 +353,42 @@ export default {
       }
     },
 
+    onSort(sortData) {
+      if (typeof sortData === "string") {
+        this.currentSortBy = sortData
+        if (
+          this.currentSortBy === sortData &&
+          this.currentSortOrder === "asc"
+        ) {
+          this.currentSortOrder = "desc"
+        } else {
+          this.currentSortOrder = "asc"
+        }
+      } else if (sortData && typeof sortData === "object") {
+        this.currentSortBy = sortData.name || null
+        this.currentSortOrder = sortData.type || "desc"
+      } else {
+        this.currentSortBy = null
+        this.currentSortOrder = "desc"
+      }
+
+      // Build term object with sort parameters for pagination
+      const term = {}
+      if (this.currentSortBy) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        term.sort_by = `${prefix}${this.currentSortBy}`
+      }
+      if (this.selectedAgentId) {
+        term.agent_id = this.selectedAgentId
+      }
+
+      // Emit EventBus event so Paginate.vue includes sort params in all subsequent pagination calls
+      EventBus.$emit("loadPage", this.paginator, term)
+
+      // Load the first page with sort applied
+      this.getClientList(1)
+    },
+
     async performSearch() {
       // Cancel previous request if still pending
       if (this.activeRequest) {
@@ -381,6 +402,10 @@ export default {
         const searchPaginator = new Paginator(resources.person.search)
 
         const params = { term: this.searchTerm }
+        if (this.currentSortBy) {
+          const prefix = this.currentSortOrder === "desc" ? "-" : ""
+          params.sort_by = `${prefix}${this.currentSortBy}`
+        }
         if (this.selectedAgentId) {
           params.agent_id = this.selectedAgentId
         }
@@ -418,6 +443,8 @@ export default {
       if (subscriber !== this.subscriber) {
         return
       }
+      // Always update with the returned data - the paginator already applied
+      // sort and search parameters in the API request, so the data is correct
       this.people.updateList(data)
       EventBus.$emit(
         "widgetContentLoaded",
@@ -432,6 +459,10 @@ export default {
 
     async getClientList(pageNumber = 1) {
       const params = {}
+      if (this.currentSortBy) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        params.sort_by = `${prefix}${this.currentSortBy}`
+      }
 
       if (this.isSearching && this.searchTerm) {
         params.term = this.searchTerm

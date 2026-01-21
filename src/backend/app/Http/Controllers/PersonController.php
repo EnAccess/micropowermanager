@@ -161,8 +161,9 @@ class PersonController extends Controller {
     ): ApiResource {
         $term = $request->input('term');
         $paginate = $request->input('paginate', 1);
+        $per_page = $request->input('per_page', 15);
 
-        return ApiResource::make($this->personService->searchPerson($term, $paginate));
+        return ApiResource::make($this->personService->searchPerson($term, $paginate, $per_page));
     }
 
     /**

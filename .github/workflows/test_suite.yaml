@@ -56,8 +56,6 @@ jobs:
             exit 1
           fi
         working-directory: ./src/backend
-        # temporarily allow this to fail
-        continue-on-error: true
 
       - name: Run Migrations
         run: |

@@ -7,13 +7,13 @@ use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Sms;
 use App\Models\SmsAndroidSetting;
+use App\Plugins\AfricasTalking\AfricasTalkingGateway;
+use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
+use App\Plugins\ViberMessaging\Models\ViberContact;
+use App\Plugins\ViberMessaging\Services\ViberContactService;
+use App\Plugins\ViberMessaging\ViberGateway;
 use App\Sms\AndroidGateway;
 use Illuminate\Support\Facades\Log;
-use Inensus\AfricasTalking\AfricasTalkingGateway;
-use Inensus\TextbeeSmsGateway\TextbeeSmsGateway;
-use Inensus\ViberMessaging\Models\ViberContact;
-use Inensus\ViberMessaging\Services\ViberContactService;
-use Inensus\ViberMessaging\ViberGateway;
 
 class SmsGatewayResolverService {
     public const VIBER_GATEWAY = 'ViberGateway';

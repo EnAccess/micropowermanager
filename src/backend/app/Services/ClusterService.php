@@ -95,4 +95,15 @@ class ClusterService implements IBaseService {
     public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
+
+    /**
+     * @return Collection<int, Cluster>
+     */
+    public function getAllForExport(): Collection {
+        return $this->cluster->newQuery()->with([
+            'miniGrids',
+            'cities',
+            'manager',
+        ])->get();
+    }
 }

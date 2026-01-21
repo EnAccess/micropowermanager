@@ -15,7 +15,7 @@ releases:
         status: "in-progress"
         category: "Core"
         github:
-          issue: 123
+          issue: 1243
       - id: "rbac"
         title: "Role-Based Access Control (RBAC)"
         description: "Comprehensive role definitions and access categories with UI and mobile API integration."

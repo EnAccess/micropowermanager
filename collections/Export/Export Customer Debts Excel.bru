@@ -1,0 +1,11 @@
+meta {
+  name: Export Customer Debts Excel
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/debts
+  body: none
+  auth: inherit
+}
