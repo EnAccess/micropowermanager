@@ -11,6 +11,6 @@ class SteamaSmsConfig extends SmsConfigsCore {
         SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER => LowBalanceLimitNotifier::class,
         SteamaSmsTypes::BALANCE_FEEDBACK => BalanceFeedback::class,
     ];
-    public string $bodyParsersPath = 'Inensus\\SteamaMeter\\Sms\\BodyParsers\\';
+    public string $bodyParsersPath = 'App\\Plugins\\SteamaMeter\\Sms\\BodyParsers\\';
     public string $servicePath = SteamaSmsBodyService::class;
 }

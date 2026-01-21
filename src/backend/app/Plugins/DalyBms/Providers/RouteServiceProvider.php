@@ -6,7 +6,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider {
-    protected $namespace = 'Inensus\DalyBms\Http\Controllers';
+    protected $namespace = 'App\Plugins\DalyBms\Http\Controllers';
 
     public function boot(): void {
         parent::boot();

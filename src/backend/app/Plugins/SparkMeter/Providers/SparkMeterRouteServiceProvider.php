@@ -6,7 +6,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Route;
 
 class SparkMeterRouteServiceProvider extends ServiceProvider {
-    protected $namespace = 'Inensus\SparkMeter\Http\Controllers';
+    protected $namespace = 'App\Plugins\SparkMeter\Http\Controllers';
 
     public function boot(): void {
         parent::boot();
