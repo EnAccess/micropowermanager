@@ -442,7 +442,6 @@ import { TransactionService } from "@/services/TransactionService"
 import { TransactionProviderService } from "@/services/TransactionProviderService"
 import { TransactionExportService } from "@/services/TransactionExportService"
 import { MainSettingsService } from "@/services/MainSettingsService"
-import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
 
 import vodacomLogo from "@/assets/icons/vodacom.png"
