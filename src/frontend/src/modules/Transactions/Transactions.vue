@@ -217,7 +217,12 @@
                 md-sort-order="desc"
                 @md-sorted="onSort"
               >
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                <md-table-row
+                  slot="md-table-row"
+                  slot-scope="{ item }"
+                  @click="transactionDetail(item.id)"
+                  style="cursor: pointer"
+                >
                   <md-table-cell :md-label="$tc('words.status')">
                     <md-icon v-if="item.status === 1" style="color: green">
                       check_circle_outline
@@ -525,9 +530,44 @@ export default {
       this.showFilter = false
     },
     onSort(sortData) {
-      this.currentSortBy = sortData && sortData.name ? sortData.name : null
-      this.currentSortOrder = sortData && sortData.type ? sortData.type : "desc"
-      this.loadTransactionsWithSort()
+      // Normalize different possible md-sorted payloads
+      let field = null
+      let order = "desc"
+
+      if (!sortData) {
+        field = null
+      } else if (typeof sortData === "string") {
+        field = sortData
+      } else if (typeof sortData === "object") {
+        field =
+          sortData.name ||
+          sortData.field ||
+          sortData.property ||
+          sortData.column ||
+          null
+        order =
+          sortData.type ||
+          sortData.order ||
+          (sortData.descending ? "desc" : sortData.ascending ? "asc" : order)
+      }
+
+      this.currentSortBy = field
+      this.currentSortOrder = order || "desc"
+
+      // Reflect sort in the URL using backend's `sort_by` param
+      const params = { ...this.$route.query }
+      params.page = 1
+      if (this.currentSortBy) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        params.sort_by = `${prefix}${this.currentSortBy}`
+      } else {
+        delete params.sort_by
+      }
+
+      this.$router.push({ query: params }).catch(() => {})
+
+      // Load first page with new sort
+      this.loadTransactionsWithSort(1)
     },
     async loadTransactionsWithSort(page = 1) {
       try {
@@ -542,10 +582,26 @@ export default {
         }
 
         const queryParams = this.$route.query
+        // copy non-pagination params into request
         for (let k of Object.keys(queryParams)) {
           if (k !== "page" && k !== "per_page") {
             params[k] = queryParams[k]
           }
+        }
+
+        // If there are no advanced filter params (only sort/page/per_page),
+        // prefer the simple transactions list endpoint which returns the
+        // general transaction list. This avoids calling `/advanced` which
+        // may apply stricter filters server-side and return empty results.
+        const hasFilters = Object.keys(params).some((k) => {
+          return k !== "page" && k !== "per_page" && k !== "sort_by"
+        })
+
+        if (!hasFilters) {
+          // ensure paginator resource is the simple list endpoint
+          this.transactionService.paginator.setPaginationResource(
+            require("@/resources").transactions.list.all,
+          )
         }
 
         const response = await this.transactionService.paginator.loadPage(
@@ -589,11 +645,12 @@ export default {
     },
     reloadList(sub, data) {
       if (sub !== this.subscriber) return
-      if (this.currentSortBy) {
-        this.loadTransactionsWithSort()
-      } else {
-        this.transactionService.updateList(data)
-      }
+
+      // Always update the list with the paginator response data.
+      // Avoid forcing a reload to page 1 here — sorting triggers
+      // an explicit loadTransactionsWithSort(1) which handles that case.
+      this.transactionService.updateList(data)
+
       EventBus.$emit("dataLoaded")
       EventBus.$emit(
         "widgetContentLoaded",
