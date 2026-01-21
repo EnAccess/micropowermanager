@@ -328,6 +328,9 @@ class MpmModelsCommand extends ModelsCommand {
 
                     'date', 'datetime' => $this->dateClass,
 
+                    // timestamp should be ... a timestamp ?!
+                    'timestamp' => $this->dateClass,
+
                     default => 'string',
                 };
             }

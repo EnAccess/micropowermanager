@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property      int                       $id
  * @property      string                    $name
  * @property      int                       $manager_id
- * @property      array<array-key, mixed>   $geo_json
+ * @property      object                    $geo_json
  * @property      Carbon|null               $created_at
  * @property      Carbon|null               $updated_at
  * @property-read Collection<int, City>     $cities
