@@ -63,7 +63,7 @@
                             transaction.type === 'energy' && transaction.token
                           "
                         >
-                          ({{ readable(transaction.token.load) }}kWh)
+                          ({{ readable(transaction.token.token_amount) }}kWh)
                         </small>
                         <small
                           v-else-if="
@@ -71,7 +71,7 @@
                             transaction.token
                           "
                         >
-                          ({{ readable(transaction.token.load) }}day's)
+                          ({{ readable(transaction.token.token_amount) }} day's)
                         </small>
                       </div>
                     </div>

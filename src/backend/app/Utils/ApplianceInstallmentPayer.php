@@ -6,6 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
 use App\Models\AppliancePerson;
+use App\Models\ApplianceRate;
 use App\Models\Device;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
@@ -14,6 +15,7 @@ use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\DeviceService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ApplianceInstallmentPayer {
     private Person $customer;
@@ -39,10 +41,12 @@ class ApplianceInstallmentPayer {
 
     // This function pays the installments for the device number that provided in transaction
     public function payInstallmentsForDevice(TransactionDataContainer $container): void {
-        $customer = $container->appliancePerson->person;
         $this->appliancePaymentService->setPaymentAmount($container->transaction->amount);
-        $installments = $container->appliancePerson->rates;
-        $this->pay($installments, $customer);
+        $container->appliancePerson->rates->map(fn (ApplianceRate $installment) => $this->appliancePaymentService->payInstallment(
+            $installment,
+            $container->appliancePerson,
+            $container->transaction
+        ));
     }
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
@@ -97,7 +101,11 @@ class ApplianceInstallmentPayer {
      * @param Collection<int, mixed> $installments
      */
     private function pay(Collection $installments, Person $customer): void {
+        Log::info('Paying installments', ['installments' => $installments, 'customer' => $customer]);
         $installments->map(function ($installment) use ($customer): bool {
+            if ($this->transaction->amount == 0) {
+                return true;
+            }
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 event(new PaymentSuccessEvent(
                     amount: (int) $this->transaction->amount,
@@ -119,7 +127,7 @@ class ApplianceInstallmentPayer {
                 $this->transaction->amount = 0;
 
                 return false;
-            } else {
+            } elseif ($installment->remaining > 0 && $this->transaction->amount > 0) {
                 event(new PaymentSuccessEvent(
                     amount: $installment->remaining,
                     paymentService: $this->transaction->original_transaction_type,
@@ -140,6 +148,8 @@ class ApplianceInstallmentPayer {
 
                 return true;
             }
+
+            return false;
         });
     }
 }

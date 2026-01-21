@@ -124,15 +124,17 @@ class TokenProcessor extends AbstractJob {
     private function handlePaymentEvents(Token $token): void {
         $owner = $this->transactionContainer->device->person;
 
-        event(new PaymentSuccessEvent(
-            amount: (int) $this->transactionContainer->transaction->amount,
-            paymentService: $this->transactionContainer->transaction->original_transaction_type,
-            paymentType: 'energy',
-            sender: $this->transactionContainer->transaction->sender,
-            paidFor: $token,
-            payer: $owner,
-            transaction: $this->transactionContainer->transaction,
-        ));
+        if (Token::TYPE_ENERGY == $token->token_type) {
+            event(new PaymentSuccessEvent(
+                amount: (int) $this->transactionContainer->transaction->amount,
+                paymentService: $this->transactionContainer->transaction->original_transaction_type,
+                paymentType: 'energy',
+                sender: $this->transactionContainer->transaction->sender,
+                paidFor: $token,
+                payer: $owner,
+                transaction: $this->transactionContainer->transaction,
+            ));
+        }
 
         event(new TransactionSuccessfulEvent($this->transactionContainer->transaction));
     }

@@ -136,6 +136,7 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'jwt.verify'], function 
 
     Route::group(['prefix' => 'payment'], static function () {
         Route::post('/{appliance_person}', [AppliancePaymentController::class, 'store'])->middleware('permission:payments');
+        Route::get('/status/{transaction_id}', [AppliancePaymentController::class, 'checkStatus'])->where('transaction_id', '[0-9]+')->middleware('permission:payments');
     });
 });
 // Clusters
