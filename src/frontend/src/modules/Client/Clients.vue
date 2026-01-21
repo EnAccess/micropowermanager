@@ -372,6 +372,20 @@ export default {
         this.currentSortOrder = "desc"
       }
 
+      // Build term object with sort parameters for pagination
+      const term = {}
+      if (this.currentSortBy) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        term.sort_by = `${prefix}${this.currentSortBy}`
+      }
+      if (this.selectedAgentId) {
+        term.agent_id = this.selectedAgentId
+      }
+
+      // Emit EventBus event so Paginate.vue includes sort params in all subsequent pagination calls
+      EventBus.$emit("loadPage", this.paginator, term)
+
+      // Load the first page with sort applied
       this.getClientList(1)
     },
 
@@ -429,17 +443,14 @@ export default {
       if (subscriber !== this.subscriber) {
         return
       }
-      if (this.currentSortBy) {
-        // If we have active sorting, reload with sort instead of just updating list
-        this.getClientList(1)
-      } else {
-        this.people.updateList(data)
-        EventBus.$emit(
-          "widgetContentLoaded",
-          this.subscriber,
-          this.people.list.length,
-        )
-      }
+      // Always update with the returned data - the paginator already applied
+      // sort and search parameters in the API request, so the data is correct
+      this.people.updateList(data)
+      EventBus.$emit(
+        "widgetContentLoaded",
+        this.subscriber,
+        this.people.list.length,
+      )
     },
 
     detail(id) {
@@ -717,37 +728,5 @@ export default {
 
 .export-dialog .md-dialog-content {
   padding: 20px;
-}
-
-::v-deep .md-table-sortable-icon {
-  opacity: 1 !important;
-  transition: opacity 0.2s ease;
-
-  svg {
-    fill: rgba(0, 0, 0, 0.54) !important;
-  }
-}
-::v-deep .md-table-head.md-sorted .md-table-sortable-icon {
-  opacity: 1 !important;
-
-  svg {
-    fill: #448aff !important;
-  }
-}
-
-::v-deep .md-table-head:hover .md-table-sortable-icon {
-  opacity: 1 !important;
-
-  svg {
-    fill: rgba(0, 0, 0, 0.87) !important;
-  }
-}
-
-::v-deep .md-table-head.md-sorted:hover .md-table-sortable-icon {
-  opacity: 1 !important;
-
-  svg {
-    fill: #448aff !important;
-  }
 }
 </style>
