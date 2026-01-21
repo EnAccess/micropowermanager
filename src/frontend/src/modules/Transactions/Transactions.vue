@@ -442,6 +442,8 @@ import { TransactionService } from "@/services/TransactionService"
 import { TransactionProviderService } from "@/services/TransactionProviderService"
 import { TransactionExportService } from "@/services/TransactionExportService"
 import { MainSettingsService } from "@/services/MainSettingsService"
+import { Paginator } from "@/Helpers/Paginator"
+import { resources } from "@/resources"
 
 import vodacomLogo from "@/assets/icons/vodacom.png"
 import waveMoneyLogo from "@/assets/icons/WaveMoney.png"
@@ -517,20 +519,27 @@ export default {
       let queryParams = this.$route.query
       if (Object.keys(queryParams).length > 0) {
         for (let k of Object.keys(queryParams)) {
-          if (k !== "page" && k !== "per_page") {
+          if (k !== "page" && k !== "per_page" && k !== "sort_by") {
             isFiltering = true
           }
         }
       }
+
       if (isFiltering) {
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.searchAdvanced,
+        )
         this.getFilterTransactions(queryParams)
+      } else {
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.list.all,
+        )
       }
     },
     closeFilter() {
       this.showFilter = false
     },
     onSort(sortData) {
-      // Normalize different possible md-sorted payloads
       let field = null
       let order = "desc"
 
@@ -554,7 +563,6 @@ export default {
       this.currentSortBy = field
       this.currentSortOrder = order || "desc"
 
-      // Reflect sort in the URL using backend's `sort_by` param
       const params = { ...this.$route.query }
       params.page = 1
       if (this.currentSortBy) {
@@ -564,9 +572,23 @@ export default {
         delete params.sort_by
       }
 
-      this.$router.push({ query: params }).catch(() => {})
+      // Check if there are filters to decide which endpoint to use
+      const hasFilters = Object.keys(params).some((k) => {
+        return k !== "page" && k !== "per_page" && k !== "sort_by"
+      })
 
-      // Load first page with new sort
+      // Switch resource before loading
+      if (hasFilters) {
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.searchAdvanced,
+        )
+      } else {
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.list.all,
+        )
+      }
+
+      this.$router.push({ query: params }).catch(() => {})
       this.loadTransactionsWithSort(1)
     },
     async loadTransactionsWithSort(page = 1) {
@@ -582,28 +604,11 @@ export default {
         }
 
         const queryParams = this.$route.query
-        // copy non-pagination params into request
         for (let k of Object.keys(queryParams)) {
           if (k !== "page" && k !== "per_page") {
             params[k] = queryParams[k]
           }
         }
-
-        // If there are no advanced filter params (only sort/page/per_page),
-        // prefer the simple transactions list endpoint which returns the
-        // general transaction list. This avoids calling `/advanced` which
-        // may apply stricter filters server-side and return empty results.
-        const hasFilters = Object.keys(params).some((k) => {
-          return k !== "page" && k !== "per_page" && k !== "sort_by"
-        })
-
-        if (!hasFilters) {
-          // ensure paginator resource is the simple list endpoint
-          this.transactionService.paginator.setPaginationResource(
-            require("@/resources").transactions.list.all,
-          )
-        }
-
         const response = await this.transactionService.paginator.loadPage(
           page,
           params,
@@ -646,9 +651,6 @@ export default {
     reloadList(sub, data) {
       if (sub !== this.subscriber) return
 
-      // Always update the list with the paginator response data.
-      // Avoid forcing a reload to page 1 here — sorting triggers
-      // an explicit loadTransactionsWithSort(1) which handles that case.
       this.transactionService.updateList(data)
 
       EventBus.$emit("dataLoaded")
