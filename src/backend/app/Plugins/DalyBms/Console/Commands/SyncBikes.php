@@ -3,6 +3,7 @@
 namespace App\Plugins\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Plugins\DalyBms\Modules\Api\DalyBmsApi;
 use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
