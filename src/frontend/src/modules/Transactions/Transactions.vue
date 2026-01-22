@@ -472,6 +472,8 @@ export default {
       paginator: null,
       analyticsData: null,
       analyticsPeriod: null,
+      isManualSort: false,
+
       showFilter: false,
       showBoxes: true,
       showExportModal: false,
@@ -514,6 +516,11 @@ export default {
   },
   methods: {
     checkRouteChanges() {
+      if (this.isManualSort) {
+        this.isManualSort = false
+        return
+      }
+
       let isFiltering = false
       let queryParams = this.$route.query
       if (Object.keys(queryParams).length > 0) {
@@ -571,12 +578,10 @@ export default {
         delete params.sort_by
       }
 
-      // Check if there are filters to decide which endpoint to use
       const hasFilters = Object.keys(params).some((k) => {
         return k !== "page" && k !== "per_page" && k !== "sort_by"
       })
 
-      // Switch resource before loading
       if (hasFilters) {
         this.transactionService.paginator.setPaginationResource(
           resources.transactions.searchAdvanced,
@@ -586,6 +591,8 @@ export default {
           resources.transactions.list.all,
         )
       }
+
+      this.isManualSort = true
 
       this.$router.push({ query: params }).catch(() => {})
       this.loadTransactionsWithSort(1)
