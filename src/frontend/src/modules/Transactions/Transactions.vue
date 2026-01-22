@@ -472,7 +472,6 @@ export default {
       paginator: null,
       analyticsData: null,
       analyticsPeriod: null,
-      isManualSort: false,
 
       showFilter: false,
       showBoxes: true,
@@ -516,11 +515,6 @@ export default {
   },
   methods: {
     checkRouteChanges() {
-      if (this.isManualSort) {
-        this.isManualSort = false
-        return
-      }
-
       let isFiltering = false
       let queryParams = this.$route.query
       if (Object.keys(queryParams).length > 0) {
@@ -535,7 +529,6 @@ export default {
         this.transactionService.paginator.setPaginationResource(
           resources.transactions.searchAdvanced,
         )
-        this.getFilterTransactions(queryParams)
       } else {
         this.transactionService.paginator.setPaginationResource(
           resources.transactions.list.all,
@@ -546,42 +539,40 @@ export default {
       this.showFilter = false
     },
     onSort(sortData) {
-      let field = null
-      let order = "desc"
+      let field = sortData
 
-      if (!sortData) {
-        field = null
-      } else if (typeof sortData === "string") {
-        field = sortData
-      } else if (typeof sortData === "object") {
-        field =
-          sortData.name ||
-          sortData.field ||
-          sortData.property ||
-          sortData.column ||
-          null
-        order =
-          sortData.type ||
-          sortData.order ||
-          (sortData.descending ? "desc" : sortData.ascending ? "asc" : order)
+      if (!field) {
+        return
       }
 
-      this.currentSortBy = field
-      this.currentSortOrder = order || "desc"
+      if (this.currentSortBy === field) {
+        this.currentSortOrder =
+          this.currentSortOrder === "desc" ? "asc" : "desc"
+      } else {
+        this.currentSortBy = field
+        this.currentSortOrder = "asc"
+      }
 
-      const params = { ...this.$route.query }
-      params.page = 1
+      const term = {
+        page: 1,
+        per_page: this.$route.query.per_page || 15,
+      }
+
       if (this.currentSortBy) {
         const prefix = this.currentSortOrder === "desc" ? "-" : ""
-        params.sort_by = `${prefix}${this.currentSortBy}`
-      } else {
-        delete params.sort_by
+        term.sort_by = `${prefix}${this.currentSortBy}`
       }
 
-      const hasFilters = Object.keys(params).some((k) => {
+      const queryParams = this.$route.query
+      for (let k of Object.keys(queryParams)) {
+        if (k !== "page" && k !== "per_page" && k !== "sort_by") {
+          term[k] = queryParams[k]
+        }
+      }
+
+      const hasFilters = Object.keys(term).some((k) => {
         return k !== "page" && k !== "per_page" && k !== "sort_by"
       })
-
       if (hasFilters) {
         this.transactionService.paginator.setPaginationResource(
           resources.transactions.searchAdvanced,
@@ -592,10 +583,7 @@ export default {
         )
       }
 
-      this.isManualSort = true
-
-      this.$router.push({ query: params }).catch(() => {})
-      this.loadTransactionsWithSort(1)
+      EventBus.$emit("loadPage", this.transactionService.paginator, term)
     },
     async loadTransactionsWithSort(page = 1) {
       try {
