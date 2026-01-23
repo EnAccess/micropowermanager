@@ -585,39 +585,7 @@ export default {
 
       EventBus.$emit("loadPage", this.transactionService.paginator, term)
     },
-    async loadTransactionsWithSort(page = 1) {
-      try {
-        const params = {
-          page: page,
-          per_page: this.$route.query.per_page || 15,
-        }
 
-        if (this.currentSortBy) {
-          const prefix = this.currentSortOrder === "desc" ? "-" : ""
-          params.sort_by = `${prefix}${this.currentSortBy}`
-        }
-
-        const queryParams = this.$route.query
-        for (let k of Object.keys(queryParams)) {
-          if (k !== "page" && k !== "per_page") {
-            params[k] = queryParams[k]
-          }
-        }
-        const response = await this.transactionService.paginator.loadPage(
-          page,
-          params,
-        )
-        this.transactionService.updateList(response.data)
-
-        EventBus.$emit(
-          "widgetContentLoaded",
-          this.subscriber,
-          this.transactionService.list.length,
-        )
-      } catch (error) {
-        this.alertNotify("error", "Failed to load transactions")
-      }
-    },
     filterTransaction(filterData) {
       let data = {}
       for (let i in filterData) {
