@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property      int         $company_id
  * @property      string|null $name
  * @property      string      $token_hash
- * @property      string|null $last_used_at
+ * @property      Carbon|null $last_used_at
  * @property      bool        $active
  * @property      Carbon|null $created_at
  * @property      Carbon|null $updated_at
