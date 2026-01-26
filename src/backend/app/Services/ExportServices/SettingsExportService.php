@@ -3,6 +3,7 @@
 namespace App\Services\ExportServices;
 
 use App\Models\MainSettings;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class SettingsExportService extends AbstractExportService {
     private ?MainSettings $settingsData = null;
@@ -29,7 +30,8 @@ class SettingsExportService extends AbstractExportService {
         ];
 
         foreach ($settings as $key => $value) {
-            $this->worksheet->setCellValue('B'.($key + 2), $value);
+            $columnLetter = Coordinate::stringFromColumnIndex($key + 1);
+            $this->worksheet->setCellValue($columnLetter.'2', $value);
         }
 
         foreach ($this->worksheet->getColumnIterator() as $column) {

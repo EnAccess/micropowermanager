@@ -7,7 +7,7 @@ use App\Services\MainSettingsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SettingsExportController extends Controller {
     public function __construct(
@@ -15,7 +15,7 @@ class SettingsExportController extends Controller {
         private SettingsExportService $settingsExportService,
     ) {}
 
-    public function download(Request $request): BinaryFileResponse|JsonResponse {
+    public function download(Request $request): StreamedResponse|JsonResponse {
         $format = $request->get('format', 'json');
 
         if ($format === 'excel') {
@@ -29,7 +29,7 @@ class SettingsExportController extends Controller {
         return $this->downloadJson($request);
     }
 
-    public function downloadExcel(Request $request): BinaryFileResponse {
+    public function downloadExcel(Request $request): StreamedResponse {
         $settings = $this->mainSettingsService->getAll()->first();
         $this->settingsExportService->setSettingsData($settings);
         $this->settingsExportService->createSpreadSheetFromTemplate($this->settingsExportService->getTemplatePath());
@@ -37,21 +37,17 @@ class SettingsExportController extends Controller {
         $this->settingsExportService->writeSettingsData();
         $pathToSpreadSheet = $this->settingsExportService->saveSpreadSheet();
 
-        $path = Storage::path($pathToSpreadSheet);
-
-        return response()->download($path, 'settings_export_'.now()->format('Ymd_His').'.xlsx');
+        return Storage::download($pathToSpreadSheet, 'settings_export_'.now()->format('Ymd_His').'.xlsx');
     }
 
-    public function downloadCsv(Request $request): BinaryFileResponse {
+    public function downloadCsv(Request $request): StreamedResponse {
         $settings = $this->mainSettingsService->getAll()->first();
         $this->settingsExportService->setSettingsData($settings);
         $this->settingsExportService->setExportingData();
         $headers = ['Site Title', 'Company Name', 'Currency', 'Country', 'Language', 'VAT Energy', 'VAT Appliance', 'Usage Type', 'SMS Gateway ID', 'Created At', 'Updated At'];
         $csvPath = $this->settingsExportService->saveCsv($headers);
 
-        $path = Storage::path($csvPath);
-
-        return response()->download($path, 'settings_export_'.now()->format('Ymd_His').'.csv');
+        return Storage::download($csvPath, 'settings_export_'.now()->format('Ymd_His').'.csv');
     }
 
     public function downloadJson(Request $request): JsonResponse {

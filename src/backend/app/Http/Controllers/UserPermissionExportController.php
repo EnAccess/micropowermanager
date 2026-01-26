@@ -7,7 +7,7 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserPermissionExportController extends Controller {
     public function __construct(
@@ -15,7 +15,7 @@ class UserPermissionExportController extends Controller {
         private UserPermissionExportService $userPermissionExportService,
     ) {}
 
-    public function download(Request $request): BinaryFileResponse|JsonResponse {
+    public function download(Request $request): StreamedResponse|JsonResponse {
         $format = $request->get('format', 'json');
 
         if ($format === 'excel') {
@@ -29,7 +29,7 @@ class UserPermissionExportController extends Controller {
         return $this->downloadJson($request);
     }
 
-    public function downloadExcel(Request $request): BinaryFileResponse {
+    public function downloadExcel(Request $request): StreamedResponse {
         $users = $this->userService->getUsersWithRolesAndPermissions();
         $this->userPermissionExportService->createSpreadSheetFromTemplate($this->userPermissionExportService->getTemplatePath());
         $this->userPermissionExportService->setUserData($users);
@@ -37,12 +37,10 @@ class UserPermissionExportController extends Controller {
         $this->userPermissionExportService->writeUserPermissionData();
         $pathToSpreadSheet = $this->userPermissionExportService->saveSpreadSheet();
 
-        $path = Storage::path($pathToSpreadSheet);
-
-        return response()->download($path, 'user_permission_export_'.now()->format('Ymd_His').'.xlsx');
+        return Storage::download($pathToSpreadSheet, 'user_permission_export_'.now()->format('Ymd_His').'.xlsx');
     }
 
-    public function downloadCsv(Request $request): BinaryFileResponse {
+    public function downloadCsv(Request $request): StreamedResponse {
         $users = $this->userService->getUsersWithRolesAndPermissions();
 
         $this->userPermissionExportService->setUserData($users);
@@ -50,9 +48,7 @@ class UserPermissionExportController extends Controller {
         $headers = ['Name', 'Email', 'Roles', 'Permissions', 'Created At'];
         $csvPath = $this->userPermissionExportService->saveCsv($headers);
 
-        $path = Storage::path($csvPath);
-
-        return response()->download($path, 'user_permission_export_'.now()->format('Ymd_His').'.csv');
+        return Storage::download($csvPath, 'user_permission_export_'.now()->format('Ymd_His').'.csv');
     }
 
     public function downloadJson(Request $request): JsonResponse {
