@@ -8,7 +8,7 @@ use App\Services\MainSettingsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ApplianceExportController extends Controller {
     public function __construct(
@@ -17,7 +17,7 @@ class ApplianceExportController extends Controller {
         private MainSettingsService $mainSettingsService,
     ) {}
 
-    public function download(Request $request): BinaryFileResponse|JsonResponse {
+    public function download(Request $request): StreamedResponse|JsonResponse {
         $format = $request->get('format', 'excel');
 
         if ($format === 'csv') {
@@ -31,7 +31,7 @@ class ApplianceExportController extends Controller {
         return $this->downloadExcel($request);
     }
 
-    public function downloadExcel(Request $request): BinaryFileResponse {
+    public function downloadExcel(Request $request): StreamedResponse {
         $mainSettings = $this->mainSettingsService->getAll()->first();
         $this->applianceExportService->setCurrency($mainSettings->currency);
 
@@ -42,12 +42,10 @@ class ApplianceExportController extends Controller {
         $this->applianceExportService->writeApplianceData();
         $pathToSpreadSheet = $this->applianceExportService->saveSpreadSheet();
 
-        $path = Storage::path($pathToSpreadSheet);
-
-        return response()->download($path, 'appliance_export_'.now()->format('Ymd_His').'.xlsx');
+        return Storage::download($pathToSpreadSheet, 'appliance_export_'.now()->format('Ymd_His').'.xlsx');
     }
 
-    public function downloadCsv(Request $request): BinaryFileResponse {
+    public function downloadCsv(Request $request): StreamedResponse {
         $mainSettings = $this->mainSettingsService->getAll()->first();
         $this->applianceExportService->setCurrency($mainSettings->currency);
 
@@ -58,9 +56,7 @@ class ApplianceExportController extends Controller {
         $headers = ['Appliance Name', 'Appliance Type', 'Price', 'Total Sold', 'Total Rates', 'Created At', 'Updated At'];
         $csvPath = $this->applianceExportService->saveCsv($headers);
 
-        $path = Storage::path($csvPath);
-
-        return response()->download($path, 'appliance_export_'.now()->format('Ymd_His').'.csv');
+        return Storage::download($csvPath, 'appliance_export_'.now()->format('Ymd_His').'.csv');
     }
 
     public function downloadJson(Request $request): JsonResponse {
