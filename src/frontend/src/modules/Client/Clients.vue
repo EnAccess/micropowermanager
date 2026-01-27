@@ -37,8 +37,19 @@
               <md-button
                 class="md-raised md-default export-csv-button"
                 @click="exportDebts"
+                :disabled="downloading"
               >
-                <md-icon>download</md-icon>
+                <md-icon class="export-icon">
+                  <Transition mode="out-in" name="fade">
+                    <md-progress-spinner
+                      v-if="downloading"
+                      md-mode="indeterminate"
+                      :md-diameter="21"
+                      :md-stroke="3"
+                    />
+                    <span v-else>download</span>
+                  </Transition>
+                </md-icon>
                 {{ $tc("phrases.exportCustomersDebts") }}
               </md-button>
               <md-button
@@ -253,11 +264,17 @@
         </div>
       </md-dialog-content>
 
+      <md-progress-bar md-mode="indeterminate" v-if="downloading" />
+
       <md-dialog-actions>
-        <md-button @click="showExportModal = false">
+        <md-button class="md-raised" @click="showExportModal = false">
           {{ $tc("words.cancel") }}
         </md-button>
-        <md-button class="md-primary" @click="exportCustomers">
+        <md-button
+          class="md-primary md-raised"
+          :disabled="downloading"
+          @click="exportCustomers"
+        >
           {{ $tc("words.export") }}
         </md-button>
       </md-dialog-actions>
@@ -315,6 +332,7 @@ export default {
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
       isSearching: false,
+      downloading: false,
       activeRequest: null,
     }
   },
@@ -529,6 +547,8 @@ export default {
     },
 
     async exportDebts() {
+      this.downloading = true
+
       try {
         const response =
           await this.outstandingDebtsExportService.exportOutstandingDebts()
@@ -553,6 +573,8 @@ export default {
           "error",
           "Error occured while exporting Customers' debts",
         )
+      } finally {
+        this.downloading = false
       }
     },
 
@@ -603,6 +625,8 @@ export default {
     },
 
     async exportCustomers() {
+      this.downloading = true
+
       try {
         const data = {
           format: this.exportFilters.format,
@@ -645,6 +669,8 @@ export default {
         this.showExportModal = false
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting customers")
+      } finally {
+        this.downloading = false
       }
     },
 
@@ -728,5 +754,9 @@ export default {
 
 .export-dialog .md-dialog-content {
   padding: 20px;
+}
+
+.fade-enter-active .fade-leave-active {
+  transition: opacity ease;
 }
 </style>
