@@ -417,11 +417,17 @@
           </div>
         </md-dialog-content>
 
+        <md-progress-bar md-mode="indeterminate" v-if="downloading" />
+
         <md-dialog-actions>
-          <md-button @click="showExportModal = false">
+          <md-button class="md-raised" @click="showExportModal = false">
             {{ $tc("words.cancel") }}
           </md-button>
-          <md-button class="md-primary" @click="exportTransactions">
+          <md-button
+            class="md-primary md-raised"
+            :disabled="downloading"
+            @click="exportTransactions"
+          >
             {{ $tc("words.export") }}
           </md-button>
         </md-dialog-actions>
@@ -467,6 +473,7 @@ export default {
       period: "Yesterday",
       filter: [],
       loading: false,
+      downloading: false,
       subscriber: "transactionList",
       tab: "all",
       paginator: null,
@@ -626,6 +633,8 @@ export default {
       this.$router.push({ path: "/transactions/" + id })
     },
     async exportTransactions() {
+      this.downloading = true
+
       try {
         const data = {
           format: this.exportFilters.format,
@@ -662,6 +671,8 @@ export default {
         this.showExportModal = false
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting transactions")
+      } finally {
+        this.downloading = false
       }
     },
     async loadAnalytics() {
