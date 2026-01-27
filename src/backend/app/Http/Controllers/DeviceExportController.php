@@ -7,7 +7,7 @@ use App\Services\ExportServices\DeviceExportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DeviceExportController extends Controller {
     public function __construct(
@@ -15,7 +15,7 @@ class DeviceExportController extends Controller {
         private DeviceExportService $deviceExportService,
     ) {}
 
-    public function download(Request $request): BinaryFileResponse|JsonResponse {
+    public function download(Request $request): StreamedResponse|JsonResponse {
         $format = $request->get('format', 'excel');
 
         if ($format === 'csv') {
@@ -29,7 +29,7 @@ class DeviceExportController extends Controller {
         return $this->downloadExcel($request);
     }
 
-    public function downloadExcel(Request $request): BinaryFileResponse {
+    public function downloadExcel(Request $request): StreamedResponse {
         $miniGridName = $request->get('miniGrid');
         $villageName = $request->get('village');
         $deviceType = $request->get('deviceType');
@@ -42,12 +42,10 @@ class DeviceExportController extends Controller {
         $this->deviceExportService->writeDeviceData();
         $pathToSpreadSheet = $this->deviceExportService->saveSpreadSheet();
 
-        $path = Storage::path($pathToSpreadSheet);
-
-        return response()->download($path, 'device_export_'.now()->format('Ymd_His').'.xlsx');
+        return Storage::download($pathToSpreadSheet, 'device_export_'.now()->format('Ymd_His').'.xlsx');
     }
 
-    public function downloadCsv(Request $request): BinaryFileResponse {
+    public function downloadCsv(Request $request): StreamedResponse {
         $miniGridName = $request->get('miniGrid');
         $villageName = $request->get('village');
         $deviceType = $request->get('deviceType');
@@ -60,9 +58,7 @@ class DeviceExportController extends Controller {
         $headers = ['Device Serial', 'Device Type', 'Customer', 'Address', 'Manufacturer', 'Created At', 'Updated At'];
         $csvPath = $this->deviceExportService->saveCsv($headers);
 
-        $path = Storage::path($csvPath);
-
-        return response()->download($path, 'device_export_'.now()->format('Ymd_His').'.csv');
+        return Storage::download($csvPath, 'device_export_'.now()->format('Ymd_His').'.csv');
     }
 
     public function downloadJson(Request $request): JsonResponse {
