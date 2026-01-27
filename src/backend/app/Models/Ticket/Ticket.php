@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\DB;
  * @property      string                         $owner_type
  * @property      int                            $owner_id
  * @property      int                            $status
- * @property      string|null                    $due_date
+ * @property      Carbon|null                    $due_date
  * @property      string                         $title
  * @property      string                         $content
  * @property      int                            $category_id

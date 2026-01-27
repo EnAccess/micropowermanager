@@ -7,7 +7,7 @@ use App\Services\ExportServices\ClusterExportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ClusterExportController extends Controller {
     public function __construct(
@@ -15,7 +15,7 @@ class ClusterExportController extends Controller {
         private ClusterExportService $clusterExportService,
     ) {}
 
-    public function download(Request $request): BinaryFileResponse|JsonResponse {
+    public function download(Request $request): StreamedResponse|JsonResponse {
         $format = $request->get('format', 'excel');
 
         if ($format === 'csv') {
@@ -29,7 +29,7 @@ class ClusterExportController extends Controller {
         return $this->downloadExcel($request);
     }
 
-    public function downloadExcel(Request $request): BinaryFileResponse {
+    public function downloadExcel(Request $request): StreamedResponse {
         $clusters = $this->clusterService->getAllForExport();
         $this->clusterExportService->createSpreadSheetFromTemplate($this->clusterExportService->getTemplatePath());
         $this->clusterExportService->setClusterData($clusters);
@@ -37,12 +37,10 @@ class ClusterExportController extends Controller {
         $this->clusterExportService->writeClusterData();
         $pathToSpreadSheet = $this->clusterExportService->saveSpreadSheet();
 
-        $path = Storage::path($pathToSpreadSheet);
-
-        return response()->download($path, 'cluster_export_'.now()->format('Ymd_His').'.xlsx');
+        return Storage::download($pathToSpreadSheet, 'cluster_export_'.now()->format('Ymd_His').'.xlsx');
     }
 
-    public function downloadCsv(Request $request): BinaryFileResponse {
+    public function downloadCsv(Request $request): StreamedResponse {
         $clusters = $this->clusterService->getAllForExport();
 
         $this->clusterExportService->setClusterData($clusters);
@@ -50,9 +48,7 @@ class ClusterExportController extends Controller {
         $headers = ['Cluster Name', 'Manager', 'Mini Grids Count', 'Cities Count', 'Created At', 'Updated At'];
         $csvPath = $this->clusterExportService->saveCsv($headers);
 
-        $path = Storage::path($csvPath);
-
-        return response()->download($path, 'cluster_export_'.now()->format('Ymd_His').'.csv');
+        return Storage::download($csvPath, 'cluster_export_'.now()->format('Ymd_His').'.csv');
     }
 
     public function downloadJson(Request $request): JsonResponse {

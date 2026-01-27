@@ -17,7 +17,7 @@ class RedisConnectionCheckCommand extends Command {
             $this->info('Redis connection successful.');
 
             $testKey = 'mpm:system-check:'.time();
-            Redis::connection()->set($testKey, 'test', ['EX' => 60]);
+            Redis::connection()->setex($testKey, 60, 'test');
 
             $value = Redis::connection()->get($testKey);
             if ($value !== 'test') {

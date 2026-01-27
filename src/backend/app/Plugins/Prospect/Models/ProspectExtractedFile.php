@@ -11,9 +11,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $file_path
  * @property int         $records_count
  * @property int|null    $file_size
- * @property string|null $extracted_at
+ * @property Carbon|null $extracted_at
  * @property bool        $is_synced
- * @property string|null $synced_at
+ * @property Carbon|null $synced_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
