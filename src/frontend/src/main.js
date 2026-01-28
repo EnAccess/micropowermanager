@@ -9,75 +9,16 @@ import router from "./routes"
 import App from "./App"
 import "leaflet/dist/leaflet.css"
 import store from "./store/store"
-import UserData from "./shared/UserData"
 import Default from "./layouts/Default"
 import i18n from "./i18n"
 import { MapSettingsService } from "./services/MapSettingsService"
 import { MainSettingsService } from "./services/MainSettingsService"
-import Steamaco from "@/plugins/steama-meter/modules/Overview/Credential"
-import Spark from "@/plugins/spark-meter/modules/Overview/Credential"
-import Calin from "@/plugins/calin-meter/modules/Overview/Credential"
-import CalinSmart from "@/plugins/calin-smart-meter/modules/Overview/Credential"
-import Kelin from "@/plugins/kelin-meter/modules/Overview/Credential"
-import Stron from "@/plugins/stron-meter/modules/Overview/Credential"
-import Settings from "@/modules/Settings/Configuration/MainSettings"
-import Viber from "@/plugins/viber-messaging/modules/Overview/Credential"
-import MicroStar from "@/plugins/micro-star-meter/modules/Overview/Credential"
-import SunKing from "@/plugins/sun-king-shs/modules/Overview/Credential"
-import WaveMoney from "@/plugins/wave-money-payment-provider/modules/Overview/Credential"
-import GomeLong from "@/plugins/gome-long-meter/modules/Overview/Credential"
-import WaveComTransaction from "@/plugins/wavecom-payment-provider/modules/Component"
-import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component"
-import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail"
-import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail"
-import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail"
-import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail"
-import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail"
-import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail"
-import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
-import Angaza from "@/plugins/angaza-shs/modules/Overview/Credential"
-import DalyBms from "@/plugins/daly-bms/modules/Overview/Credential"
-import AfricasTalking from "@/plugins/africas-talking/modules/Overview/Credential"
-import Snackbar from "@/shared/Snackbar.vue"
-import ChintMeter from "@/plugins/chint-meter/modules/Overview/Credential"
-import Prospect from "@/plugins/prospect/modules/Overview/Credential"
-import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
-import TextbeeSmsGateway from "@/plugins/textbee-sms-gateway/modules/Overview/Credential"
 import {
   getPermissionsForRoute,
   userHasPermissions,
 } from "@/Helpers/PermissionGuard"
 
 Vue.component("default", Default)
-Vue.component("Spark-Meter", Spark)
-Vue.component("Steamaco-Meter", Steamaco)
-Vue.component("Calin-Meter", Calin)
-Vue.component("CalinSmart-Meter", CalinSmart)
-Vue.component("Kelin-Meter", Kelin)
-Vue.component("Stron-Meter", Stron)
-Vue.component("Settings", Settings)
-Vue.component("Viber-Messaging", Viber)
-Vue.component("WaveMoney", WaveMoney)
-Vue.component("MicroStar-Meter", MicroStar)
-Vue.component("SunKing-SHS", SunKing)
-Vue.component("GomeLong-Meter", GomeLong)
-Vue.component("WaveComTransaction", WaveComTransaction)
-Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
-Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
-Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
-Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
-Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
-Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
-Vue.component("AgentTransactionDetail", AgentTransactionDetail)
-Vue.component("Angaza-SHS", Angaza)
-Vue.component("Daly-Bms", DalyBms)
-Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
-Vue.component("Africas-Talking", AfricasTalking)
-Vue.component("Snackbar", Snackbar)
-Vue.component("Chint-Meter", ChintMeter)
-Vue.component("Prospect", Prospect)
-Vue.component("Paystack", Paystack)
-Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 
 const toArray = (value) => {
   if (!value) {
@@ -153,9 +94,6 @@ router.beforeEach(async (to, from, next) => {
 /*eslint-disable */
 const app = new Vue({
   el: "#app",
-  components: {
-    UserData,
-  },
   data() {
     return {
       mainSettingsService: new MainSettingsService(),
