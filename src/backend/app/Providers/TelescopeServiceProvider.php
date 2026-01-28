@@ -16,7 +16,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider {
 
         $enableErrorFilter = config('telescope.enable_error_filter', false);
         if ($enableErrorFilter) {
-            Telescope::filter(fn(IncomingEntry $entry): bool => $entry->isReportableException()
+            Telescope::filter(fn (IncomingEntry $entry): bool => $entry->isReportableException()
             || $entry->isFailedRequest()
             || $entry->isFailedJob()
             || $entry->type === 'exception');
