@@ -1,6 +1,5 @@
 <?php
 
-use Laravel\Telescope\Watchers;
 use Laravel\Telescope\Watchers\BatchWatcher;
 use Laravel\Telescope\Watchers\CacheWatcher;
 use Laravel\Telescope\Watchers\ClientRequestWatcher;
@@ -250,4 +249,5 @@ return [
         ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', true),
         ViewWatcher::class => env('TELESCOPE_VIEW_WATCHER', true),
     ],
+    'enable_error_filter' => env('TELESCOPE_ENABLE_ERROR_FILTER', false),
 ];
