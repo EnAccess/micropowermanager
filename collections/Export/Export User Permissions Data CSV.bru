@@ -1,0 +1,15 @@
+meta {
+  name: Export User Permissions Data CSV
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/user-permissions?format=csv
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: csv
+}
