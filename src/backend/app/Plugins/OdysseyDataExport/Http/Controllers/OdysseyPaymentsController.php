@@ -29,7 +29,7 @@ class OdysseyPaymentsController extends Controller {
             ->with([
                 'paidFor' => function ($morphTo) {
                     $morphTo->morphWith([
-                        Token::class => ['device.person.miniGrid', 'device.address.geo'],
+                        Token::class => ['device.person.miniGrid', 'device.geo'],
                     ]);
                 },
                 'payer.addresses',

@@ -34,7 +34,7 @@ class MeterGeographicalInformationService {
                 $meter = $this->meter->newQuery()->where('id', $meter['id'])
                     ->first();
                 if ($meter) {
-                    $geo = $meter->device->person->addresses()->first()->geo;
+                    $geo = $meter->device->geo;
                     $geo->points = $points[0].','.$points[1];
                     $geo->save();
                 }

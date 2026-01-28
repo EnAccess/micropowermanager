@@ -104,7 +104,7 @@ class CustomerService implements ISynchronizeService {
                 $meter = new Meter();
                 $geoLocation = new GeographicalInformation();
             } else {
-                $geoLocation = $meter->device->person->addresses()->first()->geo()->first();
+                $geoLocation = $meter->device->geo()->first();
                 if ($geoLocation === null) {
                     $geoLocation = new GeographicalInformation();
                 }
@@ -148,7 +148,7 @@ class CustomerService implements ISynchronizeService {
             if ($geoLocation->points == null) {
                 $geoLocation->points = config('spark.geoLocation');
             }
-            $meter->device->person->addresses()->first()->geo()->save($geoLocation);
+            $meter->device->geo()->save($geoLocation);
 
             $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
 
@@ -158,8 +158,7 @@ class CustomerService implements ISynchronizeService {
             $address = $address->newQuery()->create([
                 'city_id' => request()->input('city_id', $sparkCity->id),
             ]);
-            $address->owner()->associate($meter);
-            $address->geo()->save($meter->device->address->geo()->first());
+            $address->owner()->associate($meter->device);
             $address->save();
             DB::connection('tenant')->commit();
 
@@ -223,14 +222,11 @@ class CustomerService implements ISynchronizeService {
             $meter->tariff()->associate($smTariff->mpmTariff);
             $meter->save();
         }
-        $geo = $meter->device->person->addresses()->first()->geo()->first();
+        $geo = $meter->device->geo()->first();
         if ($geo && array_key_exists('coords', $customer['meters'][0])) {
             $geo->points = $customer['meters'][0]['coords'] === '' ?
                 config('spark.geoLocation') : $customer['meters'][0]['coords'];
             $geo->update();
-            $meter->device->address()->update([
-                'geo_id' => $geo->id,
-            ]);
         }
         $person->update([
             'name' => $customer['name'],
