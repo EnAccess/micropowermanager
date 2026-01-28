@@ -249,5 +249,5 @@ return [
         ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', true),
         ViewWatcher::class => env('TELESCOPE_VIEW_WATCHER', true),
     ],
-    'enable_error_filter' => env('TELESCOPE_ENABLE_ERROR_FILTER', false),
+    'enable_error_only_filter' => env('TELESCOPE_ENABLE_ERROR_ONLY_FILTER', false),
 ];

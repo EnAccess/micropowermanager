@@ -14,7 +14,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider {
     public function register(): void {
         $this->hideSensitiveRequestDetails();
 
-        $enableErrorFilter = config('telescope.enable_error_filter', false);
+        $enableErrorFilter = config('telescope.enable_error_only_filter', false);
         if ($enableErrorFilter) {
             Telescope::filter(fn (IncomingEntry $entry): bool => $entry->isReportableException()
             || $entry->isFailedRequest()
