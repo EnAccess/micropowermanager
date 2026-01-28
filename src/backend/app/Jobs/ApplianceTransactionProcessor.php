@@ -7,6 +7,7 @@ use App\Events\TransactionFailedEvent;
 use App\Exceptions\ApplianceTokenNotProcessedException;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
+use App\Models\Appliance;
 use App\Models\Transaction\Transaction;
 use App\Utils\ApplianceInstallmentPayer;
 use Illuminate\Support\Facades\Log;
@@ -32,13 +33,22 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $container = $this->initializeTransactionDataContainer();
 
         try {
-            $this->checkForMinimumPurchaseAmount($container);
-            $container = $this->payApplianceInstallments($container);
-            $this->processToken($container);
+            $appliance = $container->appliancePerson->appliance;
+            $this->processTransactionPayment($container, $appliance);
         } catch (\Exception $e) {
             Log::info('Transaction failed.: '.$e->getMessage());
             event(new TransactionFailedEvent($this->transaction, $e->getMessage()));
             throw new ApplianceTokenNotProcessedException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    private function processTransactionPayment(TransactionDataContainer $container, Appliance $appliance): void {
+        $isPaygo = $appliance->applianceType->paygo_enabled;
+
+        $this->checkForMinimumPurchaseAmount($container);
+        $container = $this->payApplianceInstallments($container);
+        if ($isPaygo) {
+            $this->processToken($container);
         }
     }
 
