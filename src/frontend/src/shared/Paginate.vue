@@ -1,3 +1,10 @@
+<!--
+Slightly modified version of:
+https://github.com/vuematerial/vue-material/blob/dev/src/components/MdTable/MdTablePagination.vue
+
+MdTablePagination only works inside a table.
+This is copy from it's UI with adjusted handling to MPM context.
+-->
 <template>
   <div
     v-if="paginator && paginator.totalEntries > 0"
