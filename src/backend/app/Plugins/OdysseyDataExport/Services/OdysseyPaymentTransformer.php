@@ -41,7 +41,7 @@ class OdysseyPaymentTransformer {
                 }
 
                 // Geo
-                $geo = optional($device->address->geo);
+                $geo = optional($device->geo);
                 if ($geo && !empty($geo->points)) {
                     // Expecting "lat,lng" or "lng,lat"; we assume "lat,lng"
                     $parts = explode(',', $geo->points);
@@ -54,7 +54,7 @@ class OdysseyPaymentTransformer {
         }
         // Handle appliance installment payments paid against ApplianceRate
         elseif ($paidFor instanceof ApplianceRate) {
-            $appliancePerson = $paidFor->appliancePerson()->with('device.device', 'device.address.geo')->first();
+            $appliancePerson = $paidFor->appliancePerson()->with('device.device', 'device.geo')->first();
             if ($appliancePerson && $appliancePerson->device) {
                 $device = $appliancePerson->device;
                 $underlying = $device->device;
@@ -65,7 +65,7 @@ class OdysseyPaymentTransformer {
                     $customerCategory = $underlying->connectionType?->name;
                 }
 
-                $geo = optional($device->address->geo);
+                $geo = optional($device->geo);
                 if ($geo && !empty($geo->points)) {
                     $parts = explode(',', $geo->points);
                     if (count($parts) === 2) {

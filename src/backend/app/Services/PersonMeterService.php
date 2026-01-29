@@ -14,6 +14,6 @@ class PersonMeterService {
     }
 
     public function getPersonMetersGeographicalInformation(int $personId): Person {
-        return $this->person->newQuery()->with(['devices.device', 'devices.address.geo'])->find($personId);
+        return $this->person->newQuery()->with(['devices.device', 'devices.geo'])->find($personId);
     }
 }

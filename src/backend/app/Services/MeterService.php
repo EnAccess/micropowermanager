@@ -44,7 +44,7 @@ class MeterService implements IBaseService {
     public function getMeterWithAllRelations(int $meterId): ?Meter {
         return $this->meter->newQuery()->with([
             'tariff',
-            'device.device.geo',
+            'device.geo',
             'meterType',
         ])->find($meterId);
     }
@@ -53,7 +53,7 @@ class MeterService implements IBaseService {
      * @return Collection<int, Meter>
      */
     public function getUsedMetersGeoWithAccessRatePayments(): Collection {
-        return $this->meter->newQuery()->with(['device.device.geo', 'accessRatePayment'])->where('in_use', 1)->get();
+        return $this->meter->newQuery()->with(['device.geo', 'accessRatePayment'])->where('in_use', 1)->get();
     }
 
     /**
@@ -62,7 +62,7 @@ class MeterService implements IBaseService {
      * @return Collection<int, Meter>
      */
     public function getUsedMetersGeoWithAccessRatePaymentsInCities(array $cities): Collection {
-        return $this->meter->newQuery()->with(['device.device.geo', 'accessRatePayment'])
+        return $this->meter->newQuery()->with(['device.geo', 'accessRatePayment'])
             ->whereHas(
                 'device',
                 fn ($q) => $q->whereHas(
