@@ -160,6 +160,13 @@ class UserService {
     /**
      * @return Collection<int, User>
      */
+    public function getUsersWithRolesAndPermissions(): Collection {
+        return $this->user->newQuery()->with(['roles.permissions'])->get();
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
     public function getUsersToSendOutstandingDebtsReport(): Collection {
         return $this->user->newQuery()->whereHas('roles', function ($query) {
             $query->whereIn('name', ['admin', 'owner', 'financial-manager']);
