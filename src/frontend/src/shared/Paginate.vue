@@ -15,10 +15,9 @@ This is copy from it's UI with adjusted handling to MPM context.
 
       <md-field>
         <md-select
-          v-model="goPage"
+          v-model="paginator.currentPage"
           md-dense
           md-class="md-pagination-select"
-          @md-selected="changePage(goPage)"
         >
           <md-option
             v-for="page in paginator.totalPage"
@@ -61,7 +60,7 @@ This is copy from it's UI with adjusted handling to MPM context.
 
     <md-button
       class="md-icon-button md-table-pagination-previous"
-      @click="changePage(--paginator.currentPage)"
+      @click="--paginator.currentPage"
       :disabled="paginator.currentPage === 1"
     >
       <md-icon>keyboard_arrow_left</md-icon>
@@ -69,7 +68,7 @@ This is copy from it's UI with adjusted handling to MPM context.
 
     <md-button
       class="md-icon-button md-table-pagination-next"
-      @click="changePage(++paginator.currentPage)"
+      @click="++paginator.currentPage"
       :disabled="paginator.currentPage === paginator.totalPage"
     >
       <md-icon>keyboard_arrow_right</md-icon>
@@ -97,16 +96,9 @@ export default {
   data() {
     return {
       loading: false,
-      currentFrom: 0,
-      currentTo: 0,
-      total: 0,
-      currentPage: 0,
-      totalPages: 0,
       paginator: null,
       term: {},
-      threeDots: false,
       perPage: 15,
-      goPage: null,
     }
   },
   mounted() {
@@ -120,13 +112,29 @@ export default {
     this.paginator = null
   },
   watch: {
-    $route(to, from) {
-      console.log(to)
-      console.log(from)
-      console.log(this.paginator)
-      console.log("this.currentPage in watcher", this.currentPage)
+    $route() {
       if (this.route_name) {
-        this.loadPage(this.currentPage)
+        this.loadPage(this.paginator.currentPage)
+      }
+    },
+    "paginator.currentPage"(newPage) {
+      if (!newPage || this.loading) return
+
+      if (this.route_name) {
+        this.$router
+          .push({
+            query: Object.assign({}, this.term, {
+              page: newPage,
+              per_page: this.paginator.perPage,
+            }),
+          })
+          .catch((error) => {
+            if (error.name !== "NavigationDuplicated") {
+              throw error
+            }
+          })
+      } else {
+        this.loadPage(newPage)
       }
     },
     paginatorReference: {
@@ -138,47 +146,6 @@ export default {
     },
   },
   methods: {
-    changePage(pageNumber) {
-      console.log("=== changePage START ===")
-      console.log("pageNumber:", pageNumber)
-      console.log("currentPage:", this.currentPage)
-      console.log("Stack trace:", new Error().stack)
-      console.log("========================")
-      console.log("called", pageNumber)
-      if (!isNaN(pageNumber)) {
-        if (pageNumber > this.paginator.totalPage) {
-          this.alertNotify(
-            "error",
-            "Page Number is bigger than Total Pages Count",
-          )
-          return
-        }
-        this.currentPage = pageNumber
-        console.log("this.currentPage", this.currentPage)
-        if (this.route_name) {
-          console.log("pushing now..")
-          this.$router
-            .push({
-              query: Object.assign({}, this.term, {
-                page: pageNumber,
-                per_page: this.paginator.perPage,
-              }),
-            })
-            .then(() => console.log("Route push SUCCESS"))
-            .catch((error) => {
-              if (error.name !== "NavigationDuplicated") {
-                // console.log(error)
-                // console.error(error.name)
-                throw error
-              }
-            })
-        } else {
-          this.loadPage(pageNumber)
-        }
-      } else {
-        this.alertNotify("error", "Page is not a Number")
-      }
-    },
     eventLoadPage(paginator, term = {}) {
       this.term = term
       this.paginator = paginator
