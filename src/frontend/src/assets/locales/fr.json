@@ -313,7 +313,7 @@
     "originatorConversationId": "Originator Conversation Id",
     "outgoingSms": "Outgoing SMS",
     "overDueReminderRate": "Over Due Reminder Rate (Day)",
-    "paginateLabels": "Affichage de {from} à {to} des {total} entrées",
+    "paginateLabels": "{from} - {to} des {total}",
     "paidFor": "Payé",
     "paygoEnabled": "PayGo activé",
     "paymentDistribution": "Répartition des paiements",

@@ -1,9 +1,54 @@
+<!--
+Slightly modified version of:
+https://github.com/vuematerial/vue-material/blob/dev/src/components/MdTable/MdTablePagination.vue
+
+MdTablePagination only works inside a table.
+This is copy from it's UI with adjusted handling to MPM context.
+-->
 <template>
   <div
     v-if="paginator && paginator.totalEntries > 0"
-    class="md-layout md-gutter md-size-100 pagination-area"
+    class="md-table-pagination"
   >
-    <div class="md-layout-item md-size-25 pagination-entry">
+    <template v-if="paginator.totalPage >= 5">
+      <span class="md-table-pagination-label">Go to Page:</span>
+
+      <md-field>
+        <md-select
+          v-model="paginator.currentPage"
+          md-dense
+          md-class="md-pagination-select"
+        >
+          <md-option
+            v-for="page in paginator.totalPage"
+            :key="page"
+            :value="page"
+          >
+            {{ page }}
+          </md-option>
+        </md-select>
+      </md-field>
+    </template>
+
+    <template v-if="show_per_page">
+      <span class="md-table-pagination-label">Rows per page:</span>
+
+      <md-field>
+        <md-select
+          v-model="perPage"
+          md-dense
+          md-class="md-pagination-select"
+          @md-selected="defaultItemsPerPage(perPage)"
+        >
+          <md-option value="15">15</md-option>
+          <md-option value="50">50</md-option>
+          <md-option value="100">100</md-option>
+          <md-option value="200">200</md-option>
+        </md-select>
+      </md-field>
+    </template>
+
+    <span>
       {{
         $tc("phrases.paginateLabels", 1, {
           from: paginator.from,
@@ -11,92 +56,23 @@
           total: paginator.totalEntries,
         })
       }}
-    </div>
-    <div
-      class="md-layout-item md-size-20 pagination-per-page"
-      v-if="show_per_page"
-    ></div>
-    <div
-      class="md-layout-item"
-      :class="{
-        'md-size-70': !show_per_page,
-        'md-size-50': show_per_page,
-      }"
+    </span>
+
+    <md-button
+      class="md-icon-button md-table-pagination-previous"
+      @click="--paginator.currentPage"
+      :disabled="paginator.currentPage === 1"
     >
-      <div class="md-layout pagination">
-        <span v-if="show_per_page">{{ $tc("phrases.perPage") }}:</span>
-        <select
-          v-if="show_per_page"
-          name="per_page"
-          id="per_page"
-          @change="defaultItemsPerPage"
-        >
-          <option value="15">15</option>
-          <option value="25">25</option>
-          <option value="30">30</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-          <option value="200">200</option>
-          <option value="300">300</option>
-        </select>
-        <input type="number" v-model="goPage" v-if="paginator.totalPage >= 5" />
-        <button @click="changePage(goPage)" v-if="paginator.totalPage >= 5">
-          Go
-        </button>
-        <a
-          href="javascript:void(0)"
-          :class="{ disabled: paginator.currentPage === 1 }"
-          @click="changePage(1)"
-        >
-          <md-icon :class="{ disabled: paginator.currentPage === 1 }">
-            first_page
-          </md-icon>
-        </a>
-        <a
-          href="javascript:void(0)"
-          :class="{ disabled: paginator.currentPage === 1 }"
-          @click="changePage(--paginator.currentPage)"
-        >
-          <md-icon :class="{ disabled: paginator.currentPage === 1 }">
-            chevron_left
-          </md-icon>
-        </a>
-        <span>
-          {{ paginator.currentPage }} of
-          {{ formatTotalPages(paginator.totalPage) }}
-        </span>
-        <a
-          href="javascript:void(0)"
-          :class="{
-            disabled: paginator.currentPage === paginator.totalPage,
-          }"
-          @click="changePage(++paginator.currentPage)"
-        >
-          <md-icon
-            :class="{
-              disabled: paginator.currentPage === paginator.totalPage,
-            }"
-          >
-            chevron_right
-          </md-icon>
-        </a>
-        <a
-          href="javascript:void(0)"
-          :class="{
-            disabled: paginator.currentPage === paginator.totalPage,
-          }"
-          @click="changePage(paginator.totalPage)"
-        >
-          <md-icon
-            :class="{
-              disabled: paginator.currentPage === paginator.totalPage,
-            }"
-          >
-            last_page
-          </md-icon>
-        </a>
-      </div>
-    </div>
+      <md-icon>keyboard_arrow_left</md-icon>
+    </md-button>
+
+    <md-button
+      class="md-icon-button md-table-pagination-next"
+      @click="++paginator.currentPage"
+      :disabled="paginator.currentPage === paginator.totalPage"
+    >
+      <md-icon>keyboard_arrow_right</md-icon>
+    </md-button>
   </div>
 </template>
 
@@ -120,16 +96,9 @@ export default {
   data() {
     return {
       loading: false,
-      currentFrom: 0,
-      currentTo: 0,
-      total: 0,
-      currentPage: 0,
-      totalPages: 0,
       paginator: null,
       term: {},
-      threeDots: false,
       perPage: 15,
-      goPage: null,
     }
   },
   mounted() {
@@ -145,7 +114,27 @@ export default {
   watch: {
     $route() {
       if (this.route_name) {
-        this.loadPage(this.currentPage)
+        this.loadPage(this.paginator.currentPage)
+      }
+    },
+    "paginator.currentPage"(newPage) {
+      if (!newPage || this.loading) return
+
+      if (this.route_name) {
+        this.$router
+          .push({
+            query: Object.assign({}, this.term, {
+              page: newPage,
+              per_page: this.paginator.perPage,
+            }),
+          })
+          .catch((error) => {
+            if (error.name !== "NavigationDuplicated") {
+              throw error
+            }
+          })
+      } else {
+        this.loadPage(newPage)
       }
     },
     paginatorReference: {
@@ -157,37 +146,6 @@ export default {
     },
   },
   methods: {
-    changePage(pageNumber) {
-      if (this.goPage !== pageNumber) this.goPage = pageNumber
-      if (!isNaN(pageNumber)) {
-        if (pageNumber > this.paginator.totalPage) {
-          this.alertNotify(
-            "error",
-            "Page Number is bigger than Total Pages Count",
-          )
-          return
-        }
-        this.currentPage = pageNumber
-        if (this.route_name) {
-          this.$router
-            .push({
-              query: Object.assign({}, this.term, {
-                page: pageNumber,
-                per_page: this.paginator.perPage,
-              }),
-            })
-            .catch((error) => {
-              if (error.name !== "NavigationDuplicated") {
-                throw error
-              }
-            })
-        } else {
-          this.loadPage(pageNumber)
-        }
-      } else {
-        this.alertNotify("error", "Page is not a Number")
-      }
-    },
     eventLoadPage(paginator, term = {}) {
       this.term = term
       this.paginator = paginator
@@ -197,14 +155,10 @@ export default {
       this.paginator.perPage = data.target.value
       this.loadPage(this.paginator.currentPage)
     },
-    defaultCallback(data = null) {
-      console.log("default callback with", data)
-    },
     loadPage(pageNumber) {
       if (this.loading) {
         return
       }
-      if (this.goPage !== pageNumber) this.goPage = pageNumber
       this.loading = true
       this.paginator
         .loadPage(pageNumber, this.term)
@@ -231,58 +185,49 @@ export default {
           }
         })
     },
-    formatTotalPages(pageNumber) {
-      return pageNumber.toLocaleString()
-    },
   },
 }
 </script>
 
-<style scoped>
-.pagination-area {
-  width: 100%;
-  margin: 0;
-  position: absolute;
+<style lang="scss" scoped>
+.md-table-pagination {
+  height: 56px;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: 0px solid;
+  font-size: 12px;
+
+  .md-table-pagination-previous {
+    margin-right: 2px;
+    margin-left: 18px;
+  }
+
+  .md-field {
+    width: 48px;
+    min-width: 36px;
+    margin: -16px 24px 0 32px;
+
+    &:after,
+    &:before {
+      display: none;
+    }
+
+    .md-select-value {
+      font-size: 13px;
+    }
+  }
 }
-.pagination-entry {
-  font-style: italic;
-  margin: 8px;
+
+.md-menu-content.md-pagination-select {
+  max-width: 82px;
+  min-width: 56px;
+  margin-top: 5px;
 }
-.pagination-per-page {
-  font-style: italic;
-  margin: 8px;
-  right: 0 !important;
-  float: right;
-}
-.pagination {
-  display: inline-block;
-  margin-top: 2px;
-  right: 0 !important;
-  float: right;
-}
-.pagination a,
-span,
-input[type="number"],
-button,
-select {
-  max-width: 90px;
-  color: black !important;
-  float: left;
-  padding: 1px 10px;
-  text-decoration: none;
-  transition: background-color 0.3s;
-  margin: 8px 2px;
-  height: 25px;
-}
-.pagination input[type="number"]:focus {
-  border: 2px solid #555;
-}
-.pagination a:hover {
-  background-color: #ddd;
-  color: #2f0d0b !important;
-}
-.pagination .disabled {
-  pointer-events: none;
-  color: #ccc !important;
+
+// Workaround to fight global styling from SideBar.vue
+::v-deep(.md-icon.md-theme-default.md-icon-image svg) {
+  fill: rgba(0, 0, 0, 0.87) !important;
 }
 </style>
