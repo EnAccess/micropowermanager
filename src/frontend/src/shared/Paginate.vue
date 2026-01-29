@@ -120,7 +120,11 @@ export default {
     this.paginator = null
   },
   watch: {
-    $route() {
+    $route(to, from) {
+      console.log(to)
+      console.log(from)
+      console.log(this.paginator)
+      console.log("this.currentPage in watcher", this.currentPage)
       if (this.route_name) {
         this.loadPage(this.currentPage)
       }
@@ -135,7 +139,12 @@ export default {
   },
   methods: {
     changePage(pageNumber) {
-      if (this.goPage !== pageNumber) this.goPage = pageNumber
+      console.log("=== changePage START ===")
+      console.log("pageNumber:", pageNumber)
+      console.log("currentPage:", this.currentPage)
+      console.log("Stack trace:", new Error().stack)
+      console.log("========================")
+      console.log("called", pageNumber)
       if (!isNaN(pageNumber)) {
         if (pageNumber > this.paginator.totalPage) {
           this.alertNotify(
@@ -145,7 +154,9 @@ export default {
           return
         }
         this.currentPage = pageNumber
+        console.log("this.currentPage", this.currentPage)
         if (this.route_name) {
+          console.log("pushing now..")
           this.$router
             .push({
               query: Object.assign({}, this.term, {
@@ -153,8 +164,11 @@ export default {
                 per_page: this.paginator.perPage,
               }),
             })
+            .then(() => console.log("Route push SUCCESS"))
             .catch((error) => {
               if (error.name !== "NavigationDuplicated") {
+                // console.log(error)
+                // console.error(error.name)
                 throw error
               }
             })
@@ -178,7 +192,6 @@ export default {
       if (this.loading) {
         return
       }
-      if (this.goPage !== pageNumber) this.goPage = pageNumber
       this.loading = true
       this.paginator
         .loadPage(pageNumber, this.term)
