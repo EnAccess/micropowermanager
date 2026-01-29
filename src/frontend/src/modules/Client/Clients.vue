@@ -7,6 +7,7 @@
       :subscriber="subscriber"
       :button="true"
       :paginator="paginator"
+      :show_per_page="true"
       :route_name="'/people'"
       color="primary"
       :button-text="$tc('phrases.addCustomer')"
