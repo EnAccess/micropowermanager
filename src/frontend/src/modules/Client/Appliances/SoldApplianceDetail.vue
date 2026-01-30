@@ -382,6 +382,12 @@ export default {
   watch: {
     $route() {
       this.selectedApplianceId = this.$route.params.id
+      this.applianceRateService = new ApplianceRateService(
+        this.selectedApplianceId,
+      )
+      this.applianceLogService = new ApplianceLogService(
+        this.selectedApplianceId,
+      )
       this.getSoldApplianceDetail()
     },
   },
