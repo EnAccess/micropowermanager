@@ -548,7 +548,7 @@ export default {
               await this.appliancePayment.pollPaymentStatus(
                 result.transaction_id,
                 {
-                  maxAttempts: 30,
+                  maxAttempts: 20,
                   interval: 1000,
                 },
               )

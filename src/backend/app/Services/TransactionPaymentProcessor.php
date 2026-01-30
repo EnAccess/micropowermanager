@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\TransactionNotMatchedException;
 use App\Jobs\ApplianceTransactionProcessor;
 use App\Jobs\EnergyTransactionProcessor;
 use App\Models\EBike;
@@ -18,15 +19,27 @@ class TransactionPaymentProcessor {
     public static function process(int $companyId, int $transactionId): void {
         $transactionService = app()->make(TransactionService::class);
         $transaction = $transactionService->getById($transactionId);
-        $serialNumber = $transaction->message;
+        $serialId = $transaction->message;
         $deviceService = app()->make(DeviceService::class);
-        $device = $deviceService->getBySerialNumber($serialNumber);
-        $deviceType = $device->device_type;
+        $device = $deviceService->getBySerialNumber($serialId);
 
-        // select the correct processor and instantiate the processor class
-        $processorClass = self::PROCESSORS_BY_DEVICE_TYPE[$deviceType];
+        if ($device !== null) {
+            $deviceType = $device->device_type;
 
-        // Dispatch the job
-        $processorClass::dispatch($companyId, $transactionId);
+            // select the correct processor and instantiate the processor class
+            $processorClass = self::PROCESSORS_BY_DEVICE_TYPE[$deviceType];
+
+            $processorClass::dispatch($companyId, $transactionId);
+
+            return;
+        }
+
+        if ($transaction->nonPaygoAppliance()->exists()) {
+            dispatch(new ApplianceTransactionProcessor($companyId, $transactionId));
+
+            return;
+        }
+
+        throw new TransactionNotMatchedException("No device or appliance found for serial id: {$serialId}");
     }
 }

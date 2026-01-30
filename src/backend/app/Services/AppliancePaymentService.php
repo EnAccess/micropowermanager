@@ -40,7 +40,7 @@ class AppliancePaymentService {
         $ownerAddress = $applianceOwner->addresses()->where('is_primary', 1)->first();
         $sender = $ownerAddress == null ? '-' : $ownerAddress->phone;
         $transaction =
-            $this->cashTransactionService->createCashTransaction($creatorId, $amount, $sender, $deviceSerial);
+            $this->cashTransactionService->createCashTransaction($creatorId, $amount, $sender, $deviceSerial, $appliancePerson->id);
 
         dispatch(new ProcessPayment($companyId, $transaction->id));
 

@@ -4,11 +4,13 @@ namespace App\Jobs;
 
 use App\DTO\TransactionDataContainer;
 use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\ApplianceTokenNotProcessedException;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Models\Appliance;
 use App\Models\Transaction\Transaction;
+use App\Services\AppliancePaymentService;
 use App\Utils\ApplianceInstallmentPayer;
 use Illuminate\Support\Facades\Log;
 
@@ -32,6 +34,11 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $this->initializeTransaction();
         $container = $this->initializeTransactionDataContainer();
 
+        $originalTransaction = $this->transaction->originalTransaction()->first();
+        if ($originalTransaction?->conflicts()->exists()) {
+            return; // skip transaction processing if it has conflicts
+        }
+
         try {
             $appliance = $container->appliancePerson->appliance;
             $this->processTransactionPayment($container, $appliance);
@@ -49,6 +56,11 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $container = $this->payApplianceInstallments($container);
         if ($isPaygo) {
             $this->processToken($container);
+        } else {
+            $appliancePaymentService = resolve(AppliancePaymentService::class);
+            $creatorId = $this->transaction->originalTransaction()->first()->user_id ?? 0;
+            $appliancePaymentService->createPaymentLog($container->appliancePerson, $container->amount, $creatorId);
+            event(new TransactionSuccessfulEvent($this->transaction));
         }
     }
 
@@ -70,7 +82,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
     private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void {
         $minimumPurchaseAmount = $container->installmentCost;
         if ($container->amount < $minimumPurchaseAmount) {
-            throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$container->device->device_serial}");
+            throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for appliance with serial id:{$container->transaction->message}");
         }
     }
 

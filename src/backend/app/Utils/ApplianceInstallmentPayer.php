@@ -36,7 +36,24 @@ class ApplianceInstallmentPayer {
     public function initialize(TransactionDataContainer $transactionData): void {
         $this->transaction = $transactionData->transaction;
         $this->consumableAmount = $this->transaction->amount;
-        $this->customer = $this->getCustomerByDeviceSerial($this->transaction->message);
+        $this->customer = $this->getCustomerFromTransaction($transactionData);
+    }
+
+    /**
+     * Get the customer (Person) from the transaction data.
+     * Supports both device-based appliances (SHS, EBike) and general appliances (TV, bulbs, etc.).
+     */
+    private function getCustomerFromTransaction(TransactionDataContainer $transactionData): Person {
+        if ($transactionData->device instanceof Device) {
+            return $transactionData->device->person;
+        }
+
+        // For general appliances without a device, get customer from AppliancePerson
+        if ($transactionData->appliancePerson instanceof AppliancePerson) {
+            return $transactionData->appliancePerson->person;
+        }
+
+        return $this->getCustomerByDeviceSerial($this->transaction->message);
     }
 
     // This function pays the installments for the device number that provided in transaction

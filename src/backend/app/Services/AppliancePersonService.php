@@ -81,7 +81,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     public function getById(int $id): AppliancePerson {
-        throw new \Exception('Method getById() not yet implemented.');
+        return $this->appliancePerson->newQuery()->findOrFail($id);
     }
 
     /**
