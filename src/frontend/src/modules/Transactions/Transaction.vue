@@ -82,18 +82,23 @@
                       {{ $tc("words.deviceType") }}
                     </div>
                     <div class="md-layout-item md-subheader n-font">
-                      {{ $tc(`words.${transaction.device.device_type}`) }}
+                      {{ deviceType }}
                     </div>
                   </div>
                   <hr class="hr-d" />
                   <div class="md-layout">
                     <div class="md-layout-item md-subheader">
-                      {{ $tc("words.device") }}
+                      {{
+                        transaction.device
+                          ? $tc("words.device")
+                          : $tc("words.appliance")
+                      }}
                     </div>
                     <div
                       class="md-layout-item md-subheader n-font"
                       v-if="
                         transaction.payment_histories[0].paymentHistory &&
+                        transaction.device &&
                         transaction.device.device_type === 'meter'
                       "
                     >
@@ -110,6 +115,7 @@
                       class="md-layout-item md-subheader n-font"
                       v-else-if="
                         transaction.payment_histories[0].paymentHistory &&
+                        transaction.device &&
                         transaction.device.device_type === 'solar_home_system'
                       "
                     >
@@ -124,8 +130,41 @@
                         {{ transaction.message }}
                       </router-link>
                     </div>
+                    <div
+                      class="md-layout-item md-subheader n-font"
+                      v-else-if="
+                        transaction.appliance && transaction.appliance.id
+                      "
+                    >
+                      <router-link
+                        :to="{
+                          path:
+                            '/sold-appliance-detail/' +
+                            transaction.appliance.id,
+                        }"
+                        class="nav-link"
+                      >
+                        {{ deviceDisplay }}
+                      </router-link>
+                    </div>
+                    <div
+                      class="md-layout-item md-subheader n-font"
+                      v-else-if="
+                        isApplianceTransaction && applianceIdFromMessage
+                      "
+                    >
+                      <router-link
+                        :to="{
+                          path:
+                            '/sold-appliance-detail/' + applianceIdFromMessage,
+                        }"
+                        class="nav-link"
+                      >
+                        {{ deviceDisplay }}
+                      </router-link>
+                    </div>
                     <div class="md-layout-item md-subheader n-font" v-else>
-                      {{ transaction.message }}
+                      {{ deviceDisplay }}
                     </div>
                   </div>
                   <hr class="hr-d" />
@@ -308,6 +347,7 @@ import { timing } from "@/mixins/timing"
 import { currency } from "@/mixins/currency"
 import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
+import CashTransactionDetail from "@/modules/Transactions/CashTransactionDetail"
 import Widget from "@/shared/Widget.vue"
 import { TransactionService } from "@/services/TransactionService"
 import { PersonService } from "@/services/PersonService"
@@ -320,6 +360,7 @@ export default {
   components: {
     Widget,
     AgentTransactionDetail,
+    CashTransactionDetail,
     PaymentHistoryChart,
   },
   created() {
@@ -360,9 +401,45 @@ export default {
           return "WaveComTransactionDetail"
         case "paystack_transaction":
           return "PaystackTransactionDetail"
+        case "cash_transaction":
+          return "CashTransactionDetail"
         default:
           return null
       }
+    },
+    deviceType() {
+      if (this.transaction.device && this.transaction.device.device_type) {
+        return this.$tc(`words.${this.transaction.device.device_type}`)
+      }
+      if (this.transaction.appliance && this.transaction.appliance.appliance) {
+        return this.transaction.appliance.appliance.name
+      }
+      return this.$tc("words.appliance")
+    },
+    deviceDisplay() {
+      if (this.transaction.device) {
+        return this.transaction.message
+      }
+      if (this.transaction.appliance && this.transaction.appliance.appliance) {
+        return this.transaction.appliance.appliance.name
+      }
+      return this.transaction.message !== "-"
+        ? this.transaction.message
+        : this.$tc("phrases.noDeviceAssigned")
+    },
+    isApplianceTransaction() {
+      return (
+        this.transaction.type === "deferred_payment" &&
+        this.transaction.original_transaction_type === "cash_transaction" &&
+        !this.transaction.device
+      )
+    },
+    applianceIdFromMessage() {
+      const message = this.transaction.message
+      if (message && message !== "-" && /^\d+$/.test(message)) {
+        return parseInt(message, 10)
+      }
+      return null
     },
   },
   methods: {
