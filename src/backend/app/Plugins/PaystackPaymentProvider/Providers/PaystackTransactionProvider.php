@@ -10,9 +10,6 @@ use App\Models\Transaction\TransactionConflicts;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Providers\Interfaces\ITransactionProvider;
-use App\Services\SmsService;
-use App\Sms\Senders\SmsConfigs;
-use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -56,8 +53,7 @@ class PaystackTransactionProvider implements ITransactionProvider {
                 'status' => PaystackTransaction::STATUS_SUCCESS,
             ];
             $this->paystackTransactionService->update($this->paystackTransaction, $updateData);
-            $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction->toArray(), SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+        // SMS sent centrally via SendTransactionConfirmationSmsListener
         } else {
             Log::error('paystack transaction is been cancelled');
         }
