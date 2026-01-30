@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
  *
  * @property      int          $id
  * @property      string       $receiver
- * @property      int|null     $trigger_type
+ * @property      string|null  $trigger_type
  * @property      int|null     $trigger_id
  * @property      string       $body
  * @property      int          $status

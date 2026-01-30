@@ -7,6 +7,7 @@ use App\Models\ApplianceRate;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsGatewayResolverService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
@@ -140,5 +141,13 @@ abstract class SmsSender {
 
     public function setCallback(string $callback, string $uuid): void {
         $this->callback = sprintf($callback, $uuid);
+    }
+
+    /**
+     * Optional model to associate the created Sms with (e.g. for deduplication).
+     * Override in senders that trigger per-entity SMS (e.g. TransactionConfirmation).
+     */
+    public function getTriggerModel(): ?Model {
+        return null;
     }
 }

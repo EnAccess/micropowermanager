@@ -1,6 +1,13 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import SmsBodiesRepository from "@/repositories/SmsBodiesRepository"
 
+/** References used for transaction confirmation SMS (token-focused, all channels). */
+const TRANSACTION_CONFIRMATION_REFERENCES = [
+  "TokenConfirmationMeter",
+  "TokenConfirmationSHS",
+  "TransactionConfirmationNoToken",
+]
+
 export class SmsBodiesService {
   constructor() {
     this.repository = SmsBodiesRepository
@@ -22,14 +29,20 @@ export class SmsBodiesService {
     this.reminderList = []
     this.confirmationList = []
     this.resendInformationList = []
+
     for (let s in smsBodies) {
+      const raw = smsBodies[s]
+      const vars = (raw.variables || "")
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean)
       let smsBody = {
-        id: smsBodies[s].id,
-        reference: smsBodies[s].reference,
-        body: smsBodies[s].body ?? "",
-        title: smsBodies[s].title,
-        placeholder: smsBodies[s].place_holder,
-        variables: smsBodies[s].variables.split(","),
+        id: raw.id,
+        reference: raw.reference,
+        body: raw.body ?? "",
+        title: raw.title,
+        placeholder: raw.place_holder,
+        variables: vars,
       }
       smsBody.validation = smsBody.body.length > 0
 
@@ -37,7 +50,9 @@ export class SmsBodiesService {
         this.reminderList.push(smsBody)
       } else if (smsBody.reference.includes("ResendInformation")) {
         this.resendInformationList.push(smsBody)
-      } else {
+      } else if (
+        TRANSACTION_CONFIRMATION_REFERENCES.includes(smsBody.reference)
+      ) {
         this.confirmationList.push(smsBody)
       }
     }

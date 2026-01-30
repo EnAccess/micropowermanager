@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\PaymentSuccessEvent;
+use App\Events\TransactionSuccessfulEvent;
 use App\Http\Resources\ApiResource;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
@@ -117,13 +118,14 @@ class AppliancePersonController extends Controller {
                     payer: $appliancePerson->person,
                     transaction: $transaction,
                 ));
+                event(new TransactionSuccessfulEvent($transaction));
             }
             DB::connection('tenant')->commit();
 
             return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);
         }
     }
 
