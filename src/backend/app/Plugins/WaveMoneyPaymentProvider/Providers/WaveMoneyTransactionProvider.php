@@ -10,9 +10,6 @@ use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 use App\Providers\Interfaces\ITransactionProvider;
-use App\Services\SmsService;
-use App\Sms\Senders\SmsConfigs;
-use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -57,12 +54,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
                 'status' => WaveMoneyTransaction::STATUS_SUCCESS,
             ];
             $this->waveMoneyTransactionService->update($waveMoneyTransaction, $updateData);
-            $smsService = app()->make(SmsService::class);
-            $smsService->sendSms(
-                $transaction->toArray(),
-                SmsTypes::TRANSACTION_CONFIRMATION,
-                SmsConfigs::class
-            );
+        // SMS sent centrally via SendTransactionConfirmationSmsListener
         } else {
             $originalTransaction = $transaction->originalTransaction()->first();
             Log::critical(

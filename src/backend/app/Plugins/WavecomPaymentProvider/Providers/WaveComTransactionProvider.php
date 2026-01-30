@@ -10,9 +10,6 @@ use App\Models\Transaction\TransactionConflicts;
 use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
 use App\Plugins\WavecomPaymentProvider\Services\TransactionService;
 use App\Providers\Interfaces\ITransactionProvider;
-use App\Services\SmsService;
-use App\Sms\Senders\SmsConfigs;
-use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +19,6 @@ class WaveComTransactionProvider implements ITransactionProvider {
 
     public function __construct(
         private TransactionService $transactionService,
-        private SmsService $smsService,
         private TransactionConflicts $transactionConflicts,
         private WaveComTransaction $waveComTransaction,
     ) {}
@@ -36,12 +32,10 @@ class WaveComTransactionProvider implements ITransactionProvider {
         $waveComTransaction = $transaction->originalTransaction()->first();
         $this->transactionService->setStatus($waveComTransaction, $requestType);
 
-        // only send confirmation sms
-        if ($requestType) {
-            $this->smsService->sendSms($transaction->toArray(), SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
-        } else {
+        if (!$requestType) {
             Log::error('wavecom transaction is been cancelled');
         }
+        // SMS sent centrally via SendTransactionConfirmationSmsListener
     }
 
     public function validateRequest(Request $request): void {

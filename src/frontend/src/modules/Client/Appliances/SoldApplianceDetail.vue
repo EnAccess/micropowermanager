@@ -321,6 +321,7 @@ import { ApplianceLogService } from "@/services/ApplianceLogService"
 import moment from "moment"
 import { EventBus } from "@/shared/eventbus"
 import { AppliancePaymentService } from "@/services/AppliancePaymentService"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 
 export default {
   name: "SoldApplianceDetail",
@@ -381,6 +382,12 @@ export default {
   watch: {
     $route() {
       this.selectedApplianceId = this.$route.params.id
+      this.applianceRateService = new ApplianceRateService(
+        this.selectedApplianceId,
+      )
+      this.applianceLogService = new ApplianceLogService(
+        this.selectedApplianceId,
+      )
       this.getSoldApplianceDetail()
     },
   },
@@ -531,10 +538,40 @@ export default {
             amount: this.payment,
           }
 
-          await this.appliancePayment.getPaymentForAppliance(
+          const result = await this.appliancePayment.getPaymentForAppliance(
             this.selectedApplianceId,
             payment,
           )
+
+          if (result instanceof ErrorHandler) {
+            throw result
+          }
+
+          // Check if transaction_id is returned (async processing)
+          if (result.transaction_id) {
+            // Poll for payment processing status
+            try {
+              await this.appliancePayment.pollPaymentStatus(
+                result.transaction_id,
+                {
+                  maxAttempts: 20,
+                  interval: 1000,
+                },
+              )
+            } catch (pollError) {
+              // If polling fails but payment was initiated, show a warning
+              this.alertNotify(
+                "warning",
+                "Payment initiated but processing status could not be verified. Please refresh to check status.",
+              )
+              this.payment = null
+              this.getPayment = false
+              this.paymentProgress = false
+              await this.getSoldApplianceDetail()
+              return
+            }
+          }
+
           this.alertNotify(
             "success",
             this.payment + " " + this.currency + " of payment is made.",
@@ -545,7 +582,11 @@ export default {
           await this.getSoldApplianceDetail()
         } catch (e) {
           this.paymentProgress = false
-          this.alertNotify("error", e.message)
+          const errorMessage =
+            e instanceof ErrorHandler
+              ? e.message
+              : e.message || "Payment failed"
+          this.alertNotify("error", errorMessage)
         }
       }
     },
