@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ApplianceRate;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IAssociative;
@@ -335,13 +336,37 @@ class TransactionService implements IAssociative, IBaseService {
     }
 
     public function getById(int $id): Transaction {
-        return $this->transaction->newQuery()->with([
+        $transaction = $this->transaction->newQuery()->with([
             'token',
             'originalTransaction',
             'originalTransaction.conflicts',
             'sms',
             'paymentHistories',
-            'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])->find($id);
+            'paymentHistories.paidFor',
+            'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person']),
+            'appliance' => fn ($q) => $q->with(['appliance', 'person']),
+        ])->find($id);
+
+        // Load user relationship for cash transactions only
+        if ($transaction && $transaction->original_transaction_type === 'cash_transaction') {
+            $transaction->originalTransaction->load('user');
+        }
+
+        // For non-PAYGO appliances (no device), try to find the appliance through payment histories
+        if ($transaction && !$transaction->device && !$transaction->appliance && $transaction->paymentHistories->isNotEmpty()) {
+            $applianceRate = $transaction->paymentHistories
+                ->filter(fn ($ph): bool => $ph->paid_for_type === ApplianceRate::class)
+                ->first()?->paidFor;
+
+            if ($applianceRate instanceof ApplianceRate) {
+                $transaction->setRelation(
+                    'appliance',
+                    $applianceRate->appliancePerson()->with(['appliance', 'person'])->first()
+                );
+            }
+        }
+
+        return $transaction;
     }
 
     /**
