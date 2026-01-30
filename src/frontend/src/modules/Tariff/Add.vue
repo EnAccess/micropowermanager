@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget v-show="showAdd" :title="$tc('phrases.newTariff')" color="red">
+    <widget v-show="showAdd" :title="$tc('phrases.newTariff')" color="default">
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">

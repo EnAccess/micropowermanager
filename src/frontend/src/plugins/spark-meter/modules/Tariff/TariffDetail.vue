@@ -5,7 +5,7 @@
       :title="title"
       :paginator="false"
       :button="false"
-      color="red"
+      color="default"
     >
       <form @submit.prevent="submitTariffForm" data-vv-scope="Tariff-Form">
         <md-card>
