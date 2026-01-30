@@ -9,9 +9,6 @@ use App\Plugins\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Providers\Interfaces\ITransactionProvider;
-use App\Services\SmsService;
-use App\Sms\Senders\SmsConfigs;
-use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -56,12 +53,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
                 'status' => SwiftaTransaction::STATUS_SUCCESS,
             ];
             $this->swiftaTransactionService->update($swiftaTransaction, $updateData);
-            $smsService = app()->make(SmsService::class);
-            $smsService->sendSms(
-                $transaction->toArray(),
-                SmsTypes::TRANSACTION_CONFIRMATION,
-                SmsConfigs::class
-            );
+        // SMS sent centrally via SendTransactionConfirmationSmsListener
         } else {
             Log::error('swifta transaction is been cancelled');
         }

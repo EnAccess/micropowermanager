@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\DTO\LoanDataContainer;
 use App\Events\TransactionSuccessfulEvent;
 use App\Events\UserCreatedEvent;
+use App\Listeners\SendTransactionConfirmationSmsListener;
 use App\Listeners\TransactionSuccessfulListener;
 use App\Listeners\UserListener;
 use App\Models\AccessRate\AccessRate;
@@ -128,6 +129,10 @@ class AppServiceProvider extends ServiceProvider {
         Event::listen(
             TransactionSuccessfulEvent::class,
             TransactionSuccessfulListener::class
+        );
+        Event::listen(
+            TransactionSuccessfulEvent::class,
+            SendTransactionConfirmationSmsListener::class
         );
 
         // Register TelescopeServiceProvider

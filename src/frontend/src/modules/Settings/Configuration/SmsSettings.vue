@@ -7,6 +7,14 @@
         md-label="Transaction Confirmation"
       >
         <div
+          class="md-layout-item notice-message-area"
+          style="margin-bottom: 1rem"
+        >
+          <p style="font-size: 0.9rem; color: #666">
+            {{ $tc("phrases.transactionConfirmationTemplatesNotice") }}
+          </p>
+        </div>
+        <div
           v-for="(smsBody, index) in smsBodiesService.confirmationList"
           :key="index"
         >
@@ -15,6 +23,15 @@
             :sms-variable-default-values="smsVariableDefaultValueService.list"
             :sms-body="smsBody"
           />
+        </div>
+        <div class="md-layout md-alignment-bottom-right">
+          <md-button
+            class="md-primary md-dense md-raised"
+            @click="updateSmsBodies()"
+            v-show="tab !== 'android-gateway'"
+          >
+            Save
+          </md-button>
         </div>
       </md-tab>
       <md-tab @click="tab = 'reminder'" id="tab-reminder" md-label="Reminder">
@@ -28,6 +45,15 @@
             :sms-variable-default-values="smsVariableDefaultValueService.list"
             :sms-body="smsBody"
           />
+        </div>
+        <div class="md-layout md-alignment-bottom-right">
+          <md-button
+            class="md-primary md-dense md-raised"
+            @click="updateSmsBodies()"
+            v-show="tab !== 'android-gateway'"
+          >
+            Save
+          </md-button>
         </div>
       </md-tab>
       <md-tab
@@ -79,6 +105,15 @@
             </div>
           </div>
         </div>
+        <div class="md-layout md-alignment-bottom-right">
+          <md-button
+            class="md-primary md-dense md-raised"
+            @click="updateSmsBodies()"
+            v-show="tab !== 'android-gateway'"
+          >
+            Save
+          </md-button>
+        </div>
       </md-tab>
       <md-tab
         @click="tab = 'android-gateway'"
@@ -89,16 +124,16 @@
           :sms-android-settings="smsAndroidSettingsService.list"
         />
       </md-tab>
+      <div class="md-layout md-alignment-bottom-right">
+        <md-button
+          class="md-primary md-dense md-raised"
+          @click="updateSmsBodies()"
+          v-show="tab !== 'android-gateway'"
+        >
+          Save
+        </md-button>
+      </div>
     </md-tabs>
-    <div class="md-layout md-alignment-bottom-right">
-      <md-button
-        class="md-primary md-dense md-raised"
-        @click="updateSmsBodies()"
-        v-show="tab !== 'android-gateway'"
-      >
-        Save
-      </md-button>
-    </div>
     <md-progress-bar v-if="progress" md-mode="indeterminate"></md-progress-bar>
   </div>
 </template>

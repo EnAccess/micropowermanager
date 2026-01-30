@@ -13,6 +13,7 @@ use App\Sms\Senders\ManualSms;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
 use App\Sms\SmsTypes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -58,10 +59,10 @@ class SmsService {
     }
 
     /**
-     * @param array<string, mixed> $data
-     * @param class-string         $smsConfigs
+     * @param array<string, mixed>|object $data
+     * @param class-string                $smsConfigs
      */
-    public function sendSms(array $data, int $smsType, string $smsConfigs): void {
+    public function sendSms(array|object $data, int $smsType, string $smsConfigs): void {
         $uuid = Str::uuid()->toString();
         $gatewayId = null;
 
@@ -89,10 +90,10 @@ class SmsService {
     }
 
     /**
-     * @param array<string, mixed> $data
-     * @param class-string         $smsConfigs
+     * @param array<string, mixed>|object $data
+     * @param class-string                $smsConfigs
      */
-    private function getSender(array $data, int $smsType, string $smsConfigs, ?SmsAndroidSetting $smsAndroidSettings): SmsSender {
+    private function getSender(array|object $data, int $smsType, string $smsConfigs, ?SmsAndroidSetting $smsAndroidSettings): SmsSender {
         $configs = resolve($smsConfigs);
 
         if (!array_key_exists($smsType, $configs->smsTypes)) {
@@ -116,14 +117,20 @@ class SmsService {
 
     private function associateSmsWithForSmsType(SmsSender $sender, string $uuid, string $receiver, ?int $gatewayId): void {
         if (!($sender instanceof ManualSms)) {
-            Sms::query()->create([
+            $attrs = [
                 'uuid' => $uuid,
                 'body' => $sender->body,
                 'receiver' => $receiver,
                 'gateway_id' => $gatewayId,
                 'status' => Sms::STATUS_STORED,
                 'direction' => Sms::DIRECTION_OUTGOING,
-            ]);
+            ];
+            $trigger = $sender->getTriggerModel();
+            if ($trigger instanceof Model) {
+                $attrs['trigger_type'] = $trigger->getMorphClass();
+                $attrs['trigger_id'] = $trigger->getKey();
+            }
+            Sms::query()->create($attrs);
         } else {
             $lastSentManualSms = Sms::query()->where('receiver', $receiver)->where(
                 'body',
