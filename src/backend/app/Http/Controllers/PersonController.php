@@ -159,7 +159,7 @@ class PersonController extends Controller {
     public function search(
         Request $request,
     ): ApiResource {
-        $term = $request->input('term');
+        $term = $request->input('term', '');
         $paginate = $request->input('paginate', 1);
         $per_page = $request->input('per_page', 15);
 
