@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class TariffTest extends TestCase {
+class MeterTariffTest extends TestCase {
     use CreateEnvironments;
 
     public function testUserGetsMeterTariffList(): void {
