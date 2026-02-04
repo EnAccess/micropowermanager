@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
-use Database\Factories\Meter\MeterTariffFactory;
+use Database\Factories\TariffFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,7 +37,7 @@ use Illuminate\Support\Carbon;
 class Tariff extends BaseModel {
     use SoftDeletes;
 
-    /** @use HasFactory<MeterTariffFactory> */
+    /** @use HasFactory<TariffFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'tariff';
