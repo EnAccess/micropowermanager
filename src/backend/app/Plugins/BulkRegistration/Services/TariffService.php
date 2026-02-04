@@ -3,17 +3,17 @@
 namespace App\Plugins\BulkRegistration\Services;
 
 use App\Models\MainSettings;
-use App\Models\Meter\MeterTariff;
+use App\Models\Tariff;
 
 class TariffService extends CreatorService {
-    public function __construct(MeterTariff $meterTariff) {
-        parent::__construct($meterTariff);
+    public function __construct(Tariff $tariff) {
+        parent::__construct($tariff);
     }
 
     /**
      * @param array<string, mixed> $csvData
      */
-    public function resolveCsvDataFromComingRow(array $csvData): MeterTariff {
+    public function resolveCsvDataFromComingRow(array $csvData): Tariff {
         $tariffConfig = config('bulk-registration.csv_fields.tariff');
 
         $tariffData = [

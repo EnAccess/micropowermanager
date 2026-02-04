@@ -2,12 +2,12 @@
 
 namespace Database\Factories\Meter;
 
-use App\Models\Meter\MeterTariff;
+use App\Models\Tariff;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<MeterTariff> */
+/** @extends Factory<Tariff> */
 class MeterTariffFactory extends Factory {
-    protected $model = MeterTariff::class;
+    protected $model = Tariff::class;
 
     /**
      * Define the model's default state.

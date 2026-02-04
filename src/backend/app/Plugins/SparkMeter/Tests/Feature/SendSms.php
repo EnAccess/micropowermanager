@@ -6,11 +6,11 @@ use App\Models\Address\Address;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Models\SmsBody;
+use App\Models\Tariff;
 use App\Models\User;
 use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Models\SmSite;
@@ -70,7 +70,7 @@ class SendSms extends TestCase {
         // create person
         Person::factory()->createOne();
         // create meter-tariff
-        MeterTariff::factory()->createOne();
+        Tariff::factory()->createOne();
 
         // create meter-type
         MeterType::query()->create([

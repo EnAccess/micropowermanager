@@ -6,10 +6,10 @@ use App\Models\Address\Address;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\SmsBody;
+use App\Models\Tariff;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
@@ -196,7 +196,7 @@ class SmsNotifyTest extends TestCase {
         // create person
         Person::factory()->createOne();
         // create meter-tariff
-        MeterTariff::factory()->createOne();
+        Tariff::factory()->createOne();
 
         // create meter-type
         MeterType::query()->create([

@@ -279,7 +279,7 @@ trait CreateEnvironments {
             $this->meterTariffs[] = $meterTariff;
 
             if ($withTimeOfUsage) {
-                $timeOfUsage = TimeOfUsageFactory::new()->create([
+                TimeOfUsageFactory::new()->create([
                     'tariff_id' => $meterTariff->id,
                     'start' => '00:00',
                     'end' => '01:00',

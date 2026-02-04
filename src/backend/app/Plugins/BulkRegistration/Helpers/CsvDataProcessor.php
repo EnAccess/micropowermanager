@@ -9,9 +9,9 @@ use App\Models\Cluster;
 use App\Models\ConnectionType;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
+use App\Models\Tariff;
 use App\Plugins\BulkRegistration\Services\GeographicalInformationService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -72,7 +72,7 @@ class CsvDataProcessor {
 
                 $this->createRecordFromCsv($row, $this->reflections['AddressService']);
 
-                /** @var MeterTariff */
+                /** @var Tariff */
                 $tariff = $this->createRecordFromCsv($row, $this->reflections['TariffService']);
                 $row['tariff_id'] = $tariff->id;
                 $this->checkRecordWasRecentlyCreated($tariff, 'tariff');
