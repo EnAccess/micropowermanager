@@ -508,8 +508,10 @@ export default {
       paystackLogo: paystackLogo,
     }
   },
-  mounted() {
+  created() {
     this.checkRouteChanges()
+  },
+  mounted() {
     this.loadAnalytics()
     this.getPeriod()
     this.getTransactionProviders()

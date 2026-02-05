@@ -16,6 +16,9 @@ class TransactionAdvancedController extends Controller {
         $serialNumber = $request->input('serial_number');
         $tariffId = $request->input('tariff');
         $transactionProvider = $request->input('provider');
+        if (in_array($transactionProvider, [null, '', '-1'], true)) {
+            $transactionProvider = 'all';
+        }
         $status = $request->input('status');
         $fromDate = $request->input('from');
         $toDate = $request->input('to');
@@ -24,9 +27,9 @@ class TransactionAdvancedController extends Controller {
         return ApiResource::make($this->transactionService->search(
             $deviceType,
             $serialNumber,
-            $tariffId,
+            $tariffId !== null ? (int) $tariffId : null,
             $transactionProvider,
-            $status,
+            $status !== null ? (int) $status : null,
             $fromDate,
             $toDate,
             $limit
