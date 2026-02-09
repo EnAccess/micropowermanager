@@ -3,6 +3,7 @@
 namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
+use App\Exceptions\SmsRecordNotFoundException;
 use App\Models\ApplianceRate;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
@@ -31,6 +32,10 @@ abstract class SmsSender {
                 'body',
                 $this->body
             )->latest()->first();
+
+        if ($lastRecordedSMS == null) {
+            throw new SmsRecordNotFoundException('No record of the SMS to be sent to the receiver '.$this->receiver.' was found');
+        }
 
         $resolved = $gatewayResolver->resolveGatewayAndArgs($gateway, $lastRecordedSMS, [
             'body' => $this->body,
