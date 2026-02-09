@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widgetcolor="secondary" title="Sell Appliance ">
+    <widget color="secondary" title="Sell Appliance ">
       <md-card class="md-layout-item md-size-100">
         <md-card-content>
           <form novalidate class="md-layout" @submit.prevent="saveAppliance">
