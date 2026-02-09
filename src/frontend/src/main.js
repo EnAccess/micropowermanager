@@ -13,12 +13,14 @@ import Default from "./layouts/Default"
 import i18n from "./i18n"
 import { MapSettingsService } from "./services/MapSettingsService"
 import { MainSettingsService } from "./services/MainSettingsService"
+import Snackbar from "@/shared/Snackbar.vue"
 import {
   getPermissionsForRoute,
   userHasPermissions,
 } from "@/Helpers/PermissionGuard"
 
 Vue.component("default", Default)
+Vue.component("Snackbar", Snackbar)
 
 const toArray = (value) => {
   if (!value) {
