@@ -1,6 +1,10 @@
 <template>
   <div class="row">
-    <widget v-if="newLabel" :title="$tc('phrases.newCategory')" color="red">
+    <widget
+      v-if="newLabel"
+      :title="$tc('phrases.newCategory')"
+      color="secondary"
+    >
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">

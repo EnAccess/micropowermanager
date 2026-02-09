@@ -271,7 +271,7 @@
                 transaction.original_transaction_type !==
                   'third_party_transaction'
               "
-              color="red"
+              color="secondary"
             >
               <md-card>
                 <md-card-content>

@@ -1,6 +1,10 @@
 <template>
   <div>
-    <widget v-show="addAgent" :title="$tc('phrases.newAgent')" color="red">
+    <widget
+      v-show="addAgent"
+      :title="$tc('phrases.newAgent')"
+      color="secondary"
+    >
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">
