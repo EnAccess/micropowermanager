@@ -114,7 +114,9 @@ export default {
   watch: {
     $route() {
       if (this.route_name) {
-        this.loadPage(this.paginator.currentPage)
+        this.term = this.$route.query
+        const targetPage = this.paginator?.currentPage || 1
+        this.loadPage(targetPage)
       }
     },
     "paginator.currentPage"(newPage) {
