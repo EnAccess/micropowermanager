@@ -152,7 +152,7 @@ export default {
       this.loadPage(1)
     },
     defaultItemsPerPage(data) {
-      this.paginator.perPage = data.target.value
+      this.paginator.perPage = data
       this.loadPage(this.paginator.currentPage)
     },
     loadPage(pageNumber) {
