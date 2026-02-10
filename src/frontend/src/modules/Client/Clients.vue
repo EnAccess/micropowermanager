@@ -38,12 +38,12 @@
               <md-button
                 class="md-raised md-default export-csv-button"
                 @click="exportDebts"
-                :disabled="downloading"
+                :disabled="downloadingDebts"
               >
                 <md-icon class="export-icon">
                   <Transition mode="out-in" name="fade">
                     <md-progress-spinner
-                      v-if="downloading"
+                      v-if="downloadingDebts"
                       md-mode="indeterminate"
                       :md-diameter="21"
                       :md-stroke="3"
@@ -56,6 +56,7 @@
               <md-button
                 class="md-raised md-primary export-csv-button"
                 @click="showExportModal = true"
+                :disabled="downloadingCustomers"
               >
                 <md-icon>download</md-icon>
                 {{ $tc("phrases.exportAllCustomers") }}
@@ -268,7 +269,7 @@
         </div>
       </md-dialog-content>
 
-      <md-progress-bar md-mode="indeterminate" v-if="downloading" />
+      <md-progress-bar md-mode="indeterminate" v-if="downloadingCustomers" />
 
       <md-dialog-actions>
         <md-button class="md-raised" @click="showExportModal = false">
@@ -276,7 +277,7 @@
         </md-button>
         <md-button
           class="md-primary md-raised"
-          :disabled="downloading"
+          :disabled="downloadingCustomers"
           @click="exportCustomers"
         >
           {{ $tc("words.export") }}
@@ -337,7 +338,8 @@ export default {
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
       isSearching: false,
-      downloading: false,
+      downloadingDebts: false,
+      downloadingCustomers: false,
       activeRequest: null,
     }
   },
@@ -557,7 +559,7 @@ export default {
     },
 
     async exportDebts() {
-      this.downloading = true
+      this.downloadingDebts = true
 
       try {
         const response =
@@ -584,7 +586,7 @@ export default {
           "Error occured while exporting Customers' debts",
         )
       } finally {
-        this.downloading = false
+        this.downloadingDebts = false
       }
     },
 
@@ -635,7 +637,7 @@ export default {
     },
 
     async exportCustomers() {
-      this.downloading = true
+      this.downloadingCustomers = true
 
       try {
         const data = {
@@ -680,7 +682,7 @@ export default {
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting customers")
       } finally {
-        this.downloading = false
+        this.downloadingCustomers = false
       }
     },
 
