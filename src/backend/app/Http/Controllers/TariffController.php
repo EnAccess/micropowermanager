@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
-use App\Services\MeterTariffService;
+use App\Services\TariffService;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class MeterTariffController extends Controller {
+class TariffController extends Controller {
     public function __construct(
-        private MeterTariffService $meterTariffService,
+        private TariffService $tariffService,
     ) {}
 
     /**
@@ -24,7 +24,7 @@ class MeterTariffController extends Controller {
     public function index(Request $request): ApiResource {
         $limit = $request->get('limit');
 
-        return ApiResource::make($this->meterTariffService->getAll($limit));
+        return ApiResource::make($this->tariffService->getAll($limit));
     }
 
     /**
@@ -34,8 +34,8 @@ class MeterTariffController extends Controller {
      *
      * @responseFile responses/tariffs/tariff.detail.json
      */
-    public function show(Request $request, int $meterTariffId): ApiResource {
-        return ApiResource::make($this->meterTariffService->getById($meterTariffId));
+    public function show(Request $request, int $tariffId): ApiResource {
+        return ApiResource::make($this->tariffService->getById($tariffId));
     }
 
     /**
@@ -47,18 +47,18 @@ class MeterTariffController extends Controller {
      * @bodyParam price int required.
      */
     public function store(TariffCreateRequest $request): JsonResponse {
-        $meterTariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);
-        $newTariff = $this->meterTariffService->create($meterTariffData);
+        $tariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);
+        $newTariff = $this->tariffService->create($tariffData);
 
         $calculator = resolve(TariffPriceCalculator::class);
         $calculator->calculateTotalPrice($newTariff, $request);
 
-        return ApiResource::make($this->meterTariffService->getById($newTariff->id))->response()->setStatusCode(201);
+        return ApiResource::make($this->tariffService->getById($newTariff->id))->response()->setStatusCode(201);
     }
 
-    public function update(int $meterTariffId, TariffCreateRequest $request): ApiResource {
-        $meterTariff = $this->meterTariffService->getById($meterTariffId);
-        $meterTariffData = [
+    public function update(int $tariffId, TariffCreateRequest $request): ApiResource {
+        $tariff = $this->tariffService->getById($tariffId);
+        $tariffData = [
             'name' => $request->input('name'),
             'factor' => $request->input('factor'),
             'currency' => $request->input('currency'),
@@ -67,27 +67,27 @@ class MeterTariffController extends Controller {
             'minimum_purchase_amount' => $request->input('minimum_purchase_amount'),
         ];
 
-        $meterTariff = $this->meterTariffService->update($meterTariff, $meterTariffData);
+        $tariff = $this->tariffService->update($tariff, $tariffData);
         $calculator = resolve(TariffPriceCalculator::class);
-        $calculator->calculateTotalPrice($meterTariff, $request);
+        $calculator->calculateTotalPrice($tariff, $request);
 
-        return ApiResource::make($meterTariff);
+        return ApiResource::make($tariff);
     }
 
-    public function destroy(int $meterTariffId): ?bool {
-        $meterTariff = $this->meterTariffService->getById($meterTariffId);
+    public function destroy(int $tariffId): ?bool {
+        $tariff = $this->tariffService->getById($tariffId);
 
-        return $this->meterTariffService->delete($meterTariff);
+        return $this->tariffService->delete($tariff);
     }
 
-    public function updateTariff(int $meterTariffId, int $changeId): ApiResource {
-        $result = $this->meterTariffService->changeMetersTariff($meterTariffId, $changeId);
+    public function updateTariff(int $tariffId, int $changeId): ApiResource {
+        $result = $this->tariffService->changeMetersTariff($tariffId, $changeId);
 
         return ApiResource::make($result);
     }
 
     public function updateForMeter(string $meterSerial, int $tariffId): ApiResource {
-        $result = $this->meterTariffService->changeMeterTariff($meterSerial, $tariffId);
+        $result = $this->tariffService->changeMeterTariff($meterSerial, $tariffId);
 
         return ApiResource::make($result);
     }
@@ -95,7 +95,7 @@ class MeterTariffController extends Controller {
     /**
      * Display a list of meters which using a particular tariff.
      */
-    public function showUsageCount(int $meterTariffId): ApiResource {
-        return ApiResource::make($this->meterTariffService->getCountById($meterTariffId));
+    public function showUsageCount(int $tariffId): ApiResource {
+        return ApiResource::make($this->tariffService->getCountById($tariffId));
     }
 }

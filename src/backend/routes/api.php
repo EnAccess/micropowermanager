@@ -28,7 +28,6 @@ use App\Http\Controllers\MaintenanceUserController;
 use App\Http\Controllers\ManufacturerController;
 use App\Http\Controllers\MapSettingsController;
 use App\Http\Controllers\MeterGeographicalInformationController;
-use App\Http\Controllers\MeterTariffController;
 use App\Http\Controllers\MiniGridController;
 use App\Http\Controllers\MiniGridDashboardCacheController;
 use App\Http\Controllers\MiniGridDeviceController;
@@ -54,6 +53,7 @@ use App\Http\Controllers\SmsVariableDefaultValueController;
 use App\Http\Controllers\SolarHomeSystemController;
 use App\Http\Controllers\SubConnectionTypeController;
 use App\Http\Controllers\TargetController;
+use App\Http\Controllers\TariffController;
 use App\Http\Controllers\TimeOfUsageController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransactionExportController;
@@ -321,14 +321,14 @@ Route::group(['prefix' => 'targets', 'middleware' => ['jwt.verify', 'permission:
 });
 // Tariffs
 Route::group(['middleware' => ['jwt.verify', 'permission:settings'], 'prefix' => 'tariffs'], static function () {
-    Route::get('/', [MeterTariffController::class, 'index']);
-    Route::get('/{meterTariffId}', [MeterTariffController::class, 'show']);
-    Route::post('/', [MeterTariffController::class, 'store']);
-    Route::put('/{meterTariffId}', [MeterTariffController::class, 'update']);
-    Route::delete('/{meterTariffId}', [MeterTariffController::class, 'destroy']);
-    Route::get('/{meterTariffId}/usage-count', [MeterTariffController::class, 'showUsageCount']);
-    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', [MeterTariffController::class, 'updateTariff']);
-    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', [MeterTariffController::class, 'updateForMeter']);
+    Route::get('/', [TariffController::class, 'index']);
+    Route::get('/{tariffId}', [TariffController::class, 'show']);
+    Route::post('/', [TariffController::class, 'store']);
+    Route::put('/{tariffId}', [TariffController::class, 'update']);
+    Route::delete('/{tariffId}', [TariffController::class, 'destroy']);
+    Route::get('/{tariffId}/usage-count', [TariffController::class, 'showUsageCount']);
+    Route::put('/{tariffId}/change-meters-tariff/{changeId}', [TariffController::class, 'updateTariff']);
+    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', [TariffController::class, 'updateForMeter']);
 });
 // Transactions
 Route::group(

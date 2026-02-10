@@ -9,6 +9,7 @@ use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
 use App\Models\Manufacturer;
+use App\Models\Tariff;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Database\Factories\Meter\MeterFactory;
@@ -39,7 +40,7 @@ use Illuminate\Support\Carbon;
  * @property-read Device|null                       $device
  * @property-read Manufacturer|null                 $manufacturer
  * @property-read MeterType|null                    $meterType
- * @property-read MeterTariff|null                  $tariff
+ * @property-read Tariff|null                       $tariff
  * @property-read Collection<int, Token>            $tokens
  * @property-read Collection<int, Transaction>      $transactions
  */
@@ -72,9 +73,9 @@ class Meter extends BaseModel {
         return $this->belongsTo(Manufacturer::class);
     }
 
-    /** @return BelongsTo<MeterTariff, $this> */
+    /** @return BelongsTo<Tariff, $this> */
     public function tariff(): BelongsTo {
-        return $this->belongsTo(MeterTariff::class);
+        return $this->belongsTo(Tariff::class);
     }
 
     /** @return BelongsTo<ConnectionType, $this> */

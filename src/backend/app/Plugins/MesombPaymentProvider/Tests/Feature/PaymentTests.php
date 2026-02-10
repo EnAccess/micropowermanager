@@ -6,9 +6,9 @@ use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
+use App\Models\Tariff;
 use App\Models\Transaction\Transaction;
 use App\Plugins\MesombPaymentProvider\Models\MesombTransaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -133,7 +133,7 @@ class PaymentTests extends TestCase {
         // create person
         Person::factory()->create();
         // create meter-tariff
-        MeterTariff::factory()->create();
+        Tariff::factory()->create();
 
         // create meter-type
         MeterType::query()->create([

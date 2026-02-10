@@ -23,10 +23,10 @@ use App\Models\EBike;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
+use App\Models\Tariff;
 use App\Models\Ticket\Ticket;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
@@ -80,7 +80,7 @@ class AppServiceProvider extends ServiceProvider {
                 Appliance::RELATION_NAME => Appliance::class,
                 AgentReceipt::RELATION_NAME => AgentReceipt::class,
                 AgentCharge::RELATION_NAME => AgentCharge::class,
-                MeterTariff::RELATION_NAME => MeterTariff::class,
+                Tariff::RELATION_NAME => Tariff::class,
                 ThirdPartyTransaction::RELATION_NAME => ThirdPartyTransaction::class,
                 CashTransaction::RELATION_NAME => CashTransaction::class,
                 Meter::RELATION_NAME => Meter::class,
