@@ -11,12 +11,10 @@ use Illuminate\Support\Facades\View;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class MailHelper {
-    private const DELAY_SECONDS = 0;
-
     /**
      * @throws MailNotSentException
      */
-    public function sendPlain(string $to, string $title, string $body, ?string $attachment = null, ?int $delaySeconds = null): void {
+    public function sendPlain(string $to, string $title, string $body, ?string $attachment = null): void {
         // Validate email address before attempting to send
         if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
             Log::warning("Attempted to send email to invalid address: {$to}");
@@ -25,8 +23,7 @@ class MailHelper {
 
         try {
             $mailable = new PlainEmail($title, $body, $attachment);
-            $delay = $delaySeconds ?? self::DELAY_SECONDS;
-            Mail::to($to)->later(now()->addSeconds($delay), $mailable);
+            Mail::to($to)->queue($mailable);
 
             Log::info("Email sent successfully to: {$to} with subject: {$title}");
         } catch (TransportExceptionInterface $e) {
@@ -44,7 +41,6 @@ class MailHelper {
         string $templatePath,
         ?array $variables = null,
         ?string $attachmentPath = null,
-        ?int $delaySeconds = null,
     ): void {
         // Validate email address before attempting to send
         if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
@@ -56,8 +52,7 @@ class MailHelper {
             $html = View::make($templatePath, array_merge($variables ?? [], ['title' => $title]))->render();
 
             $mailable = new HtmlEmail($title, $html, $attachmentPath);
-            $delay = $delaySeconds ?? self::DELAY_SECONDS;
-            Mail::to($to)->later(now()->addSeconds($delay), $mailable);
+            Mail::to($to)->queue($mailable);
             Log::info("Template email sent successfully to: {$to} with subject: {$title}");
         } catch (TransportExceptionInterface $e) {
             Log::error("Failed to send template email to {$to}: ".$e->getMessage());

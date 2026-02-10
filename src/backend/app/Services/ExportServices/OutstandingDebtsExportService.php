@@ -74,17 +74,15 @@ class OutstandingDebtsExportService extends AbstractExportService {
 
     public function sendApplianceDebtsAsEmail(): void {
         $reportDate = CarbonImmutable::now()->endOfWeek()->endOfDay();
-        $path = $this->createReport($reportDate);
+        $path = '';
 
         $this->userService->getUsersToSendOutstandingDebtsReport()
             ->each(function (User $user) use ($path, $reportDate) {
-                $delaySeconds = 3 * $user->id;
                 $this->mailHelper->sendPlain(
                     $user->email,
                     'Outstanding debts report - '.$reportDate->format('d-m-Y'),
                     'Please find attached the outstanding debts report. This report is generated on '.CarbonImmutable::now()->format('d-m-Y').'.',
                     $path,
-                    $delaySeconds
                 );
             });
     }
