@@ -2,7 +2,6 @@
 
 namespace App\Plugins\SparkMeter\Services;
 
-use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;
@@ -153,13 +152,20 @@ class CustomerService implements ISynchronizeService {
             $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
 
             $sparkCity = $site->mpmMiniGrid->cities[0];
-
-            $address = new Address();
-            $address = $address->newQuery()->create([
-                'city_id' => request()->input('city_id', $sparkCity->id),
-            ]);
-            $address->owner()->associate($meter->device);
-            $address->save();
+            $addressService = app()->make(AddressesService::class);
+            $address = $person->addresses()->where('is_primary', 1)->first();
+            if ($address === null) {
+                $addressParams = [
+                    'city_id' => request()->input('city_id', $sparkCity->id),
+                    'is_primary' => 1,
+                ];
+                $address = $addressService->instantiate($addressParams);
+                $addressService->assignAddressToOwner($person, $address);
+            } else {
+                $address->update([
+                    'city_id' => request()->input('city_id', $sparkCity->id),
+                ]);
+            }
             DB::connection('tenant')->commit();
 
             return $person->id;
@@ -199,15 +205,25 @@ class CustomerService implements ISynchronizeService {
         $currentTariffName = $customer['meters'][0]['current_tariff_name'];
         $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
         $sparkCity = $site->mpmMiniGrid->cities[0];
+        $addressService = app()->make(AddressesService::class);
         $address = $person->addresses()->where('is_primary', 1)->first();
-        $address->update([
-            'phone' => $customer['phone_number'],
-            'street' => $customer['meters'][0]['street1'],
-        ]);
+        if ($address === null) {
+            $addressParams = [
+                'phone' => $customer['phone_number'],
+                'street' => $customer['meters'][0]['street1'],
+                'city_id' => $sparkCity->id,
+                'is_primary' => 1,
+            ];
+            $address = $addressService->instantiate($addressParams);
+            $addressService->assignAddressToOwner($person, $address);
+        } else {
+            $address->update([
+                'phone' => $customer['phone_number'],
+                'street' => $customer['meters'][0]['street1'],
+                'city_id' => $sparkCity->id,
+            ]);
+        }
         $meter = $person->devices()->first()->device;
-        $meter->device->address()->update([
-            'city_id' => $sparkCity->id,
-        ]);
         if ($meter instanceof Meter) {
             $meter->update([
                 'serial_number' => $sparkCustomerMeterSerial,
@@ -487,9 +503,9 @@ class CustomerService implements ISynchronizeService {
         $customerSyncStatus = $sparkCustomersCollection->whereNotIn('syncStatus', [1])->count();
         if ($customerSyncStatus) {
             return ['result' => false, 'message' => 'customers are not updated for site '.$siteId];
-        } else {
-            return ['result' => true, 'message' => 'Records are updated'];
         }
+
+        return ['result' => true, 'message' => 'Records are updated'];
     }
 
     public function resetMeter(SmCustomer $customer): void {

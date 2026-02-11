@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Address\Address;
 use App\Models\Appliance;
 use App\Models\ApplianceType;
 use App\Models\Device;
@@ -60,10 +59,6 @@ class EbikeSeeder extends Seeder {
             Device::factory()
                 ->for($person)
                 ->for($ebike, 'device')
-                ->has(
-                    Address::factory()
-                        ->for($person->addresses->first()->city)
-                )
                 ->has(
                     GeographicalInformation::factory()
                         // https://github.com/larastan/larastan/issues/2307

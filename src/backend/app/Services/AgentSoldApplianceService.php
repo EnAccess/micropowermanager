@@ -31,7 +31,6 @@ class AgentSoldApplianceService implements IBaseService {
         private AppliancePersonService $appliancePersonService,
         private ApplianceRateService $applianceRateService,
         private AppliancePerson $appliancePerson,
-        private DeviceAddressService $deviceAddressService,
         private DeviceService $deviceService,
         private GeographicalInformationService $geographicalInformationService,
         private PersonService $personService,
@@ -194,19 +193,22 @@ class AgentSoldApplianceService implements IBaseService {
 
         if ($deviceSerial) {
             $addressFromCustomer = $appliancePerson->person()->first()->addresses()->first();
-            $addressData = $requestData['address'] ?? ['street' => $addressFromCustomer->street, 'city_id' => $addressFromCustomer->city_id];
+            $addressData = $requestData['address'] ?? [
+                'street' => $addressFromCustomer->street,
+                'city_id' => $addressFromCustomer->city_id,
+            ];
             $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()->points;
+
             $device = $this->deviceService->getBySerialNumber($deviceSerial);
             $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
+
             $address = $this->addressesService->make([
                 'street' => $addressData['street'],
                 'city_id' => $addressData['city_id'],
             ]);
 
-            $this->deviceAddressService->setAssigned($address);
-            $this->deviceAddressService->setAssignee($device);
-            $this->deviceAddressService->assign();
-            $this->addressesService->save($address);
+            // Attach the new address to the buyer (person) rather than the device.
+            $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
 
             $geoInfo = $this->geographicalInformationService->make([
                 'points' => $points,

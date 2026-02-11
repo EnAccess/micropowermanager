@@ -1,6 +1,6 @@
 import Client from "@/repositories/Client/AxiosClient"
 
-const resource = `/api/device-addresses`
+const resource = `/api/devices/geoinformation`
 
 export default {
   update(params) {

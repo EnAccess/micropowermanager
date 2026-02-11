@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Address\Address;
 use App\Models\Appliance;
 use App\Models\ApplianceType;
 use App\Models\Device;
@@ -84,10 +83,6 @@ class SolarHomeSystemSeeder extends Seeder {
                 ->for($person)
                 ->for($solarHomeSystem, 'device')
                 ->has(
-                    Address::factory()
-                        ->for($person->addresses->first()->city)
-                )
-                ->has(
                     GeographicalInformation::factory()
                         // https://github.com/larastan/larastan/issues/2307
                         // @phpstan-ignore argument.type
@@ -109,7 +104,7 @@ class SolarHomeSystemSeeder extends Seeder {
                 ->for($demoShsManufacturer)
                 ->create();
 
-            $device = Device::factory()
+            Device::factory()
                 ->for($solarHomeSystem, 'device')
                 ->create([
                     'device_serial' => $solarHomeSystem->serial_number,

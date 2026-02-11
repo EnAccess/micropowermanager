@@ -78,7 +78,11 @@ export default {
       return this.shs.device && this.shs.device.person
     },
     hasAddressData() {
-      return this.shs.device && this.shs.device.address
+      return (
+        this.shs.device &&
+        this.shs.device.person &&
+        this.shs.device.person.addresses
+      )
     },
   },
   created() {

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\AccessRate\AccessRate;
-use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
@@ -108,13 +107,9 @@ class MeterSeeder extends Seeder {
                 ->createOne();
 
             // Assign the Meter to the customer by creating a device
-            $device = Device::factory()
+            Device::factory()
                 ->for($person)
                 ->for($meter, 'device')
-                ->has(
-                    Address::factory()
-                        ->for($person->addresses->first()->city)
-                )
                 ->has(
                     GeographicalInformation::factory()
                         // https://github.com/larastan/larastan/issues/2307

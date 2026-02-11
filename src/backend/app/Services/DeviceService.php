@@ -26,7 +26,7 @@ class DeviceService implements IBaseService, IAssociative {
 
     public function getBySerialNumber(string $serialNumber): ?Device {
         return $this->device->newQuery()
-            ->with(['address', 'geo', 'device.manufacturer', 'person'])
+            ->with(['geo', 'device.manufacturer', 'person.addresses.city'])
             ->where('device_serial', $serialNumber)
             ->first();
     }
@@ -79,25 +79,31 @@ class DeviceService implements IBaseService, IAssociative {
         $query = $this->device->newQuery()->with([
             'person',
             'device.manufacturer',
-            'address.city',
+            'person.addresses.city',
             'tokens',
             'appliance.applianceType',
         ]);
 
         if ($miniGridName) {
-            $query->whereHas('address', function ($q) use ($miniGridName) {
-                $q->whereHas('city', function ($q) use ($miniGridName) {
-                    $q->whereHas('miniGrid', function ($q) use ($miniGridName) {
-                        $q->where('name', 'LIKE', '%'.$miniGridName.'%');
-                    });
+            $query->whereHas('person', function ($q) use ($miniGridName) {
+                $q->whereHas('addresses', function ($q) use ($miniGridName) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($miniGridName) {
+                            $q->whereHas('miniGrid', function ($q) use ($miniGridName) {
+                                $q->where('name', 'LIKE', '%'.$miniGridName.'%');
+                            });
+                        });
                 });
             });
         }
 
         if ($villageName) {
-            $query->whereHas('address', function ($q) use ($villageName) {
-                $q->whereHas('city', function ($q) use ($villageName) {
-                    $q->where('name', 'LIKE', '%'.$villageName.'%');
+            $query->whereHas('person', function ($q) use ($villageName) {
+                $q->whereHas('addresses', function ($q) use ($villageName) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($villageName) {
+                            $q->where('name', 'LIKE', '%'.$villageName.'%');
+                        });
                 });
             });
         }
@@ -115,5 +121,17 @@ class DeviceService implements IBaseService, IAssociative {
         }
 
         return $query->get();
+    }
+
+    /**
+     * @param array{lat: float|string, lon: float|string} $addressData
+     */
+    public function updateGeoInformation(Device $device, array $addressData): Device {
+        $points = $addressData['lat'].','.$addressData['lon'];
+        $device->geo()->update([
+            'points' => $points,
+        ]);
+
+        return $device->fresh();
     }
 }

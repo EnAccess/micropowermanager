@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateDeviceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Device;
 use App\Services\DeviceService;
+use Illuminate\Http\Request;
 
 class DeviceController extends Controller {
     public function __construct(private DeviceService $deviceService) {}
@@ -28,5 +29,25 @@ class DeviceController extends Controller {
         ]));
 
         return ApiResource::make($updatedDevice);
+    }
+
+    public function updateGeoInformation(Request $request): ApiResource {
+        $creatorId = auth('api')->user()->id;
+        $devices = $request->all();
+        foreach ($devices as $deviceData) {
+            $serialNumber = $deviceData['serial_number'];
+            $device = $this->deviceService->getBySerialNumber($serialNumber);
+            $previousDataOfDevice = json_encode($device->toArray());
+            $this->deviceService->updateGeoInformation($device, $deviceData);
+            $updatedDevice = $this->deviceService->getBySerialNumber($serialNumber);
+            $updatedDataOfDevice = json_encode($updatedDevice->toArray());
+            event(new NewLogEvent([
+                'user_id' => $creatorId,
+                'affected' => $device,
+                'action' => "Device infos updated from: $previousDataOfDevice to $updatedDataOfDevice",
+            ]));
+        }
+
+        return ApiResource::make($devices);
     }
 }

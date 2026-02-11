@@ -19,7 +19,6 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ConnectionGroupController;
 use App\Http\Controllers\ConnectionTypeController;
 use App\Http\Controllers\CurrencyController;
-use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\EBikeController;
@@ -375,9 +374,7 @@ Route::group(['prefix' => 'companies'], static function () {
 Route::group(['prefix' => 'devices'], static function () {
     Route::put('/{device}', [DeviceController::class, 'update']);
     Route::get('/', [DeviceController::class, 'index']);
-});
-Route::group(['prefix' => 'device-addresses'], function () {
-    Route::post('/', [DeviceAddressController::class, 'update']);
+    Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
 Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', [SolarHomeSystemController::class, 'index']);
