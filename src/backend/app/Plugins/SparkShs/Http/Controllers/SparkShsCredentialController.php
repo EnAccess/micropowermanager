@@ -57,28 +57,46 @@ class SparkShsCredentialController extends Controller {
             }
         }
 
+        // Remove version segment from the end of the path
+        $audience = preg_replace('#/v\d+/?$#', '', rtrim($urls['api_url'], '/'));
+
         try {
-            $response = Http::asJson()
+            $authResponse = Http::asJson()
                 ->post($urls['auth_url'], [
                     'client_id' => $request->input('client_id'),
                     'client_secret' => $request->input('client_secret'),
-                    'audience' => $urls['api_url'],
+                    'audience' => $audience,
                     'grant_type' => 'client_credentials',
                 ]);
         } catch (ConnectionException) {
             abort(503, 'Service unavailable');
         }
 
-        if ($response->successful()) {
-            return response()->json([
-                'valid' => true,
-            ]);
-        }
-
-        if (in_array($response->status(), [400, 401])) {
+        if (in_array($authResponse->status(), [400, 401])) {
             return response()->json([
                 'valid' => false,
             ]);
+        }
+
+        $testApiUrl = rtrim($urls['api_url'], '/').'/products/kits';
+
+        try {
+            $apiResponse = Http::withHeaders([
+                'Authorization' => 'Bearer '.$authResponse->json()['access_token'],
+            ])->get($testApiUrl);
+        } catch (ConnectionException) {
+            abort(503, 'Service unavailable');
+        }
+
+        if ($apiResponse->successful()) {
+            $contentType = $apiResponse->header('Content-Type');
+
+            // Check that we return an actual JSON not a 404 HTML error page
+            if (str_contains($contentType, 'json')) {
+                return response()->json([
+                    'valid' => true,
+                ]);
+            }
         }
 
         abort(502, 'Authentication service error. Are URLs correct?');
