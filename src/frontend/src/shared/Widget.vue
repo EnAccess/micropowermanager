@@ -469,12 +469,4 @@ export default {
   height: 30%;
   margin: auto;
 }
-
-.md-toolbar-section-start {
-  width: 40%;
-}
-
-.md-toolbar-section-end {
-  width: 60%;
-}
 </style>

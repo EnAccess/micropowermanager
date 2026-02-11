@@ -3,7 +3,7 @@
 namespace App\Plugins\SparkMeter\Observers;
 
 use App\Models\AccessRate\AccessRate;
-use App\Models\Meter\MeterTariff;
+use App\Models\Tariff;
 use App\Plugins\SparkMeter\Helpers\SmTableEncryption;
 use App\Plugins\SparkMeter\Models\SmTariff;
 use App\Plugins\SparkMeter\Services\TariffService;
@@ -11,7 +11,7 @@ use App\Plugins\SparkMeter\Services\TariffService;
 class MeterTariffObserver {
     public function __construct(private TariffService $tariffService, private SmTableEncryption $smTableEncryption, private SmTariff $smTariff, private AccessRate $accessRate) {}
 
-    public function updated(MeterTariff $tariff): void {
+    public function updated(Tariff $tariff): void {
         $smTariff = $this->smTariff->newQuery()->where('mpm_tariff_id', $tariff->id)->first();
         if ($smTariff) {
             $sparkTariff = $this->tariffService->getSparkTariffInfo($smTariff->tariff_id);

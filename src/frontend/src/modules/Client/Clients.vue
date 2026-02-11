@@ -7,6 +7,7 @@
       :subscriber="subscriber"
       :button="true"
       :paginator="paginator"
+      :show_per_page="true"
       :route_name="'/people'"
       color="primary"
       :button-text="$tc('phrases.addCustomer')"
@@ -37,8 +38,19 @@
               <md-button
                 class="md-raised md-default export-csv-button"
                 @click="exportDebts"
+                :disabled="downloading"
               >
-                <md-icon>download</md-icon>
+                <md-icon class="export-icon">
+                  <Transition mode="out-in" name="fade">
+                    <md-progress-spinner
+                      v-if="downloading"
+                      md-mode="indeterminate"
+                      :md-diameter="21"
+                      :md-stroke="3"
+                    />
+                    <span v-else>download</span>
+                  </Transition>
+                </md-icon>
                 {{ $tc("phrases.exportCustomersDebts") }}
               </md-button>
               <md-button
@@ -191,7 +203,7 @@
                 <md-option
                   v-for="miniGrid in miniGridService.list"
                   :key="miniGrid.id"
-                  :value="miniGrid.id"
+                  :value="miniGrid.name"
                 >
                   {{ miniGrid.name }}
                 </md-option>
@@ -206,7 +218,7 @@
                 <md-option
                   v-for="city in cityService.list"
                   :key="city.id"
-                  :value="city.id"
+                  :value="city.name"
                 >
                   {{ city.name }}
                 </md-option>
@@ -234,9 +246,12 @@
               <label>{{ $tc("words.deviceType") }}</label>
               <md-select v-model="exportFilters.deviceType">
                 <md-option value="">{{ $tc("words.all") }}</md-option>
-                <md-option value="meter">{{ $tc("words.meter") }}</md-option>
-                <md-option value="appliance">
-                  {{ $tc("words.appliance") }}
+                <md-option
+                  v-for="device in deviceTypes"
+                  :key="device.type"
+                  :value="device.type"
+                >
+                  {{ device.display }}
                 </md-option>
               </md-select>
             </md-field>
@@ -253,11 +268,17 @@
         </div>
       </md-dialog-content>
 
+      <md-progress-bar md-mode="indeterminate" v-if="downloading" />
+
       <md-dialog-actions>
-        <md-button @click="showExportModal = false">
+        <md-button class="md-raised" @click="showExportModal = false">
           {{ $tc("words.cancel") }}
         </md-button>
-        <md-button class="md-primary" @click="exportCustomers">
+        <md-button
+          class="md-primary md-raised"
+          :disabled="downloading"
+          @click="exportCustomers"
+        >
           {{ $tc("words.export") }}
         </md-button>
       </md-dialog-actions>
@@ -281,6 +302,7 @@ import { MainSettingsService } from "@/services/MainSettingsService"
 import { AgentService } from "@/services/AgentService"
 import { MiniGridService } from "@/services/MiniGridService"
 import { CityService } from "@/services/CityService"
+import { mapGetters } from "vuex"
 
 const debounce = require("debounce")
 
@@ -315,8 +337,14 @@ export default {
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
       isSearching: false,
+      downloading: false,
       activeRequest: null,
     }
+  },
+  computed: {
+    ...mapGetters({
+      deviceTypes: "device/getDeviceTypes",
+    }),
   },
   watch: {
     searchTerm: debounce(function () {
@@ -529,6 +557,8 @@ export default {
     },
 
     async exportDebts() {
+      this.downloading = true
+
       try {
         const response =
           await this.outstandingDebtsExportService.exportOutstandingDebts()
@@ -553,6 +583,8 @@ export default {
           "error",
           "Error occured while exporting Customers' debts",
         )
+      } finally {
+        this.downloading = false
       }
     },
 
@@ -603,6 +635,8 @@ export default {
     },
 
     async exportCustomers() {
+      this.downloading = true
+
       try {
         const data = {
           format: this.exportFilters.format,
@@ -645,6 +679,8 @@ export default {
         this.showExportModal = false
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting customers")
+      } finally {
+        this.downloading = false
       }
     },
 
@@ -728,5 +764,9 @@ export default {
 
 .export-dialog .md-dialog-content {
   padding: 20px;
+}
+
+.fade-enter-active .fade-leave-active {
+  transition: opacity ease;
 }
 </style>

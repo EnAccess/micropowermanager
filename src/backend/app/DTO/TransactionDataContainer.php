@@ -6,8 +6,8 @@ use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\SolarHomeSystem;
+use App\Models\Tariff;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
@@ -18,7 +18,7 @@ class TransactionDataContainer {
     public int $accessRateDebt;
     public Transaction $transaction;
     public Device $device;
-    public ?MeterTariff $tariff = null;
+    public ?Tariff $tariff = null;
     public Manufacturer $manufacturer;
     public Token $token;
     /** @var array<int, array<string, float|int>> */

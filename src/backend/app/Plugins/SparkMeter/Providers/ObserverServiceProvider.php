@@ -3,8 +3,8 @@
 namespace App\Plugins\SparkMeter\Providers;
 
 use App\Models\GeographicalInformation;
-use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
+use App\Models\Tariff;
 use App\Plugins\SparkMeter\Observers\GeographicalInformationObserver;
 use App\Plugins\SparkMeter\Observers\MeterTariffObserver;
 use App\Plugins\SparkMeter\Observers\PersonObserver;
@@ -18,6 +18,6 @@ class ObserverServiceProvider extends ServiceProvider {
         parent::boot();
         Person::observe(PersonObserver::class);
         GeographicalInformation::observe(GeographicalInformationObserver::class);
-        MeterTariff::observe(MeterTariffObserver::class);
+        Tariff::observe(MeterTariffObserver::class);
     }
 }

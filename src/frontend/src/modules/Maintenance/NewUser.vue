@@ -3,7 +3,7 @@
     <widget
       v-if="newUser"
       :title="$tc('phrases.newMaintenanceUser')"
-      color="red"
+      color="secondary"
     >
       <div>
         <form @submit.prevent="submitNewUserForm">
