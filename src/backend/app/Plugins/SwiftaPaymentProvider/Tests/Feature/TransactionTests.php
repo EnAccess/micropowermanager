@@ -6,9 +6,9 @@ use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
+use App\Models\Tariff;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -114,7 +114,7 @@ class TransactionTests extends TestCase {
         // create person
         Person::factory()->create();
         // create meter-tariff
-        MeterTariff::query()->create([
+        Tariff::query()->create([
             'name' => 'test tariff',
             'price' => 100000,
             'total_price' => 100000,

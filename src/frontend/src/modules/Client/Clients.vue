@@ -203,7 +203,7 @@
                 <md-option
                   v-for="miniGrid in miniGridService.list"
                   :key="miniGrid.id"
-                  :value="miniGrid.id"
+                  :value="miniGrid.name"
                 >
                   {{ miniGrid.name }}
                 </md-option>
@@ -218,7 +218,7 @@
                 <md-option
                   v-for="city in cityService.list"
                   :key="city.id"
-                  :value="city.id"
+                  :value="city.name"
                 >
                   {{ city.name }}
                 </md-option>
@@ -246,9 +246,12 @@
               <label>{{ $tc("words.deviceType") }}</label>
               <md-select v-model="exportFilters.deviceType">
                 <md-option value="">{{ $tc("words.all") }}</md-option>
-                <md-option value="meter">{{ $tc("words.meter") }}</md-option>
-                <md-option value="appliance">
-                  {{ $tc("words.appliance") }}
+                <md-option
+                  v-for="device in deviceTypes"
+                  :key="device.type"
+                  :value="device.type"
+                >
+                  {{ device.display }}
                 </md-option>
               </md-select>
             </md-field>
@@ -299,6 +302,7 @@ import { MainSettingsService } from "@/services/MainSettingsService"
 import { AgentService } from "@/services/AgentService"
 import { MiniGridService } from "@/services/MiniGridService"
 import { CityService } from "@/services/CityService"
+import { mapGetters } from "vuex"
 
 const debounce = require("debounce")
 
@@ -336,6 +340,11 @@ export default {
       downloading: false,
       activeRequest: null,
     }
+  },
+  computed: {
+    ...mapGetters({
+      deviceTypes: "device/getDeviceTypes",
+    }),
   },
   watch: {
     searchTerm: debounce(function () {

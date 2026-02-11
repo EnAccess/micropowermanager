@@ -7,6 +7,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Exceptions\AccessRates\NoAccessRateFound;
 use App\Models\AccessRate\AccessRate as AccessRateModel;
 use App\Models\AccessRate\AccessRatePayment;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use Illuminate\Support\Carbon;
 
@@ -16,18 +17,24 @@ class AccessRate {
     /**
      * @throws NoAccessRateFound
      */
-    public static function withMeter(Meter $meter): AccessRate {
-        if ($meter->tariff->accessRate === null) {
-            throw new NoAccessRateFound('Tariff  '.$meter->tariff->name.' has no access rate');
+    public static function withDevice(Device $device): AccessRate {
+        $deviceModel = $device->device;
+
+        if (!$deviceModel instanceof Meter) {
+            throw new NoAccessRateFound('Device is not associated with a meter');
+        }
+
+        if ($deviceModel->tariff->accessRate === null) {
+            throw new NoAccessRateFound('Tariff  '.$deviceModel->tariff->name.' has no access rate');
         }
         $accessRate = new self();
-        $accessRate->accessRate = $meter->accessRate();
-        $accessRate->setMeter();
+        $accessRate->accessRate = $deviceModel->accessRate();
+        $accessRate->setDevice();
 
         return $accessRate;
     }
 
-    private function setMeter(): void {}
+    private function setDevice(): void {}
 
     /**
      * @throws NoAccessRateFound
@@ -50,8 +57,14 @@ class AccessRate {
     /**
      * @throws NoAccessRateFound
      */
-    private function getDebt(Meter $meter): float {
-        $accessRate = $meter->accessRatePayment()->first();
+    private function getDebt(Device $device): float {
+        $deviceModel = $device->device;
+
+        if (!$deviceModel instanceof Meter) {
+            throw new NoAccessRateFound('Device is not associated with a meter');
+        }
+
+        $accessRate = $deviceModel->accessRatePayment()->first();
         if ($accessRate === null) {
             throw new NoAccessRateFound('no access rate is defined');
         }
@@ -64,10 +77,13 @@ class AccessRate {
      */
     public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer {
         $nonStaticGateway = new self();
+        /** @var Device $device */
+        $device = $transactionData->device;
+
         // get accessRatePayment
-        $accessRatePayment = $nonStaticGateway->getAccessRatePayment($transactionData->meter);
+        $accessRatePayment = $nonStaticGateway->getAccessRatePayment($device);
         try {
-            $debt_amount = $nonStaticGateway->getDebt($transactionData->meter);
+            $debt_amount = $nonStaticGateway->getDebt($device);
         } catch (NoAccessRateFound) { // no access rate found
             return $transactionData;
         }
@@ -83,13 +99,17 @@ class AccessRate {
             }
             $nonStaticGateway->updatePayment($accessRatePayment, $debt_amount, $satisfied);
             $transactionData->accessRateDebt = (int) $debt_amount;
+
+            $deviceModel = $device->device;
+            $paidFor = $deviceModel instanceof Meter ? $deviceModel->accessRate() : null;
+
             event(new PaymentSuccessEvent(
                 amount: (int) $debt_amount,
                 paymentService: $transactionData->transaction->original_transaction_type,
                 paymentType: 'access rate',
                 sender: $transactionData->transaction->sender,
-                paidFor: $transactionData->meter->accessRate(),
-                payer: $transactionData->meter->device->person,
+                paidFor: $paidFor,
+                payer: $device->person,
                 transaction: $transactionData->transaction,
             ));
         }
@@ -102,7 +122,13 @@ class AccessRate {
         $accessRatePayment->save();
     }
 
-    private function getAccessRatePayment(Meter $meter): ?object {
-        return $meter->accessRatePayment()->first();
+    private function getAccessRatePayment(Device $device): ?object {
+        $deviceModel = $device->device;
+
+        if (!$deviceModel instanceof Meter) {
+            return null;
+        }
+
+        return $deviceModel->accessRatePayment()->first();
     }
 }
