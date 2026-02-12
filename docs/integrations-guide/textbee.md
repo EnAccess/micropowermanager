@@ -125,4 +125,4 @@ TextBee is ideal if you:
 - Your message volume is moderate (under 5000/month)
 - Want full control over your SMS infrastructure
 
-For higher volumes or mission-critical messaging, consider [AfricasTalking](/usage-guide/africastalking-setup.md).
+For higher volumes or mission-critical messaging, consider [AfricasTalking](africastalking.md).
