@@ -4,6 +4,7 @@ namespace App\Plugins\SparkShs\Services;
 
 use App\Plugins\SparkShs\Models\SparkShsCredential;
 use App\Traits\EncryptsCredentials;
+use Illuminate\Support\Carbon;
 
 class SparkShsCredentialService {
     use EncryptsCredentials;
@@ -27,7 +28,14 @@ class SparkShsCredentialService {
     }
 
     /**
-     * @param array{string: auth_url, string: api_url, string: client_id, string: client_secret} $data
+     * @param array{
+     *     auth_url?: string,
+     *     api_url?: string,
+     *     client_id?: string,
+     *     client_secret?: string,
+     *     access_token?: string,
+     *     access_token_expires_at?: Carbon
+     * } $data
      */
     public function updateCredentials(array $data): SparkShsCredential {
         $credential = $this->credential->newQuery()->firstOrFail();

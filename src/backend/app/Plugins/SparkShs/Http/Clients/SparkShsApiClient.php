@@ -4,6 +4,7 @@ namespace App\Plugins\SparkShs\Http\Clients;
 
 use App\Plugins\SparkShs\Exceptions\SparkShsUnsafeAuthRequestException;
 use App\Plugins\SparkShs\Services\SparkShsCredentialService;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 
@@ -35,7 +36,7 @@ class SparkShsApiClient {
             && Carbon::now()->lt($credentials->access_token_expires_at);
     }
 
-    protected function checkUrl($url): void {
+    protected function checkUrl(string $url): void {
         $parts = parse_url($url);
 
         if (($parts['scheme'] ?? null) !== 'https') {
@@ -110,8 +111,11 @@ class SparkShsApiClient {
 
     /**
      * GET request to API with Bearer token.
+     *
+     * @param array<string,mixed>  $query
+     * @param array<string,string> $headers
      */
-    public function get(string $path, array $query = [], array $headers = []) {
+    public function get(string $path, array $query = [], array $headers = []): Response {
         $url = $this->buildUrl($path);
 
         return Http::withHeaders(array_merge($headers, [
@@ -121,8 +125,11 @@ class SparkShsApiClient {
 
     /**
      * POST request to API with Bearer token.
+     *
+     * @param array<string,mixed>  $data
+     * @param array<string,string> $headers
      */
-    public function post(string $path, array $data = [], array $headers = []) {
+    public function post(string $path, array $data = [], array $headers = []): Response {
         $url = $this->buildUrl($path);
 
         return Http::withHeaders(array_merge($headers, [
@@ -132,8 +139,11 @@ class SparkShsApiClient {
 
     /**
      * PUT request to API with Bearer token.
+     *
+     * @param array<string,mixed>  $data
+     * @param array<string,string> $headers
      */
-    public function put(string $path, array $data = [], array $headers = []) {
+    public function put(string $path, array $data = [], array $headers = []): Response {
         $url = $this->buildUrl($path);
 
         return Http::withHeaders(array_merge($headers, [
