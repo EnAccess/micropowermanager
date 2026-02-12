@@ -2,7 +2,7 @@
 order: 26
 ---
 
-# AfricasTalking SMS Gateway Setup
+# AfricasTalking SMS Gateway
 
 This guide will walk you through the complete setup process for integrating AfricasTalking SMS service with MicroPowerManager (MPM) to enable SMS notifications and communications.
 

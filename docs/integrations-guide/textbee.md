@@ -2,7 +2,7 @@
 order: 25
 ---
 
-# TextBee SMS Gateway Setup
+# TextBee SMS Gateway
 
 TextBee allows you to use your own Android device as an SMS gateway, providing up to 98% cost savings compared to traditional SMS providers. This is ideal for organizations looking to minimize SMS costs while maintaining reliable delivery.
 
