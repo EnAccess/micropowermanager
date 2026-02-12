@@ -44,6 +44,8 @@ class Tariff extends BaseModel {
     public const DEFAULT_FACTOR = 1; // for energy usage
     public const SHS_FACTOR = 2; // for shs usage
 
+    protected $appends = ['total_price'];
+
     /**
      * Generic tariffs table.
      *
