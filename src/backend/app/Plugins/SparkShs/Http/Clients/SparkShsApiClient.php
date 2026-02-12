@@ -64,7 +64,7 @@ class SparkShsApiClient {
             'api_url' => $credentials->api_url,
         ];
 
-        foreach ($urls as $name => $url) {
+        foreach ($urls as $url) {
             $this->checkUrl($url);
         }
 

@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Log;
 
 class SparkShsApi implements IManufacturerAPI {
     public function __construct(
-        private SparkShsCredentialService $credentialService,
         private SparkShsTransaction $sparkShsTransaction,
         private SparkShsApiClient $apiClient,
     ) {}
