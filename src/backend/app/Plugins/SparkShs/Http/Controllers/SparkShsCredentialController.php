@@ -6,9 +6,7 @@ use App\Plugins\SparkShs\Http\Requests\SparkShsCredentialRequest;
 use App\Plugins\SparkShs\Http\Resources\SparkShsResource;
 use App\Plugins\SparkShs\Services\SparkShsCredentialService;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
 
