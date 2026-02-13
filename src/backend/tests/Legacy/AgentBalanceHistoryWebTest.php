@@ -21,7 +21,7 @@ class AgentBalanceHistoryWebTest extends TestCase {
         $this->assertEquals(count($response['data']), $agentBalanceHistoryCount);
     }
 
-    public function actingAs(Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null): static {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
