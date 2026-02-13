@@ -121,7 +121,7 @@ class AgentTest extends TestCase {
         $this->assertEquals(0, $agentsCount);
     }
 
-    public function actingAs(Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null): static {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
