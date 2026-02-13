@@ -34,3 +34,5 @@ auth.json
 # No version controlled files should be added to `storage`, as this directory
 # will be replace with a volume mount at runtime.
 /storage
+
+.phpunit.cache*
