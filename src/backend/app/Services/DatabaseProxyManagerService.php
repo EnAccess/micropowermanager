@@ -40,23 +40,25 @@ class DatabaseProxyManagerService {
     }
 
     private function buildDatabaseConnection(string $databaseName): void {
-        $databaseConnections = config('database.connections');
-        $databaseConnections['tenant'] = [
-            'driver' => 'mysql',
-            'host' => $databaseConnections['micro_power_manager']['host'],
-            'port' => $databaseConnections['micro_power_manager']['port'],
-            'database' => $databaseName,
-            'username' => $databaseConnections['micro_power_manager']['username'],
-            'password' => $databaseConnections['micro_power_manager']['password'],
-            'unix_socket' => $databaseConnections['micro_power_manager']['unix_socket'],
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-        ];
-        config()->set('database.connections', $databaseConnections);
-        $this->databaseManager->purge('tenant');
-        $this->databaseManager->reconnect('tenant');
+        if (!app()->environment('testing')) {
+            $databaseConnections = config('database.connections');
+            $databaseConnections['tenant'] = [
+                'driver' => 'mysql',
+                'host' => $databaseConnections['micro_power_manager']['host'],
+                'port' => $databaseConnections['micro_power_manager']['port'],
+                'database' => $databaseName,
+                'username' => $databaseConnections['micro_power_manager']['username'],
+                'password' => $databaseConnections['micro_power_manager']['password'],
+                'unix_socket' => $databaseConnections['micro_power_manager']['unix_socket'],
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'strict' => true,
+                'engine' => null,
+            ];
+            config()->set('database.connections', $databaseConnections);
+            $this->databaseManager->purge('tenant');
+            $this->databaseManager->reconnect('tenant');
+        }
     }
 }
