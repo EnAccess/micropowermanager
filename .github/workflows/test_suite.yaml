@@ -40,6 +40,9 @@ jobs:
       - name: Copy .env for Backend
         run: cp ./src/backend/.env.testing ./src/backend/.env
 
+      - name: Copy .env for Backend     
+        run: cp ./dev/.env.micropowermanager-ci ./src/backend/.env
+
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
