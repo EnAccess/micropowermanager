@@ -63,6 +63,6 @@ jobs:
         working-directory: ./src/backend
 
       - name: Execute tests
-        run: php artisan test
+        run: php artisan test  --stop-on-failure
         working-directory: ./src/backend
-        continue-on-error: true
+        continue-on-error: false
