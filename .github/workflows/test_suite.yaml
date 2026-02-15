@@ -59,7 +59,7 @@ jobs:
 
       - name: Run Migrations
         run: |
-          php artisan migrate:fresh --seed
+          php artisan migrate:fresh
         working-directory: ./src/backend
 
       - name: Execute tests
