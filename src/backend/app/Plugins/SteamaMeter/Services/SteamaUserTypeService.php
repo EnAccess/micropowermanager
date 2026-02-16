@@ -3,8 +3,8 @@
 namespace App\Plugins\SteamaMeter\Services;
 
 use App\Models\ConnectionType;
-use App\Models\Meter\MeterTariff;
 use App\Models\SubConnectionType;
+use App\Models\Tariff;
 use App\Plugins\SteamaMeter\Models\SteamaUserType;
 
 class SteamaUserTypeService {
@@ -17,7 +17,7 @@ class SteamaUserTypeService {
     /**
      * This function uses one time on installation of the package.
      */
-    public function createUserTypes(MeterTariff $tariff): void {
+    public function createUserTypes(Tariff $tariff): void {
         $connectionTypes = [
             'NA' => 'Not Specified',
             'RES' => 'Residential',

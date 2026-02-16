@@ -13,11 +13,11 @@ use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\ManufacturerFactory;
 use Database\Factories\Meter\MeterConsumptionFactory;
 use Database\Factories\Meter\MeterFactory;
-use Database\Factories\Meter\MeterTariffFactory;
 use Database\Factories\Meter\MeterTypeFactory;
-use Database\Factories\MeterTokenFactory;
 use Database\Factories\PaymentHistoryFactory;
 use Database\Factories\Person\PersonFactory;
+use Database\Factories\TariffFactory;
+use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -179,7 +179,7 @@ class MeterTest extends TestCase {
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
         $this->manufacturer = ManufacturerFactory::new()->create();
         $this->meterType = MeterTypeFactory::new()->create();
-        $this->meterTariff = MeterTariffFactory::new()->create();
+        $this->meterTariff = TariffFactory::new()->create();
         $this->connectionType = ConnectionTypeFactory::new()->create();
         $this->connectionGroup = ConnectionTypeFactory::new()->create();
         $this->person = PersonFactory::new()->create();
@@ -245,7 +245,7 @@ class MeterTest extends TestCase {
             'original_transaction_id' => $this->faker->unique()->randomNumber(),
             'original_transaction_type' => 'agent_transaction',
         ]);
-        $this->token = MeterTokenFactory::new()->create([
+        $this->token = TokenFactory::new()->create([
             'meter_id' => $meter->id,
             'token' => $this->faker->unique()->randomNumber(),
         ]);

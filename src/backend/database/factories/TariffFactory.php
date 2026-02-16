@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories\Meter;
+namespace Database\Factories;
 
-use App\Models\Meter\MeterTariff;
+use App\Models\Tariff;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<MeterTariff> */
-class MeterTariffFactory extends Factory {
-    protected $model = MeterTariff::class;
+/** @extends Factory<Tariff> */
+class TariffFactory extends Factory {
+    protected $model = Tariff::class;
 
     /**
      * Define the model's default state.
@@ -18,7 +18,6 @@ class MeterTariffFactory extends Factory {
         return [
             'name' => $this->faker->randomElement(['Productive Usage', 'Household Usage', 'Commercial Usage']),
             'price' => 100000,
-            'total_price' => 100000,
             'currency' => 'TZS',
             'factor' => 1,
         ];

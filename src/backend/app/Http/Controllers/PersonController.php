@@ -39,11 +39,11 @@ class PersonController extends Controller {
      */
     public function index(Request $request): ApiResource {
         $customerType = $request->input('is_customer', 1);
-        $limit = $request->input('limit', config('settings.paginate'));
+        $perPage = $request->input('per_page', config('settings.paginate'));
         $agentId = $request->input('agent_id');
         $activeCustomer = $request->has('active_customer') ? (bool) $request->input('active_customer') : null;
 
-        return ApiResource::make($this->personService->getAll($limit, $customerType, $agentId, $activeCustomer));
+        return ApiResource::make($this->personService->getAll($perPage, $customerType, $agentId, $activeCustomer));
     }
 
     /**
@@ -159,7 +159,7 @@ class PersonController extends Controller {
     public function search(
         Request $request,
     ): ApiResource {
-        $term = $request->input('term');
+        $term = $request->input('term', '');
         $paginate = $request->input('paginate', 1);
         $per_page = $request->input('per_page', 15);
 

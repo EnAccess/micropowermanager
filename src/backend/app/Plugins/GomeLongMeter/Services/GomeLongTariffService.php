@@ -3,7 +3,7 @@
 namespace App\Plugins\GomeLongMeter\Services;
 
 use App\Models\MainSettings;
-use App\Models\Meter\MeterTariff;
+use App\Models\Tariff;
 use App\Plugins\GomeLongMeter\Models\GomeLongTariff;
 use App\Plugins\GomeLongMeter\Modules\Api\ApiRequests;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +26,7 @@ class GomeLongTariffService {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
-    public function createGomeLongTariff(MeterTariff $tariff): void {
+    public function createGomeLongTariff(Tariff $tariff): void {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
         if (!$gomeLongTariff instanceof GomeLongTariff) {
@@ -54,7 +54,7 @@ class GomeLongTariffService {
     /**
      * @return array<string, mixed>|string
      */
-    public function updateGomeLongTariff(MeterTariff $tariff): array|string|bool {
+    public function updateGomeLongTariff(Tariff $tariff): array|string|bool {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
@@ -86,7 +86,7 @@ class GomeLongTariffService {
     /**
      * @return array<string, mixed>|string
      */
-    public function deleteGomeLongTariff(MeterTariff $tariff): array|string|bool {
+    public function deleteGomeLongTariff(Tariff $tariff): array|string|bool {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
@@ -144,20 +144,18 @@ class GomeLongTariffService {
                         $meterTariff->update([
                             'name' => $gomeLongTariff['FName'],
                             'price' => $gomeLongTariff['FPrice'],
-                            'total_price' => $gomeLongTariff['FPrice'],
                         ]);
                     }
                     $registeredGomeLongTariff->update([
                         'vat' => $gomeLongTariff['FVAT'],
                     ]);
                 } else {
-                    $IncidentModel = new MeterTariff();
+                    $IncidentModel = new Tariff();
                     $IncidentModel->unsetEventDispatcher();
                     $meterTariff = $IncidentModel->create([
                         'name' => $gomeLongTariff['FName'],
                         'price' => $gomeLongTariff['FPrice'],
                         'currency' => $this->mainSettings->newQuery()->first()->currency,
-                        'total_price' => $gomeLongTariff['FPrice'],
                     ]);
                     $this->gomeLongTariff->newQuery()->create([
                         'tariff_id' => $gomeLongTariff['FID'],

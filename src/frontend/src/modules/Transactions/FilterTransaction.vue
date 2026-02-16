@@ -182,9 +182,7 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.deviceType) {
-      this.selectedDevice = this.$route.query.deviceType
-    }
+    this.hydrateFromRoute(this.$route.query)
   },
   mounted() {
     this.getTariffs()
@@ -201,6 +199,71 @@ export default {
       store.getters["settings/getMainSettings"].currency
   },
   methods: {
+    hydrateFromRoute(query) {
+      // Reset to defaults first
+      this.selectedProvider = "-1"
+      this.selectedDevice = "meter"
+      this.selectedTariff = this.tariffs[0]?.id || "all"
+      this.transaction_ = "All"
+      this.filterFrom = null
+      this.filterTo = null
+      this.filter = {
+        status: null,
+        tariff: null,
+        provider: null,
+        from: null,
+        to: null,
+        deviceType: null,
+      }
+
+      if (query.deviceType) {
+        this.selectedDevice = query.deviceType
+      }
+      this.filter.deviceType = this.selectedDevice
+
+      if (query.provider) {
+        this.selectedProvider = query.provider
+        this.filter.provider = query.provider
+      }
+
+      if (query.status) {
+        if (String(query.status) === "1") {
+          this.transaction_ = "Only Approved"
+          this.filter.status = "1"
+        } else if (String(query.status) === "-1") {
+          this.transaction_ = "Only Rejected"
+          this.filter.status = "-1"
+        } else {
+          this.transaction_ = "All"
+          this.filter.status = null
+        }
+      }
+
+      if (query.tariff) {
+        this.filter.tariff = query.tariff
+        this.selectedTariff = query.tariff
+      }
+
+      if (query.from) {
+        const [fromDateStr] = String(query.from).split(" ")
+        this.filterFrom = new Date(fromDateStr)
+        this.filter.from = query.from
+      }
+      if (query.to) {
+        const [toDateStr] = String(query.to).split(" ")
+        this.filterTo = new Date(toDateStr)
+        this.filter.to = query.to
+      }
+    },
+    reloadList() {
+      this.loading = false
+    },
+    searching() {
+      this.loading = true
+    },
+    endSearching() {
+      this.loading = false
+    },
     async getTariffs() {
       let tariffs = await this.tariffService.getTariffs()
       tariffs.forEach((e) => {
@@ -276,13 +339,23 @@ export default {
       if (this.filter.status === "all") {
         this.filter.status = null
       }
+      this.filter.from = null
+      this.filter.to = null
       if (this.filterFrom !== null) {
         const fromDate = new Date(this.filterFrom)
-        this.filter.from = fromDate.toISOString().split("T")[0] + " 00:00:00"
+        const fromYear = fromDate.getFullYear()
+        const fromMonth = String(fromDate.getMonth() + 1).padStart(2, "0")
+        const fromDay = String(fromDate.getDate()).padStart(2, "0")
+        // Build date range using local calendar date to avoid timezone shifts
+        this.filter.from = `${fromYear}-${fromMonth}-${fromDay} 00:00:00`
       }
       if (this.filterTo !== null) {
         const toDate = new Date(this.filterTo)
-        this.filter.to = toDate.toISOString().split("T")[0] + " 23:59:59"
+        const toYear = toDate.getFullYear()
+        const toMonth = String(toDate.getMonth() + 1).padStart(2, "0")
+        const toDay = String(toDate.getDate()).padStart(2, "0")
+        // Build date range using local calendar date to avoid timezone shifts
+        this.filter.to = `${toYear}-${toMonth}-${toDay} 23:59:59`
       }
     },
     async loadMiniGrids() {
@@ -317,6 +390,10 @@ export default {
   watch: {
     selectedDevice(val) {
       this.filter.deviceType = val
+    },
+    // Keep filter UI in sync with URL when route query changes
+    $route() {
+      this.hydrateFromRoute(this.$route.query)
     },
   },
 }

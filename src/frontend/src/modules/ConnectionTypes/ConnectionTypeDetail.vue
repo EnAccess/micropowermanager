@@ -103,7 +103,7 @@
     <widget
       :title="$tc('phrases.newSubConnectionType')"
       :id="'add-sub-connection-type'"
-      color="red"
+      color="secondary"
       v-if="showNewSubType"
     >
       <md-card>

@@ -2,7 +2,7 @@
 order: 27
 ---
 
-# ECREEE e-Tender Integration Setup Guide
+# ECREEE e-Tender Integration
 
 This guide provides step-by-step instructions to set up the integration between **MicroPowerManager (MPM)** and the **ECREEE e-Tender platform** for milestone-based progress tracking and disbursement verification.
 
@@ -61,7 +61,7 @@ To allow secure data access:
 2. Click **Generate New API Key**
 3. Copy and securely store the generated API key
 
-> This API key grants access to transaction and operational data.  
+> This API key grants access to transaction and operational data.
 > Do not share it publicly.
 
 ---

@@ -9,8 +9,8 @@ use App\Models\GeographicalInformation;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
+use App\Models\Tariff;
 use App\Plugins\KelinMeter\Exceptions\KelinApiResponseException;
 use App\Plugins\KelinMeter\Helpers\ApiHelpers;
 use App\Plugins\KelinMeter\Http\Clients\KelinMeterApiClient;
@@ -44,7 +44,7 @@ class KelinMeterService implements ISynchronizeService {
         private Manufacturer $manufacturer,
         private ConnectionGroup $connectionGroup,
         private ConnectionType $connectionType,
-        private MeterTariff $meterTariff,
+        private Tariff $meterTariff,
     ) {}
 
     /**
@@ -154,21 +154,20 @@ class KelinMeterService implements ISynchronizeService {
                 $meter['registeredKelinMeter'] = null;
 
                 return $meter;
-            } else {
-                $relatedMeter = null;
-                if ($registeredStmMeter) {
-                    $meter['syncStatus'] = $meterHash === $registeredStmMeter->hash ?
-                        SyncStatus::SYNCED : SyncStatus::MODIFIED;
-                    $relatedMeter = $meters->where('id', $registeredStmMeter->mpm_meter_id)->first();
-                } else {
-                    $meter['syncStatus'] = SyncStatus::NOT_REGISTERED_YET;
-                }
-                $meter['hash'] = $meterHash;
-                $meter['relatedMeter'] = $relatedMeter;
-                $meter['registeredKelinMeter'] = $registeredStmMeter;
-
-                return $meter;
             }
+            $relatedMeter = null;
+            if ($registeredStmMeter) {
+                $meter['syncStatus'] = $meterHash === $registeredStmMeter->hash ?
+                    SyncStatus::SYNCED : SyncStatus::MODIFIED;
+                $relatedMeter = $meters->where('id', $registeredStmMeter->mpm_meter_id)->first();
+            } else {
+                $meter['syncStatus'] = SyncStatus::NOT_REGISTERED_YET;
+            }
+            $meter['hash'] = $meterHash;
+            $meter['relatedMeter'] = $relatedMeter;
+            $meter['registeredKelinMeter'] = $registeredStmMeter;
+
+            return $meter;
         });
         $meterSyncStatus = $metersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
         if ($meterSyncStatus) {

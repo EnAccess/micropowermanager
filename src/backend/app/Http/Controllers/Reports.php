@@ -666,11 +666,11 @@ class Reports {
         meters.connection_group_id,
         meters.serial_number as meter,
         SUM(transactions.amount) as revenue,
-        meter_tariffs.price as tariff_price,
+        tariffs.price as tariff_price,
         IFNULL(SUM(payment_histories.amount), 0) as total
     ')
             ->join('meters', 'transactions.message', '=', 'meters.serial_number')
-            ->join('meter_tariffs', 'meters.tariff_id', '=', 'meter_tariffs.id')
+            ->join('tariffs', 'meters.tariff_id', '=', 'tariffs.id')
             ->join('payment_histories', 'transactions.id', '=', 'payment_histories.transaction_id', 'left')
             ->where('meters.connection_group_id', $connectionGroupId)
             ->whereBetween('transactions.created_at', $dateRange)

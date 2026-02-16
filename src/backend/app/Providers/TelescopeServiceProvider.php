@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
+use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
@@ -13,7 +14,13 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider {
     public function register(): void {
         $this->hideSensitiveRequestDetails();
 
-        // filter telemetry entry using Telescope::filter()
+        $enableErrorFilter = config('telescope.enable_error_only_filter', false);
+        if ($enableErrorFilter) {
+            Telescope::filter(fn (IncomingEntry $entry): bool => $entry->isReportableException()
+            || $entry->isFailedRequest()
+            || $entry->isFailedJob()
+            || $entry->type === 'exception');
+        }
     }
 
     /**

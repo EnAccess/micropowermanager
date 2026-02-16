@@ -1,0 +1,14 @@
+meta {
+  name: Export Settings Data Excel
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/settings
+  body: none
+  auth: inherit
+}
+
+params:query {
+}
