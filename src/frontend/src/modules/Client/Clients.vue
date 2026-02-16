@@ -65,121 +65,103 @@
           </div>
         </div>
 
-        <!-- Collapsible Filter Section -->
-        <div class="md-layout-item md-size-100" v-if="showFilter">
-          <div class="filter-expanded-section">
-            <md-field>
-              <label>
-                {{ $tc("words.agent") }} ({{ agentService.list.length }}
-                agents loaded)
-              </label>
-              <md-select v-model="selectedAgentId" @input="filterByAgent">
-                <md-option :value="null">{{ $tc("words.all") }}</md-option>
-                <md-option
-                  v-for="agent in agentService.list"
-                  :key="agent.id"
-                  :value="agent.id"
-                >
-                  {{
-                    agent.person
-                      ? `${agent.person.name} ${agent.person.surname}`
-                      : agent.email
-                  }}
-                </md-option>
-              </md-select>
-            </md-field>
-
-            <div
-              v-if="agentService.list.length === 0"
-              style="color: red; font-size: 12px"
-            >
+        <div class="md-layout-item md-size-100 content-with-filter">
+          <div v-if="showFilter" class="filter-overlay">
+            <client-filter
+              v-model="customerFilters"
+              :agents="agentService.list"
+              :cities="cityService.list"
+              @apply="onFilterApply"
+              @clear="onFilterClear"
+            />
+            <div v-if="agentService.list.length === 0" class="agent-warning">
               No agents loaded. Check console for errors.
             </div>
           </div>
-        </div>
 
-        <!-- No customers message for agent filter -->
-        <div
-          class="md-layout-item md-size-100"
-          v-if="selectedAgentId && people.list.length === 0"
-        >
-          <div
-            style="
-              text-align: center;
-              padding: 2rem;
-              background: #f5f5f5;
-              border-radius: 4px;
-              margin: 1rem 0;
-            "
-          >
-            <md-icon style="font-size: 48px; color: #ccc; margin-bottom: 1rem">
-              people
-            </md-icon>
-            <div style="color: #666; font-size: 18px; margin-bottom: 0.5rem">
-              No customers found for this agent
+          <div class="md-layout-item md-size-100">
+            <!-- No customers message for agent filter -->
+            <div
+              v-if="selectedAgentId && people.list.length === 0"
+              class="no-customers-container"
+            >
+              <md-icon class="no-customers-icon">people</md-icon>
+              <div class="no-customers-title">
+                No customers found for this agent
+              </div>
+              <div class="no-customers-subtitle">
+                Try selecting a different agent or clear the filter
+              </div>
             </div>
-            <div style="color: #999; font-size: 14px">
-              Try selecting a different agent or clear the filter
+
+            <div v-if="people.list.length > 0">
+              <md-table
+                v-model="people.list"
+                md-card
+                style="margin-left: 0"
+                md-sort="created_at"
+                md-sort-order="desc"
+                @md-sorted="onSort"
+              >
+                <md-table-row
+                  slot="md-table-row"
+                  slot-scope="{ item }"
+                  @click="detail(item.id)"
+                  style="cursor: pointer"
+                >
+                  <md-table-cell
+                    :md-label="$tc('words.name')"
+                    md-sort-by="name"
+                  >
+                    {{ item.name }} {{ item.surname }}
+                  </md-table-cell>
+
+                  <md-table-cell :md-label="$tc('words.phone')">
+                    {{
+                      item.addresses.length > 0 ? item.addresses[0].phone : "-"
+                    }}
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('words.city')"
+                    md-sort-by="city"
+                    class="hidden-xs"
+                  >
+                    {{
+                      item.addresses.length > 0 && item.addresses[0].city
+                        ? item.addresses[0].city.name
+                        : "-"
+                    }}
+                  </md-table-cell>
+
+                  <md-table-cell :md-label="$tc('words.isActive')">
+                    {{ item.is_active ? $tc("words.yes") : $tc("words.no") }}
+                  </md-table-cell>
+
+                  <md-table-cell :md-label="$tc('words.device')">
+                    {{
+                      item.devices.length > 0 ? deviceList(item.devices) : "-"
+                    }}
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('words.agent')"
+                    md-sort-by="agent"
+                  >
+                    {{ getAgentName(item) }}
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('phrases.lastUpdate')"
+                    md-sort-by="created_at"
+                    class="hidden-xs"
+                  >
+                    {{ timeForTimeZone(item.lastUpdate) }}
+                  </md-table-cell>
+                </md-table-row>
+              </md-table>
             </div>
           </div>
-        </div>
-
-        <div class="md-layout-item md-size-100" v-if="people.list.length > 0">
-          <md-table
-            v-model="people.list"
-            md-card
-            style="margin-left: 0"
-            md-sort="created_at"
-            md-sort-order="desc"
-            @md-sorted="onSort"
-          >
-            <md-table-row
-              slot="md-table-row"
-              slot-scope="{ item }"
-              @click="detail(item.id)"
-              style="cursor: pointer"
-            >
-              <md-table-cell :md-label="$tc('words.name')" md-sort-by="name">
-                {{ item.name }} {{ item.surname }}
-              </md-table-cell>
-
-              <md-table-cell :md-label="$tc('words.phone')">
-                {{ item.addresses.length > 0 ? item.addresses[0].phone : "-" }}
-              </md-table-cell>
-
-              <md-table-cell
-                :md-label="$tc('words.city')"
-                md-sort-by="city"
-                class="hidden-xs"
-              >
-                {{
-                  item.addresses.length > 0 && item.addresses[0].city
-                    ? item.addresses[0].city.name
-                    : "-"
-                }}
-              </md-table-cell>
-
-              <md-table-cell :md-label="$tc('words.isActive')">
-                {{ item.is_active ? $tc("words.yes") : $tc("words.no") }}
-              </md-table-cell>
-
-              <md-table-cell :md-label="$tc('words.device')">
-                {{ item.devices.length > 0 ? deviceList(item.devices) : "-" }}
-              </md-table-cell>
-
-              <md-table-cell :md-label="$tc('words.agent')" md-sort-by="agent">
-                {{ getAgentName(item) }}
-              </md-table-cell>
-
-              <md-table-cell
-                :md-label="$tc('phrases.lastUpdate')"
-                md-sort-by="created_at"
-                class="hidden-xs"
-              >
-                {{ timeForTimeZone(item.lastUpdate) }}
-              </md-table-cell>
-            </md-table-row>
-          </md-table>
         </div>
       </div>
     </widget>
@@ -303,6 +285,7 @@ import { MainSettingsService } from "@/services/MainSettingsService"
 import { AgentService } from "@/services/AgentService"
 import { MiniGridService } from "@/services/MiniGridService"
 import { CityService } from "@/services/CityService"
+import ClientFilter from "@/modules/Client/ClientFilter.vue"
 import { mapGetters } from "vuex"
 
 const debounce = require("debounce")
@@ -310,7 +293,7 @@ const debounce = require("debounce")
 export default {
   name: "Clients",
   mixins: [timing, notify],
-  components: { AddClientModal, Widget },
+  components: { AddClientModal, Widget, ClientFilter },
   data() {
     return {
       subscriber: "client.list",
@@ -341,6 +324,18 @@ export default {
       downloadingDebts: false,
       downloadingCustomers: false,
       activeRequest: null,
+      customerFilters: {
+        status: "all",
+        agentId: null,
+        totalPaidMin: null,
+        totalPaidMax: null,
+        cityId: null,
+        latestPaymentFrom: null,
+        latestPaymentTo: null,
+        registrationFrom: null,
+        registrationTo: null,
+        deviceType: null,
+      },
     }
   },
   computed: {
@@ -436,9 +431,7 @@ export default {
           const prefix = this.currentSortOrder === "desc" ? "-" : ""
           params.sort_by = `${prefix}${this.currentSortBy}`
         }
-        if (this.selectedAgentId) {
-          params.agent_id = this.selectedAgentId
-        }
+        this.appendFilterParams(params)
 
         const response = await searchPaginator.loadPage(1, params)
 
@@ -498,9 +491,7 @@ export default {
         params.term = this.searchTerm
       }
 
-      if (this.selectedAgentId) {
-        params.agent_id = this.selectedAgentId
-      }
+      this.appendFilterParams(params)
 
       try {
         const response = await this.paginator.loadPage(pageNumber, params)
@@ -686,11 +677,101 @@ export default {
       }
     },
 
-    filterByAgent() {
-      this.paginator = new Paginator(resources.person.list)
-      this.paginator.currentPage = 1
-      this.getClientList(1)
-      this.widgetKey++
+    buildFilterParams() {
+      const params = {}
+
+      // Agent
+      if (this.customerFilters.agentId) {
+        this.selectedAgentId = this.customerFilters.agentId
+        params.agent_id = this.customerFilters.agentId
+      } else if (this.selectedAgentId) {
+        params.agent_id = this.selectedAgentId
+      }
+
+      // Active / inactive
+      if (this.customerFilters.status === "active") {
+        params.active_customer = 1
+      } else if (this.customerFilters.status === "inactive") {
+        params.active_customer = 0
+      }
+
+      // City / village
+      if (this.customerFilters.cityId) {
+        params.city_id = this.customerFilters.cityId
+      }
+
+      // Total paid interval
+      if (this.customerFilters.totalPaidMin != null) {
+        params.total_paid_min = this.customerFilters.totalPaidMin
+      }
+      if (this.customerFilters.totalPaidMax != null) {
+        params.total_paid_max = this.customerFilters.totalPaidMax
+      }
+
+      // Latest payment date
+      if (this.customerFilters.latestPaymentFrom) {
+        params.latest_payment_from = this.customerFilters.latestPaymentFrom
+      }
+      if (this.customerFilters.latestPaymentTo) {
+        params.latest_payment_to = this.customerFilters.latestPaymentTo
+      }
+
+      // Registration date
+      if (this.customerFilters.registrationFrom) {
+        params.registration_from = this.customerFilters.registrationFrom
+      }
+      if (this.customerFilters.registrationTo) {
+        params.registration_to = this.customerFilters.registrationTo
+      }
+
+      // Device / appliance type
+      if (this.customerFilters.deviceType) {
+        params.device_type = this.customerFilters.deviceType
+      }
+
+      return params
+    },
+
+    appendFilterParams(params) {
+      Object.assign(params, this.buildFilterParams())
+    },
+
+    onFilterApply() {
+      // Ensure paginator uses filters for all subsequent pages.
+      // Let Paginate.vue handle the actual loading to avoid duplicate requests.
+      const term = {}
+      if (this.currentSortBy) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        term.sort_by = `${prefix}${this.currentSortBy}`
+      }
+      Object.assign(term, this.buildFilterParams())
+
+      EventBus.$emit("loadPage", this.paginator, term)
+
+      this.showFilter = false
+    },
+
+    onFilterClear() {
+      this.customerFilters = {
+        status: "all",
+        agentId: null,
+        totalPaidMin: null,
+        totalPaidMax: null,
+        cityId: null,
+        latestPaymentFrom: null,
+        latestPaymentTo: null,
+        registrationFrom: null,
+        registrationTo: null,
+        deviceType: null,
+      }
+      this.selectedAgentId = null
+      const term = {}
+      if (this.currentSortBy) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        term.sort_by = `${prefix}${this.currentSortBy}`
+      }
+      // No extra filters; just re-load base list via paginator
+      EventBus.$emit("loadPage", this.paginator, term)
     },
 
     getAgentName(client) {
@@ -766,6 +847,54 @@ export default {
 
 .export-dialog .md-dialog-content {
   padding: 20px;
+}
+
+.content-with-filter {
+  position: relative;
+}
+
+.filter-overlay {
+  position: sticky;
+  width: 40%;
+  margin-left: 1rem;
+  min-width: 300px;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.agent-warning {
+  color: red;
+  font-size: 12px;
+  margin-top: 0.5rem;
+}
+
+.no-customers-container {
+  text-align: center;
+  padding: 2rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.no-customers-icon {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.no-customers-title {
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 0.5rem;
+}
+
+.no-customers-subtitle {
+  color: #999;
+  font-size: 14px;
 }
 
 .fade-enter-active .fade-leave-active {

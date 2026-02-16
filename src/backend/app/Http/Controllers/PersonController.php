@@ -31,9 +31,17 @@ class PersonController extends Controller {
      * [ To get a list of registered customers or non-customer like contact person of Meter Manufacturer. ].
      *
      * @urlParam is_customer int optinal. To get a list of customers or non customer. Default : 1
-     * @urlParam agent_id int optional. To gget a list of customers of a specific agent.
+     * @urlParam agent_id int optional. To get a list of customers of a specific agent.
      * @urlParam limit int optional. The number of items per page.
      * @urlParam active_customer int optional. To get a list of active customers. Default: 0
+     * @urlParam city_id int optional. Filter by primary address city/village id.
+     * @urlParam total_paid_min float optional. Minimum total paid amount for the customer.
+     * @urlParam total_paid_max float optional. Maximum total paid amount for the customer.
+     * @urlParam latest_payment_from string optional. ISO date string for minimum latest payment date.
+     * @urlParam latest_payment_to string optional. ISO date string for maximum latest payment date.
+     * @urlParam registration_from string optional. ISO date string for minimum registration date.
+     * @urlParam registration_to string optional. ISO date string for maximum registration date.
+     * @urlParam device_type string optional. Filter by device/appliance type.
      *
      * @responseFile responses/people/people.list.json
      */
@@ -42,8 +50,31 @@ class PersonController extends Controller {
         $perPage = $request->input('per_page', config('settings.paginate'));
         $agentId = $request->input('agent_id');
         $activeCustomer = $request->has('active_customer') ? (bool) $request->input('active_customer') : null;
+        $cityId = $request->input('city_id');
+        $totalPaidMin = $request->input('total_paid_min');
+        $totalPaidMax = $request->input('total_paid_max');
+        $latestPaymentFrom = $request->input('latest_payment_from');
+        $latestPaymentTo = $request->input('latest_payment_to');
+        $registrationFrom = $request->input('registration_from');
+        $registrationTo = $request->input('registration_to');
+        $deviceType = $request->input('device_type');
 
-        return ApiResource::make($this->personService->getAll($perPage, $customerType, $agentId, $activeCustomer));
+        return ApiResource::make(
+            $this->personService->getAll(
+                $perPage,
+                $customerType,
+                $agentId,
+                $activeCustomer,
+                $cityId,
+                $totalPaidMin,
+                $totalPaidMax,
+                $latestPaymentFrom,
+                $latestPaymentTo,
+                $registrationFrom,
+                $registrationTo,
+                $deviceType,
+            )
+        );
     }
 
     /**
