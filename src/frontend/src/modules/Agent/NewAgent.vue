@@ -290,6 +290,7 @@ import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import RedirectionModal from "../../shared/RedirectionModal"
 import { notify } from "@/mixins/notify"
+import moment from "moment"
 
 export default {
   mixins: [notify],
@@ -364,25 +365,10 @@ export default {
     },
     normalizeDateToISO(date) {
       if (!date) return null
-      if (date instanceof Date && !isNaN(date.getTime())) {
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, "0")
-        const day = String(date.getDate()).padStart(2, "0")
-        return `${year}-${month}-${day}`
-      }
-      if (typeof date === "string") {
-        const s = date.trim()
-        if (!s) return null
-        if (s.toLowerCase().includes("invalid")) return null
-        const parsed = new Date(s)
-        if (!isNaN(parsed.getTime())) {
-          const year = parsed.getFullYear()
-          const month = String(parsed.getMonth() + 1).padStart(2, "0")
-          const day = String(parsed.getDate()).padStart(2, "0")
-          return `${year}-${month}-${day}`
-        }
-      }
-      return null
+      const m = moment(date)
+      if (!m.isValid()) return null
+
+      return m.format("YYYY-MM-DD")
     },
 
     async saveAgent() {
