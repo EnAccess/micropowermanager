@@ -46,7 +46,7 @@ In order to use MPM software to manage your customer portfolio, you will have to
 For example, if you have Calin pre-paid meters or SunKing Solar Home Systems in your portfolio, you should activate the "Calin" and "SunKing" plug-ins to be able to manage your customers with MPM software.
 Additionally, if your customers rely on Airtel or Vodacom, you should activate the applicable Airtel or Vodacom plug-ins to enable MPM to generate tokens when receiving mobile money payments.
 
-See [Plugin Overview](/usage-guide/plugin-overview) to have an overview of active and available plug-ins.
+See [Plugin Overview](/integrations-guide/overview) to have an overview of active and available plug-ins.
 
 Note that the activated plug-ins can be changed/removed/added later on from the website interface (under "Settings").
 

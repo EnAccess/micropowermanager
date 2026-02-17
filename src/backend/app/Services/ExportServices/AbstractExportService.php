@@ -111,17 +111,13 @@ abstract class AbstractExportService {
             $fileName = $this->getPrefix().'-'.now()->format('Ymd_His_u').'.xlsx';
             $path = "{$directory}/{$fileName}";
 
-            Storage::makeDirectory($directory);
-
-            // Create temp stream, write to it, then pass to Storage
-            $tempStream = fopen('php://temp', 'r+');
+            $tempPath = tempnam(sys_get_temp_dir(), 'spreadsheet_');
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
-            $writer->save($tempStream);
-            rewind($tempStream);
+            $writer->save($tempPath);
 
-            Storage::put($path, $tempStream);
+            Storage::put($path, file_get_contents($tempPath));
 
-            fclose($tempStream);
+            unlink($tempPath);
 
             return $path;
         } catch (\Exception $e) {

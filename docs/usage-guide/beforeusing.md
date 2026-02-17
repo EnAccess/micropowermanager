@@ -26,7 +26,7 @@ New customers in MicroPowerManager can be registered using one of the following 
 
 1. **Customer Registration App:** After introducing the customer’s basic details (name, phone number, etc.), the app allows you to select the village where the customer lives, the meter manufacturer and the energy tariff that should be assigned to the meter.
 2. **MicroPowerManager's Web UI**: In the `Customer` section, click the ":heavy_plus_sign:" button and provide all relevant users details.
-3. **BulkRegistration plugin:** The [BulkRegistration plugin](/usage-guide/plugin-overview.html) allows users to upload a CSV file of customer data.
+3. **BulkRegistration plugin:** The [BulkRegistration plugin](/integrations-guide/bulk-registration.html) allows users to upload a CSV file of customer data.
 4. **Third Party Plugins:** Some Third Party tools contain customer data, for example Meter manufacturer AMI's like SteamaCo or SparkMeter. Using MicroPowerManager's third party plugins for these users can import this users data into MicroPowerManager.
 
 ## Registering Meters
@@ -35,7 +35,7 @@ New customers in MicroPowerManager can be registered using one of the following 
 > While new customers can be created via the website interface and existing meter devices can be re-assigned to customers, **new meter** devices can only be registered as described below.
 
 1. **Customer Registration App:** When the Customer Registration App is used to register a customer (see above) users have to option to also register a Meter at the same time by providing a Meter serial number.
-2. **BulkRegistration plugin:** The [BulkRegistration plugin](/usage-guide/plugin-overview.html) allows users to upload a CSV file of customer data. This will create Meter devices as applicable.
+2. **BulkRegistration plugin:** The [BulkRegistration plugin](/integrations-guide/bulk-registration.html) allows users to upload a CSV file of customer data. This will create Meter devices as applicable.
 3. **Third Party Plugins:** Some Third Party tools contain customer data, for example Meter manufacturer AMI's like SteamaCo or SparkMeter. Using MicroPowerManager's third party plugins for these users can import this users data into MicroPowerManager.
 
 ## Registering devices

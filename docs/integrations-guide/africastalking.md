@@ -2,7 +2,7 @@
 order: 26
 ---
 
-# AfricasTalking SMS Gateway Setup
+# AfricasTalking SMS Gateway
 
 This guide will walk you through the complete setup process for integrating AfricasTalking SMS service with MicroPowerManager (MPM) to enable SMS notifications and communications.
 
@@ -140,4 +140,4 @@ AfricasTalking is ideal if you:
 - Need 99.9% uptime and reliability
 - Want access to additional features (USSD, Voice, Airtime)
 
-For cost-effective, lower-volume messaging using your own Android device, consider [TextBee SMS Gateway](/usage-guide/textbee-setup).
+For cost-effective, lower-volume messaging using your own Android device, consider [TextBee SMS Gateway](/integrations-guide/textbee).
