@@ -1,5 +1,5 @@
 <?php
-namespace Inensus\{{Plugin-Name}}\Console\Commands;
+namespace App\Plugins\{{Plugin-Name}}\Console\Commands;
 
 use Illuminate\Console\Command;
 

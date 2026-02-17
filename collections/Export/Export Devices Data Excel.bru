@@ -1,0 +1,18 @@
+meta {
+  name: Export Devices Data Excel
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/devices
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~miniGrid: Main Grid
+  ~village: Village Name
+  ~deviceType: meter
+  ~manufacturer: Spark Meter
+}

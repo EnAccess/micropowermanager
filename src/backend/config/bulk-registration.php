@@ -1,18 +1,18 @@
 <?php
 
-use Inensus\BulkRegistration\Services\AddressService;
-use Inensus\BulkRegistration\Services\ApplianceTypeService;
-use Inensus\BulkRegistration\Services\CityService;
-use Inensus\BulkRegistration\Services\ClusterService;
-use Inensus\BulkRegistration\Services\ConnectionGroupService;
-use Inensus\BulkRegistration\Services\ConnectionTypeService;
-use Inensus\BulkRegistration\Services\GeographicalInformationService;
-use Inensus\BulkRegistration\Services\ManufacturerService;
-use Inensus\BulkRegistration\Services\MeterService;
-use Inensus\BulkRegistration\Services\MiniGridService;
-use Inensus\BulkRegistration\Services\PersonDocumentService;
-use Inensus\BulkRegistration\Services\PersonService;
-use Inensus\BulkRegistration\Services\TariffService;
+use App\Plugins\BulkRegistration\Services\AddressService;
+use App\Plugins\BulkRegistration\Services\ApplianceTypeService;
+use App\Plugins\BulkRegistration\Services\CityService;
+use App\Plugins\BulkRegistration\Services\ClusterService;
+use App\Plugins\BulkRegistration\Services\ConnectionGroupService;
+use App\Plugins\BulkRegistration\Services\ConnectionTypeService;
+use App\Plugins\BulkRegistration\Services\GeographicalInformationService;
+use App\Plugins\BulkRegistration\Services\ManufacturerService;
+use App\Plugins\BulkRegistration\Services\MeterService;
+use App\Plugins\BulkRegistration\Services\MiniGridService;
+use App\Plugins\BulkRegistration\Services\PersonDocumentService;
+use App\Plugins\BulkRegistration\Services\PersonService;
+use App\Plugins\BulkRegistration\Services\TariffService;
 
 return [
     'csv_fields' => [
@@ -50,7 +50,6 @@ return [
             'name' => 'Tariff Name',
             'currency' => 'Currency',
             'price' => 'Tariff Price',
-            'total_price' => 'Tariff Price',
         ],
 
         'connection_type' => [

@@ -1,24 +1,20 @@
 <?php
 
-namespace Inensus\{{Plugin-Name}}\Providers;
+namespace App\Plugins\{{Plugin-Name}}\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-class EventServiceProvider  extends ServiceProvider
-{
-    protected $subscribe = [
-
-    ];
+class EventServiceProvider  extends ServiceProvider {
+    /**
+     * @var array<class-string>
+     */
+    protected $subscribe = [];
 
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

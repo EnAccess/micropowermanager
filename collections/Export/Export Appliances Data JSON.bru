@@ -1,0 +1,15 @@
+meta {
+  name: Export Appliances Data JSON
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/appliances?format=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: json
+}

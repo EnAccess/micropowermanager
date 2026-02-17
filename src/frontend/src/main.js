@@ -14,6 +14,12 @@ import i18n from "./i18n"
 import { MapSettingsService } from "./services/MapSettingsService"
 import { MainSettingsService } from "./services/MainSettingsService"
 import Snackbar from "@/shared/Snackbar.vue"
+import ChintMeter from "@/plugins/chint-meter/modules/Overview/Credential"
+import Prospect from "@/plugins/prospect/modules/Overview/Credential"
+import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
+import TextbeeSmsGateway from "@/plugins/textbee-sms-gateway/modules/Overview/Credential"
+import SparkShs from "@/plugins/spark-shs/modules/Overview/Credential.vue"
+
 import {
   getPermissionsForRoute,
   userHasPermissions,
@@ -21,6 +27,37 @@ import {
 
 Vue.component("default", Default)
 Vue.component("Snackbar", Snackbar)
+
+// global component to be displayed in RegistrationTail
+Vue.component("Spark-Meter", Spark)
+Vue.component("Steamaco-Meter", Steamaco)
+Vue.component("Calin-Meter", Calin)
+Vue.component("CalinSmart-Meter", CalinSmart)
+Vue.component("Kelin-Meter", Kelin)
+Vue.component("Stron-Meter", Stron)
+Vue.component("Settings", Settings)
+Vue.component("Viber-Messaging", Viber)
+Vue.component("WaveMoney", WaveMoney)
+Vue.component("MicroStar-Meter", MicroStar)
+Vue.component("SunKing-SHS", SunKing)
+Vue.component("GomeLong-Meter", GomeLong)
+Vue.component("WaveComTransaction", WaveComTransaction)
+Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
+Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
+Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
+Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
+Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
+Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
+Vue.component("AgentTransactionDetail", AgentTransactionDetail)
+Vue.component("Angaza-SHS", Angaza)
+Vue.component("Daly-Bms", DalyBms)
+Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
+Vue.component("Africas-Talking", AfricasTalking)
+Vue.component("Chint-Meter", ChintMeter)
+Vue.component("Prospect", Prospect)
+Vue.component("Paystack", Paystack)
+Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
+Vue.component("SparkShs", SparkShs)
 
 const toArray = (value) => {
   if (!value) {

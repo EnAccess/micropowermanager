@@ -1,0 +1,19 @@
+meta {
+  name: Export Customers Data JSON
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/customers?format=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: json
+  ~miniGrid: Main Grid
+  ~village: Village Name
+  ~deviceType: meter
+  ~isActive: true
+}

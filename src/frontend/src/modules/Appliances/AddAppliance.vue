@@ -1,6 +1,10 @@
 <template>
   <div>
-    <widget :hidden="!addNewAppliance" title="Add Appliance SKU" color="red">
+    <widget
+      :hidden="!addNewAppliance"
+      title="Add Appliance SKU"
+      color="secondary"
+    >
       <md-card>
         <div class="md-layout md-gutter">
           <div

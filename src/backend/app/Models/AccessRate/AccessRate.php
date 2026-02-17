@@ -3,8 +3,8 @@
 namespace App\Models\AccessRate;
 
 use App\Models\Base\BaseModel;
-use App\Models\Meter\MeterTariff;
 use App\Models\PaymentHistory;
+use App\Models\Tariff;
 use Database\Factories\AccessRate\AccessRateFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +24,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                        $updated_at
  * @property-read Collection<int, AccessRatePayment> $accessRatePayments
  * @property-read Collection<int, PaymentHistory>    $paymentHistories
- * @property-read MeterTariff|null                   $tariff
+ * @property-read Tariff|null                        $tariff
  */
 class AccessRate extends BaseModel {
     /** @use HasFactory<AccessRateFactory> */
@@ -33,10 +33,10 @@ class AccessRate extends BaseModel {
     public const RELATION_NAME = 'access_rate';
 
     /**
-     * @return BelongsTo<MeterTariff, $this>
+     * @return BelongsTo<Tariff, $this>
      */
     public function tariff(): BelongsTo {
-        return $this->belongsTo(MeterTariff::class, 'tariff_id', 'id');
+        return $this->belongsTo(Tariff::class, 'tariff_id', 'id');
     }
 
     /**

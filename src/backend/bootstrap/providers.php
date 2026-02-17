@@ -1,36 +1,37 @@
 <?php
 
+use App\Plugins\AfricasTalking\Providers\AfricasTalkingServiceProvider;
+use App\Plugins\AngazaSHS\Providers\AngazaSHSServiceProvider;
+use App\Plugins\BulkRegistration\Providers\BulkRegistrationServiceProvider;
+use App\Plugins\CalinMeter\Providers\CalinMeterServiceProvider;
+use App\Plugins\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider;
+use App\Plugins\ChintMeter\Providers\ChintMeterServiceProvider;
+use App\Plugins\DalyBms\Providers\DalyBmsServiceProvider;
+use App\Plugins\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
+use App\Plugins\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
+use App\Plugins\EcreeeETender\Providers\EcreeeETenderServiceProvider;
+use App\Plugins\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
+use App\Plugins\KelinMeter\Providers\KelinMeterServiceProvider;
+use App\Plugins\MesombPaymentProvider\Providers\MesombServiceProvider;
+use App\Plugins\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
+use App\Plugins\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
+use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
+use App\Plugins\Prospect\Providers\ProspectServiceProvider;
+use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
+use App\Plugins\SparkShs\Providers\SparkShsServiceProvider;
+use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
+use App\Plugins\StronMeter\Providers\StronMeterServiceProvider;
+use App\Plugins\SunKingSHS\Providers\SunKingSHSServiceProvider;
+use App\Plugins\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
+use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
+use App\Plugins\ViberMessaging\Providers\ViberMessagingServiceProvider;
+use App\Plugins\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
+use App\Plugins\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
+use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
 use App\Providers\ApiKeyServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\ServicesProvider;
-use Inensus\AfricasTalking\Providers\AfricasTalkingServiceProvider;
-use Inensus\AngazaSHS\Providers\AngazaSHSServiceProvider;
-use Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider;
-use Inensus\CalinMeter\Providers\CalinMeterServiceProvider;
-use Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider;
-use Inensus\ChintMeter\Providers\ChintMeterServiceProvider;
-use Inensus\DalyBms\Providers\DalyBmsServiceProvider;
-use Inensus\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
-use Inensus\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
-use Inensus\EcreeeETender\Providers\EcreeeETenderServiceProvider;
-use Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
-use Inensus\KelinMeter\Providers\KelinMeterServiceProvider;
-use Inensus\MesombPaymentProvider\Providers\MesombServiceProvider;
-use Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
-use Inensus\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
-use Inensus\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
-use Inensus\Prospect\Providers\ProspectServiceProvider;
-use Inensus\SparkMeter\Providers\SparkMeterServiceProvider;
-use Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider;
-use Inensus\StronMeter\Providers\StronMeterServiceProvider;
-use Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider;
-use Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
-use Inensus\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
-use Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider;
-use Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
-use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
-use Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
 
 return [
     ApiKeyServiceProvider::class,
@@ -64,4 +65,5 @@ return [
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
     EcreeeETenderServiceProvider::class,
+    SparkShsServiceProvider::class,
 ];

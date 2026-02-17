@@ -23,19 +23,19 @@ use Database\Factories\ConnectionGroupFactory;
 use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\ManufacturerFactory;
 use Database\Factories\Meter\MeterFactory;
-use Database\Factories\Meter\MeterTariffFactory;
 use Database\Factories\Meter\MeterTypeFactory;
-use Database\Factories\MeterTokenFactory;
 use Database\Factories\MiniGridFactory;
 use Database\Factories\PaymentHistoryFactory;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\SubConnectionTypeFactory;
 use Database\Factories\SubTargetFactory;
 use Database\Factories\TargetFactory;
+use Database\Factories\TariffFactory;
 use Database\Factories\Ticket\TicketCategoryFactory;
 use Database\Factories\Ticket\TicketFactory;
-use Database\Factories\TicketUserFactory;
+use Database\Factories\Ticket\TicketUserFactory;
 use Database\Factories\TimeOfUsageFactory;
+use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -215,7 +215,7 @@ trait CreateEnvironments {
             'original_transaction_id' => $this->faker->unique()->randomNumber(),
             'original_transaction_type' => 'agent_transaction',
         ]);
-        $this->token = MeterTokenFactory::new()->create([
+        $this->token = TokenFactory::new()->create([
             'meter_id' => $meter->id,
             'token' => $this->faker->unique()->randomNumber(),
         ]);
@@ -275,11 +275,11 @@ trait CreateEnvironments {
 
     protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void {
         while ($meterTariffCount > 0) {
-            $meterTariff = MeterTariffFactory::new()->create();
+            $meterTariff = TariffFactory::new()->create();
             $this->meterTariffs[] = $meterTariff;
 
             if ($withTimeOfUsage) {
-                $timeOfUsage = TimeOfUsageFactory::new()->create([
+                TimeOfUsageFactory::new()->create([
                     'tariff_id' => $meterTariff->id,
                     'start' => '00:00',
                     'end' => '01:00',
@@ -573,7 +573,7 @@ trait CreateEnvironments {
             $transaction->originalTransaction()->associate($agentTransaction);
             $transaction->save();
 
-            $token = MeterTokenFactory::new()->create([
+            $token = TokenFactory::new()->create([
                 'transaction_id' => $transaction->id,
                 'meter_id' => $meter->id,
                 'token' => $this->faker->unique()->randomNumber(),

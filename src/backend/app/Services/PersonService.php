@@ -61,18 +61,18 @@ class PersonService implements IBaseService {
      *
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
-    public function searchPerson(string $searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
+    public function searchPerson(string $searchTerm, $paginate, int $per_page): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
+            fn ($q) => $q->where('phone', 'LIKE', $searchTerm.'%')
         )->orWhereHas(
             'devices',
-            fn ($q) => $q->where('device_serial', 'LIKE', '%'.$searchTerm.'%')
-        )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
-            ->orWhere('surname', 'LIKE', '%'.$searchTerm.'%');
+            fn ($q) => $q->where('device_serial', 'LIKE', $searchTerm.'%')
+        )->orWhere('name', 'LIKE', $searchTerm.'%')
+            ->orWhere('surname', 'LIKE', $searchTerm.'%');
 
         if ($paginate === 1) {
-            return $query->paginate(15);
+            return $query->paginate($per_page);
         }
 
         return $query->get();
@@ -174,7 +174,20 @@ class PersonService implements IBaseService {
     /**
      * @return LengthAwarePaginator<int, Person>
      */
-    public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
+    public function getAll(
+        ?int $limit = null,
+        ?int $customerType = 1,
+        ?int $agentId = null,
+        ?bool $activeCustomer = null,
+        ?int $cityId = null,
+        ?float $totalPaidMin = null,
+        ?float $totalPaidMax = null,
+        ?string $latestPaymentFrom = null,
+        ?string $latestPaymentTo = null,
+        ?string $registrationFrom = null,
+        ?string $registrationTo = null,
+        ?string $deviceType = null,
+    ): LengthAwarePaginator {
         $query = $this->person->newQuery()
             ->with([
                 'addresses.city',
@@ -202,6 +215,59 @@ class PersonService implements IBaseService {
                     $q->where('created_at', '>=', Carbon::now()->subDays(25));
                 });
             }
+        }
+
+        if ($cityId) {
+            $query->whereHas('addresses', function ($q) use ($cityId) {
+                $q->where('city_id', $cityId)
+                    ->where('is_primary', 1);
+            });
+        }
+
+        if ($deviceType) {
+            $query->whereHas('devices', function ($q) use ($deviceType) {
+                $q->where('device_type', $deviceType);
+            });
+        }
+
+        if ($latestPaymentFrom) {
+            $from = Carbon::parse($latestPaymentFrom);
+            $query->whereHas('latestPayment', function ($q) use ($from) {
+                $q->where('created_at', '>=', $from);
+            });
+        }
+
+        if ($latestPaymentTo) {
+            $to = Carbon::parse($latestPaymentTo);
+            $query->whereHas('latestPayment', function ($q) use ($to) {
+                $q->where('created_at', '<=', $to);
+            });
+        }
+
+        if ($registrationFrom) {
+            $from = Carbon::parse($registrationFrom)->startOfDay();
+            $query->where('people.created_at', '>=', $from);
+        }
+
+        if ($registrationTo) {
+            $to = Carbon::parse($registrationTo)->endOfDay();
+            $query->where('people.created_at', '<=', $to);
+        }
+
+        if (!is_null($totalPaidMin) || !is_null($totalPaidMax)) {
+            $query->whereIn('people.id', function ($sub) use ($totalPaidMin, $totalPaidMax) {
+                $sub->from('payment_histories')
+                    ->select('payer_id')
+                    ->groupBy('payer_id');
+
+                if (!is_null($totalPaidMin)) {
+                    $sub->havingRaw('SUM(amount) >= ?', [$totalPaidMin]);
+                }
+
+                if (!is_null($totalPaidMax)) {
+                    $sub->havingRaw('SUM(amount) <= ?', [$totalPaidMax]);
+                }
+            });
         }
 
         return QueryBuilder::for($query)
@@ -257,24 +323,28 @@ class PersonService implements IBaseService {
     /**
      * @return Collection<int, Person>|array<int, Person>
      */
-    public function getAllForExport(?int $miniGrid = null, ?int $village = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
+    public function getAllForExport(?string $miniGridName = null, ?string $villageName = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
         $query = $this->person->newQuery()->with([
             'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
             'devices',
         ])->where('is_customer', 1);
 
-        if ($miniGrid) {
-            $query->whereHas('addresses', function ($q) use ($miniGrid) {
-                $q->whereHas('city', function ($q) use ($miniGrid) {
-                    $q->where('mini_grid_id', $miniGrid);
+        if ($miniGridName) {
+            $query->whereHas('addresses', function ($q) use ($miniGridName) {
+                $q->whereHas('city', function ($q) use ($miniGridName) {
+                    $q->whereHas('miniGrid', function ($q) use ($miniGridName) {
+                        $q->where('name', 'LIKE', '%'.$miniGridName.'%');
+                    });
                 });
             });
         }
 
-        if ($village) {
-            $query->whereHas('addresses', function ($q) use ($village) {
-                $q->where('city_id', $village);
+        if ($villageName) {
+            $query->whereHas('addresses', function ($q) use ($villageName) {
+                $q->whereHas('city', function ($q) use ($villageName) {
+                    $q->where('name', 'LIKE', '%'.$villageName.'%');
+                });
             });
         }
 

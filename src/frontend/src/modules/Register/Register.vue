@@ -1,6 +1,6 @@
 <template>
   <div class="register">
-    <div>
+    <div class="register-container">
       <div class="header">
         <h1 class="title">MicroPowerManager</h1>
         <div class="title-divider">&nbsp;</div>
@@ -585,6 +585,11 @@ export default {
 
   width: 100vw;
   min-height: 100vh;
+}
+
+.register-container {
+  max-width: 1000px;
+  width: 100%;
 }
 
 .title {

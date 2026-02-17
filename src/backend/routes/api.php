@@ -3,12 +3,14 @@
 use App\Http\Controllers\AgentPerformanceMetricsController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\ApplianceController;
+use App\Http\Controllers\ApplianceExportController;
 use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AppliancePersonController;
 use App\Http\Controllers\ApplianceRateController;
 use App\Http\Controllers\ApplianceTypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClusterController;
+use App\Http\Controllers\ClusterExportController;
 use App\Http\Controllers\ClusterMiniGridRevenueController;
 use App\Http\Controllers\ClusterRevenueAnalysisController;
 use App\Http\Controllers\ClusterRevenueController;
@@ -19,13 +21,13 @@ use App\Http\Controllers\ConnectionTypeController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\EBikeController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
 use App\Http\Controllers\ManufacturerController;
 use App\Http\Controllers\MapSettingsController;
 use App\Http\Controllers\MeterGeographicalInformationController;
-use App\Http\Controllers\MeterTariffController;
 use App\Http\Controllers\MiniGridController;
 use App\Http\Controllers\MiniGridDashboardCacheController;
 use App\Http\Controllers\MiniGridDeviceController;
@@ -42,6 +44,8 @@ use App\Http\Controllers\RegistrationTailController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingsExportController;
+use App\Http\Controllers\SettingsImportController;
 use App\Http\Controllers\SmsAndroidSettingController;
 use App\Http\Controllers\SmsApplianceRemindRateController;
 use App\Http\Controllers\SmsBodyController;
@@ -51,6 +55,7 @@ use App\Http\Controllers\SmsVariableDefaultValueController;
 use App\Http\Controllers\SolarHomeSystemController;
 use App\Http\Controllers\SubConnectionTypeController;
 use App\Http\Controllers\TargetController;
+use App\Http\Controllers\TariffController;
 use App\Http\Controllers\TimeOfUsageController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransactionExportController;
@@ -58,6 +63,8 @@ use App\Http\Controllers\UsageTypeController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
+use App\Http\Controllers\UserPermissionExportController;
+use App\Http\Controllers\UserPermissionImportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -318,14 +325,14 @@ Route::group(['prefix' => 'targets', 'middleware' => ['jwt.verify', 'permission:
 });
 // Tariffs
 Route::group(['middleware' => ['jwt.verify', 'permission:settings'], 'prefix' => 'tariffs'], static function () {
-    Route::get('/', [MeterTariffController::class, 'index']);
-    Route::get('/{meterTariffId}', [MeterTariffController::class, 'show']);
-    Route::post('/', [MeterTariffController::class, 'store']);
-    Route::put('/{meterTariffId}', [MeterTariffController::class, 'update']);
-    Route::delete('/{meterTariffId}', [MeterTariffController::class, 'destroy']);
-    Route::get('/{meterTariffId}/usage-count', [MeterTariffController::class, 'showUsageCount']);
-    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', [MeterTariffController::class, 'updateTariff']);
-    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', [MeterTariffController::class, 'updateForMeter']);
+    Route::get('/', [TariffController::class, 'index']);
+    Route::get('/{tariffId}', [TariffController::class, 'show']);
+    Route::post('/', [TariffController::class, 'store']);
+    Route::put('/{tariffId}', [TariffController::class, 'update']);
+    Route::delete('/{tariffId}', [TariffController::class, 'destroy']);
+    Route::get('/{tariffId}/usage-count', [TariffController::class, 'showUsageCount']);
+    Route::put('/{tariffId}/change-meters-tariff/{changeId}', [TariffController::class, 'updateTariff']);
+    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', [TariffController::class, 'updateForMeter']);
 });
 // Transactions
 Route::group(
@@ -394,6 +401,15 @@ Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
     Route::get('/transactions', [TransactionExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/debts', [OutstandingDebtsExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/customers', [PersonExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/devices', [DeviceExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/appliances', [ApplianceExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/clusters', [ClusterExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/settings', [SettingsExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/user-permissions', [UserPermissionExportController::class, 'download'])->middleware('permission:exports');
+});
+Route::group(['prefix' => 'import', 'middleware' => 'api'], static function () {
+    Route::post('/settings', [SettingsImportController::class, 'import'])->middleware('permission:settings');
+    Route::post('/user-permissions', [UserPermissionImportController::class, 'import'])->middleware('permission:users');
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);
