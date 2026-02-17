@@ -211,6 +211,7 @@
 
 <script>
 import { CredentialService } from "../../services/CredentialService"
+import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"
 
 export default {
@@ -241,6 +242,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Credentials updated successfully")
+        EventBus.$emit("SparkShs")
       } catch (e) {
         this.alertNotify("error", "Failed to update credentials")
       }
