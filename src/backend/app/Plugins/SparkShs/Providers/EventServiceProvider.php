@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Plugins\{{Plugin-Name}}\Providers;
+namespace App\Plugins\SparkShs\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-class EventServiceProvider  extends ServiceProvider {
+class EventServiceProvider extends ServiceProvider {
     /**
      * @var array<class-string>
      */
@@ -13,8 +13,7 @@ class EventServiceProvider  extends ServiceProvider {
     /**
      * Register any events for your application.
      */
-    public function boot()
-    {
+    public function boot(): void {
         parent::boot();
     }
 }
