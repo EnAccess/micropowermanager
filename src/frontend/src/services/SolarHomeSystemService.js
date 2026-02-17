@@ -6,6 +6,7 @@ import {
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { EventBus } from "@/shared/eventbus"
 import SolarHomeSystemRepository from "@/repositories/SolarHomeSystemRepository"
+import { resources } from "@/resources"
 
 export class Transactions {
   constructor(shsId) {
