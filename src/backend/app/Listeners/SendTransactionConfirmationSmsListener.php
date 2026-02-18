@@ -37,7 +37,11 @@ class SendTransactionConfirmationSmsListener {
                     'device.person.addresses',
                 ]);
             }
-            $this->smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            // For now we only limit sending sms confirmation for token enabled transaction
+            // we potentionally will include other usecases in the future.
+            if ($transaction->token) {
+                $this->smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            }
         } catch (\RuntimeException $e) {
             Log::error('SendTransactionConfirmationSms failed', [
                 'transaction_id' => $transaction->id,
