@@ -85,11 +85,10 @@ class ApplianceInstallmentPayer {
                 $this->consumableAmount = 0;
 
                 return false;
-            } else {
-                $this->consumableAmount -= $installment->remaining;
-
-                return true;
             }
+            $this->consumableAmount -= $installment->remaining;
+
+            return true;
         });
 
         return $this->consumableAmount;
@@ -118,7 +117,6 @@ class ApplianceInstallmentPayer {
      * @param Collection<int, mixed> $installments
      */
     private function pay(Collection $installments, Person $customer): void {
-        Log::info('Paying installments', ['installments' => $installments, 'customer' => $customer]);
         $installments->map(function ($installment) use ($customer): bool {
             if ($this->transaction->amount == 0) {
                 return true;
