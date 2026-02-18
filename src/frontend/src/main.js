@@ -9,7 +9,6 @@ import router from "./routes"
 import App from "./App"
 import "leaflet/dist/leaflet.css"
 import store from "./store/store"
-import UserData from "./shared/UserData"
 import Default from "./layouts/Default"
 import i18n from "./i18n"
 import { MapSettingsService } from "./services/MapSettingsService"
@@ -158,9 +157,6 @@ router.beforeEach(async (to, from, next) => {
 /*eslint-disable */
 const app = new Vue({
   el: "#app",
-  components: {
-    UserData,
-  },
   data() {
     return {
       mainSettingsService: new MainSettingsService(),
