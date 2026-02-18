@@ -15,7 +15,6 @@ use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\DeviceService;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class ApplianceInstallmentPayer {
     private Person $customer;
