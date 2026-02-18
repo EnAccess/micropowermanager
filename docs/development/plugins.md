@@ -45,42 +45,26 @@ Each plugin consists of:
 4. **Example Plugins**
    Check existing plugins for reference:
    - Payment providers (e.g., Calin, Vodacom)
-   - Meter manufacturers (e.g., Stima, Spark)
+   - Meter manufacturers (e.g., SteamaCo, Spark)
+   - SHS manufacturers (e.g., SunKingSHS, Spark SHS)
    - Feature plugins (e.g., Asset Management)
 
 ## Integration Steps
 
-The following steps describe how your plugin is integrated with MPM.
-Most of these steps are automatically executed when you run the `artisan micropowermanager:new-plugin` command.
+The following steps describe how your plugin is integrated with MicroPowerManager.
 
-### Step 1: Backend Integration
+Most of the fundamental boilerplate setup is handled automatically when you run the `artisan micropowermanager:new-plugin` command.
+We won’t go into those generated details here as you can always inspect the changes using git diff to understand what was created behind the scenes.
 
-The backend integration process involves several key steps to
-make your plugin discoverable and functional within MPM.
+This guide focuses on the custom integration steps required to extend and connect your plugin to the system.
 
-#### 1.1 Register Service Provider
+### Backend Integration
 
-Add your plugin's service provider to the application's service providers definition:
+The backend integration process involves several key steps to make your plugin discoverable and functional within MicroPowerManager.
 
-```php
-// src/backend/bootstrap/providers
+#### Register API Routes
 
-return [
-    /*
-    * Application Service Providers...
-    */
-    App\Providers\AppServiceProvider::class,
-
-    // ...other providers
-    App\Plugins\YourPlugin\Providers\YourPluginServiceProvider::class,
-];
-
-```
-
-#### 1.2 Register API Routes (Optional)
-
-If your plugin needs to handle API requests (e.g., webhooks, custom endpoints),
-register your route resolver:
+If your plugin needs to handle API requests (e.g., webhooks, custom endpoints), register your route resolver:
 
 ```php
 // src/backend/app/Services/ApiResolvers/Data/ApiResolvers
@@ -109,146 +93,75 @@ class ApiResolverMap {
 }
 ```
 
-#### 1.3 Register Plugin in Core
+#### Database Setup
 
-Add your plugin to the MPM plugins model to make it discoverable by the system:
+Your plugin will might need several database migrations to integrate with MPM:
 
-```php
-// src/backend/app/Models/MpmPlugin.php
+##### Create Plugin Tables
 
-<?php
+If your plugin needs to create database tables, the migrations should be placed in the `database/migrations` folder.
 
-namespace App\Models;
+The recommended way to create a migration is by using the following command:
 
-use App\Models\Base\BaseModelCore;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class MpmPlugin extends BaseModelCore {
-    use HasFactory;
-    // ...other plugin constants
-    public const YOUR_PLUGIN = 19; // Add your plugin ID (increment sequentially)
-
-    protected $table = 'mpm_plugins';
-
-    public function plugins() {
-        return $this->hasMany(Plugins::class);
-    }
-}
+```sh
+php artisan make:migration-tenant create_your_plugin_table
 ```
 
-#### 1.4 Database Setup
+This ensures the migration is generated with the correct configuration for the multi-tenant environment used by MPM.
 
-Your plugin will need several database migrations to integrate with MPM:
+#### Customise Installation Command
 
-##### a. Create Plugin Tables
+The package generation command already creates a basic plugin installation command.
 
-If your plugin needs to create database tables the migrations should be created core `database/migrations`
-folder:
+This command is executed when a user enables your plugin for the first time via the plugin settings menu.
 
-```bash
-src
-└── backend
-    └── database
-        └── migrations
-            └── tenant
-                └── create_custom_plugin_table.php
+If your plugin requires additional one-time configuration, such as
 
-```
+- creating default credentials
+- performing initial setup tasks
 
-##### b. Register Plugin in System
-
-Finally, add your plugin to MPM's plugin registry:
-
-Create a migration to add your plugin to the `mpm_plugins` table:
+you can adapt and customize the installation command accordingly.
 
 ```php
 <?php
-
-use App\Models\MpmPlugin;
-use Carbon\Carbon;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
-
-return new class extends Migration {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
-        DB::table('mpm_plugins')->insert([
-            [
-                'id' => MpmPlugin::YOUR_PLUGIN,
-                'name' => 'YourPlugin',
-                'description' => 'This plugin developed for
-                [describe your plugin functionality].',
-                'tail_tag' => 'Your Plugin',
-                'installation_command' => 'your-plugin:install',
-                'root_class' => 'YourPlugin',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
-        DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::YOUR_PLUGIN)
-            ->delete();
-    }
-};
-```
-
-#### 1.5 Create Installation Command
-
-Create a command that will handle your plugin's installation process.
-This command should:
-
-- Publish plugin assets (migrations, configs, views) using vendor:publish
-- Run necessary migrations
-- Set up initial configuration
-- Register required services
-
-The installation command typically runs after publishing assets:
-
-```php
-<?php
-
-namespace App\Plugins\YourPlugin\Console\Commands;
+namespace App\Plugins\NewTestPlugin\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Plugins\YourPlugin\Services\YourPluginService;
 
-class InstallPackage extends Command {
-    protected $signature = 'your-plugin:install';
-    protected $description = 'Install YourPlugin Package';
+class InstallPackage extends Command
+{
+    protected $signature = 'new-test-plugin:install';
+    protected $description = 'Install NewTestPlugin Package';
 
-    public function __construct(
-        private YourPluginService $pluginService,
-    ) {
+    public function __construct() {
         parent::__construct();
     }
 
-    public function handle(): void {
-        $this->info('Installing YourPlugin Integration Package\n');
-        $this->pluginService->initialize();
+    public function handle(): void
+    {
+        $this->info('Installing NewTestPlugin Integration Package\n');
+
+        // Here you can add plugin initialisation code.
+        // For example creating initial plugin credentials in the database
+        // or registering a Manufacurer with MicroPowerManager.
+
         $this->info('Package installed successfully..');
     }
 }
 ```
 
-### Step 2: Frontend Integration
+### Frontend Integration
 
-The frontend integration makes your plugin visible and accessible in the MPM interface.
+This section describe how to integrate your plugin with the MicroPowerManager frontend.
 
-#### 2.1 Add Plugin Routes
+#### Add Plugin Routes
 
-Add your plugin's routes to the exported routes:
+The package generation command creates a default Overview page and registers a frontend route, making your plugin accessible and visible in the application sidebar.
+
+![New Plugin Sidebar](images/new-plugin-sidebar.png)
+
+If your plugin requires a more complex routing or sidebar structure, you can modify your plugin’s section in `ExportedRoutes.js` accordingly.
+The sidebar icon can also be customized in this file to better match your plugin’s functionality or branding.
 
 ```js
 // src/frontend/src/ExportedRoutes.js
@@ -285,16 +198,35 @@ export const exportedRoutes = [
 ]
 ```
 
-#### 2.2 Register Components
+#### Customising the Registration Tail
 
-Register your plugin's Vue components in the main app:
+The Registration Trail is displayed after each login once your plugin has been enabled by a user.
+Its purpose is to indicate that additional configuration steps may still be required.
+
+The component shown in the trail is configured by registering a global component within your plugin’s namespace in `main.js`.
+
+By default, the package generation command registers the plugin’s overview page.
+However, in most cases you will want to replace this with something more meaningful.
+For example a configuration screen or credentials setup page to guide users through the remaining setup steps.
 
 ```js
 // src/frontend/src/main.js
 
-import YourPlugin from "@/plugins/your-plugin/modules/Overview/Component"
+import YourPluginsOtherComponent from "@/plugins/your-plugin/modules/Overview/SomeOtherComponent"
 
-Vue.component("Your-Plugin", YourPlugin)
+Vue.component("Your-Plugin", YourPluginsOtherComponent)
+```
+
+#### Closing the RegistrationTail
+
+To signal to the application that the user has completed the registration process, emit an event with your plugin’s name to the shared `EventBus`.
+
+Once this event is received, the Registration Trail will be closed and will no longer be shown on subsequent logins.
+
+```js
+import { EventBus } from "@/shared/eventbus"
+
+EventBus.$emit("Your-Plugin")
 ```
 
 ## Advanced configurations
@@ -341,5 +273,4 @@ Vue.component("Your-Plugin", YourPlugin)
 
 4. Use proper versioning for your plugin package
 
-Remember to check existing plugins for reference implementations
-that might help guide your development.
+Remember to check existing plugins for reference implementations that might help guide your development.
