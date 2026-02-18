@@ -206,6 +206,9 @@ Its purpose is to indicate that additional configuration steps may still be requ
 The component shown in the trail is configured by registering a global component within your plugin’s namespace in `main.js`.
 
 By default, the package generation command registers the plugin’s overview page.
+
+![New Plugin Registration Tail](images/new-plugin-registration-tail.png)
+
 However, in most cases you will want to replace this with something more meaningful.
 For example a configuration screen or credentials setup page to guide users through the remaining setup steps.
 
