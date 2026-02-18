@@ -9,7 +9,6 @@ import router from "./routes"
 import App from "./App"
 import "leaflet/dist/leaflet.css"
 import store from "./store/store"
-import UserData from "./shared/UserData"
 import Default from "./layouts/Default"
 import i18n from "./i18n"
 import { MapSettingsService } from "./services/MapSettingsService"
@@ -43,12 +42,17 @@ import ChintMeter from "@/plugins/chint-meter/modules/Overview/Credential"
 import Prospect from "@/plugins/prospect/modules/Overview/Credential"
 import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 import TextbeeSmsGateway from "@/plugins/textbee-sms-gateway/modules/Overview/Credential"
+import SparkShs from "@/plugins/spark-shs/modules/Overview/Credential.vue"
+
 import {
   getPermissionsForRoute,
   userHasPermissions,
 } from "@/Helpers/PermissionGuard"
 
 Vue.component("default", Default)
+Vue.component("Snackbar", Snackbar)
+
+// global component to be displayed in RegistrationTail
 Vue.component("Spark-Meter", Spark)
 Vue.component("Steamaco-Meter", Steamaco)
 Vue.component("Calin-Meter", Calin)
@@ -73,11 +77,11 @@ Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
 Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
 Vue.component("Africas-Talking", AfricasTalking)
-Vue.component("Snackbar", Snackbar)
 Vue.component("Chint-Meter", ChintMeter)
 Vue.component("Prospect", Prospect)
 Vue.component("Paystack", Paystack)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
+Vue.component("SparkShs", SparkShs)
 
 const toArray = (value) => {
   if (!value) {
@@ -153,9 +157,6 @@ router.beforeEach(async (to, from, next) => {
 /*eslint-disable */
 const app = new Vue({
   el: "#app",
-  components: {
-    UserData,
-  },
   data() {
     return {
       mainSettingsService: new MainSettingsService(),

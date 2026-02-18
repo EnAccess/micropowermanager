@@ -144,7 +144,6 @@ class GomeLongTariffService {
                         $meterTariff->update([
                             'name' => $gomeLongTariff['FName'],
                             'price' => $gomeLongTariff['FPrice'],
-                            'total_price' => $gomeLongTariff['FPrice'],
                         ]);
                     }
                     $registeredGomeLongTariff->update([
@@ -157,7 +156,6 @@ class GomeLongTariffService {
                         'name' => $gomeLongTariff['FName'],
                         'price' => $gomeLongTariff['FPrice'],
                         'currency' => $this->mainSettings->newQuery()->first()->currency,
-                        'total_price' => $gomeLongTariff['FPrice'],
                     ]);
                     $this->gomeLongTariff->newQuery()->create([
                         'tariff_id' => $gomeLongTariff['FID'],

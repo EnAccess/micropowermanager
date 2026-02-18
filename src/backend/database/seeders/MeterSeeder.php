@@ -47,7 +47,6 @@ class MeterSeeder extends Seeder {
             ->create([
                 'name' => 'Simple Tariff',
                 'price' => '250',
-                'total_price' => '250',
                 'currency' => 'TZS',
             ]);
 
@@ -62,7 +61,6 @@ class MeterSeeder extends Seeder {
             ->create([
                 'name' => 'Tariff with monthly Access Rate',
                 'price' => '150',
-                'total_price' => '150',
                 'currency' => 'TZS',
             ]);
 

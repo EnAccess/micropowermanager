@@ -63,7 +63,6 @@ class TariffController extends Controller {
             'factor' => $request->input('factor'),
             'currency' => $request->input('currency'),
             'price' => $request->input('price'),
-            'total_price' => $request->input('price'),
             'minimum_purchase_amount' => $request->input('minimum_purchase_amount'),
         ];
 

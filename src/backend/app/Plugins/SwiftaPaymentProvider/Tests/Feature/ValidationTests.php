@@ -170,7 +170,6 @@ class ValidationTests extends TestCase {
         Tariff::query()->create([
             'name' => 'test tariff',
             'price' => 100000,
-            'total_price' => 100000,
             'currency' => 'TZS',
         ]);
         // create meter-type

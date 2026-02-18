@@ -2,7 +2,7 @@
 order: 24
 ---
 
-# Odyssey Energy Integration Setup Guide
+# Odyssey Energy Integration
 
 This guide provides easy-to-follow steps to set up an integration with the Odyssey energy platform for data analytics and reporting.
 
