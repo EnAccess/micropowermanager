@@ -6,49 +6,18 @@ use App\Events\NewLogEvent;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
-use App\Jobs\ProcessPayment;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\MainSettings;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 
 class AppliancePaymentService {
     private float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
 
-    public function __construct(private CashTransactionService $cashTransactionService, private MainSettings $mainSettings, private AppliancePersonService $appliancePersonService) {}
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getPaymentForAppliance(Request $request, AppliancePerson $appliancePerson): array {
-        $creatorId = auth('api')->user()->id;
-        $this->paymentAmount = $amount = (float) $request->input('amount');
-        $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
-        $this->validateAmount($applianceDetail, $amount);
-        $deviceSerial = $applianceDetail->device_serial;
-        $applianceOwner = $appliancePerson->person;
-        $companyId = $request->attributes->get('companyId');
-
-        if (!$applianceOwner) {
-            throw new \InvalidArgumentException('Appliance owner not found');
-        }
-
-        $ownerAddress = $applianceOwner->addresses()->where('is_primary', 1)->first();
-        $sender = $ownerAddress == null ? '-' : $ownerAddress->phone;
-        $transaction =
-            $this->cashTransactionService->createCashTransaction($creatorId, $amount, $sender, $deviceSerial, $appliancePerson->id);
-
-        dispatch(new ProcessPayment($companyId, $transaction->id));
-
-        return [
-            'appliance_person' => $appliancePerson,
-            'transaction_id' => $transaction->id,
-        ];
-    }
+    public function __construct(private MainSettings $mainSettings) {}
 
     public function updateRateRemaining(int $id, float $amount): ApplianceRate {
         $applianceRate = ApplianceRate::query()->findOrFail($id);
@@ -81,7 +50,7 @@ class AppliancePaymentService {
         ));
     }
 
-    private function validateAmount(AppliancePerson $applianceDetail, float $amount): void {
+    public function validateAmount(AppliancePerson $applianceDetail, float $amount): void {
         $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
         $installmentCost = $applianceDetail->rates[1]['rate_cost'] ?? 0;
 
