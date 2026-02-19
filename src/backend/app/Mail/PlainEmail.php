@@ -36,7 +36,7 @@ class PlainEmail extends Mailable {
      * @return array<int, RateLimited|ThrottlesExceptions>
      */
     public function middleware(): array {
-        return [(new RateLimited('emails'))->releaseAfter(5 * 60),
+        return [(new RateLimited('emails'))->releaseAfter(3),
             (new ThrottlesExceptions(3, 5 * 60))->backoff(5),
         ];
     }
