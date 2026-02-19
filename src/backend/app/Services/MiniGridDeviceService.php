@@ -19,7 +19,14 @@ class MiniGridDeviceService {
                 'device',
                 Meter::class
             )
-            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('mini_grid_id', $miniGridId)))
+            ->whereHas('person', function ($q) use ($miniGridId) {
+                $q->whereHas('addresses', function ($q) use ($miniGridId) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($miniGridId) {
+                            $q->where('mini_grid_id', $miniGridId);
+                        });
+                });
+            })
             ->get()->pluck('device');
     }
 
@@ -28,12 +35,19 @@ class MiniGridDeviceService {
      */
     public function getDevicesByMiniGridId(int $miniGridId): Collection {
         return $this->device->newQuery()
-            ->with(['device', 'address.geo'])
+            ->with(['device', 'geo', 'person.addresses.city'])
             ->whereHasMorph(
                 'device',
                 '*'
             )
-            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('mini_grid_id', $miniGridId)))
+            ->whereHas('person', function ($q) use ($miniGridId) {
+                $q->whereHas('addresses', function ($q) use ($miniGridId) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($miniGridId) {
+                            $q->where('mini_grid_id', $miniGridId);
+                        });
+                });
+            })
             ->get();
     }
 }

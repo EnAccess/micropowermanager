@@ -25,16 +25,15 @@ class OutstandingDebtsExportService extends AbstractExportService {
     public function writeOutstandingDebtsData(): void {
         $this->setActivatedSheet('Sheet1');
 
-        foreach ($this->exportingData as $key => $value) {
-            $this->worksheet->setCellValue('A'.($key + 2), $value[0]);
-            $this->worksheet->setCellValue('B'.($key + 2), $value[1]);
-            $this->worksheet->setCellValue('C'.($key + 2), $value[2]);
-            $this->worksheet->setCellValue('D'.($key + 2), $value[3]);
-            $this->worksheet->setCellValue('E'.($key + 2), $value[4]);
-        }
+        $this->worksheet->fromArray(
+            $this->exportingData->toArray(),
+            null,
+            'A2'
+        );
 
-        foreach ($this->worksheet->getColumnIterator() as $column) {
-            $this->worksheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+        $columnWidths = ['A' => 25, 'B' => 25, 'C' => 40, 'D' => 20, 'E' => 10];
+        foreach ($columnWidths as $column => $width) {
+            $this->worksheet->getColumnDimension($column)->setWidth($width);
         }
     }
 

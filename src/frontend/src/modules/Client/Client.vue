@@ -102,7 +102,11 @@ export default {
   },
   mounted() {
     EventBus.$on("setMapCenterForDevice", (device) => {
-      const points = device.address.geo.points.split(",")
+      if (!device.geo || !device.geo.points) {
+        this.alertNotify("warn", "Device has no location")
+        return
+      }
+      const points = device.geo.points.split(",")
       if (points.length !== 2) {
         this.alertNotify("warn", "Device has no location")
         return
@@ -136,9 +140,11 @@ export default {
     setClientMapData() {
       const markingInfos = []
       this.devices.map((device) => {
-        const points = device.address.geo.points.split(",")
+        if (!device.geo || !device.geo.points) {
+          return
+        }
+        const points = device.geo.points.split(",")
         if (points.length !== 2) {
-          this.alertNotify("warn", "Device has no location")
           return
         }
         const lat = parseFloat(points[0])

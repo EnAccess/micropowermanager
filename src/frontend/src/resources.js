@@ -67,8 +67,8 @@ export let resources = {
     comments: "/api/tickets/comments",
   },
   ticketOursourcePayoutReports: {
-    list: "/api/reports",
-    download: "/api/reports/download/", //{id}
+    list: "/api/tickets/reports",
+    download: "/api/tickets/reports/download/", //{id}
   },
   transactions: {
     list: {

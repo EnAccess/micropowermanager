@@ -10,7 +10,7 @@ MicroPowerManager supports the management of two kinds of appliance sales.
 2. Non-PayGO appliance sales
 
 **PayGO enabled devices** such as Solar Home Systems (SHS) or E-Bikes are typically sold under rent-to-own schemes.
-MicroPowerManager manages their PayGO functionality, including time and unlock token generation, through [Manufacturer Plugins](plugin-overview.md).
+MicroPowerManager manages their PayGO functionality, including time and unlock token generation, through [Manufacturer Plugins](../integrations-guide/overview).
 Customers make installment payments to keep the device active for a specified period.
 Once the final installment is paid, the device becomes permanently unlocked and continues to operate without requiring further tokens.
 

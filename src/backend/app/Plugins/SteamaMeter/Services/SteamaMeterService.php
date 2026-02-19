@@ -170,7 +170,7 @@ class SteamaMeterService implements ISynchronizeService {
                 $meter = new Meter();
                 $geoLocation = new GeographicalInformation();
             } else {
-                $geoLocation = $meter->device->person->addresses()->first()->geo()->first();
+                $geoLocation = $meter->device->geo()->first();
                 if ($geoLocation === null) {
                     $geoLocation = new GeographicalInformation();
                 }
@@ -216,9 +216,9 @@ class SteamaMeterService implements ISynchronizeService {
                 $address = $address->newQuery()->create([
                     'city_id' => request()->input('city_id', $steamaCity->id),
                 ]);
-                $address->owner()->associate($meter);
-                $address->geo()->save($meter->device->address->geo()->first());
+                $address->owner()->associate($meter->device);
                 $address->save();
+                $meter->device->geo()->save($geoLocation);
             }
             DB::connection('tenant')->commit();
 
@@ -245,7 +245,7 @@ class SteamaMeterService implements ISynchronizeService {
         if ($stmCustomer) {
             $points = $stmMeter['latitude'] === null ?
                 config('steama.geoLocation') : $stmMeter['latitude'].','.$stmMeter['longitude'];
-            $meter->device->person->addresses()->first()->geo->update([
+            $meter->device->geo()->update([
                 'points' => $points,
             ]);
             $meter->save();

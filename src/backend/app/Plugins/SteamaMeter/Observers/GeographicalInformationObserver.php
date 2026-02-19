@@ -2,7 +2,6 @@
 
 namespace App\Plugins\SteamaMeter\Observers;
 
-use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Plugins\SteamaMeter\Models\SteamaMeter;
@@ -15,13 +14,9 @@ class GeographicalInformationObserver {
     ) {}
 
     public function updated(GeographicalInformation $geographicalInformation): void {
-        if ($geographicalInformation->owner instanceof Address) {
-            $address = $geographicalInformation->owner;
-            if ($address->owner instanceof Device) {
-                $device = $address->owner;
-
-                $this->updateSteamaMeterGeolocation($device, $geographicalInformation);
-            }
+        if ($geographicalInformation->owner instanceof Device) {
+            $device = $geographicalInformation->owner;
+            $this->updateSteamaMeterGeolocation($device, $geographicalInformation);
         }
     }
 

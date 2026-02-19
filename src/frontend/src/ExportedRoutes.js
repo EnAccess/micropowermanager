@@ -51,61 +51,61 @@ import ApplianceList from "@/modules/Appliances/Appliances.vue"
 import AgentCommissionTypeList from "@/modules/Agent/Commission/AgentCommissionList.vue"
 import AgentDetail from "@/modules/Agent/Agent.vue"
 import SoldApplianceDetail from "@/modules/Client/Appliances/SoldApplianceDetail.vue"
+import EBikeList from "@/modules/EBikes/EBikes.vue"
 
-// Former plugins
-import CalinMeterOverview from "./plugins/calin-meter/modules/Overview/Overview"
-import CalinSmartMeterOverview from "./plugins/calin-smart-meter/modules/Overview/Overview"
-import KelinMeterOverview from "./plugins/kelin-meter/modules/Overview/Overview"
-import KelinMeterCustomerList from "./plugins/kelin-meter/modules/Customer/List"
-import KelinMeterSettings from "./plugins/kelin-meter/modules/Setting/Setting"
-import KelinMeterList from "./plugins/kelin-meter/modules/Meter/List"
-import KelinMeterStatus from "./plugins/kelin-meter/modules/Meter/Status"
-import KelinMeterConsumptionDaily from "./plugins/kelin-meter/modules/Meter/Consumption/Daily"
-import KelinMeterConsumptionMinutely from "./plugins/kelin-meter/modules/Meter/Consumption/Minutely"
-import SparkMeterSiteList from "./plugins/spark-meter/modules/Site/SiteList"
-import SparkMeterModelList from "./plugins/spark-meter/modules/MeterModel/MeterModelList"
-import SparkMeterCustomerList from "./plugins/spark-meter/modules/Customer/CustomerList"
-import SparkMeterTariffList from "./plugins/spark-meter/modules/Tariff/TariffList"
-import SparkMeterTariffDetail from "./plugins/spark-meter/modules/Tariff/TariffDetail"
-import SparkMeterOverview from "./plugins/spark-meter/modules/Overview/Overview"
-import SparkMeterSalesAccountList from "./plugins/spark-meter/modules/SalesAccount/SalesAccountList"
-import SparkMeterSettings from "./plugins/spark-meter/modules/Setting/Setting"
-import SteamaCoOverview from "./plugins/steama-meter/modules/Overview/Overview"
-import SteamaCoSiteList from "./plugins/steama-meter/modules/Site/SiteList"
-import SteamaCoCustomerList from "./plugins/steama-meter/modules/Customer/CustomerList"
-import SteamaCoCustomerDetail from "./plugins/steama-meter/modules/Customer/CustomerMovements"
-import SteamaCoMeterList from "./plugins/steama-meter/modules/Meter/MeterList"
-import SteamaCoAgentList from "./plugins/steama-meter/modules/Agent/AgentList"
-import SteamaCoSettings from "./plugins/steama-meter/modules/Setting/Setting"
-import StronMeterOverview from "./plugins/stron-meter/modules/Overview/Overview"
-import BulkRegistrationCsv from "./plugins/bulk-registration/modules/Csv"
-import ViberMessagingOverview from "./plugins/viber-messaging/modules/Overview/Overview"
-import AfricasTalkingOverview from "./plugins/africas-talking/modules/Overview/Overview"
-import TextbeeSmsGatewayOverview from "./plugins/textbee-sms-gateway/modules/Overview/Overview"
-import ProspectOverview from "./plugins/prospect/modules/Overview/Overview"
-import ProspectSettings from "./plugins/prospect/modules/Setting/Setting"
-import WaveMoneyOverview from "./plugins/wave-money-payment-provider/modules/Overview/Overview"
+// Plugins
+import CalinMeterOverview from "@/plugins/calin-meter/modules/Overview/Overview"
+import CalinSmartMeterOverview from "@/plugins/calin-smart-meter/modules/Overview/Overview"
+import KelinMeterOverview from "@/plugins/kelin-meter/modules/Overview/Overview"
+import KelinMeterCustomerList from "@/plugins/kelin-meter/modules/Customer/List"
+import KelinMeterSettings from "@/plugins/kelin-meter/modules/Setting/Setting"
+import KelinMeterList from "@/plugins/kelin-meter/modules/Meter/List"
+import KelinMeterStatus from "@/plugins/kelin-meter/modules/Meter/Status"
+import KelinMeterConsumptionDaily from "@/plugins/kelin-meter/modules/Meter/Consumption/Daily"
+import KelinMeterConsumptionMinutely from "@/plugins/kelin-meter/modules/Meter/Consumption/Minutely"
+import SparkMeterSiteList from "@/plugins/spark-meter/modules/Site/SiteList"
+import SparkMeterModelList from "@/plugins/spark-meter/modules/MeterModel/MeterModelList"
+import SparkMeterCustomerList from "@/plugins/spark-meter/modules/Customer/CustomerList"
+import SparkMeterTariffList from "@/plugins/spark-meter/modules/Tariff/TariffList"
+import SparkMeterTariffDetail from "@/plugins/spark-meter/modules/Tariff/TariffDetail"
+import SparkMeterOverview from "@/plugins/spark-meter/modules/Overview/Overview"
+import SparkMeterSalesAccountList from "@/plugins/spark-meter/modules/SalesAccount/SalesAccountList"
+import SparkMeterSettings from "@/plugins/spark-meter/modules/Setting/Setting"
+import SteamaCoOverview from "@/plugins/steama-meter/modules/Overview/Overview"
+import SteamaCoSiteList from "@/plugins/steama-meter/modules/Site/SiteList"
+import SteamaCoCustomerList from "@/plugins/steama-meter/modules/Customer/CustomerList"
+import SteamaCoCustomerDetail from "@/plugins/steama-meter/modules/Customer/CustomerMovements"
+import SteamaCoMeterList from "@/plugins/steama-meter/modules/Meter/MeterList"
+import SteamaCoAgentList from "@/plugins/steama-meter/modules/Agent/AgentList"
+import SteamaCoSettings from "@/plugins/steama-meter/modules/Setting/Setting"
+import StronMeterOverview from "@/plugins/stron-meter/modules/Overview/Overview"
+import BulkRegistrationCsv from "@/plugins/bulk-registration/modules/Csv"
+import ViberMessagingOverview from "@/plugins/viber-messaging/modules/Overview/Overview"
+import AfricasTalkingOverview from "@/plugins/africas-talking/modules/Overview/Overview"
+import TextbeeSmsGatewayOverview from "@/plugins/textbee-sms-gateway/modules/Overview/Overview"
+import ProspectOverview from "@/plugins/prospect/modules/Overview/Overview"
+import ProspectSettings from "@/plugins/prospect/modules/Setting/Setting"
+import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Overview/Overview"
 // FIXME: These are used as modules which seem broken.
 // https://github.com/EnAccess/micropowermanager/issues/142
-import WaveMoneyResult from "./plugins/wave-money-payment-provider/modules/Payment/Result"
-import WaveMoneyPayment from "./plugins/wave-money-payment-provider/modules/Payment/Payment"
-import PaystackOverview from "./plugins/paystack-payment-provider/modules/Overview/Overview.vue"
-import PaystackCredential from "./plugins/paystack-payment-provider/modules/Overview/Credential.vue"
-import PaystackTransaction from "./plugins/paystack-payment-provider/modules/Transaction/Transaction.vue"
-import PaystackPublicPayment from "./plugins/paystack-payment-provider/modules/Payment/PublicPaymentForm.vue"
-import PaystackPublicResult from "./plugins/paystack-payment-provider/modules/Payment/PublicPaymentResult.vue"
-import MicroStarMeterOverview from "./plugins/micro-star-meter/modules/Overview/Overview"
-import SwiftaOverview from "./plugins/swifta-payment-provider/modules/Overview/Overview"
-import SunKingShsOverview from "./plugins/sun-king-shs/modules/Overview/Overview"
-import GomeLongOverview from "./plugins/gome-long-meter/modules/Overview/Overview"
-import WavecomTransactionUpload from "./plugins/wavecom-payment-provider/modules/Component.vue"
-// FIXME: Move e-Bikes higher, it's not a Plugin
-import EBikeList from "@/modules/EBikes/EBikes.vue"
-import DalyBmsOverview from "./plugins/daly-bms/modules/Overview/Overview"
-import AngazaShsOverview from "./plugins/angaza-shs/modules/Overview/Overview"
-import ChintMeterOverview from "./plugins/chint-meter/modules/Overview/Overview"
-import OdysseyExportOverview from "./plugins/odyssey-data-export/modules/Overview/Overview"
-import EcreeeETenderOverview from "./plugins/ecreee-e-tender/modules/Overview/Overview"
+import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result"
+import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment"
+import PaystackOverview from "@/plugins/paystack-payment-provider/modules/Overview/Overview.vue"
+import PaystackCredential from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
+import PaystackTransaction from "@/plugins/paystack-payment-provider/modules/Transaction/Transaction.vue"
+import PaystackPublicPayment from "@/plugins/paystack-payment-provider/modules/Payment/PublicPaymentForm.vue"
+import PaystackPublicResult from "@/plugins/paystack-payment-provider/modules/Payment/PublicPaymentResult.vue"
+import MicroStarMeterOverview from "@/plugins/micro-star-meter/modules/Overview/Overview"
+import SwiftaOverview from "@/plugins/swifta-payment-provider/modules/Overview/Overview"
+import SunKingShsOverview from "@/plugins/sun-king-shs/modules/Overview/Overview"
+import GomeLongOverview from "@/plugins/gome-long-meter/modules/Overview/Overview"
+import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
+import DalyBmsOverview from "@/plugins/daly-bms/modules/Overview/Overview"
+import AngazaShsOverview from "@/plugins/angaza-shs/modules/Overview/Overview"
+import ChintMeterOverview from "@/plugins/chint-meter/modules/Overview/Overview"
+import OdysseyExportOverview from "@/plugins/odyssey-data-export/modules/Overview/Overview"
+import EcreeeETenderOverview from "@/plugins/ecreee-e-tender/modules/Overview/Overview"
+import SparkShsOverview from "@/plugins/spark-shs/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1673,6 +1673,30 @@ export const exportedRoutes = [
       {
         path: "overview",
         component: EcreeeETenderOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/spark-shs",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 28,
+        name: "Spark Shs",
+        icon: "cloud_upload",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: SparkShsOverview,
         meta: {
           layout: "default",
           sidebar: {

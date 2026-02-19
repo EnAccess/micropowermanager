@@ -2,7 +2,7 @@
 order: 23
 ---
 
-# Prospect Integration Setup Guide
+# Prospect Integration
 
 This guide provides step-by-step instructions for setting up and integrating Prospect with your MicroPowerManager project for data analytics and monitoring.
 

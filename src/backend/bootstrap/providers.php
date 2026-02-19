@@ -18,6 +18,7 @@ use App\Plugins\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use App\Plugins\Prospect\Providers\ProspectServiceProvider;
 use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
+use App\Plugins\SparkShs\Providers\SparkShsServiceProvider;
 use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use App\Plugins\StronMeter\Providers\StronMeterServiceProvider;
 use App\Plugins\SunKingSHS\Providers\SunKingSHSServiceProvider;
@@ -64,4 +65,5 @@ return [
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
     EcreeeETenderServiceProvider::class,
+    SparkShsServiceProvider::class,
 ];

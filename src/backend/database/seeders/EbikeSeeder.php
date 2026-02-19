@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Address\Address;
 use App\Models\Appliance;
 use App\Models\ApplianceType;
 use App\Models\Device;
@@ -61,21 +60,14 @@ class EbikeSeeder extends Seeder {
                 ->for($person)
                 ->for($ebike, 'device')
                 ->has(
-                    Address::factory()
-                        ->for($person->addresses->first()->city)
-                        ->has(
-                            GeographicalInformation::factory()
-                                // https://github.com/larastan/larastan/issues/2307
-                                // @phpstan-ignore argument.type
-                                ->state(function (array $attributes, Address $address) {
-                                    /** @var Device $device */
-                                    $device = $address->owner()->first();
-
-                                    return ['points' => $device->person->addresses->first()->geo->points];
-                                })
-                                ->randomizePointsInHousehold(),
-                            'geo'
-                        )
+                    GeographicalInformation::factory()
+                        // https://github.com/larastan/larastan/issues/2307
+                        // @phpstan-ignore argument.type
+                        ->state(function (array $attributes, Device $device) {
+                            return ['points' => $device->person->addresses->first()->geo->points];
+                        })
+                        ->randomizePointsInHousehold(),
+                    'geo'
                 )
                 ->create([
                     'device_serial' => $ebike->serial_number,

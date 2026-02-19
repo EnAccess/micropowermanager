@@ -19,7 +19,6 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ConnectionGroupController;
 use App\Http\Controllers\ConnectionTypeController;
 use App\Http\Controllers\CurrencyController;
-use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\EBikeController;
@@ -44,6 +43,8 @@ use App\Http\Controllers\RegistrationTailController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingsExportController;
+use App\Http\Controllers\SettingsImportController;
 use App\Http\Controllers\SmsAndroidSettingController;
 use App\Http\Controllers\SmsApplianceRemindRateController;
 use App\Http\Controllers\SmsBodyController;
@@ -61,6 +62,8 @@ use App\Http\Controllers\UsageTypeController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
+use App\Http\Controllers\UserPermissionExportController;
+use App\Http\Controllers\UserPermissionImportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -375,9 +378,7 @@ Route::group(['prefix' => 'companies'], static function () {
 Route::group(['prefix' => 'devices'], static function () {
     Route::put('/{device}', [DeviceController::class, 'update']);
     Route::get('/', [DeviceController::class, 'index']);
-});
-Route::group(['prefix' => 'device-addresses'], function () {
-    Route::post('/', [DeviceAddressController::class, 'update']);
+    Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
 Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', [SolarHomeSystemController::class, 'index']);
@@ -400,6 +401,12 @@ Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
     Route::get('/devices', [DeviceExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/appliances', [ApplianceExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/clusters', [ClusterExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/settings', [SettingsExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/user-permissions', [UserPermissionExportController::class, 'download'])->middleware('permission:exports');
+});
+Route::group(['prefix' => 'import', 'middleware' => 'api'], static function () {
+    Route::post('/settings', [SettingsImportController::class, 'import'])->middleware('permission:settings');
+    Route::post('/user-permissions', [UserPermissionImportController::class, 'import'])->middleware('permission:users');
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);

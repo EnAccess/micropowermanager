@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\AccessRate\AccessRate;
-use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
@@ -47,7 +46,6 @@ class MeterSeeder extends Seeder {
             ->create([
                 'name' => 'Simple Tariff',
                 'price' => '250',
-                'total_price' => '250',
                 'currency' => 'TZS',
             ]);
 
@@ -62,7 +60,6 @@ class MeterSeeder extends Seeder {
             ->create([
                 'name' => 'Tariff with monthly Access Rate',
                 'price' => '150',
-                'total_price' => '150',
                 'currency' => 'TZS',
             ]);
 
@@ -108,25 +105,18 @@ class MeterSeeder extends Seeder {
                 ->createOne();
 
             // Assign the Meter to the customer by creating a device
-            $device = Device::factory()
+            Device::factory()
                 ->for($person)
                 ->for($meter, 'device')
                 ->has(
-                    Address::factory()
-                        ->for($person->addresses->first()->city)
-                        ->has(
-                            GeographicalInformation::factory()
-                                // https://github.com/larastan/larastan/issues/2307
-                                // @phpstan-ignore argument.type
-                                ->state(function (array $attributes, Address $address) {
-                                    /** @var Device $device */
-                                    $device = $address->owner()->first();
-
-                                    return ['points' => $device->person->addresses->first()->geo->points];
-                                })
-                                ->randomizePointsInHousehold(),
-                            'geo'
-                        )
+                    GeographicalInformation::factory()
+                        // https://github.com/larastan/larastan/issues/2307
+                        // @phpstan-ignore argument.type
+                        ->state(function (array $attributes, Device $device) {
+                            return ['points' => $device->person->addresses->first()->geo->points];
+                        })
+                        ->randomizePointsInHousehold(),
+                    'geo'
                 )
                 ->createOne([
                     'device_serial' => $meter->serial_number,

@@ -47,11 +47,17 @@ class MeterRevenueService {
             ->whereIn('transactions.message', function ($query) use ($connectionGroupId, $clusterId) {
                 $query->select('serial_number')
                     ->from('meters')
-                    ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
-                    ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
-                    ->where('devices.device_type', 'meter')
+                    ->join('devices', function ($join) {
+                        $join->on('devices.device_id', '=', 'meters.id')
+                            ->where('devices.device_type', '=', 'meter');
+                    })
+                    ->join('people', 'people.id', '=', 'devices.person_id')
+                    ->join('addresses', function ($join) {
+                        $join->on('addresses.owner_id', '=', 'people.id')
+                            ->where('addresses.owner_type', '=', 'person')
+                            ->where('addresses.is_primary', '=', 1);
+                    })
                     ->where('meters.connection_group_id', $connectionGroupId)
-                    ->where('addresses.owner_type', 'device')
                     ->whereIn('addresses.city_id', function ($query) use ($clusterId) {
                         $query->select('id')
                             ->from('cities')
@@ -81,15 +87,18 @@ class MeterRevenueService {
             ->whereIn('transactions.message', function ($query) use ($connectionId, $cityIds) {
                 $query->select('serial_number')
                     ->from('meters')
-                    ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
-                    ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
-                    ->where('addresses.owner_type', 'device')
-                    ->where('devices.device_type', 'meter')
+                    ->join('devices', function ($join) {
+                        $join->on('devices.device_id', '=', 'meters.id')
+                            ->where('devices.device_type', '=', 'meter');
+                    })
+                    ->join('people', 'people.id', '=', 'devices.person_id')
+                    ->join('addresses', function ($join) {
+                        $join->on('addresses.owner_id', '=', 'people.id')
+                            ->where('addresses.owner_type', '=', 'person')
+                            ->where('addresses.is_primary', '=', 1);
+                    })
                     ->where('meters.connection_type_id', $connectionId)
-                    ->whereIn(
-                        'addresses.city_id',
-                        explode(',', $cityIds)
-                    );  // assuming $cityIds is a comma-separated string
+                    ->whereIn('addresses.city_id', explode(',', $cityIds));
             })
             ->whereHasMorph(
                 'originalTransaction',
@@ -122,11 +131,17 @@ class MeterRevenueService {
             ->whereIn('transactions.message', function ($query) use ($connectionGroupId, $miniGridId) {
                 $query->select('serial_number')
                     ->from('meters')
-                    ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
-                    ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
-                    ->where('devices.device_type', 'meter')
+                    ->join('devices', function ($join) {
+                        $join->on('devices.device_id', '=', 'meters.id')
+                            ->where('devices.device_type', '=', 'meter');
+                    })
+                    ->join('people', 'people.id', '=', 'devices.person_id')
+                    ->join('addresses', function ($join) {
+                        $join->on('addresses.owner_id', '=', 'people.id')
+                            ->where('addresses.owner_type', '=', 'person')
+                            ->where('addresses.is_primary', '=', 1);
+                    })
                     ->where('meters.connection_group_id', $connectionGroupId)
-                    ->where('addresses.owner_type', 'device')
                     ->whereIn('addresses.city_id', function ($query) use ($miniGridId) {
                         $query->select('id')
                             ->from('cities')
@@ -152,8 +167,16 @@ class MeterRevenueService {
     ): array {
         return Meter::query()
             ->selectRaw('COUNT(meters.id) as registered_connections')
-            ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
-            ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
+            ->join('devices', function ($join) {
+                $join->on('devices.device_id', '=', 'meters.id')
+                    ->where('devices.device_type', '=', 'meter');
+            })
+            ->join('people', 'people.id', '=', 'devices.person_id')
+            ->join('addresses', function ($join) {
+                $join->on('addresses.owner_id', '=', 'people.id')
+                    ->where('addresses.owner_type', '=', 'person')
+                    ->where('addresses.is_primary', '=', 1);
+            })
             ->where('meters.connection_group_id', $connectionGroupId)
             ->whereDate('meters.created_at', '<=', $endDate)
             ->whereIn('addresses.city_id', function ($query) use ($miniGridId) {
@@ -161,9 +184,8 @@ class MeterRevenueService {
                     ->from('cities')
                     ->where('mini_grid_id', $miniGridId);
             })
-            ->where('devices.device_type', 'meter')
-            ->where('addresses.owner_type', 'device')
-            ->get()->toArray();
+            ->get()
+            ->toArray();
     }
 
     /**
@@ -177,20 +199,27 @@ class MeterRevenueService {
     ): array {
         return Meter::query()
             ->selectRaw('COUNT(meters.id) as registered_connections, connection_groups.name, YEARWEEK(meters.created_at, 3) as period')
-            ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
-            ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
+            ->join('devices', function ($join) {
+                $join->on('devices.device_id', '=', 'meters.id')
+                    ->where('devices.device_type', '=', 'meter');
+            })
+            ->join('people', 'people.id', '=', 'devices.person_id')
+            ->join('addresses', function ($join) {
+                $join->on('addresses.owner_id', '=', 'people.id')
+                    ->where('addresses.owner_type', '=', 'person')
+                    ->where('addresses.is_primary', '=', 1);
+            })
             ->leftJoin('connection_groups', 'connection_groups.id', '=', 'meters.connection_group_id')
             ->where('meters.connection_group_id', $connectionGroupId)
-            ->where('devices.device_type', 'meter')
-            ->where('addresses.owner_type', 'device')
             ->whereIn('addresses.city_id', function ($query) use ($miniGridId) {
-                $query->select('city_id')
+                $query->select('id')
                     ->from('cities')
                     ->where('mini_grid_id', $miniGridId);
             })
             ->whereBetween(DB::raw('DATE(meters.created_at)'), [$startDate, $endDate])
             ->groupBy('connection_groups.name', DB::raw('YEARWEEK(meters.created_at, 3)'))
-            ->get()->toArray();
+            ->get()
+            ->toArray();
     }
 
     /**
@@ -204,19 +233,27 @@ class MeterRevenueService {
     ): array {
         return Meter::query()
             ->selectRaw('COUNT(meters.serial_number) as registered_connections, connection_groups.name, YEARWEEK(meters.created_at, 3) as period')
-            ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
-            ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
+            ->join('devices', function ($join) {
+                $join->on('devices.device_id', '=', 'meters.id')
+                    ->where('devices.device_type', '=', 'meter');
+            })
+            ->join('people', 'people.id', '=', 'devices.person_id')
+            ->join('addresses', function ($join) {
+                $join->on('addresses.owner_id', '=', 'people.id')
+                    ->where('addresses.owner_type', '=', 'person')
+                    ->where('addresses.is_primary', '=', 1);
+            })
             ->leftJoin('connection_groups', 'connection_groups.id', '=', 'meters.connection_group_id')
             ->where('meters.connection_group_id', $connectionGroupId)
-            ->where('devices.device_type', 'meter')
-            ->where('addresses.owner_type', 'device')
             ->whereIn('addresses.city_id', function ($query) use ($clusterId) {
-                $query->select('city_id')
+                $query->select('id')
                     ->from('cities')
                     ->where('cluster_id', $clusterId);
             })
             ->whereBetween(DB::raw('DATE(meters.created_at)'), [$startDate, $endDate])
-            ->get()->toArray();
+            ->groupBy('connection_groups.name', DB::raw('YEARWEEK(meters.created_at, 3)'))
+            ->get()
+            ->toArray();
     }
 
     /**
@@ -229,8 +266,16 @@ class MeterRevenueService {
     ): array {
         return Meter::query()
             ->selectRaw('COUNT(meters.id) as registered_connections')
-            ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
-            ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
+            ->join('devices', function ($join) {
+                $join->on('devices.device_id', '=', 'meters.id')
+                    ->where('devices.device_type', '=', 'meter');
+            })
+            ->join('people', 'people.id', '=', 'devices.person_id')
+            ->join('addresses', function ($join) {
+                $join->on('addresses.owner_id', '=', 'people.id')
+                    ->where('addresses.owner_type', '=', 'person')
+                    ->where('addresses.is_primary', '=', 1);
+            })
             ->where('meters.connection_group_id', $connectionGroupId)
             ->whereDate('meters.created_at', '<=', $endDate)
             ->whereIn('addresses.city_id', function ($query) use ($clusterId) {
@@ -238,8 +283,7 @@ class MeterRevenueService {
                     ->from('cities')
                     ->where('cluster_id', $clusterId);
             })
-            ->where('devices.device_type', 'meter')
-            ->where('addresses.owner_type', 'device')
-            ->get()->toArray();
+            ->get()
+            ->toArray();
     }
 }

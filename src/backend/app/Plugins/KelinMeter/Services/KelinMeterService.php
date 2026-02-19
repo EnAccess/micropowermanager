@@ -211,7 +211,7 @@ class KelinMeterService implements ISynchronizeService {
                 $meter = new Meter();
                 $geoLocation = new GeographicalInformation();
             } else {
-                $geoLocation = $meter->device->person->addresses()->first()->geo->first();
+                $geoLocation = $meter->device->geo()->first();
                 if ($geoLocation === null) {
                     $geoLocation = new GeographicalInformation();
                 }
@@ -265,9 +265,9 @@ class KelinMeterService implements ISynchronizeService {
                 $address = $address->newQuery()->create([
                     'city_id' => $city ? $city->id : 1,
                 ]);
-                $address->owner()->associate($meter);
-                $address->geo()->save($meter->device->address->geo()->first());
+                $address->owner()->associate($meter->device);
                 $address->save();
+                $meter->device->geo()->save($geoLocation);
             }
             DB::connection('tenant')->commit();
 
@@ -294,7 +294,7 @@ class KelinMeterService implements ISynchronizeService {
             $points = $kelinCustomer->address ?? ',';
             $meter->device->person()->associate($kelinCustomer->mpmPerson);
             $p = $points == null ? '' : $points;
-            $meter->device->person->addresses()->first()->geo()->update([
+            $meter->device->geo()->update([
                 'points' => $p,
             ]);
             $meter->save();

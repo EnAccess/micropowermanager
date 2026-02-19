@@ -18,6 +18,9 @@
         <md-tab id="tab-api-keys" md-icon="vpn_key" md-label="API Keys">
           <api-keys-settings />
         </md-tab>
+        <md-tab id="tab-import" md-icon="file_upload" md-label="Import">
+          <import-settings />
+        </md-tab>
       </md-tabs>
     </widget>
   </div>
@@ -29,6 +32,7 @@ import MainSettings from "./MainSettings"
 import MapSettings from "./MapSettings"
 import ApiKeysSettings from "./ApiKeysSettings"
 import SmsSettings from "./SmsSettings"
+import ImportSettings from "./ImportSettings"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import { MapSettingsService } from "@/services/MapSettingsService"
 
@@ -47,6 +51,7 @@ export default {
     MapSettings,
     ApiKeysSettings,
     SmsSettings,
+    ImportSettings,
   },
   data() {
     return {

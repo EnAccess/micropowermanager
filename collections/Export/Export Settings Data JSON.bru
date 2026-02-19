@@ -1,0 +1,15 @@
+meta {
+  name: Export Settings Data JSON
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/settings?format=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: json
+}

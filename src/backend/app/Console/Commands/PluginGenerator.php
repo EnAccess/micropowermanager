@@ -231,10 +231,10 @@ class PluginGenerator extends Command {
         $exportedRoutesFile = "{$projectRootFrontend}/src/ExportedRoutes.js";
         $exportedRoutesFileContent = File::get($exportedRoutesFile);
 
-        $importStatement = "import {$nameSpace}Overview from \"./plugins/{$pluginName}/modules/Overview/Overview\"";
+        $importStatement = "import {$nameSpace}Overview from \"@/plugins/{$pluginName}/modules/Overview/Overview.vue\"";
         if (!str_contains($exportedRoutesFileContent, $importStatement)) {
             $exportedRoutesFileContent = preg_replace(
-                '/(import.*from "\\.\\/plugins\\/\\S*)(?!import.*)/s',
+                '/(import.*from "@\\/plugins\\/\\S*)(?!import.*)/s',
                 "$1\n{$importStatement}",
                 $exportedRoutesFileContent
             );
@@ -277,6 +277,31 @@ JS;
         File::put($exportedRoutesFile, $exportedRoutesFileContent);
 
         $this->outputComponents()->success("Plugin frontend routes added to {$exportedRoutesFile}.");
+
+        // Step 3.3: Export a global component to be displayed in
+        $mainJsFile = "{$projectRootFrontend}/src/main.js";
+        $mainJsFileFileContent = File::get($mainJsFile);
+
+        $mainJsImportStatement = "import {$nameSpace}Overview from \"@/plugins/{$pluginName}/modules/Overview/Overview.vue\"";
+        if (!str_contains($mainJsFileFileContent, $mainJsImportStatement)) {
+            $mainJsFileFileContent = preg_replace(
+                '/(import.*from "@\\/plugins\\/\\S*)(?!import.*)/s',
+                "$1\n{$mainJsImportStatement}",
+                $mainJsFileFileContent
+            );
+        }
+
+        $mainJsSnippet = "Vue.component(\"{$nameSpace}\", {$nameSpace}Overview)";
+        $mainJsFileFileContent = preg_replace(
+            '/^(\s*)(\/\/ NEW PLUGIN PLACEHOLDER \(DO NOT REMOVE THIS LINE\))/m',
+            '$1'.$mainJsSnippet."\n".'$1$2',
+            $mainJsFileFileContent,
+            1,
+        );
+
+        File::put($mainJsFile, $mainJsFileFileContent);
+
+        $this->outputComponents()->success("Global Overview component added to {$mainJsFile}.");
 
         // Step 4: As a final step, run composer dump-autoload
         $this->outputComponents()->info('Running composer dump-autoload...');

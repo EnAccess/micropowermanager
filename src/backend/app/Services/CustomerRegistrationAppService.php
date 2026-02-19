@@ -14,7 +14,6 @@ class CustomerRegistrationAppService {
         private DeviceService $deviceService,
         private MeterDeviceService $meterDeviceService,
         private AddressesService $addressService,
-        private DeviceAddressService $deviceAddressService,
         private GeographicalInformationService $geographicalInformationService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
     ) {}
@@ -61,10 +60,7 @@ class CustomerRegistrationAppService {
             'city_id' => $cityId ?? 1,
         ];
         $address = $this->addressService->make($addressData);
-        $this->deviceAddressService->setAssigned($address);
-        $this->deviceAddressService->setAssignee($device);
-        $this->deviceAddressService->assign();
-        $this->addressService->save($address);
+        $this->addressService->assignAddressToOwner($person, $address);
         $geographicalInformation = $this->geographicalInformationService->make([
             'points' => $geoPoints,
         ]);

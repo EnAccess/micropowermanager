@@ -13,7 +13,6 @@ use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\ApplianceService;
 use App\Services\CashTransactionService;
-use App\Services\DeviceAddressService;
 use App\Services\DeviceService;
 use App\Services\GeographicalInformationService;
 use App\Services\UserAppliancePersonService;
@@ -29,7 +28,6 @@ class AppliancePersonController extends Controller {
         private UserService $userService,
         private DeviceService $deviceService,
         private AddressesService $addressesService,
-        private DeviceAddressService $deviceAddressService,
         private GeographicalInformationService $geographicalInformationService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
         private CashTransactionService $cashTransactionService,
@@ -83,14 +81,14 @@ class AppliancePersonController extends Controller {
                 $device = $this->deviceService->getBySerialNumber($deviceSerial);
                 $this->deviceService->update($device, ['person_id' => $personId]);
                 $appliancePerson->device_serial = $deviceSerial;
+
                 $address = $this->addressesService->make([
                     'street' => $addressData['street'],
                     'city_id' => $addressData['city_id'],
                 ]);
-                $this->deviceAddressService->setAssigned($address);
-                $this->deviceAddressService->setAssignee($device);
-                $this->deviceAddressService->assign();
-                $this->addressesService->save($address);
+
+                // Attach the new address to the person rather than the device.
+                $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
 
                 $geographicalInformation = $this->geographicalInformationService->make([
                     'points' => $points,

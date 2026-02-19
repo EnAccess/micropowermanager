@@ -50,7 +50,6 @@ return [
             'name' => 'Tariff Name',
             'currency' => 'Currency',
             'price' => 'Tariff Price',
-            'total_price' => 'Tariff Price',
         ],
 
         'connection_type' => [
