@@ -1690,7 +1690,7 @@ export const exportedRoutes = [
       sidebar: {
         enabled_by_mpm_plugin_id: 28,
         name: "Spark Shs",
-        icon: "cloud_upload",
+        icon: "solar_power",
       },
     },
     children: [
