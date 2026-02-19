@@ -82,6 +82,7 @@ Vue.component("Prospect", Prospect)
 Vue.component("Paystack", Paystack)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
+// NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {
   if (!value) {
