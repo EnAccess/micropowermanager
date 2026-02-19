@@ -4,6 +4,8 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Queue\Middleware\RateLimited;
+use Illuminate\Queue\Middleware\ThrottlesExceptions;
 use Illuminate\Queue\SerializesModels;
 
 class HtmlEmail extends Mailable {
@@ -24,5 +26,16 @@ class HtmlEmail extends Mailable {
         }
 
         return $mail;
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array<int, RateLimited|ThrottlesExceptions>
+     */
+    public function middleware(): array {
+        return [(new RateLimited('emails'))->releaseAfter(3),
+            (new ThrottlesExceptions(3, 5 * 60))->backoff(5),
+        ];
     }
 }
