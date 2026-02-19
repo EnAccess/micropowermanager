@@ -2,7 +2,6 @@
 
 namespace App\Plugins\SparkMeter\Observers;
 
-use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
@@ -25,15 +24,11 @@ class GeographicalInformationObserver {
             return;
         }
 
-        if ($geographicalInformation->owner instanceof Address) {
-            $address = $geographicalInformation->owner;
+        if ($geographicalInformation->owner instanceof Device) {
+            $device = $geographicalInformation->owner;
 
-            if ($address->owner instanceof Device) {
-                $device = $address->owner;
-
-                if ($device->device instanceof Meter) {
-                    $this->updateSparkMetaCustomerInformation($device, $geographicalInformation);
-                }
+            if ($device->device instanceof Meter) {
+                $this->updateSparkMetaCustomerInformation($device, $geographicalInformation);
             }
         }
     }
@@ -45,7 +40,7 @@ class GeographicalInformationObserver {
         $meter = $device->device;
 
         $customer = $this->person->newQuery()
-            ->with(['devices.device.tariff', 'devices.address.geo'])
+            ->with(['devices.device.tariff', 'devices.geo'])
             ->whereHas('devices', fn ($q) => $q->where('id', $device->id))->first();
 
         if (!$customer) {

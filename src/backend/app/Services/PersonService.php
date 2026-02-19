@@ -50,7 +50,7 @@ class PersonService implements IBaseService {
                     ->with('geo')
                     ->get(),
                 'citizenship',
-                'devices' => fn ($q) => $q->whereHas('address')->with('address.geo'),
+                'devices' => fn ($q) => $q->whereHas('address')->with('geo'),
             ]
         )->find($personID);
     }

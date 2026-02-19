@@ -334,7 +334,10 @@ export default {
       const devicesInMiniGrid =
         await this.miniGridDeviceService.getMiniGridDevices(miniGridId)
       devicesInMiniGrid.map((device) => {
-        const points = device.address.geo.points.split(",")
+        if (!device.geo || !device.geo.points) {
+          return
+        }
+        const points = device.geo.points.split(",")
         if (points.length !== 2) {
           return
         }
@@ -356,7 +359,6 @@ export default {
           id: miniGridWithGeoData.id,
           name: miniGridWithGeoData.name,
           serialNumber: device.device_serial,
-          addressId: device.address.id,
           lat: lat,
           lon: lon,
           deviceType: device.device_type,

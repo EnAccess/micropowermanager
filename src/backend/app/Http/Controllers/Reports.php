@@ -518,9 +518,10 @@ class Reports {
         $transactions = $this->transaction::with('device.device')
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
-                'device.address',
+                'device.person.addresses',
                 function ($q) use ($cityId) {
-                    $q->where('city_id', $cityId);
+                    $q->where('city_id', $cityId)
+                        ->where('is_primary', 1);
                 }
             )
             ->whereHasMorph(

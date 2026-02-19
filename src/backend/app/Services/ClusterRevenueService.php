@@ -36,23 +36,23 @@ class ClusterRevenueService {
         ?int $miniGridId = null,
     ): Collection|array {
         return $this->transaction->newQuery()
-            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue')
+            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period, SUM(amount) as revenue')
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType, $miniGridId) {
-                    $query = $miniGridId ?
-                        $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
-                            'mini_grid_id',
-                            $miniGridId
-                        )))
-                        :
-                        $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
-                            'cluster_id',
-                            $clusterId
-                        )));
+                    $q->whereHas('person.addresses', function ($q) use ($clusterId, $miniGridId) {
+                        $q->where('is_primary', 1)
+                            ->whereHas('city', function ($q) use ($clusterId, $miniGridId) {
+                                if ($miniGridId) {
+                                    $q->where('mini_grid_id', $miniGridId);
+                                } else {
+                                    $q->where('cluster_id', $clusterId);
+                                }
+                            });
+                    });
 
                     if ($connectionType) {
-                        $query->whereHasMorph(
+                        $q->whereHasMorph(
                             'device',
                             Meter::class,
                             function ($q) use ($connectionType) {
@@ -60,8 +60,6 @@ class ClusterRevenueService {
                             }
                         );
                     }
-
-                    return $query;
                 }
             )
             ->whereHasMorph(
@@ -72,7 +70,8 @@ class ClusterRevenueService {
                 }
             )
             ->whereBetween('created_at', $period)
-            ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\')'))->get();
+            ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\')'))
+            ->get();
     }
 
     /**
@@ -82,16 +81,19 @@ class ClusterRevenueService {
      */
     public function getTransactionsForWeeklyPeriod(int $clusterId, array $period, ?int $connectionType = null): Collection {
         return $this->transaction->newQuery()
-            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue, WEEKOFYEAR(created_at) as week')
+            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period, SUM(amount) as revenue, WEEKOFYEAR(created_at) as week')
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType) {
-                    $query = $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
-                        'cluster_id',
-                        $clusterId
-                    )));
+                    $q->whereHas('person.addresses', function ($q) use ($clusterId) {
+                        $q->where('is_primary', 1)
+                            ->whereHas('city', function ($q) use ($clusterId) {
+                                $q->where('cluster_id', $clusterId);
+                            });
+                    });
+
                     if ($connectionType) {
-                        $query->whereHasMorph(
+                        $q->whereHasMorph(
                             'device',
                             Meter::class,
                             function ($q) use ($connectionType) {
@@ -99,8 +101,6 @@ class ClusterRevenueService {
                             }
                         );
                     }
-
-                    return $query;
                 }
             )
             ->whereHasMorph(
@@ -111,7 +111,8 @@ class ClusterRevenueService {
                 }
             )
             ->whereBetween('created_at', $period)
-            ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\'),WEEKOFYEAR(created_at)'))->get();
+            ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\'), WEEKOFYEAR(created_at)'))
+            ->get();
     }
 
     /**

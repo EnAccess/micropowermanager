@@ -49,12 +49,8 @@ export default {
   },
   methods: {
     setMapData() {
-      if (
-        this.device.address &&
-        this.device.address.geo &&
-        this.device.address.geo.points
-      ) {
-        const points = this.device.address.geo.points.split(",")
+      if (this.device.geo && this.device.geo.points) {
+        const points = this.device.geo.points.split(",")
         if (points.length === 2) {
           const lat = parseFloat(points[0])
           const lon = parseFloat(points[1])

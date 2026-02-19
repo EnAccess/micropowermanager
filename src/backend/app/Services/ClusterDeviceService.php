@@ -11,7 +11,14 @@ class ClusterDeviceService {
 
     public function getCountByClusterId(int $clusterId): int {
         return $this->device->newQuery()
-            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('cluster_id', $clusterId)))
+            ->whereHas('person', function ($q) use ($clusterId) {
+                $q->whereHas('addresses', function ($q) use ($clusterId) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($clusterId) {
+                            $q->where('cluster_id', $clusterId);
+                        });
+                });
+            })
             ->count();
     }
 
@@ -20,8 +27,15 @@ class ClusterDeviceService {
      */
     public function getByClusterId(int $clusterId): Collection {
         return $this->device->newQuery()
-            ->with('device')
-            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('cluster_id', $clusterId)))
+            ->with(['device', 'person.addresses.city'])
+            ->whereHas('person', function ($q) use ($clusterId) {
+                $q->whereHas('addresses', function ($q) use ($clusterId) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($clusterId) {
+                            $q->where('cluster_id', $clusterId);
+                        });
+                });
+            })
             ->get();
     }
 
@@ -34,7 +48,14 @@ class ClusterDeviceService {
                 'device',
                 Meter::class
             )
-            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('cluster_id', $clusterId)))
+            ->whereHas('person', function ($q) use ($clusterId) {
+                $q->whereHas('addresses', function ($q) use ($clusterId) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($clusterId) {
+                            $q->where('cluster_id', $clusterId);
+                        });
+                });
+            })
             ->get();
     }
 }

@@ -30,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @property-read Appliance|null               $appliance
  * @property-read AppliancePerson|null         $appliancePerson
  * @property-read Meter|SolarHomeSystem|EBike  $device
+ * @property-read GeographicalInformation|null $geo
  * @property-read Person|null                  $person
  * @property-read Collection<int, Token>       $tokens
  * @property-read Collection<int, Transaction> $transactions
@@ -62,10 +63,29 @@ class Device extends BaseModel {
     }
 
     /**
-     * @return MorphOne<Address, $this>
+     * @return MorphOne<GeographicalInformation, $this>
      */
-    public function address(): MorphOne {
-        return $this->morphOne(Address::class, 'owner');
+    public function geo(): MorphOne {
+        return $this->morphOne(GeographicalInformation::class, 'owner');
+    }
+
+    /**
+     * Get the mini-grid through person's primary address.
+     */
+    public function miniGrid(): ?MiniGrid {
+        return $this->person
+            ?->addresses()
+            ->where('is_primary', 1)
+            ->first()
+            ?->city
+            ?->miniGrid;
+    }
+
+    /**
+     * Get the cluster via mini-grid (can use hasManyThrough if schema supports it).
+     */
+    public function cluster(): ?Cluster {
+        return $this->miniGrid()?->cluster;
     }
 
     /**
