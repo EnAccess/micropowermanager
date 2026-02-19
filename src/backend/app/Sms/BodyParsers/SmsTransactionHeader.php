@@ -13,7 +13,10 @@ class SmsTransactionHeader extends SmsBodyParser {
     public function __construct(protected Transaction $transaction) {}
 
     protected function getVariableValue(string $variable): mixed {
-        $person = $this->transaction->device->person->first();
+        $person = $this->transaction->device?->person;
+        if ($this->transaction->nonPaygoAppliance()->exists()) {
+            $person = $this->transaction->nonPaygoAppliance()->first()->person;
+        }
 
         return match ($variable) {
             'name' => $person->name,
