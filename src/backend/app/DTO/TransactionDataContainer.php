@@ -17,9 +17,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class TransactionDataContainer {
     public int $accessRateDebt;
     public Transaction $transaction;
-    public Device $device;
+    public ?Device $device = null;
     public ?Tariff $tariff = null;
-    public Manufacturer $manufacturer;
+    public ?Manufacturer $manufacturer = null;
     public Token $token;
     /** @var array<int, array<string, float|int>> */
     public array $paidRates;
@@ -48,18 +48,20 @@ class TransactionDataContainer {
         $container->meter = null;
 
         try {
-            // Get device by serial number
-            $container->device = $deviceService->getBySerialNumber($transaction->message);
+            // Get device by serial number (may be null for general appliances like TV, bulbs, etc.)
+            $device = $deviceService->getBySerialNumber($transaction->message);
 
-            // Get the associated device model (Meter or SHS)
-            $deviceModel = $container->device->device;
-            $container->manufacturer = $deviceModel->manufacturer ?? null;
+            if ($device !== null) {
+                $container->device = $device;
 
-            // Handle device type specific logic
-            if ($deviceModel instanceof Meter) {
-                $container->handleMeterDevice($deviceModel);
-            } elseif ($deviceModel instanceof SolarHomeSystem) {
-                $container->handleSHSDevice($deviceModel);
+                $deviceModel = $container->device->device;
+                $container->manufacturer = $deviceModel->manufacturer ?? null;
+
+                if ($deviceModel instanceof Meter) {
+                    $container->handleMeterDevice($deviceModel);
+                } elseif ($deviceModel instanceof SolarHomeSystem) {
+                    $container->handleSHSDevice($deviceModel);
+                }
             }
 
             // Handle appliance payments if any
@@ -92,7 +94,15 @@ class TransactionDataContainer {
      * Handle appliance payment related initialization.
      */
     private function handleAppliancePayments(Transaction $transaction): void {
-        $this->appliancePerson = $transaction->appliance()->first();
+        if ($transaction->paygoAppliance()->exists()) {
+            /** @var AppliancePerson|null $appliancePerson */
+            $appliancePerson = $transaction->paygoAppliance()->first();
+            $this->appliancePerson = $appliancePerson;
+        } else {
+            /** @var AppliancePerson|null $appliancePerson */
+            $appliancePerson = $transaction->nonPaygoAppliance()->first();
+            $this->appliancePerson = $appliancePerson;
+        }
 
         if ($this->appliancePerson) {
             $installments = $this->appliancePerson->rates;
