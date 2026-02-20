@@ -715,22 +715,14 @@ trait CreateEnvironments {
             ->for($person)
             ->for($this->meter, 'device')
             ->has(
-                Address::factory()
-                    ->for($this->city)
-                    ->has(
-                        GeographicalInformation::factory()
-                            // https://github.com/larastan/larastan/issues/2307
-                            // @phpstan-ignore argument.type
-                            ->state(function (array $attributes, Address $address): array {
-                                /** @var Device $device */
-                                $device = $address->owner()->first();
-
-                                return ['points' => '-7.873645,39.754433'];
-                            })
-                            ->randomizePointsInHousehold(),
-                        'geo'
-                    )
+                GeographicalInformation::factory()
+                    ->state(fn (array $attributes): array => [
+                        'points' => '-7.873645,39.754433',
+                    ])
+                    ->randomizePointsInHousehold(),
+                'geo'
             )
+
             ->createOne([
                 'device_serial' => $this->meter->serial_number,
             ]);
