@@ -77,7 +77,7 @@ class AgentAppTicketsTest extends TestCase {
         $this->assertEquals('agent', $response['data'][0]['creator_type']);
     }
 
-    public function actingAs(Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null): static {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

@@ -6,23 +6,17 @@ use App\Models\City;
 use App\Models\GeographicalInformation;
 use Database\Factories\CityFactory;
 use Database\Factories\ClusterFactory;
-use Database\Factories\CompanyDatabaseFactory;
-use Database\Factories\CompanyFactory;
 use Database\Factories\MiniGridFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CityTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
     private $user;
-    private $company;
-    private $companyDatabase;
     private $person;
     private array $clusterIds = [];
     private array $miniGridIds = [];
@@ -55,6 +49,8 @@ class CityTest extends TestCase {
         $cityData = [
             'cluster_id' => $this->clusterIds[0],
             'mini_grid_id' => $this->miniGridIds[0],
+            'country_id' => 1,
+            'points' => '-7.873645,39.754433',
             'name' => $this->faker->city(),
         ];
         $response = $this->actingAs($this->user)->post('/api/cities', $cityData);
@@ -71,6 +67,8 @@ class CityTest extends TestCase {
             'name' => 'updatedName',
             'mini_grid_id' => $this->miniGridIds[1],
             'cluster_id' => $this->clusterIds[1],
+            'country_id' => 1,
+            'points' => '-7.873645,39.754433',
         ];
         $response = $this->actingAs($this->user)->put(sprintf('/api/cities/%s', $city->id), $cityData);
         $response->assertStatus(200);
@@ -79,11 +77,9 @@ class CityTest extends TestCase {
 
     protected function createTestData($clusterCount = 1, $miniGridCount = 1, $cityCount = 1) {
         $this->user = UserFactory::new()->create();
-        $this->company = CompanyFactory::new()->create();
-        $this->companyDatabase = CompanyDatabaseFactory::new()->create();
+        $this->assignRole($this->user, 'admin');
 
         while ($clusterCount > 0) {
-            $user = UserFactory::new()->create();
             $cluster = ClusterFactory::new()->create([
                 'name' => $this->faker->unique()->companySuffix(),
                 'manager_id' => $this->user->id,
@@ -116,14 +112,6 @@ class CityTest extends TestCase {
 
             --$clusterCount;
         }
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 
     protected function generateUniqueNumber(): int {

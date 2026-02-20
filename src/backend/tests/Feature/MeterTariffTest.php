@@ -7,10 +7,9 @@ use App\Models\SocialTariff;
 use App\Models\Tariff;
 use App\Models\TimeOfUsage;
 use App\Services\TariffPricingComponentService;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Queue;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MeterTariffTest extends TestCase {
     use CreateEnvironments;
@@ -41,6 +40,7 @@ class MeterTariffTest extends TestCase {
             'price' => 20,
             'currency' => '$',
             'factor' => 1,
+            'minimum_purchase_amount' => 1,
             'components' => [
                 [
                     'name' => 'Cost-1',
@@ -182,8 +182,11 @@ class MeterTariffTest extends TestCase {
         $this->createMeterManufacturer();
         $this->createMeterType();
         $this->createMeterTariff();
-        $this->createConnectionGroup();
-        $this->createConnectionType();
+        $this->createConnectionType(1);
+        $this->createConnectionGroup(1);
+        $this->createCluster(2);
+        $this->createMiniGrid(2);
+        $this->createCity(2);
         $meterCount = 5;
         $this->createMeter($meterCount);
         $response = $this->actingAs($this->user)->get(sprintf(
@@ -201,16 +204,20 @@ class MeterTariffTest extends TestCase {
         $this->createMeterTariff();
         $tariff = $this->meterTariff;
         $tariffPrice = $tariff->total_price;
-        app()->make(TariffPricingComponentService::class);
-        $updatedTariff = $tariff->fresh();
-        $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
-    }
+        $service = app(TariffPricingComponentService::class);
 
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
+        $tariffComponent = $service->make([
+            'name' => 'Installation Fee',
+            'price' => 200000,
+            'owner_type' => 'tariff',
+            'owner_id' => $tariff->id,
+        ]);
 
-        return $this;
+        $tariffComponent->save();
+
+        $this->assertEquals(
+            $tariffPrice + 200000,
+            $tariff->fresh()->total_price
+        );
     }
 }

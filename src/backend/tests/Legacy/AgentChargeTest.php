@@ -25,7 +25,7 @@ class AgentChargeTest extends TestCase {
         $this->assertEquals($agent->balance, $agentBalance + $postData['amount']);
     }
 
-    public function actingAs(Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null): static {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

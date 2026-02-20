@@ -42,6 +42,9 @@ jobs:
         with:
           env-file: ./dev/.env.micropowermanager-ci
 
+      - name: Copy .env for Backend
+        run: cp ./dev/.env.micropowermanager-ci ./src/backend/.env
+
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
@@ -59,10 +62,10 @@ jobs:
 
       - name: Run Migrations
         run: |
-          php artisan migrate:fresh --seed
+          php artisan migrate:fresh
         working-directory: ./src/backend
 
       - name: Execute tests
-        run: php artisan test
+        run: php artisan test  --stop-on-failure
         working-directory: ./src/backend
-        continue-on-error: true
+        continue-on-error: false

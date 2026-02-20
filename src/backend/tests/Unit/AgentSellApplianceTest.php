@@ -12,40 +12,25 @@ use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentSellApplianceTest extends TestCase {
-    use RefreshDatabase;
+    use RefreshMultipleDatabases;
     use WithFaker;
-
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
-    }
 
     /**
      * A basic unit test example.
      */
     public function testAgentSellAppliance(): void {
-        $this->initData();
-        $data = [
-            'agent_assigned_appliance_id' => 2,
-            'person_id' => 1,
-            'first_payment_date' => '2020-12-29T20:53:38Z',
-            'down_payment' => 100,
-            'tenure' => 5,
-        ];
+        $data = $this->initData();
 
         $agent = Agent::query()->latest()->first();
 
-        $this->actingAs($agent)->post('/api/app/agents/appliances', $data);
+        $response = $this->actingAs($agent)->post('/api/app/agents/appliances/', $data);
+
+        $response->assertStatus(201);
 
         AgentSoldAppliance::query()->create([
             'person_id' => 1,
@@ -57,11 +42,11 @@ class AgentSellApplianceTest extends TestCase {
         $this->assertEquals($data['down_payment'], $paymentHistory->amount);
     }
 
-    public function initData(): void {
-        $user = UserFactory::new()->create();
+    public function initData(): array {
+        $user = UserFactory::new()->create(['company_id' => $this->companyId]);
         $this->actingAs($user);
-        PersonFactory::new()->create();
-        Cluster::query()->create([
+        $person = PersonFactory::new()->create();
+        $cluster = Cluster::query()->create([
             'name' => 'Test Cluster',
             'manager_id' => 1,
             'geo_json' => json_encode([
@@ -83,39 +68,49 @@ class AgentSellApplianceTest extends TestCase {
             ]),
         ]);
 
-        MiniGrid::query()->create([
-            'cluster_id' => 1,
+        $miniGrid = MiniGrid::query()->create([
+            'cluster_id' => $cluster->id,
             'name' => 'Test-Grid',
         ]);
-        Agent::query()->create([
-            'person_id' => 1,
-            'mini_grid_id' => 1,
-            'agent_commission_id' => 1,
-            'mobile_device_id' => 1,
-            'name' => 'alper',
-            'email' => 'a@a.com',
-            'fire_base_token' => 'sadadadasd3',
-            'password' => '123123',
-        ]);
 
-        AgentCommission::query()->create([
+        $agent_commission = AgentCommission::query()->create([
             'name' => 'alper',
             'energy_commission' => 21,
             'appliance_commission' => 3,
             'risk_balance' => -3,
         ]);
 
-        Appliance::query()->create([
+        $agent = Agent::query()->create([
+            'person_id' => $person->id,
+            'mini_grid_id' => $miniGrid->id,
+            'agent_commission_id' => $agent_commission->id,
+            'mobile_device_id' => 1,
+            'email' => 'a@a.com',
+            'fire_base_token' => 'sadadadasd3',
+            'password' => '123123',
+            'connection' => 'tenant',
+            'balance' => 200,
+        ]);
+
+        $appliance = Appliance::query()->create([
             'name' => 'test',
             'price' => 100,
             'appliance_type_id' => 1,
         ]);
 
-        AgentAssignedAppliances::query()->create([
-            'agent_id' => 1,
-            'user_id' => 1,
-            'appliance_id' => 1,
+        $agentAssignedAppliance = AgentAssignedAppliances::query()->create([
+            'agent_id' => $agent->id,
+            'user_id' => $user->id,
+            'appliance_id' => $appliance->id,
             'cost' => 100,
         ]);
+
+        return [
+            'agent_assigned_appliance_id' => $agentAssignedAppliance->id,
+            'person_id' => $person->id,
+            'first_payment_date' => '2020-12-29T20:53:38Z',
+            'down_payment' => 100,
+            'tenure' => 5,
+        ];
     }
 }

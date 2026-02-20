@@ -21,10 +21,10 @@ class TariffPricingComponentService implements IBaseService {
         return $this->tariffPricingComponent->newQuery()->make($tariffPricingComponentData);
     }
 
-    public function deleteByTariffId(int $meterTariffId): void {
-        $this->tariffPricingComponent->newQuery()->where('owner_type', 'meter_tariff')->where(
+    public function deleteByTariffId(int $TariffId): void {
+        $this->tariffPricingComponent->newQuery()->where('owner_type', 'tariff')->where(
             'owner_id',
-            $meterTariffId
+            $TariffId
         )->each(function ($pricingComponent) {
             $pricingComponent->delete();
         });

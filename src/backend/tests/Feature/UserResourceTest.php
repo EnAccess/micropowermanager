@@ -4,40 +4,31 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
+use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserResourceTest extends TestCase {
-    use RefreshDatabase;
+    use RefreshMultipleDatabases;
     use WithFaker;
 
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
-    }
-
-    /** @test */
-    public function listRegisteredUsers(): void {
+    public function testListRegisteredUsers(): void {
         $user = UserFactory::new()->create();
         // create random users
         UserFactory::times(30)->create();
 
+        $this->assignRole($user, 'admin');
+
         $response = $this->actingAs($user)->get('/api/users');
         $response->assertStatus(200);
-        $this->assertEquals($response->json()['total'], 31);
+        $this->assertEquals($response->json()['meta']['total'], 31);
     }
 
-    /** @test */
-    public function createUser(): void {
+    public function testCreateUser(): void {
         $this->withoutExceptionHandling();
         $user = UserFactory::new()->create();
+        $this->assignRole($user, 'admin');
         $response = $this->actingAs($user)->post('/api/users', [
             'name' => 'TestUser',
             'email' => 'test@test.com',
@@ -49,9 +40,10 @@ class UserResourceTest extends TestCase {
         $this->assertEquals($user->email, 'test@test.com');
     }
 
-    /** @test */
-    public function updateUserPassword(): void {
+    public function testUpdateUserPassword(): void {
         $user = UserFactory::new()->create();
+        $this->assignRole($user, 'admin');
+
         // create user
         $this->actingAs($user)->post('/api/users', [
             'name' => 'Test',
@@ -60,6 +52,8 @@ class UserResourceTest extends TestCase {
         ]);
 
         $user = User::query()->get()[1];
+
+        $this->assignRole($user, 'admin');
 
         $response = $this->actingAs($user)->put(
             '/api/users/password/'.$user->id,
@@ -74,9 +68,11 @@ class UserResourceTest extends TestCase {
         $this->assertTrue(Hash::check('12345', $user->password));
     }
 
-    /** @test */
-    public function resetUserPassword(): void {
+    public function testResetUserPassword(): void {
         $user = UserFactory::new()->create();
+
+        $this->assignRole($user, 'admin');
+
         // create user
         $this->actingAs($user)->post('/api/users', [
             'name' => 'Test',
@@ -84,22 +80,23 @@ class UserResourceTest extends TestCase {
             'password' => '1234123123',
         ]);
         $user = User::query()->get()[1];
-        $oldPassword = $user->password;
-        $this->post('/api/users/password', ['email' => $user->email]);
-        $userWitNewPassword = User::query()->get()[1];
+        $response = $this->actingAs($user)->post('/api/users/password', ['email' => $user->email]);
+        User::query()->get()[1];
 
-        $this->assertNotEquals($oldPassword, $userWitNewPassword->password);
+        // reset user password email was sent
+        $response->assertStatus(200);
+
+        $this->assertEquals($response->json()['data']['message'], 'If the email exists, a reset link has been sent.');
     }
 
-    /** @test */
-    public function resetPasswordWithNonExistingEmail(): void {
+    public function testResetPasswordWithNonExistingEmail(): void {
         $request = $this->post('/api/users/password', ['email' => 'ako@inensus.com']);
-
-        $request->assertStatus(404);
+        // does not indicate an error for security concerns
+        $request->assertStatus(200);
         $request->assertJson([
             'data' => [
-                'message' => 'Email address not found in any company.',
-                'status_code' => 404,
+                'message' => 'If the email exists, a reset link has been sent.',
+                'status_code' => 200,
             ],
         ]);
     }

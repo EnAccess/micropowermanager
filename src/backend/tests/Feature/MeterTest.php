@@ -6,9 +6,6 @@ use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use Carbon\Carbon;
-use Database\Factories\CityFactory;
-use Database\Factories\CompanyDatabaseFactory;
-use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\ManufacturerFactory;
 use Database\Factories\Meter\MeterConsumptionFactory;
@@ -20,22 +17,13 @@ use Database\Factories\TariffFactory;
 use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\RefreshMultipleDatabases;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MeterTest extends TestCase {
-    use RefreshMultipleDatabases;
-    use WithFaker;
+    use CreateEnvironments;
 
     private $user;
-    private $company;
-    private $city;
-    private $connectionType;
-    private $connectionGroup;
-    private $companyDatabase;
     private $manufacturer;
     private $meterType;
     private $meter;
@@ -48,8 +36,7 @@ class MeterTest extends TestCase {
         $this->createTestData();
         $meterCunt = 5;
         while ($meterCunt > 0) {
-            $person = PersonFactory::new()->create();
-            $meter = MeterFactory::new()->create([
+            MeterFactory::new()->create([
                 'meter_type_id' => $this->meterType->id,
                 'in_use' => true,
                 'manufacturer_id' => 1,
@@ -70,6 +57,9 @@ class MeterTest extends TestCase {
             'meter_type_id' => $this->meterType->id,
             'in_use' => false,
             'manufacturer_id' => $this->manufacturer->id,
+            'connection_type_id' => $this->connectionType->id,
+            'connection_group_id' => $this->connectionGroup->id,
+            'tariff_id' => $this->meterTariff->id,
         ];
         $response = $this->actingAs($this->user)->post('/api/meters', $meterData);
         $response->assertStatus(201);
@@ -112,14 +102,15 @@ class MeterTest extends TestCase {
     }
 
     public function testUserGetsPersonMeters(): void {
-        $this->getMeter();
+        $this->meter = $this->getMeter();
+        $this->createMeterDevice($this->person);
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/people/%s/meters',
             $this->person->id
         ));
         $response->assertStatus(200);
         $metersCount = Meter::query()->get()->count();
-        $this->assertEquals(count($response['data']['meters']), $metersCount);
+        $this->assertEquals(count($response['data']['devices']), $metersCount);
     }
 
     public function testUserGetsPersonMetersGeographicalInformation(): void {
@@ -154,7 +145,7 @@ class MeterTest extends TestCase {
 
     public function testUserGetsMeterConsumptions(): void {
         $meter = $this->createMeterWithTransaction();
-        $consumption = MeterConsumptionFactory::new()->create();
+        $consumption = MeterConsumptionFactory::new()->create(['meter_id' => $meter->id]);
         $response = $this->actingAs($this->user)->get(sprintf(
             '/api/meters/%s/consumptions/%s/%s',
             $meter->serial_number,
@@ -174,9 +165,10 @@ class MeterTest extends TestCase {
 
     protected function createTestData() {
         $this->user = UserFactory::new()->create();
-        $this->city = CityFactory::new()->create();
-        $this->company = CompanyFactory::new()->create();
-        $this->companyDatabase = CompanyDatabaseFactory::new()->create();
+        $this->user->syncRoles('admin');
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
         $this->manufacturer = ManufacturerFactory::new()->create();
         $this->meterType = MeterTypeFactory::new()->create();
         $this->meterTariff = TariffFactory::new()->create();
@@ -193,6 +185,9 @@ class MeterTest extends TestCase {
             'in_use' => true,
             'manufacturer_id' => $this->manufacturer->id,
             'serial_number' => str_random(36),
+            'connection_type_id' => $this->connectionType->id,
+            'connection_group_id' => $this->connectionGroup->id,
+            'tariff_id' => $this->meterTariff->id,
         ]);
     }
 
@@ -207,7 +202,7 @@ class MeterTest extends TestCase {
                 'serial_number' => str_random(36),
             ]);
             $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
-            $this->person = PersonFactory::new()->create();
+            $person = PersonFactory::new()->create();
             $addressData = [
                 'city_id' => $this->city->id,
                 'geo_id' => $geographicalInformation->id,
@@ -222,21 +217,15 @@ class MeterTest extends TestCase {
                 'is_primary' => isset($addressData['is_primary']) ?: 0,
             ]);
             $address->owner()->associate($meter)->save();
-            $geographicalInformation->owner()->associate($meter->device()->person)->save();
+            $geographicalInformation->owner()->associate($person)->save();
             --$meterCunt;
         }
     }
 
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
-    }
-
     protected function createMeterWithTransaction() {
         $meter = $this->getMeter();
+        $this->meter = $meter;
+        $this->createMeterDevice($this->person);
         $this->transaction = TransactionFactory::new()->create([
             'id' => 1,
             'amount' => $this->faker->unique()->randomNumber(),
@@ -246,8 +235,9 @@ class MeterTest extends TestCase {
             'original_transaction_type' => 'agent_transaction',
         ]);
         $this->token = TokenFactory::new()->create([
-            'meter_id' => $meter->id,
+            'device_id' => $this->meterDevice->id,
             'token' => $this->faker->unique()->randomNumber(),
+            'transaction_id' => $this->transaction->id,
         ]);
         PaymentHistoryFactory::new()->create([
             'transaction_id' => $this->transaction->id,
