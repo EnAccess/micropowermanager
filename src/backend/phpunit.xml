@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-        backupStaticAttributes="false"
-        bootstrap="vendor/autoload.php"
-        colors="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        processIsolation="false"
-        stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./app</directory>
-        </whitelist>
-    </filter>
-    <php>
-        <ini name="memory_limit" value="512M"/>
-        <env name="APP_ENV" value="testing"/>
-        <env name="DB_CONNECTION" value="micro_power_manager" force="true" />
-        <env name="DB_HOST" value="127.0.0.1"/>
-        <env name="DB_PORT" value="3306"/>
-        <env name="DB_DATABASE" value="micro_power_manager" force="true"/>
-        <env name="DB_USERNAME" value="root"/>
-        <env name="DB_PASSWORD" value="wF9zLp2qRxaS2e"/>
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true" backupGlobals="false" processIsolation="false" stopOnFailure="false" cacheDirectory=".phpunit.cache">
+  <testsuites>
+    <testsuite name="Unit">
+      <directory suffix="Test.php">tests/Unit</directory>
+      <exclude>tests/Legacy</exclude>
+    </testsuite>
+    <testsuite name="Feature">
+      <directory suffix="Test.php">tests/Feature</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <ini name="memory_limit" value="512M"/>
+    <env name="APP_ENV" value="testing" force="true"/>
+    <env name="DB_CONNECTION" value="micro_power_manager" force="true"/>
+    <env name="DB_HOST" value="127.0.0.1"/>
+    <env name="DB_PORT" value="3306"/>
+    <env name="DB_DATABASE" value="micro_power_manager" force="true"/>
+    <env name="DB_USERNAME" value="root"/>
+    <env name="DB_PASSWORD" value="wF9zLp2qRxaS2e"/>
+    <env name="LOG_CHANNEL" value="stderr"/>
+    <env name="LOG_LEVEL" value="error"/>
+  </php>
+  <source>
+    <include>
+      <directory suffix=".php">app</directory>
+    </include>
+  </source>
 </phpunit>
