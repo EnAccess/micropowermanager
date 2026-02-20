@@ -46,6 +46,18 @@ abstract class TestCase extends BaseTestCase {
         return $this;
     }
 
+    public function assignRole(User $user, ...$roles): void {
+        if ($roles != []) {
+            $user->syncRoles($roles);
+        }
+    }
+
+    public function assignPermission(User $user, ...$permissions): void {
+        if ($permissions !== []) {
+            $user->syncPermissions($permissions);
+        }
+    }
+
     protected function setUp(): void {
         parent::setUp();
 
