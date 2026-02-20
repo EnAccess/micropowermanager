@@ -20,6 +20,7 @@ class TariffFactory extends Factory {
             'price' => 100000,
             'currency' => 'TZS',
             'factor' => 1,
+            'minimum_purchase_amount' => 0,
         ];
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests;
 
 use App\Events\PaymentSuccessEvent;
 use App\Models\Address\Address;
+use App\Models\Device;
 use App\Models\GeographicalInformation;
-use App\Services\TicketUserService;
 use Database\Factories\AgentAssignedAppliancesFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
 use Database\Factories\AgentCommissionFactory;
@@ -17,8 +17,6 @@ use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\ClusterFactory;
-use Database\Factories\CompanyDatabaseFactory;
-use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionGroupFactory;
 use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\ManufacturerFactory;
@@ -39,14 +37,12 @@ use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\RefreshMultipleDatabases;
 
 trait CreateEnvironments {
     use RefreshMultipleDatabases;
     use WithFaker;
 
     private $user;
-    private $company;
     private $city;
     private $cluster;
     private $miniGrid;
@@ -55,6 +51,7 @@ trait CreateEnvironments {
     private $meterType;
     private $meter;
     private $meterTariff;
+    private $meterDevice;
     private $person;
     private $token;
     private $transaction;
@@ -67,7 +64,6 @@ trait CreateEnvironments {
     private $agentCommission;
     private $address;
     private $timeOfUsage;
-    private $companyDatabase;
     private $meterToken;
     private $paymentHistory;
     private $applianceType;
@@ -112,8 +108,7 @@ trait CreateEnvironments {
 
     protected function createTestData() {
         $this->user = UserFactory::new()->create();
-        $this->company = CompanyFactory::new()->create();
-        $this->companyDatabase = CompanyDatabaseFactory::new()->create();
+        $this->user->syncRoles('admin');
     }
 
     protected function createCluster($clusterCount = 1) {
@@ -149,7 +144,7 @@ trait CreateEnvironments {
     protected function createCity($cityCount = 1) {
         while ($cityCount > 0) {
             $city = CityFactory::new()->create([
-                'name' => $this->faker->unique()->citySuffix,
+                'name' => $this->faker->citySuffix.$this->faker->randomAscii(),
                 'country_id' => 1,
                 'mini_grid_id' => $this->getRandomIdFromList($this->miniGrids),
                 'cluster_id' => $this->getRandomIdFromList($this->clusters),
@@ -350,6 +345,9 @@ trait CreateEnvironments {
                 'in_use' => true,
                 'manufacturer_id' => $this->getRandomIdFromList($this->manufacturers),
                 'serial_number' => str_random(36),
+                'connection_type_id' => $this->connectionType->id,
+                'connection_group_id' => $this->connectionGroup->id,
+                'tariff_id' => $this->meterTariffs[0]->id,
             ]);
             $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
             $person = PersonFactory::new()->create();
@@ -367,7 +365,7 @@ trait CreateEnvironments {
                 'is_primary' => $addressData['is_primary'] ?? 0,
             ]);
             $address->owner()->associate($meter)->save();
-            $geographicalInformation->owner()->associate($meter->device()->person)->save();
+            $geographicalInformation->owner()->associate($person)->save();
 
             --$meterCount;
         }
@@ -426,7 +424,6 @@ trait CreateEnvironments {
         foreach ($this->people as $person) {
             $agent = AgentFactory::new()->create([
                 'person_id' => $person->id,
-                'name' => $person->name,
                 'agent_commission_id' => $this->getRandomIdFromList($this->agentCommissions),
                 'mini_grid_id' => $this->getRandomIdFromList($this->miniGrids),
             ]);
@@ -674,6 +671,8 @@ trait CreateEnvironments {
         $this->createTicketCategory(1);
         while ($ticketCount > 0) {
             $ticket = TicketFactory::new()->create([
+                'title' => $this->faker->sentence(6),
+                'content' => $this->faker->paragraph(3),
                 'category_id' => $this->ticketCategory->id,
                 'assigned_id' => $this->ticketUser->id,
                 'status' => $status,
@@ -693,16 +692,13 @@ trait CreateEnvironments {
 
     protected function createTicketOutsourcePayoutReport($TicketOutsourcePayoutReportCount = 1) {}
 
-    protected function createTicketUser($ticketUserCount = 1, $tag = 'inensusinensus') {
-        $ticketUserService = app()->make(TicketUserService::class);
-        $externalUser = $ticketUserService->getByTag($tag);
-
+    protected function createTicketUser($ticketUserCount = 1, $userId = 1) {
         while ($ticketUserCount > 0) {
             $ticketUser = TicketUserFactory::new()->create([
-                'user_name' => $this->faker->name,
-                'user_tag' => $this->faker->word,
+                'user_name' => $this->faker->unique()->name,
+                'phone' => $this->faker->phoneNumber(),
                 'out_source' => 0,
-                'extern_id' => $externalUser->id,
+                'user_id' => $userId,
             ]);
             $this->ticketUsers[] = $ticketUser;
 
@@ -711,6 +707,33 @@ trait CreateEnvironments {
         if (count($this->ticketUsers) > 0) {
             $this->ticketUser = $this->ticketUsers[0];
         }
+    }
+
+    protected function createMeterDevice($person = null) {
+        $person ??= PersonFactory::new()->create();
+        $this->meterDevice = Device::factory()
+            ->for($person)
+            ->for($this->meter, 'device')
+            ->has(
+                Address::factory()
+                    ->for($this->city)
+                    ->has(
+                        GeographicalInformation::factory()
+                            // https://github.com/larastan/larastan/issues/2307
+                            // @phpstan-ignore argument.type
+                            ->state(function (array $attributes, Address $address): array {
+                                /** @var Device $device */
+                                $device = $address->owner()->first();
+
+                                return ['points' => '-7.873645,39.754433'];
+                            })
+                            ->randomizePointsInHousehold(),
+                        'geo'
+                    )
+            )
+            ->createOne([
+                'device_serial' => $this->meter->serial_number,
+            ]);
     }
 
     private function getRandomIdFromList(array $list, $startIndex = 1, $endIndex = null): int {

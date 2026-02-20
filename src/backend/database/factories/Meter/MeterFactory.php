@@ -15,6 +15,9 @@ class MeterFactory extends Factory {
             'in_use' => false,
             'manufacturer_id' => 1,
             'serial_number' => $this->faker->unique()->uuid,
+            'connection_type_id' => 1,
+            'connection_group_id' => 1,
+            'tariff_id' => 1,
         ];
     }
 }
