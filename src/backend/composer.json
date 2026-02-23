@@ -34,6 +34,7 @@
     "spatie/laravel-google-cloud-storage": "^2.3",
     "spatie/laravel-permission": "^6.21",
     "spatie/laravel-query-builder": "^6.3",
+    "staudenmeir/belongs-to-through": "^2.5",
     "tymon/jwt-auth": "^2.2"
   },
   "require-dev": {
