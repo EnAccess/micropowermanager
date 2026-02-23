@@ -28,7 +28,7 @@ return new class extends Migration {
         City::with('miniGrid')->chunkById(100, function ($cities) {
             foreach ($cities as $city) {
                 if ($city->miniGrid && $city->miniGrid->cluster_id) {
-                    DB::table('cities')
+                    DB::connection('tenant')->table('cities')
                         ->where('id', $city->id)
                         ->update([
                             'cluster_id' => $city->miniGrid->cluster_id,
