@@ -1,3 +1,6 @@
-export APP_ENV=development
+#
+# DO NOT USE THESE VALUES IN PRODUCTION
+#
+export APP_KEY=base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
 export DB_USERNAME=root
 export DB_PASSWORD=wF9zLp2qRxaS2e
