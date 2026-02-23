@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
-use Znck\Eloquent\Relations\BelongsToThrough as RelationsBelongsToThrough;
-use Znck\Eloquent\Traits\BelongsToThrough;
+use Znck\Eloquent\Relations\BelongsToThrough;
+use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 /**
  * Class City.
@@ -35,7 +35,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 class City extends BaseModel {
     /** @use HasFactory<CityFactory> */
     use HasFactory;
-    use BelongsToThrough;
+    use BelongsToThroughTrait;
 
     public const RELATION_NAME = 'city';
 
@@ -68,9 +68,9 @@ class City extends BaseModel {
     }
 
     /**
-     * @return RelationsBelongsToThrough<Cluster, MiniGrid>
+     * @return BelongsToThrough<Cluster, $this>
      */
-    public function cluster(): RelationsBelongsToThrough {
+    public function cluster(): BelongsToThrough {
         return $this->belongsToThrough(Cluster::class, MiniGrid::class);
     }
 
