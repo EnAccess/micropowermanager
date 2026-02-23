@@ -68,7 +68,7 @@ class City extends BaseModel {
     }
 
     /**
-     * @return RelationsBelongsToThrough<Cluster, MiniGrid, $this>
+     * @return RelationsBelongsToThrough<Cluster, MiniGrid>
      */
     public function cluster(): RelationsBelongsToThrough {
         return $this->belongsToThrough(Cluster::class, MiniGrid::class);
