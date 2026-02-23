@@ -43,9 +43,11 @@ use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -92,6 +94,8 @@ class AppServiceProvider extends ServiceProvider {
                 EBike::RELATION_NAME => EBike::class,
             ]
         );
+        // Rate limiter for emails
+        RateLimiter::for('emails', fn () => Limit::perMinute(20));
     }
 
     /**
