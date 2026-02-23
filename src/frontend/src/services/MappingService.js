@@ -62,10 +62,12 @@ export class MappingService {
       const { data, error, status } = await this.repository.get(name)
       if (status !== 200) return new ErrorHandler(error, "http", status)
 
-      // Filter GeoJSON features by type
-      const features = data.features || []
+      const normalizedFeatures = (data.features || [])
+        .map((f) => this.normalizeFeatureGeometry(f))
+        .filter(Boolean)
+
       const filteredFeatures = this.filterGeoJSONFeatures(
-        features,
+        normalizedFeatures,
         filteredTypes,
       )
 
@@ -93,6 +95,42 @@ export class MappingService {
       const geoType = feature.geometry?.type?.toLowerCase()
       return geoType && geoType in filteredTypes
     })
+  }
+
+  /**
+   * Converts non-polygon geometries (Point, LineString) into a Polygon
+   * derived from the feature's bounding box. This ensures downstream code
+   * that expects a polygon geometry always receives one.
+   */
+  normalizeFeatureGeometry(feature) {
+    const polygonTypes = ["Polygon", "MultiPolygon"]
+    if (polygonTypes.includes(feature.geometry?.type)) {
+      return feature
+    }
+
+    // Fall back to bbox → bounding rectangle polygon
+    const bbox = feature.bbox
+    if (!bbox || bbox.length < 4) {
+      console.warn("Feature has no usable geometry or bbox, skipping:", feature)
+      return null
+    }
+
+    const [minLon, minLat, maxLon, maxLat] = bbox
+    return {
+      ...feature,
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [minLon, minLat],
+            [maxLon, minLat],
+            [maxLon, maxLat],
+            [minLon, maxLat],
+            [minLon, minLat],
+          ],
+        ],
+      },
+    }
   }
 
   strToHex(str) {
