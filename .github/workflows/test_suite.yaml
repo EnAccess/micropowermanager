@@ -37,13 +37,8 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
-      - name: Config environment file
-        uses: c-py/action-dotenv-to-setenv@v5
-        with:
-          env-file: ./dev/.env.micropowermanager-ci
-
       - name: Copy .env for Backend
-        run: cp ./dev/.env.micropowermanager-ci ./src/backend/.env
+        run: cp ./src/backend/.env.testing ./src/backend/.env
 
       - name: Install Composer Dependencies
         run: |
