@@ -40,7 +40,6 @@ class AppliancePersonController extends Controller {
      */
     public function store(
         Appliance $appliance,
-        Person $person,
         Request $request,
     ): ApiResource {
         try {

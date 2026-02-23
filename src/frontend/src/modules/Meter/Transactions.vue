@@ -31,7 +31,7 @@
             </md-table-cell>
             <md-table-cell
               v-if="token.paid_for_type === 'App\\Models\\Token'"
-              v-text="readable(token.paid_for.energy) + ' kWh'"
+              v-text="readable(token.paid_for.token_amount) + ' kWh'"
             ></md-table-cell>
             <md-table-cell v-else>-</md-table-cell>
             <md-table-cell

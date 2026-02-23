@@ -344,7 +344,6 @@ class TransactionService implements IAssociative, IBaseService {
             'paymentHistories',
             'paymentHistories.paidFor',
             'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person']),
-            'appliance' => fn ($q) => $q->with(['appliance', 'person']),
         ])->find($id);
 
         // Load user relationship for cash transactions only

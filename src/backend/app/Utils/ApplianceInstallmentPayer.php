@@ -6,6 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
 use App\Models\AppliancePerson;
+use App\Models\ApplianceRate;
 use App\Models\Device;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
@@ -34,15 +35,34 @@ class ApplianceInstallmentPayer {
     public function initialize(TransactionDataContainer $transactionData): void {
         $this->transaction = $transactionData->transaction;
         $this->consumableAmount = $this->transaction->amount;
-        $this->customer = $this->getCustomerByDeviceSerial($this->transaction->message);
+        $this->customer = $this->getCustomerFromTransaction($transactionData);
+    }
+
+    /**
+     * Get the customer (Person) from the transaction data.
+     * Supports both device-based appliances (SHS, EBike) and general appliances (TV, bulbs, etc.).
+     */
+    private function getCustomerFromTransaction(TransactionDataContainer $transactionData): Person {
+        if ($transactionData->device instanceof Device) {
+            return $transactionData->device->person;
+        }
+
+        // For general appliances without a device, get customer from AppliancePerson
+        if ($transactionData->appliancePerson instanceof AppliancePerson) {
+            return $transactionData->appliancePerson->person;
+        }
+
+        return $this->getCustomerByDeviceSerial($this->transaction->message);
     }
 
     // This function pays the installments for the device number that provided in transaction
     public function payInstallmentsForDevice(TransactionDataContainer $container): void {
-        $customer = $container->appliancePerson->person;
         $this->appliancePaymentService->setPaymentAmount($container->transaction->amount);
-        $installments = $container->appliancePerson->rates;
-        $this->pay($installments, $customer);
+        $container->appliancePerson->rates->map(fn (ApplianceRate $installment) => $this->appliancePaymentService->payInstallment(
+            $installment,
+            $container->appliancePerson,
+            $container->transaction
+        ));
     }
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
@@ -64,11 +84,10 @@ class ApplianceInstallmentPayer {
                 $this->consumableAmount = 0;
 
                 return false;
-            } else {
-                $this->consumableAmount -= $installment->remaining;
-
-                return true;
             }
+            $this->consumableAmount -= $installment->remaining;
+
+            return true;
         });
 
         return $this->consumableAmount;
@@ -98,6 +117,9 @@ class ApplianceInstallmentPayer {
      */
     private function pay(Collection $installments, Person $customer): void {
         $installments->map(function ($installment) use ($customer): bool {
+            if ($this->transaction->amount == 0) {
+                return true;
+            }
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 event(new PaymentSuccessEvent(
                     amount: (int) $this->transaction->amount,
@@ -119,7 +141,7 @@ class ApplianceInstallmentPayer {
                 $this->transaction->amount = 0;
 
                 return false;
-            } else {
+            } elseif ($installment->remaining > 0 && $this->transaction->amount > 0) {
                 event(new PaymentSuccessEvent(
                     amount: $installment->remaining,
                     paymentService: $this->transaction->original_transaction_type,
@@ -140,6 +162,8 @@ class ApplianceInstallmentPayer {
 
                 return true;
             }
+
+            return false;
         });
     }
 }
