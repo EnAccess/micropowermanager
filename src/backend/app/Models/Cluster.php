@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -35,9 +36,9 @@ class Cluster extends BaseModel implements ITargetAssignable {
         return $this->belongsTo(User::class);
     }
 
-    /** @return HasMany<City, $this> */
-    public function cities(): HasMany {
-        return $this->hasMany(City::class);
+    /** @return HasManyThrough<City, MiniGrid, $this> */
+    public function cities(): HasManyThrough {
+        return $this->hasManyThrough(City::class, MiniGrid::class);
     }
 
     /** @return HasMany<MiniGrid, $this> */

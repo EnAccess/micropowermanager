@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
+use Znck\Eloquent\Relations\BelongsToThrough;
+use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 /**
  * Class City.
@@ -33,6 +35,7 @@ use Illuminate\Support\Carbon;
 class City extends BaseModel {
     /** @use HasFactory<CityFactory> */
     use HasFactory;
+    use BelongsToThroughTrait;
 
     public const RELATION_NAME = 'city';
 
@@ -65,10 +68,10 @@ class City extends BaseModel {
     }
 
     /**
-     * @return BelongsTo<Cluster, $this>
+     * @return BelongsToThrough<Cluster, $this>
      */
-    public function cluster(): BelongsTo {
-        return $this->belongsTo(Cluster::class);
+    public function cluster(): BelongsToThrough {
+        return $this->belongsToThrough(Cluster::class, MiniGrid::class);
     }
 
     /**
@@ -76,26 +79,6 @@ class City extends BaseModel {
      */
     public function location(): MorphOne {
         return $this->morphOne(GeographicalInformation::class, 'owner');
-    }
-
-    public function setName(string $name): void {
-        $this->name = $name;
-    }
-
-    public function setCountryId(int $countryId): void {
-        $this->country_id = $countryId;
-    }
-
-    public function setClusterId(int $clusterId): void {
-        $this->cluster_id = $clusterId;
-    }
-
-    public function setMiniGridId(int $miniGridId): void {
-        $this->mini_grid_id = $miniGridId;
-    }
-
-    public function getMiniGridId(): int {
-        return $this->mini_grid_id;
     }
 
     /**

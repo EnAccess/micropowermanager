@@ -107,7 +107,6 @@ class ClusterSeeder extends Seeder {
             )
             ->has(
                 City::factory()
-                    ->for($clusters[0])
                     ->sequence(
                         ['name' => 'Mafia Village'],
                         ['name' => 'Jibondo Island Village'],
@@ -141,7 +140,6 @@ class ClusterSeeder extends Seeder {
             )
             ->has(
                 City::factory()
-                    ->for($clusters[1])
                     ->sequence(
                         ['name' => 'Konde Village'],
                         ['name' => 'Wette Village'],

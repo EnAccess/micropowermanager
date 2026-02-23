@@ -59,16 +59,4 @@ class MiniGrid extends BaseModel implements ITargetAssignable {
     public function agents(): HasMany {
         return $this->hasMany(Agent::class);
     }
-
-    public function setClusterId(int $clusterId): void {
-        $this->cluster_id = $clusterId;
-    }
-
-    public function setName(string $name): void {
-        $this->name = $name;
-    }
-
-    public function getClusterId(): int {
-        return $this->cluster_id;
-    }
 }
