@@ -130,16 +130,17 @@ export class SmsService {
   }
 
   async sendMaintenanceSms(maintenanceData) {
+    console.log("maintenanceData: ", maintenanceData)
     try {
       let sendSmsPM = {
-        person_id: maintenanceData.assigned.person.id,
+        person_id: maintenanceData.assigned.id,
         message:
           maintenanceData.description +
           "\n Amount : " +
           maintenanceData.amount +
           "\n Due Date " +
           maintenanceData.dueDate,
-        senderId: maintenanceData.id,
+        senderId: maintenanceData.creator,
       }
       let response = await this.repository.send(sendSmsPM, "single")
       if (response.status === 200 || response.status === 201) {

@@ -155,7 +155,7 @@ class TicketSeeder extends Seeder {
     }
 
     private function generateTicket(): void {
-        $randomCategory = TicketCategory::factory()->createOne();
+        $randomCategory = TicketCategory::inRandomOrder()->first();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = User::query()->inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));

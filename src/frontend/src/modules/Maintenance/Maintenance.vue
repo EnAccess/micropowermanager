@@ -115,7 +115,6 @@
                   <label for="amount">
                     {{ $tc("words.amount") }}
                   </label>
-                  <span class="md-prefix">$</span>
                   <md-input
                     v-model="maintenanceData.amount"
                     type="text"
