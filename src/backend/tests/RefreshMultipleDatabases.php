@@ -14,11 +14,11 @@ trait RefreshMultipleDatabases {
     protected function refreshInMemoryDatabase() {
         Artisan::call(
             'migrate:fresh',
-            ['--database' => 'micro_power_manager', '--path' => '/database/migrations/']
+            ['--database' => 'mpm_testing', '--path' => '/database/migrations/']
         );
         Artisan::call(
             'migrate:fresh',
-            ['--database' => 'tenant', '--path' => '/database/migrations/tenant']
+            ['--database' => 'mpm_testing', '--path' => '/database/migrations/tenant']
         );
         app(Kernel::class)->setArtisan(null);
         $this->app[Kernel::class]->setArtisan(null);
@@ -28,7 +28,7 @@ trait RefreshMultipleDatabases {
         if (!RefreshDatabaseState::$migrated) {
             Artisan::call(
                 'migrate:fresh',
-                ['--database' => 'micro_power_manager', '--path' => '/database/migrations/']
+                ['--database' => 'mpm_testing', '--path' => '/database/migrations/']
             );
 
             Artisan::call(
@@ -44,11 +44,11 @@ trait RefreshMultipleDatabases {
     }
 
     public function beginDatabaseTransaction(): void {
-        DB::connection('micro_power_manager')->beginTransaction();
+        DB::connection('mpm_testing')->beginTransaction();
 
         // Roll back both connections after each test
         $this->beforeApplicationDestroyed(function () {
-            DB::connection('micro_power_manager')->rollBack();
+            DB::connection('mpm_testing')->rollBack();
         });
     }
 }

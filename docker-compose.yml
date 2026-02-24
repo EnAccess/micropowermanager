@@ -119,8 +119,19 @@ services:
       timeout: 5s
       retries: 3
 
+  mysql_testing:
+    container_name: mysql_testing
+    env_file:
+      - path: ./dev/.env.mysql_testing
+    image: mysql:8.4
+    volumes:
+      - mysql_testing_data:/var/lib/mysql
+    ports:
+      - 12345:3306
+
 volumes:
   mysql_data:
+  mysql_testing_data:
   redis_data:
   # For local development we use a dedicated volume for each container
   # to offload module and vendor directories. This avoids race

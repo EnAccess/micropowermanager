@@ -18,10 +18,10 @@ jobs:
       mysql:
         image: mysql:8.4
         env:
-          MYSQL_DATABASE: micro_power_manager
+          MYSQL_DATABASE: mpm_testing
           MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
         ports:
-          - 3306:3306
+          - 12345:3306
       redis:
         image: redis:5
         ports:
