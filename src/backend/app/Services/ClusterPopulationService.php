@@ -17,7 +17,9 @@ class ClusterPopulationService {
                         $q->where('is_primary', 1)->whereHas(
                             'city',
                             function ($q) use ($clusterId) {
-                                $q->where('cluster_id', $clusterId);
+                                $q->whereHas('cluster', function ($q) use ($clusterId) {
+                                    $q->where('clusters.id', $clusterId);
+                                });
                             }
                         );
                     }
@@ -29,7 +31,9 @@ class ClusterPopulationService {
                     $q->where('is_primary', 1)->whereHas(
                         'city',
                         function ($q) use ($clusterId) {
-                            $q->where('cluster_id', $clusterId);
+                            $q->whereHas('cluster', function ($q) use ($clusterId) {
+                                $q->where('clusters.id', $clusterId);
+                            });
                         }
                     );
                 }

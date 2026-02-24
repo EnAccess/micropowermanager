@@ -291,7 +291,6 @@ export default {
           this.loading = true
           const city = {
             name: this.cityName,
-            clusterId: this.clusterId,
             miniGridId: this.selectedMiniGridId,
             countryId: this.selectedCountryId,
             points: `${this.cityLatLng.lat},${this.cityLatLng.lon}`,
