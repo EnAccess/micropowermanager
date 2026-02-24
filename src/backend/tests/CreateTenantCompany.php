@@ -19,24 +19,9 @@ trait CreateTenantCompany {
     protected $companyId = 1;
 
     protected function setUpCreateTenantCompany(): void {
-        $databaseConnections = config('database.connections');
+        $databaseProxyManagerService = app(DatabaseProxyManagerService::class);
 
-        $databaseConnections['tenant'] = [
-            'driver' => 'mysql',
-            'host' => $databaseConnections['micro_power_manager']['host'],
-            'port' => $databaseConnections['micro_power_manager']['port'],
-            'database' => TestCompany::TEST_COMPANY_DATABASE_NAME,
-            'username' => $databaseConnections['micro_power_manager']['username'],
-            'password' => $databaseConnections['micro_power_manager']['password'],
-            'unix_socket' => $databaseConnections['micro_power_manager']['unix_socket'],
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-        ];
-
-        config()->set('database.connections', $databaseConnections);
+        $databaseProxyManagerService->buildDatabaseConnectionTestCompany(TestCompany::TEST_COMPANY_DATABASE_NAME);
 
         $this->companyId = $this->createCompany();
     }
