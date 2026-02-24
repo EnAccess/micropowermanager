@@ -20,7 +20,6 @@ use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
  * @property      int                          $id
  * @property      string                       $name
  * @property      int                          $country_id
- * @property      int                          $cluster_id
  * @property      int                          $mini_grid_id
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at

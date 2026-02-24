@@ -84,7 +84,6 @@ class MiniGridTest extends TestCase {
                     'name' => $this->faker->citySuffix().$this->faker->randomAscii(),
                     'country_id' => 1,
                     'mini_grid_id' => $miniGrid->id,
-                    'cluster_id' => $cluster->id,
                 ]);
                 $this->miniGridIds[] = $miniGrid->id;
                 --$miniGridCount;

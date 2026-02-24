@@ -147,7 +147,6 @@ trait CreateEnvironments {
                 'name' => $this->faker->citySuffix.$this->faker->randomAscii(),
                 'country_id' => 1,
                 'mini_grid_id' => $this->getRandomIdFromList($this->miniGrids),
-                'cluster_id' => $this->getRandomIdFromList($this->clusters),
             ]);
             $this->cities[] = $city;
             --$cityCount;

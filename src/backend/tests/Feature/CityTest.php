@@ -47,7 +47,6 @@ class CityTest extends TestCase {
         $cityCount = 1;
         $this->createTestData($clusterCount, $miniGridCount, $cityCount);
         $cityData = [
-            'cluster_id' => $this->clusterIds[0],
             'mini_grid_id' => $this->miniGridIds[0],
             'country_id' => 1,
             'points' => '-7.873645,39.754433',
@@ -66,7 +65,6 @@ class CityTest extends TestCase {
         $cityData = [
             'name' => 'updatedName',
             'mini_grid_id' => $this->miniGridIds[1],
-            'cluster_id' => $this->clusterIds[1],
             'country_id' => 1,
             'points' => '-7.873645,39.754433',
         ];
@@ -98,7 +96,6 @@ class CityTest extends TestCase {
                         'name' => $this->faker->unique()->citySuffix(),
                         'country_id' => 1,
                         'mini_grid_id' => $miniGrid->id,
-                        'cluster_id' => $cluster->id,
                     ]);
                     $this->cityIds[] = $city->id;
                     --$cityCount;

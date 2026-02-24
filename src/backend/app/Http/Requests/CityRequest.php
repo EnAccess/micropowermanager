@@ -21,7 +21,6 @@ class CityRequest extends FormRequest {
         return [
             'name' => ['required'],
             'mini_grid_id' => ['required'],
-            'cluster_id' => ['required'],
             'country_id' => ['required', 'integer', 'exists:tenant.countries,id'],
             'points' => ['required', 'string'],
         ];

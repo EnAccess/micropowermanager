@@ -41,7 +41,6 @@ class CityService implements IBaseService {
         $model->update([
             'name' => $cityData['name'] ?? $model->name,
             'mini_grid_id' => $cityData['mini_grid_id'] ?? $model->mini_grid_id,
-            'cluster_id' => $cityData['cluster_id'] ?? $model->cluster_id,
             'country_id' => $cityData['country_id'] ?? $model->country_id,
         ]);
         $model->fresh();
