@@ -45,7 +45,6 @@ export class City {
   fromJson(jsonData) {
     this.id = jsonData.id
     this.name = jsonData.name
-    this.clusterId = jsonData.cluster_id
     this.countryId = jsonData.country_id
     if ("country" in jsonData) {
       this.country = this.fetchCountry(jsonData.country)
@@ -85,7 +84,6 @@ export class CityService {
     this.city = {
       id: 0,
       name: "",
-      cluster_id: 0,
       mini_grid_id: 0,
     }
     this.list = []
