@@ -325,8 +325,5 @@ php artisan test
 ```
 
 > [!NOTE]
-> The test suite is currently being worked up, so expect many failling tests.
-
 > Tests are run on a test database (`mpm_testing`) that is created when docker compose is run.
-
 > Tests must be run outside the backend container to avoid conflicting environment configurations.

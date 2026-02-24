@@ -127,7 +127,7 @@ services:
     volumes:
       - mysql_testing_data:/var/lib/mysql
     ports:
-      - 12345:3306
+      - 53306:3306
 
 volumes:
   mysql_data:
