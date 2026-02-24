@@ -42,7 +42,7 @@ class DatabaseProxyManagerService {
     }
 
     public function buildDatabaseConnectionTestCompany(?string $testDatabaseName): void {
-        $this->buildDatabaseConnectionForTesting($testDatabaseName ?? 'TestCompany_1');
+        $this->buildDatabaseConnection($testDatabaseName ?? 'TestCompany_1');
     }
 
     private function buildDatabaseConnection(string $databaseName): void {
@@ -55,27 +55,6 @@ class DatabaseProxyManagerService {
             'username' => $databaseConnections['micro_power_manager']['username'],
             'password' => $databaseConnections['micro_power_manager']['password'],
             'unix_socket' => $databaseConnections['micro_power_manager']['unix_socket'],
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-        ];
-        config()->set('database.connections', $databaseConnections);
-        $this->databaseManager->purge('tenant');
-        $this->databaseManager->reconnect('tenant');
-    }
-
-    private function buildDatabaseConnectionForTesting(string $databaseName): void {
-        $databaseConnections = config('database.connections');
-        $databaseConnections['tenant'] = [
-            'driver' => 'mysql',
-            'host' => $databaseConnections['mpm_testing']['host'],
-            'port' => $databaseConnections['mpm_testing']['port'],
-            'database' => $databaseName,
-            'username' => $databaseConnections['mpm_testing']['username'],
-            'password' => $databaseConnections['mpm_testing']['password'],
-            'unix_socket' => $databaseConnections['mpm_testing']['unix_socket'],
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
