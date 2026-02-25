@@ -141,9 +141,20 @@ Certain PHP tools (such as migration or seeding utilities) work more convenientl
 To enable this, you can access the Docker-managed MySQL database locally.
 The Docker Compose stack must still be running, but this setup allows you to run PHP commands from your local terminal, providing a smoother development experience.
 
-- Install [direnv](https://direnv.net/)
-- Copy `.envrc.sample` to `.envrc` (and adapt it's values if you run with non-default configuration)
-- Run `direnv allow`
+- Create the file `src/backend/.env` with the following content
+
+  ::: code-group
+
+  ```ini [src/backend/.env]
+  #
+  # DO NOT USE THESE VALUES IN PRODUCTION
+  #
+  APP_KEY=base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
+  DB_USERNAME=root
+  DB_PASSWORD=wF9zLp2qRxaS2e
+  ```
+
+- Run `php artisan model:show "Person\Person"` to confirm it is working.
 
 ### Linter configuration
 
