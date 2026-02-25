@@ -206,7 +206,7 @@ class MeterTariffTest extends TestCase {
         $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
     }
 
-    public function actingAs(Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null): static {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

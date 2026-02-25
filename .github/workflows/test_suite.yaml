@@ -18,10 +18,10 @@ jobs:
       mysql:
         image: mysql:8.4
         env:
-          MYSQL_DATABASE: micro_power_manager
-          MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
+          MYSQL_DATABASE: mpm_testing
+          MYSQL_ROOT_PASSWORD: 6QVlQsfsjUbxoaTS
         ports:
-          - 3306:3306
+          - 53306:3306
       redis:
         image: redis:5
         ports:
@@ -37,10 +37,8 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
-      - name: Config environment file
-        uses: c-py/action-dotenv-to-setenv@v5
-        with:
-          env-file: ./dev/.env.micropowermanager-ci
+      - name: Copy .env for Backend
+        run: cp ./src/backend/.env.testing ./src/backend/.env
 
       - name: Install Composer Dependencies
         run: |
@@ -59,10 +57,10 @@ jobs:
 
       - name: Run Migrations
         run: |
-          php artisan migrate:fresh --seed
+          php artisan migrate:fresh
         working-directory: ./src/backend
 
       - name: Execute tests
-        run: php artisan test
+        run: php artisan test  --stop-on-failure
         working-directory: ./src/backend
-        continue-on-error: true
+        continue-on-error: false

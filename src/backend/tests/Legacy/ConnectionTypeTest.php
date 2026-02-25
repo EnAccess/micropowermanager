@@ -59,7 +59,7 @@ class ConnectionTypeTest extends TestCase {
         $this->assertEquals($response['data']['name'], $connectionTypeData['name']);
     }
 
-    public function actingAs(Authenticatable $user, $driver = null) {
+    public function actingAs(Authenticatable $user, $driver = null): static {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

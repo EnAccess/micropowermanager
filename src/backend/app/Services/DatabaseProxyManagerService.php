@@ -22,8 +22,10 @@ class DatabaseProxyManagerService {
     }
 
     public function runForCompany(int $companyId, callable $callable): mixed {
-        $database = $this->companyDatabase->findByCompanyId($companyId);
-        $this->buildDatabaseConnection($database->getDatabaseName());
+        if (!app()->environment('testing')) {
+            $database = $this->companyDatabase->findByCompanyId($companyId);
+            $this->buildDatabaseConnection($database->getDatabaseName());
+        }
 
         return $callable();
     }
@@ -37,6 +39,10 @@ class DatabaseProxyManagerService {
 
     public function buildDatabaseConnectionDemoCompany(): void {
         $this->buildDatabaseConnection(DemoCompany::DEMO_COMPANY_DATABASE_NAME);
+    }
+
+    public function buildDatabaseConnectionTestCompany(?string $testDatabaseName): void {
+        $this->buildDatabaseConnection($testDatabaseName ?? 'TestCompany_1');
     }
 
     private function buildDatabaseConnection(string $databaseName): void {
