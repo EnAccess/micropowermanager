@@ -13,12 +13,10 @@ use App\Models\Transaction\Transaction;
 use App\Plugins\MesombPaymentProvider\Models\MesombTransaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use Tests\CreatesApplication;
 use Tests\TestCase;
 
 class PaymentTests extends TestCase {
     use RefreshDatabase;
-    use CreatesApplication;
 
     public function testOnlySuccessesPaymentsCanBeProcessed(): void {
         $data = [
