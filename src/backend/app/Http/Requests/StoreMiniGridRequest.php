@@ -25,7 +25,7 @@ class StoreMiniGridRequest extends FormRequest {
         return [
             'name' => ['required', 'min:3'],
             'cluster_id' => ['required'],
-            'geo_data' => ['required'],
+            'geo_data' => ['required', 'string'],
         ];
     }
 

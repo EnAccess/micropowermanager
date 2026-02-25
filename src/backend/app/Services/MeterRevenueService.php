@@ -19,7 +19,7 @@ class MeterRevenueService {
         $tokens = $this->token->newQuery()->whereHas(
             'device',
             function ($q) use ($serialNumber) {
-                $q->where('serial_number', $serialNumber);
+                $q->where('device_serial', $serialNumber);
             }
         )->pluck('transaction_id');
 

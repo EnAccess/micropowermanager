@@ -38,8 +38,8 @@ class TicketUserService implements IBaseService {
         return $ticketUsers->get();
     }
 
-    public function getById(int $externId): TicketUser {
-        return $this->ticketUser->newQuery()->where('extern_id', $externId)->first();
+    public function getById(int $userId): TicketUser {
+        return $this->ticketUser->newQuery()->where('user_id', $userId)->first();
     }
 
     public function create($ticketUserData): TicketUser {
