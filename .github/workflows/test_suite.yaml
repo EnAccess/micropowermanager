@@ -38,8 +38,7 @@ jobs:
           coverage: xdebug
 
       - name: Install Composer Dependencies
-        run: |
-          composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist
         working-directory: ./src/backend
 
       - name: Generate autoload files
@@ -54,13 +53,11 @@ jobs:
         working-directory: ./src/backend
 
       - name: Run Migrations Test
-        run: |
-          php artisan --env=testing migrate:fresh
+        run: php artisan --env=testing migrate:fresh
         working-directory: ./src/backend
 
       - name: Run Migrations Rollback Test
-        run: |
-          php artisan --env=testing migrate:rollback
+        run: php artisan --env=testing migrate:rollback
         working-directory: ./src/backend
 
       - name: Run Tests
