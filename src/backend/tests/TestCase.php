@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 abstract class TestCase extends BaseTestCase {
-    use CreatesApplication;
     use CreateTenantCompany;
 
     /**
