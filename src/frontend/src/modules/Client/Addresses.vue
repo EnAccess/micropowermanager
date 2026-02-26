@@ -230,18 +230,27 @@ export default {
         this.modalVisibility = false
 
         if (this.editFlag) {
-          this.addresses.updateAddress(this.newAddress).then((response) => {
-            this.addresses.list = this.addresses.list.map(function (item) {
-              if (response.data.data.is_primary === 1) {
-                item.primary = false
-              }
-              if (item.id === response.data.data.id) {
-                let updatedAddress = new Address()
-                return updatedAddress.fromJson(response.data.data)
-              }
-              return item
+          this.addresses
+            .updateAddress({
+              id: this.newAddress.id,
+              email: this.newAddress.email,
+              street: this.newAddress.street,
+              phone: this.newAddress.phone,
+              city_id: this.newAddress.city_id,
+              is_primary: this.newAddress.primary,
             })
-          })
+            .then((response) => {
+              this.addresses.list = this.addresses.list.map(function (item) {
+                if (response.data.data.is_primary === 1) {
+                  item.primary = false
+                }
+                if (item.id === response.data.data.id) {
+                  let updatedAddress = new Address()
+                  return updatedAddress.fromJson(response.data.data)
+                }
+                return item
+              })
+            })
         } else {
           this.addresses.newAddress(this.newAddress).then((response) => {
             this.addresses.appendList(response.data.data)

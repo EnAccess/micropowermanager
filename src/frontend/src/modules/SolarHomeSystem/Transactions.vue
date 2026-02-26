@@ -21,9 +21,7 @@
             <md-table-cell
               v-text="token.transaction.original_transaction_type"
             ></md-table-cell>
-            <md-table-cell
-              v-text="moneyFormat(token.transaction.amount)"
-            ></md-table-cell>
+            <md-table-cell v-text="moneyFormat(token.amount)"></md-table-cell>
             <md-table-cell v-if="token.paid_for_type === 'App\\Models\\Token'">
               Token ({{ formatToken(token.paid_for.token) }})
             </md-table-cell>

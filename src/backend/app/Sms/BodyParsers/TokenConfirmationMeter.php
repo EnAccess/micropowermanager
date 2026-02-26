@@ -4,6 +4,7 @@ namespace App\Sms\BodyParsers;
 
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use App\Services\MeterService;
 
 /**
  * Token confirmation for meter (non-smart): token + energy (kWh) + meter serial.
@@ -21,9 +22,10 @@ class TokenConfirmationMeter extends SmsBodyParser {
     ) {}
 
     protected function getVariableValue(string $variable): mixed {
+        $meterService = app(MeterService::class);
         $person = $this->transaction->device?->person;
-        if ($this->transaction->nonPaygoAppliance()->exists()) {
-            $person = $this->transaction->nonPaygoAppliance()->first()->person;
+        if ($person == null) {
+            $person = $meterService->getPersonByDeviceSerialNumber($this->transaction->message);
         }
 
         return match ($variable) {

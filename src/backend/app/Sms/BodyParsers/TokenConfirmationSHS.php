@@ -22,8 +22,8 @@ class TokenConfirmationSHS extends SmsBodyParser {
 
     protected function getVariableValue(string $variable): mixed {
         $person = $this->transaction->device?->person;
-        if ($this->transaction->nonPaygoAppliance()->exists()) {
-            $person = $this->transaction->nonPaygoAppliance()->first()->person;
+        if ($person == null && !$this->transaction->paygoAppliance()->exists()) {
+            $person = $this->transaction->nonPaygoAppliance()->first()?->person;
         }
 
         return match ($variable) {

@@ -103,7 +103,7 @@ export default {
       }
     },
     loadTransactions() {
-      if (this.transactions && this.transactions.paginator) {
+      if (!this.transactions && !this.transactions.paginator) {
         EventBus.$emit("loadPage", this.transactions.paginator)
       }
     },
