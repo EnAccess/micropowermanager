@@ -37,13 +37,10 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
-      - name: Copy .env for Backend
-        run: cp ./src/backend/.env.testing ./src/backend/.env
-
       - name: Install Composer Dependencies
-        run: |
-          composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist
         working-directory: ./src/backend
+
       - name: Generate autoload files
         run: |
           OUTPUT=$(composer dump-autoload 2>&1)
@@ -55,12 +52,15 @@ jobs:
           fi
         working-directory: ./src/backend
 
-      - name: Run Migrations
-        run: |
-          php artisan migrate:fresh
+      - name: Run Migrations Test
+        run: php artisan --env=testing migrate:fresh
         working-directory: ./src/backend
 
-      - name: Execute tests
+      - name: Run Migrations Rollback Test
+        run: php artisan --env=testing migrate:rollback
+        working-directory: ./src/backend
+
+      - name: Run Tests
         run: php artisan test  --stop-on-failure
         working-directory: ./src/backend
         continue-on-error: false
