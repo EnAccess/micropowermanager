@@ -13,18 +13,6 @@ class UserResourceTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
-    public function assignRole(User $user, ...$roles): void {
-        if ($roles != []) {
-            $user->syncRoles($roles);
-        }
-    }
-
-    public function assignPermission(User $user, ...$permissions): void {
-        if ($permissions !== []) {
-            $user->syncPermissions($permissions);
-        }
-    }
-
     public function testListRegisteredUsers(): void {
         $user = UserFactory::new()->create();
         // create random users

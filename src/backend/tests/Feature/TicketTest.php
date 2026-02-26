@@ -3,9 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Ticket\TicketCategory;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TicketTest extends TestCase {
     use CreateEnvironments;
@@ -20,9 +19,12 @@ class TicketTest extends TestCase {
 
     public function testUserCreatesATicket(): void {
         $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
         $this->createPerson();
         $this->createTicketCategory();
-        $this->createTicketUser();
+        $this->createTicketUser($this->user->id);
 
         $postData = [
             'owner_id' => $this->person->id,
@@ -34,25 +36,31 @@ class TicketTest extends TestCase {
             'outsourcing' => 0,
         ];
         $response = $this->actingAs($this->user)->post('/api/tickets/ticket', $postData);
-        $response->assertStatus(200);
+        $response->assertStatus(201);
     }
 
     public function testUserGetsTicketList(): void {
         $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
         $this->createPerson();
         $this->createTicketCategory();
-        $this->createTicketUser();
+        $this->createTicketUser($this->user->id);
         $this->createTicket(1, 1, $this->person->id);
         $response = $this->actingAs($this->user)->get('/api/tickets/ticket');
         $response->assertStatus(200);
-        $this->assertEquals(1, count($response['data']['data']));
+        $this->assertEquals(1, count($response['data']));
     }
 
     public function testUserClosesATicket(): void {
         $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
         $this->createPerson();
         $this->createTicketCategory();
-        $this->createTicketUser();
+        $this->createTicketUser($this->user->id);
         $this->createTicket(1, 1, $this->person->id);
         $ticketId = $this->ticket->id;
         $response = $this->actingAs($this->user)->delete(sprintf('/api/tickets/ticket/%s', $ticketId));
@@ -61,15 +69,18 @@ class TicketTest extends TestCase {
 
     public function testUserGetsAgentsTicketList(): void {
         $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
         $this->createPerson();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createTicketCategory();
-        $this->createTicketUser();
+        $this->createTicketUser($this->user->id);
         $this->createTicket(1, 1, $this->person->id, $this->agent->id);
         $response = $this->actingAs($this->user)->get(sprintf('/api/tickets/agents/%s', $this->agent->id));
         $response->assertStatus(200);
-        $this->assertEquals(1, count($response['data']['data']));
+        $this->assertEquals(1, count($response['data']));
     }
 
     public function testUserCreatesATicketCategory(): void {
@@ -77,7 +88,7 @@ class TicketTest extends TestCase {
         $postData = [
             'labelName' => 'test category',
             'labelColor' => 'red',
-            'outSource' => 0,
+            'outSourcing' => 0,
         ];
         $response = $this->actingAs($this->user)->post('/api/tickets/labels', $postData);
 
@@ -98,22 +109,17 @@ class TicketTest extends TestCase {
 
     public function testUserGetsTicketListForACustomer(): void {
         $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
         $this->createPerson();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createTicketCategory();
-        $this->createTicketUser();
+        $this->createTicketUser($this->user->id);
         $this->createTicket(1, 1, $this->person->id);
         $response = $this->actingAs($this->user)->get(sprintf('/api/tickets/user/%s', $this->person->id));
         $response->assertStatus(200);
-        $this->assertEquals(1, count($response['data']['data']));
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
+        $this->assertEquals(1, count($response['data']));
     }
 }

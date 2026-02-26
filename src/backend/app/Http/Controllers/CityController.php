@@ -34,7 +34,7 @@ class CityController extends Controller {
 
     public function update(int $cityId, CityRequest $request): ApiResource {
         $city = $this->cityService->getById($cityId);
-        $cityData = $request->only(['name', 'mini_grid_id', 'cluster_id', 'country_id']);
+        $cityData = $request->only(['name', 'mini_grid_id', 'country_id']);
 
         return ApiResource::make($this->cityService->update($city, $cityData));
     }
