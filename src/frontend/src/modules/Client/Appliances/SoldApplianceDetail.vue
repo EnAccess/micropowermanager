@@ -407,6 +407,7 @@ export default {
   },
   methods: {
     reloadRatesOrLogs(subscriber, data) {
+      console.log("subcriber: ", subscriber)
       if (subscriber === this.ratesSubscriber) {
         this.soldAppliance.rates =
           this.applianceRateService.updateRatesList(data)
@@ -486,6 +487,12 @@ export default {
           "widgetContentLoaded",
           this.subscriber,
           Object.keys(this.soldAppliance),
+        )
+
+        EventBus.$emit(
+          "widgetContentLoaded",
+          this.logsSubscriber,
+          this.soldAppliance.logs.length,
         )
         return this.personId
       } catch (e) {
