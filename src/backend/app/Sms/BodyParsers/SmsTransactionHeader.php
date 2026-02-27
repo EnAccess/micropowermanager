@@ -14,7 +14,7 @@ class SmsTransactionHeader extends SmsBodyParser {
 
     protected function getVariableValue(string $variable): mixed {
         $person = $this->transaction->device?->person;
-        if ($this->transaction->nonPaygoAppliance()->exists()) {
+        if ($person == null && !$this->transaction->paygoAppliance()->exists()) {
             $person = $this->transaction->nonPaygoAppliance()->first()->person;
         }
 

@@ -26,15 +26,15 @@ class SendTransactionConfirmationSmsListener {
         }
 
         try {
-            if ($transaction->nonPaygoAppliance()->exists()) {
+            if ($transaction->device()->exists()) {
                 $transaction->load([
                     'token',
-                    'nonPaygoAppliance.person.addresses',
+                    'device.person.addresses',
                 ]);
             } else {
                 $transaction->load([
                     'token',
-                    'device.person.addresses',
+                    'nonPaygoAppliance.person.addresses',
                 ]);
             }
             // For now we only limit sending sms confirmation for token enabled transaction
