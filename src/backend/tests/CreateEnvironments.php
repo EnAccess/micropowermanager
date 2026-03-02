@@ -13,6 +13,7 @@ use Database\Factories\AgentFactory;
 use Database\Factories\AgentReceiptFactory;
 use Database\Factories\AgentSoldApplianceFactory;
 use Database\Factories\AgentTransactionFactory;
+use Database\Factories\ApplianceFactory;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\CityFactory;
@@ -403,8 +404,7 @@ trait CreateEnvironments {
                 'email' => $this->faker->email,
                 'phone' => $this->faker->phoneNumber,
                 'street' => '',
-                'city_id' => $this->getRandomIdFromList($this->cities),
-                'geo_id' => 1,
+                'city_id' => collect($this->cities)->random()['id'],
                 'is_primary' => 1,
             ]);
             $address->owner()->associate($person)->save();
@@ -421,7 +421,12 @@ trait CreateEnvironments {
         $this->createPerson($agentCount, 0);
 
         foreach ($this->people as $person) {
+            $email = $this->user->email;
+            if (count($this->agents) > 0) {
+                $email = $this->faker->unique()->safeEmail;
+            }
             $agent = AgentFactory::new()->create([
+                'email' => $email,
                 'person_id' => $person->id,
                 'agent_commission_id' => $this->getRandomIdFromList($this->agentCommissions),
                 'mini_grid_id' => $this->getRandomIdFromList($this->miniGrids),
@@ -461,9 +466,12 @@ trait CreateEnvironments {
     protected function createAssignedAppliances($applianceCount = 1) {
         $this->createApplianceType($applianceCount);
         while ($applianceCount > 0) {
+            $appliance = ApplianceFactory::new()->create([
+                'appliance_type_id' => $this->getRandomIdFromList($this->applianceTypes),
+            ]);
             $assignedAppliance = AgentAssignedAppliancesFactory::new()->create([
                 'agent_id' => $this->getRandomIdFromList($this->agents),
-                'appliance_type_id' => $this->getRandomIdFromList($this->applianceTypes),
+                'appliance_id' => $appliance->id,
                 'user_id' => $this->user->id,
                 'cost' => $this->faker->randomFloat(2, 1, 100),
             ]);
@@ -493,7 +501,7 @@ trait CreateEnvironments {
                 'rate_count' => 10,
                 'total_cost' => $assignedAppliance->cost,
                 'down_payment' => request()->input('down_payment'),
-                'appliance_type_id' => $assignedAppliance->applianceType->id,
+                'appliance_id' => $assignedAppliance->appliance_id,
                 'creator_type' => 'agent',
                 'creator_id' => $assignedAppliance->agent_id,
             ]);
@@ -546,6 +554,11 @@ trait CreateEnvironments {
         while ($agentTransactionCount > 0) {
             $meter = $this->getMeter();
 
+            Device::factory()
+                ->for($this->person)
+                ->for($meter, 'device')
+                ->create(['device_serial' => $meter->serial_number]);
+
             $transaction = TransactionFactory::new()->make([
                 'amount' => $amount,
                 'sender' => $this->faker->phoneNumber,
@@ -571,8 +584,6 @@ trait CreateEnvironments {
 
             $token = TokenFactory::new()->create([
                 'transaction_id' => $transaction->id,
-                'meter_id' => $meter->id,
-                'token' => $this->faker->unique()->randomNumber(),
             ]);
 
             event(new PaymentSuccessEvent(
@@ -727,13 +738,7 @@ trait CreateEnvironments {
             ]);
     }
 
-    private function getRandomIdFromList(array $list, $startIndex = 1, $endIndex = null): int {
-        $ids = collect($list)->pluck('id')->toArray();
-
-        if ($endIndex === null) {
-            $endIndex = count($ids);
-        }
-
-        return random_int($startIndex, $endIndex);
+    private function getRandomIdFromList(array $list): int {
+        return collect($list)->pluck('id')->random();
     }
 }

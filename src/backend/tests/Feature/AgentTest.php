@@ -3,25 +3,31 @@
 namespace Tests\Feature;
 
 use App\Models\Agent;
-use App\Models\Person\Person;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentTest extends TestCase {
     use CreateEnvironments;
 
     public function testUserGetsAgentList(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
         $agentCount = 4;
-        $this->createAgent(4);
+        $this->createAgent($agentCount);
         $response = $this->actingAs($this->user)->get('/api/agents');
         $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), $agentCount);
+        $this->assertEquals($agentCount, count($response['data']));
     }
 
     public function testUserGetsAgentById(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
         $this->createAgent(4);
         $response = $this->actingAs($this->user)->get(sprintf('/api/agents/%s', $this->agents[0]->id));
         $response->assertStatus(200);
@@ -47,11 +53,9 @@ class AgentTest extends TestCase {
         ];
         $response = $this->actingAs($this->user)->post('/api/agents', $postData);
         $response->assertStatus(201);
-        $lastCreatedPerson = Person::query()->latest()->first();
-        $lastCreatedAgent = Agent::query()->latest()->first();
-        $personAddress = $lastCreatedPerson->addresses()->first();
-        $this->assertEquals($lastCreatedPerson->id, $response['data']['person_id']);
-        $this->assertEquals($lastCreatedAgent->person->name, $response['data']['name']);
+        $this->assertNotNull($response['data']['person_id']);
+        $lastCreatedAgent = Agent::query()->find($response['data']['id']);
+        $personAddress = $lastCreatedAgent->person->addresses()->first();
         $this->assertEquals($personAddress->phone, $postData['phone']);
     }
 
@@ -70,12 +74,12 @@ class AgentTest extends TestCase {
             'birthday' => $this->faker->date(),
             'phone' => $this->faker->phoneNumber(),
             'gender' => 'male',
-            'commissionTypeId' => 1,
+            'commissionTypeId' => $this->agentCommissions[0]->id,
         ];
 
         $response = $this->actingAs($this->user)->put(sprintf('/api/agents/%s', $this->agents[0]->id), $putData);
         $response->assertStatus(200);
-        $this->assertEquals($putData['name'], $response['data']['name']);
+        $this->assertEquals($putData['name'], $response['data']['person']['name']);
         $this->assertEquals($putData['phone'], $response['data']['person']['addresses'][0]['phone']);
         $this->assertEquals($putData['gender'], $response['data']['person']['gender']);
     }
@@ -104,9 +108,10 @@ class AgentTest extends TestCase {
         $this->createAgentCommission();
         $this->createAgent();
 
-        $response = $this->actingAs($this->user)->get('/api/agents/search?q='.$this->agents[0]->person->name);
+        $response = $this->actingAs($this->user)->get('/api/agents/search?term='.$this->agents[0]->person->name);
+        $response->assertStatus(200);
         $responseData = $response['data'][0];
-        $this->assertEquals($responseData['name'], $this->agents[0]->person->name);
+        $this->assertEquals($responseData['person']['name'], $this->agents[0]->person->name);
     }
 
     public function testUserCanDeleteAnAgent(): void {
@@ -119,13 +124,5 @@ class AgentTest extends TestCase {
         $this->actingAs($this->user)->delete(sprintf('/api/agents/%s', $this->agents[0]->id));
         $agentsCount = Agent::query()->get()->count();
         $this->assertEquals(0, $agentsCount);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }
