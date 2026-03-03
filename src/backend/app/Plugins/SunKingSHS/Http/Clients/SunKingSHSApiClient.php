@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
-class ApiRequests {
+class SunKingSHSApiClient {
     public function __construct(
         private Client $httpClient,
     ) {}

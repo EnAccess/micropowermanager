@@ -22,7 +22,7 @@ class SunKingSHSApi implements IManufacturerAPI {
     public function __construct(
         private SunKingCredentialService $credentialService,
         private SunKingTransaction $sunKingTransaction,
-        private ApiRequests $apiRequests,
+        private SunKingSHSApiClient $apiClient,
     ) {}
 
     /**
@@ -80,10 +80,10 @@ class SunKingSHSApi implements IManufacturerAPI {
      */
     private function handleApiRequest(SunKingCredential &$credentials, array $params): mixed {
         try {
-            $authResponse = $this->apiRequests->authentication($credentials);
+            $authResponse = $this->apiClient->authentication($credentials);
             $this->credentialService->updateCredentials($credentials, $authResponse);
 
-            return $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
+            return $this->apiClient->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
         } catch (SunKingApiResponseException $e) {
             $this->credentialService->updateCredentials($credentials, [
                 'access_token' => null,

@@ -17,6 +17,8 @@ class SunKingCredentialService {
      */
     public function createCredentials(): SunKingCredential {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
+            'auth_url' => config('sunking-shs.default_auth_url'),
+            'api_url' => config('sunking-shs.default_api_url'),
             'client_id' => null,
             'client_secret' => null,
         ]);
