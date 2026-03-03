@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ManufacturerTest extends TestCase {
     use CreateEnvironments;
@@ -28,6 +27,8 @@ class ManufacturerTest extends TestCase {
 
     public function testUserCreatesNewManufacturer(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
         $this->createCity();
         $manufacturerData = [
             'name' => 'test meters company',
@@ -40,13 +41,5 @@ class ManufacturerTest extends TestCase {
         $response = $this->actingAs($this->user)->post('/api/manufacturers', $manufacturerData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['name'], $manufacturerData['name']);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }
