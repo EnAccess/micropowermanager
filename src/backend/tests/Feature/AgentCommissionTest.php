@@ -3,9 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\AgentCommission;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentCommissionTest extends TestCase {
     use CreateEnvironments;
@@ -33,7 +32,7 @@ class AgentCommissionTest extends TestCase {
         ];
         $response = $this->actingAs($this->user)->post('/api/agents/commissions', $postData);
         $response->assertStatus(201);
-        $lastCreatedAgentCommission = AgentCommission::query()->latest()->first();
+        $lastCreatedAgentCommission = AgentCommission::query()->latest('id')->first();
         $this->assertEquals($lastCreatedAgentCommission->name, $response['data']['name']);
     }
 
@@ -61,16 +60,9 @@ class AgentCommissionTest extends TestCase {
     public function testUserCanDeleteAnAgent(): void {
         $this->createTestData();
         $this->createAgentCommission();
-        $this->actingAs($this->user)->delete(sprintf('/api/agents/commissions/%s', $this->agentCommissions[0]->id));
+        $response = $this->actingAs($this->user)->delete(sprintf('/api/agents/commissions/%s', $this->agentCommissions[0]->id));
+        $this->assertEquals('Agent commission deleted successfully', $response['message']);
         $agentsCount = AgentCommission::query()->get()->count();
         $this->assertEquals(0, $agentsCount);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

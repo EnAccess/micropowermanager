@@ -6,6 +6,7 @@ use App\Http\Requests\CreateAgentCommissionRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AgentCommissionService;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AgentCommissionWebController extends Controller {
     public function __construct(private AgentCommissionService $agentCommissionService) {}
@@ -42,9 +43,13 @@ class AgentCommissionWebController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $agentCommissionId): ApiResource {
+    public function destroy(int $agentCommissionId): JsonResponse {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
 
-        return ApiResource::make($this->agentCommissionService->delete($agentCommission));
+        $this->agentCommissionService->delete($agentCommission);
+
+        return response()->json([
+            'message' => 'Agent commission deleted successfully',
+        ]);
     }
 }

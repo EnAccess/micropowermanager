@@ -47,7 +47,7 @@ class PersonController extends Controller {
      */
     public function index(Request $request): ApiResource {
         $customerType = $request->input('is_customer', 1);
-        $perPage = $request->input('per_page', config('settings.paginate'));
+        $perPage = $request->input('per_page', config('settings.paginate', 15));
         $agentId = $request->input('agent_id');
         $activeCustomer = $request->has('active_customer') ? (bool) $request->input('active_customer') : null;
         $cityId = $request->input('city_id');
