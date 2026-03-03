@@ -25,6 +25,7 @@ class SettingsExportService extends AbstractExportService {
             $this->readable($this->settingsData->vat_appliance ?? 0),
             $this->settingsData->usage_type ?? '',
             $this->settingsData->sms_gateway_id ?? '',
+            $this->settingsData->transaction_sms_enabled,
             $this->convertUtcDateToTimezone($this->settingsData->created_at),
             $this->convertUtcDateToTimezone($this->settingsData->updated_at),
         ];
@@ -57,6 +58,7 @@ class SettingsExportService extends AbstractExportService {
                 $this->readable($this->settingsData->vat_appliance ?? 0),
                 $this->settingsData->usage_type ?? '',
                 $this->settingsData->sms_gateway_id ?? '',
+                $this->settingsData->transaction_sms_enabled,
                 $this->convertUtcDateToTimezone($this->settingsData->created_at),
                 $this->convertUtcDateToTimezone($this->settingsData->updated_at),
             ],
@@ -94,6 +96,7 @@ class SettingsExportService extends AbstractExportService {
                 'vat_appliance' => $this->settingsData->vat_appliance,
                 'usage_type' => $this->settingsData->usage_type,
                 'sms_gateway_id' => $this->settingsData->sms_gateway_id,
+                'transaction_sms_enabled' => $this->settingsData->transaction_sms_enabled,
                 'created_at' => $this->convertUtcDateToTimezone($this->settingsData->created_at),
                 'updated_at' => $this->convertUtcDateToTimezone($this->settingsData->updated_at),
             ],

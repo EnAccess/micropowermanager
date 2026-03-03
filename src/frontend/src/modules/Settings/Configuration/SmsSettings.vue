@@ -1,5 +1,22 @@
 <template>
   <div>
+    <div class="transaction-sms-toggle">
+      <div class="toggle-content">
+        <div>
+          <span class="toggle-label">
+            {{ $tc("phrases.transactionSmsEnabled") }}
+          </span>
+          <p class="toggle-description">
+            {{ $tc("phrases.transactionSmsEnabledDescription") }}
+          </p>
+        </div>
+        <md-switch
+          v-model="transactionSmsEnabled"
+          @change="updateTransactionSmsEnabled"
+          class="md-primary"
+        />
+      </div>
+    </div>
     <md-tabs>
       <md-tab
         @click="tab = 'confirmation'"
@@ -148,6 +165,7 @@ import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService"
 import SmsAndroidSetting from "./SmsAndroidSetting"
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService"
+import { MainSettingsService } from "@/services/MainSettingsService"
 import { notify } from "@/mixins/notify"
 
 export default {
@@ -168,11 +186,14 @@ export default {
       smsResendInformationKeyService: new SmsResendInformationKeyService(),
       smsAndroidSettingsService: new SmsAndroidSettingService(),
       smsVariableDefaultValueService: new SmsVariableDefaultValueService(),
+      mainSettingsService: new MainSettingsService(),
+      transactionSmsEnabled: true,
       isValid: false,
     }
   },
   created() {
     this.getSmsVariableDefaultValues()
+    this.loadTransactionSmsEnabled()
   },
   mounted() {
     this.getSmsBodies()
@@ -186,6 +207,26 @@ export default {
     EventBus.$on("smsAndroidSettingSaved", this.saveAdditionalAndroidSetting)
   },
   methods: {
+    async loadTransactionSmsEnabled() {
+      const mainSettings = this.$store.getters["settings/getMainSettings"]
+      this.transactionSmsEnabled =
+        mainSettings.transactionSmsEnabled !== undefined
+          ? mainSettings.transactionSmsEnabled
+          : true
+    },
+    async updateTransactionSmsEnabled() {
+      try {
+        const mainSettings = this.$store.getters["settings/getMainSettings"]
+        this.mainSettingsService.mainSettings = { ...mainSettings }
+        this.mainSettingsService.mainSettings.transactionSmsEnabled =
+          this.transactionSmsEnabled
+        await this.mainSettingsService.update()
+        await this.$store.dispatch("settings/setMainSettings")
+        this.alertNotify("success", "Updated Successfully")
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
     async getSmsVariableDefaultValues() {
       try {
         await this.smsVariableDefaultValueService.getSmsVariableDefaultValues()
@@ -311,5 +352,26 @@ export default {
   d-webkit-border-radius: 16px;
   -moz-border-radius: 16px;
   border-radius: 16px;
+}
+.transaction-sms-toggle {
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+.toggle-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.toggle-label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+.toggle-description {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 4px 0 0 0;
 }
 </style>

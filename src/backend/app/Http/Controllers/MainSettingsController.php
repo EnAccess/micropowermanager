@@ -29,6 +29,7 @@ class MainSettingsController extends Controller {
             'vat_appliance',
             'usage_type',
             'sms_gateway_id',
+            'transaction_sms_enabled',
         ]);
 
         $updated = $this->mainSettingsService->update($mainSettings, $mainSettingsData);

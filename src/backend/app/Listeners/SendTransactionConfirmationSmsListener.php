@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\TransactionSuccessfulEvent;
+use App\Models\MainSettings;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
@@ -22,6 +23,11 @@ class SendTransactionConfirmationSmsListener {
 
     private function onTransactionSuccess(Transaction $transaction): void {
         if ($transaction->sms()->exists()) {
+            return;
+        }
+
+        $mainSettings = MainSettings::query()->first();
+        if ($mainSettings && !$mainSettings->transaction_sms_enabled) {
             return;
         }
 

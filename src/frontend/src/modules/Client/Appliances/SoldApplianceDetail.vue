@@ -407,7 +407,6 @@ export default {
   },
   methods: {
     reloadRatesOrLogs(subscriber, data) {
-      console.log("subcriber: ", subscriber)
       if (subscriber === this.ratesSubscriber) {
         this.soldAppliance.rates =
           this.applianceRateService.updateRatesList(data)

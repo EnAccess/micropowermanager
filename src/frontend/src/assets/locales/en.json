@@ -445,6 +445,8 @@
     "transactionNotify": "There is not enough data to compare",
     "transactionProcessing": "Transaction Processing",
     "transactionReference": "Transaction Reference",
+    "transactionSmsEnabled": "Transaction SMS Notifications",
+    "transactionSmsEnabledDescription": "When enabled, customers will automatically receive an SMS confirmation after each successful transaction.",
     "transactionType": "Transaction Type",
     "unauthorizedDescription": "You don't have the required permission to view this section. Reach out to your administrator if you believe this is a mistake.",
     "untraceableTransaction": "Untraceable transaction",

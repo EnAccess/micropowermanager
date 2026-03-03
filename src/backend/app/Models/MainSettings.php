@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null    $sms_gateway_id
+ * @property bool        $transaction_sms_enabled
  */
 class MainSettings extends BaseModel {
     /** @use HasFactory<MainSettingsFactory> */

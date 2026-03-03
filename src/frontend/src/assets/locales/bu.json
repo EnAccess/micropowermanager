@@ -445,6 +445,8 @@
     "transactionNotify": "Jှ+ိင်းယှV်ရန်အချက်အလက်လံေုလာက်မ6မGှိပါ။",
     "transactionProcessing": "ေငေွပးေငယွ ူေဆာင်ရွက်ြခင်း",
     "transactionReference": "Transaction Reference",
+    "transactionSmsEnabled": "ငွေလွှဲ SMS အကြောင်းကြားချက်များ",
+    "transactionSmsEnabledDescription": "ဖွင့်ထားပါက ငွေလွှဲမှု အောင်မြင်တိုင်း ဖောက်သည်များသည် အတည်ပြု SMS ကို အလိုအလျောက် လက်ခံရရှိမည်။",
     "transactionType": "ငွေလွှဲအမျိုးအစား",
     "unauthorizedDescription": "You don't have the required permission to view this section. Reach out to your administrator if you believe this is a mistake.",
     "untraceableTransaction": "Untraceable transaction",

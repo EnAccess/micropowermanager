@@ -445,6 +445,8 @@
     "transactionNotify": "لا توجد بيانات كافية للمقارنة",
     "transactionProcessing": "جاري معالجة المعاملة",
     "transactionReference": "مرجع المعاملة",
+    "transactionSmsEnabled": "إشعارات SMS للمعاملات",
+    "transactionSmsEnabledDescription": "عند التفعيل، سيتلقى العملاء تلقائياً رسالة SMS تأكيد بعد كل معاملة ناجحة.",
     "transactionType": "نوع المعاملة",
     "unauthorizedDescription": "لا تملك صلاحية الوصول إلى هذا القسم. تواصل مع المسؤول إذا كنت تعتقد أن هذا خطأ.",
     "untraceableTransaction": "معاملة غير قابلة للتتبع",
