@@ -4,15 +4,18 @@ namespace Tests\Feature;
 
 use App\Models\AgentAssignedAppliances;
 use App\Models\Person\Person;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentAppTest extends TestCase {
     use CreateEnvironments;
 
     public function testAgentLogsIn(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
 
@@ -28,18 +31,25 @@ class AgentAppTest extends TestCase {
 
     public function testAgentGetsOwnData(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
         $response = $this->actingAs($this->agent)->get('/api/app/me');
         $response->assertStatus(200);
-        $this->assertEquals($agent->id, $response['id']);
-        $this->assertEquals($agent->email, $response['email']);
-        $this->assertEquals($agent->person->name, $response['name']);
+        $this->assertEquals($agent->id, $response['agent']['id']);
+        $this->assertEquals($agent->email, $response['agent']['email']);
+        $this->assertEquals($agent->person->id, $response['agent']['person_id']);
     }
 
     public function testAgentLogsOut(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
         $this->createAgent();
         $response = $this->actingAs($this->agent)->post('/api/app/logout');
         $response->assertStatus(200);
@@ -48,6 +58,10 @@ class AgentAppTest extends TestCase {
 
     public function testAgentRefreshesAuthToken(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
         $this->createAgent();
         $response = $this->actingAs($this->agent)->post('/api/app/refresh');
         $response->assertStatus(200);
@@ -55,6 +69,9 @@ class AgentAppTest extends TestCase {
 
     public function testAgentSetsFirebaseToken(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $postData = [
@@ -67,6 +84,9 @@ class AgentAppTest extends TestCase {
 
     public function testAgentGetsBalance(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
@@ -82,10 +102,10 @@ class AgentAppTest extends TestCase {
         $this->createCity();
         $this->createMeterType();
         $this->createMeterTariff();
-        $personCount = 10;
-        $this->createPerson($personCount);
         $this->createAgentCommission();
         $this->createAgent();
+        $personCount = 10;
+        $this->createPerson($personCount);
         $response = $this->actingAs($this->agent)->get('/api/app/agents/customers');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $personCount);
@@ -98,12 +118,12 @@ class AgentAppTest extends TestCase {
         $this->createCity();
         $this->createMeterType();
         $this->createMeterTariff();
-        $personCount = 10;
-        $this->createPerson($personCount);
         $this->createAgentCommission();
         $this->createAgent();
+        $personCount = 10;
+        $this->createPerson($personCount);
         $person = Person::query()->where('is_customer', 1)->first();
-        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/search?q=%s', $person->name));
+        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/search?term=%s', $person->name));
         $response->assertStatus(200);
         $this->assertNotNull($response['data']);
         $this->assertEquals($response['data'][0]['name'], $person->name);
@@ -205,6 +225,9 @@ class AgentAppTest extends TestCase {
 
     public function testAgentGetsSoldAppliances(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAssignedAppliances();
@@ -217,6 +240,9 @@ class AgentAppTest extends TestCase {
 
     public function testAgentGetsCustomerSoldAppliancesByCustomerId(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAssignedAppliances();
@@ -229,6 +255,9 @@ class AgentAppTest extends TestCase {
 
     public function testAgentSalesAppliances(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAssignedAppliances();
@@ -240,19 +269,21 @@ class AgentAppTest extends TestCase {
             'tenure' => 10,
             'first_payment_date' => date('Y-m-d', strtotime('+1 month')),
         ];
-
         $response = $this->actingAs($this->agent)->post('/api/app/agents/appliances', $postData);
         $response->assertStatus(201);
     }
 
     public function testAgentGetsAssignedAppliances(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $assignedApplianceCount = 2;
         $this->createAssignedAppliances($assignedApplianceCount);
         AgentAssignedAppliances::query()->first();
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/applianceTypes');
+        $response = $this->actingAs($this->agent)->get('/api/app/agents/appliance_types');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $assignedApplianceCount);
     }
@@ -326,13 +357,5 @@ class AgentAppTest extends TestCase {
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
         $response = $this->actingAs($this->agent)->get('/api/app/agents/dashboard/revenue');
         $response->assertStatus(200);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }
