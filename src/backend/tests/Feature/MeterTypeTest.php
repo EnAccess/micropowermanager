@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MeterTypeTest extends TestCase {
     use CreateEnvironments;
@@ -79,6 +78,9 @@ class MeterTypeTest extends TestCase {
     public function testUserGetsMeterTypesWithMeterRelationByMeterTypeId(): void {
         $connectionTypeCount = 2;
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createMeterTariff();
         $this->createConnectionGroup();
         $this->createConnectionType($connectionTypeCount);
@@ -92,13 +94,5 @@ class MeterTypeTest extends TestCase {
         ));
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']['meters']), 1);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

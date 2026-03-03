@@ -610,7 +610,7 @@ trait CreateEnvironments {
             $commission = $this->agentCommission;
 
             $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
-                'agent_id' => $this->getRandomIdFromList($this->agents),
+                'agent_id' => $agent->id,
                 'amount' => ($amount * $commission->energy_commission) < 0 ?
                     (-1 * ($amount * $commission->energy_commission)) : ($amount * $commission->energy_commission),
                 'transaction_id' => $agentTransaction->id,

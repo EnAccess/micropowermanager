@@ -3,9 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\TimeOfUsage;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TimeOfUsageTest extends TestCase {
     use CreateEnvironments;
@@ -18,13 +17,5 @@ class TimeOfUsageTest extends TestCase {
         $timeOfUsage = TimeOfUsage::query()->first();
         $response = $this->actingAs($this->user)->delete(sprintf('/api/time-of-usages/%s', $timeOfUsage->id));
         $response->assertStatus(200);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

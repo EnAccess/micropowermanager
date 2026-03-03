@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TargetTest extends TestCase {
     use CreateEnvironments;
@@ -57,20 +56,12 @@ class TargetTest extends TestCase {
                 ],
             ],
             'period' => '2022-05-12',
-            'targetType' => 'cluster',
-            'targetId' => 1,
+            'targetForType' => 'cluster',
+            'targetForId' => $this->cluster->id,
         ];
         $response = $this->actingAs($this->user)->post('/api/targets', $targetData);
         $response->assertStatus(201);
-        $this->assertEquals($response['data']['type'], $targetData['targetType']);
+        $this->assertEquals($response['data']['type'], $targetData['targetForType']);
         $this->assertEquals($response['data']['target_date'], $targetData['period']);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null): static {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }
