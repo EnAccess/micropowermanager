@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\SunKingSHS\Modules\Api;
+namespace App\Plugins\SunKingSHS\Http\Clients;
 
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
 use App\Plugins\SunKingSHS\Models\SunKingCredential;

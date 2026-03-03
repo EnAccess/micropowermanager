@@ -9,6 +9,7 @@ use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
+use App\Plugins\SunKingSHS\Http\Clients\SunKingSHSApiClient;
 use App\Plugins\SunKingSHS\Models\SunKingCredential;
 use App\Plugins\SunKingSHS\Models\SunKingTransaction;
 use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
