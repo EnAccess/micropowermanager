@@ -406,22 +406,34 @@ export default {
     EventBus.$off("pageLoaded", this.reloadRatesOrLogs)
   },
   methods: {
+    reloadRates(data) {
+      this.soldAppliance.rates = this.applianceRateService.updateRatesList(data)
+
+      EventBus.$emit(
+        "widgetContentLoaded",
+        this.ratesSubscriber,
+        this.soldAppliance.rates.length,
+      )
+    },
+
+    reloadLogs(data) {
+      this.soldAppliance.logs = this.applianceLogService.updateLogsList(data)
+
+      EventBus.$emit(
+        "widgetContentLoaded",
+        this.logsSubscriber,
+        this.soldAppliance.logs.length,
+      )
+    },
+
     reloadRatesOrLogs(subscriber, data) {
       if (subscriber === this.ratesSubscriber) {
-        this.soldAppliance.rates =
-          this.applianceRateService.updateRatesList(data)
-        EventBus.$emit(
-          "widgetContentLoaded",
-          this.ratesSubscriber,
-          this.soldAppliance.rates.length,
-        )
-      } else if (subscriber === this.logsSubscriber) {
-        this.soldAppliance.logs = this.applianceLogService.updateLogsList(data)
-        EventBus.$emit(
-          "widgetContentLoaded",
-          this.logsSubscriber,
-          this.soldAppliance.logs.length,
-        )
+        this.reloadRates(data)
+        return
+      }
+
+      if (subscriber === this.logsSubscriber) {
+        this.reloadLogs(data)
       }
     },
     showConfirm(data) {
@@ -574,6 +586,8 @@ export default {
               this.getPayment = false
               this.paymentProgress = false
               await this.getSoldApplianceDetail()
+              EventBus.$emit("reloadWidget", this.ratesSubscriber)
+              EventBus.$emit("reloadWidget", this.logsSubscriber)
               return
             }
           }
@@ -586,6 +600,8 @@ export default {
           this.getPayment = false
           this.paymentProgress = false
           await this.getSoldApplianceDetail()
+          EventBus.$emit("reloadWidget", this.ratesSubscriber)
+          EventBus.$emit("reloadWidget", this.logsSubscriber)
         } catch (e) {
           this.paymentProgress = false
           const errorMessage =
