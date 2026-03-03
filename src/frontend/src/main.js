@@ -34,6 +34,7 @@ import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionD
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail"
 import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
+import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail"
 import Angaza from "@/plugins/angaza-shs/modules/Overview/Credential"
 import DalyBms from "@/plugins/daly-bms/modules/Overview/Credential"
 import AfricasTalking from "@/plugins/africas-talking/modules/Overview/Credential"
@@ -43,6 +44,7 @@ import Prospect from "@/plugins/prospect/modules/Overview/Credential"
 import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 import TextbeeSmsGateway from "@/plugins/textbee-sms-gateway/modules/Overview/Credential"
 import SparkShs from "@/plugins/spark-shs/modules/Overview/Credential.vue"
+import SmsTransactionParserSetup from "@/plugins/sms-transaction-parser/modules/Overview/Setup.vue"
 
 import {
   getPermissionsForRoute,
@@ -73,6 +75,7 @@ Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
+Vue.component("SmsTransactionDetail", SmsTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
 Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
@@ -82,6 +85,7 @@ Vue.component("Prospect", Prospect)
 Vue.component("Paystack", Paystack)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
+Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {

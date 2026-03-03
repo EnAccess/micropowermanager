@@ -106,6 +106,7 @@ import ChintMeterOverview from "@/plugins/chint-meter/modules/Overview/Overview"
 import OdysseyExportOverview from "@/plugins/odyssey-data-export/modules/Overview/Overview"
 import EcreeeETenderOverview from "@/plugins/ecreee-e-tender/modules/Overview/Overview"
 import SparkShsOverview from "@/plugins/spark-shs/modules/Overview/Overview"
+import SmsTransactionParserOverview from "@/plugins/sms-transaction-parser/modules/Overview/Overview.vue"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1697,6 +1698,30 @@ export const exportedRoutes = [
       {
         path: "overview",
         component: SparkShsOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/sms-transaction-parser",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 29,
+        name: "Sms Transaction Parser",
+        icon: "sms",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: SmsTransactionParserOverview,
         meta: {
           layout: "default",
           sidebar: {

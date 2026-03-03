@@ -133,6 +133,7 @@ export class TransactionService {
       sentDate: transactionData.created_at,
       lastUpdate: transactionData.updated_at,
       status: this.getOriginalData(transactionData).status,
+      original_transaction: this.getOriginalData(transactionData),
     }
   }
 
