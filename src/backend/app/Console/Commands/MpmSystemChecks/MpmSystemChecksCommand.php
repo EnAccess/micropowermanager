@@ -16,6 +16,7 @@ class MpmSystemChecksCommand extends Command {
             'mpm-system-checks:logging' => 'Logging',
             'mpm-system-checks:redis-connection' => 'Redis Connection',
             'mpm-system-checks:storage' => 'Storage',
+            'mpm-system-checks:horizon' => 'Horizon Queue Worker',
         ];
 
         $failed = false;
