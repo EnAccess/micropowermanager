@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Meter\Meter;
+use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -26,6 +27,14 @@ class MeterService implements IBaseService {
             'manufacturer',
             'tokens.transaction',
         ])->where('serial_number', $serialNumber)->first();
+    }
+
+    public function getPersonByDeviceSerialNumber(string $serialNumber): ?Person {
+        $meter = $this->meter->newQuery()->with(
+            ['device.person']
+        )->where('serial_number', $serialNumber)->first();
+
+        return $meter?->device->person;
     }
 
     /**

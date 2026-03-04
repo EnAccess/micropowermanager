@@ -52,6 +52,7 @@ class SettingsImportService extends AbstractImportService {
                     'vat_appliance' => $settingsData['vat_appliance'] ?? 0,
                     'usage_type' => $settingsData['usage_type'] ?? null,
                     'sms_gateway_id' => $settingsData['sms_gateway_id'] ?? null,
+                    'transaction_sms_enabled' => $settingsData['transaction_sms_enabled'] ?? true,
                 ]);
             } else {
                 // Update existing settings
@@ -71,6 +72,10 @@ class SettingsImportService extends AbstractImportService {
 
                 if (isset($settingsData['sms_gateway_id'])) {
                     $updateData['sms_gateway_id'] = $settingsData['sms_gateway_id'] === '' ? null : $settingsData['sms_gateway_id'];
+                }
+
+                if (isset($settingsData['transaction_sms_enabled'])) {
+                    $updateData['transaction_sms_enabled'] = (bool) $settingsData['transaction_sms_enabled'];
                 }
 
                 $settings = $this->mainSettingsService->update($settings, $updateData);

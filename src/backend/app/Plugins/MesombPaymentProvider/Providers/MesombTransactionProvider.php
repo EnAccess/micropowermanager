@@ -11,9 +11,6 @@ use App\Plugins\MesombPaymentProvider\Exceptions\MesombStatusFailedException;
 use App\Plugins\MesombPaymentProvider\Models\MesombTransaction;
 use App\Plugins\MesombPaymentProvider\Services\MesomTransactionService;
 use App\Providers\Interfaces\ITransactionProvider;
-use App\Services\SmsService;
-use App\Sms\Senders\SmsConfigs;
-use App\Sms\SmsTypes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -56,8 +53,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         if ($requestType) {
             $this->mesombTransaction->status = 1;
             $this->mesombTransaction->save();
-            $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction->toArray(), SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+        // SMS sent centrally via SendTransactionConfirmationSmsListener
         } else {
             Log::critical('mesomb transaction is been cancelled');
             $this->mesombTransaction->status = -1;
