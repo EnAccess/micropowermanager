@@ -39,7 +39,6 @@
                   {{ errors.first("Credential-Form.clientId") }}
                 </span>
               </md-field>
-
               <md-field
                 :class="{
                   'md-invalid': errors.has('Credential-Form.clientSecret'),
@@ -84,7 +83,7 @@
                       'md-invalid': errors.has('Credential-Form.authUrl'),
                     }"
                   >
-                    <label for="clientSecret">Spark SHS Auth URL</label>
+                    <label for="authUrl">Spark SHS Auth URL</label>
                     <md-input
                       id="authUrl"
                       name="authUrl"
@@ -102,7 +101,7 @@
                       'md-invalid': errors.has('Credential-Form.apiUrl'),
                     }"
                   >
-                    <label for="clientSecret">Spark SHS API URL</label>
+                    <label for="apiUrl">Spark SHS API URL</label>
                     <md-input
                       id="apiUrl"
                       name="apiUrl"

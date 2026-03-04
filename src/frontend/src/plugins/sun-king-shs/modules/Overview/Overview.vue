@@ -1,25 +1,22 @@
 <template>
   <div>
-    <div class="overview-line">
-      <div class="overview-line">
-        <div class="md-layout md-gutter">
-          <div
-            class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-          >
-            <credential style="height: 100% !important" />
-          </div>
+    <widget color="primary" title="SunKing SHS Overview">
+      <div class="md-layout md-gutter">
+        <div class="md-layout-item">
+          <credential></credential>
         </div>
       </div>
-    </div>
+    </widget>
   </div>
 </template>
 
 <script>
+import Widget from "@/shared/Widget.vue"
 import Credential from "./Credential"
 
 export default {
   name: "Overview",
-  components: { Credential },
+  components: { Widget, Credential },
   data() {
     return {}
   },
@@ -28,8 +25,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.overview-line {
-  margin-top: 1rem;
-}
-</style>
+<style scoped></style>
