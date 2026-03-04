@@ -2,7 +2,7 @@
 title: Roadmap
 layout: page
 exclude_from_sidebar: true
-lastUpdated: January 2026
+lastUpdated: March 2026
 releases:
   - version: "MPM v1.0"
     title: "Stability and Off-Grid Readiness"
@@ -16,6 +16,7 @@ releases:
         category: "Core"
         github:
           issue: 1243
+
       - id: "rbac"
         title: "Role-Based Access Control (RBAC)"
         description: "Comprehensive role definitions and access categories with UI and mobile API integration."
@@ -27,6 +28,7 @@ releases:
           - title: "Mobile API integration"
         github:
           issue: 233
+
       - id: "shs-integration"
         title: "Full SHS Integration"
         description: "Extended Solar Home System functionality with improved mini-grid abstraction layers."
@@ -35,6 +37,9 @@ releases:
         features:
           - title: "Extended mobile app functionality"
           - title: "Improved mini-grid abstraction layers"
+        github:
+          issue: 1343
+
       - id: "payment-vodacom"
         title: "Vodacom Mobile Money"
         description: "Enhanced payment capabilities for Vodacom Mobile Money integration."
@@ -42,6 +47,7 @@ releases:
         category: "Payments"
         github:
           issue: 78
+
       - id: "payment-paystack"
         title: "Paystack (Nigeria)"
         description: "Payment gateway integration for Paystack to support Nigerian operations."
@@ -49,6 +55,15 @@ releases:
         category: "Payments"
         github:
           issue: 176
+
+      - id: "payment-sms-parser"
+        title: "Transaction SMS Parser Proof-of-Concept"
+        description: "Using an SMS Gateway on a phone which receives payment confirmation: Parse payment confirmation to generate transactions in MPM."
+        status: "in-progress"
+        category: "Payments"
+        github:
+          issue: 1345
+
       - id: "sms-gateway"
         title: "SMS Gateway Support"
         description: "Alternative SMS gateway as an option to external providers for more control."
@@ -56,6 +71,7 @@ releases:
         category: "Communications"
         github:
           issue: 1104
+
       - id: "branding-update"
         title: "Updated MPM Branding"
         description: "Moving away from legacy Inensus references to unified MPM branding."
@@ -66,13 +82,15 @@ releases:
           - title: "Apply EnAccess branding"
         github:
           issue: 213
+
       - id: "prospect-integration"
         title: "Prospect Platform Integration"
         description: "Full integration with the Prospect platform for seamless data exchange."
-        status: "in-progress"
+        status: "completed"
         category: "Integrations"
         github:
           issue: 804
+
       - id: "rest-api"
         title: "REST API for Import/Export"
         description: "Comprehensive REST API endpoints for data import and export operations."
@@ -80,11 +98,27 @@ releases:
         category: "API"
         github:
           issue: 494
-      - id: "docs-revamp"
-        title: "Documentation Overhaul"
-        description: "Revamped usage and onboarding guides for better developer and operator experience."
-        status: "planned"
-        category: "Docs"
+
+      - id: "manufacturer-plugins-v1"
+        title: "MPMv1 Manufacturer Plugins"
+        description: "All manufacturer integrations which are targeted for the MPMv1 release."
+        status: "in-progress"
+        category: "Integrations"
+        github:
+          issue: 1344
+        features:
+          - title: "Spark SHS (https://sparkenergy.io/)"
+          - title: "Improve SunKing SHS Plugin usability"
+          - title: "Fix SteamaCo Meter plugin"
+
+      - id: "platform-stability"
+        title: "Platform stability and Core refactoring"
+        description: "Add best practises and state-of-the-art measures to ensure high quality engineering solution and a stable product."
+        status: "in-progress"
+        category: "Core"
+        features:
+          - title: "Automated test suite"
+          - title: "Various backend refactors"
 
   - version: "MPM v1.1"
     title: "Broader Use and Ecosystem Growth"
@@ -159,6 +193,11 @@ releases:
           - title: "Vue 3 Composition API"
           - title: "UI overhaul"
           - title: "Modern, intuitive design"
+      - id: "docs-revamp"
+        title: "Documentation Overhaul"
+        description: "Revamped usage and onboarding guides for better developer and operator experience."
+        status: "planned"
+        category: "Docs"
 
   - version: "MPM v2.0"
     title: "Scaling for the Future"
