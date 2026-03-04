@@ -78,6 +78,10 @@ export default withMermaid(
           icon: "github",
           link: "https://github.com/EnAccess/micropowermanager",
         },
+        {
+          icon: "discord",
+          link: "https://discord.osea-community.org/",
+        },
       ],
 
       search: {
