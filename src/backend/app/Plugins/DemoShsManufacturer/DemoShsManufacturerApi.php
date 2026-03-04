@@ -28,18 +28,30 @@ class DemoShsManufacturerApi implements IManufacturerAPI {
 
         $energy = $transactionContainer->chargedEnergy;
 
-        // Generate a random token for demo purposes
         $randomToken = $this->generateRandomToken();
 
-        // Record transaction like the real API
         $this->recordTransaction($transactionContainer);
-        $this->logAction($transactionContainer, $randomToken);
+        $this->logAction($transactionContainer, "Demo Token: $randomToken created for $energy days usage.");
 
         return [
             'token' => $randomToken,
             'token_type' => Token::TYPE_TIME,
             'token_unit' => Token::UNIT_DAYS,
             'token_amount' => $energy,
+        ];
+    }
+
+    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+        $randomToken = $this->generateRandomToken();
+
+        $this->recordTransaction($transactionContainer);
+        $this->logAction($transactionContainer, "Demo Token: $randomToken created for unlocking device.");
+
+        return [
+            'token' => $randomToken,
+            'token_type' => Token::TYPE_UNLOCK,
+            'token_unit' => null,
+            'token_amount' => null,
         ];
     }
 
@@ -52,9 +64,6 @@ class DemoShsManufacturerApi implements IManufacturerAPI {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 
-    /**
-     * Generate a random token for demo purposes.
-     */
     private function generateRandomToken(): string {
         return sprintf(
             '%04d-%04d-%04d-%04d',
@@ -74,21 +83,11 @@ class DemoShsManufacturerApi implements IManufacturerAPI {
         ]);
     }
 
-    private function logAction(TransactionDataContainer $transactionContainer, string $token): void {
-        $isInstallmentsCompleted = $this->isInstallmentsCompleted($transactionContainer);
-        $energy = $transactionContainer->chargedEnergy;
-        $action = $isInstallmentsCompleted
-            ? "Demo Token: $token created for unlocking device."
-            : "Demo Token: $token created for $energy days usage.";
-
+    private function logAction(TransactionDataContainer $transactionContainer, string $action): void {
         event(new NewLogEvent([
             'user_id' => -1,
             'affected' => $transactionContainer->appliancePerson,
             'action' => $action,
         ]));
-    }
-
-    private function isInstallmentsCompleted(TransactionDataContainer $transactionContainer): bool {
-        return $transactionContainer->applianceInstallmentsFullFilled;
     }
 }

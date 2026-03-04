@@ -14,11 +14,11 @@ use Illuminate\Support\Carbon;
  * @property      int                 $id
  * @property      int                 $transaction_id
  * @property      string              $token
- * @property      float               $token_amount
+ * @property      float|null          $token_amount
  * @property      Carbon|null         $created_at
  * @property      Carbon|null         $updated_at
  * @property      int|null            $device_id
- * @property      string|null         $token_type
+ * @property      string              $token_type
  * @property      string|null         $token_unit
  * @property-read Device|null         $device
  * @property-read PaymentHistory|null $paymentHistories

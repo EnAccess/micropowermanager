@@ -13,6 +13,13 @@ interface IManufacturerAPI {
     public function chargeDevice(TransactionDataContainer $transactionContainer): array;
 
     /**
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function unlockDevice(TransactionDataContainer $transactionContainer): array;
+
+    /**
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException
