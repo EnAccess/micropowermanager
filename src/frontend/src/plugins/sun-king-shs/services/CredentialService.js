@@ -5,14 +5,16 @@ export class CredentialService {
   constructor() {
     this.repository = CredentialRepository
     this.credential = {
-      id: null,
+      authUrl: null,
+      apiUrl: null,
       clientId: null,
       clientSecret: null,
     }
   }
   fromJson(credentialData) {
     this.credential = {
-      id: credentialData.id,
+      authUrl: credentialData.auth_url,
+      apiUrl: credentialData.api_url,
       clientId: credentialData.client_id,
       clientSecret: credentialData.client_secret,
     }
@@ -33,12 +35,13 @@ export class CredentialService {
   }
   async updateCredential() {
     try {
-      let credentialPM = {
-        id: this.credential.id,
+      let credentialPayload = {
+        auth_url: this.credential.authUrl,
+        api_url: this.credential.apiUrl,
         client_id: this.credential.clientId,
         client_secret: this.credential.clientSecret,
       }
-      let response = await this.repository.put(credentialPM)
+      let response = await this.repository.put(credentialPayload)
       if (response.status === 200 || response.status === 201) {
         return this.fromJson(response.data.data)
       } else {

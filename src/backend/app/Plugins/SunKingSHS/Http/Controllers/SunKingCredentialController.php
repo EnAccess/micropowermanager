@@ -8,7 +8,9 @@ use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
 use Illuminate\Routing\Controller;
 
 class SunKingCredentialController extends Controller {
-    public function __construct(private SunKingCredentialService $credentialService) {}
+    public function __construct(
+        private SunKingCredentialService $credentialService,
+    ) {}
 
     public function show(): SunKingResource {
         return SunKingResource::make($this->credentialService->getCredentials());
@@ -16,11 +18,15 @@ class SunKingCredentialController extends Controller {
 
     public function update(SunKingCredentialRequest $request): SunKingResource {
         $credentials = $this->credentialService->getCredentials();
-        $updateData = $request->only([
-            'client_id',
-            'client_secret',
-        ]);
-        $credentials = $this->credentialService->updateCredentials($credentials, $updateData);
+        $credentials = $this->credentialService->updateCredentials(
+            $credentials,
+            $request->only([
+                'auth_url',
+                'api_url',
+                'client_id',
+                'client_secret',
+            ])
+        );
 
         return SunKingResource::make($credentials);
     }

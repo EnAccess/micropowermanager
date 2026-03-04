@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\SunKingSHS\Modules\Api;
+namespace App\Plugins\SunKingSHS\Http\Clients;
 
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
 use App\Plugins\SunKingSHS\Models\SunKingCredential;
@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
-class ApiRequests {
+class SunKingSHSApiClient {
     public function __construct(
         private Client $httpClient,
     ) {}
