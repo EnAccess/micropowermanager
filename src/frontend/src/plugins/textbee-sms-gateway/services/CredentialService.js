@@ -12,6 +12,7 @@ export class CredentialService {
       id: null,
       apiKey: null,
       deviceId: null,
+      webhookSecret: null,
     }
   }
 

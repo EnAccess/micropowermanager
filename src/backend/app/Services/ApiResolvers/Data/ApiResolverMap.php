@@ -13,6 +13,7 @@ use App\Services\ApiResolvers\OdysseyPaymentApiResolver;
 use App\Services\ApiResolvers\PaystackApiResolver;
 use App\Services\ApiResolvers\SwiftaPaymentApiResolver;
 use App\Services\ApiResolvers\TestApiResolver;
+use App\Services\ApiResolvers\TextbeeSmsGatewayApiResolver;
 use App\Services\ApiResolvers\ViberMessagingApiResolver;
 use App\Services\ApiResolvers\VodacomMobileMoneyApiResolver;
 use App\Services\ApiResolvers\WaveMoneyApiResolver;
@@ -30,6 +31,7 @@ class ApiResolverMap {
     public const VODACOM_MOBILE_MONEY = 'api/vodacom/';
     public const PAYSTACK_API = 'api/paystack/';
     public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
+    public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
 
     public const RESOLVABLE_APIS = [
         self::TEST_API,
@@ -44,6 +46,7 @@ class ApiResolverMap {
         self::ODYSSEY_PAYMENTS_API,
         self::PAYSTACK_API,
         self::ECREEE_METER_DATA_API,
+        self::TEXTBEE_SMS_GATEWAY_API,
     ];
 
     private const API_RESOLVER = [
@@ -59,6 +62,7 @@ class ApiResolverMap {
         self::ODYSSEY_PAYMENTS_API => OdysseyPaymentApiResolver::class,
         self::PAYSTACK_API => PaystackApiResolver::class,
         self::ECREEE_METER_DATA_API => EcreeeMeterDataApiResolver::class,
+        self::TEXTBEE_SMS_GATEWAY_API => TextbeeSmsGatewayApiResolver::class,
     ];
 
     /**

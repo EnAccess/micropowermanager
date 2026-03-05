@@ -183,7 +183,7 @@ class SmsController extends Controller {
         $sms = $this->smsService->createSms($smsData);
 
         match ($this->smsService->checkMessageType($message)) {
-            $this->smsService::FEEDBACK => event(new SmsStoredEvent($sender, $message)),
+            $this->smsService::FEEDBACK => event(new SmsStoredEvent($sender, $message, $sms)),
             $this->smsService::TICKET => $this->commentService->storeComment($sender, $message),
             default => new ApiResource($sms),
         };
