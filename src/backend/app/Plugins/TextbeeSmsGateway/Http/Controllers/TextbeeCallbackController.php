@@ -1,28 +1,39 @@
 <?php
 
-namespace App\Plugins\AfricasTalking\Http\Controllers;
+namespace App\Plugins\TextbeeSmsGateway\Http\Controllers;
 
 use App\Events\SmsStoredEvent;
 use App\Models\Address\Address;
 use App\Models\Sms;
-use App\Plugins\AfricasTalking\Services\AfricasTalkingMessageService;
+use App\Plugins\TextbeeSmsGateway\Services\TextbeeCredentialService;
 use App\Services\AddressesService;
 use App\Services\SmsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
-class AfricasTalkingCallbackController extends Controller {
+class TextbeeCallbackController extends Controller {
     public function __construct(
-        private AfricasTalkingMessageService $messageService,
+        private TextbeeCredentialService $credentialService,
         private SmsService $smsService,
         private AddressesService $addressesService,
     ) {}
 
-    public function incoming(Request $request): JsonResponse {
+    public function incoming(Request $request, string $slug): JsonResponse {
+        $credentials = $this->credentialService->getCredentials();
+
+        if ($credentials?->webhook_secret) {
+            $signature = $request->header('x-signature');
+            $expectedSignature = hash_hmac('sha256', $request->getContent(), $credentials->webhook_secret);
+
+            if (!$signature || !hash_equals($expectedSignature, $signature)) {
+                return response()->json(['status' => 'unauthorized'], 401);
+            }
+        }
+
         $data = $request->all();
-        $phoneNumber = $data['from'];
-        $message = $data['text'];
+        $phoneNumber = $data['sender'];
+        $message = $data['message'];
         $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
         $sender = $address instanceof Address ? $address->owner : null;
         // @phpstan-ignore property.notFound
@@ -38,27 +49,6 @@ class AfricasTalkingCallbackController extends Controller {
 
         $sms = $this->smsService->createSms($smsData);
         event(new SmsStoredEvent($phoneNumber, $message, $sms));
-
-        return response()->json(['status' => 'success']);
-    }
-
-    public function delivery(Request $request): JsonResponse {
-        $data = $request->all();
-        $status = $data['status'];
-        $id = $data['id'];
-        $africasTalkingMessage = $this->messageService->getByMessageId($id);
-
-        $africasTalkingMessage->update([
-            'status' => $status,
-        ]);
-
-        $africasTalkingMessage->sms()->update([
-            'status' => $status === 'Success'
-                ? Sms::STATUS_DELIVERED
-                : ($status === 'Rejected' || $status === 'Failed'
-                    ? Sms::STATUS_FAILED
-                    : Sms::STATUS_STORED),
-        ]);
 
         return response()->json(['status' => 'success']);
     }

@@ -72,6 +72,24 @@
                     </span>
                   </md-field>
                 </div>
+
+                <div
+                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                >
+                  <md-field>
+                    <label for="webhookSecret">Webhook Secret (Optional)</label>
+                    <md-input
+                      id="webhookSecret"
+                      name="webhookSecret"
+                      v-model="credentialService.credential.webhookSecret"
+                      placeholder="HMAC secret for incoming SMS verification"
+                      type="password"
+                    />
+                    <span class="md-helper-text">
+                      Required for receiving incoming SMS via webhooks
+                    </span>
+                  </md-field>
+                </div>
               </div>
             </div>
 
@@ -98,6 +116,10 @@
                   <li>Login to your TextBee account in the app</li>
                   <li>Generate an API key from the TextBee dashboard</li>
                   <li>Note your Device ID from the app or dashboard</li>
+                  <li>
+                    (Optional) Set up a webhook subscription in TextBee for
+                    incoming SMS and copy the webhook secret
+                  </li>
                 </ol>
 
                 <div class="pricing-info">
@@ -107,6 +129,17 @@
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div class="md-layout md-gutter" style="padding: 2.5rem">
+            <div
+              class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-layout-item--right"
+            >
+              <span style="font-weight: bold">
+                Incoming Messages Webhook URL:
+                <p class="token-value">{{ incomingMessagesUrl }}</p>
+              </span>
             </div>
           </div>
         </md-card-content>
@@ -124,6 +157,8 @@
 <script>
 import { CredentialService } from "../../services/CredentialService"
 import { EventBus } from "@/shared/eventbus"
+import { baseUrlExternal } from "@/repositories/Client/AxiosClient"
+import { mapGetters } from "vuex"
 import { notify } from "@/mixins/notify"
 
 export default {
@@ -156,6 +191,14 @@ export default {
         this.alertNotify("error", "Failed to update credentials")
       }
       this.loading = false
+    },
+  },
+  computed: {
+    ...mapGetters({
+      authUser: "auth/getAuthenticateUser",
+    }),
+    incomingMessagesUrl() {
+      return `${baseUrlExternal}/api/textbee-sms-gateway/callback/${this.authUser.companyId}/incoming-messages`
     },
   },
 }
@@ -213,6 +256,16 @@ export default {
       color: #666;
     }
   }
+}
+
+.token-value {
+  font-size: 16px;
+  color: #333;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-weight: normal;
 }
 
 .md-subhead {

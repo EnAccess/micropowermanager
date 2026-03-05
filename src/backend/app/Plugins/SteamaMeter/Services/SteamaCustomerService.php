@@ -506,6 +506,6 @@ class SteamaCustomerService implements ISynchronizeService {
 
         return $this->customer->newQuery()
             ->with(['site', 'mpmPerson.devices.device'])
-            ->where('mpm_customer_id', $person->id)->first();
+            ->where('mpm_customer_id', $person?->id)->first();
     }
 }

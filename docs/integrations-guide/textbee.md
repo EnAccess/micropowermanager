@@ -35,6 +35,7 @@ TextBee allows you to use your own Android device as an SMS gateway, providing u
 3. Click **Generate API Key**
 4. Copy the API key - you'll need this for MPM configuration
 5. Note your **Device ID** from the dashboard or app
+6. (Optional) To enable incoming SMS, create a **Webhook Subscription** for the `MESSAGE_RECEIVED` event and copy the **Webhook Secret**
 
 ## Step 4: Enable TextBee Plugin in MPM
 
@@ -51,8 +52,20 @@ TextBee allows you to use your own Android device as an SMS gateway, providing u
 3. Enter the following credentials:
    - **API Key**: Paste the API key from Step 3
    - **Device ID**: Enter your device ID from Step 3
+   - **Webhook Secret** (optional): Paste the webhook secret from Step 3 to enable incoming SMS
 4. Click **Save** to store the configuration
 5. The plugin will validate your credentials automatically
+
+### Incoming SMS (Optional)
+
+To receive incoming SMS from customers, you need to configure a webhook in the TextBee dashboard:
+
+1. In the TextBee dashboard, navigate to **Webhooks**
+2. Create a new webhook subscription for the `MESSAGE_RECEIVED` event
+3. Set the webhook URL to: `https://your-mpm-domain/api/textbee-sms-gateway/callback/{company-id}/incoming-messages`
+   - Replace `{company-id}` with your MPM company ID
+4. Copy the webhook secret and paste it in the MPM TextBee configuration
+5. Incoming SMS will now be stored and processed by MPM
 
 ## Step 6: Select TextBee as Your SMS Gateway
 
