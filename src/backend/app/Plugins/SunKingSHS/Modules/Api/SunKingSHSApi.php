@@ -45,7 +45,7 @@ class SunKingSHSApi implements IManufacturerAPI {
         $response = $this->handleApiRequest($credentials, $params);
 
         $this->recordTransaction($transactionContainer);
-        $this->logAction($transactionContainer, $response['token']);
+        $this->logAction($transactionContainer, "Token: {$response['token']} created for $energy days usage.");
 
         return [
             'token' => $response['token'],
@@ -56,23 +56,36 @@ class SunKingSHSApi implements IManufacturerAPI {
     }
 
     /**
-     * @return array{device: string, command: string, payload?: float, time_unit?: string}
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
-    private function buildParams(TransactionDataContainer $transactionContainer): array {
-        $deviceSerial = $transactionContainer->device->device_serial;
+    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+        $params = [
+            'device' => $transactionContainer->device->device_serial,
+            'command' => self::COMMAND_UNLOCK_DEVICE,
+        ];
+        $credentials = $this->credentialService->getCredentials();
+        $response = $this->handleApiRequest($credentials, $params);
 
-        if (!$this->isInstallmentsCompleted($transactionContainer)) {
-            return [
-                'device' => $deviceSerial,
-                'command' => self::COMMAND_ADD_CREDIT,
-                'payload' => $transactionContainer->chargedEnergy,
-                'time_unit' => 'day',
-            ];
-        }
+        $this->recordTransaction($transactionContainer);
+        $this->logAction($transactionContainer, "Token: {$response['token']} created for unlocking device.");
 
         return [
-            'device' => $deviceSerial,
-            'command' => self::COMMAND_UNLOCK_DEVICE,
+            'token' => $response['token'],
+            'token_type' => Token::TYPE_UNLOCK,
+            'token_unit' => null,
+            'token_amount' => null,
+        ];
+    }
+
+    /**
+     * @return array{device: string, command: string, payload: float, time_unit: string}
+     */
+    private function buildParams(TransactionDataContainer $transactionContainer): array {
+        return [
+            'device' => $transactionContainer->device->device_serial,
+            'command' => self::COMMAND_ADD_CREDIT,
+            'payload' => $transactionContainer->chargedEnergy,
+            'time_unit' => 'day',
         ];
     }
 
@@ -104,22 +117,12 @@ class SunKingSHSApi implements IManufacturerAPI {
         ]);
     }
 
-    private function logAction(TransactionDataContainer $transactionContainer, string $token): void {
-        $isInstallmentsCompleted = $this->isInstallmentsCompleted($transactionContainer);
-        $energy = $transactionContainer->chargedEnergy;
-        $action = $isInstallmentsCompleted
-            ? "Token: $token created for unlocking device."
-            : "Token: $token created for $energy days usage.";
-
+    private function logAction(TransactionDataContainer $transactionContainer, string $action): void {
         event(new NewLogEvent([
             'user_id' => -1,
             'affected' => $transactionContainer->appliancePerson,
             'action' => $action,
         ]));
-    }
-
-    private function isInstallmentsCompleted(TransactionDataContainer $transactionContainer): bool {
-        return $transactionContainer->applianceInstallmentsFullFilled;
     }
 
     /**

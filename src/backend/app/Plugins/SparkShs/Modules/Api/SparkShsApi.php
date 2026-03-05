@@ -34,23 +34,10 @@ class SparkShsApi implements IManufacturerAPI {
         $chargeDays = $transactionContainer->chargedEnergy;
         $deviceSerial = $transactionContainer->device->device_serial;
 
-        if ($transactionContainer->applianceInstallmentsFullFilled) {
-            $payload = [
-                'type' => 'unlock',
-            ];
-            $tokenType = Token::TYPE_UNLOCK;
-            $tokenUnit = null;
-            // FIXME: https://github.com/EnAccess/micropowermanager/issues/1304
-            $tokenAmount = 1;
-        } else {
-            $payload = [
-                'type' => 'days',
-                'days' => $chargeDays,
-            ];
-            $tokenType = Token::TYPE_TIME;
-            $tokenUnit = Token::UNIT_DAYS;
-            $tokenAmount = $chargeDays;
-        }
+        $payload = [
+            'type' => 'days',
+            'days' => $chargeDays,
+        ];
 
         $response = $this->apiClient->post(
             "products/kits/{$deviceSerial}/tokens",
@@ -58,13 +45,39 @@ class SparkShsApi implements IManufacturerAPI {
         );
 
         $this->recordTransaction($transactionContainer);
-        $this->logAction($transactionContainer, $response['token']);
+        $this->logAction($transactionContainer, "Token: {$response['token']} created for $chargeDays days usage.");
 
         return [
             'token' => $response['token'],
-            'token_type' => $tokenType,
-            'token_unit' => $tokenUnit,
-            'token_amount' => $tokenAmount,
+            'token_type' => Token::TYPE_TIME,
+            'token_unit' => Token::UNIT_DAYS,
+            'token_amount' => $chargeDays,
+        ];
+    }
+
+    /**
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
+     */
+    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+        $deviceSerial = $transactionContainer->device->device_serial;
+
+        $payload = [
+            'type' => 'unlock',
+        ];
+
+        $response = $this->apiClient->post(
+            "products/kits/{$deviceSerial}/tokens",
+            $payload
+        );
+
+        $this->recordTransaction($transactionContainer);
+        $this->logAction($transactionContainer, "Token: {$response['token']} created for unlocking device.");
+
+        return [
+            'token' => $response['token'],
+            'token_type' => Token::TYPE_UNLOCK,
+            'token_unit' => null,
+            'token_amount' => null,
         ];
     }
 
@@ -77,22 +90,12 @@ class SparkShsApi implements IManufacturerAPI {
         ]);
     }
 
-    private function logAction(TransactionDataContainer $transactionContainer, string $token): void {
-        $isInstallmentsCompleted = $this->isInstallmentsCompleted($transactionContainer);
-        $energy = $transactionContainer->chargedEnergy;
-        $action = $isInstallmentsCompleted
-            ? "Token: $token created for unlocking device."
-            : "Token: $token created for $energy days usage.";
-
+    private function logAction(TransactionDataContainer $transactionContainer, string $action): void {
         event(new NewLogEvent([
             'user_id' => -1,
             'affected' => $transactionContainer->appliancePerson,
             'action' => $action,
         ]));
-    }
-
-    private function isInstallmentsCompleted(TransactionDataContainer $transactionContainer): bool {
-        return $transactionContainer->applianceInstallmentsFullFilled;
     }
 
     /**

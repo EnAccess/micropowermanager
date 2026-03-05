@@ -3,6 +3,7 @@
 namespace App\Plugins\CalinSmartMeter;
 
 use App\DTO\TransactionDataContainer;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
@@ -66,6 +67,15 @@ class CalinSmartMeterApi implements IManufacturerAPI {
             'token_unit' => Token::UNIT_KWH,
             'token_amount' => $energy,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 
     /**

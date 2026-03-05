@@ -131,6 +131,15 @@ class SparkMeterApi implements IManufacturerAPI {
     }
 
     /**
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
+
+    /**
      * @return array<string,mixed>|null
      *
      * @throws ApiCallDoesNotSupportedException
