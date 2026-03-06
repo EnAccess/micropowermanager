@@ -27,4 +27,8 @@ use Illuminate\Support\Carbon;
 class MainSettings extends BaseModel {
     /** @use HasFactory<MainSettingsFactory> */
     use HasFactory;
+
+    protected $casts = [
+        'transaction_sms_enabled' => 'boolean',
+    ];
 }
