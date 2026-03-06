@@ -41,6 +41,7 @@ return [
     ServicesProvider::class,
     AfricasTalkingServiceProvider::class,
     TextbeeSmsGatewayServiceProvider::class,
+    SmsTransactionParserServiceProvider::class,
     AngazaSHSServiceProvider::class,
     BulkRegistrationServiceProvider::class,
     CalinMeterServiceProvider::class,
@@ -67,5 +68,4 @@ return [
     WavecomPaymentProviderServiceProvider::class,
     EcreeeETenderServiceProvider::class,
     SparkShsServiceProvider::class,
-    SmsTransactionParserServiceProvider::class,
 ];
