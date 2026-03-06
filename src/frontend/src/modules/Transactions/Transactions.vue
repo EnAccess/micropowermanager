@@ -725,8 +725,7 @@ export default {
     },
     smsProviderLabel(providerName) {
       if (!providerName) return "SMS"
-      const base = providerName.split("_")[0]
-      return base.charAt(0).toUpperCase() + base.slice(1) + " (SMS)"
+      return providerName + " (SMS)"
     },
     async getTransactionProviders() {
       this.transactionProviders =

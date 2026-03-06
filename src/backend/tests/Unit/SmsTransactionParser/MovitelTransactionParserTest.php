@@ -22,7 +22,7 @@ class MovitelTransactionParserTest extends TestCase {
         $this->assertNull($result->senderPhone);
         $this->assertEquals('PP260101.0930.A12345', $result->transactionReference);
         $this->assertEquals('5566778899', $result->deviceSerial);
-        $this->assertEquals('movitel', $result->providerName);
+        $this->assertEquals('Movitel', $result->providerName);
     }
 
     public function testReturnsNullWhenRequiredFieldMissing(): void {

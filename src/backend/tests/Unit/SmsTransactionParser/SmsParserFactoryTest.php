@@ -13,7 +13,7 @@ class SmsParserFactoryTest extends TestCase {
         $template = 'Confirmed [transaction_ref].[*]amount of [amount]MT[*]reference [device_serial][*]';
 
         SmsParsingRule::query()->create([
-            'provider_name' => 'vodacom_en',
+            'provider_name' => 'Vodacom',
             'template' => $template,
             'pattern' => $converter->convert($template),
             'sender_pattern' => '/M-?Pesa/i',
@@ -26,7 +26,7 @@ class SmsParserFactoryTest extends TestCase {
         );
 
         $this->assertNotNull($result);
-        $this->assertEquals('vodacom', $result->providerName);
+        $this->assertEquals('Vodacom', $result->providerName);
         $this->assertEquals(100.00, $result->amount);
         $this->assertEquals('XYZ1A23BCDE', $result->transactionReference);
         $this->assertEquals('991234567', $result->deviceSerial);
@@ -38,7 +38,7 @@ class SmsParserFactoryTest extends TestCase {
         $template = 'Confirmado [transaction_ref].[*]valor de [amount]MT[*]referencia [device_serial][*]';
 
         SmsParsingRule::query()->create([
-            'provider_name' => 'vodacom_pt',
+            'provider_name' => 'Vodacom',
             'template' => $template,
             'pattern' => $converter->convert($template),
             'sender_pattern' => '/M-?Pesa/i',
@@ -51,7 +51,7 @@ class SmsParserFactoryTest extends TestCase {
         );
 
         $this->assertNotNull($result);
-        $this->assertEquals('vodacom', $result->providerName);
+        $this->assertEquals('Vodacom', $result->providerName);
         $this->assertEquals(100.00, $result->amount);
         $this->assertEquals('XYZ1A23BCDE', $result->transactionReference);
         $this->assertEquals('991234567', $result->deviceSerial);
@@ -62,7 +62,7 @@ class SmsParserFactoryTest extends TestCase {
         $template = 'ID da transacao[*][transaction_ref].[*][amount]MT[*]Conteudo:[*][device_serial].[*]';
 
         SmsParsingRule::query()->create([
-            'provider_name' => 'movitel_pt',
+            'provider_name' => 'Movitel',
             'template' => $template,
             'pattern' => $converter->convert($template),
             'sender_pattern' => '/e-?Mola/i',
@@ -75,7 +75,7 @@ class SmsParserFactoryTest extends TestCase {
         );
 
         $this->assertNotNull($result);
-        $this->assertEquals('movitel', $result->providerName);
+        $this->assertEquals('Movitel', $result->providerName);
         $this->assertEquals(1.00, $result->amount);
         $this->assertEquals('PP260101.0930.A12345', $result->transactionReference);
         $this->assertEquals('5566778899', $result->deviceSerial);
@@ -86,7 +86,7 @@ class SmsParserFactoryTest extends TestCase {
         $template = 'Transaction ID [transaction_ref].[*][amount] MT[*]Content:[*][device_serial].[*]';
 
         SmsParsingRule::query()->create([
-            'provider_name' => 'movitel_en',
+            'provider_name' => 'Movitel',
             'template' => $template,
             'pattern' => $converter->convert($template),
             'sender_pattern' => '/e-?Mola/i',
@@ -99,7 +99,7 @@ class SmsParserFactoryTest extends TestCase {
         );
 
         $this->assertNotNull($result);
-        $this->assertEquals('movitel', $result->providerName);
+        $this->assertEquals('Movitel', $result->providerName);
         $this->assertEquals(1.00, $result->amount);
         $this->assertEquals('PP260101.0930.A12345', $result->transactionReference);
         $this->assertEquals('5566778899', $result->deviceSerial);
@@ -110,7 +110,7 @@ class SmsParserFactoryTest extends TestCase {
         $template = 'Confirmed [transaction_ref].[*]amount of [amount]MT[*]reference [device_serial][*]';
 
         SmsParsingRule::query()->create([
-            'provider_name' => 'vodacom_en',
+            'provider_name' => 'Vodacom',
             'template' => $template,
             'pattern' => $converter->convert($template),
             'sender_pattern' => null,

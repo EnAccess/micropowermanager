@@ -20,7 +20,7 @@ class SmsTransactionServiceTest extends TestCase {
         $converter = app(TemplateToRegexConverter::class);
 
         SmsParsingRule::query()->create([
-            'provider_name' => 'vodacom_en',
+            'provider_name' => 'Vodacom',
             'template' => $template,
             'pattern' => $converter->convert($template),
             'sender_pattern' => '/M-?Pesa/i',

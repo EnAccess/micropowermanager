@@ -40,7 +40,7 @@ class VodacomTransactionParser implements ISmsTransactionParser {
             amount: $amount,
             deviceSerial: $deviceSerial,
             transactionReference: $transactionRef,
-            providerName: 'vodacom',
+            providerName: 'Vodacom',
             rawMessage: $body,
             senderPhone: $senderPhone,
         );

@@ -66,10 +66,8 @@ export default {
   },
   computed: {
     providerLabel() {
-      const name = this.ot.provider_name
-      if (!name) return "SMS"
-      const base = name.split("_")[0]
-      return base.charAt(0).toUpperCase() + base.slice(1) + " (SMS)"
+      if (!this.ot.provider_name) return "SMS"
+      return this.ot.provider_name + " (SMS)"
     },
   },
 }

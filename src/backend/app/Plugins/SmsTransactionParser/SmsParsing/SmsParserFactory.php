@@ -11,8 +11,8 @@ use App\Plugins\SmsTransactionParser\SmsParsing\Parsers\VodacomTransactionParser
 class SmsParserFactory {
     /** @var array<string, class-string> */
     private const PARSER_MAP = [
-        'vodacom' => VodacomTransactionParser::class,
-        'movitel' => MovitelTransactionParser::class,
+        'Vodacom' => VodacomTransactionParser::class,
+        'Movitel' => MovitelTransactionParser::class,
     ];
 
     public function __construct(
@@ -34,7 +34,7 @@ class SmsParserFactory {
             }
 
             $parserClass = self::PARSER_MAP[$rule->provider_name]
-                ?? self::PARSER_MAP[explode('_', $rule->provider_name, 2)[0]]
+                ?? self::PARSER_MAP[ucfirst(explode('_', $rule->provider_name, 2)[0])]
                 ?? null;
 
             if ($parserClass === null) {

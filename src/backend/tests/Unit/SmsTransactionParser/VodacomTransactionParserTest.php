@@ -22,7 +22,7 @@ class VodacomTransactionParserTest extends TestCase {
         $this->assertNull($result->senderPhone);
         $this->assertEquals('DBQ2J80CNQY', $result->transactionReference);
         $this->assertEquals('996997813', $result->deviceSerial);
-        $this->assertEquals('vodacom', $result->providerName);
+        $this->assertEquals('Vodacom', $result->providerName);
     }
 
     public function testParsesWithOptionalSenderPhone(): void {

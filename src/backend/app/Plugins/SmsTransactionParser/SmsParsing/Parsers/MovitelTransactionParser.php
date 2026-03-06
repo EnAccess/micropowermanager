@@ -40,7 +40,7 @@ class MovitelTransactionParser implements ISmsTransactionParser {
             amount: $amount,
             deviceSerial: $deviceSerial,
             transactionReference: $transactionRef,
-            providerName: 'movitel',
+            providerName: 'Movitel',
             rawMessage: $body,
             senderPhone: $senderPhone,
         );

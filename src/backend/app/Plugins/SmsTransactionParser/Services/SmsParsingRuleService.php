@@ -62,25 +62,13 @@ class SmsParsingRuleService {
 
         $defaults = [
             [
-                'provider_name' => 'vodacom_en',
+                'provider_name' => 'Vodacom',
                 'template' => 'Confirmed [transaction_ref].[*]amount of [amount]MT[*]reference [device_serial][*]',
                 'sender_pattern' => '/M-?Pesa/i',
                 'enabled' => true,
             ],
             [
-                'provider_name' => 'vodacom_pt',
-                'template' => 'Confirmado [transaction_ref].[*]valor de [amount]MT[*]referencia [device_serial][*]',
-                'sender_pattern' => '/M-?Pesa/i',
-                'enabled' => true,
-            ],
-            [
-                'provider_name' => 'movitel_pt',
-                'template' => 'ID da transacao[*][transaction_ref].[*][amount]MT[*]Conteudo:[*][device_serial].[*]',
-                'sender_pattern' => '/e-?Mola/i',
-                'enabled' => true,
-            ],
-            [
-                'provider_name' => 'movitel_en',
+                'provider_name' => 'Movitel',
                 'template' => 'Transaction ID [transaction_ref].[*][amount] MT[*]Content:[*][device_serial].[*]',
                 'sender_pattern' => '/e-?Mola/i',
                 'enabled' => true,
