@@ -12,14 +12,8 @@
         <div class="info-box">
           <h3>Default parsing rules will be installed for:</h3>
           <ul>
-            <li>
-              <strong>Vodacom M-Pesa</strong>
-              — English and Portuguese templates
-            </li>
-            <li>
-              <strong>Movitel e-Mola</strong>
-              — English and Portuguese templates
-            </li>
+            <li><strong>Vodacom M-Pesa</strong></li>
+            <li><strong>Movitel e-Mola</strong></li>
           </ul>
           <p class="hint">
             You can customize these rules later from the plugin settings page.
