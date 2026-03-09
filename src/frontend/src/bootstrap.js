@@ -1,18 +1,18 @@
 import "babel-polyfill"
 import { use } from "echarts"
-import { BarChart, LineChart, PieChart } from "echarts/charts.js"
+import { BarChart, LineChart, PieChart } from "echarts/charts"
 import {
   GridComponent,
   LegendComponent,
   TitleComponent,
   ToolboxComponent,
   TooltipComponent,
-} from "echarts/components.js"
-import { CanvasRenderer } from "echarts/renderers.js"
+} from "echarts/components"
+import { CanvasRenderer } from "echarts/renderers"
 import moment from "moment"
 import VeeValidate from "vee-validate"
-import enMessages from "vee-validate/dist/locale/en.js"
-import frMessages from "vee-validate/dist/locale/fr.js"
+import enMessages from "vee-validate/dist/locale/en"
+import frMessages from "vee-validate/dist/locale/fr"
 import Vue from "vue"
 import VChart from "vue-echarts"
 import VueMaterial from "vue-material"
