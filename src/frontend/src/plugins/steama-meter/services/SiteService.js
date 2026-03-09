@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SiteRepository from "../repositories/SiteRepository"
+import SiteRepository from "../repositories/SiteRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class SiteService {
   constructor() {

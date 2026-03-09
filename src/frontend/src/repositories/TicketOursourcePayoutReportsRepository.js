@@ -1,5 +1,5 @@
-import Client from "@/repositories/Client/AxiosClient"
-import { resources } from "@/resources"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
 
 export default {
   list() {

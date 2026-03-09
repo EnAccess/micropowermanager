@@ -44,7 +44,7 @@ GET {{
 </template>
 
 <script>
-import { baseUrlExternal } from "@/repositories/Client/AxiosClient"
+import { baseUrlExternal } from "@/repositories/Client/AxiosClient.js"
 
 export default {
   name: "EcreeeETenderOverview",

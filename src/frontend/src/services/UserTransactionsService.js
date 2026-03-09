@@ -1,6 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import UserTransactionsRepository from "@/repositories/UserTransactionsRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import UserTransactionsRepository from "@/repositories/UserTransactionsRepository.js"
 
 export class UserTransactionsService {
   constructor(personId) {

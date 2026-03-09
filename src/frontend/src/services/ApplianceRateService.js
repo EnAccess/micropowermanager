@@ -1,9 +1,8 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { convertObjectKeysToCamelCase } from "@/Helpers/Utils"
-import { resources } from "@/resources"
-
-import ApplianceRateRepository from "@/repositories/ApplianceRateRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import { convertObjectKeysToCamelCase } from "@/Helpers/Utils.js"
+import ApplianceRateRepository from "@/repositories/ApplianceRateRepository.js"
+import { resources } from "@/resources.js"
 
 export class ApplianceRateService {
   constructor(appliancePersonId) {

@@ -37,8 +37,8 @@
 </template>
 
 <script>
+import { timing } from "@/mixins/timing.js"
 import Widget from "@/shared/Widget.vue"
-import { timing } from "@/mixins"
 
 export default {
   name: "BasicDetails",

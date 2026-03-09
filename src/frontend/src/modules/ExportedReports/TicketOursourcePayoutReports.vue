@@ -30,10 +30,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { TicketOursourcePayoutReportsService } from "@/services/TicketOursourcePayoutReportsService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { TicketOursourcePayoutReportsService } from "@/services/TicketOursourcePayoutReportsService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "TicketOursourcePayoutReports",

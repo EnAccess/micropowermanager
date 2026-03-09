@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import { AgentService } from "@/services/AgentService"
 import agentLogo from "@/assets/icons/agent-icon.png"
+import { AgentService } from "@/services/AgentService.js"
 export default {
   name: "AgentTransactionDetail",
   props: ["ot"],

@@ -1,6 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-
-import AgentAssignedApplianceRepository from "@/repositories/AgentAssignedApplianceRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import AgentAssignedApplianceRepository from "@/repositories/AgentAssignedApplianceRepository.js"
 
 export class AgentAssignedApplianceService {
   constructor() {

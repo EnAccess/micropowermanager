@@ -82,9 +82,9 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { PersonService } from "@/services/PersonService.js"
 import Widget from "@/shared/Widget.vue"
-import { PersonService } from "@/services/PersonService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "ClientDetailCard",

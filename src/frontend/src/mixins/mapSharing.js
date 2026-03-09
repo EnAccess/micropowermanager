@@ -1,5 +1,3 @@
-import store from "@/store/store"
-import { ICON_OPTIONS, MappingService } from "@/services/MappingService"
 import "leaflet/dist/leaflet.css"
 import "leaflet-draw/dist/leaflet.draw.css"
 import "leaflet.markercluster/dist/MarkerCluster.css"
@@ -10,7 +8,10 @@ import "leaflet.featuregroup.subgroup"
 import "leaflet-draw"
 import "leaflet-bing-layer"
 import marker from "leaflet/dist/images/marker-icon.png"
-import { EventBus } from "@/shared/eventbus"
+
+import { ICON_OPTIONS, MappingService } from "@/services/MappingService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import store from "@/store/store.js"
 
 export const sharedMap = {
   props: {

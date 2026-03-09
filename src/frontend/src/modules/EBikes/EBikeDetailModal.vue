@@ -133,8 +133,9 @@
 </template>
 
 <script>
-import { notify, timing } from "@/mixins"
-import { EBikeService } from "@/services/EBikeService"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import { EBikeService } from "@/services/EBikeService.js"
 import Box from "@/shared/Box.vue"
 
 export default {

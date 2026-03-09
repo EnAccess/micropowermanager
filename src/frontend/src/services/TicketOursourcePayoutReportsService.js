@@ -1,6 +1,6 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import TicketOursourcePayoutReportsRepository from "@/repositories/TicketOursourcePayoutReportsRepository"
+import { Paginator } from "@/Helpers/Paginator.js"
+import TicketOursourcePayoutReportsRepository from "@/repositories/TicketOursourcePayoutReportsRepository.js"
+import { resources } from "@/resources.js"
 
 export class TicketOursourcePayoutReportsService {
   constructor() {

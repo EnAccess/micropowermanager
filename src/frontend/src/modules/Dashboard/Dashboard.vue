@@ -27,7 +27,7 @@
         <div class="md-layout-item md-size-100">
           <widget :title="$tc('phrases.clusterMap')" id="cluster-map">
             <dashboard-map
-              :mapping-service="mappingService"
+              :mapping-service="mappingService.js"
               ref="dashboardMapRef"
             />
           </widget>
@@ -38,14 +38,15 @@
 </template>
 
 <script>
-import "@/shared/TableList"
-import BoxGroup from "@/modules/Dashboard/BoxGroup"
-import FinancialOverview from "@/modules/Dashboard/FinancialOverview"
-import DashboardMap from "@/modules/Map/DashboardMap.vue"
-import { notify } from "@/mixins/notify"
-import Widget from "@/shared/Widget.vue"
+import "@/shared/TableList.vue"
 import moment from "moment"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
+
+import { notify } from "@/mixins/notify.js"
+import BoxGroup from "@/modules/Dashboard/BoxGroup.vue"
+import FinancialOverview from "@/modules/Dashboard/FinancialOverview.vue"
+import DashboardMap from "@/modules/Map/DashboardMap.vue"
+import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Dashboard",

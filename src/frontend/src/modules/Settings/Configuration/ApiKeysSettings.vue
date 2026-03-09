@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import { ApiKeysService } from "@/services/ApiKeysService"
-import { notify } from "@/mixins"
+import { notify } from "@/mixins/notify.js"
+import { ApiKeysService } from "@/services/ApiKeysService.js"
 
 export default {
   name: "ApiKeysSettings",

@@ -77,9 +77,9 @@ This is copy from it's UI with adjusted handling to MPM context.
 </template>
 
 <script>
-import { Paginator } from "@/Helpers/Paginator"
-import { EventBus } from "./eventbus"
-import { notify } from "@/mixins/notify"
+import { Paginator } from "@/Helpers/Paginator.js"
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
 export default {
   name: "Paginate",
   mixins: [notify],

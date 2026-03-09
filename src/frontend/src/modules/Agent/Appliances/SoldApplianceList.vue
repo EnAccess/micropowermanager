@@ -41,10 +41,10 @@
   </widget>
 </template>
 <script>
+import { currency } from "@/mixins/currency.js"
+import { AgentSoldApplianceService } from "@/services/AgentSoldApplianceService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentSoldApplianceService } from "@/services/AgentSoldApplianceService"
-import { EventBus } from "@/shared/eventbus"
-import { currency } from "@/mixins/currency"
 
 export default {
   name: "SoldApplianceList",

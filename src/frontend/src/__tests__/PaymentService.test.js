@@ -1,5 +1,5 @@
-jest.mock("../repositories/PaymentHistoryRepository")
-import { PaymentService } from "../services/PaymentService"
+jest.mock("../repositories/PaymentHistoryRepository.js")
+import { PaymentService } from "../services/PaymentService.js"
 const paymentService = new PaymentService()
 
 describe("PaymentService #getPaymentFlow", () => {

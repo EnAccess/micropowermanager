@@ -304,16 +304,16 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
 import {
   ConnectionTypes,
   NumberOfCustomers,
-} from "@/services/ConnectionTypeService"
-import { currency } from "@/mixins/currency"
-import { Targets } from "@/services/TargetService"
-import { resources } from "@/resources"
-import { notify } from "@/mixins/notify"
-import Client from "@/repositories/Client/AxiosClient"
+} from "@/services/ConnectionTypeService.js"
+import { Targets } from "@/services/TargetService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "NewTarget",

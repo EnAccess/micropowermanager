@@ -33,12 +33,13 @@
 </template>
 
 <script>
+import NewConnectionType from "./NewConnectionType.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { ConnectionTypeService } from "@/services/ConnectionTypeService.js"
+import { SubConnectionTypeService } from "@/services/SubConnectionTypeService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { ConnectionTypeService } from "@/services/ConnectionTypeService"
-import { SubConnectionTypeService } from "@/services/SubConnectionTypeService"
-import NewConnectionType from "./NewConnectionType"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "ConnectionTypesList",

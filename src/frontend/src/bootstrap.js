@@ -1,28 +1,54 @@
+import { use } from "echarts"
+import { BarChart, LineChart, PieChart } from "echarts/charts.js"
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  ToolboxComponent,
+} from "echarts/components.js"
+import "vue-material/dist/vue-material.min.css"
+import "vue-material/dist/theme/default.css"
+import { CanvasRenderer } from "echarts/renderers.js"
+import moment from "moment"
+import VeeValidate from "vee-validate"
+import "vue-tel-input/dist/vue-tel-input.css"
+import "babel-polyfill"
+import enMessages from "vee-validate/dist/locale/en.js"
+import frMessages from "vee-validate/dist/locale/fr.js"
+import Vue from "vue"
+import VChart from "vue-echarts"
+import VueMaterial from "vue-material"
+import VueRouter from "vue-router"
+import VueSweetalert2 from "vue-sweetalert2"
+import VueTelInput from "vue-tel-input"
+import Vuex from "vuex"
+
+import { config } from "./config.js"
+import i18n from "./i18n.js"
+import Default from "./layouts/Default.vue"
+import { resources } from "./resources.js"
+
+import SidebarComponent from "@/modules/Sidebar/index.js"
+
+import "../src/assets/sass/mpm.scss"
+
 window._ = require("lodash")
 window.Popper = require("popper.js").default
-import "babel-polyfill"
 
 window.axios = require("axios")
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest"
 
-import { config } from "./config"
-
 Vue.prototype.appConfig = config
-
-import Vue from "vue"
 
 /**
  * Vue Router
  */
-import VueRouter from "vue-router"
-
 Vue.use(VueRouter)
 
 /**
  * Vuex
  */
-import Vuex from "vuex"
-
 Vue.use(Vuex)
 window.Vue = Vue
 window.Vuex = Vuex
@@ -30,11 +56,6 @@ window.Vuex = Vuex
 /**
  * VeeValidate
  */
-import i18n from "./i18n"
-import VeeValidate from "vee-validate"
-import enMessages from "vee-validate/dist/locale/en"
-import frMessages from "vee-validate/dist/locale/fr"
-
 Vue.use(VeeValidate, {
   i18n,
   dictionary: {
@@ -47,21 +68,6 @@ Vue.use(VeeValidate, {
 /**
  * ECharts (vue-echarts 7.x with ECharts 5.x)
  */
-import { use } from "echarts/core"
-import { CanvasRenderer } from "echarts/renderers"
-
-import { BarChart, LineChart, PieChart } from "echarts/charts"
-
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent,
-  ToolboxComponent,
-} from "echarts/components"
-
-import VChart from "vue-echarts"
-
 use([
   CanvasRenderer,
   BarChart,
@@ -79,8 +85,6 @@ Vue.component("v-chart", VChart)
 /**
  * moment
  */
-import moment from "moment"
-
 window.moment = moment
 
 /**
@@ -93,8 +97,6 @@ window.moment = moment
 /**
  * Reources
  */
-import { resources } from "./resources"
-
 window.resources = resources
 
 /**
@@ -105,8 +107,6 @@ window.Pusher = require("pusher-js")
 /**
  * Sweet Alert
  */
-import VueSweetalert2 from "vue-sweetalert2"
-
 Vue.use(VueSweetalert2)
 
 window.onclick = function (e) {
@@ -127,37 +127,26 @@ window.onclick = function (e) {
 /**
  * VueMaterial
  */
-import VueMaterial from "vue-material"
-import "vue-material/dist/vue-material.min.css"
-import "vue-material/dist/theme/default.css" // This line here
 Vue.use(VueMaterial)
 
 /**
  * SidebarComponent
  */
-import SidebarComponent from "@/modules/Sidebar"
-
 Vue.use(SidebarComponent)
 
 /**
  * Some SCSS
  */
-import "../src/assets/sass/mpm.scss"
 
 /**
  * Default Layout
  */
-import Default from "./layouts/Default.vue"
-
 Vue.component("default-layout", Default)
 
 /**
  * VueTelInput
  */
-// FIXME: It's only used once. Should this really be a global import?
-import VueTelInput from "vue-tel-input"
-import "vue-tel-input/dist/vue-tel-input.css"
-
+// FIXME: It's only used once. Should this really be global?
 const opt = {
   dropdownOptions: {
     disabledDialCode: false,

@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import UserPermissionImportRepository from "@/repositories/UserPermissionImportRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import UserPermissionImportRepository from "@/repositories/UserPermissionImportRepository.js"
 
 export class UserPermissionImportService {
   constructor() {

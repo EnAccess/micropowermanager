@@ -270,23 +270,25 @@
 </template>
 
 <script>
-import { resources } from "@/resources"
-import { Paginator } from "@/Helpers/Paginator"
-import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget.vue"
-import { People } from "@/services/PersonService"
-import { timing } from "@/mixins/timing"
-import { notify } from "@/mixins/notify"
-import i18n from "../../i18n"
-import AddClientModal from "@/modules/Client/AddClientModal.vue"
-import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService"
-import { CustomerExportService } from "@/services/CustomerExportService"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import { AgentService } from "@/services/AgentService"
-import { MiniGridService } from "@/services/MiniGridService"
-import { CityService } from "@/services/CityService"
-import ClientFilter from "@/modules/Client/ClientFilter.vue"
 import { mapGetters } from "vuex"
+
+import i18n from "../../i18n.js"
+
+import { Paginator } from "@/Helpers/Paginator.js"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import AddClientModal from "@/modules/Client/AddClientModal.vue"
+import ClientFilter from "@/modules/Client/ClientFilter.vue"
+import { resources } from "@/resources.js"
+import { AgentService } from "@/services/AgentService.js"
+import { CityService } from "@/services/CityService.js"
+import { CustomerExportService } from "@/services/CustomerExportService.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService.js"
+import { People } from "@/services/PersonService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
 

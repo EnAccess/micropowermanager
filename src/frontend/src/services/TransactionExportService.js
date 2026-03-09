@@ -1,4 +1,4 @@
-import TransactionExportRepository from "@/repositories/TransactionExportRepository"
+import TransactionExportRepository from "@/repositories/TransactionExportRepository.js"
 
 export class TransactionExportService {
   constructor() {

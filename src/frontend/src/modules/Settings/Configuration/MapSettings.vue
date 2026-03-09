@@ -90,7 +90,7 @@
     </div>
     <div class="map-area md-layout md-size-50" @click="getLatLon">
       <settings-map
-        :mapping-service="mappingService"
+        :mapping-service="mappingService.js"
         ref="settingsMap"
         :mutating-center="mutatingCenter"
         :key="mapKey"
@@ -101,10 +101,10 @@
 </template>
 
 <script>
-import { MapSettingsService } from "@/services/MapSettingsService"
-import { EventBus } from "@/shared/eventbus"
 import SettingsMap from "@/modules/Map/SettingsMap.vue"
-import { MappingService } from "@/services/MappingService"
+import { MappingService } from "@/services/MappingService.js"
+import { MapSettingsService } from "@/services/MapSettingsService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "MapSettings",

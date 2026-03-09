@@ -108,9 +108,9 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { WaveComService } from "@/plugins/wavecom-payment-provider/services/WaveComService.js"
 import Widget from "@/shared/Widget.vue"
-import { WaveComService } from "@/plugins/wavecom-payment-provider/services/WaveComService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "WaveComTransaction",

@@ -1,5 +1,5 @@
-jest.mock("../repositories/MainSettingsRepository")
-import { MainSettingsService } from "../services/MainSettingsService"
+jest.mock("../repositories/MainSettingsRepository.js")
+import { MainSettingsService } from "../services/MainSettingsService.js"
 const mainSettings = new MainSettingsService()
 const mainSettingsProperties = [
   "id",

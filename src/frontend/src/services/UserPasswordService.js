@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import UserPasswordRepository from "@/repositories/UserPasswordRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import UserPasswordRepository from "@/repositories/UserPasswordRepository.js"
 
 export class UserPasswordService {
   constructor() {

@@ -1,6 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { EventBus } from "@/shared/eventbus"
-import CustomerRepository from "../repositories/CustomerRepository"
+import CustomerRepository from "../repositories/CustomerRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class CustomerService {
   constructor() {

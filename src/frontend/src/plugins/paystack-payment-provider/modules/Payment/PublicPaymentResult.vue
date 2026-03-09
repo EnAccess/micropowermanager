@@ -237,8 +237,9 @@
 </template>
 
 <script>
-import { PublicPaymentService } from "../../services/PublicPaymentService"
-import { notify } from "@/mixins/notify"
+import { PublicPaymentService } from "../../services/PublicPaymentService.js"
+
+import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "PublicPaymentResult",

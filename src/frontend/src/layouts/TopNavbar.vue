@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import Breadcrumb from "../shared/Breadcrumb"
+import Breadcrumb from "../shared/Breadcrumb.vue"
 
 export default {
   components: {

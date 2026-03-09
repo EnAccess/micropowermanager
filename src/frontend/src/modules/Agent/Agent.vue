@@ -38,13 +38,13 @@
   </div>
 </template>
 <script>
-import AgentDetail from "./AgentDetail"
-import AssignedApplianceList from "./Appliances/AssignedApplianceList"
-import AgentReceiptList from "./Receipt/AgentReceiptList"
-import SoldApplianceList from "./Appliances/SoldApplianceList"
-import AgentTransactionList from "./AgentTransactionList"
-import AgentTicketList from "./AgentTicketList"
-import AgentBalanceHistoryList from "./Balance/AgentBalanceHistory"
+import AgentDetail from "./AgentDetail.vue"
+import AgentTicketList from "./AgentTicketList.vue"
+import AgentTransactionList from "./AgentTransactionList.vue"
+import AssignedApplianceList from "./Appliances/AssignedApplianceList.vue"
+import SoldApplianceList from "./Appliances/SoldApplianceList.vue"
+import AgentBalanceHistoryList from "./Balance/AgentBalanceHistory.vue"
+import AgentReceiptList from "./Receipt/AgentReceiptList.vue"
 
 export default {
   name: "Agent",

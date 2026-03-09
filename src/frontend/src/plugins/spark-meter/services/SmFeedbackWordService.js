@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmFeedbackWordRepository from "../repositories/SmFeedbackWordRepository"
+import SmFeedbackWordRepository from "../repositories/SmFeedbackWordRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class SmFeedbackWordService {
   constructor() {

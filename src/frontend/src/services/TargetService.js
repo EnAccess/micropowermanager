@@ -1,9 +1,9 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { City } from "@/services/CityService"
-import { ConnectionsType } from "@/services/ConnectionTypeService"
-import TargetRepository from "@/repositories/TargetRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import TargetRepository from "@/repositories/TargetRepository.js"
+import { resources } from "@/resources.js"
+import { City } from "@/services/CityService.js"
+import { ConnectionsType } from "@/services/ConnectionTypeService.js"
 
 export class SubTarget {
   constructor() {

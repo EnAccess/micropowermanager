@@ -1,4 +1,4 @@
-import { ClustersDashboardCacheDataService } from "@/services/ClustersDashboardCacheDataService"
+import { ClustersDashboardCacheDataService } from "@/services/ClustersDashboardCacheDataService.js"
 
 export const namespaced = true
 

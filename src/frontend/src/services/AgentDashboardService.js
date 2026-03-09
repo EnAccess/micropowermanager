@@ -1,4 +1,4 @@
-import AgentDashboardRepository from "@/repositories/AgentDashboardRepository"
+import AgentDashboardRepository from "@/repositories/AgentDashboardRepository.js"
 
 export class AgentDashboardService {
   constructor() {

@@ -1,7 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-
-import MiniGridRepository from "@/repositories/MiniGridRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import MiniGridRepository from "@/repositories/MiniGridRepository.js"
 
 export class MiniGridService {
   constructor() {

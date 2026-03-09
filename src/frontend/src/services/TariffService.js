@@ -1,8 +1,8 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { TimeOfUsageService } from "./TimeOfUsageService"
-import { Paginator } from "@/Helpers/Paginator"
-import { resource } from "@/repositories/TariffRepository"
-import TariffRepository from "@/repositories/TariffRepository"
+import { TimeOfUsageService } from "./TimeOfUsageService.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import TariffRepository, { resource } from "@/repositories/TariffRepository.js"
 
 export class TariffService {
   constructor() {

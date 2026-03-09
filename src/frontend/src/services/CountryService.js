@@ -1,6 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-
-import CountryRespository from "@/repositories/CountryRespository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import CountryRespository from "@/repositories/CountryRespository.js"
 
 export default class CountryService {
   constructor() {

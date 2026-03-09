@@ -1,5 +1,5 @@
-const miniGridListResponse = require("./responses/miniGrid/miniGridList.json")
 const miniGridCreateResponse = require("./responses/miniGrid/miniGridCreate.json")
+const miniGridListResponse = require("./responses/miniGrid/miniGridList.json")
 
 export default {
   list() {
