@@ -119,8 +119,8 @@
     <md-table v-if="savedRemindRates.length" class="remind-rate-table">
       <md-table-row>
         <md-table-head>{{ $tc("words.appliance") }}</md-table-head>
-        <md-table-head>{{ $tc("phrases.reminderRate") }}</md-table-head>
         <md-table-head>{{ $tc("phrases.overDueReminderRate") }}</md-table-head>
+        <md-table-head>{{ $tc("phrases.reminderRate") }}</md-table-head>
         <md-table-head>{{ $tc("phrases.enableSmsReminder") }}</md-table-head>
       </md-table-row>
       <md-table-row
@@ -131,10 +131,10 @@
       >
         <md-table-cell>{{ rate.applianceType }}</md-table-cell>
         <md-table-cell>
-          {{ rate.remindRate }} {{ $tc("words.day") }}
+          {{ rate.overdueRemindRate }} {{ $tc("words.day") }}
         </md-table-cell>
         <md-table-cell>
-          {{ rate.overdueRemindRate }} {{ $tc("words.day") }}
+          {{ rate.remindRate }} {{ $tc("words.day") }}
         </md-table-cell>
         <md-table-cell>
           <md-icon :class="rate.enabled ? 'enabled-icon' : 'disabled-icon'">
