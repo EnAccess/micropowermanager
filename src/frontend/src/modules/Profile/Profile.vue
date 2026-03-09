@@ -334,7 +334,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .save-button {
   background-color: #325932 !important;
   color: #fefefe !important;

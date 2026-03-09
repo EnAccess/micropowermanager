@@ -107,7 +107,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .token-box {
   margin-top: 16px;
 }

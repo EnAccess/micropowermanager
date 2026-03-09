@@ -192,7 +192,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-list-item-text {
   display: flex;
   flex-direction: column;

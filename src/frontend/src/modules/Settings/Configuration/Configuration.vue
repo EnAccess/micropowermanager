@@ -93,7 +93,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .settings-area {
   height: 100%;
   overflow: auto;

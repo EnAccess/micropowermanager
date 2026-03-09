@@ -179,7 +179,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @media screen and (max-width: 500px) {
   .mobile-menu-text {
     display: none;

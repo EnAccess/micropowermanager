@@ -253,7 +253,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .no-data-message {
   text-align: center;
   padding: 2rem;

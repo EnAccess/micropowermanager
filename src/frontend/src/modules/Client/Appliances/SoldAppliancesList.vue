@@ -108,7 +108,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .selected-row {
   background-color: #ccc;
 }

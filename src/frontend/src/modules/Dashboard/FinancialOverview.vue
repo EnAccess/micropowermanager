@@ -218,7 +218,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .datepicker-right .vdp-datepicker__calendar {
   right: 0;
 }

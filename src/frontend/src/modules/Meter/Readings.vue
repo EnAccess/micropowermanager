@@ -210,7 +210,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .no-data-placeholder {
   margin-top: 100px;
   margin-bottom: 100px;

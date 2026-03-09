@@ -173,7 +173,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .title-span {
   font-weight: bold;
 }

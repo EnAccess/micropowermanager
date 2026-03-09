@@ -365,7 +365,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .divider-title {
   border-bottom: solid 1px #dedede;
   font-weight: 500;

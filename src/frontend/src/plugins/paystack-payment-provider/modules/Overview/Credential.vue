@@ -429,7 +429,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .Credential-Form {
   padding: 1rem;
 }

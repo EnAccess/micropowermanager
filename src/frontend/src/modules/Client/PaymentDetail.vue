@@ -178,7 +178,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .payment-period-select {
   float: right;
   padding-right: 2.5rem !important;

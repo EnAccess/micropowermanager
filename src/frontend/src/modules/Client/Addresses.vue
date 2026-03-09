@@ -305,7 +305,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="scss">
 .address-edit-container {
   padding: 1rem;
 }

@@ -112,7 +112,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .chic-button {
   background-color: #0a0a0c !important;
   color: #fefefe !important;

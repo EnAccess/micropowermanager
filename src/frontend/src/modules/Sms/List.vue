@@ -307,7 +307,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 [data-letters]:before {
   content: attr(data-letters);
   display: inline-block;

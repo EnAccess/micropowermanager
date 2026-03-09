@@ -260,7 +260,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .list-column {
   display: flex;
   flex-direction: column;

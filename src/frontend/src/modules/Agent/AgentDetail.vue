@@ -323,4 +323,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

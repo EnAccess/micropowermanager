@@ -481,7 +481,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .transaction-detail-card {
   margin-top: 1rem !important;
   margin-right: 1rem !important;

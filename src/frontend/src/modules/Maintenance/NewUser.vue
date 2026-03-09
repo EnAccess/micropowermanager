@@ -273,7 +273,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .full-width {
   width: 100% !important;
 }

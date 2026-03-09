@@ -147,7 +147,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .success-span {
   font-size: large;
   font-weight: 700;

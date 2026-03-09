@@ -182,7 +182,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .setting-card {
   padding: 2rem !important;
 }

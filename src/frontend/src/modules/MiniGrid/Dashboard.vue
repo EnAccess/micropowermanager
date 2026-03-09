@@ -568,7 +568,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .map-area {
   z-index: 1 !important;
 }

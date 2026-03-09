@@ -129,7 +129,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .page-container {
   padding: 16px;
 }

@@ -11,7 +11,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #map {
   height: 100%;
   min-height: 500px;

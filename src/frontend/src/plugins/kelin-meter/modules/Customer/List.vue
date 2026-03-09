@@ -163,7 +163,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .edit-button-area {
   display: inline-flex;
   margin-left: -2rem;

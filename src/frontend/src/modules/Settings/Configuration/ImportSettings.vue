@@ -356,7 +356,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-table-cell {
   vertical-align: middle;
 }

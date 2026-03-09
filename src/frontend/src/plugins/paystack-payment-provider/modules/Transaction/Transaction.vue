@@ -276,7 +276,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .transaction-dialog {
   min-width: 600px;
 }
