@@ -36,7 +36,7 @@
         </md-field>
       </div>
       <div
-        class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
+        class="md-layout-item md-xlarge-size-20 md-large-size-20 md-medium-size-20 md-small-size-20"
       >
         <md-field
           :class="{
@@ -67,7 +67,7 @@
         </md-field>
       </div>
       <div
-        class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
+        class="md-layout-item md-xlarge-size-20 md-large-size-20 md-medium-size-20 md-small-size-20"
       >
         <md-field
           :class="{
@@ -93,7 +93,17 @@
         </md-field>
       </div>
       <div
-        class="md-layout-item md-xlarge-size-25 md-large-size-25 md-medium-size-25 md-small-size-25"
+        class="md-layout-item md-xlarge-size-20 md-large-size-20 md-medium-size-20 md-small-size-20"
+      >
+        <md-switch
+          v-model="smsApplianceRemindRateService.smsApplianceRemindRate.enabled"
+          class="md-primary"
+        >
+          {{ $tc("phrases.enableSmsReminder") }}
+        </md-switch>
+      </div>
+      <div
+        class="md-layout-item md-xlarge-size-15 md-large-size-15 md-medium-size-15 md-small-size-15"
       >
         <md-button
           role="button"
@@ -106,6 +116,33 @@
       </div>
     </form>
     <md-progress-bar v-if="loading" md-mode="indeterminate"></md-progress-bar>
+    <md-table v-if="savedRemindRates.length" class="remind-rate-table">
+      <md-table-row>
+        <md-table-head>{{ $tc("words.appliance") }}</md-table-head>
+        <md-table-head>{{ $tc("phrases.reminderRate") }}</md-table-head>
+        <md-table-head>{{ $tc("phrases.overDueReminderRate") }}</md-table-head>
+        <md-table-head>{{ $tc("phrases.enableSmsReminder") }}</md-table-head>
+      </md-table-row>
+      <md-table-row
+        v-for="(rate, index) in savedRemindRates"
+        :key="index"
+        @click="smsApplianceRemindRateSelected(rate.id)"
+        class="clickable-row"
+      >
+        <md-table-cell>{{ rate.applianceType }}</md-table-cell>
+        <md-table-cell>
+          {{ rate.remindRate }} {{ $tc("words.day") }}
+        </md-table-cell>
+        <md-table-cell>
+          {{ rate.overdueRemindRate }} {{ $tc("words.day") }}
+        </md-table-cell>
+        <md-table-cell>
+          <md-icon :class="rate.enabled ? 'enabled-icon' : 'disabled-icon'">
+            {{ rate.enabled ? "check_circle" : "cancel" }}
+          </md-icon>
+        </md-table-cell>
+      </md-table-row>
+    </md-table>
   </div>
 </template>
 <script>
@@ -121,6 +158,13 @@ export default {
       loading: false,
       selectedRemindRateId: 0,
     }
+  },
+  computed: {
+    savedRemindRates() {
+      return this.smsApplianceRemindRateService.list.filter(
+        (rate) => rate.id > 0,
+      )
+    },
   },
   mounted() {
     this.getSmsApplianceRemindRate()
@@ -139,6 +183,7 @@ export default {
       try {
         this.loading = true
         await this.smsApplianceRemindRateService.updateSmsApplianceRemindRate()
+        await this.smsApplianceRemindRateService.getSmsApplianceRemindRates()
         this.alertNotify("success", "Updated Successfully")
       } catch (e) {
         this.alertNotify("error", e.message)
@@ -156,4 +201,20 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.remind-rate-table {
+  margin-top: 1rem;
+}
+.clickable-row {
+  cursor: pointer;
+}
+.clickable-row:hover {
+  background-color: #f5f5f5;
+}
+.enabled-icon {
+  color: #4caf50 !important;
+}
+.disabled-icon {
+  color: #f44336 !important;
+}
+</style>

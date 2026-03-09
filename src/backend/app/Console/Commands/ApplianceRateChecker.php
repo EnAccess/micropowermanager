@@ -39,6 +39,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
         $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) {
             $dueApplianceRates = $this->applianceRate::with([
                 'appliancePerson.appliance.smsReminderRate',
+                'appliancePerson.appliance.applianceType',
                 'appliancePerson.person.addresses',
             ])
                 ->whereBetween('due_date', [
@@ -61,7 +62,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
     private function findOverDueRates(): void {
         $smsApplianceRemindRates = $this->getApplianceRemindRates();
         $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) {
-            $overDueRates = $this->applianceRate::with(['appliancePerson.appliance', 'appliancePerson.person.addresses'])
+            $overDueRates = $this->applianceRate::with(['appliancePerson.appliance.applianceType', 'appliancePerson.person.addresses'])
                 ->whereBetween('due_date', [
                     now()->toDateString(),
                     now()->addDays($smsApplianceRemindRate->overdue_remind_rate)->toDateString(),
@@ -75,9 +76,9 @@ class ApplianceRateChecker extends AbstractSharedCommand {
         });
     }
 
-    private function sendReminderSms(ApplianceRate $applianceRate): void {
+    private function sendReminderSms(ApplianceRate $applianceRate, int $smsType): void {
         $smsService = app()->make(SmsService::class);
-        $smsService->sendSms($applianceRate->toArray(), SmsTypes::APPLIANCE_RATE, SmsConfigs::class);
+        $smsService->sendSms($applianceRate, $smsType, SmsConfigs::class);
     }
 
     /**
@@ -85,7 +86,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
      */
     private function sendReminders(Collection $dueApplianceRates, int $smsType): void {
         $dueApplianceRates->each(function (ApplianceRate $dueApplianceRate) use ($smsType) {
-            $this->sendReminderSms($dueApplianceRate);
+            $this->sendReminderSms($dueApplianceRate, $smsType);
             if ($smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE) {
                 $dueApplianceRate->remind = 1;
                 $dueApplianceRate->update();
@@ -97,19 +98,22 @@ class ApplianceRateChecker extends AbstractSharedCommand {
     private function createReminderTicket(ApplianceRate $applianceRate, bool $overDue = false): void {
         $currency = $this->mainSettingsService->getAll()->first()->currency;
         // create ticket for customer service
-        $creator = $this->user->newQuery()->firstOrCreate([
-            'name' => 'System',
-        ]);
+        $creator = $this->user->newQuery()->firstOrCreate(
+            ['name' => 'System', 'company_id' => $this->companyId],
+            ['email' => 'system@mpm.local', 'password' => ''],
+        );
         // reformat due date if it is set
         if ($overDue) {
-            $category = $this->label->newQuery()->firstOrCreate([
-                'label_name' => 'Payments Issue',
-            ]);
+            $category = $this->label->newQuery()->firstOrCreate(
+                ['label_name' => 'Payments Issue'],
+                ['label_color' => '#e74c3c', 'out_source' => false],
+            );
             $description = 'Customer didn\'t pay '.$applianceRate->remaining.$currency.' on '.$applianceRate->due_date;
         } else {
-            $category = $this->label->newQuery()->firstOrCreate([
-                'label_name' => 'Customer Follow Up',
-            ]);
+            $category = $this->label->newQuery()->firstOrCreate(
+                ['label_name' => 'Customer Follow Up'],
+                ['label_color' => '#3498db', 'out_source' => false],
+            );
             $description =
                 'Customer should pay '.$applianceRate->remaining.$currency.' until '.$applianceRate->due_date;
         }
@@ -119,8 +123,9 @@ class ApplianceRateChecker extends AbstractSharedCommand {
             content: $description,
             categoryId: $category->id,
             assignedId: $creator->id,
-            dueDate: $applianceRate->due_date->toDateString() === '1970-01-01' ? null : $applianceRate->due_date,
+            dueDate: (string) $applianceRate->due_date === '1970-01-01' ? null : (string) $applianceRate->due_date,
             owner: $applianceRate->appliancePerson()->first()->person()->first(),
+            creator: $creator,
         );
     }
 

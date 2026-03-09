@@ -11,6 +11,7 @@ export class SmsApplianceRemindRateService {
       applianceType: null,
       overdueRemindRate: null,
       remindRate: null,
+      enabled: false,
     }
   }
   fromJson(applianceTypes) {
@@ -21,7 +22,7 @@ export class SmsApplianceRemindRateService {
       this.smsApplianceRemindRate = {
         id:
           applianceType.sms_reminder_rate == null ||
-          applianceTypes.sms_reminder_rate === undefined
+          applianceType.sms_reminder_rate === undefined
             ? -1 * Math.floor(Math.random() * 10000000)
             : applianceType.sms_reminder_rate.id,
         applianceTypeId: applianceType.id,
@@ -36,6 +37,11 @@ export class SmsApplianceRemindRateService {
           applianceType.sms_reminder_rate === undefined
             ? 0
             : applianceType.sms_reminder_rate.remind_rate,
+        enabled:
+          applianceType.sms_reminder_rate == null ||
+          applianceType.sms_reminder_rate === undefined
+            ? false
+            : !!applianceType.sms_reminder_rate.enabled,
       }
       return this.smsApplianceRemindRate
     })
@@ -61,6 +67,7 @@ export class SmsApplianceRemindRateService {
         appliance_type_id: this.smsApplianceRemindRate.applianceTypeId,
         overdue_remind_rate: this.smsApplianceRemindRate.overdueRemindRate,
         remind_rate: this.smsApplianceRemindRate.remindRate,
+        enabled: this.smsApplianceRemindRate.enabled,
       }
       let response
       if (smsApplianceRemindRatePm.id < 0) {

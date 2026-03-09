@@ -208,6 +208,7 @@
     "editSubConnectionTypeNotify": "Are you sure to changing this sub connection type? | Sub Connection Updated Successfully!",
     "enableAccessRate": "Enable Access Rate",
     "enableMinimumPurchaseAmount": "Enable Minimum Purchase Amount",
+    "enableSmsReminder": "Enable SMS Reminder",
     "energyCommission": "Energy Commission (sample 0.1)",
     "enterCardDetails": "Enter your card details securely",
     "environment": "Environment",

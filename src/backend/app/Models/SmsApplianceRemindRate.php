@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
  * @property      int            $appliance_id
  * @property      int            $overdue_remind_rate
  * @property      int            $remind_rate
+ * @property      bool           $enabled
  * @property      Carbon|null    $created_at
  * @property      Carbon|null    $updated_at
  * @property-read Appliance|null $appliance

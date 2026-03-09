@@ -23,7 +23,7 @@ class SmsApplianceRemindRateService {
      * @return Collection<int, SmsApplianceRemindRate>
      */
     public function getApplianceRemindRates(): Collection {
-        return $this->smsApplianceRemindRate->newQuery()->get();
+        return $this->smsApplianceRemindRate->newQuery()->where('enabled', true)->get();
     }
 
     /**
@@ -33,9 +33,9 @@ class SmsApplianceRemindRateService {
      */
     public function updateApplianceRemindRate(SmsApplianceRemindRate $smsApplianceRemindRate, array $data): Appliance|Collection {
         $smsApplianceRemindRate->update([
-            'appliance_id' => $data['appliance_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate'],
+            'enabled' => $data['enabled'] ?? false,
         ]);
 
         return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
@@ -51,6 +51,7 @@ class SmsApplianceRemindRateService {
             'appliance_id' => $data['appliance_type_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate'],
+            'enabled' => $data['enabled'] ?? false,
         ]);
 
         return $this->appliance->newQuery()->with(['smsReminderRate'])->get();

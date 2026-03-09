@@ -16,6 +16,7 @@ abstract class AbstractSharedCommand extends Command {
     protected const EXECUTE_FOR_ALL = 0;
 
     protected int $EXECUTION_TYPE = self::EXECUTE_FOR_ALL;
+    protected int $companyId = 0;
 
     /**
      * Configure the command.
@@ -93,6 +94,7 @@ abstract class AbstractSharedCommand extends Command {
         $this->info('Running '.$this->name.' for company ID : '.$companyId);
 
         try {
+            $this->companyId = $companyId;
             $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {
                 parent::execute($input, $output);
             });
