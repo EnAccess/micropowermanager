@@ -83,7 +83,7 @@ class ApplianceRateCheckerTest extends TestCase {
     }
 
     public function testCommandCreatesTicketWithCorrectOwner(): void {
-        $applianceRate = $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true);
+        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true);
 
         $this->mock(SmsService::class, function ($mock) {
             $mock->shouldReceive('sendSms');
