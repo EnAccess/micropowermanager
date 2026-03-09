@@ -5,11 +5,12 @@
  */
 
 require("./bootstrap.js")
+import "leaflet/dist/leaflet.css"
+
 import App from "./App.vue"
 import i18n from "./i18n.js"
 import Default from "./layouts/Default.vue"
 import router from "./routes.js"
-import "leaflet/dist/leaflet.css"
 import { MainSettingsService } from "./services/MainSettingsService.js"
 import { MapSettingsService } from "./services/MapSettingsService.js"
 import store from "./store/store.js"

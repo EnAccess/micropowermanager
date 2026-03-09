@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import "@/shared/TableList.vue"
-
 import moment from "moment"
 
 import BoxGroup from "./BoxGroup.vue"
@@ -63,6 +61,7 @@ import FinancialOverview from "@/modules/Dashboard/FinancialOverview.vue"
 import ClusterMap from "@/modules/Map/ClusterMap.vue"
 import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
 import { EventBus } from "@/shared/eventbus.js"
+import "@/shared/TableList.vue"
 
 export default {
   name: "Dashboard",

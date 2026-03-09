@@ -498,7 +498,7 @@ import { notify } from "@/mixins/notify.js"
 import { AppliancePersonService } from "@/services/AppliancePersonService.js"
 import { ApplianceService } from "@/services/ApplianceService.js"
 import { DeviceService } from "@/services/DeviceService.js"
-import { MappingService, ICONS } from "@/services/MappingService.js"
+import { ICONS, MappingService } from "@/services/MappingService.js"
 import Loader from "@/shared/Loader.vue"
 
 const APPLIANCE_TYPE_SHS_ID = 1

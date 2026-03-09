@@ -181,8 +181,8 @@ import { CityService } from "@/services/CityService.js"
 import { ClusterService } from "@/services/ClusterService.js"
 import CountryService from "@/services/CountryService.js"
 import {
-  MappingService,
   ICONS,
+  MappingService,
   MARKER_TYPE,
 } from "@/services/MappingService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"

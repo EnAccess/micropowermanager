@@ -40,7 +40,9 @@
           "order": "asc",
           "caseInsensitive": true
         },
-        "newlines-between": "always"
+        "named": true,
+        "newlines-between": "always",
+        "warnOnUnassignedImports": true
       }
     ]
   },

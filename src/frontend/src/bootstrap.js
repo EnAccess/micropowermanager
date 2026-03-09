@@ -1,28 +1,30 @@
+import "babel-polyfill"
 import { use } from "echarts"
 import { BarChart, LineChart, PieChart } from "echarts/charts.js"
 import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
   GridComponent,
+  LegendComponent,
+  TitleComponent,
   ToolboxComponent,
+  TooltipComponent,
 } from "echarts/components.js"
-import "vue-material/dist/vue-material.min.css"
-import "vue-material/dist/theme/default.css"
 import { CanvasRenderer } from "echarts/renderers.js"
 import moment from "moment"
 import VeeValidate from "vee-validate"
-import "vue-tel-input/dist/vue-tel-input.css"
-import "babel-polyfill"
 import enMessages from "vee-validate/dist/locale/en.js"
 import frMessages from "vee-validate/dist/locale/fr.js"
 import Vue from "vue"
 import VChart from "vue-echarts"
 import VueMaterial from "vue-material"
+import "vue-material/dist/theme/default.css"
+import "vue-material/dist/vue-material.min.css"
 import VueRouter from "vue-router"
 import VueSweetalert2 from "vue-sweetalert2"
 import VueTelInput from "vue-tel-input"
+import "vue-tel-input/dist/vue-tel-input.css"
 import Vuex from "vuex"
+
+import "../src/assets/sass/mpm.scss"
 
 import { config } from "./config.js"
 import i18n from "./i18n.js"
@@ -30,8 +32,6 @@ import Default from "./layouts/Default.vue"
 import { resources } from "./resources.js"
 
 import SidebarComponent from "@/modules/Sidebar/index.js"
-
-import "../src/assets/sass/mpm.scss"
 
 window._ = require("lodash")
 window.Popper = require("popper.js").default

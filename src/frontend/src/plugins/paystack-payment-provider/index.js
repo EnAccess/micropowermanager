@@ -19,12 +19,12 @@ export default {
 }
 
 export {
-  Overview,
-  Transaction,
   Component,
   CredentialService,
-  TransactionService,
+  Overview,
   PublicPaymentForm,
   PublicPaymentResult,
   PublicPaymentService,
+  Transaction,
+  TransactionService,
 }
