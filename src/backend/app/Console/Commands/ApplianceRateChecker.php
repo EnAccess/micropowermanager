@@ -97,11 +97,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
 
     private function createReminderTicket(ApplianceRate $applianceRate, bool $overDue = false): void {
         $currency = $this->mainSettingsService->getAll()->first()->currency;
-        // create ticket for customer service
-        $creator = $this->user->newQuery()->firstOrCreate(
-            ['name' => 'System', 'company_id' => $this->companyId],
-            ['email' => 'system@mpm.local', 'password' => ''],
-        );
+        $creator = $this->user->newQuery()->oldest()->firstOrFail();
         // reformat due date if it is set
         if ($overDue) {
             $category = $this->label->newQuery()->firstOrCreate(
