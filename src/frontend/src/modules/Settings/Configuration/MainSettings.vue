@@ -256,6 +256,10 @@ export default {
       }
       try {
         this.progress = true
+        const currentStoreSettings =
+          this.$store.getters["settings/getMainSettings"]
+        this.mainSettingsService.mainSettings.transactionSmsEnabled =
+          currentStoreSettings.transactionSmsEnabled
         await this.mainSettingsService.update()
         this.$store
           .dispatch(
