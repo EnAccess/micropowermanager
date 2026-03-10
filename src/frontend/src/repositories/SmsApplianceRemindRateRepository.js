@@ -15,4 +15,7 @@ export default {
   create(smsApplianceRemindRate) {
     return Client.post(`${resource}`, smsApplianceRemindRate)
   },
+  delete(id) {
+    return Client.delete(`${resource}/${id}`)
+  },
 }

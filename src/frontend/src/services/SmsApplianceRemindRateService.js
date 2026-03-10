@@ -85,4 +85,18 @@ export class SmsApplianceRemindRateService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+  async deleteSmsApplianceRemindRate(id) {
+    try {
+      let response = await this.repository.delete(id)
+      if (response.status === 200) {
+        this.fromJson(response.data.data)
+        return response.data.data
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 }

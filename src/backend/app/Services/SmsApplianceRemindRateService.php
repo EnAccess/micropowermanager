@@ -42,6 +42,15 @@ class SmsApplianceRemindRateService {
     }
 
     /**
+     * @return Collection<int, Appliance>
+     */
+    public function deleteApplianceRemindRate(SmsApplianceRemindRate $smsApplianceRemindRate): Collection {
+        $smsApplianceRemindRate->delete();
+
+        return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
+    }
+
+    /**
      * @param array<string, mixed> $data
      *
      * @return Collection<int, Appliance>

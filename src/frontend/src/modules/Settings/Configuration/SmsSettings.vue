@@ -1,28 +1,28 @@
 <template>
   <div>
-    <div class="transaction-sms-toggle">
-      <div class="toggle-content">
-        <div>
-          <span class="toggle-label">
-            {{ $tc("phrases.transactionSmsEnabled") }}
-          </span>
-          <p class="toggle-description">
-            {{ $tc("phrases.transactionSmsEnabledDescription") }}
-          </p>
-        </div>
-        <md-switch
-          v-model="transactionSmsEnabled"
-          @change="updateTransactionSmsEnabled"
-          class="md-primary"
-        />
-      </div>
-    </div>
     <md-tabs>
       <md-tab
         @click="tab = 'confirmation'"
         id="tab-confirmation"
         md-label="Transaction Confirmation"
       >
+        <div class="transaction-sms-toggle">
+          <div class="toggle-content">
+            <div>
+              <span class="toggle-label">
+                {{ $tc("phrases.transactionSmsEnabled") }}
+              </span>
+              <p class="toggle-description">
+                {{ $tc("phrases.transactionSmsEnabledDescription") }}
+              </p>
+            </div>
+            <md-switch
+              v-model="transactionSmsEnabled"
+              @change="updateTransactionSmsEnabled"
+              class="md-primary"
+            />
+          </div>
+        </div>
         <div
           class="md-layout-item notice-message-area"
           style="margin-bottom: 1rem"
