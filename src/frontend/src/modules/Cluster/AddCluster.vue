@@ -105,7 +105,7 @@
             <div class="md-layout-item md-size-100 map-area">
               <cluster-map
                 ref="clusterMapRef"
-                :mapping-service="mappingService.js"
+                :mapping-service="mappingService"
                 :polygon="true"
                 :edit="true"
                 :remove="true"

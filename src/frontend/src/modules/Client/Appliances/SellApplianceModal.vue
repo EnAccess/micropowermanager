@@ -462,7 +462,7 @@
         <DeviceLocationPickerMap
           v-if="showLocationPicker"
           :key="locationPickerKey"
-          :mapping-service="mappingService.js"
+          :mapping-service="mappingService"
           :map-container-id="locationPickerMapId"
           :initial-location="initialDeviceLocationArray"
           :marker-icon="getMarkerIconForAppliance(currentAppliance)"

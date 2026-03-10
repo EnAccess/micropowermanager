@@ -27,7 +27,7 @@
         <div class="md-layout-item md-size-100">
           <widget :title="$tc('phrases.clusterMap')" id="cluster-map">
             <dashboard-map
-              :mapping-service="mappingService.js"
+              :mapping-service="mappingService"
               ref="dashboardMapRef"
             />
           </widget>

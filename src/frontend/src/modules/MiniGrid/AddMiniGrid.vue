@@ -124,7 +124,7 @@
           <div class="md-layout-item md-size-100 map-area">
             <MgMap
               ref="miniGridMapRef"
-              :mapping-service="mappingService.js"
+              :mapping-service="mappingService"
               :marker="true"
               @locationSet="miniGridLocationSet"
             />

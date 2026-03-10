@@ -124,7 +124,7 @@
           <Widget :title="$tc('phrases.miniGridMap')" id="miniGrid-map">
             <mini-grid-map
               ref="miniGridMapRef"
-              :mapping-service="mappingService.js"
+              :mapping-service="mappingService"
               :edit="true"
               :miniGridId="miniGridId"
               @locationEdited="deviceLocationsEditedSet"

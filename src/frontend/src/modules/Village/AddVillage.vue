@@ -153,7 +153,7 @@
           <div class="md-layout-item md-size-100 map-area">
             <VillageMap
               ref="villageMapRef"
-              :mapping-service="mappingService.js"
+              :mapping-service="mappingService"
               :marker="true"
               @locationSet="villageLocationSet"
             />

@@ -34,7 +34,7 @@
         <md-card>
           <md-card-content>
             <cluster-map
-              :mapping-service="mappingService.js"
+              :mapping-service="mappingService"
               ref="clusterMapRef"
             />
           </md-card-content>

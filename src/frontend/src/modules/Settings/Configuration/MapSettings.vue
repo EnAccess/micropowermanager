@@ -90,7 +90,7 @@
     </div>
     <div class="map-area md-layout md-size-50" @click="getLatLon">
       <settings-map
-        :mapping-service="mappingService.js"
+        :mapping-service="mappingService"
         ref="settingsMap"
         :mutating-center="mutatingCenter"
         :key="mapKey"
