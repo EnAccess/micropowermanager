@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsGatewayRepository from "@/repositories/SmsGatewayRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SmsGatewayRepository from "@/repositories/SmsGatewayRepository.js"
 
 export class SmsGatewayService {
   constructor() {

@@ -14,10 +14,11 @@
   </widget>
 </template>
 <script>
+import TicketItem from "../../shared/TicketItem.vue"
+
+import { AgentTicketService } from "@/services/AgentTicketService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentTicketService } from "@/services/AgentTicketService"
-import { EventBus } from "@/shared/eventbus"
-import TicketItem from "../../shared/TicketItem"
 
 export default {
   name: "AgentTicketList",

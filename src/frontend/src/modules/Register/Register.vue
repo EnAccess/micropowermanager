@@ -430,10 +430,10 @@
 </template>
 
 <script>
-import { MpmPluginService } from "@/services/MpmPluginService"
-import { CompanyService } from "@/services/CompanyService"
-import { UsageTypeListService } from "@/services/UsageTypeListService"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { CompanyService } from "@/services/CompanyService.js"
+import { MpmPluginService } from "@/services/MpmPluginService.js"
+import { UsageTypeListService } from "@/services/UsageTypeListService.js"
 
 export default {
   name: "Register",

@@ -132,12 +132,13 @@
 </template>
 
 <script>
-import { TicketCommentService } from "@/services/TicketCommentService"
-import { EventBus } from "./eventbus"
-import { SmsService } from "@/services/SmsService"
-import { TicketService } from "@/services/TicketService"
 import moment from "moment"
-import { notify } from "@/mixins/notify"
+
+import { notify } from "@/mixins/notify.js"
+import { SmsService } from "@/services/SmsService.js"
+import { TicketCommentService } from "@/services/TicketCommentService.js"
+import { TicketService } from "@/services/TicketService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "TicketItem",

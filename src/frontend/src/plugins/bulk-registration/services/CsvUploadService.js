@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import CsvUploadRepository from "../repositories/CsvUploadRepository"
+import CsvUploadRepository from "../repositories/CsvUploadRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class CsvUploadService {
   constructor() {

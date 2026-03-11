@@ -333,13 +333,15 @@
 </template>
 
 <script>
-import { SettingService } from "../../services/SettingService"
+import { SettingService } from "../../services/SettingService.js"
+import { SmFeedbackWordService } from "../../services/SmFeedbackWordService.js"
+import { SmsBodiesService } from "../../services/SmsBodiesService.js"
+import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService.js"
+
+import SmsBody from "./SmsBody.vue"
+
+import { notify } from "@/mixins/notify.js"
 import Widget from "@/shared/Widget.vue"
-import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService"
-import { SmsBodiesService } from "../../services/SmsBodiesService"
-import SmsBody from "./SmsBody"
-import { SmFeedbackWordService } from "../../services/SmFeedbackWordService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Setting",

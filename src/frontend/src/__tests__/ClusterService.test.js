@@ -1,6 +1,6 @@
-import i18n from "../i18n"
-jest.mock("../repositories/ClusterRepository")
-import { ClusterService } from "../services/ClusterService"
+import i18n from "../i18n.js"
+jest.mock("../repositories/ClusterRepository.js")
+import { ClusterService } from "../services/ClusterService.js"
 const clusterService = new ClusterService()
 const clusterProperties = [
   "id",

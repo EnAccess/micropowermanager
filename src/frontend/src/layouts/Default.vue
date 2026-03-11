@@ -48,13 +48,16 @@
   </div>
 </template>
 <script>
-import FooterBar from "../layouts/FooterBar.vue"
-import { EventBus } from "@/shared/eventbus"
-import TopNavbar from "./TopNavbar.vue"
-import SideBar from "@/modules/Sidebar/SideBar"
-import MobileTopNavbar from "./MobileTopNavbar"
-import TailWizard from "@/shared/TailWizard"
 import { mapGetters } from "vuex"
+
+import FooterBar from "../layouts/FooterBar.vue"
+
+import MobileTopNavbar from "./MobileTopNavbar.vue"
+import TopNavbar from "./TopNavbar.vue"
+
+import SideBar from "@/modules/Sidebar/SideBar.vue"
+import { EventBus } from "@/shared/eventbus.js"
+import TailWizard from "@/shared/TailWizard.vue"
 
 export default {
   name: "default",

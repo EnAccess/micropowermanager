@@ -48,7 +48,7 @@ GET {{ endpointUrl }}?FROM=2025-01-01T00:00:00Z&TO=2025-01-01T23:59:59Z</pre
 </template>
 
 <script>
-import { baseUrlExternal } from "@/repositories/Client/AxiosClient"
+import { baseUrlExternal } from "@/repositories/Client/AxiosClient.js"
 
 export default {
   name: "OdysseyExportOverview",

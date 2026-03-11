@@ -1,8 +1,9 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import store from "../store/store"
-import { resources } from "@/resources"
-import BatchRevenueRepository from "@/repositories/BatchRevenueRepository"
-import Client from "@/repositories/Client/AxiosClient"
+import store from "../store/store.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import BatchRevenueRepository from "@/repositories/BatchRevenueRepository.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
 
 export class BatchRevenue {
   constructor() {

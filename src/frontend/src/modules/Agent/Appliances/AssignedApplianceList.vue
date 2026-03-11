@@ -38,13 +38,14 @@
   </div>
 </template>
 <script>
+import AssignAppliance from "./AssignAppliance.vue"
+
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { AgentAssignedApplianceService } from "@/services/AgentAssignedApplianceService.js"
+import { AgentService } from "@/services/AgentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentAssignedApplianceService } from "@/services/AgentAssignedApplianceService"
-import { AgentService } from "@/services/AgentService"
-import AssignAppliance from "./AssignAppliance"
-import { EventBus } from "@/shared/eventbus"
-import { currency } from "@/mixins/currency"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "AssignedApplianceList",

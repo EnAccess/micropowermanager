@@ -1,7 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import moment from "moment"
 
-import MaintenanceRepository from "@/repositories/MaintenanceRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MaintenanceRepository from "@/repositories/MaintenanceRepository.js"
 
 export class MaintenanceService {
   constructor() {

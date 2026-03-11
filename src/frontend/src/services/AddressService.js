@@ -1,8 +1,7 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-
-import AddressRepository from "@/repositories/AddressRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import AddressRepository from "@/repositories/AddressRepository.js"
+import { resources } from "@/resources.js"
 
 export class Address {
   fromJson(data) {

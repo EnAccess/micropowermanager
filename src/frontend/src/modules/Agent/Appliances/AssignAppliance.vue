@@ -70,10 +70,10 @@
   </md-dialog>
 </template>
 <script>
-import { AgentAssignedApplianceService } from "@/services/AgentAssignedApplianceService"
-import { EventBus } from "@/shared/eventbus"
-import { ApplianceService } from "@/services/ApplianceService"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { AgentAssignedApplianceService } from "@/services/AgentAssignedApplianceService.js"
+import { ApplianceService } from "@/services/ApplianceService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "AssignAppliance",

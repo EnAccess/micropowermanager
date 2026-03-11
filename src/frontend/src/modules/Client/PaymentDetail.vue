@@ -61,10 +61,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { PaymentService } from "@/services/PaymentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { PaymentService } from "@/services/PaymentService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "PaymentDetail",

@@ -167,11 +167,12 @@
   </div>
 </template>
 <script>
+import NewCommission from "../Commission/NewCommission.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { AgentCommissionService } from "@/services/AgentCommissionService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { AgentCommissionService } from "@/services/AgentCommissionService"
-import NewCommission from "../Commission/NewCommission"
-import { notify } from "@/mixins/notify"
 export default {
   name: "AgentCommissionList",
   mixins: [notify],

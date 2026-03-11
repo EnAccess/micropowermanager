@@ -114,10 +114,11 @@
 </template>
 
 <script>
-import { CredentialService } from "../../services/CredentialService"
-import { CertService } from "../../services/CertService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
+import { CertService } from "../../services/CertService.js"
+import { CredentialService } from "../../services/CredentialService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Credential",

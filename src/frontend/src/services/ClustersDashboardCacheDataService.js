@@ -1,6 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-
-import ClustersDashboardCacheDataRepository from "@/repositories/ClustersDashboardCacheDataRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import ClustersDashboardCacheDataRepository from "@/repositories/ClustersDashboardCacheDataRepository.js"
 
 export class ClustersDashboardCacheDataService {
   constructor() {

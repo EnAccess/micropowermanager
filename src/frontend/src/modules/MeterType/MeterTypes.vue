@@ -104,10 +104,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { MeterTypeService } from "@/services/MeterTypeService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { MeterTypeService } from "@/services/MeterTypeService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 export default {
   name: "MeterTypes",
   mixins: [notify],

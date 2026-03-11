@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import TransactionProvidersRepository from "@/repositories/TransactionProvidersRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import TransactionProvidersRepository from "@/repositories/TransactionProvidersRepository.js"
 
 export class TransactionProviderService {
   constructor() {

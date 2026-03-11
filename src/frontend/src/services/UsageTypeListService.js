@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import UsageTypeRepository from "@/repositories/UsageTypeRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import UsageTypeRepository from "@/repositories/UsageTypeRepository.js"
 
 export class UsageTypeListService {
   constructor() {

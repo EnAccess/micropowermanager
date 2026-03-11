@@ -58,8 +58,8 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
 import Box from "@/shared/Box.vue"
-import { currency } from "@/mixins/currency"
 
 export default {
   name: "BoxGroup",

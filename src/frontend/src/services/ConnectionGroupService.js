@@ -1,8 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-
-import ConnectionGroupsRepository from "@/repositories/ConnectionGroupsRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import ConnectionGroupsRepository from "@/repositories/ConnectionGroupsRepository.js"
+import { resources } from "@/resources.js"
 
 export class ConnectionGroupService {
   constructor() {

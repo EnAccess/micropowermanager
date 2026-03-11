@@ -1,4 +1,4 @@
-import MinutelyConsumptionRepository from "../repositories/MinutelyConsumptionRepository"
+import MinutelyConsumptionRepository from "../repositories/MinutelyConsumptionRepository.js"
 
 export class MinutelyConsumptionService {
   constructor(meterAddress) {

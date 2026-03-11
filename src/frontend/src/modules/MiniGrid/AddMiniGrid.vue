@@ -146,13 +146,13 @@
 </template>
 
 <script>
-import { ClusterService } from "@/services/ClusterService"
-import { ICONS, MappingService } from "@/services/MappingService"
-import { MiniGridService } from "@/services/MiniGridService"
-import Widget from "@/shared/Widget.vue"
-import RedirectionModal from "@/shared/RedirectionModal"
+import { notify } from "@/mixins/notify.js"
 import MgMap from "@/modules/Map/MiniGridMap.vue"
-import { notify } from "@/mixins"
+import { ClusterService } from "@/services/ClusterService.js"
+import { ICONS, MappingService } from "@/services/MappingService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AddMiniGrid",

@@ -288,13 +288,14 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { SubConnectionTypeService } from "@/services/SubConnectionTypeService"
-import { ConnectionTypeService } from "@/services/ConnectionTypeService"
-import { TariffService } from "@/services/TariffService"
 import moment from "moment"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
+
+import { notify } from "@/mixins/notify.js"
+import { ConnectionTypeService } from "@/services/ConnectionTypeService.js"
+import { SubConnectionTypeService } from "@/services/SubConnectionTypeService.js"
+import { TariffService } from "@/services/TariffService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "ConnectionTypeDetail",

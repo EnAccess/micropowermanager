@@ -488,15 +488,18 @@
 </template>
 
 <script>
-import { currency, notify } from "@/mixins"
-import { ApplianceService } from "@/services/ApplianceService"
-import { AppliancePersonService } from "@/services/AppliancePersonService"
-import { DeviceService } from "@/services/DeviceService"
-import { MappingService, ICONS } from "@/services/MappingService"
-import { mapGetters } from "vuex"
-import Loader from "@/shared/Loader.vue"
-import DeviceLocationPickerMap from "./DeviceLocationPickerMap.vue"
 import defaultMarker from "leaflet/dist/images/marker-icon.png"
+import { mapGetters } from "vuex"
+
+import DeviceLocationPickerMap from "./DeviceLocationPickerMap.vue"
+
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { AppliancePersonService } from "@/services/AppliancePersonService.js"
+import { ApplianceService } from "@/services/ApplianceService.js"
+import { DeviceService } from "@/services/DeviceService.js"
+import { ICONS, MappingService } from "@/services/MappingService.js"
+import Loader from "@/shared/Loader.vue"
 
 const APPLIANCE_TYPE_SHS_ID = 1
 const APPLIANCE_TYPE_E_BIKE_ID = 2

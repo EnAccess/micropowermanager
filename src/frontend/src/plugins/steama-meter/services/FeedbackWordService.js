@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import FeedbackWordRepository from "../repositories/FeedbackWordRepository"
+import FeedbackWordRepository from "../repositories/FeedbackWordRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class FeedbackWordService {
   constructor() {

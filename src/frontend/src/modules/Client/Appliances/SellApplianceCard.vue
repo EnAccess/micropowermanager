@@ -277,12 +277,13 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { AppliancePersonService } from "@/services/AppliancePersonService.js"
+import { ApplianceService } from "@/services/ApplianceService.js"
+import { PersonService } from "@/services/PersonService.js"
+import { TariffService } from "@/services/TariffService.js"
 import Widget from "@/shared/Widget.vue"
-import { ApplianceService } from "@/services/ApplianceService"
-import { AppliancePersonService } from "@/services/AppliancePersonService"
-import { currency, notify } from "@/mixins"
-import { PersonService } from "@/services/PersonService"
-import { TariffService } from "@/services/TariffService"
 
 // These are fixed values in the database
 const APPLIANCE_TYPE_SHS_ID = 1

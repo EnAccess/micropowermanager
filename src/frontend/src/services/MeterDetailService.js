@@ -1,6 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-import MeterDetailRepository from "@/repositories/MeterDetailRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import MeterDetailRepository from "@/repositories/MeterDetailRepository.js"
 
 export class MeterDetailService {
   constructor() {

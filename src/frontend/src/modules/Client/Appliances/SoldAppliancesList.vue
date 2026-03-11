@@ -52,10 +52,11 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { currency, notify } from "@/mixins"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
 import SellApplianceModal from "@/modules/Client/Appliances/SellApplianceModal.vue"
-import { PersonService } from "@/services/PersonService"
+import { PersonService } from "@/services/PersonService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SoldAppliancesList",

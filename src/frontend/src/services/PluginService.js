@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import PluginRepository from "@/repositories/PluginRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import PluginRepository from "@/repositories/PluginRepository.js"
 
 export class PluginService {
   constructor() {

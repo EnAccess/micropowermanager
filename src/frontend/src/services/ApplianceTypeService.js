@@ -1,7 +1,6 @@
-import { EventBus } from "@/shared/eventbus"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-
-import ApplianceTypeRepository from "@/repositories/ApplianceTypeRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import ApplianceTypeRepository from "@/repositories/ApplianceTypeRepository.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class ApplianceTypeService {
   constructor() {

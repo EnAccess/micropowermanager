@@ -1,6 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-import AppliancePaymentRepository from "@/repositories/AppliancePaymentRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import AppliancePaymentRepository from "@/repositories/AppliancePaymentRepository.js"
 
 export class AppliancePaymentService {
   constructor() {

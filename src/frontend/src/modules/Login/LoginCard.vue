@@ -83,9 +83,8 @@
 </template>
 
 <script>
-import { AuthenticationService } from "@/services/AuthenticationService"
-
-import { config } from "@/config"
+import { config } from "@/config.js"
+import { AuthenticationService } from "@/services/AuthenticationService.js"
 
 export default {
   name: "login-card",

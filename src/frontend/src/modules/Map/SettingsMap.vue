@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import { notify, sharedMap } from "@/mixins"
+import { sharedMap } from "@/mixins/mapSharing.js"
+import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "SettingsMap",

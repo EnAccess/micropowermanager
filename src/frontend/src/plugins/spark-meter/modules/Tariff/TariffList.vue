@@ -64,14 +64,15 @@
 </template>
 
 <script>
+import { CredentialService } from "../../services/CredentialService.js"
+import { MeterModelService } from "../../services/MeterModelService.js"
+import { SiteService } from "../../services/SiteService.js"
+import { TariffService } from "../../services/TariffService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { EventBus } from "@/shared/eventbus"
-import { TariffService } from "../../services/TariffService"
-import { MeterModelService } from "../../services/MeterModelService"
-import { CredentialService } from "../../services/CredentialService"
-import { SiteService } from "../../services/SiteService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "TariffList",

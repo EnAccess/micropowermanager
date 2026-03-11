@@ -191,13 +191,14 @@
 </template>
 
 <script>
+import NewUser from "./NewUser.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { MaintenanceService } from "@/services/MaintenanceService.js"
+import { SmsService } from "@/services/SmsService.js"
+import { TicketService } from "@/services/TicketService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import NewUser from "./NewUser"
-import { EventBus } from "@/shared/eventbus"
-import { TicketService } from "@/services/TicketService"
-import { MaintenanceService } from "@/services/MaintenanceService"
-import { SmsService } from "@/services/SmsService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Maintenance",

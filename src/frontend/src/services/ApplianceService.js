@@ -1,7 +1,7 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-import ApplianceRepository from "@/repositories/ApplianceRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import ApplianceRepository from "@/repositories/ApplianceRepository.js"
 
 export class ApplianceService {
   constructor() {

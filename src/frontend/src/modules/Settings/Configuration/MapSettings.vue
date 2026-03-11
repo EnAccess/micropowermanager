@@ -101,10 +101,10 @@
 </template>
 
 <script>
-import { MapSettingsService } from "@/services/MapSettingsService"
-import { EventBus } from "@/shared/eventbus"
 import SettingsMap from "@/modules/Map/SettingsMap.vue"
-import { MappingService } from "@/services/MappingService"
+import { MappingService } from "@/services/MappingService.js"
+import { MapSettingsService } from "@/services/MapSettingsService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "MapSettings",
