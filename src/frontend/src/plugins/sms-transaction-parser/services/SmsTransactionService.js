@@ -1,4 +1,4 @@
-import SmsTransactionRepository from "../repositories/SmsTransactionRepository"
+import SmsTransactionRepository from "../repositories/SmsTransactionRepository.js"
 
 export class SmsTransactionService {
   constructor() {

@@ -40,9 +40,9 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
-import Client from "@/repositories/Client/AxiosClient"
+import { notify } from "@/mixins/notify.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "SmsTransactionParserSetup",
@@ -74,7 +74,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-card {
   height: 100% !important;
 }

@@ -159,8 +159,9 @@
 </template>
 
 <script>
-import { ParsingRuleService } from "../../services/ParsingRuleService"
-import { notify } from "@/mixins/notify"
+import { ParsingRuleService } from "../../services/ParsingRuleService.js"
+
+import { notify } from "@/mixins/notify.js"
 
 const REQUIRED_VARIABLES = [
   {
@@ -363,7 +364,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .rule-dialog .md-dialog-container {
   min-width: 680px;
   max-width: 800px;

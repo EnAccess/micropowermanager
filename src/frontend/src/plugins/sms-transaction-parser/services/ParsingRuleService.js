@@ -1,4 +1,4 @@
-import ParsingRuleRepository from "../repositories/ParsingRuleRepository"
+import ParsingRuleRepository from "../repositories/ParsingRuleRepository.js"
 
 export class ParsingRuleService {
   constructor() {

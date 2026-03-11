@@ -11,8 +11,9 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
 import ParsingRules from "./ParsingRules.vue"
+
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Overview",

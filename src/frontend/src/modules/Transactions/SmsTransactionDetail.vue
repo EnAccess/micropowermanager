@@ -73,7 +73,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .n-font {
   font-weight: 100 !important;
 }
