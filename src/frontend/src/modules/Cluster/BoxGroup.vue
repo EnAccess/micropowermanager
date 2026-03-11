@@ -78,7 +78,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @media screen and (max-width: 1280px) {
   .small-size-style {
     margin-bottom: 1rem !important;

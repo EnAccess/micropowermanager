@@ -192,7 +192,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .map-area {
   display: block; /* or any other display property you want initially */
 }
