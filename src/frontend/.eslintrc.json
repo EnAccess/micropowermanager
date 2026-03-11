@@ -33,6 +33,7 @@
     "vue/no-v-text-v-html-on-component": 0,
     "vue/no-reserved-component-names": 0,
     "vue/block-lang": ["error", { "style": { "lang": "scss" } }],
+    "vue/enforce-style-attribute": ["error", { "allow": ["scoped"] }],
     "import/extensions": ["error", "ignorePackages"],
     "import/order": [
       "error",

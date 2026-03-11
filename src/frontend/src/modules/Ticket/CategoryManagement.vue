@@ -212,7 +212,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .colored-box {
   width: 22px;
   height: 22px;
