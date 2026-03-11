@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import CertRepository from "../repositories/CertRepository"
+import CertRepository from "../repositories/CertRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class CertService {
   constructor() {

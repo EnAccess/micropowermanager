@@ -73,12 +73,13 @@
 </template>
 
 <script>
-import { notify, timing } from "@/mixins"
-import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget.vue"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
 import AddEBikeModal from "@/modules/EBikes/AddEBikeModal.vue"
-import { EBikeService } from "@/services/EBikeService"
 import EBikeDetailModal from "@/modules/EBikes/EBikeDetailModal.vue"
+import { EBikeService } from "@/services/EBikeService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "EBikes",
@@ -150,4 +151,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

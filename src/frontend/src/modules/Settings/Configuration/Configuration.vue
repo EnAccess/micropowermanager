@@ -27,19 +27,19 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import MainSettings from "./MainSettings"
-import MapSettings from "./MapSettings"
-import ApiKeysSettings from "./ApiKeysSettings"
-import SmsSettings from "./SmsSettings"
-import ImportSettings from "./ImportSettings"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import { MapSettingsService } from "@/services/MapSettingsService"
+import ApiKeysSettings from "./ApiKeysSettings.vue"
+import ImportSettings from "./ImportSettings.vue"
+import MainSettings from "./MainSettings.vue"
+import MapSettings from "./MapSettings.vue"
+import SmsSettings from "./SmsSettings.vue"
 
-import PluginSettings from "@/modules/Settings/Configuration/PluginSettings"
-import { MpmPluginService } from "@/services/MpmPluginService"
-import { PluginService } from "@/services/PluginService"
-import { notify } from "@/mixins"
+import { notify } from "@/mixins/notify.js"
+import PluginSettings from "@/modules/Settings/Configuration/PluginSettings.vue"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { MapSettingsService } from "@/services/MapSettingsService.js"
+import { MpmPluginService } from "@/services/MpmPluginService.js"
+import { PluginService } from "@/services/PluginService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Settings",
@@ -93,7 +93,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .settings-area {
   height: 100%;
   overflow: auto;

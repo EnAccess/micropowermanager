@@ -1,4 +1,4 @@
-import DailyConsumptionRepository from "../repositories/DailyConsumptionRepository"
+import DailyConsumptionRepository from "../repositories/DailyConsumptionRepository.js"
 
 export class DailyConsumptionService {
   constructor(meterAddress) {

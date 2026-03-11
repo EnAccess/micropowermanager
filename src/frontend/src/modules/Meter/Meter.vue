@@ -32,13 +32,13 @@
 </template>
 
 <script>
-import { Transactions } from "@/services/TransactionService"
-import { MeterDetailService } from "@/services/MeterDetailService"
-import MeterBasic from "@/modules/Meter/Basic"
-import MeterDetails from "@/modules/Meter/Details"
-import MeterTransactions from "@/modules/Meter/Transactions"
-import MeterReadings from "@/modules/Meter/Readings"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import MeterBasic from "@/modules/Meter/Basic.vue"
+import MeterDetails from "@/modules/Meter/Details.vue"
+import MeterReadings from "@/modules/Meter/Readings.vue"
+import MeterTransactions from "@/modules/Meter/Transactions.vue"
+import { MeterDetailService } from "@/services/MeterDetailService.js"
+import { Transactions } from "@/services/TransactionService.js"
 
 export default {
   name: "Meter",

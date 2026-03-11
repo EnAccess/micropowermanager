@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsApplianceRemindRateRepository from "@/repositories/SmsApplianceRemindRateRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SmsApplianceRemindRateRepository from "@/repositories/SmsApplianceRemindRateRepository.js"
 
 export class SmsApplianceRemindRateService {
   constructor() {

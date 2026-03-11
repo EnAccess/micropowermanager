@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "SmsAndroidSetting",
@@ -90,4 +90,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

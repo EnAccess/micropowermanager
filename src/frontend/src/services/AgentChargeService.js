@@ -1,6 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-
-import AgentChargeRepository from "@/repositories/AgentChargeRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import AgentChargeRepository from "@/repositories/AgentChargeRepository.js"
 
 export class AgentChargeService {
   constructor() {

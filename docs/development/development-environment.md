@@ -168,6 +168,7 @@ Install the following linter and auto-formatter extensions
 - [PHP CS Fixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer)
 - [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client)
 - [Prettier - Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) (Make sure to configure `"eslint.workingDirectories": [{ "mode": "auto" }]` for the ESLint extension to work with our nested folder structure.)
 
 ### API client
 

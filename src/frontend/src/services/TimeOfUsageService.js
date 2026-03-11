@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import TimeOfUsageRepository from "@/repositories/TimeOfUsageRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import TimeOfUsageRepository from "@/repositories/TimeOfUsageRepository.js"
 
 export class TimeOfUsageService {
   constructor() {

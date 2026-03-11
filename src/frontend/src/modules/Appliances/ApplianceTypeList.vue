@@ -58,11 +58,12 @@
 </template>
 
 <script>
+import AddApplianceType from "./AddApplianceType.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { ApplianceTypeService } from "@/services/ApplianceTypeService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import AddApplianceType from "./AddApplianceType"
-import { EventBus } from "@/shared/eventbus"
-import { ApplianceTypeService } from "@/services/ApplianceTypeService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "ApplianceTypeList",
@@ -189,4 +190,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

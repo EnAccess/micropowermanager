@@ -175,13 +175,13 @@
 </template>
 
 <script>
-import { CurrencyListService } from "@/services/CurrencyListService"
-import CountryService from "@/services/CountryService"
-import { UsageTypeListService } from "@/services/UsageTypeListService"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import { SmsGatewayService } from "@/services/SmsGatewayService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import CountryService from "@/services/CountryService.js"
+import { CurrencyListService } from "@/services/CurrencyListService.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { SmsGatewayService } from "@/services/SmsGatewayService.js"
+import { UsageTypeListService } from "@/services/UsageTypeListService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "MainSettings",
@@ -256,6 +256,10 @@ export default {
       }
       try {
         this.progress = true
+        const currentStoreSettings =
+          this.$store.getters["settings/getMainSettings"]
+        this.mainSettingsService.mainSettings.transactionSmsEnabled =
+          currentStoreSettings.transactionSmsEnabled
         await this.mainSettingsService.update()
         this.$store
           .dispatch(
@@ -283,4 +287,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

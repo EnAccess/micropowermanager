@@ -1,4 +1,4 @@
-import Client from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 const resource = `/api/sun-king-shs/sun-king-credential`
 

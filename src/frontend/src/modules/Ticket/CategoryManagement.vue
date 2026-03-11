@@ -147,10 +147,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { TicketLabelService } from "@/services/TicketLabelService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { TicketLabelService } from "@/services/TicketLabelService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "CategoryManagement",

@@ -174,10 +174,10 @@
 </template>
 
 <script>
-import { SettingsImportService } from "@/services/SettingsImportService"
-import { UserPermissionImportService } from "@/services/UserPermissionImportService"
-import { notify } from "@/mixins/notify"
-import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify.js"
+import { SettingsImportService } from "@/services/SettingsImportService.js"
+import { UserPermissionImportService } from "@/services/UserPermissionImportService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "ImportSettings",
@@ -356,7 +356,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-table-cell {
   vertical-align: middle;
 }

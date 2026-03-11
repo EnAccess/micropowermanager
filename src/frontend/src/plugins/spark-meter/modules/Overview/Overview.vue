@@ -61,12 +61,14 @@
 </template>
 
 <script>
+import { CustomerService } from "../../services/CustomerService.js"
+import { MeterModelService } from "../../services/MeterModelService.js"
+import { SiteService } from "../../services/SiteService.js"
+import { TariffService } from "../../services/TariffService.js"
+
+import Credential from "./Credential.vue"
+
 import Box from "@/shared/Box.vue"
-import Credential from "./Credential"
-import { CustomerService } from "../../services/CustomerService"
-import { MeterModelService } from "../../services/MeterModelService"
-import { TariffService } from "../../services/TariffService"
-import { SiteService } from "../../services/SiteService"
 
 export default {
   name: "Overview",
@@ -104,7 +106,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .overview-line {
   margin-top: 1rem;
 }

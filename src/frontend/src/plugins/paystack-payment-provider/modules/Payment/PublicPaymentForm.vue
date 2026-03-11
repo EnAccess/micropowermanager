@@ -130,8 +130,9 @@
 </template>
 
 <script>
-import { PublicPaymentService } from "../../services/PublicPaymentService"
-import { notify } from "@/mixins/notify"
+import { PublicPaymentService } from "../../services/PublicPaymentService.js"
+
+import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "PublicPaymentForm",
@@ -305,7 +306,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .welcome {
   display: flex;
   flex-direction: column;

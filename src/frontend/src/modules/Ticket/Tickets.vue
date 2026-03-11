@@ -52,12 +52,12 @@
 </template>
 
 <script>
+import Filtering from "@/modules/Ticket/Filtering.vue"
+import { resources } from "@/resources.js"
+import { TicketService } from "@/services/TicketService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import TicketItem from "@/shared/TicketItem.vue"
 import Widget from "@/shared/Widget.vue"
-import TicketItem from "@/shared/TicketItem"
-import { EventBus } from "@/shared/eventbus"
-import Filtering from "@/modules/Ticket/Filtering"
-import { resources } from "@/resources"
-import { TicketService } from "@/services/TicketService"
 
 export default {
   name: "Tickets",
@@ -139,7 +139,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .ticket-list-card-r {
   margin-inline-end: 2vh;
   margin-top: 2vh;

@@ -66,8 +66,8 @@
 </template>
 
 <script>
+import Client from "@/repositories/Client/AxiosClient.js"
 import Widget from "@/shared/Widget.vue"
-import Client from "@/repositories/Client/AxiosClient"
 
 export default {
   name: "AddNewUser",
@@ -94,4 +94,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

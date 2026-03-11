@@ -1,7 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import SubConnectionTypeRepository from "@/repositories/SubConnectionTypeRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import SubConnectionTypeRepository from "@/repositories/SubConnectionTypeRepository.js"
+import { resources } from "@/resources.js"
 
 export class SubConnectionTypeService {
   constructor() {

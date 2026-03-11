@@ -34,9 +34,9 @@
 </template>
 
 <script>
+import { ReportsService } from "@/services/ReportsService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { ReportsService } from "@/services/ReportsService"
 export default {
   name: "VillageReports",
   components: {
@@ -106,4 +106,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

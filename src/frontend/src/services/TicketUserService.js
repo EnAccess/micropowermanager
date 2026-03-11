@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import TicketUserRepository from "@/repositories/TicketUserRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import TicketUserRepository from "@/repositories/TicketUserRepository.js"
 
 export class TicketUserService {
   constructor() {

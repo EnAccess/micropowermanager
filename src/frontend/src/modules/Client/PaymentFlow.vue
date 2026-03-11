@@ -95,11 +95,11 @@
 </template>
 
 <script>
-import { currency } from "@/mixins/currency"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { PaymentService } from "@/services/PaymentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { PaymentService } from "@/services/PaymentService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "PaymentFlow",
@@ -269,7 +269,7 @@ export default {
   },
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .txt-color-green {
   color: green;
 }

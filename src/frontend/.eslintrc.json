@@ -15,7 +15,12 @@
     "google": false,
     "L": false
   },
-  "extends": ["eslint:recommended", "plugin:vue/essential", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/essential",
+    "prettier",
+    "plugin:import/recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": 11,
     "sourceType": "module"
@@ -26,6 +31,29 @@
     "vue/multi-word-component-names": 0,
     "vue/no-mutating-props": 0,
     "vue/no-v-text-v-html-on-component": 0,
-    "vue/no-reserved-component-names": 0
+    "vue/no-reserved-component-names": 0,
+    "vue/block-lang": ["error", { "style": { "lang": "scss" } }],
+    "import/extensions": ["error", "ignorePackages"],
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "named": true,
+        "newlines-between": "always",
+        "warnOnUnassignedImports": true
+      }
+    ]
+  },
+  "settings": {
+    "import/extensions": [".js", ".vue"],
+    "import/resolver": {
+      "node": { "extensions": [".js", ".vue"] },
+      "webpack": {
+        "config": "./node_modules/@vue/cli-service/webpack.config.js"
+      }
+    }
   }
 }

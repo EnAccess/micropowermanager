@@ -1,4 +1,4 @@
-import Client from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 // Align endpoint with backend Prospect plugin once available
 const resource = `/api/prospect/prospect-setting/sync-setting`

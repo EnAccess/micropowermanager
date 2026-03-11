@@ -192,11 +192,11 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { UserPasswordService } from "@/services/UserPasswordService.js"
+import { UserService } from "@/services/UserService.js"
 import Widget from "@/shared/Widget.vue"
-import { UserService } from "@/services/UserService"
-import { CityService } from "@/services/CityService"
-import { UserPasswordService } from "@/services/UserPasswordService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Profile",
@@ -334,7 +334,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .save-button {
   background-color: #325932 !important;
   color: #fefefe !important;

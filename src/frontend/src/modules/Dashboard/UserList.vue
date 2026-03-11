@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import { UserService } from "@/services/UserService"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { UserService } from "@/services/UserService.js"
 
 export default {
   name: "UserList",
@@ -50,4 +50,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

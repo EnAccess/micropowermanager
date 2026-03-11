@@ -1,6 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import i18n from "../i18n"
-import PaymentHistoryRepository from "@/repositories/PaymentHistoryRepository"
+import i18n from "../i18n.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import PaymentHistoryRepository from "@/repositories/PaymentHistoryRepository.js"
 
 export class PaymentService {
   constructor() {

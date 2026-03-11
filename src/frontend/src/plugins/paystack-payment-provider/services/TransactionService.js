@@ -1,5 +1,5 @@
-import Client from "@/repositories/Client/AxiosClient"
-import { Paginator } from "@/Helpers/Paginator"
+import { Paginator } from "@/Helpers/Paginator.js"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 const resource = `/api/paystack`
 

@@ -1,5 +1,5 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
+import { Paginator } from "@/Helpers/Paginator.js"
+import { resources } from "@/resources.js"
 
 export class AgentTicketService {
   constructor(agentId) {

@@ -278,11 +278,12 @@
 </template>
 
 <script>
-import { notify } from "@/mixins"
-import { PersonService } from "@/services/PersonService"
-import { CityService } from "@/services/CityService"
-import Loader from "@/shared/Loader.vue"
 import moment from "moment"
+
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { PersonService } from "@/services/PersonService.js"
+import Loader from "@/shared/Loader.vue"
 
 export default {
   name: "AddClientModal",
@@ -365,7 +366,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .divider-title {
   border-bottom: solid 1px #dedede;
   font-weight: 500;

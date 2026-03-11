@@ -1,9 +1,9 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import {
   convertObjectKeysToCamelCase,
   convertObjectKeysToSnakeCase,
-} from "@/Helpers/Utils"
-import DeviceRepository from "@/repositories/DeviceRepository"
+} from "@/Helpers/Utils.js"
+import DeviceRepository from "@/repositories/DeviceRepository.js"
 
 export class DeviceService {
   constructor() {

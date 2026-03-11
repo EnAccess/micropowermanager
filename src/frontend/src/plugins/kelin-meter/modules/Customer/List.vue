@@ -52,12 +52,13 @@
 </template>
 
 <script>
-import RedirectionModal from "@/shared/RedirectionModal"
-import { EventBus } from "@/shared/eventbus"
-import { CredentialService } from "../../services/CredentialService"
+import { CredentialService } from "../../services/CredentialService.js"
+import { CustomerService } from "../../services/CustomerService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
-import { CustomerService } from "../../services/CustomerService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "CustomerList",
@@ -163,7 +164,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .edit-button-area {
   display: inline-flex;
   margin-left: -2rem;

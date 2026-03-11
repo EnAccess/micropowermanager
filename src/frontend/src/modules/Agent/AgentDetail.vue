@@ -197,12 +197,12 @@
   </widget>
 </template>
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { AgentCommissionService } from "@/services/AgentCommissionService.js"
+import { AgentService } from "@/services/AgentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentService } from "@/services/AgentService"
-import { AgentCommissionService } from "@/services/AgentCommissionService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
-import { currency } from "@/mixins/currency"
 
 export default {
   name: "AgentDetail",
@@ -323,4 +323,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SettingsImportRepository from "@/repositories/SettingsImportRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SettingsImportRepository from "@/repositories/SettingsImportRepository.js"
 
 export class SettingsImportService {
   constructor() {

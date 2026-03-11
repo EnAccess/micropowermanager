@@ -1,7 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { resources } from "@/resources"
-import ManufacturerRepository from "@/repositories/ManufacturerRepository"
-import Client from "@/repositories/Client/AxiosClient"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import ManufacturerRepository from "@/repositories/ManufacturerRepository.js"
+import { resources } from "@/resources.js"
 
 export class Manufacturer {
   constructor(id = 0, name = "") {

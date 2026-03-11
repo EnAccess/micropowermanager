@@ -48,11 +48,11 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { timing } from "@/mixins/timing.js"
+import { token } from "@/mixins/token.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { currency } from "@/mixins/currency"
-import { timing } from "@/mixins/timing"
-import { token } from "@/mixins/token"
 
 export default {
   name: "SolarHomeSystemTransactions",
@@ -101,4 +101,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

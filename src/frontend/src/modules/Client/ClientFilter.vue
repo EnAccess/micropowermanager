@@ -164,8 +164,8 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import moment from "moment"
+import { mapGetters } from "vuex"
 
 export default {
   name: "CustomerFilter",
@@ -286,7 +286,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .customer-filter-card {
   margin: 1rem 0;
 }

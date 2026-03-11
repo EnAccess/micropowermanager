@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import StatusRepository from "../repositories/StatusRepository"
+import StatusRepository from "../repositories/StatusRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class StatusService {
   constructor() {

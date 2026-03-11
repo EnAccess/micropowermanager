@@ -186,10 +186,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { SmsService } from "@/services/SmsService.js"
 import Widget from "@/shared/Widget.vue"
-import { MiniGridService } from "@/services/MiniGridService"
-import { SmsService } from "@/services/SmsService"
-import { notify } from "@/mixins/notify"
 
 const debounce = require("debounce")
 
@@ -347,7 +347,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .comment-box {
   border-bottom: 1px dotted #ccc;
   padding: 5px;
