@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-import LoginCard from "@/modules/Login/LoginCard"
+import LoginCard from "@/modules/Login/LoginCard.vue"
 
 export default {
   name: "Login",

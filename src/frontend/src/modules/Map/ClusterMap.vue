@@ -3,9 +3,10 @@
 </template>
 
 <script>
-import { sharedMap, notify } from "@/mixins"
-import { EventBus } from "@/shared/eventbus"
-import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService"
+import { sharedMap } from "@/mixins/mapSharing.js"
+import { notify } from "@/mixins/notify.js"
+import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "ClusterMap",

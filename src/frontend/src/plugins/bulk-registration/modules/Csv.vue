@@ -154,9 +154,10 @@
 </template>
 
 <script>
+import { CsvUploadService } from "../services/CsvUploadService.js"
+
+import { notify } from "@/mixins/notify.js"
 import Widget from "@/shared/Widget.vue"
-import { CsvUploadService } from "../services/CsvUploadService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Csv",

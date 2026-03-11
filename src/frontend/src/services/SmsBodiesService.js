@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsBodiesRepository from "@/repositories/SmsBodiesRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SmsBodiesRepository from "@/repositories/SmsBodiesRepository.js"
 
 /** References used for transaction confirmation SMS (token-focused, all channels). */
 const TRANSACTION_CONFIRMATION_REFERENCES = [

@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import MiniGridDeviceRepository from "@/repositories/MiniGridDeviceRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MiniGridDeviceRepository from "@/repositories/MiniGridDeviceRepository.js"
 
 export class MiniGridDeviceService {
   constructor() {

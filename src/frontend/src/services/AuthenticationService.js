@@ -1,6 +1,6 @@
-import { EventBus } from "@/shared/eventbus"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import AuthenticationRepository from "@/repositories/AuthenticationRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import AuthenticationRepository from "@/repositories/AuthenticationRepository.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class AuthenticationService {
   constructor() {

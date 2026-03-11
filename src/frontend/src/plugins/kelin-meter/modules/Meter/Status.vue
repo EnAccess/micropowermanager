@@ -111,11 +111,12 @@
 </template>
 
 <script>
+import { CredentialService } from "../../services/CredentialService.js"
+import { StatusService } from "../../services/StatusService.js"
+
+import { notify } from "@/mixins/notify.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
-import { StatusService } from "../../services/StatusService"
-import { CredentialService } from "../../services/CredentialService"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
 
 export default {
   components: { Widget, RedirectionModal },

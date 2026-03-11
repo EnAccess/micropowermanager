@@ -3,11 +3,12 @@
 </template>
 
 <script>
-import { sharedMap, notify } from "@/mixins"
-import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService"
-import { MiniGridService } from "@/services/MiniGridService"
-import { ClusterService } from "@/services/ClusterService"
-import { MiniGridDeviceService } from "@/services/MiniGridDeviceService"
+import { sharedMap } from "@/mixins/mapSharing.js"
+import { notify } from "@/mixins/notify.js"
+import { ClusterService } from "@/services/ClusterService.js"
+import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService.js"
+import { MiniGridDeviceService } from "@/services/MiniGridDeviceService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
 
 export default {
   name: "MiniGridMap",

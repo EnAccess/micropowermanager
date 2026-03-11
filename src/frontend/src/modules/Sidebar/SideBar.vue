@@ -85,9 +85,10 @@
 </template>
 
 <script>
-import { translateItem } from "@/Helpers/TranslateItem"
 import { mapGetters } from "vuex"
-import { getPermissionsForPath } from "@/Helpers/PermissionGuard"
+
+import { getPermissionsForPath } from "@/Helpers/PermissionGuard.js"
+import { translateItem } from "@/Helpers/TranslateItem.js"
 
 export default {
   name: "SideBar",

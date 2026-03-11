@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsBodiesRepository from "../repositories/SmsBodiesRepository"
+import SmsBodiesRepository from "../repositories/SmsBodiesRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class SmsBodiesService {
   constructor() {

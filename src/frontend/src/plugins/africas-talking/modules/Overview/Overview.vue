@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Credential from "./Credential"
+import Credential from "./Credential.vue"
 
 export default {
   name: "Overview",

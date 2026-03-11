@@ -49,12 +49,13 @@
 </template>
 
 <script>
-import RedirectionModal from "@/shared/RedirectionModal"
-import { SiteService } from "../../services/SiteService"
-import { EventBus } from "@/shared/eventbus"
-import { CredentialService } from "../../services/CredentialService"
+import { CredentialService } from "../../services/CredentialService.js"
+import { SiteService } from "../../services/SiteService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "SiteList",

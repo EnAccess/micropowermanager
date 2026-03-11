@@ -34,7 +34,7 @@
         <div class="client-detail-card">
           <widget :title="$tc('words.devices')" id="client-map">
             <client-map
-              :mappingService="mappingService"
+              :mappingService="mappingService.js"
               ref="clientMapRef"
               :edit="true"
               @locationEdited="deviceLocationsEditedSet"
@@ -47,22 +47,23 @@
   </section>
 </template>
 <script>
-import PaymentFlow from "@/modules/Client/PaymentFlow"
-import Transactions from "@/modules/Client/Transactions"
-import PaymentDetail from "@/modules/Client/PaymentDetail"
-import Ticket from "@/modules/Client/Ticket"
-import Addresses from "@/modules/Client/Addresses"
-import SmsHistory from "@/modules/Client/SmsHistory"
-import ClientPersonalData from "@/modules/Client/ClientPersonalData"
-import DeferredPayments from "@/modules/Client/DeferredPayments"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import Addresses from "@/modules/Client/Addresses.vue"
+import ClientPersonalData from "@/modules/Client/ClientPersonalData.vue"
+import DeferredPayments from "@/modules/Client/DeferredPayments.vue"
+import Devices from "@/modules/Client/Devices.vue"
+import PaymentDetail from "@/modules/Client/PaymentDetail.vue"
+import PaymentFlow from "@/modules/Client/PaymentFlow.vue"
+import SmsHistory from "@/modules/Client/SmsHistory.vue"
+import Ticket from "@/modules/Client/Ticket.vue"
+import Transactions from "@/modules/Client/Transactions.vue"
 import ClientMap from "@/modules/Map/ClientMap.vue"
-import { notify, timing } from "@/mixins"
-import Devices from "@/modules/Client/Devices"
+import { DeviceAddressService } from "@/services/DeviceAddressService.js"
+import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
+import { PersonService } from "@/services/PersonService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { PersonService } from "@/services/PersonService"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
-import { DeviceAddressService } from "@/services/DeviceAddressService"
-import { EventBus } from "@/shared/eventbus"
 
 export default {
   name: "Client",

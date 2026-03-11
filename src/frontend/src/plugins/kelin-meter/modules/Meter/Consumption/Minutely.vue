@@ -159,12 +159,13 @@
 </template>
 
 <script>
+import { CredentialService } from "../../../services/CredentialService.js"
+import { MinutelyConsumptionService } from "../../../services/MinutelyConsumptionService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
-import { CredentialService } from "../../../services/CredentialService"
-import { EventBus } from "@/shared/eventbus"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { MinutelyConsumptionService } from "../../../services/MinutelyConsumptionService"
-import { notify } from "@/mixins/notify"
 
 export default {
   components: { Widget, RedirectionModal },

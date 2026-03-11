@@ -13,8 +13,9 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
 import Credential from "./Credential.vue"
+
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Overview",

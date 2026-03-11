@@ -73,9 +73,9 @@
 </template>
 
 <script>
-import { notify } from "@/mixins/notify"
-import { TicketUserService } from "@/services/TicketUserService"
-import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify.js"
+import { TicketUserService } from "@/services/TicketUserService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "AddExternalTicketingUser",

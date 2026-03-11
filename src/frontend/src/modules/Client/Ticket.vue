@@ -147,16 +147,17 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { UserTickets } from "@/services/TicketService"
-import { resources } from "@/resources"
-import { EventBus } from "@/shared/eventbus"
 import moment from "moment"
-import { TicketUserService } from "@/services/TicketUserService"
-import { TicketLabelService } from "@/services/TicketLabelService"
-import TicketItem from "../../shared/TicketItem"
-import Client from "@/repositories/Client/AxiosClient"
-import { notify } from "@/mixins/notify"
+
+import { notify } from "@/mixins/notify.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
+import { TicketLabelService } from "@/services/TicketLabelService.js"
+import { UserTickets } from "@/services/TicketService.js"
+import { TicketUserService } from "@/services/TicketUserService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import TicketItem from "@/shared/TicketItem.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Ticket",

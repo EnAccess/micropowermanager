@@ -53,8 +53,8 @@
 </template>
 
 <script>
+import { EventBus } from "@/shared/eventbus.js"
 import Loader from "@/shared/Loader.vue"
-import { EventBus } from "@/shared/eventbus"
 
 export default {
   name: "ChartCard",

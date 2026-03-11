@@ -86,11 +86,12 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
 import moment from "moment"
-import { ClusterService } from "@/services/ClusterService"
+
+import { notify } from "@/mixins/notify.js"
+import { ClusterService } from "@/services/ClusterService.js"
 import ChartCard from "@/shared/ChartCard.vue"
-import { notify } from "@/mixins/notify"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "FinancialOverview",

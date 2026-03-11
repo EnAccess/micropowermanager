@@ -116,11 +116,13 @@
 </template>
 
 <script>
-import { CredentialService } from "../../services/CredentialService"
-import { EventBus } from "@/shared/eventbus"
-import { baseUrlExternal } from "@/repositories/Client/AxiosClient"
 import { mapGetters } from "vuex"
-import { notify } from "@/mixins/notify"
+
+import { CredentialService } from "../../services/CredentialService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { baseUrlExternal } from "@/repositories/Client/AxiosClient.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Credential",

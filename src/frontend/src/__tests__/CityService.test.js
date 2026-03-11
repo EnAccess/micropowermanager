@@ -1,5 +1,5 @@
-jest.mock("../repositories/CityRepository")
-import { CityService } from "../services/CityService"
+jest.mock("../repositories/CityRepository.js")
+import { CityService } from "../services/CityService.js"
 const cityService = new CityService()
 const cityServiceProperties = [
   "id",

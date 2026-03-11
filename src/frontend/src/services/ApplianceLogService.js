@@ -1,6 +1,6 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { convertObjectKeysToCamelCase } from "@/Helpers/Utils"
-import { resources } from "@/resources"
+import { Paginator } from "@/Helpers/Paginator.js"
+import { convertObjectKeysToCamelCase } from "@/Helpers/Utils.js"
+import { resources } from "@/resources.js"
 
 export class ApplianceLogService {
   constructor(appliancePersonId) {

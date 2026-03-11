@@ -1,7 +1,6 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-
-import AgentReceiptRepository from "@/repositories/AgentReceiptRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import AgentReceiptRepository from "@/repositories/AgentReceiptRepository.js"
 export class AgentReceiptService {
   constructor(agentId) {
     this.repository = AgentReceiptRepository

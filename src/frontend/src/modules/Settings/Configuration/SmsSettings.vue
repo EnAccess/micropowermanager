@@ -156,17 +156,18 @@
 </template>
 
 <script>
-import { SmsBodiesService } from "@/services/SmsBodiesService"
-import SmsBody from "./SmsBody"
-import { EventBus } from "@/shared/eventbus"
-import { SmsResendInformationKeyService } from "@/services/SmsResendInformationKeyService"
-import SmsApplianceRemindRate from "./SmsApplianceRemindRate"
-import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService"
-import SmsAndroidSetting from "./SmsAndroidSetting"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import { notify } from "@/mixins/notify"
+import SmsAndroidSetting from "./SmsAndroidSetting.vue"
+import SmsApplianceRemindRate from "./SmsApplianceRemindRate.vue"
+import SmsBody from "./SmsBody.vue"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { notify } from "@/mixins/notify.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService.js"
+import { SmsBodiesService } from "@/services/SmsBodiesService.js"
+import { SmsResendInformationKeyService } from "@/services/SmsResendInformationKeyService.js"
+import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "SmsSettings",

@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import MapSettingsRepository from "@/repositories/MapSettingsRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MapSettingsRepository from "@/repositories/MapSettingsRepository.js"
 
 export class MapSettingsService {
   constructor() {

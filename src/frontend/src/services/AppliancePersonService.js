@@ -1,10 +1,9 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import {
   convertObjectKeysToCamelCase,
   convertObjectKeysToSnakeCase,
-} from "@/Helpers/Utils"
-
-import AppliancePersonRepository from "@/repositories/AppliancePersonRepository"
+} from "@/Helpers/Utils.js"
+import AppliancePersonRepository from "@/repositories/AppliancePersonRepository.js"
 
 export class AppliancePersonService {
   constructor() {

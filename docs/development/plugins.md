@@ -227,7 +227,7 @@ To signal to the application that the user has completed the registration proces
 Once this event is received, the Registration Trail will be closed and will no longer be shown on subsequent logins.
 
 ```js
-import { EventBus } from "@/shared/eventbus"
+import { EventBus } from "@/shared/eventbus.js"
 
 EventBus.$emit("Your-Plugin")
 ```

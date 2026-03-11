@@ -87,13 +87,13 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
 import moment from "moment"
-import { SmsService } from "@/services/SmsService"
 import { mapGetters } from "vuex"
 
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { SmsService } from "@/services/SmsService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SmsHistory",

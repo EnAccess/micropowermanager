@@ -40,15 +40,16 @@
 
 <script>
 import BasicDetails from "./BasicDetails.vue"
-import Owner from "./Owner.vue"
 import Location from "./Location.vue"
+import Owner from "./Owner.vue"
 import Transactions from "./Transactions.vue"
+
+import { notify } from "@/mixins/notify.js"
 import {
   SolarHomeSystemService,
   Transactions as TransactionsService,
-} from "@/services/SolarHomeSystemService"
-import { notify } from "@/mixins"
-import { EventBus } from "@/shared/eventbus"
+} from "@/services/SolarHomeSystemService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "SolarHomeSystemDetail",

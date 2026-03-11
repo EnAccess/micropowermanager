@@ -1,6 +1,6 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import ReportsRepository from "@/repositories/ReportsRepository"
+import { Paginator } from "@/Helpers/Paginator.js"
+import ReportsRepository from "@/repositories/ReportsRepository.js"
+import { resources } from "@/resources.js"
 
 export class ReportsService {
   constructor() {

@@ -1,6 +1,6 @@
 const resource = `/api/people`
 
-import Client from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 export default {
   list() {

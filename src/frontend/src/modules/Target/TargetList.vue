@@ -75,9 +75,9 @@
 </template>
 
 <script>
+import { Targets } from "@/services/TargetService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { Targets } from "@/services/TargetService"
-import { EventBus } from "@/shared/eventbus"
 
 export default {
   name: "TargetList",

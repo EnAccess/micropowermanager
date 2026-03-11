@@ -230,21 +230,22 @@
 </template>
 
 <script>
-import RevenueTargetPerCustomerType from "@/modules/MiniGrid/RevenueTargetPerCustomerType.vue"
-import MiniGridMap from "@/modules/Map/MiniGridMap.vue"
-import RevenueTrends from "@/modules/MiniGrid/RevenueTrends.vue"
-import BoxGroup from "@/modules/MiniGrid/BoxGroup.vue"
-import TicketsOverview from "@/modules/MiniGrid/TicketsOverview.vue"
-import RevenuePerCustomerType from "@/modules/MiniGrid/RevenuePerCustomerType.vue"
-import { currency } from "@/mixins/currency"
-import { notify } from "@/mixins/notify"
-import { MiniGridService } from "@/services/MiniGridService"
-import { BatchRevenueService } from "@/services/BatchRevenueService"
-import { EventBus } from "@/shared/eventbus"
-import i18n from "@/i18n"
-import { ICONS, MappingService } from "@/services/MappingService"
-import { DeviceAddressService } from "@/services/DeviceAddressService"
 import moment from "moment"
+
+import i18n from "@/i18n.js"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import MiniGridMap from "@/modules/Map/MiniGridMap.vue"
+import BoxGroup from "@/modules/MiniGrid/BoxGroup.vue"
+import RevenuePerCustomerType from "@/modules/MiniGrid/RevenuePerCustomerType.vue"
+import RevenueTargetPerCustomerType from "@/modules/MiniGrid/RevenueTargetPerCustomerType.vue"
+import RevenueTrends from "@/modules/MiniGrid/RevenueTrends.vue"
+import TicketsOverview from "@/modules/MiniGrid/TicketsOverview.vue"
+import { BatchRevenueService } from "@/services/BatchRevenueService.js"
+import { DeviceAddressService } from "@/services/DeviceAddressService.js"
+import { ICONS, MappingService } from "@/services/MappingService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {

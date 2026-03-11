@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { EventBus } from "./eventbus"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "ConfirmationBox",

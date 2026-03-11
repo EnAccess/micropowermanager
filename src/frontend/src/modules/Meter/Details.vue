@@ -171,13 +171,13 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { ConnectionGroupService } from "@/services/ConnectionGroupService.js"
+import { ConnectionTypeService } from "@/services/ConnectionTypeService.js"
+import { MeterService } from "@/services/MeterService.js"
+import { TariffService } from "@/services/TariffService.js"
 import Widget from "@/shared/Widget.vue"
-import { TariffService } from "@/services/TariffService"
-import { ConnectionTypeService } from "@/services/ConnectionTypeService"
-import { ConnectionGroupService } from "@/services/ConnectionGroupService"
-import { MeterService } from "@/services/MeterService"
-import { currency } from "@/mixins/currency"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "MeterDetail",

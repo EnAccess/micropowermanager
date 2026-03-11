@@ -1,11 +1,10 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import { EventBus } from "@/shared/eventbus"
-
-import ConnectionTypeRepository from "@/repositories/ConnectionTypeRepository"
-import ConnectionGroupsRepository from "@/repositories/ConnectionGroupsRepository"
-import SmsRepository from "@/repositories/SmsRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import ConnectionGroupsRepository from "@/repositories/ConnectionGroupsRepository.js"
+import ConnectionTypeRepository from "@/repositories/ConnectionTypeRepository.js"
+import SmsRepository from "@/repositories/SmsRepository.js"
+import { resources } from "@/resources.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class SmsService {
   constructor() {

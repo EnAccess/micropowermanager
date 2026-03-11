@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import MeterModelRepository from "../repositories/MeterModelRepository"
+import MeterModelRepository from "../repositories/MeterModelRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class MeterModelService {
   constructor() {

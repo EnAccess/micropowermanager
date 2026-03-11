@@ -92,10 +92,11 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
 import moment from "moment"
-import { Consumptions } from "@/services/MeterConsumptionService"
-import { currency } from "@/mixins/currency"
+
+import { currency } from "@/mixins/currency.js"
+import { Consumptions } from "@/services/MeterConsumptionService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Readings.vue",

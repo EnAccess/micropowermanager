@@ -181,13 +181,14 @@
 </template>
 
 <script>
+import RedirectionModal from "../../shared/RedirectionModal.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { MaintenanceService } from "@/services/MaintenanceService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { CityService } from "@/services/CityService"
-import { MiniGridService } from "@/services/MiniGridService"
-import { MaintenanceService } from "@/services/MaintenanceService"
-import { EventBus } from "@/shared/eventbus"
-import RedirectionModal from "../../shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewUser",

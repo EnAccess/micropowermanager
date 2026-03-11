@@ -58,12 +58,13 @@
 </template>
 
 <script>
+import { AgentService } from "../../services/AgentService.js"
+import { CredentialService } from "../../services/CredentialService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { EventBus } from "@/shared/eventbus"
-import { CredentialService } from "../../services/CredentialService"
-import { AgentService } from "../../services/AgentService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "AgentList",

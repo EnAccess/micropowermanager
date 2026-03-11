@@ -42,8 +42,9 @@
 </template>
 
 <script>
-import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService"
-import { notify } from "@/mixins/notify"
+import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService.js"
+
+import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "SmsBody",

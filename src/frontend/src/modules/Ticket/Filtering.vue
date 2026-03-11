@@ -55,9 +55,9 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { TicketService } from "@/services/TicketService"
-import { TicketUserService } from "@/services/TicketUserService"
+import { TicketService } from "@/services/TicketService.js"
+import { TicketUserService } from "@/services/TicketUserService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Filtering",

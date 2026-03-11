@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import TariffRepository from "../repositories/TariffRepository"
+import TariffRepository from "../repositories/TariffRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class TariffService {
   constructor() {

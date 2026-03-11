@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { PaymentService } from "../../services/PaymentService"
+import { PaymentService } from "../../services/PaymentService.js"
 
 export default {
   name: "Payment",

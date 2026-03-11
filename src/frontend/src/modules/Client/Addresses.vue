@@ -153,10 +153,10 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { Address, Addresses } from "@/services/AddressService"
+import { Address, Addresses } from "@/services/AddressService.js"
+import { CityService } from "@/services/CityService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { CityService } from "@/services/CityService"
 
 export default {
   name: "Addresses",

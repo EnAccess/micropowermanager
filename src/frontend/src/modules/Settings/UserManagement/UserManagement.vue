@@ -75,13 +75,14 @@
   </div>
 </template>
 <script>
+import EditUser from "./EditUser.vue"
+import NewUser from "./NewUser.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { UserService } from "@/services/UserService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { UserService } from "@/services/UserService"
-import { CityService } from "@/services/CityService"
-import NewUser from "./NewUser"
-import EditUser from "./EditUser"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "ProfileManagement",

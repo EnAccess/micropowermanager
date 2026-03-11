@@ -176,9 +176,10 @@
 </template>
 
 <script>
-import { TransactionService } from "../../services/TransactionService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
+import { TransactionService } from "../../services/TransactionService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {

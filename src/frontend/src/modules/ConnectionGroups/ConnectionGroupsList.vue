@@ -80,11 +80,12 @@
 </template>
 
 <script>
+import NewConnectionGroup from "./NewConnectionGroup.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { ConnectionGroupService } from "@/services/ConnectionGroupService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { ConnectionGroupService } from "@/services/ConnectionGroupService"
-import NewConnectionGroup from "./NewConnectionGroup"
-import { notify } from "@/mixins/notify"
 export default {
   name: "ConnectionGroupsList",
   mixins: [notify],

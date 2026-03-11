@@ -5,11 +5,13 @@
 </template>
 
 <script>
-import { sharedMap, notify } from "@/mixins"
-import { ICON_OPTIONS } from "@/services/MappingService"
+import L from "leaflet"
 import defaultMarker from "leaflet/dist/images/marker-icon.png"
 import markerShadow from "leaflet/dist/images/marker-shadow.png"
-import L from "leaflet"
+
+import { sharedMap } from "@/mixins/mapSharing.js"
+import { notify } from "@/mixins/notify.js"
+import { ICON_OPTIONS } from "@/services/MappingService.js"
 
 export default {
   name: "DeviceLocationPickerMap",

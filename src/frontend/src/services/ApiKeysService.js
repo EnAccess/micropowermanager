@@ -1,4 +1,4 @@
-import ApiKeysRepository from "@/repositories/ApiKeysRepository"
+import ApiKeysRepository from "@/repositories/ApiKeysRepository.js"
 
 export class ApiKeysService {
   constructor() {

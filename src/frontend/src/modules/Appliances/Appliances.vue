@@ -131,12 +131,12 @@
 </template>
 
 <script>
-import ApplianceTypeList from "@/modules/Appliances/ApplianceTypeList.vue"
-import Widget from "@/shared/Widget.vue"
-import { ApplianceService } from "@/services/ApplianceService"
-import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify.js"
 import AddAppliance from "@/modules/Appliances/AddAppliance.vue"
-import { notify } from "@/mixins/notify"
+import ApplianceTypeList from "@/modules/Appliances/ApplianceTypeList.vue"
+import { ApplianceService } from "@/services/ApplianceService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Appliances",

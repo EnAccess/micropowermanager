@@ -164,8 +164,8 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import moment from "moment"
+import { mapGetters } from "vuex"
 
 export default {
   name: "CustomerFilter",

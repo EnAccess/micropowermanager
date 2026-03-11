@@ -1,5 +1,5 @@
-const transactionListResponse = require("./responses/transaction/transactionList.json")
 const transactionDetailResponse = require("./responses/transaction/transactionDetail.json")
+const transactionListResponse = require("./responses/transaction/transactionList.json")
 
 export default {
   list() {

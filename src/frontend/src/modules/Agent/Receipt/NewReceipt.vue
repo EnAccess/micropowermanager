@@ -81,10 +81,10 @@
   </md-dialog>
 </template>
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { AgentReceiptService } from "@/services/AgentReceiptService"
-import { AgentService } from "@/services/AgentService"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { AgentReceiptService } from "@/services/AgentReceiptService.js"
+import { AgentService } from "@/services/AgentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "NewReceipt",

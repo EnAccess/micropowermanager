@@ -123,10 +123,11 @@
 </template>
 
 <script>
-import { SolarHomeSystemService } from "@/services/SolarHomeSystemService"
-import { ManufacturerService } from "@/services/ManufacturerService"
-import { ApplianceService } from "@/services/ApplianceService"
-import { timing, notify } from "@/mixins"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import { ApplianceService } from "@/services/ApplianceService.js"
+import { ManufacturerService } from "@/services/ManufacturerService.js"
+import { SolarHomeSystemService } from "@/services/SolarHomeSystemService.js"
 
 //these are fixed values in the database
 const MANUFACTURER_TYPE = "shs"
