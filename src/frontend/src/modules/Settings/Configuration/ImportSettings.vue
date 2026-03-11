@@ -11,99 +11,47 @@
           <md-table-head>{{ $tc("words.description") }}</md-table-head>
           <md-table-head>Action</md-table-head>
 
-          <md-table-row>
+          <md-table-row
+            v-for="entity in importEntities"
+            :key="entity.key"
+          >
             <md-table-cell>
               <div class="entity-info">
-                <md-icon class="entity-icon">settings</md-icon>
-                <span>Settings</span>
+                <md-icon class="entity-icon">{{ entity.icon }}</md-icon>
+                <span>{{ entity.label }}</span>
               </div>
             </md-table-cell>
             <md-table-cell>
-              <span class="entity-description">
-                Import system settings from exported JSON file
-              </span>
+              <span class="entity-description">{{ entity.description }}</span>
             </md-table-cell>
             <md-table-cell>
               <div class="action-cell">
                 <input
                   type="file"
-                  @change="handleSettingsFileSelect"
+                  @change="handleFileSelect($event, entity.key)"
                   accept=".json"
-                  ref="settings-file-input"
+                  :ref="`${entity.key}-file-input`"
                   style="display: none"
                 />
                 <md-button
-                  v-if="!selectedSettingsFile && !settingsLoading"
+                  v-if="!selectedFiles[entity.key] && !loadingStates[entity.key]"
                   class="md-primary md-raised md-dense"
-                  @click="$refs['settings-file-input'].click()"
+                  @click="triggerFileInput(entity.key)"
                 >
                   <md-icon>file_upload</md-icon>
                   {{ $tc("words.select") }} {{ $tc("words.file") }}
                 </md-button>
                 <div
-                  v-else-if="selectedSettingsFile && !settingsLoading"
-                  class="file-selected"
-                >
-                  <md-icon class="file-icon">insert_drive_file</md-icon>
-                  <span class="file-name">{{ selectedSettingsFileName }}</span>
-                  <md-button
-                    class="md-icon-button md-dense"
-                    @click="clearSettingsFile"
-                  >
-                    <md-icon>close</md-icon>
-                  </md-button>
-                </div>
-                <md-progress-spinner
-                  v-else
-                  md-diameter="20"
-                  md-stroke="2"
-                ></md-progress-spinner>
-              </div>
-            </md-table-cell>
-          </md-table-row>
-
-          <md-table-row>
-            <md-table-cell>
-              <div class="entity-info">
-                <md-icon class="entity-icon">people</md-icon>
-                <span>User Permissions</span>
-              </div>
-            </md-table-cell>
-            <md-table-cell>
-              <span class="entity-description">
-                Import user permissions and roles from exported JSON file
-              </span>
-            </md-table-cell>
-            <md-table-cell>
-              <div class="action-cell">
-                <input
-                  type="file"
-                  @change="handleUserPermissionFileSelect"
-                  accept=".json"
-                  ref="user-permission-file-input"
-                  style="display: none"
-                />
-                <md-button
-                  v-if="!selectedUserPermissionFile && !userPermissionLoading"
-                  class="md-primary md-raised md-dense"
-                  @click="$refs['user-permission-file-input'].click()"
-                >
-                  <md-icon>file_upload</md-icon>
-                  {{ $tc("words.select") }} {{ $tc("words.file") }}
-                </md-button>
-                <div
-                  v-else-if="
-                    selectedUserPermissionFile && !userPermissionLoading
-                  "
+                  v-else-if="selectedFiles[entity.key] && !loadingStates[entity.key]"
                   class="file-selected"
                 >
                   <md-icon class="file-icon">insert_drive_file</md-icon>
                   <span class="file-name">
-                    {{ selectedUserPermissionFileName }}
+                    {{ selectedFileNames[entity.key] }}
                   </span>
                   <md-button
                     class="md-icon-button md-dense"
-                    @click="clearUserPermissionFile"
+                    @click="clearFile(entity.key)"
                   >
                     <md-icon>close</md-icon>
                   </md-button>
@@ -163,7 +111,7 @@
             <ul>
               <li v-for="(r, idx) in importResult.results" :key="idx">
                 <span :class="r.success ? 'result-success' : 'result-failed'">
-                  {{ r.type === "settings" ? "Settings" : "User permissions" }}:
+                  {{ entityLabel(r.type) }}:
                   {{ r.success ? "Imported successfully" : r.error }}
                 </span>
               </li>
@@ -182,27 +130,95 @@
 
 <script>
 import { notify } from "@/mixins/notify.js"
+import { ApplianceImportService } from "@/services/ApplianceImportService.js"
+import { ClusterImportService } from "@/services/ClusterImportService.js"
+import { CustomerImportService } from "@/services/CustomerImportService.js"
+import { DeviceImportService } from "@/services/DeviceImportService.js"
 import { ImportStatusService } from "@/services/ImportStatusService.js"
 import { SettingsImportService } from "@/services/SettingsImportService.js"
+import { TransactionImportService } from "@/services/TransactionImportService.js"
 import { UserPermissionImportService } from "@/services/UserPermissionImportService.js"
 import { EventBus } from "@/shared/eventbus.js"
 
 const POLL_INTERVAL_MS = 2000
 
+const IMPORT_ENTITIES = [
+  {
+    key: "settings",
+    label: "Settings",
+    icon: "settings",
+    description: "Import system settings from exported JSON file",
+  },
+  {
+    key: "user_permissions",
+    label: "User Permissions",
+    icon: "people",
+    description: "Import user permissions and roles from exported JSON file",
+  },
+  {
+    key: "clusters",
+    label: "Clusters",
+    icon: "location_city",
+    description:
+      "Import clusters with mini-grids and villages from exported JSON file",
+  },
+  {
+    key: "devices",
+    label: "Devices",
+    icon: "devices",
+    description:
+      "Import meters, solar home systems and e-bikes from exported JSON file",
+  },
+  {
+    key: "customers",
+    label: "Customers",
+    icon: "person",
+    description:
+      "Import customers with addresses and contact info from exported JSON file",
+  },
+  {
+    key: "transactions",
+    label: "Transactions",
+    icon: "receipt",
+    description: "Import transactions from exported JSON file",
+  },
+  {
+    key: "appliances",
+    label: "Appliances",
+    icon: "kitchen",
+    description:
+      "Import appliances with types and payment plans from exported JSON file",
+  },
+]
+
 export default {
   name: "ImportSettings",
   mixins: [notify],
   data() {
+    const selectedFiles = {}
+    const selectedFileNames = {}
+    const loadingStates = {}
+    IMPORT_ENTITIES.forEach((e) => {
+      selectedFiles[e.key] = null
+      selectedFileNames[e.key] = ""
+      loadingStates[e.key] = false
+    })
+
     return {
-      settingsImportService: new SettingsImportService(),
-      userPermissionImportService: new UserPermissionImportService(),
+      importEntities: IMPORT_ENTITIES,
+      services: {
+        settings: new SettingsImportService(),
+        user_permissions: new UserPermissionImportService(),
+        clusters: new ClusterImportService(),
+        devices: new DeviceImportService(),
+        customers: new CustomerImportService(),
+        transactions: new TransactionImportService(),
+        appliances: new ApplianceImportService(),
+      },
       importStatusService: new ImportStatusService(),
-      selectedSettingsFile: null,
-      selectedSettingsFileName: "",
-      selectedUserPermissionFile: null,
-      selectedUserPermissionFileName: "",
-      settingsLoading: false,
-      userPermissionLoading: false,
+      selectedFiles,
+      selectedFileNames,
+      loadingStates,
       importing: false,
       showResultDialog: false,
       resultDialogTitle: "",
@@ -210,56 +226,51 @@ export default {
       pollingJobId: null,
       pollingInterval: null,
       pendingResults: [],
+      pollingEntityType: null,
     }
   },
   computed: {
     hasSelectedFiles() {
-      return this.selectedSettingsFile || this.selectedUserPermissionFile
+      return Object.values(this.selectedFiles).some((f) => f !== null)
     },
   },
   beforeDestroy() {
     this.stopPolling()
   },
   methods: {
-    handleSettingsFileSelect(event) {
+    triggerFileInput(key) {
+      const refs = this.$refs[`${key}-file-input`]
+      const input = Array.isArray(refs) ? refs[0] : refs
+      if (input) {
+        input.click()
+      }
+    },
+    handleFileSelect(event, key) {
       const file = event.target.files[0]
       if (file) {
         if (!file.name.endsWith(".json")) {
           this.alertNotify("error", "Please select a JSON file")
           return
         }
-        this.selectedSettingsFile = file
-        this.selectedSettingsFileName = file.name
+        this.$set(this.selectedFiles, key, file)
+        this.$set(this.selectedFileNames, key, file.name)
       }
     },
-    handleUserPermissionFileSelect(event) {
-      const file = event.target.files[0]
-      if (file) {
-        if (!file.name.endsWith(".json")) {
-          this.alertNotify("error", "Please select a JSON file")
-          return
-        }
-        this.selectedUserPermissionFile = file
-        this.selectedUserPermissionFileName = file.name
-      }
-    },
-    clearSettingsFile() {
-      this.selectedSettingsFile = null
-      this.selectedSettingsFileName = ""
-      if (this.$refs["settings-file-input"]) {
-        this.$refs["settings-file-input"].value = ""
-      }
-    },
-    clearUserPermissionFile() {
-      this.selectedUserPermissionFile = null
-      this.selectedUserPermissionFileName = ""
-      if (this.$refs["user-permission-file-input"]) {
-        this.$refs["user-permission-file-input"].value = ""
+    clearFile(key) {
+      this.$set(this.selectedFiles, key, null)
+      this.$set(this.selectedFileNames, key, "")
+      const refs = this.$refs[`${key}-file-input`]
+      const input = Array.isArray(refs) ? refs[0] : refs
+      if (input) {
+        input.value = ""
       }
     },
     clearAllFiles() {
-      this.clearSettingsFile()
-      this.clearUserPermissionFile()
+      this.importEntities.forEach((e) => this.clearFile(e.key))
+    },
+    entityLabel(type) {
+      const entity = IMPORT_ENTITIES.find((e) => e.key === type)
+      return entity ? entity.label : type
     },
     async importAll() {
       if (!this.hasSelectedFiles) {
@@ -279,69 +290,48 @@ export default {
           this.importing = true
           const results = []
 
-          if (this.selectedSettingsFile) {
-            try {
-              this.settingsLoading = true
-              const fileContent = await this.readFileAsText(
-                this.selectedSettingsFile,
-              )
-              const jsonData = JSON.parse(fileContent)
-              const data = jsonData.data || jsonData
-              const result = await this.settingsImportService.import(data)
-              results.push({ type: "settings", success: true, data: result })
-              this.clearSettingsFile()
-            } catch (error) {
-              const errorMessage =
-                error.exception?.message ||
-                error.message ||
-                "Failed to import settings"
-              results.push({
-                type: "settings",
-                success: false,
-                error: errorMessage,
-              })
-            } finally {
-              this.settingsLoading = false
+          for (const entity of this.importEntities) {
+            if (!this.selectedFiles[entity.key]) {
+              continue
             }
-          }
 
-          if (this.selectedUserPermissionFile) {
             try {
-              this.userPermissionLoading = true
+              this.$set(this.loadingStates, entity.key, true)
               const fileContent = await this.readFileAsText(
-                this.selectedUserPermissionFile,
+                this.selectedFiles[entity.key],
               )
               const jsonData = JSON.parse(fileContent)
               const data = jsonData.data || jsonData
-              const result =
-                await this.userPermissionImportService.import(data)
 
-              if (result && result.async) {
+              const importResult = await this.services[entity.key].import(data)
+
+              if (importResult && importResult.async) {
                 this.pendingResults = results
-                this.startPolling(result.jobId)
-                this.clearUserPermissionFile()
-                this.userPermissionLoading = false
+                this.pollingEntityType = entity.key
+                this.startPolling(importResult.jobId)
+                this.clearFile(entity.key)
+                this.$set(this.loadingStates, entity.key, false)
                 return
               }
 
               results.push({
-                type: "user_permissions",
+                type: entity.key,
                 success: true,
-                data: result,
+                data: importResult,
               })
-              this.clearUserPermissionFile()
+              this.clearFile(entity.key)
             } catch (error) {
               const errorMessage =
                 error.exception?.message ||
                 error.message ||
-                "Failed to import user permissions"
+                `Failed to import ${entity.label}`
               results.push({
-                type: "user_permissions",
+                type: entity.key,
                 success: false,
                 error: errorMessage,
               })
             } finally {
-              this.userPermissionLoading = false
+              this.$set(this.loadingStates, entity.key, false)
             }
           }
 
@@ -372,7 +362,9 @@ export default {
             this.stopPolling()
             this.onAsyncImportDone(
               false,
-              status.error || status.result?.errors?.transaction || "Import failed",
+              status.error ||
+                status.result?.errors?.transaction ||
+                "Import failed",
             )
           }
         } catch (e) {
@@ -392,12 +384,14 @@ export default {
     onAsyncImportDone(success, error, data) {
       const results = [...this.pendingResults]
       this.pendingResults = []
+      const entityType = this.pollingEntityType
+      this.pollingEntityType = null
 
       if (success) {
-        results.push({ type: "user_permissions", success: true, data })
+        results.push({ type: entityType, success: true, data })
       } else {
         results.push({
-          type: "user_permissions",
+          type: entityType,
           success: false,
           error: error || "Import failed",
         })
