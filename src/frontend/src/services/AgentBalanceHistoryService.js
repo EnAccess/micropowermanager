@@ -1,6 +1,6 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import AgentBalanceHistoryRepository from "@/repositories/AgentBalanceHistoryRepository"
+import { Paginator } from "@/Helpers/Paginator.js"
+import AgentBalanceHistoryRepository from "@/repositories/AgentBalanceHistoryRepository.js"
+import { resources } from "@/resources.js"
 
 export class AgentBalanceHistoryService {
   constructor(agentId) {

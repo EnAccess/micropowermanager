@@ -50,8 +50,9 @@
 </template>
 
 <script>
-import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService"
-import { notify } from "@/mixins/notify"
+import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService.js"
+
+import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "SmsBody",
@@ -138,7 +139,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .placeholder-message-area {
   padding: 20px;
   background-color: #dfe9f3;

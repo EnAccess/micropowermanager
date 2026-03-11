@@ -1,7 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import i18n from "../i18n"
+import i18n from "../i18n.js"
 
-import RevenueRepository from "@/repositories/RevenueRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import RevenueRepository from "@/repositories/RevenueRepository.js"
 
 export class RevenueService {
   constructor() {

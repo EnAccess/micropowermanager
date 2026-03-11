@@ -447,28 +447,28 @@
 </template>
 
 <script>
-import { timing } from "@/mixins/timing"
-import { currency } from "@/mixins/currency"
-import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget.vue"
-import FilterTransaction from "@/modules/Transactions/FilterTransaction"
-import Box from "@/shared/Box"
 import { mapGetters } from "vuex"
-import { TransactionService } from "@/services/TransactionService"
-import { TransactionProviderService } from "@/services/TransactionProviderService"
-import { TransactionExportService } from "@/services/TransactionExportService"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import { resources } from "@/resources"
 
-import vodacomLogo from "@/assets/icons/vodacom.png"
-import waveMoneyLogo from "@/assets/icons/WaveMoney.png"
-import swifta from "@/assets/icons/Swifta.png"
 import agentIcon from "@/assets/icons/agent-icon.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
-import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
-import WaveComLogo from "@/assets/icons/WaveComLogo.png"
 import paystackLogo from "@/assets/icons/Paystack.png"
-import { notify } from "@/mixins/notify"
+import swifta from "@/assets/icons/Swifta.png"
+import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
+import vodacomLogo from "@/assets/icons/vodacom.png"
+import WaveComLogo from "@/assets/icons/WaveComLogo.png"
+import waveMoneyLogo from "@/assets/icons/WaveMoney.png"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import FilterTransaction from "@/modules/Transactions/FilterTransaction.vue"
+import { resources } from "@/resources.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { TransactionExportService } from "@/services/TransactionExportService.js"
+import { TransactionProviderService } from "@/services/TransactionProviderService.js"
+import { TransactionService } from "@/services/TransactionService.js"
+import Box from "@/shared/Box.vue"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Transactions.vue",
@@ -745,7 +745,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 span {
   text-align: center !important;
   margin-left: auto;

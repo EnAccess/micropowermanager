@@ -1,8 +1,8 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import TicketRepository from "@/repositories/TicketRepository"
-import Client from "@/repositories/Client/AxiosClient"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import TicketRepository from "@/repositories/TicketRepository.js"
+import { resources } from "@/resources.js"
 
 export class Ticket {
   constructor() {

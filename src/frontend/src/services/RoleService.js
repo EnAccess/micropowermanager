@@ -1,4 +1,4 @@
-import RoleRepository from "@/repositories/RoleRepository"
+import RoleRepository from "@/repositories/RoleRepository.js"
 
 export class RoleService {
   constructor() {

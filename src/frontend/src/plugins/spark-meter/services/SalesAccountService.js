@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SalesAccountRepository from "../repositories/SalesAccountRepository"
+import SalesAccountRepository from "../repositories/SalesAccountRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class SalesAccountService {
   constructor() {

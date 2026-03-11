@@ -1,6 +1,6 @@
 const agentCreateResponse = require("./responses/agent/agentCreate.json")
-const agentUpdateResponse = require("./responses/agent/agentUpdate.json")
 const agentDetailsResponse = require("./responses/agent/agentDetails.json")
+const agentUpdateResponse = require("./responses/agent/agentUpdate.json")
 
 export default {
   create() {

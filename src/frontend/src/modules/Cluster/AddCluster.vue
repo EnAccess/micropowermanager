@@ -169,12 +169,12 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { MappingService } from "@/services/MappingService"
-import { ClusterService } from "@/services/ClusterService"
-import { notify } from "@/mixins/notify"
-import ClusterMap from "@/modules/Map/ClusterMap.vue"
+import { notify } from "@/mixins/notify.js"
 import UserList from "@/modules/Dashboard/UserList.vue"
+import ClusterMap from "@/modules/Map/ClusterMap.vue"
+import { ClusterService } from "@/services/ClusterService.js"
+import { MappingService } from "@/services/MappingService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
@@ -358,7 +358,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .map-area {
   z-index: 1 !important;
 }

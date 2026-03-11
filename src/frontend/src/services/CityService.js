@@ -1,8 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-import Client from "@/repositories/Client/AxiosClient"
-
-import CityRepository from "@/repositories/CityRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import CityRepository from "@/repositories/CityRepository.js"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 // FIXME: Why is this here? It seems redundant, wrong and circular:
 // Cluster.fromJson() -> Cluster.fetchCities() -> City.fromJson() -> City.fetchCluster() -> Cluster.fromJson()

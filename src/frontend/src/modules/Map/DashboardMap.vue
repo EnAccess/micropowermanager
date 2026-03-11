@@ -3,8 +3,9 @@
 </template>
 
 <script>
-import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService"
-import { notify, sharedMap } from "@/mixins"
+import { sharedMap } from "@/mixins/mapSharing.js"
+import { notify } from "@/mixins/notify.js"
+import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService.js"
 
 export default {
   name: "DashboardMap",
@@ -126,7 +127,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #map {
   height: 100%;
   min-height: 500px;

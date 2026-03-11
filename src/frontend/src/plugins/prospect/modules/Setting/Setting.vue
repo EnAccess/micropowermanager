@@ -136,9 +136,10 @@
 </template>
 
 <script>
-import { SettingService } from "../../services/SettingService"
+import { SettingService } from "../../services/SettingService.js"
+
+import { notify } from "@/mixins/notify.js"
 import Widget from "@/shared/Widget.vue"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Setting",
@@ -182,7 +183,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .setting-card {
   padding: 2rem !important;
 }

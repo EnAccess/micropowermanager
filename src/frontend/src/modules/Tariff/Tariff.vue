@@ -522,9 +522,9 @@
   </widget>
 </template>
 <script>
+import { notify } from "@/mixins/notify.js"
+import { TariffService } from "@/services/TariffService.js"
 import Widget from "@/shared/Widget.vue"
-import { TariffService } from "@/services/TariffService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Tariff",
@@ -677,7 +677,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 input[type="time"]::-webkit-calendar-picker-indicator {
   background: none;
 }

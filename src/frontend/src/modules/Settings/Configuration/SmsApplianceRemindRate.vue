@@ -109,8 +109,8 @@
   </div>
 </template>
 <script>
-import { SmsApplianceRemindRateService } from "@/services/SmsApplianceRemindRateService"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { SmsApplianceRemindRateService } from "@/services/SmsApplianceRemindRateService.js"
 
 export default {
   name: "SmsApplianceRemindRate",
@@ -156,4 +156,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

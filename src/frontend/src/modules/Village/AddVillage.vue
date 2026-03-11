@@ -175,16 +175,19 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { MiniGridService } from "@/services/MiniGridService"
-import { CityService } from "@/services/CityService"
-import { MappingService } from "@/services/MappingService"
-import { ClusterService } from "@/services/ClusterService"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
-import { ICONS, MARKER_TYPE } from "@/services/MappingService"
+import { notify } from "@/mixins/notify.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
-import CountryService from "@/services/CountryService"
+import { CityService } from "@/services/CityService.js"
+import { ClusterService } from "@/services/ClusterService.js"
+import CountryService from "@/services/CountryService.js"
+import {
+  ICONS,
+  MappingService,
+  MARKER_TYPE,
+} from "@/services/MappingService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AddVillage",

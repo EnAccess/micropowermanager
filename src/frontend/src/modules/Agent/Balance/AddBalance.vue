@@ -52,8 +52,8 @@
   </div>
 </template>
 <script>
-import { AgentChargeService } from "@/services/AgentChargeService"
-import { EventBus } from "@/shared/eventbus"
+import { AgentChargeService } from "@/services/AgentChargeService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "addAgentBalance",
@@ -105,4 +105,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

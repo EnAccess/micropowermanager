@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import MpmPluginRepository from "@/repositories/MpmPluginRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MpmPluginRepository from "@/repositories/MpmPluginRepository.js"
 
 export class MpmPluginService {
   constructor() {

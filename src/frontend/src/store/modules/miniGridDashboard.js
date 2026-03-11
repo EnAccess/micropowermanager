@@ -1,4 +1,4 @@
-import { MiniGridDashboardCacheDataService } from "@/services/MiniGridDashboardCacheDataService"
+import { MiniGridDashboardCacheDataService } from "@/services/MiniGridDashboardCacheDataService.js"
 
 export const namespaced = true
 

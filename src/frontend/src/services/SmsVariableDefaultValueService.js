@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsVariableDefaultValueRepository from "@/repositories/SmsVariableDefaultValueRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SmsVariableDefaultValueRepository from "@/repositories/SmsVariableDefaultValueRepository.js"
 
 export class SmsVariableDefaultValueService {
   constructor() {

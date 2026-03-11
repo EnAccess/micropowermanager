@@ -127,9 +127,9 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { RoleService } from "@/services/RoleService.js"
 import Widget from "@/shared/Widget.vue"
-import { notify } from "@/mixins/notify"
-import { RoleService } from "@/services/RoleService"
 export default {
   components: { Widget },
   name: "EditUser",

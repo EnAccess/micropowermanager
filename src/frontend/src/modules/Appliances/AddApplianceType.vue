@@ -54,9 +54,9 @@
   </div>
 </template>
 <script>
+import { ApplianceTypeService } from "@/services/ApplianceTypeService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { ApplianceTypeService } from "@/services/ApplianceTypeService"
-import { EventBus } from "@/shared/eventbus"
 
 export default {
   name: "AddApplianceType",

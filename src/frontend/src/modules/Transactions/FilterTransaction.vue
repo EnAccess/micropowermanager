@@ -129,17 +129,18 @@
 </template>
 
 <script>
-import { TransactionService } from "@/services/TransactionService"
-import { TariffService } from "@/services/TariffService"
-import { EventBus } from "@/shared/eventbus"
-import { TransactionProviderService } from "@/services/TransactionProviderService"
 import { mapGetters } from "vuex"
-import store from "@/store/store"
-import { TransactionExportService } from "@/services/TransactionExportService"
-import { notify } from "@/mixins"
-import { MiniGridService } from "@/services/MiniGridService"
-import { CityService } from "@/services/CityService"
-import { CurrencyListService } from "@/services/CurrencyListService"
+
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { CurrencyListService } from "@/services/CurrencyListService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { TariffService } from "@/services/TariffService.js"
+import { TransactionExportService } from "@/services/TransactionExportService.js"
+import { TransactionProviderService } from "@/services/TransactionProviderService.js"
+import { TransactionService } from "@/services/TransactionService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import store from "@/store/store.js"
 
 export default {
   name: "FilterTransaction",

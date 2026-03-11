@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Client from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 export default {
   name: "VillageSelector",
@@ -53,7 +53,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .city-list {
   cursor: pointer;
 }

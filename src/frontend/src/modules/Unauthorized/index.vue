@@ -21,7 +21,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .unauthorized-page {
   min-height: 60vh;
   display: flex;

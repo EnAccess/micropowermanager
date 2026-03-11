@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Authentication from "./Authentication"
+import Authentication from "./Authentication.vue"
 
 export default {
   name: "Overview",
@@ -28,7 +28,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .overview-line {
   margin-top: 1rem;
 }

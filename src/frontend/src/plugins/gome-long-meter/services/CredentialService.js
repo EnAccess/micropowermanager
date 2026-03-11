@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import CredentialRepository from "../repositories/CredentialRepository"
+import CredentialRepository from "../repositories/CredentialRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class CredentialService {
   constructor() {

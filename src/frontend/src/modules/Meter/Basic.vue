@@ -81,13 +81,13 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import { DeviceService } from "@/services/DeviceService.js"
+import { MeterDetailService } from "@/services/MeterDetailService.js"
+import { PersonService } from "@/services/PersonService.js"
 import Widget from "@/shared/Widget.vue"
-import { currency } from "@/mixins/currency"
-import { PersonService } from "@/services/PersonService"
-import { timing } from "@/mixins/timing"
-import { MeterDetailService } from "@/services/MeterDetailService"
-import { notify } from "@/mixins/notify"
-import { DeviceService } from "@/services/DeviceService"
 
 export default {
   name: "MeterBasic",
@@ -192,7 +192,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-list-item-text {
   display: flex;
   flex-direction: column;

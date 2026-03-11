@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SyncSettingRepository from "../repositories/SyncSettingRepository"
+import SyncSettingRepository from "../repositories/SyncSettingRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class SyncSettingService {
   constructor() {

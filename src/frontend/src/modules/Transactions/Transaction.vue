@@ -370,17 +370,16 @@
 </template>
 
 <script>
-import { timing } from "@/mixins/timing"
-import { currency } from "@/mixins/currency"
-import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart"
-import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
-import CashTransactionDetail from "@/modules/Transactions/CashTransactionDetail"
-import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
+import CashTransactionDetail from "@/modules/Transactions/CashTransactionDetail.vue"
+import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart.vue"
+import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
+import { PersonService } from "@/services/PersonService.js"
+import { TransactionService } from "@/services/TransactionService.js"
 import Widget from "@/shared/Widget.vue"
-import { TransactionService } from "@/services/TransactionService"
-import { PersonService } from "@/services/PersonService"
-
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Transaction",
@@ -512,7 +511,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .transaction-detail-card {
   margin-top: 1rem !important;
   margin-right: 1rem !important;

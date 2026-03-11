@@ -1,5 +1,5 @@
-jest.mock("../repositories/AgentRepository")
-import { AgentService } from "../services/AgentService"
+jest.mock("../repositories/AgentRepository.js")
+import { AgentService } from "../services/AgentService.js"
 const agentService = new AgentService()
 const agentProperties = [
   "id",

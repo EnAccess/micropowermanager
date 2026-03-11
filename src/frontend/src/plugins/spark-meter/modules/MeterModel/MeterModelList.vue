@@ -55,14 +55,14 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { MeterModelService } from "../../services/MeterModelService"
-import { EventBus } from "@/shared/eventbus"
+import { CredentialService } from "../../services/CredentialService.js"
+import { MeterModelService } from "../../services/MeterModelService.js"
+import { SiteService } from "../../services/SiteService.js"
 
-import { CredentialService } from "../../services/CredentialService"
-import { SiteService } from "../../services/SiteService"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "MeterModelList",
@@ -180,4 +180,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

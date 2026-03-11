@@ -43,10 +43,11 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
+import { CustomerService } from "../../services/CustomerService.js"
+import { SteamaTransactionsService } from "../../services/SteamaTransactionsService.js"
+
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { SteamaTransactionsService } from "../../services/SteamaTransactionsService"
-import { CustomerService } from "../../services/CustomerService"
 
 export default {
   components: { Widget },
@@ -93,4 +94,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

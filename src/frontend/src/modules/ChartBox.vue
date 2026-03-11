@@ -118,7 +118,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .chart-box-header {
   margin: -3rem 15px 0 15px;
   overflow: hidden;

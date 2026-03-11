@@ -1,4 +1,5 @@
-import store from "../store/store"
+import store from "../store/store.js"
+
 import { readable } from "./numbers.js"
 
 export const currency = {

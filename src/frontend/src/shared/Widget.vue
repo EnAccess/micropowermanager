@@ -106,9 +106,10 @@
 </template>
 
 <script>
-import { Paginator } from "@/Helpers/Paginator"
-import { EventBus } from "./eventbus"
-import Paginate from "./Paginate"
+import Paginate from "./Paginate.vue"
+
+import { Paginator } from "@/Helpers/Paginator.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 const debounce = require("debounce")
 export default {

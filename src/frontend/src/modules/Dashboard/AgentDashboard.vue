@@ -149,13 +149,13 @@
 </template>
 
 <script>
-import Box from "@/shared/Box.vue"
-import Widget from "@/shared/Widget.vue"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
 import NewAgent from "@/modules/Agent/NewAgent.vue"
-import { AgentDashboardService } from "@/services/AgentDashboardService"
-import { notify } from "@/mixins/notify"
-import { currency } from "@/mixins/currency"
-import { EventBus } from "@/shared/eventbus"
+import { AgentDashboardService } from "@/services/AgentDashboardService.js"
+import Box from "@/shared/Box.vue"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AgentDashboard",

@@ -29,7 +29,7 @@
 
 <script>
 import Widget from "@/shared/Widget.vue";
-import { EventBus } from "@/shared/eventbus";
+import { EventBus } from "@/shared/eventbus.js";
 
 export default {
   name: "Overview",
@@ -46,4 +46,4 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

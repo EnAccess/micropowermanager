@@ -110,15 +110,16 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
 import moment from "moment"
-import { currency } from "@/mixins/currency"
-import { EventBus } from "@/shared/eventbus"
+
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
 import {
   BatchRevenue,
   BatchRevenueService,
-} from "@/services/BatchRevenueService"
-import { notify } from "@/mixins/notify"
+} from "@/services/BatchRevenueService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "TargetList",
@@ -332,4 +333,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

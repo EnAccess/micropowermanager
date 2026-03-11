@@ -1,10 +1,8 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-
-import Client from "@/repositories/Client/AxiosClient"
-
-import ConnectionTypeRepository from "@/repositories/ConnectionTypeRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import ConnectionTypeRepository from "@/repositories/ConnectionTypeRepository.js"
+import { resources } from "@/resources.js"
 
 export class ConnectionsType {
   constructor() {
