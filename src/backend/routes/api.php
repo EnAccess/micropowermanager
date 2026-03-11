@@ -22,6 +22,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\EBikeController;
+use App\Http\Controllers\ImportStatusController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
 use App\Http\Controllers\ManufacturerController;
@@ -409,6 +410,7 @@ Route::group(['prefix' => 'export'], static function () {
 Route::group(['prefix' => 'import'], static function () {
     Route::post('/settings', [SettingsImportController::class, 'import'])->middleware('permission:settings');
     Route::post('/user-permissions', [UserPermissionImportController::class, 'import'])->middleware('permission:users');
+    Route::get('/status/{jobId}', [ImportStatusController::class, 'show']);
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);

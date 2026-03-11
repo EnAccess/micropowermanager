@@ -13,6 +13,9 @@ export class UserPermissionImportService {
         status,
         error,
       } = await this.repository.importUserPermissions(data)
+      if (status === 202) {
+        return { async: true, jobId: responseData.data.job_id }
+      }
       if (status !== 200 && status !== 201) {
         return new ErrorHandler(error || "Import failed", "http", status)
       }

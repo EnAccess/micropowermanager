@@ -9,6 +9,7 @@ $queues = [
     'transaction_energy',
     'prospect',
     'emails',
+    'import',
 ];
 
 return [

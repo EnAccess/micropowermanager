@@ -118,7 +118,14 @@
           </md-table-row>
         </md-table>
 
-        <div class="import-actions" v-if="hasSelectedFiles">
+        <div v-if="pollingJobId" class="import-progress">
+          <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+          <p class="import-progress-text">
+            Import is being processed in the background...
+          </p>
+        </div>
+
+        <div class="import-actions" v-if="hasSelectedFiles && !pollingJobId">
           <md-button class="md-raised" @click="clearAllFiles">
             Clear All
           </md-button>
@@ -175,9 +182,12 @@
 
 <script>
 import { notify } from "@/mixins/notify.js"
+import { ImportStatusService } from "@/services/ImportStatusService.js"
 import { SettingsImportService } from "@/services/SettingsImportService.js"
 import { UserPermissionImportService } from "@/services/UserPermissionImportService.js"
 import { EventBus } from "@/shared/eventbus.js"
+
+const POLL_INTERVAL_MS = 2000
 
 export default {
   name: "ImportSettings",
@@ -186,6 +196,7 @@ export default {
     return {
       settingsImportService: new SettingsImportService(),
       userPermissionImportService: new UserPermissionImportService(),
+      importStatusService: new ImportStatusService(),
       selectedSettingsFile: null,
       selectedSettingsFileName: "",
       selectedUserPermissionFile: null,
@@ -196,12 +207,18 @@ export default {
       showResultDialog: false,
       resultDialogTitle: "",
       importResult: null,
+      pollingJobId: null,
+      pollingInterval: null,
+      pendingResults: [],
     }
   },
   computed: {
     hasSelectedFiles() {
       return this.selectedSettingsFile || this.selectedUserPermissionFile
     },
+  },
+  beforeDestroy() {
+    this.stopPolling()
   },
   methods: {
     handleSettingsFileSelect(event) {
@@ -296,7 +313,17 @@ export default {
               )
               const jsonData = JSON.parse(fileContent)
               const data = jsonData.data || jsonData
-              const result = await this.userPermissionImportService.import(data)
+              const result =
+                await this.userPermissionImportService.import(data)
+
+              if (result && result.async) {
+                this.pendingResults = results
+                this.startPolling(result.jobId)
+                this.clearUserPermissionFile()
+                this.userPermissionLoading = false
+                return
+              }
+
               results.push({
                 type: "user_permissions",
                 success: true,
@@ -319,30 +346,87 @@ export default {
           }
 
           this.importing = false
-
-          const successCount = results.filter((r) => r.success).length
-          const failCount = results.filter((r) => !r.success).length
-
-          if (successCount > 0) {
-            this.alertNotify(
-              "success",
-              `${successCount} import(s) completed successfully`,
-            )
-            EventBus.$emit("Settings")
-          }
-          if (failCount > 0) {
-            this.alertNotify("error", `${failCount} import(s) failed`)
-          }
-
-          this.importResult = {
-            results,
-            success_count: successCount,
-            failed_count: failCount,
-          }
-          this.resultDialogTitle = "Import Results"
-          this.showResultDialog = true
+          this.showResults(results)
         }
       })
+    },
+    startPolling(jobId) {
+      this.pollingJobId = jobId
+      this.pollingInterval = setInterval(async () => {
+        try {
+          const status = await this.importStatusService.getStatus(jobId)
+          if (!status || status instanceof Error) {
+            this.stopPolling()
+            this.onAsyncImportDone(false, "Failed to check import status")
+            return
+          }
+
+          if (status.status === "completed") {
+            this.stopPolling()
+            const importResult = status.result || {}
+            this.onAsyncImportDone(importResult.success !== false, null, {
+              imported_count: importResult.imported_count,
+              failed_count: importResult.failed_count,
+            })
+          } else if (status.status === "failed") {
+            this.stopPolling()
+            this.onAsyncImportDone(
+              false,
+              status.error || status.result?.errors?.transaction || "Import failed",
+            )
+          }
+        } catch (e) {
+          this.stopPolling()
+          this.onAsyncImportDone(false, "Failed to check import status")
+        }
+      }, POLL_INTERVAL_MS)
+    },
+    stopPolling() {
+      if (this.pollingInterval) {
+        clearInterval(this.pollingInterval)
+        this.pollingInterval = null
+      }
+      this.pollingJobId = null
+      this.importing = false
+    },
+    onAsyncImportDone(success, error, data) {
+      const results = [...this.pendingResults]
+      this.pendingResults = []
+
+      if (success) {
+        results.push({ type: "user_permissions", success: true, data })
+      } else {
+        results.push({
+          type: "user_permissions",
+          success: false,
+          error: error || "Import failed",
+        })
+      }
+
+      this.showResults(results)
+    },
+    showResults(results) {
+      const successCount = results.filter((r) => r.success).length
+      const failCount = results.filter((r) => !r.success).length
+
+      if (successCount > 0) {
+        this.alertNotify(
+          "success",
+          `${successCount} import(s) completed successfully`,
+        )
+        EventBus.$emit("Settings")
+      }
+      if (failCount > 0) {
+        this.alertNotify("error", `${failCount} import(s) failed`)
+      }
+
+      this.importResult = {
+        results,
+        success_count: successCount,
+        failed_count: failCount,
+      }
+      this.resultDialogTitle = "Import Results"
+      this.showResultDialog = true
     },
     readFileAsText(file) {
       return new Promise((resolve, reject) => {
@@ -413,6 +497,19 @@ export default {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid #e0e0e0;
+}
+
+.import-progress {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.import-progress-text {
+  margin-top: 0.75rem;
+  color: #666;
+  font-size: 0.875rem;
+  text-align: center;
 }
 
 .result-message {
