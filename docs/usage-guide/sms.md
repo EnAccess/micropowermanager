@@ -34,6 +34,7 @@ TextBee allows you to use your own Android device as an SMS gateway, providing u
 
 - Up to 98% cost savings
 - Uses your own Android device
+- Bidirectional SMS (send and receive)
 - Free plan: 300 messages/month
 - Pro plan: 5,000 messages/month
 

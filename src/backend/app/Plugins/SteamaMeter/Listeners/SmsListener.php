@@ -2,6 +2,7 @@
 
 namespace App\Plugins\SteamaMeter\Listeners;
 
+use App\Events\SmsStoredEvent;
 use App\Plugins\SteamaMeter\Models\SteamaCustomer;
 use App\Plugins\SteamaMeter\Services\SteamaCustomerService;
 use App\Plugins\SteamaMeter\Services\SteamaSmsFeedbackWordService;
@@ -35,8 +36,7 @@ class SmsListener {
         }
     }
 
-    public function handle(string $sender, string $message): void {
-        // TODO: Uncomment this when steamaco-meter package is refactored with device->meter approach
-        // $this->onSmsStored($sender, $message);
+    public function handle(SmsStoredEvent $event): void {
+        $this->onSmsStored($event->sender, $event->message);
     }
 }
