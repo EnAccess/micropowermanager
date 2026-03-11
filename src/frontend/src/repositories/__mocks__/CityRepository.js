@@ -1,5 +1,5 @@
-const cityListResponse = require("./responses/city/cityList.json")
 const cityCreateResponse = require("./responses/city/cityCreate.json")
+const cityListResponse = require("./responses/city/cityList.json")
 
 export default {
   list() {

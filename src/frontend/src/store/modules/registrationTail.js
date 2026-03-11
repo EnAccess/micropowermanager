@@ -1,4 +1,4 @@
-import { RegistrationTailService } from "@/services/RegistrationTailService"
+import { RegistrationTailService } from "@/services/RegistrationTailService.js"
 
 export const namespaced = true
 

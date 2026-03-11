@@ -44,7 +44,7 @@ GET {{
 </template>
 
 <script>
-import { baseUrlExternal } from "@/repositories/Client/AxiosClient"
+import { baseUrlExternal } from "@/repositories/Client/AxiosClient.js"
 
 export default {
   name: "EcreeeETenderOverview",
@@ -56,7 +56,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .overview-line {
   margin-top: 1rem;
 }

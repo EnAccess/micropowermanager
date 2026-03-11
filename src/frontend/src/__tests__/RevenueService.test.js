@@ -1,5 +1,5 @@
-jest.mock("../repositories/RevenueRepository")
-import { RevenueService } from "../services/RevenueService"
+jest.mock("../repositories/RevenueRepository.js")
+import { RevenueService } from "../services/RevenueService.js"
 const revenueService = new RevenueService()
 
 describe("RevenueService #getTicketsData", () => {

@@ -309,19 +309,22 @@
 </template>
 
 <script>
-import ConfirmationBox from "@/shared/ConfirmationBox"
-import ClientDetailCard from "@/shared/ClientDetailCard"
-import SoldAppliancesList from "./SoldAppliancesList"
-import { AppliancePersonService } from "@/services/AppliancePersonService"
-import { PersonService } from "@/services/PersonService"
-import Widget from "@/shared/Widget.vue"
-import { currency, notify } from "@/mixins"
-import { ApplianceRateService } from "@/services/ApplianceRateService"
-import { ApplianceLogService } from "@/services/ApplianceLogService"
 import moment from "moment"
-import { EventBus } from "@/shared/eventbus"
-import { AppliancePaymentService } from "@/services/AppliancePaymentService"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
+
+import SoldAppliancesList from "./SoldAppliancesList.vue"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { ApplianceLogService } from "@/services/ApplianceLogService.js"
+import { AppliancePaymentService } from "@/services/AppliancePaymentService.js"
+import { AppliancePersonService } from "@/services/AppliancePersonService.js"
+import { ApplianceRateService } from "@/services/ApplianceRateService.js"
+import { PersonService } from "@/services/PersonService.js"
+import ClientDetailCard from "@/shared/ClientDetailCard.vue"
+import ConfirmationBox from "@/shared/ConfirmationBox.vue"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SoldApplianceDetail",
@@ -519,14 +522,14 @@ export default {
 
         if (device_type === "solar_home_system") {
           const solarHomeSystemService = new (
-            await import("@/services/SolarHomeSystemService")
+            await import("@/services/SolarHomeSystemService.js")
           ).SolarHomeSystemService()
 
           this.detailedDeviceInfo =
             await solarHomeSystemService.getSolarHomeSystem(device_id)
         } else if (device_type === "meter") {
           const meterService = new (
-            await import("@/services/MeterService")
+            await import("@/services/MeterService.js")
           ).MeterService()
           this.detailedDeviceInfo =
             await meterService.getMeterBySerialNumber(device_serial)
@@ -625,7 +628,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .due-date-row {
   background-color: #a1887f;
 }

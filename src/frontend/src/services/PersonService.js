@@ -1,13 +1,12 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import moment from "moment"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-import { resources } from "@/resources"
-import Client from "@/repositories/Client/AxiosClient"
 
-import { Paginator } from "@/Helpers/Paginator"
-import { EventBus } from "@/shared/eventbus"
-
-import PersonRepository from "@/repositories/PersonRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import PersonRepository from "@/repositories/PersonRepository.js"
+import { resources } from "@/resources.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class Person {
   constructor() {

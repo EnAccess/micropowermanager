@@ -51,16 +51,17 @@
 </template>
 
 <script>
-import "@/shared/TableList"
-
-import BoxGroup from "./BoxGroup"
-import RevenueTrends from "./RevenueTrends"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
-import { notify } from "@/mixins"
-import FinancialOverview from "@/modules/Dashboard/FinancialOverview"
-import { EventBus } from "@/shared/eventbus"
 import moment from "moment"
+
+import BoxGroup from "./BoxGroup.vue"
+import RevenueTrends from "./RevenueTrends.vue"
+
+import { notify } from "@/mixins/notify.js"
+import FinancialOverview from "@/modules/Dashboard/FinancialOverview.vue"
 import ClusterMap from "@/modules/Map/ClusterMap.vue"
+import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import "@/shared/TableList.vue"
 
 export default {
   name: "Dashboard",
@@ -198,4 +199,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss"></style>

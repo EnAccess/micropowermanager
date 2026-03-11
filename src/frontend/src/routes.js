@@ -1,5 +1,6 @@
 import VueRouter from "vue-router"
-import { exportedRoutes } from "./ExportedRoutes"
+
+import { exportedRoutes } from "./ExportedRoutes.js"
 
 let routes = exportedRoutes
 

@@ -1,5 +1,4 @@
-import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client, { baseUrl } from "@/repositories/Client/AxiosClient.js"
 
 const resource = `${baseUrl}/api/settings`
 

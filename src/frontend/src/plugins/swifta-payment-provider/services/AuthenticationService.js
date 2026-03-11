@@ -1,6 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
+import AuthenticationRepository from "../repositories/AuthenticationRepository.js"
 
-import AuthenticationRepository from "../repositories/AuthenticationRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class AuthenticationService {
   constructor() {

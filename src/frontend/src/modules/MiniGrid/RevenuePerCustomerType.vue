@@ -41,9 +41,9 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
+import { EventBus } from "@/shared/eventbus.js"
 import Loader from "@/shared/Loader.vue"
-import { EventBus } from "@/shared/eventbus"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "RevenuePerCustomerType",
@@ -194,4 +194,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

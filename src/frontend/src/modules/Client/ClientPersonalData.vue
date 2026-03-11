@@ -191,8 +191,8 @@
 </template>
 
 <script>
+import { PersonService } from "@/services/PersonService.js"
 import Widget from "@/shared/Widget.vue"
-import { PersonService } from "@/services/PersonService"
 
 export default {
   name: "ClientPersonalData",
@@ -296,4 +296,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

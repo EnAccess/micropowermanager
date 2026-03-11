@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import CompanyRepository from "@/repositories/CompanyRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import CompanyRepository from "@/repositories/CompanyRepository.js"
 
 export class CompanyService {
   constructor() {

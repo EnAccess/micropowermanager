@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { RegistrationTailService } from "@/services/RegistrationTailService"
+import { RegistrationTailService } from "@/services/RegistrationTailService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "TailWizard",

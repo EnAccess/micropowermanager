@@ -284,13 +284,15 @@
 </template>
 
 <script>
-import { SettingService } from "../../services/SettingService"
+import { FeedbackWordService } from "../../services/FeedbackWordService.js"
+import { SettingService } from "../../services/SettingService.js"
+import { SmsBodiesService } from "../../services/SmsBodiesService.js"
+import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService.js"
+
+import SmsBody from "./SmsBody.vue"
+
+import { notify } from "@/mixins/notify.js"
 import Widget from "@/shared/Widget.vue"
-import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService"
-import { SmsBodiesService } from "../../services/SmsBodiesService"
-import SmsBody from "./SmsBody"
-import { FeedbackWordService } from "../../services/FeedbackWordService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Setting",
@@ -414,7 +416,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .setting-card {
   padding: 2rem !important;
 }

@@ -1,6 +1,5 @@
-import { Paginator } from "@/Helpers/Paginator"
-
-import AgentTransactionRepository from "@/repositories/AgentTransactionRepository"
+import { Paginator } from "@/Helpers/Paginator.js"
+import AgentTransactionRepository from "@/repositories/AgentTransactionRepository.js"
 
 export class AgentTransactionService {
   constructor(agentId) {

@@ -1,4 +1,4 @@
-import Client from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 const resource = `/api/micro-star-meters/micro-star-cert`
 

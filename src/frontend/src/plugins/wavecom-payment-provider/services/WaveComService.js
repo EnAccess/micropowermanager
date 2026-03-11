@@ -1,5 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import WaveComRepository from "../repositories/WaveComRepository"
+import WaveComRepository from "../repositories/WaveComRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 
 export class WaveComService {
   constructor() {

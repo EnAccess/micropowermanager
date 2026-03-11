@@ -1,8 +1,8 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { resources } from "@/resources"
-import { EventBus } from "@/shared/eventbus"
-import TransactionRepository from "@/repositories/TransactionRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import TransactionRepository from "@/repositories/TransactionRepository.js"
+import { resources } from "@/resources.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class Transactions {
   constructor(meterId) {

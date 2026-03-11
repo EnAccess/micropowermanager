@@ -1,7 +1,8 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import i18n from "../i18n"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-import ClusterRepository from "@/repositories/ClusterRepository"
+import i18n from "../i18n.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import ClusterRepository from "@/repositories/ClusterRepository.js"
 
 export class ClusterService {
   constructor() {

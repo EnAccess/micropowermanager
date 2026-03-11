@@ -38,14 +38,15 @@
 </template>
 
 <script>
-import "@/shared/TableList"
-import BoxGroup from "@/modules/Dashboard/BoxGroup"
-import FinancialOverview from "@/modules/Dashboard/FinancialOverview"
-import DashboardMap from "@/modules/Map/DashboardMap.vue"
-import { notify } from "@/mixins/notify"
-import Widget from "@/shared/Widget.vue"
 import moment from "moment"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
+
+import { notify } from "@/mixins/notify.js"
+import BoxGroup from "@/modules/Dashboard/BoxGroup.vue"
+import FinancialOverview from "@/modules/Dashboard/FinancialOverview.vue"
+import DashboardMap from "@/modules/Map/DashboardMap.vue"
+import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
+import "@/shared/TableList.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Dashboard",

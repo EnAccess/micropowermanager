@@ -1,5 +1,5 @@
-jest.mock("../repositories/TransactionRepository")
-import { TransactionService } from "../services/TransactionService"
+jest.mock("../repositories/TransactionRepository.js")
+import { TransactionService } from "../services/TransactionService.js"
 const transactionService = new TransactionService()
 
 describe("TransactionService #getTransactions", () => {

@@ -64,11 +64,11 @@
 </template>
 
 <script>
-import { SolarHomeSystemService } from "@/services/SolarHomeSystemService"
-import { timing } from "@/mixins"
-import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget.vue"
+import { timing } from "@/mixins/timing.js"
 import AddSolarHomeSystemModal from "@/modules/SolarHomeSystem/AddSolarHomeSystemModal.vue"
+import { SolarHomeSystemService } from "@/services/SolarHomeSystemService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SolarHomeSystems",
@@ -127,4 +127,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

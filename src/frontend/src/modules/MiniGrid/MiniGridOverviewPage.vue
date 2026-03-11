@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { MiniGridService } from "@/services/MiniGridService"
+import { MiniGridService } from "@/services/MiniGridService.js"
 import Loader from "@/shared/Loader.vue"
 
 export default {
@@ -33,4 +33,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

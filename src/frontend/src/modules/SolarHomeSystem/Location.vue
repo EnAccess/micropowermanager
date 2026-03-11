@@ -5,7 +5,7 @@
     :subscriber="'shs-location'"
   >
     <client-map
-      :mappingService="mappingService"
+      :mappingService="mappingService.js"
       ref="mapRef"
       :edit="false"
       :zoom="12"
@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
 import ClientMap from "@/modules/Map/ClientMap.vue"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
+import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Location",

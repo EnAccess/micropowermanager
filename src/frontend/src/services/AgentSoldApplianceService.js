@@ -1,6 +1,5 @@
-import { Paginator } from "@/Helpers/Paginator"
-
-import AgentAssignedApplianceRepository from "@/repositories/AgentAssignedApplianceRepository"
+import { Paginator } from "@/Helpers/Paginator.js"
+import AgentAssignedApplianceRepository from "@/repositories/AgentAssignedApplianceRepository.js"
 // FIXME:
 // - What's the difference between AgentAssignedAppliance and AgentSoldAppliance?
 // - Why is the Agent**Sold**ApplianceService using Agent**Assigned**ApplianceRepository

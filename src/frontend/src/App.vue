@@ -22,7 +22,7 @@ export default {
   },
 }
 </script>
-<style lang="css">
+<style lang="scss">
 .md-dialog {
   z-index: 10 !important;
 }

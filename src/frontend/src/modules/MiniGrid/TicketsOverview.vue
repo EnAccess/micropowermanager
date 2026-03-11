@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
+import { EventBus } from "@/shared/eventbus.js"
 import Loader from "@/shared/Loader.vue"
-import { EventBus } from "@/shared/eventbus"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "TicketsOverview",
@@ -253,7 +253,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .no-data-message {
   text-align: center;
   padding: 2rem;

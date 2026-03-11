@@ -39,8 +39,9 @@
 </template>
 
 <script>
-import { AuthenticationService } from "../../services/AuthenticationService"
-import { notify } from "@/mixins/notify"
+import { AuthenticationService } from "../../services/AuthenticationService.js"
+
+import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "Authentication",
@@ -62,4 +63,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

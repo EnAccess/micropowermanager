@@ -43,11 +43,11 @@
 </template>
 
 <script>
-import { notify } from "@/mixins/notify"
-import Widget from "@/shared/Widget.vue"
+import { notify } from "@/mixins/notify.js"
 import AddExternalTicketingUser from "@/modules/Ticket/AddExternalTicketingUser.vue"
-import { TicketUserService } from "@/services/TicketUserService"
-import { EventBus } from "@/shared/eventbus"
+import { TicketUserService } from "@/services/TicketUserService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "UserManagement",
@@ -98,4 +98,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

@@ -44,13 +44,14 @@
   </div>
 </template>
 <script>
-import { AgentService } from "@/services/AgentService"
-import { AgentBalanceHistoryService } from "@/services/AgentBalanceHistoryService"
+import AddAgentBalance from "./AddBalance.vue"
+
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { AgentBalanceHistoryService } from "@/services/AgentBalanceHistoryService.js"
+import { AgentService } from "@/services/AgentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import AddAgentBalance from "./AddBalance"
-import { notify } from "@/mixins/notify"
-import { currency } from "@/mixins/currency"
 
 export default {
   name: "agentBalanceHistoryList",
@@ -129,4 +130,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

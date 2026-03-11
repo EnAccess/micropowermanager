@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import Breadcrumb from "../shared/Breadcrumb"
+import Breadcrumb from "../shared/Breadcrumb.vue"
 
 export default {
   components: {
@@ -132,7 +132,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="scss">
 .nav-button {
   background-color: #3d3d3d !important;
   color: white !important;

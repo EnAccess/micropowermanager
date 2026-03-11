@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { PaymentService } from "../../services/PaymentService"
+import { PaymentService } from "../../services/PaymentService.js"
 
 export default {
   name: "Payment",
@@ -115,7 +115,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .welcome {
   display: flex;
   flex-direction: column;

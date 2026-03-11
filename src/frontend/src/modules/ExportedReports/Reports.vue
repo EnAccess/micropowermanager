@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import TicketOursourcePayoutReports from "@/modules/ExportedReports/TicketOursourcePayoutReports"
-import { ReportsService } from "@/services/ReportsService"
+import TicketOursourcePayoutReports from "@/modules/ExportedReports/TicketOursourcePayoutReports.vue"
 import VillageReports from "@/modules/ExportedReports/VillageReports.vue"
+import { ReportsService } from "@/services/ReportsService.js"
 
 export default {
   name: "Reports",
@@ -43,4 +43,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

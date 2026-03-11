@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import CurrencyRepository from "@/repositories/CurrencyRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import CurrencyRepository from "@/repositories/CurrencyRepository.js"
 
 export class CurrencyListService {
   constructor() {

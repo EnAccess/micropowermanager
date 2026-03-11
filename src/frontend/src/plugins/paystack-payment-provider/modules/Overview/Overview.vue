@@ -64,12 +64,14 @@
 </template>
 
 <script>
-import Box from "@/shared/Box.vue"
+import { CredentialService } from "../../services/CredentialService.js"
+import { TransactionService } from "../../services/TransactionService.js"
+
 import Credential from "./Credential.vue"
-import { TransactionService } from "../../services/TransactionService"
-import { CredentialService } from "../../services/CredentialService"
-import { notify } from "@/mixins/notify"
-import { EventBus } from "@/shared/eventbus"
+
+import { notify } from "@/mixins/notify.js"
+import Box from "@/shared/Box.vue"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Overview",
@@ -165,7 +167,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .overview-line {
   margin-top: 1rem;
 }

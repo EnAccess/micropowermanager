@@ -80,11 +80,11 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import RedirectionModal from "../../shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Loader from "@/shared/Loader.vue"
-import { EventBus } from "@/shared/eventbus"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "RevenueTrends",
@@ -230,4 +230,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

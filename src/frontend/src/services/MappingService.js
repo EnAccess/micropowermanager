@@ -1,13 +1,12 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import store from "@/store/store"
-import meterIcon from "@/assets/icons/meter.png"
-import shsIcon from "@/assets/icons/shs.png"
-import miniGridIcon2 from "@/assets/icons/miniGrid2.png"
-import miniGridIcon from "@/assets/icons/miniGrid.png"
-import villageMarkerIcon from "@/assets/icons/village.png"
 import eBikeIcon from "@/assets/icons/ebike.png"
-
-import MappingRepository from "@/repositories/MappingRepository"
+import meterIcon from "@/assets/icons/meter.png"
+import miniGridIcon from "@/assets/icons/miniGrid.png"
+import miniGridIcon2 from "@/assets/icons/miniGrid2.png"
+import shsIcon from "@/assets/icons/shs.png"
+import villageMarkerIcon from "@/assets/icons/village.png"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MappingRepository from "@/repositories/MappingRepository.js"
+import store from "@/store/store.js"
 
 export const MARKER_TYPE = {
   METER: "METER",

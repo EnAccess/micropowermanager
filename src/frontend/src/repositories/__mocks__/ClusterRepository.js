@@ -1,7 +1,7 @@
-const clusterListResponse = require("./responses/cluster/clusterList.json")
 const clusterCreateResponse = require("./responses/cluster/clusterCreate.json")
-const clustersRevenueResponse = require("./responses/cluster/clustersRevenue.json")
+const clusterListResponse = require("./responses/cluster/clusterList.json")
 const clusterMiniGridRevenueResponse = require("./responses/cluster/clusterMiniGridsRevenue.json")
+const clustersRevenueResponse = require("./responses/cluster/clustersRevenue.json")
 const clusterTrendsResponse = require("./responses/cluster/clusterTrends.json")
 
 export default {

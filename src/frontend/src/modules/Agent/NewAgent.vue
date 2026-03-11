@@ -282,15 +282,17 @@
   </div>
 </template>
 <script>
-import Widget from "@/shared/Widget.vue"
-import { AgentService } from "@/services/AgentService"
-import { MiniGridService } from "@/services/MiniGridService"
-import CountryService from "../../services/CountryService"
-import { EventBus } from "@/shared/eventbus"
-import { AgentCommissionService } from "@/services/AgentCommissionService"
-import RedirectionModal from "../../shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
 import moment from "moment"
+
+import CountryService from "../../services/CountryService.js"
+import RedirectionModal from "../../shared/RedirectionModal.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { AgentCommissionService } from "@/services/AgentCommissionService.js"
+import { AgentService } from "@/services/AgentService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   mixins: [notify],
@@ -414,4 +416,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

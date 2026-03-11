@@ -51,12 +51,12 @@
 </template>
 
 <script>
+import { timing } from "@/mixins/timing.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { Manufacturers } from "@/services/ManufacturerService.js"
+import { Meters } from "@/services/MeterService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { Meters } from "@/services/MeterService"
-import { Manufacturers } from "@/services/ManufacturerService"
-import { EventBus } from "@/shared/eventbus"
-import { timing } from "@/mixins/timing"
-import Client from "@/repositories/Client/AxiosClient"
 
 export default {
   name: "Meters",
@@ -168,4 +168,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

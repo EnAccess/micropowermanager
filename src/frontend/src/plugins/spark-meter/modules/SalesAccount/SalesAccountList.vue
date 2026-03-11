@@ -64,12 +64,13 @@
 </template>
 
 <script>
-import { SalesAccountService } from "../../services/SalesAccountService"
-import { CredentialService } from "../../services/CredentialService"
+import { CredentialService } from "../../services/CredentialService.js"
+import { SalesAccountService } from "../../services/SalesAccountService.js"
+
+import { notify } from "@/mixins/notify.js"
+import { EventBus } from "@/shared/eventbus.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "SalesAccountList",
@@ -177,4 +178,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

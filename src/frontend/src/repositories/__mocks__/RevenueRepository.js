@@ -1,5 +1,5 @@
-const ticketsDataResponse = require("./responses/revenue/ticketsData.json")
 const revenueTrendResponse = require("./responses/revenue/revenueTrends.json")
+const ticketsDataResponse = require("./responses/revenue/ticketsData.json")
 
 export default {
   tickets() {
