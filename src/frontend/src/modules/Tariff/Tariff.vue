@@ -677,7 +677,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 input[type="time"]::-webkit-calendar-picker-indicator {
   background: none;
 }

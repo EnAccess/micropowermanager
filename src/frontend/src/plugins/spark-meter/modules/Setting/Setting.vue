@@ -480,7 +480,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .notice-message-area {
   padding: 20px;
   background-color: #badee4;

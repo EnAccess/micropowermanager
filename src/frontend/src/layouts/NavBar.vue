@@ -95,7 +95,7 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style scoped lang="scss">
 .site-header .navbar {
   padding: 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);

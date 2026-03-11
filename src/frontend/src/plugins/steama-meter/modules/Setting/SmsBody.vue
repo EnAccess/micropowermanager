@@ -139,7 +139,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .placeholder-message-area {
   padding: 20px;
   background-color: #dfe9f3;

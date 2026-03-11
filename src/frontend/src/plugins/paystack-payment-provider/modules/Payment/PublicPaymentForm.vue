@@ -306,7 +306,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .welcome {
   display: flex;
   flex-direction: column;

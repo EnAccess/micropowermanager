@@ -307,7 +307,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .label-w {
   width: 84vw;
 }

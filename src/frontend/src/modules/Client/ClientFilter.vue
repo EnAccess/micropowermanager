@@ -286,7 +286,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .customer-filter-card {
   margin: 1rem 0;
 }

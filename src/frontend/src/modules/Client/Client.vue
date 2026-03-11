@@ -178,7 +178,7 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 [data-letters]:before {
   content: attr(data-letters);
   display: inline-block;

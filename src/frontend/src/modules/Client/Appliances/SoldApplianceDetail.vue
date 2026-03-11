@@ -628,7 +628,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .due-date-row {
   background-color: #a1887f;
 }

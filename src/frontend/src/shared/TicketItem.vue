@@ -231,7 +231,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .new-comment-area {
   margin-top: 30px;
   margin-left: 30px !important;

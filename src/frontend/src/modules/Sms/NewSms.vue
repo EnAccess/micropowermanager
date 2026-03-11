@@ -347,7 +347,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .comment-box {
   border-bottom: 1px dotted #ccc;
   padding: 5px;

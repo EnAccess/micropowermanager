@@ -307,7 +307,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-progress-bar {
   position: absolute;
   top: 0;

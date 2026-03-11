@@ -139,7 +139,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .ticket-list-card-r {
   margin-inline-end: 2vh;
   margin-top: 2vh;

@@ -240,7 +240,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .csv-p {
   font-size: x-small;
   font-weight: 500;

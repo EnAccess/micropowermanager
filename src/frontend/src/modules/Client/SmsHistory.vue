@@ -183,7 +183,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-content {
   max-height: 400px;
   overflow: auto;

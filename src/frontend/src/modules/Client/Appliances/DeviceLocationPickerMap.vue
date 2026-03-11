@@ -140,7 +140,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .device-location-map {
   width: 100%;
 }

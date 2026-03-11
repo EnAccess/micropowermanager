@@ -668,7 +668,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .show-tariff-link {
   cursor: pointer;
 }

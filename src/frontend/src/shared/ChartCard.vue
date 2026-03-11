@@ -196,7 +196,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .chart-card {
   margin-bottom: 1vh;
   min-height: 100%;
