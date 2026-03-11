@@ -209,6 +209,8 @@ export default {
 }
 </script>
 
+<!-- https://github.com/EnAccess/micropowermanager/issues/1256 -->
+<!-- eslint-disable vue/enforce-style-attribute -->
 <style lang="scss">
 .sidebar {
   background: #2b2b2b;
