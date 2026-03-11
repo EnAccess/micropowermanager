@@ -262,7 +262,6 @@ class TransactionSeeder extends Seeder {
         $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($transactionData);
         $transactionData->transaction->amount = $applianceInstallmentPayer->payInstallments();
-        $transactionData->totalAmount = $transactionData->transaction->amount;
         $transactionData->paidRates = $applianceInstallmentPayer->paidRates;
 
         // FIXME:

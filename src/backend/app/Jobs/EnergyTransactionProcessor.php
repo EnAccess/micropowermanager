@@ -85,7 +85,6 @@ class EnergyTransactionProcessor extends AbstractJob {
         $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($container);
         $container->transaction->amount = $applianceInstallmentPayer->payInstallments();
-        $container->totalAmount = $container->transaction->amount;
         $container->paidRates = $applianceInstallmentPayer->paidRates;
 
         return $container;
@@ -106,8 +105,9 @@ class EnergyTransactionProcessor extends AbstractJob {
     }
 
     private function processToken(TransactionDataContainer $transactionData): void {
-        $kWhToBeCharged = 0.0;
-        $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
+        $transactionData->chargeAmount = 0.0;
+        $transactionData->chargeUnit = '';
+        $transactionData->chargeType = '';
 
         dispatch(new TokenProcessor($this->companyId, $transactionData));
     }
