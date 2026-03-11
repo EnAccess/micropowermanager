@@ -205,9 +205,9 @@
   </div>
 </template>
 <script>
-import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify.js"
 import { SmsApplianceRemindRateService } from "@/services/SmsApplianceRemindRateService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SmsApplianceRemindRate",
