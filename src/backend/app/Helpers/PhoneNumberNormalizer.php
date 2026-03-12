@@ -2,10 +2,12 @@
 
 namespace App\Helpers;
 
+use Propaganistas\LaravelPhone\PhoneNumber;
+
 class PhoneNumberNormalizer {
     /**
-     * Normalize a phone number to canonical format: +<digits only>.
-     * Strips spaces, hyphens, parentheses, dots, and other non-digit characters.
+     * Normalize a phone number to E.164 format using libphonenumber.
+     * Trims whitespace, prepends '+' if missing, then formats via PhoneNumber::formatE164().
      */
     public static function normalize(?string $phone): ?string {
         if ($phone === null || trim($phone) === '') {
@@ -14,12 +16,11 @@ class PhoneNumberNormalizer {
 
         $phone = trim($phone);
         $hasPlus = str_starts_with($phone, '+');
-        $digits = preg_replace('/\D/', '', $phone);
 
-        if ($digits === '' || $digits === null) {
-            return null;
-        }
+        $phone = $hasPlus ? $phone : '+'.$phone;
 
-        return $hasPlus ? '+'.$digits : '+'.$digits;
+        $phoneNumber = new PhoneNumber($phone);
+
+        return $phoneNumber->formatE164();
     }
 }
