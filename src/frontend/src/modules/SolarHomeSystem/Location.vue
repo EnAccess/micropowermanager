@@ -5,7 +5,7 @@
     :subscriber="'shs-location'"
   >
     <client-map
-      :mappingService="mappingService.js"
+      :mappingService="mappingService"
       ref="mapRef"
       :edit="false"
       :zoom="12"
