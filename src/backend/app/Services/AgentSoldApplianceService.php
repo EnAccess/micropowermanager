@@ -16,8 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class AgentSoldApplianceService implements IBaseService {
     public function __construct(
-        private AddressesService $addressesService,
-        private AddressGeographicalInformationService $addressGeographicalInformationService,
         private AgentAppliancePersonService $agentAppliancePersonService,
         private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
@@ -31,6 +29,7 @@ class AgentSoldApplianceService implements IBaseService {
         private AppliancePersonService $appliancePersonService,
         private ApplianceRateService $applianceRateService,
         private AppliancePerson $appliancePerson,
+        private DeviceGeographicalInformationService $deviceGeographicalInformationService,
         private DeviceService $deviceService,
         private GeographicalInformationService $geographicalInformationService,
         private PersonService $personService,
@@ -192,32 +191,35 @@ class AgentSoldApplianceService implements IBaseService {
         $this->appliancePersonService->save($appliancePerson);
 
         if ($deviceSerial) {
-            $addressFromCustomer = $appliancePerson->person()->first()->addresses()->first();
-            $addressData = $requestData['address'] ?? [
-                'street' => $addressFromCustomer->street,
-                'city_id' => $addressFromCustomer->city_id,
-            ];
-            $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()->points;
+            $person = $appliancePerson->person()->with('addresses.geo')->first();
+            $primaryAddress = $person?->addresses()->where('is_primary', 1)->first();
+            $points = $requestData['points'] ?? $primaryAddress?->geo?->points;
 
             $device = $this->deviceService->getBySerialNumber($deviceSerial);
+            if (!$device) {
+                throw new \Exception('Selected device could not be found.');
+            }
             $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
 
-            $address = $this->addressesService->make([
-                'street' => $addressData['street'],
-                'city_id' => $addressData['city_id'],
-            ]);
+            if (!empty($points)) {
+                $device->refresh();
+                $existingGeo = $device->geo;
 
-            // Attach the new address to the buyer (person) rather than the device.
-            $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
+                if ($existingGeo) {
+                    $this->geographicalInformationService->update($existingGeo, [
+                        'points' => $points,
+                    ]);
+                } else {
+                    $geoInfo = $this->geographicalInformationService->make([
+                        'points' => $points,
+                    ]);
 
-            $geoInfo = $this->geographicalInformationService->make([
-                'points' => $points,
-            ]);
-
-            $this->addressGeographicalInformationService->setAssigned($geoInfo);
-            $this->addressGeographicalInformationService->setAssignee($address);
-            $this->addressGeographicalInformationService->assign();
-            $this->geographicalInformationService->save($geoInfo);
+                    $this->deviceGeographicalInformationService->setAssigned($geoInfo);
+                    $this->deviceGeographicalInformationService->setAssignee($device);
+                    $this->deviceGeographicalInformationService->assign();
+                    $this->geographicalInformationService->save($geoInfo);
+                }
+            }
         }
 
         // initalize appliance Rates
