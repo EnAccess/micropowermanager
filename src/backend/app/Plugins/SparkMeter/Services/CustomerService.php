@@ -529,7 +529,7 @@ class CustomerService implements ISynchronizeService {
 
         return $this->smCustomer->newQuery()->with(['site', 'mpmPerson.devices.device'])->where(
             'mpm_customer_id',
-            $person->id
+            $person?->id
         )->first();
     }
 }

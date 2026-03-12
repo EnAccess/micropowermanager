@@ -19,12 +19,14 @@ class TextbeeCredentialController extends Controller {
     public function update(TextbeeCredentialRequest $request): TextbeeResource {
         $apiKey = $request->input('api_key');
         $deviceId = $request->input('device_id');
+        $webhookSecret = $request->input('webhook_secret');
         $id = $request->input('id');
 
         $credentials = $this->credentialService->updateCredentials([
             'id' => $id,
             'api_key' => $apiKey,
             'device_id' => $deviceId,
+            'webhook_secret' => $webhookSecret,
         ]);
 
         return TextbeeResource::make($credentials);

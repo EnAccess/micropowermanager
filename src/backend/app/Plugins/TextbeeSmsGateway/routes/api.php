@@ -7,4 +7,7 @@ Route::group(['prefix' => 'textbee-sms-gateway'], function () {
         Route::get('/', 'TextbeeCredentialController@show');
         Route::put('/', 'TextbeeCredentialController@update');
     });
+    Route::group(['prefix' => 'callback'], function () {
+        Route::post('/{slug}/incoming-messages', 'TextbeeCallbackController@incoming');
+    });
 });

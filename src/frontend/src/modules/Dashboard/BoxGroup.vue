@@ -104,7 +104,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .box-group {
   display: flex;
   margin-top: 1rem;

@@ -88,7 +88,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .md-menu-content {
   z-index: 11 !important;
 }
