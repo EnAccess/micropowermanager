@@ -8,7 +8,7 @@ MicroPowerManager automatically monitors appliance rates and notifies both custo
 
 ## How It Works
 
-The system checks appliance rates on a recurring schedule and performs two actions for each matched rate:
+The system checks appliance rates **once per day at midnight (00:00)** and performs two actions for each matched rate:
 
 1. **Sends an SMS reminder** to the customer.
 2. **Creates a ticket** assigned to the tenant admin so the team can follow up.
