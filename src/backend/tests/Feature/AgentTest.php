@@ -48,7 +48,7 @@ class AgentTest extends TestCase {
             'password' => $this->faker->password(),
             'email' => $this->faker->unique()->safeEmail(),
             'mini_grid_id' => $this->miniGrid->id,
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => $this->faker->e164PhoneNumber(),
             'agent_commission_id' => $this->agentCommissions[0]->id,
             'city_id' => $this->city->id,
         ];

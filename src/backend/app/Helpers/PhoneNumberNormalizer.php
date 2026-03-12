@@ -2,12 +2,14 @@
 
 namespace App\Helpers;
 
+use libphonenumber\NumberParseException;
 use Propaganistas\LaravelPhone\PhoneNumber;
 
 class PhoneNumberNormalizer {
     /**
      * Normalize a phone number to E.164 format using libphonenumber.
      * Trims whitespace, prepends '+' if missing, then formats via PhoneNumber::formatE164().
+     * Returns the original (trimmed, with '+') phone string if parsing fails.
      */
     public static function normalize(?string $phone): ?string {
         if ($phone === null || trim($phone) === '') {
@@ -19,8 +21,12 @@ class PhoneNumberNormalizer {
 
         $phone = $hasPlus ? $phone : '+'.$phone;
 
-        $phoneNumber = new PhoneNumber($phone);
+        try {
+            $phoneNumber = new PhoneNumber($phone);
 
-        return $phoneNumber->formatE164();
+            return $phoneNumber->formatE164();
+        } catch (NumberParseException) {
+            return $phone;
+        }
     }
 }
