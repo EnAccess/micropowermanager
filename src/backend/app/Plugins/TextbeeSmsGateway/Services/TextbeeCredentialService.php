@@ -19,13 +19,14 @@ class TextbeeCredentialService {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_key' => null,
             'device_id' => null,
+            'webhook_secret' => null,
         ]);
     }
 
     public function getCredentials(): ?TextbeeCredential {
         $credential = $this->credential->newQuery()->first();
 
-        return $this->decryptCredentialFields($credential, ['api_key', 'device_id']);
+        return $this->decryptCredentialFields($credential, ['api_key', 'device_id', 'webhook_secret']);
     }
 
     /**
@@ -34,13 +35,13 @@ class TextbeeCredentialService {
     public function updateCredentials(array $data): TextbeeCredential {
         $credential = $this->credential->newQuery()->find($data['id']);
 
-        $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'device_id']);
+        $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'device_id', 'webhook_secret']);
 
         $credential->update($encryptedData);
         $credential->save();
 
         $credential->fresh();
 
-        return $this->decryptCredentialFields($credential, ['api_key', 'device_id']);
+        return $this->decryptCredentialFields($credential, ['api_key', 'device_id', 'webhook_secret']);
     }
 }

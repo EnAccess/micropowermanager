@@ -22,12 +22,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-.md-dialog {
-  z-index: 10 !important;
-}
-
-.md-content.md-tabs-content.md-theme-default {
-  height: 100% !important;
-}
-</style>
+<style scoped lang="scss"></style>

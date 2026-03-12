@@ -2,7 +2,7 @@
 
 namespace App\Plugins\SparkMeter\Listeners;
 
-use App\Models\Meter\Meter;
+use App\Events\SmsStoredEvent;
 use App\Plugins\SparkMeter\Exceptions\SparkAPIResponseException;
 use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Services\CustomerService;
@@ -56,8 +56,7 @@ class SmsListener {
         }
     }
 
-    public function handle(string $sender, string $message): void {
-        // TODO: Uncomment this when spark-meter package is refactored with device->meter approach
-        // $this->onSmsStored($sender, $message);
+    public function handle(SmsStoredEvent $event): void {
+        $this->onSmsStored($event->sender, $event->message);
     }
 }
