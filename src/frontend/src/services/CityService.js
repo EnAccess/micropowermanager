@@ -116,4 +116,33 @@ export class CityService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+
+  async getCity(cityId, withRelation = false) {
+    try {
+      const { data, status, error } = await this.repository.detail(
+        cityId,
+        withRelation,
+      )
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+      this.city = data.data
+      return this.city
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async updateCity(cityId, cityData) {
+    try {
+      const params = convertObjectKeysToSnakeCase(cityData)
+      const { data, status, error } = await this.repository.update(cityId, params)
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
+      this.city = data.data
+      return this.city
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 }

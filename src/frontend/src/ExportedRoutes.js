@@ -48,6 +48,8 @@ import TransactionDetail from "@/modules/Transactions/Transaction.vue"
 import TransactionList from "@/modules/Transactions/Transactions.vue"
 import UnauthorizedPage from "@/modules/Unauthorized/index.vue"
 import AddVillage from "@/modules/Village/AddVillage.vue"
+import VillageDetail from "@/modules/Village/VillageDetail.vue"
+import VillageList from "@/modules/Village/Villages.vue"
 import Welcome from "@/modules/Welcome/index.vue"
 import AfricasTalkingOverview from "@/plugins/africas-talking/modules/Overview/Overview.vue"
 import AngazaShsOverview from "@/plugins/angaza-shs/modules/Overview/Overview.vue"
@@ -451,6 +453,45 @@ export const exportedRoutes = [
             level: "detail",
             name: "Customers",
             link: "/people",
+            target: "id",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/villages",
+    component: ChildRouteWrapper,
+    meta: {
+      permissions: ["settings"],
+      sidebar: {
+        enabled: true,
+        name: "Villages",
+        icon: "location_city",
+      },
+    },
+    children: [
+      {
+        path: "",
+        component: VillageList,
+        meta: {
+          layout: "default",
+          breadcrumb: {
+            level: "base",
+            name: "Villages",
+            link: "/villages",
+          },
+        },
+      },
+      {
+        path: ":id",
+        component: VillageDetail,
+        meta: {
+          layout: "default",
+          breadcrumb: {
+            level: "detail",
+            name: "Villages",
+            link: "/villages",
             target: "id",
           },
         },
