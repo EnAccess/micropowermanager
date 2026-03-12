@@ -30,13 +30,32 @@ class ApplianceRateChecker extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        $this->remindUpComingRates();
-        $this->findOverDueRates();
+        $smsApplianceRemindRates = $this->getApplianceRemindRates();
+
+        if ($smsApplianceRemindRates->isEmpty()) {
+            $this->info('No enabled appliance reminder configurations found.');
+
+            return;
+        }
+
+        $this->info('Found '.$smsApplianceRemindRates->count().' enabled reminder configuration(s).');
+        $this->newLine();
+
+        $upcomingRates = $this->remindUpComingRates($smsApplianceRemindRates);
+        $overdueRates = $this->findOverDueRates($smsApplianceRemindRates);
+
+        $this->newLine();
+        $this->displaySummary($upcomingRates, $overdueRates);
     }
 
-    private function remindUpComingRates(): void {
-        $smsApplianceRemindRates = $this->getApplianceRemindRates();
-        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) {
+    /**
+     * @param Collection<int, SmsApplianceRemindRate> $smsApplianceRemindRates
+     *
+     * @return Collection<int, ApplianceRate>
+     */
+    private function remindUpComingRates(Collection $smsApplianceRemindRates): Collection {
+        $allUpcoming = new Collection();
+        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) use ($allUpcoming) {
             $dueApplianceRates = $this->applianceRate::with([
                 'appliancePerson.appliance.smsReminderRate',
                 'appliancePerson.appliance.applianceType',
@@ -54,14 +73,21 @@ class ApplianceRateChecker extends AbstractSharedCommand {
                     }
                 )
                 ->get();
-            echo "\n".count($dueApplianceRates).' upcoming rates found'."\n";
+            $allUpcoming->push(...$dueApplianceRates);
             $this->sendReminders($dueApplianceRates, SmsTypes::APPLIANCE_RATE);
         });
+
+        return $allUpcoming;
     }
 
-    private function findOverDueRates(): void {
-        $smsApplianceRemindRates = $this->getApplianceRemindRates();
-        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) {
+    /**
+     * @param Collection<int, SmsApplianceRemindRate> $smsApplianceRemindRates
+     *
+     * @return Collection<int, ApplianceRate>
+     */
+    private function findOverDueRates(Collection $smsApplianceRemindRates): Collection {
+        $allOverdue = new Collection();
+        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) use ($allOverdue) {
             $overDueRates = $this->applianceRate::with(['appliancePerson.appliance.applianceType', 'appliancePerson.person.addresses'])
                 ->whereBetween('due_date', [
                     now()->toDateString(),
@@ -70,10 +96,49 @@ class ApplianceRateChecker extends AbstractSharedCommand {
                 ->where('remaining', '>', 0)
                 ->where('remind', 0)
                 ->get();
-
-            echo "\n".count($overDueRates).' overdue rates found'."\n";
+            $allOverdue->push(...$overDueRates);
             $this->sendReminders($overDueRates, SmsTypes::OVER_DUE_APPLIANCE_RATE);
         });
+
+        return $allOverdue;
+    }
+
+    /**
+     * @param Collection<int, ApplianceRate> $upcomingRates
+     * @param Collection<int, ApplianceRate> $overdueRates
+     */
+    private function displaySummary(Collection $upcomingRates, Collection $overdueRates): void {
+        if ($upcomingRates->isEmpty() && $overdueRates->isEmpty()) {
+            $this->info('No upcoming or overdue appliance rates found.');
+
+            return;
+        }
+
+        if ($upcomingRates->isNotEmpty()) {
+            $this->info('Upcoming Rates ('.$upcomingRates->count().'):');
+            $this->table(
+                ['Appliance', 'Customer', 'Due Date', 'Remaining'],
+                $upcomingRates->map(fn (ApplianceRate $rate): array => [
+                    $rate->appliancePerson->appliance->applianceType->name ?? 'N/A',
+                    $rate->appliancePerson->person->name ?? 'N/A',
+                    (string) $rate->due_date,
+                    $rate->remaining,
+                ])->all(),
+            );
+        }
+
+        if ($overdueRates->isNotEmpty()) {
+            $this->info('Overdue Rates ('.$overdueRates->count().'):');
+            $this->table(
+                ['Appliance', 'Customer', 'Due Date', 'Remaining'],
+                $overdueRates->map(fn (ApplianceRate $rate): array => [
+                    $rate->appliancePerson->appliance->applianceType->name ?? 'N/A',
+                    $rate->appliancePerson->person->name ?? 'N/A',
+                    (string) $rate->due_date,
+                    $rate->remaining,
+                ])->all(),
+            );
+        }
     }
 
     private function sendReminderSms(ApplianceRate $applianceRate, int $smsType): void {
