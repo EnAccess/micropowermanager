@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Helpers\PhoneNumberNormalizer;
 use App\Models\Agent;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
@@ -56,7 +57,7 @@ class AgentTest extends TestCase {
         $this->assertNotNull($response['data']['person_id']);
         $lastCreatedAgent = Agent::query()->find($response['data']['id']);
         $personAddress = $lastCreatedAgent->person->addresses()->first();
-        $this->assertEquals($personAddress->phone, $postData['phone']);
+        $this->assertEquals($personAddress->phone, PhoneNumberNormalizer::normalize($postData['phone']));
     }
 
     public function testUserCanUpdateAnAgent(): void {
@@ -80,7 +81,7 @@ class AgentTest extends TestCase {
         $response = $this->actingAs($this->user)->put(sprintf('/api/agents/%s', $this->agents[0]->id), $putData);
         $response->assertStatus(200);
         $this->assertEquals($putData['name'], $response['data']['person']['name']);
-        $this->assertEquals($putData['phone'], $response['data']['person']['addresses'][0]['phone']);
+        $this->assertEquals(PhoneNumberNormalizer::normalize($putData['phone']), $response['data']['person']['addresses'][0]['phone']);
         $this->assertEquals($putData['gender'], $response['data']['person']['gender']);
     }
 

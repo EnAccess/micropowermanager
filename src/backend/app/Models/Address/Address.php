@@ -2,10 +2,12 @@
 
 namespace App\Models\Address;
 
+use App\Helpers\PhoneNumberNormalizer;
 use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use Database\Factories\Address\AddressFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -72,8 +74,15 @@ class Address extends BaseModel {
         $this->city_id = $cityId;
     }
 
+    /** @return Attribute<string|null, string|null> */
+    protected function phone(): Attribute {
+        return Attribute::make(
+            set: PhoneNumberNormalizer::normalize(...),
+        );
+    }
+
     public function setPhone(?string $phone): void {
-        $this->phone = $phone;
+        $this->phone = PhoneNumberNormalizer::normalize($phone);
     }
 
     public function setEmail(?string $email): void {

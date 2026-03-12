@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\PhoneNumberNormalizer;
 use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
 use App\Services\Interfaces\IAssociative;
@@ -107,8 +108,7 @@ class AddressesService implements IBaseService, IAssociative {
 
     public function getAddressByPhoneNumber(string $phoneNumber): ?Address {
         return $this->address->newQuery()
-            ->where('phone', $phoneNumber)
-            ->orWhere('phone', ltrim($phoneNumber, '+'))
+            ->where('phone', PhoneNumberNormalizer::normalize($phoneNumber))
             ->first();
     }
 }
