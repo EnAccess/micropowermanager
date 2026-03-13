@@ -210,16 +210,9 @@ export default {
 </script>
 
 <!-- https://github.com/EnAccess/micropowermanager/issues/1256 -->
-<!-- eslint-disable vue/enforce-style-attribute -->
-<style lang="scss">
+<style scoped lang="scss">
 .sidebar {
   background: #2b2b2b;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  width: 260px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -310,7 +303,7 @@ export default {
   background-color: transparent !important;
 }
 
-.md-icon.md-theme-default.md-icon-image svg {
+:deep(.md-icon.md-theme-default.md-icon-image svg) {
   fill: #f5e8e8 !important;
 }
 
