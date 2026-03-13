@@ -58,9 +58,11 @@ class ApplianceImportService extends AbstractImportService {
 
             DB::connection('tenant')->commit();
 
+            $allFailed = count($imported) === 0 && count($failed) > 0;
+
             return [
-                'success' => true,
-                'message' => 'Appliances imported successfully',
+                'success' => !$allFailed,
+                'message' => $allFailed ? 'All appliance imports failed' : 'Appliances imported successfully',
                 'imported_count' => count($imported),
                 'failed_count' => count($failed),
                 'imported' => $imported,

@@ -4,6 +4,7 @@ namespace App\Services\ImportServices;
 
 use App\Models\City;
 use App\Models\Cluster;
+use App\Models\Country;
 use App\Models\MiniGrid;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -60,9 +61,11 @@ class ClusterImportService extends AbstractImportService {
 
             DB::connection('tenant')->commit();
 
+            $allFailed = count($imported) === 0 && count($failed) > 0;
+
             return [
-                'success' => true,
-                'message' => 'Clusters imported successfully',
+                'success' => !$allFailed,
+                'message' => $allFailed ? 'All cluster imports failed' : 'Clusters imported successfully',
                 'imported_count' => count($imported),
                 'failed_count' => count($failed),
                 'imported' => $imported,
@@ -90,8 +93,8 @@ class ClusterImportService extends AbstractImportService {
     private function importCluster(array $clusterData): array {
         $clusterName = $clusterData['cluster_name'];
 
-        // Resolve manager by name if provided
-        $managerId = null;
+        // Resolve manager by name, fall back to the authenticated user
+        $managerId = auth('api')->user()->id;
         if (!empty($clusterData['manager'])) {
             $manager = User::query()->where('name', $clusterData['manager'])->first();
             if ($manager !== null) {
@@ -102,11 +105,14 @@ class ClusterImportService extends AbstractImportService {
         $cluster = Cluster::query()->where('name', $clusterName)->first();
 
         if ($cluster === null) {
+            $geoJson = $clusterData['geo_json'] ?? '{}';
+
             $cluster = Cluster::query()->create([
                 'name' => $clusterName,
                 'manager_id' => $managerId,
+                'geo_json' => $geoJson,
             ]);
-        } elseif ($managerId !== null) {
+        } else {
             $cluster->update(['manager_id' => $managerId]);
         }
 
@@ -126,15 +132,17 @@ class ClusterImportService extends AbstractImportService {
         // Parse and create villages/cities (comma-separated string from export)
         if (!empty($clusterData['villages'])) {
             $villageNames = array_map(trim(...), explode(',', $clusterData['villages']));
-            foreach ($villageNames as $villageName) {
-                if ($villageName === '') {
-                    continue;
-                }
-                // Assign village to the first mini-grid of this cluster
-                $miniGrid = MiniGrid::query()->where('cluster_id', $cluster->id)->first();
-                if ($miniGrid !== null) {
+            $miniGrid = MiniGrid::query()->where('cluster_id', $cluster->id)->first();
+            $country = Country::query()->first();
+
+            if ($miniGrid !== null && $country !== null) {
+                foreach ($villageNames as $villageName) {
+                    if ($villageName === '') {
+                        continue;
+                    }
                     City::query()->firstOrCreate(
                         ['name' => $villageName, 'mini_grid_id' => $miniGrid->id],
+                        ['country_id' => $country->id, 'cluster_id' => $cluster->id],
                     );
                 }
             }

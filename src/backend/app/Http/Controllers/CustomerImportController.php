@@ -31,7 +31,7 @@ class CustomerImportController extends Controller {
 
         $result = $this->customerImportService->import($data);
 
-        if (!$result['success']) {
+        if (!$result['success'] && isset($result['errors'])) {
             return response()->json([
                 'success' => false,
                 'errors' => $result['errors'],

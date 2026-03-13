@@ -3,6 +3,7 @@
 namespace App\Services\ExportServices;
 
 use App\Models\Device;
+use App\Models\Meter\Meter;
 use Illuminate\Support\Collection;
 
 class DeviceExportService extends AbstractExportService {
@@ -83,6 +84,27 @@ class DeviceExportService extends AbstractExportService {
                 'manufacturer' => $manufacturer,
                 'serial_number' => $device->device_serial,
             ];
+
+            // Include meter-specific details
+            if ($device->device_type === 'meter' && $device->device instanceof Meter) {
+                $meter = $device->device;
+                $meterType = $meter->meterType;
+                if ($meterType !== null) {
+                    $deviceDetails['meter_type'] = [
+                        'online' => $meterType->online,
+                        'phase' => $meterType->phase,
+                        'max_current' => $meterType->max_current,
+                    ];
+                }
+                $deviceDetails['connection_type'] = $meter->connectionType->name ?? '';
+                $deviceDetails['connection_group'] = $meter->connectionGroup->name ?? '';
+                $deviceDetails['tariff'] = $meter->tariff->name ?? '';
+            }
+
+            // Include appliance name for SHS and e-bikes
+            if (in_array($device->device_type, ['solar_home_system', 'e_bike'])) {
+                $deviceDetails['appliance'] = $device->device->appliance->name ?? '';
+            }
 
             // Get tokens
             $tokens = $device->tokens->map(fn ($token): array => [

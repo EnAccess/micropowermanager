@@ -59,9 +59,11 @@ class CustomerImportService extends AbstractImportService {
 
             DB::connection('tenant')->commit();
 
+            $allFailed = count($imported) === 0 && count($failed) > 0;
+
             return [
-                'success' => true,
-                'message' => 'Customers imported successfully',
+                'success' => !$allFailed,
+                'message' => $allFailed ? 'All customer imports failed' : 'Customers imported successfully',
                 'imported_count' => count($imported),
                 'failed_count' => count($failed),
                 'imported' => $imported,

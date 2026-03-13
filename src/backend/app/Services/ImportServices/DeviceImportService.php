@@ -2,12 +2,19 @@
 
 namespace App\Services\ImportServices;
 
+use App\Models\Appliance;
+use App\Models\ApplianceType;
+use App\Models\ConnectionGroup;
+use App\Models\ConnectionType;
 use App\Models\Device;
 use App\Models\EBike;
+use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
+use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
+use App\Models\Tariff;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -64,9 +71,11 @@ class DeviceImportService extends AbstractImportService {
 
             DB::connection('tenant')->commit();
 
+            $allFailed = count($imported) === 0 && count($failed) > 0;
+
             return [
-                'success' => true,
-                'message' => 'Devices imported successfully',
+                'success' => !$allFailed,
+                'message' => $allFailed ? 'All device imports failed' : 'Devices imported successfully',
                 'imported_count' => count($imported),
                 'failed_count' => count($failed),
                 'imported' => $imported,
@@ -104,7 +113,7 @@ class DeviceImportService extends AbstractImportService {
             if ($manufacturer === null) {
                 $manufacturer = Manufacturer::query()->create([
                     'name' => $manufacturerName,
-                    'type' => $deviceType,
+                    'type' => $this->mapDeviceTypeToManufacturerType($deviceType),
                 ]);
             }
         }
@@ -144,7 +153,7 @@ class DeviceImportService extends AbstractImportService {
         }
 
         // Create the type-specific device model
-        $specificDevice = $this->createSpecificDevice($deviceType, $serialNumber, $manufacturer);
+        $specificDevice = $this->createSpecificDevice($deviceType, $serialNumber, $manufacturer, $deviceInfo);
 
         // Create the polymorphic Device record
         $device = Device::query()->create([
@@ -164,24 +173,149 @@ class DeviceImportService extends AbstractImportService {
         ];
     }
 
-    private function createSpecificDevice(string $type, string $serialNumber, ?Manufacturer $manufacturer): Meter|SolarHomeSystem|EBike {
+    /**
+     * @param array<string, mixed> $deviceInfo
+     */
+    private function createSpecificDevice(string $type, string $serialNumber, ?Manufacturer $manufacturer, array $deviceInfo): Meter|SolarHomeSystem|EBike {
         $manufacturerId = $manufacturer?->id;
+
+        $applianceId = in_array($type, ['solar_home_system', 'e_bike'])
+            ? $this->resolveApplianceId($deviceInfo['appliance'] ?? '')
+            : null;
 
         return match ($type) {
             'solar_home_system' => SolarHomeSystem::query()->create([
                 'serial_number' => $serialNumber,
                 'manufacturer_id' => $manufacturerId,
+                'appliance_id' => $applianceId,
             ]),
             'e_bike' => EBike::query()->create([
                 'serial_number' => $serialNumber,
                 'manufacturer_id' => $manufacturerId,
+                'appliance_id' => $applianceId,
             ]),
             default => Meter::query()->create([
                 'serial_number' => $serialNumber,
                 'manufacturer_id' => $manufacturerId,
                 'in_use' => true,
+                'meter_type_id' => $this->resolveMeterTypeId($deviceInfo['meter_type'] ?? null),
+                'connection_type_id' => $this->resolveConnectionTypeId($deviceInfo['connection_type'] ?? ''),
+                'connection_group_id' => $this->resolveConnectionGroupId($deviceInfo['connection_group'] ?? ''),
+                'tariff_id' => $this->resolveTariffId($deviceInfo['tariff'] ?? ''),
             ]),
         };
+    }
+
+    /**
+     * @param array<string, mixed>|null $meterTypeData
+     */
+    private function resolveMeterTypeId(?array $meterTypeData): int {
+        if ($meterTypeData !== null) {
+            $meterType = MeterType::query()->firstOrCreate([
+                'online' => $meterTypeData['online'] ?? false,
+                'phase' => $meterTypeData['phase'] ?? 1,
+                'max_current' => $meterTypeData['max_current'] ?? 10,
+            ]);
+
+            return $meterType->id;
+        }
+
+        $meterType = MeterType::query()->first();
+        if ($meterType === null) {
+            $meterType = MeterType::query()->create([
+                'online' => false,
+                'phase' => 1,
+                'max_current' => 10,
+            ]);
+        }
+
+        return $meterType->id;
+    }
+
+    private function resolveConnectionTypeId(string $name): int {
+        if ($name !== '') {
+            $connectionType = ConnectionType::query()->where('name', $name)->first();
+            if ($connectionType !== null) {
+                return $connectionType->id;
+            }
+        }
+
+        $connectionType = ConnectionType::query()->first();
+        if ($connectionType === null) {
+            $connectionType = ConnectionType::query()->create(['name' => $name !== '' ? $name : 'Default']);
+        }
+
+        return $connectionType->id;
+    }
+
+    private function resolveConnectionGroupId(string $name): int {
+        if ($name !== '') {
+            $connectionGroup = ConnectionGroup::query()->where('name', $name)->first();
+            if ($connectionGroup !== null) {
+                return $connectionGroup->id;
+            }
+        }
+
+        $connectionGroup = ConnectionGroup::query()->first();
+        if ($connectionGroup === null) {
+            $connectionGroup = ConnectionGroup::query()->create(['name' => $name !== '' ? $name : 'Default']);
+        }
+
+        return $connectionGroup->id;
+    }
+
+    private function resolveTariffId(string $name): int {
+        if ($name !== '') {
+            $tariff = Tariff::query()->where('name', $name)->first();
+            if ($tariff !== null) {
+                return $tariff->id;
+            }
+        }
+
+        $tariff = Tariff::query()->first();
+        if ($tariff === null) {
+            $mainSettings = MainSettings::query()->first();
+            $currency = $mainSettings !== null ? $mainSettings->currency : '€';
+
+            $tariff = Tariff::query()->create([
+                'name' => $name !== '' ? $name : 'Default',
+                'price' => 0,
+                'currency' => $currency,
+            ]);
+        }
+
+        return $tariff->id;
+    }
+
+    private function mapDeviceTypeToManufacturerType(string $deviceType): string {
+        return match ($deviceType) {
+            'solar_home_system' => 'shs',
+            'e_bike' => 'e-bike',
+            default => 'meter',
+        };
+    }
+
+    private function resolveApplianceId(string $name): int {
+        if ($name !== '') {
+            $appliance = Appliance::query()->where('name', $name)->first();
+            if ($appliance !== null) {
+                return $appliance->id;
+            }
+        }
+
+        $appliance = Appliance::query()->first();
+        if ($appliance === null) {
+            $applianceType = ApplianceType::query()->first();
+            $applianceTypeId = $applianceType !== null ? $applianceType->id : ApplianceType::query()->create(['name' => 'Solar Home System'])->id;
+
+            $appliance = Appliance::query()->create([
+                'name' => $name !== '' ? $name : 'Default Appliance',
+                'appliance_type_id' => $applianceTypeId,
+                'price' => 0,
+            ]);
+        }
+
+        return $appliance->id;
     }
 
     /**

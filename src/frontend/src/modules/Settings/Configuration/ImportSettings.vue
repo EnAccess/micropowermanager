@@ -89,33 +89,54 @@
       </md-card-content>
     </md-card>
 
-    <md-dialog :md-active.sync="showResultDialog">
-      <md-dialog-title>{{ resultDialogTitle }}</md-dialog-title>
+    <md-dialog
+      :md-active.sync="showResultDialog"
+      class="import-result-dialog"
+    >
+      <md-dialog-title>
+        <md-icon class="result-title-icon">assessment</md-icon>
+        {{ resultDialogTitle }}
+      </md-dialog-title>
       <md-dialog-content>
         <div v-if="importResult">
-          <div class="result-stats">
-            <p>
-              <strong>Successful:</strong>
-              {{ importResult.success_count }}
-            </p>
-            <p v-if="importResult.failed_count > 0">
-              <strong>Failed:</strong>
-              {{ importResult.failed_count }}
-            </p>
+          <div class="result-stats-row">
+            <div class="stat-card stat-card--success">
+              <span class="stat-value">{{
+                importResult.imported_count
+              }}</span>
+              <span class="stat-label">Imported</span>
+            </div>
+            <div class="stat-card stat-card--failed">
+              <span class="stat-value">{{ importResult.failed_count }}</span>
+              <span class="stat-label">Failed</span>
+            </div>
           </div>
           <div
             v-if="importResult.results && importResult.results.length > 0"
             class="result-details"
           >
-            <p><strong>Details:</strong></p>
-            <ul>
-              <li v-for="(r, idx) in importResult.results" :key="idx">
-                <span :class="r.success ? 'result-success' : 'result-failed'">
-                  {{ entityLabel(r.type) }}:
-                  {{ r.success ? "Imported successfully" : r.error }}
+            <div
+              v-for="(r, idx) in importResult.results"
+              :key="idx"
+              class="result-row"
+              :class="r.success ? 'result-row--success' : 'result-row--failed'"
+            >
+              <md-icon class="result-row-icon">{{
+                r.success ? "check_circle" : "error"
+              }}</md-icon>
+              <div class="result-row-content">
+                <strong>{{ entityLabel(r.type) }}</strong>
+                <span class="result-row-detail">
+                  <template v-if="r.data && r.data.imported_count != null">
+                    {{ r.data.imported_count }} imported,
+                    {{ r.data.failed_count }} failed
+                  </template>
+                  <template v-else>
+                    {{ r.success ? "Imported successfully" : r.error }}
+                  </template>
                 </span>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
         </div>
       </md-dialog-content>
@@ -141,6 +162,7 @@ import { UserPermissionImportService } from "@/services/UserPermissionImportServ
 import { EventBus } from "@/shared/eventbus.js"
 
 const POLL_INTERVAL_MS = 2000
+const POLL_TIMEOUT_MS = 5 * 60 * 1000
 
 const IMPORT_ENTITIES = [
   {
@@ -225,6 +247,7 @@ export default {
       importResult: null,
       pollingJobId: null,
       pollingInterval: null,
+      pollingTimeout: null,
       pendingResults: [],
       pollingEntityType: null,
     }
@@ -314,10 +337,19 @@ export default {
                 return
               }
 
+              const importSuccess =
+                importResult.success !== false &&
+                !(
+                  importResult.imported_count === 0 &&
+                  importResult.failed_count > 0
+                )
               results.push({
                 type: entity.key,
-                success: true,
+                success: importSuccess,
                 data: importResult,
+                error: importSuccess
+                  ? null
+                  : importResult.message || `Failed to import ${entity.label}`,
               })
               this.clearFile(entity.key)
             } catch (error) {
@@ -342,9 +374,15 @@ export default {
     },
     startPolling(jobId) {
       this.pollingJobId = jobId
+      this.pollingTimeout = setTimeout(() => {
+        this.stopPolling()
+        this.onAsyncImportDone(false, "Import timed out. The job may still be running in the background.")
+      }, POLL_TIMEOUT_MS)
       this.pollingInterval = setInterval(async () => {
+        if (!this.pollingJobId) return
         try {
           const status = await this.importStatusService.getStatus(jobId)
+          if (!this.pollingJobId) return
           if (!status || status instanceof Error) {
             this.stopPolling()
             this.onAsyncImportDone(false, "Failed to check import status")
@@ -360,11 +398,17 @@ export default {
             })
           } else if (status.status === "failed") {
             this.stopPolling()
+            const failedResult = status.result || {}
             this.onAsyncImportDone(
               false,
               status.error ||
-                status.result?.errors?.transaction ||
+                failedResult.errors?.transaction ||
+                failedResult.message ||
                 "Import failed",
+              {
+                imported_count: failedResult.imported_count ?? 0,
+                failed_count: failedResult.failed_count ?? 0,
+              },
             )
           }
         } catch (e) {
@@ -377,6 +421,10 @@ export default {
       if (this.pollingInterval) {
         clearInterval(this.pollingInterval)
         this.pollingInterval = null
+      }
+      if (this.pollingTimeout) {
+        clearTimeout(this.pollingTimeout)
+        this.pollingTimeout = null
       }
       this.pollingJobId = null
       this.importing = false
@@ -394,30 +442,42 @@ export default {
           type: entityType,
           success: false,
           error: error || "Import failed",
+          data,
         })
       }
 
       this.showResults(results)
     },
     showResults(results) {
-      const successCount = results.filter((r) => r.success).length
-      const failCount = results.filter((r) => !r.success).length
+      let totalImported = 0
+      let totalFailed = 0
 
-      if (successCount > 0) {
+      results.forEach((r) => {
+        if (r.data && r.data.imported_count != null) {
+          totalImported += r.data.imported_count
+          totalFailed += r.data.failed_count || 0
+        } else if (r.success) {
+          totalImported += 1
+        } else {
+          totalFailed += 1
+        }
+      })
+
+      if (totalImported > 0) {
         this.alertNotify(
           "success",
-          `${successCount} import(s) completed successfully`,
+          `${totalImported} record(s) imported successfully`,
         )
         EventBus.$emit("Settings")
       }
-      if (failCount > 0) {
-        this.alertNotify("error", `${failCount} import(s) failed`)
+      if (totalFailed > 0) {
+        this.alertNotify("error", `${totalFailed} record(s) failed to import`)
       }
 
       this.importResult = {
         results,
-        success_count: successCount,
-        failed_count: failCount,
+        imported_count: totalImported,
+        failed_count: totalFailed,
       }
       this.resultDialogTitle = "Import Results"
       this.showResultDialog = true
@@ -506,36 +566,105 @@ export default {
   text-align: center;
 }
 
-.result-message {
-  margin-bottom: 1rem;
+.import-result-dialog .md-dialog-container {
+  min-width: 440px;
+  border-radius: 8px;
 }
 
-.result-stats {
-  margin: 1rem 0;
+.result-title-icon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
 }
 
-.result-stats p {
-  margin: 0.5rem 0;
+.result-stats-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.result-details {
-  margin-top: 1rem;
+.stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
 }
 
-.result-details ul {
-  margin: 0.5rem 0 0 1.5rem;
-  padding: 0;
+.stat-card--success {
+  background-color: #e8f5e9;
 }
 
-.result-details li {
-  margin: 0.25rem 0;
+.stat-card--failed {
+  background-color: #fbe9e7;
 }
 
-.result-success {
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.stat-card--success .stat-value {
   color: #2e7d32;
 }
 
-.result-failed {
+.stat-card--failed .stat-value {
   color: #c62828;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.result-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border-left: 3px solid;
+}
+
+.result-row--success {
+  background-color: #f1f8e9;
+  border-left-color: #2e7d32;
+}
+
+.result-row--failed {
+  background-color: #fef3f2;
+  border-left-color: #c62828;
+}
+
+.result-row-icon {
+  margin: 0;
+}
+
+.result-row--success .result-row-icon {
+  color: #2e7d32;
+}
+
+.result-row--failed .result-row-icon {
+  color: #c62828;
+}
+
+.result-row-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-row-detail {
+  font-size: 0.85rem;
+  color: #666;
 }
 </style>

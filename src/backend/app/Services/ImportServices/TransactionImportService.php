@@ -3,9 +3,19 @@
 namespace App\Services\ImportServices;
 
 use App\Models\Device;
+use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\BasePaymentProviderTransaction;
+use App\Models\Transaction\CashTransaction;
+use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
+use App\Plugins\MesombPaymentProvider\Models\MesombTransaction;
+use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
+use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class TransactionImportService extends AbstractImportService {
     /**
@@ -58,9 +68,11 @@ class TransactionImportService extends AbstractImportService {
 
             DB::connection('tenant')->commit();
 
+            $allFailed = count($imported) === 0 && count($failed) > 0;
+
             return [
-                'success' => true,
-                'message' => 'Transactions imported successfully',
+                'success' => !$allFailed,
+                'message' => $allFailed ? 'All transaction imports failed' : 'Transactions imported successfully',
                 'imported_count' => count($imported),
                 'failed_count' => count($failed),
                 'imported' => $imported,
@@ -103,12 +115,18 @@ class TransactionImportService extends AbstractImportService {
             $amount = (float) preg_replace('/[^0-9.]/', '', str_replace(',', '', $amount));
         }
 
+        // Create the provider-specific transaction record matching the original type
+        $transactionType = $transactionData['transaction_type'] ?? ThirdPartyTransaction::RELATION_NAME;
+        $originalData = $transactionData['original_transaction'] ?? [];
+        $originalTransaction = $this->createOriginalTransaction($transactionType, $originalData);
+
         $transaction = Transaction::query()->create([
             'amount' => $amount,
             'sender' => $transactionData['customer'] ?? '',
             'message' => $deviceSerial,
-            'type' => 'imported',
-            'original_transaction_type' => $transactionData['transaction_type'] ?? null,
+            'type' => Transaction::TYPE_IMPORTED,
+            'original_transaction_id' => $originalTransaction->getKey(),
+            'original_transaction_type' => $transactionType,
             'created_at' => $transactionData['sent_date'] ?? now(),
         ]);
 
@@ -120,6 +138,41 @@ class TransactionImportService extends AbstractImportService {
                 'device_serial' => $deviceSerial,
             ],
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $originalData
+     */
+    private function createOriginalTransaction(string $type, array $originalData): BasePaymentProviderTransaction {
+        $modelClass = $this->resolveTransactionModel($type);
+
+        // If no exported data, default to third party transaction
+        if ($originalData === []) {
+            $modelClass = ThirdPartyTransaction::class;
+            $originalData = [
+                'transaction_id' => Str::uuid()->toString(),
+                'status' => 1,
+            ];
+        }
+
+        return $modelClass::query()->create($originalData);
+    }
+
+    /**
+     * @return class-string<BasePaymentProviderTransaction>
+     */
+    private function resolveTransactionModel(string $type): string {
+        return match ($type) {
+            CashTransaction::RELATION_NAME => CashTransaction::class,
+            AgentTransaction::RELATION_NAME => AgentTransaction::class,
+            ThirdPartyTransaction::RELATION_NAME => ThirdPartyTransaction::class,
+            SwiftaTransaction::RELATION_NAME => SwiftaTransaction::class,
+            MesombTransaction::RELATION_NAME => MesombTransaction::class,
+            WaveComTransaction::RELATION_NAME => WaveComTransaction::class,
+            WaveMoneyTransaction::RELATION_NAME => WaveMoneyTransaction::class,
+            PaystackTransaction::RELATION_NAME => PaystackTransaction::class,
+            default => ThirdPartyTransaction::class,
+        };
     }
 
     /**

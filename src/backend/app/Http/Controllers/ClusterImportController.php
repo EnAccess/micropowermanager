@@ -31,7 +31,7 @@ class ClusterImportController extends Controller {
 
         $result = $this->clusterImportService->import($data);
 
-        if (!$result['success']) {
+        if (!$result['success'] && isset($result['errors'])) {
             return response()->json([
                 'success' => false,
                 'errors' => $result['errors'],
