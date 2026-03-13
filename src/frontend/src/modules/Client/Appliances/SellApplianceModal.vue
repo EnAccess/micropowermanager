@@ -286,25 +286,6 @@
                     </span>
                   </md-field>
                 </div>
-                <div class="md-layout-item md-size-100 md-small-size-100">
-                  <md-field>
-                    <label for="minimumPayableAmount">
-                      {{
-                        applianceService.appliance.rateType === "weekly"
-                          ? $tc("phrases.minimumPayableAmount", 1)
-                          : $tc("phrases.minimumPayableAmount", 2)
-                      }}
-                    </label>
-                    <md-input
-                      type="number"
-                      id="minimumPayableAmount"
-                      name="minimumPayableAmount"
-                      v-model="minimumPayableAmount"
-                      readonly
-                      disabled
-                    />
-                  </md-field>
-                </div>
               </form>
             </md-tab>
           </md-tabs>
@@ -528,7 +509,6 @@ export default {
       selectedApplianceId: null,
       deviceSelectionList: [],
       isDeviceSelectionRequired: false,
-      minimumPayableAmount: 0,
       selectedDeviceSerial: null,
       showRates: false,
       loading: false,
@@ -822,8 +802,7 @@ export default {
       ) {
         this.applianceService.appliance.rate = 0
       }
-      this.minimumPayableAmount = 0
-      this.rateCost = 0
+      this.applianceService.appliance.rateCost = 0
     },
     calculateRateCountsOnRateCostChange() {
       const remainingCost =
@@ -835,18 +814,15 @@ export default {
           "warn",
           "Rate cost can not be bigger than remaining cost",
         )
-        this.minimumPayableAmount = 0
         this.applianceService.appliance.rate = 0
         return
       }
       if (installmentCost < 1 || typeof installmentCost !== "number") {
-        this.minimumPayableAmount = 0
         this.applianceService.appliance.rate = 0
         return
       }
-      this.minimumPayableAmount = Math.floor(installmentCost)
       this.applianceService.appliance.rate = Math.floor(
-        remainingCost / this.minimumPayableAmount,
+        remainingCost / installmentCost,
       )
     },
     isDeviceBindingRequired(appliance) {
