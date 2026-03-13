@@ -88,7 +88,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
     private function findOverDueRates(Collection $smsApplianceRemindRates): Collection {
         $allOverdue = new Collection();
         $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) use ($allOverdue) {
-            $overDueRates = $this->applianceRate::with(['appliancePerson.appliance.applianceType', 'appliancePerson.person.addresses'])
+            $overDueRates = $this->applianceRate::with(['appliancePerson.appliance.smsReminderRate', 'appliancePerson.appliance.applianceType', 'appliancePerson.person.addresses'])
                 ->whereBetween('due_date', [
                     now()->toDateString(),
                     now()->addDays($smsApplianceRemindRate->overdue_remind_rate)->toDateString(),
@@ -156,7 +156,10 @@ class ApplianceRateChecker extends AbstractSharedCommand {
                 $dueApplianceRate->remind = 1;
                 $dueApplianceRate->update();
             }
-            $this->createReminderTicket($dueApplianceRate);
+            $smsReminderRate = $dueApplianceRate->appliancePerson->appliance->smsReminderRate;
+            if ($smsReminderRate && $smsReminderRate->create_ticket) {
+                $this->createReminderTicket($dueApplianceRate, $smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE);
+            }
         });
     }
 

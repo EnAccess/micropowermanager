@@ -36,6 +36,7 @@ class SmsApplianceRemindRateService {
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate'],
             'enabled' => $data['enabled'] ?? false,
+            'create_ticket' => $data['create_ticket'] ?? false,
         ]);
 
         return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
@@ -61,6 +62,7 @@ class SmsApplianceRemindRateService {
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate'],
             'enabled' => $data['enabled'] ?? false,
+            'create_ticket' => $data['create_ticket'] ?? false,
         ]);
 
         return $this->appliance->newQuery()->with(['smsReminderRate'])->get();

@@ -90,7 +90,7 @@
                 </span>
               </md-field>
             </div>
-            <div class="md-layout-item md-size-20 md-small-size-100">
+            <div class="md-layout-item md-size-15 md-small-size-100">
               <md-switch
                 v-model="
                   smsApplianceRemindRateService.smsApplianceRemindRate.enabled
@@ -98,6 +98,17 @@
                 class="md-primary"
               >
                 {{ $tc("phrases.enableSmsReminder") }}
+              </md-switch>
+            </div>
+            <div class="md-layout-item md-size-15 md-small-size-100">
+              <md-switch
+                v-model="
+                  smsApplianceRemindRateService.smsApplianceRemindRate
+                    .createTicket
+                "
+                class="md-primary"
+              >
+                {{ $tc("phrases.createTicket") }}
               </md-switch>
             </div>
           </form>
@@ -134,6 +145,7 @@
           </md-table-head>
           <md-table-head>{{ $tc("phrases.reminderRate") }}</md-table-head>
           <md-table-head>{{ $tc("phrases.enableSmsReminder") }}</md-table-head>
+          <md-table-head>{{ $tc("phrases.createTicket") }}</md-table-head>
           <md-table-head></md-table-head>
         </md-table-row>
         <md-table-row v-for="(rate, index) in savedRemindRates" :key="index">
@@ -167,6 +179,19 @@
             />
             <md-icon v-else :class="rate.enabled ? 'md-primary' : 'md-accent'">
               {{ rate.enabled ? "check" : "close" }}
+            </md-icon>
+          </md-table-cell>
+          <md-table-cell>
+            <md-switch
+              v-if="editingIndex === index"
+              v-model="rate.createTicket"
+              class="md-primary"
+            />
+            <md-icon
+              v-else
+              :class="rate.createTicket ? 'md-primary' : 'md-accent'"
+            >
+              {{ rate.createTicket ? "check" : "close" }}
             </md-icon>
           </md-table-cell>
           <md-table-cell>

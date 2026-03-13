@@ -18,7 +18,7 @@ use Tests\TestCase;
 class ApplianceRateCheckerTest extends TestCase {
     use CreateEnvironments;
 
-    private function setUpApplianceWithDueRate(int $dueDaysFromNow = 0, bool $reminderEnabled = true): ApplianceRate {
+    private function setUpApplianceWithDueRate(int $dueDaysFromNow = 0, bool $reminderEnabled = true, bool $createTicket = false): ApplianceRate {
         $this->createTestData();
         $this->createCluster(1);
         $this->createMiniGrid(1);
@@ -45,6 +45,7 @@ class ApplianceRateCheckerTest extends TestCase {
             'remind_rate' => 7,
             'overdue_remind_rate' => 14,
             'enabled' => $reminderEnabled,
+            'create_ticket' => $createTicket,
         ]);
 
         return ApplianceRateFactory::new()->create([
@@ -70,7 +71,7 @@ class ApplianceRateCheckerTest extends TestCase {
     }
 
     public function testCommandProcessesEnabledReminders(): void {
-        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true);
+        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true, createTicket: true);
 
         $this->mock(SmsService::class, function ($mock) {
             $mock->shouldReceive('sendSms')->once();
@@ -83,7 +84,7 @@ class ApplianceRateCheckerTest extends TestCase {
     }
 
     public function testCommandCreatesTicketWithCorrectOwner(): void {
-        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true);
+        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true, createTicket: true);
 
         $this->mock(SmsService::class, function ($mock) {
             $mock->shouldReceive('sendSms');
@@ -96,6 +97,19 @@ class ApplianceRateCheckerTest extends TestCase {
         $this->assertNotNull($ticket);
         $this->assertEquals('person', $ticket->owner_type);
         $this->assertEquals($this->person->id, $ticket->owner_id);
+    }
+
+    public function testCommandSendsReminderWithoutTicketWhenCreateTicketDisabled(): void {
+        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true, createTicket: false);
+
+        $this->mock(SmsService::class, function ($mock) {
+            $mock->shouldReceive('sendSms')->once();
+        });
+
+        $this->artisan('appliance-rate:check', ['--company-id' => 1])
+            ->assertSuccessful();
+
+        $this->assertEquals(0, Ticket::query()->count());
     }
 
     public function testCommandDoesNotProcessFutureRatesOutsideWindow(): void {
