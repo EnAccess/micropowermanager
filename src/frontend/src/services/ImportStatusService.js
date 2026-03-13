@@ -8,9 +8,8 @@ export class ImportStatusService {
 
   async getStatus(jobId) {
     try {
-      const { data: responseData, status } = await this.repository.getStatus(
-        jobId,
-      )
+      const { data: responseData, status } =
+        await this.repository.getStatus(jobId)
       if (status !== 200) {
         return new ErrorHandler("Failed to get import status", "http", status)
       }

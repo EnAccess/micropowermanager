@@ -11,10 +11,7 @@
           <md-table-head>{{ $tc("words.description") }}</md-table-head>
           <md-table-head>Action</md-table-head>
 
-          <md-table-row
-            v-for="entity in importEntities"
-            :key="entity.key"
-          >
+          <md-table-row v-for="entity in importEntities" :key="entity.key">
             <md-table-cell>
               <div class="entity-info">
                 <md-icon class="entity-icon">{{ entity.icon }}</md-icon>
@@ -34,7 +31,9 @@
                   style="display: none"
                 />
                 <md-button
-                  v-if="!selectedFiles[entity.key] && !loadingStates[entity.key]"
+                  v-if="
+                    !selectedFiles[entity.key] && !loadingStates[entity.key]
+                  "
                   class="md-primary md-raised md-dense"
                   @click="triggerFileInput(entity.key)"
                 >
@@ -42,7 +41,9 @@
                   {{ $tc("words.select") }} {{ $tc("words.file") }}
                 </md-button>
                 <div
-                  v-else-if="selectedFiles[entity.key] && !loadingStates[entity.key]"
+                  v-else-if="
+                    selectedFiles[entity.key] && !loadingStates[entity.key]
+                  "
                   class="file-selected"
                 >
                   <md-icon class="file-icon">insert_drive_file</md-icon>
@@ -89,10 +90,7 @@
       </md-card-content>
     </md-card>
 
-    <md-dialog
-      :md-active.sync="showResultDialog"
-      class="import-result-dialog"
-    >
+    <md-dialog :md-active.sync="showResultDialog" class="import-result-dialog">
       <md-dialog-title>
         <md-icon class="result-title-icon">assessment</md-icon>
         {{ resultDialogTitle }}
@@ -101,9 +99,7 @@
         <div v-if="importResult">
           <div class="result-stats-row">
             <div class="stat-card stat-card--success">
-              <span class="stat-value">{{
-                importResult.imported_count
-              }}</span>
+              <span class="stat-value">{{ importResult.imported_count }}</span>
               <span class="stat-label">Imported</span>
             </div>
             <div class="stat-card stat-card--failed">
@@ -121,9 +117,9 @@
               class="result-row"
               :class="r.success ? 'result-row--success' : 'result-row--failed'"
             >
-              <md-icon class="result-row-icon">{{
-                r.success ? "check_circle" : "error"
-              }}</md-icon>
+              <md-icon class="result-row-icon">
+                {{ r.success ? "check_circle" : "error" }}
+              </md-icon>
               <div class="result-row-content">
                 <strong>{{ entityLabel(r.type) }}</strong>
                 <span class="result-row-detail">
@@ -376,7 +372,10 @@ export default {
       this.pollingJobId = jobId
       this.pollingTimeout = setTimeout(() => {
         this.stopPolling()
-        this.onAsyncImportDone(false, "Import timed out. The job may still be running in the background.")
+        this.onAsyncImportDone(
+          false,
+          "Import timed out. The job may still be running in the background.",
+        )
       }, POLL_TIMEOUT_MS)
       this.pollingInterval = setInterval(async () => {
         if (!this.pollingJobId) return
