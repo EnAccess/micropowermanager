@@ -87,7 +87,7 @@ export class AgentService {
         surname: this.agent.surname,
         is_customer: 0,
         nationality: this.agent.nationality,
-        city_id: this.agent.miniGridId,
+        village_id: this.agent.miniGridId,
         email: this.agent.email,
         phone: this.agent.phone,
         is_primary: 1,

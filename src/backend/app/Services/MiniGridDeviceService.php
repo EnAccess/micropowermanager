@@ -22,7 +22,7 @@ class MiniGridDeviceService {
             ->whereHas('person', function ($q) use ($miniGridId) {
                 $q->whereHas('addresses', function ($q) use ($miniGridId) {
                     $q->where('is_primary', 1)
-                        ->whereHas('city', function ($q) use ($miniGridId) {
+                        ->whereHas('village', function ($q) use ($miniGridId) {
                             $q->where('mini_grid_id', $miniGridId);
                         });
                 });
@@ -35,7 +35,7 @@ class MiniGridDeviceService {
      */
     public function getDevicesByMiniGridId(int $miniGridId): Collection {
         return $this->device->newQuery()
-            ->with(['device', 'geo', 'person.addresses.city'])
+            ->with(['device', 'geo', 'person.addresses.village'])
             ->whereHasMorph(
                 'device',
                 '*'
@@ -43,7 +43,7 @@ class MiniGridDeviceService {
             ->whereHas('person', function ($q) use ($miniGridId) {
                 $q->whereHas('addresses', function ($q) use ($miniGridId) {
                     $q->where('is_primary', 1)
-                        ->whereHas('city', function ($q) use ($miniGridId) {
+                        ->whereHas('village', function ($q) use ($miniGridId) {
                             $q->where('mini_grid_id', $miniGridId);
                         });
                 });

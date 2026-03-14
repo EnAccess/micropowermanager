@@ -67,7 +67,7 @@ class ExtractCustomers extends AbstractJob {
                 ->where('is_customer', 1)
                 ->with([
                     'addresses.geo',
-                    'addresses.city.country',
+                    'addresses.village.country',
                     'citizenship',
                     'miniGrid',
                     'personDocument',

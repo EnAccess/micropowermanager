@@ -77,7 +77,7 @@ class Device extends BaseModel {
             ?->addresses()
             ->where('is_primary', 1)
             ->first()
-            ?->city
+            ?->village
             ?->miniGrid;
     }
 

@@ -255,15 +255,15 @@ class KelinMeterService implements ISynchronizeService {
                 $meter->save();
                 $kelinCustomerAddress = $kelinCustomer
                     ->mpmPerson
-                    ->with('addresses.city')
+                    ->with('addresses.village')
                     ->whereHas('addresses', fn ($q) => $q->where('is_primary', 1))
                     ->first()
                 ;
 
-                $city = $kelinCustomerAddress->addresses[0]->city()->first() ?? null;
+                $village = $kelinCustomerAddress->addresses[0]->village()->first() ?? null;
                 $address = new Address();
                 $address = $address->newQuery()->create([
-                    'city_id' => $city ? $city->id : 1,
+                    'village_id' => $village ? $village->id : 1,
                 ]);
                 $address->owner()->associate($meter->device);
                 $address->save();

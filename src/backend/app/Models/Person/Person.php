@@ -175,14 +175,14 @@ class Person extends BaseModel implements \Stringable, HasAddressesInterface {
                 $q->where('addresses.owner_type', 'person');
                 $q->where('addresses.is_primary', '=', 1);
             })
-            ->leftJoin('cities', function (JoinClause $jc) {
-                $jc->on('cities.id', '=', 'addresses.city_id');
+            ->leftJoin('villages', function (JoinClause $jc) {
+                $jc->on('villages.id', '=', 'addresses.village_id');
             })
             ->leftJoin('clusters', function (JoinClause $jc) {
-                $jc->on('clusters.id', '=', 'cities.cluster_id');
+                $jc->on('clusters.id', '=', 'villages.cluster_id');
             })->where('clusters.id', '=', $clusterId)
             ->orderBy('people.id')
-            ->orderBy('cities.id');
+            ->orderBy('villages.id');
     }
 
     public function getId(): int {

@@ -13,7 +13,7 @@ class AgentTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $agentCount = 4;
         $this->createAgent($agentCount);
@@ -26,7 +26,7 @@ class AgentTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent(4);
         $response = $this->actingAs($this->user)->get(sprintf('/api/agents/%s', $this->agents[0]->id));
@@ -38,7 +38,7 @@ class AgentTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $postData = [
             'name' => $this->faker->name(),
@@ -49,7 +49,7 @@ class AgentTest extends TestCase {
             'mini_grid_id' => $this->miniGrid->id,
             'phone' => $this->faker->phoneNumber(),
             'agent_commission_id' => $this->agentCommissions[0]->id,
-            'city_id' => $this->city->id,
+            'village_id' => $this->village->id,
         ];
         $response = $this->actingAs($this->user)->post('/api/agents', $postData);
         $response->assertStatus(201);
@@ -63,7 +63,7 @@ class AgentTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
 
@@ -88,7 +88,7 @@ class AgentTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
 
@@ -104,7 +104,7 @@ class AgentTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
 
@@ -118,7 +118,7 @@ class AgentTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $this->actingAs($this->user)->delete(sprintf('/api/agents/%s', $this->agents[0]->id));

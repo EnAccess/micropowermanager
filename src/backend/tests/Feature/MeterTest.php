@@ -168,7 +168,7 @@ class MeterTest extends TestCase {
         $this->user->syncRoles('admin');
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
         $this->manufacturer = ManufacturerFactory::new()->create();
         $this->meterType = MeterTypeFactory::new()->create();
         $this->meterTariff = TariffFactory::new()->create();
@@ -204,7 +204,7 @@ class MeterTest extends TestCase {
             $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
             $person = PersonFactory::new()->create();
             $addressData = [
-                'city_id' => $this->city->id,
+                'village_id' => $this->village->id,
                 'geo_id' => $geographicalInformation->id,
             ];
 
@@ -212,7 +212,7 @@ class MeterTest extends TestCase {
                 'email' => isset($addressData['email']) ?: null,
                 'phone' => isset($addressData['phone']) ?: null,
                 'street' => isset($addressData['street']) ?: null,
-                'city_id' => isset($addressData['city_id']) ?: null,
+                'village_id' => isset($addressData['village_id']) ?: null,
                 'geo_id' => isset($addressData['geo_id']) ?: null,
                 'is_primary' => isset($addressData['is_primary']) ?: 0,
             ]);

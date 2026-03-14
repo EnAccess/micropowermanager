@@ -13,7 +13,7 @@ class AgentChargeTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $agentBalance = $this->agents[0]->balance;

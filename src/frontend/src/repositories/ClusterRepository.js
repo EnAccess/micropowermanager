@@ -18,8 +18,8 @@ export default {
   getClusterRevenues(clusterId) {
     return Client.get(`${resource}/${clusterId}/revenue`)
   },
-  getClusterCitiesRevenue(clusterId, terms) {
-    return Client.get(`${resource}/${clusterId}/cities-revenue${terms}`)
+  getClusterVillagesRevenue(clusterId, terms) {
+    return Client.get(`${resource}/${clusterId}/villages-revenue${terms}`)
   },
   getAllRevenues(terms) {
     return Client.get(`${resource}/revenue${terms}`)

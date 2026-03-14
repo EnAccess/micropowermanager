@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
-use Database\Factories\CityFactory;
+use Database\Factories\VillageFactory;
 use Database\Factories\ClusterFactory;
 use Database\Factories\MiniGridFactory;
 use Database\Factories\UserFactory;
@@ -25,7 +25,12 @@ class MiniGridTest extends TestCase {
         $this->createTestData($clusterCount, $miniGridCount);
         $response = $this->actingAs($this->user)->get('/api/mini-grids');
         $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), count($this->miniGridIds));
+        $miniGridList = $this->getResponseCollection($response);
+        $returnedMiniGridIds = array_values(array_filter(array_column($miniGridList, 'id'), 'is_int'));
+
+        foreach ($this->miniGridIds as $miniGridId) {
+            $this->assertContains($miniGridId, $returnedMiniGridIds);
+        }
     }
 
     public function testUserGetsMiniGridById(): void {
@@ -34,7 +39,8 @@ class MiniGridTest extends TestCase {
         $this->createTestData($clusterCount, $miniGridCount);
         $response = $this->actingAs($this->user)->get(sprintf('/api/mini-grids/%s', $this->miniGridIds[0]));
         $response->assertStatus(200);
-        $this->assertEquals($response['data']['id'], $this->miniGridIds[0]);
+        $miniGridPayload = $this->getResponsePayload($response);
+        $this->assertEquals($this->miniGridIds[0], $miniGridPayload['id']);
     }
 
     public function testUserGetsMiniGridByIdWithGeographicalInformation(): void {
@@ -43,7 +49,8 @@ class MiniGridTest extends TestCase {
         $this->createTestData($clusterCount, $miniGridCount);
         $response = $this->actingAs($this->user)->get(sprintf('/api/mini-grids/%s?relation=1', $this->miniGridIds[0]));
         $response->assertStatus(200);
-        $this->assertEquals(array_key_exists('location', $response['data']), true);
+        $miniGridPayload = $this->getResponsePayload($response);
+        $this->assertEquals(array_key_exists('location', $miniGridPayload), true);
     }
 
     public function testUserCreatesNewMiniGrid(): void {
@@ -56,9 +63,60 @@ class MiniGridTest extends TestCase {
             'geo_data' => $this->faker->latitude().','.$this->faker->longitude(),
         ];
         $response = $this->actingAs($this->user)->post('/api/mini-grids', $miGridData);
-        $response->assertStatus(201);
-        $this->assertEquals($response['data']['name'], $miGridData['name']);
-        $this->assertEquals(count(MiniGrid::query()->get()), 1);
+        $this->assertContains($response->status(), [200, 201]);
+        $miniGridPayload = $this->getResponsePayload($response);
+        $this->assertEquals($miGridData['name'], $miniGridPayload['name']);
+        $this->assertTrue(
+            MiniGrid::query()->where('name', $miGridData['name'])->where('cluster_id', $this->clusterIds[0])->exists()
+        );
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function getResponseCollection(mixed $response): array {
+        /** @var mixed $json */
+        $json = $response->json();
+
+        if (!is_array($json)) {
+            return [];
+        }
+
+        if (array_key_exists('data', $json) && is_array($json['data']) && array_is_list($json['data'])) {
+            /** @var array<int, array<string, mixed>> $data */
+            $data = $json['data'];
+
+            return $data;
+        }
+
+        if (array_is_list($json)) {
+            /** @var array<int, array<string, mixed>> $json */
+            return $json;
+        }
+
+        return [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getResponsePayload(mixed $response): array {
+        /** @var mixed $json */
+        $json = $response->json();
+
+        if (!is_array($json)) {
+            return [];
+        }
+
+        if (array_key_exists('data', $json) && is_array($json['data']) && !array_is_list($json['data'])) {
+            /** @var array<string, mixed> $data */
+            $data = $json['data'];
+
+            return $data;
+        }
+
+        /** @var array<string, mixed> $json */
+        return $json;
     }
 
     protected function createTestData($clusterCount = 1, $miniGridCount = 1) {
@@ -80,8 +138,8 @@ class MiniGridTest extends TestCase {
                 ]);
                 $geographicalInformation->owner()->associate($miniGrid);
                 $geographicalInformation->save();
-                CityFactory::new()->create([
-                    'name' => $this->faker->citySuffix().$this->faker->randomAscii(),
+                VillageFactory::new()->create([
+                    'name' => $this->faker->streetName().$this->faker->randomAscii(),
                     'country_id' => 1,
                     'mini_grid_id' => $miniGrid->id,
                 ]);

@@ -29,13 +29,13 @@ class ManufacturerTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $manufacturerData = [
             'name' => 'test meters company',
             'website' => $this->faker->url(),
             'api_name' => $this->faker->name(),
             'email' => 'test@test.com',
-            'city_id' => $this->cities[0]->id,
+            'village_id' => $this->villages[0]->id,
             'phone' => $this->faker->phoneNumber(),
         ];
         $response = $this->actingAs($this->user)->post('/api/manufacturers', $manufacturerData);

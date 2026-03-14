@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
@@ -40,55 +40,53 @@ class ClusterSeeder extends Seeder {
             ->sequence(
                 [
                     'name' => 'Cluster Mafia Island',
-                    'geo_json' => json_decode(
-                        '{
-                            "type": "Feature",
-                            "properties": {
-                                "name": "Cluster Mafia Island"
-                            },
-                            "geometry": {
-                                "type": "Polygon",
-                                "coordinates": [
-                                    [
-                                        [39.961513, -7.630225],
-                                        [39.631923, -7.652002],
-                                        [39.549526, -7.910525],
-                                        [39.631923, -8.125383],
-                                        [39.934047, -8.092754],
-                                        [39.988979, -7.869716],
-                                        [39.961513, -7.630225]
-                                    ]
-                                ]
-                            }
-                    }'
-                    ),
                 ],
                 [
                     'name' => 'Cluster Pemba Island',
-                    'geo_json' => json_decode(
-                        '{
-                            "type": "Feature",
-                            "properties": {},
-                            "geometry": {
-                                "type": "Polygon",
-                                "coordinates": [
-                                    [
-                                        [39.770765, -4.800463],
-                                        [39.520826, -4.937297],
-                                        [39.545546, -5.421455],
-                                        [39.647169, -5.582757],
-                                        [39.905348, -5.448798],
-                                        [39.95204, -5.194467],
-                                        [39.899855, -4.86341],
-                                        [39.770765, -4.800463]
-                                    ]
-                                ]
-                            }
-                    }'
-                    ),
                 ],
             )
             ->create();
+
+        $clusters[0]->location()->update([
+            'geo_json' => [
+                'type' => 'Feature',
+                'properties' => [
+                    'name' => 'Cluster Mafia Island',
+                ],
+                'geometry' => [
+                    'type' => 'Polygon',
+                    'coordinates' => [[
+                        [39.961513, -7.630225],
+                        [39.631923, -7.652002],
+                        [39.549526, -7.910525],
+                        [39.631923, -8.125383],
+                        [39.934047, -8.092754],
+                        [39.988979, -7.869716],
+                        [39.961513, -7.630225],
+                    ]],
+                ],
+            ],
+        ]);
+
+        $clusters[1]->location()->update([
+            'geo_json' => [
+                'type' => 'Feature',
+                'properties' => (object) [],
+                'geometry' => [
+                    'type' => 'Polygon',
+                    'coordinates' => [[
+                        [39.770765, -4.800463],
+                        [39.520826, -4.937297],
+                        [39.545546, -5.421455],
+                        [39.647169, -5.582757],
+                        [39.905348, -5.448798],
+                        [39.95204, -5.194467],
+                        [39.899855, -4.86341],
+                        [39.770765, -4.800463],
+                    ]],
+                ],
+            ],
+        ]);
 
         // MiniGrids and Villages on Mafia Island
         $miniGridsMafiaIsland = MiniGrid::factory()
@@ -106,7 +104,7 @@ class ClusterSeeder extends Seeder {
                 'location'
             )
             ->has(
-                City::factory()
+                Village::factory()
                     ->sequence(
                         ['name' => 'Mafia Village'],
                         ['name' => 'Jibondo Island Village'],
@@ -139,7 +137,7 @@ class ClusterSeeder extends Seeder {
                 'location'
             )
             ->has(
-                City::factory()
+                Village::factory()
                     ->sequence(
                         ['name' => 'Konde Village'],
                         ['name' => 'Wette Village'],

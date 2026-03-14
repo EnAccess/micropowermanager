@@ -12,7 +12,7 @@ class AgentBalanceHistoryWebTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();

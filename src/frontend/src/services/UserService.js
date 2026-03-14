@@ -14,7 +14,7 @@ export class UserService {
       email: null,
       phone: null,
       street: null,
-      cityId: null,
+      villageId: null,
       roles: [],
     }
   }
@@ -25,9 +25,9 @@ export class UserService {
       email: user.email,
       phone: user.address_details ? user.address_details.phone : null,
       street: user.address_details ? user.address_details.street : null,
-      cityId:
-        user.address_details && user.address_details.city
-          ? user.address_details.city.id
+      villageId:
+        user.address_details && user.address_details.village
+          ? user.address_details.village.id
           : null,
       roles: user.roles,
     }
@@ -101,13 +101,13 @@ export class UserService {
     }
 
     // Update address separately if needed
-    if (this.user.phone || this.user.street || this.user.cityId) {
+    if (this.user.phone || this.user.street || this.user.villageId) {
       const addressData = {
         id: this.user.id,
         name: this.user.name,
         phone: this.user.phone,
         street: this.user.street,
-        city_id: this.user.cityId,
+        village_id: this.user.villageId,
       }
       try {
         await this.repository.putAddress(addressData)
@@ -127,7 +127,7 @@ export class UserService {
       email: null,
       phone: null,
       street: null,
-      cityId: null,
+      villageId: null,
     }
   }
 }

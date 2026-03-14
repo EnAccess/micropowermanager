@@ -2,7 +2,7 @@
 
 use App\Plugins\BulkRegistration\Services\AddressService;
 use App\Plugins\BulkRegistration\Services\ApplianceTypeService;
-use App\Plugins\BulkRegistration\Services\CityService;
+use App\Plugins\BulkRegistration\Services\VillageService;
 use App\Plugins\BulkRegistration\Services\ClusterService;
 use App\Plugins\BulkRegistration\Services\ConnectionGroupService;
 use App\Plugins\BulkRegistration\Services\ConnectionTypeService;
@@ -33,7 +33,7 @@ return [
             'name' => 'Mini Grid Name',
         ],
 
-        'city' => [
+        'village' => [
             'cluster_id' => 'cluster_id',
             'mini_grid_id' => 'mini_grid_id',
             'name' => 'Village Name',
@@ -41,7 +41,7 @@ return [
 
         'address' => [
             'person_id' => 'person_id',
-            'city_id' => 'city_id',
+            'village_id' => 'village_id',
             'phone' => 'Phone number',
             'alternative_phone' => 'Alternate phone number',
         ],
@@ -133,7 +133,7 @@ return [
         'ClusterService' => ClusterService::class,
         'MiniGridService' => MiniGridService::class,
         'GeographicalInformationService' => GeographicalInformationService::class,
-        'CityService' => CityService::class,
+        'VillageService' => VillageService::class,
         'AddressService' => AddressService::class,
         'TariffService' => TariffService::class,
         'ConnectionTypeService' => ConnectionTypeService::class,

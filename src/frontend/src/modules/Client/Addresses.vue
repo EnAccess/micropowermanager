@@ -24,8 +24,8 @@
           <md-table-cell :md-label="$tc('words.street')" md-sort-by="street">
             {{ item.street }}
           </md-table-cell>
-          <md-table-cell :md-label="$tc('words.city')" md-sort-by="city">
-            {{ item.city }}
+          <md-table-cell :md-label="$tc('words.village')" md-sort-by="village">
+            {{ item.village }}
           </md-table-cell>
           <md-table-cell :md-label="$tc('words.phone')" md-sort-by="phone">
             {{ item.phone }}
@@ -54,22 +54,22 @@
       <md-dialog-content class="md-scrollbar">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50 md-small-size-100">
-            <md-field name="city">
-              <label for="city">{{ $tc("words.city") }}</label>
-              <md-select name="city" id="city" v-model="newAddress.city_id">
+            <md-field name="village">
+              <label for="village">{{ $tc("words.village") }}</label>
+              <md-select name="village" id="village" v-model="newAddress.village_id">
                 <md-option
                   value="0"
                   disabled
-                  v-if="!editFlag || newAddress.city_id === null"
+                  v-if="!editFlag || newAddress.village_id === null"
                 >
-                  {{ $tc("words.city") }}
+                  {{ $tc("words.village") }}
                 </md-option>
                 <md-option
-                  v-for="city in cities"
-                  :key="city.id"
-                  :value="city.id"
+                  v-for="village in villages"
+                  :key="village.id"
+                  :value="village.id"
                 >
-                  {{ city.name }}
+                  {{ village.name }}
                 </md-option>
               </md-select>
             </md-field>
@@ -154,7 +154,7 @@
 
 <script>
 import { Address, Addresses } from "@/services/AddressService.js"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
@@ -166,12 +166,12 @@ export default {
   },
   data() {
     return {
-      cityService: new CityService(),
+      villageService: new VillageService(),
       addresses: new Addresses(this.personId),
       subscriber: "personAddresses",
       modalVisibility: false,
       newAddress: {},
-      cities: [],
+      villages: [],
       editFlag: false,
       addressIndex: 0,
       phone: {
@@ -200,8 +200,8 @@ export default {
       this.showModal()
     },
     showModal() {
-      if (this.cities.length === 0) {
-        this.getCities()
+      if (this.villages.length === 0) {
+        this.getVillages()
       }
       this.modalVisibility = true
     },
@@ -213,14 +213,14 @@ export default {
         email: address.email,
         street: address.street,
         phone: address.phone,
-        city_id: address.city_id,
+        village_id: address.village_id,
         primary: address.primary,
       }
       this.showModal()
     },
-    async getCities() {
+    async getVillages() {
       try {
-        this.cities = await this.cityService.getCities()
+        this.villages = await this.villageService.getVillages()
       } catch (e) {
         this.alertNotify("error", e.message)
       }
@@ -236,7 +236,7 @@ export default {
               email: this.newAddress.email,
               street: this.newAddress.street,
               phone: this.newAddress.phone,
-              city_id: this.newAddress.city_id,
+              village_id: this.newAddress.village_id,
               is_primary: this.newAddress.primary,
             })
             .then((response) => {
@@ -266,11 +266,11 @@ export default {
       this.phone = phone
     },
     validateNewAddress() {
-      if (!("city_id" in this.newAddress) || !this.newAddress.city_id) {
+      if (!("village_id" in this.newAddress) || !this.newAddress.village_id) {
         this.$swal({
           type: "error",
           title: this.$tc("phrase.missingField"),
-          text: "City is required",
+          text: "Village is required",
         })
         return false
       } else if ("phone" in this.newAddress) {

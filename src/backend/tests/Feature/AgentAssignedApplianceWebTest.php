@@ -13,7 +13,7 @@ class AgentAssignedApplianceWebTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $agentCount = 1;
         $this->createAgentCommission();
         $this->createAgent($agentCount);
@@ -28,7 +28,7 @@ class AgentAssignedApplianceWebTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $agentCount = 1;
         $this->createAgentCommission();
         $this->createAgent($agentCount);

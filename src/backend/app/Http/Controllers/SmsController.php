@@ -93,9 +93,9 @@ class SmsController extends Controller {
                         'device.person.addresses',
                         static function ($q) use ($miniGrid) {
                             if ((int) $miniGrid === 0) {
-                                $q->where('city_id', '>', 0);
+                                $q->where('village_id', '>', 0);
                             } else {
-                                $q->where('city_id', $miniGrid);
+                                $q->where('village_id', $miniGrid);
                             }
                         }
                     )->whereHas(
@@ -116,9 +116,9 @@ class SmsController extends Controller {
                         'device.person.addresses',
                         static function ($q) use ($miniGrid) {
                             if ((int) $miniGrid === 0) {
-                                $q->where('city_id', '>', 0);
+                                $q->where('village_id', '>', 0);
                             } else {
-                                $q->where('city_id', $miniGrid);
+                                $q->where('village_id', $miniGrid);
                             }
                         }
                     )->get();
@@ -134,9 +134,9 @@ class SmsController extends Controller {
                         'device.person.addresses',
                         static function ($q) use ($miniGrid) {
                             if ((int) $miniGrid === 0) {
-                                $q->where('city_id', '>', 0);
+                                $q->where('village_id', '>', 0);
                             } else {
-                                $q->where('city_id', $miniGrid);
+                                $q->where('village_id', $miniGrid);
                             }
                         }
                     )->whereHas(

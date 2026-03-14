@@ -29,14 +29,14 @@ class ClusterExportService extends AbstractExportService {
     public function setExportingData(): void {
         $this->exportingData = $this->clusterData->map(function (Cluster $cluster): array {
             $miniGridCount = $cluster->miniGrids->count();
-            $cityCount = $cluster->cities->count();
+            $villageCount = $cluster->villages->count();
             $managerName = $cluster->manager->name ?? '';
 
             return [
                 $cluster->name,
                 $managerName,
                 $miniGridCount,
-                $cityCount,
+                $villageCount,
                 $this->convertUtcDateToTimezone($cluster->created_at),
                 $this->convertUtcDateToTimezone($cluster->updated_at),
             ];
@@ -69,14 +69,14 @@ class ClusterExportService extends AbstractExportService {
         // transform exporting data to JSON structure for cluster export
         $jsonDataTransform = $this->clusterData->map(function (Cluster $cluster): array {
             $miniGrids = $cluster->miniGrids->pluck('name')->filter()->implode(', ');
-            $cities = $cluster->cities->pluck('name')->filter()->implode(', ');
+            $villages = $cluster->villages->pluck('name')->filter()->implode(', ');
             $managerName = $cluster->manager->name ?? '';
 
             return [
                 'cluster_name' => $cluster->name,
                 'manager' => $managerName,
                 'mini_grids' => $miniGrids,
-                'villages' => $cities,
+                'villages' => $villages,
                 'created_at' => $this->convertUtcDateToTimezone($cluster->created_at),
                 'updated_at' => $this->convertUtcDateToTimezone($cluster->updated_at),
             ];

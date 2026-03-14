@@ -7,6 +7,8 @@ use App\Models\Cluster;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @implements IBaseService<Cluster>
@@ -35,15 +37,17 @@ class ClusterService implements IBaseService {
     }
 
     public function getClusterCities(int $clusterId): ?Cluster {
-        return Cluster::query()->with('cities')->find($clusterId);
+        return Cluster::query()->with(['villages', 'location'])->find($clusterId);
     }
 
     public function getClusterMiniGrids(int $clusterId): ?Cluster {
-        return Cluster::query()->with('miniGrids')->find($clusterId);
+        return Cluster::query()->with(['miniGrids', 'location'])->find($clusterId);
     }
 
     public function getGeoLocationById(int $clusterId): mixed {
-        return $this->cluster->newQuery()->select('geo_json')->find($clusterId)->geo_json;
+        $cluster = $this->cluster->newQuery()->with('location')->findOrFail($clusterId);
+
+        return $cluster->geo_json;
     }
 
     /**
@@ -64,14 +68,32 @@ class ClusterService implements IBaseService {
     }
 
     public function getById(int $clusterId): Cluster {
-        return $this->cluster->newQuery()->with(['miniGrids.location', 'cities'])->find($clusterId);
+        return $this->cluster->newQuery()->with(['miniGrids.location', 'villages', 'location'])->find($clusterId);
     }
 
     /**
      * @param array<string, mixed> $clusterData
      */
     public function create(array $clusterData): Cluster {
-        return $this->cluster->newQuery()->create($clusterData);
+        return DB::connection('tenant')->transaction(function () use ($clusterData): Cluster {
+            $geoJson = $clusterData['geo_json'] ?? null;
+
+            // Keep legacy write only while clusters.geo_json exists.
+            if (! Schema::connection('tenant')->hasColumn('clusters', 'geo_json')) {
+                unset($clusterData['geo_json']);
+            }
+
+            $cluster = $this->cluster->newQuery()->create($clusterData);
+
+            if ($geoJson !== null) {
+                $cluster->location()->create([
+                    'points' => '',
+                    'geo_json' => $geoJson,
+                ]);
+            }
+
+            return $cluster->fresh('location');
+        });
     }
 
     /**
@@ -79,10 +101,10 @@ class ClusterService implements IBaseService {
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit !== null) {
-            return $this->cluster->newQuery()->with('miniGrids')->limit($limit)->get();
+            return $this->cluster->newQuery()->with(['miniGrids', 'location'])->limit($limit)->get();
         }
 
-        return $this->cluster->newQuery()->with('miniGrids')->get();
+        return $this->cluster->newQuery()->with(['miniGrids', 'location'])->get();
     }
 
     /**
@@ -102,8 +124,9 @@ class ClusterService implements IBaseService {
     public function getAllForExport(): Collection {
         return $this->cluster->newQuery()->with([
             'miniGrids',
-            'cities',
+            'villages',
             'manager',
+            'location',
         ])->get();
     }
 }

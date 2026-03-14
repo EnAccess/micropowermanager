@@ -83,8 +83,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ], 422));
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');
-        $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00');
+        $schedule->command('reports:village-revenue weekly')->weeklyOn(1, '3:00');
+        $schedule->command('reports:village-revenue monthly')->monthlyOn(1, '3:00');
         $schedule->command('reports:ticket-outsource-payout')->monthlyOn(1, '3:30');
         $schedule->command('sms:resend-rejected 5')->everyMinute();
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();

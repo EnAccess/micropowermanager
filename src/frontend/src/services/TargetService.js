@@ -2,7 +2,7 @@ import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { Paginator } from "@/Helpers/Paginator.js"
 import TargetRepository from "@/repositories/TargetRepository.js"
 import { resources } from "@/resources.js"
-import { City } from "@/services/CityService.js"
+import { Village } from "@/services/VillageService.js"
 import { ConnectionsType } from "@/services/ConnectionTypeService.js"
 
 export class SubTarget {
@@ -33,7 +33,7 @@ export class Target {
     this.startDate = null
     this.endDate = null
     this.subTargets = []
-    this.city = new City()
+    this.village = new Village()
   }
 
   fromJson(jsonData) {

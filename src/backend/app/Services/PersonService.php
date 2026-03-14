@@ -45,8 +45,8 @@ class PersonService implements IBaseService {
         return $this->person->newQuery()->with(
             [
                 'addresses' => fn ($q) => $q->orderBy('is_primary')
-                    ->with('city', fn ($q) => $q->whereHas('location'))
-                    ->with('city.location')
+                    ->with('village', fn ($q) => $q->whereHas('location'))
+                    ->with('village.location')
                     ->with('geo')
                     ->get(),
                 'citizenship',
@@ -62,7 +62,7 @@ class PersonService implements IBaseService {
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
     public function searchPerson(string $searchTerm, $paginate, int $per_page): Builder|Collection|LengthAwarePaginator {
-        $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
+        $query = $this->person->newQuery()->with(['addresses.village', 'devices'])->whereHas(
             'addresses',
             fn ($q) => $q->where('phone', 'LIKE', $searchTerm.'%')
         )->orWhereHas(
@@ -108,7 +108,7 @@ class PersonService implements IBaseService {
         return $this->person->newQuery()->with(
             [
                 'addresses' => fn ($q) => $q->where('is_primary', '=', 1),
-                'addresses.city',
+                'addresses.village',
                 'citizenship',
                 'roleOwner.definitions',
                 'devices.device',
@@ -179,7 +179,7 @@ class PersonService implements IBaseService {
         ?int $customerType = 1,
         ?int $agentId = null,
         ?bool $activeCustomer = null,
-        ?int $cityId = null,
+        ?int $villageId = null,
         ?float $totalPaidMin = null,
         ?float $totalPaidMax = null,
         ?string $latestPaymentFrom = null,
@@ -190,7 +190,7 @@ class PersonService implements IBaseService {
     ): LengthAwarePaginator {
         $query = $this->person->newQuery()
             ->with([
-                'addresses.city',
+                'addresses.village',
                 'devices',
                 'agentSoldAppliance',
                 'latestPayment',
@@ -217,9 +217,9 @@ class PersonService implements IBaseService {
             }
         }
 
-        if ($cityId) {
-            $query->whereHas('addresses', function ($q) use ($cityId) {
-                $q->where('city_id', $cityId)
+        if ($villageId) {
+            $query->whereHas('addresses', function ($q) use ($villageId) {
+                $q->where('village_id', $villageId)
                     ->where('is_primary', 1);
             });
         }
@@ -289,12 +289,12 @@ class PersonService implements IBaseService {
                     $query->orderByRaw('('.$subquery->toSql().') '.$direction)
                         ->addBinding($subquery->getBindings(), 'order');
                 }),
-                AllowedSort::callback('city', function (Builder $query, bool $descending, string $property) {
+                AllowedSort::callback('village', function (Builder $query, bool $descending, string $property) {
                     $direction = $descending ? 'desc' : 'asc';
 
                     $subquery = DB::table('addresses', 'addr')
                         ->select('c.name')
-                        ->join('cities as c', 'c.id', '=', 'addr.city_id')
+                        ->join('villages as c', 'c.id', '=', 'addr.village_id')
                         ->whereColumn('addr.owner_id', 'people.id')
                         ->where('addr.owner_type', 'person')
                         ->where('addr.is_primary', 1)
@@ -326,13 +326,13 @@ class PersonService implements IBaseService {
     public function getAllForExport(?string $miniGridName = null, ?string $villageName = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
         $query = $this->person->newQuery()->with([
             'addresses' => fn ($q) => $q->where('is_primary', 1),
-            'addresses.city',
+            'addresses.village',
             'devices',
         ])->where('is_customer', 1);
 
         if ($miniGridName) {
             $query->whereHas('addresses', function ($q) use ($miniGridName) {
-                $q->whereHas('city', function ($q) use ($miniGridName) {
+                $q->whereHas('village', function ($q) use ($miniGridName) {
                     $q->whereHas('miniGrid', function ($q) use ($miniGridName) {
                         $q->where('name', 'LIKE', '%'.$miniGridName.'%');
                     });
@@ -342,7 +342,7 @@ class PersonService implements IBaseService {
 
         if ($villageName) {
             $query->whereHas('addresses', function ($q) use ($villageName) {
-                $q->whereHas('city', function ($q) use ($villageName) {
+                $q->whereHas('village', function ($q) use ($villageName) {
                     $q->where('name', 'LIKE', '%'.$villageName.'%');
                 });
             });
@@ -383,7 +383,7 @@ class PersonService implements IBaseService {
 
         $addressService = app()->make(AddressesService::class);
         $addressParams = [
-            'city_id' => $request->get('city_id') ?? 1,
+            'village_id' => $request->get('village_id') ?? 1,
             'email' => $request->get('email') ?? '',
             'phone' => $request->get('phone') ?? '',
             'street' => $request->get('street') ?? '',

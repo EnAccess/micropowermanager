@@ -12,7 +12,7 @@ class TargetTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createConnectionGroup();
         $targetCount = 2;
         $this->createTarget($targetCount);
@@ -25,7 +25,7 @@ class TargetTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createConnectionGroup();
         $targetCount = 2;
         $this->createTarget($targetCount);
@@ -39,7 +39,7 @@ class TargetTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createConnectionGroup();
         $targetData = [
             'data' => [

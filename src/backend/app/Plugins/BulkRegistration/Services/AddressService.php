@@ -24,7 +24,7 @@ class AddressService extends CreatorService {
         $firstAddressData = [
             'owner_type' => 'person',
             'owner_id' => $csvData[$addressConfig['person_id']],
-            'city_id' => $csvData[$addressConfig['city_id']],
+            'village_id' => $csvData[$addressConfig['village_id']],
             'phone' => $csvData[$addressConfig['phone']],
             'is_primary' => 1,
         ];
@@ -33,7 +33,7 @@ class AddressService extends CreatorService {
             $alternativeAddress = [
                 'owner_type' => 'person',
                 'owner_id' => $csvData[$addressConfig['person_id']],
-                'city_id' => $csvData[$addressConfig['city_id']],
+                'village_id' => $csvData[$addressConfig['village_id']],
                 'phone' => $csvData[$addressConfig['alternative_phone']],
                 'is_primary' => 0,
             ];
@@ -42,10 +42,10 @@ class AddressService extends CreatorService {
         $this->createRelatedDataIfDoesNotExists($returnAddresses);
     }
 
-    public function createForPerson(int $personId, int $cityId, ?string $phone, ?string $email, ?string $street, bool $isPrimary): Address {
+    public function createForPerson(int $personId, int $villageId, ?string $phone, ?string $email, ?string $street, bool $isPrimary): Address {
         $address = new Address();
         $address->setOwner($personId, 'person');
-        $address->setCityId($cityId);
+        $address->setVillageId($villageId);
         $address->setPhone($phone);
         $address->setEmail($email);
         $address->setIsPrimary($isPrimary);

@@ -209,28 +209,28 @@
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
-                    'md-invalid': errors.has('customer-add-form.city'),
+                    'md-invalid': errors.has('customer-add-form.village'),
                   }"
                 >
-                  <label for="city">
-                    {{ $tc("words.city") }}
+                  <label for="village">
+                    {{ $tc("words.village") }}
                   </label>
                   <md-select
-                    name="city"
-                    id="city"
-                    v-model="selectedCityId"
+                    name="village"
+                    id="village"
+                    v-model="selectedVillageId"
                     v-validate="'required'"
                   >
                     <md-option
-                      v-for="city in cityService.list"
-                      :key="city.id"
-                      :value="city.id"
+                      v-for="village in villageService.list"
+                      :key="village.id"
+                      :value="village.id"
                     >
-                      {{ city.name }}
+                      {{ village.name }}
                     </md-option>
                   </md-select>
                   <span class="md-error">
-                    {{ errors.first("customer-add-form.city") }}
+                    {{ errors.first("customer-add-form.village") }}
                   </span>
                 </md-field>
               </div>
@@ -281,7 +281,7 @@
 import moment from "moment"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { PersonService } from "@/services/PersonService.js"
 import Loader from "@/shared/Loader.vue"
 
@@ -298,9 +298,9 @@ export default {
   data() {
     return {
       personService: new PersonService(),
-      cityService: new CityService(),
+      villageService: new VillageService(),
       loading: false,
-      selectedCityId: null,
+      selectedVillageId: null,
       phone: {
         valid: true,
       },
@@ -308,7 +308,7 @@ export default {
     }
   },
   beforeMount() {
-    this.cityService.getCities()
+    this.villageService.getVillages()
   },
   methods: {
     async save() {
@@ -324,7 +324,7 @@ export default {
           surname: this.personService.person.surname,
           phone: this.personService.person.address.phone,
           street: this.personService.person.address.street,
-          cityId: this.personService.person.address.cityId,
+          villageId: this.personService.person.address.villageId,
           isPrimary: true,
           country_code: this.phone.countryCode,
           title: this.personService.person.title,
@@ -360,8 +360,8 @@ export default {
     },
   },
   watch: {
-    selectedCityId: function (val) {
-      this.personService.person.address.cityId = val
+    selectedVillageId: function (val) {
+      this.personService.person.address.villageId = val
     },
   },
 }

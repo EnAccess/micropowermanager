@@ -24,7 +24,7 @@ class AddressesService implements IBaseService, IAssociative {
      */
     public function instantiate(array $params): Address {
         return $this->address->fill([
-            'city_id' => $params['city_id'] ?? null,
+            'village_id' => $params['village_id'] ?? null,
             'email' => $params['email'] ?? null,
             'phone' => $params['phone'],
             'street' => $params['street'] ?? null,
@@ -37,7 +37,7 @@ class AddressesService implements IBaseService, IAssociative {
     }
 
     public function getStoredAddressWithCityRelation(int $id): Address {
-        return $this->address::with('city')->findOrFail($id);
+        return $this->address::with('village')->findOrFail($id);
     }
 
     /**
@@ -48,7 +48,7 @@ class AddressesService implements IBaseService, IAssociative {
             'email' => $request->get('email') ?? '',
             'phone' => $request->get('phone') ?? '',
             'street' => $request->get('street') ?? '',
-            'city_id' => $request->get('city_id') ?? '',
+            'village_id' => $request->get('village_id') ?? '',
             'is_primary' => $request->get('is_primary') ?? 1,
         ];
     }
@@ -96,7 +96,7 @@ class AddressesService implements IBaseService, IAssociative {
             'email' => $addressData['email'] ?? null,
             'phone' => $addressData['phone'] ?? null,
             'street' => $addressData['street'] ?? null,
-            'city_id' => $addressData['city_id'] ?? null,
+            'village_id' => $addressData['village_id'] ?? null,
             'is_primary' => $addressData['is_primary'] ?? 0,
         ]);
     }

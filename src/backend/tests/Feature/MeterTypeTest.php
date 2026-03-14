@@ -80,7 +80,7 @@ class MeterTypeTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createMeterTariff();
         $this->createConnectionGroup();
         $this->createConnectionType($connectionTypeCount);

@@ -14,7 +14,7 @@ class ClusterDeviceService {
             ->whereHas('person', function ($q) use ($clusterId) {
                 $q->whereHas('addresses', function ($q) use ($clusterId) {
                     $q->where('is_primary', 1)
-                        ->whereHas('city', function ($q) use ($clusterId) {
+                        ->whereHas('village', function ($q) use ($clusterId) {
                             $q->where('cluster_id', $clusterId);
                         });
                 });
@@ -27,11 +27,11 @@ class ClusterDeviceService {
      */
     public function getByClusterId(int $clusterId): Collection {
         return $this->device->newQuery()
-            ->with(['device', 'person.addresses.city'])
+            ->with(['device', 'person.addresses.village'])
             ->whereHas('person', function ($q) use ($clusterId) {
                 $q->whereHas('addresses', function ($q) use ($clusterId) {
                     $q->where('is_primary', 1)
-                        ->whereHas('city', function ($q) use ($clusterId) {
+                        ->whereHas('village', function ($q) use ($clusterId) {
                             $q->whereHas('cluster', function ($q) use ($clusterId) {
                                 $q->where('clusters.id', $clusterId);
                             });
@@ -53,7 +53,7 @@ class ClusterDeviceService {
             ->whereHas('person', function ($q) use ($clusterId) {
                 $q->whereHas('addresses', function ($q) use ($clusterId) {
                     $q->where('is_primary', 1)
-                        ->whereHas('city', function ($q) use ($clusterId) {
+                        ->whereHas('village', function ($q) use ($clusterId) {
                             $q->whereHas('cluster', function ($q) use ($clusterId) {
                                 $q->where('clusters.id', $clusterId);
                             });

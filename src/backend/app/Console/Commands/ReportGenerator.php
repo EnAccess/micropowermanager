@@ -6,8 +6,8 @@ use App\Http\Controllers\Reports;
 use Carbon\Carbon;
 
 class ReportGenerator extends AbstractSharedCommand {
-    protected $signature = 'reports:city-revenue {type} {--start-date=} {--company-id=}';
-    protected $description = 'Creates city revenue reports';
+    protected $signature = 'reports:village-revenue {type} {--start-date=} {--company-id=}';
+    protected $description = 'Creates village revenue reports';
 
     public function __construct(private Reports $reports) {
         parent::__construct();

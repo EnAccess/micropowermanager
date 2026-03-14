@@ -7,7 +7,7 @@ export const state = {
   clustersCacheData: [],
   clusterCacheData: {
     id: null,
-    citiesRevenue: [],
+    villagesRevenue: [],
     revenueAnalysis: {},
     clusterData: {},
   },

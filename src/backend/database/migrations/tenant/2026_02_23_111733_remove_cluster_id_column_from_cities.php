@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\City;
+use App\Models\Village;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +11,7 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::connection('tenant')->table('cities', function (Blueprint $table) {
+        Schema::connection('tenant')->table('villages', function (Blueprint $table) {
             $table->dropColumn('cluster_id');
         });
     }
@@ -20,18 +20,18 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::connection('tenant')->table('cities', function (Blueprint $table) {
+        Schema::connection('tenant')->table('villages', function (Blueprint $table) {
             $table->integer('cluster_id')->after('country_id');
         });
 
-        // Repopulate cluster_id from city -> minigrid -> cluster
-        City::with('miniGrid')->chunkById(100, function ($cities) {
-            foreach ($cities as $city) {
-                if ($city->miniGrid && $city->miniGrid->cluster_id) {
-                    DB::connection('tenant')->table('cities')
-                        ->where('id', $city->id)
+        // Repopulate cluster_id from village -> minigrid -> cluster
+        Village::with('miniGrid')->chunkById(100, function ($villages) {
+            foreach ($villages as $village) {
+                if ($village->miniGrid && $village->miniGrid->cluster_id) {
+                    DB::connection('tenant')->table('villages')
+                        ->where('id', $village->id)
                         ->update([
-                            'cluster_id' => $city->miniGrid->cluster_id,
+                            'cluster_id' => $village->miniGrid->cluster_id,
                         ]);
                 }
             }

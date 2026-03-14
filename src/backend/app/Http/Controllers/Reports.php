@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ConnectionGroupNotFoundException;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\DatabaseProxy;
@@ -52,7 +52,7 @@ class Reports {
         private ConnectionType $connectionType,
         private ConnectionGroup $connectionGroup,
         private PaymentHistory $paymentHistory,
-        private City $city,
+        private Village $village,
         private Target $target,
         private Report $report,
     ) {}
@@ -145,11 +145,11 @@ class Reports {
 
     public function generateWithJob(string $startDate, string $endDate, string $reportType): void {
         try {
-            $cities = $this->city->newQuery()->get();
-            foreach ($cities as $city) {
+            $villages = $this->village->newQuery()->get();
+            foreach ($villages as $village) {
                 $this->getCustomerGroupCountPerMonth($endDate);
                 $this->getCustomerGroupEnergyUsagePerMonth([$startDate, $endDate]);
-                $this->generateReportForCity($city->id, $city->name, $startDate, $endDate, $reportType);
+                $this->generateReportForVillage($village->id, $village->name, $startDate, $endDate, $reportType);
             }
         } catch (\Exception $e) {
             Log::critical(
@@ -501,9 +501,9 @@ class Reports {
      * @throws ConnectionGroupNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function generateReportForCity(
-        int $cityId,
-        string $cityName,
+    private function generateReportForVillage(
+        int $villageId,
+        string $villageName,
         string $startDate,
         string $endDate,
         string $reportType,
@@ -519,8 +519,8 @@ class Reports {
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
                 'device.person.addresses',
-                function ($q) use ($cityId) {
-                    $q->where('city_id', $cityId)
+                function ($q) use ($villageId) {
+                    $q->where('village_id', $villageId)
                         ->where('is_primary', 1);
                 }
             )
@@ -568,7 +568,7 @@ class Reports {
             $sheet2->setTitle('monthly');
             // Add targets
             $this->addTargetConnectionGroups($sheet2);
-            $this->addStoredTargets($sheet2, $cityId, $endDate);
+            $this->addStoredTargets($sheet2, $villageId, $endDate);
             $this->addTargetsToXls($sheet2);
         }
 
@@ -577,11 +577,11 @@ class Reports {
             $databaseProxy = app(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-            $fileName = Str::slug("{$reportType}-{$cityName}-{$dateRange}").'.xlsx';
+            $fileName = Str::slug("{$reportType}-{$villageName}-{$dateRange}").'.xlsx';
             $path = "reports/{$companyId}/village_report_{$reportType}/{$fileName}";
 
             // Save to a temporary local file
-            $tempFile = tempnam(sys_get_temp_dir(), 'city_report_').'.xlsx';
+            $tempFile = tempnam(sys_get_temp_dir(), 'village_report_').'.xlsx';
             $writer = new Xlsx($this->spreadsheet);
             $writer->save($tempFile);
 
@@ -593,13 +593,13 @@ class Reports {
                 'path' => $path."*{$companyId}",
                 'type' => $reportType,
                 'date' => "{$startDate}---{$endDate}",
-                'name' => $cityName,
+                'name' => $villageName,
             ]);
 
             Log::info("Report generated: {$fileName}");
         } catch (Exception $e) {
-            Log::error('Error generating report for city', [
-                'city' => $cityName,
+            Log::error('Error generating report for village', [
+                'village' => $villageName,
                 'exception' => $e->getMessage(),
             ]);
         }
@@ -697,11 +697,11 @@ class Reports {
         }
     }
 
-    private function addStoredTargets(Worksheet $sheet, int $cityId, string $endDate): void {
+    private function addStoredTargets(Worksheet $sheet, int $villageId, string $endDate): void {
         $targetData = $this->target::with('subTargets.connectionType')
             ->where('target_date', '>', $endDate)
             ->where('owner_type', 'mini-grid')
-            ->where('owner_id', $cityId)
+            ->where('owner_id', $villageId)
             ->oldest('target_date')->first();
 
         if (!$targetData) { // no target is defined for that mini-grid

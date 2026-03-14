@@ -42,7 +42,7 @@ class MaintenanceUserController extends Controller {
             } else {
                 $person = $this->personService->createMaintenancePerson($personData);
             }
-            $this->addressService->createForPerson($person->getId(), $request->getCityId(), $request->getPhone(), $request->getEmail(), $request->getStreet(), true);
+            $this->addressService->createForPerson($person->getId(), $request->getVillageId(), $request->getPhone(), $request->getEmail(), $request->getStreet(), true);
         }
 
         // Ensure the person is marked as maintenance type

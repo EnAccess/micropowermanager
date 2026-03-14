@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Address\Address;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
 use App\Services\DatabaseProxyManagerService;
@@ -23,7 +23,7 @@ class CustomerSeeder extends Seeder {
      */
     public function run() {
         // Get available Villages
-        $villages = City::all();
+        $villages = Village::all();
 
         // For each Village generate customers
         foreach ($villages as $village) {
@@ -38,7 +38,7 @@ class CustomerSeeder extends Seeder {
                                 // https://github.com/larastan/larastan/issues/2307
                                 // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
-                                    return ['points' => $address->city->location->points];
+                                    return ['points' => $address->village->location->points];
                                 })
                                 ->randomizePointsInVillage(),
                             'geo'

@@ -77,21 +77,21 @@
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
-                    'md-invalid': errors.has('address.' + $tc('words.city')),
+                    'md-invalid': errors.has('address.' + $tc('words.village')),
                   }"
                 >
-                  <label for="city">
-                    {{ $tc("words.city") }}
+                  <label for="village">
+                    {{ $tc("words.village") }}
                   </label>
                   <md-select
-                    v-model="selectedCity"
+                    v-model="selectedVillage"
                     required
-                    :name="$tc('words.city')"
-                    id="city"
+                    :name="$tc('words.village')"
+                    id="village"
                     v-validate="'required'"
                   >
                     <md-option
-                      v-for="c in cityService.cities"
+                      v-for="c in villageService.villages"
                       :key="c.id"
                       :value="c.id"
                     >
@@ -99,7 +99,7 @@
                     </md-option>
                   </md-select>
                   <span class="md-error">
-                    {{ errors.first("address." + $tc("words.city")) }}
+                    {{ errors.first("address." + $tc("words.village")) }}
                   </span>
                 </md-field>
               </div>
@@ -193,7 +193,7 @@
 
 <script>
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { UserPasswordService } from "@/services/UserPasswordService.js"
 import { UserService } from "@/services/UserService.js"
 import Widget from "@/shared/Widget.vue"
@@ -206,11 +206,11 @@ export default {
     return {
       sending: false,
       modalVisibility: false,
-      selectedCity: "",
+      selectedVillage: "",
       firstStepClicked: false,
       refreshKey: 0,
       userService: new UserService(),
-      cityService: new CityService(),
+      villageService: new VillageService(),
       passwordService: new UserPasswordService(),
       phone: {
         valid: true,
@@ -230,7 +230,7 @@ export default {
     },
   },
   async mounted() {
-    await this.getCities()
+    await this.getVillages()
     await this.getUser()
     if (
       !this.userService.user.phone ||
@@ -240,10 +240,10 @@ export default {
     }
   },
   methods: {
-    async getCities() {
+    async getVillages() {
       try {
-        await this.cityService.getCities()
-        this.setSelectedCity()
+        await this.villageService.getVillages()
+        this.setSelectedVillage()
       } catch (error) {
         this.alertNotify("error", error.message)
       }
@@ -265,25 +265,25 @@ export default {
         ) {
           this.userService.user.phone = ""
         }
-        this.setSelectedCity()
+        this.setSelectedVillage()
       } catch (error) {
         this.alertNotify("error", error.message)
       }
     },
-    setSelectedCity() {
+    setSelectedVillage() {
       if (
-        this.userService.user.cityId !== undefined &&
-        this.userService.user.cityId !== null
+        this.userService.user.villageId !== undefined &&
+        this.userService.user.villageId !== null
       ) {
-        // If cities are loaded, verify the city exists in the list
-        if (this.cityService.cities.length > 0) {
-          const city = this.cityService.cities.find(
-            (x) => x.id === this.userService.user.cityId,
+        // If villages are loaded, verify the village exists in the list
+        if (this.villageService.villages.length > 0) {
+          const village = this.villageService.villages.find(
+            (x) => x.id === this.userService.user.villageId,
           )
-          this.selectedCity = city ? city.id : this.userService.user.cityId
+          this.selectedVillage = village ? village.id : this.userService.user.villageId
         } else {
-          // If cities not loaded yet, set directly (will be validated when cities load)
-          this.selectedCity = this.userService.user.cityId
+          // If villages not loaded yet, set directly (will be validated when villages load)
+          this.selectedVillage = this.userService.user.villageId
         }
       }
     },
@@ -295,8 +295,8 @@ export default {
         this.sending = false
         return
       }
-      if (this.selectedCity !== undefined) {
-        this.userService.user.cityId = this.selectedCity
+      if (this.selectedVillage !== undefined) {
+        this.userService.user.villageId = this.selectedVillage
       }
       try {
         await this.userService.update()

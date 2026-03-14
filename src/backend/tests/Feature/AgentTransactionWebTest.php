@@ -12,7 +12,7 @@ class AgentTransactionWebTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createMeterType();
         $this->createMeterTariff();
         $this->createMeterManufacturer();

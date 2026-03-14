@@ -4,7 +4,7 @@ namespace App\Plugins\BulkRegistration\Helpers;
 
 use App\Events\AccessRatePaymentInitialize;
 use App\Models\Address\Address;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Cluster;
 use App\Models\ConnectionType;
 use App\Models\Manufacturer;
@@ -65,10 +65,10 @@ class CsvDataProcessor {
                 $row['mini_grid_id'] = $miniGrid->id;
                 $this->checkRecordWasRecentlyCreated($miniGrid, 'mini_grid');
 
-                /** @var City */
-                $city = $this->createRecordFromCsv($row, $this->reflections['CityService']);
-                $row['city_id'] = $city->id;
-                $this->checkRecordWasRecentlyCreated($city, 'village');
+                /** @var Village */
+                $village = $this->createRecordFromCsv($row, $this->reflections['VillageService']);
+                $row['village_id'] = $village->id;
+                $this->checkRecordWasRecentlyCreated($village, 'village');
 
                 $this->createRecordFromCsv($row, $this->reflections['AddressService']);
 
@@ -103,7 +103,7 @@ class CsvDataProcessor {
 
                         $address = new Address();
                         $address = $address->newQuery()->make([
-                            'city_id' => $city->id,
+                            'village_id' => $village->id,
                         ]);
                         $address->owner()->associate($meter);
                         // See: https://github.com/EnAccess/micropowermanager/issues/1004

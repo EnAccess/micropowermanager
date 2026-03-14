@@ -2,7 +2,7 @@
 
 namespace App\Plugins\SparkMeter\Services;
 
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
@@ -29,7 +29,7 @@ class SiteService implements ISynchronizeService {
         private OrganizationService $organizationService,
         private Cluster $cluster,
         private MiniGrid $miniGrid,
-        private City $city,
+        private Village $village,
         private GeographicalInformation $geographicalInformation,
         private SmSyncSettingService $smSyncSettingService,
         private SmSyncActionService $smSyncActionService,
@@ -68,9 +68,9 @@ class SiteService implements ISynchronizeService {
             'cluster_id' => $cluster->id,
         ]);
 
-        $cityName = explode('-', $site['name'])[1].' Village';
-        $this->city->newQuery()->create([
-            'name' => $cityName,
+        $villageName = explode('-', $site['name'])[1].' Village';
+        $this->village->newQuery()->create([
+            'name' => $villageName,
             'mini_grid_id' => $miniGrid->id,
             'cluster_id' => $miniGrid->cluster_id,
         ]);

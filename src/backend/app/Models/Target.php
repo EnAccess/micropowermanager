@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\DB;
  * @property      int                        $owner_id
  * @property      Carbon|null                $created_at
  * @property      Carbon|null                $updated_at
- * @property-read City|null                  $city
+ * @property-read Village|null                  $village
  * @property-read Model                      $owner
  * @property-read Collection<int, SubTarget> $subTargets
  */
@@ -33,10 +33,10 @@ class Target extends BaseModel {
     use HasFactory;
 
     /**
-     * @return BelongsTo<City, $this>
+     * @return BelongsTo<Village, $this>
      */
-    public function city(): BelongsTo {
-        return $this->belongsTo(City::class);
+    public function village(): BelongsTo {
+        return $this->belongsTo(Village::class);
     }
 
     /**
@@ -49,9 +49,9 @@ class Target extends BaseModel {
     /**
      * @return Builder<Target>
      */
-    public function targetForMiniGrid(int|string $cityId, string $endDate): Builder {
-        return $this::with('subTargets.connectionType', 'city')
-            ->where('owner_id', $cityId)
+    public function targetForMiniGrid(int|string $villageId, string $endDate): Builder {
+        return $this::with('subTargets.connectionType', 'village')
+            ->where('owner_id', $villageId)
             ->where('owner_type', 'mini-grid')
             ->where('target_date', '>=', $endDate)
             ->oldest('target_date')
@@ -66,7 +66,7 @@ class Target extends BaseModel {
     public function targetForCluster(array $miniGridIds, string $endDate): Builder {
         return $this::query()
             ->select(DB::raw('*, YEARWEEK(target_date,3) as period'))
-            ->with('subTargets.connectionType', 'city')
+            ->with('subTargets.connectionType', 'village')
             ->whereIn('owner_id', $miniGridIds)
             ->where('owner_type', 'mini-grid')
             ->where('target_date', '>=', $endDate)
@@ -83,13 +83,13 @@ class Target extends BaseModel {
     /**
      * @return Builder<Target>
      */
-    public function periodTargetAlternative(int|string $cityId, string $startDate): Builder {
+    public function periodTargetAlternative(int|string $villageId, string $startDate): Builder {
         return $this::query()
             ->select(DB::raw('*, YEARWEEK(target_date,3) as period'))->with(
                 'subTargets.connectionType',
-                'city'
+                'village'
             )
-            ->where('owner_id', $cityId)
+            ->where('owner_id', $villageId)
             ->where('owner_type', 'mini-grid')
             ->where('target_date', '<', $startDate)
             ->orderBy('target_date', 'desc')->limit(1);

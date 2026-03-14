@@ -2,7 +2,7 @@
 
 namespace App\Plugins\SteamaMeter\Services;
 
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Person\Person;
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
 use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
@@ -44,7 +44,7 @@ class SteamaCustomerService implements ISynchronizeService {
         private SteamaPerKwhPaymentPlan $perKwhPaymentPlan,
         private SteamaUserType $userType,
         private SteamaSite $stmSite,
-        private City $city,
+        private Village $village,
         private SteamaSyncSettingService $steamaSyncSettingService,
         private StemaSyncActionService $steamaSyncActionService,
         private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
@@ -183,7 +183,7 @@ class SteamaCustomerService implements ISynchronizeService {
             'street1' => $customer['site_name'] ?: null,
         ];
         $customerSite = $this->stmSite->newQuery()->with('mpmMiniGrid')->where('site_id', $customer['site'])->first();
-        $customerCity = $this->city->newQuery()->where('mini_grid_id', $customerSite->mpmMiniGrid->id)->first();
+        $customerCity = $this->village->newQuery()->where('mini_grid_id', $customerSite->mpmMiniGrid->id)->first();
 
         $person = $this->person->newQuery()->create([
             'name' => $personData['name'],
@@ -195,7 +195,7 @@ class SteamaCustomerService implements ISynchronizeService {
             'phone' => $personData['phone'],
             'street' => $personData['street1'],
             'is_primary' => 1,
-            'city_id' => $customerCity->id,
+            'village_id' => $customerCity->id,
         ];
         $address = $addressService->instantiate($addressParams);
         $addressService->assignAddressToOwner($person, $address);
@@ -212,13 +212,13 @@ class SteamaCustomerService implements ISynchronizeService {
             'surname' => $customer['last_name'] ?: '',
         ]);
         $customerSite = $this->stmSite->newQuery()->with('mpmMiniGrid')->where('site_id', $customer['site'])->first();
-        $customerCity = $this->city->newQuery()->where('mini_grid_id', $customerSite->mpmMiniGrid->id)->first();
+        $customerCity = $this->village->newQuery()->where('mini_grid_id', $customerSite->mpmMiniGrid->id)->first();
 
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->update([
             'phone' => $customer['telephone'] ?: null,
             'street' => $customer['site_name'] ?: null,
-            'city_id' => $customerCity->id,
+            'village_id' => $customerCity->id,
         ]);
 
         return $person;

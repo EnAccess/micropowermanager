@@ -128,8 +128,8 @@ class TransactionSeeder extends Seeder {
         $deviceSerial = $randomDevice->device_serial;
 
         if ($transactionType instanceof AgentTransaction) {
-            $city = $randomDevice->person->addresses()->first()->city()->first();
-            $miniGrid = $city->miniGrid()->first();
+            $village = $randomDevice->person->addresses()->first()->village()->first();
+            $miniGrid = $village->miniGrid()->first();
             // get a random agent from the mini grid
             $agent = $miniGrid->agents()->inRandomOrder()->first();
             $transaction = (new TransactionFactory())->make([
@@ -157,8 +157,8 @@ class TransactionSeeder extends Seeder {
         $manufacturerTransaction = $this->getManufacturerTransactionFromDeviceType($deviceModel);
 
         if ($transactionType instanceof AgentTransaction) {
-            $city = $randomDevice->person->addresses()->first()->city()->first();
-            $miniGrid = $city->miniGrid()->first();
+            $village = $randomDevice->person->addresses()->first()->village()->first();
+            $miniGrid = $village->miniGrid()->first();
             $agent = $miniGrid->agents()->inRandomOrder()->first();
             if (!$agent) {
                 return;

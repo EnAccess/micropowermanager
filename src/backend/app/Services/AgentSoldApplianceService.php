@@ -195,7 +195,7 @@ class AgentSoldApplianceService implements IBaseService {
             $addressFromCustomer = $appliancePerson->person()->first()->addresses()->first();
             $addressData = $requestData['address'] ?? [
                 'street' => $addressFromCustomer->street,
-                'city_id' => $addressFromCustomer->city_id,
+                'village_id' => $addressFromCustomer->village_id,
             ];
             $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()->points;
 
@@ -204,7 +204,7 @@ class AgentSoldApplianceService implements IBaseService {
 
             $address = $this->addressesService->make([
                 'street' => $addressData['street'],
-                'city_id' => $addressData['city_id'],
+                'village_id' => $addressData['village_id'],
             ]);
 
             // Attach the new address to the buyer (person) rather than the device.

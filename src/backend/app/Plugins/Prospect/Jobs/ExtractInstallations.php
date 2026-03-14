@@ -66,7 +66,7 @@ class ExtractInstallations extends AbstractJob {
             $query = Device::query()->with([
                 'device',
                 'person.addresses.geo',
-                'person.addresses.city.country',
+                'person.addresses.village.country',
                 'tokens.transaction',
                 'appliance',
                 'appliancePerson',

@@ -22,7 +22,7 @@ class AgentCommissionTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $postData = [
             'name' => 'test commission',

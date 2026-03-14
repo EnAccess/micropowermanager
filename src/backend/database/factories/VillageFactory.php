@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\City;
+use App\Models\Village;
 use Faker\Provider\en_NG\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<City> */
-class CityFactory extends Factory {
-    protected $model = City::class;
+/** @extends Factory<Village> */
+class VillageFactory extends Factory {
+    protected $model = Village::class;
 
     public function __construct(
     ) {
@@ -23,7 +23,7 @@ class CityFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'name' => $this->faker->city,
+            'name' => $this->faker->streetName,
             'country_id' => 1,
         ];
     }
