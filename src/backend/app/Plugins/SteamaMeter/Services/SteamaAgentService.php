@@ -174,13 +174,13 @@ class SteamaAgentService implements ISynchronizeService {
             'surname' => $stmAgent['last_name'],
             'is_customer' => 0,
         ]);
-        $site = $this->site->newQuery()->with('mpmMiniGrid.cities')->where('site_id', $stmAgent['site'])->first();
+        $site = $this->site->newQuery()->with('mpmMiniGrid.villages')->where('site_id', $stmAgent['site'])->first();
 
-        $city = $site->mpmMiniGrid->cities->first();
+        $village = $site->mpmMiniGrid->villages->first();
 
         $addressService = app()->make(AddressesService::class);
         $addressParams = [
-            'city_id' => $city->id,
+            'village_id' => $village->id,
             'email' => '',
             'phone' => $stmAgent['telephone'],
             'street' => $stmAgent['site_name'],
@@ -216,7 +216,7 @@ class SteamaAgentService implements ISynchronizeService {
 
         $site = $this->site->newQuery()->with('mpmMiniGrid')->where('site_id', $stmAgent['site'])->first();
 
-        $city = $site->mpmMiniGrid->cities->first();
+        $village = $site->mpmMiniGrid->villages->first();
 
         $personId = $relatedPerson->id;
 
@@ -229,7 +229,7 @@ class SteamaAgentService implements ISynchronizeService {
         )->first();
 
         $address->update([
-            'city_id' => $city->id,
+            'village_id' => $village->id,
             'phone' => $stmAgent['telephone'],
             'street' => $stmAgent['site_name'],
             'is_primary' => 1,

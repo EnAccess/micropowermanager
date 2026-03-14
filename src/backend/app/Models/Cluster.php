@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -21,7 +22,8 @@ use Illuminate\Support\Carbon;
  * @property      object                    $geo_json
  * @property      Carbon|null               $created_at
  * @property      Carbon|null               $updated_at
- * @property-read Collection<int, City>     $cities
+ * @property-read Collection<int, Village>     $villages
+ * @property-read GeographicalInformation|null $location
  * @property-read User|null                 $manager
  * @property-read Collection<int, MiniGrid> $miniGrids
  */
@@ -31,19 +33,50 @@ class Cluster extends BaseModel implements ITargetAssignable {
 
     public const RELATION_NAME = 'cluster';
 
+    /** @var array<int, string> */
+    protected $hidden = ['location'];
+
+    /** @var array<int, string> */
+    protected $appends = ['geo_json'];
+
     /** @return BelongsTo<User, $this> */
     public function manager(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
-    /** @return HasManyThrough<City, MiniGrid, $this> */
-    public function cities(): HasManyThrough {
-        return $this->hasManyThrough(City::class, MiniGrid::class);
+    /** @return HasManyThrough<Village, MiniGrid, $this> */
+    public function villages(): HasManyThrough {
+        return $this->hasManyThrough(Village::class, MiniGrid::class);
     }
 
     /** @return HasMany<MiniGrid, $this> */
     public function miniGrids(): HasMany {
         return $this->hasMany(MiniGrid::class);
+    }
+
+    /** @return MorphOne<GeographicalInformation, $this> */
+    public function location(): MorphOne {
+        return $this->morphOne(GeographicalInformation::class, 'owner');
+    }
+
+    public function getGeoJsonAttribute(): mixed {
+        $location = $this->relationLoaded('location')
+            ? $this->location
+            : $this->location()->first();
+
+        if ($location?->geo_json !== null) {
+            return $location->geo_json;
+        }
+
+        $legacyGeoJson = $this->getRawOriginal('geo_json');
+
+        if ($legacyGeoJson === null || $legacyGeoJson === '') {
+            return null;
+        }
+
+        return is_string($legacyGeoJson)
+            ? json_decode($legacyGeoJson)
+            : $legacyGeoJson;
     }
 
     protected function casts(): array {

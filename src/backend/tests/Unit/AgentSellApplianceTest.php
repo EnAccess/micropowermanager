@@ -13,6 +13,7 @@ use App\Models\PaymentHistory;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Schema;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
@@ -46,26 +47,40 @@ class AgentSellApplianceTest extends TestCase {
         $user = UserFactory::new()->create(['company_id' => $this->companyId]);
         $this->actingAs($user);
         $person = PersonFactory::new()->create();
-        $cluster = Cluster::query()->create([
-            'name' => 'Test Cluster',
-            'manager_id' => 1,
-            'geo_json' => json_encode([
-                'type' => 'Feature',
-                'properties' => [
-                    'name' => 'Test Cluster',
-                ],
-                'geometry' => [
-                    'type' => 'Polygon',
-                    'coordinates' => [
-                        [
-                            [37.937924389032375, -3.204747603780925],
-                            [37.93779565098191, -3.4220930701917984],
-                            [38.24208948955007, -3.2492230959644415],
-                            [37.937924389032375, -3.204747603780925],
-                        ],
+        $clusterGeoJson = [
+            'type' => 'Feature',
+            'properties' => [
+                'name' => 'Test Cluster',
+            ],
+            'geometry' => [
+                'type' => 'Polygon',
+                'coordinates' => [
+                    [
+                        [37.937924389032375, -3.204747603780925],
+                        [37.93779565098191, -3.4220930701917984],
+                        [38.24208948955007, -3.2492230959644415],
+                        [37.937924389032375, -3.204747603780925],
                     ],
                 ],
-            ]),
+            ],
+        ];
+
+        $clusterCreateData = [
+            'name' => 'Test Cluster',
+            'manager_id' => 1,
+        ];
+
+        if (Schema::connection('tenant')->hasColumn('clusters', 'geo_json')) {
+            $clusterCreateData['geo_json'] = $clusterGeoJson;
+        }
+
+        $cluster = Cluster::query()->create([
+            ...$clusterCreateData,
+        ]);
+
+        $cluster->location()->create([
+            'points' => '',
+            'geo_json' => $clusterGeoJson,
         ]);
 
         $miniGrid = MiniGrid::query()->create([

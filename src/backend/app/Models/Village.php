@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
-use Database\Factories\CityFactory;
+use Database\Factories\VillageFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +15,7 @@ use Znck\Eloquent\Relations\BelongsToThrough;
 use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 /**
- * Class City.
+ * Class Village.
  *
  * @property      int                          $id
  * @property      string                       $name
@@ -31,12 +31,12 @@ use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
  * @property-read MiniGrid|null                $miniGrid
  * @property-read Collection<int, Target>      $targets
  */
-class City extends BaseModel {
-    /** @use HasFactory<CityFactory> */
+class Village extends BaseModel {
+    /** @use HasFactory<VillageFactory> */
     use HasFactory;
     use BelongsToThroughTrait;
 
-    public const RELATION_NAME = 'city';
+    public const RELATION_NAME = 'village';
 
     /**
      * @return HasMany<Target, $this>

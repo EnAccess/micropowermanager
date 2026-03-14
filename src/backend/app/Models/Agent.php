@@ -149,7 +149,7 @@ class Agent extends Authenticatable implements JWTSubject {
      * @return MorphMany<Address, $this>
      */
     public function addressDetails(): MorphMany {
-        return $this->addresses()->with('city');
+        return $this->addresses()->with('village');
     }
 
     /**

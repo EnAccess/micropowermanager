@@ -51,10 +51,18 @@ class CompanyDatabase extends BaseModelCentral {
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase {
+        if (!$this->shouldUseCache()) {
+            return $this->newQuery()
+                ->where(self::COL_COMPANY_ID, '=', $companyId)
+                ->latest('id')
+                ->firstOrFail();
+        }
+
         $cacheKey = self::CACHE_KEY_PREFIX.':'.$companyId;
 
         return Cache::remember($cacheKey, self::CACHE_TTL, fn () => $this->newQuery()
             ->where(self::COL_COMPANY_ID, '=', $companyId)
+            ->latest('id')
             ->firstOrFail());
     }
 
@@ -73,5 +81,9 @@ class CompanyDatabase extends BaseModelCentral {
     private function clearCache(): void {
         $cacheKey = self::CACHE_KEY_PREFIX.':'.$this->company_id;
         Cache::forget($cacheKey);
+    }
+
+    private function shouldUseCache(): bool {
+        return !app()->environment(['development', 'testing']);
     }
 }

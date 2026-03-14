@@ -67,8 +67,8 @@ class ExtractAgents extends AbstractJob {
                 ->with([
                     'person',
                     'person.addresses.geo',
-                    'person.addresses.city.country',
-                    'person.addresses.city.cluster',
+                    'person.addresses.village.country',
+                    'person.addresses.village.cluster',
                 ]);
 
             $agents = $query->get();

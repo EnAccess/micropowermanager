@@ -12,7 +12,7 @@ class AgentSoldApplianceWebTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAssignedAppliances();

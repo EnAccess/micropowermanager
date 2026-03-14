@@ -32,7 +32,7 @@ class CustomerRegistrationAppService {
         $connectionTypeId = $request->input('connection_type_id');
         $connectionGroupId = $request->input('connection_group_id');
         $tariffId = $request->input('tariff_id');
-        $cityId = $request->input('city_id');
+        $villageId = $request->input('village_id');
         $geoPoints = $request->input('geo_points');
         if (!$person instanceof Person) {
             $request->attributes->add(['is_customer' => 1]);
@@ -57,7 +57,7 @@ class CustomerRegistrationAppService {
         $this->meterDeviceService->assign();
         $this->deviceService->save($device);
         $addressData = [
-            'city_id' => $cityId ?? 1,
+            'village_id' => $villageId ?? 1,
         ];
         $address = $this->addressService->make($addressData);
         $this->addressService->assignAddressToOwner($person, $address);

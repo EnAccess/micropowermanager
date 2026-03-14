@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CityController;
+use App\Http\Controllers\VillageController;
 use App\Http\Controllers\ConnectionGroupController;
 use App\Http\Controllers\ConnectionTypeController;
 use App\Http\Controllers\CustomerRegistrationAppController;
@@ -16,7 +16,7 @@ Route::group(['prefix' => 'customer-registration-app'], static function () {
     Route::get('/manufacturers', [ManufacturerController::class, 'index']);
     Route::get('/meter-types', [MeterTypeController::class, 'index']);
     Route::get('/tariffs', [TariffController::class, 'index']);
-    Route::get('/cities', [CityController::class, 'index']);
+    Route::get('/villages', [VillageController::class, 'index']);
     Route::get('/connection-groups', [ConnectionGroupController::class, 'index']);
     Route::get('/connection-types', [ConnectionTypeController::class, 'index']);
     Route::get('/sub-connection-types', [SubConnectionTypeController::class, 'index']);

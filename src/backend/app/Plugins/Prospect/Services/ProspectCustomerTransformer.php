@@ -24,12 +24,12 @@ class ProspectCustomerTransformer {
         if ($primaryAddress?->street) {
             $addressParts[] = $primaryAddress->street;
         }
-        if ($primaryAddress?->city?->name) {
-            $addressParts[] = $primaryAddress->city->name;
+        if ($primaryAddress?->village?->name) {
+            $addressParts[] = $primaryAddress->village->name;
         }
         $addressString = empty($addressParts) ? null : implode(', ', $addressParts);
 
-        $countryCode = $primaryAddress?->city?->country->country_code ?? null;
+        $countryCode = $primaryAddress?->village?->country->country_code ?? null;
 
         $birthYear = $this->extractBirthYear($person->birth_date);
 
@@ -61,7 +61,7 @@ class ProspectCustomerTransformer {
 
         return $person->addresses()
             ->where('is_primary', true)
-            ->with(['city.country', 'geo'])
+            ->with(['village.country', 'geo'])
             ->first();
     }
 
@@ -77,7 +77,7 @@ class ProspectCustomerTransformer {
             ->where('is_primary', false)
             ->whereNotNull('phone')
             ->where('phone', '!=', '')
-            ->with(['city.country', 'geo'])
+            ->with(['village.country', 'geo'])
             ->first();
     }
 

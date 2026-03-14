@@ -2,27 +2,27 @@
 
 namespace App\Services;
 
-use App\Models\City;
+use App\Models\Village;
 use App\Models\GeographicalInformation;
 use App\Services\Interfaces\IAssignationService;
 
 /**
- * @implements IAssignationService<GeographicalInformation, City>
+ * @implements IAssignationService<GeographicalInformation, Village>
  */
-class CityGeographicalInformationService implements IAssignationService {
+class VillageGeographicalInformationService implements IAssignationService {
     private GeographicalInformation $geographicInformation;
-    private City $city;
+    private Village $village;
 
     public function setAssigned($assigned): void {
         $this->geographicInformation = $assigned;
     }
 
     public function setAssignee($assignee): void {
-        $this->city = $assignee;
+        $this->village = $assignee;
     }
 
     public function assign(): GeographicalInformation {
-        $this->geographicInformation->owner()->associate($this->city);
+        $this->geographicInformation->owner()->associate($this->village);
 
         return $this->geographicInformation;
     }

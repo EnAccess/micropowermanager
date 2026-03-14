@@ -2,7 +2,7 @@
 
 namespace App\Plugins\SteamaMeter\Services;
 
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
@@ -28,7 +28,7 @@ class SteamaSiteService implements ISynchronizeService {
         private MiniGrid $miniGrid,
         private Cluster $cluster,
         private GeographicalInformation $geographicalInformation,
-        private City $city,
+        private Village $village,
         private SteamaSyncSettingService $steamaSyncSettingService,
         private StemaSyncActionService $steamaSyncActionService,
     ) {}
@@ -147,7 +147,7 @@ class SteamaSiteService implements ISynchronizeService {
             'name' => $site['name'],
             'cluster_id' => $cluster->id,
         ]);
-        $this->city->newQuery()->create([
+        $this->village->newQuery()->create([
             'name' => $miniGrid->name.' Village',
             'mini_grid_id' => $miniGrid->id,
             'cluster_id' => $miniGrid->cluster->id,

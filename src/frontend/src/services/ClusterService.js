@@ -14,7 +14,17 @@ export class ClusterService {
     this.list = []
   }
 
-  async createCluster(clusterData) {
+  async createCluster(clusterDataOrGeoData, geoType = null, name = null, managerId = null) {
+    const clusterData =
+      clusterDataOrGeoData && typeof clusterDataOrGeoData === "object"
+        ? clusterDataOrGeoData
+        : {
+            geojson: clusterDataOrGeoData,
+            geo_type: geoType,
+            name,
+            manager_id: managerId,
+          }
+
     const params = convertObjectKeysToSnakeCase(clusterData)
     try {
       const { data, status, error } = await this.repository.create(params)
@@ -98,6 +108,49 @@ export class ClusterService {
     }
   }
 
+  async getClusterVillagesRevenue(clusterId, period, startDate, endDate) {
+    const queryString = `?period=${period ?? ""}&startDate=${
+      startDate ?? ""
+    }&endDate=${endDate ?? ""}`
+
+    try {
+      const { data, status, error } = await this.repository.getClusterVillagesRevenue(
+        clusterId,
+        queryString,
+      )
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
+
+      this.financialData = data.data
+      return this.financialData
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async getClusterTrends(clusterId = 0, period = "monthly", startDate, endDate) {
+    const queryString = `?period=${period}&startDate=${
+      startDate ?? ""
+    }&endDate=${endDate ?? ""}`
+
+    try {
+      const { data, status, error } = await this.repository.getClusterTrends(
+        clusterId,
+        queryString,
+      )
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
+
+      this.clusterTrends = data.data
+      this.fillTrends()
+      return this.clusterTrends
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   fillTrends() {
     let trendKeys = Object.keys(this.clusterTrends)
     this.trendChartData.base = [Object.keys(this.clusterTrends)]
@@ -112,7 +165,7 @@ export class ClusterService {
     }
   }
 
-  insertCityNames(count, data) {
+  insertVillageNames(count, data) {
     for (let i = 0; i < count; i++) {
       data.push(this.financialData[i].name)
     }
@@ -128,7 +181,7 @@ export class ClusterService {
       return
     }
 
-    data[0] = this.insertCityNames(itemCount, data[0])
+    data[0] = this.insertVillageNames(itemCount, data[0])
     if (summary) {
       data[0].push(i18n.tc("words.total"))
     }

@@ -132,7 +132,7 @@
 import { mapGetters } from "vuex"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { CurrencyListService } from "@/services/CurrencyListService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import { TariffService } from "@/services/TariffService.js"
@@ -170,7 +170,7 @@ export default {
       },
       transactionProviders: [],
       miniGridService: new MiniGridService(),
-      cityService: new CityService(),
+      villageService: new VillageService(),
       currencyListService: new CurrencyListService(),
       exportFilters: {
         format: "csv",
@@ -369,9 +369,9 @@ export default {
 
     async loadCities() {
       try {
-        await this.cityService.getCities()
+        await this.villageService.getVillages()
       } catch (error) {
-        console.error("Failed to load cities:", error)
+        console.error("Failed to load villages:", error)
       }
     },
 

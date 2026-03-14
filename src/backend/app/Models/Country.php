@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property      string                $country_name
  * @property      Carbon|null           $created_at
  * @property      Carbon|null           $updated_at
- * @property-read Collection<int, City> $cities
+ * @property-read Collection<int, Village> $villages
  */
 class Country extends BaseModel {
     /** @use HasFactory<CountryFactory> */
@@ -28,9 +28,9 @@ class Country extends BaseModel {
     }
 
     /**
-     * @return HasMany<City, $this>
+     * @return HasMany<Village, $this>
      */
-    public function cities(): HasMany {
-        return $this->hasMany(City::class);
+    public function villages(): HasMany {
+        return $this->hasMany(Village::class);
     }
 }

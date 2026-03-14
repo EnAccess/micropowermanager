@@ -17,12 +17,12 @@ return new class extends Migration {
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('street')->nullable();
-            $table->integer('city_id')->nullable();
+            $table->integer('village_id')->nullable();
             $table->integer('geo_id')->nullable();
             $table->integer('is_primary')->default(0);
             $table->timestamps();
 
-            // email, phone, street, city ,province, country, geo reference
+            // email, phone, street, village, province, country, geo reference
         });
     }
 

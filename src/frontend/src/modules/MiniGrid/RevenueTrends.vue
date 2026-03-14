@@ -107,7 +107,7 @@ export default {
     return {
       loading: false,
       redirectionUrl: "/locations/add-village",
-      imperativeItem: "City",
+      imperativeItem: "Village",
       redirectDialogActive: false,
     }
   },

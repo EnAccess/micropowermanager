@@ -27,9 +27,9 @@ export let resources = {
     update: "/api/addresses",
     delete: "/api/addresses",
   },
-  city: {
-    list: "/api/cities",
-    create: "/api/cities",
+  village: {
+    list: "/api/villages",
+    create: "/api/villages",
   },
   admin: {
     list: "/api/users",

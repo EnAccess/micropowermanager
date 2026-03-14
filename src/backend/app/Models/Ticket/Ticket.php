@@ -121,9 +121,9 @@ class Ticket extends BaseModel {
             LEFT JOIN addresses ON addresses.owner_id = tickets.owner_id
             WHERE
                 addresses.owner_type = 'person'
-                AND addresses.city_id IN (
+                AND addresses.village_id IN (
                     SELECT id
-                    FROM cities
+                    FROM villages
                     WHERE mini_grid_id = {$miniGridId}
                 ){$dateFilter}
             GROUP BY
@@ -158,9 +158,9 @@ class Ticket extends BaseModel {
             LEFT JOIN addresses ON addresses.owner_id = tickets.owner_id
             WHERE
                 addresses.owner_type = 'person'
-                AND addresses.city_id IN (
+                AND addresses.village_id IN (
                     SELECT id
-                    FROM cities
+                    FROM villages
                     WHERE mini_grid_id = {$miniGridId}
                 )
                 AND tickets.status = 1{$dateFilter}

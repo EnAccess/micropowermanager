@@ -22,13 +22,13 @@ class AddressTest extends TestCase {
         $person = PersonFactory::new()->create();
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
 
         $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
             'email' => $this->faker->email(),
             'phone' => $this->faker->phoneNumber(),
             'street' => $this->faker->streetAddress(),
-            'city_id' => $this->city->id,
+            'village_id' => $this->village->id,
             'country_id' => 1,
             'cluster_id' => $this->cluster->id,
             'mini_grid_id' => $this->miniGrid->id,
@@ -36,7 +36,7 @@ class AddressTest extends TestCase {
         ]);
         $response->assertStatus(200);
         $this->assertEquals(1, $person->addresses()->count());
-        $this->assertEquals($this->city->id, $person->addresses()->first()->city_id);
+        $this->assertEquals($this->village->id, $person->addresses()->first()->village_id);
         $this->assertEquals(1, $person->addresses()->first()->is_primary);
     }
 
@@ -47,7 +47,7 @@ class AddressTest extends TestCase {
         $person = PersonFactory::new()->create();
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
 
         $address = AddressFactory::new()->make();
         $address->owner()->associate($person);
@@ -61,7 +61,7 @@ class AddressTest extends TestCase {
             'country_id' => 1,
             'cluster_id' => $this->cluster->id,
             'mini_grid_id' => $this->miniGrid->id,
-            'city_id' => $this->city->id,
+            'village_id' => $this->village->id,
             'primary' => 0,
         ]);
 

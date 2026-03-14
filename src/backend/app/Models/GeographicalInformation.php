@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property      int         $owner_id
  * @property      string      $owner_type
  * @property      string      $points
+ * @property      object|null $geo_json
  * @property      Carbon|null $created_at
  * @property      Carbon|null $updated_at
  * @property-read Model       $owner
@@ -31,5 +32,11 @@ class GeographicalInformation extends BaseModel {
      */
     public function owner(): MorphTo {
         return $this->morphTo();
+    }
+
+    protected function casts(): array {
+        return [
+            'geo_json' => 'object',
+        ];
     }
 }

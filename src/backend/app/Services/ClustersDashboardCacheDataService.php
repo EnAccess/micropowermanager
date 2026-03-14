@@ -53,7 +53,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
             $revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
             $population = $this->clusterPopulationService->getById($cluster->id);
 
-            $citiesRevenue = $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
+            $villagesRevenue = $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
             $revenueAnalysis = $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
                 $cluster->id,
                 $connectionTypes,
@@ -73,7 +73,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 meterCount: $meterCount,
                 revenue: $revenue,
                 population: $population,
-                citiesRevenue: $citiesRevenue,
+                villagesRevenue: $villagesRevenue,
                 revenueAnalysis: $revenueAnalysis,
                 period: $periodicRevenue['period'],
                 periodWeekly: $periodicRevenue['periodWeekly'],

@@ -110,7 +110,7 @@ class Transaction extends BaseModel {
     /**
      * @return array<int, array<string, mixed>>
      */
-    public function periodTargetAlternative(int $cityId, string $startDate, string $endDate): array {
+    public function periodTargetAlternative(int $villageId, string $startDate, string $endDate): array {
         $sql = <<<SQL
             SELECT
                 SUM(transactions.amount) AS revenue,
@@ -129,7 +129,7 @@ class Transaction extends BaseModel {
                     ON addresses.owner_id = people.id AND addresses.owner_type = 'person'
                 WHERE
                     DATE(transactions.created_at) BETWEEN :periodStartDate AND :periodEndDate
-                    AND addresses.city_id = :city_id
+                    AND addresses.village_id = :village_id
             );
             SQL;
         // FIXME: This used to be here, but no longer.
@@ -138,7 +138,7 @@ class Transaction extends BaseModel {
         // " ORDER BY CON CAT(YEAR(transactions.created_at), '-', WEEK(transactions.created_at,3))";
 
         $sth = DB::connection()->getPdo()->prepare($sql);
-        $sth->bindValue(':city_id', $cityId, \PDO::PARAM_INT);
+        $sth->bindValue(':village_id', $villageId, \PDO::PARAM_INT);
         $sth->bindValue(':periodStartDate', $startDate, \PDO::PARAM_STR);
         $sth->bindValue(':periodEndDate', $endDate, \PDO::PARAM_STR);
 

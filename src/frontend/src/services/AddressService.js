@@ -10,8 +10,8 @@ export class Address {
     this.email = item.email
     this.phone = item.phone
     this.street = item.street !== null ? item.street : "-"
-    this.city = item.city !== null ? item.city.name : "-"
-    this.city_id = item.city_id
+    this.village = item.village !== null ? item.village.name : "-"
+    this.village_id = item.village_id
     this.primary = item.is_primary !== 0
     this.created_at = item.created_at
     return this

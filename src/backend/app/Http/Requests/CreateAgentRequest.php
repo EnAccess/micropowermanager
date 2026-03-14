@@ -26,7 +26,7 @@ class CreateAgentRequest extends FormRequest {
             'name' => ['required', 'min:3'],
             'surname' => ['required', 'min:3'],
             'password' => ['required', 'min:6'],
-            'city_id' => ['required'],
+            'village_id' => ['required'],
             'agent_commission_id' => ['required'],
         ];
     }

@@ -38,7 +38,7 @@ abstract class TestCase extends BaseTestCase {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
 
-        $guard = $driver ?? ($user instanceof Agent ? 'agent_api' : 'api');
+        $guard = $guard ?? ($user instanceof Agent ? 'agent_api' : 'api');
 
         parent::actingAs($user, $guard);
 

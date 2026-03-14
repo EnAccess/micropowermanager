@@ -21,7 +21,7 @@ class TicketTest extends TestCase {
         $this->createTestData();
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser($this->user->id);
@@ -43,7 +43,7 @@ class TicketTest extends TestCase {
         $this->createTestData();
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser($this->user->id);
@@ -57,7 +57,7 @@ class TicketTest extends TestCase {
         $this->createTestData();
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser($this->user->id);
@@ -71,7 +71,7 @@ class TicketTest extends TestCase {
         $this->createTestData();
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
         $this->createPerson();
         $this->createAgentCommission();
         $this->createAgent();
@@ -111,7 +111,7 @@ class TicketTest extends TestCase {
         $this->createTestData();
         $this->createCluster(1);
         $this->createMiniGrid(1);
-        $this->createCity(1);
+        $this->createVillage(1);
         $this->createPerson();
         $this->createAgentCommission();
         $this->createAgent();

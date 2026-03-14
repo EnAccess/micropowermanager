@@ -16,14 +16,14 @@ class UserAddressService {
             'email' => $data['email'] ?? '',
             'phone' => $data['phone'] ?? '',
             'street' => $data['street'] ?? '',
-            'city_id' => $data['city_id'] ?? '',
+            'village_id' => $data['village_id'] ?? '',
         ]);
         // delete address if exists
         $user->address()->delete();
         $address->owner()->associate($user);
         $address->save();
 
-        return $address->load(['city']);
+        return $address->load(['village']);
     }
 
     /**
@@ -38,7 +38,7 @@ class UserAddressService {
                 'email' => $user->email,
                 'phone' => $data['phone'],
                 'street' => $data['street'],
-                'city_id' => $data['city_id'],
+                'village_id' => $data['village_id'],
                 'is_primary' => 1,
             ]);
             $address->owner()->associate($user);
@@ -50,7 +50,7 @@ class UserAddressService {
             'email' => $user->email,
             'phone' => $data['phone'],
             'street' => $data['street'],
-            'city_id' => $data['city_id'],
+            'village_id' => $data['village_id'],
             'is_primary' => $address->is_primary,
         ]);
 

@@ -5,7 +5,7 @@ order: 8
 # Customers
 
 MicroPowerManager customers are listed under `Customers` in the sidebar.
-This table contains the customers' name, phone number, city, and device number.
+This table contains the customers' name, phone number, village, and device number.
 The search function also includes all those fields.
 By clicking on a customer, the customer’s profile page will be loaded
 Data parameters included are:

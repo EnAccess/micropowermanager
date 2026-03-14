@@ -16,7 +16,7 @@ use Database\Factories\AgentTransactionFactory;
 use Database\Factories\ApplianceFactory;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
-use Database\Factories\CityFactory;
+use Database\Factories\VillageFactory;
 use Database\Factories\ClusterFactory;
 use Database\Factories\ConnectionGroupFactory;
 use Database\Factories\ConnectionTypeFactory;
@@ -44,7 +44,7 @@ trait CreateEnvironments {
     use WithFaker;
 
     private $user;
-    private $city;
+    private $village;
     private $cluster;
     private $miniGrid;
     private $connectionType;
@@ -86,7 +86,7 @@ trait CreateEnvironments {
     private $subConnectionTypes = [];
     private $meterTypes = [];
     private $manufacturers = [];
-    private $cities = [];
+    private $villages = [];
     private $meterTariffs = [];
     private $targets = [];
     private $subTargets = [];
@@ -142,19 +142,19 @@ trait CreateEnvironments {
         }
     }
 
-    protected function createCity($cityCount = 1) {
-        while ($cityCount > 0) {
-            $city = CityFactory::new()->create([
-                'name' => $this->faker->citySuffix.$this->faker->randomAscii(),
+    protected function createVillage($villageCount = 1) {
+        while ($villageCount > 0) {
+            $village = VillageFactory::new()->create([
+                'name' => $this->faker->streetName.$this->faker->randomAscii(),
                 'country_id' => 1,
                 'mini_grid_id' => $this->getRandomIdFromList($this->miniGrids),
             ]);
-            $this->cities[] = $city;
-            --$cityCount;
+            $this->villages[] = $village;
+            --$villageCount;
         }
 
-        if (count($this->cities) > 0) {
-            $this->city = $this->cities[0];
+        if (count($this->villages) > 0) {
+            $this->village = $this->villages[0];
         }
     }
 
@@ -182,7 +182,7 @@ trait CreateEnvironments {
             $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
             $this->person = PersonFactory::new()->create();
             $addressData = [
-                'city_id' => $this->city->id,
+                'village_id' => $this->village->id,
                 'geo_id' => $geographicalInformation->id,
             ];
 
@@ -190,7 +190,7 @@ trait CreateEnvironments {
                 'email' => isset($addressData['email']) ?: null,
                 'phone' => isset($addressData['phone']) ?: null,
                 'street' => isset($addressData['street']) ?: null,
-                'city_id' => isset($addressData['city_id']) ?: null,
+                'village_id' => isset($addressData['village_id']) ?: null,
                 'geo_id' => isset($addressData['geo_id']) ?: null,
                 'is_primary' => isset($addressData['is_primary']) ?: 0,
             ]);
@@ -254,7 +254,7 @@ trait CreateEnvironments {
                 'email' => $this->faker->email,
                 'phone' => $this->faker->phoneNumber,
                 'street' => $this->faker->streetAddress,
-                'city_id' => 1,
+                'village_id' => 1,
             ]);
             $address->owner()->associate($manufacturer);
             $address->save();
@@ -352,7 +352,7 @@ trait CreateEnvironments {
             $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
             $person = PersonFactory::new()->create();
             $addressData = [
-                'city_id' => $this->getRandomIdFromList($this->cities),
+                'village_id' => $this->getRandomIdFromList($this->villages),
                 'geo_id' => $geographicalInformation->id,
             ];
 
@@ -360,7 +360,7 @@ trait CreateEnvironments {
                 'email' => $addressData['email'] ?? null,
                 'phone' => $addressData['phone'] ?? null,
                 'street' => $addressData['street'] ?? null,
-                'city_id' => $addressData['city_id'] ?? null,
+                'village_id' => $addressData['village_id'] ?? null,
                 'geo_id' => $addressData['geo_id'] ?? null,
                 'is_primary' => $addressData['is_primary'] ?? 0,
             ]);
@@ -404,7 +404,7 @@ trait CreateEnvironments {
                 'email' => $this->faker->email,
                 'phone' => $this->faker->phoneNumber,
                 'street' => '',
-                'city_id' => collect($this->cities)->random()['id'],
+                'village_id' => collect($this->villages)->random()['id'],
                 'is_primary' => 1,
             ]);
             $address->owner()->associate($person)->save();

@@ -29,7 +29,7 @@ class ManufacturerService implements IBaseService {
     }
 
     public function getById(int $manufacturerId): Manufacturer {
-        return $this->manufacturer->newQuery()->with(['address.city.country'])->findOrFail($manufacturerId);
+        return $this->manufacturer->newQuery()->with(['address.village.country'])->findOrFail($manufacturerId);
     }
 
     /**

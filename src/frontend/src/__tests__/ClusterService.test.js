@@ -45,9 +45,9 @@ describe("ClusterService #getAllRevenues", () => {
     expect(Object.keys(data[0]).length).not.toEqual(0)
   })
 })
-describe("ClusterService #getClusterCitiesRevenue", () => {
-  it("should get cluster cities revenue data for chart", async () => {
-    const financialData = await clusterService.getClusterCitiesRevenue(
+describe("ClusterService #getClusterVillagesRevenue", () => {
+  it("should get cluster villages revenue data for chart", async () => {
+    const financialData = await clusterService.getClusterVillagesRevenue(
       12,
       "monthly",
     )
@@ -71,7 +71,7 @@ describe("ClusterService #lineChartData", () => {
     }
   })
   it("should get formatted Line chart data for Cluster Mini Grids", async () => {
-    const financialData = await clusterService.getClusterCitiesRevenue(
+    const financialData = await clusterService.getClusterVillagesRevenue(
       12,
       "monthly",
     )
@@ -102,7 +102,7 @@ describe("ClusterService #columnChartData", () => {
     }
   })
   it("should get formatted Column chart data for MiniGrids", async () => {
-    const financialData = await clusterService.getClusterCitiesRevenue(
+    const financialData = await clusterService.getClusterVillagesRevenue(
       12,
       "monthly",
     )

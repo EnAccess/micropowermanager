@@ -71,8 +71,8 @@ class AgentCustomersPaymentHistoryService {
                 CONCAT_WS("/", {$period}) AS period
             FROM payment_histories
             INNER JOIN addresses ON payment_histories.payer_id = addresses.owner_id
-            INNER JOIN cities ON addresses.city_id = cities.id
-            INNER JOIN mini_grids ON cities.mini_grid_id = mini_grids.id
+            INNER JOIN villages ON addresses.village_id = villages.id
+            INNER JOIN mini_grids ON villages.mini_grid_id = mini_grids.id
             INNER JOIN agents ON agents.mini_grid_id = mini_grids.id
             WHERE
                 payment_service LIKE '%agent%'

@@ -14,7 +14,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
@@ -33,7 +33,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
@@ -48,7 +48,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $response = $this->actingAs($this->agent)->post('/api/app/logout');
@@ -60,7 +60,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $response = $this->actingAs($this->agent)->post('/api/app/refresh');
@@ -71,7 +71,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $postData = [
@@ -86,7 +86,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
@@ -99,7 +99,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createMeterType();
         $this->createMeterTariff();
         $this->createAgentCommission();
@@ -115,7 +115,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createMeterType();
         $this->createMeterTariff();
         $this->createAgentCommission();
@@ -133,7 +133,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();
@@ -156,7 +156,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();
@@ -181,7 +181,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();
@@ -204,7 +204,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();
@@ -227,7 +227,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAssignedAppliances();
@@ -242,7 +242,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAssignedAppliances();
@@ -257,7 +257,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAssignedAppliances();
@@ -277,7 +277,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createAgentCommission();
         $this->createAgent();
         $assignedApplianceCount = 2;
@@ -292,7 +292,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();
@@ -319,7 +319,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();
@@ -341,7 +341,7 @@ class AgentAppTest extends TestCase {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
-        $this->createCity();
+        $this->createVillage();
         $this->createPerson();
         $this->createMeterType();
         $this->createMeterTariff();

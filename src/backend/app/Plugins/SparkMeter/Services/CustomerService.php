@@ -151,19 +151,19 @@ class CustomerService implements ISynchronizeService {
 
             $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
 
-            $sparkCity = $site->mpmMiniGrid->cities[0];
+            $sparkCity = $site->mpmMiniGrid->villages[0];
             $addressService = app()->make(AddressesService::class);
             $address = $person->addresses()->where('is_primary', 1)->first();
             if ($address === null) {
                 $addressParams = [
-                    'city_id' => request()->input('city_id', $sparkCity->id),
+                    'village_id' => request()->input('village_id', $sparkCity->id),
                     'is_primary' => 1,
                 ];
                 $address = $addressService->instantiate($addressParams);
                 $addressService->assignAddressToOwner($person, $address);
             } else {
                 $address->update([
-                    'city_id' => request()->input('city_id', $sparkCity->id),
+                    'village_id' => request()->input('village_id', $sparkCity->id),
                 ]);
             }
             DB::connection('tenant')->commit();
@@ -204,14 +204,14 @@ class CustomerService implements ISynchronizeService {
         $sparkCustomerMeterSerial = $customer['meters'][0]['serial'];
         $currentTariffName = $customer['meters'][0]['current_tariff_name'];
         $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
-        $sparkCity = $site->mpmMiniGrid->cities[0];
+        $sparkCity = $site->mpmMiniGrid->villages[0];
         $addressService = app()->make(AddressesService::class);
         $address = $person->addresses()->where('is_primary', 1)->first();
         if ($address === null) {
             $addressParams = [
                 'phone' => $customer['phone_number'],
                 'street' => $customer['meters'][0]['street1'],
-                'city_id' => $sparkCity->id,
+                'village_id' => $sparkCity->id,
                 'is_primary' => 1,
             ];
             $address = $addressService->instantiate($addressParams);
@@ -220,7 +220,7 @@ class CustomerService implements ISynchronizeService {
             $address->update([
                 'phone' => $customer['phone_number'],
                 'street' => $customer['meters'][0]['street1'],
-                'city_id' => $sparkCity->id,
+                'village_id' => $sparkCity->id,
             ]);
         }
         $meter = $person->devices()->first()->device;

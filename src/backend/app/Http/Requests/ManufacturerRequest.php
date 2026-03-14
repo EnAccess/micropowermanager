@@ -24,7 +24,7 @@ class ManufacturerRequest extends FormRequest {
             'email' => ['sometimes', 'email'],
             'contact_person' => ['sometimes', 'min:3'],
             'website' => ['sometimes', 'min:6'],
-            'city_id' => ['sometimes', 'integer'],
+            'village_id' => ['sometimes', 'integer'],
             'address' => ['sometimes', 'string'],
             'api_name' => ['sometimes'],
         ];

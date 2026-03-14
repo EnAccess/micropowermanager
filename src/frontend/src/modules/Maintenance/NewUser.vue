@@ -122,7 +122,7 @@
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
                     :class="{
-                      'md-invalid': errors.has($tc('words.city')),
+                      'md-invalid': errors.has($tc('words.village')),
                     }"
                   >
                     <label>
@@ -130,10 +130,10 @@
                     </label>
 
                     <md-select
-                      id="city"
+                      id="village"
                       v-validate="'required'"
-                      :name="$tc('words.city')"
-                      v-model="maintenanceService.personData.city_id"
+                      :name="$tc('words.village')"
+                      v-model="maintenanceService.personData.village_id"
                     >
                       <md-option value selected disabled>
                         &#45;&#45;
@@ -141,15 +141,15 @@
                         &#45;&#45;
                       </md-option>
                       <md-option
-                        v-for="(city, index) in cities"
-                        :value="city.id"
+                        v-for="(village, index) in villages"
+                        :value="village.id"
                         :key="index"
                       >
-                        {{ city.name }}
+                        {{ village.name }}
                       </md-option>
                     </md-select>
                     <span class="md-error">
-                      {{ errors.first($tc("words.city")) }}
+                      {{ errors.first($tc("words.village")) }}
                     </span>
                   </md-field>
                 </div>
@@ -184,7 +184,7 @@
 import RedirectionModal from "../../shared/RedirectionModal.vue"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { MaintenanceService } from "@/services/MaintenanceService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -204,9 +204,9 @@ export default {
   data() {
     return {
       miniGrids: [],
-      cities: [],
+      villages: [],
       miniGridService: new MiniGridService(),
-      cityService: new CityService(),
+      villageService: new VillageService(),
       maintenanceService: new MaintenanceService(),
       loading: false,
       imperativeItem: "Mini-Grid",
@@ -221,7 +221,7 @@ export default {
   mounted() {
     EventBus.$on("getLists", () => {
       this.getMiniGrids()
-      this.getCities()
+      this.getVillages()
     })
   },
   methods: {
@@ -235,9 +235,9 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    async getCities() {
+    async getVillages() {
       try {
-        this.cities = await this.cityService.getCities()
+        this.villages = await this.villageService.getVillages()
       } catch (e) {
         this.alertNotify("error", e.message)
       }

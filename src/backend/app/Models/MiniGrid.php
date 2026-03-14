@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
  * @property-read Collection<int, Agent>       $agents
- * @property-read Collection<int, City>        $cities
+ * @property-read Collection<int, Village>        $villages
  * @property-read Cluster|null                 $cluster
  * @property-read GeographicalInformation|null $location
  */
@@ -33,10 +33,10 @@ class MiniGrid extends BaseModel implements ITargetAssignable {
     protected $guarded = [];
 
     /**
-     * @return HasMany<City, $this>
+     * @return HasMany<Village, $this>
      */
-    public function cities(): HasMany {
-        return $this->hasMany(City::class);
+    public function villages(): HasMany {
+        return $this->hasMany(Village::class);
     }
 
     /**

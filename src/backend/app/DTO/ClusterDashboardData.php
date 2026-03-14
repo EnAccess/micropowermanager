@@ -17,7 +17,7 @@ class ClusterDashboardData {
         public float $revenue = 0.0,
         public int $population = 0,
         /** @var array<array-key, mixed> */
-        public array $citiesRevenue = [],
+        public array $villagesRevenue = [],
         /** @var array<array-key, mixed> */
         public array $revenueAnalysis = [],
         /** @var array<array-key, mixed> */
@@ -43,7 +43,7 @@ class ClusterDashboardData {
             'meterCount' => $this->meterCount,
             'revenue' => $this->revenue,
             'population' => $this->population,
-            'citiesRevenue' => $this->citiesRevenue,
+            'villagesRevenue' => $this->villagesRevenue,
             'revenueAnalysis' => $this->revenueAnalysis,
             'clusterData' => $this->cluster,
             'period' => $this->period,

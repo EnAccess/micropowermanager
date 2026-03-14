@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class DatabaseProxy extends BaseModelCentral {
     public const COL_DATABASE_CONNECTION = 'database_connection';
+    public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'fk_company_id';
     public const COL_EMAIL = 'email';
     private const CACHE_KEY_PREFIX = 'database_proxy';
@@ -51,11 +52,18 @@ class DatabaseProxy extends BaseModelCentral {
     }
 
     public function findByEmail(string $email): DatabaseProxy {
+        if (!$this->shouldUseCache()) {
+            return $this->buildQuery()
+                ->where(self::COL_EMAIL, '=', $email)
+                ->latest(self::COL_ID)
+                ->firstOrFail();
+        }
+
         $cacheKey = self::CACHE_KEY_PREFIX.':'.md5($email);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, fn () => $this->buildQuery()
-            ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=', self::COL_COMPANY_ID)
             ->where(self::COL_EMAIL, '=', $email)
+            ->latest(self::COL_ID)
             ->firstOrFail());
     }
 
@@ -86,5 +94,9 @@ class DatabaseProxy extends BaseModelCentral {
     private function clearCache(): void {
         $cacheKey = self::CACHE_KEY_PREFIX.':'.md5($this->email);
         Cache::forget($cacheKey);
+    }
+
+    private function shouldUseCache(): bool {
+        return !app()->environment(['development', 'testing']);
     }
 }

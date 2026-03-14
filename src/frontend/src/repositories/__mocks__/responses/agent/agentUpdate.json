@@ -34,7 +34,7 @@
             "email": null,
             "phone": "+90666",
             "street": "74 sk 13/9  esentepe",
-            "city_id": null,
+            "village_id": null,
             "geo_id": null,
             "created_at": "2020-11-10T13:22:31.000000Z",
             "updated_at": "2020-11-10T13:22:31.000000Z"
@@ -45,7 +45,7 @@
             "email": "demo3@inensus.com",
             "phone": "123123123",
             "street": "",
-            "city_id": 1,
+            "village_id": 1,
             "geo_id": null,
             "created_at": "2021-04-16T00:17:05.000000Z",
             "updated_at": "2021-04-16T00:17:05.000000Z"

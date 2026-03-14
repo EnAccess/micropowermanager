@@ -42,7 +42,7 @@ class AgentWebController extends Controller {
         $agentData = [
             'password' => $request['password'],
             'email' => $request['email'],
-            'mini_grid_id' => $request['city_id'],
+            'mini_grid_id' => $request['village_id'],
             'agent_commission_id' => $request['agent_commission_id'],
             'mobile_device_id' => '-',
             'fire_base_token' => '-',

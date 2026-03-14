@@ -42,7 +42,7 @@ class AgentSeeder extends Seeder {
 
         // For each Mini-Grid we create one Agent
         foreach ($minigrids as $minigrid) {
-            $village = $minigrid->cities()->get()->random();
+            $village = $minigrid->villages()->get()->random();
 
             $person = Person::factory()
                 ->isAgent($village->name)
@@ -54,7 +54,7 @@ class AgentSeeder extends Seeder {
                                 // https://github.com/larastan/larastan/issues/2307
                                 // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
-                                    return ['points' => $address->city->location->points];
+                                    return ['points' => $address->village->location->points];
                                 })
                                 ->randomizePointsInVillage(),
                             'geo'

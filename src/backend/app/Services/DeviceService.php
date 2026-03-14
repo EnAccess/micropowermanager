@@ -26,7 +26,7 @@ class DeviceService implements IBaseService, IAssociative {
 
     public function getBySerialNumber(string $serialNumber): ?Device {
         return $this->device->newQuery()
-            ->with(['geo', 'device.manufacturer', 'person.addresses.city'])
+            ->with(['geo', 'device.manufacturer', 'person.addresses.village'])
             ->where('device_serial', $serialNumber)
             ->first();
     }
@@ -79,7 +79,7 @@ class DeviceService implements IBaseService, IAssociative {
         $query = $this->device->newQuery()->with([
             'person',
             'device.manufacturer',
-            'person.addresses.city',
+            'person.addresses.village',
             'tokens',
             'appliance.applianceType',
         ]);
@@ -88,7 +88,7 @@ class DeviceService implements IBaseService, IAssociative {
             $query->whereHas('person', function ($q) use ($miniGridName) {
                 $q->whereHas('addresses', function ($q) use ($miniGridName) {
                     $q->where('is_primary', 1)
-                        ->whereHas('city', function ($q) use ($miniGridName) {
+                        ->whereHas('village', function ($q) use ($miniGridName) {
                             $q->whereHas('miniGrid', function ($q) use ($miniGridName) {
                                 $q->where('name', 'LIKE', '%'.$miniGridName.'%');
                             });
@@ -101,7 +101,7 @@ class DeviceService implements IBaseService, IAssociative {
             $query->whereHas('person', function ($q) use ($villageName) {
                 $q->whereHas('addresses', function ($q) use ($villageName) {
                     $q->where('is_primary', 1)
-                        ->whereHas('city', function ($q) use ($villageName) {
+                        ->whereHas('village', function ($q) use ($villageName) {
                             $q->where('name', 'LIKE', '%'.$villageName.'%');
                         });
                 });

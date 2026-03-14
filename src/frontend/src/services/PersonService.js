@@ -18,7 +18,7 @@ export class Person {
     this.surname = null
     this.gender = null
     this.nationality = null
-    this.city = null
+    this.village = null
     this.devices = []
     this.is_active = null
   }
@@ -145,12 +145,12 @@ export class PersonService {
       surname: null,
       gender: null,
       nationality: null,
-      city: null,
+      village: null,
       devices: [],
       addresses: [],
       address: {
         street: null,
-        cityId: null,
+        villageId: null,
         email: null,
         phone: null,
       },
