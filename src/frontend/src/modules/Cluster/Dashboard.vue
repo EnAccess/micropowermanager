@@ -96,7 +96,7 @@ export default {
     this.$store.dispatch("clusterDashboard/get", this.$route.params.id)
     this.clusterData = this.$store.getters["clusterDashboard/getClusterData"]
     this.boxData["mini_grids"] = this.clusterData.clusterData.mini_grids.length
-    this.revenue = this.clusterData.citiesRevenue
+    this.revenue = this.clusterData.villagesRevenue
     this.setClusterMapData()
   },
   methods: {
@@ -153,7 +153,7 @@ export default {
         this.$store.dispatch("clusterDashboard/get", this.$route.params.id)
         this.clusterData =
           this.$store.getters["clusterDashboard/getClusterData"]
-        this.revenue = this.clusterData.citiesRevenue
+        this.revenue = this.clusterData.villagesRevenue
         this.alertNotify("success", "Dashboard refreshed successfully.")
       } catch (e) {
         this.alertNotify("error", e.message)
@@ -163,8 +163,8 @@ export default {
     },
     financialOverviewPeriodChanged(fromDate, toDate) {
       const cachedData = this.$store.getters["clusterDashboard/getClusterData"]
-      this.revenue = cachedData.citiesRevenue.map((cityRevenue) => {
-        const newPeriod = Object.entries(cityRevenue.period).reduce(
+      this.revenue = cachedData.villagesRevenue.map((villageRevenue) => {
+        const newPeriod = Object.entries(villageRevenue.period).reduce(
           (acc, [period, revenue]) => {
             const date = moment(period, "YYYY-MM")
             const lastDayOfMonth = date.endOf("month")
@@ -180,7 +180,7 @@ export default {
           {},
         )
         return {
-          ...cityRevenue,
+          ...villageRevenue,
           period: newPeriod,
         }
       })

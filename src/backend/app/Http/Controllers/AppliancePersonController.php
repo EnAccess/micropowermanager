@@ -84,7 +84,7 @@ class AppliancePersonController extends Controller {
 
                 $address = $this->addressesService->make([
                     'street' => $addressData['street'],
-                    'city_id' => $addressData['city_id'],
+                    'village_id' => $addressData['village_id'],
                 ]);
 
                 // Attach the new address to the person rather than the device.

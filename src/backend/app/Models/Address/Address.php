@@ -3,7 +3,7 @@
 namespace App\Models\Address;
 
 use App\Models\Base\BaseModel;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\GeographicalInformation;
 use Database\Factories\Address\AddressFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,11 +22,11 @@ use Illuminate\Support\Carbon;
  * @property      string|null                  $email
  * @property      string|null                  $phone
  * @property      string|null                  $street
- * @property      int|null                     $city_id
+ * @property      int|null                     $village_id
  * @property      int                          $is_primary
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
- * @property-read City|null                    $city
+ * @property-read Village|null                    $village
  * @property-read GeographicalInformation|null $geo
  * @property-read Model                        $owner
  */
@@ -39,14 +39,14 @@ class Address extends BaseModel {
 
     /** @var array<string, string> */
     public static $rules = [
-        'city_id' => 'required|exists:cities,id',
+        'village_id' => 'required|exists:villages,id',
     ];
 
     /**
-     * @return BelongsTo<City, $this>
+     * @return BelongsTo<Village, $this>
      */
-    public function city(): BelongsTo {
-        return $this->belongsTo(City::class);
+    public function village(): BelongsTo {
+        return $this->belongsTo(Village::class);
     }
 
     /**
@@ -68,8 +68,8 @@ class Address extends BaseModel {
         $this->owner_type = $ownerType;
     }
 
-    public function setCityId(int $cityId): void {
-        $this->city_id = $cityId;
+    public function setVillageId(int $villageId): void {
+        $this->village_id = $villageId;
     }
 
     public function setPhone(?string $phone): void {

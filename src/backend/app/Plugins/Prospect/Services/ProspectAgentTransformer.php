@@ -26,12 +26,12 @@ class ProspectAgentTransformer {
         if ($primaryAddress?->street) {
             $addressParts[] = $primaryAddress->street;
         }
-        if ($primaryAddress?->city?->name) {
-            $addressParts[] = $primaryAddress->city->name;
+        if ($primaryAddress?->village?->name) {
+            $addressParts[] = $primaryAddress->village->name;
         }
         $addressString = empty($addressParts) ? null : implode(', ', $addressParts);
 
-        $countryCode = $primaryAddress?->city?->country->country_code ?? null;
+        $countryCode = $primaryAddress?->village?->country->country_code ?? null;
         $latitude = null;
         $longitude = null;
 
@@ -53,12 +53,12 @@ class ProspectAgentTransformer {
         $locationArea4 = null;
         $locationArea5 = null;
 
-        if ($primaryAddress?->city) {
-            $city = $primaryAddress->city;
-            if ($city->cluster) {
-                $locationArea1 = $city->cluster->name ?? null;
+        if ($primaryAddress?->village) {
+            $village = $primaryAddress->village;
+            if ($village->cluster) {
+                $locationArea1 = $village->cluster->name ?? null;
             }
-            $locationArea2 = $city->name ?? null;
+            $locationArea2 = $village->name ?? null;
         }
 
         $agentType = $this->determineAgentType($agent);
@@ -99,7 +99,7 @@ class ProspectAgentTransformer {
 
         return $person->addresses()
             ->where('is_primary', true)
-            ->with(['city.country', 'city.cluster', 'geo'])
+            ->with(['village.country', 'village.cluster', 'geo'])
             ->first();
     }
 

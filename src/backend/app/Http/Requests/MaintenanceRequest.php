@@ -25,7 +25,7 @@ class MaintenanceRequest extends FormRequest {
             'birth_date' => ['sometimes', 'date_format:"Y-m-d"'],
             'gender' => ['sometimes', 'nullable', 'string'],
             'education' => ['sometimes', 'min:3'],
-            'city_id' => ['sometimes', 'exists:tenant.cities,id'],
+            'village_id' => ['sometimes', 'exists:tenant.villages,id'],
             'street' => ['sometimes', 'string', 'min:3'],
             'email' => ['sometimes', 'email'],
             'phone' => ['required', 'min:11', 'regex:(^\+)'],
@@ -33,8 +33,8 @@ class MaintenanceRequest extends FormRequest {
         ];
     }
 
-    public function getCityId(): int {
-        return $this->input('city_id');
+    public function getVillageId(): int {
+        return $this->input('village_id');
     }
 
     public function getPhone(): ?string {

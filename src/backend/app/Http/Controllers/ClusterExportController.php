@@ -45,7 +45,7 @@ class ClusterExportController extends Controller {
 
         $this->clusterExportService->setClusterData($clusters);
         $this->clusterExportService->setExportingData();
-        $headers = ['Cluster Name', 'Manager', 'Mini Grids Count', 'Cities Count', 'Created At', 'Updated At'];
+        $headers = ['Cluster Name', 'Manager', 'Mini Grids Count', 'Villages Count', 'Created At', 'Updated At'];
         $csvPath = $this->clusterExportService->saveCsv($headers);
 
         return Storage::download($csvPath, 'cluster_export_'.now()->format('Ymd_His').'.csv');

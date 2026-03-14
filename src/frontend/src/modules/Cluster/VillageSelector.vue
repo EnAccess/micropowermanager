@@ -1,60 +1,61 @@
 <template>
   <ul class="list-group">
     <li
-      class="list-group-item city-list"
-      v-for="city in cities"
-      :key="city.id"
-      :class="isCitySelected(city) ? 'active' : ''"
-      @click="selectCity(city)"
+      class="list-group-item village-list"
+      v-for="village in villages"
+      :key="village.id"
+      :class="isVillageSelected(village) ? 'active' : ''"
+      @click="selectVillage(village)"
     >
-      <input type="checkbox" :checked="isCitySelected(city)" />
+      <input type="checkbox" :checked="isVillageSelected(village)" />
 
-      {{ city.name }}
+      {{ village.name }}
     </li>
   </ul>
 </template>
 
 <script>
 import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
 
 export default {
   name: "VillageSelector",
   mounted() {
-    this.getCityList()
+    this.getVillageList()
   },
 
   data() {
     return {
-      cities: null,
-      selectedCitites: [],
+      villages: null,
+      selectedVillages: [],
     }
   },
   methods: {
-    getCityList() {
-      Client.get(resources.city.list).then((response) => {
-        this.cities = response.data.data
+    getVillageList() {
+      Client.get(resources.village.list).then((response) => {
+        this.villages = response.data.data
       })
     },
-    selectCity(city) {
-      if (!this.isCitySelected(city)) {
-        this.selectedCitites.push(city)
+    selectVillage(village) {
+      if (!this.isVillageSelected(village)) {
+        this.selectedVillages.push(village)
       } else {
-        this.selectedCitites = this.selectedCitites.filter(
-          (c) => c.id !== city.id,
+        this.selectedVillages = this.selectedVillages.filter(
+          (c) => c.id !== village.id,
         )
       }
-      this.$emit("citySelected", this.selectedCitites)
+      this.$emit("villageSelected", this.selectedVillages)
     },
-    isCitySelected(city) {
-      let citySearch = this.selectedCitites.filter((c) => c.id === city.id)
-      return citySearch.length === 1
+    isVillageSelected(village) {
+      let villageSearch = this.selectedVillages.filter((c) => c.id === village.id)
+      return villageSearch.length === 1
     },
   },
 }
 </script>
 
 <style scoped lang="scss">
-.city-list {
+.village-list {
   cursor: pointer;
 }
 </style>

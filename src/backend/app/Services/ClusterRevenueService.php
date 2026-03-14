@@ -42,7 +42,7 @@ class ClusterRevenueService {
                 function ($q) use ($clusterId, $connectionType, $miniGridId) {
                     $q->whereHas('person.addresses', function ($q) use ($clusterId, $miniGridId) {
                         $q->where('is_primary', 1)
-                            ->whereHas('city', function ($q) use ($clusterId, $miniGridId) {
+                            ->whereHas('village', function ($q) use ($clusterId, $miniGridId) {
                                 if ($miniGridId) {
                                     $q->where('mini_grid_id', $miniGridId);
                                 } else {
@@ -89,7 +89,7 @@ class ClusterRevenueService {
                 function ($q) use ($clusterId, $connectionType) {
                     $q->whereHas('person.addresses', function ($q) use ($clusterId) {
                         $q->where('is_primary', 1)
-                            ->whereHas('city', function ($q) use ($clusterId) {
+                            ->whereHas('village', function ($q) use ($clusterId) {
                                 $q->whereHas('cluster', function ($q) use ($clusterId) {
                                     $q->where('clusters.id', $clusterId);
                                 });

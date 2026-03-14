@@ -16,7 +16,7 @@ class ClusterTransactionService {
         return $this->transaction->newQuery()->whereHas(
             'device.person.addresses',
             function ($q) use ($clusterId) {
-                $q->where('is_primary', 1)->whereHas('city', function ($q) use ($clusterId) {
+                $q->where('is_primary', 1)->whereHas('village', function ($q) use ($clusterId) {
                     $q->whereHas('cluster', function ($q) use ($clusterId) {
                         $q->where('clusters.id', $clusterId);
                     });

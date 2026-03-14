@@ -103,7 +103,7 @@ class TicketSeeder extends Seeder {
 
         // For each Mini-Grid we create one Maintenance User
         foreach ($minigrids as $minigrid) {
-            $village = $minigrid->cities()->get()->random();
+            $village = $minigrid->villages()->get()->random();
 
             $person = Person::factory()
                 ->isMaintenanceUser($village->name)
@@ -115,7 +115,7 @@ class TicketSeeder extends Seeder {
                                 // https://github.com/larastan/larastan/issues/2307
                                 // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
-                                    return ['points' => $address->city->location->points];
+                                    return ['points' => $address->village->location->points];
                                 })
                                 ->randomizePointsInVillage(),
                             'geo'

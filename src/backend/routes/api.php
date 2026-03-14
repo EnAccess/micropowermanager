@@ -67,8 +67,8 @@ use App\Http\Controllers\UserPermissionImportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Routes for City resource
-require __DIR__.'/resources/Cities.php';
+// Routes for Village resource
+require __DIR__.'/resources/Villages.php';
 // Routes for Country resource
 require __DIR__.'/resources/Countries.php';
 // Routes for meter resource
@@ -151,7 +151,7 @@ Route::group(['prefix' => '/clusters', 'middleware' => 'jwt.verify'], static fun
     Route::get('/revenue', [ClusterRevenueController::class, 'index']);
     Route::get('/{clusterId}/revenue', [ClusterRevenueController::class, 'show']);
     Route::get('/{clusterId}/revenue/analysis', [ClusterRevenueAnalysisController::class, 'show']);
-    Route::get('/{clusterId}/cities-revenue', [ClusterMiniGridRevenueController::class, 'show']);
+    Route::get('/{clusterId}/villages-revenue', [ClusterMiniGridRevenueController::class, 'show']);
 });
 // Dashboard data from cache
 Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static function () {

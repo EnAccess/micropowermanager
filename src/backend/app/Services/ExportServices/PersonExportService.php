@@ -44,7 +44,7 @@ class PersonExportService extends AbstractExportService {
                 $person->gender,
                 $primaryAddress?->email,
                 $primaryAddress?->phone,
-                $primaryAddress?->city?->name,
+                $primaryAddress?->village?->name,
                 $devices,
                 $agent->person->name ?? '',
             ];
@@ -88,7 +88,7 @@ class PersonExportService extends AbstractExportService {
                 'gender' => $person->gender,
                 'email' => $primaryAddress?->email,
                 'phone' => $primaryAddress?->phone,
-                'city' => $primaryAddress?->city?->name,
+                'village' => $primaryAddress?->village?->name,
                 'devices' => $devices,
                 'agent' => $agent->person->name ?? '',
             ];

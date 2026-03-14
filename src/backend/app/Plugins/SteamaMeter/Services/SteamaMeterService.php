@@ -3,7 +3,7 @@
 namespace App\Plugins\SteamaMeter\Services;
 
 use App\Models\Address\Address;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\ConnectionGroup;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
@@ -36,7 +36,7 @@ class SteamaMeterService implements ISynchronizeService {
         private SteamaCustomer $customer,
         private Manufacturer $manufacturer,
         private ConnectionGroup $connectionGroup,
-        private City $city,
+        private Village $village,
         private MeterType $meterType,
         private SteamaMeterType $stmMeterType,
         private SteamaTariff $tariff,
@@ -206,15 +206,15 @@ class SteamaMeterService implements ISynchronizeService {
                 $tariff = $this->tariff->newQuery()->with('mpmTariff')->first();
                 $meter->tariff()->associate($tariff->mpmTariff);
                 $meter->save();
-                $stmCustomerAddress = $stmCustomer->mpmPerson->newQuery()->with('addresses.city')
+                $stmCustomerAddress = $stmCustomer->mpmPerson->newQuery()->with('addresses.village')
                     ->whereHas('addresses', fn ($q) => $q->where('is_primary', 1))->first();
-                $cityName = $stmCustomerAddress->addresses[0]->city->name;
+                $villageName = $stmCustomerAddress->addresses[0]->village->name;
 
-                $steamaCity = $this->city->newQuery()->with('miniGrid')->where('name', $cityName)->first();
+                $steamaVillage = $this->village->newQuery()->with('miniGrid')->where('name', $villageName)->first();
 
                 $address = new Address();
                 $address = $address->newQuery()->create([
-                    'city_id' => request()->input('city_id', $steamaCity->id),
+                    'village_id' => request()->input('village_id', $steamaVillage->id),
                 ]);
                 $address->owner()->associate($meter->device);
                 $address->save();

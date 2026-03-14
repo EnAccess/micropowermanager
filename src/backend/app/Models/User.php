@@ -113,7 +113,7 @@ class User extends Authenticatable implements JWTSubject {
      * @return MorphOne<Address, $this>
      */
     public function addressDetails(): MorphOne {
-        return $this->address()->with('city');
+        return $this->address()->with('village');
     }
 
     /**

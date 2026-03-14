@@ -22,7 +22,7 @@ export class MaintenanceService {
       name: null,
       surname: null,
       phone: null,
-      city_id: null,
+      village_id: null,
       mini_grid_id: null,
       gender: "male",
     }
@@ -80,7 +80,7 @@ export class MaintenanceService {
       name: null,
       surname: null,
       phone: null,
-      city_id: null,
+      village_id: null,
       mini_grid_id: null,
       gender: "male",
     }

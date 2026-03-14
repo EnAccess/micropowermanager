@@ -14,7 +14,7 @@ class TargetService {
     public function __construct(private Target $target) {}
 
     public function getById(int $targetId): Target {
-        return $this->target->newQuery()->with(['subTargets', 'city'])->find($targetId);
+        return $this->target->newQuery()->with(['subTargets', 'village'])->find($targetId);
     }
 
     public function create(CarbonImmutable $period, string $targetForType, ITargetAssignable $targetOwner): Target {

@@ -2,7 +2,7 @@
 
 namespace App\Plugins\KelinMeter\Services;
 
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Person\Person;
 use App\Plugins\KelinMeter\Exceptions\KelinApiResponseException;
 use App\Plugins\KelinMeter\Helpers\ApiHelpers;
@@ -188,12 +188,12 @@ class KelinCustomerService implements ISynchronizeService {
             'is_customer' => 1,
         ]);
         $addressService = app()->make(AddressesService::class);
-        $city = City::query()->first();
+        $village = Village::query()->first();
         $addressParams = [
             'phone' => $personData['phone'],
             'street' => $personData['street1'],
             'is_primary' => 1,
-            'city_id' => $city ? $city->id : 1,
+            'village_id' => $village ? $village->id : 1,
         ];
         $address = $addressService->instantiate($addressParams);
         $addressService->assignAddressToOwner($person, $address);

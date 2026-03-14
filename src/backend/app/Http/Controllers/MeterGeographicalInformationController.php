@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Models\Meter\Meter;
-use App\Services\CityService;
+use App\Services\VillageService;
 use App\Services\MeterGeographicalInformationService;
 use App\Services\MeterService;
 use App\Services\PersonMeterService;
@@ -14,7 +14,7 @@ class MeterGeographicalInformationController extends Controller {
     public function __construct(
         private MeterGeographicalInformationService $meterGeographicalInformationService,
         private PersonMeterService $personMeterService,
-        private CityService $cityService,
+        private VillageService $villageService,
         private MeterService $meterService,
     ) {}
 
@@ -28,12 +28,12 @@ class MeterGeographicalInformationController extends Controller {
      * @responseFile responses/meters/meters.geo.list.json
      */
     public function index(?int $miniGridId = null): ApiResource {
-        $cityIds = $miniGridId ? $this->cityService->getCityIdsByMiniGridId($miniGridId) : [];
-        // we can get city id only by address
+        $villageIds = $miniGridId ? $this->villageService->getVillageIdsByMiniGridId($miniGridId) : [];
+        // we can get village id only by address
         if ($miniGridId === null) {
             $meters = $this->meterService->getUsedMetersGeoWithAccessRatePayments();
         } else {
-            $meters = $this->meterService->getUsedMetersGeoWithAccessRatePaymentsInCities($cityIds);
+            $meters = $this->meterService->getUsedMetersGeoWithAccessRatePaymentsInVillages($villageIds);
         }
 
         return ApiResource::make($meters);

@@ -66,18 +66,18 @@ class MeterService implements IBaseService {
     }
 
     /**
-     * @param array<int> $cities
+     * @param array<int> $villages
      *
      * @return Collection<int, Meter>
      */
-    public function getUsedMetersGeoWithAccessRatePaymentsInCities(array $cities): Collection {
+    public function getUsedMetersGeoWithAccessRatePaymentsInVillages(array $villages): Collection {
         return $this->meter->newQuery()->with(['device.geo', 'accessRatePayment'])
             ->whereHas(
                 'device',
                 fn ($q) => $q->whereHas(
                     'address',
-                    function ($q) use ($cities) {
-                        $q->whereIn('city_id', $cities);
+                    function ($q) use ($villages) {
+                        $q->whereIn('village_id', $villages);
                     }
                 )
             )

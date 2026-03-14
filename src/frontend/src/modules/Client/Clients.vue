@@ -70,7 +70,7 @@
             <client-filter
               v-model="customerFilters"
               :agents="agentService.list"
-              :cities="cityService.list"
+              :villages="villageService.list"
               @apply="onFilterApply"
               @clear="onFilterClear"
             />
@@ -123,13 +123,13 @@
                   </md-table-cell>
 
                   <md-table-cell
-                    :md-label="$tc('words.city')"
-                    md-sort-by="city"
+                    :md-label="$tc('words.village')"
+                    md-sort-by="village"
                     class="hidden-xs"
                   >
                     {{
-                      item.addresses.length > 0 && item.addresses[0].city
-                        ? item.addresses[0].city.name
+                      item.addresses.length > 0 && item.addresses[0].village
+                        ? item.addresses[0].village.name
                         : "-"
                     }}
                   </md-table-cell>
@@ -199,11 +199,11 @@
               <md-select v-model="exportFilters.village">
                 <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option
-                  v-for="city in cityService.list"
-                  :key="city.id"
-                  :value="city.name"
+                  v-for="village in villageService.list"
+                  :key="village.id"
+                  :value="village.name"
                 >
-                  {{ city.name }}
+                  {{ village.name }}
                 </md-option>
               </md-select>
             </md-field>
@@ -281,7 +281,7 @@ import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import ClientFilter from "@/modules/Client/ClientFilter.vue"
 import { resources } from "@/resources.js"
 import { AgentService } from "@/services/AgentService.js"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { CustomerExportService } from "@/services/CustomerExportService.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
@@ -321,7 +321,7 @@ export default {
         deviceType: "",
       },
       miniGridService: new MiniGridService(),
-      cityService: new CityService(),
+      villageService: new VillageService(),
       isSearching: false,
       downloadingDebts: false,
       downloadingCustomers: false,
@@ -331,7 +331,7 @@ export default {
         agentId: null,
         totalPaidMin: null,
         totalPaidMax: null,
-        cityId: null,
+        villageId: null,
         latestPaymentFrom: null,
         latestPaymentTo: null,
         registrationFrom: null,
@@ -623,9 +623,9 @@ export default {
 
     async loadCities() {
       try {
-        await this.cityService.getCities()
+        await this.villageService.getVillages()
       } catch (error) {
-        console.error("Failed to load cities:", error)
+        console.error("Failed to load villages:", error)
       }
     },
 
@@ -697,9 +697,9 @@ export default {
         params.active_customer = 0
       }
 
-      // City / village
-      if (this.customerFilters.cityId) {
-        params.city_id = this.customerFilters.cityId
+      // Village / village
+      if (this.customerFilters.villageId) {
+        params.village_id = this.customerFilters.villageId
       }
 
       // Total paid interval
@@ -759,7 +759,7 @@ export default {
         agentId: null,
         totalPaidMin: null,
         totalPaidMax: null,
-        cityId: null,
+        villageId: null,
         latestPaymentFrom: null,
         latestPaymentTo: null,
         registrationFrom: null,

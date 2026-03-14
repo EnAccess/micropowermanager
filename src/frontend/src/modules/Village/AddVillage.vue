@@ -10,13 +10,13 @@
                   'md-invalid': errors.has($tc('words.name')),
                 }"
               >
-                <label for="city_name">
+                <label for="village_name">
                   {{ $tc("words.name") }}
                 </label>
                 <md-input
-                  id="cityName"
+                  id="villageName"
                   :name="$tc('words.name')"
-                  v-model="cityName"
+                  v-model="villageName"
                   v-validate="'required|min:3'"
                 />
                 <span class="md-error">
@@ -103,7 +103,7 @@
                     <md-input
                       id="latitude"
                       :name="$tc('words.latitude')"
-                      v-model="cityLatLng.lat"
+                      v-model="villageLatLng.lat"
                       step="any"
                       maxlength="8"
                       v-validate="'required|decimal:6'"
@@ -125,7 +125,7 @@
                     <md-input
                       id="longitude"
                       :name="$tc('words.longitude')"
-                      v-model="cityLatLng.lon"
+                      v-model="villageLatLng.lon"
                       step="any"
                       maxlength="8"
                       v-validate="'required|decimal:6'"
@@ -177,7 +177,7 @@
 <script>
 import { notify } from "@/mixins/notify.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { ClusterService } from "@/services/ClusterService.js"
 import CountryService from "@/services/CountryService.js"
 import {
@@ -208,13 +208,13 @@ export default {
       villageSaved: false,
       loading: false,
       lastVillage: null,
-      cityName: null,
-      cityIndex: 0,
-      cityService: new CityService(),
+      villageName: null,
+      villageIndex: 0,
+      villageService: new VillageService(),
       countryService: new CountryService(),
       countries: [],
       selectedCountryId: null,
-      cityLatLng: {
+      villageLatLng: {
         lat: null,
         lon: null,
       },
@@ -292,13 +292,13 @@ export default {
         }
         try {
           this.loading = true
-          const city = {
-            name: this.cityName,
+          const village = {
+            name: this.villageName,
             miniGridId: this.selectedMiniGridId,
             countryId: this.selectedCountryId,
-            points: `${this.cityLatLng.lat},${this.cityLatLng.lon}`,
+            points: `${this.villageLatLng.lat},${this.villageLatLng.lon}`,
           }
-          await this.cityService.createCity(city)
+          await this.villageService.createVillage(village)
           this.alertNotify("success", this.$tc("phrases.newVillageNotify", 1))
           this.loading = false
           await this.$router.replace(
@@ -312,15 +312,15 @@ export default {
     },
     villageLocationSet(data) {
       if (!data.error) {
-        this.cityLatLng.lat = Number(
+        this.villageLatLng.lat = Number(
           data.geoDataItem.coordinates.lat.toFixed(5),
         )
-        this.cityLatLng.lon = Number(
+        this.villageLatLng.lon = Number(
           data.geoDataItem.coordinates.lng.toFixed(5),
         )
       } else {
-        this.cityLatLng.lat = null
-        this.cityLatLng.lon = null
+        this.villageLatLng.lat = null
+        this.villageLatLng.lon = null
         this.$swal({
           type: "warning",
           text: data.error,
@@ -328,7 +328,7 @@ export default {
       }
     },
     setPoints() {
-      const location = [this.cityLatLng.lat, this.cityLatLng.lon]
+      const location = [this.villageLatLng.lat, this.villageLatLng.lon]
       this.$refs.villageMapRef.setVillageMarkerManually(location)
     },
   },

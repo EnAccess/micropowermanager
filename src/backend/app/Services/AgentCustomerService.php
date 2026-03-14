@@ -17,12 +17,12 @@ class AgentCustomerService {
 
         return $this->person->newQuery()->with([
             'devices',
-            'addresses' => fn ($q) => $q->where('is_primary', 1)->with('city'),
+            'addresses' => fn ($q) => $q->where('is_primary', 1)->with('village'),
         ])
             ->where('is_customer', 1)
             ->whereHas(
                 'addresses',
-                fn ($q) => $q->whereHas('city', fn ($q) => $q->where('mini_grid_id', $miniGridId))
+                fn ($q) => $q->whereHas('village', fn ($q) => $q->where('mini_grid_id', $miniGridId))
             )
             ->paginate(config('settings.paginate'));
     }
@@ -31,7 +31,7 @@ class AgentCustomerService {
      * @return LengthAwarePaginator<int, Person>
      */
     public function search(string $searchTerm, int $limit, Agent $agent): LengthAwarePaginator {
-        return $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
+        return $this->person->newQuery()->with(['addresses.village', 'devices'])->whereHas(
             'addresses',
             fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
         )->orWhereHas(

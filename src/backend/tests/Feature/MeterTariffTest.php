@@ -186,7 +186,7 @@ class MeterTariffTest extends TestCase {
         $this->createConnectionGroup(1);
         $this->createCluster(2);
         $this->createMiniGrid(2);
-        $this->createCity(2);
+        $this->createVillage(2);
         $meterCount = 5;
         $this->createMeter($meterCount);
         $response = $this->actingAs($this->user)->get(sprintf(

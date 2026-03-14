@@ -66,24 +66,24 @@
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
-                    'md-invalid': errors.has('Edit-Form.' + $tc('words.city')),
+                    'md-invalid': errors.has('Edit-Form.' + $tc('words.village')),
                   }"
                 >
-                  <label for="city">
-                    {{ $tc("words.city") }}
+                  <label for="village">
+                    {{ $tc("words.village") }}
                   </label>
                   <md-select
-                    v-model="selectedCity"
-                    :name="$tc('words.city')"
-                    id="city"
+                    v-model="selectedVillage"
+                    :name="$tc('words.village')"
+                    id="village"
                     v-validate="'required'"
                   >
-                    <md-option v-for="c in cities" :key="c.id" :value="c.id">
+                    <md-option v-for="c in villages" :key="c.id" :value="c.id">
                       {{ c.name }}
                     </md-option>
                   </md-select>
                   <span class="md-error">
-                    {{ errors.first("Edit-Form." + $tc("words.city")) }}
+                    {{ errors.first("Edit-Form." + $tc("words.village")) }}
                   </span>
                 </md-field>
               </div>
@@ -143,7 +143,7 @@ export default {
       type: Object,
       required: true,
     },
-    cities: {
+    villages: {
       type: Array,
       required: true,
     },
@@ -151,7 +151,7 @@ export default {
   data() {
     return {
       sending: false,
-      selectedCity: 0,
+      selectedVillage: 0,
       phone: {
         valid: true,
       },
@@ -161,7 +161,7 @@ export default {
     }
   },
   mounted() {
-    this.setSelectedCity()
+    this.setSelectedVillage()
   },
   methods: {
     async loadRoles() {
@@ -194,15 +194,15 @@ export default {
         return
       }
 
-      this.user.cityId = this.selectedCity
+      this.user.villageId = this.selectedVillage
       // Add roles to user object to be sent with the update
       this.user.roles = this.selectedRoles
       this.$emit("updateUser", this.user)
     },
-    setSelectedCity() {
-      if (this.user.cityId) {
-        this.selectedCity = this.cities
-          .filter((x) => x.id === this.user.cityId)
+    setSelectedVillage() {
+      if (this.user.villageId) {
+        this.selectedVillage = this.villages
+          .filter((x) => x.id === this.user.villageId)
           .map((x) => x.id)[0]
       }
     },
@@ -222,13 +222,13 @@ export default {
   },
   watch: {
     showEditUser() {
-      this.setSelectedCity()
+      this.setSelectedVillage()
       this.loadRoles()
       this.resetPhoneValidation()
     },
     "user.id"() {
       // Reload roles and reset validation when switching between users
-      this.setSelectedCity()
+      this.setSelectedVillage()
       this.loadRoles()
       this.resetPhoneValidation()
     },

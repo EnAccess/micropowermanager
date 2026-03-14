@@ -17,7 +17,7 @@ use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
 use App\Models\Appliance;
 use App\Models\ApplianceRate;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\EBike;
@@ -88,7 +88,7 @@ class AppServiceProvider extends ServiceProvider {
                 CashTransaction::RELATION_NAME => CashTransaction::class,
                 Meter::RELATION_NAME => Meter::class,
                 Device::RELATION_NAME => Device::class,
-                City::RELATION_NAME => City::class,
+                Village::RELATION_NAME => Village::class,
                 Address::RELATION_NAME => Address::class,
                 SolarHomeSystem::RELATION_NAME => SolarHomeSystem::class,
                 Token::RELATION_NAME => Token::class,

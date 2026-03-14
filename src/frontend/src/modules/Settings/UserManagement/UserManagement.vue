@@ -11,7 +11,7 @@
       :showEditUser="showEditUser"
       :user="userService.user"
       @updateUser="updateUser"
-      :cities="cities"
+      :villages="villages"
     />
     <widget
       :title="$tc('phrases.userManagement')"
@@ -79,7 +79,7 @@ import EditUser from "./EditUser.vue"
 import NewUser from "./NewUser.vue"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
+import { VillageService } from "@/services/VillageService.js"
 import { UserService } from "@/services/UserService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
@@ -93,17 +93,17 @@ export default {
       subscriber: "user-management",
       sending: false,
       showEditUser: false,
-      selectedCity: 0,
+      selectedVillage: 0,
       userService: new UserService(),
-      cityService: new CityService(),
+      villageService: new VillageService(),
       userId: 0,
       showNewUser: false,
       resetKey: 1,
-      cities: [],
+      villages: [],
     }
   },
   created() {
-    this.getCities()
+    this.getVillages()
   },
   mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
@@ -124,10 +124,10 @@ export default {
         this.userService.users.length,
       )
     },
-    async getCities() {
+    async getVillages() {
       try {
-        await this.cityService.getCities()
-        this.cities = this.cityService.cities
+        await this.villageService.getVillages()
+        this.villages = this.villageService.villages
       } catch (error) {
         this.alertNotify("error", error.message)
       }
@@ -142,8 +142,8 @@ export default {
     },
     async updateUser(user) {
       this.sending = true
-      if (user.cityId !== 0) {
-        this.userService.user.cityId = user.cityId
+      if (user.villageId !== 0) {
+        this.userService.user.villageId = user.villageId
       }
       // Set roles if provided
       if (user.roles) {

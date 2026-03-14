@@ -33,7 +33,7 @@ class DeviceExportService extends AbstractExportService {
             $personSurname = $device->person->surname ?? '';
             $fullName = trim($personName.' '.$personSurname);
             $primaryAddress = $device->person?->addresses->where('is_primary', 1)->first();
-            $address = $primaryAddress?->city->name ?? '';
+            $address = $primaryAddress?->village->name ?? '';
 
             return [
                 $device->device_serial,
@@ -98,7 +98,7 @@ class DeviceExportService extends AbstractExportService {
             $primaryAddress = $device->person?->addresses->where('is_primary', 1)->first();
             if ($primaryAddress) {
                 $address = [
-                    'city' => $primaryAddress->city->name ?? '',
+                    'village' => $primaryAddress->village->name ?? '',
                     'street' => $primaryAddress->street ?? '',
                 ];
             }

@@ -58,9 +58,9 @@ class MeterRevenueService {
                             ->where('addresses.is_primary', '=', 1);
                     })
                     ->where('meters.connection_group_id', $connectionGroupId)
-                    ->whereIn('addresses.city_id', function ($query) use ($clusterId) {
+                    ->whereIn('addresses.village_id', function ($query) use ($clusterId) {
                         $query->select('id')
-                            ->from('cities')
+                            ->from('villages')
                             ->where('cluster_id', $clusterId);
                     });
             })
@@ -76,15 +76,15 @@ class MeterRevenueService {
     /**
      * @return \Illuminate\Database\Eloquent\Collection<int, Transaction>
      */
-    public function getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
-        string $cityIds,
+    public function getConnectionTypeBasedRevenueInWeeklyPeriodForVillages(
+        string $villageIds,
         int $connectionId,
         string $startDate,
         string $endDate,
     ): Collection {
         return Transaction::query()
             ->selectRaw('SUM(transactions.amount) as total, YEARWEEK(transactions.created_at, 3) as result_date')
-            ->whereIn('transactions.message', function ($query) use ($connectionId, $cityIds) {
+            ->whereIn('transactions.message', function ($query) use ($connectionId, $villageIds) {
                 $query->select('serial_number')
                     ->from('meters')
                     ->join('devices', function ($join) {
@@ -98,7 +98,7 @@ class MeterRevenueService {
                             ->where('addresses.is_primary', '=', 1);
                     })
                     ->where('meters.connection_type_id', $connectionId)
-                    ->whereIn('addresses.city_id', explode(',', $cityIds));
+                    ->whereIn('addresses.village_id', explode(',', $villageIds));
             })
             ->whereHasMorph(
                 'originalTransaction',
@@ -142,9 +142,9 @@ class MeterRevenueService {
                             ->where('addresses.is_primary', '=', 1);
                     })
                     ->where('meters.connection_group_id', $connectionGroupId)
-                    ->whereIn('addresses.city_id', function ($query) use ($miniGridId) {
+                    ->whereIn('addresses.village_id', function ($query) use ($miniGridId) {
                         $query->select('id')
-                            ->from('cities')
+                            ->from('villages')
                             ->where('mini_grid_id', $miniGridId);
                     });
             })
@@ -179,9 +179,9 @@ class MeterRevenueService {
             })
             ->where('meters.connection_group_id', $connectionGroupId)
             ->whereDate('meters.created_at', '<=', $endDate)
-            ->whereIn('addresses.city_id', function ($query) use ($miniGridId) {
+            ->whereIn('addresses.village_id', function ($query) use ($miniGridId) {
                 $query->select('id')
-                    ->from('cities')
+                    ->from('villages')
                     ->where('mini_grid_id', $miniGridId);
             })
             ->get()
@@ -211,9 +211,9 @@ class MeterRevenueService {
             })
             ->leftJoin('connection_groups', 'connection_groups.id', '=', 'meters.connection_group_id')
             ->where('meters.connection_group_id', $connectionGroupId)
-            ->whereIn('addresses.city_id', function ($query) use ($miniGridId) {
+            ->whereIn('addresses.village_id', function ($query) use ($miniGridId) {
                 $query->select('id')
-                    ->from('cities')
+                    ->from('villages')
                     ->where('mini_grid_id', $miniGridId);
             })
             ->whereBetween(DB::raw('DATE(meters.created_at)'), [$startDate, $endDate])
@@ -245,9 +245,9 @@ class MeterRevenueService {
             })
             ->leftJoin('connection_groups', 'connection_groups.id', '=', 'meters.connection_group_id')
             ->where('meters.connection_group_id', $connectionGroupId)
-            ->whereIn('addresses.city_id', function ($query) use ($clusterId) {
+            ->whereIn('addresses.village_id', function ($query) use ($clusterId) {
                 $query->select('id')
-                    ->from('cities')
+                    ->from('villages')
                     ->where('cluster_id', $clusterId);
             })
             ->whereBetween(DB::raw('DATE(meters.created_at)'), [$startDate, $endDate])
@@ -278,9 +278,9 @@ class MeterRevenueService {
             })
             ->where('meters.connection_group_id', $connectionGroupId)
             ->whereDate('meters.created_at', '<=', $endDate)
-            ->whereIn('addresses.city_id', function ($query) use ($clusterId) {
+            ->whereIn('addresses.village_id', function ($query) use ($clusterId) {
                 $query->select('id')
-                    ->from('cities')
+                    ->from('villages')
                     ->where('cluster_id', $clusterId);
             })
             ->get()

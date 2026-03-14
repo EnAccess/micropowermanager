@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\DTO\MiniGridDashboardData;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\ConnectionGroup;
 use App\Models\Target;
 use App\Models\Ticket\Ticket;
@@ -20,7 +20,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
         private Target $target,
         private ConnectionGroup $connectionGroup,
         private ConnectionGroupService $connectionGroupService,
-        private City $city,
+        private Village $village,
         private ConnectionTypeService $connectionTypeService,
         private PeriodService $periodService,
         private Ticket $ticket,
@@ -118,8 +118,8 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $connectionsData[$connectionGroup->name] = $connectionData[0]['registered_connections'] ?? 0;
             }
 
-            $cities = $this->city::where('mini_grid_id', $miniGridId)->get();
-            $cityIds = implode(',', $cities->pluck('id')->toArray());
+            $villages = $this->village::where('mini_grid_id', $miniGridId)->get();
+            $villageIds = implode(',', $villages->pluck('id')->toArray());
             $initialData = array_fill_keys($connectionNames, ['revenue' => 0]);
 
             $response = $this->periodService->generatePeriodicList(
@@ -129,8 +129,8 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $initialData
             );
             foreach ($connectionsTypes as $connectionType) {
-                $tariffRevenue = $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
-                    $cityIds,
+                $tariffRevenue = $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForVillages(
+                    $villageIds,
                     $connectionType->id,
                     $startDate,
                     $endDate

@@ -720,8 +720,8 @@ export default {
       if (!address) return null
       const addressPoints = this.parsePoints(address.geo?.points)
       if (addressPoints) return addressPoints
-      const cityPoints = this.parsePoints(address.city?.location?.points)
-      if (cityPoints) return cityPoints
+      const villagePoints = this.parsePoints(address.village?.location?.points)
+      if (villagePoints) return villagePoints
       return null
     },
     resetDeviceSelectionValidation() {

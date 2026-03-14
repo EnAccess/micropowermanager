@@ -78,16 +78,16 @@
           <div class="md-layout-item md-size-100">
             <md-field>
               <label>{{ $tc("phrases.provinceVillage") }}</label>
-              <md-select v-model="localFilters.cityId">
+              <md-select v-model="localFilters.villageId">
                 <md-option :value="null">
                   {{ $tc("words.all") }}
                 </md-option>
                 <md-option
-                  v-for="city in cities"
-                  :key="city.id"
-                  :value="city.id"
+                  v-for="village in villages"
+                  :key="village.id"
+                  :value="village.id"
                 >
-                  {{ city.name }}
+                  {{ village.name }}
                 </md-option>
               </md-select>
             </md-field>
@@ -174,7 +174,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    cities: {
+    villages: {
       type: Array,
       default: () => [],
     },
@@ -190,7 +190,7 @@ export default {
         agentId: null,
         totalPaidMin: null,
         totalPaidMax: null,
-        cityId: null,
+        villageId: null,
         latestPaymentFrom: null,
         latestPaymentTo: null,
         registrationFrom: null,
@@ -242,7 +242,7 @@ export default {
         agentId: this.localFilters.agentId,
         totalPaidMin: this.localFilters.totalPaidMin,
         totalPaidMax: this.localFilters.totalPaidMax,
-        cityId: this.localFilters.cityId,
+        villageId: this.localFilters.villageId,
         latestPaymentFrom: this.normalizeDate(
           this.localFilters.latestPaymentFrom,
         ),
@@ -271,7 +271,7 @@ export default {
         agentId: null,
         totalPaidMin: null,
         totalPaidMax: null,
-        cityId: null,
+        villageId: null,
         latestPaymentFrom: null,
         latestPaymentTo: null,
         registrationFrom: null,

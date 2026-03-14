@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\City;
+use App\Models\Village;
 use App\Models\Cluster;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
@@ -22,7 +22,7 @@ class RevenueController extends Controller {
         private Ticket $ticket,
         private TicketCategory $label,
         private PeriodService $periodService,
-        private City $city,
+        private Village $village,
         private RevenueService $revenueService,
         private MeterRevenueService $meterRevenueService,
         private Target $target,
@@ -71,11 +71,11 @@ class RevenueController extends Controller {
         $end = $request->input('endDate', date('Y-m-d'));
         $endDate = Carbon::parse($end)->endOfDay();
 
-        $cities = $this->city::query()->where('mini_grid_id', $id)->get();
-        $cityIds = implode(',', $cities->pluck('id')->toArray());
+        $villages = $this->village::query()->where('mini_grid_id', $id)->get();
+        $villageIds = implode(',', $villages->pluck('id')->toArray());
 
-        if (count($cities) === 0) {
-            $response = ['data' => null, 'message' => 'There is no city for this MiniGrid'];
+        if (count($villages) === 0) {
+            $response = ['data' => null, 'message' => 'There is no village for this MiniGrid'];
 
             return ApiResource::make($response);
         }
@@ -92,9 +92,9 @@ class RevenueController extends Controller {
             $initialData
         );
 
-        $connections->each(function (ConnectionType $connection) use ($endDate, $startDate, $cityIds, &$response) {
-            $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
-                $cityIds,
+        $connections->each(function (ConnectionType $connection) use ($endDate, $startDate, $villageIds, &$response) {
+            $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForVillages(
+                $villageIds,
                 $connection->id,
                 $startDate,
                 $endDate

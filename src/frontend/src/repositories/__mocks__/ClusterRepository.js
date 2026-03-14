@@ -20,7 +20,7 @@ export default {
       process.nextTick(() => resolve(clustersRevenueResponse))
     })
   },
-  getClusterCitiesRevenue() {
+  getClusterVillagesRevenue() {
     return new Promise((resolve) => {
       process.nextTick(() => resolve(clusterMiniGridRevenueResponse))
     })
