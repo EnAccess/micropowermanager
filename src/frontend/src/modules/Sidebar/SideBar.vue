@@ -25,13 +25,10 @@
               :key="'menu' + menu.meta?.sidebar?.name ?? menu.path"
             >
               <md-list-item>
-                <md-icon
-                  v-if="menu.meta?.sidebar?.icon"
-                  class="c-white icon-box"
-                >
+                <md-icon v-if="menu.meta?.sidebar?.icon" class="icon-box">
                   {{ menu.meta.sidebar.icon }}
                 </md-icon>
-                <span class="md-list-item-text c-white">
+                <span class="md-list-item-text">
                   {{ $tc("menu." + menu.meta?.sidebar?.name ?? menu.path) }}
                 </span>
               </md-list-item>
@@ -43,13 +40,10 @@
               :key="'submenu' + menu.meta?.sidebar?.name ?? menu.path"
             >
               <md-list-item md-expand>
-                <md-icon
-                  v-if="menu.meta?.sidebar?.icon"
-                  class="c-white icon-box"
-                >
+                <md-icon v-if="menu.meta?.sidebar?.icon" class="icon-box">
                   {{ menu.meta.sidebar.icon }}
                 </md-icon>
-                <span class="md-list-item-text c-white">
+                <span class="md-list-item-text">
                   {{ menu.meta?.sidebar?.name ?? menu.path }}
                 </span>
                 <md-list slot="md-expand" class="no-bg">
@@ -61,7 +55,7 @@
                       class="sub-menu"
                     >
                       <md-list-item>
-                        <span class="md-list-item-text c-white">
+                        <span class="md-list-item-text">
                           {{
                             $tc(
                               "menu.subMenu." + sub.meta?.sidebar?.name ??
@@ -209,21 +203,13 @@ export default {
 }
 </script>
 
-<!-- https://github.com/EnAccess/micropowermanager/issues/1256 -->
-<!-- eslint-disable vue/enforce-style-attribute -->
-<style lang="scss">
+<style scoped lang="scss">
 .sidebar {
   background: #2b2b2b;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  width: 260px;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
+
 .sidebar-wrapper {
   position: relative;
   z-index: 4;
@@ -308,14 +294,6 @@ export default {
 
 .no-bg {
   background-color: transparent !important;
-}
-
-.md-icon.md-theme-default.md-icon-image svg {
-  fill: #f5e8e8 !important;
-}
-
-.c-white {
-  color: #f5e8e8 !important;
 }
 
 .icon-box {
