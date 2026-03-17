@@ -191,7 +191,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .md-table-pagination {
   height: 56px;
   display: flex;
@@ -226,10 +226,5 @@ export default {
   max-width: 82px;
   min-width: 56px;
   margin-top: 5px;
-}
-
-// Workaround to fight global styling from SideBar.vue
-::v-deep(.md-icon.md-theme-default.md-icon-image svg) {
-  fill: rgba(0, 0, 0, 0.87) !important;
 }
 </style>
