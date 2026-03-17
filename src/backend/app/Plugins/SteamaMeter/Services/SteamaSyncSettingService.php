@@ -2,7 +2,6 @@
 
 namespace App\Plugins\SteamaMeter\Services;
 
-use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
 use App\Plugins\SteamaMeter\Models\SteamaSetting;
 use App\Plugins\SteamaMeter\Models\SteamaSyncSetting;
 use Carbon\Carbon;
