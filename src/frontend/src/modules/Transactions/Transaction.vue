@@ -503,7 +503,7 @@ export default {
 
 .message-box {
   padding: 10px;
-  background-color: #f5e8e8;
+  background-color: white;
   -moz-border-radius: 10px;
   border-radius: 14px;
   margin-top: 2vh;
