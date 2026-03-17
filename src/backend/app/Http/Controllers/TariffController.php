@@ -19,7 +19,7 @@ class TariffController extends Controller {
      * a list of all tariffs.
      * The list is paginated and each page contains 15 results.
      *
-     * @responseFile responses/tariffs/tariffs.list.json
+     * @responseFile resources/docs/responses/tariffs/tariffs.list.json
      */
     public function index(Request $request): ApiResource {
         $limit = $request->get('limit');
@@ -32,7 +32,7 @@ class TariffController extends Controller {
      *
      * @urlParam     id int required
      *
-     * @responseFile responses/tariffs/tariff.detail.json
+     * @responseFile resources/docs/responses/tariffs/tariff.detail.json
      */
     public function show(Request $request, int $tariffId): ApiResource {
         return ApiResource::make($this->tariffService->getById($tariffId));

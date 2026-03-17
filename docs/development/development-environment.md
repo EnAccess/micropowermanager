@@ -152,6 +152,7 @@ The Docker Compose stack must still be running, but this setup allows you to run
   APP_KEY=base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
   DB_USERNAME=root
   DB_PASSWORD=wF9zLp2qRxaS2e
+  JWT_SECRET=TihQ232bmMermM8HKaLHwzRl5JSuxwqhfEAQKxRHrQqjRUwrsw1FRZhAcLkihEDU
   ```
 
 - Run `php artisan model:show "Person\Person"` to confirm it is working.

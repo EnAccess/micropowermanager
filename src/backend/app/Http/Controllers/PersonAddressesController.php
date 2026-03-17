@@ -22,7 +22,7 @@ class PersonAddressesController extends Controller {
      *
      * @bodyParam    person int required the ID of the person. Example: 2
      *
-     * @responseFile responses/people/person.addresses.list.json
+     * @responseFile resources/docs/responses/people/person.addresses.list.json
      *
      * @apiResourceModel \App\Models\Person\Person
      */

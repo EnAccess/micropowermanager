@@ -21,7 +21,7 @@ class MeterTypeController extends Controller {
     /**
      * List.
      *
-     * @responseFile responses/metertypes/meter.types.list.json
+     * @responseFile resources/docs/responses/metertypes/meter.types.list.json
      */
     public function index(Request $request): ApiResource {
         $limit = $request->get('limit');

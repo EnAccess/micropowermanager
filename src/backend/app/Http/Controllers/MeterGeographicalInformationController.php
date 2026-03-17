@@ -25,7 +25,7 @@ class MeterGeographicalInformationController extends Controller {
      *
      * @urlParam mini_grid_id int
      *
-     * @responseFile responses/meters/meters.geo.list.json
+     * @responseFile resources/docs/responses/meters/meters.geo.list.json
      */
     public function index(?int $miniGridId = null): ApiResource {
         $cityIds = $miniGridId ? $this->cityService->getCityIdsByMiniGridId($miniGridId) : [];
@@ -50,7 +50,7 @@ class MeterGeographicalInformationController extends Controller {
      *
      * @urlParam person required The ID of the person
      *
-     * @responseFile responses/people/person.meter.list.json
+     * @responseFile resources/docs/responses/people/person.meter.list.json
      */
     public function show(int $personId): ApiResource {
         return ApiResource::make($this->personMeterService->getPersonMetersGeographicalInformation($personId));

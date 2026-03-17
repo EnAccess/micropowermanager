@@ -149,11 +149,7 @@ class SteamaSyncSettingService {
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettingsByActionName(string $actionName): SteamaSyncSetting {
-        try {
-            return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
-        } catch (\Exception $exception) {
-            throw new ModelNotFoundException($exception->getMessage());
-        }
+    public function getSyncSettingsByActionName(string $actionName): ?SteamaSyncSetting {
+        return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
     }
 }

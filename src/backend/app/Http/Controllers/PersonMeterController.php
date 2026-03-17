@@ -17,7 +17,7 @@ class PersonMeterController {
      *
      * @urlParam person required The ID of the person
      *
-     * @responseFile responses/people/person.meter.tariff.json
+     * @responseFile resources/docs/responses/people/person.meter.tariff.json
      */
     public function show(int $personId): ApiResource {
         return ApiResource::make($this->personMeterService->getPersonMeters($personId));

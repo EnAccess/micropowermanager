@@ -51,6 +51,10 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Knuckles\Camel\Extraction\ExtractedEndpointData;
+use Knuckles\Scribe\Scribe;
+use Symfony\Component\HttpFoundation\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -97,6 +101,16 @@ class AppServiceProvider extends ServiceProvider {
         );
         // Rate limiter for emails
         RateLimiter::for('emails', fn () => Limit::perMinute(20));
+
+        // API documentation (with scribe)
+        // Be sure to wrap in a `class_exists()`,
+        // so production doesn't break if you installed Scribe as dev-only
+        if (class_exists(Scribe::class)) {
+            Scribe::beforeResponseCall(function (Request $request, ExtractedEndpointData $endpointData) {
+                $token = JWTAuth::fromUser(User::first());
+                $request->headers->add(['Authorization' => "Bearer $token"]);
+            });
+        }
     }
 
     /**
