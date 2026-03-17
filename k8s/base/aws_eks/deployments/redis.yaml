@@ -50,3 +50,13 @@ spec:
       targetPort: 6379
   selector:
     app: redis-db
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis-db

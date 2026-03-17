@@ -23,6 +23,8 @@ spec:
       creationTimestamp: null
       labels:
         app: redis-db
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false" # blocks autoscaler eviction
     spec:
       containers:
         - image: redis:5
@@ -50,3 +52,13 @@ spec:
       targetPort: 6379
   selector:
     app: redis-db
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis-db
