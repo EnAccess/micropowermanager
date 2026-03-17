@@ -272,6 +272,7 @@ Route::group(['prefix' => 'sms-appliance-remind-rate'], static function () {
     Route::get('/', [SmsApplianceRemindRateController::class, 'index']);
     Route::put('/{smsApplianceRemindRate}', [SmsApplianceRemindRateController::class, 'update']);
     Route::post('/', [SmsApplianceRemindRateController::class, 'store']);
+    Route::delete('/{smsApplianceRemindRate}', [SmsApplianceRemindRateController::class, 'destroy']);
 });
 Route::group(['prefix' => 'sms-android-setting'], static function () {
     Route::get('/', [SmsAndroidSettingController::class, 'index']);

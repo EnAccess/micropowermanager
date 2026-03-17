@@ -9,7 +9,7 @@ class ApplianceRateReminder extends SmsBodyParser {
 
     protected function getVariableValue(string $variable): mixed {
         return match ($variable) {
-            'appliance_type_name' => $this->reminderData->appliancePerson->applianceType->name,
+            'appliance_type_name' => $this->reminderData->appliancePerson->appliance->applianceType->name,
             'remaining' => $this->reminderData->remaining,
             'due_date' => $this->reminderData->due_date,
             default => $variable,
