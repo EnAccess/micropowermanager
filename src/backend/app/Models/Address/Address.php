@@ -2,18 +2,17 @@
 
 namespace App\Models\Address;
 
-use App\Helpers\PhoneNumberNormalizer;
 use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use Database\Factories\Address\AddressFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Propaganistas\LaravelPhone\Casts\E164PhoneNumberCast;
 
 /**
  * Class Address.
@@ -43,6 +42,8 @@ class Address extends BaseModel {
     public static $rules = [
         'city_id' => 'required|exists:cities,id',
     ];
+
+    public $casts = ['phone' => E164PhoneNumberCast::class];
 
     /**
      * @return BelongsTo<City, $this>
@@ -74,15 +75,8 @@ class Address extends BaseModel {
         $this->city_id = $cityId;
     }
 
-    /** @return Attribute<string|null, string|null> */
-    protected function phone(): Attribute {
-        return Attribute::make(
-            set: PhoneNumberNormalizer::normalize(...),
-        );
-    }
-
     public function setPhone(?string $phone): void {
-        $this->phone = PhoneNumberNormalizer::normalize($phone);
+        $this->phone = $phone;
     }
 
     public function setEmail(?string $email): void {

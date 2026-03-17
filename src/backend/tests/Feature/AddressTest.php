@@ -26,7 +26,7 @@ class AddressTest extends TestCase {
 
         $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
             'email' => $this->faker->email(),
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => $this->faker->e164PhoneNumber(),
             'street' => $this->faker->streetAddress(),
             'city_id' => $this->city->id,
             'country_id' => 1,

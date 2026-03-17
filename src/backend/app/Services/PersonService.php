@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Helpers\PhoneNumberNormalizer;
 use App\Models\Country;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
@@ -398,7 +397,7 @@ class PersonService implements IBaseService {
     }
 
     public function getByPhoneNumber(string $phoneNumber): ?Person {
-        $phoneNumber = PhoneNumberNormalizer::normalize($phoneNumber) ?? $phoneNumber;
+        $phoneNumber = phone($phoneNumber)->formatE164();
 
         return $this->person->newQuery()->whereHas('addresses', fn ($q) => $q->where('phone', $phoneNumber))
             ->first();

@@ -4,7 +4,6 @@ namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
 use App\Exceptions\SmsRecordNotFoundException;
-use App\Helpers\PhoneNumberNormalizer;
 use App\Models\ApplianceRate;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
@@ -129,13 +128,13 @@ abstract class SmsSender {
 
     public function getReceiver(): string {
         if ($this->data instanceof Transaction) {
-            $this->receiver = PhoneNumberNormalizer::normalize($this->data->sender);
+            $this->receiver = phone($this->data->sender)->formatE164();
         } elseif ($this->data instanceof ApplianceRate) {
             $this->receiver = $this->data->appliancePerson->person->addresses->first()->phone;
         } elseif (!is_array($this->data) && $this->data->mpmPerson) {
             $this->receiver = $this->data->mpmPerson->addresses[0]->phone;
         } else {
-            $this->receiver = PhoneNumberNormalizer::normalize($this->data['phone']);
+            $this->receiver = phone($this->data['phone'])->formatE164();
         }
 
         return $this->receiver;

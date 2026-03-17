@@ -13,7 +13,7 @@ class TransactionFactory extends Factory {
         return [
             'id' => $this->faker->unique()->randomNumber(),
             'amount' => $this->faker->unique()->randomNumber(),
-            'sender' => $this->faker->phoneNumber,
+            'sender' => $this->faker->e164PhoneNumber(),
             'message' => '47000268748',
         ];
     }

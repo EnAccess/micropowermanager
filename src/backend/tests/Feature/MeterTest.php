@@ -229,7 +229,7 @@ class MeterTest extends TestCase {
         $this->transaction = TransactionFactory::new()->create([
             'id' => 1,
             'amount' => $this->faker->unique()->randomNumber(),
-            'sender' => $this->faker->phoneNumber(),
+            'sender' => $this->faker->e164PhoneNumber(),
             'message' => $meter->serial_number,
             'original_transaction_id' => $this->faker->unique()->randomNumber(),
             'original_transaction_type' => 'agent_transaction',
@@ -243,7 +243,7 @@ class MeterTest extends TestCase {
             'transaction_id' => $this->transaction->id,
             'amount' => $this->transaction->amount,
             'payment_service' => 'agent_transaction',
-            'sender' => $this->faker->phoneNumber(),
+            'sender' => $this->faker->e164PhoneNumber(),
             'payment_type' => 'energy',
             'paid_for_type' => 'token',
             'paid_for_id' => $this->token->id,
