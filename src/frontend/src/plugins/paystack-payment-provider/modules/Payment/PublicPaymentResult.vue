@@ -283,13 +283,15 @@ export default {
     },
     // Non-paygo installments have no device_serial — no device or token to show
     isNonPaygoInstallment() {
-      return this.isInstallment   && !this.paymentResult?.transaction?.serial_id
+      return this.isInstallment && !this.paymentResult?.transaction?.serial_id
     },
     deviceType() {
       return this.paymentResult?.transaction?.device_type || "meter"
     },
     isSHS() {
-      return this.deviceType === "solar_home_system" || this.deviceType === "shs"
+      return (
+        this.deviceType === "solar_home_system" || this.deviceType === "shs"
+      )
     },
     deviceTypeName() {
       return this.isSHS ? "Solar Home System" : "Meter"

@@ -14,6 +14,9 @@ use Tests\TestCase;
 class PaystackTransactionServiceInitializePaymentTest extends TestCase {
     use RefreshMultipleDatabases;
 
+    /**
+     * @param array<string, mixed> $apiResponse
+     */
     private function makeServiceWithMockedApi(array $apiResponse): PaystackTransactionService {
         $apiService = $this->createMock(PaystackApiService::class);
         $apiService->method('initializeTransaction')->willReturn($apiResponse);
