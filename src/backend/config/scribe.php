@@ -49,7 +49,7 @@ DESC,
 
     // The base URL displayed in the docs. If this is empty, Scribe will use the value of config('app.url') at generation time.
     // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.
-    'base_url' => 'https://api.demo.micropowermanager.io',
+    'base_url' => env('SCRIBE_BASE_URL', config('app.url')),
 
     'routes' => [
         [
@@ -123,7 +123,7 @@ DESC,
     // - "laravel" will generate the documentation as a Blade view, so you can add routing and authentication.
     // - "external_static" and "external_laravel" do the same as above, but generate a basic template,
     // passing the OpenAPI spec as a URL, allowing you to easily use the docs with an external generator
-    'type' => 'external_static',
+    'type' => 'static',
 
     // See https://scribe.knuckles.wtf/laravel/reference/config#theme for supported options
     'theme' => 'elements',
@@ -131,7 +131,7 @@ DESC,
     'static' => [
         // HTML documentation, assets and Postman collection will be generated to this folder.
         // Source Markdown will still be in resources/docs.
-        'output_path' => 'storage/framework/cache/scribe',
+        'output_path' => 'public/openapi',
     ],
 
     'laravel' => [

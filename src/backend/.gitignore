@@ -35,4 +35,9 @@ auth.json
 # will be replace with a volume mount at runtime.
 /storage
 
+## PHPUnit
 .phpunit.cache*
+
+## OpenAPI docs (scribe)
+.scribe
+public/openapi

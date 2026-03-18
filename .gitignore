@@ -66,9 +66,6 @@ docs/build/
 ## ERD
 dist/
 
-## OpenAPI docs (scribe)
-.scribe
-
 # deployment related
 
 ## secret files

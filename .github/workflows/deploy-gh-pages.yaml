@@ -58,6 +58,12 @@ jobs:
 
       - name: Generate OpenAPI docs
         working-directory: ./src/backend
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+          SCRIBE_BASE_URL: https://api.demo.micropowermanager.io
         run: |
           php artisan scribe:generate
 

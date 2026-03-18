@@ -86,13 +86,13 @@ OpenAPI docs are automatically generated when the docs are deployed via [Github 
 Assumping you have a [local development setup](https://micropowermanager.io/development/development-environment.html#access-docker-mysql-database-locally) running, run
 
 ```sh
-cd src/backend
-php artisan scribe:generate && cp -r storage/framework/cache/scribe/ ../../docs/.public/openapi/
+docker exec -it -u www-data backend-dev bash
+php artisan scribe:generate
 ```
 
 Then a render version of the OpenAPI docs are available at
 
-- [OpenAPI](http://localhost:5173/openapi/index.html)
+- [OpenAPI](http://localhost:8000/openapi/)
 
 ## Further Read
 
