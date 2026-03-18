@@ -87,7 +87,7 @@ class PersonController extends Controller {
      *
      * @apiResourceModel App\Models\Person\Person
      *
-     * @responseFile responses/people/people.detail.json
+     * @responseFile resources/docs/responses/people/people.detail.json
      */
     public function show(int $personId): ApiResource {
         return ApiResource::make($this->personService->getDetails($personId, true));
@@ -144,7 +144,7 @@ class PersonController extends Controller {
      *
      * @apiResourceModel App\Models\Person\Person
      *
-     * @responseFile     responses/people/person.update.json
+     * @responseFile resources/docs/responses/people/person.update.json
      */
     public function update(
         int $personId,

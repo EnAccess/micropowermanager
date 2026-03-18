@@ -48,11 +48,13 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Knuckles\Camel\Extraction\ExtractedEndpointData;
 use Knuckles\Scribe\Scribe;
+use Knuckles\Scribe\Tools\ConsoleOutputUtils as ScribeConsoleOutput;
 use Symfony\Component\HttpFoundation\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -103,12 +105,29 @@ class AppServiceProvider extends ServiceProvider {
         RateLimiter::for('emails', fn () => Limit::perMinute(20));
 
         // API documentation (with scribe)
-        // Be sure to wrap in a `class_exists()`,
-        // so production doesn't break if you installed Scribe as dev-only
+        // Wrap in a `class_exists()` so production doesn't break if you installed Scribe as dev-only
         if (class_exists(Scribe::class)) {
             Scribe::beforeResponseCall(function (Request $request, ExtractedEndpointData $endpointData) {
-                $token = JWTAuth::fromUser(User::first());
-                $request->headers->add(['Authorization' => "Bearer $token"]);
+                $action = $endpointData->route->action;
+
+                // Check if 'api' middleware is applied
+                if (isset($action['middleware']) && in_array('api', (array) $action['middleware'])) {
+                    ScribeConsoleOutput::info(
+                        'Auth API route detected:'.json_encode([
+                            'route' => $action['uses'] ?? null,
+                            'prefix' => $action['prefix'] ?? null,
+                            'middleware' => $action['middleware'],
+                        ])
+                    );
+
+                    /** @phpstan-ignore staticMethod.notFound */
+                    $token = JWTAuth::fromUser(User::first());
+                    $request->headers->add([
+                        'Authorization' => "Bearer $token",
+                    ]);
+                }
+
+                // TODO: Handle agent app and api-key middleware
             });
         }
     }
