@@ -104,7 +104,6 @@ class UserDefaultDatabaseConnectionMiddleware {
             'laravel-erd',
             'api/users/password',
             'api/mpm-plugins',
-            'docs',
         ])) {
             return true;
         }
