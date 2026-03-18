@@ -290,7 +290,7 @@ export default {
           timer: 2000,
           timerProgressBar: true,
         }).then(() => {
-          window.location = data.redirection_url
+            window.location = data.redirect_url
         })
       } catch (error) {
         this.$swal({

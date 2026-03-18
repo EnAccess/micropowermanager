@@ -28,15 +28,19 @@
               <span class="label">Transaction ID:</span>
               <span class="value">{{ paymentResult.transaction.id }}</span>
             </div>
-            <div class="detail-row">
+            <div v-if="!isNonPaygoInstallment" class="detail-row">
               <span class="label">{{ deviceLabel }}:</span>
               <span class="value">
                 {{ paymentResult.transaction.serial_id }}
               </span>
             </div>
-            <div class="detail-row">
+            <div v-if="!isNonPaygoInstallment" class="detail-row">
               <span class="label">Device Type:</span>
               <span class="value">{{ deviceTypeName }}</span>
+            </div>
+            <div v-if="isNonPaygoInstallment" class="detail-row">
+              <span class="label">Payment Type:</span>
+              <span class="value">Installment</span>
             </div>
             <div class="detail-row">
               <span class="label">Amount Paid:</span>
@@ -58,7 +62,7 @@
           </div>
 
           <!-- Token Information -->
-          <div class="token-container">
+          <div v-if="!isNonPaygoInstallment" class="token-container">
             <div class="token-header">
               <h3 class="token-title">{{ tokenTitle }}</h3>
               <div class="token-status">
@@ -179,15 +183,19 @@
               <span class="label">Transaction ID:</span>
               <span class="value">{{ paymentResult.transaction.id }}</span>
             </div>
-            <div class="detail-row">
+            <div v-if="!isNonPaygoInstallment" class="detail-row">
               <span class="label">{{ deviceLabel }}:</span>
               <span class="value">
                 {{ paymentResult.transaction.serial_id }}
               </span>
             </div>
-            <div class="detail-row">
+            <div v-if="!isNonPaygoInstallment" class="detail-row">
               <span class="label">Device Type:</span>
               <span class="value">{{ deviceTypeName }}</span>
+            </div>
+            <div v-if="isNonPaygoInstallment" class="detail-row">
+              <span class="label">Payment Type:</span>
+              <span class="value">Installment</span>
             </div>
             <div class="detail-row">
               <span class="label">Amount:</span>
@@ -267,11 +275,21 @@ export default {
       const urlParams = new URLSearchParams(window.location.search)
       return urlParams.get("reference")
     },
+    paymentType() {
+      return this.paymentResult?.transaction?.payment_type
+    },
+    isInstallment() {
+      return this.paymentType === "deferred_payment"
+    },
+    // Non-paygo installments have no device_serial — no device or token to show
+    isNonPaygoInstallment() {
+      return this.isInstallment   && !this.paymentResult?.transaction?.serial_id
+    },
     deviceType() {
       return this.paymentResult?.transaction?.device_type || "meter"
     },
     isSHS() {
-      return this.deviceType === "shs"
+      return this.deviceType === "solar_home_system" || this.deviceType === "shs"
     },
     deviceTypeName() {
       return this.isSHS ? "Solar Home System" : "Meter"
@@ -289,6 +307,10 @@ export default {
       return this.isSHS ? "Token Amount" : "Energy Amount"
     },
     successMessage() {
+      if (this.isNonPaygoInstallment) {
+        return "Your payment has been processed successfully. Your account balance will be updated shortly."
+      }
+
       if (this.isSHS) {
         return "Your payment has been processed successfully. Your appliance token will be generated shortly."
       }

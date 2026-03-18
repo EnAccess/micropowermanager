@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Plugins\PaystackPaymentProvider\Http\Controllers;
 
 use App\Plugins\PaystackPaymentProvider\Http\Requests\TransactionInitializeRequest;
-use App\Plugins\PaystackPaymentProvider\Http\Resources\PaystackResource;
 use App\Plugins\PaystackPaymentProvider\Http\Resources\PaystackTransactionResource;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
@@ -23,10 +22,28 @@ class PaystackController extends Controller {
         private PaystackWebhookService $webhookService,
     ) {}
 
-    public function startTransaction(TransactionInitializeRequest $request): PaystackResource {
-        $transaction = $request->getPaystackTransaction();
+    public function initializeTransaction(TransactionInitializeRequest $request): JsonResponse {
+        $customerId = (int) $request->input('customer_id');
+        $serialId = $request->input('device_serial');
+        $amount = (float) $request->input('amount');
+        $sender = $this->transactionService->getCustomerPhoneByCustomerId($customerId) ?? '';
 
-        return PaystackResource::make($this->apiService->initializeTransaction($transaction));
+        $result = $this->transactionService->initializePayment(
+            amount: $amount,
+            sender: $sender,
+            message: $serialId,
+            type: 'energy',
+            customerId: $customerId,
+            serialId: $serialId,
+        );
+
+        return response()->json([
+            'data' => [
+                'redirectionUrl' => $result['provider_data']['redirect_url'],
+                'reference' => $result['provider_data']['reference'],
+                'error' => null,
+            ],
+        ]);
     }
 
     /**

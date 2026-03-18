@@ -58,20 +58,9 @@ class PaystackWebhookService {
                 return;
             }
 
-            $paystackTransaction->setExternalTransactionId($data['id'] ?? '');
-
-            // Get customer's phone number for sender field
-            $customerPhone = $this->transactionService->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
-            $sender = $customerPhone ?: '';
-
-            $paystackTransaction->transaction()->create([
-                'amount' => $paystackTransaction->getAmount(),
-                'sender' => $sender,
-                'message' => $paystackTransaction->getDeviceSerial(),
-                'type' => 'energy',
-            ]);
+            $paystackTransaction->setExternalTransactionId((string) ($data['id'] ?? ''));
             $paystackTransaction->save();
-            // Process the successful payment in MPM
+
             $this->transactionService->processSuccessfulPayment($companyId, $paystackTransaction);
         } catch (\Exception $e) {
             Log::error('PaystackWebhookService: Failed to process payment', [
@@ -94,7 +83,9 @@ class PaystackWebhookService {
             return;
         }
 
-        $paystackTransaction->setStatus(PaystackTransaction::STATUS_FAILED);
+        $paystackTransaction->setExternalTransactionId((string) ($data['id'] ?? ''));
         $paystackTransaction->save();
+
+        $this->transactionService->processFailedPayment($paystackTransaction);
     }
 }

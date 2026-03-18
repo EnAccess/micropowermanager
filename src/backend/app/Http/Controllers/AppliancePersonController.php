@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Http\Resources\ApiResource;
+use App\Jobs\ProcessPayment;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\Person\Person;
@@ -13,15 +14,17 @@ use App\Services\AddressGeographicalInformationService;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\ApplianceService;
-use App\Services\CashTransactionService;
 use App\Services\DeviceService;
 use App\Services\GeographicalInformationService;
+use App\Services\PaymentInitializationService;
 use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AppliancePersonController extends Controller {
+    public const CASH_TRANSACTION_PROVIVER = 0;
+
     public function __construct(
         private AppliancePerson $appliancePerson,
         private AppliancePersonService $appliancePersonService,
@@ -31,7 +34,7 @@ class AppliancePersonController extends Controller {
         private AddressesService $addressesService,
         private GeographicalInformationService $geographicalInformationService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
-        private CashTransactionService $cashTransactionService,
+        private PaymentInitializationService $paymentInitializationService,
         private ApplianceService $applianceService,
         private ApplianceRateService $applianceRateService,
     ) {}
@@ -98,29 +101,45 @@ class AppliancePersonController extends Controller {
                 $this->addressGeographicalInformationService->assign();
                 $this->geographicalInformationService->save($geographicalInformation);
             }
+            $downPaymentInitData = [];
             if ($downPayment > 0) {
+                $paymentProviderId = (int) $request->input('payment_provider', 0);
+                $companyId = $request->attributes->get('companyId');
                 $sender = isset($addressData) ? $addressData['phone'] : '-';
-                $transaction = $this->cashTransactionService->createCashTransaction(
-                    $user->id,
-                    $downPayment,
-                    $sender,
-                    $deviceSerial
+                $message = $deviceSerial ?? (string) $appliancePerson->id;
+                $person = $appliancePerson->person;
+
+                $result = $this->paymentInitializationService->initialize(
+                    providerId: $paymentProviderId,
+                    amount: $downPayment,
+                    sender: $sender,
+                    message: $message,
+                    type: 'deferred_payment',
+                    customerId: $person->id,
+                    creatorId: $user->id,
+                    serialId: $deviceSerial ?? null,
                 );
-                $applianceRate = $this->applianceRateService->getDownPaymentAsApplianceRate($appliancePerson);
-                event(new PaymentSuccessEvent(
-                    amount: (int) $transaction->amount,
-                    paymentService: 'web',
-                    paymentType: 'down payment',
-                    sender: $transaction->sender,
-                    paidFor: $applianceRate,
-                    payer: $appliancePerson->person,
-                    transaction: $transaction,
-                ));
-                event(new TransactionSuccessfulEvent($transaction));
+
+                if ($paymentProviderId === $this::CASH_TRANSACTION_PROVIVER) {
+                    $applianceRate = $this->applianceRateService->getDownPaymentAsApplianceRate($appliancePerson);
+                    event(new PaymentSuccessEvent(
+                        amount: (int) $result['transaction']->amount,
+                        paymentService: 'web',
+                        paymentType: 'down payment',
+                        sender: $result['transaction']->sender,
+                        paidFor: $applianceRate,
+                        payer: $appliancePerson->person,
+                        transaction: $result['transaction'],
+                    ));
+                    event(new TransactionSuccessfulEvent($result['transaction']));
+                } else {
+                    dispatch(new ProcessPayment($companyId, $result['transaction']->id));
+                    $downPaymentInitData = $result['provider_data'];
+                }
             }
             DB::connection('tenant')->commit();
 
-            return ApiResource::make($appliancePerson);
+            return ApiResource::make(array_merge(['appliance_person' => $appliancePerson], $downPaymentInitData));
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);

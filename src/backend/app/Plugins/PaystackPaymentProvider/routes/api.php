@@ -13,7 +13,7 @@ Route::prefix('paystack')->group(function () {
     Route::post('/credential/agent-payment-url', [PaystackCredentialController::class, 'generateAgentPaymentUrl']);
 
     // Transaction management
-    Route::post('/transaction/initialize', [PaystackController::class, 'startTransaction']);
+    Route::post('/transaction/initialize', [PaystackController::class, 'initializeTransaction']);
     Route::get('/transaction/verify/{reference}', [PaystackController::class, 'verifyTransaction']);
     Route::get('/transactions', [PaystackController::class, 'getTransactions']);
     Route::get('/transactions/{id}', [PaystackController::class, 'getTransaction']);

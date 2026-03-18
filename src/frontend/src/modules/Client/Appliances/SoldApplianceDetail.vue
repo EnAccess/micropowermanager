@@ -73,6 +73,19 @@
         <md-dialog :md-active.sync="getPayment">
           <md-dialog-title>How Much Do You Want to Pay?</md-dialog-title>
           <div style="padding: 2vh">
+            <md-field v-if="paymentProviders.length > 0">
+              <label>Payment Method</label>
+              <md-select v-model="selectedProviderId" name="paymentMethod">
+                <md-option :value="0">Cash</md-option>
+                <md-option
+                  v-for="provider in paymentProviders"
+                  :key="provider.id"
+                  :value="provider.id"
+                >
+                  {{ provider.name }}
+                </md-option>
+              </md-select>
+            </md-field>
             <md-field
               :class="{
                 'md-invalid': errors.has($tc('words.amount')),
@@ -165,7 +178,7 @@
                   <div class="md-toolbar-section-end" style="margin-left: auto">
                     <md-button
                       class="md-primary md-raised md-dense"
-                      @click="getPayment = true"
+                      @click="openPaymentDialog()"
                       :disabled="!soldAppliance.totalRemainingAmount"
                     >
                       <md-icon style="color: white">payments</md-icon>
@@ -368,6 +381,9 @@ export default {
       detailedDeviceInfo: null,
       editRow: null,
       tempCost: null,
+      paymentProviders: [],
+      selectedProviderId: 0,
+      redirectUrl: null,
     }
   },
   computed: {
@@ -454,10 +470,19 @@ export default {
       this.tempCost = cost
       this.editRow = "rate_" + id
     },
+    async openPaymentDialog() {
+      this.getPayment = true
+      const providers = await this.appliancePayment.getPaymentProviders()
+      if (!(providers instanceof ErrorHandler)) {
+        this.paymentProviders = providers
+      }
+    },
     closeGetPayment() {
       this.getPayment = false
       this.payment = null
       this.errorLabel = false
+      this.selectedProviderId = 0
+      this.redirectUrl = null
     },
     async editRate(data) {
       this.progress = true
@@ -557,6 +582,7 @@ export default {
             adminId: this.adminId,
             rates: this.soldAppliance.rates,
             amount: this.payment,
+            paymentProvider: this.selectedProviderId,
           }
 
           const result = await this.appliancePayment.getPaymentForAppliance(
@@ -566,6 +592,11 @@ export default {
 
           if (result instanceof ErrorHandler) {
             throw result
+          }
+
+          if (result.redirect_url) {
+            this.redirectUrl = result.redirect_url
+            window.open(result.redirect_url, "_blank")
           }
 
           // Check if transaction_id is returned (async processing)

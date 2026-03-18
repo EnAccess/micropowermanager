@@ -9,6 +9,27 @@ use Illuminate\Support\Facades\DB;
 class CashTransactionService {
     public function __construct(private CashTransaction $cashTransaction, private Transaction $transaction) {}
 
+    public function createTransaction(int $creatorId, float $amount, string $sender, string $message, string $type): Transaction {
+        return DB::transaction(function () use ($creatorId, $amount, $sender, $message, $type) {
+            $cashTransaction = $this->cashTransaction->newQuery()->create([
+                'user_id' => $creatorId,
+                'status' => 1,
+            ]);
+
+            $transaction = $this->transaction->newQuery()->make([
+                'amount' => $amount,
+                'sender' => $sender,
+                'message' => $message,
+                'type' => $type,
+            ]);
+
+            $transaction->originalTransaction()->associate($cashTransaction);
+            $transaction->save();
+
+            return $transaction;
+        });
+    }
+
     public function createCashTransaction(int $creatorId, float $amount, string $sender, ?string $deviceSerial = null, ?int $applianceId = null): Transaction {
         return DB::transaction(function () use ($creatorId, $amount, $sender, $deviceSerial, $applianceId) {
             $cashTransaction = $this->cashTransaction->newQuery()->create([
