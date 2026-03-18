@@ -108,25 +108,37 @@ class AppServiceProvider extends ServiceProvider {
         if (class_exists(Scribe::class)) {
             Scribe::beforeResponseCall(function (Request $request, ExtractedEndpointData $endpointData) {
                 $action = $endpointData->route->action;
+                $middlewares = $endpointData->route->gatherMiddleware();
+                $token = null;
 
-                // Check if 'api' middleware is applied
-                if (isset($action['middleware']) && in_array('api', (array) $action['middleware'])) {
+                // Check if 'jwt.verify:agent' middleware is applied
+                // This should be the case for almost all endpoints used in the Agent App.
+                if (in_array('jwt.verify:agent', $middlewares, true)) {
                     ScribeConsoleOutput::info(
-                        'Auth API route detected:'.json_encode([
+                        'Auth `jwt.verify:agent` API route detected:'.json_encode([
                             'route' => $action['uses'] ?? null,
                             'prefix' => $action['prefix'] ?? null,
-                            'middleware' => $action['middleware'],
+                            'middlewares' => $middlewares,
                         ])
                     );
-
-                    /** @phpstan-ignore staticMethod.notFound */
-                    $token = JWTAuth::fromUser(User::first());
-                    $request->headers->add([
-                        'Authorization' => "Bearer $token",
-                    ]);
+                    $token = auth('agent_api')->login(Agent::first());
+                // Check if 'jwt.verify:agent' middleware is applied
+                // This should be the case for all normal MPM endpoints that are authenticated.
+                } elseif (in_array('jwt.verify', $middlewares, true)) {
+                    ScribeConsoleOutput::info(
+                        'Auth `jwt.verify` API route detected:'.json_encode([
+                            'route' => $action['uses'] ?? null,
+                            'prefix' => $action['prefix'] ?? null,
+                            'middlewares' => $middlewares,
+                        ])
+                    );
+                    $token = auth('api')->login(User::first());
                 }
+                // TODO: api-key middleware
 
-                // TODO: Handle agent app and api-key middleware
+                if ($token) {
+                    $request->headers->set('Authorization', "Bearer $token");
+                }
             });
         }
     }

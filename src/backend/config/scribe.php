@@ -56,7 +56,9 @@ DESC,
             // Routes that match these conditions will be included in the docs
             'match' => [
                 // Match only routes whose paths match this pattern (use * as a wildcard to match any characters). Example: 'users/*'.
-                'prefixes' => ['api/*'],
+                'prefixes' => [
+                    'api/*',
+                ],
 
                 // Match only routes whose domains match this pattern (use * as a wildcard to match any characters). Example: 'api.*'.
                 'domains' => ['*'],
@@ -107,11 +109,11 @@ DESC,
                 'api/addresses/*',
                 'api/transactions/*',
                 'api/transactions/analytics/*',
-                'api/app/agents/balance/*',
                 'api/app/agents/customers',
                 'api/app/agents/customers/*',
                 'api/app/agents/transactions',
                 'api/app/agents/balance',
+                'api/app/agents/balance/*',
                 // binary stuff in here, not cool
                 '/api/export/*',
             ],
