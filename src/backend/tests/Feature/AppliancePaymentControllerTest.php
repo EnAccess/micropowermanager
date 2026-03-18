@@ -182,6 +182,7 @@ class AppliancePaymentControllerTest extends TestCase {
             ]
         );
 
-        $response->assertStatus(500);
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['message' => 'Unsupported payment provider ID: 999']);
     }
 }

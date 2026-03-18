@@ -6,11 +6,11 @@ use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class PaystackTransactionTest extends BaseTestCase {
-    public function itReturnsCorrectTransactionName(): void {
+    public function testReturnsCorrectTransactionName(): void {
         $this->assertEquals('paystack_transaction', PaystackTransaction::getTransactionName());
     }
 
-    public function itHasCorrectStatusConstants(): void {
+    public function testHasCorrectStatusConstants(): void {
         $this->assertEquals(0, PaystackTransaction::STATUS_REQUESTED);
         $this->assertEquals(1, PaystackTransaction::STATUS_SUCCESS);
         $this->assertEquals(2, PaystackTransaction::STATUS_COMPLETED);
@@ -19,7 +19,7 @@ class PaystackTransactionTest extends BaseTestCase {
         $this->assertEquals(5, PaystackTransaction::MAX_ATTEMPTS);
     }
 
-    public function itHasCorrectRelationName(): void {
+    public function testHasCorrectRelationName(): void {
         $this->assertEquals('paystack_transaction', PaystackTransaction::RELATION_NAME);
     }
 }

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace App\Plugins\PaystackPaymentProvider\Modules\Transaction;
-
 namespace App\Plugins\PaystackPaymentProvider\Services;
 
 use App\Jobs\ProcessPayment;

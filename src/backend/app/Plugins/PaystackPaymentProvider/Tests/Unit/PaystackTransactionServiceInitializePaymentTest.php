@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace App\Plugins\PaystackPaymentProvider\Tests\Unit;
 
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;

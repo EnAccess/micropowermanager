@@ -8,6 +8,7 @@ use App\Models\AppliancePerson;
 use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
 use App\Services\PaymentInitializationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +21,7 @@ class AppliancePaymentController extends Controller {
         private PaymentInitializationService $paymentInitializationService,
     ) {}
 
-    public function store(AppliancePerson $appliancePerson, Request $request): ApiResource {
+    public function store(AppliancePerson $appliancePerson, Request $request): ApiResource|JsonResponse {
         try {
             DB::connection('tenant')->beginTransaction();
             $result = $this->getPaymentForAppliance($request, $appliancePerson);
@@ -33,9 +34,13 @@ class AppliancePaymentController extends Controller {
                 ],
                 $result['provider_data'],
             ));
+        } catch (\InvalidArgumentException $e) {
+            DB::connection('tenant')->rollBack();
+
+            return response()->json(['message' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);
         }
     }
 
