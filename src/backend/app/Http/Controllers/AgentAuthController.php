@@ -32,7 +32,11 @@ class AgentAuthController extends Controller {
     }
 
     /**
-     * Get JWT via given credentials.
+     * Agent login.
+     *
+     * Login a user of the Agent App and get JWT token via given credentials.
+     *
+     * @unauthenticated
      *
      * @bodyParam email string required
      * @bodyParam password string required
@@ -59,7 +63,7 @@ class AgentAuthController extends Controller {
     }
 
     /**
-     * Get the authenticated User.
+     * Get the authenticated Agent.
      *
      * @return JsonResponse
      */

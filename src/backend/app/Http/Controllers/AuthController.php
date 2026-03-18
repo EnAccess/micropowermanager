@@ -22,7 +22,11 @@ class AuthController extends Controller {
     }
 
     /**
-     * JWT authentication.
+     * User login.
+     *
+     * Login a user and get JWT token via given credentials.
+     *
+     * @unauthenticated
      *
      * @bodyParam email string required
      * @bodyParam password string required
