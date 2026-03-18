@@ -26,9 +26,9 @@ export class DeviceService {
     }
   }
 
-  async getDevices() {
+  async getDevices(params = {}) {
     try {
-      const { data, status, error } = await this.repository.list()
+      const { data, status, error } = await this.repository.list(params)
       if (status !== 200) return new ErrorHandler(error, "http", status)
       this.list = data.data.map((device) =>
         convertObjectKeysToCamelCase(device),
@@ -39,5 +39,14 @@ export class DeviceService {
       const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
+  }
+
+  async getAvailableDevicesForAppliance(applianceId) {
+    const params = {
+      unassigned: 1,
+      appliance_id: applianceId,
+      per_page: 50,
+    }
+    return this.getDevices(params)
   }
 }
