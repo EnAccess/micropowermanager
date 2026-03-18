@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openapi-docs
-          path: src/backend/storage/framework/cache/scribe/
+          path: src/backend/public/openapi
 
   # Build job
   build:
