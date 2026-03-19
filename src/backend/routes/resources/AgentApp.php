@@ -23,7 +23,8 @@ Route::group([
     Route::post('logout', [AgentAuthController::class, 'logout']);
     Route::post('refresh', [AgentAuthController::class, 'refresh']);
     Route::get('me', [AgentAuthController::class, 'me']);
-    Route::group(['prefix' => 'agents', 'middleware' => ['jwt.verify:agent', 'agent_api']], function () {
+
+    Route::group(['prefix' => 'agents', 'middleware' => ['auth:agent_api', 'agent_api']], function () {
         Route::post('/firebase', [AgentFirebaseController::class, 'update']);
         Route::get('/balance', [AgentBalanceController::class, 'show']);
         Route::group(['prefix' => 'customers'], function () {

@@ -38,8 +38,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'transaction.auth' => Transaction::class,
             'transaction.request' => TransactionRequest::class,
-            'admin' => AdminJWT::class,
-            'jwt.verify' => JwtMiddleware::class,
             'agent.balance' => AgentBalanceMiddleware::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,

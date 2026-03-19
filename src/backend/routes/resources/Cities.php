@@ -4,7 +4,7 @@ use App\Http\Controllers\CityController;
 use Illuminate\Support\Facades\Route;
 
 /* City */
-Route::middleware('jwt.verify')
+Route::middleware('auth:api')
     ->prefix('cities')
     ->group(function () {
         Route::get('/', [CityController::class, 'index']);
