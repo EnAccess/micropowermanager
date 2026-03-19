@@ -20,9 +20,12 @@ Route::group([
     'prefix' => 'app',
 ], function () {
     Route::post('login', [AgentAuthController::class, 'login']);
-    Route::post('logout', [AgentAuthController::class, 'logout']);
-    Route::post('refresh', [AgentAuthController::class, 'refresh']);
-    Route::get('me', [AgentAuthController::class, 'me']);
+
+    Route::group(['middleware' => 'auth:agent_api'], static function () {
+        Route::post('logout', [AgentAuthController::class, 'logout']);
+        Route::post('refresh', [AgentAuthController::class, 'refresh']);
+        Route::get('me', [AgentAuthController::class, 'me']);
+    });
 
     Route::group(['prefix' => 'agents', 'middleware' => ['auth:agent_api', 'agent_api']], function () {
         Route::post('/firebase', [AgentFirebaseController::class, 'update']);

@@ -89,10 +89,14 @@ require __DIR__.'/resources/TicketWeb.php';
 // JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::get('me', [AuthController::class, 'me']);
+
+    Route::group(['middleware' => 'auth:api'], static function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
+        Route::get('me', [AuthController::class, 'me']);
+    });
 });
+
 // user
 Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], static function () {
     Route::post('/', [UserController::class, 'store'])->middleware('permission:users');
