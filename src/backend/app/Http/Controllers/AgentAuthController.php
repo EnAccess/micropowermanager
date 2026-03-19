@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
-use App\Services\AgentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTGuard;
@@ -14,6 +13,8 @@ use Tymon\JWTAuth\JWTGuard;
  * Responsible for AgentAPP-API-Call authentications.
  */
 class AgentAuthController extends Controller {
+    public $agentService;
+
     /**
      * Get the JWT authentication guard.
      */

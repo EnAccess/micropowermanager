@@ -55,7 +55,6 @@ use Knuckles\Camel\Extraction\ExtractedEndpointData;
 use Knuckles\Scribe\Scribe;
 use Knuckles\Scribe\Tools\ConsoleOutputUtils as ScribeConsoleOutput;
 use Symfony\Component\HttpFoundation\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AppServiceProvider extends ServiceProvider {
     /**
