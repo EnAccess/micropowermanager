@@ -15,6 +15,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -24,11 +25,18 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
+        // `web` automatically applies 'web' middleware group to all routes
         web: __DIR__.'/../routes/web.php',
+        // `api automtically applies `api` prefix and `api` middleware group to all routes
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
+        then: function () {
+            Route::middleware('agent_api')
+                ->prefix('api')
+                ->group(__DIR__.'/../routes/resources/AgentApp.php');
+        },
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(UserDefaultDatabaseConnectionMiddleware::class);

@@ -77,8 +77,6 @@ require __DIR__.'/resources/Meters.php';
 require __DIR__.'/resources/Addresses.php';
 // Transaction routes
 require __DIR__.'/api_paths/transactions.php';
-// Agent routes
-require __DIR__.'/resources/AgentApp.php';
 // Agent Web panel routes
 require __DIR__.'/resources/AgentWeb.php';
 // Routes for CustomerRegistrationApp resource
@@ -87,7 +85,7 @@ require __DIR__.'/resources/CustomerRegistrationApp.php';
 require __DIR__.'/resources/TicketWeb.php';
 
 // JWT authentication
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
+Route::group(['prefix' => 'auth'], static function () {
     Route::post('login', [AuthController::class, 'login']);
 
     Route::group(['middleware' => 'auth:api'], static function () {
@@ -400,7 +398,7 @@ Route::group(['prefix' => 'e-bikes'], static function () {
     Route::get('/{serialNumber}', [EBikeController::class, 'show']);
     Route::post('/switch', [EBikeController::class, 'switch']);
 });
-Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
+Route::group(['prefix' => 'export'], static function () {
     Route::get('/transactions', [TransactionExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/debts', [OutstandingDebtsExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/customers', [PersonExportController::class, 'download'])->middleware('permission:exports');
@@ -410,7 +408,7 @@ Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
     Route::get('/settings', [SettingsExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/user-permissions', [UserPermissionExportController::class, 'download'])->middleware('permission:exports');
 });
-Route::group(['prefix' => 'import', 'middleware' => 'api'], static function () {
+Route::group(['prefix' => 'import'], static function () {
     Route::post('/settings', [SettingsImportController::class, 'import'])->middleware('permission:settings');
     Route::post('/user-permissions', [UserPermissionImportController::class, 'import'])->middleware('permission:users');
 });

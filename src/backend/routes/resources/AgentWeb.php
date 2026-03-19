@@ -12,7 +12,7 @@ use App\Http\Controllers\AgentWebController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'middleware' => ['api', 'auth:api'],
+    'middleware' => ['auth:api'],
     'prefix' => 'agents',
 ], static function ($router) {
     Route::get('/', [AgentWebController::class, 'index']);

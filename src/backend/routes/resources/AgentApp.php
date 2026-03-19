@@ -16,9 +16,7 @@ use App\Http\Controllers\AgentTransactionsController;
 use Illuminate\Support\Facades\Route;
 
 // Android App Services
-Route::group([
-    'prefix' => 'app',
-], function () {
+Route::group(['prefix' => 'app'], function () {
     Route::post('login', [AgentAuthController::class, 'login']);
 
     Route::group(['middleware' => 'auth:agent_api'], static function () {
@@ -27,7 +25,7 @@ Route::group([
         Route::get('me', [AgentAuthController::class, 'me']);
     });
 
-    Route::group(['prefix' => 'agents', 'middleware' => ['auth:agent_api', 'agent_api']], function () {
+    Route::group(['prefix' => 'agents', 'middleware' => ['auth:agent_api']], function () {
         Route::post('/firebase', [AgentFirebaseController::class, 'update']);
         Route::get('/balance', [AgentBalanceController::class, 'show']);
         Route::group(['prefix' => 'customers'], function () {
