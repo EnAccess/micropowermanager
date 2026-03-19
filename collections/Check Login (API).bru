@@ -1,11 +1,11 @@
 meta {
-  name: Logout
+  name: Check Login (API)
   type: http
-  seq: 14
+  seq: 12
 }
 
-post {
-  url: {{mpm_backend_url}}/api/auth/logout
+get {
+  url: {{mpm_backend_url}}/api/auth/me
   body: json
   auth: inherit
 }
