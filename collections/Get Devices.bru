@@ -1,0 +1,11 @@
+meta {
+  name: Get Devices
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{mpm_backend_url}}/api/devices
+  body: none
+  auth: inherit
+}
