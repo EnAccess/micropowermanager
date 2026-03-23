@@ -1,11 +1,14 @@
 <?php
 
+use App\Plugins\VodacomMobileMoney\Http\Controllers\VodacomTransactionController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'vodacom'], function () {
-    Route::group(['prefix' => 'transactions'], function () {
-        Route::post('/validation', 'VodacomTransactionController@validateTransaction');
-        Route::post('/process', 'VodacomTransactionController@processTransaction');
-        Route::post('/enquiry', 'VodacomTransactionController@transactionEnquiryStatus');
-    });
+Route::prefix('vodacom')->group(function () {
+    Route::prefix('transactions')
+        ->middleware('auth:api-key')
+        ->group(function () {
+            Route::post('/validate', [VodacomTransactionController::class, 'validateTransaction']);
+            Route::post('/process', [VodacomTransactionController::class, 'processTransaction']);
+            Route::post('/query', [VodacomTransactionController::class, 'queryTransactionStatus']);
+        });
 });
