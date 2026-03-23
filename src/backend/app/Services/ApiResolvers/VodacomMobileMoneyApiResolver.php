@@ -4,23 +4,25 @@ declare(strict_types=1);
 
 namespace App\Services\ApiResolvers;
 
+use App\Auth\ApiKeyAuthenticatable;
 use App\Services\Interfaces\IApiResolver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Tymon\JWTAuth\JWTGuard;
 
 class VodacomMobileMoneyApiResolver implements IApiResolver {
     public function resolveCompanyId(Request $request): int {
-        /** @var JWTGuard $guard */
-        $guard = auth('api');
-        $payload = $guard->check() ? $guard->payload() : null;
+        // The user should already be authenticated by the 'api-key' guard
+        /** @var ApiKeyAuthenticatable|Company|User|null $user */
+        $user = auth('api-key')->user();
 
-        $companyId = $payload?->get('companyId');
-
-        if (!$companyId) {
-            throw ValidationException::withMessages(['webhook' => 'failed to parse company identifier from the webhook']);
+        if ($user === null) {
+            throw ValidationException::withMessages(['authorization' => 'Company could not be resolved from authenticated API key']);
         }
 
-        return (int) $companyId;
+        if ($user instanceof ApiKeyAuthenticatable) {
+            return $user->getCompany()->id;
+        }
+
+        return $user->id;
     }
 }
