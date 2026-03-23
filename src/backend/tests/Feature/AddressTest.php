@@ -26,7 +26,7 @@ class AddressTest extends TestCase {
 
         $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
             'email' => $this->faker->email(),
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => $this->faker->e164PhoneNumber(),
             'street' => $this->faker->streetAddress(),
             'city_id' => $this->city->id,
             'country_id' => 1,
@@ -38,6 +38,30 @@ class AddressTest extends TestCase {
         $this->assertEquals(1, $person->addresses()->count());
         $this->assertEquals($this->city->id, $person->addresses()->first()->city_id);
         $this->assertEquals(1, $person->addresses()->first()->is_primary);
+    }
+
+    public function testCreatingAddressWithNonInternationalPhoneNumberIsNotAllowed(): void {
+        $user = UserFactory::new()->create();
+        $this->user = $user;
+        $this->assignRole($user, 'admin');
+        $person = PersonFactory::new()->create();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
+
+        $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
+            'email' => $this->faker->email(),
+            'phone' => '0712345678',
+            'street' => $this->faker->streetAddress(),
+            'city_id' => $this->city->id,
+            'country_id' => 1,
+            'cluster_id' => $this->cluster->id,
+            'mini_grid_id' => $this->miniGrid->id,
+            'primary' => 1,
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('phone');
     }
 
     public function testUserUpdatesAndAddressOfCustomerForOwnCompany(): void {

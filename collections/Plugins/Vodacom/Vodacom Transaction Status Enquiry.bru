@@ -1,11 +1,11 @@
 meta {
   name: Vodacom Transaction Status Enquiry
   type: http
-  seq: 26
+  seq: 23
 }
 
 post {
-  url: {{mpm_backend_url}}/api/vodacom/transactions/enquiry
+  url: {{mpm_backend_url}}/api/vodacom/transactions/query
   body: json
   auth: inherit
 }

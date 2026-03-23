@@ -28,6 +28,7 @@
     "parsecsv/php-parsecsv": "^1.3",
     "phpoffice/phpspreadsheet": "^1.7",
     "predis/predis": "^1.1.7",
+    "propaganistas/laravel-phone": "^6.0",
     "pusher/pusher-php-server": "^7.0",
     "spatie/geocoder": "^3.14",
     "spatie/laravel-backup": "^9.0",

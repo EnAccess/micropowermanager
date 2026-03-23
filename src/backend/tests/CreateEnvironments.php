@@ -205,7 +205,7 @@ trait CreateEnvironments {
         $this->transaction = TransactionFactory::new()->create([
             'id' => 1,
             'amount' => $this->faker->unique()->randomNumber(),
-            'sender' => $this->faker->phoneNumber,
+            'sender' => $this->faker->e164PhoneNumber(),
             'message' => $meter->serial_number,
             'original_transaction_id' => $this->faker->unique()->randomNumber(),
             'original_transaction_type' => 'agent_transaction',
@@ -218,7 +218,7 @@ trait CreateEnvironments {
             'transaction_id' => $this->transaction->id,
             'amount' => $this->transaction->amount,
             'payment_service' => 'agent_transaction',
-            'sender' => $this->faker->phoneNumber,
+            'sender' => $this->faker->e164PhoneNumber(),
             'payment_type' => 'energy',
             'paid_for_type' => 'token',
             'paid_for_id' => $this->token->id,
@@ -252,7 +252,7 @@ trait CreateEnvironments {
             $manufacturer = ManufacturerFactory::new()->create();
             $address = Address::query()->make([
                 'email' => $this->faker->email,
-                'phone' => $this->faker->phoneNumber,
+                'phone' => $this->faker->e164PhoneNumber(),
                 'street' => $this->faker->streetAddress,
                 'city_id' => 1,
             ]);
@@ -402,7 +402,7 @@ trait CreateEnvironments {
             $this->people[] = $person;
             $address = Address::query()->make([
                 'email' => $this->faker->email,
-                'phone' => $this->faker->phoneNumber,
+                'phone' => $this->faker->e164PhoneNumber(),
                 'street' => '',
                 'city_id' => collect($this->cities)->random()['id'],
                 'is_primary' => 1,
@@ -561,7 +561,7 @@ trait CreateEnvironments {
 
             $transaction = TransactionFactory::new()->make([
                 'amount' => $amount,
-                'sender' => $this->faker->phoneNumber,
+                'sender' => $this->faker->e164PhoneNumber(),
                 'message' => $meter->serial_number,
             ]);
 
@@ -635,7 +635,7 @@ trait CreateEnvironments {
                 'transaction_id' => $this->faker->numberBetween(1, 100),
                 'amount' => $this->faker->randomFloat(2, 0, 100),
                 'payment_service' => 'agent_transaction',
-                'sender' => $this->faker->phoneNumber,
+                'sender' => $this->faker->e164PhoneNumber(),
                 'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment', 'access rate']),
             ]);
 
@@ -706,7 +706,7 @@ trait CreateEnvironments {
         while ($ticketUserCount > 0) {
             $ticketUser = TicketUserFactory::new()->create([
                 'user_name' => $this->faker->unique()->name,
-                'phone' => $this->faker->phoneNumber(),
+                'phone' => $this->faker->e164PhoneNumber(),
                 'out_source' => 0,
                 'user_id' => $userId,
             ]);

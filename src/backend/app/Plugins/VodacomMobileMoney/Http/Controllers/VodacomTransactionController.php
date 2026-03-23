@@ -119,7 +119,7 @@ class VodacomTransactionController extends Controller {
      *   }
      * }
      */
-    public function transactionEnquiryStatus(VodacomTransactionEnquiryStatusRequest $request): VodacomTransactionResource {
+    public function queryTransactionStatus(VodacomTransactionEnquiryStatusRequest $request): VodacomTransactionResource {
         $validatedData = $request->validated();
 
         try {
