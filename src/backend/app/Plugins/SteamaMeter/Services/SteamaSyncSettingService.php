@@ -155,4 +155,5 @@ class SteamaSyncSettingService {
         } catch (\Exception $exception) {
             throw new ModelNotFoundException($exception->getMessage());
         }
+    }
 }
