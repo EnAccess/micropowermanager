@@ -2,6 +2,7 @@
 
 namespace App\Plugins\SteamaMeter\Services;
 
+use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
 use App\Plugins\SteamaMeter\Models\SteamaSetting;
 use App\Plugins\SteamaMeter\Models\SteamaSyncSetting;
 use Carbon\Carbon;
@@ -148,7 +149,10 @@ class SteamaSyncSettingService {
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettingsByActionName(string $actionName): ?SteamaSyncSetting {
-        return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
-    }
+    public function getSyncSettingsByActionName(string $actionName): SteamaSyncSetting {
+        try {
+            return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
+        } catch (\Exception $exception) {
+            throw new ModelNotFoundException($exception->getMessage());
+        }
 }
