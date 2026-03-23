@@ -1,11 +1,11 @@
 meta {
   name: Vodacom Transaction Validation
   type: http
-  seq: 22
+  seq: 24
 }
 
 post {
-  url: {{mpm_backend_url}}/api/vodacom/transactions/validation
+  url: {{mpm_backend_url}}/api/vodacom/transactions/validate
   body: json
   auth: inherit
 }

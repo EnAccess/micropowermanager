@@ -1,11 +1,11 @@
 meta {
-  name: Logout
+  name: Check Login (Agent App)
   type: http
-  seq: 14
+  seq: 13
 }
 
-post {
-  url: {{mpm_backend_url}}/api/auth/logout
+get {
+  url: {{mpm_backend_url}}/api/app/me
   body: json
   auth: inherit
 }

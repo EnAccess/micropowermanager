@@ -14,4 +14,5 @@ class DemoCompany {
     public const DEMO_COMPANY_REGULAR_USER_EMAIL = 'demo_company_regular_user@example.com';
     public const DEMO_COMPANY_CLUSTER_ADMIN_EMAIL = 'demo_company_cluster_admin@example.com';
     public const DEMO_COMPANY_AGENT_EMAIL = 'demo_company_agent@example.com';
+    public const DEMO_COMPANY_API_KEY = 'demo-api-key-1234567890';
 }

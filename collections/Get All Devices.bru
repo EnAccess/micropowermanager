@@ -1,0 +1,19 @@
+meta {
+  name: Get All Devices
+  type: http
+  seq: 31
+}
+
+get {
+  url: {{mpm_backend_url}}/api/devices?page=1&per_page=15
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  per_page: 15
+  ~device_type: solar_home_system
+  ~appliance_id: 1
+  ~unassigned: 1
+}

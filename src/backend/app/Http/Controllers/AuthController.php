@@ -13,20 +13,7 @@ use Tymon\JWTAuth\JWTGuard;
  */
 class AuthController extends Controller {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
-
-    /**
-     * User login.
-     *
-     * Login a user and get JWT token via given credentials.
-     *
-     * @unauthenticated
+     * JWT authentication.
      *
      * @bodyParam email string required
      * @bodyParam password string required

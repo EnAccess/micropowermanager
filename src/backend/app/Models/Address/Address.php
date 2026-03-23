@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Propaganistas\LaravelPhone\Casts\E164PhoneNumberCast;
 
 /**
  * Class Address.
@@ -41,6 +42,8 @@ class Address extends BaseModel {
     public static $rules = [
         'city_id' => 'required|exists:cities,id',
     ];
+
+    public $casts = ['phone' => E164PhoneNumberCast::class];
 
     /**
      * @return BelongsTo<City, $this>

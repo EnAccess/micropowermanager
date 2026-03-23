@@ -10,7 +10,7 @@ use App\Http\Controllers\TicketUserController;
 use Illuminate\Support\Facades\Route;
 
 // Tickets
-Route::group(['prefix' => 'tickets', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'tickets', 'middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'ticket'], static function () {
         Route::get('/', [TicketController::class, 'index'])->middleware('permission:tickets');
         Route::post('/', [TicketCustomerController::class, 'store'])->middleware('permission:tickets');
