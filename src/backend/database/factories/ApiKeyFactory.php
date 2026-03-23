@@ -7,7 +7,7 @@ use App\Utils\DemoCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/** @extends ApiKeyFactory<User> */
+/** @extends Factory<ApiKey> */
 class ApiKeyFactory extends Factory {
     protected $model = ApiKey::class;
 

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services\ApiResolvers;
 
 use App\Auth\ApiKeyAuthenticatable;
+use App\Models\Company;
+use App\Models\User;
 use App\Services\Interfaces\IApiResolver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
