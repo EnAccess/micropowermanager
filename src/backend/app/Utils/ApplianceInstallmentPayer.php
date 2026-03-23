@@ -63,6 +63,8 @@ class ApplianceInstallmentPayer {
             $container->appliancePerson,
             $container->transaction
         ));
+        // reload potentially updated rates
+        $container->appliancePerson->load('rates');
     }
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
