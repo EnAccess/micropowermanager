@@ -43,7 +43,7 @@
     "driftingly/rector-laravel": "^2.0",
     "filp/whoops": "^2.0",
     "friendsofphp/php-cs-fixer": "^3.64",
-    "knuckleswtf/scribe": "^5.3",
+    "knuckleswtf/scribe": "^5.7",
     "larastan/larastan": "^3.0",
     "mockery/mockery": "^1.4.4",
     "nunomaduro/collision": "^8.1",
@@ -80,7 +80,7 @@
       "Tests\\": "tests/"
     },
     "exclude-from-classmap": [
-        "tests/Legacy/"
+      "tests/Legacy/"
     ]
   },
   "minimum-stability": "stable",
