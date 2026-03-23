@@ -7,13 +7,17 @@ use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\JWTGuard;
 
 /**
- * @group   Authenticator
- * Class AuthController
+ * @group Authenticator
+ *
  * Responsible for API-Call authentications.
  */
 class AuthController extends Controller {
     /**
-     * JWT authentication.
+     * User login.
+     *
+     * Login a user of the Web App and get JWT token via given credentials.
+     *
+     * @unauthenticated
      *
      * @bodyParam email string required
      * @bodyParam password string required
@@ -54,7 +58,9 @@ class AuthController extends Controller {
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * User logout.
+     *
+     * Logout the user and invalidate the JWT token.
      */
     public function logout(): JsonResponse {
         auth('api')->logout();
@@ -63,7 +69,8 @@ class AuthController extends Controller {
     }
 
     /**
-     * Refresh token
+     * Refresh user token.
+     *
      * Generates a new valid token for the next 3600 seconds
      * Inorder to generate the new token, a working (Bearer)token has to be provided in the header.
      */

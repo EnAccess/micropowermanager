@@ -189,7 +189,7 @@ DESC,
         'placeholder' => '{YOUR_AUTH_KEY}',
 
         // Any extra authentication-related info for your users. Markdown and HTML are supported.
-        'extra_info' => 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'extra_info' => 'This endpoint **requires authentication**. MicroPowerManager supported different auth mechanism, for example `User` login, `Agent App` login or `API Key`. Please refer to the endpoints documentation to see which applies.',
     ],
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.

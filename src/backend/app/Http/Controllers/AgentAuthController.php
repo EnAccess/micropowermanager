@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTGuard;
 
 /**
- * @group   Agent-Authenticator
- * Class AgentAuthController
+ * @group AgentApp - Authenticator
+ *
  * Responsible for AgentAPP-API-Call authentications.
  */
 class AgentAuthController extends Controller {
@@ -91,18 +91,19 @@ class AgentAuthController extends Controller {
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * Agent logout.
      *
-     * @return JsonResponse
+     * Logout the AgentApp user and invalidate the JWT token.
      */
-    public function logout() {
+    public function logout(): JsonResponse {
         auth('agent_api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
 
     /**
-     * Refresh a token.
+     * Refresh Agent token.
+     *
      * A valid JWT token has to be sent to refresh the token.
      *
      * @return JsonResponse

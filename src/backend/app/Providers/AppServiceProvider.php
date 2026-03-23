@@ -110,27 +110,27 @@ class AppServiceProvider extends ServiceProvider {
                 $middlewares = $endpointData->route->gatherMiddleware();
                 $token = null;
 
-                // Check if 'jwt.verify:agent' middleware is applied
-                // This should be the case for almost all endpoints used in the Agent App.
-                if (in_array('jwt.verify:agent', $middlewares, true)) {
+                if (in_array('auth:agent_api', $middlewares, true)) {
                     ScribeConsoleOutput::info(
-                        'Auth `jwt.verify:agent` API route detected:'.json_encode([
+                        'Auth middleware `auth:agent_api` on API route detected:'.json_encode([
                             'route' => $action['uses'] ?? null,
                             'prefix' => $action['prefix'] ?? null,
                             'middlewares' => $middlewares,
                         ])
                     );
+
+                    $endpointData->metadata->description .= '🔒 **Requires Authentication:** `Agent`';
                     $token = auth('agent_api')->login(Agent::first());
-                // Check if 'jwt.verify:agent' middleware is applied
-                // This should be the case for all normal MPM endpoints that are authenticated.
-                } elseif (in_array('jwt.verify', $middlewares, true)) {
+                } elseif (in_array('auth:api', $middlewares, true)) {
                     ScribeConsoleOutput::info(
-                        'Auth `jwt.verify` API route detected:'.json_encode([
+                        'Auth middleware `auth:api` on API route detected:'.json_encode([
                             'route' => $action['uses'] ?? null,
                             'prefix' => $action['prefix'] ?? null,
                             'middlewares' => $middlewares,
                         ])
                     );
+
+                    $endpointData->metadata->description .= '🔒 **Requires Authentication:** `User`';
                     $token = auth('api')->login(User::first());
                 }
                 // TODO: api-key middleware
