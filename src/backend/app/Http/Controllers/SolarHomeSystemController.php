@@ -9,6 +9,7 @@ use App\Services\PaymentHistoryService;
 use App\Services\SolarHomeSystemDeviceService;
 use App\Services\SolarHomeSystemService;
 use Illuminate\Http\Request;
+use Knuckles\Scribe\Attributes\QueryParam;
 
 class SolarHomeSystemController extends Controller {
     public function __construct(
@@ -41,6 +42,7 @@ class SolarHomeSystemController extends Controller {
         return ApiResource::make($solarHomeSystem->load(['manufacturer', 'appliance', 'device.person']));
     }
 
+    #[QueryParam('term', 'int', 'Search Term.', required: true, example: 1)]
     public function search(Request $request): ApiResource {
         $term = $request->input('term');
         $paginate = $request->input('paginate', 1);
