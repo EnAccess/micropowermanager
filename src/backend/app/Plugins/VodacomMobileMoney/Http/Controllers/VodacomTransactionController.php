@@ -10,7 +10,7 @@ use App\Plugins\VodacomMobileMoney\Http\Resources\VodacomTransactionResource;
 use App\Plugins\VodacomMobileMoney\Services\VodacomTransactionService;
 
 /**
- * @group Vodacom Transaction
+ * @group Plugins / Vodacom Transaction
  *
  * API endpoints for integrating with Vodacom's M-Pesa payment services
  */

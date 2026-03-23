@@ -8,11 +8,20 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group Plugins / ECREEE
+ */
 class EcreeeMeterDataController extends Controller {
     public function __construct(
         private EcreeeMeterDataService $ecreeeMeterDataService,
     ) {}
 
+    /**
+     * Fetch ECREEE Meter data.
+     *
+     * @queryParam startDate The start date. Example: 2025-01-01.
+     * @queryParam endDate The end date. Example: 2025-01-02.
+     */
     public function index(Request $request): JsonResponse {
         $startDate = $request->query('startDate');
         $endDate = $request->query('endDate');

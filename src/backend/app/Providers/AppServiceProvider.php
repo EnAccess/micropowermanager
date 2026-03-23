@@ -42,6 +42,7 @@ use App\Policies\UserPolicy;
 use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
+use App\Utils\DemoCompany;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -132,8 +133,18 @@ class AppServiceProvider extends ServiceProvider {
 
                     $endpointData->metadata->description .= '🔒 **Requires Authentication:** `User`';
                     $token = auth('api')->login(User::first());
+                } elseif (in_array('auth:api-key', $middlewares, true)) {
+                    ScribeConsoleOutput::info(
+                        'Auth middleware `auth:api-key` on API route detected:'.json_encode([
+                            'route' => $action['uses'] ?? null,
+                            'prefix' => $action['prefix'] ?? null,
+                            'middlewares' => $middlewares,
+                        ])
+                    );
+
+                    $endpointData->metadata->description .= '🔒 **Requires Authentication:** `API Key`';
+                    $token = DemoCompany::DEMO_COMPANY_API_KEY;
                 }
-                // TODO: api-key middleware
 
                 if ($token) {
                     $request->headers->set('Authorization', "Bearer $token");
