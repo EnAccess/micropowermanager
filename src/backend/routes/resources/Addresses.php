@@ -4,7 +4,7 @@ use App\Http\Controllers\AddressController;
 use Illuminate\Support\Facades\Route;
 
 /* Address */
-Route::middleware('jwt.verify')
+Route::middleware('auth:api')
     ->prefix('addresses')
     ->group(function () {
         Route::get('/', [AddressController::class, 'index']);

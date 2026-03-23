@@ -17,9 +17,9 @@ class AgentAuthController extends Controller {
     /**
      * Create a new AuthController instance.
      */
-    public function __construct(private AgentService $agentService) {
-        $this->middleware('auth:agent_api', ['except' => ['login']]);
-    }
+    public function __construct(
+        private AgentService $agentService,
+    ) {}
 
     /**
      * Get the JWT authentication guard.
@@ -65,6 +65,7 @@ class AgentAuthController extends Controller {
      */
     public function me() {
         $agent = auth('agent_api')->user();
+
         if (method_exists($agent, 'getRoleNames')) {
             /** @var Agent $agent */
             $roles = $agent->getRoleNames()->toArray();
