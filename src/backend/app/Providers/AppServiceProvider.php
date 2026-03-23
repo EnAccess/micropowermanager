@@ -56,6 +56,7 @@ use Knuckles\Camel\Extraction\ExtractedEndpointData;
 use Knuckles\Scribe\Scribe;
 use Knuckles\Scribe\Tools\ConsoleOutputUtils as ScribeConsoleOutput;
 use Symfony\Component\HttpFoundation\Request;
+use Tymon\JWTAuth\JWTGuard;
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -121,7 +122,7 @@ class AppServiceProvider extends ServiceProvider {
                     );
 
                     $endpointData->metadata->description .= '🔒 **Requires Authentication:** `Agent`';
-                    /** @var \Tymon\JWTAuth\JWTGuard $guard */
+                    /** @var JWTGuard $guard */
                     $guard = auth('agent_api');
                     $token = $guard->login(Agent::first());
                 } elseif (in_array('auth:api', $middlewares, true)) {
@@ -134,7 +135,7 @@ class AppServiceProvider extends ServiceProvider {
                     );
 
                     $endpointData->metadata->description .= '🔒 **Requires Authentication:** `User`';
-                    /** @var \Tymon\JWTAuth\JWTGuard $guard */
+                    /** @var JWTGuard $guard */
                     $guard = auth('api');
                     $token = $guard->login(User::first());
                 } elseif (in_array('auth:api-key', $middlewares, true)) {
