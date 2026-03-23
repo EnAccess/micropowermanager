@@ -121,7 +121,9 @@ class AppServiceProvider extends ServiceProvider {
                     );
 
                     $endpointData->metadata->description .= '🔒 **Requires Authentication:** `Agent`';
-                    $token = auth('agent_api')->login(Agent::first());
+                    /** @var \Tymon\JWTAuth\JWTGuard $guard */
+                    $guard = auth('agent_api');
+                    $token = $guard->login(Agent::first());
                 } elseif (in_array('auth:api', $middlewares, true)) {
                     ScribeConsoleOutput::info(
                         'Auth middleware `auth:api` on API route detected:'.json_encode([
@@ -132,7 +134,9 @@ class AppServiceProvider extends ServiceProvider {
                     );
 
                     $endpointData->metadata->description .= '🔒 **Requires Authentication:** `User`';
-                    $token = auth('api')->login(User::first());
+                    /** @var \Tymon\JWTAuth\JWTGuard $guard */
+                    $guard = auth('api');
+                    $token = $guard->login(User::first());
                 } elseif (in_array('auth:api-key', $middlewares, true)) {
                     ScribeConsoleOutput::info(
                         'Auth middleware `auth:api-key` on API route detected:'.json_encode([
