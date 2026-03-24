@@ -34,7 +34,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: 8.2
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
