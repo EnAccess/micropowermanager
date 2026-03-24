@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\JWTGuard;
 
-/**
- * @group   Authenticator
- * Class AuthController
- * Responsible for API-Call authentications.
- */
+#[Group('Auth', 'Responsible for API-Call authentications', weight: 0)]
 class AuthController extends Controller {
     /**
-     * JWT authentication.
+     * User login.
+     *
+     * Login a user of the Web App and get JWT token via given credentials.
      *
      * @bodyParam email string required
      * @bodyParam password string required
@@ -32,21 +31,22 @@ class AuthController extends Controller {
      * Get the authenticated User.
      */
     public function me(): JsonResponse {
+        /** @var User */
         $user = auth('api')->user();
+
         if (method_exists($user, 'getRoleNames')) {
-            /** @var User $user */
             $roles = $user->getRoleNames()->toArray();
         } else {
             $roles = [];
         }
         if (method_exists($user, 'getAllPermissions')) {
-            /** @var User $user */
             $permissions = $user->getAllPermissions()->pluck('name')->toArray();
         } else {
             $permissions = [];
         }
 
         return response()->json([
+            /* @var User */
             'user' => $user,
             'roles' => $roles,
             'permissions' => $permissions,
@@ -54,7 +54,9 @@ class AuthController extends Controller {
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * User logout.
+     *
+     * Logout the user and invalidate the JWT token.
      */
     public function logout(): JsonResponse {
         auth('api')->logout();
@@ -63,7 +65,8 @@ class AuthController extends Controller {
     }
 
     /**
-     * Refresh token
+     * Refresh User token.
+     *
      * Generates a new valid token for the next 3600 seconds
      * Inorder to generate the new token, a working (Bearer)token has to be provided in the header.
      */
