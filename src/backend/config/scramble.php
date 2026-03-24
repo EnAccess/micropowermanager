@@ -29,7 +29,22 @@ return [
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => '',
+        'description' => <<<DESC
+
+![MPM Logo](https://micropowermanager.io/mpmlogo_raw.png)
+
+<p align="center">
+    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em>
+</p>
+
+---
+
+# 💫 Overview
+This documentation will provide all the information you need to work with our API.
+
+As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
+You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).
+DESC,
     ],
 
     /*
@@ -59,7 +74,7 @@ return [
         /*
          * URL to an image that displays as a small square logo next to the title, above the table of contents.
          */
-        'logo' => '',
+        'logo' => 'https://micropowermanager.io/mpmlogo_raw.png',
 
         /*
          * Use to fetch the credential policy for the Try It feature. Options are: omit, include (default), and same-origin
@@ -89,7 +104,10 @@ return [
      * ],
      * ```
      */
-    'servers' => null,
+    'servers' => [
+        'Demo' => 'https://api.demo.micropowermanager.io',
+        'Cloud' => 'https://api.cloud.micropowermanager.io',
+    ],
 
     /*
      * Determines how Scramble stores the descriptions of enum cases.
