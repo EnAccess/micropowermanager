@@ -11,48 +11,47 @@ use App\Services\DatabaseProxyManagerService;
 use App\Services\UserPasswordResetService;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class UserPasswordController extends Controller {
-    public function __construct(private UserService $userService, private DatabaseProxyManagerService $databaseProxyManagerService, private UserPasswordResetService $userPasswordResetService) {}
+    public function __construct(
+        private UserService $userService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
+        private UserPasswordResetService $userPasswordResetService,
+    ) {}
 
-    public function forgotPassword(AdminResetPasswordRequest $request, Response $response): Response {
+    public function forgotPassword(AdminResetPasswordRequest $request): JsonResponse {
         $email = $request->input('email');
 
         try {
             $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
             $companyId = $databaseProxy->getCompanyId();
 
-            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($email, $response): Response {
+            return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($email): JsonResponse {
                 if (!$this->userPasswordResetService->sendResetEmail($email)) {
-                    return $response->setStatusCode(422)->setContent(
-                        [
-                            'data' => [
-                                'message' => 'Failed to send reset email. Please try it again later.',
-                                'status_code' => 409,
-                            ],
-                        ]
-                    );
+                    return response()->json([
+                        'data' => [
+                            'message' => 'Failed to send reset email. Please try it again later.',
+                            'status_code' => 409,
+                        ],
+                    ], 422);
                 }
 
-                return $response->setStatusCode(200)->setContent(
-                    [
-                        'data' => [
-                            'message' => 'If the email exists, a reset link has been sent.',
-                            'status_code' => 200,
-                        ],
-                    ]
-                );
-            });
-        } catch (ModelNotFoundException) {
-            return $response->setStatusCode(200)->setContent(
-                [
+                return response()->json([
                     'data' => [
                         'message' => 'If the email exists, a reset link has been sent.',
                         'status_code' => 200,
                     ],
-                ]
-            );
+                ], 200);
+            });
+        } catch (ModelNotFoundException) {
+            return response()->json([
+                'data' => [
+                    'message' => 'If the email exists, a reset link has been sent.',
+                    'status_code' => 200,
+                ],
+            ], 200);
         }
     }
 
