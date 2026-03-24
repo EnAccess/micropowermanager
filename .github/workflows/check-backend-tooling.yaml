@@ -85,6 +85,20 @@ jobs:
       matrix:
         php-version: ["8.2"]
 
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: micro_power_manager
+          MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -97,11 +111,32 @@ jobs:
           coverage: xdebug
 
       - name: Install Composer Dependencies
+        working-directory: ./src/backend
         run: |
           composer install --no-interaction --prefer-dist
           composer dump-autoload
+
+      - name: Wait for MySQL to be ready
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P3306 -u root -pwF9zLp2qRxaS2e --silent; do
+            sleep 1
+          done
+
+      - name: Prepare the database for OpenAPI generation
         working-directory: ./src/backend
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+        run: |
+          php artisan migrate
 
       - name: Generate OpenAPI with Scramble
-        run: php artisan scramble:analyze
         working-directory: ./src/backend
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+        run: php artisan scramble:analyze
