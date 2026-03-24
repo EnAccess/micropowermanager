@@ -63,11 +63,8 @@ src/backend/.env_staging
 docs/_build/
 docs/build/
 
-## ERD
+## Laravel Export
 dist/
-
-## OpenAPI docs (scribe)
-.scribe
 
 # deployment related
 
