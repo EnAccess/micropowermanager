@@ -24,7 +24,11 @@ parameters:
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
 #
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
+    excludePaths:
+        analyse:
+            - app/Plugins/AngazaSHS/Tests
+            - app/Plugins/SparkMeter/Tests
+            - app/Plugins/SteamaMeter/Tests
+            - app/Plugins/PaystackPaymentProvider/Tests
 #
 #    checkMissingIterableValueType: false
