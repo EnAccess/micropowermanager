@@ -63,15 +63,20 @@ class AgentAuthController extends Controller {
      * @return JsonResponse
      */
     public function me() {
-        /** @var Agent */
         $agent = auth('agent_api')->user();
 
-        $roles = method_exists($agent, 'getRoleNames')
-            ? $agent->getRoleNames()->toArray()
-            : [];
-        $permissions = method_exists($agent, 'getAllPermissions')
-            ? $agent->getAllPermissions()->pluck('name')->toArray()
-            : [];
+        if (method_exists($agent, 'getRoleNames')) {
+            /** @var Agent $agent */
+            $roles = $agent->getRoleNames()->toArray();
+        } else {
+            $roles = [];
+        }
+        if (method_exists($agent, 'getAllPermissions')) {
+            /** @var Agent $agent */
+            $permissions = $agent->getAllPermissions()->pluck('name')->toArray();
+        } else {
+            $permissions = [];
+        }
 
         return response()->json([
             /* @var Agent */

@@ -31,15 +31,20 @@ class AuthController extends Controller {
      * Get the authenticated User.
      */
     public function me(): JsonResponse {
-        /** @var User */
         $user = auth('api')->user();
 
-        $roles = method_exists($user, 'getRoleNames')
-            ? $user->getRoleNames()->toArray()
-            : [];
-        $permissions = method_exists($user, 'getAllPermissions')
-            ? $user->getAllPermissions()->pluck('name')->toArray()
-            : [];
+        if (method_exists($user, 'getRoleNames')) {
+            /** @var User $user */
+            $roles = $user->getRoleNames()->toArray();
+        } else {
+            $roles = [];
+        }
+        if (method_exists($user, 'getAllPermissions')) {
+            /** @var User $user */
+            $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+        } else {
+            $permissions = [];
+        }
 
         return response()->json([
             /* @var User */
