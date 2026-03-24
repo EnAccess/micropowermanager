@@ -352,8 +352,6 @@ Route::group(['prefix' => 'time-of-usages', 'middleware' => 'auth:api'], static 
     Route::delete('/{timeOfUsageId}', [TimeOfUsageController::class, 'destroy']);
 });
 
-Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
-
 Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', [MpmPluginController::class, 'index']);
 });
