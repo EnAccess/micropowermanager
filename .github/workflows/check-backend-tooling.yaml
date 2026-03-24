@@ -130,7 +130,7 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: wF9zLp2qRxaS2e
         run: |
-          php artisan migrate
+          php artisan migrate --seed
 
       - name: Generate OpenAPI with Scramble
         working-directory: ./src/backend
