@@ -128,7 +128,7 @@ jobs:
         run: |
           php artisan migrate --seed
 
-      - name: Generate OpenAPI with Scramble
+      - name: Check OpenAPI generation with Scramble
         working-directory: ./src/backend
         env:
           DB_HOST: 127.0.0.1
