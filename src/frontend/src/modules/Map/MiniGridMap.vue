@@ -25,6 +25,11 @@ export default {
       clusterService: new ClusterService(),
       miniGridService: new MiniGridService(),
       miniGridDeviceService: new MiniGridDeviceService(),
+      deviceLayers: {
+        [MARKER_TYPE.METER]: new L.LayerGroup(),
+        [MARKER_TYPE.SHS]: new L.LayerGroup(),
+        [MARKER_TYPE.E_BIKE]: new L.LayerGroup(),
+      },
     }
   },
   mounted() {
@@ -32,7 +37,6 @@ export default {
       this.setMiniGridMapData(this.miniGridId)
     }
     const drawingLayer = this.editableLayer
-    const markersLayer = this.markersLayer
     const map = this.map
     this.map.on("draw:created", (event) => {
       const type = event.layerType
@@ -95,16 +99,20 @@ export default {
         this.$emit("locationEdited", editedItems)
       }
     })
+    const deviceLayers = this.deviceLayers
     this.map.on("draw:toolbaropened", function () {
-      map.removeLayer(markersLayer)
-      const markers = markersLayer.getLayers()
+      const allDeviceMarkers = []
+      for (const layer of Object.values(deviceLayers)) {
+        allDeviceMarkers.push(...layer.getLayers())
+        map.removeLayer(layer)
+      }
       drawingLayer.eachLayer((layer) => {
         const type = !layer._latlngs ? "Marker" : "Polygon"
         if (type === "Marker") {
           drawingLayer.removeLayer(layer)
         }
       })
-      markers.map((marker) => {
+      allDeviceMarkers.map((marker) => {
         marker.setOpacity(1)
         marker.addTo(drawingLayer)
       })
@@ -209,6 +217,12 @@ export default {
         })
     },
     setDeviceMarkers() {
+      const overlayLabels = {
+        [MARKER_TYPE.METER]: "Meters",
+        [MARKER_TYPE.SHS]: "Solar Home Systems",
+        [MARKER_TYPE.E_BIKE]: "E-Bikes",
+      }
+
       this.mappingService.markingInfos
         .filter(
           (markingInfo) =>
@@ -249,14 +263,25 @@ export default {
               )
             })
           }
-          deviceMarker.addTo(this.markersLayer) //this layer is used to show markers as marker cluster
+          deviceMarker.addTo(this.deviceLayers[markingInfo.markerType])
 
           const editableMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: deviceMarkerIcon,
           }).setOpacity(0)
-          editableMarker.addTo(this.editableLayer) //we create invisible editable markers as well to be able to edit them once toolbar opened
+          editableMarker.addTo(this.editableLayer)
         })
-      this.map.addLayer(this.markersLayer)
+
+      const overlays = {}
+      for (const [type, layer] of Object.entries(this.deviceLayers)) {
+        if (layer.getLayers().length > 0) {
+          overlays[overlayLabels[type]] = layer
+          layer.addTo(this.map)
+        }
+      }
+
+      if (Object.keys(overlays).length > 0) {
+        L.control.layers(null, overlays, { collapsed: false }).addTo(this.map)
+      }
     },
     setMiniGridMarkerManually(location) {
       const editableLayers = this.nonEditableLayer.getLayers()
