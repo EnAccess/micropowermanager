@@ -40,6 +40,7 @@
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.5",
+    "dedoc/scramble": "^0.13.16",
     "driftingly/rector-laravel": "^2.0",
     "filp/whoops": "^2.0",
     "friendsofphp/php-cs-fixer": "^3.64",
