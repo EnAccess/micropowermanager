@@ -12,7 +12,6 @@ use App\Services\UserPasswordResetService;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 
 class UserPasswordController extends Controller {
     public function __construct(
