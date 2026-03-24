@@ -105,5 +105,3 @@ jobs:
       - name: Generate OpenAPI with Scramble
         run: php artisan scramble:analyze
         working-directory: ./src/backend
-
-
