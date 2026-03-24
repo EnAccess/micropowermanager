@@ -1,4 +1,4 @@
-name: Backend tooling
+name: Check Backend tooling
 on:
   push:
     branches: [main]
@@ -7,7 +7,7 @@ on:
 
 jobs:
   check-erd-generate:
-    name: ERD Generate Check
+    name: ERD Generation
     runs-on: ubuntu-latest
 
     strategy:
@@ -78,7 +78,7 @@ jobs:
           DB_PASSWORD: wF9zLp2qRxaS2e
 
   check-scramble-openapi:
-    name: Scramble OpenAPI check
+    name: Scramble OpenAPI
     runs-on: ubuntu-latest
 
     strategy:
