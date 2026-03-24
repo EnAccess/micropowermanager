@@ -86,7 +86,8 @@ require __DIR__.'/resources/TicketWeb.php';
 
 // JWT authentication
 Route::group(['prefix' => 'auth'], static function () {
-    Route::post('login', [AuthController::class, 'login']);
+    // A named route 'login' is required for Laravel Auth handling.
+    Route::post('login', [AuthController::class, 'login'])->name('login');
 
     Route::group(['middleware' => 'auth:api'], static function () {
         Route::post('logout', [AuthController::class, 'logout']);
