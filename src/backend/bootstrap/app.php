@@ -59,9 +59,16 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        // JWTExceptions happen quite frequently.
+        // User token might expire, web scraper trying to access unauthrized areas, etc...
+        // Lowering the LogLevel here to not spam our logging.
+        $exceptions->level(JWTException::class, LogLevel::INFO);
+
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             return response()->json(['message' => 'Unauthorized. Make sure you are logged in.'], 401);
         });
+
+        $exceptions->render(fn (JWTException $e) => response()->json(['error' => 'Unauthorized. Make sure you are logged in. ('.$e->getMessage().')'], 401));
 
         $exceptions->render(fn (ModelNotFoundException $e) => response()->json([
             'message' => 'Model not found '.implode(' ', $e->getIds()),
