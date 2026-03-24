@@ -34,16 +34,12 @@ class AuthController extends Controller {
         /** @var User */
         $user = auth('api')->user();
 
-        if (method_exists($user, 'getRoleNames')) {
-            $roles = $user->getRoleNames()->toArray();
-        } else {
-            $roles = [];
-        }
-        if (method_exists($user, 'getAllPermissions')) {
-            $permissions = $user->getAllPermissions()->pluck('name')->toArray();
-        } else {
-            $permissions = [];
-        }
+        $roles = method_exists($user, 'getRoleNames')
+            ? $user->getRoleNames()->toArray()
+            : [];
+        $permissions = method_exists($user, 'getAllPermissions')
+            ? $user->getAllPermissions()->pluck('name')->toArray()
+            : [];
 
         return response()->json([
             /* @var User */

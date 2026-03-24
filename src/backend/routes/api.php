@@ -64,7 +64,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserPermissionExportController;
 use App\Http\Controllers\UserPermissionImportController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Routes for City resource
