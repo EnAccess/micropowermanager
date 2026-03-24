@@ -83,6 +83,7 @@ jobs:
       - name: Export OpenAPI from Scramble with Laravel Export
         working-directory: ./src/backend
         env:
+          APP_KEY: base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
           DB_HOST: 127.0.0.1
           DB_DATABASE: micro_power_manager
           DB_USERNAME: root
