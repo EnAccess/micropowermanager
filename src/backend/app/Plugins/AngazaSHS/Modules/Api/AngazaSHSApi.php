@@ -48,9 +48,10 @@ class AngazaSHSApi implements IManufacturerAPI {
         ];
         $credentials = $this->credentialService->getCredentials();
         $response = $this->handleApiRequest($credentials, $params);
+        $token = $response['_embedded']['latest_keycode']['keycode'];
 
         $this->recordTransaction($transactionContainer);
-        $this->logAction($transactionContainer, 'Token: '.$response['_embedded']['latest_keycode']['keycode'].' created for '.$energy.' days usage.');
+        $this->logAction($transactionContainer, 'Token: '.$token.' created for '.$energy.' days usage.');
 
         return [
             'token' => $response['_embedded']['latest_keycode']['keycode'],
