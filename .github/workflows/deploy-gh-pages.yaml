@@ -61,10 +61,10 @@ jobs:
           echo "SCRAMBLE_OPEN_API_VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Install Composer Dependencies
+        working-directory: ./src/backend
         run: |
           composer install --no-interaction --prefer-dist
           composer dump-autoload
-        working-directory: ./src/backend
 
       - name: Wait for MySQL to be ready
         run: |
@@ -86,6 +86,7 @@ jobs:
         working-directory: ./src/backend
         env:
           APP_KEY: base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
+          JWT_SECRET: TihQ232bmMermM8HKaLHwzRl5JSuxwqhfEAQKxRHrQqjRUwrsw1FRZhAcLkihEDU
           DB_HOST: 127.0.0.1
           DB_DATABASE: micro_power_manager
           DB_USERNAME: root
