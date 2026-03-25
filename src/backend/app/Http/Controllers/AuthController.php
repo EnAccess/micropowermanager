@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Utils\DemoCompany;
+use Dedoc\Scramble\Attributes\BodyParameter;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\JWTGuard;
@@ -13,10 +15,9 @@ class AuthController extends Controller {
      * User login.
      *
      * Login a user of the Web App and get JWT token via given credentials.
-     *
-     * @bodyParam email string required
-     * @bodyParam password string required
      */
+    #[BodyParameter('email', type: 'string', format: 'email', example: DemoCompany::DEMO_COMPANY_ADMIN_EMAIL)]
+    #[BodyParameter('password', type: 'string', format: 'password', example: DemoCompany::DEMO_COMPANY_PASSWORD)]
     public function login(): JsonResponse {
         $credentials = request(['email', 'password']);
 

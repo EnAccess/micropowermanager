@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Agent;
 use App\Services\AgentService;
+use App\Utils\DemoCompany;
+use Dedoc\Scramble\Attributes\BodyParameter;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,10 +37,10 @@ class AgentAuthController extends Controller {
      *
      * @bodyParam email string required
      * @bodyParam password string required
-     *
-     * @return JsonResponse
      */
-    public function login(Request $request) {
+    #[BodyParameter('email', type: 'string', format: 'email', example: DemoCompany::DEMO_COMPANY_AGENT_EMAIL)]
+    #[BodyParameter('password', type: 'string', format: 'password', example: DemoCompany::DEMO_COMPANY_PASSWORD)]
+    public function login(Request $request): JsonResponse {
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = $this->guard()->setTTL(525600)->attempt($credentials)) {
@@ -59,10 +61,8 @@ class AgentAuthController extends Controller {
 
     /**
      * Get the authenticated Agent.
-     *
-     * @return JsonResponse
      */
-    public function me() {
+    public function me(): JsonResponse {
         $agent = auth('agent_api')->user();
 
         if (method_exists($agent, 'getRoleNames')) {
