@@ -68,8 +68,8 @@ class AngazaSHSApiTest extends TestCase {
 
         $this->assertSame('1234-5678-9012', $result['token']);
         $this->assertSame(Token::TYPE_UNLOCK, $result['token_type']);
-        $this->assertNull($result['token_unit']);
-        $this->assertNull($result['token_amount']);
+        $this->assertEquals(null, $result['token_unit']);
+        $this->assertEquals(null, $result['token_amount']);
     }
 
     public function testUnlockDeviceThrowsOnApiError(): void {
