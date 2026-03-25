@@ -239,56 +239,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Time-based URLs -->
-          <div class="url-item time-based-url">
-            <label class="url-label">
-              <md-icon class="url-icon">schedule</md-icon>
-              Time-based URLs (Expire in 24 hours):
-            </label>
-
-            <div class="url-sub-item">
-              <label class="url-sublabel">Payment URL:</label>
-              <div class="url-container">
-                <md-input
-                  v-model="publicUrls.time_based_payment_url"
-                  readonly
-                  class="url-input"
-                />
-                <md-button
-                  class="md-icon-button md-primary"
-                  @click="copyToClipboard(publicUrls.time_based_payment_url)"
-                  :disabled="!publicUrls.time_based_payment_url"
-                >
-                  <md-icon>content_copy</md-icon>
-                </md-button>
-              </div>
-            </div>
-
-            <div class="url-sub-item">
-              <label class="url-sublabel">Result URL:</label>
-              <div class="url-container">
-                <md-input
-                  v-model="publicUrls.time_based_result_url"
-                  readonly
-                  class="url-input"
-                />
-                <md-button
-                  class="md-icon-button md-primary"
-                  @click="copyToClipboard(publicUrls.time_based_result_url)"
-                  :disabled="!publicUrls.time_based_result_url"
-                >
-                  <md-icon>content_copy</md-icon>
-                </md-button>
-              </div>
-            </div>
-
-            <p class="url-description">
-              <md-icon>warning</md-icon>
-              These URLs expire in 24 hours. Use for temporary or
-              agent-generated links.
-            </p>
-          </div>
         </div>
 
         <div class="url-actions">
@@ -336,8 +286,6 @@ export default {
       loadingUrls: false,
       publicUrls: {
         permanent_payment_url: "",
-        time_based_payment_url: "",
-        time_based_result_url: "",
       },
       callbackUrl: "",
     }
@@ -382,13 +330,6 @@ export default {
           permanent_payment_url: this.addFrontendPrefix(
             response.permanent_payment_url,
           ),
-          time_based_payment_url: this.addFrontendPrefix(
-            response.time_based_payment_url,
-          ),
-          time_based_result_url: this.addFrontendPrefix(
-            response.time_based_result_url,
-          ),
-          company_id: response.company_id,
         }
 
         this.callbackUrl = this.addFrontendPrefix(
@@ -486,29 +427,9 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-.time-based-url {
-  border-left: 4px solid #ff9800;
-  padding-left: 1rem;
-  background-color: #fff3e0;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-}
-
 .url-icon {
   margin-right: 8px;
   vertical-align: middle;
-}
-
-.url-sublabel {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #666;
-  font-size: 14px;
-}
-
-.url-sub-item {
-  margin-bottom: 1rem;
 }
 
 .url-description {

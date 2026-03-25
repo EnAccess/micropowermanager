@@ -37,6 +37,18 @@ export class AppliancePaymentService {
     }
   }
 
+  async getPaymentProviders() {
+    try {
+      const { data, status, error } = await this.repository.getProviders()
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      const errorMessage = e.response?.data?.message || e.message
+      return new ErrorHandler(errorMessage, "http", e.response?.status || 500)
+    }
+  }
+
   async pollPaymentStatus(transactionId, options = {}) {
     const { maxAttempts = 30, interval = 1000, onProgress = null } = options
 

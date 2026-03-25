@@ -389,6 +389,24 @@
               </p>
             </div>
           </div>
+          <div
+            v-if="paymentProviders.length > 0"
+            class="md-layout-item md-size-100 md-small-size-100"
+          >
+            <md-field>
+              <label>Payment Method</label>
+              <md-select v-model="paymentProvider" name="paymentMethod">
+                <md-option :value="0">Cash</md-option>
+                <md-option
+                  v-for="provider in paymentProviders"
+                  :key="provider.id"
+                  :value="provider.id"
+                >
+                  {{ provider.name }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </div>
           <div v-if="applianceService.appliance.rate" style="padding: 1rem">
             <div
               style="
@@ -493,8 +511,10 @@ import { mapGetters } from "vuex"
 
 import DeviceLocationPickerMap from "./DeviceLocationPickerMap.vue"
 
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
+import { AppliancePaymentService } from "@/services/AppliancePaymentService.js"
 import { AppliancePersonService } from "@/services/AppliancePersonService.js"
 import { ApplianceService } from "@/services/ApplianceService.js"
 import { DeviceService } from "@/services/DeviceService.js"
@@ -523,6 +543,7 @@ export default {
     return {
       applianceService: new ApplianceService(),
       appliancePersonService: new AppliancePersonService(),
+      appliancePaymentService: new AppliancePaymentService(),
       deviceService: new DeviceService(),
       mappingService: new MappingService(),
       selectedApplianceId: null,
@@ -539,6 +560,8 @@ export default {
       locationPickerKey: 0,
       locationPickerMapId: "",
       internalDialogVisible: false,
+      paymentProviders: [],
+      paymentProvider: 0,
     }
   },
   created() {
@@ -615,14 +638,20 @@ export default {
               userId: this.user.id,
               deviceSerial: this.selectedDeviceSerial,
               address: this.getSelectedAddress(),
+              paymentProvider: this.paymentProvider,
             }
             const soldAppliance =
               await this.appliancePersonService.sellAppliance(
                 soldApplianceParams,
               )
+            if (soldAppliance.redirectUrl) {
+              window.open(soldAppliance.redirectUrl, "_blank")
+            }
             this.alertNotify("success", this.$tc("phrases.sellAppliance", 1))
+            const appliancePersonId =
+              soldAppliance.appliancePerson?.id ?? soldAppliance.id
             await this.$router.push(
-              "/sold-appliance-detail/" + soldAppliance.id,
+              "/sold-appliance-detail/" + appliancePersonId,
             )
           } catch (e) {
             console.log(e)
@@ -861,10 +890,15 @@ export default {
     },
   },
   watch: {
-    showSellApplianceModal(value) {
+    async showSellApplianceModal(value) {
       this.internalDialogVisible = value
       if (value) {
         this.locationPickerKey += 1
+        const providers =
+          await this.appliancePaymentService.getPaymentProviders()
+        if (!(providers instanceof ErrorHandler)) {
+          this.paymentProviders = providers
+        }
       }
     },
     async selectedApplianceId() {

@@ -15,7 +15,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Ramsey\Uuid\Uuid;
 
 class PaystackPublicController extends Controller {
     public function __construct(
@@ -66,12 +65,7 @@ class PaystackPublicController extends Controller {
                 return response()->json(['error' => 'Invalid company identifier'], 400);
             }
 
-            // Validate device serial and amount
             $validatedData = $request->validated();
-
-            // Get agent_id from query parameters if present
-            $agentId = $request->query('agent');
-
             $deviceType = $validatedData['device_type'] ?? 'meter';
             $deviceSerial = $validatedData['device_serial'];
 
@@ -82,30 +76,26 @@ class PaystackPublicController extends Controller {
                 $customerId = $this->transactionService->getCustomerIdByMeterSerial($deviceSerial);
             }
 
-            // Create Paystack transaction
-            $transaction = $this->transactionService->createPublicTransaction([
-                'amount' => $validatedData['amount'],
-                'currency' => $validatedData['currency'],
-                'serial_id' => $deviceSerial,
-                'device_type' => $deviceType,
-                'customer_id' => $customerId,
-                'order_id' => Uuid::uuid4()->toString(),
-                'reference_id' => Uuid::uuid4()->toString(),
-                'agent_id' => $agentId ? (int) $agentId : null,
-            ]);
-
-            // Initialize Paystack transaction with company ID for callback URL
-            $result = $this->apiService->initializeTransaction($transaction, $companyId);
-
-            if ($result['error']) {
-                return response()->json(['error' => $result['error']], 400);
+            if (!$customerId) {
+                return response()->json(['error' => 'Customer not found for device'], 400);
             }
+
+            $sender = $this->transactionService->getCustomerPhoneByCustomerId($customerId) ?? '';
+
+            $result = $this->transactionService->initializePayment(
+                amount: (float) $validatedData['amount'],
+                sender: $sender,
+                message: $deviceSerial,
+                type: 'energy',
+                customerId: $customerId,
+                serialId: $deviceSerial,
+            );
 
             return response()->json([
                 'success' => true,
-                'redirection_url' => $result['redirectionUrl'],
-                'reference' => $result['reference'],
-                'transaction_id' => $transaction->getId(),
+                'redirect_url' => $result['provider_data']['redirect_url'],
+                'reference' => $result['provider_data']['reference'],
+                'transaction_id' => $result['transaction']->id,
             ]);
         } catch (\Exception $e) {
             Log::error('PaystackPublicController: Failed to initiate payment', [
@@ -167,6 +157,7 @@ class PaystackPublicController extends Controller {
                     'currency' => $transaction->getCurrency(),
                     'serial_id' => $transaction->getDeviceSerial(),
                     'device_type' => $transaction->getDeviceType(),
+                    'payment_type' => $mainTransaction?->type,
                     'status' => $transaction->getStatus(),
                     'created_at' => $transaction->getAttribute('created_at'),
                 ],

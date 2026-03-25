@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace App\Plugins\PaystackPaymentProvider\Modules\Transaction;
-
 namespace App\Plugins\PaystackPaymentProvider\Services;
 
 use App\Jobs\ProcessPayment;
@@ -12,7 +10,9 @@ use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use App\Services\AbstractPaymentAggregatorTransactionService;
+use App\Services\DeviceService;
 use App\Services\Interfaces\IBaseService;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,6 +28,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         private Address $address,
         private Transaction $transaction,
         private PaystackTransaction $paystackTransaction,
+        private PaystackApiService $paystackApiService,
     ) {
         parent::__construct(
             $this->meter,
@@ -134,6 +135,70 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         dispatch(new ProcessPayment($companyId, $id));
         $transaction->setStatus(PaystackTransaction::STATUS_SUCCESS);
         $transaction->save();
+    }
+
+    public function processFailedPayment(PaystackTransaction $transaction): void {
+        $transaction->setStatus(PaystackTransaction::STATUS_FAILED);
+        $transaction->save();
+
+        $relatedTransaction = $transaction->transaction;
+        if ($relatedTransaction) {
+            $relatedTransaction->update(['status' => PaystackTransaction::STATUS_FAILED]);
+        }
+    }
+
+    /**
+     * Create a PaystackTransaction + Transaction and initialize via the Paystack API.
+     * The caller supplies message and type, keeping routing knowledge outside this service.
+     *
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     */
+    public function initializePayment(
+        float $amount,
+        string $sender,
+        string $message,
+        string $type,
+        int $customerId,
+        ?string $serialId = null,
+    ): array {
+        $deviceType = null;
+        if ($serialId !== null) {
+            $device = app(DeviceService::class)->getBySerialNumber($serialId);
+            $deviceType = $device?->device_type;
+        }
+
+        $paystackTxn = $this->paystackTransaction->newQuery()->create([
+            'amount' => $amount,
+            'currency' => config('paystack-payment-provider.currency.default', 'NGN'),
+            'order_id' => Uuid::uuid4()->toString(),
+            'reference_id' => Uuid::uuid4()->toString(),
+            'status' => PaystackTransaction::STATUS_REQUESTED,
+            'customer_id' => $customerId,
+            'serial_id' => $serialId,
+            'device_type' => $deviceType,
+            'metadata' => ['customer_id' => $customerId, 'serial_id' => $serialId, 'transaction_type' => $type],
+        ]);
+
+        /** @var Transaction $transaction */
+        $transaction = $paystackTxn->transaction()->create([
+            'amount' => $amount,
+            'sender' => $sender,
+            'message' => $message,
+            'type' => $type,
+        ]);
+
+        $result = $this->paystackApiService->initializeTransaction($paystackTxn);
+        if ($result['error']) {
+            throw new \RuntimeException('Paystack initialization failed: '.$result['error']);
+        }
+
+        return [
+            'transaction' => $transaction,
+            'provider_data' => [
+                'redirect_url' => $result['redirectionUrl'],
+                'reference' => $result['reference'],
+            ],
+        ];
     }
 
     /**
