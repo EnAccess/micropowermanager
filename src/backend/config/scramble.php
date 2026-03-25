@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ScrambleOpenApiMiddleware;
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
 return [
@@ -156,8 +157,7 @@ DESC,
     'flatten_deep_query_parameters' => true,
 
     'middleware' => [
-        // 'web',
-        // RestrictedDocsAccess::class,
+        RestrictedDocsAccess::class,
     ],
 
     'extensions' => [],
