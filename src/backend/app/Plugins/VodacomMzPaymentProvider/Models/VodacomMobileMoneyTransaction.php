@@ -16,5 +16,5 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 class VodacomMzPaymentProviderTransaction extends BaseModel {
-    protected $table = 'vodacom_mobile_money_transactions';
+    protected $table = 'vodacom_mz_transactions';
 }

@@ -28,7 +28,7 @@ class ApiResolverMap {
     public const DATA_EXPORTING_API = 'api/export';
     public const ODYSSEY_PAYMENTS_API = 'api/odyssey';
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
-    public const VODACOM_MOBILE_MONEY = 'api/vodacom/';
+    public const VODACOM_MZ_PAYMENT_PROVIDER = 'api/vodacom_mz/';
     public const PAYSTACK_API = 'api/paystack/';
     public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
@@ -42,7 +42,7 @@ class ApiResolverMap {
         self::REPORT_DOWNLOADING_API,
         self::DATA_EXPORTING_API,
         self::AFRICAS_TALKING_API,
-        self::VODACOM_MOBILE_MONEY,
+        self::VODACOM_MZ_PAYMENT_PROVIDER,
         self::ODYSSEY_PAYMENTS_API,
         self::PAYSTACK_API,
         self::ECREEE_METER_DATA_API,
@@ -58,7 +58,7 @@ class ApiResolverMap {
         self::REPORT_DOWNLOADING_API => DownloadingReportsResolver::class,
         self::DATA_EXPORTING_API => DataExportResolver::class,
         self::AFRICAS_TALKING_API => AfricasTalkingApiResolver::class,
-        self::VODACOM_MOBILE_MONEY => VodacomMzPaymentProviderApiResolver::class,
+        self::VODACOM_MZ_PAYMENT_PROVIDER => VodacomMzPaymentProviderApiResolver::class,
         self::ODYSSEY_PAYMENTS_API => OdysseyPaymentApiResolver::class,
         self::PAYSTACK_API => PaystackApiResolver::class,
         self::ECREEE_METER_DATA_API => EcreeeMeterDataApiResolver::class,
