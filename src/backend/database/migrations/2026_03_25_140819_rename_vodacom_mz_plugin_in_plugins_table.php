@@ -16,7 +16,7 @@ return new class extends Migration {
             ->table('mpm_plugins')
             ->where('id', MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER)
             ->update([
-                'name' => 'VodacomMz',
+                'name' => 'VodacomMzPaymentProvider',
                 'description' => 'This plugin enables payments via M-Pesa (Vodacom Mozambique).',
                 'tail_tag' => 'Vodacom Mz Payment Provider',
                 'installation_command' => 'vodacom-mz:install',
