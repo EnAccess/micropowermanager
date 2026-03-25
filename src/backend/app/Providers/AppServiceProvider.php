@@ -104,9 +104,7 @@ class AppServiceProvider extends ServiceProvider {
         // Rate limiter for emails
         RateLimiter::for('emails', fn () => Limit::perMinute(20));
 
-        Gate::define('viewApiDocs', function (?User $user) {
-            return app()->environment('development');
-        });
+        Gate::define('viewApiDocs', fn (?User $user) => app()->environment('development'));
 
         Scramble::configure()
             ->withDocumentTransformers(function (OpenApi $openApi) {

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\ScrambleOpenApiMiddleware;
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
 return [
