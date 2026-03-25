@@ -96,7 +96,7 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up PHP
@@ -135,4 +135,17 @@ jobs:
           DB_DATABASE: micro_power_manager
           DB_USERNAME: root
           DB_PASSWORD: wF9zLp2qRxaS2e
+          SCRAMBLE_OPEN_API_PROD_SERVERS: true
         run: php artisan scramble:analyze
+
+      - name: Check OpenAPI export from Scramble with Laravel Export
+        working-directory: ./src/backend
+        env:
+          APP_KEY: base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
+          JWT_SECRET: TihQ232bmMermM8HKaLHwzRl5JSuxwqhfEAQKxRHrQqjRUwrsw1FRZhAcLkihEDU
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+          SCRAMBLE_OPEN_API_PROD_SERVERS: true
+        run: php artisan export
