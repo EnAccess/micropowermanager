@@ -97,8 +97,9 @@ class ApplianceTransactionProcessor extends AbstractJob {
     }
 
     private function processToken(TransactionDataContainer $transactionData): void {
-        $kWhToBeCharged = 0.0;
-        $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
+        $transactionData->chargeAmount = 0.0;
+        $transactionData->chargeUnit = '';
+        $transactionData->chargeType = '';
 
         dispatch(new TokenProcessor($this->companyId, $transactionData));
     }

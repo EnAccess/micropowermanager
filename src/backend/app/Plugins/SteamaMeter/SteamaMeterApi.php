@@ -36,15 +36,17 @@ class SteamaMeterApi implements IManufacturerAPI {
         $customerId = $stmCustomer->customer_id;
         $stmCustomer = $this->customerService->syncTransactionCustomer($stmCustomer->id);
         $customerEnergyPrice = $stmCustomer->energy_price;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / $customerEnergyPrice;
+        $transactionContainer->chargeAmount += $transactionContainer->amount / $customerEnergyPrice;
+        $transactionContainer->chargeUnit = Token::UNIT_KWH;
+        $transactionContainer->chargeType = Token::TYPE_ENERGY;
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'load' => $transactionContainer->chargedEnergy,
+                'load' => $transactionContainer->chargeAmount,
             ];
         } else {
-            $amount = $transactionContainer->totalAmount;
+            $amount = $transactionContainer->transaction->amount;
             $postParams = [
                 'amount' => $amount,
                 'category' => 'PAY',
@@ -100,7 +102,7 @@ class SteamaMeterApi implements IManufacturerAPI {
                 'token' => $token,
                 'token_type' => Token::TYPE_ENERGY,
                 'token_unit' => Token::UNIT_KWH,
-                'token_amount' => $transactionContainer->chargedEnergy,
+                'token_amount' => $transactionContainer->chargeAmount,
             ];
         }
     }

@@ -20,9 +20,11 @@ class DemoMeterManufacturerApi implements IManufacturerAPI {
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $tariff = $transactionContainer->tariff;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeUnit = Token::UNIT_KWH;
+        $transactionContainer->chargeType = Token::TYPE_ENERGY;
 
-        $energy = $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargeAmount;
 
         // Generate a random token for demo purposes
         $randomToken = $this->generateRandomToken();

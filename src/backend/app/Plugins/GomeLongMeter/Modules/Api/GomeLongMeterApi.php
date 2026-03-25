@@ -23,24 +23,26 @@ class GomeLongMeterApi implements IManufacturerAPI {
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeUnit = Token::UNIT_KWH;
+        $transactionContainer->chargeType = Token::TYPE_ENERGY;
 
-        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargeAmount.
             ' Manufacturer => GomeLongMeterApi');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargeAmount,
             ];
         } else {
-            $energy = $transactionContainer->chargedEnergy;
+            $energy = $transactionContainer->chargeAmount;
             $credentials = $this->credentialService->getCredentials();
             $params = [
                 'U' => $credentials->getUserId(),
                 'K' => $credentials->getUserPassword(),
                 'meter' => $meter->serial_number,
-                'amt' => $transactionContainer->chargedEnergy,
+                'amt' => $transactionContainer->chargeAmount,
             ];
 
             $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);

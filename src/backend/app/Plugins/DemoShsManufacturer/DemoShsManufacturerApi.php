@@ -23,10 +23,11 @@ class DemoShsManufacturerApi implements IManufacturerAPI {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
         $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); // This is for 1 day of energy
-        $transactionContainer->chargedEnergy = 0; // will represent the day count
-        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / $minimumPurchaseAmountPerDay);
+        $transactionContainer->chargeAmount = ceil($transactionContainer->amount / $minimumPurchaseAmountPerDay);
+        $transactionContainer->chargeUnit = Token::UNIT_DAYS;
+        $transactionContainer->chargeType = Token::TYPE_TIME;
 
-        $energy = $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargeAmount;
 
         $randomToken = $this->generateRandomToken();
 
