@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\EBike;
+use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -87,13 +89,21 @@ class DeviceService implements IBaseService, IAssociative {
      * @return Collection<int, Device>
      */
     public function getAllForExport(?string $miniGridName = null, ?string $villageName = null, ?string $deviceType = null, ?string $manufacturerName = null): Collection {
-        $query = $this->device->newQuery()->with([
+        /** @var array<string, \Closure|string> $relations */
+        $relations = [
             'person',
-            'device.manufacturer',
+            'device' => function (MorphTo $morphTo): void {
+                $morphTo->morphWith([
+                    Meter::class => ['manufacturer', 'meterType', 'connectionType', 'connectionGroup', 'tariff'],
+                    SolarHomeSystem::class => ['manufacturer', 'appliance'],
+                    EBike::class => ['manufacturer', 'appliance'],
+                ]);
+            },
             'person.addresses.city',
             'tokens',
             'appliance.applianceType',
-        ]);
+        ];
+        $query = $this->device->newQuery()->with($relations);
 
         if ($miniGridName) {
             $query->whereHas('person', function ($q) use ($miniGridName) {

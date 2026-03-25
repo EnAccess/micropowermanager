@@ -1,9 +1,9 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
-import UserPermissionImportRepository from "@/repositories/UserPermissionImportRepository.js"
+import CustomerImportRepository from "@/repositories/CustomerImportRepository.js"
 
-export class UserPermissionImportService {
+export class CustomerImportService {
   constructor() {
-    this.repository = UserPermissionImportRepository
+    this.repository = CustomerImportRepository
   }
 
   async import(data) {
@@ -12,7 +12,7 @@ export class UserPermissionImportService {
         data: responseData,
         status,
         error,
-      } = await this.repository.importUserPermissions(data)
+      } = await this.repository.importCustomers(data)
       if (status === 202) {
         return { async: true, jobId: responseData.data.job_id }
       }

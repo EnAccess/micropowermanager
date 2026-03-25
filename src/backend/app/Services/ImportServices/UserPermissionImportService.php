@@ -73,9 +73,11 @@ class UserPermissionImportService extends AbstractImportService {
 
             DB::connection('tenant')->commit();
 
+            $allFailed = count($imported) === 0 && count($failed) > 0;
+
             return [
-                'success' => true,
-                'message' => 'Users imported successfully',
+                'success' => !$allFailed,
+                'message' => $allFailed ? 'All user imports failed' : 'Users imported successfully',
                 'imported_count' => count($imported),
                 'failed_count' => count($failed),
                 'imported' => $imported,
