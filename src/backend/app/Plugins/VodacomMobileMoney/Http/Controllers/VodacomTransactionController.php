@@ -8,12 +8,14 @@ use App\Plugins\VodacomMobileMoney\Http\Requests\VodacomTransactionProcessReques
 use App\Plugins\VodacomMobileMoney\Http\Requests\VodacomTransactionValidationRequest;
 use App\Plugins\VodacomMobileMoney\Http\Resources\VodacomTransactionResource;
 use App\Plugins\VodacomMobileMoney\Services\VodacomTransactionService;
+use Dedoc\Scramble\Attributes\Group;
 
 /**
  * @group Vodacom Transaction
  *
  * API endpoints for integrating with Vodacom's M-Pesa payment services
  */
+#[Group('Plugins / Vodacom')]
 class VodacomTransactionController extends Controller {
     public function __construct(private VodacomTransactionService $vodacomService) {}
 

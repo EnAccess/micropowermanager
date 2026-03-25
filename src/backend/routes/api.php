@@ -64,7 +64,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserPermissionExportController;
 use App\Http\Controllers\UserPermissionImportController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Routes for City resource
@@ -351,8 +350,6 @@ Route::group(
 Route::group(['prefix' => 'time-of-usages', 'middleware' => 'auth:api'], static function () {
     Route::delete('/{timeOfUsageId}', [TimeOfUsageController::class, 'destroy']);
 });
-
-Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', [MpmPluginController::class, 'index']);

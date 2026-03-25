@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Utils\DemoCompany;
+use Dedoc\Scramble\Attributes\BodyParameter;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\JWTGuard;
 
-/**
- * @group   Authenticator
- * Class AuthController
- * Responsible for API-Call authentications.
- */
+#[Group('Auth', 'Responsible for API-Call authentications', weight: 0)]
 class AuthController extends Controller {
     /**
-     * JWT authentication.
+     * User login.
      *
-     * @bodyParam email string required
-     * @bodyParam password string required
+     * Login a user of the Web App and get JWT token via given credentials.
      */
+    #[BodyParameter('email', type: 'string', format: 'email', example: DemoCompany::DEMO_COMPANY_ADMIN_EMAIL)]
+    #[BodyParameter('password', type: 'string', format: 'password', example: DemoCompany::DEMO_COMPANY_PASSWORD)]
     public function login(): JsonResponse {
         $credentials = request(['email', 'password']);
 
@@ -33,6 +33,7 @@ class AuthController extends Controller {
      */
     public function me(): JsonResponse {
         $user = auth('api')->user();
+
         if (method_exists($user, 'getRoleNames')) {
             /** @var User $user */
             $roles = $user->getRoleNames()->toArray();
@@ -47,6 +48,7 @@ class AuthController extends Controller {
         }
 
         return response()->json([
+            /* @var User */
             'user' => $user,
             'roles' => $roles,
             'permissions' => $permissions,
@@ -54,7 +56,9 @@ class AuthController extends Controller {
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * User logout.
+     *
+     * Logout the user and invalidate the JWT token.
      */
     public function logout(): JsonResponse {
         auth('api')->logout();
@@ -63,7 +67,8 @@ class AuthController extends Controller {
     }
 
     /**
-     * Refresh token
+     * Refresh User token.
+     *
      * Generates a new valid token for the next 3600 seconds
      * Inorder to generate the new token, a working (Bearer)token has to be provided in the header.
      */

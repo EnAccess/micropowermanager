@@ -6,9 +6,11 @@ use App\Plugins\ViberMessaging\Http\Requests\ViberCredentialRequest;
 use App\Plugins\ViberMessaging\Http\Resources\ViberResource;
 use App\Plugins\ViberMessaging\Services\ViberCredentialService;
 use App\Services\DatabaseProxyManagerService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\URL;
 
+#[Group('Plugins / Viber')]
 class ViberCredentialController extends Controller {
     public function __construct(
         private ViberCredentialService $credentialService,

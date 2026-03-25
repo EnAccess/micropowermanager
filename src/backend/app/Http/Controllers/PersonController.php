@@ -42,8 +42,6 @@ class PersonController extends Controller {
      * @urlParam registration_from string optional. ISO date string for minimum registration date.
      * @urlParam registration_to string optional. ISO date string for maximum registration date.
      * @urlParam device_type string optional. Filter by device/appliance type.
-     *
-     * @responseFile responses/people/people.list.json
      */
     public function index(Request $request): ApiResource {
         $customerType = $request->input('is_customer', 1);
@@ -86,8 +84,6 @@ class PersonController extends Controller {
      * - Meter list.
      *
      * @apiResourceModel App\Models\Person\Person
-     *
-     * @responseFile     responses/people/people.detail.json
      */
     public function show(int $personId): ApiResource {
         return ApiResource::make($this->personService->getDetails($personId, true));
@@ -143,8 +139,6 @@ class PersonController extends Controller {
      * @bodyParam education string. The title of the person. Example: Dr.
      *
      * @apiResourceModel App\Models\Person\Person
-     *
-     * @responseFile     responses/people/person.update.json
      */
     public function update(
         int $personId,
@@ -162,8 +156,6 @@ class PersonController extends Controller {
      * Each page contains 7 entries of the last transaction.
      *
      * @bodyParam    person_id int required the ID of the person. Example: 2
-     *
-     * @responseFile responses/people/person.transaction.list.json
      */
     public function transactions(
         int $personId,
@@ -184,8 +176,6 @@ class PersonController extends Controller {
      *
      * @urlParam term  The ID of the post. Example: John Doe
      * @urlParam paginage int The page number. Example:1
-     *
-     * @responseFile responses/people/people.search.json
      */
     public function search(
         Request $request,

@@ -4,15 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Agent;
 use App\Services\AgentService;
+use App\Utils\DemoCompany;
+use Dedoc\Scramble\Attributes\BodyParameter;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTGuard;
 
-/**
- * @group   Agent-Authenticator
- * Class AgentAuthController
- * Responsible for AgentAPP-API-Call authentications.
- */
+#[Group('AgentApp - Auth', 'Responsible for AgentAPP-API-Call authentications.', weight: 20)]
 class AgentAuthController extends Controller {
     /**
      * Create a new AuthController instance.
@@ -32,14 +31,16 @@ class AgentAuthController extends Controller {
     }
 
     /**
-     * Get JWT via given credentials.
+     * Agent login.
+     *
+     * Login a user of the Agent App and get JWT token via given credentials.
      *
      * @bodyParam email string required
      * @bodyParam password string required
-     *
-     * @return JsonResponse
      */
-    public function login(Request $request) {
+    #[BodyParameter('email', type: 'string', format: 'email', example: DemoCompany::DEMO_COMPANY_AGENT_EMAIL)]
+    #[BodyParameter('password', type: 'string', format: 'password', example: DemoCompany::DEMO_COMPANY_PASSWORD)]
+    public function login(Request $request): JsonResponse {
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = $this->guard()->setTTL(525600)->attempt($credentials)) {
@@ -59,11 +60,9 @@ class AgentAuthController extends Controller {
     }
 
     /**
-     * Get the authenticated User.
-     *
-     * @return JsonResponse
+     * Get the authenticated Agent.
      */
-    public function me() {
+    public function me(): JsonResponse {
         $agent = auth('agent_api')->user();
 
         if (method_exists($agent, 'getRoleNames')) {
@@ -80,6 +79,7 @@ class AgentAuthController extends Controller {
         }
 
         return response()->json([
+            /* @var Agent */
             'agent' => $agent,
             'roles' => $roles,
             'permissions' => $permissions,
@@ -87,18 +87,19 @@ class AgentAuthController extends Controller {
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * Agent logout.
      *
-     * @return JsonResponse
+     * Logout the AgentApp user and invalidate the JWT token.
      */
-    public function logout() {
+    public function logout(): JsonResponse {
         auth('agent_api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
 
     /**
-     * Refresh a token.
+     * Refresh Agent token.
+     *
      * A valid JWT token has to be sent to refresh the token.
      *
      * @return JsonResponse

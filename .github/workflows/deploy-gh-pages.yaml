@@ -21,12 +21,98 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Build job
-  build:
+  # Generate OpenAPI docs
+  generate-openapi:
+    name: Generate OpenAPI docs
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: micro_power_manager
+          MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+      redis:
+        image: redis:5
+        ports:
+          - 6379:6379
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, dom, fileinfo, mysql
+          coverage: xdebug
+
+      - name: Get version
+        run: |
+          VERSION=$(cat version)
+          echo "SCRAMBLE_OPEN_API_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Install Composer Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer dump-autoload
+        working-directory: ./src/backend
+
+      - name: Wait for MySQL to be ready
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P3306 -u root -pwF9zLp2qRxaS2e --silent; do
+            sleep 1
+          done
+
+      - name: Prepare the database for OpenAPI generation
+        working-directory: ./src/backend
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+        run: |
+          php artisan migrate --seed
+
+      - name: Export OpenAPI from Scramble with Laravel Export
+        working-directory: ./src/backend
+        env:
+          APP_KEY: base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+          SCRAMBLE_OPEN_API_PROD_SERVERS: true
+        run: php artisan export
+
+      - name: Upload OpenAPI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-docs
+          path: src/backend/dist/docs/api
+
+
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    needs: generate-openapi
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download OpenAPI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: openapi-docs
+          path: docs/.public/openapi
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
