@@ -12,7 +12,8 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        DB::connection('micropowermanager')->table('mpm_plugins')
+        DB::connection('micro_power_manager')
+            ->table('mpm_plugins')
             ->where('id', MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER)
             ->update([
                 'name' => 'VodacomMz',
@@ -28,8 +29,8 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        DB::connection($this->connection)
-            ->table('micropowermanager')
+        DB::connection('micro_power_manager')
+            ->table('mpm_plugins')
             ->where('id', MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER)
             ->update([
                 'name' => 'VodacomMobileMoney',
