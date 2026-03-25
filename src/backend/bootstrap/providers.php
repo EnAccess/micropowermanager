@@ -25,7 +25,7 @@ use App\Plugins\SunKingSHS\Providers\SunKingSHSServiceProvider;
 use App\Plugins\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
 use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
 use App\Plugins\ViberMessaging\Providers\ViberMessagingServiceProvider;
-use App\Plugins\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider;
+use App\Plugins\VodacomMzPaymentProvider\Providers\VodacomMzPaymentProviderServiceProvider;
 use App\Plugins\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
 use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
 use App\Providers\ApiKeyServiceProvider;
@@ -61,7 +61,7 @@ return [
     SunKingSHSServiceProvider::class,
     SwiftaServiceProvider::class,
     ViberMessagingServiceProvider::class,
-    VodacomMobileMoneyServiceProvider::class,
+    VodacomMzPaymentProviderServiceProvider::class,
     WaveMoneyPaymentProviderServiceProvider::class,
     WavecomPaymentProviderServiceProvider::class,
     EcreeeETenderServiceProvider::class,

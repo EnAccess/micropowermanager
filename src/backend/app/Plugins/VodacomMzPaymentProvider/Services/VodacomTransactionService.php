@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\VodacomMobileMoney\Services;
+namespace App\Plugins\VodacomMzPaymentProvider\Services;
 
 class VodacomTransactionService {
     /**

@@ -11,7 +11,7 @@ use App\Services\Interfaces\IApiResolver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class VodacomMobileMoneyApiResolver implements IApiResolver {
+class VodacomMzApiResolver implements IApiResolver {
     public function resolveCompanyId(Request $request): int {
         // The user should already be authenticated by the 'api-key' guard
         /** @var ApiKeyAuthenticatable|Company|User|null $user */

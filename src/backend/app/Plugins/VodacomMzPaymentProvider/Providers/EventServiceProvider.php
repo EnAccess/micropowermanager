@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Plugins\VodacomMobileMoney\Providers;
+namespace App\Plugins\VodacomMzPaymentProvider\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-class ObserverServiceProvider extends ServiceProvider {
+class EventServiceProvider extends ServiceProvider {
     /**
      * Register any events for your application.
      */
