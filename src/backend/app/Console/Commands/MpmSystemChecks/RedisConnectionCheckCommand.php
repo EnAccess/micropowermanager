@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\MpmSystemChecks;
 
+use App\Models\PendingJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 
@@ -32,6 +33,11 @@ class RedisConnectionCheckCommand extends Command {
             return Command::SUCCESS;
         } catch (\Exception $e) {
             $this->error('Redis connection check failed: '.$e->getMessage());
+
+            $pendingCount = PendingJob::count();
+            if ($pendingCount > 0) {
+                $this->warn("There are {$pendingCount} jobs buffered in the pending_jobs table waiting for Redis recovery.");
+            }
 
             return Command::FAILURE;
         }
