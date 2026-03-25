@@ -19,7 +19,7 @@ return new class extends Migration {
                 'name' => 'VodacomMzPaymentProvider',
                 'description' => 'This plugin enables payments via M-Pesa (Vodacom Mozambique).',
                 'tail_tag' => 'Vodacom Mz Payment Provider',
-                'installation_command' => 'vodacom-mz:install',
+                'installation_command' => 'vodacom-mz-payment-provider:install',
                 'root_class' => 'VodacomMzPaymentProvider',
                 'updated_at' => Carbon::now(),
             ]);

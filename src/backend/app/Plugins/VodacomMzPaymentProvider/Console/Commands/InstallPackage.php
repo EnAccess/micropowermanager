@@ -5,7 +5,7 @@ namespace App\Plugins\VodacomMzPaymentProvider\Console\Commands;
 use Illuminate\Console\Command;
 
 class InstallPackage extends Command {
-    protected $signature = 'vodacom-mobile-money:install';
+    protected $signature = 'vodacom-mz-payment-provider:install';
     protected $description = 'Install VodacomMzPaymentProvider Package';
 
     public function __construct() {
