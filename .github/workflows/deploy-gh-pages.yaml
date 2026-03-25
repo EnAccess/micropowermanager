@@ -55,6 +55,11 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
+      - name: Get version
+        run: |
+          VERSION=$(cat version)
+          echo "SCRAMBLE_OPEN_API_VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
@@ -85,6 +90,7 @@ jobs:
           DB_DATABASE: micro_power_manager
           DB_USERNAME: root
           DB_PASSWORD: wF9zLp2qRxaS2e
+          SCRAMBLE_OPEN_API_PROD_SERVERS: true
         run: php artisan export
 
       - name: Upload OpenAPI artifact

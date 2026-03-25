@@ -7,7 +7,7 @@ return [
      * Your API path. By default, all routes starting with this path will be added to the docs.
      * If you need to change this behavior, you can add your custom routes resolver using `Scramble::routes()`.
      */
-    'api_path' => 'api',
+    'api_path' => '',
 
     /*
      * Your API domain. By default, app domain is used. This is also a part of the default API routes
@@ -24,22 +24,32 @@ return [
         /*
          * API version.
          */
-        'version' => env('API_VERSION', '0.0.1'),
+        'version' => env('SCRAMBLE_OPEN_API_VERSION', '0.0.0 (development)'),
 
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
         'description' => <<<DESC
-
-![MPM Logo](https://micropowermanager.io/mpmlogo_raw.png)
-
+<p align="center">
+  <a href="https://github.com/EnAccess/micropowermanager">
+    <img
+      src="https://micropowermanager.io/mpmlogo_stylized.png"
+      alt="OpenSmartMeter"
+      width="320"
+    >
+  </a>
+</p>
 <p align="center">
     <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em>
 </p>
 
 ---
 
-# 💫 Overview
+# MicroPowerManager
+
+MicroPowerManager (MPM) is a decentralized utility and customer management tool.
+Manage customers, revenues and assets with this all-in one Open Source platform.
+
 This documentation will provide all the information you need to work with our API.
 
 As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
@@ -104,10 +114,10 @@ DESC,
      * ],
      * ```
      */
-    'servers' => [
+    'servers' => env('SCRAMBLE_OPEN_API_PROD_SERVERS', false) ? [
         'Demo' => 'https://api.demo.micropowermanager.io',
         'Cloud' => 'https://api.cloud.micropowermanager.io',
-    ],
+    ] : null,
 
     /*
      * Determines how Scramble stores the descriptions of enum cases.
