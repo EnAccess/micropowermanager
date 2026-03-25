@@ -4,6 +4,8 @@ namespace App\Providers\Helpers;
 
 use App\Models\Transaction\AgentTransaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
+use App\Plugins\SmsTransactionParser\Providers\SmsTransactionProvider;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Plugins\SwiftaPaymentProvider\Providers\SwiftaTransactionProvider;
 use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -42,6 +44,11 @@ class TransactionAdapter {
             return $baseTransaction;
         } elseif ($transactionProvider instanceof WaveComTransaction) {
             $baseTransaction = resolve(WaveComTransactionProvider::class);
+            $baseTransaction->init($transactionProvider);
+
+            return $baseTransaction;
+        } elseif ($transactionProvider instanceof SmsTransaction) {
+            $baseTransaction = resolve(SmsTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;

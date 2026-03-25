@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Plugins\SmsTransactionParser\SmsParsing;
+
+use App\Plugins\SmsTransactionParser\Models\SmsParsingRule;
+use App\Plugins\SmsTransactionParser\SmsParsing\Parsers\MovitelTransactionParser;
+use App\Plugins\SmsTransactionParser\SmsParsing\Parsers\VodacomTransactionParser;
+
+class SmsParserFactory {
+    /** @var array<string, class-string> */
+    private const PARSER_MAP = [
+        'Vodacom' => VodacomTransactionParser::class,
+        'Movitel' => MovitelTransactionParser::class,
+    ];
+
+    public function __construct(
+        private SmsParsingRule $smsParsingRule,
+    ) {}
+
+    public function parse(string $body, string $sender): ?ParsedSmsData {
+        $rules = $this->smsParsingRule->newQuery()
+            ->where('enabled', true)
+            ->get();
+
+        foreach ($rules as $rule) {
+            if (isset($rule->sender_pattern) && $rule->sender_pattern != '' && !preg_match($rule->sender_pattern, $sender)) {
+                continue;
+            }
+
+            if (!preg_match($rule->pattern, $body, $matches)) {
+                continue;
+            }
+
+            $parserClass = self::PARSER_MAP[$rule->provider_name]
+                ?? self::PARSER_MAP[ucfirst(explode('_', $rule->provider_name, 2)[0])]
+                ?? null;
+
+            if ($parserClass === null) {
+                continue;
+            }
+
+            $parser = resolve($parserClass);
+            $namedMatches = array_filter($matches, is_string(...), ARRAY_FILTER_USE_KEY);
+
+            return $parser->parse($body, $namedMatches);
+        }
+
+        return null;
+    }
+}

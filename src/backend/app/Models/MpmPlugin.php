@@ -48,6 +48,7 @@ class MpmPlugin extends BaseModelCentral {
     public const TEXTBEE_SMS_GATEWAY = 26;
     public const ECREEE_E_TENDER = 27;
     public const SPARK_SHS = 28;
+    public const SMS_TRANSACTION_PARSER = 29;
 
     protected $table = 'mpm_plugins';
 

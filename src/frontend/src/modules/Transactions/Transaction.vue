@@ -337,6 +337,33 @@
             </widget>
           </div>
         </div>
+        <div
+          class="md-layout-item md-size-50 md-small-size-100"
+          v-if="ot && ot.raw_message"
+        >
+          <div class="transaction-detail-card">
+            <widget
+              title="Incoming SMS"
+              :show-spinner="false"
+              color="secondary"
+            >
+              <md-card>
+                <md-card-content>
+                  <div class="md-layout md-gutter md-size-100">
+                    <div class="md-layout-item md-subheader md-size-20">
+                      {{ $tc("words.body") }}
+                    </div>
+                    <div
+                      class="md-layout-item md-subheader md-size-75 message-box"
+                    >
+                      {{ ot.raw_message }}
+                    </div>
+                  </div>
+                </md-card-content>
+              </md-card>
+            </widget>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -349,6 +376,7 @@ import { timing } from "@/mixins/timing.js"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
 import CashTransactionDetail from "@/modules/Transactions/CashTransactionDetail.vue"
 import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart.vue"
+import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
 import { PersonService } from "@/services/PersonService.js"
 import { TransactionService } from "@/services/TransactionService.js"
 import Widget from "@/shared/Widget.vue"
@@ -360,6 +388,7 @@ export default {
     Widget,
     AgentTransactionDetail,
     CashTransactionDetail,
+    SmsTransactionDetail,
     PaymentHistoryChart,
   },
   created() {
@@ -402,6 +431,8 @@ export default {
           return "PaystackTransactionDetail"
         case "cash_transaction":
           return "CashTransactionDetail"
+        case "sms_transaction":
+          return "SmsTransactionDetail"
         default:
           return null
       }

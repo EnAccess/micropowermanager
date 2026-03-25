@@ -292,6 +292,16 @@
                       :src="paystackLogo"
                       style="max-height: 32px; max-width: 100px"
                     />
+                    <span
+                      v-if="item.service === 'sms_transaction'"
+                      class="sms-provider-label"
+                    >
+                      {{
+                        smsProviderLabel(
+                          item.original_transaction?.provider_name,
+                        )
+                      }}
+                    </span>
                   </md-table-cell>
 
                   <md-table-cell
@@ -713,6 +723,10 @@ export default {
 
       this.loadAnalytics()
     },
+    smsProviderLabel(providerName) {
+      if (!providerName) return "SMS"
+      return providerName + " (SMS)"
+    },
     async getTransactionProviders() {
       this.transactionProviders =
         await this.transactionProviderService.getTransactionProviders()
@@ -825,5 +839,11 @@ span {
 
 .export-dialog .md-dialog-content {
   padding: 20px;
+}
+
+.sms-provider-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
 }
 </style>
