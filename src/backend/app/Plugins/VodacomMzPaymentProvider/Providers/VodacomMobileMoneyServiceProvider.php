@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Plugins\VodacomMobileMoney\Providers;
+namespace App\Plugins\VodacomMzPaymentProvider\Providers;
 
-use App\Plugins\VodacomMobileMoney\Console\Commands\InstallPackage;
+use App\Plugins\VodacomMzPaymentProvider\Console\Commands\InstallPackage;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class VodacomMobileMoneyServiceProvider extends ServiceProvider {
+class VodacomMzPaymentProviderServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([InstallPackage::class]);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\VodacomMobileMoney\Http\Requests;
+namespace App\Plugins\VodacomMzPaymentProvider\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

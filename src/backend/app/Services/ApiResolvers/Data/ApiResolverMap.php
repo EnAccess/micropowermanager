@@ -15,7 +15,7 @@ use App\Services\ApiResolvers\SwiftaPaymentApiResolver;
 use App\Services\ApiResolvers\TestApiResolver;
 use App\Services\ApiResolvers\TextbeeSmsGatewayApiResolver;
 use App\Services\ApiResolvers\ViberMessagingApiResolver;
-use App\Services\ApiResolvers\VodacomMobileMoneyApiResolver;
+use App\Services\ApiResolvers\VodacomMzPaymentProviderApiResolver;
 use App\Services\ApiResolvers\WaveMoneyApiResolver;
 
 class ApiResolverMap {
@@ -58,7 +58,7 @@ class ApiResolverMap {
         self::REPORT_DOWNLOADING_API => DownloadingReportsResolver::class,
         self::DATA_EXPORTING_API => DataExportResolver::class,
         self::AFRICAS_TALKING_API => AfricasTalkingApiResolver::class,
-        self::VODACOM_MOBILE_MONEY => VodacomMobileMoneyApiResolver::class,
+        self::VODACOM_MOBILE_MONEY => VodacomMzPaymentProviderApiResolver::class,
         self::ODYSSEY_PAYMENTS_API => OdysseyPaymentApiResolver::class,
         self::PAYSTACK_API => PaystackApiResolver::class,
         self::ECREEE_METER_DATA_API => EcreeeMeterDataApiResolver::class,

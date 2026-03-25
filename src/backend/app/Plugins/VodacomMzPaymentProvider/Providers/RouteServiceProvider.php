@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Plugins\VodacomMobileMoney\Providers;
+namespace App\Plugins\VodacomMzPaymentProvider\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider {
-    protected $namespace = 'App\Plugins\VodacomMobileMoney\Http\Controllers';
+    protected $namespace = 'App\Plugins\VodacomMzPaymentProvider\Http\Controllers';
 
     public function boot(): void {
         parent::boot();

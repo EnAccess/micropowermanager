@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Plugins\VodacomMobileMoney\Http\Controllers;
+namespace App\Plugins\VodacomMzPaymentProvider\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Plugins\VodacomMobileMoney\Http\Requests\VodacomTransactionEnquiryStatusRequest;
-use App\Plugins\VodacomMobileMoney\Http\Requests\VodacomTransactionProcessRequest;
-use App\Plugins\VodacomMobileMoney\Http\Requests\VodacomTransactionValidationRequest;
-use App\Plugins\VodacomMobileMoney\Http\Resources\VodacomTransactionResource;
-use App\Plugins\VodacomMobileMoney\Services\VodacomTransactionService;
+use App\Plugins\VodacomMzPaymentProvider\Http\Requests\VodacomTransactionEnquiryStatusRequest;
+use App\Plugins\VodacomMzPaymentProvider\Http\Requests\VodacomTransactionProcessRequest;
+use App\Plugins\VodacomMzPaymentProvider\Http\Requests\VodacomTransactionValidationRequest;
+use App\Plugins\VodacomMzPaymentProvider\Http\Resources\VodacomTransactionResource;
+use App\Plugins\VodacomMzPaymentProvider\Services\VodacomTransactionService;
 use Dedoc\Scramble\Attributes\Group;
 
 /**

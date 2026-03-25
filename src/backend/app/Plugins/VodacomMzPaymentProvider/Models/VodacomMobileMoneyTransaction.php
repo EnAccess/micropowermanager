@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\VodacomMobileMoney\Models;
+namespace App\Plugins\VodacomMzPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
 use Illuminate\Support\Carbon;
@@ -15,6 +15,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class VodacomMobileMoneyTransaction extends BaseModel {
+class VodacomMzPaymentProviderTransaction extends BaseModel {
     protected $table = 'vodacom_mobile_money_transactions';
 }
