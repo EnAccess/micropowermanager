@@ -3,7 +3,7 @@
 use App\Plugins\VodacomMzPaymentProvider\Http\Controllers\VodacomTransactionController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('vodacom')->group(function () {
+Route::prefix('vodacom_mz')->group(function () {
     Route::prefix('transactions')
         ->middleware('auth:api-key')
         ->group(function () {

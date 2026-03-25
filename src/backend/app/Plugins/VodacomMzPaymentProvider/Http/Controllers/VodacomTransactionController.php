@@ -15,7 +15,7 @@ use Dedoc\Scramble\Attributes\Group;
  *
  * API endpoints for integrating with Vodacom's M-Pesa payment services
  */
-#[Group('Plugins / Vodacom')]
+#[Group('Plugins / Vodacom Mz')]
 class VodacomTransactionController extends Controller {
     public function __construct(private VodacomTransactionService $vodacomService) {}
 
