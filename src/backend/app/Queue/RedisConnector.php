@@ -15,8 +15,6 @@ class RedisConnector extends BaseRedisConnector {
             $config['connection'] ?? $this->connection,
             $config['retry_after'] ?? 60,
             $config['block_for'] ?? null,
-            (int) ($config['retry_connection_attempts'] ?? 3),
-            (int) ($config['retry_connection_delay_ms'] ?? 1000),
         );
     }
 }

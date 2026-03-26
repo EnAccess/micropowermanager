@@ -61,8 +61,6 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
             'block_for' => null,
-            'retry_connection_attempts' => env('QUEUE_REDIS_RETRY_ATTEMPTS', 3),
-            'retry_connection_delay_ms' => env('QUEUE_REDIS_RETRY_DELAY_MS', 1000),
         ],
     ],
 

@@ -30,7 +30,7 @@ class RedisQueueRetryTest extends TestCase {
     public function testPushSucceedsOnFirstAttempt(): void {
         $this->redisConnection->shouldReceive('eval')->once()->andReturn(1);
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null, 3, 100);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
         $queue->setContainer(app());
 
         $payload = json_encode(['id' => 'test-123', 'job' => 'test']);
@@ -58,7 +58,7 @@ class RedisQueueRetryTest extends TestCase {
             ->once()
             ->withArgs(fn ($msg): bool => str_contains($msg, 'Redis connection failed'));
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null, 3, 100);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
         $queue->setContainer(app());
 
         $queue->pushRaw('{"job":"test"}', 'default');
@@ -74,12 +74,12 @@ class RedisQueueRetryTest extends TestCase {
         );
 
         $this->redisConnection->shouldReceive('eval')
-            ->times(3)
+            ->times(4)
             ->andThrow($exception);
 
-        Log::shouldReceive('warning')->twice();
+        Log::shouldReceive('warning')->times(4);
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null, 3, 100);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
         $queue->setContainer(app());
 
         $this->expectException(ConnectionException::class);
@@ -95,12 +95,12 @@ class RedisQueueRetryTest extends TestCase {
         );
 
         $this->redisConnection->shouldReceive('eval')
-            ->times(3)
+            ->times(4)
             ->andThrow($exception);
 
-        Log::shouldReceive('warning')->twice();
+        Log::shouldReceive('warning')->times(4);
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null, 3, 1000);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
         $queue->setContainer(app());
 
         try {
@@ -109,12 +109,8 @@ class RedisQueueRetryTest extends TestCase {
             // expected
         }
 
-        // First retry: 1000ms * 2^0 = 1000ms = 1_000_000 microseconds
-        // Second retry: 1000ms * 2^1 = 2000ms = 2_000_000 microseconds
-        Sleep::assertSequence([
-            Sleep::usleep(1_000_000),
-            Sleep::usleep(2_000_000),
-        ]);
+        // Backoff schedule: 1s, 5s, 10s, 60s (plus up to 500ms jitter each)
+        Sleep::assertSleptTimes(4);
     }
 
     public function testPopRetriesOnConnectionFailure(): void {
@@ -139,32 +135,12 @@ class RedisQueueRetryTest extends TestCase {
 
         Log::shouldReceive('warning')->once();
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null, 3, 100);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
         $queue->setContainer(app());
 
         $result = $queue->pop('default');
 
         $this->assertNull($result);
         Sleep::assertSleptTimes(1);
-    }
-
-    public function testSingleAttemptThrowsImmediatelyWithNoRetry(): void {
-        $exception = new ConnectionException(
-            \Mockery::mock(NodeConnectionInterface::class),
-            'Connection refused',
-        );
-
-        $this->redisConnection->shouldReceive('eval')
-            ->once()
-            ->andThrow($exception);
-
-        Log::shouldReceive('warning')->never();
-
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null, 1, 100);
-        $queue->setContainer(app());
-
-        $this->expectException(ConnectionException::class);
-
-        $queue->pushRaw('{"job":"test"}', 'default');
     }
 }

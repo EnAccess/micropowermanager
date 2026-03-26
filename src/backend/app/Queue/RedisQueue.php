@@ -28,14 +28,22 @@ use Predis\Connection\ConnectionException;
  * @see RedisConnector  Wires this class in place of Laravel's RedisQueue
  */
 class RedisQueue extends BaseRedisQueue {
+    /**
+     * @var array<int, int>
+     */
+    protected array $retryBackoffMs = [
+        1000,
+        5000,
+        10000,
+        60000,
+    ];
+
     public function __construct(
         Factory $redis,
         $default = 'default',
         $connection = null,
         $retryAfter = 60,
         $blockFor = null,
-        protected int $retryAttempts = 3,
-        protected int $retryDelayMs = 1000,
     ) {
         parent::__construct($redis, $default, $connection, $retryAfter, $blockFor);
     }
@@ -71,24 +79,21 @@ class RedisQueue extends BaseRedisQueue {
     private function retryOnConnectionFailure(callable $callback): mixed {
         $lastException = null;
 
-        for ($attempt = 1; $attempt <= $this->retryAttempts; ++$attempt) {
+        foreach ($this->retryBackoffMs as $attempt => $delayMs) {
             try {
                 return $callback();
             } catch (ConnectionException $e) {
                 $lastException = $e;
 
-                if ($attempt < $this->retryAttempts) {
-                    $delayMs = $this->retryDelayMs * (2 ** ($attempt - 1));
-
-                    Log::warning('Redis connection failed, retrying', [
-                        'attempt' => $attempt,
-                        'max_attempts' => $this->retryAttempts,
-                        'retry_in_ms' => $delayMs,
-                        'error' => $e->getMessage(),
-                    ]);
-
-                    Sleep::usleep($delayMs * 1000);
-                }
+                Log::warning('Redis connection failed, retrying', [
+                    'attempt' => $attempt + 1,
+                    'max_attempts' => count($this->retryBackoffMs),
+                    'retry_in_ms' => $delayMs,
+                    'error' => $e->getMessage(),
+                ]);
+                // add a small time difference between retries
+                $delayMs += random_int(0, 500);
+                Sleep::usleep($delayMs * 1000);
             }
         }
 
