@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\NewLogEvent;
+use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\MainSettings;
 use Carbon\Carbon;
@@ -88,15 +89,6 @@ class ApplianceRateService {
         $baseTime = $appliancePerson->first_payment_date ?? date('Y-m-d');
         $installment = $installmentType === 'monthly' ? 'month' : 'week';
         if ($appliancePerson->down_payment > 0) {
-            $this->applianceRate->newQuery()->create(
-                [
-                    'appliance_person_id' => $appliancePerson->id,
-                    'rate_cost' => round($appliancePerson->down_payment),
-                    'remaining' => 0,
-                    'due_date' => Carbon::parse(date('Y-m-d'))->toDateTimeString(),
-                    'remind' => 0,
-                ]
-            );
             $appliancePerson->total_cost -= $appliancePerson->down_payment;
         }
         foreach (range(1, $appliancePerson->rate_count) as $rate) {
@@ -139,6 +131,16 @@ class ApplianceRateService {
      */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
+    }
+
+    public function createPaidRate(AppliancePerson $appliancePerson, float $amount): ApplianceRate {
+        return $this->applianceRate->newQuery()->create([
+            'appliance_person_id' => $appliancePerson->id,
+            'rate_cost' => round($amount),
+            'remaining' => 0,
+            'due_date' => Carbon::now()->toDateTimeString(),
+            'remind' => 0,
+        ]);
     }
 
     public function getDownPaymentAsApplianceRate(object $appliancePerson): ?ApplianceRate {

@@ -6,6 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
+use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\Token;
 use Illuminate\Bus\Queueable;
@@ -74,7 +75,10 @@ class TokenProcessor extends AbstractJob {
 
     private function generateToken(mixed $api): void {
         try {
-            if ($this->transactionContainer->applianceInstallmentsFullFilled) {
+            $isEnergyService = $this->transactionContainer->appliancePerson instanceof AppliancePerson
+                && $this->transactionContainer->appliancePerson->isEnergyService();
+
+            if (!$isEnergyService && $this->transactionContainer->applianceInstallmentsFullFilled) {
                 $tokenData = $api->unlockDevice($this->transactionContainer);
             } else {
                 $tokenData = $api->chargeDevice($this->transactionContainer);
