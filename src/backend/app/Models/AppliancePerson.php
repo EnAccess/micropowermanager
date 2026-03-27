@@ -28,6 +28,9 @@ use Illuminate\Support\Carbon;
  * @property      float|null                     $down_payment
  * @property      Carbon|null                    $first_payment_date
  * @property      string|null                    $device_serial
+ * @property      string                         $payment_type
+ * @property      int|null                       $minimum_payable_amount
+ * @property      int|null                       $price_per_day
  * @property-read Appliance|null                 $appliance
  * @property-read Model                          $creator
  * @property-read Device|null                    $device
@@ -36,10 +39,17 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ApplianceRate> $rates
  */
 class AppliancePerson extends BaseModel {
+    public const PAYMENT_TYPE_INSTALLMENT = 'installment';
+    public const PAYMENT_TYPE_ENERGY_SERVICE = 'energy_service';
+
     /** @var array<string, string> */
     protected $dispatchesEvents = [
         'created' => AppliancePersonCreated::class,
     ];
+
+    public function isEnergyService(): bool {
+        return $this->payment_type === self::PAYMENT_TYPE_ENERGY_SERVICE;
+    }
 
     /**
      * @return BelongsTo<Person, $this>

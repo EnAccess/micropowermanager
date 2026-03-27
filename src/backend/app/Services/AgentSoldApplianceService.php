@@ -151,6 +151,10 @@ class AgentSoldApplianceService implements IBaseService {
         $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
+        $paymentType = $requestData['payment_type'] ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
+        $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
+
+        $downPayment = $requestData['down_payment'] ?: 0;
 
         // create agent transaction
         $agentTransactionData = [
@@ -162,7 +166,7 @@ class AgentSoldApplianceService implements IBaseService {
 
         // assign agent transaction to transaction
         $transactionData = [
-            'amount' => $requestData['down_payment'] ?: 0,
+            'amount' => $downPayment,
             'sender' => 'Agent-'.$agent->id,
             'message' => $deviceSerial ?? '-',
             'type' => 'deferred_payment',
@@ -177,12 +181,15 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent to appliance person
         $appliancePersonData = [
             'person_id' => $requestData['person_id'],
-            'first_payment_date' => Carbon::parse($requestData['first_payment_date'])->toDateString(),
-            'rate_count' => $requestData['tenure'],
-            'total_cost' => $assignedAppliance->cost,
-            'down_payment' => $requestData['down_payment'],
+            'first_payment_date' => $isEnergyService ? null : Carbon::parse($requestData['first_payment_date'])->toDateString(),
+            'rate_count' => $isEnergyService ? 0 : $requestData['tenure'],
+            'total_cost' => $isEnergyService ? 0 : $assignedAppliance->cost,
+            'down_payment' => $downPayment,
             'appliance_id' => $assignedAppliance->appliance->id,
             'device_serial' => $deviceSerial,
+            'payment_type' => $paymentType,
+            'minimum_payable_amount' => $isEnergyService ? ($requestData['minimum_payable_amount'] ?? null) : null,
+            'price_per_day' => $isEnergyService ? ($requestData['price_per_day'] ?? null) : null,
         ];
 
         $appliancePerson = $this->appliancePersonService->make($appliancePersonData);
@@ -222,10 +229,13 @@ class AgentSoldApplianceService implements IBaseService {
 
         // initalize appliance Rates
         $buyer = $this->personService->getById($appliancePerson->person_id);
-        $this->applianceRateService->create($appliancePerson);
+
+        if (!$isEnergyService) {
+            $this->applianceRateService->create($appliancePerson);
+        }
 
         if ($appliancePerson->down_payment > 0) {
-            $applianceRate = $this->applianceRateService->getDownPaymentAsApplianceRate($appliancePerson);
+            $applianceRate = $this->applianceRateService->createPaidRate($appliancePerson, $appliancePerson->down_payment);
             event(new PaymentSuccessEvent(
                 amount: (int) $transaction->amount,
                 paymentService: $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
