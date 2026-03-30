@@ -19,10 +19,10 @@ class CreateAgentCommissionRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'name' => 'required',
-            'energy_commission' => 'required|numeric',
-            'appliance_commission' => 'required|numeric',
-            'risk_balance' => 'required|numeric|max:0',
+            'name' => ['required'],
+            'energy_commission' => ['required', 'numeric'],
+            'appliance_commission' => ['required', 'numeric'],
+            'risk_balance' => ['required', 'numeric', 'max:0'],
         ];
     }
 }

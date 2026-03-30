@@ -1,7 +1,7 @@
 meta {
   name: Export Customers Data CSV
   type: http
-  seq: 1
+  seq: 4
 }
 
 get {
@@ -12,4 +12,8 @@ get {
 
 params:query {
   format: csv
+  ~miniGrid: Main Grid
+  ~village: Village Name
+  ~deviceType: meter
+  ~isActive: true
 }

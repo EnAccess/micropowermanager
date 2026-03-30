@@ -17,7 +17,7 @@ class DatabaseProxyService implements IBaseService {
     }
 
     public function create(array $databaseProxyData): DatabaseProxy {
-        return $this->databaseProxy->newQuery()->create($databaseProxyData);
+        return $this->databaseProxy->newQuery()->firstOrCreate($databaseProxyData);
     }
 
     public function update($model, array $data): DatabaseProxy {

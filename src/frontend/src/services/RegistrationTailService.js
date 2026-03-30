@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import RegistrationTailRepository from "@/repositories/RegistrationTailRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import RegistrationTailRepository from "@/repositories/RegistrationTailRepository.js"
 
 export class RegistrationTailService {
   constructor() {

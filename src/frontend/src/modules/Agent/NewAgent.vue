@@ -1,6 +1,10 @@
 <template>
   <div>
-    <widget v-show="addAgent" :title="$tc('phrases.newAgent')" color="red">
+    <widget
+      v-show="addAgent"
+      :title="$tc('phrases.newAgent')"
+      color="secondary"
+    >
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -135,28 +139,14 @@
                 </div>
 
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('birthDate'),
-                    }"
-                  >
-                    <md-datepicker
-                      id="birth-date"
-                      name="birthDate"
-                      md-immediately
-                      v-model="agentService.agent.birthday"
-                      v-validate="'required|date_format:YYYY-MM-DD'"
-                      :data-vv-as="$tc('words.birthday')"
-                      :md-close-on-blur="false"
-                    >
-                      <label for="birth-date">
-                        {{ $tc("words.birthday") }} :
-                      </label>
-                    </md-datepicker>
-                    <span class="md-error">
-                      {{ errors.first("birthDate") }}
-                    </span>
-                  </md-field>
+                  <label>{{ $tc("words.birthday") }}</label>
+                  <md-datepicker
+                    id="birth-date"
+                    name="birthDate"
+                    md-immediately
+                    v-model="agentService.agent.birthday"
+                    :md-close-on-blur="false"
+                  ></md-datepicker>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
@@ -232,7 +222,7 @@
                       id="password"
                       :name="$tc('words.password')"
                       v-model="agentService.agent.password"
-                      v-validate="'required|min:3|max:15'"
+                      v-validate="'required|min:3|max:128'"
                       ref="passwordRef"
                       type="password"
                     />
@@ -292,14 +282,17 @@
   </div>
 </template>
 <script>
+import moment from "moment"
+
+import CountryService from "../../services/CountryService.js"
+import RedirectionModal from "../../shared/RedirectionModal.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { AgentCommissionService } from "@/services/AgentCommissionService.js"
+import { AgentService } from "@/services/AgentService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentService } from "@/services/AgentService"
-import { MiniGridService } from "@/services/MiniGridService"
-import CountryService from "../../services/CountryService"
-import { EventBus } from "@/shared/eventbus"
-import { AgentCommissionService } from "@/services/AgentCommissionService"
-import RedirectionModal from "../../shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
 
 export default {
   mixins: [notify],
@@ -372,23 +365,43 @@ export default {
     async selectNationality(miniGridId) {
       this.selectedMiniGridId = miniGridId
     },
+    normalizeDateToISO(date) {
+      if (!date) return null
+      const m = moment(date)
+      if (!m.isValid()) return null
+
+      return m.format("YYYY-MM-DD")
+    },
+
     async saveAgent() {
       this.firstStepClicked = true
       let validator = await this.$validator.validateAll()
       if (!this.phone.valid) return
-      if (validator) {
-        this.loading = true
-        try {
-          await this.agentService.createAgent()
-          this.loading = false
-          this.hide()
-          this.alertNotify("success", this.$tc("phrases.newAgent", 1))
-        } catch (e) {
-          this.loading = false
-          this.alertNotify("error", e.message)
+      if (!validator) return
+
+      this.loading = true
+      try {
+        const normalized = this.normalizeDateToISO(
+          this.agentService.agent.birthday,
+        )
+        this.agentService.agent.birth_date = normalized
+        if ("birthday" in this.agentService.agent) {
+          delete this.agentService.agent.birthday
         }
+
+        const created = await this.agentService.createAgent()
+        this.$emit("agent-added", created)
+        EventBus.$emit("agentCreated", created)
+
+        this.alertNotify("success", this.$tc("phrases.agentCreatedSuccess"))
         this.$refs["agentForm"].reset()
         this.confirmPassword = null
+        this.agentService.agent = {}
+        this.hide()
+      } catch (e) {
+        this.alertNotify("error", e.message || e)
+      } finally {
+        this.loading = false
       }
     },
     validatePhone(phone) {
@@ -403,4 +416,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

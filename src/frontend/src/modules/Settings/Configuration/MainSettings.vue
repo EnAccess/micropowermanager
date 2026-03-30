@@ -142,6 +142,25 @@
         </md-field>
         <span class="md-error">{{ errors.first("usage_type") }}</span>
       </div>
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <md-field>
+          <label for="sms_gateway">SMS Gateway</label>
+          <md-select
+            name="sms_gateway"
+            id="sms_gateway"
+            v-model="mainSettingsService.mainSettings.smsGatewayId"
+          >
+            <md-option disabled :value="null">Select SMS Gateway</md-option>
+            <md-option
+              v-for="gateway in smsGatewayService.availableGateways"
+              :key="gateway.id"
+              :value="gateway.id"
+            >
+              {{ gateway.label }}
+            </md-option>
+          </md-select>
+        </md-field>
+      </div>
       <div class="md-layout md-alignment-bottom-right">
         <md-button
           class="md-primary md-dense md-raised"
@@ -156,12 +175,13 @@
 </template>
 
 <script>
-import { CurrencyListService } from "@/services/CurrencyListService"
-import CountryService from "@/services/CountryService"
-import { UsageTypeListService } from "@/services/UsageTypeListService"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import CountryService from "@/services/CountryService.js"
+import { CurrencyListService } from "@/services/CurrencyListService.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { SmsGatewayService } from "@/services/SmsGatewayService.js"
+import { UsageTypeListService } from "@/services/UsageTypeListService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "MainSettings",
@@ -177,6 +197,7 @@ export default {
       currencyListService: new CurrencyListService(),
       countryListService: new CountryService(),
       usageTypeListService: new UsageTypeListService(),
+      smsGatewayService: new SmsGatewayService(),
       currencyList: [],
       languagesList: ["ar", "bu", "en", "fr"],
       countryList: [],
@@ -194,6 +215,7 @@ export default {
     this.getCurrencyList()
     this.getCountryList()
     this.getUsageTypeList()
+    this.getAvailableSmsGateways()
   },
   methods: {
     fetchMainSettings() {
@@ -220,6 +242,13 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
+    async getAvailableSmsGateways() {
+      try {
+        await this.smsGatewayService.getAvailableGateways()
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
     async updateMainSettings() {
       let validator = await this.$validator.validateAll()
       if (!validator) {
@@ -227,6 +256,10 @@ export default {
       }
       try {
         this.progress = true
+        const currentStoreSettings =
+          this.$store.getters["settings/getMainSettings"]
+        this.mainSettingsService.mainSettings.transactionSmsEnabled =
+          currentStoreSettings.transactionSmsEnabled
         await this.mainSettingsService.update()
         this.$store
           .dispatch(
@@ -254,4 +287,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

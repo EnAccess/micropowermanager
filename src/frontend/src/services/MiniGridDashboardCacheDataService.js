@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import MiniGridDashboardCacheDataRepository from "@/repositories/MiniGridDashboardCacheDataRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MiniGridDashboardCacheDataRepository from "@/repositories/MiniGridDashboardCacheDataRepository.js"
 
 export class MiniGridDashboardCacheDataService {
   constructor() {

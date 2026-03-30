@@ -11,10 +11,10 @@
  * |.
  */
 
+use App\DTO\TransactionDataContainer;
 use App\Events\TransactionSuccessfulEvent;
 use App\Jobs\EnergyTransactionProcessor;
 use App\Jobs\TokenProcessor;
-use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Route;
 
@@ -25,19 +25,14 @@ Route::group(
             $id = request('id');
             $recreate = (bool) request('recreate');
             $companyId = auth('agent_api')->user()->company_id;
-            TokenProcessor::dispatch(
-                $companyId,
-                TransactionDataContainer::initialize(Transaction::find($id)),
-                $recreate,
-                1
-            );
+            dispatch(new TokenProcessor($companyId, TransactionDataContainer::initialize(Transaction::find($id)), $recreate, 1));
         })->where('id', '[0-9]+')->name('jobs.token');
 
         Route::get('energy/{id}', function () {
             $id = request('id');
             $transaction = Transaction::find($id);
             $companyId = auth('agent_api')->user()->company_id;
-            EnergyTransactionProcessor::dispatch($companyId, $transaction->id);
+            dispatch(new EnergyTransactionProcessor($companyId, $transaction->id));
         });
     }
 );
@@ -58,8 +53,4 @@ Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
         // fire event which confirms the transaction
         event(new TransactionSuccessfulEvent($transaction));
     })->where('id', '[0-9]+');
-});
-
-Route::group(['middleware' => 'auth'], function () {
-    // Route::get('/user-data', [AdminController::class, 'auth']);
 });

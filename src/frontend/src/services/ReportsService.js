@@ -1,6 +1,6 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import ReportsRepository from "@/repositories/ReportsRepository"
+import { Paginator } from "@/Helpers/Paginator.js"
+import ReportsRepository from "@/repositories/ReportsRepository.js"
+import { resources } from "@/resources.js"
 
 export class ReportsService {
   constructor() {
@@ -8,7 +8,6 @@ export class ReportsService {
     this.report = {
       id: null,
       name: null,
-      path: null,
       date: null,
       type: null,
     }
@@ -22,7 +21,6 @@ export class ReportsService {
       return {
         id: report.id,
         name: report.name,
-        path: report.path,
         date: report.date,
         type: report.type,
       }
@@ -30,7 +28,7 @@ export class ReportsService {
     return this.list
   }
 
-  exportReport(id, reference, companyId) {
-    return this.repository.download(id, reference, companyId)
+  async exportReport(id) {
+    return this.repository.download(id)
   }
 }

@@ -31,19 +31,48 @@ class PersonController extends Controller {
      * [ To get a list of registered customers or non-customer like contact person of Meter Manufacturer. ].
      *
      * @urlParam is_customer int optinal. To get a list of customers or non customer. Default : 1
-     * @urlParam agent_id int optional. To gget a list of customers of a specific agent.
+     * @urlParam agent_id int optional. To get a list of customers of a specific agent.
      * @urlParam limit int optional. The number of items per page.
      * @urlParam active_customer int optional. To get a list of active customers. Default: 0
-     *
-     * @responseFile responses/people/people.list.json
+     * @urlParam city_id int optional. Filter by primary address city/village id.
+     * @urlParam total_paid_min float optional. Minimum total paid amount for the customer.
+     * @urlParam total_paid_max float optional. Maximum total paid amount for the customer.
+     * @urlParam latest_payment_from string optional. ISO date string for minimum latest payment date.
+     * @urlParam latest_payment_to string optional. ISO date string for maximum latest payment date.
+     * @urlParam registration_from string optional. ISO date string for minimum registration date.
+     * @urlParam registration_to string optional. ISO date string for maximum registration date.
+     * @urlParam device_type string optional. Filter by device/appliance type.
      */
     public function index(Request $request): ApiResource {
         $customerType = $request->input('is_customer', 1);
-        $limit = $request->input('limit', config('settings.paginate'));
+        $perPage = $request->input('per_page', config('settings.paginate', 15));
         $agentId = $request->input('agent_id');
         $activeCustomer = $request->has('active_customer') ? (bool) $request->input('active_customer') : null;
+        $cityId = $request->input('city_id');
+        $totalPaidMin = $request->input('total_paid_min');
+        $totalPaidMax = $request->input('total_paid_max');
+        $latestPaymentFrom = $request->input('latest_payment_from');
+        $latestPaymentTo = $request->input('latest_payment_to');
+        $registrationFrom = $request->input('registration_from');
+        $registrationTo = $request->input('registration_to');
+        $deviceType = $request->input('device_type');
 
-        return ApiResource::make($this->personService->getAll($limit, $customerType, $agentId, $activeCustomer));
+        return ApiResource::make(
+            $this->personService->getAll(
+                $perPage,
+                $customerType,
+                $agentId,
+                $activeCustomer,
+                $cityId,
+                $totalPaidMin,
+                $totalPaidMax,
+                $latestPaymentFrom,
+                $latestPaymentTo,
+                $registrationFrom,
+                $registrationTo,
+                $deviceType,
+            )
+        );
     }
 
     /**
@@ -55,8 +84,6 @@ class PersonController extends Controller {
      * - Meter list.
      *
      * @apiResourceModel App\Models\Person\Person
-     *
-     * @responseFile     responses/people/people.detail.json
      */
     public function show(int $personId): ApiResource {
         return ApiResource::make($this->personService->getDetails($personId, true));
@@ -108,12 +135,10 @@ class PersonController extends Controller {
      * @bodyParam name string. The title of the person. Example: Dr.
      * @bodyParam surname string. The title of the person. Example: Dr.
      * @bodyParam birth_date string. The title of the person. Example: Dr.
-     * @bodyParam sex string. The title of the person. Example: Dr.
+     * @bodyParam gender string. The title of the person. Example: Dr.
      * @bodyParam education string. The title of the person. Example: Dr.
      *
      * @apiResourceModel App\Models\Person\Person
-     *
-     * @responseFile     responses/people/person.update.json
      */
     public function update(
         int $personId,
@@ -131,8 +156,6 @@ class PersonController extends Controller {
      * Each page contains 7 entries of the last transaction.
      *
      * @bodyParam    person_id int required the ID of the person. Example: 2
-     *
-     * @responseFile responses/people/person.transaction.list.json
      */
     public function transactions(
         int $personId,
@@ -153,16 +176,15 @@ class PersonController extends Controller {
      *
      * @urlParam term  The ID of the post. Example: John Doe
      * @urlParam paginage int The page number. Example:1
-     *
-     * @responseFile responses/people/people.search.json
      */
     public function search(
         Request $request,
     ): ApiResource {
-        $term = $request->input('term');
+        $term = $request->input('term', '');
         $paginate = $request->input('paginate', 1);
+        $per_page = $request->input('per_page', 15);
 
-        return ApiResource::make($this->personService->searchPerson($term, $paginate));
+        return ApiResource::make($this->personService->searchPerson($term, $paginate, $per_page));
     }
 
     /**
@@ -178,9 +200,20 @@ class PersonController extends Controller {
      */
     public function destroy(
         int $personId,
-    ): ApiResource {
+    ): JsonResponse {
         $person = $this->personService->getById($personId);
 
-        return ApiResource::make($this->personService->delete($person));
+        $deleted = $this->personService->delete($person);
+
+        if (!$deleted) {
+            return response()->json([
+                'message' => 'Failed to delete person',
+            ], 500);
+        }
+
+        return ApiResource::make([
+            'message' => 'Person deleted successfully',
+            'data' => $person,
+        ])->response()->setStatusCode(200);
     }
 }

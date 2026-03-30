@@ -4,7 +4,7 @@ use App\Http\Controllers\CountryController;
 use Illuminate\Support\Facades\Route;
 
 /* Country */
-Route::middleware('jwt.verify')
+Route::middleware('auth:api')
     ->prefix('countries')
     ->group(function () {
         Route::get('/', [CountryController::class, 'index']); // list of all countries

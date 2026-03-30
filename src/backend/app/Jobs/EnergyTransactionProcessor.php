@@ -2,11 +2,11 @@
 
 namespace App\Jobs;
 
+use App\DTO\TransactionDataContainer;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
-use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
@@ -85,7 +85,6 @@ class EnergyTransactionProcessor extends AbstractJob {
         $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($container);
         $container->transaction->amount = $applianceInstallmentPayer->payInstallments();
-        $container->totalAmount = $container->transaction->amount;
         $container->paidRates = $applianceInstallmentPayer->paidRates;
 
         return $container;
@@ -106,10 +105,11 @@ class EnergyTransactionProcessor extends AbstractJob {
     }
 
     private function processToken(TransactionDataContainer $transactionData): void {
-        $kWhToBeCharged = 0.0;
-        $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
+        $transactionData->chargeAmount = 0.0;
+        $transactionData->chargeUnit = '';
+        $transactionData->chargeType = '';
 
-        TokenProcessor::dispatch($this->companyId, $transactionData);
+        dispatch(new TokenProcessor($this->companyId, $transactionData));
     }
 
     private function getTariffMinimumPurchaseAmount(TransactionDataContainer $transactionData): float {

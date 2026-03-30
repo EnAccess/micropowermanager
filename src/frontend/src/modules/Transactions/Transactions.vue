@@ -1,448 +1,464 @@
 <template>
   <div>
-    <div :class="{ 'box-margin': showBoxes }">
-      <md-toolbar class="md-dense">
-        <div class="md-toolbar-section-start md-small-size-100">
-          <div class="md-layout md-size-40 md-small-size-100">
-            <md-field class="period-area">
-              <label for="period">
-                {{ $tc("words.period") }}
-              </label>
-              <md-select
-                v-model="period"
-                name="period"
-                id="period"
-                @md-selected="getPeriod"
-              >
-                <md-option value="Yesterday">
-                  {{ $tc("words.yesterday") }}
-                </md-option>
-                <md-option value="Same day last week">
-                  {{ $tc("phrases.sameDayLastWeek") }}
-                </md-option>
-                <md-option value="Past 7 days">
-                  {{ $tc("phrases.lastXDays", 1, { x: 7 }) }}
-                </md-option>
-                <md-option value="Past 30 days">
-                  {{ $tc("phrases.lastXDays", 1, { x: 30 }) }}
-                </md-option>
-              </md-select>
-            </md-field>
+    <div>
+      <div :class="{ 'box-margin': showBoxes }">
+        <md-toolbar class="md-dense">
+          <div class="md-toolbar-section-start md-small-size-100">
+            <div class="md-layout md-size-40 md-small-size-100">
+              <md-field class="period-area">
+                <label for="period">
+                  {{ $tc("words.period") }}
+                </label>
+                <md-select
+                  v-model="period"
+                  name="period"
+                  id="period"
+                  @md-selected="getPeriod"
+                >
+                  <md-option value="Yesterday">
+                    {{ $tc("words.yesterday") }}
+                  </md-option>
+                  <md-option value="Same day last week">
+                    {{ $tc("phrases.sameDayLastWeek") }}
+                  </md-option>
+                  <md-option value="Past 7 days">
+                    {{ $tc("phrases.lastXDays", 1, { x: 7 }) }}
+                  </md-option>
+                  <md-option value="Past 30 days">
+                    {{ $tc("phrases.lastXDays", 1, { x: 30 }) }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
+            <div
+              class="md-layout md-gutter md-size-60 md-small-size-100 summary"
+              v-if="!showBoxes"
+            >
+              <div class="md-layout-item">
+                <div class="md-layout">
+                  <span>
+                    {{ analyticsData.current.confirmed }}
+                  </span>
+                </div>
+                <div class="md-layout">
+                  <md-icon class="md-primary">check</md-icon>
+                </div>
+                <div class="md-layout">
+                  <small>{{ $tc("words.confirm", 2) }}</small>
+                </div>
+              </div>
+              <div class="md-layout-item">
+                <div class="md-layout">
+                  <span>
+                    {{ analyticsData.current.cancelled }}
+                  </span>
+                </div>
+                <div class="md-layout">
+                  <md-icon class="md-accent">cancel</md-icon>
+                </div>
+                <div class="md-layout">
+                  <small>{{ $tc("words.cancel", 2) }}</small>
+                </div>
+              </div>
+              <div class="md-layout-item">
+                <div class="md-layout">
+                  <span>
+                    {{ moneyFormat(analyticsData.current.amount) }}
+                  </span>
+                </div>
+                <div class="md-layout">
+                  <md-icon>attach_money</md-icon>
+                </div>
+                <div class="md-layout">
+                  <small>{{ $tc("words.revenue") }}</small>
+                </div>
+              </div>
+            </div>
           </div>
-          <div
-            class="md-layout md-gutter md-size-60 md-small-size-100 summary"
-            v-if="!showBoxes"
-          >
-            <div class="md-layout-item">
-              <div class="md-layout">
-                <span>
-                  {{ analyticsData.current.confirmed }}
-                </span>
-              </div>
-              <div class="md-layout">
-                <md-icon class="md-primary">check</md-icon>
-              </div>
-              <div class="md-layout">
-                <small>{{ $tc("words.confirm", 2) }}</small>
-              </div>
-            </div>
-            <div class="md-layout-item">
-              <div class="md-layout">
-                <span>
-                  {{ analyticsData.current.cancelled }}
-                </span>
-              </div>
-              <div class="md-layout">
-                <md-icon class="md-accent">cancel</md-icon>
-              </div>
-              <div class="md-layout">
-                <small>{{ $tc("words.cancel", 2) }}</small>
-              </div>
-            </div>
-            <div class="md-layout-item">
-              <div class="md-layout">
-                <span>
-                  {{ moneyFormat(analyticsData.current.amount) }}
-                </span>
-              </div>
-              <div class="md-layout">
-                <md-icon>attach_money</md-icon>
-              </div>
-              <div class="md-layout">
-                <small>{{ $tc("words.revenue") }}</small>
-              </div>
-            </div>
+          <div class="md-toolbar-section-end md-small-size-100 summary">
+            <md-button
+              class="md-dense md-button-icon"
+              @click="showBoxes = !showBoxes"
+            >
+              {{ showBoxes ? $tc("words.collapse") : $tc("words.expand") }}
+              <md-icon>
+                {{ showBoxes ? "keyboard_arrow_down" : "keyboard_arrow_left" }}
+              </md-icon>
+            </md-button>
           </div>
-        </div>
-        <div class="md-toolbar-section-end md-small-size-100 summary">
-          <md-button
-            class="md-dense md-button-icon"
-            @click="showBoxes = !showBoxes"
-          >
-            {{ showBoxes ? $tc("words.collapse") : $tc("words.expand") }}
-            <md-icon>
-              {{ showBoxes ? "keyboard_arrow_down" : "keyboard_arrow_left" }}
-            </md-icon>
-          </md-button>
-        </div>
-      </md-toolbar>
-    </div>
-    <div class="md-layout md-gutter" v-if="showBoxes">
-      <div
-        v-if="analyticsData"
-        class="md-layout-item md-size-25 md-small-size-50"
-      >
-        <box
-          :box-color="'blue'"
-          :center-text="true"
-          :header-text="$tc('phrases.incomingTransactions')"
-          :sub-text="
-            analyticsData.current.total + '/' + analyticsData.past.total
-          "
-          :box-icon="'add'"
-          :additional-text="
-            analyticsData.analytics.totalPercentage.percentage +
-            '% of ' +
-            analyticsPeriods[analyticsPeriod]
-          "
-        />
+        </md-toolbar>
       </div>
-      <div
-        v-if="analyticsData"
-        class="md-layout-item md-size-25 md-small-size-50"
-      >
-        <box
-          :box-color="'green'"
-          :center-text="true"
-          :header-text="$tc('words.confirm', 2)"
-          :sub-text="
-            analyticsData.current.confirmed + '/' + analyticsData.past.confirmed
-          "
-          :box-icon="'check'"
-          :additional-text="
-            analyticsData.analytics.confirmationPercentage.percentage +
-            '% of ' +
-            analyticsPeriods[analyticsPeriod]
-          "
-        />
-      </div>
-      <div
-        v-if="analyticsData"
-        class="md-layout-item md-size-25 md-small-size-50"
-      >
-        <box
-          :box-color="'red'"
-          :center-text="true"
-          :header-text="$tc('words.cancel', 2)"
-          :sub-text="
-            analyticsData.current.cancelled + '/' + analyticsData.past.cancelled
-          "
-          :box-icon="'cancel'"
-          :additional-text="
-            analyticsData.analytics.cancelationPercentage.percentage +
-            '% of ' +
-            analyticsPeriods[analyticsPeriod]
-          "
-        />
-      </div>
-      <div
-        v-if="analyticsData"
-        class="md-layout-item md-size-25 md-small-size-50"
-      >
-        <box
-          :box-color="'orange'"
-          :center-text="true"
-          :header-text="$tc('words.revenue')"
-          :sub-text="moneyFormat(analyticsData.current.amount)"
-          :box-icon="'attach_money'"
-          :additional-text="
-            analyticsData.analytics.amountPercentage.percentage +
-            '% of ' +
-            analyticsPeriods[analyticsPeriod]
-          "
-        />
-      </div>
-
-      <div
-        class="md-layout-item md-size-25 md-small-size-50"
-        v-if="analyticsData === null && loading === false"
-      >
-        <h5>{{ $tc("phrases.transactionNotify") }}</h5>
-      </div>
-    </div>
-    <div class="md-layout">
-      <div class="transaction-filter" v-if="showFilter">
-        <filter-transaction @searchSubmit="filterTransaction" />
-      </div>
-      <div class="md-layout-item md-size-100">
-        <widget
-          :id="'transaction-list'"
-          :title="$tc('words.transaction', 2)"
-          :paginator="transactionService.paginator"
-          :search="false"
-          :subscriber="subscriber"
-          :route_name="'/transactions'"
-          :show_per_page="true"
-          color="green"
-          :button="true"
-          :empty-state-create-button="false"
-          :button-text="$tc('words.filter')"
-          @widgetAction="
-            () => {
-              showFilter = !showFilter
-            }
-          "
-          button-icon="filter_list"
+      <div class="md-layout md-gutter" v-if="showBoxes">
+        <div
+          v-if="analyticsData"
+          class="md-layout-item md-size-25 md-small-size-50"
         >
-          <div>
-            <div class="export-button-container">
-              <md-button
-                class="md-raised md-primary export-csv-button"
-                @click="showExportModal = true"
-              >
-                <md-icon>download</md-icon>
-                {{ $tc("phrases.exportTransactions") }}
-              </md-button>
-            </div>
-            <md-table style="width: 100%" md-card>
-              <md-table-row>
-                <md-table-head>
-                  {{ $tc("words.status") }}
-                </md-table-head>
-                <md-table-head>
-                  <md-icon>person</md-icon>
-                  {{ $tc("words.service") }}
-                </md-table-head>
-                <md-table-head>
-                  <md-icon>phone</md-icon>
-                  {{ $tc("words.sender") }}
-                </md-table-head>
-                <md-table-head>
-                  <md-icon>money</md-icon>
-                  {{ $tc("words.amount") }}
-                </md-table-head>
-                <md-table-head>
-                  {{ $tc("words.type") }}
-                </md-table-head>
-                <md-table-head>
-                  {{ $tc("words.message") }}
-                </md-table-head>
-                <md-table-head>
-                  <md-icon>calendar_today</md-icon>
-                  {{ $tc("phrases.sentDate") }}
-                </md-table-head>
-                <md-table-head>
-                  <md-icon>calendar_view_day</md-icon>
-                  {{ $tc("phrases.processTime") }}
-                </md-table-head>
-              </md-table-row>
-
-              <md-table-row
-                v-for="transaction in transactionService.list"
-                :key="transaction.id"
-                style="cursor: pointer"
-                @click="transactionDetail(transaction.id)"
-              >
-                <md-table-cell>
-                  <md-icon
-                    v-if="transaction.status === 1"
-                    style="color: green"
-                    md-toolt
-                  >
-                    check_circle_outline
-                    <md-tooltip md-direction="right">
-                      {{ $tc("words.confirm", 2) }}
-                    </md-tooltip>
-                  </md-icon>
-                  <md-icon
-                    v-if="transaction.status === 0"
-                    style="color: goldenrod"
-                  >
-                    contact_support
-                    <md-tooltip md-direction="right">
-                      {{ $tc("words.process", 3) }}
-                    </md-tooltip>
-                  </md-icon>
-                  <md-icon v-if="transaction.status === -1" style="color: red">
-                    cancel
-                    <md-tooltip md-direction="right">
-                      {{ $tc("words.reject", 2) }}
-                    </md-tooltip>
-                  </md-icon>
-                </md-table-cell>
-
-                <md-table-cell style="text-align: center !important">
-                  <img
-                    v-if="transaction.service === 'vodacom_transaction'"
-                    class="logo"
-                    alt="logo"
-                    :src="vodacomLogo"
-                    style="max-height: 20px"
-                  />
-                  <img
-                    v-if="transaction.service === 'airtel_transaction'"
-                    class="logo"
-                    alt="logo"
-                    :src="airtelLogo"
-                    style="max-height: 32px"
-                  />
-                  <img
-                    v-if="transaction.service === 'third_party_transaction'"
-                    class="logo"
-                    alt="logo"
-                    :src="thirdPartyLogo"
-                    style="max-height: 24px"
-                  />
-                  <img
-                    v-if="transaction.service === 'agent_transaction'"
-                    :src="agentIcon"
-                    style="max-height: 32px"
-                  />
-                  <img
-                    v-if="transaction.service === 'cash_transaction'"
-                    :src="moneyIcon"
-                    style="max-height: 32px"
-                  />
-                  <img
-                    v-if="transaction.service === 'wave_money_transaction'"
-                    :src="waveMoneyLogo"
-                    style="max-height: 34px"
-                  />
-                  <img
-                    v-if="transaction.service === 'swifta_transaction'"
-                    :src="swiftaLogo"
-                    style="max-height: 20px"
-                  />
-                  <img
-                    v-if="transaction.service === 'wavecom_transaction'"
-                    :src="waveComLogo"
-                    style="max-height: 32px"
-                  />
-                </md-table-cell>
-                <md-table-cell>
-                  {{ transaction.sender }}
-                </md-table-cell>
-                <md-table-cell>
-                  {{ moneyFormat(transaction.amount) }}
-                </md-table-cell>
-                <md-table-cell>
-                  {{ transaction.type }}
-                </md-table-cell>
-                <md-table-cell>
-                  {{ transaction.message }}
-                </md-table-cell>
-                <md-table-cell>
-                  <div v-if="transaction != undefined">
-                    {{ timeForHuman(transaction.sentDate) }}
-                    <small style="margin-left: 0.2rem">
-                      ({{ timeForTimeZone(transaction.sentDate) }})
-                    </small>
-                  </div>
-                </md-table-cell>
-                <md-table-cell>
-                  <div v-if="transaction != undefined">
-                    {{
-                      $tc("phrases.inXSeconds", 1, {
-                        x: timeDiffForHuman(
-                          transaction.sentDate,
-                          transaction.lastUpdate,
-                        ),
-                      })
-                    }}
-                  </div>
-                </md-table-cell>
-              </md-table-row>
-            </md-table>
-          </div>
-        </widget>
-      </div>
-    </div>
-
-    <md-dialog :md-active.sync="showExportModal" class="export-dialog">
-      <md-dialog-title>{{ $tc("phrases.exportTransactions") }}</md-dialog-title>
-
-      <md-dialog-content>
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-25">
-            <md-field>
-              <label>{{ $tc("words.deviceType") }}</label>
-              <md-select v-model="exportFilters.deviceType">
-                <md-option value="">{{ $tc("words.all") }}</md-option>
-                <md-option value="meter">{{ $tc("words.meter") }}</md-option>
-                <md-option value="appliance">
-                  {{ $tc("words.appliance") }}
-                </md-option>
-              </md-select>
-            </md-field>
-          </div>
-          <div class="md-layout-item md-size-25">
-            <md-field>
-              <label>{{ $tc("words.provider") }}</label>
-              <md-select v-model="exportFilters.provider">
-                <md-option value="">{{ $tc("words.all") }}</md-option>
-                <md-option value="vodacom_transaction">Vodacom</md-option>
-                <md-option value="airtel_transaction">Airtel</md-option>
-                <md-option value="wave_money_transaction">Wave Money</md-option>
-                <md-option value="agent_transaction">Agent</md-option>
-                <md-option value="cash_transaction">Cash</md-option>
-              </md-select>
-            </md-field>
-          </div>
-          <div class="md-layout-item md-size-25">
-            <md-field>
-              <label>{{ $tc("words.status") }}</label>
-              <md-select v-model="exportFilters.status">
-                <md-option value="">{{ $tc("words.all") }}</md-option>
-                <md-option :value="1">{{ $tc("words.confirm", 2) }}</md-option>
-                <md-option :value="0">{{ $tc("words.process", 3) }}</md-option>
-                <md-option :value="-1">{{ $tc("words.reject", 2) }}</md-option>
-              </md-select>
-            </md-field>
-          </div>
-          <div class="md-layout-item md-size-25">
-            <md-field>
-              <label>{{ $tc("words.format") }}</label>
-              <md-select v-model="exportFilters.format">
-                <md-option value="csv">CSV</md-option>
-                <md-option value="xlsx">Excel</md-option>
-              </md-select>
-            </md-field>
-          </div>
+          <box
+            :box-color="'blue'"
+            :center-text="true"
+            :header-text="$tc('phrases.incomingTransactions')"
+            :sub-text="
+              analyticsData.current.total + '/' + analyticsData.past.total
+            "
+            :box-icon="'add'"
+            :additional-text="
+              analyticsData.analytics.totalPercentage.percentage +
+              '% of ' +
+              analyticsPeriods[analyticsPeriod]
+            "
+          />
         </div>
-      </md-dialog-content>
+        <div
+          v-if="analyticsData"
+          class="md-layout-item md-size-25 md-small-size-50"
+        >
+          <box
+            :box-color="'green'"
+            :center-text="true"
+            :header-text="$tc('words.confirm', 2)"
+            :sub-text="
+              analyticsData.current.confirmed +
+              '/' +
+              analyticsData.past.confirmed
+            "
+            :box-icon="'check'"
+            :additional-text="
+              analyticsData.analytics.confirmationPercentage.percentage +
+              '% of ' +
+              analyticsPeriods[analyticsPeriod]
+            "
+          />
+        </div>
+        <div
+          v-if="analyticsData"
+          class="md-layout-item md-size-25 md-small-size-50"
+        >
+          <box
+            :box-color="'red'"
+            :center-text="true"
+            :header-text="$tc('words.cancel', 2)"
+            :sub-text="
+              analyticsData.current.cancelled +
+              '/' +
+              analyticsData.past.cancelled
+            "
+            :box-icon="'cancel'"
+            :additional-text="
+              analyticsData.analytics.cancelationPercentage.percentage +
+              '% of ' +
+              analyticsPeriods[analyticsPeriod]
+            "
+          />
+        </div>
+        <div
+          v-if="analyticsData"
+          class="md-layout-item md-size-25 md-small-size-50"
+        >
+          <box
+            :box-color="'orange'"
+            :center-text="true"
+            :header-text="$tc('words.revenue')"
+            :sub-text="moneyFormat(analyticsData.current.amount)"
+            :box-icon="'attach_money'"
+            :additional-text="
+              analyticsData.analytics.amountPercentage.percentage +
+              '% of ' +
+              analyticsPeriods[analyticsPeriod]
+            "
+          />
+        </div>
 
-      <md-dialog-actions>
-        <md-button @click="showExportModal = false">
-          {{ $tc("words.cancel") }}
-        </md-button>
-        <md-button class="md-primary" @click="exportTransactions">
-          {{ $tc("words.export") }}
-        </md-button>
-      </md-dialog-actions>
-    </md-dialog>
+        <div
+          class="md-layout-item md-size-25 md-small-size-50"
+          v-if="analyticsData === null && loading === false"
+        >
+          <h5>{{ $tc("phrases.transactionNotify") }}</h5>
+        </div>
+      </div>
+      <div class="md-layout">
+        <div class="transaction-filter" v-if="showFilter">
+          <filter-transaction @searchSubmit="filterTransaction" />
+        </div>
+        <div class="md-layout-item md-size-100">
+          <widget
+            :id="'transaction-list'"
+            :title="$tc('words.transaction', 2)"
+            :paginator="transactionService.paginator"
+            :search="false"
+            :subscriber="subscriber"
+            :route_name="'/transactions'"
+            :show_per_page="true"
+            color="primary"
+            :button="true"
+            :empty-state-create-button="false"
+            :button-text="$tc('words.filter')"
+            @widgetAction="
+              () => {
+                showFilter = !showFilter
+              }
+            "
+            button-icon="filter_list"
+          >
+            <div>
+              <div class="export-button-container">
+                <md-button
+                  class="md-raised md-primary export-csv-button"
+                  @click="showExportModal = true"
+                >
+                  <md-icon>download</md-icon>
+                  {{ $tc("phrases.exportTransactions") }}
+                </md-button>
+              </div>
+              <md-table
+                v-model="transactionService.list"
+                style="width: 100%"
+                md-card
+                md-sort="created_at"
+                md-sort-order="desc"
+                @md-sorted="onSort"
+              >
+                <md-table-row
+                  slot="md-table-row"
+                  slot-scope="{ item }"
+                  @click="transactionDetail(item.id)"
+                  style="cursor: pointer"
+                >
+                  <md-table-cell :md-label="$tc('words.status')">
+                    <md-icon v-if="item.status === 1" style="color: green">
+                      check_circle_outline
+                      <md-tooltip md-direction="right">
+                        {{ $tc("words.confirm", 2) }}
+                      </md-tooltip>
+                    </md-icon>
+                    <md-icon v-if="item.status === 0" style="color: goldenrod">
+                      contact_support
+                      <md-tooltip md-direction="right">
+                        {{ $tc("words.process", 3) }}
+                      </md-tooltip>
+                    </md-icon>
+                    <md-icon v-if="item.status === -1" style="color: red">
+                      cancel
+                      <md-tooltip md-direction="right">
+                        {{ $tc("words.reject", 2) }}
+                      </md-tooltip>
+                    </md-icon>
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('words.service')"
+                    style="text-align: center !important"
+                  >
+                    <img
+                      v-if="item.service === 'vodacom_transaction'"
+                      class="logo"
+                      alt="logo"
+                      :src="vodacomLogo"
+                      style="max-height: 20px"
+                    />
+                    <img
+                      v-if="item.service === 'third_party_transaction'"
+                      class="logo"
+                      alt="logo"
+                      :src="thirdPartyLogo"
+                      style="max-height: 24px"
+                    />
+                    <img
+                      v-if="item.service === 'agent_transaction'"
+                      :src="agentIcon"
+                      style="max-height: 32px"
+                    />
+                    <img
+                      v-if="item.service === 'cash_transaction'"
+                      :src="moneyIcon"
+                      style="max-height: 32px"
+                    />
+                    <img
+                      v-if="item.service === 'wave_money_transaction'"
+                      :src="waveMoneyLogo"
+                      style="max-height: 34px"
+                    />
+                    <img
+                      v-if="item.service === 'swifta_transaction'"
+                      :src="swiftaLogo"
+                      style="max-height: 20px"
+                    />
+                    <img
+                      v-if="item.service === 'wavecom_transaction'"
+                      :src="waveComLogo"
+                      style="max-height: 32px"
+                    />
+                    <img
+                      v-if="item.service === 'paystack_transaction'"
+                      :src="paystackLogo"
+                      style="max-height: 32px; max-width: 100px"
+                    />
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('words.sender')"
+                    md-sort-by="sender"
+                  >
+                    {{ item.sender }}
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('words.amount')"
+                    md-sort-by="amount"
+                    md-numeric
+                  >
+                    {{ moneyFormat(item.amount) }}
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('words.type')"
+                    md-sort-by="original_transaction_type"
+                  >
+                    {{ item.type }}
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('words.message')"
+                    md-sort-by="message"
+                  >
+                    {{ item.message }}
+                  </md-table-cell>
+
+                  <md-table-cell
+                    :md-label="$tc('phrases.sentDate')"
+                    md-sort-by="created_at"
+                  >
+                    <div v-if="item != undefined">
+                      {{ timeForHuman(item.sentDate) }}
+                      <small style="margin-left: 0.2rem">
+                        ({{ timeForTimeZone(item.sentDate) }})
+                      </small>
+                    </div>
+                  </md-table-cell>
+
+                  <md-table-cell :md-label="$tc('phrases.processTime')">
+                    <div v-if="item != undefined">
+                      {{
+                        $tc("phrases.inXSeconds", 1, {
+                          x: timeDiffForHuman(item.sentDate, item.lastUpdate),
+                        })
+                      }}
+                    </div>
+                  </md-table-cell>
+                </md-table-row>
+              </md-table>
+            </div>
+          </widget>
+        </div>
+      </div>
+
+      <md-dialog :md-active.sync="showExportModal" class="export-dialog">
+        <md-dialog-title>
+          {{ $tc("phrases.exportTransactions") }}
+        </md-dialog-title>
+
+        <md-dialog-content>
+          <div class="md-layout md-gutter">
+            <div class="md-layout-item md-size-25">
+              <md-field>
+                <label>{{ $tc("words.deviceType") }}</label>
+                <md-select v-model="exportFilters.deviceType">
+                  <md-option value="all">{{ $tc("words.all") }}</md-option>
+                  <md-option
+                    v-for="device in deviceTypes"
+                    :value="device.type"
+                    :key="device.type"
+                  >
+                    {{ device.display }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
+            <div class="md-layout-item md-size-25">
+              <md-field>
+                <label>{{ $tc("words.provider") }}</label>
+                <md-select v-model="exportFilters.provider">
+                  <md-option value="">{{ $tc("words.all") }}</md-option>
+                  <md-option
+                    v-for="(p, i) in transactionProviders"
+                    :key="i"
+                    :value="p.value"
+                  >
+                    {{ p.name }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
+            <div class="md-layout-item md-size-25">
+              <md-field>
+                <label>{{ $tc("words.status") }}</label>
+                <md-select v-model="exportFilters.status">
+                  <md-option value="">{{ $tc("words.all") }}</md-option>
+                  <md-option :value="1">
+                    {{ $tc("words.confirm", 2) }}
+                  </md-option>
+                  <md-option :value="0">
+                    {{ $tc("words.process", 3) }}
+                  </md-option>
+                  <md-option :value="-1">
+                    {{ $tc("words.reject", 2) }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
+            <div class="md-layout-item md-size-25">
+              <md-field>
+                <label>{{ $tc("words.format") }}</label>
+                <md-select v-model="exportFilters.format">
+                  <md-option value="csv">CSV</md-option>
+                  <md-option value="xlsx">Excel</md-option>
+                </md-select>
+              </md-field>
+            </div>
+          </div>
+        </md-dialog-content>
+
+        <md-progress-bar md-mode="indeterminate" v-if="downloading" />
+
+        <md-dialog-actions>
+          <md-button class="md-raised" @click="showExportModal = false">
+            {{ $tc("words.cancel") }}
+          </md-button>
+          <md-button
+            class="md-primary md-raised"
+            :disabled="downloading"
+            @click="exportTransactions"
+          >
+            {{ $tc("words.export") }}
+          </md-button>
+        </md-dialog-actions>
+      </md-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-import { timing } from "@/mixins/timing"
-import { currency } from "@/mixins/currency"
-import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget.vue"
-import FilterTransaction from "@/modules/Transactions/FilterTransaction"
-import Box from "@/shared/Box"
-import { TransactionService } from "@/services/TransactionService"
-import { TransactionExportService } from "@/services/TransactionExportService"
-import { MainSettingsService } from "@/services/MainSettingsService"
+import { mapGetters } from "vuex"
 
-import airtelLogo from "@/assets/icons/airtel.png"
-import vodacomLogo from "@/assets/icons/vodacom.png"
-import waveMoneyLogo from "@/assets/icons/WaveMoney.png"
-import swifta from "@/assets/icons/Swifta.png"
 import agentIcon from "@/assets/icons/agent-icon.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
+import paystackLogo from "@/assets/icons/Paystack.png"
+import swifta from "@/assets/icons/Swifta.png"
 import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
+import vodacomLogo from "@/assets/icons/vodacom.png"
 import WaveComLogo from "@/assets/icons/WaveComLogo.png"
-import { notify } from "@/mixins/notify"
+import waveMoneyLogo from "@/assets/icons/WaveMoney.png"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import FilterTransaction from "@/modules/Transactions/FilterTransaction.vue"
+import { resources } from "@/resources.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { TransactionExportService } from "@/services/TransactionExportService.js"
+import { TransactionProviderService } from "@/services/TransactionProviderService.js"
+import { TransactionService } from "@/services/TransactionService.js"
+import Box from "@/shared/Box.vue"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Transactions.vue",
@@ -451,19 +467,24 @@ export default {
   data() {
     return {
       transactionService: new TransactionService(),
+      transactionProviderService: new TransactionProviderService(),
       transactionExportService: new TransactionExportService(),
       mainSettingsService: new MainSettingsService(),
       period: "Yesterday",
       filter: [],
       loading: false,
+      downloading: false,
       subscriber: "transactionList",
       tab: "all",
       paginator: null,
       analyticsData: null,
       analyticsPeriod: null,
+
       showFilter: false,
       showBoxes: true,
       showExportModal: false,
+      currentSortBy: null,
+      currentSortOrder: "desc",
       analyticsPeriods: [
         "Yesterday",
         "Same day last week",
@@ -472,11 +493,11 @@ export default {
       ],
       exportFilters: {
         format: "csv",
-        deviceType: "",
+        deviceType: "all",
         provider: "",
         status: "",
       },
-      airtelLogo: airtelLogo,
+      transactionProviders: [],
       vodacomLogo: vodacomLogo,
       thirdPartyLogo: thirdPartyLogo,
       waveMoneyLogo: waveMoneyLogo,
@@ -484,12 +505,16 @@ export default {
       moneyIcon: moneyIcon,
       swiftaLogo: swifta,
       waveComLogo: WaveComLogo,
+      paystackLogo: paystackLogo,
     }
   },
-  mounted() {
+  created() {
     this.checkRouteChanges()
+  },
+  mounted() {
     this.loadAnalytics()
     this.getPeriod()
+    this.getTransactionProviders()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("transactionFilterClosed", this.closeFilter)
   },
@@ -503,18 +528,73 @@ export default {
       let queryParams = this.$route.query
       if (Object.keys(queryParams).length > 0) {
         for (let k of Object.keys(queryParams)) {
-          if (k !== "page" && k !== "per_page") {
+          if (k !== "page" && k !== "per_page" && k !== "sort_by") {
             isFiltering = true
           }
         }
       }
+
       if (isFiltering) {
-        this.getFilterTransactions(queryParams)
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.searchAdvanced,
+        )
+      } else {
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.list.all,
+        )
       }
     },
     closeFilter() {
       this.showFilter = false
     },
+    onSort(sortData) {
+      let field = sortData
+
+      if (!field) {
+        return
+      }
+
+      if (this.currentSortBy === field) {
+        this.currentSortOrder =
+          this.currentSortOrder === "desc" ? "asc" : "desc"
+      } else {
+        this.currentSortBy = field
+        this.currentSortOrder = "asc"
+      }
+
+      const term = {
+        page: 1,
+        per_page: this.$route.query.per_page || 15,
+      }
+
+      if (this.currentSortBy) {
+        const prefix = this.currentSortOrder === "desc" ? "-" : ""
+        term.sort_by = `${prefix}${this.currentSortBy}`
+      }
+
+      const queryParams = this.$route.query
+      for (let k of Object.keys(queryParams)) {
+        if (k !== "page" && k !== "per_page" && k !== "sort_by") {
+          term[k] = queryParams[k]
+        }
+      }
+
+      const hasFilters = Object.keys(term).some((k) => {
+        return k !== "page" && k !== "per_page" && k !== "sort_by"
+      })
+      if (hasFilters) {
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.searchAdvanced,
+        )
+      } else {
+        this.transactionService.paginator.setPaginationResource(
+          resources.transactions.list.all,
+        )
+      }
+
+      EventBus.$emit("loadPage", this.transactionService.paginator, term)
+    },
+
     filterTransaction(filterData) {
       let data = {}
       for (let i in filterData) {
@@ -541,7 +621,9 @@ export default {
     },
     reloadList(sub, data) {
       if (sub !== this.subscriber) return
+
       this.transactionService.updateList(data)
+
       EventBus.$emit("dataLoaded")
       EventBus.$emit(
         "widgetContentLoaded",
@@ -553,6 +635,8 @@ export default {
       this.$router.push({ path: "/transactions/" + id })
     },
     async exportTransactions() {
+      this.downloading = true
+
       try {
         const data = {
           format: this.exportFilters.format,
@@ -569,19 +653,18 @@ export default {
 
         const response =
           await this.transactionExportService.exportTransactions(data)
+
         const blob = new Blob([response.data])
         const downloadUrl = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = downloadUrl
+
         const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        const filename =
+          contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+          (this.exportFilters.format === "excel" ? "export.xlsx" : "export.csv")
 
-        const defaultFileName =
-          this.exportFilters.format === "xlsx"
-            ? "export_transactions.xlsx"
-            : "export_transactions.csv"
-        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
-
+        a.download = filename
         document.body.appendChild(a)
         a.click()
         a.remove()
@@ -590,6 +673,8 @@ export default {
         this.showExportModal = false
       } catch (e) {
         this.alertNotify("error", "Error occurred while exporting transactions")
+      } finally {
+        this.downloading = false
       }
     },
     async loadAnalytics() {
@@ -628,6 +713,15 @@ export default {
 
       this.loadAnalytics()
     },
+    async getTransactionProviders() {
+      this.transactionProviders =
+        await this.transactionProviderService.getTransactionProviders()
+    },
+  },
+  computed: {
+    ...mapGetters({
+      deviceTypes: "device/getDeviceTypes",
+    }),
   },
   watch: {
     //for query param filtering
@@ -637,7 +731,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 span {
   text-align: center !important;
   margin-left: auto;

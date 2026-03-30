@@ -1,6 +1,10 @@
 <template>
   <div class="row">
-    <widget v-if="newLabel" :title="$tc('phrases.newCategory')" color="red">
+    <widget
+      v-if="newLabel"
+      :title="$tc('phrases.newCategory')"
+      color="secondary"
+    >
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -68,16 +72,7 @@
           </div>
           <div class="md-layout">
             <span class="md-subheader">
-              {{ $tc("phrases.ticketLabels", 1) }}
-            </span>
-          </div>
-          <div class="md-layout">
-            <span class="md-subheader">
-              {{
-                $tc("phrases.ticketLabels", 2, {
-                  email: " ako@inensus.com",
-                })
-              }}
+              {{ $tc("phrases.ticketLabels") }}
             </span>
           </div>
         </md-card-content>
@@ -109,7 +104,7 @@
           newLabel = true
         }
       "
-      color="green"
+      color="primary"
       :subscriber="subscriber"
     >
       <md-card>
@@ -152,10 +147,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { TicketLabelService } from "@/services/TicketLabelService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { TicketLabelService } from "@/services/TicketLabelService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "CategoryManagement",
@@ -217,7 +212,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .colored-box {
   width: 22px;
   height: 22px;

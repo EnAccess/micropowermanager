@@ -1,10 +1,9 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { resources } from "@/resources"
-import { Paginator } from "@/Helpers/Paginator"
-import { Manufacturers } from "@/services/ManufacturerService"
-import { EventBus } from "@/shared/eventbus"
-
-import MeterRepository from "@/repositories/MeterRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import MeterRepository from "@/repositories/MeterRepository.js"
+import { resources } from "@/resources.js"
+import { Manufacturers } from "@/services/ManufacturerService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class Meter {
   constructor() {}

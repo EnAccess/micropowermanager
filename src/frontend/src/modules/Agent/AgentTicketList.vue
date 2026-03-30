@@ -3,7 +3,7 @@
     :subscriber="subscriber"
     :title="$tc('phrases.agentTicket', 1)"
     :paginator="agentTicketService.paginator"
-    color="green"
+    color="primary"
   >
     <ticket-item
       :allow-comment="true"
@@ -14,11 +14,11 @@
   </widget>
 </template>
 <script>
+import TicketItem from "../../shared/TicketItem.vue"
+
+import { AgentTicketService } from "@/services/AgentTicketService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentTicketService } from "@/services/AgentTicketService"
-import { EventBus } from "@/shared/eventbus"
-import { UserTickets } from "@/services/TicketService"
-import TicketItem from "../../shared/TicketItem"
 
 export default {
   name: "AgentTicketList",
@@ -34,7 +34,6 @@ export default {
         this.$tc("words.status"),
         this.$tc("words.date"),
       ],
-      tickets: new UserTickets(this.$store.getters.person.id),
     }
   },
   components: {
@@ -68,4 +67,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

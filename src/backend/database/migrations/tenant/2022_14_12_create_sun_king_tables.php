@@ -15,7 +15,7 @@ return new class extends Migration {
             Schema::connection('tenant')->create('sun_king_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('auth_url')->default('https://auth.central.glpapps.com/auth/realms/glp-dev/protocol/openid-connect/token');
-                $table->string('api_url')->default(config('services.sunKing.url'));
+                $table->string('api_url')->default('https://dev.assetcontrol.central.glpapps.com/v2');
                 $table->string('client_id')->nullable();
                 $table->string('client_secret')->nullable();
                 $table->text('access_token')->nullable();

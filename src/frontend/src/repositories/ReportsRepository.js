@@ -1,13 +1,14 @@
-import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
-const resource = `${baseUrl}/api/reports`
+const resource = `/api/reports`
 
 export default {
   list(type) {
     return Client.get(`${resource}?type=` + type)
   },
-  download(id, reference, companyId) {
-    return `${baseUrl}/api/report-downloading/${id}/${reference}/${companyId}`
+  download(id) {
+    return Client.get(`${resource}/download/${id}`, {
+      responseType: "blob",
+    })
   },
 }

@@ -10,7 +10,7 @@
       :paginator="agentReceiptService.paginator"
       :subscriber="subscriber"
       :resetKey="resetKey"
-      color="green"
+      color="primary"
     >
       <md-table md-sort="id" md-sort-order="asc">
         <md-table-row>
@@ -40,12 +40,13 @@
   </div>
 </template>
 <script>
+import NewReceipt from "./NewReceipt.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { AgentReceiptService } from "@/services/AgentReceiptService.js"
+import { AgentService } from "@/services/AgentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import NewReceipt from "./NewReceipt"
-import { AgentReceiptService } from "@/services/AgentReceiptService"
-import { EventBus } from "@/shared/eventbus"
-import { AgentService } from "@/services/AgentService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "AgentReceiptList",
@@ -115,5 +116,5 @@ export default {
   },
 }
 </script>
-<style scoped></style>
-<style scoped></style>
+<style scoped lang="scss"></style>
+<style scoped lang="scss"></style>

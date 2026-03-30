@@ -9,7 +9,7 @@
             <widget
               :title="$tc('phrases.providerSpecificInformation')"
               :show-spinner="false"
-              color="green"
+              color="primary"
             >
               <md-card>
                 <md-card-content>
@@ -63,7 +63,7 @@
                             transaction.type === 'energy' && transaction.token
                           "
                         >
-                          ({{ readable(transaction.token.load) }}kWh)
+                          ({{ readable(transaction.token.token_amount) }}kWh)
                         </small>
                         <small
                           v-else-if="
@@ -71,7 +71,7 @@
                             transaction.token
                           "
                         >
-                          ({{ readable(transaction.token.load) }}day's)
+                          ({{ readable(transaction.token.token_amount) }} day's)
                         </small>
                       </div>
                     </div>
@@ -82,18 +82,23 @@
                       {{ $tc("words.deviceType") }}
                     </div>
                     <div class="md-layout-item md-subheader n-font">
-                      {{ $tc(`words.${transaction.device.device_type}`) }}
+                      {{ deviceType }}
                     </div>
                   </div>
                   <hr class="hr-d" />
                   <div class="md-layout">
                     <div class="md-layout-item md-subheader">
-                      {{ $tc("words.device") }}
+                      {{
+                        transaction.device
+                          ? $tc("words.device")
+                          : $tc("words.appliance")
+                      }}
                     </div>
                     <div
                       class="md-layout-item md-subheader n-font"
                       v-if="
                         transaction.payment_histories[0].paymentHistory &&
+                        transaction.device &&
                         transaction.device.device_type === 'meter'
                       "
                     >
@@ -110,6 +115,7 @@
                       class="md-layout-item md-subheader n-font"
                       v-else-if="
                         transaction.payment_histories[0].paymentHistory &&
+                        transaction.device &&
                         transaction.device.device_type === 'solar_home_system'
                       "
                     >
@@ -124,8 +130,41 @@
                         {{ transaction.message }}
                       </router-link>
                     </div>
+                    <div
+                      class="md-layout-item md-subheader n-font"
+                      v-else-if="
+                        transaction.appliance && transaction.appliance.id
+                      "
+                    >
+                      <router-link
+                        :to="{
+                          path:
+                            '/sold-appliance-detail/' +
+                            transaction.appliance.id,
+                        }"
+                        class="nav-link"
+                      >
+                        {{ deviceDisplay }}
+                      </router-link>
+                    </div>
+                    <div
+                      class="md-layout-item md-subheader n-font"
+                      v-else-if="
+                        isApplianceTransaction && applianceIdFromMessage
+                      "
+                    >
+                      <router-link
+                        :to="{
+                          path:
+                            '/sold-appliance-detail/' + applianceIdFromMessage,
+                        }"
+                        class="nav-link"
+                      >
+                        {{ deviceDisplay }}
+                      </router-link>
+                    </div>
                     <div class="md-layout-item md-subheader n-font" v-else>
-                      {{ transaction.message }}
+                      {{ deviceDisplay }}
                     </div>
                   </div>
                   <hr class="hr-d" />
@@ -174,7 +213,7 @@
             <widget
               title="Transaction Processing"
               :show-spinner="false"
-              color="green"
+              color="primary"
             >
               <md-card>
                 <div
@@ -271,7 +310,7 @@
                 transaction.original_transaction_type !==
                   'third_party_transaction'
               "
-              color="red"
+              color="secondary"
             >
               <md-card>
                 <md-card-content>
@@ -304,15 +343,15 @@
 </template>
 
 <script>
-import { timing } from "@/mixins/timing"
-import { currency } from "@/mixins/currency"
-import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart"
-import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
+import CashTransactionDetail from "@/modules/Transactions/CashTransactionDetail.vue"
+import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart.vue"
+import { PersonService } from "@/services/PersonService.js"
+import { TransactionService } from "@/services/TransactionService.js"
 import Widget from "@/shared/Widget.vue"
-import { TransactionService } from "@/services/TransactionService"
-import { PersonService } from "@/services/PersonService"
-
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Transaction",
@@ -320,6 +359,7 @@ export default {
   components: {
     Widget,
     AgentTransactionDetail,
+    CashTransactionDetail,
     PaymentHistoryChart,
   },
   created() {
@@ -348,8 +388,6 @@ export default {
       switch (transactionType) {
         case "vodacom_transaction":
           return "VodacomTransactionDetail"
-        case "airtel_transaction":
-          return "AirtelTransactionDetail"
         case "agent_transaction":
           return "AgentTransactionDetail"
         case "third_party_transaction":
@@ -360,9 +398,47 @@ export default {
           return "SwiftaTransactionDetail"
         case "wavecom_transaction":
           return "WaveComTransactionDetail"
+        case "paystack_transaction":
+          return "PaystackTransactionDetail"
+        case "cash_transaction":
+          return "CashTransactionDetail"
         default:
           return null
       }
+    },
+    deviceType() {
+      if (this.transaction.device && this.transaction.device.device_type) {
+        return this.$tc(`words.${this.transaction.device.device_type}`)
+      }
+      if (this.transaction.appliance && this.transaction.appliance.appliance) {
+        return this.transaction.appliance.appliance.name
+      }
+      return this.$tc("words.appliance")
+    },
+    deviceDisplay() {
+      if (this.transaction.device) {
+        return this.transaction.message
+      }
+      if (this.transaction.appliance && this.transaction.appliance.appliance) {
+        return this.transaction.appliance.appliance.name
+      }
+      return this.transaction.message !== "-"
+        ? this.transaction.message
+        : this.$tc("phrases.noDeviceAssigned")
+    },
+    isApplianceTransaction() {
+      return (
+        this.transaction.type === "deferred_payment" &&
+        this.transaction.original_transaction_type === "cash_transaction" &&
+        !this.transaction.device
+      )
+    },
+    applianceIdFromMessage() {
+      const message = this.transaction.message
+      if (message && message !== "-" && /^\d+$/.test(message)) {
+        return parseInt(message, 10)
+      }
+      return null
     },
   },
   methods: {
@@ -376,7 +452,15 @@ export default {
           )
         }
       } catch (e) {
-        this.alertNotify("error", e.message)
+        if (e.response && e.response.status === 403) {
+          this.alertNotify(
+            "error",
+            "You do not have permission to view this transaction",
+          )
+          this.$router.push({ path: "/transactions" })
+        } else {
+          this.alertNotify("error", e.message)
+        }
       }
     },
     async getRelatedPerson(personId) {
@@ -385,14 +469,18 @@ export default {
         this.personName = person.name + " " + person.surname
         this.personId = person.id
       } catch (e) {
-        this.alertNotify("error", e.message)
+        if (e.response && e.response.status === 403) {
+          console.warn("Customer details: Insufficient permissions")
+        } else {
+          this.alertNotify("error", e.message)
+        }
       }
     },
   },
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .transaction-detail-card {
   margin-top: 1rem !important;
   margin-right: 1rem !important;
@@ -415,7 +503,7 @@ export default {
 
 .message-box {
   padding: 10px;
-  background-color: #f5e8e8;
+  background-color: white;
   -moz-border-radius: 10px;
   border-radius: 14px;
   margin-top: 2vh;

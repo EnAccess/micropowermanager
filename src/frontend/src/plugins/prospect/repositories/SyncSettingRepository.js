@@ -1,0 +1,14 @@
+import Client from "@/repositories/Client/AxiosClient.js"
+
+// Align endpoint with backend Prospect plugin once available
+const resource = `/api/prospect/prospect-setting/sync-setting`
+
+export default {
+  getSyncSettings() {
+    return Client.get(`${resource}`)
+  },
+  updateSyncSettings(syncListPayload) {
+    // Send raw array payload like other meter plugins
+    return Client.put(`${resource}`, syncListPayload)
+  },
+}

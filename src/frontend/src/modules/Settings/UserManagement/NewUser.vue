@@ -1,5 +1,5 @@
 <template>
-  <widget v-if="showNewUser" :title="$tc('phrases.newUser')" color="red">
+  <widget v-if="showNewUser" :title="$tc('phrases.newUser')" color="secondary">
     <form @submit.prevent="createUser" data-vv-scope="Create-Form">
       <div class="edit-container">
         <md-card>
@@ -59,7 +59,7 @@
                   type="password"
                   :name="$tc('words.password')"
                   id="password"
-                  v-validate="'required|min:3|max:15'"
+                  v-validate="'required|min:3|max:128'"
                   v-model="user.password"
                   ref="passwordRef"
                 />
@@ -85,7 +85,7 @@
                   :name="$tc('phrases.confirmPassword')"
                   id="confirmPassword"
                   v-model="user.confirmPassword"
-                  v-validate="'required|min:3|max:15'"
+                  v-validate="'required|min:3|max:128'"
                 />
                 <span class="md-error">
                   {{
@@ -93,6 +93,31 @@
                       "Create-Form." + $tc("phrases.confirmPassword"),
                     )
                   }}
+                </span>
+              </md-field>
+            </div>
+          </md-card-content>
+          <md-card-content
+            class="md-layout md-gutter"
+            v-if="$store.getters['auth/getPermissions'].includes('roles')"
+          >
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <md-field>
+                <label for="roles">
+                  Roles
+                  <span style="color: red">*</span>
+                </label>
+                <md-select id="roles" v-model="selectedRoles" multiple>
+                  <md-option
+                    v-for="r in roleService.roles"
+                    :key="r.name"
+                    :value="r.name"
+                  >
+                    {{ r.name }}
+                  </md-option>
+                </md-select>
+                <span class="md-helper-text">
+                  At least one role is required
                 </span>
               </md-field>
             </div>
@@ -113,8 +138,9 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { RoleService } from "@/services/RoleService.js"
 import Widget from "@/shared/Widget.vue"
-import { notify } from "@/mixins/notify"
 export default {
   name: "NewUser",
   mixins: [notify],
@@ -131,13 +157,39 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      roleService: new RoleService(),
+      selectedRoles: [],
+    }
+  },
+  async mounted() {
+    try {
+      await this.roleService.fetchAll()
+    } catch (e) {
+      this.alertNotify("error", "Failed to fetch roles")
+      console.error(e)
+    }
+  },
   methods: {
     async createUser() {
       const validation = await this.$validator.validateAll("Create-Form")
       if (!validation) {
         return
       }
-      this.$emit("createUser")
+
+      // Prevent creating users with no roles
+      if (!this.selectedRoles || this.selectedRoles.length === 0) {
+        this.$notify({
+          group: "notify",
+          type: "error",
+          title: "Validation Error",
+          text: "Users must have at least one role assigned.",
+        })
+        return
+      }
+
+      this.$emit("createUser", { roles: this.selectedRoles })
     },
     closeNewUser() {
       this.$emit("newUserClosed")
@@ -146,4 +198,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

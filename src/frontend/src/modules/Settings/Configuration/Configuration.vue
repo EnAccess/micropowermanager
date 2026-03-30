@@ -1,6 +1,6 @@
 <template>
   <div class="settings-area">
-    <widget color="green" title="Settings">
+    <widget color="primary" title="Settings">
       <md-tabs>
         <md-tab id="tab-home" md-icon="home" md-label="Main">
           <main-settings :mainSettings="mainSettings" />
@@ -18,24 +18,28 @@
         <md-tab id="tab-api-keys" md-icon="vpn_key" md-label="API Keys">
           <api-keys-settings />
         </md-tab>
+        <md-tab id="tab-import" md-icon="file_upload" md-label="Import">
+          <import-settings />
+        </md-tab>
       </md-tabs>
     </widget>
   </div>
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import MainSettings from "./MainSettings"
-import MapSettings from "./MapSettings"
-import ApiKeysSettings from "./ApiKeysSettings"
-import SmsSettings from "./SmsSettings"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import { MapSettingsService } from "@/services/MapSettingsService"
+import ApiKeysSettings from "./ApiKeysSettings.vue"
+import ImportSettings from "./ImportSettings.vue"
+import MainSettings from "./MainSettings.vue"
+import MapSettings from "./MapSettings.vue"
+import SmsSettings from "./SmsSettings.vue"
 
-import PluginSettings from "@/modules/Settings/Configuration/PluginSettings"
-import { MpmPluginService } from "@/services/MpmPluginService"
-import { PluginService } from "@/services/PluginService"
-import { notify } from "@/mixins"
+import { notify } from "@/mixins/notify.js"
+import PluginSettings from "@/modules/Settings/Configuration/PluginSettings.vue"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { MapSettingsService } from "@/services/MapSettingsService.js"
+import { MpmPluginService } from "@/services/MpmPluginService.js"
+import { PluginService } from "@/services/PluginService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Settings",
@@ -47,6 +51,7 @@ export default {
     MapSettings,
     ApiKeysSettings,
     SmsSettings,
+    ImportSettings,
   },
   data() {
     return {
@@ -88,7 +93,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .settings-area {
   height: 100%;
   overflow: auto;

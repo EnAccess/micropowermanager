@@ -10,9 +10,11 @@
 </template>
 
 <script>
-import ClientDetailCard from "../../../shared/ClientDetailCard"
-import { PersonService } from "@/services/PersonService"
-import SellApplianceCard from "./SellApplianceCard"
+import ClientDetailCard from "../../../shared/ClientDetailCard.vue"
+
+import SellApplianceCard from "./SellApplianceCard.vue"
+
+import { PersonService } from "@/services/PersonService.js"
 export default {
   name: "SellAppliance",
   components: { ClientDetailCard, SellApplianceCard },
@@ -26,4 +28,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

@@ -2,16 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\Address\Address;
-use App\Models\Asset;
-use App\Models\AssetType;
+use App\Models\Appliance;
+use App\Models\ApplianceType;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class SolarHomeSystemSeeder extends Seeder {
     public function __construct(
@@ -38,13 +37,13 @@ class SolarHomeSystemSeeder extends Seeder {
 
         $manufacturers = collect([$demoShsManufacturer]);
 
-        // Get the SHS asset type
-        $assetType = AssetType::where('name', 'Solar Home System')->first();
+        // Get the SHS appliance type
+        $applianceType = ApplianceType::where('name', 'Solar Home System')->first();
 
         // Create our appliances, i.e. sales deals (?)
-        $appliances = Asset::factory()
+        $appliances = Appliance::factory()
             ->count(5)
-            ->for($assetType)
+            ->for($applianceType)
             ->sequence(
                 // Thank you ChatGPT for generating these names... 🤖
                 [
@@ -75,7 +74,7 @@ class SolarHomeSystemSeeder extends Seeder {
         foreach ($selectedPersons as $person) {
             // Create a Solar Home System
             $solarHomeSystem = SolarHomeSystem::factory()
-                ->for(Asset::all()->random(), 'appliance')
+                ->for(Appliance::all()->random(), 'appliance')
                 ->for($demoShsManufacturer)
                 ->create();
 
@@ -84,22 +83,14 @@ class SolarHomeSystemSeeder extends Seeder {
                 ->for($person)
                 ->for($solarHomeSystem, 'device')
                 ->has(
-                    Address::factory()
-                        ->for($person->addresses->first()->city)
-                        ->has(
-                            GeographicalInformation::factory()
-                                // Remove this after Laravel 12 upgrade, see
-                                // https://github.com/larastan/larastan/issues/2307
-                                // @phpstan-ignore-next-line
-                                ->state(function (array $attributes, Address $address) {
-                                    /** @var Device $device */
-                                    $device = $address->owner()->first();
-
-                                    return ['points' => $device->person->addresses->first()->geo->points];
-                                })
-                                ->randomizePointsInHousehold(),
-                            'geo'
-                        )
+                    GeographicalInformation::factory()
+                        // https://github.com/larastan/larastan/issues/2307
+                        // @phpstan-ignore argument.type
+                        ->state(function (array $attributes, Device $device) {
+                            return ['points' => $device->person->addresses->first()->geo->points];
+                        })
+                        ->randomizePointsInHousehold(),
+                    'geo'
                 )
                 ->create([
                     'device_serial' => $solarHomeSystem->serial_number,
@@ -109,11 +100,11 @@ class SolarHomeSystemSeeder extends Seeder {
         // Create additional not-yet-sold SHS
         for ($i = 1; $i <= 10; ++$i) {
             $solarHomeSystem = SolarHomeSystem::factory()
-                ->for(Asset::all()->random(), 'appliance')
+                ->for(Appliance::all()->random(), 'appliance')
                 ->for($demoShsManufacturer)
                 ->create();
 
-            $device = Device::factory()
+            Device::factory()
                 ->for($solarHomeSystem, 'device')
                 ->create([
                     'device_serial' => $solarHomeSystem->serial_number,

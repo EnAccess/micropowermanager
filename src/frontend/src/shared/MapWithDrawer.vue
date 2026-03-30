@@ -106,22 +106,31 @@ export default {
     }
   },
   methods: {
-    emitLocationSelected(location) {
-      let data = {}
-      if (!("geojson" in location)) {
-        data["geojson"] = location
-      } else {
-        data = location
-      }
-
-      this.$emit("locationSelected", data)
+    emitLocationSelected(geometry) {
+      this.$emit("locationSelected", { geojson: geometry })
     },
 
-    focusLocation(geo) {
-      let tmp = []
+    focusLocation(feature) {
       this.geoLayer.clearLayers()
-      tmp.push(geo)
-      this.setGeoLocation(tmp)
+      // Create a FeatureCollection from the single feature
+      const featureCollection = {
+        type: "FeatureCollection",
+        features: [feature],
+      }
+      const geoJsonLayer = L.geoJSON(featureCollection, {
+        onEachFeature: (feature, layer) => {
+          const displayName =
+            feature.properties?.display_name || feature.properties?.name || ""
+          if (displayName) {
+            layer.bindPopup(displayName)
+          }
+        },
+      })
+      geoJsonLayer.addTo(this.geoLayer)
+      const bounds = geoJsonLayer.getBounds()
+      if (bounds.isValid()) {
+        this.map.fitBounds(bounds)
+      }
     },
     setMapView(location) {
       this.map.setView(location, 9)
@@ -144,9 +153,8 @@ export default {
     locationSelected(index, location) {
       this.manualLayer.clearLayers()
       this.selectedLocationIndex = index
-      this.setMapView([location.lat, location.lon])
-      this.emitLocationSelected(location.geojson)
-      this.focusLocation(location)
+      this.emitLocationSelected(location.feature.geometry)
+      this.focusLocation(location.feature)
     },
     removeCoordinate(index) {
       this.polygonCoordinates.splice(index, 1)
@@ -220,54 +228,116 @@ export default {
         .get(
           "https://nominatim.openstreetmap.org/search.php?q=" +
             this.cluster_name +
-            "&polygon_geojson=1&format=json",
+            "&polygon_geojson=1&format=geojson",
         )
         .then((response) => {
-          this.geoData = this.filterResultsOut(response.data)
           if (!this.mapInitialized) {
             this.initMap()
           }
 
-          this.setGeoLocation(response.data)
+          const normalizedFeatures = (response.data.features || [])
+            .map((f) => this.normalizeFeatureGeometry(f))
+            .filter(Boolean)
+
+          const filteredFeatures =
+            this.filterGeoJSONFeatures(normalizedFeatures)
+
+          this.geoData = filteredFeatures.map((feature) => ({
+            feature: feature,
+            display_name:
+              feature.properties?.display_name ||
+              feature.properties?.name ||
+              "",
+          }))
+
+          this.setGeoLocation(filteredFeatures)
         })
     },
-
-    filterResultsOut(data) {
-      let result = []
-      for (let i in data) {
-        let geoType = data[i].geojson.type
-        if (
-          Object.keys(this.filtered_types).length > 0 &&
-          !(geoType.toLowerCase() in this.filtered_types)
-        ) {
-          continue
-        }
-        result.push(data[i])
+    /**
+     * Converts non-polygon geometries (Point, LineString) into a Polygon
+     * derived from the feature's bounding box. This ensures downstream code
+     * that expects a polygon geometry always receives one.
+     */
+    normalizeFeatureGeometry(feature) {
+      const polygonTypes = ["Polygon", "MultiPolygon"]
+      if (polygonTypes.includes(feature.geometry?.type)) {
+        return feature
       }
-      return result
+
+      // Fall back to bbox → bounding rectangle polygon
+      const bbox = feature.bbox
+      if (!bbox || bbox.length < 4) {
+        console.warn(
+          "Feature has no usable geometry or bbox, skipping:",
+          feature,
+        )
+        return null
+      }
+
+      const [minLon, minLat, maxLon, maxLat] = bbox
+      return {
+        ...feature,
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [minLon, minLat],
+              [maxLon, minLat],
+              [maxLon, maxLat],
+              [minLon, maxLat],
+              [minLon, minLat],
+            ],
+          ],
+        },
+      }
     },
 
-    setGeoLocation(data) {
-      let locations = []
+    filterGeoJSONFeatures(features) {
+      if (Object.keys(this.filtered_types).length === 0) {
+        return features
+      }
+
+      return features.filter((feature) => {
+        const geoType = feature.geometry?.type?.toLowerCase()
+        return geoType && geoType in this.filtered_types
+      })
+    },
+
+    setGeoLocation(filteredFeatures) {
       this.geoLayer.clearLayers()
-      for (let i in data) {
-        let geoType = data[i].geojson.type
 
-        locations.push({
-          type: "Feature",
-          properties: { popupContent: data[i].display_name },
+      if (!filteredFeatures || filteredFeatures.length === 0) {
+        return
+      }
 
-          geometry: {
-            type: geoType,
-            coordinates: data[i].geojson.coordinates,
-          },
-        })
+      const featureCollection = {
+        type: "FeatureCollection",
+        features: filteredFeatures,
+      }
 
-        let geoJsonLayer = L.geoJSON(locations)
+      const geoJsonLayer = L.geoJSON(featureCollection, {
+        onEachFeature: (feature, layer) => {
+          // Add popup with display name
+          const displayName =
+            feature.properties?.display_name || feature.properties?.name || ""
+          if (displayName) {
+            layer.bindPopup(displayName)
+          }
+        },
+      })
 
-        geoJsonLayer.addTo(this.geoLayer)
+      geoJsonLayer.addTo(this.geoLayer)
 
-        this.map.setView([data[i].lat, data[i].lon], 12)
+      const bounds = geoJsonLayer.getBounds()
+      if (bounds.isValid()) {
+        this.map.fitBounds(bounds)
+      } else if (filteredFeatures.length > 0) {
+        const firstFeature = filteredFeatures[0]
+        if (firstFeature.bbox && firstFeature.bbox.length >= 4) {
+          const centerLat = (firstFeature.bbox[1] + firstFeature.bbox[3]) / 2
+          const centerLon = (firstFeature.bbox[0] + firstFeature.bbox[2]) / 2
+          this.map.setView([centerLat, centerLon], 12)
+        }
       }
     },
 
@@ -306,4 +376,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

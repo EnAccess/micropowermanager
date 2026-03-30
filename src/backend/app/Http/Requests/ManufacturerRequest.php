@@ -19,14 +19,14 @@ class ManufacturerRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'name' => 'required|string',
-            'phone' => 'sometimes|string',
-            'email' => 'sometimes|email',
-            'contact_person' => 'sometimes|min:3',
-            'website' => 'sometimes|min:6',
-            'city_id' => 'sometimes|integer',
-            'address' => 'sometimes|string',
-            'api_name' => 'sometimes',
+            'name' => ['required', 'string'],
+            'phone' => ['sometimes', 'string'],
+            'email' => ['sometimes', 'email'],
+            'contact_person' => ['sometimes', 'min:3'],
+            'website' => ['sometimes', 'min:6'],
+            'city_id' => ['sometimes', 'integer'],
+            'address' => ['sometimes', 'string'],
+            'api_name' => ['sometimes'],
         ];
     }
 }

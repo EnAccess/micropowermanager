@@ -18,7 +18,7 @@ abstract class AbstractDashboardCacheDataService {
      * @return array<int, array<string, mixed>>
      */
     public function getData(): array {
-        return Cache::get(self::cacheKeyGenerator()) ? Cache::get(self::cacheKeyGenerator())->toArray() : [];
+        return Cache::get(self::cacheKeyGenerator()) ?: [];
     }
 
     /**

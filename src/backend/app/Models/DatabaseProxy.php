@@ -8,6 +8,7 @@ use App\Models\Base\BaseModelCentral;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @property      int                  $id
@@ -23,6 +24,18 @@ class DatabaseProxy extends BaseModelCentral {
     public const COL_DATABASE_CONNECTION = 'database_connection';
     public const COL_COMPANY_ID = 'fk_company_id';
     public const COL_EMAIL = 'email';
+    private const CACHE_KEY_PREFIX = 'database_proxy';
+    private const CACHE_TTL = 3600 * 24; // 24 hours in seconds
+
+    protected static function booted(): void {
+        static::saved(function (self $databaseProxy) {
+            $databaseProxy->clearCache();
+        });
+
+        static::deleted(function (self $databaseProxy) {
+            $databaseProxy->clearCache();
+        });
+    }
 
     /**
      * @return Builder<DatabaseProxy>
@@ -38,10 +51,12 @@ class DatabaseProxy extends BaseModelCentral {
     }
 
     public function findByEmail(string $email): DatabaseProxy {
-        return $this->buildQuery()
+        $cacheKey = self::CACHE_KEY_PREFIX.':'.md5($email);
+
+        return Cache::remember($cacheKey, self::CACHE_TTL, fn () => $this->buildQuery()
             ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=', self::COL_COMPANY_ID)
             ->where(self::COL_EMAIL, '=', $email)
-            ->firstOrFail();
+            ->firstOrFail());
     }
 
     public function findByCompanyId(int $companyId): DatabaseProxy {
@@ -66,5 +81,10 @@ class DatabaseProxy extends BaseModelCentral {
      */
     public function companyDatabase(): BelongsTo {
         return $this->belongsTo(CompanyDatabase::class, 'fk_company_database_id');
+    }
+
+    private function clearCache(): void {
+        $cacheKey = self::CACHE_KEY_PREFIX.':'.md5($this->email);
+        Cache::forget($cacheKey);
     }
 }

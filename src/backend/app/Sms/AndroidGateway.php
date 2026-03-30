@@ -29,11 +29,11 @@ class AndroidGateway implements ISmsProvider {
         }
 
         // add sms to sms_gateway job
-        SmsLoadBalancer::dispatch([
+        dispatch(new SmsLoadBalancer([
             'number' => $number,
             'message' => $body,
             'callback' => $callbackWithoutProtocolRoot,
             'setting' => $smsAndroidSetting,
-        ]);
+        ]));
     }
 }

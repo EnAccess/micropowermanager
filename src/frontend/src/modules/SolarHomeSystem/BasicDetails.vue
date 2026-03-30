@@ -1,7 +1,7 @@
 <template>
   <widget
     :title="$tc('SolarHomeSystem')"
-    color="green"
+    color="primary"
     :subscriber="'shs-details'"
   >
     <md-list class="md-double-line">
@@ -37,8 +37,8 @@
 </template>
 
 <script>
+import { timing } from "@/mixins/timing.js"
 import Widget from "@/shared/Widget.vue"
-import { timing } from "@/mixins"
 
 export default {
   name: "BasicDetails",

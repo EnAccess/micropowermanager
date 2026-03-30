@@ -1,7 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-
-import CityRepository from "@/repositories/CityRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import CityRepository from "@/repositories/CityRepository.js"
+import Client from "@/repositories/Client/AxiosClient.js"
 
 // FIXME: Why is this here? It seems redundant, wrong and circular:
 // Cluster.fromJson() -> Cluster.fetchCities() -> City.fromJson() -> City.fetchCluster() -> Cluster.fromJson()
@@ -44,7 +44,6 @@ export class City {
   fromJson(jsonData) {
     this.id = jsonData.id
     this.name = jsonData.name
-    this.clusterId = jsonData.cluster_id
     this.countryId = jsonData.country_id
     if ("country" in jsonData) {
       this.country = this.fetchCountry(jsonData.country)
@@ -68,8 +67,7 @@ export class City {
   }
 
   getCities() {
-    return axios
-      .get(resources.city.list)
+    return Client.get(resources.city.list)
       .then((response) => {
         return response.data.data
       })
@@ -85,7 +83,6 @@ export class CityService {
     this.city = {
       id: 0,
       name: "",
-      cluster_id: 0,
       mini_grid_id: 0,
     }
     this.list = []

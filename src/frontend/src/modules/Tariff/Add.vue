@@ -1,6 +1,10 @@
 <template>
   <div>
-    <widget v-show="showAdd" :title="$tc('phrases.newTariff')" color="red">
+    <widget
+      v-show="showAdd"
+      :title="$tc('phrases.newTariff')"
+      color="secondary"
+    >
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -534,10 +538,10 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify.js"
+import { TariffService } from "@/services/TariffService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { TariffService } from "@/services/TariffService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Add",
@@ -664,7 +668,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .show-tariff-link {
   cursor: pointer;
 }

@@ -3,15 +3,17 @@
 namespace Tests\Feature;
 
 use App\Models\Agent;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentChargeTest extends TestCase {
     use CreateEnvironments;
 
     public function testUserCreatesNewBalanceForAgent(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
         $agentBalance = $this->agents[0]->balance;
@@ -23,13 +25,5 @@ class AgentChargeTest extends TestCase {
         $response->assertStatus(201);
         $agent = Agent::query()->find($this->agents[0]->id);
         $this->assertEquals($agent->balance, $agentBalance + $postData['amount']);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

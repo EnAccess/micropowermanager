@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\NoActiveSmsProviderException;
 use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
+use App\Exceptions\SmsRecordNotFoundException;
 use App\Exceptions\SmsTypeNotFoundException;
 use App\Sms\Senders\SmsSender;
 use Illuminate\Bus\Queueable;
@@ -34,7 +36,7 @@ class SmsProcessor extends AbstractJob {
     public function executeJob(): void {
         try {
             $this->smsSender->sendSms();
-        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
+        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException|NoActiveSmsProviderException|SmsRecordNotFoundException $exception) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
 
             return;

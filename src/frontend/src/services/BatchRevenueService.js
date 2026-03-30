@@ -1,7 +1,9 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import store from "../store/store"
-import { resources } from "@/resources"
-import BatchRevenueRepository from "@/repositories/BatchRevenueRepository"
+import store from "../store/store.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import BatchRevenueRepository from "@/repositories/BatchRevenueRepository.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
 
 export class BatchRevenue {
   constructor() {
@@ -9,16 +11,14 @@ export class BatchRevenue {
   }
 
   revenueForPeriod(targetId, targetType, startDate, endDate) {
-    return axios
-      .post(resources.revenues.batch, {
-        target_type_id: targetId,
-        target_type: targetType,
-        start_date: startDate,
-        end_date: endDate,
-      })
-      .then((response) => {
-        return response.data.data
-      })
+    return Client.post(resources.revenues.batch, {
+      target_type_id: targetId,
+      target_type: targetType,
+      start_date: startDate,
+      end_date: endDate,
+    }).then((response) => {
+      return response.data.data
+    })
   }
 
   periodData(period) {

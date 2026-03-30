@@ -1,5 +1,5 @@
-jest.mock("../repositories/TariffRepository")
-import { TariffService } from "../services/TariffService"
+jest.mock("../repositories/TariffRepository.js")
+import { TariffService } from "../services/TariffService.js"
 const tariffService = new TariffService()
 const tariffProperties = [
   "id",

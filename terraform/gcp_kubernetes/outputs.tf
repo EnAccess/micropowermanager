@@ -51,3 +51,20 @@ output "network_cloud_nat_static_ip_address" {
 output "network_internal_loadbalancer_ip_address" {
   value = length(google_compute_address.internal_loadbalancer_address) > 0 ? google_compute_address.internal_loadbalancer_address[0].address : ""
 }
+
+output "network_internal_loadbalancer_tls_key" {
+  value = length(tls_private_key.internal_loadbalancer_key) > 0 ? tls_private_key.internal_loadbalancer_key[0].private_key_pem : ""
+}
+
+output "network_internal_loadbalancer_tls_cert" {
+  value = length(tls_self_signed_cert.internal_loadbalancer_cert) > 0 ? tls_self_signed_cert.internal_loadbalancer_cert[0].cert_pem : ""
+}
+
+
+output "mpm_backend_storage" {
+  value = google_storage_bucket.mpm-backend-storage
+}
+
+output "mpm_service_account" {
+  value = google_service_account.mpm_service_account
+}

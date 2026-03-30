@@ -1,11 +1,12 @@
-import { Paginator } from "@/Helpers/Paginator"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 import {
   convertObjectKeysToCamelCase,
   convertObjectKeysToSnakeCase,
-} from "@/Helpers/Utils"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { EventBus } from "@/shared/eventbus"
-import SolarHomeSystemRepository from "@/repositories/SolarHomeSystemRepository"
+} from "@/Helpers/Utils.js"
+import SolarHomeSystemRepository from "@/repositories/SolarHomeSystemRepository.js"
+import { resources } from "@/resources.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class Transactions {
   constructor(shsId) {
@@ -35,7 +36,7 @@ export class SolarHomeSystemService {
     this.list = []
     this.shs = {
       serialNumber: null,
-      assetId: null,
+      applianceId: null,
       manufacturerId: null,
       personId: null,
     }

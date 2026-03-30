@@ -11,8 +11,8 @@ abstract class SmsConfigsCore {
      */
     public array $smsTypes = [
         SmsTypes::TRANSACTION_CONFIRMATION => TransactionConfirmation::class,
-        SmsTypes::APPLIANCE_RATE => AssetRateNotification::class,
-        SmsTypes::OVER_DUE_APPLIANCE_RATE => OverDueAssetRateNotification::class,
+        SmsTypes::APPLIANCE_RATE => ApplianceRateNotification::class,
+        SmsTypes::OVER_DUE_APPLIANCE_RATE => OverDueApplianceRateNotification::class,
         SmsTypes::MANUAL_SMS => ManualSms::class,
         SmsTypes::RESEND_INFORMATION => ResendInformationNotification::class,
     ];

@@ -6,6 +6,31 @@
         id="tab-confirmation"
         md-label="Transaction Confirmation"
       >
+        <div class="transaction-sms-toggle">
+          <div class="toggle-content">
+            <div>
+              <span class="toggle-label">
+                {{ $tc("phrases.transactionSmsEnabled") }}
+              </span>
+              <p class="toggle-description">
+                {{ $tc("phrases.transactionSmsEnabledDescription") }}
+              </p>
+            </div>
+            <md-switch
+              v-model="transactionSmsEnabled"
+              @change="updateTransactionSmsEnabled"
+              class="md-primary"
+            />
+          </div>
+        </div>
+        <div
+          class="md-layout-item notice-message-area"
+          style="margin-bottom: 1rem"
+        >
+          <p style="font-size: 0.9rem; color: #666">
+            {{ $tc("phrases.transactionConfirmationTemplatesNotice") }}
+          </p>
+        </div>
         <div
           v-for="(smsBody, index) in smsBodiesService.confirmationList"
           :key="index"
@@ -16,19 +41,38 @@
             :sms-body="smsBody"
           />
         </div>
+        <div class="md-layout md-alignment-bottom-right">
+          <md-button
+            class="md-primary md-dense md-raised"
+            @click="updateSmsBodies()"
+            v-show="tab !== 'android-gateway'"
+          >
+            Save
+          </md-button>
+        </div>
       </md-tab>
       <md-tab @click="tab = 'reminder'" id="tab-reminder" md-label="Reminder">
         <sms-appliance-remind-rate />
-        <div
-          v-for="(smsBody, index) in smsBodiesService.reminderList"
-          :key="index"
-        >
-          <sms-body
-            ref="smsBody_reminder_ref"
-            :sms-variable-default-values="smsVariableDefaultValueService.list"
-            :sms-body="smsBody"
-          />
-        </div>
+        <widget title="SMS Reminder Templates" class="reminder-templates">
+          <div
+            v-for="(smsBody, index) in smsBodiesService.reminderList"
+            :key="index"
+          >
+            <sms-body
+              ref="smsBody_reminder_ref"
+              :sms-variable-default-values="smsVariableDefaultValueService.list"
+              :sms-body="smsBody"
+            />
+          </div>
+          <div class="md-layout md-alignment-bottom-right">
+            <md-button
+              class="md-primary md-dense md-raised"
+              @click="updateSmsBodies()"
+            >
+              Save
+            </md-button>
+          </div>
+        </widget>
       </md-tab>
       <md-tab
         @click="tab = 'resend-information'"
@@ -79,6 +123,15 @@
             </div>
           </div>
         </div>
+        <div class="md-layout md-alignment-bottom-right">
+          <md-button
+            class="md-primary md-dense md-raised"
+            @click="updateSmsBodies()"
+            v-show="tab !== 'android-gateway'"
+          >
+            Save
+          </md-button>
+        </div>
       </md-tab>
       <md-tab
         @click="tab = 'android-gateway'"
@@ -89,36 +142,39 @@
           :sms-android-settings="smsAndroidSettingsService.list"
         />
       </md-tab>
+      <div class="md-layout md-alignment-bottom-right">
+        <md-button
+          class="md-primary md-dense md-raised"
+          @click="updateSmsBodies()"
+          v-show="tab !== 'android-gateway'"
+        >
+          Save
+        </md-button>
+      </div>
     </md-tabs>
-    <div class="md-layout md-alignment-bottom-right">
-      <md-button
-        class="md-primary md-dense md-raised"
-        @click="updateSmsBodies()"
-        v-show="tab !== 'android-gateway'"
-      >
-        Save
-      </md-button>
-    </div>
     <md-progress-bar v-if="progress" md-mode="indeterminate"></md-progress-bar>
   </div>
 </template>
 
 <script>
-import { SmsBodiesService } from "@/services/SmsBodiesService"
-import SmsBody from "./SmsBody"
-import { EventBus } from "@/shared/eventbus"
-import { SmsResendInformationKeyService } from "@/services/SmsResendInformationKeyService"
-import SmsApplianceRemindRate from "./SmsApplianceRemindRate"
-import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService"
-import SmsAndroidSetting from "./SmsAndroidSetting"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService"
-import { notify } from "@/mixins/notify"
+import SmsAndroidSetting from "./SmsAndroidSetting.vue"
+import SmsApplianceRemindRate from "./SmsApplianceRemindRate.vue"
+import SmsBody from "./SmsBody.vue"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { notify } from "@/mixins/notify.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService.js"
+import { SmsBodiesService } from "@/services/SmsBodiesService.js"
+import { SmsResendInformationKeyService } from "@/services/SmsResendInformationKeyService.js"
+import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SmsSettings",
   mixins: [notify],
-  components: { SmsAndroidSetting, SmsApplianceRemindRate, SmsBody },
+  components: { SmsAndroidSetting, SmsApplianceRemindRate, SmsBody, Widget },
   props: {
     smsBodies: {
       type: Array,
@@ -133,11 +189,14 @@ export default {
       smsResendInformationKeyService: new SmsResendInformationKeyService(),
       smsAndroidSettingsService: new SmsAndroidSettingService(),
       smsVariableDefaultValueService: new SmsVariableDefaultValueService(),
+      mainSettingsService: new MainSettingsService(),
+      transactionSmsEnabled: true,
       isValid: false,
     }
   },
   created() {
     this.getSmsVariableDefaultValues()
+    this.loadTransactionSmsEnabled()
   },
   mounted() {
     this.getSmsBodies()
@@ -151,6 +210,26 @@ export default {
     EventBus.$on("smsAndroidSettingSaved", this.saveAdditionalAndroidSetting)
   },
   methods: {
+    async loadTransactionSmsEnabled() {
+      const mainSettings = this.$store.getters["settings/getMainSettings"]
+      this.transactionSmsEnabled =
+        mainSettings.transactionSmsEnabled !== undefined
+          ? mainSettings.transactionSmsEnabled
+          : true
+    },
+    async updateTransactionSmsEnabled() {
+      try {
+        const mainSettings = this.$store.getters["settings/getMainSettings"]
+        this.mainSettingsService.mainSettings = { ...mainSettings }
+        this.mainSettingsService.mainSettings.transactionSmsEnabled =
+          this.transactionSmsEnabled
+        await this.mainSettingsService.update()
+        await this.$store.dispatch("settings/setMainSettings")
+        this.alertNotify("success", "Updated Successfully")
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
     async getSmsVariableDefaultValues() {
       try {
         await this.smsVariableDefaultValueService.getSmsVariableDefaultValues()
@@ -268,7 +347,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.reminder-templates {
+  margin-top: 1.5rem;
+}
 .notice-message-area {
   padding: 20px;
   background-color: #badee4;
@@ -276,5 +358,26 @@ export default {
   d-webkit-border-radius: 16px;
   -moz-border-radius: 16px;
   border-radius: 16px;
+}
+.transaction-sms-toggle {
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+.toggle-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.toggle-label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+.toggle-description {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 4px 0 0 0;
 }
 </style>

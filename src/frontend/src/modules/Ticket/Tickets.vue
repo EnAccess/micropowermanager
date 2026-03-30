@@ -10,6 +10,7 @@
       "
       :title="$tc('words.ticket', 2)"
       button-icon="filter_list"
+      color="primary"
     >
       <div class="md-layout-item" v-if="filterTicket">
         <filtering @filtering="filtered"></filtering>
@@ -21,7 +22,7 @@
             :subscriber="subscriber.opened"
             :paginator="ticketService.openedPaginator"
             :resetKey="resetKey"
-            color="green"
+            color="accent"
           >
             <ticket-item
               :allow-comment="true"
@@ -36,7 +37,7 @@
             :subscriber="subscriber.closed"
             :paginator="ticketService.closedPaginator"
             :resetKey="resetKey"
-            color="red"
+            color="secondary"
           >
             <ticket-item
               :allow-comment="true"
@@ -51,13 +52,13 @@
 </template>
 
 <script>
+import Filtering from "@/modules/Ticket/Filtering.vue"
+import { resources } from "@/resources.js"
+import { TicketService } from "@/services/TicketService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import TicketItem from "@/shared/TicketItem.vue"
 import Widget from "@/shared/Widget.vue"
-import TicketItem from "@/shared/TicketItem"
-import { EventBus } from "@/shared/eventbus"
-import Filtering from "@/modules/Ticket/Filtering"
-import { resources } from "@/resources"
-import { TicketService } from "@/services/TicketService"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+
 export default {
   name: "Tickets",
   components: { Filtering, Widget, TicketItem },
@@ -121,14 +122,14 @@ export default {
       )
     },
     filtered(data) {
-      this.ticketService.openedPaginator.setPaginationBaseUrl(
-        baseUrl + resources.ticket.list + "?status=0" + data,
+      this.ticketService.openedPaginator.setPaginationResource(
+        resources.ticket.list + "?status=0" + data,
       )
       this.ticketService.openedPaginator.loadPage(1).then((response) => {
         this.reloadList(this.subscriber.opened, response.data)
       })
-      this.ticketService.closedPaginator.setPaginationBaseUrl(
-        baseUrl + resources.ticket.list + "?status=1" + data,
+      this.ticketService.closedPaginator.setPaginationResource(
+        resources.ticket.list + "?status=1" + data,
       )
       this.ticketService.closedPaginator.loadPage(1).then((response) => {
         this.reloadList(this.subscriber.closed, response.data)
@@ -138,7 +139,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .ticket-list-card-r {
   margin-inline-end: 2vh;
   margin-top: 2vh;

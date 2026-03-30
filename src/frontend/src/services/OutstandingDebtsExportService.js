@@ -1,4 +1,4 @@
-import OutstandingDebtsExportRepository from "@/repositories/OutstandingDebtsExportRepository"
+import OutstandingDebtsExportRepository from "@/repositories/OutstandingDebtsExportRepository.js"
 
 export class OutstandingDebtsExportService {
   constructor() {

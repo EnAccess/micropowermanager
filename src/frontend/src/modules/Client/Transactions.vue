@@ -2,7 +2,7 @@
   <widget
     :title="$tc('phrases.lastTransactions')"
     :paginator="userTransactionsService.paginator"
-    color="green"
+    color="primary"
     :subscriber="subscriber"
   >
     <md-table
@@ -34,7 +34,7 @@
         </md-table-cell>
         <md-table-cell
           :md-label="$tc('phrases.paymentService')"
-          md-sort-by="paymentService"
+          md-sort-by="paymentService.js"
         >
           {{ item.paymentService }}
         </md-table-cell>
@@ -50,11 +50,11 @@
 </template>
 
 <script>
-import { currency } from "@/mixins/currency"
-import { timing } from "@/mixins/timing"
+import { currency } from "@/mixins/currency.js"
+import { timing } from "@/mixins/timing.js"
+import { UserTransactionsService } from "@/services/UserTransactionsService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { UserTransactionsService } from "@/services/UserTransactionsService"
 
 export default {
   name: "Transactions",

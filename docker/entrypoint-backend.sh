@@ -51,6 +51,9 @@ gosu www-data php artisan migrate --force
 echo "Running MicroPowerManager tenant migrations..."
 gosu www-data php artisan migrate-tenant --force
 
+echo "Running system checks..."
+gosu www-data php artisan mpm-system-checks || echo "System checks completed with warnings"
+
 # Check if MPM_LOAD_DEMO_DATA is set and not empty or false-y,
 # only then load the demo data.
 if [ -n "$MPM_LOAD_DEMO_DATA" ] && [ "$MPM_LOAD_DEMO_DATA" != "0" ] && [ "$MPM_LOAD_DEMO_DATA" != "false" ]; then
@@ -64,7 +67,13 @@ echo "Executing command: $@"
 # We do this at container startup (not build) so runtime environment variables are available to the framework.
 if [ "$APP_ENV" = "production" ] || ( [ -n "$MPM_FORCE_OPTIMIZE" ] && [ "$MPM_FORCE_OPTIMIZE" != "0" ] && [ "$MPM_FORCE_OPTIMIZE" != "false" ] ); then
   echo "Optimizing Laravel (caching config, events, routes, views)..."
-  gosu www-data php artisan optimize || echo "php artisan optimize failed"
+  # Currently, we cannot run `artisan optimize` as `artisan config:cache` fails
+  # due to the way we have use closures in `FilterHandler`.
+  # See: https://github.com/Seldaek/monolog/issues/1965
+  # gosu www-data php artisan optimize || echo "php artisan optimize failed"
+  gosu www-data php artisan event:cache || echo "php artisan event:cache failed"
+  gosu www-data php artisan route:cache || echo "php artisan route:cache failed"
+  gosu www-data php artisan view:cache || echo "php artisan view:cache failed"
 fi
 
 # the main image's CMD arguments are somehow not passed to this script

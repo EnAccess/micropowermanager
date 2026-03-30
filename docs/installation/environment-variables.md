@@ -14,10 +14,12 @@ In this document we describe the most relevant environment variables and highlig
 
 ### Backend connection
 
-| Environment Variable | Default      | Description                                                                                                                                                                                                                                                                                              |
-| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MPM_ENV`            | **Required** | Environment identifier for the MicroPowerManager frontend. Can be `development`, `demo` or `production`. Recommended to set to `production` in production environments. Note: This is different from the builtin [`NODE_ENV`](https://cli.vuejs.org/guide/mode-and-env.html#modes) environment variable. |
-| `MPM_BACKEND_URL`    | **Required** | The URL of the MicroPowerManager backend. For example `http://localhost:8000` (for non-local) or `https://demo-backend.micropowermanager.io` (for production).                                                                                                                                           |
+| Environment Variable               | Default                                   | Description                                                                                                                                                                                                                                                                                              |
+| ---------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MPM_ENV`                          | **Required**                              | Environment identifier for the MicroPowerManager frontend. Can be `development`, `demo` or `production`. Recommended to set to `production` in production environments. Note: This is different from the builtin [`NODE_ENV`](https://cli.vuejs.org/guide/mode-and-env.html#modes) environment variable. |
+| `MPM_BACKEND_URL`                  | **Required**                              | The URL of the MicroPowerManager backend. For example `http://localhost:8000` (for non-local) or `https://demo-backend.micropowermanager.io` (for production).                                                                                                                                           |
+| `VUE_APP_CUSTOM_HEADERS`           | `none` _(Development only)_               | Provide any optional, custom headers that should be present on all requests to the MicroPowerManager backend. Can be used for example to surpress Ngrok warning pages with `{"ngrok-skip-browser-warning": true}`                                                                                        |
+| `VUE_APP_MPM_BACKEND_URL_EXTERNAL` | `${MPM_BACKEND_URL}` _(Development only)_ | Useful when the MicroPowerManager URL for external services is different from `localhost`. Can be used when developing third party plugins that expose a local machine via reverse tunnels. For example `VUE_APP_MPM_BACKEND_URL_EXTERNAL=https://randomly-generated-url.ngrok-free.dev`                 |
 
 ## Backend
 
@@ -101,6 +103,37 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 | `PUSHER_APP_SECRET`  | **Required** (If Pusher is used) | Pusher App secret.                    |
 | `PUSHER_APP_CLUSTER` | **Required** (If Pusher is used) | Pusher App cluster. For example `eu`. |
 
+### File Storage
+
+MicroPowerManager supports multiple storage backends for file storage. Configure the following environment variables based on your chosen storage provider.
+
+#### Storage Configuration
+
+| Environment Variable | Default | Description                                                |
+| -------------------- | ------- | ---------------------------------------------------------- |
+| `FILESYSTEM_DISK`    | `local` | The default storage disk to use (`local`, `s3`, or `gcs`). |
+
+#### Amazon S3 Storage
+
+| Environment Variable          | Default | Description                                                                 |
+| ----------------------------- | ------- | --------------------------------------------------------------------------- |
+| `AWS_ACCESS_KEY_ID`           | `null`  | Your AWS access key ID.                                                     |
+| `AWS_SECRET_ACCESS_KEY`       | `null`  | Your AWS secret access key.                                                 |
+| `AWS_DEFAULT_REGION`          | `null`  | The AWS region where your S3 bucket is located.                             |
+| `AWS_BUCKET`                  | `null`  | The name of your S3 bucket.                                                 |
+| `AWS_USE_PATH_STYLE_ENDPOINT` | `false` | Set to `true` if using S3-compatible services that require path-style URLs. |
+
+#### Google Cloud Storage
+
+| Environment Variable          | Default | Description                                                                                                                  |
+| ----------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `GOOGLE_CLOUD_PROJECT_ID`     | `null`  | Your Google Cloud project ID.                                                                                                |
+| `GOOGLE_CLOUD_STORAGE_BUCKET` | `null`  | The name of your GCS bucket.                                                                                                 |
+| `GOOGLE_CLOUD_KEY_FILE`       | `null`  | Path to a service account JSON key file.                                                                                     |
+| `GOOGLE_CLOUD_KEY_JSON`       | `null`  | Your service account JSON key file content (as a JSON string). Will be used only if `GOOGLE_CLOUD_KEY_FILE` is not provided. |
+
+To learn more about working with GCS in Laravel, the official [library](https://github.com/spatie/laravel-google-cloud-storage) will be a vaulable guide.
+
 ### Basic setup
 
 #### Logging
@@ -154,6 +187,19 @@ Configure Horizon notifications
 | --------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `HORIZON_SLACK_WEBHOOK_URL` | `null`  | Slack Webhook URL for Horizon notifications. This requires a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `HORIZON_SLACK_WEBHOOK_URL` is provided Horizon Slack notifications will be enabled. **Note:** Can be the same webhook as `LOG_SLACK_WEBHOOK_URL`. |
 
+#### Laravel Telescope and Telescope Dashboard
+
+MicroPowerManager internally uses [Laravel Telescope](https://laravel.com/docs/12.x/telescope) for peformance monitoring and debugging.
+
+By default Telescope will be disabled. Configure the below environment variables to enable Telescope and secure the dashboard with HTTP Basic Auth.
+
+| Environment Variable            | Default | Description                                                                                                                                   |
+| ------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TELESCOPE_ENABLED`             | `false` | Enable or disable Telescope data collection and dashboard.                                                                                    |
+| `TELESCOPE_BASIC_AUTH_USERNAME` | `null`  | HTTP Basic Auth Username for Telescope Dashboard.                                                                                             |
+| `TELESCOPE_BASIC_AUTH_PASSWORD` | `null`  | HTTP Basic Auth Password for Telescope Dashboard.                                                                                             |
+| `TELESCOPE_PRUNE_HOURS`         | `48`    | Number of hours to retain Telescope data before pruning. Increase for extended debugging periods (e.g., `168` for 7 days, `336` for 14 days). |
+
 ### MPM Plugins
 
 Certain MicroPowerManager plugins require configuration before they can be used.
@@ -163,10 +209,10 @@ Find below a reference of configurations which are required if the corresponding
 
 For detailed information see [SunKing Developer Documentation](https://sunking.com/)
 
-| Environment Variable       | Default                                                                              | Description                                                                                                   |
-| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `SUNKING_AUTH_DEFAULT_URL` | `https://auth.central.glpapps.com/auth/realms/glp-dev/protocol/openid-connect/token` | Default authorisation URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager. |
-| `SUNKING_API_DEFAULT_URL`  | `https://dev.assetcontrol.central.glpapps.com/v2`                                    | Default API URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager.           |
+| Environment Variable       | Default                                                                          | Description                                                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `SUNKING_AUTH_DEFAULT_URL` | `https://auth.central.glpapps.com/auth/realms/glp/protocol/openid-connect/token` | Default authorisation URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager. |
+| `SUNKING_API_DEFAULT_URL`  | `https://assetcontrol.central.glpapps.com/v2`                                    | Default API URL used when tenants activate the SunKing plugin on the instance of MicroPowerManager.           |
 
 #### WaveMoney
 
@@ -175,3 +221,15 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 | Environment Variable | Default                            | Description                                                                 |
 | -------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
 | `WAVEMONEY_API_URL`  | **Required** (when plugin is used) | WaveMoney API URL. For example `https://preprodpayments.wavemoney.io:8107`. |
+
+#### Paystack
+
+For detailed information see [Paystack Developer Documentation](https://paystack.com/docs)
+
+| Environment Variable                | Default           | Description                                                                              |
+| ----------------------------------- | ----------------- | ---------------------------------------------------------------------------------------- |
+| `PAYSTACK_COMPANY_HASH_SALT`        | `APP_KEY`         | Salt used for generating company-specific payment URLs. Defaults to the application key. |
+| `PAYSTACK_API_TIMEOUT`              | `30`              | API request timeout in seconds.                                                          |
+| `PAYSTACK_VERIFY_WEBHOOK_SIGNATURE` | `true`            | Whether to verify Paystack webhook signatures for security.                              |
+| `PAYSTACK_DEFAULT_CURRENCY`         | `NGN`             | Default currency for Paystack transactions.                                              |
+| `PAYSTACK_SUPPORTED_CURRENCIES`     | `NGN,GHS,KES,ZAR` | Comma-separated list of supported currencies for Paystack transactions.                  |

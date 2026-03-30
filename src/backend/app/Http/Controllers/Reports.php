@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\CustomerGroup\CustomerGroupNotFound;
+use App\Exceptions\ConnectionGroupNotFoundException;
 use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
@@ -16,6 +16,8 @@ use App\Models\Transaction\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
@@ -103,7 +105,7 @@ class Reports {
 
         $this->styleSheet($sheet, 'A5:'.$sheet->getHighestDataColumn().'5', Border::BORDER_THIN, null);
         foreach ($this->excelColumnRange('A', $sheet->getHighestColumn()) as $col) {
-            if ($col === 'B' || $col === 'C' || $col === 'D') {
+            if (in_array($col, ['B', 'C', 'D'], true)) {
                 continue;
             }
             $sheet
@@ -229,7 +231,7 @@ class Reports {
     /**
      * @param Collection<int,Transaction> $transactions
      *
-     * @throws CustomerGroupNotFound
+     * @throws ConnectionGroupNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function generateXls(
@@ -258,7 +260,7 @@ class Reports {
     /**
      * @param Collection<int, Transaction> $transactions
      *
-     * @throws CustomerGroupNotFound
+     * @throws ConnectionGroupNotFoundException
      */
     private function addTransactions(Worksheet $sheet, Collection $transactions, bool $addPurchaseBreakDown = true): void {
         $sheetIndex = 0;
@@ -333,7 +335,7 @@ class Reports {
      *
      * @param Collection<int, PaymentHistory> $paymentHistories
      *
-     * @throws CustomerGroupNotFound
+     * @throws ConnectionGroupNotFoundException
      */
     private function purchaseBreakDown(
         Worksheet $sheet,
@@ -365,7 +367,7 @@ class Reports {
     }
 
     /**
-     * @throws CustomerGroupNotFound
+     * @throws ConnectionGroupNotFoundException
      */
     private function getConnectionGroupColumn(string $connectionGroupName): string {
         if (
@@ -376,7 +378,7 @@ class Reports {
         ) {
             return $this->connectionTypeCells[$connectionGroupName];
         }
-        throw new CustomerGroupNotFound($connectionGroupName.' not found');
+        throw new ConnectionGroupNotFoundException($connectionGroupName.' not found');
     }
 
     private function storeConnectionGroupColumn(string $connectionGroup, string $column): void {
@@ -448,7 +450,7 @@ class Reports {
     }
 
     /**
-     * @throws CustomerGroupNotFound
+     * @throws ConnectionGroupNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function addSoldSummary(Worksheet $sheet): void {
@@ -496,7 +498,7 @@ class Reports {
     }
 
     /**
-     * @throws CustomerGroupNotFound
+     * @throws ConnectionGroupNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function generateReportForCity(
@@ -516,9 +518,10 @@ class Reports {
         $transactions = $this->transaction::with('device.device')
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
-                'device.address',
+                'device.person.addresses',
                 function ($q) use ($cityId) {
-                    $q->where('city_id', $cityId);
+                    $q->where('city_id', $cityId)
+                        ->where('is_primary', 1);
                 }
             )
             ->whereHasMorph(
@@ -569,28 +572,36 @@ class Reports {
             $this->addTargetsToXls($sheet2);
         }
 
-        $writer = new Xlsx($this->spreadsheet);
-        $dirPath = storage_path('./'.$reportType);
-        $user = User::query()->first();
-        $databaseProxy = app()->make(DatabaseProxy::class);
-        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
-
-        if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
-        }
         try {
-            $fileName = str_slug($reportType.'-'.$cityName.'-'.$dateRange).'.xlsx';
-            $writer->save(storage_path('./'.$reportType.'/'.$fileName));
-            $this->report->create(
-                [
-                    'path' => storage_path($reportType.'/'.$fileName.'*'.$companyId),
-                    'type' => $reportType,
-                    'date' => $startDate.'---'.$endDate,
-                    'name' => $cityName,
-                ]
-            );
+            $user = User::query()->first();
+            $databaseProxy = app(DatabaseProxy::class);
+            $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
+            $fileName = Str::slug("{$reportType}-{$cityName}-{$dateRange}").'.xlsx';
+            $path = "reports/{$companyId}/village_report_{$reportType}/{$fileName}";
+
+            // Save to a temporary local file
+            $tempFile = tempnam(sys_get_temp_dir(), 'city_report_').'.xlsx';
+            $writer = new Xlsx($this->spreadsheet);
+            $writer->save($tempFile);
+
+            Storage::put($path, file_get_contents($tempFile));
+            unlink($tempFile);
+
+            // Save report metadata
+            $this->report->create([
+                'path' => $path."*{$companyId}",
+                'type' => $reportType,
+                'date' => "{$startDate}---{$endDate}",
+                'name' => $cityName,
+            ]);
+
+            Log::info("Report generated: {$fileName}");
         } catch (Exception $e) {
-            echo 'error'.$e->getMessage();
+            Log::error('Error generating report for city', [
+                'city' => $cityName,
+                'exception' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -656,11 +667,11 @@ class Reports {
         meters.connection_group_id,
         meters.serial_number as meter,
         SUM(transactions.amount) as revenue,
-        meter_tariffs.price as tariff_price,
+        tariffs.price as tariff_price,
         IFNULL(SUM(payment_histories.amount), 0) as total
     ')
             ->join('meters', 'transactions.message', '=', 'meters.serial_number')
-            ->join('meter_tariffs', 'meters.tariff_id', '=', 'meter_tariffs.id')
+            ->join('tariffs', 'meters.tariff_id', '=', 'tariffs.id')
             ->join('payment_histories', 'transactions.id', '=', 'payment_histories.transaction_id', 'left')
             ->where('meters.connection_group_id', $connectionGroupId)
             ->whereBetween('transactions.created_at', $dateRange)
@@ -691,7 +702,7 @@ class Reports {
             ->where('target_date', '>', $endDate)
             ->where('owner_type', 'mini-grid')
             ->where('owner_id', $cityId)
-            ->orderBy('target_date', 'asc')->first();
+            ->oldest('target_date')->first();
 
         if (!$targetData) { // no target is defined for that mini-grid
             return;

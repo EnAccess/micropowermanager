@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import Client from "@/repositories/Client/AxiosClient.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
@@ -82,7 +83,7 @@ export default {
       this.registerUserFlag = true
     },
     saveUser() {
-      axios.post("http://localhost:8000/register", {
+      Client.post("http://localhost:8000/register", {
         name: "Ali KEmal Özkan",
         email: "hebele@hubele.com",
         password: "3242353434543543",
@@ -93,4 +94,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

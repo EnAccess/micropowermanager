@@ -1,7 +1,7 @@
-import { MapSettingsService } from "@/services/MapSettingsService"
-import { MainSettingsService } from "@/services/MainSettingsService"
-import i18n from "../../i18n"
-import { PluginService } from "@/services/PluginService"
+import i18n from "@/i18n.js"
+import { MainSettingsService } from "@/services/MainSettingsService.js"
+import { MapSettingsService } from "@/services/MapSettingsService.js"
+import { PluginService } from "@/services/PluginService.js"
 
 const serviceMap = new MapSettingsService()
 const serviceMain = new MainSettingsService()
@@ -58,7 +58,11 @@ export const actions = {
         })
     })
   },
-  fetchPlugins({ commit }) {
+  fetchPlugins({ commit, rootGetters }) {
+    const permissions = rootGetters["auth/getPermissions"] || []
+    if (!permissions.includes("plugins")) {
+      return Promise.resolve([])
+    }
     return new Promise((resolve, reject) => {
       servicePlugin
         .getPlugins()

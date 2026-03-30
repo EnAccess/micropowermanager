@@ -1,7 +1,7 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import moment from "moment"
 
-import MaintenanceRepository from "@/repositories/MaintenanceRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MaintenanceRepository from "@/repositories/MaintenanceRepository.js"
 
 export class MaintenanceService {
   constructor() {
@@ -24,7 +24,7 @@ export class MaintenanceService {
       phone: null,
       city_id: null,
       mini_grid_id: null,
-      sex: "male",
+      gender: "male",
     }
   }
 
@@ -82,7 +82,7 @@ export class MaintenanceService {
       phone: null,
       city_id: null,
       mini_grid_id: null,
-      sex: "male",
+      gender: "male",
     }
   }
 }

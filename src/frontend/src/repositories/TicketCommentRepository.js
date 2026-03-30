@@ -1,7 +1,6 @@
-import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
-const resource = `${baseUrl}/tickets/api/tickets/comments`
+const resource = `/api/tickets/comments`
 
 export default {
   create(commentPm) {

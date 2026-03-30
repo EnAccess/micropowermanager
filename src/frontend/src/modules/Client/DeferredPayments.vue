@@ -6,7 +6,7 @@
       :button="true"
       :title="$tc('phrases.soldAppliances')"
       :button-color="'red'"
-      color="green"
+      color="primary"
       :subscriber="subscriber"
       @widgetAction="
         () => {
@@ -26,12 +26,12 @@
             </md-table-head>
           </md-table-row>
           <md-table-row
-            v-for="(item, index) in assetPersonService.list"
+            v-for="(item, index) in appliancePersonService.list"
             :key="index"
             @click="showDetails(index)"
           >
             <md-table-cell md-label="Name" md-sort-by="name">
-              {{ item.asset.name }}
+              {{ item.appliance.name }}
             </md-table-cell>
             <md-table-cell md-label="Cost" md-sort-by="total_cost">
               {{ moneyFormat(item.total_cost) }}
@@ -56,12 +56,12 @@
 </template>
 
 <script>
-import { AssetRateService } from "@/services/AssetRateService"
-import { AssetPersonService } from "@/services/AssetPersonService"
-import { currency, notify } from "@/mixins"
-import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget.vue"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
 import SellApplianceModal from "@/modules/Client/Appliances/SellApplianceModal.vue"
+import { AppliancePersonService } from "@/services/AppliancePersonService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "DeferredPayments",
@@ -75,16 +75,15 @@ export default {
     },
   },
   mounted() {
-    this.getAssetList()
+    this.getApplianceList()
   },
   data() {
     return {
-      subscriber: "person-asset",
-      assetRateService: new AssetRateService(),
-      assetPersonService: new AssetPersonService(),
+      subscriber: "person-appliance",
+      appliancePersonService: new AppliancePersonService(),
       adminId:
         this.$store.getters["auth/authenticationService"].authenticateUser.id,
-      selectedAsset: null,
+      selectedAppliance: null,
       headers: [
         this.$tc("words.name"),
         this.$tc("words.cost"),
@@ -97,18 +96,25 @@ export default {
 
   methods: {
     showDetails(index) {
-      this.selectedAsset = this.assetPersonService.list[index]
-      this.$router.push("/sold-appliance-detail/" + this.selectedAsset.id)
+      this.selectedAppliance = this.appliancePersonService.list[index]
+      this.$router.push("/sold-appliance-detail/" + this.selectedAppliance.id)
     },
-    async getAssetList() {
+    async getApplianceList() {
+      if (!this.$can("appliances")) {
+        return
+      }
       try {
-        await this.assetPersonService.getPersonAssets(this.personId)
+        await this.appliancePersonService.getPersonAppliances(this.personId)
         EventBus.$emit(
           "widgetContentLoaded",
           this.subscriber,
-          this.assetPersonService.list.length,
+          this.appliancePersonService.list.length,
         )
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Assets/Deferred payments: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },

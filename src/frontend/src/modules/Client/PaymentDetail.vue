@@ -30,12 +30,30 @@
       </div>
       <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-90">
-          <GChart
-            type="ColumnChart"
-            :data="paymentService.paymentDetailData"
-            :options="chartOptions"
-            :resizeDebounce="500"
-          />
+          <div style="height: 400px; width: 100%; position: relative">
+            <v-chart
+              v-if="
+                echartsOption && echartsOption.series && echartsOption.series[0]
+              "
+              :option="echartsOption"
+              :autoresize="true"
+              style="height: 400px; width: 100%; min-height: 400px"
+            />
+            <div
+              v-else
+              style="
+                padding: 2rem;
+                text-align: center;
+                color: #999;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              {{ $tc("phrases.noData") || "No Data Available" }}
+            </div>
+          </div>
         </div>
       </div>
     </widget>
@@ -43,10 +61,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { PaymentService } from "@/services/PaymentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { PaymentService } from "@/services/PaymentService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "PaymentDetail",
@@ -59,14 +77,60 @@ export default {
       personId: null,
       period: "M",
       periodName: "Monthly",
-      chartOptions: {
-        chart: {
-          title: "Customer Payment Flow",
-        },
-        colors: ["#0b920b", "#8b2621", "#0c7cd5", "#aad4df"],
-      },
       barData: [],
     }
+  },
+  computed: {
+    echartsOption() {
+      if (
+        !this.paymentService.paymentDetailData ||
+        !Array.isArray(this.paymentService.paymentDetailData) ||
+        this.paymentService.paymentDetailData.length < 2
+      ) {
+        return null
+      }
+
+      const data = this.paymentService.paymentDetailData
+      const headers = data[0] || []
+      const seriesNames = headers.slice(1)
+      const categories = data.slice(1).map((row) => row[0] || "")
+
+      const series = seriesNames.map((name, index) => {
+        const seriesIndex = index + 1
+        return {
+          name: String(name || `Series ${index + 1}`),
+          type: "bar",
+          data: data.slice(1).map((row) => parseFloat(row[seriesIndex]) || 0),
+        }
+      })
+
+      return {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {
+          data: seriesNames.map((name) => String(name)),
+          top: 10,
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: categories,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: series,
+      }
+    },
   },
   created() {
     this.personId = this.$store.getters.person.id
@@ -79,6 +143,9 @@ export default {
   },
   methods: {
     async getFlow(period = "M") {
+      if (!this.$can("payments")) {
+        return
+      }
       switch (period) {
         case "Y":
           this.periodName = this.$tc("words.annually")
@@ -101,13 +168,17 @@ export default {
           this.paymentService.paymentDetailData.length,
         )
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment detail: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .payment-period-select {
   float: right;
   padding-right: 2.5rem !important;

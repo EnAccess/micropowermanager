@@ -19,20 +19,20 @@ class StoreMiniGridRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, string>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array {
         return [
-            'name' => 'required|min:3',
-            'cluster_id' => 'required',
-            'geo_data' => 'required',
+            'name' => ['required', 'min:3'],
+            'cluster_id' => ['required'],
+            'geo_data' => ['required', 'string'],
         ];
     }
 
     public function getMiniGrid(): MiniGrid {
         $miniGrid = new MiniGrid();
-        $miniGrid->setClusterId($this->input(self::PARAM_CLUSTER_ID));
-        $miniGrid->setName($this->input(self::PARAM_NAME));
+        $miniGrid->cluster_id = $this->input(self::PARAM_CLUSTER_ID);
+        $miniGrid->name = $this->input(self::PARAM_NAME);
 
         return $miniGrid;
     }

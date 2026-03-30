@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Target;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /** @extends Factory<Target> */
@@ -18,7 +19,7 @@ class TargetFactory extends Factory {
         $ownerType = $this->faker->randomElement(['mini-grid', 'cluster']);
 
         return [
-            'target_date' => $this->faker->date('Y-m-d'),
+            'target_date' => Carbon::now()->endOfYear()->format('Y-m-d'),
             'type' => $ownerType,
             'owner_type' => $ownerType,
             'owner_id' => $ownerType === 'cluster'

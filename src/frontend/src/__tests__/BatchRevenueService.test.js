@@ -1,5 +1,5 @@
-jest.mock("../repositories/BatchRevenueRepository")
-import { BatchRevenueService } from "../services/BatchRevenueService"
+jest.mock("../repositories/BatchRevenueRepository.js")
+import { BatchRevenueService } from "../services/BatchRevenueService.js"
 const batchRevenueService = new BatchRevenueService()
 const batchRevenueProperties = [
   "target",

@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentSoldAppliance;
-use App\Models\Asset;
-use App\Models\AssetType;
+use App\Models\Appliance;
+use App\Models\ApplianceType;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Person\Person;
@@ -24,7 +24,7 @@ class AgentApplianceSalesSeeder extends Seeder {
         // Fetch Existing Agents
         $agents = Agent::all();
         if ($agents->isEmpty()) {
-            $this->command->warn('No existing agents found. Skipping seeder.');
+            $this->command->outputComponents()->warn('No existing agents found. Skipping seeder.');
 
             return;
         }
@@ -32,40 +32,40 @@ class AgentApplianceSalesSeeder extends Seeder {
         // Fetch Existing Customers
         $customers = Person::where('is_customer', true)->get();
         if ($customers->isEmpty()) {
-            $this->command->warn('No existing customers found. Skipping seeder.');
+            $this->command->outputComponents()->warn('No existing customers found. Skipping seeder.');
 
             return;
         }
 
-        // Fetch Existing Assets
-        $assetType = AssetType::where('name', 'Solar Home System')->first();
-        $assets = Asset::where('asset_type_id', $assetType->id)->get();
-        if ($assets->isEmpty()) {
-            $this->command->warn('No existing assets found. Skipping seeder.');
+        // Fetch Existing Appliances
+        $applianceType = ApplianceType::where('name', 'Solar Home System')->first();
+        $appliances = Appliance::where('appliance_type_id', $applianceType->id)->get();
+        if ($appliances->isEmpty()) {
+            $this->command->outputComponents()->warn('No existing appliances found. Skipping seeder.');
 
             return;
         }
 
         // Assign 2 unique Appliances to each Agent
-        $assignedAppliances = $agents->flatMap(function ($agent) use ($assets, $customers) {
-            return collect($assets->shuffle()->take(2))->map(function ($asset) use ($agent, $customers) {
+        $assignedAppliances = $agents->flatMap(function ($agent) use ($appliances, $customers) {
+            return collect($appliances->shuffle()->take(2))->map(function ($appliance) use ($agent, $customers) {
                 return AgentAssignedAppliances::factory()->create([
                     'agent_id' => $agent->id,
-                    'appliance_id' => $asset->id,
+                    'appliance_id' => $appliance->id,
                     'user_id' => $customers->random()->id,
                 ]);
             });
         });
 
         // Simulate Sales
-        $assignedAppliances->each(function ($assignedAppliance) use ($customers, $assets) {
+        $assignedAppliances->each(function ($assignedAppliance) use ($customers, $appliances) {
             $soldAppliance = AgentSoldAppliance::factory()->create([
                 'agent_assigned_appliance_id' => $assignedAppliance->id,
                 'person_id' => $customers->random()->id,
             ]);
 
             $solarHomeSystem = SolarHomeSystem::factory()
-                ->for($assets->random(), 'appliance')
+                ->for($appliances->random(), 'appliance')
                 ->for(Manufacturer::where('type', 'shs')->get()->random())
                 ->create();
 
@@ -85,6 +85,6 @@ class AgentApplianceSalesSeeder extends Seeder {
             ]);
         });
 
-        $this->command->info('Agent Appliance Sales Seeded Successfully!');
+        $this->command->outputComponents()->success('Agent Appliance Sales Seeded Successfully!');
     }
 }

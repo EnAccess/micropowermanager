@@ -12,7 +12,7 @@ class SmsAndroidSettingRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'token' => 'required',
+            'token' => ['required'],
         ];
     }
 }

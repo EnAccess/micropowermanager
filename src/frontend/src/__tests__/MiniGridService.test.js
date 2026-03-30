@@ -1,5 +1,5 @@
-jest.mock("../repositories/MiniGridRepository")
-import { MiniGridService } from "../services/MiniGridService"
+jest.mock("../repositories/MiniGridRepository.js")
+import { MiniGridService } from "../services/MiniGridService.js"
 const miniGridService = new MiniGridService()
 const miniGridProperties = [
   "id",

@@ -21,11 +21,32 @@
       <md-card-content>
         <div class="md-layout">
           <div class="md-layout-item md-size-100">
-            <GChart
-              type="ColumnChart"
-              :data="paymentService.chartData"
-              :options="chartOptions"
-            />
+            <div style="height: 400px; width: 100%; position: relative">
+              <v-chart
+                v-if="
+                  echartsOption &&
+                  echartsOption.series &&
+                  echartsOption.series[0]
+                "
+                :option="echartsOption"
+                :autoresize="true"
+                style="height: 400px; width: 100%; min-height: 400px"
+              />
+              <div
+                v-else
+                style="
+                  padding: 2rem;
+                  text-align: center;
+                  color: #999;
+                  height: 100%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                {{ $tc("phrases.noData") || "No Data Available" }}
+              </div>
+            </div>
           </div>
           <div class="md-layout-item md-size-100">
             {{ $tc("phrases.averagePeriod") }}
@@ -74,18 +95,16 @@
 </template>
 
 <script>
-import { currency } from "@/mixins/currency"
-import { GChart } from "vue-google-charts"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { PaymentService } from "@/services/PaymentService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { PaymentService } from "@/services/PaymentService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "PaymentFlow",
   components: {
     Widget,
-    GChart,
   },
   mixins: [currency, notify],
   data() {
@@ -106,12 +125,6 @@ export default {
         "Nov",
         "Dec",
       ],
-      chartOptions: {
-        chart: {
-          title: this.$tc("phrases.paymentFlow"),
-        },
-        colors: ["#1b9e77", "#d95f02", "#7570b3"],
-      },
       lastPayment: null,
       paymentPeriod: 0,
       loaded: false,
@@ -145,6 +158,56 @@ export default {
 
       return paymentFlow
     },
+    echartsOption() {
+      if (
+        !this.paymentService.chartData ||
+        !Array.isArray(this.paymentService.chartData) ||
+        this.paymentService.chartData.length < 2
+      ) {
+        return null
+      }
+
+      const data = this.paymentService.chartData
+      const headers = data[0] || []
+      const seriesNames = headers.slice(1)
+      const categories = data.slice(1).map((row) => row[0] || "")
+
+      const series = seriesNames.map((name, index) => {
+        const seriesIndex = index + 1
+        return {
+          name: String(name || `Series ${index + 1}`),
+          type: "bar",
+          data: data.slice(1).map((row) => parseFloat(row[seriesIndex]) || 0),
+        }
+      })
+
+      return {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {
+          data: seriesNames.map((name) => String(name)),
+          top: 10,
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: categories,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: series,
+      }
+    },
   },
   created() {
     this.getFlow(this.$store.getters.person.id)
@@ -153,6 +216,9 @@ export default {
   },
   methods: {
     async getFlow(personId) {
+      if (!this.$can("payments")) {
+        return
+      }
       try {
         await this.paymentService.getPaymentFlow(personId)
         EventBus.$emit(
@@ -161,31 +227,49 @@ export default {
           this.paymentService.chartData.length,
         )
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment flow: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
     async getPeriod(personId) {
+      if (!this.$can("payments")) {
+        return
+      }
       try {
         let data = await this.paymentService.getPeriod(personId)
         this.paymentPeriod = data.difference
         this.lastPayment = data.lastTransaction
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment period: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
     async getDebt(personId) {
+      if (!this.$can("payments")) {
+        return
+      }
       try {
         let data = await this.paymentService.getDebt(personId)
         this.accessDebt = data.access_rate
         this.deferredDebt = data.deferred
       } catch (e) {
+        if (e.response && e.response.status === 403) {
+          console.warn("Payment debt: Insufficient permissions")
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
   },
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .txt-color-green {
   color: green;
 }

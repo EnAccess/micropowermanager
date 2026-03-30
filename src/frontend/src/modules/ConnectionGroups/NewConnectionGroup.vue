@@ -46,10 +46,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { ConnectionGroupService } from "@/services/ConnectionGroupService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { ConnectionGroupService } from "@/services/ConnectionGroupService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewConnectionGroup",
@@ -98,7 +98,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .full-width {
   width: 100% !important;
 }

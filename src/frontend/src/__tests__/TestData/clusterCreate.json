@@ -1,24 +1,19 @@
 {
-  "geoData": {
-    "display_name": "test",
-    "draw_type": "draw",
-    "geojson": {
+  "geojson": {
+    "type": "Feature",
+    "properties": {
+      "name": "test"
+    },
+    "geometry": {
+      "type": "Polygon",
       "coordinates": [
         [-1.1553744185139059, 36.15194141521097],
         [-1.932926590026594, 35.898198717784155],
         [-1.8983561543640837, 37.846606198583515],
         [-1.0556577358915145, 37.87346953844301]
-      ],
-      "type": "Polygon"
-    },
-    "lat": -1.5105787246990245,
-    "leaflet_id": 316,
-    "lon": 36.94255396750541,
-    "searched": false,
-    "selected": true,
-    "type": "manual"
+      ]
+    }
   },
-  "geo_type": "manuel",
   "manager_id": 25,
   "name": "test"
 }

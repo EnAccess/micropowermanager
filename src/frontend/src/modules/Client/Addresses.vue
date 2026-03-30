@@ -5,7 +5,7 @@
       :title="$tc('words.address', 1)"
       :button="true"
       :button-text="$tc('phrases.newAddress')"
-      color="green"
+      color="primary"
       @widgetAction="addNewAddress"
       :paginator="addresses.paginator"
       :subscriber="subscriber"
@@ -115,6 +115,7 @@
                 enabledCountryCode="true"
                 v-model="newAddress.phone"
                 @validate="validatePhone"
+                @input="onPhoneInput"
               ></vue-tel-input>
               <span
                 v-if="!phone.valid && firstStepClicked"
@@ -152,10 +153,10 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { Address, Addresses } from "@/services/AddressService"
+import { Address, Addresses } from "@/services/AddressService.js"
+import { CityService } from "@/services/CityService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { CityService } from "@/services/CityService"
 
 export default {
   name: "Addresses",
@@ -229,18 +230,27 @@ export default {
         this.modalVisibility = false
 
         if (this.editFlag) {
-          this.addresses.updateAddress(this.newAddress).then((response) => {
-            this.addresses.list = this.addresses.list.map(function (item) {
-              if (response.data.data.is_primary === 1) {
-                item.primary = false
-              }
-              if (item.id === response.data.data.id) {
-                let updatedAddress = new Address()
-                return updatedAddress.fromJson(response.data.data)
-              }
-              return item
+          this.addresses
+            .updateAddress({
+              id: this.newAddress.id,
+              email: this.newAddress.email,
+              street: this.newAddress.street,
+              phone: this.newAddress.phone,
+              city_id: this.newAddress.city_id,
+              is_primary: this.newAddress.primary,
             })
-          })
+            .then((response) => {
+              this.addresses.list = this.addresses.list.map(function (item) {
+                if (response.data.data.is_primary === 1) {
+                  item.primary = false
+                }
+                if (item.id === response.data.data.id) {
+                  let updatedAddress = new Address()
+                  return updatedAddress.fromJson(response.data.data)
+                }
+                return item
+              })
+            })
         } else {
           this.addresses.newAddress(this.newAddress).then((response) => {
             this.addresses.appendList(response.data.data)
@@ -250,6 +260,9 @@ export default {
       }
     },
     validatePhone(phone) {
+      this.phone = phone
+    },
+    onPhoneInput(_, phone) {
       this.phone = phone
     },
     validateNewAddress() {
@@ -292,7 +305,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped lang="scss">
 .address-edit-container {
   padding: 1rem;
 }

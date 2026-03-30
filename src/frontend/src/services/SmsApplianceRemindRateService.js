@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsApplianceRemindRateRepository from "@/repositories/SmsApplianceRemindRateRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SmsApplianceRemindRateRepository from "@/repositories/SmsApplianceRemindRateRepository.js"
 
 export class SmsApplianceRemindRateService {
   constructor() {
@@ -11,6 +11,8 @@ export class SmsApplianceRemindRateService {
       applianceType: null,
       overdueRemindRate: null,
       remindRate: null,
+      enabled: false,
+      createTicket: false,
     }
   }
   fromJson(applianceTypes) {
@@ -21,7 +23,7 @@ export class SmsApplianceRemindRateService {
       this.smsApplianceRemindRate = {
         id:
           applianceType.sms_reminder_rate == null ||
-          applianceTypes.sms_reminder_rate === undefined
+          applianceType.sms_reminder_rate === undefined
             ? -1 * Math.floor(Math.random() * 10000000)
             : applianceType.sms_reminder_rate.id,
         applianceTypeId: applianceType.id,
@@ -36,6 +38,16 @@ export class SmsApplianceRemindRateService {
           applianceType.sms_reminder_rate === undefined
             ? 0
             : applianceType.sms_reminder_rate.remind_rate,
+        enabled:
+          applianceType.sms_reminder_rate == null ||
+          applianceType.sms_reminder_rate === undefined
+            ? false
+            : !!applianceType.sms_reminder_rate.enabled,
+        createTicket:
+          applianceType.sms_reminder_rate == null ||
+          applianceType.sms_reminder_rate === undefined
+            ? false
+            : !!applianceType.sms_reminder_rate.create_ticket,
       }
       return this.smsApplianceRemindRate
     })
@@ -61,6 +73,8 @@ export class SmsApplianceRemindRateService {
         appliance_type_id: this.smsApplianceRemindRate.applianceTypeId,
         overdue_remind_rate: this.smsApplianceRemindRate.overdueRemindRate,
         remind_rate: this.smsApplianceRemindRate.remindRate,
+        enabled: this.smsApplianceRemindRate.enabled,
+        create_ticket: this.smsApplianceRemindRate.createTicket,
       }
       let response
       if (smsApplianceRemindRatePm.id < 0) {
@@ -69,6 +83,20 @@ export class SmsApplianceRemindRateService {
         response = await this.repository.update(smsApplianceRemindRatePm)
       }
       if (response.status === 200) {
+        return response.data.data
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+  async deleteSmsApplianceRemindRate(id) {
+    try {
+      let response = await this.repository.delete(id)
+      if (response.status === 200) {
+        this.fromJson(response.data.data)
         return response.data.data
       } else {
         return new ErrorHandler(response.error, "http", response.status)

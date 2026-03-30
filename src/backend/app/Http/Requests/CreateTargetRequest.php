@@ -13,10 +13,10 @@ class CreateTargetRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'data' => 'required',
-            'period' => 'required',
-            'targetForType' => 'required|string',
-            'targetForId' => 'required|numeric|min:1',
+            'data' => ['required'],
+            'period' => ['required'],
+            'targetForType' => ['required', 'string'],
+            'targetForId' => ['required', 'numeric', 'min:1'],
         ];
     }
 

@@ -153,12 +153,12 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { AgentDashboardService } from "@/services/AgentDashboardService.js"
 import Box from "@/shared/Box.vue"
-import Widget from "@/shared/Widget.vue"
 import ChartCard from "@/shared/ChartCard.vue"
-import { AgentDashboardService } from "@/services/AgentDashboardService"
-import { notify } from "@/mixins/notify"
-import { currency } from "@/mixins/currency"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AgentPerformanceDashboard",
@@ -221,7 +221,6 @@ export default {
         vAxis: {
           title: this.$tc("words.value"),
         },
-        colors: ["#26c6da", "#ffa726"],
         legend: { position: "top" },
         height: 400,
         width: "100%",
@@ -265,7 +264,7 @@ export default {
     },
     formatCurrency(amount) {
       const currency =
-        this.$store.getters["settings/getMainSettings"]?.currency || "TSZ"
+        this.$store.getters["settings/getMainSettings"]?.currency || "TZS"
       return this.readable(amount) + currency
     },
   },

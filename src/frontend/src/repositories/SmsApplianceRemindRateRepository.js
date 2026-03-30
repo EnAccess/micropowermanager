@@ -1,7 +1,6 @@
-import Client from "@/repositories/Client/AxiosClient"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 
-const resource = `${baseUrl}/api/sms-appliance-remind-rate`
+const resource = `/api/sms-appliance-remind-rate`
 
 export default {
   list() {
@@ -15,5 +14,8 @@ export default {
   },
   create(smsApplianceRemindRate) {
     return Client.post(`${resource}`, smsApplianceRemindRate)
+  },
+  delete(id) {
+    return Client.delete(`${resource}/${id}`)
   },
 }

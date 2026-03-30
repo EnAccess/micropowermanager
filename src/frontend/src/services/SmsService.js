@@ -1,11 +1,10 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import { EventBus } from "@/shared/eventbus"
-
-import ConnectionTypeRepository from "@/repositories/ConnectionTypeRepository"
-import ConnectionGroupsRepository from "@/repositories/ConnectionGroupsRepository"
-import SmsRepository from "@/repositories/SmsRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import ConnectionGroupsRepository from "@/repositories/ConnectionGroupsRepository.js"
+import ConnectionTypeRepository from "@/repositories/ConnectionTypeRepository.js"
+import SmsRepository from "@/repositories/SmsRepository.js"
+import { resources } from "@/resources.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class SmsService {
   constructor() {
@@ -130,16 +129,17 @@ export class SmsService {
   }
 
   async sendMaintenanceSms(maintenanceData) {
+    console.log("maintenanceData: ", maintenanceData)
     try {
       let sendSmsPM = {
-        person_id: maintenanceData.assigned.person.id,
+        person_id: maintenanceData.assigned.id,
         message:
           maintenanceData.description +
           "\n Amount : " +
           maintenanceData.amount +
           "\n Due Date " +
           maintenanceData.dueDate,
-        senderId: maintenanceData.id,
+        senderId: maintenanceData.creator,
       }
       let response = await this.repository.send(sendSmsPM, "single")
       if (response.status === 200 || response.status === 201) {
@@ -168,7 +168,18 @@ export class SmsService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      return new ErrorHandler(e, "http")
+      if (e.response.status === 422) {
+        return new ErrorHandler(
+          e.response.data.message,
+          "http",
+          e.response.status,
+        )
+      }
+      return new ErrorHandler(
+        e.response.data.message,
+        "http",
+        e.response.status,
+      )
     }
   }
 
@@ -186,7 +197,18 @@ export class SmsService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      return new ErrorHandler(e, "http")
+      if (e.response.status === 422) {
+        return new ErrorHandler(
+          e.response.data.message,
+          "http",
+          e.response.status,
+        )
+      }
+      return new ErrorHandler(
+        e.response.data.message,
+        "http",
+        e.response.status,
+      )
     }
   }
 

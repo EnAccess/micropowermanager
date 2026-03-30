@@ -38,6 +38,7 @@ class SubTarget extends BaseModel {
     /**
      * @return BelongsTo<ConnectionGroup, $this>
      */
+    // FIXME: Yepp... `connectionType` actually relates to `ConnectionGroup`
     public function connectionType(): BelongsTo {
         return $this->belongsTo(ConnectionGroup::class, 'connection_id');
     }

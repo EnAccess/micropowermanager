@@ -11,7 +11,13 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        $tableNames = config('permission.table_names');
+        $tableNames = [
+            'roles' => 'roles_permission',
+            'permissions' => 'permissions',
+            'model_has_permissions' => 'model_has_permissions',
+            'model_has_roles' => 'model_has_roles',
+            'role_has_permissions' => 'role_has_permissions',
+        ];
 
         Schema::connection('tenant')->create($tableNames['permissions'], function (Blueprint $table) {
             $table->increments('id');
@@ -77,7 +83,13 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        $tableNames = config('permission.table_names');
+        $tableNames = [
+            'roles' => 'roles_permission',
+            'permissions' => 'permissions',
+            'model_has_permissions' => 'model_has_permissions',
+            'model_has_roles' => 'model_has_roles',
+            'role_has_permissions' => 'role_has_permissions',
+        ];
 
         Schema::connection('tenant')->drop($tableNames['role_has_permissions']);
         Schema::connection('tenant')->drop($tableNames['model_has_roles']);

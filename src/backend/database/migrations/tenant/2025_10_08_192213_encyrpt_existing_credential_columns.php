@@ -33,10 +33,10 @@ return new class extends Migration {
 
         foreach ($credentialTables as $tableName => $fields) {
             if (Schema::connection('tenant')->hasTable($tableName)) {
-                // Increase column size to 255 for all credential fields
+                // Change column type to text for all credential fields
                 Schema::connection('tenant')->table($tableName, function (Blueprint $table) use ($fields) {
                     foreach ($fields as $field) {
-                        $table->string($field, 500)->nullable()->change();
+                        $table->text($field)->nullable()->change();
                     }
                 });
 

@@ -2,60 +2,71 @@
   <widget
     :title="$tc('words.detail', 2)"
     :button="true"
-    :button-text="$tc('phrases.deleteCustomer', 0)"
+    :button-text="$tc('phrases.deleteCustomer', 1)"
     @widgetAction="confirmDelete"
     button-icon="delete"
     :show-spinner="false"
   >
     <md-card>
       <md-card-content>
-        <div class="md-layout md-gutter" v-if="!editPerson">
-          <div
-            class="md-layout-item md-large-size-15 md-medium-size-20 md-small-size-25"
-          >
-            <md-icon class="md-size-3x">account_circle</md-icon>
+        <div class="md-layout md-gutter md-alignment-center" v-if="!editPerson">
+          <div class="md-layout-item">
+            <div class="md-layout md-alignment-center-left">
+              <div class="md-layout-item md-size-20">
+                <md-avatar class="md-avatar-icon md-large">
+                  {{ initials }}
+                </md-avatar>
+              </div>
+              <div class="md-layout-item">
+                <h2>
+                  {{ this.personService.person.title }}
+                  {{ this.personService.person.name }}
+                  {{ this.personService.person.surname }}
+                </h2>
+              </div>
+            </div>
           </div>
-          <div class="md-layout-item md-size-65">
-            <h3>
-              {{ this.personService.person.title }}
-              {{ this.personService.person.name }}
-              {{ this.personService.person.surname }}
-            </h3>
-          </div>
-          <div
-            class="md-layout-item md-large-size-20 md-medium-size-15 md-small-size-10"
-          >
+
+          <div class="md-layout-item md-size-20">
             <md-button
               @click="editPerson = true"
-              class="md-icon-button"
+              class="md-icon-button md-raised"
               style="float: right"
             >
               <md-icon>create</md-icon>
             </md-button>
           </div>
-          <div class="md-layout-item md-size-100">&nbsp;</div>
-          <div class="md-layout-item md-size-15">
-            <md-icon>wc</md-icon>
-            {{ $tc("words.gender") }}:
-          </div>
-          <div class="md-layout-item md-size-15">
-            {{ this.personService.person.gender }}
-          </div>
 
-          <div class="md-layout-item md-size-20">
-            <md-icon>school</md-icon>
-            &nbsp;{{ $tc("words.education") }}:
-          </div>
-          <div class="md-layout-item md-size-15">
-            {{ this.personService.person.education }}
-          </div>
-
-          <div class="md-layout-item md-size-15">
-            <md-icon>cake</md-icon>
-            &nbsp;{{ $tc("words.birthday") }}:
-          </div>
-          <div class="md-layout-item md-size-15">
-            {{ this.personService.person.birthDate }}
+          <div class="md-layout-item md-size-100">
+            <md-list class="md-double-line">
+              <md-list-item>
+                <md-icon>wc</md-icon>
+                <div class="md-list-item-text">
+                  <span>{{ $tc("words.gender") }}</span>
+                  <span>{{ this.personService.person.gender || "N/A" }}</span>
+                </div>
+              </md-list-item>
+              <md-divider></md-divider>
+              <md-list-item>
+                <md-icon>school</md-icon>
+                <div class="md-list-item-text">
+                  <span>{{ $tc("words.education") }}</span>
+                  <span>
+                    {{ this.personService.person.education || "N/A" }}
+                  </span>
+                </div>
+              </md-list-item>
+              <md-divider></md-divider>
+              <md-list-item>
+                <md-icon>cake</md-icon>
+                <div class="md-list-item-text">
+                  <span>{{ $tc("words.birthday") }}</span>
+                  <span>
+                    {{ this.personService.person.birthDate || "N/A" }}
+                  </span>
+                </div>
+              </md-list-item>
+            </md-list>
           </div>
         </div>
 
@@ -138,6 +149,9 @@
                   <md-option value="female">
                     {{ $tc("words.female") }}
                   </md-option>
+                  <md-option value="non-binary">
+                    {{ $tc("words.nonBinary") }}
+                  </md-option>
                 </md-select>
               </md-field>
               <md-field>
@@ -177,8 +191,8 @@
 </template>
 
 <script>
+import { PersonService } from "@/services/PersonService.js"
 import Widget from "@/shared/Widget.vue"
-import { PersonService } from "@/services/PersonService"
 
 export default {
   name: "ClientPersonalData",
@@ -199,6 +213,17 @@ export default {
   mounted() {
     this.personService.person = this.person
   },
+  computed: {
+    initials() {
+      const person = this.personService.person
+      if (!person) return ""
+
+      const first = person.name?.charAt(0) ?? ""
+      const last = person.surname?.charAt(0) ?? ""
+
+      return (first + last).toUpperCase()
+    },
+  },
   methods: {
     async updatePerson() {
       const validator = await this.$validator.validateAll()
@@ -210,7 +235,7 @@ export default {
         title: this.personService.person.title,
         education: this.personService.person.education,
         birthDate: this.personService.person.birthDate,
-        sex: this.personService.person.gender,
+        gender: this.personService.person.gender,
       }
       await this.personService.updatePerson(personParams)
       this.editPerson = false
@@ -218,42 +243,33 @@ export default {
     confirmDelete() {
       this.$swal({
         type: "question",
-        title: this.$tc("phrases.deleteCustomer", 0),
+        title: this.$tc("phrases.deleteCustomer", 1),
+        text: this.$tc("phrases.deleteCustomerNotify", 0, {
+          name: this.personService.person.name,
+          surname: this.personService.person.surname,
+        }),
         width: "35%",
         confirmButtonText: this.$tc("words.confirm"),
         showCancelButton: true,
         cancelButtonText: this.$tc("words.cancel"),
         focusCancel: true,
-        html:
-          '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
-          "  <label>" +
-          '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-          this.$tc("phrases.deleteCustomerNotify", 0, {
-            name: this.personService.person.name,
-            surname: this.personService.person.surname,
-          }) +
-          "  </label>" +
-          "</div>",
       }).then((result) => {
-        let answer = document.getElementById("confirmation").checked
-        if ("value" in result) {
-          //delete customer
-          if (answer) {
-            this.deletePerson()
-          } else {
-            //not confirmed
-          }
+        if (result.value) {
+          this.deletePerson()
         }
       })
     },
-    deletePerson() {
-      this.personService
-        .deletePerson(this.personService.person.id)
-        .then((response) => {
-          if (response.status === 200) {
-            this.showConfirmation()
-          }
+    async deletePerson() {
+      try {
+        await this.personService.deletePerson(this.personService.person.id)
+        this.showConfirmation()
+      } catch (error) {
+        this.$swal({
+          type: "error",
+          title: this.$tc("phrases.error"),
+          text: error.message || "Failed to delete customer",
         })
+      }
     },
     showConfirmation() {
       const Toast = this.$swal.mixin({
@@ -280,4 +296,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped lang="scss"></style>

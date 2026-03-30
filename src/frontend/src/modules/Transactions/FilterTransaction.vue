@@ -113,13 +113,6 @@
       </md-card-content>
       <md-card-actions>
         <md-button
-          class="md-raised md-secondary"
-          v-if="!loading"
-          @click="exportTransactions"
-        >
-          <md-icon>download</md-icon>
-        </md-button>
-        <md-button
           class="md-raised md-primary"
           v-if="!loading"
           @click="submitFilter"
@@ -136,18 +129,18 @@
 </template>
 
 <script>
-import { TransactionService } from "@/services/TransactionService"
-import { TariffService } from "@/services/TariffService"
-import { EventBus } from "@/shared/eventbus"
-import { TransactionProviderService } from "@/services/TransactionProviderService"
 import { mapGetters } from "vuex"
-import moment from "moment-timezone"
-import store from "@/store/store"
-import { TransactionExportService } from "@/services/TransactionExportService"
-import { notify } from "@/mixins"
-import { MiniGridService } from "@/services/MiniGridService"
-import { CityService } from "@/services/CityService"
-import { CurrencyListService } from "@/services/CurrencyListService"
+
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { CurrencyListService } from "@/services/CurrencyListService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { TariffService } from "@/services/TariffService.js"
+import { TransactionExportService } from "@/services/TransactionExportService.js"
+import { TransactionProviderService } from "@/services/TransactionProviderService.js"
+import { TransactionService } from "@/services/TransactionService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import store from "@/store/store.js"
 
 export default {
   name: "FilterTransaction",
@@ -190,9 +183,7 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.deviceType) {
-      this.selectedDevice = this.$route.query.deviceType
-    }
+    this.hydrateFromRoute(this.$route.query)
   },
   mounted() {
     this.getTariffs()
@@ -209,6 +200,71 @@ export default {
       store.getters["settings/getMainSettings"].currency
   },
   methods: {
+    hydrateFromRoute(query) {
+      // Reset to defaults first
+      this.selectedProvider = "-1"
+      this.selectedDevice = "meter"
+      this.selectedTariff = this.tariffs[0]?.id || "all"
+      this.transaction_ = "All"
+      this.filterFrom = null
+      this.filterTo = null
+      this.filter = {
+        status: null,
+        tariff: null,
+        provider: null,
+        from: null,
+        to: null,
+        deviceType: null,
+      }
+
+      if (query.deviceType) {
+        this.selectedDevice = query.deviceType
+      }
+      this.filter.deviceType = this.selectedDevice
+
+      if (query.provider) {
+        this.selectedProvider = query.provider
+        this.filter.provider = query.provider
+      }
+
+      if (query.status) {
+        if (String(query.status) === "1") {
+          this.transaction_ = "Only Approved"
+          this.filter.status = "1"
+        } else if (String(query.status) === "-1") {
+          this.transaction_ = "Only Rejected"
+          this.filter.status = "-1"
+        } else {
+          this.transaction_ = "All"
+          this.filter.status = null
+        }
+      }
+
+      if (query.tariff) {
+        this.filter.tariff = query.tariff
+        this.selectedTariff = query.tariff
+      }
+
+      if (query.from) {
+        const [fromDateStr] = String(query.from).split(" ")
+        this.filterFrom = new Date(fromDateStr)
+        this.filter.from = query.from
+      }
+      if (query.to) {
+        const [toDateStr] = String(query.to).split(" ")
+        this.filterTo = new Date(toDateStr)
+        this.filter.to = query.to
+      }
+    },
+    reloadList() {
+      this.loading = false
+    },
+    searching() {
+      this.loading = true
+    },
+    endSearching() {
+      this.loading = false
+    },
     async getTariffs() {
       let tariffs = await this.tariffService.getTariffs()
       tariffs.forEach((e) => {
@@ -261,52 +317,6 @@ export default {
       this.adjustFilter()
       this.$emit("searchSubmit", this.filter)
     },
-    async exportTransactions() {
-      this.adjustFilter()
-      const data = {
-        ...this.filter,
-        format: this.exportFilters.format,
-        currency:
-          this.exportFilters.currency ||
-          store.getters["settings/getMainSettings"].currency,
-        timeZone: this.exportFilters.timeZone || moment.tz.guess(),
-        deviceType: this.exportFilters.deviceType,
-        provider: this.exportFilters.provider,
-        status: this.exportFilters.status,
-      }
-
-      // Remove null/empty values
-      Object.keys(data).forEach((key) => {
-        if (data[key] === null || data[key] === "") {
-          delete data[key]
-        }
-      })
-
-      try {
-        const response =
-          await this.transactionExportService.exportTransactions(data)
-        const blob = new Blob([response.data])
-        const downloadUrl = window.URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = downloadUrl
-
-        const contentDisposition = response.headers["content-disposition"]
-        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
-
-        const defaultFileName =
-          data.format === "excel"
-            ? "export_transactions.xlsx"
-            : "export_transactions.csv"
-        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
-
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        window.URL.revokeObjectURL(downloadUrl)
-      } catch (e) {
-        this.alertNotify("error", "Error occurred while exporting transactions")
-      }
-    },
     getSearch() {
       let search = this.$store.getters.search
 
@@ -330,13 +340,23 @@ export default {
       if (this.filter.status === "all") {
         this.filter.status = null
       }
+      this.filter.from = null
+      this.filter.to = null
       if (this.filterFrom !== null) {
         const fromDate = new Date(this.filterFrom)
-        this.filter.from = fromDate.toISOString().split("T")[0] + " 00:00:00"
+        const fromYear = fromDate.getFullYear()
+        const fromMonth = String(fromDate.getMonth() + 1).padStart(2, "0")
+        const fromDay = String(fromDate.getDate()).padStart(2, "0")
+        // Build date range using local calendar date to avoid timezone shifts
+        this.filter.from = `${fromYear}-${fromMonth}-${fromDay} 00:00:00`
       }
       if (this.filterTo !== null) {
         const toDate = new Date(this.filterTo)
-        this.filter.to = toDate.toISOString().split("T")[0] + " 23:59:59"
+        const toYear = toDate.getFullYear()
+        const toMonth = String(toDate.getMonth() + 1).padStart(2, "0")
+        const toDay = String(toDate.getDate()).padStart(2, "0")
+        // Build date range using local calendar date to avoid timezone shifts
+        this.filter.to = `${toYear}-${toMonth}-${toDay} 23:59:59`
       }
     },
     async loadMiniGrids() {
@@ -371,6 +391,10 @@ export default {
   watch: {
     selectedDevice(val) {
       this.filter.deviceType = val
+    },
+    // Keep filter UI in sync with URL when route query changes
+    $route() {
+      this.hydrateFromRoute(this.$route.query)
     },
   },
 }

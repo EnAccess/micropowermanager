@@ -50,7 +50,7 @@
             step="any"
             @change="setCenterPoints"
             maxlength="9"
-            v-validate="'required|decimal:5|max:8'"
+            v-validate="'required|decimal:6'"
           />
           <span class="md-error">
             {{ errors.first($tc("words.latitude")) }}
@@ -72,7 +72,7 @@
             step="any"
             @change="setCenterPoints"
             maxlength="9"
-            v-validate="'required|decimal:5|max:8'"
+            v-validate="'required|decimal:6'"
           />
           <span class="md-error">
             {{ errors.first($tc("words.longitude")) }}
@@ -101,10 +101,10 @@
 </template>
 
 <script>
-import { MapSettingsService } from "@/services/MapSettingsService"
-import { EventBus } from "@/shared/eventbus"
 import SettingsMap from "@/modules/Map/SettingsMap.vue"
-import { MappingService } from "@/services/MappingService"
+import { MappingService } from "@/services/MappingService.js"
+import { MapSettingsService } from "@/services/MapSettingsService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "MapSettings",
@@ -192,7 +192,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped lang="scss">
 .map-area {
   display: block; /* or any other display property you want initially */
 }

@@ -1,13 +1,12 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import store from "@/store/store"
-import meterIcon from "@/assets/icons/meter.png"
-import shsIcon from "@/assets/icons/shs.png"
-import miniGridIcon2 from "@/assets/icons/miniGrid2.png"
-import miniGridIcon from "@/assets/icons/miniGrid.png"
-import villageMarkerIcon from "@/assets/icons/village.png"
 import eBikeIcon from "@/assets/icons/ebike.png"
-
-import MappingRepository from "@/repositories/MappingRepository"
+import meterIcon from "@/assets/icons/meter.png"
+import miniGridIcon from "@/assets/icons/miniGrid.png"
+import miniGridIcon2 from "@/assets/icons/miniGrid2.png"
+import shsIcon from "@/assets/icons/shs.png"
+import villageMarkerIcon from "@/assets/icons/village.png"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import MappingRepository from "@/repositories/MappingRepository.js"
+import store from "@/store/store.js"
 
 export const MARKER_TYPE = {
   METER: "METER",
@@ -61,28 +60,76 @@ export class MappingService {
     try {
       const { data, error, status } = await this.repository.get(name)
       if (status !== 200) return new ErrorHandler(error, "http", status)
-      this.searchedOrDrawnItems = this.filterResultsOut(data, filteredTypes)
+
+      const normalizedFeatures = (data.features || [])
+        .map((f) => this.normalizeFeatureGeometry(f))
+        .filter(Boolean)
+
+      const filteredFeatures = this.filterGeoJSONFeatures(
+        normalizedFeatures,
+        filteredTypes,
+      )
+
+      // Store for list display
+      this.searchedOrDrawnItems = filteredFeatures.map((feature) => ({
+        feature: feature,
+        display_name:
+          feature.properties?.display_name || feature.properties?.name || "",
+        searched: true,
+      }))
+
       return this.searchedOrDrawnItems
     } catch (e) {
-      const errorMessage = e.response.data.message
+      const errorMessage = e.response.data.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
 
-  filterResultsOut(geoData, filteredTypes) {
-    this.searchedOrDrawnItems = []
-    return geoData.filter((data) => {
-      const geoType = data.geojson.type.toLowerCase()
+  filterGeoJSONFeatures(features, filteredTypes) {
+    if (Object.keys(filteredTypes).length === 0) {
+      return features
+    }
 
-      if (
-        Object.keys(filteredTypes).length > 0 &&
-        !(geoType in filteredTypes)
-      ) {
-        return false
-      }
-      data.searched = true
-      return true
+    return features.filter((feature) => {
+      const geoType = feature.geometry?.type?.toLowerCase()
+      return geoType && geoType in filteredTypes
     })
+  }
+
+  /**
+   * Converts non-polygon geometries (Point, LineString) into a Polygon
+   * derived from the feature's bounding box. This ensures downstream code
+   * that expects a polygon geometry always receives one.
+   */
+  normalizeFeatureGeometry(feature) {
+    const polygonTypes = ["Polygon", "MultiPolygon"]
+    if (polygonTypes.includes(feature.geometry?.type)) {
+      return feature
+    }
+
+    // Fall back to bbox → bounding rectangle polygon
+    const bbox = feature.bbox
+    if (!bbox || bbox.length < 4) {
+      console.warn("Feature has no usable geometry or bbox, skipping:", feature)
+      return null
+    }
+
+    const [minLon, minLat, maxLon, maxLat] = bbox
+    return {
+      ...feature,
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [minLon, minLat],
+            [maxLon, minLat],
+            [maxLon, maxLat],
+            [minLon, maxLat],
+            [minLon, minLat],
+          ],
+        ],
+      },
+    }
   }
 
   strToHex(str) {
@@ -152,7 +199,18 @@ export class MappingService {
   }
 
   setGeoData(geoData) {
-    this.geoData = geoData
+    // geoData must be a GeoJSON Feature, FeatureCollection, or array of Features
+    if (Array.isArray(geoData)) {
+      this.geoData = geoData
+    } else if (geoData.type === "FeatureCollection") {
+      this.geoData = geoData.features || []
+    } else if (geoData.type === "Feature") {
+      this.geoData = [geoData]
+    } else {
+      throw new Error(
+        "geoData must be a GeoJSON Feature, FeatureCollection, or array of Features",
+      )
+    }
   }
 
   setConstantMarkerUrl(constantMarkerUrl) {

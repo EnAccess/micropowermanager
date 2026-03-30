@@ -3,7 +3,7 @@
     :hidden="!showAdd"
     :id="'new-connection-type'"
     :title="$tc('phrases.newConnectionType')"
-    color="red"
+    color="secondary"
   >
     <md-card>
       <md-card-content>
@@ -46,10 +46,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { ConnectionTypeService } from "@/services/ConnectionTypeService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { ConnectionTypeService } from "@/services/ConnectionTypeService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewConnectionType",
@@ -98,7 +98,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .full-width {
   width: 100% !important;
 }

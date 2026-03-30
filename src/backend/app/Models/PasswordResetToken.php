@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
  * @property string      $email
  * @property string      $token
- * @property string|null $created_at
+ * @property Carbon|null $created_at
  */
 class PasswordResetToken extends BaseModel {
     protected $table = 'password_resets';

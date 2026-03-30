@@ -7,7 +7,7 @@
       :button="true"
       :title="$tc('phrases.commissionType', 2)"
       @widgetAction="newCommission"
-      color="green"
+      color="primary"
       :subscriber="subscriber"
     >
       <md-progress-bar md-mode="indeterminate" v-if="loading" />
@@ -167,11 +167,12 @@
   </div>
 </template>
 <script>
+import NewCommission from "../Commission/NewCommission.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { AgentCommissionService } from "@/services/AgentCommissionService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { AgentCommissionService } from "@/services/AgentCommissionService"
-import NewCommission from "../Commission/NewCommission"
-import { notify } from "@/mixins/notify"
 export default {
   name: "AgentCommissionList",
   mixins: [notify],
@@ -212,10 +213,20 @@ export default {
       this.showNewCommission = false
     },
     async newCommission() {
+      if (!this.$can("settings")) {
+        this.alertNotify(
+          "error",
+          "You do not have permission to create commissions",
+        )
+        return
+      }
       this.agentCommissionService.resetAgentCommission()
       this.showNewCommission = true
     },
     async getAgentCommissions() {
+      if (!this.$can("settings")) {
+        return
+      }
       try {
         await this.agentCommissionService.getAgentCommissions()
         EventBus.$emit(
@@ -225,10 +236,22 @@ export default {
         )
       } catch (e) {
         this.loading = false
+        if (e.response && e.response.status === 403) {
+          console.warn("Agent commissions: Insufficient permissions")
+          EventBus.$emit("widgetContentLoaded", this.subscriber, 0)
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
     async updateCommission(commission) {
+      if (!this.$can("settings")) {
+        this.alertNotify(
+          "error",
+          "You do not have permission to update commissions",
+        )
+        return
+      }
       try {
         this.loading = true
         await this.agentCommissionService.updateAgentCommission(commission)
@@ -237,6 +260,13 @@ export default {
         this.loading = false
       } catch (e) {
         this.loading = false
+        if (e.response && e.response.status === 403) {
+          this.alertNotify(
+            "error",
+            "You do not have permission to update commissions",
+          )
+          return
+        }
         this.alertNotify("error", e.message)
       }
     },
@@ -283,4 +313,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

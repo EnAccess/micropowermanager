@@ -19,8 +19,8 @@ class CountryRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'country_name' => 'required',
-            'country_code' => 'required|min:2',
+            'country_name' => ['required'],
+            'country_code' => ['required', 'min:2'],
         ];
     }
 }

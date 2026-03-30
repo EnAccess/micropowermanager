@@ -19,14 +19,14 @@ class AndroidAppRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'name' => 'required|min:3',
-            'surname' => 'required|min:3',
-            'phone' => 'required|min:11|regex:(^\+)|numeric',
-            'tariff_id' => 'required',
-            'geo_points' => 'required',
-            'serial_number' => 'required|string',
-            'manufacturer' => 'required',
-            'meter_type' => 'required',
+            'name' => ['required', 'min:3'],
+            'surname' => ['required', 'min:3'],
+            'phone' => ['required', 'min:11', 'regex:(^\+)', 'numeric'],
+            'tariff_id' => ['required'],
+            'geo_points' => ['required'],
+            'serial_number' => ['required', 'string'],
+            'manufacturer' => ['required'],
+            'meter_type' => ['required'],
         ];
     }
 }
