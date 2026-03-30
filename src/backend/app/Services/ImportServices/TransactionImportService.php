@@ -115,6 +115,26 @@ class TransactionImportService extends AbstractImportService {
             $amount = (float) preg_replace('/[^0-9.]/', '', str_replace(',', '', $amount));
         }
 
+        $sentDate = $transactionData['sent_date'] ?? now();
+
+        // Check for duplicate transaction
+        $existingTransaction = Transaction::query()
+            ->where('message', $deviceSerial)
+            ->where('amount', $amount)
+            ->where('created_at', $sentDate)
+            ->first();
+
+        if ($existingTransaction !== null) {
+            return [
+                'success' => true,
+                'transaction' => [
+                    'id' => $existingTransaction->id,
+                    'amount' => $existingTransaction->amount,
+                    'device_serial' => $deviceSerial,
+                ],
+            ];
+        }
+
         // Create the provider-specific transaction record matching the original type
         $transactionType = $transactionData['transaction_type'] ?? ThirdPartyTransaction::RELATION_NAME;
         $originalData = $transactionData['original_transaction'] ?? [];
@@ -127,7 +147,7 @@ class TransactionImportService extends AbstractImportService {
             'type' => Transaction::TYPE_IMPORTED,
             'original_transaction_id' => $originalTransaction->getKey(),
             'original_transaction_type' => $transactionType,
-            'created_at' => $transactionData['sent_date'] ?? now(),
+            'created_at' => $sentDate,
         ]);
 
         return [

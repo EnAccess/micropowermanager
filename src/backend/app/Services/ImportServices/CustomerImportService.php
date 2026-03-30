@@ -136,6 +136,7 @@ class CustomerImportService extends AbstractImportService {
         $addressFields = [
             'email' => $customerData['email'] ?? null,
             'phone' => $customerData['phone'] ?? null,
+            'street' => $customerData['street'] ?? null,
             'city_id' => $cityId,
             'is_primary' => 1,
         ];

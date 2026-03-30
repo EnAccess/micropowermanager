@@ -142,6 +142,8 @@ class DeviceImportService extends AbstractImportService {
                 $existingDevice->update(['person_id' => $personId]);
             }
 
+            $this->updateSpecificDevice($existingDevice, $manufacturer, $deviceInfo);
+
             return [
                 'success' => true,
                 'device' => [
@@ -171,6 +173,43 @@ class DeviceImportService extends AbstractImportService {
                 'type' => $device->device_type,
             ],
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $deviceInfo
+     */
+    private function updateSpecificDevice(Device $device, ?Manufacturer $manufacturer, array $deviceInfo): void {
+        $specificDevice = $device->device;
+
+        $updates = [];
+        if ($manufacturer instanceof Manufacturer) {
+            $updates['manufacturer_id'] = $manufacturer->id;
+        }
+
+        if ($specificDevice instanceof Meter) {
+            if (!empty($deviceInfo['connection_type'])) {
+                $updates['connection_type_id'] = $this->resolveConnectionTypeId($deviceInfo['connection_type']);
+            }
+            if (!empty($deviceInfo['connection_group'])) {
+                $updates['connection_group_id'] = $this->resolveConnectionGroupId($deviceInfo['connection_group']);
+            }
+            if (!empty($deviceInfo['tariff'])) {
+                $updates['tariff_id'] = $this->resolveTariffId($deviceInfo['tariff']);
+            }
+            if (isset($deviceInfo['meter_type'])) {
+                $updates['meter_type_id'] = $this->resolveMeterTypeId($deviceInfo['meter_type']);
+            }
+        } elseif ($specificDevice instanceof SolarHomeSystem) {
+            if (!empty($deviceInfo['appliance'])) {
+                $updates['appliance_id'] = $this->resolveApplianceId($deviceInfo['appliance']);
+            }
+        } elseif (!empty($deviceInfo['appliance'])) {
+            $updates['appliance_id'] = $this->resolveApplianceId($deviceInfo['appliance']);
+        }
+
+        if ($updates !== []) {
+            $specificDevice->update($updates);
+        }
     }
 
     /**

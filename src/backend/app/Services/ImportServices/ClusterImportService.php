@@ -135,7 +135,13 @@ class ClusterImportService extends AbstractImportService {
             $miniGrid = MiniGrid::query()->where('cluster_id', $cluster->id)->first();
             $country = Country::query()->first();
 
-            if ($miniGrid !== null && $country !== null) {
+            if ($miniGrid === null || $country === null) {
+                Log::warning('Skipping village import for cluster: missing mini-grid or country', [
+                    'cluster' => $clusterName,
+                    'has_mini_grid' => $miniGrid !== null,
+                    'has_country' => $country !== null,
+                ]);
+            } else {
                 foreach ($villageNames as $villageName) {
                     if ($villageName === '') {
                         continue;
