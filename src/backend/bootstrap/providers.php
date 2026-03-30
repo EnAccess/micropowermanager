@@ -31,12 +31,14 @@ use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServi
 use App\Providers\ApiKeyServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\HorizonServiceProvider;
+use App\Providers\QueueServiceProvider;
 use App\Providers\ServicesProvider;
 
 return [
     ApiKeyServiceProvider::class,
     AppServiceProvider::class,
     HorizonServiceProvider::class,
+    QueueServiceProvider::class,
     ServicesProvider::class,
     AfricasTalkingServiceProvider::class,
     TextbeeSmsGatewayServiceProvider::class,
