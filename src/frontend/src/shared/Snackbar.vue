@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   data() {
@@ -39,7 +39,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-snackbar.md-success {
   background-color: #4caf50 !important;
 }

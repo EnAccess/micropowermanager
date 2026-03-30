@@ -21,8 +21,8 @@ class CreateAgentChargeRequest extends FormRequest {
         // TODO: Change on UI.  user_id is not required.
 
         return [
-            'agent_id' => 'required',
-            'amount' => 'required|numeric',
+            'agent_id' => ['required'],
+            'amount' => ['required', 'numeric'],
         ];
     }
 }

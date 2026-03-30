@@ -1,0 +1,11 @@
+meta {
+  name: Export Appliances Data Excel
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/appliances
+  body: none
+  auth: inherit
+}

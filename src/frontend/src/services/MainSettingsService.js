@@ -1,9 +1,9 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import MainSettingsRepository from "@/repositories/MainSettingsRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import {
   convertObjectKeysToCamelCase,
   convertObjectKeysToSnakeCase,
-} from "@/Helpers/Utils"
+} from "@/Helpers/Utils.js"
+import MainSettingsRepository from "@/repositories/MainSettingsRepository.js"
 
 export class MainSettingsService {
   constructor() {
@@ -18,6 +18,8 @@ export class MainSettingsService {
       vatEnergy: null,
       vatAppliance: null,
       usageType: null,
+      smsGatewayId: null,
+      transactionSmsEnabled: true,
       protectedPagePassword: null,
     }
   }

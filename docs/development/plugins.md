@@ -12,77 +12,62 @@ integrating a plugin for MicroPowerManager (MPM).
 Plugins are modular components that extend MPM's functionality.
 Each plugin consists of:
 
-- Backend package (`src/backend/packages/inensus/{plugin-name}`)
+- Backend package (`src/backend/app/Plugins/{plugin-name}`)
 - Frontend module (`src/frontend/src/plugins/{plugin-name}`)
 
 ## Quick Start
 
 1. **Prerequisites**
-   - Running MPM development environment
-   - Docker installed and running
+   - Running [advanced development environment](development-environment.md#advanced-development-environment) with local PHP installation
    - Basic knowledge of Laravel and Vue.js
 
 2. **Create Plugin Template**
 
-   ```bash
-   # Access the backend container
-   docker exec -it -u www-data backend-dev bash
+   From the root directory of MicroPowerManager in your local development environment, run the following command:
 
-   # Generate plugin template
-   php artisan micropowermanager:new-package {plugin-name}
+   ```bash
+   cd src/backend
+   php artisan micropowermanager:new-plugin {plugin-name}
    ```
 
+   Replace `{plugin-name}` with the desired name of your plugin.
+
    This command:
-   - Creates backend package in `src/backend/packages/inensus/{plugin-name}`
-   - Generates frontend module template
-   - Sets up basic file structure
+   - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
+   - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
+   - Automatically generates and registers a new plugin id
+   - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
 3. **Post-Creation Setup**
-   - Move the generated UI folder to `src/frontend/src/plugins/{plugin-name}`
    - Review generated code structure
    - Follow integration steps below
 
 4. **Example Plugins**
    Check existing plugins for reference:
    - Payment providers (e.g., Calin, Vodacom)
-   - Meter manufacturers (e.g., Stima, Spark)
+   - Meter manufacturers (e.g., SteamaCo, Spark)
+   - SHS manufacturers (e.g., SunKingSHS, Spark SHS)
    - Feature plugins (e.g., Asset Management)
 
 ## Integration Steps
 
-Follow these steps in order to integrate your plugin with MPM:
+The following steps describe how your plugin is integrated with MicroPowerManager.
 
-### Step 1: Backend Integration
+Most of the fundamental boilerplate setup is handled automatically when you run the `artisan micropowermanager:new-plugin` command.
+We won’t go into those generated details here as you can always inspect the changes using git diff to understand what was created behind the scenes.
 
-The backend integration process involves several key steps to
-make your plugin discoverable and functional within MPM.
+This guide focuses on the custom integration steps required to extend and connect your plugin to the system.
 
-#### 1.1 Register Service Provider
+### Backend Integration
 
-Add your plugin's service provider to the application's service providers definition:
+The backend integration process involves several key steps to make your plugin discoverable and functional within MicroPowerManager.
 
-```php
-// src/backend/bootstrap/providers
+#### Register API Routes
 
-return [
-    /*
-    * Application Service Providers...
-    */
-    App\Providers\AppServiceProvider::class,
-
-    // ...other providers
-    Inensus\YourPlugin\Providers\YourPluginServiceProvider::class,
-];
-
-```
-
-#### 1.2 Register API Routes (Optional)
-
-If your plugin needs to handle API requests (e.g., webhooks, custom endpoints),
-register your route resolver:
+If your plugin needs to handle API requests (e.g., webhooks, custom endpoints), register your route resolver:
 
 ```php
-// src/backend/app/modules/TenantResolver/ApiResolvers/Data/ApiResolvers
+// src/backend/app/Services/ApiResolvers/Data/ApiResolvers
 
 class ApiResolverMap {
     // ...other API constants
@@ -108,224 +93,80 @@ class ApiResolverMap {
 }
 ```
 
-#### 1.3 Register Plugin in Core
+#### Database Setup
 
-Add your plugin to the MPM plugins model to make it discoverable by the system:
+Your plugin will might need several database migrations to integrate with MPM:
 
-```php
-// src/backend/app/Models/MpmPlugin.php
+##### Create Plugin Tables
 
-<?php
+If your plugin needs to create database tables, the migrations should be placed in the `database/migrations` folder.
 
-namespace App\Models;
+The recommended way to create a migration is by using the following command:
 
-use App\Models\Base\BaseModelCore;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class MpmPlugin extends BaseModelCore {
-    use HasFactory;
-    // ...other plugin constants
-    public const YOUR_PLUGIN = 19; // Add your plugin ID (increment sequentially)
-
-    protected $table = 'mpm_plugins';
-
-    public function plugins() {
-        return $this->hasMany(Plugins::class);
-    }
-}
+```sh
+php artisan make:migration-tenant create_your_plugin_table
 ```
 
-#### 1.4 Database Setup
+This ensures the migration is generated with the correct configuration for the multi-tenant environment used by MPM.
 
-Your plugin will need several database migrations to integrate with MPM:
+#### Customise Installation Command
 
-##### a. Register Plugin Pages
+The package generation command already creates a basic plugin installation command.
 
-First, register your plugin's pages to make them accessible:
+This command is executed when a user enables your plugin for the first time via the plugin settings menu.
 
-Create a migration to register your plugin's overview page:
+If your plugin requires additional one-time configuration, such as
+
+- creating default credentials
+- performing initial setup tasks
+
+you can adapt and customize the installation command accordingly.
 
 ```php
 <?php
-
-use Carbon\Carbon;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
-
-return new class extends Migration {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
-        DB::table('protected_pages')->insert([
-            [
-                'name' => '/your-plugin/your-plugin-overview',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
-        DB::table('protected_pages')->where('name', '/your-plugin/your-plugin-overview')->delete();
-    }
-};
-```
-
-##### b. Create and Publish Plugin Tables
-
-Next, create the database tables should be created in the package `database/migrations`
-folder as stubs to be pulished:
-
-```bash
-src
-└── backend
-    └── packages
-        └── inensus
-            └── your_plugin_example
-                └── database
-                    └── migrations
-                        └── create_custom_tables.php.stub
-
-```
-
-The generated migrations and other assets will be stored in your plugin's directory.
-To make them available to the core application,
-publish them using Laravel's vendor:publish command:
-
-```bash
-# Publish migrations
-php artisan vendor:publish
---provider="Inensus\YourPlugin\Providers\YourPluginServiceProvider" --tag="migrations"
-
-# You can also publish other assets like config files, views, etc.
-# Just add the appropriate tags in your ServiceProvider
-```
-
-##### c. Register Plugin in System
-
-Finally, add your plugin to MPM's plugin registry:
-
-Create a migration to add your plugin to the `mpm_plugins` table:
-
-```php
-<?php
-
-use App\Models\MpmPlugin;
-use Carbon\Carbon;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
-
-return new class extends Migration {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
-        DB::table('mpm_plugins')->insert([
-            [
-                'id' => MpmPlugin::YOUR_PLUGIN,
-                'name' => 'YourPlugin',
-                'description' => 'This plugin developed for
-                [describe your plugin functionality].',
-                'tail_tag' => 'Your Plugin',
-                'installation_command' => 'your-plugin:install',
-                'root_class' => 'YourPlugin',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
-        DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::YOUR_PLUGIN)
-            ->delete();
-    }
-};
-```
-
-#### 1.5 Create Installation Command
-
-Create a command that will handle your plugin's installation process.
-This command should:
-
-- Publish plugin assets (migrations, configs, views) using vendor:publish
-- Run necessary migrations
-- Set up initial configuration
-- Register required services
-
-The installation command typically runs after publishing assets:
-
-```php
-<?php
-
-namespace Inensus\YourPlugin\Console\Commands;
+namespace App\Plugins\NewTestPlugin\Console\Commands;
 
 use Illuminate\Console\Command;
-use Inensus\YourPlugin\Services\YourPluginService;
 
-class InstallPackage extends Command {
-    protected $signature = 'your-plugin:install';
-    protected $description = 'Install YourPlugin Package';
+class InstallPackage extends Command
+{
+    protected $signature = 'new-test-plugin:install';
+    protected $description = 'Install NewTestPlugin Package';
 
-    public function __construct(
-        private YourPluginService $pluginService,
-    ) {
+    public function __construct() {
         parent::__construct();
     }
 
-    public function handle(): void {
-        $this->info('Installing YourPlugin Integration Package\n');
-        $this->pluginService->initialize();
+    public function handle(): void
+    {
+        $this->info('Installing NewTestPlugin Integration Package\n');
+
+        // Here you can add plugin initialisation code.
+        // For example creating initial plugin credentials in the database
+        // or registering a Manufacurer with MicroPowerManager.
+
         $this->info('Package installed successfully..');
     }
 }
 ```
 
-#### 1.6 Configure Autoloading
+### Frontend Integration
 
-Add your plugin's namespace to composer's autoload configuration:
+This section describe how to integrate your plugin with the MicroPowerManager frontend.
 
-```json
-"autoload-dev": {
-  "psr-4": {
-    "Inensus\\YourPlugin\\": "packages/inensus/your-plugin/src",
-  }
-}
-```
+#### Add Plugin Routes
 
-After adding the autoload entry, run:
+The package generation command creates a default Overview page and registers a frontend route, making your plugin accessible and visible in the application sidebar.
 
-```bash
-composer dump-autoload
-```
+![New Plugin Sidebar](images/new-plugin-sidebar.png)
 
-### Step 2: Frontend Integration
-
-The frontend integration makes your plugin visible and accessible in the MPM interface.
-
-#### 2.1 Add Plugin Routes
-
-Add your plugin's routes to the exported routes:
+If your plugin requires a more complex routing or sidebar structure, you can modify your plugin’s section in `ExportedRoutes.js` accordingly.
+The sidebar icon can also be customized in this file to better match your plugin’s functionality or branding.
 
 ```js
 // src/frontend/src/ExportedRoutes.js
 
-import YourPluginOverview from "./plugins/your-plugin/js/modules/Overview/Overview"
+import YourPluginOverview from "./plugins/your-plugin/modules/Overview/Overview"
 
 export const exportedRoutes = [
   // ...other routes
@@ -357,25 +198,57 @@ export const exportedRoutes = [
 ]
 ```
 
-#### 2.2 Register Components
+#### Customising the Registration Tail
 
-Register your plugin's Vue components in the main app:
+The Registration Trail is displayed after each login once your plugin has been enabled by a user.
+Its purpose is to indicate that additional configuration steps may still be required.
+
+The component shown in the trail is configured by registering a global component within your plugin’s namespace in `main.js`.
+
+By default, the package generation command registers the plugin’s overview page.
+
+![New Plugin Registration Tail](images/new-plugin-registration-tail.png)
+
+However, in most cases you will want to replace this with something more meaningful.
+For example a configuration screen or credentials setup page to guide users through the remaining setup steps.
 
 ```js
 // src/frontend/src/main.js
 
-import YourPlugin from "@/plugins/your-plugin/js/modules/Overview/Component"
+import YourPluginsOtherComponent from "@/plugins/your-plugin/modules/Overview/SomeOtherComponent"
 
-Vue.component("Your-Plugin", YourPlugin)
+Vue.component("Your-Plugin", YourPluginsOtherComponent)
 ```
 
-### Step 3: Testing Your Plugin
+#### Closing the RegistrationTail
+
+To signal to the application that the user has completed the registration process, emit an event with your plugin’s name to the shared `EventBus`.
+
+Once this event is received, the Registration Trail will be closed and will no longer be shown on subsequent logins.
+
+```js
+import { EventBus } from "@/shared/eventbus.js"
+
+EventBus.$emit("Your-Plugin")
+```
+
+## Advanced configurations
+
+> [!WARNING]
+> This section needs expansion.
+
+- Add plugin pages to Role-based access control (RBAC)
+- Creating external endpoints and using access keys
+
+## Testing Your Plugin
 
 1. Install the plugin:
 
    ```bash
    php artisan your-plugin:install
    ```
+
+   or enable the plugin via the Settings UI.
 
 2. Verify database setup:
    - Check migrations ran successfully
@@ -403,5 +276,4 @@ Vue.component("Your-Plugin", YourPlugin)
 
 4. Use proper versioning for your plugin package
 
-Remember to check existing plugins for reference implementations
-that might help guide your development.
+Remember to check existing plugins for reference implementations that might help guide your development.

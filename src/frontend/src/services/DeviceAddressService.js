@@ -1,6 +1,6 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-import DeviceAddressRepository from "@/repositories/DeviceAddressRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
+import DeviceAddressRepository from "@/repositories/DeviceAddressRepository.js"
 
 export class DeviceAddressService {
   constructor() {

@@ -7,6 +7,9 @@ resources:
   - namespace.yaml
   - ../../base/gcp_gke/
 
+components:
+  - ../../components/internal_ingress
+
 # customise `newTag` to deploy a specific version of MicroPowerManager
 images:
   - name: enaccess/micropowermanager-backend:latest
@@ -19,7 +22,7 @@ images:
     newTag: latest
 
 patches:
-  # Setting a static IP address for our load balancer, see
+  # Setting a static IP external address for our external loadbalancer, see
   # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
   - patch: |-
       apiVersion: networking.k8s.io/v1
@@ -28,6 +31,17 @@ patches:
         name: mpm-ingress
         annotations:
           kubernetes.io/ingress.global-static-ip-name: loadbalancer-global-address-demo
+  # Setting a static internal IP address and TLS for our internal loadbalancer, see
+  # https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#static_ip_addressing
+  # https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#https_between_client_and_load_balancer
+  - patch: |-
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: mpm-ingress-internal
+        annotations:
+          ingress.gcp.kubernetes.io/pre-shared-cert: internal-loadbalancer-cert-demo
+          kubernetes.io/ingress.regional-static-ip-name: internal-loadbalancer-address-demo
   - patch: |-
       apiVersion: networking.gke.io/v1
       kind: ManagedCertificate

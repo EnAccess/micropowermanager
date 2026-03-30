@@ -6,22 +6,21 @@ use App\Http\Resources\ApiResource;
 use App\Models\Report;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController {
     public function __construct(private Report $report) {}
 
-    public function download(int $id): ?BinaryFileResponse {
-        if ($id === 0) {
-            return null;
-        }
+    public function download(int $id): StreamedResponse {
         $report = $this->report->find($id);
+        $relativePath = explode('*', $report->path)[0];
 
-        if (!$report) {
-            return null;
+        if (!Storage::exists($relativePath)) {
+            abort(404, 'Report file not found.');
         }
 
-        return response()->download(explode('*', $report->path)[0]);
+        return Storage::download($relativePath);
     }
 
     public function index(Request $request): ApiResource {
@@ -30,8 +29,8 @@ class ReportController {
         $request->get('endDate');
 
         $reports = match ($type) {
-            'weekly' => $this->getWeeklyReports(),
-            'monthly' => $this->getMonthlyReports(),
+            'weekly' => $this->getVillageReportsWeekly(),
+            'monthly' => $this->getVillageReportsMonthly(),
             default => $this->getAllReports(),
         };
 
@@ -41,14 +40,14 @@ class ReportController {
     /**
      * @return LengthAwarePaginator<int, Report>
      */
-    private function getWeeklyReports(): LengthAwarePaginator {
+    private function getVillageReportsWeekly(): LengthAwarePaginator {
         return $this->report->where('type', 'weekly')->paginate(15);
     }
 
     /**
      * @return LengthAwarePaginator<int, Report>
      */
-    private function getMonthlyReports(): LengthAwarePaginator {
+    private function getVillageReportsMonthly(): LengthAwarePaginator {
         return $this->report->where('type', 'monthly')
             ->paginate(15);
     }

@@ -6,6 +6,7 @@ data:
   APP_ENV: demo
   APP_DEBUG: "false"
   MPM_LOAD_DEMO_DATA: "true"
+  MPM_FORCE_OPTIMIZE: "true"
   LOG_LEVEL: info
   DB_CONNECTION: micro_power_manager
   DB_PORT: "3306"
@@ -13,6 +14,7 @@ data:
   REDIS_HOST: redis-db-service
   REDIS_PORT: "6379"
   CACHE_DRIVER: redis
+  FILESYSTEM_DISK: gcs
   TRUSTEDPROXY_PROXIES: 35.191.0.0/16,130.211.0.0/22
 ---
 apiVersion: v1

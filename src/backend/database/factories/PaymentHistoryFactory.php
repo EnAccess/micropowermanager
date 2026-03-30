@@ -20,7 +20,7 @@ class PaymentHistoryFactory extends Factory {
             'transaction_id' => 1,
             'amount' => $this->faker->randomFloat(2, 0, 100),
             'payment_service' => 'agent_transaction',
-            'sender' => $this->faker->phoneNumber,
+            'sender' => $this->faker->e164PhoneNumber(),
             'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment', 'access rate']),
             'paid_for_type' => $this->faker->randomElement(['appliance', 'token', 'loan_rate', 'access_rate']),
             'paid_for_id' => 1,

@@ -103,7 +103,7 @@
     <widget
       :title="$tc('phrases.newSubConnectionType')"
       :id="'add-sub-connection-type'"
-      color="red"
+      color="secondary"
       v-if="showNewSubType"
     >
       <md-card>
@@ -176,7 +176,7 @@
       :button="true"
       :button-text="$tc('phrases.newSubConnectionType')"
       @widgetAction="addSubType"
-      :color="'green'"
+      :color="'primary'"
       :subscriber="subscriber.subTypes"
     >
       <md-card v-if="subConnectionTypeService.subConnectionTypes.length > 0">
@@ -288,13 +288,14 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { SubConnectionTypeService } from "@/services/SubConnectionTypeService"
-import { ConnectionTypeService } from "@/services/ConnectionTypeService"
-import { TariffService } from "@/services/TariffService"
 import moment from "moment"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
+
+import { notify } from "@/mixins/notify.js"
+import { ConnectionTypeService } from "@/services/ConnectionTypeService.js"
+import { SubConnectionTypeService } from "@/services/SubConnectionTypeService.js"
+import { TariffService } from "@/services/TariffService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "ConnectionTypeDetail",
@@ -472,7 +473,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .n-font {
   font-weight: 100 !important;
 }

@@ -1,5 +1,5 @@
-jest.mock("../repositories/TicketRepository")
-import { TicketService } from "../services/TicketService"
+jest.mock("../repositories/TicketRepository.js")
+import { TicketService } from "../services/TicketService.js"
 const ticketService = new TicketService()
 
 describe("TicketService #createMaintenanceTicket", function () {

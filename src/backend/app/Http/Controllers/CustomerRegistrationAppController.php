@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AndroidAppRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\CustomerRegistrationAppService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use MPM\Apps\CustomerRegistration\CustomerRegistrationAppService;
 
 class CustomerRegistrationAppController extends Controller {
     public function __construct(private CustomerRegistrationAppService $customerRegistrationAppService) {}

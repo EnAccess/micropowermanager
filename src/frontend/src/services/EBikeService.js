@@ -1,11 +1,11 @@
-import { Paginator } from "@/Helpers/Paginator"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 import {
   convertObjectKeysToCamelCase,
   convertObjectKeysToSnakeCase,
-} from "@/Helpers/Utils"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { EventBus } from "@/shared/eventbus"
-import EBikeRepository from "@/repositories/EBikeRepository"
+} from "@/Helpers/Utils.js"
+import EBikeRepository from "@/repositories/EBikeRepository.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class EBikeService {
   constructor() {
@@ -14,7 +14,7 @@ export class EBikeService {
     this.list = []
     this.eBike = {
       serialNumber: null,
-      assetId: null,
+      applianceId: null,
       manufacturerId: null,
       receiveTime: null,
       lat: null,

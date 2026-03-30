@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsAndroidSettingRepository from "@/repositories/SmsAndroidSettingRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SmsAndroidSettingRepository from "@/repositories/SmsAndroidSettingRepository.js"
 
 export class SmsAndroidSettingService {
   constructor() {

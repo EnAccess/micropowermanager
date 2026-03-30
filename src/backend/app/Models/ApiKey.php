@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModelCentral;
+use Database\Factories\ApiKeyFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
@@ -20,13 +23,16 @@ use Illuminate\Support\Carbon;
  * @property      int         $company_id
  * @property      string|null $name
  * @property      string      $token_hash
- * @property      string|null $last_used_at
+ * @property      Carbon|null $last_used_at
  * @property      bool        $active
  * @property      Carbon|null $created_at
  * @property      Carbon|null $updated_at
  * @property-read Company     $company
  */
 class ApiKey extends BaseModelCentral {
+    /** @use HasFactory<ApiKeyFactory> */
+    use HasFactory;
+
     protected $table = 'api_keys';
 
     protected $fillable = [
@@ -50,7 +56,8 @@ class ApiKey extends BaseModelCentral {
      *
      * @return Builder<ApiKey>
      */
-    protected function scopeActive(Builder $query): Builder {
+    #[Scope]
+    protected function active(Builder $query): Builder {
         return $query->where('active', true);
     }
 }

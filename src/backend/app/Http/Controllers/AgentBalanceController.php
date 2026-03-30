@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Services\AgentService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
+#[Group('AgentApp', weight: 21)]
 class AgentBalanceController extends Controller {
     public function __construct(
         private AgentService $agentService,

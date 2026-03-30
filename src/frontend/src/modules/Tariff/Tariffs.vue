@@ -8,7 +8,7 @@
       :subscriber="subscriber"
       :buttonText="$tc('phrases.newTariff')"
       @widgetAction="showNewTariff"
-      color="green"
+      color="primary"
       :paginator="tariffService.paginator"
     >
       <md-table
@@ -74,12 +74,12 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import Add from "@/modules/Tariff/Add.vue"
+import { TariffService } from "@/services/TariffService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { currency } from "@/mixins/currency"
-import Add from "@/modules/Tariff/Add"
-import { EventBus } from "@/shared/eventbus"
-import { TariffService } from "@/services/TariffService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Tariffs",
@@ -198,4 +198,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

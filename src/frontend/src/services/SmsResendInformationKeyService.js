@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import SmsResendInformationKeyRepository from "@/repositories/SmsResendInformationKeyRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import SmsResendInformationKeyRepository from "@/repositories/SmsResendInformationKeyRepository.js"
 
 export class SmsResendInformationKeyService {
   constructor() {

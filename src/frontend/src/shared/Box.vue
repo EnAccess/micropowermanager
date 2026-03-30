@@ -44,7 +44,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
 .box {
   border-radius: 5px;
   padding: 30px;

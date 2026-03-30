@@ -1,7 +1,7 @@
 <template>
   <div>
     <widget
-      color="green"
+      color="primary"
       @widgetAction="
         () => {
           showSellApplianceModal = true
@@ -27,7 +27,7 @@
           @click="showDetails(soldAppliancesList[index].id)"
         >
           <md-table-cell md-label="Name" md-sort-by="name">
-            {{ item.asset.name }}
+            {{ item.appliance.name }}
           </md-table-cell>
           <md-table-cell md-label="Cost" md-sort-by="total_cost">
             {{ moneyFormat(item.total_cost) }}
@@ -52,10 +52,11 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { currency, notify } from "@/mixins"
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
 import SellApplianceModal from "@/modules/Client/Appliances/SellApplianceModal.vue"
-import { PersonService } from "@/services/PersonService"
+import { PersonService } from "@/services/PersonService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SoldAppliancesList",
@@ -108,7 +109,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .selected-row {
   background-color: #ccc;
 }

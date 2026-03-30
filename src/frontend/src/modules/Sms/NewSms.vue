@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget title="New Message" color="red">
+    <widget title="New Message" color="secondary">
       <md-card class="md-size-80">
         <md-card-header>
           <md-list class="mobile-tabs">
@@ -186,10 +186,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { SmsService } from "@/services/SmsService.js"
 import Widget from "@/shared/Widget.vue"
-import { MiniGridService } from "@/services/MiniGridService"
-import { SmsService } from "@/services/SmsService"
-import { notify } from "@/mixins/notify"
 
 const debounce = require("debounce")
 
@@ -347,7 +347,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .comment-box {
   border-bottom: 1px dotted #ccc;
   padding: 5px;
@@ -409,13 +409,13 @@ export default {
 }
 
 /*
-     * The following styles are auto-applied to elements with
-     * transition="modal" when their visibility is toggled
-     * by Vue.js.
-     *
-     * You can easily play with the modal transition by editing
-     * these styles.
-     */
+* The following styles are auto-applied to elements with
+* transition="modal" when their visibility is toggled
+* by Vue.js.
+*
+* You can easily play with the modal transition by editing
+* these styles.
+*/
 
 .modal-enter {
   opacity: 0;

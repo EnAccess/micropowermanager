@@ -6,60 +6,21 @@ use App\Events\NewLogEvent;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
-use App\Misc\TransactionDataContainer;
-use App\Models\AssetPerson;
-use App\Models\AssetRate;
-use App\Models\Device;
+use App\Models\AppliancePerson;
+use App\Models\ApplianceRate;
 use App\Models\MainSettings;
-use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use MPM\Device\DeviceService;
 
 class AppliancePaymentService {
     private float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
 
-    public function __construct(private CashTransactionService $cashTransactionService, private MainSettings $mainSettings, private AppliancePersonService $appliancePersonService, private DeviceService $deviceService) {}
+    public function __construct(private MainSettings $mainSettings) {}
 
-    public function getPaymentForAppliance(Request $request, AssetPerson $appliancePerson): AssetPerson {
-        $creatorId = auth('api')->user()->id;
-        $this->paymentAmount = $amount = (float) $request->input('amount');
-        $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
-        $this->validateAmount($applianceDetail, $amount);
-        $deviceSerial = $applianceDetail->device_serial;
-        $applianceOwner = $appliancePerson->person;
-
-        if (!$applianceOwner) {
-            throw new \InvalidArgumentException('Appliance owner not found');
-        }
-
-        $ownerAddress = $applianceOwner->addresses()->where('is_primary', 1)->first();
-        $sender = $ownerAddress == null ? '-' : $ownerAddress->phone;
-        $transaction =
-            $this->cashTransactionService->createCashTransaction($creatorId, $amount, $sender, $deviceSerial);
-        $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
-        $this->applianceInstallmentsFullFilled = $totalRemainingAmount <= $amount;
-        $applianceDetail->rates->map(fn ($installment) => $this->payInstallment(
-            $installment,
-            $appliancePerson, // Changed from $applianceOwner to $appliancePerson
-            $transaction
-        ));
-        if ($applianceDetail->device_serial) {
-            $this->processPaymentForDevice($deviceSerial, $transaction, $applianceDetail);
-        } else {
-            $this->createPaymentLog($appliancePerson, $amount, $creatorId);
-        }
-
-        return $appliancePerson;
-    }
-
-    public function updateRateRemaining(int $id, float $amount): AssetRate {
-        $applianceRate = AssetRate::query()->findOrFail($id);
+    public function updateRateRemaining(int $id, float $amount): ApplianceRate {
+        $applianceRate = ApplianceRate::query()->findOrFail($id);
         $applianceRate->remaining -= (int) $amount; // Cast to int to match property type
         $applianceRate->update();
         $applianceRate->save();
@@ -67,7 +28,7 @@ class AppliancePaymentService {
         return $applianceRate;
     }
 
-    public function createPaymentLog(AssetPerson $appliancePerson, float $amount, int $creatorId): void {
+    public function createPaymentLog(AppliancePerson $appliancePerson, float $amount, int $creatorId): void {
         $mainSettings = $this->mainSettings->newQuery()->first();
         $currency = $mainSettings->currency ?? '€';
         event(new NewLogEvent([
@@ -77,7 +38,7 @@ class AppliancePaymentService {
         ]));
     }
 
-    public function createPaymentHistory(float $amount, AssetPerson $buyer, AssetRate $applianceRate, Transaction $transaction): void {
+    public function createPaymentHistory(float $amount, AppliancePerson $buyer, ApplianceRate $applianceRate, Transaction $transaction): void {
         event(new PaymentSuccessEvent(
             amount: (int) $amount,
             paymentService: 'web',
@@ -89,7 +50,7 @@ class AppliancePaymentService {
         ));
     }
 
-    private function validateAmount(AssetPerson $applianceDetail, float $amount): void {
+    public function validateAmount(AppliancePerson $applianceDetail, float $amount): void {
         $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
         $installmentCost = $applianceDetail->rates[1]['rate_cost'] ?? 0;
 
@@ -97,7 +58,7 @@ class AppliancePaymentService {
             throw new PaymentAmountBiggerThanTotalRemainingAmount('Payment Amount can not bigger than Total Remaining Amount');
         }
 
-        if ($amount < $installmentCost) {
+        if ($amount < $installmentCost && $amount != $totalRemainingAmount) {
             throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than installment cost');
         }
 
@@ -106,7 +67,7 @@ class AppliancePaymentService {
         }
     }
 
-    public function payInstallment(Model $installment, AssetPerson $applianceOwner, Transaction $transaction): void {
+    public function payInstallment(ApplianceRate $installment, AppliancePerson $applianceOwner, Transaction $transaction): void {
         if ($installment['remaining'] > 0 && $this->paymentAmount > 0) {
             if ($installment['remaining'] <= $this->paymentAmount) {
                 $this->paymentAmount -= $installment['remaining'];
@@ -120,35 +81,8 @@ class AppliancePaymentService {
         }
     }
 
-    private function processPaymentForDevice(string $deviceSerial, Transaction $transaction, AssetPerson $applianceDetail): void {
-        $device = $this->deviceService->getBySerialNumber($deviceSerial);
-
-        if (!$device instanceof Device) {
-            throw new ModelNotFoundException("No device found with $deviceSerial");
-        }
-
-        $manufacturer = $device->device->manufacturer;
-        $installments = $applianceDetail->rates;
-        // Use this because we do not want to get down payment as installment
-        $secondInstallment = $applianceDetail->rates[1];
-        $installmentCost = $secondInstallment ? $secondInstallment['rate_cost']
-            : 0;
-        $dayDiff = $this->getDayDifferenceBetweenTwoInstallments($installments);
-        $transactionData = TransactionDataContainer::initialize($transaction);
-        $transactionData->installmentCost = $installmentCost;
-        $transactionData->dayDifferenceBetweenTwoInstallments = $dayDiff;
-        $transactionData->appliancePerson = $applianceDetail;
-        $manufacturerApi = resolve($manufacturer->api_name);
-        $transactionData->applianceInstallmentsFullFilled = $this->applianceInstallmentsFullFilled;
-
-        $tokenData = $manufacturerApi->chargeDevice($transactionData);
-        $token = Token::query()->make($tokenData);
-        $token->transaction()->associate($transactionData->transaction);
-        $token->save();
-    }
-
     /**
-     * @param Collection<int, AssetRate> $installments
+     * @param Collection<int, ApplianceRate> $installments
      */
     public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {
         try {
@@ -169,7 +103,7 @@ class AppliancePaymentService {
             $dueDateSecondRow = Carbon::parse($secondDueDate);
             $dueDateThirdRow = Carbon::parse($thirdDueDate);
 
-            return $dueDateSecondRow->diffInDays($dueDateThirdRow);
+            return (int) $dueDateSecondRow->diffInDays($dueDateThirdRow);
         } catch (\Exception) {
             return 30;
         }
@@ -177,5 +111,27 @@ class AppliancePaymentService {
 
     public function setPaymentAmount(float $amount): void {
         $this->paymentAmount = $amount;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function checkPaymentStatus(int $transactionId): array {
+        $transaction = Transaction::query()->find($transactionId);
+
+        if (!$transaction) {
+            return [
+                'status' => 'not_found',
+                'processed' => false,
+            ];
+        }
+
+        $hasPaymentHistories = $transaction->paymentHistories()->exists();
+
+        return [
+            'status' => $hasPaymentHistories ? 'processed' : 'processing',
+            'processed' => $hasPaymentHistories,
+            'transaction_id' => $transactionId,
+        ];
     }
 }

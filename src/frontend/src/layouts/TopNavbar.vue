@@ -12,7 +12,7 @@
               <md-tooltip md-direction="bottom">
                 {{ $tc("words.location", 2) }}
               </md-tooltip>
-              <md-icon class="c-white">add_location_alt</md-icon>
+              <md-icon>add_location_alt</md-icon>
               <small>{{ $tc("words.location", 2) }}</small>
             </md-button>
             <md-menu-content>
@@ -37,7 +37,7 @@
               <md-tooltip md-direction="bottom">
                 {{ $tc("menu.subMenu.Settings") }}
               </md-tooltip>
-              <md-icon class="c-white">settings</md-icon>
+              <md-icon>settings</md-icon>
               <small>{{ $tc("menu.subMenu.Settings") }}</small>
             </md-button>
             <md-menu-content>
@@ -70,9 +70,9 @@
           </md-menu>
           <md-menu class="menu-item" md-direction="bottom-end" md-size="big">
             <md-button class="nav-button md-raised md-dense" md-menu-trigger>
-              <md-icon class="c-white">person</md-icon>
+              <md-icon>person</md-icon>
               <small>{{ adminName }}</small>
-              <md-icon class="c-white">keyboard_arrow_down</md-icon>
+              <md-icon>keyboard_arrow_down</md-icon>
             </md-button>
             <md-menu-content>
               <div class="author-card">
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import Breadcrumb from "../shared/Breadcrumb"
+import Breadcrumb from "../shared/Breadcrumb.vue"
 
 export default {
   components: {
@@ -121,7 +121,7 @@ export default {
       this.toggleCard = !this.toggleCard
     },
     navigateRoute(route) {
-      this.$router.push(route)
+      this.$router.push(route).catch(() => {})
     },
   },
   computed: {
@@ -132,10 +132,17 @@ export default {
 }
 </script>
 
-<style lang="css">
-.nav-button {
-  background-color: #3d3d3d !important;
-  color: white !important;
+<style scoped lang="scss">
+.md-button.md-theme-default.md-raised.nav-button {
+  background-color: #3d3d3d;
+}
+
+.md-toolbar.md-theme-default * {
+  color: white;
+}
+
+.md-toolbar.md-theme-default .md-icon {
+  color: white;
 }
 
 .menu-item {
@@ -150,9 +157,5 @@ export default {
   font-weight: 300;
   padding: 1vh;
   margin-top: 0;
-}
-
-.c-white {
-  color: white;
 }
 </style>

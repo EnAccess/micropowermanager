@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Company;
+use App\Services\DatabaseProxyManagerService;
 use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,7 +11,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 abstract class AbstractJob implements ShouldQueue {
     use Dispatchable;
@@ -51,7 +51,7 @@ abstract class AbstractJob implements ShouldQueue {
      */
     public static function dispatchForAllTenants(...$args): void {
         foreach (Company::pluck('id') as $companyId) {
-            static::dispatch($companyId, ...$args);
+            dispatch(new (static::class)($companyId, ...$args));
         }
     }
 }

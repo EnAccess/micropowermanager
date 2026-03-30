@@ -1,4 +1,4 @@
-import Client from "@/repositories/Client/AxiosClient"
+import Client from "@/repositories/Client/AxiosClient.js"
 const resource = {
   openStreetSearch: "https://nominatim.openstreetmap.org/search.php?q=",
 }
@@ -6,7 +6,7 @@ const resource = {
 export default {
   get(name) {
     return Client.get(
-      `${resource.openStreetSearch + name + "&polygon_geojson=1&format=json"}`,
+      `${resource.openStreetSearch + name + "&polygon_geojson=1&format=geojson"}`,
     )
   },
 }

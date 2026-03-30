@@ -6,8 +6,8 @@ use App\Models\Address\Address;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CustomerSeeder extends Seeder {
     public function __construct(
@@ -35,9 +35,8 @@ class CustomerSeeder extends Seeder {
                         ->for($village)
                         ->has(
                             GeographicalInformation::factory()
-                                // Remove this after Laravel 12 upgrade, see
                                 // https://github.com/larastan/larastan/issues/2307
-                                // @phpstan-ignore-next-line
+                                // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
                                     return ['points' => $address->city->location->points];
                                 })

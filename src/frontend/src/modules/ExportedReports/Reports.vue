@@ -1,33 +1,40 @@
 <template>
-  <div class="md-layout md-gutter">
-    <div class="md-layout-item md-size-50 md-small-size-100">
-      <BookKeeping />
-      <PeriodicReports
-        :id="'weekly-report'"
-        :title="$tc('phrases.weeklyReports')"
-        :subscriber="'weeklyReport'"
-        :paginator="reportService.paginatorWeekly"
-      />
-    </div>
-    <div class="md-layout-item md-size-50 md-small-size-100">
-      <PeriodicReports
-        :id="'monthly-report'"
-        :title="$tc('phrases.monthlyReports')"
-        :subscriber="'monthlyReport'"
-        :paginator="reportService.paginatorMonthly"
-      />
+  <div>
+    <div class="md-layout md-gutter">
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <VillageReports
+          :id="'monthly-report'"
+          :title="$tc('phrases.villageReportsMonthly')"
+          :subscriber="'monthlyReport'"
+          :paginator="reportService.paginatorMonthly"
+        />
+      </div>
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <VillageReports
+          :id="'weekly-report'"
+          :title="$tc('phrases.villageReportsWeekly')"
+          :subscriber="'weeklyReport'"
+          :paginator="reportService.paginatorWeekly"
+        />
+      </div>
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <TicketOursourcePayoutReports />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import BookKeeping from "@/modules/ExportedReports/BookKeeping"
-import { ReportsService } from "@/services/ReportsService"
-import PeriodicReports from "@/modules/ExportedReports/PeriodicReports.vue"
+import TicketOursourcePayoutReports from "@/modules/ExportedReports/TicketOursourcePayoutReports.vue"
+import VillageReports from "@/modules/ExportedReports/VillageReports.vue"
+import { ReportsService } from "@/services/ReportsService.js"
 
 export default {
   name: "Reports",
-  components: { PeriodicReports, BookKeeping },
+  components: {
+    VillageReports,
+    TicketOursourcePayoutReports,
+  },
   data() {
     return {
       reportService: new ReportsService(),
@@ -36,4 +43,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

@@ -1,7 +1,7 @@
 meta {
   name: Advanced Transaction Search
   type: http
-  seq: 35
+  seq: 34
 }
 
 get {
@@ -15,6 +15,7 @@ params:query {
   per_page: 15
   status: 1
   provider: agent_transaction
+  ~sort_by: -amount
 }
 
 assert {

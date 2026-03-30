@@ -1,16 +1,16 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import { Person } from "@/services/PersonService"
-import * as auth from "@/store/modules/authentication"
-import * as settings from "@/store/modules/settings"
-import * as resolution from "@/store/modules/resolution"
-import * as breadcrumb from "@/store/modules/breadcrumb"
-import * as registrationTail from "@/store/modules/registrationTail"
-import * as clusterDashboard from "@/store/modules/clusterDashboard"
-import * as miniGridDashboard from "@/store/modules/miniGridDashboard"
-import * as protection from "@/store/modules/protection"
-import * as device from "@/store/modules/device"
 import VuexPersist from "vuex-persist"
+
+import { Person } from "@/services/PersonService.js"
+import * as auth from "@/store/modules/authentication.js"
+import * as breadcrumb from "@/store/modules/breadcrumb.js"
+import * as clusterDashboard from "@/store/modules/clusterDashboard.js"
+import * as device from "@/store/modules/device.js"
+import * as miniGridDashboard from "@/store/modules/miniGridDashboard.js"
+import * as registrationTail from "@/store/modules/registrationTail.js"
+import * as resolution from "@/store/modules/resolution.js"
+import * as settings from "@/store/modules/settings.js"
 
 Vue.use(Vuex)
 const vuexLocalStorage = new VuexPersist({
@@ -38,10 +38,6 @@ const vuexLocalStorage = new VuexPersist({
       registrationTail: state.registrationTail.registrationTail,
       isWizardShown: state.registrationTail.isWizardShown,
     },
-    protection: {
-      protectedPages: state.protection.protectedPages,
-      password: state.protection.password,
-    },
     miniGridsDashboard: {
       miniGridsCacheData: state.miniGridsCacheData,
     },
@@ -57,7 +53,6 @@ export default new Vuex.Store({
     breadcrumb,
     clusterDashboard,
     registrationTail,
-    protection,
     miniGridDashboard,
     device,
   },

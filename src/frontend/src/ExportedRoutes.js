@@ -1,102 +1,104 @@
-import LoginHeader from "@/modules/Login/LoginHeader"
-import LoginFooter from "@/modules/Login/LoginFooter"
-import Welcome from "./pages/Welcome/index.vue"
-import Login from "./pages/Login/index.vue"
-import Register from "./pages/Register/index.vue"
-import ForgotPassword from "./pages/ForgotPassword/index.vue"
-import ProtectedPagePasswordResetRequest from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetRequest.vue"
-import ProtectedPagePasswordResetConfirm from "./modules/ProtectedPagePasswordReset/ProtectedPagePasswordResetConfirm.vue"
+import MeterDetail from "./modules/Meter/MeterDetail.vue"
+import MiniGridOverviewPage from "./modules/MiniGrid/MiniGridOverviewPage.vue"
 import UserPasswordResetConfirm from "./modules/UserPasswordReset/UserPasswordResetConfirm.vue"
-
 import ChildRouteWrapper from "./shared/ChildRouteWrapper.vue"
 
-import ClusterOverviewPage from "./pages/Dashboard/index.vue"
-import ClusterDetailPage from "./pages/Dashboard/Cluster/_id.vue"
-// MiniGridOverviewPage just redirects to MiniGridDetailPage for first Mini-Grid
-import MiniGridOverviewPage from "./pages/Dashboard/MiniGrid/index.vue"
-import MiniGridDetailPage from "./pages/Dashboard/MiniGrid/_id.vue"
-import AgentDashboardPage from "./pages/Dashboard/Agents/index.vue"
-import AgentPerformanceDashboardPage from "./pages/Dashboard/AgentPerformance/index.vue"
-import AddCluster from "./pages/Location/Cluster/New/index.vue"
-import AddVillage from "./pages/Location/Village/New/index.vue"
-import AddMiniGrid from "./pages/Location/MiniGrid/New/index.vue"
-import SettingsPage from "./pages/Settings/Configuration/index.vue"
-import ProfilePage from "./pages/Profile/index.vue"
-import UserManagementPage from "./pages/Settings/UserManagement/index.vue"
-import Reports from "./pages/Report/index.vue"
-// FIXME: https://github.com/EnAccess/micropowermanager/issues/143
-import CustomerList from "./pages/Client/index.vue"
-import CustomerDetail from "./pages/Client/_id.vue"
-import TransactionList from "./pages/Transaction/index.vue"
-import TransactionSearch from "./pages/Transaction/index.vue"
-import TransactionDetail from "./pages/Transaction/_id.vue"
-import TicketList from "./pages/Ticket/index.vue"
-import TariffList from "./pages/Tariff/index.vue"
-import TariffDetail from "./pages/Tariff/_id.vue"
-import MeterList from "./pages/Meter/index.vue"
-import MeterDetail from "./pages/Meter/_id.vue"
-import MeterTypeList from "./pages/MeterType/index.vue"
-import SolarHomeSystem from "./pages/SolarHomeSystem/index.vue"
-import SolarHomeSystemDetail from "./pages/SolarHomeSystem/_id.vue"
-import TargetList from "./pages/Target/index.vue"
-import TargetNew from "./pages/Target/New/index.vue"
-import ConnectionTypeList from "./pages/Connection/Type/index.vue"
-import ConnectionTypeDetail from "./pages/Connection/Type/_id.vue"
-import ConnectionTypeNew from "./pages/Connection/Type/New/index.vue"
-import ConnectionGroupList from "./pages/Connection/Group/index.vue"
-import MessageList from "./pages/Sms/index.vue"
-import MessageNew from "./pages/Sms/New/index.vue"
-import Maintenance from "./pages/Maintenance/index.vue"
-import ApplianceList from "./pages/Appliance/index.vue"
-import AgentCommissionTypeList from "./pages/Agent/Commission/index.vue"
-import AgentDetail from "./pages/Agent/_id.vue"
-import SoldApplianceDetail from "./pages/Client/Appliance/_id.vue"
-
-// Former plugins
-import CalinMeterOverview from "./plugins/calin-meter/js/modules/Overview/Overview"
-import CalinSmartMeterOverview from "./plugins/calin-smart-meter/js/modules/Overview/Overview"
-import KelinMeterOverview from "./plugins/kelin-meter/js/modules/Overview/Overview"
-import KelinMeterCustomerList from "./plugins/kelin-meter/js/modules/Customer/List"
-import KelinMeterSettings from "./plugins/kelin-meter/js/modules/Setting/Setting"
-import KelinMeterList from "./plugins/kelin-meter/js/modules/Meter/List"
-import KelinMeterStatus from "./plugins/kelin-meter/js/modules/Meter/Status"
-import KelinMeterConsumptionDaily from "./plugins/kelin-meter/js/modules/Meter/Consumption/Daily"
-import KelinMeterConsumptionMinutely from "./plugins/kelin-meter/js/modules/Meter/Consumption/Minutely"
-import SparkMeterSiteList from "./plugins/spark-meter/js/modules/Site/SiteList"
-import SparkMeterModelList from "./plugins/spark-meter/js/modules/MeterModel/MeterModelList"
-import SparkMeterCustomerList from "./plugins/spark-meter/js/modules/Customer/CustomerList"
-import SparkMeterTariffList from "./plugins/spark-meter/js/modules/Tariff/TariffList"
-import SparkMeterTariffDetail from "./plugins/spark-meter/js/modules/Tariff/TariffDetail"
-import SparkMeterOverview from "./plugins/spark-meter/js/modules/Overview/Overview"
-import SparkMeterSalesAccountList from "./plugins/spark-meter/js/modules/SalesAccount/SalesAccountList"
-import SparkMeterSettings from "./plugins/spark-meter/js/modules/Setting/Setting"
-import SteamaCoOverview from "./plugins/steama-meter/js/modules/Overview/Overview"
-import SteamaCoSiteList from "./plugins/steama-meter/js/modules/Site/SiteList"
-import SteamaCoCustomerList from "./plugins/steama-meter/js/modules/Customer/CustomerList"
-import SteamaCoCustomerDetail from "./plugins/steama-meter/js/modules/Customer/CustomerMovements"
-import SteamaCoMeterList from "./plugins/steama-meter/js/modules/Meter/MeterList"
-import SteamaCoAgentList from "./plugins/steama-meter/js/modules/Agent/AgentList"
-import SteamaCoSettings from "./plugins/steama-meter/js/modules/Setting/Setting"
-import StronMeterOverview from "./plugins/stron-meter/js/modules/Overview/Overview"
-import BulkRegistrationCsv from "./plugins/bulk-registration/js/modules/Csv"
-import ViberMessagingOverview from "./plugins/viber-messaging/js/modules/Overview/Overview"
-import AfricasTalkingOverview from "./plugins/africas-talking/js/modules/Overview/Overview"
-import WaveMoneyOverview from "./plugins/wave-money-payment-provider/js/modules/Overview/Overview"
-// FIXME: These are used as modules which seem broken.
-// https://github.com/EnAccess/micropowermanager/issues/142
-import WaveMoneyResult from "./plugins/wave-money-payment-provider/js/modules/Payment/Result"
-import WaveMoneyPayment from "./plugins/wave-money-payment-provider/js/modules/Payment/Payment"
-import MicroStarMeterOverview from "./plugins/micro-star-meter/js/modules/Overview/Overview"
-import SwiftaOverview from "./plugins/swifta-payment-provider/js/modules/Overview/Overview"
-import SunKingShsOverview from "./plugins/sun-king-shs/js/modules/Overview/Overview"
-import GomeLongOverview from "./plugins/gome-long-meter/js/modules/Overview/Overview"
-import WavecomTransactionUpload from "./plugins/wavecom-payment-provider/js/modules/Component.vue"
-// FIXME: Move e-Bikes higher, it's not a Plugin
-import EBikeList from "./pages/EBikes/index.vue"
-import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
-import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
-import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
-import OdysseyExportOverview from "./plugins/odyssey-data-export/js/modules/Overview/Overview"
+import AgentDetail from "@/modules/Agent/Agent.vue"
+import AgentCommissionTypeList from "@/modules/Agent/Commission/AgentCommissionList.vue"
+import ApplianceList from "@/modules/Appliances/Appliances.vue"
+import SoldApplianceDetail from "@/modules/Client/Appliances/SoldApplianceDetail.vue"
+import CustomerDetail from "@/modules/Client/Client.vue"
+import CustomerList from "@/modules/Client/Clients.vue"
+import AddCluster from "@/modules/Cluster/AddCluster.vue"
+import ClusterDetailPage from "@/modules/Cluster/Dashboard.vue"
+import ConnectionGroupList from "@/modules/ConnectionGroups/ConnectionGroupsList.vue"
+import ConnectionTypeDetail from "@/modules/ConnectionTypes/ConnectionTypeDetail.vue"
+import ConnectionTypeList from "@/modules/ConnectionTypes/ConnectionTypesList.vue"
+import ConnectionTypeNew from "@/modules/ConnectionTypes/NewConnectionType.vue"
+import AgentDashboardPage from "@/modules/Dashboard/AgentDashboard.vue"
+import AgentPerformanceDashboardPage from "@/modules/Dashboard/AgentPerformanceDashboard.vue"
+import ClusterOverviewPage from "@/modules/Dashboard/Dashboard.vue"
+import EBikeList from "@/modules/EBikes/EBikes.vue"
+import Reports from "@/modules/ExportedReports/Reports.vue"
+import ForgotPassword from "@/modules/ForgotPassword/ForgotPassword.vue"
+import Login from "@/modules/Login/Login.vue"
+import LoginFooter from "@/modules/Login/LoginFooter.vue"
+import LoginHeader from "@/modules/Login/LoginHeader.vue"
+import Maintenance from "@/modules/Maintenance/Maintenance.vue"
+import MeterList from "@/modules/Meter/Meters.vue"
+import MeterTypeList from "@/modules/MeterType/MeterTypes.vue"
+import AddMiniGrid from "@/modules/MiniGrid/AddMiniGrid.vue"
+import MiniGridDetailPage from "@/modules/MiniGrid/Dashboard.vue"
+import ProfilePage from "@/modules/Profile/Profile.vue"
+import Register from "@/modules/Register/Register.vue"
+import SettingsPage from "@/modules/Settings/Configuration/Configuration.vue"
+import UserManagementPage from "@/modules/Settings/UserManagement/UserManagement.vue"
+import MessageList from "@/modules/Sms/List.vue"
+import MessageNew from "@/modules/Sms/NewSms.vue"
+import SolarHomeSystemDetail from "@/modules/SolarHomeSystem/SolarHomeSystemDetail.vue"
+import SolarHomeSystem from "@/modules/SolarHomeSystem/SolarHomeSystems.vue"
+import TargetNew from "@/modules/Target/NewTarget.vue"
+import TargetList from "@/modules/Target/TargetList.vue"
+import TariffDetail from "@/modules/Tariff/Tariff.vue"
+import TariffList from "@/modules/Tariff/Tariffs.vue"
+import TicketSettingsCategories from "@/modules/Ticket/CategoryManagement.vue"
+import TicketList from "@/modules/Ticket/Tickets.vue"
+import TicketSettingsUserManagement from "@/modules/Ticket/UserManagement.vue"
+import TransactionDetail from "@/modules/Transactions/Transaction.vue"
+import TransactionList from "@/modules/Transactions/Transactions.vue"
+import UnauthorizedPage from "@/modules/Unauthorized/index.vue"
+import AddVillage from "@/modules/Village/AddVillage.vue"
+import Welcome from "@/modules/Welcome/index.vue"
+import AfricasTalkingOverview from "@/plugins/africas-talking/modules/Overview/Overview.vue"
+import AngazaShsOverview from "@/plugins/angaza-shs/modules/Overview/Overview.vue"
+import BulkRegistrationCsv from "@/plugins/bulk-registration/modules/Csv.vue"
+import CalinMeterOverview from "@/plugins/calin-meter/modules/Overview/Overview.vue"
+import CalinSmartMeterOverview from "@/plugins/calin-smart-meter/modules/Overview/Overview.vue"
+import ChintMeterOverview from "@/plugins/chint-meter/modules/Overview/Overview.vue"
+import DalyBmsOverview from "@/plugins/daly-bms/modules/Overview/Overview.vue"
+import EcreeeETenderOverview from "@/plugins/ecreee-e-tender/modules/Overview/Overview.vue"
+import GomeLongOverview from "@/plugins/gome-long-meter/modules/Overview/Overview.vue"
+import KelinMeterCustomerList from "@/plugins/kelin-meter/modules/Customer/List.vue"
+import KelinMeterConsumptionDaily from "@/plugins/kelin-meter/modules/Meter/Consumption/Daily.vue"
+import KelinMeterConsumptionMinutely from "@/plugins/kelin-meter/modules/Meter/Consumption/Minutely.vue"
+import KelinMeterList from "@/plugins/kelin-meter/modules/Meter/List.vue"
+import KelinMeterStatus from "@/plugins/kelin-meter/modules/Meter/Status.vue"
+import KelinMeterOverview from "@/plugins/kelin-meter/modules/Overview/Overview.vue"
+import KelinMeterSettings from "@/plugins/kelin-meter/modules/Setting/Setting.vue"
+import MicroStarMeterOverview from "@/plugins/micro-star-meter/modules/Overview/Overview.vue"
+import OdysseyExportOverview from "@/plugins/odyssey-data-export/modules/Overview/Overview.vue"
+import PaystackCredential from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
+import PaystackOverview from "@/plugins/paystack-payment-provider/modules/Overview/Overview.vue"
+import PaystackPublicPayment from "@/plugins/paystack-payment-provider/modules/Payment/PublicPaymentForm.vue"
+import PaystackPublicResult from "@/plugins/paystack-payment-provider/modules/Payment/PublicPaymentResult.vue"
+import PaystackTransaction from "@/plugins/paystack-payment-provider/modules/Transaction/Transaction.vue"
+import ProspectOverview from "@/plugins/prospect/modules/Overview/Overview.vue"
+import ProspectSettings from "@/plugins/prospect/modules/Setting/Setting.vue"
+import SparkMeterCustomerList from "@/plugins/spark-meter/modules/Customer/CustomerList.vue"
+import SparkMeterModelList from "@/plugins/spark-meter/modules/MeterModel/MeterModelList.vue"
+import SparkMeterOverview from "@/plugins/spark-meter/modules/Overview/Overview.vue"
+import SparkMeterSalesAccountList from "@/plugins/spark-meter/modules/SalesAccount/SalesAccountList.vue"
+import SparkMeterSettings from "@/plugins/spark-meter/modules/Setting/Setting.vue"
+import SparkMeterSiteList from "@/plugins/spark-meter/modules/Site/SiteList.vue"
+import SparkMeterTariffDetail from "@/plugins/spark-meter/modules/Tariff/TariffDetail.vue"
+import SparkMeterTariffList from "@/plugins/spark-meter/modules/Tariff/TariffList.vue"
+import SparkShsOverview from "@/plugins/spark-shs/modules/Overview/Overview.vue"
+import SteamaCoAgentList from "@/plugins/steama-meter/modules/Agent/AgentList.vue"
+import SteamaCoCustomerList from "@/plugins/steama-meter/modules/Customer/CustomerList.vue"
+import SteamaCoCustomerDetail from "@/plugins/steama-meter/modules/Customer/CustomerMovements.vue"
+import SteamaCoMeterList from "@/plugins/steama-meter/modules/Meter/MeterList.vue"
+import SteamaCoOverview from "@/plugins/steama-meter/modules/Overview/Overview.vue"
+import SteamaCoSettings from "@/plugins/steama-meter/modules/Setting/Setting.vue"
+import SteamaCoSiteList from "@/plugins/steama-meter/modules/Site/SiteList.vue"
+import StronMeterOverview from "@/plugins/stron-meter/modules/Overview/Overview.vue"
+import SunKingShsOverview from "@/plugins/sun-king-shs/modules/Overview/Overview.vue"
+import SwiftaOverview from "@/plugins/swifta-payment-provider/modules/Overview/Overview.vue"
+import TextbeeSmsGatewayOverview from "@/plugins/textbee-sms-gateway/modules/Overview/Overview.vue"
+import ViberMessagingOverview from "@/plugins/viber-messaging/modules/Overview/Overview.vue"
+import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Overview/Overview.vue"
+import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment.vue"
+import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
+import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -141,24 +143,6 @@ export const exportedRoutes = [
     name: "reset-password",
     components: {
       default: UserPasswordResetConfirm,
-      header: LoginHeader,
-      footer: LoginFooter,
-    },
-  },
-  {
-    path: "/forgot-protected-password",
-    name: "forgot-protected-password",
-    components: {
-      default: ProtectedPagePasswordResetRequest,
-      header: LoginHeader,
-      footer: LoginFooter,
-    },
-  },
-  {
-    path: "/reset-protected-password",
-    name: "reset-protected-password",
-    components: {
-      default: ProtectedPagePasswordResetConfirm,
       header: LoginHeader,
       footer: LoginFooter,
     },
@@ -279,6 +263,13 @@ export const exportedRoutes = [
       layout: "default",
     },
   },
+  {
+    path: "/unauthorized",
+    component: UnauthorizedPage,
+    meta: {
+      layout: "default",
+    },
+  },
   // Sidebar routes
   {
     path: "/",
@@ -343,6 +334,49 @@ export const exportedRoutes = [
           },
         ],
       },
+      {
+        path: "dashboards/mini-grid",
+        component: ChildRouteWrapper,
+        meta: {
+          sidebar: {
+            enabled: true,
+            name: "Mini-Grid",
+          },
+        },
+        children: [
+          {
+            path: "",
+            // MiniGridOverviewPage just redirects to MiniGridDetailPage for first Mini-Grid
+            component: MiniGridOverviewPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Mini-Grids",
+                link: "/dashboards/mini-grid",
+              },
+              sidebar: {
+                enabled: true,
+                name: "Mini-Grid",
+              },
+            },
+          },
+          {
+            path: ":id",
+            component: MiniGridDetailPage,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "detail",
+                name: "Mini-Grid",
+                link: "/dashboards/mini-grid",
+                target: "id",
+              },
+            },
+          },
+        ],
+      },
+
       {
         path: "dashboards/agent-performance",
         component: ChildRouteWrapper,
@@ -447,15 +481,6 @@ export const exportedRoutes = [
         },
       },
       {
-        // transaction list
-        // TODO: Why is this here? Doesn't seem to be used
-        path: "search",
-        component: TransactionSearch,
-        meta: {
-          layout: "default",
-        },
-      },
-      {
         path: ":id",
         component: TransactionDetail,
         meta: {
@@ -489,6 +514,28 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "List",
+          },
+        },
+      },
+      {
+        path: "tickets-settings/categories",
+        component: TicketSettingsCategories,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Categories",
+          },
+        },
+      },
+      {
+        path: "tickets-settings/user-management",
+        component: TicketSettingsUserManagement,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "userManagement",
           },
         },
       },
@@ -702,9 +749,9 @@ export const exportedRoutes = [
     },
   },
   {
-    path: "/assets",
+    path: "/appliances",
     component: ApplianceList,
-    name: "asset",
+    name: "appliance",
     meta: {
       layout: "default",
       sidebar: {
@@ -1313,6 +1360,8 @@ export const exportedRoutes = [
           },
         },
       },
+      // FIXME: These are used as modules which seem broken.
+      // https://github.com/EnAccess/micropowermanager/issues/142
       {
         path: "payment/:name/:id",
         modules: {
@@ -1329,6 +1378,68 @@ export const exportedRoutes = [
           default: WaveMoneyResult,
           header: LoginHeader,
           footer: LoginFooter,
+        },
+      },
+    ],
+  },
+  {
+    path: "/paystack/public",
+    component: ChildRouteWrapper,
+    children: [
+      {
+        path: "payment/:companyHash",
+        component: PaystackPublicPayment,
+        name: "/paystack/public/payment",
+      },
+      {
+        path: "result/:companyHash",
+        name: "/paystack/public/result",
+        component: PaystackPublicResult,
+      },
+    ],
+  },
+  {
+    path: "/paystack",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 25,
+        name: "Paystack",
+        icon: "payment",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: PaystackOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "credential",
+        component: PaystackCredential,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Credentials",
+          },
+        },
+      },
+      {
+        path: "transactions",
+        component: PaystackTransaction,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
+          },
         },
       },
     ],
@@ -1493,6 +1604,30 @@ export const exportedRoutes = [
     ],
   },
   {
+    path: "/textbee-sms-gateway",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 26,
+        name: "TextBee SMS Gateway",
+        icon: "sms",
+      },
+    },
+    children: [
+      {
+        path: "textbee-sms-gateway-overview",
+        component: TextbeeSmsGatewayOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
     path: "/chint-meters",
     component: ChildRouteWrapper,
     meta: {
@@ -1511,6 +1646,41 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/prospect",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 24,
+        name: "Prospect",
+        icon: "bolt",
+      },
+    },
+    children: [
+      {
+        path: "prospect-overview",
+        component: ProspectOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "prospect-setting",
+        component: ProspectSettings,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Settings",
           },
         },
       },
@@ -1540,4 +1710,53 @@ export const exportedRoutes = [
       },
     ],
   },
+  {
+    path: "/ecreee-e-tender",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 27,
+        name: "Ecreee E Tender",
+        icon: "cloud_upload",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: EcreeeETenderOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/spark-shs",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 28,
+        name: "Spark Shs",
+        icon: "solar_power",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: SparkShsOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 ]

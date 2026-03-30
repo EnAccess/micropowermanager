@@ -1,0 +1,11 @@
+meta {
+  name: Export Clusters Data Excel
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/clusters
+  body: none
+  auth: inherit
+}

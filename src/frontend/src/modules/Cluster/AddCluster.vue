@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="$tc('phrases.newCluster', 1)" color="green">
+    <widget :title="$tc('phrases.newCluster', 1)" color="primary">
       <md-card class="md-layout-item md-size-100">
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -28,15 +28,25 @@
             <div
               class="md-layout-item md-large-size-33 md-medium-size-33 md-small-size-100"
             >
-              <user-list @userSelected="userSelected"></user-list>
+              <md-button
+                class="md-raised md-primary"
+                @click="handleSearchClick()"
+                :disabled="
+                  !clusterName || clusterName.length < 3 || isSearching
+                "
+              >
+                <md-icon>search</md-icon>
+                {{
+                  isSearching ? "Searching..." : $tc("words.search", "Search")
+                }}
+              </md-button>
             </div>
             <div
               class="md-layout-item md-large-size-33 md-medium-size-33 md-small-size-100"
             >
-              <md-button class="md-primary save-button" @click="saveCluster()">
-                {{ $tc("words.save") }}
-              </md-button>
+              <user-list @userSelected="userSelected"></user-list>
             </div>
+
             <div class="md-layout-item md-size-100">
               <md-list>
                 <div v-if="mappingService.searchedOrDrawnItems.length > 0">
@@ -86,6 +96,11 @@
                   </h4>
                 </div>
               </md-list>
+            </div>
+            <div class="md-layout-item md-size-100 save-button-container">
+              <md-button class="md-primary save-button" @click="saveCluster()">
+                {{ $tc("words.saveCluster") }}
+              </md-button>
             </div>
             <div class="md-layout-item md-size-100 map-area">
               <cluster-map
@@ -154,12 +169,12 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { MappingService } from "@/services/MappingService"
-import { ClusterService } from "@/services/ClusterService"
-import { notify } from "@/mixins/notify"
-import ClusterMap from "@/modules/Map/ClusterMap.vue"
+import { notify } from "@/mixins/notify.js"
 import UserList from "@/modules/Dashboard/UserList.vue"
+import ClusterMap from "@/modules/Map/ClusterMap.vue"
+import { ClusterService } from "@/services/ClusterService.js"
+import { MappingService } from "@/services/MappingService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
@@ -180,8 +195,10 @@ export default {
       selectedCluster: null,
       geoDataItems: [],
       typed: false,
-      filteredTypes: { polygon: true },
+      filteredTypes: { polygon: true, multipolygon: true },
       dialogActive: false,
+      isSearching: false,
+      lastSearchTime: 0,
     }
   },
   mounted() {
@@ -200,6 +217,28 @@ export default {
         this.filteredTypes,
       )
     },
+    async handleSearchClick() {
+      if (this.isSearching) return
+
+      const now = Date.now()
+      const timeSinceLastSearch = now - this.lastSearchTime
+      if (timeSinceLastSearch < 1000) {
+        const waitTime = 1000 - timeSinceLastSearch
+        await new Promise((resolve) => setTimeout(resolve, waitTime))
+      }
+
+      this.isSearching = true
+      this.typed = true
+      this.lastSearchTime = Date.now()
+
+      try {
+        await this.searchGeoDataByName()
+      } catch (error) {
+        console.error("Search error:", error)
+      } finally {
+        this.isSearching = false
+      }
+    },
     async locationSelected(geoDataItem) {
       this.mappingService.searchedOrDrawnItems =
         this.mappingService.searchedOrDrawnItems.map((item) => {
@@ -207,7 +246,8 @@ export default {
           return item
         })
       this.selectedCluster = geoDataItem
-      this.mappingService.geoData = geoDataItem
+      // Store the GeoJSON Feature
+      this.mappingService.geoData = geoDataItem.feature || geoDataItem
       this.$refs.clusterMapRef.drawCluster()
     },
     async saveCluster() {
@@ -233,11 +273,38 @@ export default {
         return
       }
       try {
+        // Extract GeoJSON Feature from selected cluster
+        let feature = this.selectedCluster.feature
+
+        // If no feature property exists but we have geojson (for manual draws), create the feature
+        if (
+          !feature &&
+          this.selectedCluster.geojson &&
+          this.selectedCluster.type === "manual"
+        ) {
+          feature = {
+            type: "Feature",
+            geometry: this.selectedCluster.geojson,
+            properties: {},
+          }
+        }
+
+        if (!feature || feature.type !== "Feature") {
+          throw new Error("Selected cluster must be a valid GeoJSON Feature")
+        }
+
+        if (
+          !feature.geometry ||
+          !feature.geometry.type ||
+          !feature.geometry.coordinates
+        ) {
+          throw new Error("Feature must contain valid geometry")
+        }
+
         const cluster = {
-          geoType: this.selectedCluster.type,
-          geoData: this.selectedCluster,
+          geo_json: feature,
           name: this.clusterName,
-          managerId: this.user,
+          manager_id: this.user,
         }
         await this.clusterService.createCluster(cluster)
         this.alertNotify("success", this.$tc("phrases.newClusterNotify2", 2))
@@ -265,15 +332,10 @@ export default {
     customDrawnDeletedSet(deletedItems) {
       this.mappingService.searchedOrDrawnItems =
         this.mappingService.searchedOrDrawnItems.filter((item) => {
-          const drawnItemCoordinates = item.geojson.coordinates[0].map(
-            (coord) => {
-              return [coord[1], coord[0]]
-            },
-          )
           return !deletedItems.some(
             (deletedItem) =>
-              JSON.stringify(drawnItemCoordinates) ===
-              JSON.stringify(deletedItem.feature.geometry.coordinates[0]),
+              JSON.stringify(item.geojson.coordinates) ===
+              JSON.stringify(deletedItem.feature.geometry.coordinates),
           )
         })
       if (this.mappingService.searchedOrDrawnItems.length === 0) {
@@ -293,28 +355,10 @@ export default {
       })
     },
   },
-  watch: {
-    async clusterName() {
-      if (this.clusterName.length > 3) {
-        let selectedCluster = this.geoDataItems.filter(
-          (x) => x.selected === true,
-        )[0]
-        if (
-          selectedCluster !== undefined &&
-          selectedCluster.display_name === ""
-        ) {
-          selectedCluster.display_name = this.clusterName
-        } else {
-          this.typed = true
-          await this.searchGeoDataByName()
-        }
-      }
-    },
-  },
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .map-area {
   z-index: 1 !important;
 }
@@ -322,8 +366,16 @@ export default {
 .save-button {
   background-color: #325932 !important;
   color: #fefefe !important;
-  top: 0.5rem;
-  float: right;
+
+  margin-right: 0 !important;
+}
+.save-button-container {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
 .selected-list-item {

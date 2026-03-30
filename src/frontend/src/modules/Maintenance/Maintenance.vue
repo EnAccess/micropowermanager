@@ -14,7 +14,7 @@
       :button-text="$tc('phrases.newMaintenanceUser')"
       :button="true"
       @widgetAction="openNewUser"
-      color="green"
+      color="primary"
     >
       <form @submit.prevent="submitMaintainForm">
         <md-card>
@@ -61,16 +61,14 @@
                     <md-option value="" disabled selected>
                       -- {{ $tc("words.select") }} --
                     </md-option>
-                    <template v-for="employee in employees">
-                      <md-option
-                        :key="employee.id"
-                        v-if="employee.person"
-                        :value="employee.id"
-                      >
-                        {{ employee.person.name }}
-                        {{ employee.person.surname }}
-                      </md-option>
-                    </template>
+                    <md-option
+                      v-for="employee in employees"
+                      :key="employee.id"
+                      :value="employee.id"
+                    >
+                      {{ employee.name }}
+                      {{ employee.surname }}
+                    </md-option>
                   </md-select>
                   <span class="md-error">
                     {{ errors.first($tc("words.employee")) }}
@@ -117,7 +115,6 @@
                   <label for="amount">
                     {{ $tc("words.amount") }}
                   </label>
-                  <span class="md-prefix">$</span>
                   <md-input
                     v-model="maintenanceData.amount"
                     type="text"
@@ -194,13 +191,14 @@
 </template>
 
 <script>
+import NewUser from "./NewUser.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { MaintenanceService } from "@/services/MaintenanceService.js"
+import { SmsService } from "@/services/SmsService.js"
+import { TicketService } from "@/services/TicketService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import NewUser from "./NewUser"
-import { EventBus } from "@/shared/eventbus"
-import { TicketService } from "@/services/TicketService"
-import { MaintenanceService } from "@/services/MaintenanceService"
-import { SmsService } from "@/services/SmsService"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "Maintenance",
@@ -309,7 +307,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .label-w {
   width: 84vw;
 }

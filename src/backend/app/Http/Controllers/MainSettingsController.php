@@ -5,20 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\MainSettings;
 use App\Services\MainSettingsService;
+use App\Services\SmsGatewayResolverService;
 use Illuminate\Http\Request;
 
 class MainSettingsController extends Controller {
     public function __construct(
         private MainSettingsService $mainSettingsService,
+        private SmsGatewayResolverService $smsGatewayResolverService,
     ) {}
 
     public function index(): ApiResource {
-        $mainSettings = $this->mainSettingsService->getAll()->first();
-        if ($mainSettings) {
-            unset($mainSettings['protected_page_password']);
-        }
-
-        return ApiResource::make($mainSettings);
+        return ApiResource::make($this->mainSettingsService->getAll()->first());
     }
 
     public function update(MainSettings $mainSettings, Request $request): ApiResource {
@@ -31,16 +28,18 @@ class MainSettingsController extends Controller {
             'vat_energy',
             'vat_appliance',
             'usage_type',
+            'sms_gateway_id',
+            'transaction_sms_enabled',
         ]);
 
-        $protectedPagePassword = $request->input('protected_page_password');
-        if ($protectedPagePassword) {
-            $mainSettingsData['protected_page_password'] = $protectedPagePassword;
-        }
-
         $updated = $this->mainSettingsService->update($mainSettings, $mainSettingsData);
-        unset($updated['protected_page_password']);
 
         return ApiResource::make($updated);
+    }
+
+    public function getAvailableSmsGateways(): ApiResource {
+        $availableGateways = $this->smsGatewayResolverService->getAvailableSmsGateways();
+
+        return ApiResource::make($availableGateways);
     }
 }

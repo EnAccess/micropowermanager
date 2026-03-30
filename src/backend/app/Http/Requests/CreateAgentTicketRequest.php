@@ -19,9 +19,9 @@ class CreateAgentTicketRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'owner_id' => 'required',
-            'title' => 'required',
-            'description' => 'required',
+            'owner_id' => ['required'],
+            'title' => ['required'],
+            'description' => ['required'],
         ];
     }
 }

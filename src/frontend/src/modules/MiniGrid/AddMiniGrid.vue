@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="$tc('phrases.newMiniGrid')" color="green">
+    <widget :title="$tc('phrases.newMiniGrid')" color="primary">
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter md-size-100">
@@ -78,7 +78,7 @@
                       maxlength="8"
                       step="any"
                       v-model="miniGridLatLng.lat"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     ></md-input>
                     <span class="md-error">
                       {{ errors.first($tc("words.latitude")) }}
@@ -100,7 +100,7 @@
                       step="any"
                       maxlength="8"
                       v-model="miniGridLatLng.lon"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     ></md-input>
                     <span class="md-error">
                       {{ errors.first($tc("words.longitude")) }}
@@ -146,13 +146,13 @@
 </template>
 
 <script>
-import { ClusterService } from "@/services/ClusterService"
-import { ICONS, MappingService } from "@/services/MappingService"
-import { MiniGridService } from "@/services/MiniGridService"
-import Widget from "@/shared/Widget.vue"
-import RedirectionModal from "@/shared/RedirectionModal"
+import { notify } from "@/mixins/notify.js"
 import MgMap from "@/modules/Map/MiniGridMap.vue"
-import { notify } from "@/mixins"
+import { ClusterService } from "@/services/ClusterService.js"
+import { ICONS, MappingService } from "@/services/MappingService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AddMiniGrid",
@@ -253,15 +253,61 @@ export default {
       const clusterGeoData = await this.getClusterGeoData(
         this.selectedClusterId,
       )
-      this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
-      this.mappingService.setGeoData(clusterGeoData)
+
+      if (!clusterGeoData || !clusterGeoData.geo_json) {
+        this.alertNotify("error", "Cluster has no geo data")
+        return
+      }
+
+      // Extract geo_json and convert to Feature if needed
+      let geoJsonFeature
+      if (clusterGeoData.geo_json.type === "Feature") {
+        geoJsonFeature = clusterGeoData.geo_json
+      } else if (clusterGeoData.geo_json.type === "FeatureCollection") {
+        geoJsonFeature = clusterGeoData.geo_json.features[0]
+      } else {
+        throw new Error(
+          "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
+        )
+      }
+
+      // Calculate center from GeoJSON bounds or geometry
+      let centerLat, centerLon
+      if (geoJsonFeature.bbox && geoJsonFeature.bbox.length >= 4) {
+        centerLon = (geoJsonFeature.bbox[0] + geoJsonFeature.bbox[2]) / 2
+        centerLat = (geoJsonFeature.bbox[1] + geoJsonFeature.bbox[3]) / 2
+      } else if (geoJsonFeature.geometry) {
+        const coords = geoJsonFeature.geometry.coordinates
+        if (geoJsonFeature.geometry.type === "Point") {
+          centerLon = coords[0]
+          centerLat = coords[1]
+        } else if (
+          geoJsonFeature.geometry.type === "Polygon" &&
+          coords[0] &&
+          coords[0][0]
+        ) {
+          // Use first coordinate
+          centerLon = coords[0][0][0]
+          centerLat = coords[0][0][1]
+        } else {
+          // Fallback to first available coordinate
+          centerLon = coords[0]?.[0]?.[0] || 0
+          centerLat = coords[0]?.[0]?.[1] || 0
+        }
+      }
+
+      if (centerLat && centerLon) {
+        this.mappingService.setCenter([centerLat, centerLon])
+      }
+
+      this.mappingService.setGeoData(geoJsonFeature)
       this.$refs.miniGridMapRef.drawCluster()
     },
   },
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .md-progress-bar {
   position: absolute;
   top: 0;

@@ -129,6 +129,9 @@
                     <md-option value="female">
                       {{ $tc("words.female") }}
                     </md-option>
+                    <md-option value="non-binary">
+                      {{ $tc("words.nonBinary") }}
+                    </md-option>
                   </md-select>
                   <span class="md-error">
                     {{ errors.first("customer-add-form.gender") }}
@@ -275,11 +278,12 @@
 </template>
 
 <script>
-import { notify } from "@/mixins"
-import { PersonService } from "@/services/PersonService"
-import { CityService } from "@/services/CityService"
-import Loader from "@/shared/Loader.vue"
 import moment from "moment"
+
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { PersonService } from "@/services/PersonService.js"
+import Loader from "@/shared/Loader.vue"
 
 export default {
   name: "AddClientModal",
@@ -330,7 +334,7 @@ export default {
                 "YYYY-MM-DD HH:mm:ss",
               )
             : null,
-          sex: this.personService.person.gender,
+          gender: this.personService.person.gender,
           isCustomer: true,
         }
         const person = await this.personService.createPerson(personParams)
@@ -362,7 +366,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .divider-title {
   border-bottom: solid 1px #dedede;
   font-weight: 500;

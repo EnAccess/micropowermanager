@@ -19,14 +19,14 @@ class CreateAgentSoldApplianceRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'person_id' => 'required',
-            'down_payment' => 'required|numeric',
-            'tenure' => 'required|numeric|min:0',
-            'first_payment_date' => 'required',
-            'agent_assigned_appliance_id' => 'required',
-            'device_serial' => 'nullable|string',
-            'address' => 'nullable|array',
-            'points' => 'nullable|string',
+            'person_id' => ['required'],
+            'down_payment' => ['required', 'numeric'],
+            'tenure' => ['required', 'numeric', 'min:0'],
+            'first_payment_date' => ['required'],
+            'agent_assigned_appliance_id' => ['required'],
+            'device_serial' => ['nullable', 'string'],
+            'address' => ['nullable', 'array'],
+            'points' => ['nullable', 'string'],
         ];
     }
 }

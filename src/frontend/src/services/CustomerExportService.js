@@ -1,4 +1,4 @@
-import CustomerExportRepository from "@/repositories/CustomerExportRepository"
+import CustomerExportRepository from "@/repositories/CustomerExportRepository.js"
 
 export class CustomerExportService {
   constructor() {

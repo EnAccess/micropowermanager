@@ -3,10 +3,11 @@
 namespace App\Models\Transaction;
 
 use App\Models\Base\BaseModel;
+use App\Plugins\MesombPaymentProvider\Models\MesombTransaction;
+use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Inensus\MesombPaymentProvider\Models\MesombTransaction;
-use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 /**
  * Base class for manufacturer transaction models.
@@ -57,5 +58,14 @@ abstract class BaseManufacturerTransaction extends BaseModel {
      */
     public function waveMoneyTransaction(): MorphOne {
         return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');
+    }
+
+    /**
+     * Get the Paystack transaction relationship.
+     *
+     * @return MorphOne<PaystackTransaction, $this>
+     */
+    public function paystackTransaction(): MorphOne {
+        return $this->morphOne(PaystackTransaction::class, 'manufacturer_transaction');
     }
 }

@@ -2,7 +2,7 @@
   <widget
     :class="'col-sm-6 col-md-5'"
     :title="$tc('phrases.lastTransactions')"
-    color="green"
+    color="primary"
     :paginator="agentTransactionService.paginator"
     :subscriber="subscriber"
   >
@@ -36,10 +36,10 @@
   </widget>
 </template>
 <script>
+import { currency } from "@/mixins/currency.js"
+import { AgentTransactionService } from "@/services/AgentTransactionService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentTransactionService } from "@/services/AgentTransactionService"
-import { EventBus } from "@/shared/eventbus"
-import { currency } from "@/mixins/currency"
 
 export default {
   name: "AgentTransactionList",
@@ -86,4 +86,4 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

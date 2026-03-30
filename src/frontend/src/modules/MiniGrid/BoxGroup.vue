@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import { MiniGridService } from "@/services/MiniGridService"
+import { currency } from "@/mixins/currency.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
 import Box from "@/shared/Box.vue"
-import { currency } from "@/mixins/currency"
 
 export default {
   name: "BoxGroup",
@@ -88,4 +88,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

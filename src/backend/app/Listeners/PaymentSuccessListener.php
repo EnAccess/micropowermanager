@@ -4,8 +4,8 @@ namespace App\Listeners;
 
 use App\Events\PaymentSuccessEvent;
 use App\Models\AccessRate\AccessRate;
-use App\Models\Asset;
-use App\Models\AssetRate;
+use App\Models\Appliance;
+use App\Models\ApplianceRate;
 use App\Models\Person\Person;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
@@ -29,7 +29,7 @@ class PaymentSuccessListener {
         string $paymentService,
         string $paymentType,
         string $sender,
-        AccessRate|AssetRate|Asset|Token $paidFor,
+        AccessRate|ApplianceRate|Appliance|Token $paidFor,
         Person $payer,
         Transaction $transaction,
     ): void {
@@ -52,13 +52,13 @@ class PaymentSuccessListener {
                 $this->accessRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->accessRatePaymentHistoryService->assign();
                 break;
-            case $paidFor instanceof AssetRate:
+            case $paidFor instanceof ApplianceRate:
                 $this->applianceRatePaymentHistoryService->setAssignee($paidFor);
                 $this->applianceRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->applianceRatePaymentHistoryService->assign();
                 break;
-            case $paidFor instanceof Asset:
-                $paymentHistory->paid_for_type = Asset::class;
+            case $paidFor instanceof Appliance:
+                $paymentHistory->paid_for_type = Appliance::class;
                 $paymentHistory->paid_for_id = $paidFor->id;
                 break;
                 // @phpstan-ignore instanceof.alwaysTrue

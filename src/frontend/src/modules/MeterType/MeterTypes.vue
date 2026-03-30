@@ -4,7 +4,7 @@
       v-if="toggleNewType"
       id="add-new-meter-type"
       :title="$tc('phrases.newMeterType')"
-      color="red"
+      color="secondary"
     >
       <md-card>
         <md-card-content>
@@ -72,7 +72,7 @@
       :subscriber="subscriber"
       :buttonText="$tc('phrases.newMeterType')"
       @widgetAction="showNewType"
-      color="green"
+      color="primary"
     >
       <md-table>
         <md-table-row>
@@ -104,10 +104,10 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { MeterTypeService } from "@/services/MeterTypeService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { MeterTypeService } from "@/services/MeterTypeService"
-import { EventBus } from "@/shared/eventbus"
-import { notify } from "@/mixins/notify"
 export default {
   name: "MeterTypes",
   mixins: [notify],

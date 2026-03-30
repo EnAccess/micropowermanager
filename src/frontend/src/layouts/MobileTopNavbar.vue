@@ -21,7 +21,7 @@
         <div class="md-layout-item md-layout md-gutter nav-menu">
           <md-menu md-direction="bottom-end" md-size="medium" class="menu-item">
             <md-button class="md-dense nav-button" md-menu-trigger>
-              <md-icon class="c-white">add_location_alt</md-icon>
+              <md-icon>add_location_alt</md-icon>
               <small>{{ $tc("words.location", 2) }}</small>
             </md-button>
             <md-menu-content>
@@ -51,7 +51,7 @@
           </md-menu>
           <md-menu class="menu-item" md-direction="bottom-end" md-size="medium">
             <md-button class="md-dense nav-button" md-menu-trigger>
-              <md-icon class="c-white">settings</md-icon>
+              <md-icon>settings</md-icon>
               <small class="mobile-menu-text">
                 {{ $tc("menu.subMenu.Settings") }}
               </small>
@@ -96,11 +96,11 @@
           </md-menu>
           <md-menu class="menu-item" md-direction="bottom-end" md-size="medium">
             <md-button class="nav-button md-dense" md-menu-trigger>
-              <md-icon class="c-white">person</md-icon>
+              <md-icon>person</md-icon>
               <small class="mobile-menu-text">
                 {{ adminName }}
               </small>
-              <md-icon class="c-white">keyboard_arrow_down</md-icon>
+              <md-icon>keyboard_arrow_down</md-icon>
             </md-button>
             <md-menu-content>
               <div class="author-card">
@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import Breadcrumb from "../shared/Breadcrumb"
+import Breadcrumb from "../shared/Breadcrumb.vue"
 
 export default {
   name: "MobileTopNavBar",
@@ -168,7 +168,7 @@ export default {
       this.$sidebar.displaySidebar(false)
     },
     navigateRoute(route) {
-      this.$router.push(route)
+      this.$router.push(route).catch(() => {})
     },
   },
   computed: {
@@ -179,7 +179,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.md-button.nav-button {
+  color: white;
+}
+
+.md-icon.md-icon-font.md-theme-default {
+  color: white;
+}
+
 @media screen and (max-width: 500px) {
   .mobile-menu-text {
     display: none;

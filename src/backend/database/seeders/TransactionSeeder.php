@@ -10,23 +10,21 @@ use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
+use App\Plugins\AngazaSHS\Models\AngazaTransaction;
+use App\Plugins\CalinMeter\Models\CalinTransaction;
+use App\Plugins\SunKingSHS\Models\SunKingTransaction;
+use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
+use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use App\Services\DatabaseProxyManagerService;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use Database\Factories\AgentTransactionFactory;
 use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
-use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Inensus\AngazaSHS\Models\AngazaTransaction;
-use Inensus\CalinMeter\Models\CalinTransaction;
-use Inensus\SunKingSHS\Models\SunKingTransaction;
-use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TransactionSeeder extends Seeder {
     public function __construct(
@@ -51,20 +49,15 @@ class TransactionSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        (new Info($this->command->getOutput()))->render(
+        $this->command->outputComponents()->info(
             "Running TransactionSeeder to generate $this->amount transactions. This may take some time."
         );
 
-        for ($i = 1; $i <= $this->amount; ++$i) {
-            try {
-                DB::connection('tenant')->beginTransaction();
-                $this->generateTransaction();
-                DB::connection('tenant')->commit();
-            } catch (\Exception $e) {
-                DB::connection('tenant')->rollBack();
-                echo $e->getMessage();
-            }
-        }
+        $this->command->withProgressBar(
+            range(1, $this->amount),
+            fn () => $this->generateTransaction()
+        );
+        $this->command->newLine(2);
     }
 
     private function getTransactionTypeRandomlyFromTransactionTypes(): string {
@@ -251,7 +244,7 @@ class TransactionSeeder extends Seeder {
 
         try {
             // create an object for the token job
-            $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
+            $transactionData = \App\DTO\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
             event(new TransactionFailedEvent($transaction, $exception->getMessage()));
             throw $exception;
@@ -269,11 +262,10 @@ class TransactionSeeder extends Seeder {
         $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($transactionData);
         $transactionData->transaction->amount = $applianceInstallmentPayer->payInstallments();
-        $transactionData->totalAmount = $transactionData->transaction->amount;
         $transactionData->paidRates = $applianceInstallmentPayer->paidRates;
 
         // FIXME:
-        // Access to an undefined property App\Misc\TransactionDataContainer::$shsLoan.
+        // Access to an undefined property App\DTO\TransactionDataContainer::$shsLoan.
         // $transactionData->shsLoan = $applianceInstallmentPayer->shsLoan;
 
         // generate random token

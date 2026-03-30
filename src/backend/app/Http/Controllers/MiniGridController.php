@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMiniGridRequest;
 use App\Http\Requests\UpdateMiniGridRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\MiniGrid;
 use App\Services\GeographicalInformationService;
 use App\Services\MiniGridGeographicalInformationService;
 use App\Services\MiniGridService;

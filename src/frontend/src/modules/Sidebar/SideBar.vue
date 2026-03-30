@@ -3,7 +3,7 @@
     <!-- Fixed logo section that won't scroll -->
     <div class="logo fixed-logo">
       <div class="brand-column">
-        <img class="logo" alt="logo" :src="imgLogo" />
+        <img class="logo icon" alt="logo" :src="imgLogo" />
         <div class="company-header">
           {{ $store.getters["settings/getMainSettings"].companyName }}
           <br />
@@ -17,14 +17,7 @@
       <slot name="content"></slot>
       <md-list class="no-bg p-15" md-expand-single>
         <template v-for="menu in routes">
-          <template
-            v-if="
-              menu.meta?.sidebar?.enabled ||
-              getEnabledPlugins.includes(
-                menu.meta?.sidebar?.enabled_by_mpm_plugin_id,
-              )
-            "
-          >
+          <template v-if="shouldRenderMenu(menu)">
             <!-- If the route has no children, then it should be a clickable menu item -->
             <router-link
               v-if="!hasSubMenu(menu)"
@@ -32,21 +25,12 @@
               :key="'menu' + menu.meta?.sidebar?.name ?? menu.path"
             >
               <md-list-item>
-                <md-icon
-                  v-if="menu.meta?.sidebar?.icon"
-                  class="c-white icon-box"
-                >
+                <md-icon v-if="menu.meta?.sidebar?.icon" class="icon-box">
                   {{ menu.meta.sidebar.icon }}
                 </md-icon>
-                <span class="md-list-item-text c-white">
+                <span class="md-list-item-text">
                   {{ $tc("menu." + menu.meta?.sidebar?.name ?? menu.path) }}
                 </span>
-                <md-icon
-                  v-if="protectedPages.includes(menu.path)"
-                  class="c-white password-protected-lock-icon"
-                >
-                  lock
-                </md-icon>
               </md-list-item>
             </router-link>
 
@@ -56,32 +40,22 @@
               :key="'submenu' + menu.meta?.sidebar?.name ?? menu.path"
             >
               <md-list-item md-expand>
-                <md-icon
-                  v-if="menu.meta?.sidebar?.icon"
-                  class="c-white icon-box"
-                >
+                <md-icon v-if="menu.meta?.sidebar?.icon" class="icon-box">
                   {{ menu.meta.sidebar.icon }}
                 </md-icon>
-                <span class="md-list-item-text c-white">
+                <span class="md-list-item-text">
                   {{ menu.meta?.sidebar?.name ?? menu.path }}
                 </span>
                 <md-list slot="md-expand" class="no-bg">
-                  <router-link
-                    v-for="sub in menu.children"
-                    :key="sub.path"
-                    :to="subMenuUrl(menu.path, sub.path)"
-                    class="sub-menu"
-                  >
-                    <template
-                      v-if="
-                        sub.meta?.sidebar?.enabled ||
-                        getEnabledPlugins.includes(
-                          sub.meta?.sidebar?.enabled_by_mpm_plugin_id,
-                        )
-                      "
+                  <template v-for="sub in menu.children">
+                    <router-link
+                      v-if="shouldRenderSubMenu(menu, sub)"
+                      :key="sub.path"
+                      :to="subMenuUrl(menu.path, sub.path)"
+                      class="sub-menu"
                     >
                       <md-list-item>
-                        <span class="md-list-item-text c-white">
+                        <span class="md-list-item-text">
                           {{
                             $tc(
                               "menu.subMenu." + sub.meta?.sidebar?.name ??
@@ -89,19 +63,9 @@
                             )
                           }}
                         </span>
-                        <md-icon
-                          v-if="
-                            protectedPages.includes(
-                              subMenuUrl(menu.path, sub.path),
-                            )
-                          "
-                          class="c-white password-protected-lock-icon"
-                        >
-                          lock
-                        </md-icon>
                       </md-list-item>
-                    </template>
-                  </router-link>
+                    </router-link>
+                  </template>
                 </md-list>
               </md-list-item>
             </div>
@@ -115,13 +79,13 @@
 </template>
 
 <script>
-import { translateItem } from "@/Helpers/TranslateItem"
-import PasswordProtection from "@/shared/PasswordProtection"
 import { mapGetters } from "vuex"
+
+import { getPermissionsForPath } from "@/Helpers/PermissionGuard.js"
+import { translateItem } from "@/Helpers/TranslateItem.js"
 
 export default {
   name: "SideBar",
-  mixins: [PasswordProtection],
 
   data() {
     return {
@@ -141,11 +105,11 @@ export default {
     },
     imgLogo: {
       type: String,
-      default: require("@/assets/images/Logo1.png"),
+      default: require("@/assets/images/mpmlogo_stylized.svg"),
     },
     sidebarItemColor: {
       type: String,
-      default: "green",
+      default: "primary",
     },
     autoClose: {
       type: Boolean,
@@ -161,6 +125,48 @@ export default {
     await this.$store.dispatch("settings/fetchPlugins")
   },
   methods: {
+    isSidebarEnabled(meta = {}) {
+      const enabledFlag = meta?.sidebar?.enabled
+      const pluginId = meta?.sidebar?.enabled_by_mpm_plugin_id
+      const pluginEnabled =
+        pluginId && this.getEnabledPlugins.includes(pluginId)
+      return Boolean(enabledFlag || pluginEnabled)
+    },
+    shouldRenderMenu(menu) {
+      if (!this.isSidebarEnabled(menu.meta ?? {})) {
+        return false
+      }
+      if (!this.hasSubMenu(menu)) {
+        return this.canNavigate(menu.path, menu.meta ?? {})
+      }
+      return menu.children?.some((sub) => this.shouldRenderSubMenu(menu, sub))
+    },
+    shouldRenderSubMenu(menu, sub) {
+      const enabledFlag = sub.meta?.sidebar?.enabled
+      const pluginId = sub.meta?.sidebar?.enabled_by_mpm_plugin_id
+      const pluginEnabled =
+        pluginId && this.getEnabledPlugins.includes(pluginId)
+      if (!enabledFlag && !pluginEnabled) {
+        return false
+      }
+      return this.canNavigate(
+        this.subMenuUrl(menu.path, sub.path),
+        sub.meta ?? {},
+        menu.meta ?? {},
+      )
+    },
+    canNavigate(path, meta = {}, fallbackMeta = {}) {
+      let requiredPermissions = getPermissionsForPath(path, meta)
+      if (!requiredPermissions.length && Object.keys(fallbackMeta).length) {
+        requiredPermissions = getPermissionsForPath(path, fallbackMeta)
+      }
+      if (!requiredPermissions.length) {
+        return true
+      }
+      return requiredPermissions.every((permission) =>
+        this.userPermissions.includes(permission),
+      )
+    },
     hasSubMenu(menu) {
       // We show a submenu if the menu has children and at least one of them has sidebar enabled
       if (menu.children && menu.children.length > 0) {
@@ -185,6 +191,9 @@ export default {
   },
   computed: {
     ...mapGetters("settings", ["getEnabledPlugins"]),
+    ...mapGetters({
+      userPermissions: "auth/getPermissions",
+    }),
     sidebarStyle() {
       return {
         background: "#2b2b2b !important",
@@ -194,19 +203,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
 .sidebar {
   background: #2b2b2b;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  width: 260px;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
+
 .sidebar-wrapper {
   position: relative;
   z-index: 4;
@@ -241,6 +244,11 @@ export default {
   padding: 15px 0;
   width: 100%;
 }
+
+.logo.icon {
+  max-width: 64px;
+}
+
 .sidebar-bottom-buffer {
   height: 30px;
 }
@@ -281,29 +289,17 @@ export default {
   background: #6b6a6a !important;
   position: relative;
   width: calc(100%) !important;
-  border-right: 5px solid #9d302a;
+  border-right: 5px solid $brand-primary-dark;
 }
 
 .no-bg {
   background-color: transparent !important;
 }
 
-.md-icon.md-theme-default.md-icon-image svg {
-  fill: #f5e8e8 !important;
-}
-
-.c-white {
-  color: #f5e8e8 !important;
-}
-
 .icon-box {
   margin-right: 10px !important;
   width: 25px !important;
   height: 25px !important;
-}
-
-.md-icon.password-protected-lock-icon {
-  font-size: 16px !important;
 }
 
 .sub-menu {

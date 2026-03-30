@@ -12,7 +12,7 @@ use App\Http\Controllers\AgentWebController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'middleware' => ['api', 'jwt.verify'],
+    'middleware' => ['auth:api'],
     'prefix' => 'agents',
 ], static function ($router) {
     Route::get('/', [AgentWebController::class, 'index']);
@@ -30,7 +30,7 @@ Route::group([
     Route::group(['prefix' => 'sold'], function () {
         Route::get('/{agentId}', [AgentSoldApplianceWebController::class, 'index']);
     });
-    Route::group(['prefix' => 'commissions'], function () {
+    Route::group(['prefix' => 'commissions', 'middleware' => 'permission:settings'], function () {
         Route::get('/', [AgentCommissionWebController::class, 'index']);
         Route::post('/', [AgentCommissionWebController::class, 'store']);
         Route::delete('/{agentCommissionId}', [AgentCommissionWebController::class, 'destroy']);

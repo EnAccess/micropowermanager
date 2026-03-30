@@ -55,9 +55,9 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus"
-import { TicketService } from "@/services/TicketService"
-import { TicketUserService } from "@/services/TicketUserService"
+import { TicketService } from "@/services/TicketService.js"
+import { TicketUserService } from "@/services/TicketUserService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Filtering",
@@ -112,7 +112,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .chic-button {
   background-color: #0a0a0c !important;
   color: #fefefe !important;

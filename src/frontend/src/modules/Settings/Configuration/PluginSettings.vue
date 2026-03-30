@@ -21,7 +21,7 @@
         <md-switch
           v-model="plugin.checked"
           @change="onSwitchChange($event, plugin)"
-          class="data-stream-switch"
+          class="md-primary data-stream-switch"
           :disabled="switching"
         />
       </div>
@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import { MpmPluginService } from "@/services/MpmPluginService"
-import { PluginService } from "@/services/PluginService"
-import { notify } from "@/mixins/notify"
+import { notify } from "@/mixins/notify.js"
+import { MpmPluginService } from "@/services/MpmPluginService.js"
+import { PluginService } from "@/services/PluginService.js"
 
 export default {
   name: "PluginSettings",

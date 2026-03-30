@@ -1,5 +1,5 @@
 <template>
-  <widget :title="$tc('Meter Detail')" color="green">
+  <widget :title="$tc('Meter Detail')" color="primary">
     <div class="meter-overview-card">
       <div
         class="meter-overview-detail"
@@ -32,7 +32,7 @@
                 <span
                   style="cursor: pointer"
                   @click="editTariff = true"
-                  v-if="meter.tariff.factor !== 2"
+                  v-if="meter.tariff.factor !== 2 && $can('transactions')"
                 >
                   <md-icon>edit</md-icon>
                 </span>
@@ -74,6 +74,7 @@
                 <span
                   style="cursor: pointer"
                   @click="editConnectionGroup = true"
+                  v-if="$can('transactions')"
                 >
                   <md-icon>edit</md-icon>
                 </span>
@@ -123,6 +124,7 @@
                 <span
                   style="cursor: pointer"
                   @click="editConnectionType = true"
+                  v-if="$can('transactions')"
                 >
                   <md-icon>edit</md-icon>
                 </span>
@@ -169,13 +171,13 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import { ConnectionGroupService } from "@/services/ConnectionGroupService.js"
+import { ConnectionTypeService } from "@/services/ConnectionTypeService.js"
+import { MeterService } from "@/services/MeterService.js"
+import { TariffService } from "@/services/TariffService.js"
 import Widget from "@/shared/Widget.vue"
-import { TariffService } from "@/services/TariffService"
-import { ConnectionTypeService } from "@/services/ConnectionTypeService"
-import { ConnectionGroupService } from "@/services/ConnectionGroupService"
-import { MeterService } from "@/services/MeterService"
-import { currency } from "@/mixins/currency"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "MeterDetail",
@@ -187,9 +189,13 @@ export default {
     },
   },
   mounted() {
-    this.getTariffs()
-    this.getConnectionGroups()
-    this.getConnectionTypes()
+    if (this.$can("transactions")) {
+      this.getTariffs()
+    }
+    if (this.$can("settings")) {
+      this.getConnectionGroups()
+      this.getConnectionTypes()
+    }
     this.$emit("widget-loaded", "meter-detail")
   },
   data() {
@@ -254,7 +260,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .list-column {
   display: flex;
   flex-direction: column;

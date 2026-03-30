@@ -27,9 +27,10 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
  * @property-read Address|null                 $address
- * @property-read Asset|null                   $appliance
- * @property-read AssetPerson|null             $assetPerson
+ * @property-read Appliance|null               $appliance
+ * @property-read AppliancePerson|null         $appliancePerson
  * @property-read Meter|SolarHomeSystem|EBike  $device
+ * @property-read GeographicalInformation|null $geo
  * @property-read Person|null                  $person
  * @property-read Collection<int, Token>       $tokens
  * @property-read Collection<int, Transaction> $transactions
@@ -62,10 +63,29 @@ class Device extends BaseModel {
     }
 
     /**
-     * @return MorphOne<Address, $this>
+     * @return MorphOne<GeographicalInformation, $this>
      */
-    public function address(): MorphOne {
-        return $this->morphOne(Address::class, 'owner');
+    public function geo(): MorphOne {
+        return $this->morphOne(GeographicalInformation::class, 'owner');
+    }
+
+    /**
+     * Get the mini-grid through person's primary address.
+     */
+    public function miniGrid(): ?MiniGrid {
+        return $this->person
+            ?->addresses()
+            ->where('is_primary', 1)
+            ->first()
+            ?->city
+            ?->miniGrid;
+    }
+
+    /**
+     * Get the cluster via mini-grid (can use hasManyThrough if schema supports it).
+     */
+    public function cluster(): ?Cluster {
+        return $this->miniGrid()?->cluster;
     }
 
     /**
@@ -76,23 +96,23 @@ class Device extends BaseModel {
     }
 
     /**
-     * @return HasOne<AssetPerson, $this>
+     * @return HasOne<AppliancePerson, $this>
      */
-    public function assetPerson(): HasOne {
-        return $this->hasOne(AssetPerson::class, 'device_serial', 'device_serial');
+    public function appliancePerson(): HasOne {
+        return $this->hasOne(AppliancePerson::class, 'device_serial', 'device_serial');
     }
 
     /**
-     * @return HasOneThrough<Asset, AssetPerson, $this>
+     * @return HasOneThrough<Appliance, AppliancePerson, $this>
      */
     public function appliance(): HasOneThrough {
         return $this->hasOneThrough(
-            Asset::class,
-            AssetPerson::class,
+            Appliance::class,
+            AppliancePerson::class,
             'device_serial',
             'id',
             'device_serial',
-            'asset_id'
+            'appliance_id'
         );
     }
 

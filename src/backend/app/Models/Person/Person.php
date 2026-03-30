@@ -7,15 +7,14 @@ use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
-use App\Models\AssetPerson;
+use App\Models\AppliancePerson;
 use App\Models\Base\BaseModel;
 use App\Models\Country;
-use App\Models\CustomerGroup;
 use App\Models\Device;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
-use App\Models\Role\RoleInterface;
-use App\Models\Role\Roles;
+use App\Models\PersonDocument;
+use App\Models\Ticket\Ticket;
 use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,41 +27,39 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
-use Inensus\Ticket\Models\Ticket;
 
 /**
  * Class Person.
  *
- * @property      int                             $id
- * @property      string|null                     $title
- * @property      string|null                     $education
- * @property      string                          $name
- * @property      string                          $surname
- * @property      \Illuminate\Support\Carbon|null $birth_date
- * @property      string|null                     $sex
- * @property      int|null                        $nationality
- * @property      int                             $is_customer
- * @property      string                          $type
- * @property      int|null                        $mini_grid_id
- * @property      \Illuminate\Support\Carbon|null $deleted_at
- * @property      \Illuminate\Support\Carbon|null $created_at
- * @property      \Illuminate\Support\Carbon|null $updated_at
- * @property      array<array-key, mixed>|null    $additional_json
- * @property-read Collection<int, Address>        $addresses
- * @property-read Agent|null                      $agent
- * @property-read AgentSoldAppliance|null         $agentSoldAppliance
- * @property-read Collection<int, AssetPerson>    $assetPerson
- * @property-read Country|null                    $citizenship
- * @property-read CustomerGroup|null              $customerGroup
- * @property-read Collection<int, Device>         $devices
- * @property-read bool                            $is_active
- * @property-read PaymentHistory|null             $latestPayment
- * @property-read MiniGrid|null                   $miniGrid
- * @property-read Collection<int, PaymentHistory> $payments
- * @property-read Collection<int, Roles>          $roleOwner
- * @property-read Collection<int, Ticket>         $tickets
+ * @property      int                              $id
+ * @property      string|null                      $title
+ * @property      string|null                      $education
+ * @property      string                           $name
+ * @property      string                           $surname
+ * @property      \Illuminate\Support\Carbon|null  $birth_date
+ * @property      string|null                      $gender
+ * @property      int|null                         $nationality
+ * @property      int                              $is_customer
+ * @property      string                           $type
+ * @property      int|null                         $mini_grid_id
+ * @property      \Illuminate\Support\Carbon|null  $deleted_at
+ * @property      \Illuminate\Support\Carbon|null  $created_at
+ * @property      \Illuminate\Support\Carbon|null  $updated_at
+ * @property      array<array-key, mixed>|null     $additional_json
+ * @property-read Collection<int, Address>         $addresses
+ * @property-read Agent|null                       $agent
+ * @property-read AgentSoldAppliance|null          $agentSoldAppliance
+ * @property-read Collection<int, AppliancePerson> $appliancePerson
+ * @property-read Country|null                     $citizenship
+ * @property-read Collection<int, Device>          $devices
+ * @property-read bool                             $is_active
+ * @property-read PaymentHistory|null              $latestPayment
+ * @property-read MiniGrid|null                    $miniGrid
+ * @property-read Collection<int, PaymentHistory>  $payments
+ * @property-read PersonDocument|null              $personDocument
+ * @property-read Collection<int, Ticket>          $tickets
  */
-class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
+class Person extends BaseModel implements \Stringable, HasAddressesInterface {
     /** @use HasFactory<PersonFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -132,24 +129,10 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return MorphMany<Roles, $this>
-     */
-    public function roleOwner(): MorphMany {
-        return $this->morphMany(Roles::class, 'role_owner');
-    }
-
-    /**
      * @return MorphMany<PaymentHistory, $this>
      */
     public function payments(): MorphMany {
         return $this->morphMany(PaymentHistory::class, 'payer');
-    }
-
-    /**
-     * @return BelongsTo<CustomerGroup, $this>
-     */
-    public function customerGroup(): BelongsTo {
-        return $this->belongsTo(CustomerGroup::class);
     }
 
     /**
@@ -167,10 +150,17 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     /**
-     * @return HasMany<AssetPerson, $this>
+     * @return HasMany<AppliancePerson, $this>
      */
-    public function assetPerson(): HasMany {
-        return $this->HasMany(AssetPerson::class, 'person_id', 'id');
+    public function appliancePerson(): HasMany {
+        return $this->HasMany(AppliancePerson::class, 'person_id', 'id');
+    }
+
+    /**
+     * @return HasOne<PersonDocument, $this>
+     */
+    public function personDocument(): HasOne {
+        return $this->hasOne(PersonDocument::class, 'person_id', 'id');
     }
 
     public function __toString(): string {
@@ -206,7 +196,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
             return false;
         }
 
-        return Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
+        return (int) Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
     }
 
     /**

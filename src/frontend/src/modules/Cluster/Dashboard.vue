@@ -51,16 +51,17 @@
 </template>
 
 <script>
-import "@/shared/TableList"
-
-import BoxGroup from "./BoxGroup"
-import RevenueTrends from "./RevenueTrends"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
-import { notify } from "@/mixins"
-import FinancialOverview from "@/modules/Dashboard/FinancialOverview"
-import { EventBus } from "@/shared/eventbus"
 import moment from "moment"
+
+import BoxGroup from "./BoxGroup.vue"
+import RevenueTrends from "./RevenueTrends.vue"
+
+import { notify } from "@/mixins/notify.js"
+import FinancialOverview from "@/modules/Dashboard/FinancialOverview.vue"
 import ClusterMap from "@/modules/Map/ClusterMap.vue"
+import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import "@/shared/TableList.vue"
 
 export default {
   name: "Dashboard",
@@ -101,10 +102,27 @@ export default {
   methods: {
     setClusterMapData() {
       const markingInfos = []
-      const clusterGeoData = this.clusterData.geo_data
-      this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
-      this.mappingService.setGeoData(clusterGeoData)
-      const miniGridsOfCluster = this.clusterData.clusterData.mini_grids
+      const cluster = this.clusterData.clusterData || this.clusterData
+
+      // Use geo_json from cluster model
+      if (cluster.geo_json !== null && cluster.geo_json !== undefined) {
+        // Convert geo_json to GeoJSON Feature
+        let geoJsonFeature
+        if (cluster.geo_json.type === "Feature") {
+          geoJsonFeature = cluster.geo_json
+        } else if (cluster.geo_json.type === "FeatureCollection") {
+          // Use first feature from collection
+          geoJsonFeature = cluster.geo_json.features[0]
+        } else {
+          throw new Error(
+            "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
+          )
+        }
+
+        this.mappingService.setGeoData(geoJsonFeature)
+      }
+
+      const miniGridsOfCluster = this.clusterData.clusterData?.mini_grids || []
       miniGridsOfCluster.map((miniGrid) => {
         const points = miniGrid.location.points.split(",")
         if (points.length !== 2) {
@@ -181,4 +199,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped lang="scss"></style>

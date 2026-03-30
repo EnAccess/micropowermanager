@@ -2,8 +2,8 @@
 
 namespace App\Lib;
 
+use App\DTO\TransactionDataContainer;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 
 interface IManufacturerAPI {
@@ -11,6 +11,13 @@ interface IManufacturerAPI {
      * @return array<string, mixed>
      */
     public function chargeDevice(TransactionDataContainer $transactionContainer): array;
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function unlockDevice(TransactionDataContainer $transactionContainer): array;
 
     /**
      * @return array<string,mixed>|null

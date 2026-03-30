@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Database\Factories\EBikeFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
@@ -10,7 +12,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property      int               $id
  * @property      string            $serial_number
- * @property      int               $asset_id
+ * @property      int               $appliance_id
  * @property      int               $manufacturer_id
  * @property      string|null       $receive_time
  * @property      string|null       $lat
@@ -23,11 +25,13 @@ use Illuminate\Support\Carbon;
  * @property      float|null        $battery_voltage
  * @property      Carbon|null       $created_at
  * @property      Carbon|null       $updated_at
- * @property-read Asset|null        $appliance
+ * @property-read Appliance|null    $appliance
  * @property-read Device|null       $device
  * @property-read Manufacturer|null $manufacturer
  */
 class EBike extends BaseModel {
+    /** @use HasFactory<EBikeFactory> */
+    use HasFactory;
     public const RELATION_NAME = 'e_bike';
     protected $table = 'e_bikes';
 
@@ -46,9 +50,9 @@ class EBike extends BaseModel {
     }
 
     /**
-     * @return BelongsTo<Asset, $this>
+     * @return BelongsTo<Appliance, $this>
      */
     public function appliance(): BelongsTo {
-        return $this->belongsTo(Asset::class, 'asset_id', 'id');
+        return $this->belongsTo(Appliance::class, 'appliance_id', 'id');
     }
 }

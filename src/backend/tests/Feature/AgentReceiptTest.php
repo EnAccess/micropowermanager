@@ -3,59 +3,76 @@
 namespace Tests\Feature;
 
 use App\Models\AgentBalanceHistory;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentReceiptTest extends TestCase {
     use CreateEnvironments;
 
     public function testUserGetsAgentsReceipts(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createMeterType();
+        $this->createMeterTariff();
+        $this->createMeterManufacturer();
+        $this->createConnectionGroup();
+        $this->createConnectionType();
         $this->createAgentCommission();
         $this->createAgent();
-        $agentTransactionCount = 1;
-        $this->createAgentTransaction($agentTransactionCount);
+        $agentId = $this->agents[0]->id;
+        $this->createAgentTransaction(1, 100, $agentId);
         $this->createAgentReceipt();
-        $response = $this->actingAs($this->user)->get(sprintf('/api/agents/receipt/%s', $this->agents[0]->id));
+        $response = $this->actingAs($this->user)->get(sprintf('/api/agents/receipt/%s', $agentId));
         $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), 1);
-        $this->assertEquals($response['data'][0]['agent']['id'], $this->agents[0]->id);
-        $agentBalance = AgentBalanceHistory::query()->where('agent_id', $this->agents[0]->id)->sum('amount');
+        $this->assertEquals(1, count($response['data']));
+        $this->assertEquals($agentId, $response['data'][0]['agent']['id']);
+        $agentBalance = AgentBalanceHistory::query()->where('agent_id', $agentId)->sum('amount');
         $this->assertEquals($response['data'][0]['agent']['balance'], $agentBalance);
     }
 
     public function testUserGetsAllReceipts(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createMeterType();
+        $this->createMeterTariff();
+        $this->createMeterManufacturer();
+        $this->createConnectionGroup();
+        $this->createConnectionType();
         $this->createAgentCommission();
         $this->createAgent();
-        $this->createAgentTransaction();
+        $agentId = $this->agents[0]->id;
+        $this->createAgentTransaction(1, 100, $agentId);
         $this->createAgentReceipt();
         $response = $this->actingAs($this->user)->get('/api/agents/receipt');
         $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), 1);
+        $this->assertEquals(1, count($response['data']));
     }
 
     public function testUserCreatesNewReceipt(): void {
         $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createMeterType();
+        $this->createMeterTariff();
+        $this->createMeterManufacturer();
+        $this->createConnectionGroup();
+        $this->createConnectionType();
         $this->createAgentCommission();
         $this->createAgent();
-        $this->createAgentTransaction();
+        $agentId = $this->agents[0]->id;
+        $this->createAgentTransaction(1, 100, $agentId);
         $postData = [
-            'agent_id' => $this->agents[0]->id,
+            'agent_id' => $agentId,
             'amount' => 50,
         ];
         $response = $this->actingAs($this->user)->post('/api/agents/receipt', $postData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['agent_id'], $postData['agent_id']);
         $this->assertEquals($response['data']['amount'], $postData['amount']);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

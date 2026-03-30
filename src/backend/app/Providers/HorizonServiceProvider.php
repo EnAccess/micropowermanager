@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Request;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
@@ -36,6 +37,11 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider {
                 return true;
             }
 
+            // If user is authenticated and has permission, allow
+            if ($user && method_exists($user, 'can') && $user->can('horizon')) {
+                return true;
+            }
+
             if (empty($horizon_username) || empty($horizon_password)) {
                 abort(403, 'Horizon access not configured.');
             }
@@ -47,8 +53,8 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider {
                 exit;
             }
 
-            return $_SERVER['PHP_AUTH_USER'] === $horizon_username
-                && $_SERVER['PHP_AUTH_PW'] === $horizon_password;
+            return Request::server('PHP_AUTH_USER') === $horizon_username
+                && Request::server('PHP_AUTH_PW') === $horizon_password;
         });
     }
 }

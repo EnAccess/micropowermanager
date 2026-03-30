@@ -1,6 +1,6 @@
-const tariffListResponse = require("./responses/tariff/tariffList.json")
 const tariffCreateResponse = require("./responses/tariff/tariffCreate.json")
 const tariffGetResponse = require("./responses/tariff/tariffGet.json")
+const tariffListResponse = require("./responses/tariff/tariffList.json")
 export default {
   list() {
     return new Promise((resolve) => {

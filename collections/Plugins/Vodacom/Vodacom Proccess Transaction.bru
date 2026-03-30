@@ -1,0 +1,18 @@
+meta {
+  name: Vodacom Proccess Transaction
+  type: http
+  seq: 25
+}
+
+post {
+  url: {{mpm_backend_url}}/api/vodacom_mz/transactions/process
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "referenceId": "ORD-12345-ABC",
+    "transactionId": "VOD-TXN-123456"
+  }
+}

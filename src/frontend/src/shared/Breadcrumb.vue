@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { translateItem } from "@/Helpers/TranslateItem"
+import { translateItem } from "@/Helpers/TranslateItem.js"
 
 export default {
   name: "Breadcrumb",
@@ -104,7 +104,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .breadcrumb {
 }
 ul {

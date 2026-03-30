@@ -19,7 +19,7 @@ class CreateAgentBalanceHistoryRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'amount' => 'required|regex:/^\d*(\.\d{1,2})?$/',
+            'amount' => ['required', 'regex:/^\d*(\.\d{1,2})?$/'],
         ];
     }
 }

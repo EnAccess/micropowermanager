@@ -1,5 +1,5 @@
-jest.mock("../repositories/MapSettingsRepository")
-import { MapSettingsService } from "../services/MapSettingsService"
+jest.mock("../repositories/MapSettingsRepository.js")
+import { MapSettingsService } from "../services/MapSettingsService.js"
 const mapSettingsService = new MapSettingsService()
 const mapSettingsProperties = ["id", "zoom", "latitude", "longitude"]
 

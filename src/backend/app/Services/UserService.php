@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Events\UserCreatedEvent;
 use App\Exceptions\MailNotSentException;
 use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use MPM\User\Events\UserCreatedEvent;
 use Tymon\JWTAuth\JWTGuard;
 
 class UserService {
@@ -43,10 +43,20 @@ class UserService {
     }
 
     /**
-     * @param array{password: string} $data
+     * @param array{password?: string, name?: string} $data
      */
     public function update(User $user, array $data): User {
-        $user->update(['password' => $data['password']]);
+        $updateData = [];
+        if (isset($data['password'])) {
+            $updateData['password'] = $data['password'];
+        }
+        if (isset($data['name'])) {
+            $updateData['name'] = $data['name'];
+        }
+
+        if (!empty($updateData)) {
+            $user->update($updateData);
+        }
 
         return $user->fresh();
     }
@@ -88,7 +98,7 @@ class UserService {
     public function list(): LengthAwarePaginator {
         return $this->user->newQuery()
             ->select('id', 'name', 'email')
-            ->with(['addressDetails'])
+            ->with(['addressDetails', 'roles:name'])
             ->paginate();
     }
 
@@ -145,5 +155,21 @@ class UserService {
      */
     public function getUsers(): Collection {
         return $this->user->newQuery()->get();
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersWithRolesAndPermissions(): Collection {
+        return $this->user->newQuery()->with(['roles.permissions'])->get();
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersToSendOutstandingDebtsReport(): Collection {
+        return $this->user->newQuery()->whereHas('roles', function ($query) {
+            $query->whereIn('name', ['admin', 'owner', 'financial-manager']);
+        })->get();
     }
 }

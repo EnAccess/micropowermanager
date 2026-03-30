@@ -1,5 +1,5 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
+import { Paginator } from "@/Helpers/Paginator.js"
+import { resources } from "@/resources.js"
 
 export class AgentTicketService {
   constructor(agentId) {
@@ -9,7 +9,7 @@ export class AgentTicketService {
 
   async updateList(data) {
     this.list = []
-    this.list = data?.data?.map((ticket) => {
+    this.list = data?.map((ticket) => {
       return {
         created: ticket.created_at,
         id: ticket.id,

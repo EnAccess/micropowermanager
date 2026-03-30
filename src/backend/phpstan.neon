@@ -1,48 +1,27 @@
 includes:
     - vendor/larastan/larastan/extension.neon
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/phpstan/phpstan-mockery/extension.neon
 
 parameters:
 
     paths:
-        - app/
-        - bootstrap/
-        - config/
+        - app
+        - bootstrap
+        - config
         - database
-        # - packages
-        - packages/inensus/africas-talking/
-        - packages/inensus/angaza-shs/
-        - packages/inensus/bulk-registration/
-        - packages/inensus/calin-meter/
-        - packages/inensus/calin-smart-meter/
-        - packages/inensus/chint-meter/
-        - packages/inensus/daly-bms/
-        - packages/inensus/demo-meter-manufacturer/
-        - packages/inensus/demo-shs-manufacturer/
-        - packages/inensus/gome-long-meter/
-        - packages/inensus/kelin-meter/
-        - packages/inensus/mesomb-payment-provider/
-        - packages/inensus/micro-star-meter/
-        # - packages/inensus/spark-meter/
-        - packages/inensus/steama-meter/
-        - packages/inensus/stron-meter/
-        - packages/inensus/sun-king-shs/
-        - packages/inensus/swifta-payment-provider/
-        - packages/inensus/ticket/
-        - packages/inensus/viber-messaging/
-        - packages/inensus/vodacom-mobile-money/
-        - packages/inensus/wave-money-payment-provider/
-        - packages/inensus/wavecom-payment-provider/
         - public
         - resources
         - routes
-        - storage
         - stubs
         # - tests
 
     # Level 9 is the highest level
     level: 6
 
+    # Ensure PHPStan scans vendor for class discovery
+    scanDirectories:
+        - vendor/spatie/laravel-query-builder
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
 #

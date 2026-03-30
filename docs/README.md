@@ -81,20 +81,15 @@ docs/development/images/schema_central_database.png
 
 ## Generate OpenAPI docs
 
-Currently, OpenAPI docs generation is a (semi-)manual process.
+OpenAPI docs are automatically generated when the docs are deployed via [Github Actions](https://github.com/EnAccess/micropowermanager/blob/main/.github/workflows/deploy-gh-pages.yaml)
 
-Assumping you have a local development setup running, run
+Assumping you have a [local development setup](https://micropowermanager.io/development/development-environment.html#access-docker-mysql-database-locally) running, then a rendered version of the OpenAPI docs are available at
 
-```sh
-docker exec -it -u www-data backend-dev bash
-php artisan scribe:generate
-```
+- [OpenAPI](http://localhost:8000/docs/api/)
 
-Run (from the host)
-
-```sh
-cp -r src/backend/storage/framework/cache/scribe/ docs/.public/openapi/
-```
+> [!INFO]
+> Rendered OpenAPI docs are only available on a development environment.
+> Production containers do not expose OpenAPI docs.
 
 ## Further Read
 

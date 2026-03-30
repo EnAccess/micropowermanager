@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Events\TransactionSavedEvent;
 use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
+use App\Providers\Interfaces\ITransactionProvider;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use MPM\Transaction\Provider\ITransactionProvider;
-use MPM\Transaction\TransactionService;
 
 class TransactionController extends Controller {
     public function __construct(
@@ -39,7 +39,7 @@ class TransactionController extends Controller {
         if (isset($transaction->id)) {
             $companyId = $request->attributes->get('companyId') ?? null;
             if ($companyId !== null) {
-                ProcessPayment::dispatch($companyId, $transaction->id);
+                dispatch(new ProcessPayment($companyId, $transaction->id));
             } else {
                 Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
             }

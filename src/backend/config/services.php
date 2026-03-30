@@ -37,15 +37,7 @@ return [
     'bingMapApi' => [
         'url' => env('BINGMAP_API_URL', 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key='),
     ],
-    'sunKing' => [
-        'default_auth_url' => env('SUNKING_DEFAULT_AUTH_URL', 'https://auth.central.glpapps.com/auth/realms/glp-dev/protocol/openid-connect/token'),
-        'default_api_url' => env('SUNKING_DEFAULT_API_URL', 'https://dev.assetcontrol.central.glpapps.com/v2'),
-    ],
     'waveMoney' => [
         'url' => env('WAVEMONEY_API_URL'),
-    ],
-    'prospect' => [
-        'api_url' => env('PROSPECT_API_URL', 'https://demo.prospect.energy/api/v1/in/installations'),
-        'api_token' => env('PROSPECT_API_TOKEN'),
     ],
 ];

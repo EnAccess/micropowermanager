@@ -1,0 +1,14 @@
+meta {
+  name: Export User Permissions Data Excel
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/user-permissions
+  body: none
+  auth: inherit
+}
+
+params:query {
+}

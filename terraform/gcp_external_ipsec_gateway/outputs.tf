@@ -12,10 +12,18 @@ output "project_number" {
 }
 
 ################################################################################
-# GKE Instance
+# GCE Instance
 ################################################################################
 
-# TBD
+output "ipsec_gateway_gce_instance" {
+  description = "The Google Cloud Engine (GCE) instance that implements the IPSec gateway."
+  value       = google_compute_instance.ipsec_gateway.self_link
+}
+
+output "ipsec_gateway_gce_instance_zone" {
+  description = "The Google Cloud Engine (GCE) instance's zone that implements the IPSec gateway."
+  value       = google_compute_instance.ipsec_gateway.zone
+}
 
 ################################################################################
 # Network

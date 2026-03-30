@@ -1,7 +1,8 @@
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { Paginator } from "@/Helpers/Paginator"
-import { resources } from "@/resources"
-import TicketRepository from "@/repositories/TicketRepository"
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import TicketRepository from "@/repositories/TicketRepository.js"
+import { resources } from "@/resources.js"
 
 export class Ticket {
   constructor() {
@@ -50,11 +51,11 @@ export class Ticket {
   }
 
   close() {
-    axios
-      .delete(resources.ticket.close, { data: { ticketId: this.id } })
-      .then(() => {
+    Client.delete(resources.ticket.close, { data: { ticketId: this.id } }).then(
+      () => {
         this.closed = true
-      })
+      },
+    )
   }
 }
 
@@ -98,7 +99,7 @@ export class UserTickets {
   }
 
   newComment(commentData) {
-    axios.post(resources.ticket.comments, commentData)
+    Client.post(resources.ticket.comments, commentData)
   }
 }
 
@@ -169,7 +170,7 @@ export class TicketService {
     try {
       let response = await this.repository.create(maintenanceDataPM)
       if (response.status === 200 || response.status === 201) {
-        return response.data.data
+        return response.data
       } else {
         return new ErrorHandler(response.error, "http", response.status)
       }

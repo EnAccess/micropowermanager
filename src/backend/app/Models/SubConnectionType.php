@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use Database\Factories\SubConnectionTypeFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null            $updated_at
  * @property-read ConnectionType|null    $connectionType
  * @property-read Collection<int, Meter> $meters
- * @property-read MeterTariff|null       $tariff
+ * @property-read Tariff|null            $tariff
  */
 class SubConnectionType extends BaseModel {
     /** @use HasFactory<SubConnectionTypeFactory> */
@@ -42,9 +41,9 @@ class SubConnectionType extends BaseModel {
     }
 
     /**
-     * @return BelongsTo<MeterTariff, $this>
+     * @return BelongsTo<Tariff, $this>
      */
     public function tariff(): BelongsTo {
-        return $this->belongsTo(MeterTariff::class, 'tariff_id', 'id');
+        return $this->belongsTo(Tariff::class, 'tariff_id', 'id');
     }
 }

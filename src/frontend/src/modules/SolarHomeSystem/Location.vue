@@ -1,7 +1,7 @@
 <template>
   <widget
     :title="$tc('words.location')"
-    color="green"
+    color="primary"
     :subscriber="'shs-location'"
   >
     <client-map
@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
 import ClientMap from "@/modules/Map/ClientMap.vue"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
+import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Location",
@@ -49,12 +49,8 @@ export default {
   },
   methods: {
     setMapData() {
-      if (
-        this.device.address &&
-        this.device.address.geo &&
-        this.device.address.geo.points
-      ) {
-        const points = this.device.address.geo.points.split(",")
+      if (this.device.geo && this.device.geo.points) {
+        const points = this.device.geo.points.split(",")
         if (points.length === 2) {
           const lat = parseFloat(points[0])
           const lon = parseFloat(points[1])

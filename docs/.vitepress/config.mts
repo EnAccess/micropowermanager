@@ -4,13 +4,16 @@ import { withMermaid } from "vitepress-plugin-mermaid"
 
 // https://vitepress-sidebar.jooy2.com/getting-started
 const vitepressSidebarOptions = {
-  excludePattern: ["README.md"],
-  excludeFilesByFrontmatterFieldName: "exclude",
+  excludePattern: ["README.md", "roadmap.md"],
+  excludeFilesByFrontmatterFieldName: "exclude_from_sidebar",
   sortMenusByFrontmatterOrder: true,
   useFolderTitleFromIndexFile: true,
   useTitleFromFileHeading: true,
   useTitleFromFrontmatter: true,
 }
+
+const footerLink = (href: string, label: string) =>
+  `<a href="${href}">${label}</a>`
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid(
@@ -56,9 +59,15 @@ export default withMermaid(
       nav: [
         { text: "Home", link: "/" },
         { text: "Docs", link: "/get-started" },
+        { text: "Roadmap", link: "/roadmap" },
       ],
       footer: {
-        message: "Built with VitePress ❤️.",
+        message: [
+          footerLink("https://vitepress.dev/", "Built with VitePress ❤️"),
+          footerLink("/legal/legal-disclosure", "Legal disclosure"),
+          footerLink("/legal/privacy-policy", "Privacy Policy"),
+          footerLink("/legal/cookies-policy", "Cookies Policy"),
+        ].join("  |  "),
         copyright: `Copyright © ${new Date().getFullYear()} EnAccess.`,
       },
 
@@ -68,6 +77,10 @@ export default withMermaid(
         {
           icon: "github",
           link: "https://github.com/EnAccess/micropowermanager",
+        },
+        {
+          icon: "discord",
+          link: "https://discord.osea-community.org/",
         },
       ],
 

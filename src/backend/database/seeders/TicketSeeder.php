@@ -6,15 +6,13 @@ use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
+use App\Models\Ticket\Ticket;
+use App\Models\Ticket\TicketCategory;
+use App\Models\Ticket\TicketOutsource;
+use App\Models\Ticket\TicketUser;
 use App\Models\User;
-use Illuminate\Console\View\Components\Info;
+use App\Services\DatabaseProxyManagerService;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Models\TicketCategory;
-use Inensus\Ticket\Models\TicketOutsource;
-use Inensus\Ticket\Models\TicketUser;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {
     public function __construct(
@@ -31,10 +29,6 @@ class TicketSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        (new Info($this->command->getOutput()))->render(
-            "Running TransactionSeeder to generate $this->amount tickets. This may take some time."
-        );
-
         // Create Ticket categories
         TicketCategory::factory()
             ->count(12)
@@ -118,9 +112,8 @@ class TicketSeeder extends Seeder {
                         ->for($village)
                         ->has(
                             GeographicalInformation::factory()
-                                // Remove this after Laravel 12 upgrade, see
                                 // https://github.com/larastan/larastan/issues/2307
-                                // @phpstan-ignore-next-line
+                                // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
                                     return ['points' => $address->city->location->points];
                                 })
@@ -150,20 +143,19 @@ class TicketSeeder extends Seeder {
         }
 
         // Seed tickets
-        for ($i = 1; $i <= $this->amount; ++$i) {
-            try {
-                DB::connection('tenant')->beginTransaction();
-                $this->generateTicket();
-                DB::connection('tenant')->commit();
-            } catch (\Exception $e) {
-                DB::connection('tenant')->rollBack();
-                echo $e->getMessage();
-            }
-        }
+        $this->command->outputComponents()->info(
+            "Running TicketSeeder to generate $this->amount tickets. This may take some time."
+        );
+
+        $this->command->withProgressBar(
+            range(1, $this->amount),
+            fn () => $this->generateTicket()
+        );
+        $this->command->newLine(2);
     }
 
     private function generateTicket(): void {
-        $randomCategory = TicketCategory::factory()->createOne();
+        $randomCategory = TicketCategory::inRandomOrder()->first();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = User::query()->inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));

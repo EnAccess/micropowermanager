@@ -71,7 +71,7 @@
                 </md-field>
               </div>
 
-              <!--asset list-->
+              <!--appliance list-->
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
@@ -82,7 +82,7 @@
                     {{ $tc("words.appliance") }}
                   </label>
                   <md-select
-                    v-model="eBikeService.eBike.assetId"
+                    v-model="eBikeService.eBike.applianceId"
                     name="appliance"
                     id="appliance"
                     v-validate="'required'"
@@ -123,10 +123,11 @@
 </template>
 
 <script>
-import { ManufacturerService } from "@/services/ManufacturerService"
-import { ApplianceService } from "@/services/ApplianceService"
-import { timing, notify } from "@/mixins"
-import { EBikeService } from "@/services/EBikeService"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import { ApplianceService } from "@/services/ApplianceService.js"
+import { EBikeService } from "@/services/EBikeService.js"
+import { ManufacturerService } from "@/services/ManufacturerService.js"
 
 //these are fixed values in the database
 const MANUFACTURER_TYPE = "e-bike"
@@ -180,7 +181,7 @@ export default {
     },
     appliances() {
       return this.applianceService.list.filter(
-        (appliance) => appliance.assetTypeId === APPLIANCE_TYPE_ID,
+        (appliance) => appliance.applianceTypeId === APPLIANCE_TYPE_ID,
       )
     },
   },

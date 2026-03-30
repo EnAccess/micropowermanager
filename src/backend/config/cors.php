@@ -45,7 +45,8 @@ return [
     /*
      * Sets the Access-Control-Expose-Headers response header with these headers.
      */
-    'exposed_headers' => [],
+    // Allow filenames returned by the backend to be read by the frontend
+    'exposed_headers' => ['Content-Disposition'],
 
     /*
      * Sets the Access-Control-Max-Age response header when > 0.

@@ -1,11 +1,11 @@
-import { Paginator } from "@/Helpers/Paginator"
-import { EventBus } from "@/shared/eventbus"
-import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import { resources } from "@/resources"
-
-import AgentRepository from "@/repositories/AgentRepository"
-import PersonRepository from "@/repositories/PersonRepository"
 import moment from "moment"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
+import AgentRepository from "@/repositories/AgentRepository.js"
+import PersonRepository from "@/repositories/PersonRepository.js"
+import { resources } from "@/resources.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export class AgentService {
   constructor() {
@@ -44,7 +44,7 @@ export class AgentService {
       surname: data.person.surname,
       email: data.email,
       balance: data.balance,
-      gender: data.person.sex,
+      gender: data.person.gender,
       phone: data.person.addresses[0].phone,
       birthday: data.person.birth_date,
       commissionType: data.commission.name,
@@ -94,7 +94,7 @@ export class AgentService {
         agent_commission_id: this.agent.commissionTypeId,
         password: this.agent.password,
         birth_date: moment(this.agent.birthday).format("YYYY-MM-DD HH:mm:ss"),
-        sex: this.agent.gender,
+        gender: this.agent.gender,
       }
       let response = await this.repository.create(agentPM)
       if (response.status === 201) {

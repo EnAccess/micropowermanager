@@ -2,7 +2,7 @@
   <div class="col-sm-12">
     <widget
       :subscriber="subscriber"
-      color="green"
+      color="primary"
       :title="$tc('phrases.userTicket', 2)"
       :paginator="tickets.paginator"
       :button="true"
@@ -21,16 +21,24 @@
     <md-dialog :md-active.sync="showModal">
       <md-dialog-title>{{ $tc("phrases.newTicket") }}</md-dialog-title>
       <md-dialog-content class="md-scrollbar">
-        <form novalidate class="md-layout md-gutter">
+        <form class="md-layout md-gutter">
           <div class="md-layout-item md-size-100">
-            <md-field name="title">
+            <md-field
+              :class="{
+                'md-invalid': errors.has($tc('words.title')),
+              }"
+            >
               <label for="title">{{ $tc("words.title") }}</label>
               <md-input
                 type="text"
                 v-model="newTicket.title"
                 id="title"
-                name="title"
+                :name="$tc('words.title')"
+                v-validate="'required|min:3'"
               />
+              <span class="md-error">
+                {{ errors.first($tc("words.title")) }}
+              </span>
             </md-field>
           </div>
 
@@ -47,14 +55,19 @@
             </md-datepicker>
           </div>
           <div class="md-layout-item md-size-100">
-            <md-field name="ticketPriority">
+            <md-field
+              :class="{
+                'md-invalid': errors.has($tc('words.category')),
+              }"
+            >
               <label for="ticketPriority">
                 {{ $tc("words.category") }}
               </label>
               <md-select
                 v-model="newTicket.label"
-                name="ticketPriority"
+                :name="$tc('words.category')"
                 id="ticketPriority"
+                v-validate="'required'"
               >
                 <md-option value="0" disabled>
                   -- {{ $tc("words.select") }} --
@@ -67,6 +80,9 @@
                   {{ label.label_name }}
                 </md-option>
               </md-select>
+              <span class="md-error">
+                {{ errors.first($tc("words.category")) }}
+              </span>
             </md-field>
           </div>
 
@@ -95,16 +111,24 @@
           </div>
 
           <div class="md-layout-item md-size-100">
-            <md-field>
+            <md-field
+              :class="{
+                'md-invalid': errors.has($tc('words.description')),
+              }"
+            >
               <label for="description">
                 {{ $tc("words.description") }}
               </label>
               <md-textarea
                 type="text"
                 id="description"
-                name="description"
+                :name="$tc('words.description')"
                 v-model="newTicket.description"
+                v-validate="'required|min:3'"
               />
+              <span class="md-error">
+                {{ errors.first($tc("words.description")) }}
+              </span>
             </md-field>
           </div>
           <md-dialog-actions class="md-layout-item md-size-100">
@@ -123,16 +147,17 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { UserTickets } from "@/services/TicketService"
-import { resources } from "@/resources"
-import { EventBus } from "@/shared/eventbus"
 import moment from "moment"
-import { TicketUserService } from "@/services/TicketUserService"
-import { TicketLabelService } from "@/services/TicketLabelService"
-import TicketItem from "../../shared/TicketItem"
-import { baseUrl } from "@/repositories/Client/AxiosClient"
-import { notify } from "@/mixins/notify"
+
+import { notify } from "@/mixins/notify.js"
+import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
+import { TicketLabelService } from "@/services/TicketLabelService.js"
+import { UserTickets } from "@/services/TicketService.js"
+import { TicketUserService } from "@/services/TicketUserService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import TicketItem from "@/shared/TicketItem.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Ticket",
@@ -226,6 +251,7 @@ export default {
     closeModal() {
       this.showModal = false
       this.resetForm()
+      this.$validator.reset()
     },
     resetForm() {
       this.newTicket = {
@@ -271,6 +297,20 @@ export default {
     },
 
     async saveTicket() {
+      if (!this.$can("tickets")) {
+        this.alertNotify(
+          "error",
+          "You do not have permission to create tickets",
+        )
+        return
+      }
+
+      // Validate all fields
+      const validator = await this.$validator.validateAll()
+      if (!validator) {
+        return
+      }
+
       //validate ticket
       if (this.showPriceInput && this.newTicket.outsourcing === 0) {
         this.$swal({
@@ -289,7 +329,7 @@ export default {
       }
 
       try {
-        await axios.post(baseUrl + resources.ticket.create, newTicketParams)
+        await Client.post(resources.ticket.create, newTicketParams)
         this.alertNotify("success", "Ticket created successfully.")
         // Refresh ticket list
         EventBus.$emit(
@@ -303,11 +343,18 @@ export default {
         this.closeModal()
       } catch (error) {
         console.error("Error creating ticket:", error)
-        this.alertNotify("error", error.message)
+        if (error.response && error.response.status === 403) {
+          this.alertNotify(
+            "error",
+            "You do not have permission to create tickets",
+          )
+        } else {
+          this.alertNotify("error", error.message)
+        }
       }
     },
   },
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

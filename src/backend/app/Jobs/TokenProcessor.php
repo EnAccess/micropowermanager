@@ -2,11 +2,11 @@
 
 namespace App\Jobs;
 
+use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
-use App\Misc\TransactionDataContainer;
-use App\Models\AssetRate;
+use App\Models\ApplianceRate;
 use App\Models\Token;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -74,7 +74,11 @@ class TokenProcessor extends AbstractJob {
 
     private function generateToken(mixed $api): void {
         try {
-            $tokenData = $api->chargeDevice($this->transactionContainer);
+            if ($this->transactionContainer->applianceInstallmentsFullFilled) {
+                $tokenData = $api->unlockDevice($this->transactionContainer);
+            } else {
+                $tokenData = $api->chargeDevice($this->transactionContainer);
+            }
         } catch (\Exception $e) {
             $this->handleTokenGenerationFailure($e);
 
@@ -106,12 +110,7 @@ class TokenProcessor extends AbstractJob {
 
     private function retryTokenGeneration(): void {
         ++$this->counter;
-        self::dispatch(
-            $this->companyId,
-            $this->transactionContainer,
-            false,
-            $this->counter
-        )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
+        dispatch(new self($this->companyId, $this->transactionContainer, false, $this->counter))->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
     }
 
     /**
@@ -129,15 +128,17 @@ class TokenProcessor extends AbstractJob {
     private function handlePaymentEvents(Token $token): void {
         $owner = $this->transactionContainer->device->person;
 
-        event(new PaymentSuccessEvent(
-            amount: (int) $this->transactionContainer->transaction->amount,
-            paymentService: $this->transactionContainer->transaction->original_transaction_type,
-            paymentType: 'energy',
-            sender: $this->transactionContainer->transaction->sender,
-            paidFor: $token,
-            payer: $owner,
-            transaction: $this->transactionContainer->transaction,
-        ));
+        if (Token::TYPE_ENERGY == $token->token_type) {
+            event(new PaymentSuccessEvent(
+                amount: (int) $this->transactionContainer->transaction->amount,
+                paymentService: $this->transactionContainer->transaction->original_transaction_type,
+                paymentType: 'energy',
+                sender: $this->transactionContainer->transaction->sender,
+                paidFor: $token,
+                payer: $owner,
+                transaction: $this->transactionContainer->transaction,
+            ));
+        }
 
         event(new TransactionSuccessfulEvent($this->transactionContainer->transaction));
     }
@@ -145,10 +146,10 @@ class TokenProcessor extends AbstractJob {
     private function handleRollbackInFailure(): void {
         $paidRates = $this->transactionContainer->paidRates;
         collect($paidRates)->map(function (array $paidRate) {
-            $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);
-            $assetRate->remaining += $paidRate['paid'];
-            $assetRate->update();
-            $assetRate->save();
+            $applianceRate = ApplianceRate::query()->find($paidRate['appliance_rate_id']);
+            $applianceRate->remaining += $paidRate['paid'];
+            $applianceRate->update();
+            $applianceRate->save();
         });
         $paymentHistories = $this->transactionContainer->transaction->paymentHistories()->get();
         $paymentHistories->map(function ($paymentHistory) {

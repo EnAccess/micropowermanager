@@ -1,0 +1,22 @@
+meta {
+  name: Export Transactions Data JSON
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/transactions?format=json&deviceType=all
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: json
+  deviceType: all
+  ~status: 1
+  ~provider: vodacom_transaction
+  ~serial_number: ABC123
+  ~tariff: 1
+  ~from: 2025-01-01
+  ~to: 2026-01-09
+}

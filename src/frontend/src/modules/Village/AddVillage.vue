@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="$tc('phrases.newVillage')" color="green">
+    <widget :title="$tc('phrases.newVillage')" color="primary">
       <md-card class="md-layout-item md-size-100">
         <md-card-content>
           <div class="md-layout md-gutter md-size-100">
@@ -106,7 +106,7 @@
                       v-model="cityLatLng.lat"
                       step="any"
                       maxlength="8"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     />
                     <span class="md-error">
                       {{ errors.first($tc("words.latitude")) }}
@@ -128,7 +128,7 @@
                       v-model="cityLatLng.lon"
                       step="any"
                       maxlength="8"
-                      v-validate="'required|decimal:5|max:8'"
+                      v-validate="'required|decimal:6'"
                     />
                     <span class="md-error">
                       {{ errors.first($tc("words.longitude")) }}
@@ -175,16 +175,19 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue"
-import { MiniGridService } from "@/services/MiniGridService"
-import { CityService } from "@/services/CityService"
-import { MappingService } from "@/services/MappingService"
-import { ClusterService } from "@/services/ClusterService"
-import RedirectionModal from "@/shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
-import { ICONS, MARKER_TYPE } from "@/services/MappingService"
+import { notify } from "@/mixins/notify.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
-import CountryService from "@/services/CountryService"
+import { CityService } from "@/services/CityService.js"
+import { ClusterService } from "@/services/ClusterService.js"
+import CountryService from "@/services/CountryService.js"
+import {
+  ICONS,
+  MappingService,
+  MARKER_TYPE,
+} from "@/services/MappingService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import RedirectionModal from "@/shared/RedirectionModal.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AddVillage",
@@ -291,7 +294,6 @@ export default {
           this.loading = true
           const city = {
             name: this.cityName,
-            clusterId: this.clusterId,
             miniGridId: this.selectedMiniGridId,
             countryId: this.selectedCountryId,
             points: `${this.cityLatLng.lat},${this.cityLatLng.lon}`,
@@ -345,8 +347,54 @@ export default {
       const lon = parseFloat(points[1])
       const clusterId = miniGridWithGeoData.cluster_id
       const clusterGeoData = await this.getClusterGeoData(clusterId)
-      this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
-      this.mappingService.setGeoData(clusterGeoData)
+
+      if (!clusterGeoData || !clusterGeoData.geo_json) {
+        this.alertNotify("error", "Cluster has no geo data")
+        return
+      }
+
+      // Extract geo_json and convert to Feature if needed
+      let geoJsonFeature
+      if (clusterGeoData.geo_json.type === "Feature") {
+        geoJsonFeature = clusterGeoData.geo_json
+      } else if (clusterGeoData.geo_json.type === "FeatureCollection") {
+        geoJsonFeature = clusterGeoData.geo_json.features[0]
+      } else {
+        throw new Error(
+          "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
+        )
+      }
+
+      // Calculate center from GeoJSON bounds or geometry
+      let centerLat, centerLon
+      if (geoJsonFeature.bbox && geoJsonFeature.bbox.length >= 4) {
+        centerLon = (geoJsonFeature.bbox[0] + geoJsonFeature.bbox[2]) / 2
+        centerLat = (geoJsonFeature.bbox[1] + geoJsonFeature.bbox[3]) / 2
+      } else if (geoJsonFeature.geometry) {
+        const coords = geoJsonFeature.geometry.coordinates
+        if (geoJsonFeature.geometry.type === "Point") {
+          centerLon = coords[0]
+          centerLat = coords[1]
+        } else if (
+          geoJsonFeature.geometry.type === "Polygon" &&
+          coords[0] &&
+          coords[0][0]
+        ) {
+          // Use first coordinate
+          centerLon = coords[0][0][0]
+          centerLat = coords[0][0][1]
+        } else {
+          // Fallback to first available coordinate
+          centerLon = coords[0]?.[0]?.[0] || 0
+          centerLat = coords[0]?.[0]?.[1] || 0
+        }
+      }
+
+      if (centerLat && centerLon) {
+        this.mappingService.setCenter([centerLat, centerLon])
+      }
+
+      this.mappingService.setGeoData(geoJsonFeature)
       markingInfos.push({
         id: miniGridWithGeoData.id,
         name: miniGridWithGeoData.name,

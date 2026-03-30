@@ -1,0 +1,11 @@
+meta {
+  name: Export Transactions Data Excel
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/transactions
+  body: none
+  auth: inherit
+}

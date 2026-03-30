@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\NoActiveSmsProviderException;
 use App\Models\Sms;
-use App\Models\SmsAndroidSetting;
-use App\Sms\AndroidGateway;
-use Illuminate\Console\Command;
+use App\Services\SmsGatewayResolverService;
 use Illuminate\Support\Facades\Log;
 
 class ResendRejectedMessages extends AbstractSharedCommand {
@@ -24,32 +23,42 @@ class ResendRejectedMessages extends AbstractSharedCommand {
      *
      * @return void
      */
-    public function __construct(private Sms $sms) {
+    public function __construct(
+        private Sms $sms,
+        private SmsGatewayResolverService $gatewayResolver,
+    ) {
         parent::__construct();
     }
 
     public function handle(): void {
+        if (!$this->gatewayResolver->hasActiveProvider()) {
+            return;
+        }
+
         $amountToSend = (int) $this->argument('amount');
         $this->sms
             ->where('direction', 1)
             ->where('status', -1)
             ->orderBy('id')
             ->take($amountToSend)
-            ->get()->each(function ($sms) {
-                Log::info("Resending rejected message {$sms->id} to {$sms->receiver}");
-                $smsAndroidSettings = SmsAndroidSetting::getResponsible();
-                $callback = sprintf($smsAndroidSettings->callback, $sms->uuid);
-                $sms->status = 0;
-                $sms->gateway_id = $smsAndroidSettings->getId();
-                $sms->save();
+            ->get()->each(function (Sms $sms) {
+                try {
+                    Log::info("Resending rejected message {$sms->id} to {$sms->receiver}");
+                    [$gateway, $viberId] = $this->gatewayResolver->determineGateway($sms->receiver);
 
-                resolve(AndroidGateway::class)
-                    ->sendSms(
-                        $sms->receiver,
-                        $sms->body,
-                        $callback,
-                        $smsAndroidSettings
-                    );
+                    $resolved = $this->gatewayResolver->resolveGatewayAndArgs($gateway, $sms, [
+                        'viberId' => $viberId,
+                    ]);
+
+                    $resolved['gateway']->sendSms(...$resolved['args']);
+
+                    $sms->status = 0;
+                    $sms->gateway_id = $resolved['gatewayId'];
+                    $sms->save();
+                } catch (NoActiveSmsProviderException $exception) {
+                    Log::error("Failed to resend message {$sms->id}: {$exception->getMessage()}");
+                    $this->error("Failed to resend message {$sms->id}: No active SMS provider");
+                }
             });
     }
 }

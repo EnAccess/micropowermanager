@@ -66,7 +66,7 @@ username: demo_company_admin@example.com
 password: 123123
 ```
 
-The Demo Company protected page password of this company is `123123`.
+The seeded admin account holds the **Owner** role, so it can access every page secured by RBAC.
 
 ## Running `artisan` commands
 
@@ -113,12 +113,22 @@ Configurations for a different editor will work a like.
 
 For local development and editor integration it can be helpful to have a local instance of PHP.
 This will allow you to run composer scripts like `larastan` without the need to use Docker.
+Also, a local PHP installation is pre-requisite for MicroPowerManager plugin development.
 
-These steps are highly dependant on your system setup.
+Install the following tools
+
+- [PHP](https://www.php.net/)
+- [Composer](https://getcomposer.org/)
+- [PhpRedis](https://github.com/phpredis/phpredis)
+
+The actual steps for installation are highly dependant on your system setup.
+Please refer to the individual tools documentation.
+
 For example using `brew` on MacOS
 
 ```sh
 brew install php@8.2
+brew install composer
 pecl install redis
 ```
 
@@ -131,9 +141,21 @@ Certain PHP tools (such as migration or seeding utilities) work more convenientl
 To enable this, you can access the Docker-managed MySQL database locally.
 The Docker Compose stack must still be running, but this setup allows you to run PHP commands from your local terminal, providing a smoother development experience.
 
-- Install [direnv](https://direnv.net/)
-- Copy `.envrc.sample` to `.envrc` (and adapt it's values if you run with non-default configuration)
-- Run `direnv allow`
+- Create the file `src/backend/.env` with the following content
+
+  ::: code-group
+
+  ```ini [src/backend/.env]
+  #
+  # DO NOT USE THESE VALUES IN PRODUCTION
+  #
+  APP_KEY=base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U=
+  DB_USERNAME=root
+  DB_PASSWORD=wF9zLp2qRxaS2e
+  JWT_SECRET=TihQ232bmMermM8HKaLHwzRl5JSuxwqhfEAQKxRHrQqjRUwrsw1FRZhAcLkihEDU
+  ```
+
+- Run `php artisan model:show "Person\Person"` to confirm it is working.
 
 ### Linter configuration
 
@@ -147,6 +169,7 @@ Install the following linter and auto-formatter extensions
 - [PHP CS Fixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer)
 - [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client)
 - [Prettier - Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) (Make sure to configure `"eslint.workingDirectories": [{ "mode": "auto" }]` for the ESLint extension to work with our nested folder structure.)
 
 ### API client
 
@@ -191,6 +214,62 @@ And configure the following database connection
   For example `micro_power_manager` and `DemoCompany_1`.
 
 ![SQL Editor database connection](/screenshots/sql-editor-database-connection.png)
+
+### API Gateway with `ngrok`
+
+When working with external API's that use callbacks and webhook it can be helpful to have a local installation of MicroPowerManager be available through an internet gateway.
+
+- Install [ngrok](https://ngrok.com/download/)
+
+Usage of `ngrok` requires an account.
+The free version usually suffices.
+
+Once `ngrok` is installed and authentication, open a new terminal an run
+
+```sh
+ngrok http 8000
+```
+
+This will expose your local MicroPowerManager backend via ngrok gateway.
+
+You should see an output like this
+
+```sh
+Session Status                online
+Account                       Developer Name (Plan: Free)
+Version                       3.33.0
+Region                        Europe (eu)
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    https://randomly-generated-url.ngrok-free.dev -> http://localhost:8000
+
+Connections                   ttl     opn     rt1     rt5     p50     p90
+                              0       0       0.00    0.00    0.00    0.00
+```
+
+Take note of `<https://randomly-generated-url.ngrok-free.dev>`.
+
+#### Use a local Frontend with backend server via ngrok
+
+Create (or modify) the following two files at the root directory:
+
+```sh
+# .env.override.micropowermanager-backend
+APP_URL=https://randomly-generated-url.ngrok-free.dev
+```
+
+```sh
+# .env.override.micropowermanager-frontend
+MPM_BACKEND_URL=https://randomly-generated-url.ngrok-free.dev
+VUE_APP_CUSTOM_HEADERS={"ngrok-skip-browser-warning": true}
+```
+
+#### Expose external API's via ngrok
+
+Create (or modify) the following file at the root directory:
+
+```sh
+VUE_APP_MPM_BACKEND_URL_EXTERNAL=https://randomly-generated-url.ngrok-free.dev
+```
 
 ### Vue Developer Tools
 
@@ -252,11 +331,12 @@ We recommend the following settings
 
 ### Running test suite locally (backend)
 
-To run the backend tests use the command:
+To run the backend tests, cd into the backend directory `src/backend` and then use the command:
 
 ```sh
 php artisan test
 ```
 
 > [!NOTE]
-> The test suite is currently being worked up, so expect many failling tests.
+> Tests are run on a test database (`mpm_testing`) that is created when docker compose is run.
+> Tests must be run outside the backend container to avoid conflicting environment configurations.

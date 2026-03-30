@@ -6,7 +6,7 @@
     :id="'meter-transactions'"
     :paginator="transactions.paginator"
     :subscriber="subscriber"
-    color="green"
+    color="primary"
   >
     <md-card>
       <md-card-content>
@@ -31,7 +31,7 @@
             </md-table-cell>
             <md-table-cell
               v-if="token.paid_for_type === 'App\\Models\\Token'"
-              v-text="readable(token.paid_for.energy) + ' kWh'"
+              v-text="readable(token.paid_for.token_amount) + ' kWh'"
             ></md-table-cell>
             <md-table-cell v-else>-</md-table-cell>
             <md-table-cell
@@ -45,11 +45,11 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { timing } from "@/mixins/timing.js"
+import { token } from "@/mixins/token.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { currency } from "@/mixins/currency"
-import { timing } from "@/mixins/timing"
-import { token } from "@/mixins/token"
 
 export default {
   name: "Transactions.vue",
@@ -97,4 +97,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

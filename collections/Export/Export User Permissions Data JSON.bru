@@ -1,0 +1,15 @@
+meta {
+  name: Export User Permissions Data JSON
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/user-permissions?format=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: json
+}

@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
+use RectorLaravel\Rector\StaticCall\CarbonToDateFacadeRector;
 use RectorLaravel\Set\LaravelSetList;
 use RectorLaravel\Set\LaravelSetProvider;
 
@@ -15,7 +16,6 @@ return RectorConfig::configure()
         __DIR__.'/app',
         __DIR__.'/bootstrap',
         __DIR__.'/config',
-        __DIR__.'/packages',
         __DIR__.'/public',
         __DIR__.'/resources',
         __DIR__.'/routes',
@@ -47,5 +47,6 @@ return RectorConfig::configure()
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
         ReadOnlyPropertyRector::class,
         NullToStrictStringFuncCallArgRector::class,
+        CarbonToDateFacadeRector::class,
     ])
 ;

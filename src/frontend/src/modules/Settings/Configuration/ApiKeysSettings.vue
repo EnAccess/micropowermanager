@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import { ApiKeysService } from "@/services/ApiKeysService"
-import { notify } from "@/mixins"
+import { notify } from "@/mixins/notify.js"
+import { ApiKeysService } from "@/services/ApiKeysService.js"
 
 export default {
   name: "ApiKeysSettings",
@@ -107,7 +107,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .token-box {
   margin-top: 16px;
 }

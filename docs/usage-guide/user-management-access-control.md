@@ -42,27 +42,23 @@ This ensures:
 > All administrative actions must be performed through the web platform.
 > Field employees using the mobile apps do **not** have access to these protected areas.
 
-### Protected Pages Password
+### Role-Based Permissions (RBAC)
 
-Access to sensitive areas on the web platform is protected by a **Protected Pages Password**.
-This password acts as an additional layer of security on top of standard user login credentials.
+MicroPowerManager uses **Role-Based Access Control (RBAC)** to decide who can perform administrative tasks. Every authenticated request carries a JWT token populated with the user’s **roles** and the derived **permissions**. Both the API and the web UI validate those permissions before rendering sensitive features.
 
-> [!WARNING]
-> Entering an incorrect Protected Pages Password will redirect the user back to the **home page**.
+Built-in roles:
 
-The **Protected Pages Password** is:
+- **Owner** – Full control, including managing admins and system settings.
+- **Admin** – Manage all operational data and configuration, but not owner accounts.
+- **Financial Manager** – Manage customers, finances, transactions, and reports.
+- **User** – Operational access to customers, assets, and tickets only.
 
-- Set during **company (tenant) registration**.
-- Shared across **all user accounts** within the company.
-- Distinct from a user’s personal login password.
+Key permission areas:
 
-You can update this password at any time via: `Settings → User Management` in the web platform.
+- `users`, `roles` – User and role administration.
+- `settings`, `settings.api-keys` – Company configuration, SMS gateways, API keys.
+- `plugins` – Enable/disable and configure plugins.
+- `assets`, `customers`, `payments`, `transactions`, `reports`, `exports`, `tickets` – Operational domains.
 
-![change-protected-pages-password](images/change-protected-pages-password.png)
-
-## Summary
-
-| Feature                      | Who it applies to               | Notes                                              |
-| ---------------------------- | ------------------------------- | -------------------------------------------------- |
-| **User Account**             | Individual employees            | Used to log into web and Customer Registration app |
-| **Protected Pages Password** | All users in a company (tenant) | Shared at tenant level.                            |
+> [!INFO]
+> Pages that were previously guarded by the Protected Pages Password now rely on these permissions.

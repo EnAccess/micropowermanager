@@ -75,8 +75,8 @@
 </template>
 
 <script>
-import { notify } from "@/mixins/notify"
-import { UserPasswordService } from "@/services/UserPasswordService"
+import { notify } from "@/mixins/notify.js"
+import { UserPasswordService } from "@/services/UserPasswordService.js"
 
 export default {
   name: "UserPasswordResetConfirm",
@@ -155,4 +155,4 @@ export default {
 }
 </script>
 
-<style lang="css"></style>
+<style scoped lang="scss"></style>

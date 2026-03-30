@@ -20,31 +20,31 @@ class AgentPerformanceMetricsService {
 
         // Overall metrics
         $overall = DB::connection('tenant')
-            ->table('asset_people')
+            ->table('appliance_people')
             ->selectRaw('
                 COUNT(DISTINCT agents.id) AS number_of_agents,
-                COUNT(asset_people.id) AS sold_appliances,
+                COUNT(appliance_people.id) AS sold_appliances,
                 SUM(agents.commission_revenue) AS total_commission,
-                ROUND(COUNT(asset_people.person_id) / NULLIF(COUNT(DISTINCT agents.id), 0), 2) AS avg_customers_per_agent
+                ROUND(COUNT(appliance_people.person_id) / NULLIF(COUNT(DISTINCT agents.id), 0), 2) AS avg_customers_per_agent
             ')
-            ->leftJoin('agents', 'asset_people.creator_id', '=', 'agents.id')
+            ->leftJoin('agents', 'appliance_people.creator_id', '=', 'agents.id')
             ->where('creator_type', 'agent')
-            ->whereBetween('asset_people.created_at', [$startDate, $endDate])
+            ->whereBetween('appliance_people.created_at', [$startDate, $endDate])
             ->first();
 
         // Top 5 performing agents
         $topAgents = DB::connection('tenant')
-            ->table('asset_people')
+            ->table('appliance_people')
             ->selectRaw('
                 people.name AS agent,
-                COUNT(DISTINCT asset_people.person_id) AS customers,
+                COUNT(DISTINCT appliance_people.person_id) AS customers,
                 SUM(agents.commission_revenue) AS commission,
-                COUNT(asset_people.id) AS sales
+                COUNT(appliance_people.id) AS sales
             ')
-            ->leftJoin('agents', 'asset_people.creator_id', '=', 'agents.id')
+            ->leftJoin('agents', 'appliance_people.creator_id', '=', 'agents.id')
             ->leftJoin('people', 'agents.person_id', '=', 'people.id')
             ->where('creator_type', 'agent')
-            ->whereBetween('asset_people.created_at', [$startDate, $endDate])
+            ->whereBetween('appliance_people.created_at', [$startDate, $endDate])
             ->groupBy('agents.id', 'people.name')
             ->orderByDesc('sales')
             ->limit(5)
@@ -59,15 +59,15 @@ class AgentPerformanceMetricsService {
         };
 
         $periodicData = DB::connection('tenant')
-            ->table('asset_people')
+            ->table('appliance_people')
             ->selectRaw("
-                DATE_FORMAT(asset_people.created_at, '{$groupFormat}') as period,
+                DATE_FORMAT(appliance_people.created_at, '{$groupFormat}') as period,
                 SUM(agents.commission_revenue) AS agent_commissions,
-                COUNT(asset_people.id) AS appliance_sales
+                COUNT(appliance_people.id) AS appliance_sales
             ")
-            ->leftJoin('agents', 'asset_people.creator_id', '=', 'agents.id')
+            ->leftJoin('agents', 'appliance_people.creator_id', '=', 'agents.id')
             ->where('creator_type', 'agent')
-            ->whereBetween('asset_people.created_at', [$startDate, $endDate])
+            ->whereBetween('appliance_people.created_at', [$startDate, $endDate])
             ->groupBy('period')
             ->get();
 

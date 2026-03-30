@@ -4,6 +4,14 @@
       <h3 class="md-title" style="flex: 1">
         {{ $tc("phrases.agentDashboard") }}
       </h3>
+      <md-button
+        class="md-raised md-primary"
+        @click="showAddAgentModal"
+        style="margin-right: 8px"
+      >
+        <md-icon>add</md-icon>
+        {{ $tc("phrases.newAgent") }}
+      </md-button>
       <md-button class="md-raised" @click="refreshData" :disabled="loading">
         <md-icon>update</md-icon>
         {{ $tc("phrases.refreshData") }}
@@ -13,6 +21,11 @@
         ></md-progress-bar>
       </md-button>
     </md-toolbar>
+    <new-agent
+      :add-agent="showNewAgentModal"
+      @agent-added="onAgentAdded"
+      v-if="showNewAgentModal"
+    />
 
     <div>
       <div class="md-layout md-gutter" style="margin-top: 3rem">
@@ -136,15 +149,21 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
+import NewAgent from "@/modules/Agent/NewAgent.vue"
+import { AgentDashboardService } from "@/services/AgentDashboardService.js"
 import Box from "@/shared/Box.vue"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { AgentDashboardService } from "@/services/AgentDashboardService"
-import { notify } from "@/mixins/notify"
-import { currency } from "@/mixins/currency"
 
 export default {
   name: "AgentDashboard",
-  components: { Box, Widget },
+  components: {
+    Box,
+    Widget,
+    NewAgent,
+  },
   mixins: [notify, currency],
   data() {
     return {
@@ -153,6 +172,7 @@ export default {
       agentDashboardService: new AgentDashboardService(),
       agents: [],
       agentMetrics: {},
+      showNewAgentModal: false,
     }
   },
   computed: {
@@ -223,9 +243,32 @@ export default {
     },
     formatCurrency(amount) {
       const currency =
-        this.$store.getters["settings/getMainSettings"]?.currency || "TSZ"
+        this.$store.getters["settings/getMainSettings"]?.currency || "TZS"
       return this.readable(amount) + currency
     },
+    // Add these new methods
+    showAddAgentModal() {
+      this.showNewAgentModal = true
+    },
+    onAgentAdded() {
+      this.showNewAgentModal = false
+      this.loadAgentData() // Refresh the list
+      this.alertNotify("success", this.$tc("phrases.agentCreatedSuccess"))
+    },
+  },
+  created() {
+    // Listen for the close event from NewAgent
+    EventBus.$on("closed", () => {
+      this.showNewAgentModal = false
+    })
+    EventBus.$on("agentCreated", () => {
+      this.loadAgentData()
+    })
+  },
+  beforeDestroy() {
+    // Clean up event listener
+    EventBus.$off("closed")
+    EventBus.$off("agentCreated")
   },
 }
 </script>
@@ -258,5 +301,13 @@ export default {
 .md-chip.md-default {
   background-color: #9e9e9e !important;
   color: white !important;
+}
+
+.md-button {
+  min-width: 120px;
+
+  .md-icon {
+    margin-right: 4px;
+  }
 }
 </style>

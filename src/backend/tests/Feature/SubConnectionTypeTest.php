@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use App\Models\SubConnectionType;
+use Tests\CreateEnvironments;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SubConnectionTypeTest extends TestCase {
     use CreateEnvironments;
@@ -16,9 +16,10 @@ class SubConnectionTypeTest extends TestCase {
         $this->createTestData();
         $this->createMeterTariff($meterTariffCount);
         $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
+        $expectedCount = SubConnectionType::query()->count();
         $response = $this->actingAs($this->user)->get('/api/sub-connection-types');
         $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), count($this->subConnectionTypes));
+        $this->assertCount($expectedCount, $response['data']);
     }
 
     public function testUserGetsSubConnectionTypesByConnectionTypeId(): void {
@@ -67,13 +68,5 @@ class SubConnectionTypeTest extends TestCase {
         ), $subConnectionTypeData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $subConnectionTypeData['name']);
-    }
-
-    public function actingAs(Authenticatable $user, $driver = null) {
-        $token = JWTAuth::fromUser($user);
-        $this->withHeader('Authorization', "Bearer {$token}");
-        parent::actingAs($user);
-
-        return $this;
     }
 }

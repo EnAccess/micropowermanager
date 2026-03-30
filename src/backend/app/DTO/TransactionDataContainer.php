@@ -1,0 +1,116 @@
+<?php
+
+namespace App\DTO;
+
+use App\Models\AppliancePerson;
+use App\Models\Device;
+use App\Models\Manufacturer;
+use App\Models\Meter\Meter;
+use App\Models\SolarHomeSystem;
+use App\Models\Tariff;
+use App\Models\Token;
+use App\Models\Transaction\Transaction;
+use App\Services\AppliancePaymentService;
+use App\Services\DeviceService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+class TransactionDataContainer {
+    public int $accessRateDebt;
+    public Transaction $transaction;
+    public ?Device $device = null;
+    public ?Tariff $tariff = null;
+    public ?Manufacturer $manufacturer = null;
+    public Token $token;
+    /** @var array<int, array<string, float|int>> */
+    public array $paidRates;
+    public float $chargeAmount;
+    public string $chargeUnit;
+    public string $chargeType;
+    public float $amount;
+    public ?AppliancePerson $appliancePerson = null;
+    public ?Meter $meter = null;
+    public float $installmentCost = 0;
+    public float $dayDifferenceBetweenTwoInstallments;
+    public bool $applianceInstallmentsFullFilled;
+
+    public static function initialize(Transaction $transaction): TransactionDataContainer {
+        $container = app()->make(TransactionDataContainer::class);
+        $deviceService = app()->make(DeviceService::class);
+
+        // Initialize base properties
+        $container->chargeAmount = 0;
+        $container->chargeUnit = '';
+        $container->chargeType = '';
+        $container->transaction = $transaction;
+        $container->amount = $transaction->amount;
+        $container->applianceInstallmentsFullFilled = false;
+        $container->tariff = null;
+        $container->meter = null;
+
+        try {
+            // Get device by serial number (may be null for general appliances like TV, bulbs, etc.)
+            $device = $deviceService->getBySerialNumber($transaction->message);
+
+            if ($device !== null) {
+                $container->device = $device;
+
+                $deviceModel = $container->device->device;
+                $container->manufacturer = $deviceModel->manufacturer ?? null;
+
+                if ($deviceModel instanceof Meter) {
+                    $container->handleMeterDevice($deviceModel);
+                } elseif ($deviceModel instanceof SolarHomeSystem) {
+                    $container->handleSHSDevice($deviceModel);
+                }
+            }
+
+            // Handle appliance payments if any
+            $container->handleAppliancePayments($transaction);
+        } catch (ModelNotFoundException $e) {
+            throw new \Exception('Unexpected error occurred while processing transaction. '.$e->getMessage(), $e->getCode(), $e);
+        }
+
+        return $container;
+    }
+
+    /**
+     * Handle meter-specific device initialization.
+     */
+    private function handleMeterDevice(Meter $meter): void {
+        $this->manufacturer = $meter->manufacturer()->first();
+        $this->tariff = $meter->tariff()->first();
+        $this->meter = $meter;
+    }
+
+    /**
+     * Handle Solar Home System specific device initialization.
+     */
+    private function handleSHSDevice(SolarHomeSystem $shs): void {
+        $this->manufacturer = $shs->manufacturer()->first();
+        // Add any SHS-specific initialization here
+    }
+
+    /**
+     * Handle appliance payment related initialization.
+     */
+    private function handleAppliancePayments(Transaction $transaction): void {
+        if ($transaction->paygoAppliance()->exists()) {
+            /** @var AppliancePerson|null $appliancePerson */
+            $appliancePerson = $transaction->paygoAppliance()->first();
+            $this->appliancePerson = $appliancePerson;
+        } else {
+            /** @var AppliancePerson|null $appliancePerson */
+            $appliancePerson = $transaction->nonPaygoAppliance()->first();
+            $this->appliancePerson = $appliancePerson;
+        }
+
+        if ($this->appliancePerson) {
+            $installments = $this->appliancePerson->rates;
+            $appliancePaymentService = app()->make(AppliancePaymentService::class);
+            $secondInstallment = $installments[1] ?? null;
+            $this->installmentCost = $secondInstallment ? $secondInstallment['rate_cost'] : 0;
+            $this->dayDifferenceBetweenTwoInstallments =
+                $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
+        }
+    }
+}

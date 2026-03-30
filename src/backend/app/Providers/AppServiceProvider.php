@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
-use App\Misc\LoanDataContainer;
+use App\DTO\LoanDataContainer;
+use App\Events\TransactionSuccessfulEvent;
+use App\Events\UserCreatedEvent;
+use App\Listeners\SendTransactionConfirmationSmsListener;
+use App\Listeners\TransactionSuccessfulListener;
+use App\Listeners\UserListener;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
 use App\Models\Agent;
@@ -10,43 +15,59 @@ use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCharge;
 use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
-use App\Models\Asset;
-use App\Models\AssetRate;
+use App\Models\Appliance;
+use App\Models\ApplianceRate;
 use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\EBike;
+use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
+use App\Models\Tariff;
+use App\Models\Ticket\Ticket;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
+use App\Policies\MainSettingsPolicy;
+use App\Policies\TicketPolicy;
+use App\Policies\TransactionPolicy;
+use App\Policies\UserPolicy;
 use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\Operation;
+use Dedoc\Scramble\Support\Generator\SecurityRequirement;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use Dedoc\Scramble\Support\RouteInfo;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use MPM\Transaction\Provider\AgentTransactionProvider;
-use MPM\User\Events\UserCreatedEvent;
-use MPM\User\UserListener;
 
 class AppServiceProvider extends ServiceProvider {
     /**
      * Bootstrap any application services.
      */
     public function boot(): void {
+        // Policies
+        Gate::policy(MainSettings::class, MainSettingsPolicy::class);
+        Gate::policy(Ticket::class, TicketPolicy::class);
+        Gate::policy(Transaction::class, TransactionPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
         // Maria DB work-around
         Schema::defaultStringLength(191);
 
@@ -58,17 +79,17 @@ class AppServiceProvider extends ServiceProvider {
                 Transaction::RELATION_NAME => Transaction::class,
                 AgentTransaction::RELATION_NAME => AgentTransaction::class,
                 AccessRate::RELATION_NAME => AccessRate::class,
-                AssetRate::RELATION_NAME => AssetRate::class,
+                ApplianceRate::RELATION_NAME => ApplianceRate::class,
                 Cluster::RELATION_NAME => Cluster::class,
                 MiniGrid::RELATION_NAME => MiniGrid::class,
                 AgentCommission::RELATION_NAME => AgentCommission::class,
                 AgentAssignedAppliances::RELATION_NAME => AgentAssignedAppliances::class,
                 Agent::RELATION_NAME => Agent::class,
                 User::RELATION_NAME => User::class,
-                Asset::RELATION_NAME => Asset::class,
+                Appliance::RELATION_NAME => Appliance::class,
                 AgentReceipt::RELATION_NAME => AgentReceipt::class,
                 AgentCharge::RELATION_NAME => AgentCharge::class,
-                MeterTariff::RELATION_NAME => MeterTariff::class,
+                Tariff::RELATION_NAME => Tariff::class,
                 ThirdPartyTransaction::RELATION_NAME => ThirdPartyTransaction::class,
                 CashTransaction::RELATION_NAME => CashTransaction::class,
                 Meter::RELATION_NAME => Meter::class,
@@ -80,6 +101,43 @@ class AppServiceProvider extends ServiceProvider {
                 EBike::RELATION_NAME => EBike::class,
             ]
         );
+        // Rate limiter for emails
+        RateLimiter::for('emails', fn () => Limit::perMinute(20));
+
+        Gate::define('viewApiDocs', fn (?User $user) => app()->environment('development'));
+
+        Scramble::configure()
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                $openApi->components->securitySchemes['user'] = SecurityScheme::http('bearer', 'JWT')
+                    ->setDescription('This endpoint requires authentication using a **JWT Bearer token**. You can obtain this token by logging in via the `User` authentication endpoint.');
+                $openApi->components->securitySchemes['agent'] = SecurityScheme::http('bearer', 'JWT')
+                    ->setDescription('This endpoint requires authentication using a **JWT Bearer token**. You can obtain this token by logging in via the `Agent App` authentication endpoint.');
+                $openApi->components->securitySchemes['api-key'] = SecurityScheme::http('bearer')
+                    ->setDescription('This endpoint requires an **API key** for authentication. You can generate an API key in the settings dashboard under "API Keys".');
+            })
+            ->withOperationTransformers(function (Operation $operation, RouteInfo $routeInfo) {
+                $route = $routeInfo->route;
+
+                $middlewares = $route->gatherMiddleware();
+
+                if (in_array('auth:api', $middlewares)) {
+                    $operation->security[] = new SecurityRequirement([
+                        'user' => [],
+                    ]);
+                }
+
+                if (in_array('auth:agent_api', $middlewares)) {
+                    $operation->security[] = new SecurityRequirement([
+                        'agent' => [],
+                    ]);
+                }
+
+                if (in_array('auth:api-key', $middlewares)) {
+                    $operation->security[] = new SecurityRequirement([
+                        'api-key' => [],
+                    ]);
+                }
+            });
     }
 
     /**
@@ -105,10 +163,27 @@ class AppServiceProvider extends ServiceProvider {
 
         // Register custom MPM Events
 
-        // MPM\User namespace
         Event::listen(
             UserCreatedEvent::class,
             UserListener::class
         );
+
+        // App\Listeners namespace
+        // manually register TransactionSuccessfulEvent to listener.
+        // because TransactionSuccessfulEvent is also registered in SparkMeter namespace.
+        Event::listen(
+            TransactionSuccessfulEvent::class,
+            TransactionSuccessfulListener::class
+        );
+        Event::listen(
+            TransactionSuccessfulEvent::class,
+            SendTransactionConfirmationSmsListener::class
+        );
+
+        // Register TelescopeServiceProvider
+        if (config('telescope.enabled', false)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 }

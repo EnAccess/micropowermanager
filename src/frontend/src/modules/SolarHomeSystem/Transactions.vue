@@ -7,7 +7,7 @@
     :paginator="transactions.paginator"
     :subscriber="subscriber"
     :show_per_page="true"
-    color="green"
+    color="primary"
   >
     <md-card>
       <md-card-content>
@@ -21,9 +21,7 @@
             <md-table-cell
               v-text="token.transaction.original_transaction_type"
             ></md-table-cell>
-            <md-table-cell
-              v-text="moneyFormat(token.transaction.amount)"
-            ></md-table-cell>
+            <md-table-cell v-text="moneyFormat(token.amount)"></md-table-cell>
             <md-table-cell v-if="token.paid_for_type === 'App\\Models\\Token'">
               Token ({{ formatToken(token.paid_for.token) }})
             </md-table-cell>
@@ -50,11 +48,11 @@
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
+import { timing } from "@/mixins/timing.js"
+import { token } from "@/mixins/token.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { EventBus } from "@/shared/eventbus"
-import { currency } from "@/mixins/currency"
-import { timing } from "@/mixins/timing"
-import { token } from "@/mixins/token"
 
 export default {
   name: "SolarHomeSystemTransactions",
@@ -103,4 +101,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

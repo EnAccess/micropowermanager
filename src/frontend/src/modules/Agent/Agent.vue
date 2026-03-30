@@ -21,11 +21,15 @@
       <div
         class="md-layout-item md-large-size-50 md-medium-size-50 md-xlarge-size-50 md-small-size-100 md-small-size-100"
       >
-        <assigned-appliance-list :agent-id="agentId" />
-        <sold-appliance-list :agent-id="agentId" />
-        <agent-ticket-list :agent-id="agentId" />
+        <assigned-appliance-list
+          v-if="$can('appliances')"
+          :agent-id="agentId"
+        />
+        <sold-appliance-list v-if="$can('appliances')" :agent-id="agentId" />
+        <agent-ticket-list v-if="$can('tickets')" :agent-id="agentId" />
       </div>
       <div
+        v-if="$can('transactions')"
         class="md-layout-item md-large-size-100 md-medium-size-100 md-xlarge-size-100 md-small-size-100 md-small-size-100"
       >
         <agent-transaction-list :agent-id="agentId" />
@@ -34,13 +38,13 @@
   </div>
 </template>
 <script>
-import AgentDetail from "./AgentDetail"
-import AssignedApplianceList from "./Appliances/AssignedApplianceList"
-import AgentReceiptList from "./Receipt/AgentReceiptList"
-import SoldApplianceList from "./Appliances/SoldApplianceList"
-import AgentTransactionList from "./AgentTransactionList"
-import AgentTicketList from "./AgentTicketList"
-import AgentBalanceHistoryList from "./Balance/AgentBalanceHistory"
+import AgentDetail from "./AgentDetail.vue"
+import AgentTicketList from "./AgentTicketList.vue"
+import AgentTransactionList from "./AgentTransactionList.vue"
+import AssignedApplianceList from "./Appliances/AssignedApplianceList.vue"
+import SoldApplianceList from "./Appliances/SoldApplianceList.vue"
+import AgentBalanceHistoryList from "./Balance/AgentBalanceHistory.vue"
+import AgentReceiptList from "./Receipt/AgentReceiptList.vue"
 
 export default {
   name: "Agent",
@@ -61,6 +65,7 @@ export default {
   created() {
     this.agentId = this.$route.params.id
   },
+  methods: {},
 }
 </script>
-<style scoped></style>
+<style scoped lang="scss"></style>

@@ -1,0 +1,17 @@
+meta {
+  name: Vodacom Transaction Status Enquiry
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{mpm_backend_url}}/api/vodacom_mz/transactions/query
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "referenceId": "ORD-12345-ABC"
+  }
+}

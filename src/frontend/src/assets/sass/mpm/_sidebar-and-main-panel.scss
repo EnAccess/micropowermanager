@@ -30,18 +30,20 @@
   background-position: center center;
   @extend .animation-transition-general;
 
-  .md-icon.md-theme-default.md-icon-font,
-  .material-icons {
-    color: #fff !important;
-    opacity: 0.8;
-  }
-
   .md-list {
     &.nav {
       position: initial;
     }
 
     background-color: transparent !important;
+
+    .md-list-item * {
+      color: white;
+    }
+
+    .md-icon.md-theme-default.md-icon-image svg {
+      fill: white;
+    }
 
     .md-list-item a {
       text-transform: capitalize;

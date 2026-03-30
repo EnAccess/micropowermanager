@@ -1,0 +1,18 @@
+meta {
+  name: Export Customers Data Excel
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/customers
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~miniGrid: Main Grid
+  ~village: Village Name
+  ~deviceType: meter
+  ~isActive: true
+}

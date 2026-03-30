@@ -35,7 +35,7 @@
               :box-color="'orange'"
               :center-text="true"
               :header-text="$tc('words.speed')"
-              :sub-text="eBike.speed"
+              :sub-text="eBike.speed + ' km/h'"
               :box-icon="'speed'"
             />
           </div>
@@ -68,7 +68,7 @@
               <div class="txt-bold-and-big">
                 {{ $tc("phrases.batteryLevel") }}:
                 <span :class="'txt-color-red txt-description'">
-                  {{ eBike.batteryLevel }}
+                  {{ eBike.batteryLevel }} %
                 </span>
               </div>
             </div>
@@ -99,7 +99,7 @@
               >
                 <md-switch
                   v-model="statusOn"
-                  class="data-stream-switch"
+                  class="md-primary data-stream-switch"
                   :disabled="loading"
                 >
                   <span v-if="eBike.statusOn">
@@ -133,8 +133,9 @@
 </template>
 
 <script>
-import { notify, timing } from "@/mixins"
-import { EBikeService } from "@/services/EBikeService"
+import { notify } from "@/mixins/notify.js"
+import { timing } from "@/mixins/timing.js"
+import { EBikeService } from "@/services/EBikeService.js"
 import Box from "@/shared/Box.vue"
 
 export default {
@@ -189,7 +190,7 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .txt-color-green {
   color: green;
 }

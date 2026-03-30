@@ -1,0 +1,44 @@
+import CredentialRepository from "../repositories/CredentialRepository.js"
+
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import {
+  convertObjectKeysToCamelCase,
+  convertObjectKeysToSnakeCase,
+} from "@/Helpers/Utils.js"
+
+export class CredentialService {
+  constructor() {
+    this.repository = CredentialRepository
+    this.credential = {
+      id: null,
+      userName: null,
+      userPassword: null,
+    }
+  }
+
+  async getCredential() {
+    try {
+      const { data, status, error } = await this.repository.get()
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+      this.credential = convertObjectKeysToCamelCase(data.data)
+      return this.credential
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async updateCredential() {
+    try {
+      const postData = convertObjectKeysToSnakeCase(this.credential)
+      const { data, status, error } = await this.repository.put(postData)
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+}

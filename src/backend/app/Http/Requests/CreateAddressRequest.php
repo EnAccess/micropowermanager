@@ -21,7 +21,8 @@ class CreateAddressRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'city_id' => 'required',
+            'city_id' => ['required'],
+            'phone' => ['phone:INTERNATIONAL'],
         ];
     }
 }

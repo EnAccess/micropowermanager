@@ -1,5 +1,5 @@
-const paymentFlowResponse = require("./responses/payment/paymentFlow.json")
 const paymentDetailResponse = require("./responses/payment/paymentDetail.json")
+const paymentFlowResponse = require("./responses/payment/paymentFlow.json")
 
 export default {
   getFlow() {

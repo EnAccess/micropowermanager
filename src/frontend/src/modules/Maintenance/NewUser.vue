@@ -3,7 +3,7 @@
     <widget
       v-if="newUser"
       :title="$tc('phrases.newMaintenanceUser')"
-      color="red"
+      color="secondary"
     >
       <div>
         <form @submit.prevent="submitNewUserForm">
@@ -108,6 +108,7 @@
                       enabledCountryCode="true"
                       v-model="maintenanceService.personData.phone"
                       @validate="validatePhone"
+                      @input="onPhoneInput"
                     ></vue-tel-input>
                     <span
                       v-if="!phone.valid && firstStepClicked"
@@ -180,13 +181,14 @@
 </template>
 
 <script>
+import RedirectionModal from "../../shared/RedirectionModal.vue"
+
+import { notify } from "@/mixins/notify.js"
+import { CityService } from "@/services/CityService.js"
+import { MaintenanceService } from "@/services/MaintenanceService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
-import { CityService } from "@/services/CityService"
-import { MiniGridService } from "@/services/MiniGridService"
-import { MaintenanceService } from "@/services/MaintenanceService"
-import { EventBus } from "@/shared/eventbus"
-import RedirectionModal from "../../shared/RedirectionModal"
-import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewUser",
@@ -243,6 +245,9 @@ export default {
     validatePhone(phone) {
       this.phone = phone
     },
+    onPhoneInput(_, phone) {
+      this.phone = phone
+    },
     async submitNewUserForm() {
       let validator = await this.$validator.validateAll()
       if (!validator) {
@@ -269,7 +274,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .full-width {
   width: 100% !important;
 }

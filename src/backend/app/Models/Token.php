@@ -14,11 +14,11 @@ use Illuminate\Support\Carbon;
  * @property      int                 $id
  * @property      int                 $transaction_id
  * @property      string              $token
- * @property      float               $token_amount
+ * @property      float|null          $token_amount
  * @property      Carbon|null         $created_at
  * @property      Carbon|null         $updated_at
  * @property      int|null            $device_id
- * @property      string|null         $token_type
+ * @property      string              $token_type
  * @property      string|null         $token_unit
  * @property-read Device|null         $device
  * @property-read PaymentHistory|null $paymentHistories
@@ -28,6 +28,7 @@ class Token extends BaseModel {
     public const RELATION_NAME = 'token';
     public const TYPE_TIME = 'time';
     public const TYPE_ENERGY = 'energy';
+    public const TYPE_UNLOCK = 'unlock';
 
     public const UNIT_DAYS = 'days';
     public const UNIT_WEEKS = 'weeks';

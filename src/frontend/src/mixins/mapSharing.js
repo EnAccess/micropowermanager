@@ -1,16 +1,17 @@
-import store from "@/store/store"
-import { ICON_OPTIONS, MappingService } from "@/services/MappingService"
+import L from "leaflet"
+import marker from "leaflet/dist/images/marker-icon.png"
 import "leaflet/dist/leaflet.css"
+import "leaflet-bing-layer"
+import "leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
+import "leaflet.featuregroup.subgroup"
+import "leaflet.markercluster"
 import "leaflet.markercluster/dist/MarkerCluster.css"
 import "leaflet.markercluster/dist/MarkerCluster.Default.css"
-import L from "leaflet"
-import "leaflet.markercluster"
-import "leaflet.featuregroup.subgroup"
-import "leaflet-draw"
-import "leaflet-bing-layer"
-import marker from "leaflet/dist/images/marker-icon.png"
-import { EventBus } from "@/shared/eventbus"
+
+import { ICON_OPTIONS, MappingService } from "@/services/MappingService.js"
+import { EventBus } from "@/shared/eventbus.js"
+import store from "@/store/store.js"
 
 export const sharedMap = {
   props: {
@@ -72,6 +73,10 @@ export const sharedMap = {
       type: Boolean,
       default: false,
     },
+    mapContainerId: {
+      type: String,
+      default: "map",
+    },
   },
   data() {
     return {
@@ -112,7 +117,10 @@ export const sharedMap = {
           edit: this.edit,
         },
       }
-      this.map = L.map("map").setView(this.mappingService.center, this.zoom)
+      this.map = L.map(this.mapContainerId).setView(
+        this.mappingService.center,
+        this.zoom,
+      )
       this.setTileLayer()
       if (drawingOptions.draw.marker) {
         const marker = L.Icon.extend({

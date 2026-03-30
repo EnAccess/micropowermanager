@@ -10,18 +10,14 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        php-version: ["8.2"]
-
     services:
       mysql:
         image: mysql:8.4
         env:
-          MYSQL_DATABASE: micro_power_manager
-          MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
+          MYSQL_DATABASE: mpm_testing
+          MYSQL_ROOT_PASSWORD: 6QVlQsfsjUbxoaTS
         ports:
-          - 3306:3306
+          - 53306:3306
       redis:
         image: redis:5
         ports:
@@ -33,19 +29,14 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: 8.2
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
-      - name: Config environment file
-        uses: c-py/action-dotenv-to-setenv@v5
-        with:
-          env-file: ./dev/.env.micropowermanager-ci
-
       - name: Install Composer Dependencies
-        run: |
-          composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist
         working-directory: ./src/backend
+
       - name: Generate autoload files
         run: |
           OUTPUT=$(composer dump-autoload 2>&1)
@@ -57,12 +48,15 @@ jobs:
           fi
         working-directory: ./src/backend
 
-      - name: Run Migrations
-        run: |
-          php artisan migrate:fresh --seed
+      - name: Run Migrations Test
+        run: php artisan --env=testing migrate:fresh
         working-directory: ./src/backend
 
-      - name: Execute tests
-        run: php artisan test
+      - name: Run Migrations Rollback Test
+        run: php artisan --env=testing migrate:rollback
         working-directory: ./src/backend
-        continue-on-error: true
+
+      - name: Run Tests
+        run: php artisan test  --stop-on-failure
+        working-directory: ./src/backend
+        continue-on-error: false

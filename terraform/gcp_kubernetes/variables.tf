@@ -8,13 +8,13 @@ variable "gcp_region" {
   type        = string
 }
 
-variable "resoure_prefix" {
+variable "resource_prefix" {
   description = "Prefix used in resource creation. This can be useful to identify resources."
   type        = string
   default     = ""
 }
 
-variable "resoure_suffix" {
+variable "resource_suffix" {
   description = "Suffix used in resource creation. This can be useful to distinguish between different environments like `development` and `production`."
   type        = string
   default     = ""
@@ -81,6 +81,19 @@ EOT
       can(regex("^(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)){3}/([0-9]|[1-2][0-9]|3[0-2])$", var.network_proxy_only_subnet_cidr_range))
     )
     error_message = "network_proxy_only_subnet_cidr_range must be a valid IPv4 CIDR range."
+  }
+}
+
+variable "create_internal_loadbalancer_tls" {
+  description = "Determines whether an self-signed certificate will be created and uploaded to GCP Certificate Manager. This certificate can be used in the internal LB in scenarios where there is the additional requirement to serve trafficIPSec tunnels are to be established."
+  type        = bool
+  default     = false
+
+  validation {
+    condition = (
+      !var.create_internal_loadbalancer_tls || var.create_internal_loadbalancer_address
+    )
+    error_message = "create_internal_loadbalancer_address must be true when create_internal_loadbalancer_tls is enabled."
   }
 }
 

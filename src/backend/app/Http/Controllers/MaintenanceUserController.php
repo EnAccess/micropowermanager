@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MaintenanceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Person\Person;
+use App\Plugins\BulkRegistration\Services\AddressService;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Inensus\BulkRegistration\Services\AddressService;
 
 class MaintenanceUserController extends Controller {
     public function __construct(
