@@ -4,6 +4,7 @@ namespace App\Services\ImportServices;
 
 use App\Models\Address\Address;
 use App\Models\City;
+use App\Models\Device;
 use App\Models\Person\Person;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -145,6 +146,14 @@ class CustomerImportService extends AbstractImportService {
             $address = new Address($addressFields);
             $address->owner()->associate($person);
             $address->save();
+        }
+
+        // Link devices by serial number
+        if (!empty($customerData['devices'])) {
+            $serialNumbers = array_map(trim(...), explode(',', $customerData['devices']));
+            Device::query()
+                ->whereIn('device_serial', $serialNumbers)
+                ->update(['person_id' => $person->id]);
         }
 
         return [
