@@ -4,9 +4,9 @@ namespace App\Queue;
 
 use Illuminate\Contracts\Queue\Job;
 use Illuminate\Contracts\Redis\Factory;
-use Illuminate\Queue\RedisQueue as BaseRedisQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
+use Laravel\Horizon\RedisQueue as BaseRedisQueue;
 use Predis\Connection\ConnectionException;
 
 /**
