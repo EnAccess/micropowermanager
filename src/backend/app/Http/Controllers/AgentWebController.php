@@ -11,8 +11,8 @@ use App\Services\CountryService;
 use App\Services\DatabaseProxyService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Tymon\JWTAuth\JWTGuard;
 
 class AgentWebController extends Controller {
@@ -96,27 +96,23 @@ class AgentWebController extends Controller {
         return ApiResource::make($this->agentService->searchAgent($term, $paginate));
     }
 
-    public function resetPassword(Request $request, Response $response): Response {
+    public function resetPassword(Request $request): JsonResponse {
         $responseMessage = $this->agentService->resetPassword($request->input('email'));
 
         if ($responseMessage === 'Invalid email.') {
-            return $response->setStatusCode(422)->setContent(
-                [
-                    'data' => [
-                        'message' => $responseMessage,
-                        'status_code' => 400,
-                    ],
-                ]
-            );
-        }
-
-        return $response->setStatusCode(200)->setContent(
-            [
+            return response()->json([
                 'data' => [
                     'message' => $responseMessage,
-                    'status_code' => 200,
+                    'status_code' => 400,
                 ],
-            ]
-        );
+            ], 422);
+        }
+
+        return response()->json([
+            'data' => [
+                'message' => $responseMessage,
+                'status_code' => 200,
+            ],
+        ], 200);
     }
 }

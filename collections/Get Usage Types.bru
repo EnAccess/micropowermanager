@@ -1,0 +1,11 @@
+meta {
+  name: Get Usage Types
+  type: http
+  seq: 35
+}
+
+get {
+  url: {{mpm_backend_url}}/api/usage-types
+  body: none
+  auth: inherit
+}

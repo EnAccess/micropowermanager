@@ -199,6 +199,13 @@ export default {
   width: 490px;
 }
 
+@media (max-width: 576px) {
+  .login-card {
+    width: 100%;
+    padding: 0 1rem;
+  }
+}
+
 .md-checkbox {
   display: flex;
 }

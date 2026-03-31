@@ -24,8 +24,6 @@ class MeterController extends Controller {
      *
      * @urlParam     page int
      * @urlParam     in_use int to list wether used or all meters
-     *
-     * @responseFile responses/meters/meters.list.json
      */
     public function index(Request $request): ApiResource {
         $inUse = $request->input('in_use');
@@ -62,8 +60,6 @@ class MeterController extends Controller {
      * - Manufacturer.
      *
      * @urlParam serialNumber string
-     *
-     * @responseFile responses/meters/meter.detail.json
      */
     public function show(string $serialNumber): ApiResource {
         return ApiResource::make($this->meterService->getBySerialNumber($serialNumber));
@@ -76,8 +72,6 @@ class MeterController extends Controller {
      * - Serial number.
      *
      * @bodyParam term string required
-     *
-     * @responseFile responses/meters/meters.search.json
      */
     public function search(): ApiResource {
         $term = request('term');

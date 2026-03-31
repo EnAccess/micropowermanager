@@ -14,6 +14,9 @@
       <directory suffix="Test.php">tests/Unit</directory>
       <directory suffix="Test.php">app/Plugins/PaystackPaymentProvider/Tests/Unit/</directory>
     </testsuite>
+    <testsuite name="AngazaSHS">
+      <directory suffix="Test.php">app/Plugins/AngazaSHS/Tests</directory>
+    </testsuite>
     <testsuite name="Feature">
       <directory suffix="Test.php">tests/Feature</directory>
     </testsuite>

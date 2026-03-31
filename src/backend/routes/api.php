@@ -64,7 +64,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserPermissionExportController;
 use App\Http\Controllers\UserPermissionImportController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Routes for City resource
@@ -77,8 +76,6 @@ require __DIR__.'/resources/Meters.php';
 require __DIR__.'/resources/Addresses.php';
 // Transaction routes
 require __DIR__.'/api_paths/transactions.php';
-// Agent routes
-require __DIR__.'/resources/AgentApp.php';
 // Agent Web panel routes
 require __DIR__.'/resources/AgentWeb.php';
 // Routes for CustomerRegistrationApp resource
@@ -87,14 +84,19 @@ require __DIR__.'/resources/CustomerRegistrationApp.php';
 require __DIR__.'/resources/TicketWeb.php';
 
 // JWT authentication
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::get('me', [AuthController::class, 'me']);
+Route::group(['prefix' => 'auth'], static function () {
+    // A named route 'login' is required for Laravel Auth handling.
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+
+    Route::group(['middleware' => 'auth:api'], static function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
+        Route::get('me', [AuthController::class, 'me']);
+    });
 });
+
 // user
-Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], static function () {
     Route::post('/', [UserController::class, 'store'])->middleware('permission:users');
     Route::put('/{user}', [UserController::class, 'update'])->middleware('can:update,user');
     Route::get('/{user}', [UserController::class, 'show'])->middleware('can:view,user');
@@ -114,7 +116,7 @@ Route::get('users/password/validate/{token}', [UserPasswordController::class, 'v
 Route::post('users/password/confirm', [UserPasswordController::class, 'confirmReset']);
 
 // Appliances
-Route::group(['prefix' => 'appliances', 'middleware' => 'jwt.verify'], function () {
+Route::group(['prefix' => 'appliances', 'middleware' => 'auth:api'], function () {
     Route::get('/', [ApplianceController::class, 'index'])->middleware('permission:appliances');
     Route::post('/', [ApplianceController::class, 'store'])->middleware('permission:appliances');
     Route::put('/{appliance}', [ApplianceController::class, 'update'])->middleware('permission:appliances');
@@ -144,7 +146,7 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'jwt.verify'], function 
     });
 });
 // Clusters
-Route::group(['prefix' => '/clusters', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => '/clusters', 'middleware' => 'auth:api'], static function () {
     Route::get('/', [ClusterController::class, 'index']);
     Route::get('/{clusterId}', [ClusterController::class, 'show'])->where('clusterId', '[0-9]+');
     Route::post('/', [ClusterController::class, 'store'])->middleware('permission:settings');
@@ -155,7 +157,7 @@ Route::group(['prefix' => '/clusters', 'middleware' => 'jwt.verify'], static fun
     Route::get('/{clusterId}/cities-revenue', [ClusterMiniGridRevenueController::class, 'show']);
 });
 // Dashboard data from cache
-Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => '/dashboard', 'middleware' => 'auth:api'], static function () {
     Route::get('/clusters', [ClustersDashboardCacheDataController::class, 'index']);
     Route::put('/clusters', [ClustersDashboardCacheDataController::class, 'update']);
     Route::get('/clusters/{clusterId}', [ClustersDashboardCacheDataController::class, 'show']);
@@ -165,32 +167,32 @@ Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static fu
     Route::get('/agents', [AgentPerformanceMetricsController::class, 'index']);
 });
 // Connection-Groups
-Route::group(['prefix' => 'connection-groups', 'middleware' => ['jwt.verify', 'permission:settings']], static function () {
+Route::group(['prefix' => 'connection-groups', 'middleware' => ['auth:api', 'permission:settings']], static function () {
     Route::get('/', [ConnectionGroupController::class, 'index']);
     Route::post('/', [ConnectionGroupController::class, 'store']);
     Route::put('/{connectionGroupId}', [ConnectionGroupController::class, 'update']);
     Route::get('/{connectionGroupId}', [ConnectionGroupController::class, 'show']);
 });
 // Connection-Types
-Route::group(['prefix' => 'connection-types', 'middleware' => ['jwt.verify', 'permission:settings']], static function () {
+Route::group(['prefix' => 'connection-types', 'middleware' => ['auth:api', 'permission:settings']], static function () {
     Route::get('/', [ConnectionTypeController::class, 'index']);
     Route::post('/', [ConnectionTypeController::class, 'store']);
     Route::get('/{connectionTypeId?}', [ConnectionTypeController::class, 'show']);
     Route::put('/{connectionTypeId}', [ConnectionTypeController::class, 'update']);
 });
 // Maintenance
-Route::group(['prefix' => '/maintenance', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => '/maintenance', 'middleware' => 'auth:api'], static function () {
     Route::get('/', [MaintenanceUserController::class, 'index']);
     Route::post('/user', [MaintenanceUserController::class, 'store']);
 });
 // Manufacturers
-Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'manufacturers', 'middleware' => 'auth:api'], static function () {
     Route::get('/', [ManufacturerController::class, 'index']);
     Route::get('/{manufacturerId}', [ManufacturerController::class, 'show']);
     Route::post('/', [ManufacturerController::class, 'store']);
 });
 // Mini-Grids
-Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'mini-grids', 'middleware' => 'auth:api'], static function () {
     Route::get('/', [MiniGridController::class, 'index']);
     Route::post('/', [MiniGridController::class, 'store'])->middleware('permission:settings');
     Route::get('/{miniGridId}', [MiniGridController::class, 'show']);
@@ -205,7 +207,7 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
     });
 });
 // PaymentHistories
-Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], function () {
+Route::group(['prefix' => 'paymenthistories', 'middleware' => 'auth:api'], function () {
     Route::get('/{personId}/flow/{year?}', [PaymentHistoryController::class, 'byYear'])->where('personId', '[0-9]+')->middleware('permission:payments');
     Route::get('/{person}/period', [PaymentHistoryController::class, 'getPaymentPeriod'])->where('personId', '[0-9]+')->middleware('permission:payments');
     Route::get('/debt/{personId}', [PaymentHistoryController::class, 'debts'])->where('personId', '[0-9]+')->middleware('permission:payments');
@@ -216,7 +218,7 @@ Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], fun
     )->middleware('permission:payments');
 });
 // People
-Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'people', 'middleware' => 'auth:api'], static function () {
     Route::get('/{personId}/meters', [PersonMeterController::class, 'show'])->middleware('permission:customers');
     Route::get('/{personId}/meters/geo', [MeterGeographicalInformationController::class, 'show'])->middleware('permission:customers');
 
@@ -239,22 +241,22 @@ Route::group(['prefix' => 'map-settings'], static function () {
     Route::get('/', [MapSettingsController::class, 'index']);
     Route::get('/key/{key}', [MapSettingsController::class, 'checkBingApiKey']);
     Route::put('/{mapSettings}', [MapSettingsController::class, 'update'])
-        ->middleware('jwt.verify');
+        ->middleware('auth:api');
 });
 
 // Settings
 Route::group(['prefix' => 'settings'], static function () {
-    Route::get('/main', [MainSettingsController::class, 'index'])->middleware('jwt.verify');
+    Route::get('/main', [MainSettingsController::class, 'index'])->middleware('auth:api');
     // update requires auth and permission
     Route::put('/main/{mainSettings}', [MainSettingsController::class, 'update'])
-        ->middleware(['jwt.verify', 'permission:settings']);
+        ->middleware(['auth:api', 'permission:settings']);
     Route::get('/sms-gateways', [MainSettingsController::class, 'getAvailableSmsGateways'])
         ->middleware('permission:settings');
     Route::get('/currency-list', [CurrencyController::class, 'index']);
 });
 
 // Roles (read-only role management)
-Route::group(['prefix' => 'roles', 'middleware' => ['jwt.verify']], static function () {
+Route::group(['prefix' => 'roles', 'middleware' => ['auth:api']], static function () {
     Route::get('/', [RoleController::class, 'index'])->middleware('permission:roles');
     Route::get('/permissions', [RoleController::class, 'permissions'])->middleware('permission:roles');
     Route::get('/details', [RoleController::class, 'details'])->middleware('permission:roles');
@@ -285,18 +287,18 @@ Route::group(['prefix' => 'sms-variable-default-value'], static function () {
     Route::get('/', [SmsVariableDefaultValueController::class, 'index']);
 });
 // Reports
-Route::group(['prefix' => 'reports', 'middleware' => 'jwt.verify'], function () {
+Route::group(['prefix' => 'reports', 'middleware' => 'auth:api'], function () {
     Route::get('/', [ReportController::class, 'index'])->middleware('permission:reports');
     Route::get('/download/{id}', [ReportController::class, 'download'])->middleware('permission:reports');
 });
 // Revenue
-Route::group(['prefix' => 'revenue', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'revenue', 'middleware' => 'auth:api'], static function () {
     Route::post('/', [RevenueController::class, 'revenueData']);
     Route::post('/trends/{id}', [RevenueController::class, 'trending']);
     Route::get('/tickets/{id}', [RevenueController::class, 'ticketData']);
 });
 // Sms
-Route::group(['prefix' => 'sms', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'sms', 'middleware' => 'auth:api'], static function () {
     Route::get('/{number}', [SmsController::class, 'show']);
     Route::get('/phone/{number}', [SmsController::class, 'byPhone']);
 
@@ -313,20 +315,20 @@ Route::group(['prefix' => 'sms-android-callback'], static function () {
 });
 
 // Sub-Connection-Types
-Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'auth:api'], static function () {
     Route::get('/{connectionTypeId?}', [SubConnectionTypeController::class, 'index']);
     Route::post('/', [SubConnectionTypeController::class, 'store']);
     Route::put('/{subConnectionTypeId}', [SubConnectionTypeController::class, 'update']);
 });
 // Targets
-Route::group(['prefix' => 'targets', 'middleware' => ['jwt.verify', 'permission:settings']], static function () {
+Route::group(['prefix' => 'targets', 'middleware' => ['auth:api', 'permission:settings']], static function () {
     Route::get('/', [TargetController::class, 'index']);
     Route::post('/', [TargetController::class, 'store']);
     Route::get('/{targetId}', [TargetController::class, 'show']);
     Route::post('/slots', [TargetController::class, 'getSlotsForDate']);
 });
 // Tariffs
-Route::group(['middleware' => ['jwt.verify', 'permission:settings'], 'prefix' => 'tariffs'], static function () {
+Route::group(['middleware' => ['auth:api', 'permission:settings'], 'prefix' => 'tariffs'], static function () {
     Route::get('/', [TariffController::class, 'index']);
     Route::get('/{tariffId}', [TariffController::class, 'show']);
     Route::post('/', [TariffController::class, 'store']);
@@ -346,11 +348,9 @@ Route::group(
     }
 );
 
-Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'time-of-usages', 'middleware' => 'auth:api'], static function () {
     Route::delete('/{timeOfUsageId}', [TimeOfUsageController::class, 'destroy']);
 });
-
-Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', [MpmPluginController::class, 'index']);
@@ -383,7 +383,7 @@ Route::group(['prefix' => 'devices'], static function () {
     Route::get('/', [DeviceController::class, 'index']);
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
-Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'jwt.verify'], static function () {
+Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'auth:api'], static function () {
     Route::get('/', [SolarHomeSystemController::class, 'index']);
     Route::post('/', [SolarHomeSystemController::class, 'store']);
     Route::get('/search', [SolarHomeSystemController::class, 'search']);
@@ -397,7 +397,7 @@ Route::group(['prefix' => 'e-bikes'], static function () {
     Route::get('/{serialNumber}', [EBikeController::class, 'show']);
     Route::post('/switch', [EBikeController::class, 'switch']);
 });
-Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
+Route::group(['prefix' => 'export'], static function () {
     Route::get('/transactions', [TransactionExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/debts', [OutstandingDebtsExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/customers', [PersonExportController::class, 'download'])->middleware('permission:exports');
@@ -407,7 +407,7 @@ Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
     Route::get('/settings', [SettingsExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/user-permissions', [UserPermissionExportController::class, 'download'])->middleware('permission:exports');
 });
-Route::group(['prefix' => 'import', 'middleware' => 'api'], static function () {
+Route::group(['prefix' => 'import'], static function () {
     Route::post('/settings', [SettingsImportController::class, 'import'])->middleware('permission:settings');
     Route::post('/user-permissions', [UserPermissionImportController::class, 'import'])->middleware('permission:users');
 });

@@ -28,18 +28,20 @@ class KelinMeterApi implements IManufacturerAPI {
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeUnit = Token::UNIT_KWH;
+        $transactionContainer->chargeType = Token::TYPE_ENERGY;
         Log::critical('ENERGY TO BE CHARGED float '.
-            $transactionContainer->chargedEnergy.
+            $transactionContainer->chargeAmount.
             ' Manufacturer => Kelin');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargeAmount,
             ];
         } else {
-            $amount = $transactionContainer->totalAmount;
+            $amount = $transactionContainer->transaction->amount;
             try {
                 $kelinMeter = $this->kelinMeter->newQuery()->where(
                     'mpm_meter_id',
@@ -53,7 +55,7 @@ class KelinMeterApi implements IManufacturerAPI {
                 'meterNo' => $kelinMeter->meter_address,
                 'tariff' => $tariff->total_price,
                 'recharge' => $amount,
-                'energy' => $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargeAmount,
                 'rechargeTime' => Carbon::now()->format('Y-m-d'),
             ];
 
@@ -111,7 +113,7 @@ class KelinMeterApi implements IManufacturerAPI {
                 'token' => $token,
                 'token_type' => Token::TYPE_ENERGY,
                 'token_unit' => Token::UNIT_KWH,
-                'token_amount' => $transactionContainer->chargedEnergy,
+                'token_amount' => $transactionContainer->chargeAmount,
             ];
         }
     }

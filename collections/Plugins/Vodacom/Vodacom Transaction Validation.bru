@@ -1,0 +1,20 @@
+meta {
+  name: Vodacom Transaction Validation
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{mpm_backend_url}}/api/vodacom_mz/transactions/validate
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "serialNumber": "ABC123456789",
+    "amount": 15000,
+    "payerPhoneNumber": "258712345678",
+    "referenceId": "ORD-12345-ABC"
+  }
+}

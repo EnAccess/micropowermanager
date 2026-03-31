@@ -110,14 +110,15 @@ class DalyBmsApi implements IManufacturerAPI {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
         $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); // This is for 1 day of energy
-        $transactionContainer->chargedEnergy = 0; // will represent the day count
-        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / $minimumPurchaseAmountPerDay);
+        $transactionContainer->chargeAmount = ceil($transactionContainer->amount / $minimumPurchaseAmountPerDay);
+        $transactionContainer->chargeUnit = Token::UNIT_DAYS;
+        $transactionContainer->chargeType = Token::TYPE_TIME;
 
-        Log::debug('ENERGY TO BE CHARGED as Day '.$transactionContainer->chargedEnergy.
+        Log::debug('CHARGE AMOUNT as Day '.$transactionContainer->chargeAmount.
             ' Manufacturer => DalyBmsApi');
 
         $device = $transactionContainer->device;
-        $energy = $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargeAmount;
         $deviceSerial = $device->device_serial;
         $this->switchDevice($deviceSerial, true);
         $manufacturerTransaction = $this->dalyBmsTransaction->newQuery()->create([]);

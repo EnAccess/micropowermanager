@@ -44,6 +44,12 @@ use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\Operation;
+use Dedoc\Scramble\Support\Generator\SecurityRequirement;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use Dedoc\Scramble\Support\RouteInfo;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
@@ -97,6 +103,41 @@ class AppServiceProvider extends ServiceProvider {
         );
         // Rate limiter for emails
         RateLimiter::for('emails', fn () => Limit::perMinute(20));
+
+        Gate::define('viewApiDocs', fn (?User $user) => app()->environment('development'));
+
+        Scramble::configure()
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                $openApi->components->securitySchemes['user'] = SecurityScheme::http('bearer', 'JWT')
+                    ->setDescription('This endpoint requires authentication using a **JWT Bearer token**. You can obtain this token by logging in via the `User` authentication endpoint.');
+                $openApi->components->securitySchemes['agent'] = SecurityScheme::http('bearer', 'JWT')
+                    ->setDescription('This endpoint requires authentication using a **JWT Bearer token**. You can obtain this token by logging in via the `Agent App` authentication endpoint.');
+                $openApi->components->securitySchemes['api-key'] = SecurityScheme::http('bearer')
+                    ->setDescription('This endpoint requires an **API key** for authentication. You can generate an API key in the settings dashboard under "API Keys".');
+            })
+            ->withOperationTransformers(function (Operation $operation, RouteInfo $routeInfo) {
+                $route = $routeInfo->route;
+
+                $middlewares = $route->gatherMiddleware();
+
+                if (in_array('auth:api', $middlewares)) {
+                    $operation->security[] = new SecurityRequirement([
+                        'user' => [],
+                    ]);
+                }
+
+                if (in_array('auth:agent_api', $middlewares)) {
+                    $operation->security[] = new SecurityRequirement([
+                        'agent' => [],
+                    ]);
+                }
+
+                if (in_array('auth:api-key', $middlewares)) {
+                    $operation->security[] = new SecurityRequirement([
+                        'api-key' => [],
+                    ]);
+                }
+            });
     }
 
     /**
