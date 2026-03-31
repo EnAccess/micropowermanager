@@ -34,12 +34,6 @@ class TransactionPaymentProcessor {
             return;
         }
 
-        if ($transaction->paygoAppliance()->exists()) {
-            dispatch(new ApplianceTransactionProcessor($companyId, $transactionId));
-
-            return;
-        }
-
         if ($transaction->nonPaygoAppliance()->exists()) {
             dispatch(new ApplianceTransactionProcessor($companyId, $transactionId));
 

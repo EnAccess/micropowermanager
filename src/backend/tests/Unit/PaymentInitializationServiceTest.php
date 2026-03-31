@@ -11,11 +11,15 @@ use App\Services\CashTransactionService;
 use App\Services\MpmPluginService;
 use App\Services\PaymentInitializationService;
 use App\Services\PluginsService;
+use Illuminate\Contracts\Container\Container;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PaymentInitializationServiceTest extends TestCase {
     private PaymentInitializationService $service;
+
+    /** @var Container&MockObject */
+    private MockObject $container;
 
     /** @var CashTransactionService&MockObject */
     private MockObject $cashService;
@@ -31,11 +35,16 @@ class PaymentInitializationServiceTest extends TestCase {
         $pluginsService = $this->createMock(PluginsService::class);
         $mpmPluginService = $this->createMock(MpmPluginService::class);
 
+        $this->container = $this->createMock(Container::class);
+        $this->container->method('make')->willReturnMap([
+            [CashTransactionService::class, [], $this->cashService],
+            [PaystackTransactionService::class, [], $this->paystackService],
+        ]);
+
         $this->service = new PaymentInitializationService(
-            $this->cashService,
-            $this->paystackService,
             $pluginsService,
             $mpmPluginService,
+            $this->container,
         );
     }
 
@@ -50,18 +59,17 @@ class PaymentInitializationServiceTest extends TestCase {
             message: 'DEVICE-001',
             type: 'deferred_payment',
             customerId: 1,
-            creatorId: 1,
         );
     }
 
-    public function testDelegatesToCashTransactionServiceForProviderZero(): void {
+    public function testDelegatesToCashServiceForProviderZero(): void {
         $transaction = new Transaction();
 
         $this->cashService
             ->expects($this->once())
-            ->method('createTransaction')
-            ->with(1, 100.0, '+2340000', '42', 'deferred_payment')
-            ->willReturn($transaction);
+            ->method('initializePayment')
+            ->with(100.0, '+2340000', '42', 'deferred_payment', 5, null)
+            ->willReturn(['transaction' => $transaction, 'provider_data' => []]);
 
         $result = $this->service->initialize(
             providerId: 0,
@@ -70,7 +78,6 @@ class PaymentInitializationServiceTest extends TestCase {
             message: '42',
             type: 'deferred_payment',
             customerId: 5,
-            creatorId: 1,
         );
 
         $this->assertSame($transaction, $result['transaction']);
@@ -99,7 +106,6 @@ class PaymentInitializationServiceTest extends TestCase {
             message: '42',
             type: 'deferred_payment',
             customerId: 5,
-            creatorId: 1,
         );
 
         $this->assertSame($transaction, $result['transaction']);
@@ -109,7 +115,8 @@ class PaymentInitializationServiceTest extends TestCase {
     public function testDoesNotCallPaystackServiceForCashProvider(): void {
         $transaction = new Transaction();
 
-        $this->cashService->method('createTransaction')->willReturn($transaction);
+        $this->cashService->method('initializePayment')
+            ->willReturn(['transaction' => $transaction, 'provider_data' => []]);
         $this->paystackService->expects($this->never())->method('initializePayment');
 
         $this->service->initialize(
@@ -119,7 +126,6 @@ class PaymentInitializationServiceTest extends TestCase {
             message: '1',
             type: 'deferred_payment',
             customerId: 1,
-            creatorId: 1,
         );
     }
 
@@ -130,7 +136,7 @@ class PaymentInitializationServiceTest extends TestCase {
             'transaction' => $transaction,
             'provider_data' => ['redirect_url' => 'https://paystack.com/pay/x', 'reference' => 'ref_x'],
         ]);
-        $this->cashService->expects($this->never())->method('createTransaction');
+        $this->cashService->expects($this->never())->method('initializePayment');
 
         $this->service->initialize(
             providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
@@ -139,7 +145,6 @@ class PaymentInitializationServiceTest extends TestCase {
             message: '1',
             type: 'deferred_payment',
             customerId: 1,
-            creatorId: 1,
         );
     }
 
@@ -162,7 +167,6 @@ class PaymentInitializationServiceTest extends TestCase {
             message: 'SERIAL-001',
             type: 'deferred_payment',
             customerId: 5,
-            creatorId: 1,
             serialId: 'SERIAL-001',
         );
     }

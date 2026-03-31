@@ -116,7 +116,6 @@ class AppliancePersonController extends Controller {
                     message: $message,
                     type: 'deferred_payment',
                     customerId: $person->id,
-                    creatorId: $user->id,
                     serialId: $deviceSerial ?? null,
                 );
 

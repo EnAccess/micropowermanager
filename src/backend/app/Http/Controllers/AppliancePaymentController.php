@@ -60,7 +60,6 @@ class AppliancePaymentController extends Controller {
      * @return array<string, mixed>
      */
     private function getPaymentForAppliance(Request $request, AppliancePerson $appliancePerson): array {
-        $creatorId = auth('api')->user()->id;
         $amount = (float) $request->input('amount');
         $providerId = (int) $request->input('payment_provider', 0);
         $companyId = $request->attributes->get('companyId');
@@ -86,7 +85,6 @@ class AppliancePaymentController extends Controller {
             message: $message,
             type: 'deferred_payment',
             customerId: $applianceOwner->id,
-            creatorId: $creatorId,
             serialId: $deviceSerial,
         );
 
