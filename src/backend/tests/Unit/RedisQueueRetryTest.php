@@ -33,7 +33,7 @@ class RedisQueueRetryTest extends TestCase {
         $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
         $queue->setContainer(app());
 
-        $payload = json_encode(['id' => 'test-123', 'job' => 'test']);
+        $payload = json_encode(['uuid' => 'test-123', 'id' => 'test-123', 'displayName' => 'test', 'job' => 'test']);
         $queue->pushRaw($payload, 'default');
 
         // No exception thrown = success
@@ -61,7 +61,7 @@ class RedisQueueRetryTest extends TestCase {
         $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
         $queue->setContainer(app());
 
-        $queue->pushRaw('{"job":"test"}', 'default');
+        $queue->pushRaw('{"uuid":"test-456","id":"test-456","displayName":"test","job":"test"}', 'default');
 
         // No exception thrown = success after retry
         Sleep::assertSleptTimes(1);
