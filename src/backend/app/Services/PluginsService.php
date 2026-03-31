@@ -59,7 +59,7 @@ class PluginsService {
             MpmPlugin::MESOMB_PAYMENT_PROVIDER,
             MpmPlugin::WAVE_MONEY_PAYMENT_PROVIDER,
             MpmPlugin::WAVECOM_PAYMENT_PROVIDER,
-            MpmPlugin::VODACOM_MOBILE_MONEY,
+            MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
             MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
         ];
 
