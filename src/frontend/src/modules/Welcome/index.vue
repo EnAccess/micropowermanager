@@ -87,6 +87,7 @@ export default {
   max-width: 720px;
   text-align: center;
   margin-top: 18rem;
+  padding: 0 1rem;
 }
 
 .title {
@@ -116,5 +117,15 @@ export default {
   width: 100%;
   margin-top: 8px;
   padding: 4px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-top: 4rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
 }
 </style>
