@@ -147,7 +147,14 @@
                     ? moneyFormat(soldAppliance.minimumPayableAmount)
                     : "N/A"
                 }}
+                <span v-if="minimumPaymentDaysText" class="eaas-days-hint">
+                  ({{ minimumPaymentDaysText }})
+                </span>
               </h4>
+              <div class="eaas-rate-info">
+                1 day of service =
+                {{ moneyFormat(soldAppliance.pricePerDay) }}
+              </div>
             </div>
             <div class="md-layout-item md-size-50">
               <h3>
@@ -440,6 +447,13 @@ export default {
       })
       return this.formatReadableDate(latest.due_date || latest.dueDate)
     },
+    minimumPaymentDaysText() {
+      const amount = parseFloat(this.soldAppliance.minimumPayableAmount)
+      const rate = parseFloat(this.soldAppliance.pricePerDay)
+      if (!amount || !rate || rate <= 0) return ""
+      const days = Math.round((amount / rate) * 10) / 10
+      return `${days} day${days !== 1 ? "s" : ""}`
+    },
     deviceInfoTitle() {
       if (this.soldAppliance.device?.device_type) {
         const deviceType = this.soldAppliance.device.device_type
@@ -709,5 +723,20 @@ export default {
 <style scoped lang="scss">
 .due-date-row {
   background-color: #a1887f;
+}
+
+.eaas-rate-info {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #f5f5f5;
+  border-left: 3px solid #1b75ba;
+  font-size: 0.95rem;
+  color: #333;
+  border-radius: 2px;
+}
+
+.eaas-days-hint {
+  font-size: 0.85rem;
+  color: #888;
 }
 </style>

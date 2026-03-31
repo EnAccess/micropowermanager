@@ -389,6 +389,9 @@
                       v-model="minimumPayableAmount"
                     />
                   </md-field>
+                  <span v-if="eaasMinPaymentDaysText" class="eaas-helper-text">
+                    {{ eaasMinPaymentDaysText }}
+                  </span>
                 </div>
                 <div class="md-layout-item md-size-100 md-small-size-100">
                   <p class="eaas-description">
@@ -967,6 +970,13 @@ export default {
       if (!this.deviceLocation) return null
       return [this.deviceLocation.lat, this.deviceLocation.lon]
     },
+    eaasMinPaymentDaysText() {
+      const amount = parseFloat(this.minimumPayableAmount)
+      const rate = parseFloat(this.pricePerDay)
+      if (!amount || !rate || rate <= 0) return ""
+      const days = Math.round((amount / rate) * 10) / 10
+      return `= ${days} day${days !== 1 ? "s" : ""} of service at ${this.moneyFormat(rate)}/day`
+    },
   },
   watch: {
     showSellApplianceModal(value) {
@@ -1023,6 +1033,14 @@ export default {
   font-size: 0.875rem;
   color: #555;
   margin-bottom: 1rem;
+}
+
+.eaas-helper-text {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .eaas-description {
