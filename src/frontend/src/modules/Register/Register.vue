@@ -590,6 +590,7 @@ export default {
 .register-container {
   max-width: 1000px;
   width: 100%;
+  padding: 0 1rem;
 }
 
 .title {
@@ -712,5 +713,20 @@ export default {
 .plugin-selector-switch {
   margin-left: 3rem !important;
   float: right;
+}
+
+@media (max-width: 768px) {
+  .stepper-title {
+    font-size: medium !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .box {
+    padding: 3vw;
+  }
+
+  .plugin-selector-switch {
+    margin-left: 1rem !important;
+  }
 }
 </style>
