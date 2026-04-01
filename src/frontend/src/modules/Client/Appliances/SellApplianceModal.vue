@@ -547,7 +547,6 @@ export default {
   },
   beforeMount() {
     this.getApplianceList()
-    this.deviceService.getDevices()
     this.initializeDeviceLocation()
   },
   methods: {
@@ -737,37 +736,6 @@ export default {
         this.$validator.reset(fieldName)
       }
     },
-    getDeviceSelectionList(appliance, availableDevices) {
-      return availableDevices
-        .filter((device) => {
-          const applianceId =
-            device.device?.applianceId ||
-            device.device?.appliance?.id ||
-            device.applianceId ||
-            null
-          if (!applianceId) return false
-          switch (appliance.applianceTypeId) {
-            case APPLIANCE_TYPE_SHS_ID:
-              return (
-                device.deviceType === "solar_home_system" &&
-                applianceId === this.selectedApplianceId
-              )
-            case APPLIANCE_TYPE_E_BIKE_ID:
-              return (
-                device.deviceType === "e_bike" &&
-                applianceId === this.selectedApplianceId
-              )
-            default:
-              return applianceId === this.selectedApplianceId
-          }
-        })
-        .map((device) => {
-          return {
-            id: device.id,
-            serial: device.deviceSerial || device.serial || device.serialNumber,
-          }
-        })
-    },
     parsePoints(points) {
       if (!points || typeof points !== "string") return null
       const values = points.split(",").map((value) => value.trim())
@@ -901,21 +869,21 @@ export default {
     },
     async selectedApplianceId() {
       this.applianceService.appliance.id = this.selectedApplianceId
-      const availableDevices = this.deviceService.list.filter(
-        (device) => !device.person,
-      )
       const appliance = this.applianceService.list.find(
         (x) => x.id === this.applianceService.appliance.id,
       )
       this.updateDeviceMarkerIcon(appliance)
       if (this.isDeviceBindingRequired(appliance)) {
         this.isDeviceSelectionRequired = true
-        this.deviceSelectionList = this.getDeviceSelectionList(
-          appliance,
-          availableDevices,
-        )
         this.selectedDeviceSerial = null
         this.resetDeviceSelectionValidation()
+        await this.deviceService.getAvailableDevicesForAppliance(
+          this.selectedApplianceId,
+        )
+        this.deviceSelectionList = this.deviceService.list.map((device) => ({
+          id: device.id,
+          serial: device.deviceSerial,
+        }))
       } else {
         this.isDeviceSelectionRequired = false
         this.deviceSelectionList = []

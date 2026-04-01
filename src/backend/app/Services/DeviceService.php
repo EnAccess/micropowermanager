@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Device;
+use App\Models\EBike;
+use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -62,14 +64,23 @@ class DeviceService implements IBaseService, IAssociative {
     }
 
     /**
+     * @param array<string, mixed> $filters
+     *
      * @return Collection<int, Device>|LengthAwarePaginator<int, Device>
      */
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        if ($limit) {
-            return $this->device->newQuery()->with(['person', 'device'])->paginate($limit);
-        }
+    public function getAll(?int $limit = null, array $filters = []): Collection|LengthAwarePaginator {
+        $query = $this->device->newQuery()
+            ->with(['person', 'device'])
+            ->when($filters['device_type'] ?? null, fn ($q, $type) => $q->where('device_type', $type))
+            ->when($filters['appliance_id'] ?? null, fn ($q, $applianceId) => $q->whereHasMorph(
+                'device',
+                [SolarHomeSystem::class, EBike::class],
+                fn ($morph) => $morph->where('appliance_id', $applianceId),
+            ))
+            ->unless(empty($filters['unassigned']), fn ($q) => $q->whereNull('person_id'))
+            ->latest();
 
-        return $this->device->newQuery()->with(['person', 'device'])->get();
+        return $limit ? $query->paginate($limit) : $query->get();
     }
 
     /**

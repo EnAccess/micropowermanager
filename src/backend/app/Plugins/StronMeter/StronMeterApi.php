@@ -25,9 +25,11 @@ class StronMeterApi implements IManufacturerAPI {
         $tariff = $transactionContainer->tariff;
         $owner = $transactionContainer->device->person;
 
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeUnit = Token::UNIT_KWH;
+        $transactionContainer->chargeType = Token::TYPE_ENERGY;
 
-        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargeAmount.
             ' Manufacturer => StronMeterApi');
 
         $credentials = $this->credentials->newQuery()->firstOrFail();
@@ -83,7 +85,7 @@ class StronMeterApi implements IManufacturerAPI {
             'token' => $token,
             'token_type' => Token::TYPE_ENERGY,
             'token_unit' => Token::UNIT_KWH,
-            'token_amount' => $transactionContainer->chargedEnergy,
+            'token_amount' => $transactionContainer->chargeAmount,
         ];
     }
 

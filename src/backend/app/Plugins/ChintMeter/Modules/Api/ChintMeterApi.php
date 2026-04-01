@@ -21,13 +21,13 @@ class ChintMeterApi implements IManufacturerAPI {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
 
-        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargeAmount.
             ' Manufacturer => ChintMeterApi');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargeAmount,
             ];
         }
 

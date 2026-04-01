@@ -25,4 +25,8 @@ class SmsApplianceRemindRateController extends Controller {
             $request->all()
         ));
     }
+
+    public function destroy(SmsApplianceRemindRate $smsApplianceRemindRate): ApiResource {
+        return new ApiResource($this->smsApplianceRemindService->deleteApplianceRemindRate($smsApplianceRemindRate));
+    }
 }

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder {
         if ($this->companyService->getAll()->isEmpty()) {
             $this->call([
                 TenantSeeder::class,
+                ApiKeySeeder::class,
                 ClusterSeeder::class,
                 ConnectionTypeGroupSeeder::class,
                 CustomerSeeder::class,

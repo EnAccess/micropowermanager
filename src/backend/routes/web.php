@@ -54,7 +54,3 @@ Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
         event(new TransactionSuccessfulEvent($transaction));
     })->where('id', '[0-9]+');
 });
-
-Route::group(['middleware' => 'auth'], function () {
-    // Route::get('/user-data', [AdminController::class, 'auth']);
-});

@@ -23,10 +23,10 @@ class TransactionDataContainer {
     public Token $token;
     /** @var array<int, array<string, float|int>> */
     public array $paidRates;
-    public float $chargedEnergy;
+    public float $chargeAmount;
+    public string $chargeUnit;
+    public string $chargeType;
     public float $amount;
-    public float $totalAmount;
-    public float $rawAmount;
     public ?AppliancePerson $appliancePerson = null;
     public ?Meter $meter = null;
     public float $installmentCost = 0;
@@ -38,11 +38,11 @@ class TransactionDataContainer {
         $deviceService = app()->make(DeviceService::class);
 
         // Initialize base properties
-        $container->chargedEnergy = 0;
+        $container->chargeAmount = 0;
+        $container->chargeUnit = '';
+        $container->chargeType = '';
         $container->transaction = $transaction;
-        $container->totalAmount = $transaction->amount;
         $container->amount = $transaction->amount;
-        $container->rawAmount = $transaction->amount;
         $container->applianceInstallmentsFullFilled = false;
         $container->tariff = null;
         $container->meter = null;

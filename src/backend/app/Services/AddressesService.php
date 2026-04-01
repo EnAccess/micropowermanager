@@ -107,8 +107,7 @@ class AddressesService implements IBaseService, IAssociative {
 
     public function getAddressByPhoneNumber(string $phoneNumber): ?Address {
         return $this->address->newQuery()
-            ->where('phone', $phoneNumber)
-            ->orWhere('phone', ltrim($phoneNumber, '+'))
+            ->where('phone', phone($phoneNumber)->formatE164())
             ->first();
     }
 }

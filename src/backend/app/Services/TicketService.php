@@ -24,22 +24,28 @@ class TicketService implements IAssociative {
         int $assignedId,
         ?string $dueDate,
         mixed $owner,
+        ?Model $creator = null,
     ): Ticket {
-        $ticket = $this->ticket->newQuery()->create(
-            [
-                'title' => $title,
-                'content' => $content,
-                'category_id' => $categoryId,
-                'due_date' => $dueDate,
-                'assigned_id' => $assignedId,
-                'status' => 0,
-            ]
-        );
+        $attributes = [
+            'title' => $title,
+            'content' => $content,
+            'category_id' => $categoryId,
+            'due_date' => $dueDate,
+            'assigned_id' => $assignedId,
+            'status' => 0,
+        ];
 
-        $ticket->owner()->associate($owner);
-        $ticket->save();
+        if ($creator instanceof Model) {
+            $attributes['creator_type'] = $creator->getMorphClass();
+            $attributes['creator_id'] = $creator->getKey();
+        }
 
-        return $ticket;
+        if ($owner instanceof Model) {
+            $attributes['owner_type'] = $owner->getMorphClass();
+            $attributes['owner_id'] = $owner->getKey();
+        }
+
+        return $this->ticket->newQuery()->create($attributes);
     }
 
     public function close(int $ticketId): Ticket {

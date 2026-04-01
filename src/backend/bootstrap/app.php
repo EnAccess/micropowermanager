@@ -4,19 +4,20 @@ use App\Console\Commands\MailApplianceDebtsCommand;
 use App\Exceptions\CompanyAlreadyExistsException;
 use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Exceptions\SmsGatewayNotConfiguredException;
-use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
-use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\TelescopeBasicAuthMiddleware;
 use App\Http\Middleware\Transaction;
 use App\Http\Middleware\TransactionRequest;
 use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -26,11 +27,18 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
+        // `web` automatically applies 'web' middleware group to all routes
         web: __DIR__.'/../routes/web.php',
+        // `api automtically applies `api` prefix and `api` middleware group to all routes
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
+        then: function () {
+            Route::middleware('agent_api')
+                ->prefix('api')
+                ->group(__DIR__.'/../routes/resources/AgentApp.php');
+        },
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(UserDefaultDatabaseConnectionMiddleware::class);
@@ -38,8 +46,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'transaction.auth' => Transaction::class,
             'transaction.request' => TransactionRequest::class,
-            'admin' => AdminJWT::class,
-            'jwt.verify' => JwtMiddleware::class,
             'agent.balance' => AgentBalanceMiddleware::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
@@ -58,7 +64,15 @@ return Application::configure(basePath: dirname(__DIR__))
         // Lowering the LogLevel here to not spam our logging.
         $exceptions->level(JWTException::class, LogLevel::INFO);
 
-        $exceptions->render(fn (JWTException $e) => response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401));
+        $exceptions->render(fn (AuthenticationException $e, Request $request) => response()->json(
+            ['message' => 'Unauthorized. Make sure you are logged in.'],
+            401
+        ));
+
+        $exceptions->render(fn (JWTException $e) => response()->json(
+            ['error' => 'Unauthorized. Make sure you are logged in. ('.$e->getMessage().')'],
+            401
+        ));
 
         $exceptions->render(fn (ModelNotFoundException $e) => response()->json([
             'message' => 'Model not found '.implode(' ', $e->getIds()),

@@ -17,7 +17,7 @@ class TicketUserFactory extends Factory {
     public function definition(): array {
         return [
             'user_name' => $this->faker->name,
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => $this->faker->e164PhoneNumber(),
             'user_id' => 0,
             'out_source' => 0,
         ];

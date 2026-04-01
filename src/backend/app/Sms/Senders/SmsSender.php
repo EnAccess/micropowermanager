@@ -28,11 +28,8 @@ abstract class SmsSender {
 
         $lastRecordedSMS = Sms::query()
             ->where('receiver', $this->receiver)
-            ->orWhere('receiver', ltrim($this->receiver, '+'))
-            ->where(
-                'body',
-                $this->body
-            )->latest()->first();
+            ->where('body', $this->body)
+            ->latest()->first();
 
         if ($lastRecordedSMS == null) {
             throw new SmsRecordNotFoundException('No record of the SMS to be sent to the receiver '.$this->receiver.' was found');
@@ -131,14 +128,13 @@ abstract class SmsSender {
 
     public function getReceiver(): string {
         if ($this->data instanceof Transaction) {
-            $this->receiver = str_starts_with($this->data->sender, '+') ? $this->data->sender : '+'.$this->data->sender;
+            $this->receiver = phone($this->data->sender)->formatE164();
         } elseif ($this->data instanceof ApplianceRate) {
-            $this->receiver = str_starts_with($this->data->appliancePerson->person->addresses->first()->phone, '+') ? $this->data->appliancePerson->person->addresses->first()->phone
-                : '+'.$this->data->appliancePerson->person->addresses->first()->phone;
+            $this->receiver = $this->data->appliancePerson->person->addresses->first()->phone;
         } elseif (!is_array($this->data) && $this->data->mpmPerson) {
-            $this->receiver = str_starts_with($this->data->mpmPerson->addresses[0]->phone, '+') ? $this->data->mpmPerson->addresses[0]->phone : '+'.$this->data->mpmPerson->addresses[0]->phone;
+            $this->receiver = $this->data->mpmPerson->addresses[0]->phone;
         } else {
-            $this->receiver = str_starts_with($this->data['phone'], '+') ? $this->data['phone'] : '+'.$this->data['phone'];
+            $this->receiver = phone($this->data['phone'])->formatE164();
         }
 
         return $this->receiver;

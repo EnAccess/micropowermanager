@@ -23,11 +23,13 @@ class CalinMeterApi implements IManufacturerAPI {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         // we round the energy to be charged to 1 decimal place because the api only accepts 1 decimal place.
-        $transactionContainer->chargedEnergy += round($transactionContainer->amount / $tariff->total_price, 1);
-        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargedEnergy.
+        $transactionContainer->chargeAmount += round($transactionContainer->amount / $tariff->total_price, 1);
+        $transactionContainer->chargeUnit = Token::UNIT_KWH;
+        $transactionContainer->chargeType = Token::TYPE_ENERGY;
+        Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargeAmount.
             ' Manufacturer => CalinMeterApi');
         $credentials = $this->credentials->newQuery()->firstOrFail();
-        $energy = $transactionContainer->chargedEnergy;
+        $energy = $transactionContainer->chargeAmount;
 
         $tokenParams = [
             'user_id' => $credentials->user_id,

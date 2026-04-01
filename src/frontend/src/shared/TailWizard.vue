@@ -122,6 +122,7 @@ export default {
 <style scoped lang="scss">
 .tail-stepper {
   width: 940px;
+  max-width: 100%;
 }
 
 .stepper-step {
@@ -141,5 +142,16 @@ export default {
 
 .md-dialog {
   z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .tail-stepper {
+    width: 100%;
+  }
+
+  .md-dialog {
+    max-width: 100%;
+    margin: 0.5rem;
+  }
 }
 </style>

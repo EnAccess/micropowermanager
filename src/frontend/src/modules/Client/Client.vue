@@ -34,7 +34,7 @@
         <div class="client-detail-card">
           <widget :title="$tc('words.devices')" id="client-map">
             <client-map
-              :mappingService="mappingService.js"
+              :mappingService="mappingService"
               ref="clientMapRef"
               :edit="true"
               @locationEdited="deviceLocationsEditedSet"

@@ -38,18 +38,20 @@ class SparkMeterApi implements IManufacturerAPI {
             $tariff->id
         )->first();
         $tariff = $this->tariffService->singleSync($smTariff);
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
+        $transactionContainer->chargeUnit = Token::UNIT_KWH;
+        $transactionContainer->chargeType = Token::TYPE_ENERGY;
         Log::critical('ENERGY TO BE CHARGED float '.
-            $transactionContainer->chargedEnergy.
+            $transactionContainer->chargeAmount.
             ' Manufacturer => Spark');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => $transactionContainer->chargedEnergy,
+                'energy' => $transactionContainer->chargeAmount,
             ];
         } else {
-            $amount = $transactionContainer->totalAmount;
+            $amount = $transactionContainer->transaction->amount;
             $externalId = $transactionContainer->transaction->id;
 
             try {
@@ -125,7 +127,7 @@ class SparkMeterApi implements IManufacturerAPI {
                 'token' => $token,
                 'token_type' => Token::TYPE_ENERGY,
                 'token_unit' => Token::UNIT_KWH,
-                'token_amount' => $transactionContainer->chargedEnergy,
+                'token_amount' => $transactionContainer->chargeAmount,
             ];
         }
     }

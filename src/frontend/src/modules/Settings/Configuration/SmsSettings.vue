@@ -1,28 +1,28 @@
 <template>
   <div>
-    <div class="transaction-sms-toggle">
-      <div class="toggle-content">
-        <div>
-          <span class="toggle-label">
-            {{ $tc("phrases.transactionSmsEnabled") }}
-          </span>
-          <p class="toggle-description">
-            {{ $tc("phrases.transactionSmsEnabledDescription") }}
-          </p>
-        </div>
-        <md-switch
-          v-model="transactionSmsEnabled"
-          @change="updateTransactionSmsEnabled"
-          class="md-primary"
-        />
-      </div>
-    </div>
     <md-tabs>
       <md-tab
         @click="tab = 'confirmation'"
         id="tab-confirmation"
         md-label="Transaction Confirmation"
       >
+        <div class="transaction-sms-toggle">
+          <div class="toggle-content">
+            <div>
+              <span class="toggle-label">
+                {{ $tc("phrases.transactionSmsEnabled") }}
+              </span>
+              <p class="toggle-description">
+                {{ $tc("phrases.transactionSmsEnabledDescription") }}
+              </p>
+            </div>
+            <md-switch
+              v-model="transactionSmsEnabled"
+              @change="updateTransactionSmsEnabled"
+              class="md-primary"
+            />
+          </div>
+        </div>
         <div
           class="md-layout-item notice-message-area"
           style="margin-bottom: 1rem"
@@ -53,25 +53,26 @@
       </md-tab>
       <md-tab @click="tab = 'reminder'" id="tab-reminder" md-label="Reminder">
         <sms-appliance-remind-rate />
-        <div
-          v-for="(smsBody, index) in smsBodiesService.reminderList"
-          :key="index"
-        >
-          <sms-body
-            ref="smsBody_reminder_ref"
-            :sms-variable-default-values="smsVariableDefaultValueService.list"
-            :sms-body="smsBody"
-          />
-        </div>
-        <div class="md-layout md-alignment-bottom-right">
-          <md-button
-            class="md-primary md-dense md-raised"
-            @click="updateSmsBodies()"
-            v-show="tab !== 'android-gateway'"
+        <widget title="SMS Reminder Templates" class="reminder-templates">
+          <div
+            v-for="(smsBody, index) in smsBodiesService.reminderList"
+            :key="index"
           >
-            Save
-          </md-button>
-        </div>
+            <sms-body
+              ref="smsBody_reminder_ref"
+              :sms-variable-default-values="smsVariableDefaultValueService.list"
+              :sms-body="smsBody"
+            />
+          </div>
+          <div class="md-layout md-alignment-bottom-right">
+            <md-button
+              class="md-primary md-dense md-raised"
+              @click="updateSmsBodies()"
+            >
+              Save
+            </md-button>
+          </div>
+        </widget>
       </md-tab>
       <md-tab
         @click="tab = 'resend-information'"
@@ -168,11 +169,12 @@ import { SmsBodiesService } from "@/services/SmsBodiesService.js"
 import { SmsResendInformationKeyService } from "@/services/SmsResendInformationKeyService.js"
 import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService.js"
 import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SmsSettings",
   mixins: [notify],
-  components: { SmsAndroidSetting, SmsApplianceRemindRate, SmsBody },
+  components: { SmsAndroidSetting, SmsApplianceRemindRate, SmsBody, Widget },
   props: {
     smsBodies: {
       type: Array,
@@ -346,6 +348,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.reminder-templates {
+  margin-top: 1.5rem;
+}
 .notice-message-area {
   padding: 20px;
   background-color: #badee4;

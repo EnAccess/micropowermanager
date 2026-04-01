@@ -1,0 +1,11 @@
+meta {
+  name: Get Agent Dashboard Boxes
+  type: http
+  seq: 34
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/dashboard/boxes
+  body: none
+  auth: inherit
+}
