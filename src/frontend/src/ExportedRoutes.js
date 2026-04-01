@@ -74,6 +74,7 @@ import PaystackPublicResult from "@/plugins/paystack-payment-provider/modules/Pa
 import PaystackTransaction from "@/plugins/paystack-payment-provider/modules/Transaction/Transaction.vue"
 import ProspectOverview from "@/plugins/prospect/modules/Overview/Overview.vue"
 import ProspectSettings from "@/plugins/prospect/modules/Setting/Setting.vue"
+import SmsTransactionParserMessages from "@/plugins/sms-transaction-parser/modules/Messages/Messages.vue"
 import SmsTransactionParserOverview from "@/plugins/sms-transaction-parser/modules/Overview/Overview.vue"
 import SparkMeterCustomerList from "@/plugins/spark-meter/modules/Customer/CustomerList.vue"
 import SparkMeterModelList from "@/plugins/spark-meter/modules/MeterModel/MeterModelList.vue"
@@ -1723,6 +1724,17 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Overview",
+          },
+        },
+      },
+      {
+        path: "messages",
+        component: SmsTransactionParserMessages,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Messages",
           },
         },
       },

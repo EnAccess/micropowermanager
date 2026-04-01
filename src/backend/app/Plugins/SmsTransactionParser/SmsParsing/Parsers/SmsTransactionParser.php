@@ -7,7 +7,11 @@ namespace App\Plugins\SmsTransactionParser\SmsParsing\Parsers;
 use App\Plugins\SmsTransactionParser\SmsParsing\Contracts\ISmsTransactionParser;
 use App\Plugins\SmsTransactionParser\SmsParsing\ParsedSmsData;
 
-class VodacomTransactionParser implements ISmsTransactionParser {
+class SmsTransactionParser implements ISmsTransactionParser {
+    public function __construct(
+        private readonly string $providerName,
+    ) {}
+
     /**
      * @param array<string, string> $regexMatches
      */
@@ -40,7 +44,7 @@ class VodacomTransactionParser implements ISmsTransactionParser {
             amount: $amount,
             deviceSerial: $deviceSerial,
             transactionReference: $transactionRef,
-            providerName: 'Vodacom',
+            providerName: $this->providerName,
             rawMessage: $body,
             senderPhone: $senderPhone,
         );

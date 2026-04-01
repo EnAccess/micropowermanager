@@ -97,4 +97,14 @@ class SmsTransactionService {
         return $this->smsTransaction->newQuery()->latest()
             ->paginate($limit);
     }
+
+    /**
+     * @return LengthAwarePaginator<int, SmsTransaction>
+     */
+    public function getByProviderName(string $providerName, int $limit = 15): LengthAwarePaginator {
+        return $this->smsTransaction->newQuery()
+            ->where('provider_name', $providerName)
+            ->latest()
+            ->paginate($limit);
+    }
 }

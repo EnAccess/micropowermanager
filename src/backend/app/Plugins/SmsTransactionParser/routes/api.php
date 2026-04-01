@@ -12,6 +12,7 @@ Route::group(['prefix' => 'sms-transaction-parser'], function () {
         Route::post('/', [SmsParsingRuleController::class, 'store']);
         Route::put('/{id}', [SmsParsingRuleController::class, 'update']);
         Route::delete('/{id}', [SmsParsingRuleController::class, 'destroy']);
+        Route::get('/{id}/messages', [SmsTransactionController::class, 'byParsingRule']);
     });
 
     Route::group(['prefix' => 'transactions'], function () {

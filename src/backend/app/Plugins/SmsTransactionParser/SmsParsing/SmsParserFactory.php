@@ -5,16 +5,9 @@ declare(strict_types=1);
 namespace App\Plugins\SmsTransactionParser\SmsParsing;
 
 use App\Plugins\SmsTransactionParser\Models\SmsParsingRule;
-use App\Plugins\SmsTransactionParser\SmsParsing\Parsers\MovitelTransactionParser;
-use App\Plugins\SmsTransactionParser\SmsParsing\Parsers\VodacomTransactionParser;
+use App\Plugins\SmsTransactionParser\SmsParsing\Parsers\SmsTransactionParser;
 
 class SmsParserFactory {
-    /** @var array<string, class-string> */
-    private const PARSER_MAP = [
-        'Vodacom' => VodacomTransactionParser::class,
-        'Movitel' => MovitelTransactionParser::class,
-    ];
-
     public function __construct(
         private SmsParsingRule $smsParsingRule,
     ) {}
@@ -33,15 +26,7 @@ class SmsParserFactory {
                 continue;
             }
 
-            $parserClass = self::PARSER_MAP[$rule->provider_name]
-                ?? self::PARSER_MAP[ucfirst(explode('_', $rule->provider_name, 2)[0])]
-                ?? null;
-
-            if ($parserClass === null) {
-                continue;
-            }
-
-            $parser = resolve($parserClass);
+            $parser = new SmsTransactionParser($rule->provider_name);
             $namedMatches = array_filter($matches, is_string(...), ARRAY_FILTER_USE_KEY);
 
             return $parser->parse($body, $namedMatches);

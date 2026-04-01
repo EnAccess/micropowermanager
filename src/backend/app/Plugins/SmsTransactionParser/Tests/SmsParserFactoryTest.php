@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\SmsTransactionParser;
+namespace App\Plugins\SmsTransactionParser\Tests;
 
 use App\Plugins\SmsTransactionParser\Models\SmsParsingRule;
 use App\Plugins\SmsTransactionParser\SmsParsing\SmsParserFactory;
