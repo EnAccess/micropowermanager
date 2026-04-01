@@ -102,7 +102,7 @@ releases:
       - id: "manufacturer-plugins-v1"
         title: "MPMv1 Manufacturer Plugins"
         description: "All manufacturer integrations which are targeted for the MPMv1 release."
-        status: "in-progress"
+        status: "completed"
         category: "Integrations"
         github:
           issue: 1344
@@ -125,6 +125,17 @@ releases:
     target: "End of 2026"
     description: "Expand MPM's coverage for diverse use cases, improve developer experience, and strengthen integration options."
     milestones:
+      - id: "manufacturer-plugins-v1.1"
+        title: "MPMv1.1 Manufacturer Plugins"
+        description: "All manufacturer integrations which are targeted for the MPMv1.1 release."
+        status: "planned"
+        category: "Integrations"
+        github:
+          issue: 1413
+        features:
+          - title: "Zimpertec SHS (https://www.zimpertec.com/)"
+          - title: "Support for generic token sheet operations"
+
       - id: "plugin-system"
         title: "Plugin System Re-architecture"
         description: "Easier plugin development and maintenance with a revamped plugin architecture."
@@ -134,56 +145,67 @@ releases:
           - title: "Simplified plugin development"
           - title: "Better plugin isolation"
           - title: "Hot-reload support"
+
       - id: "native-sms"
         title: "Native SMS Support"
         description: "Built-in SMS capabilities within MPM Core without external dependencies."
         status: "planned"
         category: "Communications"
+
       - id: "open-paygo"
         title: "Open PayGo Device Integration"
         description: "Native support for Open PayGo standard devices."
         status: "planned"
         category: "Devices"
+
       - id: "post-paid"
         title: "Post-Paid Metering"
         description: "Exploration and implementation of post-paid metering capabilities."
         status: "exploring"
         category: "Metering"
+
       - id: "payment-pesapal"
         title: "PesaPal (Uganda)"
         description: "Payment gateway integration for PesaPal to support Ugandan operations."
         status: "planned"
         category: "Payments"
+
       - id: "payment-safaricom"
         title: "Safaricom (Kenya)"
         description: "M-Pesa integration through Safaricom for Kenyan market support."
         status: "planned"
         category: "Payments"
+
       - id: "tou-pricing"
         title: "Time-of-Use (ToU) Pricing"
         description: "Dynamic pricing support based on time of use for flexible tariff structures."
         status: "planned"
         category: "Billing"
+
       - id: "energy-monitoring"
         title: "Energy Monitoring"
         description: "Native or third-party integrations for energy consumption monitoring."
         status: "exploring"
         category: "Monitoring"
+
       - id: "backend-refactor"
         title: "Backend Refactoring"
         description: "Scalability improvements and code quality enhancements."
         status: "planned"
         category: "Architecture"
+
       - id: "inventory-mgmt"
         title: "Inventory & Deployment Management"
         description: "Tools for tracking inventory and managing device deployments."
         status: "exploring"
         category: "Operations"
+
       - id: "cloud-status"
         title: "Cloud Service Status Tracker"
         description: "Real-time status and availability monitoring for cloud services."
         status: "planned"
         category: "DevOps"
+
       - id: "vue3-migration"
         title: "Vue 3 Migration"
         description: "Frontend upgrade from Vue 2 to Vue 3 for modern development patterns."
@@ -193,6 +215,7 @@ releases:
           - title: "Vue 3 Composition API"
           - title: "UI overhaul"
           - title: "Modern, intuitive design"
+
       - id: "docs-revamp"
         title: "Documentation Overhaul"
         description: "Revamped usage and onboarding guides for better developer and operator experience."
