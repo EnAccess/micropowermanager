@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Log;
 
 class ApplianceTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
-    protected const TYPE = 'deferred_payment';
 
     public function __construct(int $companyId, private int $transactionId) {
         $this->onConnection('redis');
@@ -68,7 +67,16 @@ class ApplianceTransactionProcessor extends AbstractJob {
 
     private function initializeTransaction(): void {
         $this->transaction = Transaction::query()->find($this->transactionId);
-        $this->transaction->type = 'deferred_payment';
+
+        if ($this->transaction->type !== Transaction::TYPE_DOWN_PAYMENT) {
+            $appliancePerson = $this->transaction->paygoAppliance()->first()
+                ?? $this->transaction->nonPaygoAppliance()->first();
+
+            $this->transaction->type = ($appliancePerson && $appliancePerson->isEnergyService())
+                ? Transaction::TYPE_EAAS_RATE
+                : Transaction::TYPE_DEFERRED_PAYMENT;
+        }
+
         $this->transaction->save();
     }
 

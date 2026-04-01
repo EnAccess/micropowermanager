@@ -110,6 +110,8 @@ class ProspectPaymentTransformer {
         return match ($transactionType) {
             'energy' => 'Paygo Payment',
             'deferred_payment', 'loan', 'installment' => 'Loan repayment',
+            'eaas_rate' => 'Energy service payment',
+            'down_payment' => 'Down payment',
             'access_rate' => 'Access rate payment',
             default => 'Paygo Payment',
         };

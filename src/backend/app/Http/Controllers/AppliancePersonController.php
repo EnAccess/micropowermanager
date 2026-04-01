@@ -8,6 +8,7 @@ use App\Http\Resources\ApiResource;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\Person\Person;
+use App\Models\Transaction\Transaction;
 use App\Models\User;
 use App\Services\AddressesService;
 use App\Services\AddressGeographicalInformationService;
@@ -141,7 +142,8 @@ class AppliancePersonController extends Controller {
             $user->id,
             $downPayment,
             $sender,
-            $deviceSerial
+            $deviceSerial,
+            type: Transaction::TYPE_DOWN_PAYMENT,
         );
 
         $applianceRate = $this->applianceRateService->createPaidRate($appliancePerson, $downPayment);

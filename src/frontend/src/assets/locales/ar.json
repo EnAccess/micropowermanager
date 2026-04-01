@@ -203,6 +203,7 @@
     "downPayment": "دفعة أولى",
     "dueDate": "أجل الدفع",
     "eaasDescription": "Energy as a Service: The customer pays on-demand for energy credits. No installment plan or due dates will be created. The device will stay owned by the service provider and no unlock tokens are sent to the customer.",
+    "eaasRate": "معدل EaaS",
     "editConnectionGroup": "تم تحديث مجموعة الاتصال بنجاح | هل أنت متأكد من تغيير اسم مجموعة الاتصال هذه؟ | تعديل مجموعة الاتصال ",
     "editConnectionType": "تعديل نوع الاتصال",
     "editConnectionTypeNotify": "تم تحديث اسم نوع الاتصال بنجاح ‏ | {name}‏  هل أنت متأكد من تغيير اسم نوع الاتصال لـ",

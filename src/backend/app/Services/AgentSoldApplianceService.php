@@ -6,6 +6,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AppliancePerson;
+use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IBaseService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -169,7 +170,7 @@ class AgentSoldApplianceService implements IBaseService {
             'amount' => $downPayment,
             'sender' => 'Agent-'.$agent->id,
             'message' => $deviceSerial ?? '-',
-            'type' => 'deferred_payment',
+            'type' => Transaction::TYPE_DOWN_PAYMENT,
         ];
 
         $transaction = $this->transactionService->make($transactionData);

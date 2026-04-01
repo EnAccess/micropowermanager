@@ -203,6 +203,7 @@
     "downPayment": "Down Payment",
     "dueDate": "Due Date",
     "eaasDescription": "Energy as a Service: The customer pays on-demand for energy credits. No installment plan or due dates will be created. The device will stay owned by the service provider and no unlock tokens are sent to the customer.",
+    "eaasRate": "EaaS Rate",
     "editConnectionGroup": "Edit Connection Group | Are you sure to changing this connection group name ? | Connection Group Updated Successfully",
     "editConnectionType": "Edit Connection Type",
     "editConnectionTypeNotify": "Connection Type Name Updated Successfully | Are you sure to change of connection type name for {name} ?",
