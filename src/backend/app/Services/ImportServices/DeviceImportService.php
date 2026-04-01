@@ -8,6 +8,7 @@ use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
 use App\Models\EBike;
+use App\Models\GeographicalInformation;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
@@ -72,13 +73,17 @@ class DeviceImportService extends AbstractImportService {
             DB::connection('tenant')->commit();
 
             $allFailed = count($imported) === 0 && count($failed) > 0;
+            $partitioned = $this->partitionResults($imported);
 
             return [
                 'success' => !$allFailed,
                 'message' => $allFailed ? 'All device imports failed' : 'Devices imported successfully',
                 'imported_count' => count($imported),
+                'added_count' => $partitioned['added_count'],
+                'modified_count' => $partitioned['modified_count'],
                 'failed_count' => count($failed),
-                'imported' => $imported,
+                'added' => $partitioned['added'],
+                'modified' => $partitioned['modified'],
                 'failed' => $failed,
             ];
         } catch (\Exception $e) {
@@ -143,9 +148,11 @@ class DeviceImportService extends AbstractImportService {
             }
 
             $this->updateSpecificDevice($existingDevice, $manufacturer, $deviceInfo);
+            $this->handleDeviceGeo($existingDevice, $deviceData);
 
             return [
                 'success' => true,
+                'action' => 'modified',
                 'device' => [
                     'id' => $existingDevice->id,
                     'serial_number' => $existingDevice->device_serial,
@@ -165,14 +172,36 @@ class DeviceImportService extends AbstractImportService {
             'device_serial' => $serialNumber,
         ]);
 
+        $this->handleDeviceGeo($device, $deviceData);
+
         return [
             'success' => true,
+            'action' => 'added',
             'device' => [
                 'id' => $device->id,
                 'serial_number' => $device->device_serial,
                 'type' => $device->device_type,
             ],
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $deviceData
+     */
+    private function handleDeviceGeo(Device $device, array $deviceData): void {
+        $geo = $deviceData['geo'] ?? null;
+        if (!is_array($geo) || empty($geo['points'])) {
+            return;
+        }
+
+        $points = $geo['points'];
+        $existingGeo = $device->geo;
+
+        if ($existingGeo instanceof GeographicalInformation) {
+            $existingGeo->update(['points' => $points]);
+        } else {
+            $device->geo()->create(['points' => $points]);
+        }
     }
 
     /**

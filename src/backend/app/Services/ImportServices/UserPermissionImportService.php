@@ -74,13 +74,17 @@ class UserPermissionImportService extends AbstractImportService {
             DB::connection('tenant')->commit();
 
             $allFailed = count($imported) === 0 && count($failed) > 0;
+            $partitioned = $this->partitionResults($imported);
 
             return [
                 'success' => !$allFailed,
                 'message' => $allFailed ? 'All user imports failed' : 'Users imported successfully',
                 'imported_count' => count($imported),
+                'added_count' => $partitioned['added_count'],
+                'modified_count' => $partitioned['modified_count'],
                 'failed_count' => count($failed),
-                'imported' => $imported,
+                'added' => $partitioned['added'],
+                'modified' => $partitioned['modified'],
                 'failed' => $failed,
             ];
         } catch (\Exception $e) {
@@ -122,8 +126,9 @@ class UserPermissionImportService extends AbstractImportService {
 
         // Find or create user
         $user = $this->userService->getByEmail($userData['email']);
+        $isNew = !$user instanceof User;
 
-        if (!$user instanceof User) {
+        if ($isNew) {
             // Create new user
             if (empty($userData['password'])) {
                 return [
@@ -231,6 +236,7 @@ class UserPermissionImportService extends AbstractImportService {
 
         return [
             'success' => true,
+            'action' => $isNew ? 'added' : 'modified',
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,

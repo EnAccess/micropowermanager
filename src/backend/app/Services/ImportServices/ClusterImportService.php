@@ -62,13 +62,17 @@ class ClusterImportService extends AbstractImportService {
             DB::connection('tenant')->commit();
 
             $allFailed = count($imported) === 0 && count($failed) > 0;
+            $partitioned = $this->partitionResults($imported);
 
             return [
                 'success' => !$allFailed,
                 'message' => $allFailed ? 'All cluster imports failed' : 'Clusters imported successfully',
                 'imported_count' => count($imported),
+                'added_count' => $partitioned['added_count'],
+                'modified_count' => $partitioned['modified_count'],
                 'failed_count' => count($failed),
-                'imported' => $imported,
+                'added' => $partitioned['added'],
+                'modified' => $partitioned['modified'],
                 'failed' => $failed,
             ];
         } catch (\Exception $e) {
@@ -103,8 +107,9 @@ class ClusterImportService extends AbstractImportService {
         }
 
         $cluster = Cluster::query()->where('name', $clusterName)->first();
+        $isNew = $cluster === null;
 
-        if ($cluster === null) {
+        if ($isNew) {
             $geoJson = $clusterData['geo_json'] ?? '{}';
 
             $cluster = Cluster::query()->create([
@@ -156,6 +161,7 @@ class ClusterImportService extends AbstractImportService {
 
         return [
             'success' => true,
+            'action' => $isNew ? 'added' : 'modified',
             'cluster' => [
                 'id' => $cluster->id,
                 'name' => $cluster->name,

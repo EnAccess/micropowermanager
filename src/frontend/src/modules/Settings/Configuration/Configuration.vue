@@ -18,9 +18,6 @@
         <md-tab id="tab-api-keys" md-icon="vpn_key" md-label="API Keys">
           <api-keys-settings />
         </md-tab>
-        <md-tab id="tab-import" md-icon="file_upload" md-label="Import">
-          <import-settings />
-        </md-tab>
       </md-tabs>
     </widget>
   </div>
@@ -28,7 +25,6 @@
 
 <script>
 import ApiKeysSettings from "./ApiKeysSettings.vue"
-import ImportSettings from "./ImportSettings.vue"
 import MainSettings from "./MainSettings.vue"
 import MapSettings from "./MapSettings.vue"
 import SmsSettings from "./SmsSettings.vue"
@@ -51,7 +47,6 @@ export default {
     MapSettings,
     ApiKeysSettings,
     SmsSettings,
-    ImportSettings,
   },
   data() {
     return {

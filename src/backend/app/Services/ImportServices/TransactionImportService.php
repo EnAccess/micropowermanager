@@ -69,13 +69,17 @@ class TransactionImportService extends AbstractImportService {
             DB::connection('tenant')->commit();
 
             $allFailed = count($imported) === 0 && count($failed) > 0;
+            $partitioned = $this->partitionResults($imported);
 
             return [
                 'success' => !$allFailed,
                 'message' => $allFailed ? 'All transaction imports failed' : 'Transactions imported successfully',
                 'imported_count' => count($imported),
+                'added_count' => $partitioned['added_count'],
+                'modified_count' => $partitioned['modified_count'],
                 'failed_count' => count($failed),
-                'imported' => $imported,
+                'added' => $partitioned['added'],
+                'modified' => $partitioned['modified'],
                 'failed' => $failed,
             ];
         } catch (\Exception $e) {
@@ -127,6 +131,7 @@ class TransactionImportService extends AbstractImportService {
         if ($existingTransaction !== null) {
             return [
                 'success' => true,
+                'action' => 'modified',
                 'transaction' => [
                     'id' => $existingTransaction->id,
                     'amount' => $existingTransaction->amount,
@@ -152,6 +157,7 @@ class TransactionImportService extends AbstractImportService {
 
         return [
             'success' => true,
+            'action' => 'added',
             'transaction' => [
                 'id' => $transaction->id,
                 'amount' => $transaction->amount,

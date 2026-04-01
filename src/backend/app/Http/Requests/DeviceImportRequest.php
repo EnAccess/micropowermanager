@@ -22,9 +22,8 @@ class DeviceImportRequest extends FormRequest {
             'data.*.device_info.manufacturer' => ['sometimes', 'nullable', 'string'],
             'data.*.device_info.serial_number' => ['required', 'string', 'min:1'],
             'data.*.tokens' => ['sometimes', 'nullable', 'array'],
-            'data.*.address' => ['sometimes', 'nullable', 'array'],
-            'data.*.address.city' => ['sometimes', 'nullable', 'string'],
-            'data.*.address.street' => ['sometimes', 'nullable', 'string'],
+            'data.*.geo' => ['sometimes', 'nullable', 'array'],
+            'data.*.geo.points' => ['sometimes', 'nullable', 'string'],
             'data.*.created_at' => ['sometimes', 'nullable', 'string'],
             'data.*.updated_at' => ['sometimes', 'nullable', 'string'],
         ];

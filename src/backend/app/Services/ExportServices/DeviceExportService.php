@@ -115,13 +115,11 @@ class DeviceExportService extends AbstractExportService {
                 'created_at' => $this->convertUtcDateToTimezone($token->created_at),
             ])->all();
 
-            // Get address details
-            $address = null;
-            $primaryAddress = $device->person?->addresses->where('is_primary', 1)->first();
-            if ($primaryAddress) {
-                $address = [
-                    'city' => $primaryAddress->city->name ?? '',
-                    'street' => $primaryAddress->street ?? '',
+            // Get geo information
+            $geo = null;
+            if ($device->geo !== null) {
+                $geo = [
+                    'points' => $device->geo->points,
                 ];
             }
 
@@ -130,7 +128,7 @@ class DeviceExportService extends AbstractExportService {
                 'customer' => $fullName,
                 'device_info' => $deviceDetails,
                 'tokens' => $tokens,
-                'address' => $address,
+                'geo' => $geo,
                 'created_at' => $this->convertUtcDateToTimezone($device->created_at),
                 'updated_at' => $this->convertUtcDateToTimezone($device->updated_at),
             ];

@@ -61,13 +61,17 @@ class CustomerImportService extends AbstractImportService {
             DB::connection('tenant')->commit();
 
             $allFailed = count($imported) === 0 && count($failed) > 0;
+            $partitioned = $this->partitionResults($imported);
 
             return [
                 'success' => !$allFailed,
                 'message' => $allFailed ? 'All customer imports failed' : 'Customers imported successfully',
                 'imported_count' => count($imported),
+                'added_count' => $partitioned['added_count'],
+                'modified_count' => $partitioned['modified_count'],
                 'failed_count' => count($failed),
-                'imported' => $imported,
+                'added' => $partitioned['added'],
+                'modified' => $partitioned['modified'],
                 'failed' => $failed,
             ];
         } catch (\Exception $e) {
@@ -116,7 +120,9 @@ class CustomerImportService extends AbstractImportService {
             $personFields['gender'] = $customerData['gender'];
         }
 
-        if ($person === null) {
+        $isNew = $person === null;
+
+        if ($isNew) {
             $person = Person::query()->create($personFields);
         } else {
             $person->update($personFields);
@@ -128,6 +134,24 @@ class CustomerImportService extends AbstractImportService {
             $city = City::query()->where('name', $customerData['city'])->first();
             if ($city !== null) {
                 $cityId = $city->id;
+            }
+        }
+
+        // Check phone uniqueness
+        if (!empty($customerData['phone'])) {
+            $phoneInUse = Address::query()
+                ->where('phone', $customerData['phone'])
+                ->where(function ($query) use ($person): void {
+                    $query->where('owner_id', '!=', $person->id)
+                        ->orWhere('owner_type', '!=', Person::class);
+                })
+                ->exists();
+
+            if ($phoneInUse) {
+                return [
+                    'success' => false,
+                    'errors' => ['phone' => "Phone number '{$customerData['phone']}' is already assigned to another customer"],
+                ];
             }
         }
 
@@ -159,6 +183,7 @@ class CustomerImportService extends AbstractImportService {
 
         return [
             'success' => true,
+            'action' => $isNew ? 'added' : 'modified',
             'customer' => [
                 'id' => $person->id,
                 'name' => $person->name,

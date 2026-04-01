@@ -59,13 +59,17 @@ class ApplianceImportService extends AbstractImportService {
             DB::connection('tenant')->commit();
 
             $allFailed = count($imported) === 0 && count($failed) > 0;
+            $partitioned = $this->partitionResults($imported);
 
             return [
                 'success' => !$allFailed,
                 'message' => $allFailed ? 'All appliance imports failed' : 'Appliances imported successfully',
                 'imported_count' => count($imported),
+                'added_count' => $partitioned['added_count'],
+                'modified_count' => $partitioned['modified_count'],
                 'failed_count' => count($failed),
-                'imported' => $imported,
+                'added' => $partitioned['added'],
+                'modified' => $partitioned['modified'],
                 'failed' => $failed,
             ];
         } catch (\Exception $e) {
@@ -108,8 +112,9 @@ class ApplianceImportService extends AbstractImportService {
         $appliance = Appliance::query()
             ->where('name', $applianceData['appliance_name'])
             ->first();
+        $isNew = $appliance === null;
 
-        if ($appliance === null) {
+        if ($isNew) {
             $appliance = Appliance::query()->create([
                 'name' => $applianceData['appliance_name'],
                 'appliance_type_id' => $applianceType?->id,
@@ -124,6 +129,7 @@ class ApplianceImportService extends AbstractImportService {
 
         return [
             'success' => true,
+            'action' => $isNew ? 'added' : 'modified',
             'appliance' => [
                 'id' => $appliance->id,
                 'name' => $appliance->name,

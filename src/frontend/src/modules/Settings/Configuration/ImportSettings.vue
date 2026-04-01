@@ -99,8 +99,12 @@
         <div v-if="importResult">
           <div class="result-stats-row">
             <div class="stat-card stat-card--success">
-              <span class="stat-value">{{ importResult.imported_count }}</span>
-              <span class="stat-label">Imported</span>
+              <span class="stat-value">{{ importResult.added_count }}</span>
+              <span class="stat-label">Added</span>
+            </div>
+            <div class="stat-card stat-card--modified">
+              <span class="stat-value">{{ importResult.modified_count }}</span>
+              <span class="stat-label">Modified</span>
             </div>
             <div class="stat-card stat-card--failed">
               <span class="stat-value">{{ importResult.failed_count }}</span>
@@ -123,8 +127,9 @@
               <div class="result-row-content">
                 <strong>{{ entityLabel(r.type) }}</strong>
                 <span class="result-row-detail">
-                  <template v-if="r.data && r.data.imported_count != null">
-                    {{ r.data.imported_count }} imported,
+                  <template v-if="r.data && r.data.added_count != null">
+                    {{ r.data.added_count }} added,
+                    {{ r.data.modified_count }} modified,
                     {{ r.data.failed_count }} failed
                   </template>
                   <template v-else>
@@ -392,7 +397,8 @@ export default {
             this.stopPolling()
             const importResult = status.result || {}
             this.onAsyncImportDone(importResult.success !== false, null, {
-              imported_count: importResult.imported_count,
+              added_count: importResult.added_count,
+              modified_count: importResult.modified_count,
               failed_count: importResult.failed_count,
             })
           } else if (status.status === "failed") {
@@ -405,7 +411,8 @@ export default {
                 failedResult.message ||
                 "Import failed",
               {
-                imported_count: failedResult.imported_count ?? 0,
+                added_count: failedResult.added_count ?? 0,
+                modified_count: failedResult.modified_count ?? 0,
                 failed_count: failedResult.failed_count ?? 0,
               },
             )
@@ -448,25 +455,27 @@ export default {
       this.showResults(results)
     },
     showResults(results) {
-      let totalImported = 0
+      let totalAdded = 0
+      let totalModified = 0
       let totalFailed = 0
 
       results.forEach((r) => {
-        if (r.data && r.data.imported_count != null) {
-          totalImported += r.data.imported_count
+        if (r.data && r.data.added_count != null) {
+          totalAdded += r.data.added_count
+          totalModified += r.data.modified_count || 0
           totalFailed += r.data.failed_count || 0
         } else if (r.success) {
-          totalImported += 1
+          totalAdded += 1
         } else {
           totalFailed += 1
         }
       })
 
-      if (totalImported > 0) {
-        this.alertNotify(
-          "success",
-          `${totalImported} record(s) imported successfully`,
-        )
+      if (totalAdded > 0 || totalModified > 0) {
+        const parts = []
+        if (totalAdded > 0) parts.push(`${totalAdded} added`)
+        if (totalModified > 0) parts.push(`${totalModified} modified`)
+        this.alertNotify("success", `${parts.join(", ")} successfully`)
         EventBus.$emit("Settings")
       }
       if (totalFailed > 0) {
@@ -475,7 +484,8 @@ export default {
 
       this.importResult = {
         results,
-        imported_count: totalImported,
+        added_count: totalAdded,
+        modified_count: totalModified,
         failed_count: totalFailed,
       }
       this.resultDialogTitle = "Import Results"
@@ -594,6 +604,10 @@ export default {
   background-color: #e8f5e9;
 }
 
+.stat-card--modified {
+  background-color: #fff3e0;
+}
+
 .stat-card--failed {
   background-color: #fbe9e7;
 }
@@ -606,6 +620,10 @@ export default {
 
 .stat-card--success .stat-value {
   color: #2e7d32;
+}
+
+.stat-card--modified .stat-value {
+  color: #e65100;
 }
 
 .stat-card--failed .stat-value {

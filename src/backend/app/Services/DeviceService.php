@@ -100,6 +100,7 @@ class DeviceService implements IBaseService, IAssociative {
                 ]);
             },
             'person.addresses.city',
+            'geo',
             'tokens',
             'appliance.applianceType',
         ];

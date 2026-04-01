@@ -39,8 +39,9 @@ class SettingsImportService extends AbstractImportService {
 
         try {
             $settings = $this->mainSettingsService->getAll()->first();
+            $isNew = $settings === null;
 
-            if ($settings === null) {
+            if ($isNew) {
                 // Create new settings if none exist
                 $settings = $this->mainSettingsService->create([
                     'site_title' => $settingsData['site_title'] ?? '',
@@ -84,6 +85,10 @@ class SettingsImportService extends AbstractImportService {
             return [
                 'success' => true,
                 'message' => 'Settings imported successfully',
+                'imported_count' => 1,
+                'added_count' => $isNew ? 1 : 0,
+                'modified_count' => $isNew ? 0 : 1,
+                'failed_count' => 0,
                 'data' => $settings->toArray(),
             ];
         } catch (\Exception $e) {
