@@ -67,7 +67,7 @@ releases:
       - id: "sms-gateway"
         title: "SMS Gateway Support"
         description: "Alternative SMS gateway as an option to external providers for more control."
-        status: "in-progress"
+        status: "completed"
         category: "Communications"
         github:
           issue: 1104
