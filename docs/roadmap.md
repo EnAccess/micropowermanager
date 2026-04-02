@@ -41,12 +41,15 @@ releases:
           issue: 1343
 
       - id: "payment-vodacom"
-        title: "Vodacom Mobile Money"
-        description: "Enhanced payment capabilities for Vodacom Mobile Money integration."
+        title: "Vodacom Mozambique (M-Pesa) 🇲🇿"
+        description: "Enhanced payment capabilities for Vodacom Mozambique (M-Pesa) integration."
         status: "in-progress"
         category: "Payments"
+        features:
+          - title: "Customer initiated C2B transactions using Vodacom's generic OpenAPI protocol"
+          - title: "Establish a secure IPSec tunnel between MPM Cloud and Vodacom infrastructur"
         github:
-          issue: 78
+          issue: 489
 
       - id: "payment-paystack"
         title: "Paystack (Nigeria)"
@@ -75,7 +78,7 @@ releases:
       - id: "branding-update"
         title: "Updated MPM Branding"
         description: "Moving away from legacy Inensus references to unified MPM branding."
-        status: "in-progress"
+        status: "completed"
         category: "UX"
         features:
           - title: "Moving away from legacy Inensus references to unified MPM branding."
@@ -215,6 +218,17 @@ releases:
           - title: "Vue 3 Composition API"
           - title: "UI overhaul"
           - title: "Modern, intuitive design"
+
+      - id: "branding-update"
+        title: "Apply EnAcces MPM Branding to Mobile Apps"
+        description: "Moving away from legacy Inensus references to unified MPM branding."
+        status: "planned"
+        category: "UX"
+        features:
+          - title: "Agent App"
+          - title: "Customer Registration App"
+        github:
+          issue: 1416
 
       - id: "docs-revamp"
         title: "Documentation Overhaul"
