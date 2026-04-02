@@ -242,6 +242,7 @@ class UserPermissionImportService extends AbstractImportService {
                 'name' => $user->name,
                 'email' => $user->email,
                 'company_id' => $user->company_id,
+                'action' => $isNew ? 'added' : 'modified',
             ],
         ];
     }

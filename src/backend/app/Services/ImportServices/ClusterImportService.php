@@ -165,6 +165,7 @@ class ClusterImportService extends AbstractImportService {
             'cluster' => [
                 'id' => $cluster->id,
                 'name' => $cluster->name,
+                'action' => $isNew ? 'added' : 'modified',
             ],
         ];
     }

@@ -133,6 +133,7 @@ class ApplianceImportService extends AbstractImportService {
             'appliance' => [
                 'id' => $appliance->id,
                 'name' => $appliance->name,
+                'action' => $isNew ? 'added' : 'modified',
             ],
         ];
     }

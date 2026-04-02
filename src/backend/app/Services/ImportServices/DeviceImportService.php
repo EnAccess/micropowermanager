@@ -157,6 +157,7 @@ class DeviceImportService extends AbstractImportService {
                     'id' => $existingDevice->id,
                     'serial_number' => $existingDevice->device_serial,
                     'type' => $existingDevice->device_type,
+                    'action' => 'modified',
                 ],
             ];
         }
@@ -181,6 +182,7 @@ class DeviceImportService extends AbstractImportService {
                 'id' => $device->id,
                 'serial_number' => $device->device_serial,
                 'type' => $device->device_type,
+                'action' => 'added',
             ],
         ];
     }

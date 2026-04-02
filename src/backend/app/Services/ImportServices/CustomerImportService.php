@@ -188,6 +188,7 @@ class CustomerImportService extends AbstractImportService {
                 'id' => $person->id,
                 'name' => $person->name,
                 'surname' => $person->surname,
+                'action' => $isNew ? 'added' : 'modified',
             ],
         ];
     }

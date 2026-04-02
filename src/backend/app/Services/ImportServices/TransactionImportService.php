@@ -136,6 +136,7 @@ class TransactionImportService extends AbstractImportService {
                     'id' => $existingTransaction->id,
                     'amount' => $existingTransaction->amount,
                     'device_serial' => $deviceSerial,
+                    'action' => 'modified',
                 ],
             ];
         }
@@ -162,6 +163,7 @@ class TransactionImportService extends AbstractImportService {
                 'id' => $transaction->id,
                 'amount' => $transaction->amount,
                 'device_serial' => $deviceSerial,
+                'action' => 'added',
             ],
         ];
     }
