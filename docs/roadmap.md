@@ -117,8 +117,10 @@ releases:
       - id: "platform-stability"
         title: "Platform stability and Core refactoring"
         description: "Add best practises and state-of-the-art measures to ensure high quality engineering solution and a stable product."
-        status: "in-progress"
+        status: "completed"
         category: "Core"
+        github:
+          issue: 1420
         features:
           - title: "Automated test suite"
           - title: "Various backend refactors"
