@@ -23,6 +23,7 @@ class PersonExportService extends AbstractExportService {
             $this->worksheet->setCellValue('H'.($key + 2), $value[7]);
             $this->worksheet->setCellValue('I'.($key + 2), $value[8]);
             $this->worksheet->setCellValue('J'.($key + 2), $value[9]);
+            $this->worksheet->setCellValue('K'.($key + 2), $value[10]);
         }
 
         foreach ($this->worksheet->getColumnIterator() as $column) {
@@ -45,6 +46,7 @@ class PersonExportService extends AbstractExportService {
                 $primaryAddress?->email,
                 $primaryAddress?->phone,
                 $primaryAddress?->city?->name,
+                $primaryAddress?->street,
                 $devices,
                 $agent->person->name ?? '',
             ];
@@ -89,6 +91,7 @@ class PersonExportService extends AbstractExportService {
                 'email' => $primaryAddress?->email,
                 'phone' => $primaryAddress?->phone,
                 'city' => $primaryAddress?->city?->name,
+                'street' => $primaryAddress?->street,
                 'devices' => $devices,
                 'agent' => $agent->person->name ?? '',
             ];

@@ -3,6 +3,7 @@
 namespace App\Services\ExportServices;
 
 use App\Models\Device;
+use App\Models\Meter\Meter;
 use Illuminate\Support\Collection;
 
 class DeviceExportService extends AbstractExportService {
@@ -84,6 +85,27 @@ class DeviceExportService extends AbstractExportService {
                 'serial_number' => $device->device_serial,
             ];
 
+            // Include meter-specific details
+            if ($device->device_type === 'meter' && $device->device instanceof Meter) {
+                $meter = $device->device;
+                $meterType = $meter->meterType;
+                if ($meterType !== null) {
+                    $deviceDetails['meter_type'] = [
+                        'online' => $meterType->online,
+                        'phase' => $meterType->phase,
+                        'max_current' => $meterType->max_current,
+                    ];
+                }
+                $deviceDetails['connection_type'] = $meter->connectionType->name ?? '';
+                $deviceDetails['connection_group'] = $meter->connectionGroup->name ?? '';
+                $deviceDetails['tariff'] = $meter->tariff->name ?? '';
+            }
+
+            // Include appliance name for SHS and e-bikes
+            if (in_array($device->device_type, ['solar_home_system', 'e_bike'])) {
+                $deviceDetails['appliance'] = $device->device->appliance->name ?? '';
+            }
+
             // Get tokens
             $tokens = $device->tokens->map(fn ($token): array => [
                 'token' => $token->token ?? '',
@@ -93,13 +115,11 @@ class DeviceExportService extends AbstractExportService {
                 'created_at' => $this->convertUtcDateToTimezone($token->created_at),
             ])->all();
 
-            // Get address details
-            $address = null;
-            $primaryAddress = $device->person?->addresses->where('is_primary', 1)->first();
-            if ($primaryAddress) {
-                $address = [
-                    'city' => $primaryAddress->city->name ?? '',
-                    'street' => $primaryAddress->street ?? '',
+            // Get geo information
+            $geo = null;
+            if ($device->geo !== null) {
+                $geo = [
+                    'points' => $device->geo->points,
                 ];
             }
 
@@ -108,7 +128,7 @@ class DeviceExportService extends AbstractExportService {
                 'customer' => $fullName,
                 'device_info' => $deviceDetails,
                 'tokens' => $tokens,
-                'address' => $address,
+                'geo' => $geo,
                 'created_at' => $this->convertUtcDateToTimezone($device->created_at),
                 'updated_at' => $this->convertUtcDateToTimezone($device->updated_at),
             ];
