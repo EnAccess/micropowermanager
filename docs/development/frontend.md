@@ -40,3 +40,12 @@ src/frontend
 |   |   |   ├── index.vue
 |   |   |   ├── _id.vue
 ```
+
+## MPM Brand guidelines
+
+To ensure a consistent look and feel across our applications, we maintain a set of brand guidelines covering typography, color palettes, iconography, and spacing.
+
+When designing any user-facing UI elements, please consult the [MPM Brand guidelines](https://drive.google.com/file/d/1ZBszNtIvf_iNjUou7S3A_9swcIHBr37-/view?usp=sharing) for styling direction.
+If you encounter a scenario not covered by the guidelines, feel free reach out!
+
+[![MPM Brand guidelines](/screenshots/MPM_Brand_Guidelines.png)](https://drive.google.com/file/d/1ZBszNtIvf_iNjUou7S3A_9swcIHBr37-/view?usp=sharing)
