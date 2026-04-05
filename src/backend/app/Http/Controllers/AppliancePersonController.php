@@ -8,12 +8,11 @@ use App\Http\Resources\ApiResource;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\Person\Person;
-use App\Services\AddressesService;
-use App\Services\AddressGeographicalInformationService;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\ApplianceService;
 use App\Services\CashTransactionService;
+use App\Services\DeviceGeographicalInformationService;
 use App\Services\DeviceService;
 use App\Services\GeographicalInformationService;
 use App\Services\UserAppliancePersonService;
@@ -28,9 +27,8 @@ class AppliancePersonController extends Controller {
         private UserAppliancePersonService $userAppliancePersonService,
         private UserService $userService,
         private DeviceService $deviceService,
-        private AddressesService $addressesService,
         private GeographicalInformationService $geographicalInformationService,
-        private AddressGeographicalInformationService $addressGeographicalInformationService,
+        private DeviceGeographicalInformationService $deviceGeographicalInformationService,
         private CashTransactionService $cashTransactionService,
         private ApplianceService $applianceService,
         private ApplianceRateService $applianceRateService,
@@ -79,27 +77,33 @@ class AppliancePersonController extends Controller {
 
             if ($deviceSerial) {
                 $device = $this->deviceService->getBySerialNumber($deviceSerial);
+                if (!$device) {
+                    throw new \Exception('Selected device could not be found.');
+                }
                 $this->deviceService->update($device, ['person_id' => $personId]);
                 $appliancePerson->device_serial = $deviceSerial;
 
-                $address = $this->addressesService->make([
-                    'street' => $addressData['street'],
-                    'city_id' => $addressData['city_id'],
-                ]);
+                if (!empty($points)) {
+                    $device->refresh();
+                    $existingGeo = $device->geo;
 
-                // Attach the new address to the person rather than the device.
-                $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
-
-                $geographicalInformation = $this->geographicalInformationService->make([
-                    'points' => $points,
-                ]);
-                $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
-                $this->addressGeographicalInformationService->setAssignee($address);
-                $this->addressGeographicalInformationService->assign();
-                $this->geographicalInformationService->save($geographicalInformation);
+                    if ($existingGeo) {
+                        $this->geographicalInformationService->update($existingGeo, [
+                            'points' => $points,
+                        ]);
+                    } else {
+                        $geographicalInformation = $this->geographicalInformationService->make([
+                            'points' => $points,
+                        ]);
+                        $this->deviceGeographicalInformationService->setAssigned($geographicalInformation);
+                        $this->deviceGeographicalInformationService->setAssignee($device);
+                        $this->deviceGeographicalInformationService->assign();
+                        $this->geographicalInformationService->save($geographicalInformation);
+                    }
+                }
             }
             if ($downPayment > 0) {
-                $sender = isset($addressData) ? $addressData['phone'] : '-';
+                $sender = $addressData['phone'] ?? '-';
                 $transaction = $this->cashTransactionService->createCashTransaction(
                     $user->id,
                     $downPayment,
