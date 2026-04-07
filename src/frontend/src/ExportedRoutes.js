@@ -32,6 +32,7 @@ import MiniGridDetailPage from "@/modules/MiniGrid/Dashboard.vue"
 import ProfilePage from "@/modules/Profile/Profile.vue"
 import Register from "@/modules/Register/Register.vue"
 import SettingsPage from "@/modules/Settings/Configuration/Configuration.vue"
+import ImportPage from "@/modules/Settings/Configuration/ImportSettings.vue"
 import UserManagementPage from "@/modules/Settings/UserManagement/UserManagement.vue"
 import MessageList from "@/modules/Sms/List.vue"
 import MessageNew from "@/modules/Sms/NewSms.vue"
@@ -190,6 +191,13 @@ export const exportedRoutes = [
       {
         path: "configuration",
         component: SettingsPage,
+        meta: {
+          layout: "default",
+        },
+      },
+      {
+        path: "import",
+        component: ImportPage,
         meta: {
           layout: "default",
         },

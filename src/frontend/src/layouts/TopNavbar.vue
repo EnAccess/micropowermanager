@@ -35,19 +35,22 @@
           <md-menu class="menu-item" md-direction="bottom-end" md-size="big">
             <md-button class="md-dense nav-button md-raised" md-menu-trigger>
               <md-tooltip md-direction="bottom">
-                {{ $tc("menu.subMenu.Settings") }}
+                {{ $tc("menu.subMenu.Config") }}
               </md-tooltip>
               <md-icon>settings</md-icon>
-              <small>{{ $tc("menu.subMenu.Settings") }}</small>
+              <small>{{ $tc("menu.subMenu.Config") }}</small>
             </md-button>
             <md-menu-content>
               <md-menu-item disabled>
-                <span>{{ $tc("menu.subMenu.Settings") }}</span>
+                <span>{{ $tc("menu.subMenu.Config") }}</span>
                 <md-icon>settings</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
               <md-menu-item @click="navigateRoute('/settings/configuration')">
-                <span>{{ $tc("menu.subMenu.Config") }}</span>
+                <span>{{ $tc("menu.subMenu.Settings") }}</span>
+              </md-menu-item>
+              <md-menu-item @click="navigateRoute('/settings/import')">
+                <span>Import</span>
               </md-menu-item>
               <md-menu-item @click="navigateRoute('/settings/user-management')">
                 {{ $tc("phrases.userManagement") }}
