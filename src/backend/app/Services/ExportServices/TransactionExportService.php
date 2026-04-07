@@ -2,6 +2,7 @@
 
 namespace App\Services\ExportServices;
 
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Collection;
 
@@ -81,8 +82,25 @@ class TransactionExportService extends AbstractExportService {
             'currency' => $this->currency,
             'amount' => $this->readable($transaction->amount).$this->currency,
             'sent_date' => $this->convertUtcDateToTimezone($transaction->created_at),
+            'original_transaction' => $this->extractOriginalTransactionData($transaction),
         ]);
 
         return $jsonDataTransform->all();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function extractOriginalTransactionData(Transaction $transaction): array {
+        /** @var BasePaymentProviderTransaction|null $original */
+        $original = $transaction->originalTransaction;
+        if ($original === null) {
+            return [];
+        }
+
+        $data = $original->toArray();
+        unset($data['id'], $data['created_at'], $data['updated_at']);
+
+        return $data;
     }
 }
