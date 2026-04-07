@@ -113,7 +113,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
             event(new PaymentSuccessEvent(
                 amount: (int) $container->amount,
                 paymentService: $this->transaction->original_transaction_type,
-                paymentType: 'energy_service',
+                paymentType: Transaction::TYPE_EAAS_RATE,
                 sender: $this->transaction->sender,
                 paidFor: $paidRate,
                 payer: $container->appliancePerson->person,

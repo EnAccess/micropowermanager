@@ -261,7 +261,7 @@
                           >
                             <md-table-cell>
                               <p>
-                                {{ p.payment_type }}
+                                {{ formatPaymentType(p.payment_type) }}
                               </p>
                             </md-table-cell>
                             <md-table-cell>
@@ -450,6 +450,19 @@ export default {
     },
   },
   methods: {
+    formatPaymentType(type) {
+      const labels = {
+        energy_service: this.$tc("phrases.eaasRate"),
+        eaas_rate: this.$tc("phrases.eaasRate"),
+        "down payment": this.$tc("phrases.downPayment"),
+        down_payment: this.$tc("phrases.downPayment"),
+        installment: this.$tc("phrases.deferredPayment"),
+        deferred_payment: this.$tc("phrases.deferredPayment"),
+        energy: this.$tc("words.energy"),
+        access_rate: this.$tc("phrases.accessRate"),
+      }
+      return labels[type] || type
+    },
     async getDetail(id) {
       try {
         this.transaction = await this.transactionService.getTransaction(id)
