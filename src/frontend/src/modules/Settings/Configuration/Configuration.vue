@@ -93,9 +93,30 @@ export default {
   height: 100%;
   overflow: auto;
 }
+
 @media only screen and (max-width: 767px) {
   .settings-area {
-    height: 200px;
+    height: auto;
+  }
+
+  ::v-deep .md-tabs-content {
+    height: auto !important;
+  }
+
+  ::v-deep .md-tabs-navigation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  ::v-deep .md-tab-nav-button {
+    min-width: auto;
+    padding: 0 12px;
+    flex-shrink: 0;
   }
 }
 </style>

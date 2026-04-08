@@ -380,4 +380,27 @@ export default {
   color: #666;
   margin: 4px 0 0 0;
 }
+
+@media only screen and (max-width: 767px) {
+  ::v-deep .md-tabs-content {
+    height: auto !important;
+  }
+
+  ::v-deep .md-tabs-navigation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  ::v-deep .md-tab-nav-button {
+    min-width: auto;
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 0 8px;
+  }
+}
 </style>
