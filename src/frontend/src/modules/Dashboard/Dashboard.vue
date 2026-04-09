@@ -1,17 +1,40 @@
 <template>
   <div>
     <md-toolbar class="md-dense">
-      <h3 class="md-title" style="flex: 1">
-        {{ $tc("phrases.clustersDashboard") }}
-      </h3>
-      <md-button class="md-raised" @click="updateCacheData">
-        <md-icon>update</md-icon>
-        {{ $tc("phrases.refreshData") }}
-        <md-progress-bar
-          v-if="loading"
-          md-mode="indeterminate"
-        ></md-progress-bar>
-      </md-button>
+      <div class="md-toolbar-row">
+        <div class="md-toolbar-section-start">
+          <md-menu
+            md-direction="bottom-end"
+            md-size="big"
+            :md-offset-x="127"
+            :md-offset-y="-36"
+          >
+            <md-button md-menu-trigger>
+              <md-icon>keyboard_arrow_down</md-icon>
+              {{ $tc("words.cluster") }}
+            </md-button>
+            <md-menu-content>
+              <md-menu-item
+                v-for="(cluster, key) in clusterList"
+                :key="key"
+                @click="goToClusterDetail(cluster.id)"
+              >
+                <span>{{ cluster.name }}</span>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </div>
+        <div class="md-toolbar-section-end">
+          <md-button class="md-raised" @click="updateCacheData">
+            <md-icon>update</md-icon>
+            {{ $tc("phrases.refreshData") }}
+            <md-progress-bar
+              v-if="loading"
+              md-mode="indeterminate"
+            ></md-progress-bar>
+          </md-button>
+        </div>
+      </div>
     </md-toolbar>
     <div>
       <div class="md-layout md-gutter" style="margin-top: 3rem">
@@ -62,7 +85,22 @@ export default {
   created() {
     this.getClusterList()
   },
+  computed: {
+    clusterList() {
+      return this.$store.getters["clusterDashboard/getClustersData"].map(
+        (cluster) => {
+          return {
+            id: cluster.id,
+            name: cluster.clusterData?.name || cluster.name,
+          }
+        },
+      )
+    },
+  },
   methods: {
+    goToClusterDetail(clusterId) {
+      this.$router.push("/clusters/" + clusterId)
+    },
     async getClusterList() {
       this.loading = true
       await this.$store.dispatch("clusterDashboard/list")
