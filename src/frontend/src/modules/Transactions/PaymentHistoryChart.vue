@@ -105,11 +105,24 @@ export default {
     },
   },
   methods: {
+    formatPaymentType(type) {
+      const labels = {
+        energy_service: this.$tc("phrases.eaasRate"),
+        eaas_rate: this.$tc("phrases.eaasRate"),
+        "down payment": this.$tc("phrases.downPayment"),
+        down_payment: this.$tc("phrases.downPayment"),
+        installment: this.$tc("phrases.deferredPayment"),
+        deferred_payment: this.$tc("phrases.deferredPayment"),
+        energy: this.$tc("words.energy"),
+        access_rate: this.$tc("phrases.accessRate"),
+      }
+      return labels[type] || type
+    },
     prepareChartData() {
       this.donutData = [["Paid For", "Amount"]]
       for (let i in this.paymentdata) {
         this.donutData.push([
-          this.paymentdata[i].payment_type,
+          this.formatPaymentType(this.paymentdata[i].payment_type),
           this.paymentdata[i].amount,
         ])
       }
