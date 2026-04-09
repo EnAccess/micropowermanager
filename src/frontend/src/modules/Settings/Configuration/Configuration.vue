@@ -1,7 +1,7 @@
 <template>
   <div class="settings-area">
     <widget color="primary" title="Settings">
-      <md-tabs>
+      <md-tabs md-dynamic-height>
         <md-tab id="tab-home" md-icon="home" md-label="Main">
           <main-settings :mainSettings="mainSettings" />
         </md-tab>
@@ -97,10 +97,6 @@ export default {
 @media only screen and (max-width: 767px) {
   .settings-area {
     height: auto;
-  }
-
-  ::v-deep .md-tabs-content {
-    height: auto !important;
   }
 
   ::v-deep .md-tabs-navigation {
