@@ -97,7 +97,7 @@ releases:
       - id: "rest-api"
         title: "REST API for Import/Export"
         description: "Comprehensive REST API endpoints for data import and export operations."
-        status: "in-progress"
+        status: "completed"
         category: "API"
         github:
           issue: 494
