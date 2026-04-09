@@ -561,8 +561,8 @@ export default {
     deviceChipClass(deviceType) {
       const classes = {
         meter: "md-primary",
-        solar_home_system: "device-chip--secondary",
-        e_bike: "device-chip--accent",
+        solar_home_system: "md-accent",
+        e_bike: "md-warn",
       }
       return classes[deviceType] || ""
     },
@@ -940,20 +940,5 @@ export default {
     color: inherit !important;
     vertical-align: middle;
   }
-}
-
-.device-chip.md-primary {
-  background-color: #28aae1 !important;
-  color: #fff !important;
-}
-
-.device-chip--secondary {
-  background-color: #fab15b !important;
-  color: #fff !important;
-}
-
-.device-chip--accent {
-  background-color: #81a872 !important;
-  color: #fff !important;
 }
 </style>
