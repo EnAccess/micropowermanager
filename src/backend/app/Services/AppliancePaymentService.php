@@ -51,6 +51,19 @@ class AppliancePaymentService {
     }
 
     public function validateAmount(AppliancePerson $applianceDetail, float $amount): void {
+        if ($amount <= 0) {
+            throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than zero');
+        }
+
+        if ($applianceDetail->isEnergyService()) {
+            $minimumPayableAmount = $applianceDetail->minimum_payable_amount ?? 0;
+            if ($minimumPayableAmount > 0 && $amount < $minimumPayableAmount) {
+                throw new PaymentAmountSmallerThanZero("Payment amount can not be less than minimum payable amount ({$minimumPayableAmount})");
+            }
+
+            return;
+        }
+
         $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
         $installmentCost = $applianceDetail->rates[1]['rate_cost'] ?? 0;
 
@@ -60,10 +73,6 @@ class AppliancePaymentService {
 
         if ($amount < $installmentCost && $amount != $totalRemainingAmount) {
             throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than installment cost');
-        }
-
-        if ($amount <= 0) {
-            throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than zero');
         }
     }
 

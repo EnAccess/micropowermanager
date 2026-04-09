@@ -28,6 +28,9 @@ export class AppliancePersonService {
       rates: data.rates,
       logs: data.logs,
       device: data.device,
+      paymentType: data.payment_type,
+      minimumPayableAmount: data.minimum_payable_amount,
+      pricePerDay: data.price_per_day,
     }
   }
   async getPersonAppliances(id) {

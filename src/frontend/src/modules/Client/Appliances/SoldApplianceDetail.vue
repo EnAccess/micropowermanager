@@ -93,7 +93,11 @@
               </span>
             </md-field>
             <md-content class="md-accent" v-if="errorLabel">
-              Payment Amount can not bigger than Total Remaining Amount !!!
+              {{
+                isEnergyService
+                  ? "Payment Amount can not be less than Minimum Payable Amount"
+                  : "Payment Amount can not bigger than Total Remaining Amount !!!"
+              }}
             </md-content>
           </div>
           <md-progress-bar
@@ -119,6 +123,56 @@
 
         <div class="md-layout md-gutter dialog-place">
           <div
+            v-if="isEnergyService"
+            class="md-layout-item md-layout md-gutter md-size-100"
+            style="padding: 2vw"
+          >
+            <div class="md-layout-item md-size-50">
+              <h2>
+                <b>{{ $tc("phrases.paymentType") }}:</b>
+                Energy as a Service
+              </h2>
+              <h4>
+                <b>{{ $tc("phrases.pricePerDay") }}:</b>
+                {{ moneyFormat(soldAppliance.pricePerDay) }}
+              </h4>
+              <h4>
+                <b>{{ $tc("phrases.downPayment") }}:</b>
+                {{ moneyFormat(soldAppliance.downPayment) }}
+              </h4>
+              <h4>
+                <b>{{ $tc("phrases.minimumPayableAmount", 0) }}:</b>
+                {{
+                  soldAppliance.minimumPayableAmount
+                    ? moneyFormat(soldAppliance.minimumPayableAmount)
+                    : "N/A"
+                }}
+                <span v-if="minimumPaymentDaysText" class="eaas-days-hint">
+                  ({{ minimumPaymentDaysText }})
+                </span>
+              </h4>
+              <div class="eaas-rate-info">
+                1 day of service =
+                {{ moneyFormat(soldAppliance.pricePerDay) }}
+              </div>
+            </div>
+            <div class="md-layout-item md-size-50">
+              <h3>
+                <b>{{ $tc("phrases.soldDate") }}:</b>
+                {{ formatReadableDate(soldAppliance.createdAt) }}
+              </h3>
+              <h3>
+                <b>Total Payments:</b>
+                {{ moneyFormat(soldAppliance.totalPayments) }}
+              </h3>
+              <h3>
+                <b>{{ $tc("phrases.lastPaidDate") }}:</b>
+                {{ lastPaidDate }}
+              </h3>
+            </div>
+          </div>
+          <div
+            v-else
             class="md-layout-item md-layout md-gutter md-size-100"
             style="padding: 2vw"
           >
@@ -128,7 +182,7 @@
                 {{ moneyFormat(soldAppliance.totalCost) }}
               </h2>
               <h4>
-                <b>Down Payment:</b>
+                <b>{{ $tc("phrases.downPayment") }}:</b>
                 {{ moneyFormat(soldAppliance.downPayment) }}
               </h4>
               <h4>
@@ -153,7 +207,7 @@
           </div>
           <div class="md-layout-item md-size-100">
             <widget
-              title="Payment Plan"
+              :title="isEnergyService ? 'Payment History' : 'Payment Plan'"
               color="primary"
               :paginator="applianceRateService.paginator"
               :subscriber="ratesSubscriber"
@@ -166,7 +220,9 @@
                     <md-button
                       class="md-primary md-raised md-dense"
                       @click="getPayment = true"
-                      :disabled="!soldAppliance.totalRemainingAmount"
+                      :disabled="
+                        !isEnergyService && !soldAppliance.totalRemainingAmount
+                      "
                     >
                       <md-icon style="color: white">payments</md-icon>
                       Get Payment
@@ -176,15 +232,15 @@
                 <md-table-row>
                   <md-table-head>ID</md-table-head>
                   <md-table-head>
-                    <strong>{{ $tc("words.cost") }}</strong>
+                    <strong>{{ $tc("words.amount") }}</strong>
                   </md-table-head>
-                  <md-table-head>
+                  <md-table-head v-if="!isEnergyService">
                     <strong>{{ $tc("phrases.remainingAmount") }}</strong>
                   </md-table-head>
                   <md-table-head>
-                    <strong>{{ $tc("phrases.dueDate") }}</strong>
+                    <strong>{{ $tc("words.date") }}</strong>
                   </md-table-head>
-                  <md-table-head>
+                  <md-table-head v-if="!isEnergyService">
                     <strong>Edit Rate</strong>
                   </md-table-head>
                 </md-table-row>
@@ -219,55 +275,57 @@
                   <md-table-cell v-else>
                     {{ moneyFormat(rate.rateCost || rate.rate_cost) }}
                   </md-table-cell>
-                  <md-table-cell>
+                  <md-table-cell v-if="!isEnergyService">
                     {{ moneyFormat(rate.remaining) }}
                   </md-table-cell>
                   <md-table-cell>
                     {{ formatReadableDate(rate.dueDate || rate.due_date) }}
                   </md-table-cell>
-                  <div
-                    v-if="
-                      (rate.rateCost || rate.rate_cost) === rate.remaining &&
-                      soldAppliance.applianceType.appliance_type_id !== 1
-                    "
-                  >
-                    <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
-                      <md-button
-                        class="md-icon-button"
-                        @click="showConfirm(rate)"
-                      >
-                        <md-icon style="color: green">save</md-icon>
-                      </md-button>
-                      <md-button
-                        class="md-icon-button"
-                        @click="
-                          closeEditRateAmount(rate.rateCost || rate.rate_cost)
-                        "
-                      >
-                        <md-icon style="color: red">cancel</md-icon>
-                      </md-button>
-                    </md-table-cell>
-                    <md-table-cell v-else>
-                      <md-button
-                        class="md-icon-button"
-                        @click="
-                          changeRateAmount(
-                            rate.id,
-                            rate.rateCost || rate.rate_cost,
-                          )
-                        "
-                      >
-                        <md-icon>edit</md-icon>
-                      </md-button>
-                    </md-table-cell>
-                  </div>
-                  <div v-else>
-                    <md-table-cell>
-                      <md-button class="md-icon-button" disabled="">
-                        <md-icon>edit_off</md-icon>
-                      </md-button>
-                    </md-table-cell>
-                  </div>
+                  <template v-if="!isEnergyService">
+                    <div
+                      v-if="
+                        (rate.rateCost || rate.rate_cost) === rate.remaining &&
+                        soldAppliance.applianceType.appliance_type_id !== 1
+                      "
+                    >
+                      <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
+                        <md-button
+                          class="md-icon-button"
+                          @click="showConfirm(rate)"
+                        >
+                          <md-icon style="color: green">save</md-icon>
+                        </md-button>
+                        <md-button
+                          class="md-icon-button"
+                          @click="
+                            closeEditRateAmount(rate.rateCost || rate.rate_cost)
+                          "
+                        >
+                          <md-icon style="color: red">cancel</md-icon>
+                        </md-button>
+                      </md-table-cell>
+                      <md-table-cell v-else>
+                        <md-button
+                          class="md-icon-button"
+                          @click="
+                            changeRateAmount(
+                              rate.id,
+                              rate.rateCost || rate.rate_cost,
+                            )
+                          "
+                        >
+                          <md-icon>edit</md-icon>
+                        </md-button>
+                      </md-table-cell>
+                    </div>
+                    <div v-else>
+                      <md-table-cell>
+                        <md-button class="md-icon-button" disabled="">
+                          <md-icon>edit_off</md-icon>
+                        </md-button>
+                      </md-table-cell>
+                    </div>
+                  </template>
                 </md-table-row>
               </md-table>
             </widget>
@@ -371,6 +429,31 @@ export default {
     }
   },
   computed: {
+    isEnergyService() {
+      return this.soldAppliance.paymentType === "energy_service"
+    },
+    lastPaidDate() {
+      if (!this.soldAppliance.rates || !this.soldAppliance.rates.length) {
+        return "N/A"
+      }
+      const paidRates = this.soldAppliance.rates.filter(
+        (r) => r.remaining === 0,
+      )
+      if (!paidRates.length) return "N/A"
+      const latest = paidRates.reduce((a, b) => {
+        const dateA = new Date(a.due_date || a.dueDate)
+        const dateB = new Date(b.due_date || b.dueDate)
+        return dateA > dateB ? a : b
+      })
+      return this.formatReadableDate(latest.due_date || latest.dueDate)
+    },
+    minimumPaymentDaysText() {
+      const amount = parseFloat(this.soldAppliance.minimumPayableAmount)
+      const rate = parseFloat(this.soldAppliance.pricePerDay)
+      if (!amount || !rate || rate <= 0) return ""
+      const days = Math.round((amount / rate) * 10) / 10
+      return `${days} day${days !== 1 ? "s" : ""}`
+    },
     deviceInfoTitle() {
       if (this.soldAppliance.device?.device_type) {
         const deviceType = this.soldAppliance.device.device_type
@@ -616,6 +699,15 @@ export default {
       }
     },
     checkPaymentForTotalRemaining() {
+      if (this.isEnergyService) {
+        const min = this.soldAppliance.minimumPayableAmount || 0
+        if (min > 0 && this.payment < min) {
+          this.errorLabel = true
+          return true
+        }
+        this.errorLabel = false
+        return false
+      }
       if (this.payment > this.soldAppliance.totalRemainingAmount) {
         this.errorLabel = true
         return true
@@ -631,5 +723,20 @@ export default {
 <style scoped lang="scss">
 .due-date-row {
   background-color: #a1887f;
+}
+
+.eaas-rate-info {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #f5f5f5;
+  border-left: 3px solid #1b75ba;
+  font-size: 0.95rem;
+  color: #333;
+  border-radius: 2px;
+}
+
+.eaas-days-hint {
+  font-size: 0.85rem;
+  color: #888;
 }
 </style>

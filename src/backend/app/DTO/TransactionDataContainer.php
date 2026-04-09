@@ -105,12 +105,17 @@ class TransactionDataContainer {
         }
 
         if ($this->appliancePerson) {
-            $installments = $this->appliancePerson->rates;
-            $appliancePaymentService = app()->make(AppliancePaymentService::class);
-            $secondInstallment = $installments[1] ?? null;
-            $this->installmentCost = $secondInstallment ? $secondInstallment['rate_cost'] : 0;
-            $this->dayDifferenceBetweenTwoInstallments =
-                $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
+            if ($this->appliancePerson->isEnergyService()) {
+                $this->installmentCost = $this->appliancePerson->price_per_day ?? 0;
+                $this->dayDifferenceBetweenTwoInstallments = 1;
+            } else {
+                $installments = $this->appliancePerson->rates;
+                $appliancePaymentService = app()->make(AppliancePaymentService::class);
+                $secondInstallment = $installments[1] ?? null;
+                $this->installmentCost = $secondInstallment ? $secondInstallment['rate_cost'] : 0;
+                $this->dayDifferenceBetweenTwoInstallments =
+                    $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
+            }
         }
     }
 }
