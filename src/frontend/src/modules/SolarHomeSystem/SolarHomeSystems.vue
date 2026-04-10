@@ -55,9 +55,7 @@
           <md-table-cell :md-label="$tc('words.owner')" md-sort-by="owner">
             <template v-if="item.device && item.device.person">
               <router-link :to="`/people/${item.device.person.id}`">
-                {{
-                  `${item.device.person.name} ${item.device.person.surname}`
-                }}
+                {{ `${item.device.person.name} ${item.device.person.surname}` }}
               </router-link>
             </template>
             <template v-else>-</template>
