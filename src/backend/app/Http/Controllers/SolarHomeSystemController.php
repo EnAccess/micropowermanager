@@ -42,8 +42,8 @@ class SolarHomeSystemController extends Controller {
     }
 
     public function search(Request $request): ApiResource {
-        $term = $request->input('term');
-        $paginate = $request->input('paginate', 1);
+        $term = $request->input('term', '');
+        $paginate = (int) $request->input('per_page', 15);
 
         return ApiResource::make($this->solarHomeSystemService->search($term, $paginate));
     }
