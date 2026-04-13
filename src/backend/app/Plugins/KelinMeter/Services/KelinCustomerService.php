@@ -234,7 +234,7 @@ class KelinCustomerService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, KelinCustomer>
      */
     public function getCustomers(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->kelinCustomer->newQuery()->with(['mpmPerson.addresses'])->paginate($perPage);
     }

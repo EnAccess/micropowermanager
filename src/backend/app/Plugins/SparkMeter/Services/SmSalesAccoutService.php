@@ -31,7 +31,7 @@ class SmSalesAccoutService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SmSalesAccount>
      */
     public function getSmSalesAccounts(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->smSalesAccount->newQuery()->with(['site.mpmMiniGrid'])->paginate($perPage);
     }
