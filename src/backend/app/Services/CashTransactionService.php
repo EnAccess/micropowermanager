@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\DB;
 class CashTransactionService implements PaymentInitializer {
     public function __construct(private CashTransaction $cashTransaction, private Transaction $transaction) {}
 
-    public function createTransaction(int $creatorId, float $amount, string $sender, string $message, string $type): Transaction {
-        return DB::transaction(function () use ($creatorId, $amount, $sender, $message, $type) {
+    public function createTransaction(int $creatorId, float $amount, string $sender, string $message, string $type = Transaction::TYPE_DEFERRED_PAYMENT): Transaction {
+        return DB::transaction(function () use ($creatorId, $amount, $sender, $type) {
             $cashTransaction = $this->cashTransaction->newQuery()->create([
                 'user_id' => $creatorId,
                 'status' => 1,
@@ -21,7 +21,7 @@ class CashTransactionService implements PaymentInitializer {
             $transaction = $this->transaction->newQuery()->make([
                 'amount' => $amount,
                 'sender' => $sender,
-                'message' => $message,
+                'message' => $deviceSerial ?? strval($applianceId ?? '-'),
                 'type' => $type,
             ]);
 

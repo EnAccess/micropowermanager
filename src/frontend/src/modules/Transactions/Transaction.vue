@@ -50,13 +50,7 @@
                       {{ $tc("phrases.paymentType") }}
                     </div>
                     <div class="md-layout-item md-subheader n-font">
-                      <span
-                        v-text="
-                          transaction.type === 'energy'
-                            ? $tc('words.energy')
-                            : $tc('phrases.deferredPayment')
-                        "
-                      ></span>
+                      <span>{{ transactionTypeLabel }}</span>
                       <div style="margin-left: 0.2em">
                         <small
                           v-if="
@@ -67,8 +61,11 @@
                         </small>
                         <small
                           v-else-if="
-                            transaction.type === 'deferred_payment' &&
-                            transaction.token
+                            [
+                              'deferred_payment',
+                              'eaas_rate',
+                              'down_payment',
+                            ].includes(transaction.type) && transaction.token
                           "
                         >
                           ({{ readable(transaction.token.token_amount) }} day's)
@@ -264,7 +261,7 @@
                           >
                             <md-table-cell>
                               <p>
-                                {{ p.payment_type }}
+                                {{ formatPaymentType(p.payment_type) }}
                               </p>
                             </md-table-cell>
                             <md-table-cell>
@@ -426,9 +423,20 @@ export default {
         ? this.transaction.message
         : this.$tc("phrases.noDeviceAssigned")
     },
+    transactionTypeLabel() {
+      const labels = {
+        energy: this.$tc("words.energy"),
+        deferred_payment: this.$tc("phrases.deferredPayment"),
+        eaas_rate: this.$tc("phrases.eaasRate"),
+        down_payment: this.$tc("phrases.downPayment"),
+      }
+      return labels[this.transaction.type] || this.transaction.type
+    },
     isApplianceTransaction() {
       return (
-        this.transaction.type === "deferred_payment" &&
+        ["deferred_payment", "eaas_rate", "down_payment"].includes(
+          this.transaction.type,
+        ) &&
         this.transaction.original_transaction_type === "cash_transaction" &&
         !this.transaction.device
       )
@@ -442,6 +450,19 @@ export default {
     },
   },
   methods: {
+    formatPaymentType(type) {
+      const labels = {
+        energy_service: this.$tc("phrases.eaasRate"),
+        eaas_rate: this.$tc("phrases.eaasRate"),
+        "down payment": this.$tc("phrases.downPayment"),
+        down_payment: this.$tc("phrases.downPayment"),
+        installment: this.$tc("phrases.deferredPayment"),
+        deferred_payment: this.$tc("phrases.deferredPayment"),
+        energy: this.$tc("words.energy"),
+        access_rate: this.$tc("phrases.accessRate"),
+      }
+      return labels[type] || type
+    },
     async getDetail(id) {
       try {
         this.transaction = await this.transactionService.getTransaction(id)

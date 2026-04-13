@@ -405,7 +405,7 @@ class OutstandingDebtsSeeder extends Seeder {
             // Create main transaction using proper polymorphic relationship
             $transaction = new Transaction([
                 'amount' => $paymentAmount,
-                'type' => 'deferred_payment',
+                'type' => Transaction::TYPE_DEFERRED_PAYMENT,
                 'sender' => $sender,
                 'message' => $appliancePerson->device_serial,
                 'created_at' => $historicalDate,
@@ -480,7 +480,7 @@ class OutstandingDebtsSeeder extends Seeder {
 
             $transaction = new Transaction([
                 'amount' => $paymentAmount,
-                'type' => 'deferred_payment',
+                'type' => Transaction::TYPE_DEFERRED_PAYMENT,
                 'sender' => $sender,
                 'message' => $appliancePerson->device_serial,
             ]);
@@ -530,7 +530,7 @@ class OutstandingDebtsSeeder extends Seeder {
 
             $transaction = new Transaction([
                 'amount' => $paymentAmount,
-                'type' => 'deferred_payment',
+                'type' => Transaction::TYPE_DEFERRED_PAYMENT,
                 'sender' => $sender,
                 'message' => $appliancePerson->device_serial,
             ]);

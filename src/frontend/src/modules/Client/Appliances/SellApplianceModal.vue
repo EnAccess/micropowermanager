@@ -307,6 +307,99 @@
                 </div>
               </form>
             </md-tab>
+            <md-tab
+              id="energy-service"
+              @click="tabName = 'energy-service'"
+              md-label="Energy as a Service"
+            >
+              <form
+                data-vv-scope="energy-service-form"
+                class="md-layout md-gutter"
+              >
+                <div class="md-layout-item md-size-100 md-small-size-100">
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has('energy-service-form.appliance'),
+                    }"
+                  >
+                    <label for="appliance">
+                      {{ $tc("words.appliance") }}
+                    </label>
+                    <md-select
+                      name="appliance"
+                      id="eaas-appliance"
+                      v-model="selectedApplianceId"
+                      v-validate="'required'"
+                    >
+                      <md-option disabled value>
+                        --{{ $tc("words.select") }}--
+                      </md-option>
+                      <md-option
+                        :value="appliance.id"
+                        v-for="appliance in applianceService.list"
+                        :key="appliance.id"
+                      >
+                        {{ appliance.name }}
+                      </md-option>
+                    </md-select>
+                    <span class="md-error">
+                      {{ errors.first("energy-service-form.appliance") }}
+                    </span>
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-size-50 md-small-size-100">
+                  <md-field>
+                    <label>{{ $tc("phrases.downPayment") }}</label>
+                    <md-input
+                      name="eaas-down-payment"
+                      type="number"
+                      min="0"
+                      v-model="applianceService.appliance.downPayment"
+                    />
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-size-50 md-small-size-100">
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has(
+                        'energy-service-form.price_per_day',
+                      ),
+                    }"
+                  >
+                    <label>{{ $tc("phrases.pricePerDay") }}</label>
+                    <md-input
+                      name="price_per_day"
+                      type="number"
+                      min="0"
+                      v-model="pricePerDay"
+                      v-validate="'required|min_value:0|decimal'"
+                    />
+                    <span class="md-error">
+                      {{ errors.first("energy-service-form.price_per_day") }}
+                    </span>
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-size-50 md-small-size-100">
+                  <md-field>
+                    <label>{{ $tc("phrases.minimumPayableAmount", 0) }}</label>
+                    <md-input
+                      name="eaas-minimum-payable-amount"
+                      type="number"
+                      min="0"
+                      v-model="minimumPayableAmount"
+                    />
+                  </md-field>
+                  <span v-if="eaasMinPaymentDaysText" class="eaas-helper-text">
+                    {{ eaasMinPaymentDaysText }}
+                  </span>
+                </div>
+                <div class="md-layout-item md-size-100 md-small-size-100">
+                  <p class="eaas-description">
+                    {{ $tc("phrases.eaasDescription") }}
+                  </p>
+                </div>
+              </form>
+            </md-tab>
           </md-tabs>
           <div class="md-layout-item md-size-100 md-small-size-100">
             <template v-if="isDeviceSelectionRequired">
@@ -407,7 +500,12 @@
               </md-select>
             </md-field>
           </div>
-          <div v-if="applianceService.appliance.rate" style="padding: 1rem">
+          <div
+            v-if="
+              applianceService.appliance.rate && tabName !== 'energy-service'
+            "
+            style="padding: 1rem"
+          >
             <div
               style="
                 font-size: 1rem;
@@ -550,6 +648,7 @@ export default {
       deviceSelectionList: [],
       isDeviceSelectionRequired: false,
       minimumPayableAmount: 0,
+      pricePerDay: 0,
       selectedDeviceSerial: null,
       showRates: false,
       loading: false,
@@ -606,6 +705,7 @@ export default {
       const appliance = this.applianceService.list.find(
         (x) => x.id === this.applianceService.appliance.id,
       )
+      const isEnergyService = this.tabName === "energy-service"
       const isDeviceBindingRequired = this.isDeviceBindingRequired(appliance)
       if (isDeviceBindingRequired && !this.selectedDeviceSerial) {
         this.alertNotify("error", "Please select a device")
@@ -616,12 +716,15 @@ export default {
         this.alertNotify("error", "Please set the device location")
         return
       }
+      const confirmText = isEnergyService
+        ? this.$tc("phrases.confirmEaas")
+        : this.$tc("phrases.sellAppliance", 2, {
+            cost: this.moneyFormat(this.applianceService.appliance.cost),
+          })
       this.$swal({
         type: "question",
         title: this.$tc("phrases.sellAppliance", 0),
-        text: this.$tc("phrases.sellAppliance", 2, {
-          cost: this.moneyFormat(this.applianceService.appliance.cost),
-        }),
+        text: confirmText,
         showCancelButton: true,
         cancelButtonText: this.$tc("words.cancel"),
         confirmButtonText: this.$tc("words.sell"),
@@ -634,6 +737,14 @@ export default {
               id: this.applianceService.appliance.id,
               personId: this.person.id,
               ...this.applianceService.appliance,
+              cost: isEnergyService ? 0 : this.applianceService.appliance.cost,
+              downPayment: this.applianceService.appliance.downPayment || 0,
+              rate: isEnergyService ? 0 : this.applianceService.appliance.rate,
+              paymentType: isEnergyService ? "energy_service" : "installment",
+              minimumPayableAmount: isEnergyService
+                ? this.minimumPayableAmount || null
+                : null,
+              pricePerDay: isEnergyService ? this.pricePerDay || null : null,
               points: points,
               userId: this.user.id,
               deviceSerial: this.selectedDeviceSerial,
@@ -888,6 +999,13 @@ export default {
       if (!this.deviceLocation) return null
       return [this.deviceLocation.lat, this.deviceLocation.lon]
     },
+    eaasMinPaymentDaysText() {
+      const amount = parseFloat(this.minimumPayableAmount)
+      const rate = parseFloat(this.pricePerDay)
+      if (!amount || !rate || rate <= 0) return ""
+      const days = Math.round((amount / rate) * 10) / 10
+      return `= ${days} day${days !== 1 ? "s" : ""} of service at ${this.moneyFormat(rate)}/day`
+    },
   },
   watch: {
     async showSellApplianceModal(value) {
@@ -949,5 +1067,20 @@ export default {
   font-size: 0.875rem;
   color: #555;
   margin-bottom: 1rem;
+}
+
+.eaas-helper-text {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.eaas-description {
+  font-size: 0.875rem;
+  color: #555;
+  margin-top: 0.5rem;
+  line-height: 1.5;
 }
 </style>

@@ -75,6 +75,7 @@ class ClusterExportService extends AbstractExportService {
             return [
                 'cluster_name' => $cluster->name,
                 'manager' => $managerName,
+                'geo_json' => $cluster->geo_json,
                 'mini_grids' => $miniGrids,
                 'villages' => $cities,
                 'created_at' => $this->convertUtcDateToTimezone($cluster->created_at),

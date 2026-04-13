@@ -51,6 +51,11 @@ use Illuminate\Support\Facades\DB;
  */
 class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
+    public const TYPE_ENERGY = 'energy';
+    public const TYPE_DEFERRED_PAYMENT = 'deferred_payment';
+    public const TYPE_EAAS_RATE = 'eaas_rate';
+    public const TYPE_DOWN_PAYMENT = 'down_payment';
+    public const TYPE_UNKNOWN = 'unknown';
     public const TYPE_IMPORTED = 'imported';
 
     /**
