@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use App\Models\AppliancePerson;
+use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
 use App\Services\PaymentInitializationService;
@@ -83,7 +84,7 @@ class AppliancePaymentController extends Controller {
             amount: $amount,
             sender: $sender,
             message: $message,
-            type: 'deferred_payment',
+            type: Transaction::TYPE_DEFERRED_PAYMENT,
             customerId: $applianceOwner->id,
             serialId: $deviceSerial,
         );

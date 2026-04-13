@@ -153,7 +153,7 @@ class AppliancePersonController extends Controller {
             amount: $downPayment,
             sender: $sender,
             message: $message,
-            type: 'deferred_payment',
+            type: Transaction::TYPE_DOWN_PAYMENT,
             customerId: $person->id,
             serialId: $deviceSerial ?? null,
         );
