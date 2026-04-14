@@ -239,77 +239,13 @@
               </div>
             </div>
           </div>
-
-          <!-- Time-based URLs -->
-          <div class="url-item time-based-url">
-            <label class="url-label">
-              <md-icon class="url-icon">schedule</md-icon>
-              Time-based URLs (Expire in 24 hours):
-            </label>
-
-            <div class="url-sub-item">
-              <label class="url-sublabel">Payment URL:</label>
-              <div class="url-container">
-                <md-input
-                  v-model="publicUrls.time_based_payment_url"
-                  readonly
-                  class="url-input"
-                />
-                <md-button
-                  class="md-icon-button md-primary"
-                  @click="copyToClipboard(publicUrls.time_based_payment_url)"
-                  :disabled="!publicUrls.time_based_payment_url"
-                >
-                  <md-icon>content_copy</md-icon>
-                </md-button>
-              </div>
-            </div>
-
-            <div class="url-sub-item">
-              <label class="url-sublabel">Result URL:</label>
-              <div class="url-container">
-                <md-input
-                  v-model="publicUrls.time_based_result_url"
-                  readonly
-                  class="url-input"
-                />
-                <md-button
-                  class="md-icon-button md-primary"
-                  @click="copyToClipboard(publicUrls.time_based_result_url)"
-                  :disabled="!publicUrls.time_based_result_url"
-                >
-                  <md-icon>content_copy</md-icon>
-                </md-button>
-              </div>
-            </div>
-
-            <p class="url-description">
-              <md-icon>warning</md-icon>
-              These URLs expire in 24 hours. Use for temporary or
-              agent-generated links.
-            </p>
-          </div>
         </div>
 
         <div class="url-actions">
           <md-button
             class="md-raised md-primary"
-            @click="generateUrls"
-            :disabled="loadingUrls"
-          >
-            <md-progress-spinner
-              v-if="loadingUrls"
-              md-diameter="20"
-              md-stroke="2"
-              style="margin-right: 8px"
-            ></md-progress-spinner>
-            {{ loadingUrls ? "Generating..." : "Generate URLs" }}
-          </md-button>
-
-          <md-button
-            class="md-raised"
             @click="openPaymentPage"
-            :disabled="!publicUrls.payment_url"
+            :disabled="!publicUrls.permanent_payment_url"
           >
             <md-icon>open_in_new</md-icon>
             Test Payment Page
@@ -333,11 +269,8 @@ export default {
     return {
       credentialService: new CredentialService(),
       loading: false,
-      loadingUrls: false,
       publicUrls: {
         permanent_payment_url: "",
-        time_based_payment_url: "",
-        time_based_result_url: "",
       },
       callbackUrl: "",
     }
@@ -373,22 +306,13 @@ export default {
       }
     },
     async generateUrls() {
-      this.loadingUrls = true
       try {
         const response = await this.credentialService.getPublicUrls()
 
-        // Add frontend prefix to all URLs
         this.publicUrls = {
           permanent_payment_url: this.addFrontendPrefix(
             response.permanent_payment_url,
           ),
-          time_based_payment_url: this.addFrontendPrefix(
-            response.time_based_payment_url,
-          ),
-          time_based_result_url: this.addFrontendPrefix(
-            response.time_based_result_url,
-          ),
-          company_id: response.company_id,
         }
 
         this.callbackUrl = this.addFrontendPrefix(
@@ -397,8 +321,6 @@ export default {
       } catch (error) {
         console.error("Error generating public URLs:", error)
         this.alertNotify("error", "Failed to generate public URLs")
-      } finally {
-        this.loadingUrls = false
       }
     },
     async copyToClipboard(text) {
@@ -486,29 +408,9 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-.time-based-url {
-  border-left: 4px solid #ff9800;
-  padding-left: 1rem;
-  background-color: #fff3e0;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-}
-
 .url-icon {
   margin-right: 8px;
   vertical-align: middle;
-}
-
-.url-sublabel {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #666;
-  font-size: 14px;
-}
-
-.url-sub-item {
-  margin-bottom: 1rem;
 }
 
 .url-description {
