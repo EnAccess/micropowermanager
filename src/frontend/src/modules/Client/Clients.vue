@@ -139,9 +139,26 @@
                   </md-table-cell>
 
                   <md-table-cell :md-label="$tc('words.device')">
-                    {{
-                      item.devices.length > 0 ? deviceList(item.devices) : "-"
-                    }}
+                    <template v-if="item.devices.length > 0">
+                      <md-chip
+                        v-for="device in item.devices"
+                        :key="device.device_id"
+                        :class="[
+                          'device-chip',
+                          deviceChipClass(device.device_type),
+                        ]"
+                      >
+                        <md-icon class="device-chip-icon">
+                          {{ deviceIcon(device.device_type) }}
+                        </md-icon>
+                        <md-tooltip md-direction="top">
+                          {{ device.device_serial }}
+                          ({{ $tc(`words.${device.device_type}`) }})
+                        </md-tooltip>
+                        {{ truncateSerial(device.device_serial) }}
+                      </md-chip>
+                    </template>
+                    <span v-else>-</span>
                   </md-table-cell>
 
                   <md-table-cell
@@ -271,8 +288,6 @@
 
 <script>
 import { mapGetters } from "vuex"
-
-import i18n from "../../i18n.js"
 
 import { Paginator } from "@/Helpers/Paginator.js"
 import { notify } from "@/mixins/notify.js"
@@ -531,17 +546,28 @@ export default {
       this.widgetKey++
     },
 
-    deviceList(devices) {
-      return devices.reduce((acc, curr, index, arr) => {
-        if (index !== arr.length - 1) {
-          acc +=
-            curr.device_serial + ` (${i18n.tc(`words.${curr.device_type}`)}),`
-        } else {
-          acc +=
-            curr.device_serial + ` (${i18n.tc(`words.${curr.device_type}`)})`
-        }
-        return acc
-      }, "")
+    truncateSerial(serial) {
+      if (!serial) return ""
+      if (serial.length <= 12) return serial
+      return (
+        serial.substring(0, 6) + "..." + serial.substring(serial.length - 4)
+      )
+    },
+    deviceIcon(deviceType) {
+      const icons = {
+        meter: "flash_on",
+        solar_home_system: "wb_sunny",
+        e_bike: "pedal_bike",
+      }
+      return icons[deviceType] || "devices"
+    },
+    deviceChipClass(deviceType) {
+      const classes = {
+        meter: "md-primary",
+        solar_home_system: "md-accent",
+        e_bike: "md-warn",
+      }
+      return classes[deviceType] || ""
     },
 
     showAllEntries() {
@@ -901,5 +927,21 @@ export default {
 
 .fade-enter-active .fade-leave-active {
   transition: opacity ease;
+}
+
+.device-chip {
+  margin: 2px;
+  height: 26px;
+  font-size: 12px;
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+
+  .device-chip-icon {
+    font-size: 14px !important;
+    margin-right: 4px;
+    color: inherit !important;
+    vertical-align: middle;
+  }
 }
 </style>
