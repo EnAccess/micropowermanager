@@ -59,6 +59,19 @@ export class SolarHomeSystemService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+
+  async createSolarHomeSystems(serialNumbers) {
+    const createdSolarHomeSystems = []
+
+    for (const serialNumber of serialNumbers) {
+      this.shs.serialNumber = serialNumber
+      const createdSolarHomeSystem = await this.createSolarHomeSystem()
+      createdSolarHomeSystems.push(createdSolarHomeSystem)
+    }
+
+    return createdSolarHomeSystems
+  }
+
   search(term) {
     this.paginator = new Paginator(`${this.repository.resource}/search`)
     EventBus.$emit("loadPage", this.paginator, { term: term })
