@@ -14,7 +14,7 @@ class TicketCommentController extends Controller {
     public function store(Request $request): void {
         /** @var User $user */
         $user = Auth::user();
-        $ticketId = (int) $request->input('cardId');
+        $ticketId = $request->integer('cardId');
         $comment = $request->input('comment');
 
         $ticketUser = $this->ticketUserService->findOrCreateByUser($user);
