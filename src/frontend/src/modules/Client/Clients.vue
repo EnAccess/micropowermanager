@@ -548,7 +548,8 @@ export default {
 
     truncateSerial(serial) {
       if (!serial) return ""
-      return serial.length > 8 ? serial.substring(0, 8) + "..." : serial
+      if (serial.length <= 12) return serial
+      return serial.substring(0, 6) + "..." + serial.substring(serial.length - 4)
     },
     deviceIcon(deviceType) {
       const icons = {
