@@ -71,6 +71,10 @@ export default {
   background: linear-gradient(135deg, #6eaa44 0%, #578839 100%);
 }
 
+.box[box-color="purple"] {
+  background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%);
+}
+
 .header-text {
   color: rgb(148, 148, 148);
   margin-top: 0px;

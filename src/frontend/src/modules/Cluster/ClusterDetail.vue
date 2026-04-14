@@ -130,8 +130,11 @@ export default {
       this.clusterId = id
       this.$store.dispatch("clusterDashboard/get", id)
       this.clusterData = this.$store.getters["clusterDashboard/getClusterData"]
+      const clusterModel = this.clusterData.clusterData
       this.boxData["mini_grids"] =
-        this.clusterData.clusterData.mini_grids.length
+        clusterModel && clusterModel.mini_grids
+          ? clusterModel.mini_grids.length
+          : 0
       this.revenue = this.clusterData.citiesRevenue
       this.setClusterMapData()
     },

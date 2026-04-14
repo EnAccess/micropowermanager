@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-toolbar class="md-dense">
+    <md-toolbar style="margin-bottom: 3rem" class="md-dense">
       <div class="md-toolbar-row">
         <div class="md-toolbar-section-start">
           <md-menu
@@ -11,7 +11,7 @@
           >
             <md-button md-menu-trigger>
               <md-icon>keyboard_arrow_down</md-icon>
-              {{ $tc("words.cluster") }}
+              {{ $tc("phrases.allClusters") }}
             </md-button>
             <md-menu-content>
               <md-menu-item
@@ -37,7 +37,7 @@
       </div>
     </md-toolbar>
     <div>
-      <div class="md-layout md-gutter" style="margin-top: 3rem">
+      <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-100">
           <box-group :clusters="clustersData" />
         </div>
