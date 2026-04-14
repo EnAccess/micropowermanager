@@ -118,24 +118,77 @@
             <div
               v-for="(r, idx) in importResult.results"
               :key="idx"
-              class="result-row"
-              :class="r.success ? 'result-row--success' : 'result-row--failed'"
+              class="result-row-wrapper"
             >
-              <md-icon class="result-row-icon">
-                {{ r.success ? "check_circle" : "error" }}
-              </md-icon>
-              <div class="result-row-content">
-                <strong>{{ entityLabel(r.type) }}</strong>
-                <span class="result-row-detail">
-                  <template v-if="r.data && r.data.added_count != null">
-                    {{ r.data.added_count }} added,
-                    {{ r.data.modified_count }} modified,
-                    {{ r.data.failed_count }} failed
-                  </template>
-                  <template v-else>
-                    {{ r.success ? "Imported successfully" : r.error }}
-                  </template>
-                </span>
+              <div
+                class="result-row"
+                :class="
+                  r.success ? 'result-row--success' : 'result-row--failed'
+                "
+              >
+                <md-icon class="result-row-icon">
+                  {{ r.success ? "check_circle" : "error" }}
+                </md-icon>
+                <div class="result-row-content">
+                  <strong>{{ entityLabel(r.type) }}</strong>
+                  <span class="result-row-detail">
+                    <template v-if="r.data && r.data.added_count != null">
+                      {{ r.data.added_count }} added,
+                      {{ r.data.modified_count }} modified,
+                      {{ r.data.failed_count }} failed
+                    </template>
+                    <template v-else>
+                      {{ r.success ? "Imported successfully" : r.error }}
+                    </template>
+                  </span>
+                </div>
+                <md-button
+                  v-if="hasErrorDetails(r)"
+                  class="md-icon-button md-dense error-toggle-btn"
+                  @click="toggleErrorDetails(idx)"
+                >
+                  <md-icon>
+                    {{
+                      expandedErrors[idx]
+                        ? "keyboard_arrow_up"
+                        : "keyboard_arrow_down"
+                    }}
+                  </md-icon>
+                </md-button>
+              </div>
+              <div
+                v-if="hasErrorDetails(r) && expandedErrors[idx]"
+                class="error-details-panel"
+              >
+                <div
+                  v-if="r.failedItems && r.failedItems.length > 0"
+                  class="error-list"
+                >
+                  <div
+                    v-for="(item, fIdx) in r.failedItems"
+                    :key="'f-' + fIdx"
+                    class="error-item"
+                  >
+                    <span class="error-item-name">{{ item.name }}</span>
+                    <span
+                      v-for="(msg, field) in item.errors"
+                      :key="field"
+                      class="error-item-msg"
+                    >
+                      {{ msg }}
+                    </span>
+                  </div>
+                </div>
+                <div v-if="r.validationErrors" class="error-list">
+                  <div
+                    v-for="(msg, field) in r.validationErrors"
+                    :key="field"
+                    class="error-item"
+                  >
+                    <span class="error-item-name">{{ field }}</span>
+                    <span class="error-item-msg">{{ msg }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -251,6 +304,7 @@ export default {
       pollingTimeout: null,
       pendingResults: [],
       pollingEntityType: null,
+      expandedErrors: {},
     }
   },
   computed: {
@@ -295,6 +349,16 @@ export default {
     entityLabel(type) {
       const entity = IMPORT_ENTITIES.find((e) => e.key === type)
       return entity ? entity.label : type
+    },
+    hasErrorDetails(result) {
+      return (
+        (result.failedItems && result.failedItems.length > 0) ||
+        (result.validationErrors &&
+          Object.keys(result.validationErrors).length > 0)
+      )
+    },
+    toggleErrorDetails(idx) {
+      this.$set(this.expandedErrors, idx, !this.expandedErrors[idx])
     },
     async importAll() {
       if (!this.hasSelectedFiles) {
@@ -344,25 +408,36 @@ export default {
                   importResult.imported_count === 0 &&
                   importResult.failed_count > 0
                 )
-              results.push({
+              const resultEntry = {
                 type: entity.key,
                 success: importSuccess,
                 data: importResult,
                 error: importSuccess
                   ? null
                   : importResult.message || `Failed to import ${entity.label}`,
-              })
+              }
+              if (importResult.failed && importResult.failed.length > 0) {
+                resultEntry.failedItems = importResult.failed
+              }
+              if (importResult.errors) {
+                resultEntry.validationErrors = importResult.errors
+              }
+              results.push(resultEntry)
               this.clearFile(entity.key)
             } catch (error) {
               const errorMessage =
                 error.exception?.message ||
                 error.message ||
                 `Failed to import ${entity.label}`
-              results.push({
+              const resultEntry = {
                 type: entity.key,
                 success: false,
                 error: errorMessage,
-              })
+              }
+              if (error.errors) {
+                resultEntry.validationErrors = error.errors
+              }
+              results.push(resultEntry)
             } finally {
               this.$set(this.loadingStates, entity.key, false)
             }
@@ -396,11 +471,17 @@ export default {
           if (status.status === "completed") {
             this.stopPolling()
             const importResult = status.result || {}
-            this.onAsyncImportDone(importResult.success !== false, null, {
-              added_count: importResult.added_count,
-              modified_count: importResult.modified_count,
-              failed_count: importResult.failed_count,
-            })
+            this.onAsyncImportDone(
+              importResult.success !== false,
+              null,
+              {
+                added_count: importResult.added_count,
+                modified_count: importResult.modified_count,
+                failed_count: importResult.failed_count,
+              },
+              importResult.failed,
+              importResult.errors,
+            )
           } else if (status.status === "failed") {
             this.stopPolling()
             const failedResult = status.result || {}
@@ -415,6 +496,8 @@ export default {
                 modified_count: failedResult.modified_count ?? 0,
                 failed_count: failedResult.failed_count ?? 0,
               },
+              failedResult.failed,
+              failedResult.errors,
             )
           }
         } catch (e) {
@@ -435,22 +518,25 @@ export default {
       this.pollingJobId = null
       this.importing = false
     },
-    onAsyncImportDone(success, error, data) {
+    onAsyncImportDone(success, error, data, failedItems, validationErrors) {
       const results = [...this.pendingResults]
       this.pendingResults = []
       const entityType = this.pollingEntityType
       this.pollingEntityType = null
 
-      if (success) {
-        results.push({ type: entityType, success: true, data })
-      } else {
-        results.push({
-          type: entityType,
-          success: false,
-          error: error || "Import failed",
-          data,
-        })
+      const resultEntry = {
+        type: entityType,
+        success,
+        data,
+        error: success ? null : error || "Import failed",
       }
+      if (failedItems && failedItems.length > 0) {
+        resultEntry.failedItems = failedItems
+      }
+      if (validationErrors) {
+        resultEntry.validationErrors = validationErrors
+      }
+      results.push(resultEntry)
 
       this.showResults(results)
     },
@@ -482,6 +568,7 @@ export default {
         this.alertNotify("error", `${totalFailed} record(s) failed to import`)
       }
 
+      this.expandedErrors = {}
       this.importResult = {
         results,
         added_count: totalAdded,
@@ -641,7 +728,6 @@ export default {
 .result-details {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .result-row {
@@ -683,5 +769,56 @@ export default {
 .result-row-detail {
   font-size: 0.85rem;
   color: #666;
+}
+
+.result-row-wrapper {
+  margin-bottom: 0.5rem;
+}
+
+.error-toggle-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.error-details-panel {
+  margin-top: 0.25rem;
+  margin-left: 2.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.error-list {
+  padding: 0.5rem;
+}
+
+.error-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.375rem 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.error-item:last-child {
+  border-bottom: none;
+}
+
+.error-item-name {
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.error-item-msg {
+  font-size: 0.78rem;
+  color: #c62828;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

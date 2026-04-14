@@ -39,7 +39,7 @@ class SiteService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SmSite>
      */
     public function getSmSites(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
         $sites = $this->site->newQuery()->with('mpmMiniGrid')->paginate($perPage);
 
         foreach ($sites as $site) {

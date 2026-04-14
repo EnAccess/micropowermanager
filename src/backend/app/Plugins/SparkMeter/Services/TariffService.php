@@ -113,7 +113,7 @@ class TariffService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SmTariff>
      */
     public function getSmTariffs(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->smTariff->newQuery()->with(['mpmTariff', 'site.mpmMiniGrid'])->paginate($perPage);
     }

@@ -152,7 +152,7 @@ class SteamaTransactionsService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaTransaction>
      */
     public function getTransactionsByCustomer(SteamaCustomer $customer, Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->steamaTransaction->newQuery()->where('customer_id', $customer)->paginate($perPage);
     }
