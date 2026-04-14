@@ -72,7 +72,7 @@ import "@/shared/TableList.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
-  name: "Dashboard",
+  name: "ClustersOverview",
   components: { DashboardMap, FinancialOverview, BoxGroup, Widget },
   mixins: [notify],
   data() {

@@ -47,6 +47,7 @@
       </div>
       <div class="md-layout-item md-size-100">
         <financial-overview
+          :clusterId="clusterId"
           :revenue="revenue"
           :periodChanged="financialOverviewPeriodChanged"
         />
@@ -85,7 +86,7 @@ import { EventBus } from "@/shared/eventbus.js"
 import "@/shared/TableList.vue"
 
 export default {
-  name: "Dashboard",
+  name: "ClusterDetail",
   mixins: [notify],
   components: {
     RevenueTrends,
