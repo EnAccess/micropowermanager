@@ -6,22 +6,33 @@
 
 apply the following to all code
 
-- Prioritize code correctness and clarity. Speed and efficiency are secondary priorities unless otherwise specified.
-- Prefer modification over addition. Prefer implementing functionality in existing files unless it is a new logical component.
-- Avoid creative additions unless explicitly requested
-  Avoid creating many small files.
+- Prioritize code correctness and clarity.
+  Speed and efficiency are secondary priorities unless otherwise specified.
 
-- Prefer modification over addition. When implementing a feature, your first instinct should be to generalize, extend, or refactor existing code — not to add a new parallel implementation. If existing code does 80% of what's needed, modify it to do 100%. Don't create a second version alongside it.
+- Prefer modification over addition.
+  Implementing functionality in existing files unless it is a new logical component.
+  Do not add a new parallel implementation instead generalize, extend, or refactor existing code.
+  Avoid creative additions unless explicitly requested.
 
-- Merge, don't layer. If you find duplicated or near-duplicated logic, consolidate it. Extract shared behavior into a common function, base class, or utility. Two things that do almost the same thing should become one thing with a parameter.
+- Merge, don't layer.
+  If you find duplicated or near-duplicated logic, consolidate it.
+  Extract shared behavior into a common function, base class, or utility.
 
-- Delete fearlessly. If your change makes existing code obsolete, remove it. Dead code, unused imports, abandoned helpers — clean them up as you go. Don't leave them "just in case."
+- Delete fearlessly.
+  If your change makes existing code obsolete, remove it.
+  Dead code should always be deleted.
 
-- Refactor as part of the work, not as a separate step. You don't need permission to restructure code that's in your way. If completing a task cleanly requires reshaping what's already there, that's part of the task.
+- Refactor as part of the work, not as a separate step.
+  The code base has grown organically and accumlated a lot of tech debt.
+  You don't need permission to restructure code that's in a meaningful way.
+  If completing a task cleanly requires reshaping what's already there, that's part of the task.
 
-- The code base has grown organically and accumlated a lot of debt. Always consider removing unused code and change existing structures when it poses constraints to new feature additions.
+- Complexity budget should always be net zero or negative.
+  After your change, the codebase should have the same or fewer total abstractions, files, and code paths than before.
 
-- Complexity budget: net zero or negative. After your change, the codebase should have the same or fewer total abstractions, files, and code paths than before. If you're adding a new file, ask whether an existing one should absorb it. If you're adding a function, ask whether an existing one should grow a parameter instead.
+- Follow the Scout Rule in software engineering.
+  "Always leave the campground cleaner than you found it".
+  Making small, incremental improvements to the codebase every time you touch it.
 
 ### generic code style
 
