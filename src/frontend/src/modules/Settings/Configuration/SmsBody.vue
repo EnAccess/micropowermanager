@@ -5,7 +5,7 @@
         {{ $tc("phrases." + smsBody.title) }}
       </md-card-header>
       <md-card-content class="md-layout md-gutter md-size-100">
-        <div class="md-layout-item md-size-70">
+        <div class="md-layout-item md-size-70 md-small-size-100">
           <md-field :class="{ 'md-invalid': errors.has('body') }">
             <md-textarea
               :placeholder="smsBody.placeholder"
@@ -20,7 +20,7 @@
             <span class="md-error">{{ errors.first("body") }}</span>
           </md-field>
         </div>
-        <div class="md-layout-item md-size-30">
+        <div class="md-layout-item md-size-30 md-small-size-100">
           <div v-if="smsBody.variables[0] !== ''">
             <md-chip
               v-for="(variable, index) in smsBody.variables"
