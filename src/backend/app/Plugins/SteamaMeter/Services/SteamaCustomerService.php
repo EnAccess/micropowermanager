@@ -54,7 +54,7 @@ class SteamaCustomerService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaCustomer>
      */
     public function getCustomers(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->customer->newQuery()->with(['mpmPerson.addresses', 'site.mpmMiniGrid'])->paginate($perPage);
     }

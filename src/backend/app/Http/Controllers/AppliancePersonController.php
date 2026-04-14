@@ -81,8 +81,8 @@ class AppliancePersonController extends Controller {
         $appliancePerson = $this->appliancePersonService->make([
             'appliance_id' => $request->input('id'),
             'person_id' => $request->input('person_id'),
-            'total_cost' => $isEnergyService ? 0 : (int) $request->input('cost'),
-            'rate_count' => $isEnergyService ? 0 : (int) $request->input('rate'),
+            'total_cost' => $isEnergyService ? 0 : $request->integer('cost'),
+            'rate_count' => $isEnergyService ? 0 : $request->integer('rate'),
             'down_payment' => (float) $request->input('down_payment', 0),
             'device_serial' => $request->input('device_serial'),
             'payment_type' => $paymentType,
