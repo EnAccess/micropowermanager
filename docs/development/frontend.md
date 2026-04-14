@@ -55,7 +55,7 @@ The user's selected language is persisted in `localStorage` and can be changed f
 
 ### File structure at a glance
 
-```
+```sh
 src/frontend/src/
 ├── i18n.js                          # vue-i18n setup, imports all locale files
 ├── bootstrap.js                     # VeeValidate dictionary (form validation messages)
@@ -124,6 +124,16 @@ When you add a new feature or change existing UI text, you need to update **all*
 1. **Add or modify the key in `en.json` first.** English is the source of truth. Pick the appropriate section (`words` for single reusable words, `phrases` for longer UI strings, `messages` for notifications, `menu` for navigation).
 
 2. **Add the same key to every other locale file** (`fr.json`, `pt.json`, `ar.json`, `bu.json`). If you don't know the correct translation, add the English text as a placeholder and flag it for a translator — an English fallback is better than a missing key that shows a raw key string in the UI.
+
+### Sorting translation files
+
+After adding or renaming translation keys, run the sorting script to keep JSON files consistently ordered across locales.
+
+```sh
+sh tools/sort_lang_json.sh src/frontend/src/assets/locales
+```
+
+This requires `jq` to be installed.
 
 ## MPM Brand guidelines
 
