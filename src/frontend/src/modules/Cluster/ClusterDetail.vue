@@ -3,10 +3,32 @@
     <md-toolbar style="margin-bottom: 3rem" class="md-dense">
       <div class="md-toolbar-row">
         <div class="md-toolbar-section-start">
-          {{ $tc("words.cluster") }} :
-          <span style="font-size: 1.3rem; font-weight: bold" v-if="clusterData">
-            {{ clusterData.name }}
-          </span>
+          <md-menu
+            md-direction="bottom-end"
+            md-size="big"
+            :md-offset-x="127"
+            :md-offset-y="-36"
+          >
+            <md-button md-menu-trigger>
+              <md-icon>keyboard_arrow_down</md-icon>
+              {{ $tc("words.cluster") }}:
+              {{ clusterData.name }}
+            </md-button>
+            <md-menu-content>
+              <md-menu-item @click="goToAllClusters">
+                <span>{{ $tc("phrases.allClusters") }}</span>
+              </md-menu-item>
+              <md-divider></md-divider>
+              <md-menu-item
+                v-for="(cluster, key) in clusterList"
+                :key="key"
+                :disabled="cluster.id === parseInt(clusterId)"
+                @click="setCluster(cluster.id)"
+              >
+                <span>{{ cluster.name }}</span>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
         </div>
         <div class="md-toolbar-section-end">
           <md-button class="md-raised" @click="updateCacheData">
@@ -26,6 +48,7 @@
       </div>
       <div class="md-layout-item md-size-100">
         <financial-overview
+          :clusterId="clusterId"
           :revenue="revenue"
           :periodChanged="financialOverviewPeriodChanged"
         />
@@ -64,7 +87,7 @@ import { EventBus } from "@/shared/eventbus.js"
 import "@/shared/TableList.vue"
 
 export default {
-  name: "Dashboard",
+  name: "ClusterDetail",
   mixins: [notify],
   components: {
     RevenueTrends,
@@ -92,14 +115,36 @@ export default {
   created() {
     this.clusterId = this.$route.params.id
   },
-  mounted() {
-    this.$store.dispatch("clusterDashboard/get", this.$route.params.id)
-    this.clusterData = this.$store.getters["clusterDashboard/getClusterData"]
-    this.boxData["mini_grids"] = this.clusterData.clusterData.mini_grids.length
-    this.revenue = this.clusterData.citiesRevenue
-    this.setClusterMapData()
+  async mounted() {
+    await this.$store.dispatch("clusterDashboard/list")
+    this.loadClusterData(this.$route.params.id)
+  },
+  watch: {
+    "$route.params.id"(newId) {
+      if (newId) {
+        this.loadClusterData(newId)
+      }
+    },
   },
   methods: {
+    loadClusterData(id) {
+      this.clusterId = id
+      this.$store.dispatch("clusterDashboard/get", id)
+      this.clusterData = this.$store.getters["clusterDashboard/getClusterData"]
+      const clusterModel = this.clusterData.clusterData
+      this.boxData["mini_grids"] =
+        clusterModel && clusterModel.mini_grids
+          ? clusterModel.mini_grids.length
+          : 0
+      this.revenue = this.clusterData.citiesRevenue
+      this.setClusterMapData()
+    },
+    setCluster(clusterId) {
+      this.$router.replace("/clusters/" + clusterId)
+    },
+    goToAllClusters() {
+      this.$router.push("/clusters")
+    },
     setClusterMapData() {
       const markingInfos = []
       const cluster = this.clusterData.clusterData || this.clusterData
@@ -194,6 +239,18 @@ export default {
     addConnections(data) {
       this.boxData["people"] = data
       this.boxData["meters"] = data
+    },
+  },
+  computed: {
+    clusterList() {
+      return this.$store.getters["clusterDashboard/getClustersData"].map(
+        (cluster) => {
+          return {
+            id: cluster.id,
+            name: cluster.clusterData?.name || cluster.name,
+          }
+        },
+      )
     },
   },
 }
