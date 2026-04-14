@@ -38,6 +38,17 @@
         class="md-layout-item md-size-20 md-small-size-50 md-xsmall-size-100"
       >
         <box
+          :box-color="'purple'"
+          :center-text="true"
+          :header-text="$tc('phrases.soldAppliances')"
+          :sub-text="readable(soldAppliances).toString()"
+          :box-icon="'shopping_cart'"
+        />
+      </div>
+      <div
+        class="md-layout-item md-size-20 md-small-size-50 md-xsmall-size-100"
+      >
+        <box
           :box-color="'green'"
           :center-text="true"
           :header-text="
@@ -51,17 +62,6 @@
             $store.getters['settings/getMainSettings'].currency
           "
           :box-icon="'attach_money'"
-        />
-      </div>
-      <div
-        class="md-layout-item md-size-20 md-small-size-50 md-xsmall-size-100"
-      >
-        <box
-          :box-color="'purple'"
-          :center-text="true"
-          :header-text="$tc('phrases.soldAppliances')"
-          :sub-text="readable(soldAppliances).toString()"
-          :box-icon="'shopping_cart'"
         />
       </div>
     </div>

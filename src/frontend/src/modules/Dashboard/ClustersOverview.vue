@@ -11,9 +11,14 @@
           >
             <md-button md-menu-trigger>
               <md-icon>keyboard_arrow_down</md-icon>
+              {{ $tc("words.cluster") }}:
               {{ $tc("phrases.allClusters") }}
             </md-button>
             <md-menu-content>
+              <md-menu-item :disabled="true">
+                <span>{{ $tc("phrases.allClusters") }}</span>
+              </md-menu-item>
+              <md-divider></md-divider>
               <md-menu-item
                 v-for="(cluster, key) in clusterList"
                 :key="key"

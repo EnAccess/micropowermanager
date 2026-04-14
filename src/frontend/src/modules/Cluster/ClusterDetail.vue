@@ -22,6 +22,7 @@
               <md-menu-item
                 v-for="(cluster, key) in clusterList"
                 :key="key"
+                :disabled="cluster.id === parseInt(clusterId)"
                 @click="setCluster(cluster.id)"
               >
                 <span>{{ cluster.name }}</span>
