@@ -13,6 +13,7 @@ import moment from "moment"
 import VeeValidate from "vee-validate"
 import enMessages from "vee-validate/dist/locale/en"
 import frMessages from "vee-validate/dist/locale/fr"
+import ptMessages from "vee-validate/dist/locale/pt_PT"
 import Vue from "vue"
 import VChart from "vue-echarts"
 import VueMaterial from "vue-material"
@@ -62,6 +63,7 @@ Vue.use(VeeValidate, {
     en: enMessages,
     fr: frMessages,
     bu: enMessages, // No burmese error messages available
+    pt: ptMessages,
   },
 })
 

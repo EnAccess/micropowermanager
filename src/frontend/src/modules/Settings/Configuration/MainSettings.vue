@@ -199,7 +199,7 @@ export default {
       usageTypeListService: new UsageTypeListService(),
       smsGatewayService: new SmsGatewayService(),
       currencyList: [],
-      languagesList: ["ar", "bu", "en", "fr"],
+      languagesList: ["ar", "bu", "en", "fr", "pt"],
       countryList: [],
       progress: false,
     }
