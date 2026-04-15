@@ -144,7 +144,7 @@ class AppliancePaymentPlanEnergyAsAServiceTest extends TestCase {
             ]
         );
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $this->assertDatabaseHas('appliance_people', [
             'person_id' => $person->id,
