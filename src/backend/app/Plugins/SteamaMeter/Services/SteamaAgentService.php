@@ -40,7 +40,7 @@ class SteamaAgentService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaAgent>
      */
     public function getAgents(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->stmAgent->newQuery()->with(['mpmAgent.person.addresses', 'site.mpmMiniGrid'])->paginate($perPage);
     }

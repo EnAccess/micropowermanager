@@ -18,6 +18,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
         private ClusterTransactionService $clusterTransactionsService,
         private ClusterPopulationService $clusterPopulationService,
         private ClusterDeviceService $clusterDeviceService,
+        private AppliancePersonService $appliancePersonService,
     ) {
         parent::__construct(self::CACHE_KEY_CLUSTERS_DATA);
     }
@@ -50,6 +51,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
             $devicesInCluster = $this->clusterDeviceService->getByClusterId($cluster->id);
             $meters = $this->clusterDeviceService->getMetersByClusterId($cluster->id);
             $meterCount = $meters->count();
+            $applianceCount = $this->appliancePersonService->getCountByClusterId($cluster->id);
             $revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
             $population = $this->clusterPopulationService->getById($cluster->id);
 
@@ -71,6 +73,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 cluster: $this->clusterService->getById($cluster->id),
                 deviceCount: $devicesInCluster->count(),
                 meterCount: $meterCount,
+                applianceCount: $applianceCount,
                 revenue: $revenue,
                 population: $population,
                 citiesRevenue: $citiesRevenue,

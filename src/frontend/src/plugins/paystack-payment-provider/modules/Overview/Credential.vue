@@ -244,22 +244,8 @@
         <div class="url-actions">
           <md-button
             class="md-raised md-primary"
-            @click="generateUrls"
-            :disabled="loadingUrls"
-          >
-            <md-progress-spinner
-              v-if="loadingUrls"
-              md-diameter="20"
-              md-stroke="2"
-              style="margin-right: 8px"
-            ></md-progress-spinner>
-            {{ loadingUrls ? "Generating..." : "Generate URLs" }}
-          </md-button>
-
-          <md-button
-            class="md-raised"
             @click="openPaymentPage"
-            :disabled="!publicUrls.payment_url"
+            :disabled="!publicUrls.permanent_payment_url"
           >
             <md-icon>open_in_new</md-icon>
             Test Payment Page
@@ -283,7 +269,6 @@ export default {
     return {
       credentialService: new CredentialService(),
       loading: false,
-      loadingUrls: false,
       publicUrls: {
         permanent_payment_url: "",
       },
@@ -321,11 +306,9 @@ export default {
       }
     },
     async generateUrls() {
-      this.loadingUrls = true
       try {
         const response = await this.credentialService.getPublicUrls()
 
-        // Add frontend prefix to all URLs
         this.publicUrls = {
           permanent_payment_url: this.addFrontendPrefix(
             response.permanent_payment_url,
@@ -338,8 +321,6 @@ export default {
       } catch (error) {
         console.error("Error generating public URLs:", error)
         this.alertNotify("error", "Failed to generate public URLs")
-      } finally {
-        this.loadingUrls = false
       }
     },
     async copyToClipboard(text) {

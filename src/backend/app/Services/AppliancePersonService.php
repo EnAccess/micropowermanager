@@ -126,4 +126,19 @@ class AppliancePersonService implements IBaseService, IAssociative {
     public function getBySerialNumber(string $serialNumber): ?AppliancePerson {
         return $this->appliancePerson->newQuery()->where('device_serial', $serialNumber)->first();
     }
+
+    public function getCountByClusterId(int $clusterId): int {
+        return $this->appliancePerson->newQuery()
+            ->whereHas('person', function ($q) use ($clusterId) {
+                $q->whereHas('addresses', function ($q) use ($clusterId) {
+                    $q->where('is_primary', 1)
+                        ->whereHas('city', function ($q) use ($clusterId) {
+                            $q->whereHas('cluster', function ($q) use ($clusterId) {
+                                $q->where('clusters.id', $clusterId);
+                            });
+                        });
+                });
+            })
+            ->count();
+    }
 }

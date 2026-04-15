@@ -22,7 +22,7 @@ class TransactionAdvancedController extends Controller {
         $status = $request->input('status');
         $fromDate = $request->input('from');
         $toDate = $request->input('to');
-        $limit = (int) $request->input('per_page', '15');
+        $limit = $request->integer('per_page', 15);
 
         return ApiResource::make($this->transactionService->search(
             $deviceType,

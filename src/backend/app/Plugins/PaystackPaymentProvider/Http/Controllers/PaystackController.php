@@ -85,7 +85,7 @@ class PaystackController extends Controller {
      * @return JsonResponse
      */
     public function getTransactions(Request $request) {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
         $transactions = $this->transactionService->getAll($perPage);
 
         return response()->json($transactions);

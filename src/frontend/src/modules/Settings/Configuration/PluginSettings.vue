@@ -6,7 +6,7 @@
           (p) => p.plugin_for_usage_type || p.checked,
         )"
         :key="plugin.id"
-        class="box md-layout-item md-size-25 md-small-size-50"
+        class="box md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
         <div class="header-text">{{ plugin.name }}</div>
         <div
@@ -147,7 +147,13 @@ export default {
 }
 
 .data-stream-switch {
-  margin-left: 3rem !important;
+  margin-left: auto !important;
   float: right;
+}
+
+@media only screen and (max-width: 600px) {
+  .box {
+    padding: 12px;
+  }
 }
 </style>

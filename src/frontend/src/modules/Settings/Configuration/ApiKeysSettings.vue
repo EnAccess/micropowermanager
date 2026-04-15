@@ -2,31 +2,36 @@
   <div>
     <div class="md-layout md-gutter">
       <div class="md-layout-item md-size-70 md-small-size-100">
-        <md-table v-if="apiKeysService.list && apiKeysService.list.length">
-          <md-table-row>
-            <md-table-head>Name</md-table-head>
-            <md-table-head>Created</md-table-head>
-            <md-table-head>Last used</md-table-head>
-            <md-table-head>Active</md-table-head>
-            <md-table-head></md-table-head>
-          </md-table-row>
-          <md-table-row v-for="k in apiKeysService.list" :key="k.id">
-            <md-table-cell>{{ k.name || "-" }}</md-table-cell>
-            <md-table-cell>{{ format(k.created_at) }}</md-table-cell>
-            <md-table-cell>
-              {{ k.last_used_at ? format(k.last_used_at) : "-" }}
-            </md-table-cell>
-            <md-table-cell>
-              <md-icon v-if="k.active">check</md-icon>
-              <md-icon v-else>close</md-icon>
-            </md-table-cell>
-            <md-table-cell>
-              <md-button class="md-accent md-dense" @click="revoke(k.id)">
-                Revoke
-              </md-button>
-            </md-table-cell>
-          </md-table-row>
-        </md-table>
+        <div
+          v-if="apiKeysService.list && apiKeysService.list.length"
+          class="table-scroll-wrapper"
+        >
+          <md-table>
+            <md-table-row>
+              <md-table-head>Name</md-table-head>
+              <md-table-head>Created</md-table-head>
+              <md-table-head>Last used</md-table-head>
+              <md-table-head>Active</md-table-head>
+              <md-table-head></md-table-head>
+            </md-table-row>
+            <md-table-row v-for="k in apiKeysService.list" :key="k.id">
+              <md-table-cell>{{ k.name || "-" }}</md-table-cell>
+              <md-table-cell>{{ format(k.created_at) }}</md-table-cell>
+              <md-table-cell>
+                {{ k.last_used_at ? format(k.last_used_at) : "-" }}
+              </md-table-cell>
+              <md-table-cell>
+                <md-icon v-if="k.active">check</md-icon>
+                <md-icon v-else>close</md-icon>
+              </md-table-cell>
+              <md-table-cell>
+                <md-button class="md-accent md-dense" @click="revoke(k.id)">
+                  Revoke
+                </md-button>
+              </md-table-cell>
+            </md-table-row>
+          </md-table>
+        </div>
         <div v-else class="md-body-1">No API keys yet.</div>
       </div>
       <div class="md-layout-item md-size-30 md-small-size-100">
@@ -110,5 +115,11 @@ export default {
 <style scoped lang="scss">
 .token-box {
   margin-top: 16px;
+}
+
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 </style>
