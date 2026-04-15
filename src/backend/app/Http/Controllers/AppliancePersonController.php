@@ -162,7 +162,7 @@ class AppliancePersonController extends Controller {
         );
 
         if ($paymentProviderId === $this::CASH_TRANSACTION_PROVIVER) {
-            $applianceRate = $this->applianceRateService->getDownPaymentAsApplianceRate($appliancePerson);
+            $applianceRate = $this->applianceRateService->createPaidRate($appliancePerson, $downPayment);
             event(new PaymentSuccessEvent(
                 amount: (int) $result['transaction']->amount,
                 paymentService: 'web',
