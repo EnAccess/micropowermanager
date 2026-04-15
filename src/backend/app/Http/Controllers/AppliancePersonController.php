@@ -68,7 +68,7 @@ class AppliancePersonController extends Controller {
             $responseArray = ['appliance_person' => $appliancePerson];
 
             if ($downPayment > 0) {
-                $responseArray = $this->processDownPayment($appliancePerson, $user, $downPayment, $request);
+                $responseArray = $this->processDownPayment($appliancePerson, $downPayment, $request);
             }
 
             DB::connection('tenant')->commit();
@@ -138,7 +138,10 @@ class AppliancePersonController extends Controller {
         $this->geographicalInformationService->save($geographicalInformation);
     }
 
-    private function processDownPayment(AppliancePerson $appliancePerson, ?User $user, float $downPayment, Request $request): array {
+    /**
+     * @return array<string, mixed>
+     */
+    private function processDownPayment(AppliancePerson $appliancePerson, float $downPayment, Request $request): array {
         $addressData = $request->input('address');
         $deviceSerial = $request->input('device_serial');
         $sender = isset($addressData) ? $addressData['phone'] : '-';
