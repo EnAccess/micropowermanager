@@ -10,9 +10,12 @@ hero:
     - theme: brand
       text: Get Started
       link: /get-started
-    - theme: alt
-      text: Demo Version
+    - theme: brand
+      text: Try the Demo Version
       link: https://demo.micropowermanager.io/#/login
+    - theme: alt
+      text: Explore MPM Cloud
+      link: /cloud
   image:
     src: /mpmlogo_stylized.svg
     alt: MicroPowerManager
