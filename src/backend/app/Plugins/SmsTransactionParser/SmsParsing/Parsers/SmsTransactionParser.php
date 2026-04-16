@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Plugins\SmsTransactionParser\SmsParsing\Parsers;
 
 use App\Plugins\SmsTransactionParser\SmsParsing\Contracts\ISmsTransactionParser;
-use App\Plugins\SmsTransactionParser\SmsParsing\ParsedSmsData;
+use App\Plugins\SmsTransactionParser\SmsParsing\DTO\ParsedSmsData;
 
 class SmsTransactionParser implements ISmsTransactionParser {
     public function __construct(

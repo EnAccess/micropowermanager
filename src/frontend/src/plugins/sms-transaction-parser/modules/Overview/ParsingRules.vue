@@ -55,7 +55,7 @@
               </span>
             </md-field>
           </div>
-          <div class="md-layout-item md-size-50">
+          <div class="md-layout-item md-size-50 sender-filter-field">
             <md-field>
               <label>Sender Filter (optional)</label>
               <md-input
@@ -66,13 +66,21 @@
                 Only process SMS from this sender name
               </span>
             </md-field>
+            <md-icon class="sender-filter-help">
+              help_outline
+              <md-tooltip md-direction="top">
+                Matches the SMS sender name. Plain text does an exact match. For
+                flexible matching use a regex, e.g. /e-?Mola/i It matches all
+                sms if no sender filter is added.
+              </md-tooltip>
+            </md-icon>
           </div>
         </div>
 
         <p class="section-label">SMS Message Template</p>
         <p class="section-hint">
           Paste a sample SMS message and replace the variable parts with the
-          tags below. Click a tag to insert it at the end.
+          tags below. Click a tag to insert it at the cursor position.
         </p>
 
         <div class="template-editor">
@@ -102,6 +110,7 @@
               md-autogrow
               class="template-input"
               placeholder="e.g. Confirmed [transaction_ref].[*]amount of [amount]MT[*]reference [device_serial][*]"
+              @blur="templateCursorPos = $refs.templateInput.$el.selectionStart"
             />
           </md-field>
         </div>
@@ -219,6 +228,7 @@ export default {
       },
       testSms: "",
       testResult: null,
+      templateCursorPos: null,
     }
   },
   computed: {
@@ -272,7 +282,18 @@ export default {
       this.editingRule = null
     },
     insertVariable(name) {
-      this.formData.template += `[${name}]`
+      let tag = `[${name}]`
+      let text = this.formData.template || ""
+      let pos =
+        this.templateCursorPos !== null ? this.templateCursorPos : text.length
+      this.formData.template = text.slice(0, pos) + tag + text.slice(pos)
+      this.templateCursorPos = pos + tag.length
+      this.$nextTick(() => {
+        let textarea = this.$refs.templateInput.$el
+        textarea.focus()
+        textarea.selectionStart = this.templateCursorPos
+        textarea.selectionEnd = this.templateCursorPos
+      })
     },
     async saveRule() {
       const missing = REQUIRED_VARIABLES.filter(
@@ -372,6 +393,23 @@ export default {
 
 .top-fields-row {
   margin-bottom: 36px;
+}
+
+.sender-filter-field {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sender-filter-field .md-field {
+  flex: 1;
+}
+
+.sender-filter-help.md-icon {
+  margin-top: 20px;
+  margin-left: 4px;
+  cursor: help;
+  color: #999;
+  font-size: 18px;
 }
 
 .section-label {

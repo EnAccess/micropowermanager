@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Plugins\SmsTransactionParser\SmsParsing;
+namespace App\Plugins\SmsTransactionParser\SmsParsing\DTO;
 
 class ParsedSmsData {
     public function __construct(

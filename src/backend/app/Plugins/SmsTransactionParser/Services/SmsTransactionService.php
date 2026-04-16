@@ -7,7 +7,7 @@ namespace App\Plugins\SmsTransactionParser\Services;
 use App\Jobs\ProcessPayment;
 use App\Models\CompanyDatabase;
 use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
-use App\Plugins\SmsTransactionParser\SmsParsing\ParsedSmsData;
+use App\Plugins\SmsTransactionParser\SmsParsing\DTO\ParsedSmsData;
 use App\Plugins\SmsTransactionParser\SmsParsing\SmsParserFactory;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
@@ -30,6 +30,11 @@ class SmsTransactionService {
             ->first();
 
         if ($existing) {
+            Log::info('Duplicate SMS transaction skipped', [
+                'reference' => $parsedData->transactionReference,
+                'sender' => $sender,
+            ]);
+
             return null;
         }
 

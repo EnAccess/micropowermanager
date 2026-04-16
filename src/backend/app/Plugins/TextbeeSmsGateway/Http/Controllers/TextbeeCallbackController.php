@@ -36,8 +36,7 @@ class TextbeeCallbackController extends Controller {
         $message = $data['message'];
         $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
         $sender = $address instanceof Address ? $address->owner : null;
-        // @phpstan-ignore property.notFound
-        $senderId = $sender ? $sender->id : null;
+        $senderId = $sender?->getKey();
 
         $smsData = [
             'receiver' => $address->phone ?? $phoneNumber,

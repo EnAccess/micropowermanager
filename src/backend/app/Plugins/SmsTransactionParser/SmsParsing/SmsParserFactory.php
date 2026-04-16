@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Plugins\SmsTransactionParser\SmsParsing;
 
 use App\Plugins\SmsTransactionParser\Models\SmsParsingRule;
+use App\Plugins\SmsTransactionParser\SmsParsing\DTO\ParsedSmsData;
 use App\Plugins\SmsTransactionParser\SmsParsing\Parsers\SmsTransactionParser;
 
 class SmsParserFactory {

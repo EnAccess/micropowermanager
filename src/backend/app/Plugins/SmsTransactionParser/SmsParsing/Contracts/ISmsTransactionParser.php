@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\SmsTransactionParser\SmsParsing\Contracts;
 
-use App\Plugins\SmsTransactionParser\SmsParsing\ParsedSmsData;
+use App\Plugins\SmsTransactionParser\SmsParsing\DTO\ParsedSmsData;
 
 interface ISmsTransactionParser {
     /**
