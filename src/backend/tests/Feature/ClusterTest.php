@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\EntityHasChildrenException;
 use App\Models\Cluster;
 use Database\Factories\ClusterFactory;
 use Database\Factories\MiniGridFactory;
@@ -54,10 +55,14 @@ class ClusterTest extends TestCase {
             'name' => 'blocking-mini-grid',
         ]);
 
-        $response = $this->actingAs($this->user)->delete("/api/clusters/{$cluster->id}");
+        $this->withoutExceptionHandling();
+        $this->expectException(EntityHasChildrenException::class);
 
-        $response->assertStatus(422);
-        $this->assertNotNull(Cluster::query()->find($cluster->id));
+        try {
+            $this->actingAs($this->user)->delete("/api/clusters/{$cluster->id}");
+        } finally {
+            $this->assertNotNull(Cluster::query()->find($cluster->id));
+        }
     }
 
     public function testTrashedClustersHiddenFromIndex(): void {

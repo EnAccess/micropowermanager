@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\EntityHasChildrenException;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
@@ -75,10 +76,14 @@ class MiniGridTest extends TestCase {
     public function testMiniGridDeleteBlockedWhenItHasCities(): void {
         $this->createTestData(1, 1);
 
-        $response = $this->actingAs($this->user)->delete("/api/mini-grids/{$this->miniGridIds[0]}");
+        $this->withoutExceptionHandling();
+        $this->expectException(EntityHasChildrenException::class);
 
-        $response->assertStatus(422);
-        $this->assertNotNull(MiniGrid::query()->find($this->miniGridIds[0]));
+        try {
+            $this->actingAs($this->user)->delete("/api/mini-grids/{$this->miniGridIds[0]}");
+        } finally {
+            $this->assertNotNull(MiniGrid::query()->find($this->miniGridIds[0]));
+        }
     }
 
     public function testUserCreatesNewMiniGrid(): void {

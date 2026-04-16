@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\EntityHasChildrenException;
 use App\Models\Address\Address;
 use App\Models\City;
 use App\Models\GeographicalInformation;
@@ -81,10 +82,14 @@ class CityTest extends TestCase {
         ]);
         $address->owner()->associate($person)->save();
 
-        $response = $this->actingAs($this->user)->delete("/api/cities/{$cityId}");
+        $this->withoutExceptionHandling();
+        $this->expectException(EntityHasChildrenException::class);
 
-        $response->assertStatus(422);
-        $this->assertNotNull(City::query()->find($cityId));
+        try {
+            $this->actingAs($this->user)->delete("/api/cities/{$cityId}");
+        } finally {
+            $this->assertNotNull(City::query()->find($cityId));
+        }
     }
 
     public function testUserUpdatesACity(): void {
