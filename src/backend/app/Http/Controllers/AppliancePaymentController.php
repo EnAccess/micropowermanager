@@ -25,7 +25,7 @@ class AppliancePaymentController extends Controller {
     public function store(AppliancePerson $appliancePerson, Request $request): ApiResource|JsonResponse {
         try {
             DB::connection('tenant')->beginTransaction();
-            $result = $this->getPaymentForAppliance($request, $appliancePerson);
+            $result = $this->makePaymentForAppliance($request, $appliancePerson);
             DB::connection('tenant')->commit();
 
             return ApiResource::make(array_merge(
@@ -60,9 +60,9 @@ class AppliancePaymentController extends Controller {
     /**
      * @return array<string, mixed>
      */
-    private function getPaymentForAppliance(Request $request, AppliancePerson $appliancePerson): array {
-        $amount = (float) $request->input('amount');
-        $providerId = (int) $request->input('payment_provider', 0);
+    private function makePaymentForAppliance(Request $request, AppliancePerson $appliancePerson): array {
+        $amount = $request->float('amount');
+        $providerId = $request->integer('payment_provider', 0);
         $companyId = $request->attributes->get('companyId');
 
         $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);

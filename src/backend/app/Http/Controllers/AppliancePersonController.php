@@ -166,7 +166,7 @@ class AppliancePersonController extends Controller {
             event(new PaymentSuccessEvent(
                 amount: (int) $result['transaction']->amount,
                 paymentService: 'web',
-                paymentType: 'down payment',
+                paymentType: Transaction::TYPE_DOWN_PAYMENT,
                 sender: $result['transaction']->sender,
                 paidFor: $applianceRate,
                 payer: $appliancePerson->person,

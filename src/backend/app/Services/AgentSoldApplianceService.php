@@ -114,9 +114,9 @@ class AgentSoldApplianceService implements IBaseService {
         }
         if ($limit) {
             return $query->latest()->paginate($limit);
-        } else {
-            return $query->latest()->paginate();
         }
+
+        return $query->latest()->paginate();
     }
 
     /**
@@ -240,7 +240,7 @@ class AgentSoldApplianceService implements IBaseService {
             event(new PaymentSuccessEvent(
                 amount: (int) $transaction->amount,
                 paymentService: $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
-                paymentType: 'down payment',
+                paymentType: Transaction::TYPE_DOWN_PAYMENT,
                 sender: $transaction->sender,
                 paidFor: $applianceRate,
                 payer: $buyer,
