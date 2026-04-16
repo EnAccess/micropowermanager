@@ -24,19 +24,21 @@ class AfricasTalkingCallbackController extends Controller {
         $phoneNumber = $data['from'];
         $message = $data['text'];
         $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
-        $sender = $address instanceof Address ? $address->owner : null;
-        // @phpstan-ignore property.notFound
-        $senderId = $sender ? $sender->id : null;
 
-        $smsData = [
-            'receiver' => $address->phone ?? $phoneNumber,
+        if (!$address instanceof Address) {
+            event(new SmsStoredEvent($phoneNumber, $message));
+
+            return response()->json(['status' => 'success']);
+        }
+
+        $sms = $this->smsService->createSms([
+            'receiver' => $address->phone,
             'body' => $message,
-            'sender_id' => $senderId,
+            'sender_id' => $address->owner->getKey(),
             'direction' => Sms::DIRECTION_INCOMING,
             'status' => Sms::STATUS_DELIVERED,
-        ];
+        ]);
 
-        $sms = $this->smsService->createSms($smsData);
         event(new SmsStoredEvent($phoneNumber, $message, $sms));
 
         return response()->json(['status' => 'success']);
