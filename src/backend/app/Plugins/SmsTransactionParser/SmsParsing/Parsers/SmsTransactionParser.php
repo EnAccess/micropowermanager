@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Plugins\SmsTransactionParser\SmsParsing\Parsers;
 
-use App\Plugins\SmsTransactionParser\SmsParsing\Contracts\ISmsTransactionParser;
 use App\Plugins\SmsTransactionParser\SmsParsing\DTO\ParsedSmsData;
 
-class SmsTransactionParser implements ISmsTransactionParser {
+class SmsTransactionParser {
     public function __construct(
         private readonly string $providerName,
     ) {}
