@@ -236,88 +236,385 @@
       </p>
     </div>
 
-    <!-- What to Expect Section -->
-    <div class="expectations-section">
-      <h2 class="section-title">What to Expect</h2>
+    <!-- Pricing Section -->
+    <div class="pricing-section">
+      <h2 class="section-title">Pricing</h2>
       <p class="section-subtitle">
-        Transparency matters. Here is how we run MPM Cloud and what you can
-        count on.
+        Start for free and scale as your operations grow.
       </p>
-      <div class="expectations-grid">
-        <div class="expectation-card highlighted">
-          <div class="expectation-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="12" x2="12" y1="1" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+      <div class="pricing-grid">
+        <!-- Free -->
+        <div class="pricing-card promoted">
+          <div class="pricing-card-header">
+            <h3 class="pricing-tier-name">Free</h3>
+            <p class="pricing-description">
+              For small utilities getting started.
+            </p>
           </div>
-          <h3>Pricing</h3>
-          <p>
-            MPM Cloud is currently free for small utilities getting started. We
-            want to lower the barrier to adoption and help you grow. Larger
-            organizations with more customers are welcome too — just
-            <a href="mailto:mpm@enaccess.org">reach out to us</a> so we can find
-            an arrangement that works.
-          </p>
-        </div>
-        <div class="expectation-card">
-          <div class="expectation-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
+          <div class="pricing-volume-options">
+            <div class="pricing-volume-option">
+              <div class="volume-price">
+                <span class="volume-amount">$0</span
+                ><span class="volume-period">/month</span>
+              </div>
+              <ul class="volume-limits">
+                <li><strong>500</strong> customers</li>
+                <li><strong>500</strong> devices</li>
+                <li><strong>1,000</strong> transactions/month</li>
+              </ul>
+            </div>
           </div>
-          <h3>Availability</h3>
-          <p>
-            We aim for high uptime so your operations run smoothly around the
-            clock. Planned maintenance is scheduled outside peak hours and
-            communicated in advance.
-          </p>
+          <ul class="pricing-features">
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Community support via Discord and Github
+            </li>
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Immediate CVE response
+            </li>
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Server maintenance &amp; backups
+            </li>
+          </ul>
+          <a
+            href="https://cloud.micropowermanager.io"
+            target="_blank"
+            class="pricing-btn pricing-btn-primary"
+            >Get Started Free</a
+          >
         </div>
-        <div class="expectation-card">
-          <div class="expectation-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-              />
-            </svg>
+
+        <!-- Growth -->
+        <div class="pricing-card promoted">
+          <div class="pricing-card-header">
+            <h3 class="pricing-tier-name">Growth</h3>
+            <p class="pricing-description">
+              For growing utilities that need more capacity and dedicated
+              support.
+            </p>
           </div>
-          <h3>Support</h3>
-          <p>
-            Reach our team through email or Discord. We triage issues by
-            severity and keep you informed until they are resolved.
-          </p>
+          <div class="pricing-volume-options">
+            <div class="pricing-volume-option">
+              <div class="volume-price">
+                <span class="volume-amount">$100</span
+                ><span class="volume-period">/month</span>
+              </div>
+              <ul class="volume-limits">
+                <li><strong>2,000</strong> customers</li>
+                <li><strong>2,000</strong> devices</li>
+                <li><strong>4,000</strong> transactions/month</li>
+              </ul>
+            </div>
+            <div class="pricing-volume-divider"></div>
+            <div class="pricing-volume-option">
+              <div class="volume-price">
+                <span class="volume-amount">$250</span
+                ><span class="volume-period">/month</span>
+              </div>
+              <ul class="volume-limits">
+                <li><strong>5,000</strong> customers</li>
+                <li><strong>5,000</strong> devices</li>
+                <li><strong>10,000</strong> transactions/month</li>
+              </ul>
+            </div>
+          </div>
+          <ul class="pricing-features">
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Everything in Free
+            </li>
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Email support (2 business day response)
+            </li>
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Uptime guarantee
+            </li>
+          </ul>
+          <a
+            href="https://cloud.micropowermanager.io"
+            target="_blank"
+            class="pricing-btn pricing-btn-primary"
+            >Get Started</a
+          >
         </div>
+
+        <!-- Custom -->
+        <div class="pricing-card subdued">
+          <div class="pricing-card-header">
+            <h3 class="pricing-tier-name">Custom</h3>
+            <p class="pricing-description">
+              For large-scale operations or specific requirements.
+            </p>
+          </div>
+          <div class="pricing-volume-options">
+            <div class="pricing-volume-option">
+              <p class="volume-description">
+                Let's talk about your needs. Reach out and we find an
+                arrangement that works.
+              </p>
+            </div>
+          </div>
+          <ul class="pricing-features">
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Everything in Growth
+            </li>
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Custom volume limits
+            </li>
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Whitelabel option
+            </li>
+            <li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Dedicated account manager
+            </li>
+          </ul>
+          <a
+            href="mailto:info@enaccess.org"
+            class="pricing-btn pricing-btn-secondary"
+            >Reach Out</a
+          >
+        </div>
+      </div>
+
+      <div class="additional-offerings">
+        <h3>Additional Services</h3>
+        <p class="additional-offerings-intro">
+          Independent of any Cloud plan, we offer consulting and hands-on
+          support to help you get the most out of MPM.
+        </p>
+        <div class="offerings-grid">
+          <div class="offering-item">
+            <div class="offering-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
+                />
+              </svg>
+            </div>
+            <div>
+              <strong>Migration support</strong>
+              <span
+                >Moving into MPM, from Cloud to self-hosted, or the other way
+                around.</span
+              >
+            </div>
+          </div>
+          <div class="offering-item">
+            <div class="offering-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+                />
+              </svg>
+            </div>
+            <div>
+              <strong>Integration &amp; customization</strong>
+              <span
+                >Payment gateways, meter protocols, SMS providers, and
+                third-party systems.</span
+              >
+            </div>
+          </div>
+          <div class="offering-item">
+            <div class="offering-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+            </div>
+            <div>
+              <strong>Training &amp; onboarding</strong>
+              <span
+                >Hands-on workshops for your operations and technical
+                teams.</span
+              >
+            </div>
+          </div>
+          <div class="offering-item">
+            <div class="offering-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" x2="18" y1="20" y2="10" />
+                <line x1="12" x2="12" y1="20" y2="4" />
+                <line x1="6" x2="6" y1="20" y2="14" />
+              </svg>
+            </div>
+            <div>
+              <strong>Data &amp; reporting</strong>
+              <span>Analytics, and regulatory reporting setups.</span>
+            </div>
+          </div>
+        </div>
+        <p class="additional-offerings-cta">
+          <a href="mailto:info@enaccess.org">Get in touch</a> to learn more.
+        </p>
       </div>
     </div>
 
@@ -593,74 +890,270 @@ $mobile: 419px;
   }
 }
 
-/* Expectations Section */
-.expectations-section {
+/* Pricing Section */
+.pricing-section {
   padding: 4rem 0;
 }
 
-.expectations-grid {
+.pricing-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  align-items: start;
 
   @media (max-width: $tablet) {
     grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
   }
 }
 
-.expectation-card {
+.pricing-card {
+  position: relative;
   display: flex;
-  gap: 1.25rem;
-  padding: 1.75rem;
+  flex-direction: column;
+  padding: 2rem;
   background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
   border-radius: 1rem;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: var(--vp-c-brand-1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
 
-  &.highlighted {
-    grid-column: 1 / -1;
+  &.promoted {
     border-color: var(--vp-c-brand-1);
-    background: rgba(27, 117, 186, 0.03);
   }
 
-  .expectation-icon {
-    flex-shrink: 0;
+  &.subdued {
+    opacity: 0.75;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.pricing-card-header {
+  margin-bottom: 1.5rem;
+}
+
+.pricing-tier-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  margin: 0 0 0.5rem;
+}
+
+.pricing-description {
+  font-size: 0.9rem;
+  color: var(--vp-c-text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Volume options */
+.pricing-volume-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.pricing-volume-option {
+  padding: 0.5rem 0;
+}
+
+.pricing-volume-divider {
+  border-top: 1px dashed var(--vp-c-divider);
+}
+
+.volume-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.volume-amount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--vp-c-text-1);
+  line-height: 1;
+}
+
+.volume-period {
+  font-size: 1rem;
+  color: var(--vp-c-text-2);
+  font-weight: 500;
+}
+
+.volume-limits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    font-size: 0.85rem;
+    color: var(--vp-c-text-2);
+    padding: 0.15rem 0;
+
+    strong {
+      color: var(--vp-c-text-1);
+      font-weight: 700;
+    }
+  }
+}
+
+.volume-description {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  flex: 1;
+
+  li {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    background: rgba(27, 117, 186, 0.1);
-    border-radius: 0.75rem;
-    color: var(--vp-c-brand-1);
-  }
-
-  h3 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--vp-c-text-1);
-    margin: 0 0 0.375rem;
-  }
-
-  p {
+    align-items: flex-start;
+    gap: 0.5rem;
     font-size: 0.9rem;
     color: var(--vp-c-text-2);
-    margin: 0;
-    line-height: 1.6;
+    padding: 0.3rem 0;
 
-    a {
+    svg {
+      flex-shrink: 0;
+      color: #16a34a;
+      margin-top: 2px;
+    }
+  }
+}
+
+.pricing-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &-primary {
+    background: var(--vp-c-brand-1);
+    color: white;
+
+    &:hover {
+      background: var(--vp-c-brand-2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(27, 117, 186, 0.3);
+    }
+  }
+
+  &-secondary {
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-1);
+    border: 1px solid var(--vp-c-divider);
+
+    &:hover {
+      border-color: var(--vp-c-brand-1);
       color: var(--vp-c-brand-1);
-      text-decoration: none;
-      font-weight: 500;
+      transform: translateY(-2px);
+    }
+  }
+}
 
-      &:hover {
-        text-decoration: underline;
-      }
+.additional-offerings {
+  margin-top: 2.5rem;
+  padding: 2rem 2rem 1.5rem;
+  background: var(--vp-c-bg-soft);
+  border-radius: 1rem;
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--vp-c-text-1);
+    margin: 0 0 0.5rem;
+    text-align: center;
+  }
+}
+
+.additional-offerings-intro {
+  font-size: 0.95rem;
+  color: var(--vp-c-text-2);
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 540px;
+}
+
+.offerings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.offering-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--vp-c-bg);
+  border-radius: 0.75rem;
+  border: 1px solid var(--vp-c-divider);
+
+  strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--vp-c-text-1);
+    margin-bottom: 0.2rem;
+  }
+
+  span {
+    font-size: 0.8rem;
+    color: var(--vp-c-text-2);
+    line-height: 1.4;
+  }
+}
+
+.offering-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: rgba(27, 117, 186, 0.1);
+  border-radius: 0.5rem;
+  color: var(--vp-c-brand-1);
+}
+
+.additional-offerings-cta {
+  font-size: 0.9rem;
+  color: var(--vp-c-text-2);
+  text-align: center;
+  margin: 1.25rem 0 0;
+
+  a {
+    color: var(--vp-c-brand-1);
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
