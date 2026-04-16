@@ -49,6 +49,7 @@ import TransactionDetail from "@/modules/Transactions/Transaction.vue"
 import TransactionList from "@/modules/Transactions/Transactions.vue"
 import UnauthorizedPage from "@/modules/Unauthorized/index.vue"
 import AddVillage from "@/modules/Village/AddVillage.vue"
+import VillageList from "@/modules/Village/VillageList.vue"
 import Welcome from "@/modules/Welcome/index.vue"
 import AfricasTalkingOverview from "@/plugins/africas-talking/modules/Overview/Overview.vue"
 import AngazaShsOverview from "@/plugins/angaza-shs/modules/Overview/Overview.vue"
@@ -167,6 +168,14 @@ export const exportedRoutes = [
         path: "add-village",
         component: AddVillage,
         name: "add-village",
+        meta: {
+          layout: "default",
+        },
+      },
+      {
+        path: "villages",
+        component: VillageList,
+        name: "villages",
         meta: {
           layout: "default",
         },

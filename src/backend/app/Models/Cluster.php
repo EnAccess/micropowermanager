@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property      object                    $geo_json
  * @property      Carbon|null               $created_at
  * @property      Carbon|null               $updated_at
+ * @property      Carbon|null               $deleted_at
  * @property-read Collection<int, City>     $cities
  * @property-read User|null                 $manager
  * @property-read Collection<int, MiniGrid> $miniGrids
@@ -28,6 +30,7 @@ use Illuminate\Support\Carbon;
 class Cluster extends BaseModel implements ITargetAssignable {
     /** @use HasFactory<ClusterFactory> */
     use HasFactory;
+    use SoftDeletes;
 
     public const RELATION_NAME = 'cluster';
 

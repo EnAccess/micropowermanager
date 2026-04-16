@@ -28,6 +28,34 @@ export class ClusterService {
     }
   }
 
+  async updateCluster(clusterId, clusterData) {
+    const params = convertObjectKeysToSnakeCase(clusterData)
+    try {
+      const { data, status, error } = await this.repository.update(
+        clusterId,
+        params,
+      )
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async deleteCluster(clusterId) {
+    try {
+      const { status, error } = await this.repository.delete(clusterId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return true
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   async getClusters() {
     try {
       const { data, status, error } = await this.repository.list()

@@ -39,9 +39,38 @@
               md-mode="indeterminate"
             ></md-progress-bar>
           </md-button>
+          <md-button class="md-raised" @click="openEditDialog">
+            <md-icon>edit</md-icon>
+            {{ $tc("words.edit") }}
+          </md-button>
+          <md-button class="md-raised md-accent" @click="confirmDelete">
+            <md-icon>delete</md-icon>
+            {{ $tc("words.delete") }}
+          </md-button>
         </div>
       </div>
     </md-toolbar>
+    <md-dialog
+      :md-active.sync="editDialogActive"
+      :md-close-on-esc="true"
+      :md-click-outside-to-close="true"
+    >
+      <md-dialog-title>{{ $tc("phrases.editCluster") }}</md-dialog-title>
+      <md-dialog-content>
+        <md-field>
+          <label>{{ $tc("words.name") }}</label>
+          <md-input v-model="editName" />
+        </md-field>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button @click="editDialogActive = false">
+          {{ $tc("words.cancel") }}
+        </md-button>
+        <md-button class="md-primary" @click="saveEdit">
+          {{ $tc("words.save") }}
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
     <div class="md-layout md-gutter">
       <div class="md-layout-item md-size-100">
         <box-group :cluster="clusterData" />
@@ -82,6 +111,7 @@ import RevenueTrends from "./RevenueTrends.vue"
 import { notify } from "@/mixins/notify.js"
 import FinancialOverview from "@/modules/Dashboard/FinancialOverview.vue"
 import ClusterMap from "@/modules/Map/ClusterMap.vue"
+import { ClusterService } from "@/services/ClusterService.js"
 import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import "@/shared/TableList.vue"
@@ -99,8 +129,11 @@ export default {
     return {
       clusterData: {},
       mappingService: new MappingService(),
+      clusterService: new ClusterService(),
       clusterId: null,
       loading: false,
+      editDialogActive: false,
+      editName: "",
       boxData: {
         revenue: {
           period: "-",
@@ -239,6 +272,55 @@ export default {
     addConnections(data) {
       this.boxData["people"] = data
       this.boxData["meters"] = data
+    },
+    openEditDialog() {
+      this.editName = this.clusterData.name || ""
+      this.editDialogActive = true
+    },
+    async saveEdit() {
+      if (!this.editName || !this.editName.trim()) {
+        this.alertNotify("error", this.$tc("phrases.nameRequired"))
+        return
+      }
+      try {
+        await this.clusterService.updateCluster(this.clusterId, {
+          name: this.editName.trim(),
+        })
+        this.editDialogActive = false
+        this.alertNotify("success", this.$tc("phrases.clusterUpdated"))
+        await this.$store.dispatch("clusterDashboard/list")
+        this.loadClusterData(this.clusterId)
+      } catch (e) {
+        this.alertNotify("error", e.message || this.$tc("phrases.updateFailed"))
+      }
+    },
+    confirmDelete() {
+      this.$swal({
+        type: "question",
+        title: this.$tc("phrases.deleteCluster"),
+        text: this.$tc("phrases.deleteClusterNotify", 0, {
+          name: this.clusterData.name,
+        }),
+        width: "35%",
+        confirmButtonText: this.$tc("words.confirm"),
+        showCancelButton: true,
+        cancelButtonText: this.$tc("words.cancel"),
+        focusCancel: true,
+      }).then((result) => {
+        if (result.value) {
+          this.deleteCluster()
+        }
+      })
+    },
+    async deleteCluster() {
+      try {
+        await this.clusterService.deleteCluster(this.clusterId)
+        this.alertNotify("success", this.$tc("phrases.clusterDeleted"))
+        await this.$store.dispatch("clusterDashboard/list")
+        this.$router.push("/clusters")
+      } catch (e) {
+        this.alertNotify("error", e.message || this.$tc("phrases.deleteFailed"))
+      }
     },
   },
   computed: {

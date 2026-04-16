@@ -47,6 +47,11 @@
                   {{ $tc("menu.subMenu.addVillage") }}
                 </span>
               </md-menu-item>
+              <md-menu-item @click="navigateRoute('/locations/villages')">
+                <span class="mobile-sub-menu-text">
+                  {{ $tc("menu.subMenu.manageVillages") }}
+                </span>
+              </md-menu-item>
             </md-menu-content>
           </md-menu>
           <md-menu class="menu-item" md-direction="bottom-end" md-size="medium">

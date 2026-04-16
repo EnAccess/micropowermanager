@@ -30,6 +30,9 @@
               <md-menu-item @click="navigateRoute('/locations/add-village')">
                 {{ $tc("menu.subMenu.addVillage") }}
               </md-menu-item>
+              <md-menu-item @click="navigateRoute('/locations/villages')">
+                {{ $tc("menu.subMenu.manageVillages") }}
+              </md-menu-item>
             </md-menu-content>
           </md-menu>
           <md-menu class="menu-item" md-direction="bottom-end" md-size="big">

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClusterRequest;
+use App\Http\Requests\UpdateClusterRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\ClusterMeterService;
 use App\Services\ClusterPopulationService;
 use App\Services\ClusterService;
 use App\Services\ClusterTransactionService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ClusterController extends Controller {
@@ -51,5 +53,18 @@ class ClusterController extends Controller {
         $clusterData = $request->getClusterData();
 
         return ApiResource::make($this->clusterService->create($clusterData));
+    }
+
+    public function update(int $clusterId, UpdateClusterRequest $request): ApiResource {
+        $cluster = $this->clusterService->getById($clusterId);
+
+        return ApiResource::make($this->clusterService->update($cluster, $request->getClusterData()));
+    }
+
+    public function destroy(int $clusterId): JsonResponse {
+        $cluster = $this->clusterService->getById($clusterId);
+        $this->clusterService->delete($cluster);
+
+        return response()->json(['message' => 'Cluster deleted.']);
     }
 }

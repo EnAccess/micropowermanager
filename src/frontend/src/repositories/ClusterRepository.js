@@ -6,6 +6,12 @@ export default {
   create(cluster) {
     return Client.post(`${resource}`, cluster)
   },
+  update(clusterId, cluster) {
+    return Client.put(`${resource}/${clusterId}`, cluster)
+  },
+  delete(clusterId) {
+    return Client.delete(`${resource}/${clusterId}`)
+  },
   list() {
     return Client.get(`${resource}`)
   },

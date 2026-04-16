@@ -36,6 +36,14 @@
               >
                 <md-icon>calendar_today</md-icon>
               </md-button>
+              <md-button class="md-raised" @click="openEditModal">
+                <md-icon>edit</md-icon>
+                {{ $tc("words.edit") }}
+              </md-button>
+              <md-button class="md-raised md-accent" @click="confirmDelete">
+                <md-icon>delete</md-icon>
+                {{ $tc("words.delete") }}
+              </md-button>
             </div>
           </md-toolbar>
           <div v-if="setPeriod" class="period-selector">
@@ -163,68 +171,27 @@
         </div>
       </div>
 
-      <transition name="modal" v-if="showModal">
-        <div class="modal-mask">
-          <div class="modal-wrapper">
-            <div class="modal-container">
-              <md-card class="md-size-100">
-                <md-card-header>
-                  <h3>
-                    {{ $tc("words.edit") }}
-                    {{ miniGridData.name }}
-                  </h3>
-                </md-card-header>
-                <md-card-content>
-                  <md-field>
-                    <label for="mini-grid-name">
-                      {{ $tc("words.name") }}
-                    </label>
-                    <md-input
-                      type="text"
-                      id="mini-grid-name"
-                      class="form-control"
-                      :value="miniGridData.name"
-                    ></md-input>
-                  </md-field>
-
-                  <md-field>
-                    <label for="mini-grid-location">
-                      {{ $tc("words.location") }}
-                    </label>
-                    <md-input
-                      type="text"
-                      id="mini-grid-location"
-                      class="form-control"
-                      :value="
-                        miniGridData.location !== undefined
-                          ? miniGridData.location.points
-                          : ''
-                      "
-                      placeholder="Latitude, Longitude"
-                    ></md-input>
-                  </md-field>
-                </md-card-content>
-                <md-card-actions>
-                  <md-button
-                    class="md-raised md-accent"
-                    @click="showModal = false"
-                  >
-                    <md-icon>cancel</md-icon>
-                    {{ $tc("words.close") }}
-                  </md-button>
-
-                  <md-button
-                    @click="updateMiniGrid"
-                    class="md-raised md-primary"
-                  >
-                    {{ $tc("words.update") }}
-                  </md-button>
-                </md-card-actions>
-              </md-card>
-            </div>
-          </div>
-        </div>
-      </transition>
+      <md-dialog
+        :md-active.sync="showModal"
+        :md-close-on-esc="true"
+        :md-click-outside-to-close="true"
+      >
+        <md-dialog-title>{{ $tc("phrases.editMiniGrid") }}</md-dialog-title>
+        <md-dialog-content>
+          <md-field>
+            <label>{{ $tc("words.name") }}</label>
+            <md-input v-model="editName" />
+          </md-field>
+        </md-dialog-content>
+        <md-dialog-actions>
+          <md-button @click="showModal = false">
+            {{ $tc("words.cancel") }}
+          </md-button>
+          <md-button class="md-primary" @click="updateMiniGrid">
+            {{ $tc("words.save") }}
+          </md-button>
+        </md-dialog-actions>
+      </md-dialog>
     </section>
   </div>
 </template>
@@ -267,6 +234,7 @@ export default {
       batchRevenueService: new BatchRevenueService(),
       deviceAddressService: new DeviceAddressService(),
       showModal: false,
+      editName: "",
       miniGridData: {},
       miniGridId: null,
       chartOptions: {
@@ -546,8 +514,52 @@ export default {
       }
       return this.trendChartData.base
     },
-    editMiniGrid() {
+    openEditModal() {
+      this.editName = this.miniGridData.name || ""
       this.showModal = true
+    },
+    async updateMiniGrid() {
+      if (!this.editName || !this.editName.trim()) {
+        this.alertNotify("error", this.$tc("phrases.nameRequired"))
+        return
+      }
+      try {
+        await this.miniGridService.updateMiniGrid(this.miniGridId, {
+          name: this.editName.trim(),
+        })
+        this.showModal = false
+        this.alertNotify("success", this.$tc("phrases.miniGridUpdated"))
+        await this.getMiniGridData()
+      } catch (e) {
+        this.alertNotify("error", e.message || this.$tc("phrases.updateFailed"))
+      }
+    },
+    confirmDelete() {
+      this.$swal({
+        type: "question",
+        title: this.$tc("phrases.deleteMiniGrid"),
+        text: this.$tc("phrases.deleteMiniGridNotify", 0, {
+          name: this.miniGridData.name,
+        }),
+        width: "35%",
+        confirmButtonText: this.$tc("words.confirm"),
+        showCancelButton: true,
+        cancelButtonText: this.$tc("words.cancel"),
+        focusCancel: true,
+      }).then((result) => {
+        if (result.value) {
+          this.deleteMiniGrid()
+        }
+      })
+    },
+    async deleteMiniGrid() {
+      try {
+        await this.miniGridService.deleteMiniGrid(this.miniGridId)
+        this.alertNotify("success", this.$tc("phrases.miniGridDeleted"))
+        this.$router.push("/dashboards/mini-grid")
+      } catch (e) {
+        this.alertNotify("error", e.message || this.$tc("phrases.deleteFailed"))
+      }
     },
     calculateRevenuePercent(current, compared) {
       if (current + compared === 0) return -1

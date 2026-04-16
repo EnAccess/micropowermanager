@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Znck\Eloquent\Relations\BelongsToThrough;
 use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
@@ -23,6 +24,7 @@ use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
  * @property      int                          $mini_grid_id
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
+ * @property      Carbon|null                  $deleted_at
  * @property-read Collection<int, Address>     $addresses
  * @property-read Cluster|null                 $cluster
  * @property-read Country|null                 $country
@@ -34,6 +36,7 @@ use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 class City extends BaseModel {
     /** @use HasFactory<CityFactory> */
     use HasFactory;
+    use SoftDeletes;
     use BelongsToThroughTrait;
 
     public const RELATION_NAME = 'city';
