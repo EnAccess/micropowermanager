@@ -4,6 +4,7 @@ namespace App\Providers\Helpers;
 
 use App\Models\Transaction\AgentTransaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\PaystackPaymentProvider\Providers\PaystackTransactionProvider;
 use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
 use App\Plugins\SmsTransactionParser\Providers\SmsTransactionProvider;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -38,7 +39,7 @@ class TransactionAdapter {
 
             return $baseTransaction;
         } elseif ($transactionProvider instanceof PaystackTransaction) {
-            $baseTransaction = resolve('PaystackPaymentProvider');
+            $baseTransaction = resolve(PaystackTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;

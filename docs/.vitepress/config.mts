@@ -59,6 +59,7 @@ export default withMermaid(
       nav: [
         { text: "Home", link: "/" },
         { text: "Docs", link: "/get-started" },
+        { text: "Cloud", link: "/cloud" },
         { text: "Roadmap", link: "/roadmap" },
       ],
       footer: {

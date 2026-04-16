@@ -50,6 +50,25 @@ class PluginsService {
             ->first();
     }
 
+    /**
+     * @return Collection<int, Plugins>
+     */
+    public function getActivePaymentProviders(): Collection {
+        $paymentProviderIds = [
+            MpmPlugin::SWIFTA_PAYMENT_PROVIDER,
+            MpmPlugin::MESOMB_PAYMENT_PROVIDER,
+            MpmPlugin::WAVE_MONEY_PAYMENT_PROVIDER,
+            MpmPlugin::WAVECOM_PAYMENT_PROVIDER,
+            MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+        ];
+
+        return $this->plugin->newQuery()
+            ->where('status', Plugins::ACTIVE)
+            ->whereIn('mpm_plugin_id', $paymentProviderIds)
+            ->get();
+    }
+
     public function isPluginActive(int $pluginId): bool {
         return $this->plugin->newQuery()
             ->where('mpm_plugin_id', '=', $pluginId)

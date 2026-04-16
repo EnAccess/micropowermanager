@@ -1,61 +1,54 @@
 <template>
   <div class="roadmap-container">
-    <!-- Hero Section -->
-    <div class="roadmap-hero">
-      <div class="hero-content">
-        <h1 class="hero-title">MPM Roadmap</h1>
-        <p class="hero-tagline">
-          Our vision for the future of MicroPowerManager — transparent,
-          community-driven, and always evolving.
-        </p>
-        <div class="hero-actions">
-          <a
-            href="https://github.com/EnAccess/micropowermanager/issues"
-            target="_blank"
-            class="hero-btn hero-btn-primary"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" x2="12" y1="8" y2="12" />
-              <line x1="12" x2="12.01" y1="16" y2="16" />
-            </svg>
-            Feature Requests
-          </a>
-          <a
-            href="https://discord.osea-community.org/"
-            target="_blank"
-            class="hero-btn hero-btn-secondary"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-              />
-            </svg>
-            Join Discord
-          </a>
-        </div>
-      </div>
-    </div>
+    <PageHero
+      title="MPM Roadmap"
+      tagline="Our vision for the future of MicroPowerManager — transparent, community-driven, and always evolving."
+    >
+      <a
+        href="https://github.com/EnAccess/micropowermanager/issues"
+        target="_blank"
+        class="hero-btn hero-btn-primary"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" x2="12" y1="8" y2="12" />
+          <line x1="12" x2="12.01" y1="16" y2="16" />
+        </svg>
+        Feature Requests
+      </a>
+      <a
+        href="https://discord.osea-community.org/"
+        target="_blank"
+        class="hero-btn hero-btn-secondary"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+          />
+        </svg>
+        Join Discord
+      </a>
+    </PageHero>
 
     <!-- Release Navigation -->
     <div class="release-nav">
@@ -276,33 +269,25 @@
       </div>
     </div>
 
-    <!-- Community Section -->
-    <div class="community-section">
-      <div class="community-content">
-        <h2>Shape the Future of MPM</h2>
-        <p>
-          MPM is built by and for the community. Your feedback drives our
-          priorities. Join us in building tools that empower sustainable energy
-          access worldwide.
-        </p>
-        <div class="community-actions">
-          <a
-            href="https://discord.osea-community.org/"
-            target="_blank"
-            class="community-btn"
-          >
-            Join Discord Community
-          </a>
-          <a
-            href="https://github.com/EnAccess/micropowermanager"
-            target="_blank"
-            class="community-btn community-btn-outline"
-          >
-            Contribute on GitHub
-          </a>
-        </div>
-      </div>
-    </div>
+    <PageCta
+      title="Shape the Future of MPM"
+      description="MPM is built by and for the community. Your feedback drives our priorities. Join us in building tools that empower sustainable energy access worldwide."
+    >
+      <a
+        href="https://discord.osea-community.org/"
+        target="_blank"
+        class="cta-btn"
+      >
+        Join Discord Community
+      </a>
+      <a
+        href="https://github.com/EnAccess/micropowermanager"
+        target="_blank"
+        class="cta-btn cta-btn-outline"
+      >
+        Contribute on GitHub
+      </a>
+    </PageCta>
 
     <p class="last-updated">Last updated: {{ lastUpdated }}</p>
   </div>
@@ -311,6 +296,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { useData } from "vitepress"
+import PageHero from "./PageHero.vue"
+import PageCta from "./PageCta.vue"
 
 const { frontmatter } = useData()
 
@@ -410,130 +397,12 @@ const navigateToRelease = (version: string | "all") => {
 </script>
 
 <style scoped lang="scss">
-$pc: 1440px;
-$laptop: 1280px;
-$pad: 959px;
-$tablet: 719px;
 $mobile: 419px;
 
 .roadmap-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
-}
-
-/* Hero Section */
-.roadmap-hero {
-  position: relative;
-  padding: 4rem 0;
-  text-align: center;
-  background: linear-gradient(
-    135deg,
-    rgba(27, 117, 186, 0.08) 0%,
-    rgba(119, 217, 247, 0.08) 50%,
-    rgba(23, 69, 105, 0.08) 100%
-  );
-  border-radius: 1.5rem;
-  margin: 2rem 0;
-  overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-      radial-gradient(
-        circle at 20% 80%,
-        rgba(27, 117, 186, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 20%,
-        rgba(119, 217, 247, 0.1) 0%,
-        transparent 50%
-      );
-    pointer-events: none;
-  }
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
-
-.hero-title {
-  font-size: 3rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-4));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 1rem;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  padding-bottom: 0.1em;
-
-  @media (max-width: $tablet) {
-    font-size: 2.25rem;
-  }
-}
-
-.hero-tagline {
-  font-size: 1.25rem;
-  color: var(--vp-c-text-2);
-  max-width: 600px;
-  margin: 0 auto 2rem;
-  line-height: 1.6;
-
-  @media (max-width: $tablet) {
-    font-size: 1rem;
-    padding: 0 1rem;
-  }
-}
-
-.hero-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.hero-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-
-  &-primary {
-    background: var(--vp-c-brand-1);
-    color: white;
-
-    &:hover {
-      background: var(--vp-c-brand-2);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(27, 117, 186, 0.3);
-    }
-  }
-
-  &-secondary {
-    background: var(--vp-c-bg-soft);
-    color: var(--vp-c-text-1);
-    border: 1px solid var(--vp-c-divider);
-
-    &:hover {
-      background: var(--vp-c-bg-alt);
-      border-color: var(--vp-c-brand-1);
-      color: var(--vp-c-brand-1);
-    }
-  }
 }
 
 /* Release Navigation */
@@ -921,75 +790,6 @@ $mobile: 419px;
     color: var(--vp-c-text-2);
     margin: 0;
     line-height: 1.5;
-  }
-}
-
-/* Community Section */
-.community-section {
-  margin: 4rem 0;
-  padding: 4rem 2rem;
-  background: linear-gradient(
-    135deg,
-    var(--vp-c-brand-1) 0%,
-    var(--vp-c-brand-2) 100%
-  );
-  border-radius: 1.5rem;
-  text-align: center;
-}
-
-.community-content {
-  max-width: 600px;
-  margin: 0 auto;
-
-  h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: white;
-    margin: 0 0 1rem;
-  }
-
-  p {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.6;
-    margin: 0 0 2rem;
-  }
-}
-
-.community-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.community-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.75rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  background: white;
-  color: var(--vp-c-brand-1);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  &-outline {
-    background: transparent;
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: white;
-    }
   }
 }
 
