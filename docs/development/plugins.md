@@ -150,6 +150,54 @@ class InstallPackage extends Command
 }
 ```
 
+#### Payment Provider Plugins
+
+If your plugin is a **payment provider** (processes transactions from an external payment gateway), there are additional integration steps required:
+
+1. **Implement the `PaymentInitializer` interface**
+
+   Your plugin's transaction service must implement `App\Services\Interfaces\PaymentInitializer`. This enforces a consistent `initializePayment()` method that creates the provider-specific record and an associated `Transaction` entry.
+
+   ```php
+   use App\Services\Interfaces\PaymentInitializer;
+
+   class YourProviderTransactionService implements PaymentInitializer {
+       public function initializePayment(
+           float $amount,
+           string $sender,
+           string $message,
+           string $type,
+           int $customerId,
+           ?string $serialId = null,
+       ): array {
+           // 1. Create your provider-specific transaction record
+           // 2. Create the associated Transaction record
+           // 3. Call your provider's API if needed (e.g. to get a redirect URL)
+           // 4. Return ['transaction' => $transaction, 'provider_data' => [...]]
+       }
+   }
+   ```
+
+2. **Register in the provider map**
+
+   Add your plugin's MpmPlugin ID and service class to the `PROVIDER_MAP` constant in `App\Services\PaymentInitializationService`:
+
+   ```php
+   private const PROVIDER_MAP = [
+       0 => CashTransactionService::class,
+       MpmPlugin::PAYSTACK_PAYMENT_PROVIDER => PaystackTransactionService::class,
+       MpmPlugin::YOUR_PAYMENT_PROVIDER => YourProviderTransactionService::class,
+   ];
+   ```
+
+3. **Register in the active providers list**
+
+   Add your plugin's MpmPlugin ID to the `$paymentProviderIds` array in `App\Services\PluginsService::getActivePaymentProviders()`. This is required for your provider to appear as an available payment option in the UI.
+
+4. **Provider validation**
+
+   Payment validation (device ownership, minimum purchase amounts) is handled via the `ITransactionProvider::validateRequest()` interface and `AbstractPaymentAggregatorTransactionService::validatePaymentOwner()`. If your provider receives incoming payment callbacks, implement `ITransactionProvider` in your provider class to plug into the existing validation pipeline.
+
 ### Frontend Integration
 
 This section describe how to integrate your plugin with the MicroPowerManager frontend.

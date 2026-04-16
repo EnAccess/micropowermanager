@@ -454,7 +454,6 @@ export default {
       const labels = {
         energy_service: this.$tc("phrases.eaasRate"),
         eaas_rate: this.$tc("phrases.eaasRate"),
-        "down payment": this.$tc("phrases.downPayment"),
         down_payment: this.$tc("phrases.downPayment"),
         installment: this.$tc("phrases.deferredPayment"),
         deferred_payment: this.$tc("phrases.deferredPayment"),
