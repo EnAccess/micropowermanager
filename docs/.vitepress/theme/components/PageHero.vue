@@ -44,8 +44,16 @@ $tablet: 719px;
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(circle at 20% 80%, rgba(27, 117, 186, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(119, 217, 247, 0.1) 0%, transparent 50%);
+      radial-gradient(
+        circle at 20% 80%,
+        rgba(27, 117, 186, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(119, 217, 247, 0.1) 0%,
+        transparent 50%
+      );
     pointer-events: none;
   }
 }
