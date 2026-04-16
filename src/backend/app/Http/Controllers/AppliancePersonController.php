@@ -8,6 +8,8 @@ use App\Http\Resources\ApiResource;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\Person\Person;
+use App\Models\Transaction\Transaction;
+use App\Models\User;
 use App\Services\AddressesService;
 use App\Services\AddressGeographicalInformationService;
 use App\Services\AppliancePersonService;
@@ -36,88 +38,34 @@ class AppliancePersonController extends Controller {
         private ApplianceRateService $applianceRateService,
     ) {}
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(
         Appliance $appliance,
         Request $request,
     ): ApiResource {
         try {
-            $userId = $request->input('user_id');
-            $applianceId = $request->input('id');
-            $personId = $request->input('person_id');
-            $cost = (int) $request->input('cost');
-            $installmentCount = (int) $request->input('rate');
-            $downPayment = (float) $request->input('down_payment');
+            $user = $this->userService->getById($request->input('user_id'));
+            $appliance = $this->applianceService->getById($request->input('id'));
+            $paymentType = $request->input('payment_type', AppliancePerson::PAYMENT_TYPE_INSTALLMENT);
+            $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
+            $downPayment = (float) $request->input('down_payment', 0);
             $deviceSerial = $request->input('device_serial');
-            $addressData = $request->input('address');
-            $user = $this->userService->getById($userId);
-            $appliance = $this->applianceService->getById($applianceId);
-            $installmentType = $request->input('rate_type');
-            $points = $request->input('points');
 
             DB::connection('tenant')->beginTransaction();
 
-            $appliancePerson = $this->appliancePersonService->make([
-                'appliance_id' => $applianceId,
-                'person_id' => $personId,
-                'total_cost' => $cost,
-                'rate_count' => $installmentCount,
-                'down_payment' => $downPayment,
-                'device_serial' => $deviceSerial,
-            ]);
-            $this->userAppliancePersonService->setAssigned($appliancePerson);
-            $this->userAppliancePersonService->setAssignee($user);
-            $this->userAppliancePersonService->assign();
-            $this->appliancePersonService->save($appliancePerson);
-            $preferredPrice = $appliance->price;
-            if ($cost !== $preferredPrice) {
-                $this->appliancePersonService->createLogForSoldAppliance($appliancePerson, $cost, $preferredPrice);
+            $appliancePerson = $this->createAppliancePerson($request, $user, $paymentType);
+
+            if (!$isEnergyService) {
+                $this->createInstallmentRates($appliancePerson, $appliance, $request->input('rate_type'));
             }
-            $this->applianceRateService->create($appliancePerson, $installmentType);
 
             if ($deviceSerial) {
-                $device = $this->deviceService->getBySerialNumber($deviceSerial);
-                $this->deviceService->update($device, ['person_id' => $personId]);
-                $appliancePerson->device_serial = $deviceSerial;
-
-                $address = $this->addressesService->make([
-                    'street' => $addressData['street'],
-                    'city_id' => $addressData['city_id'],
-                ]);
-
-                // Attach the new address to the person rather than the device.
-                $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
-
-                $geographicalInformation = $this->geographicalInformationService->make([
-                    'points' => $points,
-                ]);
-                $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
-                $this->addressGeographicalInformationService->setAssignee($address);
-                $this->addressGeographicalInformationService->assign();
-                $this->geographicalInformationService->save($geographicalInformation);
+                $this->assignDevice($appliancePerson, $request);
             }
+
             if ($downPayment > 0) {
-                $sender = isset($addressData) ? $addressData['phone'] : '-';
-                $transaction = $this->cashTransactionService->createCashTransaction(
-                    $user->id,
-                    $downPayment,
-                    $sender,
-                    $deviceSerial
-                );
-                $applianceRate = $this->applianceRateService->getDownPaymentAsApplianceRate($appliancePerson);
-                event(new PaymentSuccessEvent(
-                    amount: (int) $transaction->amount,
-                    paymentService: 'web',
-                    paymentType: 'down payment',
-                    sender: $transaction->sender,
-                    paidFor: $applianceRate,
-                    payer: $appliancePerson->person,
-                    transaction: $transaction,
-                ));
-                event(new TransactionSuccessfulEvent($transaction));
+                $this->processDownPayment($appliancePerson, $user, $downPayment, $request);
             }
+
             DB::connection('tenant')->commit();
 
             return ApiResource::make($appliancePerson);
@@ -125,6 +73,91 @@ class AppliancePersonController extends Controller {
             DB::connection('tenant')->rollBack();
             throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);
         }
+    }
+
+    private function createAppliancePerson(Request $request, ?User $user, string $paymentType): AppliancePerson {
+        $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
+
+        $appliancePerson = $this->appliancePersonService->make([
+            'appliance_id' => $request->input('id'),
+            'person_id' => $request->input('person_id'),
+            'total_cost' => $isEnergyService ? 0 : $request->integer('cost'),
+            'rate_count' => $isEnergyService ? 0 : $request->integer('rate'),
+            'down_payment' => (float) $request->input('down_payment', 0),
+            'device_serial' => $request->input('device_serial'),
+            'payment_type' => $paymentType,
+            'minimum_payable_amount' => $isEnergyService ? $request->input('minimum_payable_amount') : null,
+            'price_per_day' => $isEnergyService ? $request->input('price_per_day') : null,
+        ]);
+
+        $this->userAppliancePersonService->setAssigned($appliancePerson);
+        $this->userAppliancePersonService->setAssignee($user);
+        $this->userAppliancePersonService->assign();
+        $this->appliancePersonService->save($appliancePerson);
+
+        return $appliancePerson;
+    }
+
+    private function createInstallmentRates(AppliancePerson $appliancePerson, Appliance $appliance, string $installmentType): void {
+        $cost = (int) $appliancePerson->total_cost;
+        $preferredPrice = $appliance->price;
+
+        if ($cost !== $preferredPrice) {
+            $this->appliancePersonService->createLogForSoldAppliance($appliancePerson, $cost, $preferredPrice);
+        }
+
+        $this->applianceRateService->create($appliancePerson, $installmentType);
+    }
+
+    private function assignDevice(AppliancePerson $appliancePerson, Request $request): void {
+        $deviceSerial = $request->input('device_serial');
+        $addressData = $request->input('address');
+        $points = $request->input('points');
+
+        $device = $this->deviceService->getBySerialNumber($deviceSerial);
+        $this->deviceService->update($device, ['person_id' => $appliancePerson->person_id]);
+
+        $address = $this->addressesService->make([
+            'street' => $addressData['street'],
+            'city_id' => $addressData['city_id'],
+        ]);
+
+        $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
+
+        $geographicalInformation = $this->geographicalInformationService->make([
+            'points' => $points,
+        ]);
+        $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
+        $this->addressGeographicalInformationService->setAssignee($address);
+        $this->addressGeographicalInformationService->assign();
+        $this->geographicalInformationService->save($geographicalInformation);
+    }
+
+    private function processDownPayment(AppliancePerson $appliancePerson, ?User $user, float $downPayment, Request $request): void {
+        $addressData = $request->input('address');
+        $deviceSerial = $request->input('device_serial');
+        $sender = isset($addressData) ? $addressData['phone'] : '-';
+
+        $transaction = $this->cashTransactionService->createCashTransaction(
+            $user->id,
+            $downPayment,
+            $sender,
+            $deviceSerial,
+            type: Transaction::TYPE_DOWN_PAYMENT,
+        );
+
+        $applianceRate = $this->applianceRateService->createPaidRate($appliancePerson, $downPayment);
+
+        event(new PaymentSuccessEvent(
+            amount: (int) $transaction->amount,
+            paymentService: 'web',
+            paymentType: 'down payment',
+            sender: $transaction->sender,
+            paidFor: $applianceRate,
+            payer: $appliancePerson->person,
+            transaction: $transaction,
+        ));
+        event(new TransactionSuccessfulEvent($transaction));
     }
 
     /**

@@ -65,6 +65,9 @@ export default {
   color: #eaeaea;
   padding: 8px;
   border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 .mt-1 {
   margin-top: 8px;

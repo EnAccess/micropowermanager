@@ -14,6 +14,7 @@ class ClusterDashboardData {
         public Cluster $cluster,
         public int $deviceCount = 0,
         public int $meterCount = 0,
+        public int $applianceCount = 0,
         public float $revenue = 0.0,
         public int $population = 0,
         /** @var array<array-key, mixed> */
@@ -41,6 +42,7 @@ class ClusterDashboardData {
             'updated_at' => $this->cluster->updated_at,
             'deviceCount' => $this->deviceCount,
             'meterCount' => $this->meterCount,
+            'applianceCount' => $this->applianceCount,
             'revenue' => $this->revenue,
             'population' => $this->population,
             'citiesRevenue' => $this->citiesRevenue,

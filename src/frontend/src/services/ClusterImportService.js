@@ -21,11 +21,19 @@ export class ClusterImportService {
       }
       return responseData.data
     } catch (e) {
-      if (e.exception) {
+      if (e.message && e.type) {
         throw e
       }
       const errorMessage = e.response?.data?.message || e.message
-      return new ErrorHandler(errorMessage, "http", e.response?.status)
+      const error = {
+        message: errorMessage,
+        type: "http",
+        status_code: e.response?.status,
+      }
+      if (e.response?.data?.errors) {
+        error.errors = e.response.data.errors
+      }
+      throw error
     }
   }
 }

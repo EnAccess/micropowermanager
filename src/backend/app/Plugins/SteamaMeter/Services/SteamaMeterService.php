@@ -48,7 +48,7 @@ class SteamaMeterService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaMeter>
      */
     public function getMeters(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->stmMeter->newQuery()->with([
             'mpmMeter',

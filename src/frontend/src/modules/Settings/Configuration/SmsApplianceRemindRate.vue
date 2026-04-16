@@ -137,95 +137,105 @@
       :button-text="$tc('phrases.newAppliance', 1)"
       @widgetAction="showAddForm = true"
     >
-      <md-table v-if="savedRemindRates.length">
-        <md-table-row>
-          <md-table-head>{{ $tc("words.appliance") }}</md-table-head>
-          <md-table-head>
-            {{ $tc("phrases.overDueReminderRate") }}
-          </md-table-head>
-          <md-table-head>{{ $tc("phrases.reminderRate") }}</md-table-head>
-          <md-table-head>{{ $tc("phrases.enableSmsReminder") }}</md-table-head>
-          <md-table-head>{{ $tc("phrases.createTicket") }}</md-table-head>
-          <md-table-head></md-table-head>
-        </md-table-row>
-        <md-table-row v-for="(rate, index) in savedRemindRates" :key="index">
-          <md-table-cell>{{ rate.applianceType }}</md-table-cell>
-          <md-table-cell>
-            <div v-if="editingIndex === index">
-              <md-field>
-                <md-input
-                  type="number"
-                  v-model="rate.overdueRemindRate"
-                ></md-input>
-              </md-field>
-            </div>
-            <span v-else>
-              {{ rate.overdueRemindRate }} {{ $tc("words.day") }}
-            </span>
-          </md-table-cell>
-          <md-table-cell>
-            <div v-if="editingIndex === index">
-              <md-field>
-                <md-input type="number" v-model="rate.remindRate"></md-input>
-              </md-field>
-            </div>
-            <span v-else>{{ rate.remindRate }} {{ $tc("words.day") }}</span>
-          </md-table-cell>
-          <md-table-cell>
-            <md-switch
-              v-if="editingIndex === index"
-              v-model="rate.enabled"
-              class="md-primary"
-            />
-            <md-icon v-else :class="rate.enabled ? 'md-primary' : 'md-accent'">
-              {{ rate.enabled ? "check" : "close" }}
-            </md-icon>
-          </md-table-cell>
-          <md-table-cell>
-            <md-switch
-              v-if="editingIndex === index"
-              v-model="rate.createTicket"
-              class="md-primary"
-            />
-            <md-icon
-              v-else
-              :class="rate.createTicket ? 'md-primary' : 'md-accent'"
-            >
-              {{ rate.createTicket ? "check" : "close" }}
-            </md-icon>
-          </md-table-cell>
-          <md-table-cell>
-            <div v-if="editingIndex === index" class="md-layout md-gutter">
-              <md-button
-                class="md-primary md-dense"
-                @click="updateRemindRate(rate)"
+      <div class="table-scroll-wrapper">
+        <md-table v-if="savedRemindRates.length">
+          <md-table-row>
+            <md-table-head>{{ $tc("words.appliance") }}</md-table-head>
+            <md-table-head>
+              {{ $tc("phrases.overDueReminderRate") }}
+            </md-table-head>
+            <md-table-head>{{ $tc("phrases.reminderRate") }}</md-table-head>
+            <md-table-head>
+              {{ $tc("phrases.enableSmsReminder") }}
+            </md-table-head>
+            <md-table-head>{{ $tc("phrases.createTicket") }}</md-table-head>
+            <md-table-head></md-table-head>
+          </md-table-row>
+          <md-table-row v-for="(rate, index) in savedRemindRates" :key="index">
+            <md-table-cell>{{ rate.applianceType }}</md-table-cell>
+            <md-table-cell>
+              <div v-if="editingIndex === index">
+                <md-field>
+                  <md-input
+                    type="number"
+                    v-model="rate.overdueRemindRate"
+                  ></md-input>
+                </md-field>
+              </div>
+              <span v-else>
+                {{ rate.overdueRemindRate }} {{ $tc("words.day") }}
+              </span>
+            </md-table-cell>
+            <md-table-cell>
+              <div v-if="editingIndex === index">
+                <md-field>
+                  <md-input type="number" v-model="rate.remindRate"></md-input>
+                </md-field>
+              </div>
+              <span v-else>{{ rate.remindRate }} {{ $tc("words.day") }}</span>
+            </md-table-cell>
+            <md-table-cell>
+              <md-switch
+                v-if="editingIndex === index"
+                v-model="rate.enabled"
+                class="md-primary"
+              />
+              <md-icon
+                v-else
+                :class="rate.enabled ? 'md-primary' : 'md-accent'"
               >
-                <md-icon class="md-primary">save</md-icon>
-                {{ $tc("words.save") }}
-              </md-button>
-              <md-button class="md-accent md-dense" @click="cancelEdit">
-                <md-icon class="md-accent">close</md-icon>
-                {{ $tc("words.close") }}
-              </md-button>
-            </div>
-            <div v-else class="md-layout md-gutter">
-              <md-button class="md-primary md-dense" @click="startEdit(index)">
-                <md-icon>edit</md-icon>
-                {{ $tc("words.edit") }}
-              </md-button>
-              <md-button
-                class="md-accent md-dense"
-                :disabled="loading"
-                @click="deleteRemindRate(rate)"
+                {{ rate.enabled ? "check" : "close" }}
+              </md-icon>
+            </md-table-cell>
+            <md-table-cell>
+              <md-switch
+                v-if="editingIndex === index"
+                v-model="rate.createTicket"
+                class="md-primary"
+              />
+              <md-icon
+                v-else
+                :class="rate.createTicket ? 'md-primary' : 'md-accent'"
               >
-                <md-icon class="md-accent">delete</md-icon>
-                {{ $tc("words.delete") }}
-              </md-button>
-            </div>
-            <md-progress-bar md-mode="indeterminate" v-if="loading" />
-          </md-table-cell>
-        </md-table-row>
-      </md-table>
+                {{ rate.createTicket ? "check" : "close" }}
+              </md-icon>
+            </md-table-cell>
+            <md-table-cell>
+              <div v-if="editingIndex === index" class="md-layout md-gutter">
+                <md-button
+                  class="md-primary md-dense"
+                  @click="updateRemindRate(rate)"
+                >
+                  <md-icon class="md-primary">save</md-icon>
+                  {{ $tc("words.save") }}
+                </md-button>
+                <md-button class="md-accent md-dense" @click="cancelEdit">
+                  <md-icon class="md-accent">close</md-icon>
+                  {{ $tc("words.close") }}
+                </md-button>
+              </div>
+              <div v-else class="md-layout md-gutter">
+                <md-button
+                  class="md-primary md-dense"
+                  @click="startEdit(index)"
+                >
+                  <md-icon>edit</md-icon>
+                  {{ $tc("words.edit") }}
+                </md-button>
+                <md-button
+                  class="md-accent md-dense"
+                  :disabled="loading"
+                  @click="deleteRemindRate(rate)"
+                >
+                  <md-icon class="md-accent">delete</md-icon>
+                  {{ $tc("words.delete") }}
+                </md-button>
+              </div>
+              <md-progress-bar md-mode="indeterminate" v-if="loading" />
+            </md-table-cell>
+          </md-table-row>
+        </md-table>
+      </div>
     </widget>
   </div>
 </template>
@@ -343,4 +353,10 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+</style>

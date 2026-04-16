@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\DTO\TransactionDataContainer;
+use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\ApplianceTokenNotProcessedException;
@@ -11,12 +12,12 @@ use App\Exceptions\TransactionNotInitializedException;
 use App\Models\Appliance;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
+use App\Services\ApplianceRateService;
 use App\Utils\ApplianceInstallmentPayer;
 use Illuminate\Support\Facades\Log;
 
 class ApplianceTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
-    protected const TYPE = 'deferred_payment';
 
     public function __construct(int $companyId, private int $transactionId) {
         $this->onConnection('redis');
@@ -66,7 +67,16 @@ class ApplianceTransactionProcessor extends AbstractJob {
 
     private function initializeTransaction(): void {
         $this->transaction = Transaction::query()->find($this->transactionId);
-        $this->transaction->type = 'deferred_payment';
+
+        if ($this->transaction->type !== Transaction::TYPE_DOWN_PAYMENT) {
+            $appliancePerson = $this->transaction->paygoAppliance()->first()
+                ?? $this->transaction->nonPaygoAppliance()->first();
+
+            $this->transaction->type = ($appliancePerson && $appliancePerson->isEnergyService())
+                ? Transaction::TYPE_EAAS_RATE
+                : Transaction::TYPE_DEFERRED_PAYMENT;
+        }
+
         $this->transaction->save();
     }
 
@@ -80,13 +90,39 @@ class ApplianceTransactionProcessor extends AbstractJob {
     }
 
     private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void {
-        $minimumPurchaseAmount = $container->installmentCost;
-        if ($container->amount < $minimumPurchaseAmount) {
+        $minimumPurchaseAmount = $container->appliancePerson->isEnergyService()
+            ? ($container->appliancePerson->minimum_payable_amount ?? 0)
+            : $container->installmentCost;
+
+        if ($minimumPurchaseAmount > 0 && $container->amount < $minimumPurchaseAmount) {
             throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for appliance with serial id:{$container->transaction->message}");
         }
     }
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {
+        if ($container->appliancePerson->isEnergyService()) {
+            $applianceRateService = resolve(ApplianceRateService::class);
+            $paidRate = $applianceRateService->createPaidRate($container->appliancePerson, $container->amount);
+            $container->paidRates = [
+                ['appliance_rate_id' => $paidRate->id, 'paid' => $container->amount],
+            ];
+
+            $container->applianceInstallmentsFullFilled = false;
+            // Success payment event means the client will update the ui as updated
+            // before the token get's generated.
+            event(new PaymentSuccessEvent(
+                amount: (int) $container->amount,
+                paymentService: $this->transaction->original_transaction_type,
+                paymentType: Transaction::TYPE_EAAS_RATE,
+                sender: $this->transaction->sender,
+                paidFor: $paidRate,
+                payer: $container->appliancePerson->person,
+                transaction: $this->transaction,
+            ));
+
+            return $container;
+        }
+
         $applianceInstallmentPayer = resolve(ApplianceInstallmentPayer::class);
         $applianceInstallmentPayer->initialize($container);
         $applianceInstallmentPayer->payInstallmentsForDevice($container);

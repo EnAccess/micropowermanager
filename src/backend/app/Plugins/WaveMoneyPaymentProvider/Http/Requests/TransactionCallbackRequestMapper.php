@@ -39,7 +39,7 @@ class TransactionCallbackRequestMapper {
             $request->input(self::BODY_PARAM_BACKEND_RESULT_URL),
             $request->input(self::BODY_PARAM_INITIATOR_MSISDN),
             floatval($request->input(self::BODY_PARAM_AMOUNT)),
-            (int) $request->input(self::BODY_PARAM_TIME_TO_LIVE_SECONDS),
+            $request->integer(self::BODY_PARAM_TIME_TO_LIVE_SECONDS),
             $request->input(self::BODY_PARAM_PAYMENT_DESCRIPTION),
             $request->input(self::BODY_PARAM_CURRENCY),
             $request->input(self::BODY_PARAM_HASH_VALUE),

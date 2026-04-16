@@ -323,7 +323,7 @@
                     :md-label="$tc('words.type')"
                     md-sort-by="original_transaction_type"
                   >
-                    {{ item.type }}
+                    {{ formatTransactionType(item.type) }}
                   </md-table-cell>
 
                   <md-table-cell
@@ -533,6 +533,15 @@ export default {
     EventBus.$off("searching", this.searching)
   },
   methods: {
+    formatTransactionType(type) {
+      const labels = {
+        energy: this.$tc("words.energy"),
+        deferred_payment: this.$tc("phrases.deferredPayment"),
+        eaas_rate: this.$tc("phrases.eaasRate"),
+        down_payment: this.$tc("phrases.downPayment"),
+      }
+      return labels[type] || type
+    },
     checkRouteChanges() {
       let isFiltering = false
       let queryParams = this.$route.query

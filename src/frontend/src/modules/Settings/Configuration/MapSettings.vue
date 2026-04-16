@@ -4,7 +4,7 @@
       class="md-layout md-gutter md-size-50 md-small-size-100"
       style="padding: 1rem"
     >
-      <div class="md-layout-item md-size-33 md-small-size-50">
+      <div class="md-layout-item md-size-33 md-small-size-100">
         <md-field :class="{ 'md-invalid': errors.has('Zoom') }">
           <label for="Zoom">Default Zoom</label>
           <md-input
@@ -18,7 +18,7 @@
           <span class="md-error">{{ errors.first("Zoom") }}</span>
         </md-field>
       </div>
-      <div class="md-layout-item md-size-33 md-small-size-50">
+      <div class="md-layout-item md-size-33 md-small-size-100">
         <md-field>
           <label for="provider">Default Provider</label>
           <md-select
@@ -39,7 +39,7 @@
       <div class="md-layout-item md-size-100 md-small-size-100">
         <md-subheader>Set Map Starting Points</md-subheader>
       </div>
-      <div class="md-layout-item md-size-33 md-small-size-50">
+      <div class="md-layout-item md-size-33 md-small-size-100">
         <md-field :class="{ 'md-invalid': errors.has($tc('words.latitude')) }">
           <label for="latitude">{{ $tc("words.latitude") }}</label>
           <md-input
@@ -57,7 +57,7 @@
           </span>
         </md-field>
       </div>
-      <div class="md-layout-item md-size-33 md-small-size-50">
+      <div class="md-layout-item md-size-33 md-small-size-100">
         <md-field
           :class="{
             'md-invalid': errors.has($tc('words.longitude')),

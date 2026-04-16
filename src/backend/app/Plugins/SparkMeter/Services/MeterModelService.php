@@ -33,7 +33,7 @@ class MeterModelService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SmMeterModel>
      */
     public function getSmMeterModels(Request $request): LengthAwarePaginator {
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
 
         return $this->smMeterModel->newQuery()->with(['meterType', 'site.mpmMiniGrid'])->paginate($perPage);
     }

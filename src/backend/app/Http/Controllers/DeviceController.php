@@ -13,7 +13,7 @@ class DeviceController extends Controller {
     public function __construct(private DeviceService $deviceService) {}
 
     public function index(Request $request): ApiResource {
-        $limit = (int) $request->input('per_page', 15);
+        $limit = $request->integer('per_page', 15);
         $filters = $request->only(['device_type', 'appliance_id', 'unassigned']);
 
         return ApiResource::make($this->deviceService->getAll($limit, $filters));
