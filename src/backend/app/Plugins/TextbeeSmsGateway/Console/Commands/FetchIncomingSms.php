@@ -49,13 +49,16 @@ class FetchIncomingSms extends AbstractSharedCommand {
             $body = $message['body'];
 
             $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
-            $sender = $address instanceof Address ? $address->owner : null;
-            $senderId = $sender?->getKey();
+
+            if (!$address instanceof Address) {
+                event(new SmsStoredEvent($phoneNumber, $body));
+                continue;
+            }
 
             $sms = $this->smsService->createSms([
-                'receiver' => $address->phone ?? $phoneNumber,
+                'receiver' => $address->phone,
                 'body' => $body,
-                'sender_id' => $senderId,
+                'sender_id' => $address->owner->getKey(),
                 'direction' => Sms::DIRECTION_INCOMING,
                 'status' => Sms::STATUS_DELIVERED,
             ]);

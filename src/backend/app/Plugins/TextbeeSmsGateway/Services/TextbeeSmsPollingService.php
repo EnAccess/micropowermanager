@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Log;
 
 class TextbeeSmsPollingService {
     private const BASE_URL = 'https://api.textbee.dev/api/v1';
-    private const CACHE_KEY = 'textbee_last_polled_at';
+    private const CACHE_KEY_RECEIVED_AFTER = 'textbee_last_polled_at';
+    private const CACHE_KEY_RECENT_IDS = 'textbee_recent_message_ids';
 
     public function __construct(
         private TextbeeCredentialService $credentialService,
@@ -31,7 +32,9 @@ class TextbeeSmsPollingService {
 
         $url = self::BASE_URL.'/gateway/devices/'.$credentials->device_id.'/get-received-sms';
 
-        $lastPolledAt = Cache::get(self::CACHE_KEY);
+        $lastPolledAt = Cache::get(self::CACHE_KEY_RECEIVED_AFTER);
+        $recentIds = Cache::get(self::CACHE_KEY_RECENT_IDS, []);
+        $recentIdsSet = array_flip($recentIds);
 
         $queryParams = ['page' => 1, 'limit' => 20];
         if ($lastPolledAt) {
@@ -61,9 +64,23 @@ class TextbeeSmsPollingService {
 
             $messages = [];
             $latestReceivedAt = $lastPolledAt;
+            $currentBatchIds = [];
 
             foreach ($data as $sms) {
+                $id = $sms['_id'] ?? null;
                 $receivedAt = $sms['receivedAt'] ?? null;
+
+                if ($id !== null) {
+                    $currentBatchIds[] = $id;
+
+                    // TextBee's `receivedAfter` is inclusive, so messages at the
+                    // boundary timestamp get re-returned. Skip anything we emitted
+                    // in the previous poll.
+                    if (isset($recentIdsSet[$id])) {
+                        continue;
+                    }
+                }
+
                 $messages[] = [
                     'sender' => $sms['sender'] ?? '',
                     'body' => $sms['message'] ?? '',
@@ -76,7 +93,10 @@ class TextbeeSmsPollingService {
             }
 
             if ($latestReceivedAt) {
-                Cache::put(self::CACHE_KEY, $latestReceivedAt);
+                Cache::put(self::CACHE_KEY_RECEIVED_AFTER, $latestReceivedAt);
+            }
+            if ($currentBatchIds !== []) {
+                Cache::put(self::CACHE_KEY_RECENT_IDS, $currentBatchIds);
             }
 
             return $messages;
