@@ -62,14 +62,14 @@ class SmsParsingRuleService {
 
         $defaults = [
             [
-                'provider_name' => 'Vodacom',
-                'template' => 'Confirmed [transaction_ref].[*]amount of [amount]MT[*]reference [device_serial][*]',
+                'provider_name' => 'M-Pesa (Vodacom MZ)',
+                'template' => 'Confirmado [transaction_ref]. Registamos uma operacao de compra no valor de [amount] e a taxa foi de [*] na entidade [*] com referencia [device_serial] aos [*] as [*]. O teu novo saldo M-Pesa e de [*]. Em caso de dúvida, liga 100. M-Pesa e facil!',
                 'sender_pattern' => '/M-?Pesa/i',
                 'enabled' => true,
             ],
             [
-                'provider_name' => 'Movitel',
-                'template' => 'Transaction ID [transaction_ref].[*][amount] MT[*]Content:[*][device_serial].[*]',
+                'provider_name' => 'e-Mola (Movitel MZ)',
+                'template' => 'ID da transacao [transaction_ref]. Transferiste [amount] para conta [sender_phone], nome: [*] as [*] de [*]. Taxa: [*]. O saldo da tua conta e [*]. Conteudo: [device_serial]. Em caso de duvida, liga 100. Obrigado!',
                 'sender_pattern' => '/e-?Mola/i',
                 'enabled' => true,
             ],
