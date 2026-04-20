@@ -17,7 +17,7 @@ class SmsParsingRuleService {
      * @return Collection<int, SmsParsingRule>
      */
     public function getAll(): Collection {
-        return $this->smsParsingRule->newQuery()->get();
+        return $this->smsParsingRule->newQuery()->orderBy('id')->get();
     }
 
     public function getById(int $id): SmsParsingRule {

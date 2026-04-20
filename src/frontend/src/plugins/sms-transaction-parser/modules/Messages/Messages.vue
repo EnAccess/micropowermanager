@@ -4,7 +4,7 @@
       <div class="md-layout-item md-size-30">
         <md-field>
           <label>Select Parsing Rule</label>
-          <md-select v-model="selectedRuleId" @md-selected="onRuleSelected">
+          <md-select v-model="selectedRuleId">
             <md-option v-for="rule in rules" :key="rule.id" :value="rule.id">
               {{ rule.provider_name }}
             </md-option>
@@ -82,19 +82,21 @@ export default {
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
   },
+  watch: {
+    selectedRuleId(newId) {
+      if (!newId) return
+      this.transactions = []
+      this.paginator = new Paginator(
+        `/api/sms-transaction-parser/parsing-rules/${newId}/messages`,
+      )
+    },
+  },
   methods: {
     async loadRules() {
       this.rules = await this.parsingRuleService.getRules()
       if (this.rules.length > 0) {
         this.selectedRuleId = this.rules[0].id
-        this.onRuleSelected(this.rules[0].id)
       }
-    },
-    onRuleSelected(ruleId) {
-      this.transactions = []
-      this.paginator = new Paginator(
-        `/api/sms-transaction-parser/parsing-rules/${ruleId}/messages`,
-      )
     },
     reloadList(sub, data) {
       if (sub !== this.subscriber) return

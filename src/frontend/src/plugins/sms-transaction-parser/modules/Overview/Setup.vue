@@ -4,19 +4,26 @@
       <md-card-header>
         <div class="md-title">SMS Transaction Parser</div>
         <div class="md-subhead">
-          Automatically parse incoming mobile money SMS messages (M-Pesa,
-          e-Mola) and create energy transactions.
+          Turn mobile money payment SMS into energy transactions automatically —
+          no manual entry required.
         </div>
       </md-card-header>
       <md-card-content>
         <div class="info-box">
-          <h3>Default parsing rules will be installed for:</h3>
+          <h3>We'll set up ready-to-use parsing rules for:</h3>
           <ul>
-            <li><strong>Vodacom M-Pesa</strong></li>
-            <li><strong>Movitel e-Mola</strong></li>
+            <li>
+              <strong>M-Pesa</strong>
+              (Vodacom Mozambique)
+            </li>
+            <li>
+              <strong>e-Mola</strong>
+              (Movitel Mozambique)
+            </li>
           </ul>
           <p class="hint">
-            You can customize these rules later from the plugin settings page.
+            Need a different provider or format? Rules can be edited, disabled,
+            or extended anytime from the plugin settings page.
           </p>
         </div>
 
@@ -86,9 +93,9 @@ export default {
 
 .info-box {
   padding: 1.5rem;
-  background-color: #f8f9fa;
+  background-color: #f3f8fb;
   border-radius: 4px;
-  border-left: 4px solid #4caf50;
+  border-left: 4px solid #1b75ba;
 }
 
 .info-box h3 {
@@ -99,7 +106,8 @@ export default {
 }
 
 .info-box ul {
-  padding-left: 1.5rem;
+  list-style: none;
+  padding-left: 0;
   margin-bottom: 1rem;
 }
 
