@@ -41,7 +41,7 @@
           </md-button>
           <md-button class="md-raised" @click="openEditDialog">
             <md-icon>edit</md-icon>
-            {{ $tc("words.edit") }}
+            {{ $tc("words.rename") }}
           </md-button>
           <md-button class="md-raised md-accent" @click="confirmDelete">
             <md-icon>delete</md-icon>
@@ -55,7 +55,7 @@
       :md-close-on-esc="true"
       :md-click-outside-to-close="true"
     >
-      <md-dialog-title>{{ $tc("phrases.editCluster") }}</md-dialog-title>
+      <md-dialog-title>{{ $tc("phrases.renameCluster") }}</md-dialog-title>
       <md-dialog-content>
         <md-field>
           <label>{{ $tc("words.name") }}</label>

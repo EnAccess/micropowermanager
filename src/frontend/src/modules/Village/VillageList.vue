@@ -58,6 +58,22 @@
           <label>{{ $tc("words.name") }}</label>
           <md-input v-model="editName" />
         </md-field>
+        <md-field>
+          <label for="editCountry">{{ $tc("words.country") }}</label>
+          <md-select
+            v-model="editCountryId"
+            name="editCountry"
+            id="editCountry"
+          >
+            <md-option
+              v-for="country in countries"
+              :value="country.id"
+              :key="country.id"
+            >
+              {{ country.country_name }}
+            </md-option>
+          </md-select>
+        </md-field>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button @click="editDialogActive = false">
@@ -74,6 +90,7 @@
 <script>
 import { notify } from "@/mixins/notify.js"
 import { CityService } from "@/services/CityService.js"
+import CountryService from "@/services/CountryService.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
@@ -85,15 +102,19 @@ export default {
   data() {
     return {
       cityService: new CityService(),
+      countryService: new CountryService(),
       cities: [],
+      countries: [],
       loading: false,
       editDialogActive: false,
       editingCity: null,
       editName: "",
+      editCountryId: null,
     }
   },
   mounted() {
     this.loadCities()
+    this.loadCountries()
   },
   methods: {
     async loadCities() {
@@ -106,12 +127,21 @@ export default {
       }
       this.loading = false
     },
+    async loadCountries() {
+      try {
+        await this.countryService.getCountries()
+        this.countries = this.countryService.list
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
     goToAddVillage() {
       this.$router.push("/locations/add-village")
     },
     openEditDialog(city) {
       this.editingCity = city
       this.editName = city.name || ""
+      this.editCountryId = city.country_id || null
       this.editDialogActive = true
     },
     async saveEdit() {
@@ -123,7 +153,7 @@ export default {
         await this.cityService.updateCity(this.editingCity.id, {
           name: this.editName.trim(),
           miniGridId: this.editingCity.mini_grid_id,
-          countryId: this.editingCity.country_id,
+          countryId: this.editCountryId,
         })
         this.editDialogActive = false
         this.alertNotify("success", this.$tc("phrases.villageUpdated"))
