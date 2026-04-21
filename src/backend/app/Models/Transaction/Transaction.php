@@ -102,14 +102,14 @@ class Transaction extends BaseModel {
      * @return HasOne<AppliancePerson, $this>
      */
     public function paygoAppliance(): HasOne {
-        return $this->hasOne(AppliancePerson::class, 'device_serial', 'message');
+        return $this->hasOne(AppliancePerson::class, 'device_serial', 'message')->latestOfMany();
     }
 
     /**
      * @return HasOne<AppliancePerson, $this>
      */
     public function nonPaygoAppliance(): HasOne {
-        return $this->hasOne(AppliancePerson::class, 'id', 'message');
+        return $this->hasOne(AppliancePerson::class, 'id', 'message')->latestOfMany();
     }
 
     /**
