@@ -9,8 +9,8 @@ It manages customers, revenues, devices (smart meters, solar home systems), and 
 
 Monorepo with Docker-based services:
 
-- `src/backend/` — Laravel 12 (PHP 8.2) REST API. See [`src/backend/AGENTS.md`](src/backend/AGENTS.md).
-- `src/frontend/` — Vue.js 2 SPA (Vue CLI, Node 18). See [`src/frontend/AGENTS.md`](src/frontend/AGENTS.md).
+- `src/backend/` - See [`src/backend/AGENTS.md`](src/backend/AGENTS.md).
+- `src/frontend/` — Vue.js 2 SPA. See [`src/frontend/AGENTS.md`](src/frontend/AGENTS.md).
 - `docker/` — Dockerfiles for all services.
 - `dev/` — Development environment config files.
 

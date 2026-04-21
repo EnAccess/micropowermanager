@@ -1,4 +1,4 @@
-# Backend (Laravel 12 / PHP 8.2)
+# Backend
 
 Read the [root `AGENTS.md`](../../AGENTS.md) first for repo-wide rules. This file covers backend-specific conventions, patterns, and commands.
 
@@ -17,7 +17,10 @@ Read the [root `AGENTS.md`](../../AGENTS.md) first for repo-wide rules. This fil
 ## Common Patterns
 
 - **Multi-tenancy.** Two MySQL connections: `micro_power_manager` (shared) and a per-tenant connection. `UserDefaultDatabaseConnectionMiddleware` switches the tenant connection per request.
-- **Authentication.** JWT (tymon/jwt-auth) with dual guards: `User` (admin panel) and `Agent` (field agent app). Middleware: `JwtMiddleware`.
+- **Authentication.** Three guards:
+  - `api` — JWT for `User` (admin panel), via tymon/jwt-auth. Middleware: `JwtMiddleware`.
+  - `agent_api` — JWT for `Agent` (field agent app).
+  - `api-key` — custom driver for `Company` integrations (plugin webhooks, external API callers). See `app/Auth/ApiKeyGuard.php`.
 - **Plugin system.** Plugins live in `app/Plugins/` (payment providers, SMS gateways, smart meters, solar home systems). Managed through the `PluginGateway` pattern.
 - **Event-driven transactions.** Transaction lifecycle uses `TransactionSuccessfulEvent` / `TransactionFailedEvent` with listeners that trigger payment processing, SMS notifications, and token generation. Key jobs: `TokenProcessor`, `EnergyTransactionProcessor`, `ApplianceTransactionProcessor`.
 - **Service layer.** Business logic lives in `app/Services/`. Controllers delegate to services. Models in `app/Models/` map to database entities.
