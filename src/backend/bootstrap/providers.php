@@ -17,6 +17,7 @@ use App\Plugins\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
 use App\Plugins\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use App\Plugins\Prospect\Providers\ProspectServiceProvider;
+use App\Plugins\SmsTransactionParser\Providers\SmsTransactionParserServiceProvider;
 use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
 use App\Plugins\SparkShs\Providers\SparkShsServiceProvider;
 use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
@@ -42,6 +43,7 @@ return [
     ServicesProvider::class,
     AfricasTalkingServiceProvider::class,
     TextbeeSmsGatewayServiceProvider::class,
+    SmsTransactionParserServiceProvider::class,
     AngazaSHSServiceProvider::class,
     BulkRegistrationServiceProvider::class,
     CalinMeterServiceProvider::class,

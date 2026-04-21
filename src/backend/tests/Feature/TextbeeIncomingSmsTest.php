@@ -3,8 +3,11 @@
 namespace Tests\Feature;
 
 use App\Events\SmsStoredEvent;
+use App\Models\Address\Address;
 use App\Models\Sms;
 use App\Plugins\TextbeeSmsGateway\Models\TextbeeCredential;
+use Database\Factories\Address\AddressFactory;
+use Database\Factories\Person\PersonFactory;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Tests\RefreshMultipleDatabases;
@@ -37,7 +40,16 @@ class TextbeeIncomingSmsTest extends TestCase {
         ]);
     }
 
-    private function buildPayload(string $sender = '+123456789', string $message = 'Hello from SMS'): array {
+    private function createCustomerAddress(string $phone): Address {
+        $person = PersonFactory::new()->create();
+        $address = AddressFactory::new()->make(['phone' => $phone]);
+        $address->owner()->associate($person);
+        $address->save();
+
+        return $address;
+    }
+
+    private function buildPayload(string $sender = '+255712345678', string $message = 'Hello from SMS'): array {
         return [
             'smsId' => 'sms-123',
             'sender' => $sender,
@@ -55,6 +67,7 @@ class TextbeeIncomingSmsTest extends TestCase {
 
     public function testValidWebhookCreatesIncomingSmsRecord(): void {
         $this->createCredentialWithSecret();
+        $this->createCustomerAddress('+255712345678');
         Event::fake([SmsStoredEvent::class]);
 
         $payload = $this->buildPayload();
@@ -68,7 +81,7 @@ class TextbeeIncomingSmsTest extends TestCase {
         $response->assertJson(['status' => 'success']);
 
         $this->assertDatabaseHas('sms', [
-            'receiver' => '+123456789',
+            'receiver' => '+255712345678',
             'body' => 'Hello from SMS',
             'direction' => Sms::DIRECTION_INCOMING,
             'status' => Sms::STATUS_DELIVERED,
@@ -90,9 +103,10 @@ class TextbeeIncomingSmsTest extends TestCase {
 
     public function testSmsStoredEventIsDispatched(): void {
         $this->createCredentialWithSecret();
+        $this->createCustomerAddress('+255787654321');
         Event::fake([SmsStoredEvent::class]);
 
-        $payload = $this->buildPayload('+987654321', 'Test message');
+        $payload = $this->buildPayload('+255787654321', 'Test message');
         $signature = $this->signPayload($payload);
 
         $response = $this->postJson($this->webhookUrl, $payload, [
@@ -101,7 +115,7 @@ class TextbeeIncomingSmsTest extends TestCase {
 
         $response->assertStatus(200);
 
-        Event::assertDispatched(SmsStoredEvent::class, fn (SmsStoredEvent $event): bool => $event->sender === '+987654321'
+        Event::assertDispatched(SmsStoredEvent::class, fn (SmsStoredEvent $event): bool => $event->sender === '+255787654321'
             && $event->message === 'Test message'
             && $event->sms instanceof Sms);
     }

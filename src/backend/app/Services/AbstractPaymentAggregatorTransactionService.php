@@ -10,6 +10,7 @@ use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
+use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
@@ -28,7 +29,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction $paymentAggregatorTransaction,
+        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|SmsTransaction $paymentAggregatorTransaction,
     ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
@@ -145,7 +146,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         return $this->minimumPurchaseAmount;
     }
 
-    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction {
+    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|SmsTransaction {
         return $this->paymentAggregatorTransaction;
     }
 }
