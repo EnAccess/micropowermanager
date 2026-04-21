@@ -106,8 +106,16 @@ class AddressesService implements IBaseService, IAssociative {
     }
 
     public function getAddressByPhoneNumber(string $phoneNumber): ?Address {
-        return $this->address->newQuery()
-            ->where('phone', phone($phoneNumber)->formatE164())
-            ->first();
+        return $this->safelyFindAddressByPhoneNumber($phoneNumber);
+    }
+
+    private function safelyFindAddressByPhoneNumber(string $phoneNumber): ?Address {
+        try {
+            return $this->address->newQuery()
+                ->where('phone', phone($phoneNumber)->formatE164())
+                ->first();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

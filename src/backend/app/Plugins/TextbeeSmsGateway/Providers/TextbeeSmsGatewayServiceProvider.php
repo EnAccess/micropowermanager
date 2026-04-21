@@ -2,6 +2,7 @@
 
 namespace App\Plugins\TextbeeSmsGateway\Providers;
 
+use App\Plugins\TextbeeSmsGateway\Console\Commands\FetchIncomingSms;
 use App\Plugins\TextbeeSmsGateway\Console\Commands\InstallPackage;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use Illuminate\Support\ServiceProvider;
@@ -9,7 +10,7 @@ use Illuminate\Support\ServiceProvider;
 class TextbeeSmsGatewayServiceProvider extends ServiceProvider {
     public function boot(): void {
         $this->app->register(RouteServiceProvider::class);
-        $this->commands([InstallPackage::class]);
+        $this->commands([InstallPackage::class, FetchIncomingSms::class]);
     }
 
     public function register(): void {

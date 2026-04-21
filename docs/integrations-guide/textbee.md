@@ -67,6 +67,18 @@ To receive incoming SMS from customers, you need to configure a webhook in the T
 4. Copy the webhook secret and paste it in the MPM TextBee configuration
 5. Incoming SMS will now be stored and processed by MPM
 
+### SMS Polling Fallback
+
+If the webhook is not working reliably (e.g. in development environments or when there is network instability), MPM includes a scheduled command that polls TextBee for incoming SMS instead:
+
+```bash
+php artisan textbee-sms-gateway:fetch-incoming-sms
+```
+
+This command fetches new messages from the TextBee API and processes them the same way the webhook would.
+It runs automatically on a schedule when the plugin is active, so no manual setup is needed.
+It tracks the last poll timestamp so it only fetches messages received since the previous run.
+
 ## Step 6: Select TextBee as Your SMS Gateway
 
 1. Navigate to **Settings** → **Configuration** → **Main Settings**

@@ -17,6 +17,9 @@
     <testsuite name="AngazaSHS">
       <directory suffix="Test.php">app/Plugins/AngazaSHS/Tests</directory>
     </testsuite>
+    <testsuite name="SmsTransactionParser">
+      <directory suffix="Test.php">app/Plugins/SmsTransactionParser/Tests</directory>
+    </testsuite>
     <testsuite name="Feature">
       <directory suffix="Test.php">tests/Feature</directory>
     </testsuite>
