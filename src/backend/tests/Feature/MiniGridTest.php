@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\EntityHasChildrenException;
+use App\Models\City;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use Database\Factories\CityFactory;
@@ -44,6 +46,44 @@ class MiniGridTest extends TestCase {
         $response = $this->actingAs($this->user)->get(sprintf('/api/mini-grids/%s?relation=1', $this->miniGridIds[0]));
         $response->assertStatus(200);
         $this->assertEquals(array_key_exists('location', $response['data']), true);
+    }
+
+    public function testUserUpdatesMiniGrid(): void {
+        $this->createTestData(1, 1);
+        $miniGrid = MiniGrid::query()->find($this->miniGridIds[0]);
+
+        $response = $this->actingAs($this->user)->put("/api/mini-grids/{$miniGrid->id}", [
+            'name' => 'updatedMiniGridName',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertEquals('updatedMiniGridName', $response['data']['name']);
+        $this->assertEquals('updatedMiniGridName', $miniGrid->fresh()->name);
+    }
+
+    public function testUserSoftDeletesChildlessMiniGrid(): void {
+        $this->createTestData(1, 1);
+        // createTestData adds a city — delete it first so the mini-grid is childless.
+        City::query()->where('mini_grid_id', $this->miniGridIds[0])->delete();
+
+        $response = $this->actingAs($this->user)->delete("/api/mini-grids/{$this->miniGridIds[0]}");
+
+        $response->assertStatus(200);
+        $this->assertNull(MiniGrid::query()->find($this->miniGridIds[0]));
+        $this->assertNotNull(MiniGrid::withTrashed()->find($this->miniGridIds[0])->deleted_at);
+    }
+
+    public function testMiniGridDeleteBlockedWhenItHasCities(): void {
+        $this->createTestData(1, 1);
+
+        $this->withoutExceptionHandling();
+        $this->expectException(EntityHasChildrenException::class);
+
+        try {
+            $this->actingAs($this->user)->delete("/api/mini-grids/{$this->miniGridIds[0]}");
+        } finally {
+            $this->assertNotNull(MiniGrid::query()->find($this->miniGridIds[0]));
+        }
     }
 
     public function testUserCreatesNewMiniGrid(): void {

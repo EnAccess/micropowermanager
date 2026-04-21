@@ -8,6 +8,7 @@ use App\Http\Resources\ApiResource;
 use App\Services\GeographicalInformationService;
 use App\Services\MiniGridGeographicalInformationService;
 use App\Services\MiniGridService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MiniGridController extends Controller {
@@ -53,14 +54,16 @@ class MiniGridController extends Controller {
         return ApiResource::make($miniGrid);
     }
 
-    /**
-     * Update.
-     *
-     * @bodyParam name string The name of the MiniGrid.
-     */
     public function update(int $miniGridId, UpdateMiniGridRequest $request): ApiResource {
-        $this->miniGridService->getById($miniGridId);
+        $miniGrid = $this->miniGridService->getById($miniGridId);
 
-        return ApiResource::make($this->miniGridService->getById($miniGridId));
+        return ApiResource::make($this->miniGridService->update($miniGrid, $request->validated()));
+    }
+
+    public function destroy(int $miniGridId): JsonResponse {
+        $miniGrid = $this->miniGridService->getById($miniGridId);
+        $this->miniGridService->delete($miniGrid);
+
+        return response()->json(['message' => 'Mini-grid deleted.']);
     }
 }

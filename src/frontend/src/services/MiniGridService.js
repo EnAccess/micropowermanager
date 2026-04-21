@@ -39,6 +39,34 @@ export class MiniGridService {
     }
   }
 
+  async updateMiniGrid(miniGridId, miniGridData) {
+    try {
+      const params = convertObjectKeysToSnakeCase(miniGridData)
+      const { data, status, error } = await this.repository.update(
+        miniGridId,
+        params,
+      )
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async deleteMiniGrid(miniGridId) {
+    try {
+      const { status, error } = await this.repository.delete(miniGridId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return true
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   async getMiniGrid(miniGridId) {
     try {
       let response = await this.repository.get(miniGridId)

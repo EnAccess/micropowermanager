@@ -9,6 +9,12 @@ export default {
   create(miniGridPM) {
     return Client.post(`${resource}`, miniGridPM)
   },
+  update(miniGridId, miniGrid) {
+    return Client.put(`${resource}/${miniGridId}`, miniGrid)
+  },
+  delete(miniGridId) {
+    return Client.delete(`${resource}/${miniGridId}`)
+  },
   get(miniGridId) {
     return Client.get(`${resource}/${miniGridId}`)
   },

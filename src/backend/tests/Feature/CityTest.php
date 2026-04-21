@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\EntityHasChildrenException;
+use App\Models\Address\Address;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use Database\Factories\CityFactory;
 use Database\Factories\ClusterFactory;
 use Database\Factories\MiniGridFactory;
+use Database\Factories\Person\PersonFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
@@ -55,6 +58,38 @@ class CityTest extends TestCase {
         $response = $this->actingAs($this->user)->post('/api/cities', $cityData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['name'], $cityData['name']);
+    }
+
+    public function testUserSoftDeletesAnUnusedCity(): void {
+        $this->createTestData();
+        $cityId = $this->cityIds[0];
+
+        $response = $this->actingAs($this->user)->delete("/api/cities/{$cityId}");
+
+        $response->assertStatus(200);
+        $this->assertNull(City::query()->find($cityId));
+        $this->assertNotNull(City::withTrashed()->find($cityId)->deleted_at);
+    }
+
+    public function testCityDeleteBlockedWhenItHasAddresses(): void {
+        $this->createTestData();
+        $cityId = $this->cityIds[0];
+
+        $person = PersonFactory::new()->create();
+        $address = Address::query()->make([
+            'city_id' => $cityId,
+            'is_primary' => 1,
+        ]);
+        $address->owner()->associate($person)->save();
+
+        $this->withoutExceptionHandling();
+        $this->expectException(EntityHasChildrenException::class);
+
+        try {
+            $this->actingAs($this->user)->delete("/api/cities/{$cityId}");
+        } finally {
+            $this->assertNotNull(City::query()->find($cityId));
+        }
     }
 
     public function testUserUpdatesACity(): void {

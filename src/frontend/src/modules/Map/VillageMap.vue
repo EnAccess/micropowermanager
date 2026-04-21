@@ -67,7 +67,7 @@ export default {
       }
 
       const polygonColor = this.mappingService.strToHex(
-        feature.properties?.display_name || feature.properties?.name || "",
+        feature.properties?.name || "",
       )
 
       const editableLayer = this.editableLayer
@@ -78,8 +78,7 @@ export default {
         style: { fillColor: polygonColor, color: polygonColor },
         onEachFeature: function (feature, layer) {
           const clusterId = feature.properties?.clusterId || -1
-          const displayName =
-            feature.properties?.display_name || feature.properties?.name || ""
+          const displayName = feature.properties?.name || ""
 
           if (feature.geometry.type === "Polygon" && clusterId !== -1) {
             layer.on("click", () => {

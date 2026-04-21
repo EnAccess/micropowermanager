@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\EntityHasChildrenException;
 use App\Models\MiniGrid;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,10 +37,10 @@ class MiniGridService implements IBaseService {
     public function update(Model $model, array $miniGridData): MiniGrid {
         $model->update([
             'name' => $miniGridData['name'] ?? $model->name,
+            'cluster_id' => $miniGridData['cluster_id'] ?? $model->cluster_id,
         ]);
-        $model->fresh();
 
-        return $model;
+        return $model->fresh();
     }
 
     /**
@@ -55,7 +56,16 @@ class MiniGridService implements IBaseService {
         return $query->get();
     }
 
+    /**
+     * @param MiniGrid $model
+     *
+     * @throws EntityHasChildrenException when the mini-grid still has cities
+     */
     public function delete(Model $model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
+        if ($model->cities()->exists()) {
+            throw new EntityHasChildrenException('Mini-grid cannot be deleted while it still has villages. Delete the villages first.');
+        }
+
+        return $model->delete();
     }
 }

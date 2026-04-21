@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\EntityHasChildrenException;
 use App\Models\City;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -59,14 +60,25 @@ class CityService implements IBaseService {
      * @return Collection<int, City>|LengthAwarePaginator<int, City>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
+        $query = $this->city->newQuery()->with(['location', 'miniGrid', 'country']);
+
         if ($limit) {
-            return $this->city->newQuery()->with('location')->paginate($limit);
+            return $query->paginate($limit);
         }
 
-        return $this->city->newQuery()->with('location')->get();
+        return $query->get();
     }
 
+    /**
+     * @param City $model
+     *
+     * @throws EntityHasChildrenException when the city still has addresses
+     */
     public function delete(Model $model): ?bool {
-        throw new \Exception('not implemented');
+        if ($model->addresses()->exists()) {
+            throw new EntityHasChildrenException('Village cannot be deleted while it still has addresses linked to it.');
+        }
+
+        return $model->delete();
     }
 }
