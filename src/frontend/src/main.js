@@ -22,6 +22,7 @@ import {
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
 import Settings from "@/modules/Settings/Configuration/MainSettings.vue"
 import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail.vue"
+import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail.vue"
 import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail.vue"
 import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail.vue"
@@ -39,6 +40,7 @@ import MicroStar from "@/plugins/micro-star-meter/modules/Overview/Credential.vu
 import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component.vue"
 import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 import Prospect from "@/plugins/prospect/modules/Overview/Credential.vue"
+import SmsTransactionParserSetup from "@/plugins/sms-transaction-parser/modules/Overview/Setup.vue"
 import Spark from "@/plugins/spark-meter/modules/Overview/Credential.vue"
 import SparkShs from "@/plugins/spark-shs/modules/Overview/Credential.vue"
 import Steamaco from "@/plugins/steama-meter/modules/Overview/Credential.vue"
@@ -74,6 +76,7 @@ Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
+Vue.component("SmsTransactionDetail", SmsTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
 Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
@@ -83,6 +86,7 @@ Vue.component("Prospect", Prospect)
 Vue.component("Paystack", Paystack)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
+Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {
