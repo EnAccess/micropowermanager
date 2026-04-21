@@ -144,4 +144,4 @@ The workflow is:
 
 1. Agent or human reviewer notes a pattern during a session.
 2. Team validates the pattern in code review.
-3. A dedicated commit adds the rule with context on _why_ it exists.
+3. A dedicated commit adds the rule with context on *why* it exists.
