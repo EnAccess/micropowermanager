@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CityRequest;
+use App\Http\Requests\UpdateCityRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\CityGeographicalInformationService;
 use App\Services\CityService;
 use App\Services\GeographicalInformationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CityController extends Controller {
@@ -32,11 +34,10 @@ class CityController extends Controller {
         return ApiResource::make($this->cityService->getById($cityId));
     }
 
-    public function update(int $cityId, CityRequest $request): ApiResource {
+    public function update(int $cityId, UpdateCityRequest $request): ApiResource {
         $city = $this->cityService->getById($cityId);
-        $cityData = $request->only(['name', 'mini_grid_id', 'country_id']);
 
-        return ApiResource::make($this->cityService->update($city, $cityData));
+        return ApiResource::make($this->cityService->update($city, $request->validated()));
     }
 
     public function store(CityRequest $request): ApiResource {
@@ -49,5 +50,12 @@ class CityController extends Controller {
         $this->geographicalInformationService->save($geographicalInformation);
 
         return ApiResource::make($city);
+    }
+
+    public function destroy(int $cityId): JsonResponse {
+        $city = $this->cityService->getById($cityId);
+        $this->cityService->delete($city);
+
+        return response()->json(['message' => 'Village deleted.']);
     }
 }

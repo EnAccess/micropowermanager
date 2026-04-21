@@ -11,4 +11,5 @@ Route::middleware('auth:api')
         Route::get('/{cityId}', [CityController::class, 'show'])->where('id', '[0-9]+');
         Route::post('/', [CityController::class, 'store'])->middleware('permission:settings');
         Route::put('/{cityId}', [CityController::class, 'update'])->middleware('permission:settings');
+        Route::delete('/{cityId}', [CityController::class, 'destroy'])->where('cityId', '[0-9]+')->middleware('permission:settings');
     });

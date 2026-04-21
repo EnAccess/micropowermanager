@@ -133,7 +133,8 @@ export default {
         // Use geo_json from clusterData (the cluster model)
         const cluster = data.clusterData || data
         if (cluster.geo_json !== null && cluster.geo_json !== undefined) {
-          // Convert geo_json to GeoJSON Feature with cluster properties
+          // Overwrite properties.name with fresh cluster.name — the persisted
+          // geo_json is a snapshot from creation and doesn't follow renames.
           let geoJsonFeature
           if (cluster.geo_json.type === "Feature") {
             geoJsonFeature = {
@@ -141,17 +142,16 @@ export default {
               properties: {
                 ...cluster.geo_json.properties,
                 clusterId: data.id,
-                clusterDisplayName: cluster.name || "",
+                name: cluster.name || "",
               },
             }
           } else if (cluster.geo_json.type === "FeatureCollection") {
-            // Use first feature from collection
             geoJsonFeature = {
               ...cluster.geo_json.features[0],
               properties: {
                 ...cluster.geo_json.features[0].properties,
                 clusterId: data.id,
-                clusterDisplayName: cluster.name || "",
+                name: cluster.name || "",
               },
             }
           } else {
@@ -180,7 +180,7 @@ export default {
               deviceType: null,
               markerType: MARKER_TYPE.MINI_GRID,
               clusterId: data.id,
-              clusterDisplayName: cluster.name || "",
+              clusterName: cluster.name || "",
             })
           })
         }

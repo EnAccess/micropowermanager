@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -20,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property      string                       $name
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
+ * @property      Carbon|null                  $deleted_at
  * @property-read Collection<int, Agent>       $agents
  * @property-read Collection<int, City>        $cities
  * @property-read Cluster|null                 $cluster
@@ -28,6 +30,7 @@ use Illuminate\Support\Carbon;
 class MiniGrid extends BaseModel implements ITargetAssignable {
     /** @use HasFactory<MiniGridFactory> */
     use HasFactory;
+    use SoftDeletes;
 
     public const RELATION_NAME = 'mini-grid';
     protected $guarded = [];

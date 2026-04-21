@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\City;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -24,17 +23,10 @@ return new class extends Migration {
             $table->integer('cluster_id')->after('country_id');
         });
 
-        // Repopulate cluster_id from city -> minigrid -> cluster
-        City::with('miniGrid')->chunkById(100, function ($cities) {
-            foreach ($cities as $city) {
-                if ($city->miniGrid && $city->miniGrid->cluster_id) {
-                    DB::connection('tenant')->table('cities')
-                        ->where('id', $city->id)
-                        ->update([
-                            'cluster_id' => $city->miniGrid->cluster_id,
-                        ]);
-                }
-            }
-        });
+        DB::connection('tenant')
+            ->table('cities')
+            ->join('mini_grids', 'cities.mini_grid_id', '=', 'mini_grids.id')
+            ->whereNotNull('mini_grids.cluster_id')
+            ->update(['cities.cluster_id' => DB::raw('mini_grids.cluster_id')]);
     }
 };

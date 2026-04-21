@@ -138,10 +138,7 @@ export default {
       }
 
       const polygonColor = this.mappingService.strToHex(
-        feature.properties?.clusterDisplayName ||
-          feature.properties?.display_name ||
-          feature.properties?.name ||
-          "",
+        feature.properties?.name || "",
       )
 
       const nonEditableLayers = this.nonEditableLayer
@@ -153,11 +150,7 @@ export default {
         style: { fillColor: polygonColor, color: polygonColor },
         onEachFeature: function (feature, layer) {
           const clusterId = feature.properties?.clusterId || -1
-          const displayName =
-            feature.properties?.clusterDisplayName ||
-            feature.properties?.display_name ||
-            feature.properties?.name ||
-            ""
+          const displayName = feature.properties?.name || ""
 
           if (feature.geometry.type === "Polygon" && clusterId !== -1) {
             layer.on("click", () => {
@@ -206,7 +199,7 @@ export default {
           let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
           if (markingInfo.clusterId !== undefined) {
             tooltip +=
-              "<br><strong>Cluster:</strong> " + markingInfo.clusterDisplayName
+              "<br><strong>Cluster:</strong> " + markingInfo.clusterName
           }
           miniGridMarker.bindTooltip(tooltip, {
             sticky: true,
@@ -328,23 +321,30 @@ export default {
       const lat = parseFloat(points[0])
       const lon = parseFloat(points[1])
       const clusterId = miniGridWithGeoData.cluster_id
-      const clusterGeoJson =
+      const clusterGeoData =
         await this.clusterService.getClusterGeoLocation(clusterId)
 
-      // Convert geo_json to GeoJSON Feature
-      if (!clusterGeoJson.geo_json) {
-        throw new Error("clusterGeoJson.geo_json is required")
+      if (!clusterGeoData.geo_json) {
+        throw new Error("clusterGeoData.geo_json is required")
       }
 
       let geoJsonFeature
-      if (clusterGeoJson.geo_json.type === "Feature") {
-        geoJsonFeature = clusterGeoJson.geo_json
-      } else if (clusterGeoJson.geo_json.type === "FeatureCollection") {
-        geoJsonFeature = clusterGeoJson.geo_json.features[0]
+      if (clusterGeoData.geo_json.type === "Feature") {
+        geoJsonFeature = clusterGeoData.geo_json
+      } else if (clusterGeoData.geo_json.type === "FeatureCollection") {
+        geoJsonFeature = clusterGeoData.geo_json.features[0]
       } else {
         throw new Error(
-          "clusterGeoJson.geo_json must be a GeoJSON Feature or FeatureCollection",
+          "clusterGeoData.geo_json must be a GeoJSON Feature or FeatureCollection",
         )
+      }
+
+      geoJsonFeature = {
+        ...geoJsonFeature,
+        properties: {
+          ...geoJsonFeature.properties,
+          name: clusterGeoData.name || "",
+        },
       }
 
       this.mappingService.setGeoData(geoJsonFeature)

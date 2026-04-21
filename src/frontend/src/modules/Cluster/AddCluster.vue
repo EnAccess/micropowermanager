@@ -246,8 +246,18 @@ export default {
           return item
         })
       this.selectedCluster = geoDataItem
-      // Store the GeoJSON Feature
-      this.mappingService.geoData = geoDataItem.feature || geoDataItem
+      const feature = geoDataItem.feature || geoDataItem
+      this.mappingService.geoData = {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          name:
+            this.clusterName ||
+            feature.properties?.name ||
+            feature.properties?.display_name ||
+            "",
+        },
+      }
       this.$refs.clusterMapRef.drawCluster()
     },
     async saveCluster() {

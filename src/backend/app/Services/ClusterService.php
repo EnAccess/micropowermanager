@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\DTO\ClusterDashboardData;
+use App\Exceptions\EntityHasChildrenException;
 use App\Models\Cluster;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -42,8 +44,8 @@ class ClusterService implements IBaseService {
         return Cluster::query()->with('miniGrids')->find($clusterId);
     }
 
-    public function getGeoLocationById(int $clusterId): mixed {
-        return $this->cluster->newQuery()->select('geo_json')->find($clusterId)->geo_json;
+    public function getGeoLocationById(int $clusterId): ?Cluster {
+        return $this->cluster->newQuery()->select('id', 'name', 'geo_json')->find($clusterId);
     }
 
     /**
@@ -86,14 +88,35 @@ class ClusterService implements IBaseService {
     }
 
     /**
+     * @param Cluster              $model
      * @param array<string, mixed> $data
      */
-    public function update($model, array $data): Cluster {
-        throw new \Exception('Method update() not yet implemented.');
+    public function update(Model $model, array $data): Cluster {
+        $attributes = array_filter(
+            [
+                'name' => $data['name'] ?? null,
+                'manager_id' => $data['manager_id'] ?? null,
+                'geo_json' => $data['geo_json'] ?? null,
+            ],
+            static fn ($value): bool => $value !== null,
+        );
+
+        $model->update($attributes);
+
+        return $model->fresh();
     }
 
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
+    /**
+     * @param Cluster $model
+     *
+     * @throws EntityHasChildrenException when the cluster still has mini-grids
+     */
+    public function delete(Model $model): ?bool {
+        if ($model->miniGrids()->exists()) {
+            throw new EntityHasChildrenException('Cluster cannot be deleted while it still has mini-grids. Delete the mini-grids first.');
+        }
+
+        return $model->delete();
     }
 
     /**

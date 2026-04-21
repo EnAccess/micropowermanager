@@ -156,6 +156,8 @@ Route::group(['prefix' => '/clusters', 'middleware' => 'auth:api'], static funct
     Route::get('/', [ClusterController::class, 'index']);
     Route::get('/{clusterId}', [ClusterController::class, 'show'])->where('clusterId', '[0-9]+');
     Route::post('/', [ClusterController::class, 'store'])->middleware('permission:settings');
+    Route::put('/{clusterId}', [ClusterController::class, 'update'])->where('clusterId', '[0-9]+')->middleware('permission:settings');
+    Route::delete('/{clusterId}', [ClusterController::class, 'destroy'])->where('clusterId', '[0-9]+')->middleware('permission:settings');
     Route::get('/{clusterId}/geo', [ClusterController::class, 'showGeo']);
     Route::get('/revenue', [ClusterRevenueController::class, 'index']);
     Route::get('/{clusterId}/revenue', [ClusterRevenueController::class, 'show']);
@@ -202,6 +204,8 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'auth:api'], static func
     Route::get('/', [MiniGridController::class, 'index']);
     Route::post('/', [MiniGridController::class, 'store'])->middleware('permission:settings');
     Route::get('/{miniGridId}', [MiniGridController::class, 'show']);
+    Route::put('/{miniGridId}', [MiniGridController::class, 'update'])->where('miniGridId', '[0-9]+')->middleware('permission:settings');
+    Route::delete('/{miniGridId}', [MiniGridController::class, 'destroy'])->where('miniGridId', '[0-9]+')->middleware('permission:settings');
 
     Route::post('/{miniGridId}/transactions', [MiniGridRevenueController::class, 'show']);
     Route::post('/{miniGridId}/energy', [MiniGridRevenueController::class, 'show']);
