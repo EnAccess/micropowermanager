@@ -2,7 +2,7 @@
 
 Read the [root `AGENTS.md`](../../AGENTS.md) first for repo-wide rules. This file covers frontend-specific conventions, patterns, and commands.
 
-Vue 2 is long deprecated — see the root *Known tech debt* section. Avoid doubling down on Vue-2-only patterns when an incremental path to Vue 3 exists.
+Vue 2 is long deprecated — see the root _Known tech debt_ section. Avoid doubling down on Vue-2-only patterns when an incremental path to Vue 3 exists.
 
 ## Conventions
 
