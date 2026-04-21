@@ -18,7 +18,6 @@ export default {
       // Handle both single feature and array of features
       const features = Array.isArray(geoData) ? geoData : [geoData]
 
-      // Create FeatureCollection with cluster properties
       const featureCollection = {
         type: "FeatureCollection",
         features: features.map((feature) => {
@@ -30,11 +29,6 @@ export default {
             properties: {
               ...feature.properties,
               clusterId: feature.properties?.clusterId || -1,
-              clusterDisplayName:
-                feature.properties?.clusterDisplayName ||
-                feature.properties?.display_name ||
-                feature.properties?.name ||
-                "",
             },
           }
         }),
@@ -46,21 +40,14 @@ export default {
 
       const drawnCluster = L.geoJSON(featureCollection, {
         style: (feature) => {
-          const displayName =
-            feature.properties?.clusterDisplayName ||
-            feature.properties?.display_name ||
-            feature.properties?.name ||
-            ""
-          const polygonColor = this.mappingService.strToHex(displayName)
+          const polygonColor = this.mappingService.strToHex(
+            feature.properties?.name || "",
+          )
           return { fillColor: polygonColor, color: polygonColor }
         },
         onEachFeature: function (feature, layer) {
           const clusterId = feature.properties?.clusterId || -1
-          const displayName =
-            feature.properties?.clusterDisplayName ||
-            feature.properties?.display_name ||
-            feature.properties?.name ||
-            ""
+          const displayName = feature.properties?.name || ""
 
           if (feature.geometry.type === "Polygon" && clusterId !== -1) {
             layer.on("click", () => {
@@ -106,7 +93,7 @@ export default {
           let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
           if (markingInfo.clusterId !== undefined) {
             tooltip +=
-              "<br><strong>Cluster:</strong> " + markingInfo.clusterDisplayName
+              "<br><strong>Cluster:</strong> " + markingInfo.clusterName
           }
           miniGridMarker.bindTooltip(tooltip, {
             sticky: true,

@@ -44,8 +44,8 @@ class ClusterService implements IBaseService {
         return Cluster::query()->with('miniGrids')->find($clusterId);
     }
 
-    public function getGeoLocationById(int $clusterId): mixed {
-        return $this->cluster->newQuery()->select('geo_json')->find($clusterId)->geo_json;
+    public function getGeoLocationById(int $clusterId): ?Cluster {
+        return $this->cluster->newQuery()->select('id', 'name', 'geo_json')->find($clusterId);
     }
 
     /**

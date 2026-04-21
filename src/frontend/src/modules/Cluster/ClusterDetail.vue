@@ -182,19 +182,24 @@ export default {
       const markingInfos = []
       const cluster = this.clusterData.clusterData || this.clusterData
 
-      // Use geo_json from cluster model
       if (cluster.geo_json !== null && cluster.geo_json !== undefined) {
-        // Convert geo_json to GeoJSON Feature
         let geoJsonFeature
         if (cluster.geo_json.type === "Feature") {
           geoJsonFeature = cluster.geo_json
         } else if (cluster.geo_json.type === "FeatureCollection") {
-          // Use first feature from collection
           geoJsonFeature = cluster.geo_json.features[0]
         } else {
           throw new Error(
             "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
           )
+        }
+
+        geoJsonFeature = {
+          ...geoJsonFeature,
+          properties: {
+            ...geoJsonFeature.properties,
+            name: cluster.name || "",
+          },
         }
 
         this.mappingService.setGeoData(geoJsonFeature)

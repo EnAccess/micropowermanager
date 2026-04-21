@@ -365,6 +365,14 @@ export default {
         )
       }
 
+      geoJsonFeature = {
+        ...geoJsonFeature,
+        properties: {
+          ...geoJsonFeature.properties,
+          name: clusterGeoData.name || "",
+        },
+      }
+
       // Calculate center from GeoJSON bounds or geometry
       let centerLat, centerLon
       if (geoJsonFeature.bbox && geoJsonFeature.bbox.length >= 4) {
