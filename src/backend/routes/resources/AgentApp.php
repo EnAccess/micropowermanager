@@ -31,6 +31,8 @@ Route::group(['prefix' => 'app'], function () {
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', [AgentCustomerController::class, 'index']);
             Route::post('/', [AgentCustomerController::class, 'store']);
+            Route::post('/{customerId}/meters', [AgentCustomerController::class, 'storeMeter'])
+                ->where('customerId', '[0-9]+');
             Route::get('/search', [AgentCustomerController::class, 'search']);
             Route::get(
                 '/{customerId}/graph/{period}/{limit?}/{order?}',
