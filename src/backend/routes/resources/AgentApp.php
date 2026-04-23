@@ -30,6 +30,7 @@ Route::group(['prefix' => 'app'], function () {
         Route::get('/balance', [AgentBalanceController::class, 'show']);
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', [AgentCustomerController::class, 'index']);
+            Route::post('/', [AgentCustomerController::class, 'store']);
             Route::get('/search', [AgentCustomerController::class, 'search']);
             Route::get(
                 '/{customerId}/graph/{period}/{limit?}/{order?}',

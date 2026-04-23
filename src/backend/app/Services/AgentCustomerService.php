@@ -2,12 +2,52 @@
 
 namespace App\Services;
 
+use App\Http\Requests\CreateAgentCustomerRequest;
 use App\Models\Agent;
+use App\Models\City;
 use App\Models\Person\Person;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
 
 class AgentCustomerService {
-    public function __construct(private Person $person) {}
+    public function __construct(
+        private Person $person,
+        private City $city,
+        private PersonService $personService,
+        private GeographicalInformationService $geographicalInformationService,
+        private AddressGeographicalInformationService $addressGeographicalInformationService,
+    ) {}
+
+    public function register(Agent $agent, CreateAgentCustomerRequest $request): Person {
+        $cityId = $request->integer('city_id');
+        $phone = $request->string('phone')->toString();
+        $geoPoints = $request->string('geo_points')->toString();
+
+        $city = $this->city->newQuery()->findOrFail($cityId);
+        if ($city->mini_grid_id !== $agent->mini_grid_id) {
+            throw ValidationException::withMessages(['city_id' => ['Selected city does not belong to the agent\'s mini-grid.']]);
+        }
+
+        if ($this->personService->getByPhoneNumber($phone) instanceof Person) {
+            throw ValidationException::withMessages(['phone' => ['A customer with this phone number already exists.']]);
+        }
+
+        $request->merge(['is_customer' => 1]);
+        $person = $this->personService->createFromRequest($request);
+
+        if ($geoPoints !== '') {
+            $address = $person->addresses()->where('is_primary', 1)->first();
+            $geographicalInformation = $this->geographicalInformationService->make([
+                'points' => $geoPoints,
+            ]);
+            $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
+            $this->addressGeographicalInformationService->setAssignee($address);
+            $this->addressGeographicalInformationService->assign();
+            $this->geographicalInformationService->save($geographicalInformation);
+        }
+
+        return $person->fresh(['addresses.city', 'addresses.geo']);
+    }
 
     /**
      * @return LengthAwarePaginator<int, Person>

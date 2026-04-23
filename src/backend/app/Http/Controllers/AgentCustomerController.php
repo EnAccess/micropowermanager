@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateAgentCustomerRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AgentCustomerService;
 use App\Services\AgentService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class AgentCustomerController extends Controller {
     public function __construct(
@@ -30,5 +35,24 @@ class AgentCustomerController extends Controller {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return ApiResource::make($this->agentCustomerService->search($term, $limit, $agent));
+    }
+
+    public function store(CreateAgentCustomerRequest $request): JsonResponse {
+        $agent = $this->agentService->getByAuthenticatedUser();
+
+        try {
+            DB::connection('tenant')->beginTransaction();
+            $person = $this->agentCustomerService->register($agent, $request);
+            DB::connection('tenant')->commit();
+
+            return ApiResource::make($person)->response()->setStatusCode(201);
+        } catch (ValidationException $e) {
+            DB::connection('tenant')->rollBack();
+            throw $e;
+        } catch (\Exception $e) {
+            DB::connection('tenant')->rollBack();
+            Log::critical('Error while an agent was registering a customer', ['message' => $e->getMessage()]);
+            throw $e;
+        }
     }
 }
