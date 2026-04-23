@@ -2,9 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ProcessPayment;
 use App\Models\AgentAssignedAppliances;
 use App\Models\City;
 use App\Models\Person\Person;
+use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\Transaction;
+use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -410,6 +414,55 @@ class AgentAppTest extends TestCase {
         $response = $this->actingAs($this->agent)->post('/api/app/agents/customers', $postData);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['city_id']);
+    }
+
+    public function testAgentRecordsCashTransaction(): void {
+        Queue::fake();
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $postData = [
+            'device_serial' => 'MTR-TX-001',
+            'amount' => 500,
+        ];
+        $response = $this->actingAs($this->agent)
+            ->post('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
+        $response->assertStatus(200);
+
+        $transaction = Transaction::query()->where('message', 'MTR-TX-001')->firstOrFail();
+        $this->assertSame(500, (int) $transaction->amount);
+        $this->assertSame('Agent-'.$this->agent->id, $transaction->sender);
+        $this->assertSame('energy', $transaction->type);
+        $this->assertSame('agent_transaction', $transaction->original_transaction_type);
+
+        $agentTransaction = AgentTransaction::query()->where('agent_id', $this->agent->id)->firstOrFail();
+        $this->assertSame($agentTransaction->id, (int) $transaction->original_transaction_id);
+
+        Queue::assertPushed(ProcessPayment::class);
+    }
+
+    public function testAgentTransactionFailsWhenAmountExceedsFloat(): void {
+        Queue::fake();
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $postData = [
+            'device_serial' => 'MTR-TX-002',
+            'amount' => 999_999_999,
+        ];
+        $response = $this->actingAs($this->agent)
+            ->post('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
+        $response->assertStatus(500);
+        $this->assertSame(0, Transaction::query()->where('message', 'MTR-TX-002')->count());
+        Queue::assertNotPushed(ProcessPayment::class);
     }
 
     public function testAgentGetsApplicationDashboardWeeklyRevenues(): void {
