@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Jobs\ProcessPayment;
 use App\Models\AgentAssignedAppliances;
 use App\Models\City;
+use App\Models\MainSettings;
 use App\Models\Person\Person;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
@@ -47,6 +48,87 @@ class AgentAppTest extends TestCase {
         $this->assertEquals($agent->id, $response['agent']['id']);
         $this->assertEquals($agent->email, $response['agent']['email']);
         $this->assertEquals($agent->person->id, $response['agent']['person_id']);
+    }
+
+    public function testAgentLoginResponseIncludesTenantSettings(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->setMainSettings([
+            'currency' => 'TZS',
+            'country' => 'Tanzania',
+            'language' => 'sw',
+            'company_name' => 'Acme Mini-Grid',
+        ]);
+
+        $response = $this->post('/api/app/login', [
+            'email' => $this->agent->email,
+            'password' => '123456',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('settings.currency', 'TZS');
+        $response->assertJsonPath('settings.country', 'Tanzania');
+        $response->assertJsonPath('settings.language', 'sw');
+        $response->assertJsonPath('settings.company_name', 'Acme Mini-Grid');
+    }
+
+    public function testAgentMeResponseIncludesTenantSettings(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->setMainSettings([
+            'currency' => 'TZS',
+            'country' => 'Tanzania',
+            'language' => 'sw',
+            'company_name' => 'Acme Mini-Grid',
+        ]);
+
+        $response = $this->actingAs($this->agent)->get('/api/app/me');
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('settings.currency', 'TZS');
+        $response->assertJsonPath('settings.country', 'Tanzania');
+        $response->assertJsonPath('settings.language', 'sw');
+        $response->assertJsonPath('settings.company_name', 'Acme Mini-Grid');
+    }
+
+    public function testAgentAuthSettingsAreNullWhenMainSettingsAreMissing(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        MainSettings::query()->delete();
+
+        $response = $this->post('/api/app/login', [
+            'email' => $this->agent->email,
+            'password' => '123456',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('settings', null);
+    }
+
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    private function setMainSettings(array $attributes): MainSettings {
+        $settings = MainSettings::query()->first();
+        if ($settings instanceof MainSettings) {
+            $settings->update($attributes);
+
+            return $settings->fresh();
+        }
+
+        return MainSettings::factory()->create($attributes);
     }
 
     public function testAgentLogsOut(): void {
