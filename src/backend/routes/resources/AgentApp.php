@@ -41,6 +41,8 @@ Route::group(['prefix' => 'app'], function () {
                 '/graph/{period}/{limit?}/{order?}',
                 [AgentCustomersPaymentHistoryController::class, 'index']
             );
+            Route::get('/{customerId}', [AgentCustomerController::class, 'show'])
+                ->where('customerId', '[0-9]+');
         });
         Route::group(['prefix' => 'transactions'], function () {
             Route::get('/', [AgentTransactionsController::class, 'index']);

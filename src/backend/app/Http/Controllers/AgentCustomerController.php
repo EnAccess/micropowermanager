@@ -29,6 +29,12 @@ class AgentCustomerController extends Controller {
         return ApiResource::make($this->agentCustomerService->list($agent));
     }
 
+    public function show(int $customerId): ApiResource {
+        $agent = $this->agentService->getByAuthenticatedUser();
+
+        return ApiResource::make($this->agentCustomerService->findForAgent($agent, $customerId));
+    }
+
     public function search(Request $request): ApiResource {
         $term = $request->input('term');
         $limit = $request->input('paginate', 15);
