@@ -27,4 +27,24 @@ class AgentTransactionsController extends Controller {
 
         return ApiResource::make($this->agentTransactionService->getByCustomerId($agent->id, $customerId));
     }
+
+    /**
+     * Return the token generated for one of the agent's transactions, if any.
+     * Token generation is asynchronous (queued in ProcessPayment), so the
+     * field app polls this endpoint after a successful POST until the token
+     * appears or it gives up.
+     */
+    public function token(int $transactionId): ApiResource {
+        $agent = $this->agentService->getByAuthenticatedUser();
+        $transaction = $this->agentTransactionService->findForAgent($agent->id, $transactionId);
+
+        if ($transaction === null) {
+            abort(404, 'Transaction not found.');
+        }
+
+        return ApiResource::make([
+            'transaction_id' => $transaction->id,
+            'token' => $transaction->token,
+        ]);
+    }
 }

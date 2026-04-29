@@ -205,7 +205,7 @@ class AgentSoldApplianceService implements IBaseService {
                 'street' => $addressFromCustomer->street,
                 'city_id' => $addressFromCustomer->city_id,
             ];
-            $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()->points;
+            $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()?->points;
 
             $device = $this->deviceService->getBySerialNumber($deviceSerial);
             $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
@@ -218,14 +218,16 @@ class AgentSoldApplianceService implements IBaseService {
             // Attach the new address to the buyer (person) rather than the device.
             $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
 
-            $geoInfo = $this->geographicalInformationService->make([
-                'points' => $points,
-            ]);
+            if ($points) {
+                $geoInfo = $this->geographicalInformationService->make([
+                    'points' => $points,
+                ]);
 
-            $this->addressGeographicalInformationService->setAssigned($geoInfo);
-            $this->addressGeographicalInformationService->setAssignee($address);
-            $this->addressGeographicalInformationService->assign();
-            $this->geographicalInformationService->save($geoInfo);
+                $this->addressGeographicalInformationService->setAssigned($geoInfo);
+                $this->addressGeographicalInformationService->setAssignee($address);
+                $this->addressGeographicalInformationService->assign();
+                $this->geographicalInformationService->save($geoInfo);
+            }
         }
 
         // initalize appliance Rates

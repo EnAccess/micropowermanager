@@ -71,6 +71,22 @@ class AgentTransactionService implements IAgentTransactionService {
     }
 
     /**
+     * Find a transaction owned by the given agent and eager-load its token.
+     * Returns null if the transaction doesn't exist or doesn't belong to the agent.
+     */
+    public function findForAgent(int $agentId, int $transactionId): ?Transaction {
+        return $this->transaction->newQuery()
+            ->with(['token'])
+            ->whereHasMorph(
+                'originalTransaction',
+                [AgentTransaction::class],
+                fn ($q) => $q->where('agent_id', $agentId)
+            )
+            ->where('id', $transactionId)
+            ->first();
+    }
+
+    /**
      * @param array<string, mixed> $transactionData
      */
     public function create(array $transactionData): AgentTransaction {

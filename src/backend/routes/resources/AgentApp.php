@@ -46,6 +46,8 @@ Route::group(['prefix' => 'app'], function () {
         });
         Route::group(['prefix' => 'transactions'], function () {
             Route::get('/', [AgentTransactionsController::class, 'index']);
+            Route::get('/{transactionId}/token', [AgentTransactionsController::class, 'token'])
+                ->where('transactionId', '[0-9]+');
             Route::get('/{customerId}', [AgentTransactionsController::class, 'show'])
                 ->where('customerId', '[0-9]+');
             Route::post('/', [TransactionController::class, 'store'])
