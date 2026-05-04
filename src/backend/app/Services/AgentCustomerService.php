@@ -7,6 +7,7 @@ use App\Models\Agent;
 use App\Models\City;
 use App\Models\Person\Person;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 
 class AgentCustomerService {
@@ -60,7 +61,10 @@ class AgentCustomerService {
         return $this->scopedQuery($agent)->findOrFail($customerId);
     }
 
-    private function scopedQuery(Agent $agent) {
+    /**
+     * @return Builder<Person>
+     */
+    private function scopedQuery(Agent $agent): Builder {
         return $this->person->newQuery()->with([
             'devices',
             'addresses' => fn ($q) => $q->where('is_primary', 1)->with('city'),

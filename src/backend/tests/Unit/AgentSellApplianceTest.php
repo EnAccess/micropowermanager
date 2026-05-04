@@ -7,9 +7,12 @@ use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCommission;
 use App\Models\AgentSoldAppliance;
 use App\Models\Appliance;
+use App\Models\City;
 use App\Models\Cluster;
+use App\Models\Device;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
+use App\Models\SolarHomeSystem;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -105,12 +108,38 @@ class AgentSellApplianceTest extends TestCase {
             'cost' => 100,
         ]);
 
+        $city = City::query()->create([
+            'name' => 'Test City',
+            'country_id' => 1,
+            'cluster_id' => $cluster->id,
+            'mini_grid_id' => $miniGrid->id,
+        ]);
+
+        $shs = SolarHomeSystem::query()->create([
+            'serial_number' => 'SHS-TEST-0001',
+            'manufacturer_id' => 1,
+            'appliance_id' => $appliance->id,
+        ]);
+
+        Device::query()->create([
+            'person_id' => $person->id,
+            'device_id' => $shs->id,
+            'device_type' => SolarHomeSystem::class,
+            'device_serial' => 'SHS-TEST-0001',
+        ]);
+
         return [
             'agent_assigned_appliance_id' => $agentAssignedAppliance->id,
             'person_id' => $person->id,
             'first_payment_date' => '2020-12-29T20:53:38Z',
             'down_payment' => 100,
             'tenure' => 5,
+            'device_serial' => 'SHS-TEST-0001',
+            'address' => [
+                'street' => '1 Test Street',
+                'city_id' => $city->id,
+            ],
+            'points' => '0,0',
         ];
     }
 }

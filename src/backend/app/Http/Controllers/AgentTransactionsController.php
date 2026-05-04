@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
+use App\Models\Transaction\Transaction;
 use App\Services\AgentService;
 use App\Services\AgentTransactionService;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class AgentTransactionsController extends Controller {
         $agent = $this->agentService->getByAuthenticatedUser();
         $transaction = $this->agentTransactionService->findForAgent($agent->id, $transactionId);
 
-        if ($transaction === null) {
+        if (!$transaction instanceof Transaction) {
             abort(404, 'Transaction not found.');
         }
 
