@@ -48,7 +48,7 @@ class AgentBalanceMiddleware {
                 throw new DownPaymentBiggerThanAmountException('Down payment is bigger than amount');
             }
         }
-        if ($routeName === 'agent-transaction') {
+        if (in_array($routeName, ['agent-transaction', 'agent-app-transaction'], true)) {
             if ($transactionAmount = $request->input('amount')) {
                 $agentBalance -= $transactionAmount;
             } else {

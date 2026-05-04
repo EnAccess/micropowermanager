@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
+use App\Models\MainSettings;
 use App\Services\AgentService;
+use App\Services\MainSettingsService;
 use App\Utils\DemoCompany;
 use Dedoc\Scramble\Attributes\BodyParameter;
 use Dedoc\Scramble\Attributes\Group;
@@ -18,6 +20,7 @@ class AgentAuthController extends Controller {
      */
     public function __construct(
         private AgentService $agentService,
+        private MainSettingsService $mainSettingsService,
     ) {}
 
     /**
@@ -83,6 +86,7 @@ class AgentAuthController extends Controller {
             'agent' => $agent,
             'roles' => $roles,
             'permissions' => $permissions,
+            'settings' => $this->mainSettings(),
         ]);
     }
 
@@ -128,6 +132,24 @@ class AgentAuthController extends Controller {
             'agent' => $agent,
             'roles' => $roles,
             'permissions' => $permissions,
+            'settings' => $this->mainSettings(),
         ]);
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function mainSettings(): ?array {
+        $settings = $this->mainSettingsService->getAll()->first();
+        if (!$settings instanceof MainSettings) {
+            return null;
+        }
+
+        return [
+            'currency' => $settings->currency,
+            'country' => $settings->country,
+            'language' => $settings->language,
+            'company_name' => $settings->company_name,
+        ];
     }
 }

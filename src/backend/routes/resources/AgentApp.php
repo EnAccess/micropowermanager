@@ -13,6 +13,7 @@ use App\Http\Controllers\AgentFirebaseController;
 use App\Http\Controllers\AgentSoldApplianceController;
 use App\Http\Controllers\AgentTicketController;
 use App\Http\Controllers\AgentTransactionsController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 // Android App Services
@@ -30,6 +31,7 @@ Route::group(['prefix' => 'app'], function () {
         Route::get('/balance', [AgentBalanceController::class, 'show']);
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', [AgentCustomerController::class, 'index']);
+            Route::post('/', [AgentCustomerController::class, 'store']);
             Route::get('/search', [AgentCustomerController::class, 'search']);
             Route::get(
                 '/{customerId}/graph/{period}/{limit?}/{order?}',
@@ -39,10 +41,18 @@ Route::group(['prefix' => 'app'], function () {
                 '/graph/{period}/{limit?}/{order?}',
                 [AgentCustomersPaymentHistoryController::class, 'index']
             );
+            Route::get('/{customerId}', [AgentCustomerController::class, 'show'])
+                ->where('customerId', '[0-9]+');
         });
         Route::group(['prefix' => 'transactions'], function () {
             Route::get('/', [AgentTransactionsController::class, 'index']);
-            Route::get('/{customerId}', [AgentTransactionsController::class, 'show']);
+            Route::get('/{transactionId}/token', [AgentTransactionsController::class, 'token'])
+                ->where('transactionId', '[0-9]+');
+            Route::get('/{customerId}', [AgentTransactionsController::class, 'show'])
+                ->where('customerId', '[0-9]+');
+            Route::post('/', [TransactionController::class, 'store'])
+                ->name('agent-app-transaction')
+                ->middleware(['transaction.auth', 'transaction.request', 'agent.balance']);
         });
         Route::group(['prefix' => 'appliances'], function () {
             Route::get('/', [AgentSoldApplianceController::class, 'index']);
