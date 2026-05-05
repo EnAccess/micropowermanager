@@ -27,7 +27,7 @@ class TransactionController extends Controller {
         return ApiResource::make($transaction);
     }
 
-    public function store(Request $request): void {
+    public function store(Request $request): ApiResource {
         /**
          * @var ITransactionProvider $transactionProvider
          */
@@ -44,5 +44,9 @@ class TransactionController extends Controller {
                 Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
             }
         }
+
+        return ApiResource::make([
+            'id' => $transaction->id ?? null,
+        ]);
     }
 }

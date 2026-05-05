@@ -2,10 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\Address\Address;
+use App\Jobs\ProcessPayment;
 use App\Models\AgentAssignedAppliances;
 use App\Models\City;
+use App\Models\MainSettings;
 use App\Models\Person\Person;
+use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\Transaction;
+use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -44,6 +48,87 @@ class AgentAppTest extends TestCase {
         $this->assertEquals($agent->id, $response['agent']['id']);
         $this->assertEquals($agent->email, $response['agent']['email']);
         $this->assertEquals($agent->person->id, $response['agent']['person_id']);
+    }
+
+    public function testAgentLoginResponseIncludesTenantSettings(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->setMainSettings([
+            'currency' => 'TZS',
+            'country' => 'Tanzania',
+            'language' => 'sw',
+            'company_name' => 'Acme Mini-Grid',
+        ]);
+
+        $response = $this->post('/api/app/login', [
+            'email' => $this->agent->email,
+            'password' => '123456',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('settings.currency', 'TZS');
+        $response->assertJsonPath('settings.country', 'Tanzania');
+        $response->assertJsonPath('settings.language', 'sw');
+        $response->assertJsonPath('settings.company_name', 'Acme Mini-Grid');
+    }
+
+    public function testAgentMeResponseIncludesTenantSettings(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->setMainSettings([
+            'currency' => 'TZS',
+            'country' => 'Tanzania',
+            'language' => 'sw',
+            'company_name' => 'Acme Mini-Grid',
+        ]);
+
+        $response = $this->actingAs($this->agent)->get('/api/app/me');
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('settings.currency', 'TZS');
+        $response->assertJsonPath('settings.country', 'Tanzania');
+        $response->assertJsonPath('settings.language', 'sw');
+        $response->assertJsonPath('settings.company_name', 'Acme Mini-Grid');
+    }
+
+    public function testAgentAuthSettingsAreNullWhenMainSettingsAreMissing(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        MainSettings::query()->delete();
+
+        $response = $this->post('/api/app/login', [
+            'email' => $this->agent->email,
+            'password' => '123456',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('settings', null);
+    }
+
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    private function setMainSettings(array $attributes): MainSettings {
+        $settings = MainSettings::query()->first();
+        if ($settings instanceof MainSettings) {
+            $settings->update($attributes);
+
+            return $settings->fresh();
+        }
+
+        return MainSettings::factory()->create($attributes);
     }
 
     public function testAgentLogsOut(): void {
@@ -413,109 +498,53 @@ class AgentAppTest extends TestCase {
         $response->assertJsonValidationErrors(['city_id']);
     }
 
-    public function testAgentAssignsMeterToCustomer(): void {
+    public function testAgentRecordsCashTransaction(): void {
+        Queue::fake();
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
         $this->createCity();
-        $this->createMeterType();
-        $this->createMeterTariff();
-        $this->createMeterManufacturer();
-        $this->createConnectionGroup();
-        $this->createConnectionType();
         $this->createAgentCommission();
         $this->createAgent();
-        $this->createPerson();
 
-        $customer = Person::query()->where('is_customer', 1)->firstOrFail();
         $postData = [
-            'serial_number' => 'MTR-1000001',
-            'manufacturer_id' => $this->manufacturer->id,
-            'meter_type_id' => $this->meterType->id,
-            'tariff_id' => $this->meterTariff->id,
-            'connection_group_id' => $this->connectionGroup->id,
-            'connection_type_id' => $this->connectionType->id,
-            'geo_points' => '52.5200,13.4050',
+            'device_serial' => 'MTR-TX-001',
+            'amount' => 500,
         ];
         $response = $this->actingAs($this->agent)
-            ->post(sprintf('/api/app/agents/customers/%d/meters', $customer->id), $postData);
-        $response->assertStatus(201);
-        $this->assertEquals('MTR-1000001', $response['data']['serial_number']);
-        $this->assertEquals($customer->id, $response['data']['device']['person_id']);
+            ->post('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
+        $response->assertStatus(200);
+
+        $transaction = Transaction::query()->where('message', 'MTR-TX-001')->firstOrFail();
+        $this->assertSame(500, (int) $transaction->amount);
+        $this->assertSame('Agent-'.$this->agent->id, $transaction->sender);
+        $this->assertSame('energy', $transaction->type);
+        $this->assertSame('agent_transaction', $transaction->original_transaction_type);
+
+        $agentTransaction = AgentTransaction::query()->where('agent_id', $this->agent->id)->firstOrFail();
+        $this->assertSame($agentTransaction->id, (int) $transaction->original_transaction_id);
+
+        Queue::assertPushed(ProcessPayment::class);
     }
 
-    public function testAgentCannotAssignMeterWithDuplicateSerial(): void {
+    public function testAgentTransactionFailsWhenAmountExceedsFloat(): void {
+        Queue::fake();
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
         $this->createCity();
-        $this->createMeterType();
-        $this->createMeterTariff();
-        $this->createMeterManufacturer();
-        $this->createConnectionGroup();
-        $this->createConnectionType();
-        $this->createAgentCommission();
-        $this->createAgent();
-        $this->createPerson();
-
-        $customer = Person::query()->where('is_customer', 1)->firstOrFail();
-        $postData = [
-            'serial_number' => 'MTR-DUP-1',
-            'manufacturer_id' => $this->manufacturer->id,
-            'meter_type_id' => $this->meterType->id,
-            'tariff_id' => $this->meterTariff->id,
-            'connection_group_id' => $this->connectionGroup->id,
-            'connection_type_id' => $this->connectionType->id,
-        ];
-        $url = sprintf('/api/app/agents/customers/%d/meters', $customer->id);
-        $this->actingAs($this->agent)->post($url, $postData)->assertStatus(201);
-        $response = $this->actingAs($this->agent)->post($url, $postData);
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['serial_number']);
-    }
-
-    public function testAgentCannotAssignMeterToForeignCustomer(): void {
-        $this->createTestData();
-        $this->createCluster();
-        $this->createMiniGrid(2);
-        $this->createCity();
-        $this->createMeterType();
-        $this->createMeterTariff();
-        $this->createMeterManufacturer();
-        $this->createConnectionGroup();
-        $this->createConnectionType();
         $this->createAgentCommission();
         $this->createAgent();
 
-        $foreignMiniGrid = collect($this->miniGrids)
-            ->first(fn ($miniGrid): bool => $miniGrid->id !== $this->agent->mini_grid_id);
-        $foreignCity = City::query()->create([
-            'name' => 'Foreignville',
-            'country_id' => 1,
-            'mini_grid_id' => $foreignMiniGrid->id,
-        ]);
-        $foreignCustomer = Person::factory()->create(['is_customer' => 1]);
-        $foreignAddress = Address::query()->make([
-            'email' => 'foreign@example.com',
-            'phone' => '+14155550199',
-            'street' => '',
-            'city_id' => $foreignCity->id,
-            'is_primary' => 1,
-        ]);
-        $foreignAddress->owner()->associate($foreignCustomer)->save();
-
         $postData = [
-            'serial_number' => 'MTR-FOREIGN-1',
-            'manufacturer_id' => $this->manufacturer->id,
-            'meter_type_id' => $this->meterType->id,
-            'tariff_id' => $this->meterTariff->id,
-            'connection_group_id' => $this->connectionGroup->id,
-            'connection_type_id' => $this->connectionType->id,
+            'device_serial' => 'MTR-TX-002',
+            'amount' => 999_999_999,
         ];
         $response = $this->actingAs($this->agent)
-            ->post(sprintf('/api/app/agents/customers/%d/meters', $foreignCustomer->id), $postData);
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['customer']);
+            ->post('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
+        $response->assertStatus(500);
+        $this->assertSame(0, Transaction::query()->where('message', 'MTR-TX-002')->count());
+        Queue::assertNotPushed(ProcessPayment::class);
     }
 
     public function testAgentGetsApplicationDashboardWeeklyRevenues(): void {

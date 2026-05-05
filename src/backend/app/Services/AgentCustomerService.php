@@ -5,11 +5,15 @@ namespace App\Services;
 use App\Events\AccessRatePaymentInitialize;
 use App\Http\Requests\AssignMeterToCustomerRequest;
 use App\Http\Requests\CreateAgentCustomerRequest;
+use App\Http\Requests\CreateAgentCustomerRequest;
 use App\Models\Agent;
 use App\Models\City;
 use App\Models\Meter\Meter;
+use App\Models\City;
 use App\Models\Person\Person;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 
 class AgentCustomerService {
@@ -98,8 +102,17 @@ class AgentCustomerService {
      * @return LengthAwarePaginator<int, Person>
      */
     public function list(Agent $agent): LengthAwarePaginator {
-        $miniGridId = $agent->mini_grid_id;
+        return $this->scopedQuery($agent)->paginate(config('settings.paginate'));
+    }
 
+    public function findForAgent(Agent $agent, int $customerId): Person {
+        return $this->scopedQuery($agent)->findOrFail($customerId);
+    }
+
+    /**
+     * @return Builder<Person>
+     */
+    private function scopedQuery(Agent $agent): Builder {
         return $this->person->newQuery()->with([
             'devices',
             'addresses' => fn ($q) => $q->where('is_primary', 1)->with('city'),
@@ -107,9 +120,8 @@ class AgentCustomerService {
             ->where('is_customer', 1)
             ->whereHas(
                 'addresses',
-                fn ($q) => $q->whereHas('city', fn ($q) => $q->where('mini_grid_id', $miniGridId))
-            )
-            ->paginate(config('settings.paginate'));
+                fn ($q) => $q->whereHas('city', fn ($q) => $q->where('mini_grid_id', $agent->mini_grid_id))
+            );
     }
 
     /**
