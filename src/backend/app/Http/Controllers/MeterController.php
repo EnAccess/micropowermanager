@@ -27,7 +27,7 @@ class MeterController extends Controller {
      */
     public function index(Request $request): ApiResource {
         $inUse = $request->input('in_use');
-        $limit = $request->input('limit', config('settings.paginate', 15));
+        $limit = $request->input('limit', 15);
 
         return ApiResource::make($this->meterService->getAll($limit, $inUse));
     }

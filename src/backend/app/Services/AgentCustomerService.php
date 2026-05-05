@@ -53,10 +53,10 @@ class AgentCustomerService {
     /**
      * @return LengthAwarePaginator<int, Person>
      */
-    public function list(Agent $agent): LengthAwarePaginator {
+    public function list(Agent $agent, int $perPage = 15): LengthAwarePaginator {
         return $this->scopedQuery($agent)->latest()
             ->orderByDesc('id')
-            ->paginate(config('settings.paginate'));
+            ->paginate($perPage);
     }
 
     public function findForAgent(Agent $agent, int $customerId): Person {
