@@ -24,9 +24,10 @@ class AgentCustomerController extends Controller {
      * @return ApiResource
      */
     public function index(Request $request) {
+        $perPage = $request->integer('per_page', 15);
         $agent = $this->agentService->getByAuthenticatedUser();
 
-        return ApiResource::make($this->agentCustomerService->list($agent));
+        return ApiResource::make($this->agentCustomerService->list($agent, $perPage));
     }
 
     public function show(int $customerId): ApiResource {
