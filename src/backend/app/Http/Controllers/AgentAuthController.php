@@ -81,6 +81,8 @@ class AgentAuthController extends Controller {
             $permissions = [];
         }
 
+        $agent = $this->agentService->getById($agent->id);
+
         return response()->json([
             /* @var Agent */
             'agent' => $agent,
