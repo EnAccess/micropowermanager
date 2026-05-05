@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AssignMeterToCustomerRequest;
 use App\Http\Requests\CreateAgentCustomerRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\Person\Person;
 use App\Services\AgentCustomerService;
 use App\Services\AgentService;
 use Illuminate\Http\JsonResponse;
@@ -59,6 +61,26 @@ class AgentCustomerController extends Controller {
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             Log::critical('Error while an agent was registering a customer', ['message' => $e->getMessage()]);
+            throw $e;
+        }
+    }
+
+    public function storeMeter(AssignMeterToCustomerRequest $request, int $customerId): JsonResponse {
+        $agent = $this->agentService->getByAuthenticatedUser();
+        $customer = Person::query()->where('is_customer', 1)->findOrFail($customerId);
+
+        try {
+            DB::connection('tenant')->beginTransaction();
+            $meter = $this->agentCustomerService->assignMeter($agent, $customer, $request);
+            DB::connection('tenant')->commit();
+
+            return ApiResource::make($meter)->response()->setStatusCode(201);
+        } catch (ValidationException $e) {
+            DB::connection('tenant')->rollBack();
+            throw $e;
+        } catch (\Exception $e) {
+            DB::connection('tenant')->rollBack();
+            Log::critical('Error while an agent was assigning a meter to a customer', ['message' => $e->getMessage()]);
             throw $e;
         }
     }

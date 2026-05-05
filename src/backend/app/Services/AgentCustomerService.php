@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Events\AccessRatePaymentInitialize;
+use App\Http\Requests\AssignMeterToCustomerRequest;
 use App\Http\Requests\CreateAgentCustomerRequest;
 use App\Models\Agent;
 use App\Models\City;
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,6 +20,9 @@ class AgentCustomerService {
         private PersonService $personService,
         private GeographicalInformationService $geographicalInformationService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
+        private MeterService $meterService,
+        private DeviceService $deviceService,
+        private MeterDeviceService $meterDeviceService,
     ) {}
 
     public function register(Agent $agent, CreateAgentCustomerRequest $request): Person {
@@ -48,6 +54,45 @@ class AgentCustomerService {
         }
 
         return $person->fresh(['addresses.city', 'addresses.geo']);
+    }
+
+    public function assignMeter(Agent $agent, Person $customer, AssignMeterToCustomerRequest $request): Meter {
+        $primaryAddress = $customer->addresses()->where('is_primary', 1)->with('city')->first();
+        if ($primaryAddress === null || $primaryAddress->city === null || $primaryAddress->city->mini_grid_id !== $agent->mini_grid_id) {
+            throw ValidationException::withMessages(['customer' => ['Customer does not belong to the agent\'s mini-grid.']]);
+        }
+
+        $meter = $this->meterService->create([
+            'serial_number' => $request->string('serial_number')->toString(),
+            'manufacturer_id' => $request->integer('manufacturer_id'),
+            'meter_type_id' => $request->integer('meter_type_id'),
+            'tariff_id' => $request->integer('tariff_id'),
+            'connection_group_id' => $request->integer('connection_group_id'),
+            'connection_type_id' => $request->integer('connection_type_id'),
+            'in_use' => 1,
+        ]);
+
+        $device = $this->deviceService->make([
+            'person_id' => $customer->id,
+            'device_serial' => $meter->serial_number,
+        ]);
+        $this->meterDeviceService->setAssigned($device);
+        $this->meterDeviceService->setAssignee($meter);
+        $this->meterDeviceService->assign();
+        $this->deviceService->save($device);
+
+        $geoPoints = $request->string('geo_points')->toString();
+        if ($geoPoints !== '') {
+            $geographicalInformation = $this->geographicalInformationService->make(['points' => $geoPoints]);
+            $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
+            $this->addressGeographicalInformationService->setAssignee($primaryAddress);
+            $this->addressGeographicalInformationService->assign();
+            $this->geographicalInformationService->save($geographicalInformation);
+        }
+
+        event(new AccessRatePaymentInitialize($meter));
+
+        return $meter->fresh(['tariff', 'device', 'meterType', 'connectionType', 'connectionGroup', 'manufacturer']);
     }
 
     /**

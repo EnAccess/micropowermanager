@@ -38,7 +38,7 @@ class AgentTransactionService implements IAgentTransactionService {
             static function ($q) use ($agentId) {
                 $q->where('agent_id', $agentId);
             }
-        );
+        )->latest()->orderByDesc('id');
 
         return $limit ? $query->paginate($limit) : $query->get();
     }
@@ -63,6 +63,7 @@ class AgentTransactionService implements IAgentTransactionService {
             )
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()
+            ->orderByDesc('id')
             ->paginate();
     }
 
