@@ -98,8 +98,10 @@ class AgentCustomerService {
     /**
      * @return LengthAwarePaginator<int, Person>
      */
-    public function list(Agent $agent): LengthAwarePaginator {
-        return $this->scopedQuery($agent)->paginate(config('settings.paginate'));
+    public function list(Agent $agent, int $perPage = 15): LengthAwarePaginator {
+        return $this->scopedQuery($agent)->latest()
+            ->orderByDesc('id')
+            ->paginate($perPage);
     }
 
     public function findForAgent(Agent $agent, int $customerId): Person {
@@ -132,7 +134,8 @@ class AgentCustomerService {
             'devices',
             fn ($q) => $q->where('device_serial', 'LIKE', '%'.$searchTerm.'%')
         )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
-            ->orWhere('surname', 'LIKE', '%'.$searchTerm.'%')
+            ->orWhere('surname', 'LIKE', '%'.$searchTerm.'%')->latest()
+            ->orderByDesc('id')
             ->paginate($limit);
     }
 }
