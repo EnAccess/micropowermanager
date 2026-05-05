@@ -5,14 +5,11 @@ namespace App\Services;
 use App\Events\AccessRatePaymentInitialize;
 use App\Http\Requests\AssignMeterToCustomerRequest;
 use App\Http\Requests\CreateAgentCustomerRequest;
-use App\Http\Requests\CreateAgentCustomerRequest;
 use App\Models\Agent;
 use App\Models\City;
 use App\Models\Meter\Meter;
-use App\Models\City;
 use App\Models\Person\Person;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 
