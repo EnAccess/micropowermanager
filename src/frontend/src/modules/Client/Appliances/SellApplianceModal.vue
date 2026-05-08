@@ -415,8 +415,23 @@
                   :name="$tc('phrases.selectDevice')"
                   v-model="selectedDeviceSerial"
                   v-validate="'required'"
+                  @md-opened="focusDeviceSearchInput"
+                  @md-closed="resetDeviceSearch"
                 >
-                  <template v-if="!deviceSelectionList.length">
+                  <div class="device-search-row" @click.stop @mousedown.stop>
+                    <md-field md-inline>
+                      <md-icon>search</md-icon>
+                      <md-input
+                        ref="deviceSearchInput"
+                        v-model="deviceSearchTerm"
+                        placeholder="Search by serial..."
+                        @click.native.stop
+                        @mousedown.native.stop
+                        @keydown.native.stop
+                      />
+                    </md-field>
+                  </div>
+                  <template v-if="!filteredDeviceSelectionList.length">
                     <md-option disabled>
                       <md-tooltip md-direction="top">
                         Consider changing the search term or create a suitable
@@ -427,7 +442,7 @@
                   </template>
                   <template v-else>
                     <md-option
-                      v-for="device in deviceSelectionList"
+                      v-for="device in filteredDeviceSelectionList"
                       :key="device.id"
                       :value="device.serial"
                     >
@@ -661,6 +676,7 @@ export default {
       internalDialogVisible: false,
       paymentProviders: [],
       paymentProvider: 0,
+      deviceSearchTerm: "",
     }
   },
   created() {
@@ -964,6 +980,17 @@ export default {
         appliance.applianceTypeId === APPLIANCE_TYPE_E_BIKE_ID
       )
     },
+    focusDeviceSearchInput() {
+      this.$nextTick(() => {
+        const input = this.$refs.deviceSearchInput
+        if (input && typeof input.focus === "function") {
+          input.focus()
+        }
+      })
+    },
+    resetDeviceSearch() {
+      this.deviceSearchTerm = ""
+    },
   },
   computed: {
     ...mapGetters({
@@ -979,6 +1006,13 @@ export default {
     },
     showRatesButton() {
       return this.applianceService.appliance.rate > 1
+    },
+    filteredDeviceSelectionList() {
+      const term = this.deviceSearchTerm.trim().toLowerCase()
+      if (!term) return this.deviceSelectionList
+      return this.deviceSelectionList.filter((device) =>
+        device.serial.toLowerCase().includes(term),
+      )
     },
     formattedDeviceLatitude() {
       if (!this.deviceLocation) return ""
@@ -1082,5 +1116,14 @@ export default {
   color: #555;
   margin-top: 0.5rem;
   line-height: 1.5;
+}
+
+.device-search-row {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0 1rem;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
 }
 </style>
