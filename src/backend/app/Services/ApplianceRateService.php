@@ -18,6 +18,7 @@ class ApplianceRateService {
     public function __construct(
         private ApplianceRate $applianceRate,
         private MainSettings $mainSettings,
+        private UserService $userService,
     ) {}
 
     public function getCurrencyFromMainSettings(): string {
@@ -62,10 +63,11 @@ class ApplianceRateService {
         $appliancePerson->save();
 
         $currency = $this->getCurrencyFromMainSettings();
+        $creatorName = $this->userService->getById($creatorId)?->name ?? 'Unknown';
         event(new NewLogEvent([
             'user_id' => $creatorId,
             'affected' => $appliancePerson,
-            'action' => "Total cost updated. From {$oldTotalCost} {$currency} to {$newTotalCost} {$currency}",
+            'action' => "User {$creatorName} updated Total cost from {$oldTotalCost} {$currency} to {$newTotalCost} {$currency}",
         ]));
 
         return $appliancePerson->refresh();

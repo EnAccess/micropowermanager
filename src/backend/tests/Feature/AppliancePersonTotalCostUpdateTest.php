@@ -123,7 +123,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
             ->first();
         $this->assertNotNull($log);
         $this->assertSame($this->user->id, $log->user_id);
-        $this->assertStringContainsString('Total cost updated. From 1000', $log->action);
+        $this->assertStringContainsString("User {$this->user->name} updated Total cost from 1000", $log->action);
         $this->assertStringContainsString('to 1500', $log->action);
     }
 
