@@ -292,10 +292,10 @@ export default {
         text: this.$tc("phrases.bulkSms", 1),
         cancelButtonText: this.$tc("words.cancel"),
         showCancelButton: true,
-      }).then((value) => {
+      }).then(async (value) => {
         if (value.value === true)
           try {
-            this.smsService.sendBulk(
+            await this.smsService.sendBulk(
               this.tab,
               this.message,
               this.senderId,
