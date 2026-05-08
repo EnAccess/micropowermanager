@@ -6,24 +6,21 @@ use App\Http\Resources\ApiResource;
 use App\Models\ApplianceRate;
 use App\Services\ApplianceRateService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ApplianceRateController extends Controller {
     public function __construct(
-        /**
-         * Update the specified resource in storage.
-         *
-         * @param Request       $request
-         * @param ApplianceRate $applianceRate
-         *
-         * @return ApiResource
-         */
         private ApplianceRateService $applianceRateService,
     ) {}
 
     public function update(Request $request, ApplianceRate $applianceRate): ApiResource {
-        $cost = $request->get('cost');
-        $newCost = $request->get('newCost');
-        $creatorId = $request->get('admin_id');
+        if ($applianceRate->rate_cost !== $applianceRate->remaining) {
+            throw ValidationException::withMessages(['rate' => 'Cannot modify a rate that has been paid or partially paid']);
+        }
+
+        $cost = $request->integer('cost');
+        $newCost = $request->integer('newCost');
+        $creatorId = $request->integer('admin_id');
         $amount = $newCost - $cost;
         $appliancePerson = $applianceRate->appliancePerson;
 

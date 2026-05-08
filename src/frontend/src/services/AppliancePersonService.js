@@ -56,6 +56,26 @@ export class AppliancePersonService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+  async updateTotalCost(appliancePersonId, newTotalCost, adminId) {
+    try {
+      const { data, status, error } = await this.repository.updateTotalCost(
+        appliancePersonId,
+        {
+          new_total_cost: newTotalCost,
+          admin_id: adminId,
+        },
+      )
+      if (status !== 200 && status !== 201) {
+        return new ErrorHandler(error, "http", status)
+      }
+      return this.fromJson(data.data)
+    } catch (e) {
+      const responseData = e.response?.data ?? {}
+      const errorMessage =
+        responseData.errors?.new_total_cost?.[0] ?? responseData.message
+      return new ErrorHandler(errorMessage, "http", e.response?.status)
+    }
+  }
   async sellAppliance(params) {
     try {
       const appliance = convertObjectKeysToSnakeCase(params)

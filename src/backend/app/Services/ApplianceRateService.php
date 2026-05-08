@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\ValidationException;
 
 // FIXME:
 // class ApplianceRateService implements IBaseService
@@ -23,6 +24,51 @@ class ApplianceRateService {
         $mainSettings = $this->mainSettings->newQuery()->first();
 
         return $mainSettings->currency ?? '€';
+    }
+
+    public function recomputeRatesFromTotalCost(AppliancePerson $appliancePerson, int $newTotalCost, int $creatorId): AppliancePerson {
+        if ($newTotalCost < 0) {
+            throw ValidationException::withMessages(['new_total_cost' => 'Total cost cannot be negative']);
+        }
+
+        $rates = $appliancePerson->rates()->oldest('due_date')->get();
+        $paidAmount = (int) $rates->sum(fn (ApplianceRate $rate): int => $rate->rate_cost - $rate->remaining);
+
+        if ($newTotalCost < $paidAmount) {
+            throw ValidationException::withMessages(['new_total_cost' => 'New total cannot be lower than the amount already paid']);
+        }
+
+        $newOutstanding = $newTotalCost - $paidAmount;
+        $unpaidRates = $rates->filter(
+            fn (ApplianceRate $rate): bool => $rate->rate_cost === $rate->remaining
+        )->values();
+
+        if ($unpaidRates->isEmpty() && $newOutstanding > 0) {
+            throw ValidationException::withMessages(['new_total_cost' => 'All rates are paid or partially paid; edit individual rates instead']);
+        }
+
+        $count = $unpaidRates->count();
+        if ($count > 0) {
+            $base = intdiv($newOutstanding, $count);
+            $remainder = $newOutstanding - $base * $count;
+            $unpaidRates->each(function (ApplianceRate $rate, int $index) use ($base, $remainder, $count): void {
+                $rateCost = $base + ($index === $count - 1 ? $remainder : 0);
+                $rate->update(['rate_cost' => $rateCost, 'remaining' => $rateCost]);
+            });
+        }
+
+        $oldTotalCost = (int) $appliancePerson->total_cost;
+        $appliancePerson->total_cost = $newTotalCost;
+        $appliancePerson->save();
+
+        $currency = $this->getCurrencyFromMainSettings();
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $appliancePerson,
+            'action' => "Total cost updated. From {$oldTotalCost} {$currency} to {$newTotalCost} {$currency}",
+        ]));
+
+        return $appliancePerson->refresh();
     }
 
     public function updateApplianceRateCost(ApplianceRate $applianceRate, int $creatorId, int $cost, int $newCost): ApplianceRate {

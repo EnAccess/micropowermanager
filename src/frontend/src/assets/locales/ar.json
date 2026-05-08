@@ -224,6 +224,8 @@
     "editRate": "تعديل المعدل",
     "editSubConnectionType": "تعديل نوع الاتصال الفرعي",
     "editSubConnectionTypeNotify": "تم تحديث الاتصال الفرعي بنجاح! | هل أنت متأكد من تغيير نوع الاتصال الفرعي هذا؟",
+    "editTotalCost": "تعديل التكلفة الإجمالية",
+    "editTotalCostConfirm": "سيؤدي هذا إلى إعادة احتساب جميع الأقساط غير المدفوعة. هل أنت متأكد؟",
     "editVillage": "تعديل القرية",
     "enableAccessRate": "تمكين معدل النفاذ",
     "enableMinimumPurchaseAmount": "تمكين الحد الأدنى لمبلغ الشراء",

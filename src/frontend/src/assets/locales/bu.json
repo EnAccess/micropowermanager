@@ -224,6 +224,8 @@
     "editRate": "တည်းြဖတ်Jှ+နး်ထား",
     "editSubConnectionType": "Sub Connection အမျ+ိးအစားကို တည်းြဖတ်ပါ။",
     "editSubConnectionTypeNotify": "ဤချတိ ်ဆက်မ6ခဲွ အမျ+ိးအစား ကိုေြပာင်းရန် ေသချာပါ သလား။ | ချတိ ်ဆက်မ6ခဲွကို ေအာင်ြမင်စွာ မွမ်းမံNပီး ပါNပီ။",
+    "editTotalCost": "Edit Total Cost",
+    "editTotalCostConfirm": "This will recompute all unpaid rates. Are you sure?",
     "editVillage": "ရွာကိုတည်းဖြတ်ပါ။",
     "enableAccessRate": "ဝင်ေရာက်မ6Jှ+နး်ဖွင်ပ့ါ။",
     "enableMinimumPurchaseAmount": "Enable Minimum Purchase Amount",

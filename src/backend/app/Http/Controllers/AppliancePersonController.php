@@ -23,6 +23,7 @@ use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AppliancePersonController extends Controller {
     public const CASH_TRANSACTION_PROVIVER = 0;
@@ -76,7 +77,7 @@ class AppliancePersonController extends Controller {
             return ApiResource::make($responseArray);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -207,6 +208,32 @@ class AppliancePersonController extends Controller {
             ->with('logs.owner')
             ->orderBy('due_date', 'asc')
             ->paginate($perPage));
+    }
+
+    public function updateTotalCost(int $appliancePersonId, Request $request): ApiResource {
+        $newTotalCost = $request->integer('new_total_cost');
+        $creatorId = $request->integer('admin_id');
+        $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
+
+        try {
+            DB::connection('tenant')->beginTransaction();
+            $this->applianceRateService->recomputeRatesFromTotalCost(
+                $appliancePerson,
+                $newTotalCost,
+                $creatorId
+            );
+            DB::connection('tenant')->commit();
+        } catch (ValidationException $e) {
+            DB::connection('tenant')->rollBack();
+            throw $e;
+        } catch (\Exception $e) {
+            DB::connection('tenant')->rollBack();
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+        }
+
+        return ApiResource::make(
+            $this->appliancePersonService->getApplianceDetails($appliancePersonId)
+        );
     }
 
     public function getLogs(int $appliancePersonId, Request $request): ApiResource {

@@ -224,6 +224,8 @@
     "editRate": "Edit Rate",
     "editSubConnectionType": "Edit Sub Connection Type",
     "editSubConnectionTypeNotify": "Are you sure to changing this sub connection type? | Sub Connection Updated Successfully!",
+    "editTotalCost": "Edit Total Cost",
+    "editTotalCostConfirm": "This will recompute all unpaid rates. Are you sure?",
     "editVillage": "Edit Village",
     "enableAccessRate": "Enable Access Rate",
     "enableMinimumPurchaseAmount": "Enable Minimum Purchase Amount",

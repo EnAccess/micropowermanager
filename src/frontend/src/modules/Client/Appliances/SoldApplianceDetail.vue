@@ -190,9 +190,49 @@
             style="padding: 2vw"
           >
             <div class="md-layout-item md-size-50">
-              <h2>
+              <h2 v-if="editTotalCostMode">
+                <b>{{ $tc("phrases.totalCost") }}:</b>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has($tc('phrases.totalCost')),
+                  }"
+                  style="display: inline-flex; max-width: 14rem"
+                >
+                  <span class="md-prefix">{{ currency }}</span>
+                  <md-input
+                    type="number"
+                    v-model="tempTotalCost"
+                    :id="$tc('phrases.totalCost')"
+                    :name="$tc('phrases.totalCost')"
+                    v-validate="'required|numeric|min_value:0'"
+                  />
+                  <span class="md-error">
+                    {{ errors.first($tc("phrases.totalCost")) }}
+                  </span>
+                </md-field>
+                <md-button
+                  class="md-icon-button"
+                  @click="confirmUpdateTotalCost()"
+                >
+                  <md-icon class="md-primary">save</md-icon>
+                </md-button>
+                <md-button
+                  class="md-icon-button"
+                  @click="cancelEditTotalCost()"
+                >
+                  <md-icon class="md-accent">cancel</md-icon>
+                </md-button>
+              </h2>
+              <h2 v-else>
                 <b>{{ $tc("phrases.totalCost") }}:</b>
                 {{ moneyFormat(soldAppliance.totalCost) }}
+                <md-button
+                  class="md-icon-button"
+                  @click="startEditTotalCost()"
+                  :disabled="!canEditTotalCost"
+                >
+                  <md-icon>edit</md-icon>
+                </md-button>
               </h2>
               <h4>
                 <b>{{ $tc("phrases.downPayment") }}:</b>
@@ -294,19 +334,18 @@
                   <md-table-cell>
                     {{ formatReadableDate(rate.dueDate || rate.due_date) }}
                   </md-table-cell>
-                  <template v-if="!isEnergyService">
-                    <div
+                  <md-table-cell v-if="!isEnergyService">
+                    <template
                       v-if="
-                        (rate.rateCost || rate.rate_cost) === rate.remaining &&
-                        soldAppliance.applianceType.appliance_type_id !== 1
+                        (rate.rateCost || rate.rate_cost) === rate.remaining
                       "
                     >
-                      <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
+                      <template v-if="editRow === 'rate' + '_' + rate.id">
                         <md-button
                           class="md-icon-button"
                           @click="showConfirm(rate)"
                         >
-                          <md-icon style="color: green">save</md-icon>
+                          <md-icon class="md-primary">save</md-icon>
                         </md-button>
                         <md-button
                           class="md-icon-button"
@@ -314,31 +353,26 @@
                             closeEditRateAmount(rate.rateCost || rate.rate_cost)
                           "
                         >
-                          <md-icon style="color: red">cancel</md-icon>
+                          <md-icon class="md-accent">cancel</md-icon>
                         </md-button>
-                      </md-table-cell>
-                      <md-table-cell v-else>
-                        <md-button
-                          class="md-icon-button"
-                          @click="
-                            changeRateAmount(
-                              rate.id,
-                              rate.rateCost || rate.rate_cost,
-                            )
-                          "
-                        >
-                          <md-icon>edit</md-icon>
-                        </md-button>
-                      </md-table-cell>
-                    </div>
-                    <div v-else>
-                      <md-table-cell>
-                        <md-button class="md-icon-button" disabled="">
-                          <md-icon>edit_off</md-icon>
-                        </md-button>
-                      </md-table-cell>
-                    </div>
-                  </template>
+                      </template>
+                      <md-button
+                        v-else
+                        class="md-icon-button"
+                        @click="
+                          changeRateAmount(
+                            rate.id,
+                            rate.rateCost || rate.rate_cost,
+                          )
+                        "
+                      >
+                        <md-icon>edit</md-icon>
+                      </md-button>
+                    </template>
+                    <md-button v-else class="md-icon-button" disabled>
+                      <md-icon>edit_off</md-icon>
+                    </md-button>
+                  </md-table-cell>
                 </md-table-row>
               </md-table>
             </widget>
@@ -439,6 +473,8 @@ export default {
       detailedDeviceInfo: null,
       editRow: null,
       tempCost: null,
+      editTotalCostMode: false,
+      tempTotalCost: null,
       paymentProviders: [],
       selectedProviderId: 0,
       redirectUrl: null,
@@ -469,6 +505,17 @@ export default {
       if (!amount || !rate || rate <= 0) return ""
       const days = Math.round((amount / rate) * 10) / 10
       return `${days} day${days !== 1 ? "s" : ""}`
+    },
+    canEditTotalCost() {
+      if (this.isEnergyService) return false
+      if (!this.soldAppliance.rates || !this.soldAppliance.rates.length) {
+        return false
+      }
+      return this.soldAppliance.rates.some(
+        (rate) =>
+          (rate.rateCost || rate.rate_cost) === rate.remaining &&
+          rate.remaining > 0,
+      )
     },
     deviceInfoTitle() {
       if (this.soldAppliance.device?.device_type) {
@@ -566,6 +613,47 @@ export default {
       this.errorLabel = false
       this.selectedProviderId = 0
       this.redirectUrl = null
+    },
+    startEditTotalCost() {
+      this.tempTotalCost = this.soldAppliance.totalCost
+      this.editTotalCostMode = true
+    },
+    cancelEditTotalCost() {
+      this.editTotalCostMode = false
+      this.tempTotalCost = null
+    },
+    async confirmUpdateTotalCost() {
+      const validator = await this.$validator.validateAll()
+      if (!validator) return
+      const result = await this.$swal({
+        type: "question",
+        title: this.$tc("phrases.editTotalCost"),
+        text: this.$tc("phrases.editTotalCostConfirm"),
+        showCancelButton: true,
+        confirmButtonText: "I'm sure",
+        cancelButtonText: this.$tc("words.cancel"),
+      })
+      if (!result.value) return
+      try {
+        const response = await this.appliancePersonService.updateTotalCost(
+          this.selectedApplianceId,
+          parseInt(this.tempTotalCost),
+          this.adminId,
+        )
+        if (response instanceof ErrorHandler) {
+          throw response
+        }
+        this.editTotalCostMode = false
+        this.tempTotalCost = null
+        this.alertNotify("success", this.$tc("phrases.totalCost"))
+        await this.getSoldApplianceDetail()
+        EventBus.$emit("reloadWidget", this.ratesSubscriber)
+        EventBus.$emit("reloadWidget", this.logsSubscriber)
+      } catch (e) {
+        const errorMessage =
+          e instanceof ErrorHandler ? e.message : e.message || "Update failed"
+        this.alertNotify("error", errorMessage)
+      }
     },
     async editRate(data) {
       this.progress = true

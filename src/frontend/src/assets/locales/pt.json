@@ -224,6 +224,8 @@
     "editRate": "Editar Taxa",
     "editSubConnectionType": "Editar Sub Tipo de Ligação",
     "editSubConnectionTypeNotify": "Tem a certeza que pretende alterar este sub tipo de ligação? | Sub Ligação Actualizada com Sucesso!",
+    "editTotalCost": "Editar Custo Total",
+    "editTotalCostConfirm": "Isto irá recalcular todas as parcelas em aberto. Tem a certeza?",
     "editVillage": "Editar Aldeia",
     "enableAccessRate": "Activar Taxa de Acesso",
     "enableMinimumPurchaseAmount": "Activar Valor Mínimo de Compra",

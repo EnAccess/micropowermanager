@@ -32,8 +32,10 @@ export class ApplianceRateService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
-      return new ErrorHandler(errorMessage, "http")
+      const responseData = e.response?.data ?? {}
+      const errorMessage =
+        responseData.errors?.rate?.[0] ?? responseData.message
+      return new ErrorHandler(errorMessage, "http", e.response?.status)
     }
   }
 

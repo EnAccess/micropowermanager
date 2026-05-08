@@ -17,4 +17,8 @@ export default {
   show(applianceId) {
     return Client.get(`${resource}/people/detail/${applianceId}`)
   },
+
+  updateTotalCost(appliancePersonId, terms) {
+    return Client.put(`${resource}/${appliancePersonId}/total-cost`, terms)
+  },
 }
