@@ -186,7 +186,8 @@ class AppliancePersonController extends Controller {
      * Display the specified resource.
      */
     public function index(Person $person, Request $request): ApiResource {
-        $appliances = $this->appliancePerson::with('appliance.applianceType', 'rates.logs', 'logs.owner')
+        $appliances = $this->appliancePerson::withTrashed()
+            ->with('appliance.applianceType', 'rates.logs', 'logs.owner')
             ->where('person_id', $person->id)
             ->get();
 
@@ -202,11 +203,11 @@ class AppliancePersonController extends Controller {
     public function getRates(int $appliancePersonId, Request $request): ApiResource {
         $perPage = $request->get('per_page', 15);
 
-        $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
+        $appliancePerson = $this->appliancePerson::withTrashed()->findOrFail($appliancePersonId);
 
         return ApiResource::make($appliancePerson->rates()
             ->with('logs.owner')
-            ->orderBy('due_date', 'asc')
+            ->oldest('due_date')
             ->paginate($perPage));
     }
 
@@ -239,11 +240,28 @@ class AppliancePersonController extends Controller {
     public function getLogs(int $appliancePersonId, Request $request): ApiResource {
         $perPage = $request->get('per_page', 10);
 
-        $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
+        $appliancePerson = $this->appliancePerson::withTrashed()->findOrFail($appliancePersonId);
 
         return ApiResource::make($appliancePerson->logs()
-            ->with('owner')
-            ->orderBy('created_at', 'desc')
+            ->with('owner')->latest()
             ->paginate($perPage));
+    }
+
+    public function destroy(int $appliancePersonId, Request $request): ApiResource {
+        $creatorId = $request->integer('admin_id');
+        $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
+
+        try {
+            DB::connection('tenant')->beginTransaction();
+            $this->appliancePersonService->deleteWithDeviceRelease($appliancePerson, $creatorId);
+            DB::connection('tenant')->commit();
+        } catch (\Exception $e) {
+            DB::connection('tenant')->rollBack();
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+        }
+
+        return ApiResource::make(
+            $this->appliancePersonService->getApplianceDetails($appliancePersonId)
+        );
     }
 }

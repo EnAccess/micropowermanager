@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\NewLogEvent;
 use App\Models\AppliancePerson;
+use App\Models\Device;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
@@ -20,6 +21,8 @@ class AppliancePersonService implements IBaseService, IAssociative {
     public function __construct(
         private MainSettings $mainSettings,
         private AppliancePerson $appliancePerson,
+        private Device $device,
+        private UserService $userService,
     ) {}
 
     /**
@@ -51,11 +54,31 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     public function getApplianceDetails(int $applianceId): AppliancePerson {
-        $appliance = $this->appliancePerson::with('appliance', 'rates.logs', 'logs.owner', 'device')
+        $appliance = $this->appliancePerson::withTrashed()
+            ->with('appliance', 'rates.logs', 'logs.owner', 'device')
             ->where('id', '=', $applianceId)
             ->first();
 
         return $this->sumTotalPaymentsAndTotalRemainingAmount($appliance);
+    }
+
+    public function deleteWithDeviceRelease(AppliancePerson $appliancePerson, int $creatorId): AppliancePerson {
+        if ($appliancePerson->device_serial) {
+            $this->device->newQuery()
+                ->where('device_serial', $appliancePerson->device_serial)
+                ->update(['person_id' => null]);
+        }
+
+        $creatorName = $this->userService->getById($creatorId)->name ?? 'Unknown';
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $appliancePerson,
+            'action' => "User {$creatorName} deleted the sold appliance",
+        ]));
+
+        $appliancePerson->delete();
+
+        return $appliancePerson;
     }
 
     private function sumTotalPaymentsAndTotalRemainingAmount(AppliancePerson $appliance): AppliancePerson {
@@ -81,7 +104,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     public function getById(int $id): AppliancePerson {
-        return $this->appliancePerson->newQuery()->findOrFail($id);
+        return $this->appliancePerson->newQuery()->withTrashed()->findOrFail($id);
     }
 
     /**

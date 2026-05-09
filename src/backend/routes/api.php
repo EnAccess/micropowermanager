@@ -134,6 +134,7 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'auth:api'], function ()
         Route::get('/{appliancePersonId}/rates', [AppliancePersonController::class, 'getRates'])->middleware('permission:appliances');
         Route::get('/{appliancePersonId}/logs', [AppliancePersonController::class, 'getLogs'])->middleware('permission:appliances');
         Route::put('/{appliancePersonId}/total-cost', [AppliancePersonController::class, 'updateTotalCost'])->middleware('permission:appliances');
+        Route::delete('/{appliancePersonId}', [AppliancePersonController::class, 'destroy'])->middleware('permission:appliances');
     });
     Route::group(['prefix' => 'types'], function () {
         Route::get('/', [ApplianceTypeController::class, 'index'])->middleware('permission:appliances');

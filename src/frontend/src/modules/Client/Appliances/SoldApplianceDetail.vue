@@ -136,6 +136,35 @@
 
         <div class="md-layout md-gutter dialog-place">
           <div
+            v-if="isDeleted"
+            class="md-layout-item md-size-100"
+            style="padding: 1rem 2vw 0"
+          >
+            <div class="deleted-banner">
+              <md-icon>info</md-icon>
+              <span>
+                {{
+                  $tc("phrases.soldAppliancePlanDeleted", 1, {
+                    date: formatReadableDate(soldAppliance.deletedAt),
+                  })
+                }}
+              </span>
+            </div>
+          </div>
+          <div
+            v-else
+            class="md-layout-item md-size-100"
+            style="text-align: right; padding: 1rem 2vw 0"
+          >
+            <md-button
+              class="md-accent md-raised md-dense"
+              @click="confirmDeleteSoldAppliance()"
+            >
+              <md-icon style="color: white">delete</md-icon>
+              {{ $tc("phrases.deleteSoldAppliance", 0) }}
+            </md-button>
+          </div>
+          <div
             v-if="isEnergyService"
             class="md-layout-item md-layout md-gutter md-size-100"
             style="padding: 2vw"
@@ -229,7 +258,7 @@
                 <md-button
                   class="md-icon-button"
                   @click="startEditTotalCost()"
-                  :disabled="!canEditTotalCost"
+                  :disabled="!canEditTotalCost || isDeleted"
                 >
                   <md-icon>edit</md-icon>
                 </md-button>
@@ -274,7 +303,9 @@
                       class="md-primary md-raised md-dense"
                       @click="openPaymentDialog()"
                       :disabled="
-                        !isEnergyService && !soldAppliance.totalRemainingAmount
+                        isDeleted ||
+                        (!isEnergyService &&
+                          !soldAppliance.totalRemainingAmount)
                       "
                     >
                       <md-icon style="color: white">payments</md-icon>
@@ -359,6 +390,7 @@
                       <md-button
                         v-else
                         class="md-icon-button"
+                        :disabled="isDeleted"
                         @click="
                           changeRateAmount(
                             rate.id,
@@ -517,6 +549,9 @@ export default {
           rate.remaining > 0,
       )
     },
+    isDeleted() {
+      return Boolean(this.soldAppliance.deletedAt)
+    },
     deviceInfoTitle() {
       if (this.soldAppliance.device?.device_type) {
         const deviceType = this.soldAppliance.device.device_type
@@ -652,6 +687,36 @@ export default {
       } catch (e) {
         const errorMessage =
           e instanceof ErrorHandler ? e.message : e.message || "Update failed"
+        this.alertNotify("error", errorMessage)
+      }
+    },
+    async confirmDeleteSoldAppliance() {
+      const result = await this.$swal({
+        type: "warning",
+        title: this.$tc("phrases.deleteSoldAppliance", 0),
+        text: this.$tc("phrases.deleteSoldAppliance", 2, {
+          name: this.soldAppliance.applianceType?.name ?? "",
+        }),
+        showCancelButton: true,
+        confirmButtonText: this.$tc("phrases.deleteSoldAppliance", 0),
+        cancelButtonText: this.$tc("words.cancel"),
+      })
+      if (!result.value) return
+      try {
+        const response = await this.appliancePersonService.delete(
+          this.selectedApplianceId,
+          this.adminId,
+        )
+        if (response instanceof ErrorHandler) {
+          throw response
+        }
+        this.alertNotify("success", this.$tc("phrases.deleteSoldAppliance", 1))
+        await this.getSoldApplianceDetail()
+        EventBus.$emit("reloadWidget", this.ratesSubscriber)
+        EventBus.$emit("reloadWidget", this.logsSubscriber)
+      } catch (e) {
+        const errorMessage =
+          e instanceof ErrorHandler ? e.message : e.message || "Delete failed"
         this.alertNotify("error", errorMessage)
       }
     },
@@ -857,5 +922,21 @@ export default {
 .eaas-days-hint {
   font-size: 0.85rem;
   color: #888;
+}
+
+.deleted-banner {
+  padding: 0.75rem 1rem;
+  background-color: #fff8e1;
+  border-left: 3px solid #f57c00;
+  color: #6d4c00;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 2px;
+
+  .md-icon {
+    color: #f57c00;
+    flex-shrink: 0;
+  }
 }
 </style>

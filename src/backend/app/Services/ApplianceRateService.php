@@ -63,7 +63,7 @@ class ApplianceRateService {
         $appliancePerson->save();
 
         $currency = $this->getCurrencyFromMainSettings();
-        $creatorName = $this->userService->getById($creatorId)?->name ?? 'Unknown';
+        $creatorName = $this->userService->getById($creatorId)->name ?? 'Unknown';
         event(new NewLogEvent([
             'user_id' => $creatorId,
             'affected' => $appliancePerson,

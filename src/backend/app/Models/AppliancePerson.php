@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -25,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property      int                            $creator_id
  * @property      Carbon|null                    $created_at
  * @property      Carbon|null                    $updated_at
+ * @property      Carbon|null                    $deleted_at
  * @property      float|null                     $down_payment
  * @property      Carbon|null                    $first_payment_date
  * @property      string|null                    $device_serial
@@ -39,6 +41,8 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ApplianceRate> $rates
  */
 class AppliancePerson extends BaseModel {
+    use SoftDeletes;
+
     public const PAYMENT_TYPE_INSTALLMENT = 'installment';
     public const PAYMENT_TYPE_ENERGY_SERVICE = 'energy_service';
 

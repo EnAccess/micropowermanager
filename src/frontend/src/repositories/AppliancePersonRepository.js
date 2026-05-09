@@ -21,4 +21,8 @@ export default {
   updateTotalCost(appliancePersonId, terms) {
     return Client.put(`${resource}/${appliancePersonId}/total-cost`, terms)
   },
+
+  delete(appliancePersonId, payload) {
+    return Client.delete(`${resource}/${appliancePersonId}`, { data: payload })
+  },
 }

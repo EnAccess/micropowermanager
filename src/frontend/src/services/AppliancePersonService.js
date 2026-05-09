@@ -13,12 +13,14 @@ export class AppliancePersonService {
   }
   fromJson(data) {
     return {
+      id: data.id,
       applianceType: data.appliance,
       applianceTypeId: data.appliance.id,
       creatorId: data.creator_id,
       creatorType: data.creator_type,
       downPayment: data.down_payment,
       createdAt: data.created_at,
+      deletedAt: data.deleted_at,
       firstPaymentDate: data.first_payment_date,
       personId: data.person_id,
       rateCount: data.rate_count,
@@ -73,6 +75,21 @@ export class AppliancePersonService {
       const responseData = e.response?.data ?? {}
       const errorMessage =
         responseData.errors?.new_total_cost?.[0] ?? responseData.message
+      return new ErrorHandler(errorMessage, "http", e.response?.status)
+    }
+  }
+  async delete(appliancePersonId, adminId) {
+    try {
+      const { data, status, error } = await this.repository.delete(
+        appliancePersonId,
+        { admin_id: adminId },
+      )
+      if (status !== 200 && status !== 201) {
+        return new ErrorHandler(error, "http", status)
+      }
+      return this.fromJson(data.data)
+    } catch (e) {
+      const errorMessage = e.response?.data?.message
       return new ErrorHandler(errorMessage, "http", e.response?.status)
     }
   }
