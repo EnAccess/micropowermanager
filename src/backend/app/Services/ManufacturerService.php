@@ -42,12 +42,15 @@ class ManufacturerService implements IBaseService {
     /**
      * @return Collection<int, Manufacturer>|LengthAwarePaginator<int, Manufacturer>
      */
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
+    public function getAll(?int $limit = null, ?string $type = null): Collection|LengthAwarePaginator {
+        $query = $this->manufacturer->newQuery()
+            ->when($type !== null, fn ($q) => $q->where('type', $type));
+
         if ($limit) {
-            return $this->manufacturer->newQuery()->paginate($limit);
+            return $query->paginate($limit);
         }
 
-        return $this->manufacturer->newQuery()->get();
+        return $query->get();
     }
 
     public function getByName(string $manufacturerName): ?Manufacturer {

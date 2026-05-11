@@ -10,6 +10,7 @@ use App\Http\Controllers\AgentDashboardBalanceHistoryController;
 use App\Http\Controllers\AgentDashboardBoxesController;
 use App\Http\Controllers\AgentDashboardRevenueController;
 use App\Http\Controllers\AgentFirebaseController;
+use App\Http\Controllers\AgentMeterController;
 use App\Http\Controllers\AgentSoldApplianceController;
 use App\Http\Controllers\AgentTicketController;
 use App\Http\Controllers\AgentTransactionsController;
@@ -65,6 +66,9 @@ Route::group(['prefix' => 'app'], function () {
         });
         Route::group(['prefix' => 'appliance_types'], function () {
             Route::get('/', [AgentAssignedAppliancesController::class, 'index']);
+        });
+        Route::group(['prefix' => 'meters'], function () {
+            Route::get('/', [AgentMeterController::class, 'index']);
         });
         Route::group(['prefix' => 'ticket'], function () {
             Route::get('/', [AgentTicketController::class, 'index']);

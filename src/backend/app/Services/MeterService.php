@@ -127,6 +127,18 @@ class MeterService implements IBaseService {
         return $query->paginate($limit);
     }
 
+    /**
+     * @return Collection<int, Meter>
+     */
+    public function getAvailable(?int $manufacturerId = null, ?int $meterTypeId = null): Collection {
+        return $this->meter->newQuery()
+            ->where('in_use', 0)
+            ->when($manufacturerId !== null, fn ($q) => $q->where('manufacturer_id', $manufacturerId))
+            ->when($meterTypeId !== null, fn ($q) => $q->where('meter_type_id', $meterTypeId))
+            ->orderBy('serial_number')
+            ->get();
+    }
+
     public function update($meter, array $meterData): Meter {
         $meter->update($meterData);
         $meter->fresh();

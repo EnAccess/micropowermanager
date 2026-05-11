@@ -62,15 +62,24 @@ class AgentCustomerService {
             throw ValidationException::withMessages(['customer' => ['Customer does not belong to the agent\'s mini-grid.']]);
         }
 
-        $meter = $this->meterService->create([
-            'serial_number' => $request->string('serial_number')->toString(),
+        $serialNumber = $request->string('serial_number')->toString();
+        $meterAttributes = [
+            'serial_number' => $serialNumber,
             'manufacturer_id' => $request->integer('manufacturer_id'),
             'meter_type_id' => $request->integer('meter_type_id'),
             'tariff_id' => $request->integer('tariff_id'),
             'connection_group_id' => $request->integer('connection_group_id'),
             'connection_type_id' => $request->integer('connection_type_id'),
             'in_use' => 1,
-        ]);
+        ];
+
+        $existing = $this->meterService->getBySerialNumber($serialNumber);
+        if ($existing instanceof Meter) {
+            $existing->fill($meterAttributes)->save();
+            $meter = $existing;
+        } else {
+            $meter = $this->meterService->create($meterAttributes);
+        }
 
         $device = $this->deviceService->make([
             'person_id' => $customer->id,

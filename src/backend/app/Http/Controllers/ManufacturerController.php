@@ -22,8 +22,9 @@ class ManufacturerController extends Controller {
      */
     public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
+        $type = $request->input('type');
 
-        return ApiResource::make($this->manufacturerService->getAll($limit));
+        return ApiResource::make($this->manufacturerService->getAll($limit, $type));
     }
 
     /**

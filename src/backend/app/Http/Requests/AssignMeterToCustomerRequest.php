@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Device;
+use App\Models\Meter\Meter;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AssignMeterToCustomerRequest extends FormRequest {
@@ -14,7 +16,22 @@ class AssignMeterToCustomerRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'serial_number' => ['required', 'string', 'unique:tenant.meters,serial_number'],
+            'serial_number' => [
+                'required',
+                'string',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $meter = Meter::query()->where('serial_number', $value)->first();
+                    if ($meter !== null && (int) $meter->in_use === 1) {
+                        $fail('This meter is already assigned to another customer.');
+
+                        return;
+                    }
+                    $deviceTaken = Device::query()->where('device_serial', $value)->exists();
+                    if ($deviceTaken) {
+                        $fail('This meter is already assigned to another customer.');
+                    }
+                },
+            ],
             'manufacturer_id' => ['required', 'integer', 'exists:tenant.manufacturers,id'],
             'meter_type_id' => ['required', 'integer', 'exists:tenant.meter_types,id'],
             'tariff_id' => ['required', 'integer', 'exists:tenant.tariffs,id'],

@@ -29,15 +29,15 @@ class MeterSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        // Manufacturer
-        // Create demo manufacturers for demo purposes
-        $demoMeterManufacturer = Manufacturer::create([
-            'name' => 'Demo Meter Manufacturer',
-            'type' => 'meter',
-            'website' => 'https://demo.micropowermanager.io/',
-            'contact_person' => 'Demo Person',
-            'api_name' => 'DemoMeterManufacturerApi',
-        ]);
+        $demoMeterManufacturer = Manufacturer::firstOrCreate(
+            ['api_name' => 'DemoMeterManufacturerApi'],
+            [
+                'name' => 'Demo Meter Manufacturer',
+                'type' => 'meter',
+                'website' => 'https://demo.micropowermanager.io/',
+                'contact_person' => 'Demo Person',
+            ]
+        );
 
         $manufacturers = collect([$demoMeterManufacturer]);
 
@@ -95,14 +95,13 @@ class MeterSeeder extends Seeder {
 
         // Assign one meter to each customer
         foreach ($persons as $person) {
-            // Create a Meter
             $meter = Meter::factory()
                 ->for(ConnectionType::all()->random())
                 ->for(ConnectionGroup::all()->random())
                 ->for(MeterType::all()->random())
                 ->for($manufacturers->random())
                 ->for(Tariff::all()->random(), 'tariff')
-                ->createOne();
+                ->createOne(['in_use' => 1]);
 
             // Assign the Meter to the customer by creating a device
             Device::factory()
@@ -122,6 +121,17 @@ class MeterSeeder extends Seeder {
                     'device_serial' => $meter->serial_number,
                 ]);
             $this->generateMeterConsumptionData($meter);
+        }
+
+        foreach (MeterType::all() as $meterType) {
+            Meter::factory()
+                ->count(5)
+                ->for(ConnectionType::all()->random())
+                ->for(ConnectionGroup::all()->random())
+                ->for($meterType)
+                ->for($demoMeterManufacturer)
+                ->for(Tariff::all()->random(), 'tariff')
+                ->create(['in_use' => 0]);
         }
     }
 
