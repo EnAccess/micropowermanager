@@ -1,254 +1,214 @@
 <template>
-  <div>
+  <div class="paystack-settings">
     <form
       @submit.prevent="submitCredentialForm"
       data-vv-scope="Credential-Form"
-      class="Credential-Form"
     >
-      <md-card>
+      <md-card class="panel">
+        <div class="panel__head">
+          <h2 class="panel__title">Paystack API Credentials</h2>
+          <p class="panel__subtitle">
+            Enter the keys from your Paystack dashboard to start accepting
+            payments.
+          </p>
+        </div>
         <md-card-content>
           <div class="md-layout md-gutter">
-            <div
-              class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
-            >
-              <div class="md-layout md-gutter">
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <div class="field">
+                <label class="field__label" for="secretKey">
+                  {{ $tc("phrases.secretKey") }}
+                </label>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('Credential-Form.secretKey'),
+                  }"
                 >
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Credential-Form.secretKey'),
-                    }"
+                  <md-input
+                    id="secretKey"
+                    name="secretKey"
+                    v-model="credentialService.credential.secretKey"
+                    v-validate="'required|min:3'"
+                    type="password"
+                    placeholder="sk_..."
+                  />
+                  <span class="md-error">
+                    {{ errors.first("Credential-Form.secretKey") }}
+                  </span>
+                </md-field>
+              </div>
+            </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <div class="field">
+                <label class="field__label" for="publicKey">
+                  {{ $tc("phrases.publicKey") }}
+                </label>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('Credential-Form.publicKey'),
+                  }"
+                >
+                  <md-input
+                    id="publicKey"
+                    name="publicKey"
+                    v-model="credentialService.credential.publicKey"
+                    v-validate="'required|min:3'"
+                    placeholder="pk_..."
+                  />
+                  <span class="md-error">
+                    {{ errors.first("Credential-Form.publicKey") }}
+                  </span>
+                </md-field>
+              </div>
+            </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <div class="field">
+                <label class="field__label" for="merchantName">
+                  {{ $tc("phrases.merchantName") }}
+                </label>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('Credential-Form.merchantName'),
+                  }"
+                >
+                  <md-input
+                    id="merchantName"
+                    name="merchantName"
+                    v-model="credentialService.credential.merchantName"
+                    v-validate="'required|min:2'"
+                  />
+                  <span class="md-error">
+                    {{ errors.first("Credential-Form.merchantName") }}
+                  </span>
+                </md-field>
+              </div>
+            </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <div class="field">
+                <label class="field__label" for="merchantEmail">
+                  {{ $tc("phrases.merchantEmail") }}
+                </label>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('Credential-Form.merchantEmail'),
+                  }"
+                >
+                  <md-input
+                    id="merchantEmail"
+                    name="merchantEmail"
+                    v-model="credentialService.credential.merchantEmail"
+                    v-validate="'required|email'"
+                    type="email"
+                  />
+                  <span class="md-error">
+                    {{ errors.first("Credential-Form.merchantEmail") }}
+                  </span>
+                </md-field>
+              </div>
+            </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <div class="field">
+                <label class="field__label" for="environment">
+                  {{ $tc("phrases.environment") }}
+                </label>
+                <md-field>
+                  <md-select
+                    id="environment"
+                    name="environment"
+                    v-model="credentialService.credential.environment"
                   >
-                    <label for="secretKey">
-                      {{ $tc("phrases.secretKey") }}
-                    </label>
-                    <md-input
-                      id="secretKey"
-                      name="secretKey"
-                      v-model="credentialService.credential.secretKey"
-                      v-validate="'required|min:3'"
-                      type="password"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.secretKey") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
+                    <md-option value="test">
+                      {{ $tc("phrases.test") }}
+                    </md-option>
+                    <md-option value="live">
+                      {{ $tc("phrases.live") }}
+                    </md-option>
+                  </md-select>
+                </md-field>
+              </div>
+            </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <div class="field">
+                <label class="field__label" for="callbackUrl">
+                  {{ $tc("phrases.callbackUrl") }}
+                </label>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('Credential-Form.callbackUrl'),
+                  }"
                 >
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Credential-Form.publicKey'),
-                    }"
-                  >
-                    <label for="publicKey">
-                      {{ $tc("phrases.publicKey") }}
-                    </label>
-                    <md-input
-                      id="publicKey"
-                      name="publicKey"
-                      v-model="credentialService.credential.publicKey"
-                      v-validate="'required|min:3'"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.publicKey") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
-                >
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Credential-Form.callbackUrl'),
-                    }"
-                  >
-                    <label for="callbackUrl">
-                      {{ $tc("phrases.callbackUrl") }}
-                    </label>
-                    <md-input
-                      id="callbackUrl"
-                      name="callbackUrl"
-                      v-model="credentialService.credential.callbackUrl"
-                      v-validate="'required'"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.callbackUrl") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
-                >
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Credential-Form.merchantName'),
-                    }"
-                  >
-                    <label for="merchantName">
-                      {{ $tc("phrases.merchantName") }}
-                    </label>
-                    <md-input
-                      id="merchantName"
-                      name="merchantName"
-                      v-model="credentialService.credential.merchantName"
-                      v-validate="'required|min:2'"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.merchantName") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
-                >
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Credential-Form.merchantEmail'),
-                    }"
-                  >
-                    <label for="merchantEmail">
-                      {{ $tc("phrases.merchantEmail") }}
-                    </label>
-                    <md-input
-                      id="merchantEmail"
-                      name="merchantEmail"
-                      v-model="credentialService.credential.merchantEmail"
-                      v-validate="'required|email'"
-                      type="email"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.merchantEmail") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-50 md-medium-size-50 md-small-size-50"
-                >
-                  <md-field>
-                    <label for="environment">
-                      {{ $tc("phrases.environment") }}
-                    </label>
-                    <md-select
-                      id="environment"
-                      name="environment"
-                      v-model="credentialService.credential.environment"
-                    >
-                      <md-option value="test">
-                        {{ $tc("phrases.test") }}
-                      </md-option>
-                      <md-option value="live">
-                        {{ $tc("phrases.live") }}
-                      </md-option>
-                    </md-select>
-                  </md-field>
-                </div>
+                  <md-input
+                    id="callbackUrl"
+                    name="callbackUrl"
+                    v-model="credentialService.credential.callbackUrl"
+                    v-validate="'required'"
+                    readonly
+                  />
+                  <span class="md-error">
+                    {{ errors.first("Credential-Form.callbackUrl") }}
+                  </span>
+                </md-field>
+                <p class="field__note">
+                  Generated automatically — no action needed.
+                </p>
               </div>
             </div>
           </div>
         </md-card-content>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
-        <md-card-actions>
-          <md-button class="md-raised md-primary" type="submit">
+        <div class="panel__actions">
+          <md-button class="save-btn md-raised md-primary" type="submit">
             {{ $tc("words.save") }}
           </md-button>
-        </md-card-actions>
+        </div>
       </md-card>
     </form>
 
-    <!-- Public URLs Section -->
-    <md-card class="public-urls-card">
-      <md-card-header>
-        <div class="md-title">Public Payment URLs</div>
-        <div class="md-subhead">
-          Share these URLs with your customers for direct payments
-        </div>
-      </md-card-header>
+    <md-card class="panel">
+      <div class="panel__head">
+        <h2 class="panel__title">Public Payment Link</h2>
+        <p class="panel__subtitle">
+          Share this link with your customers so they can pay directly.
+        </p>
+      </div>
       <md-card-content>
-        <div class="url-section">
-          <!-- Permanent Payment URL -->
-          <div class="url-item permanent-url">
-            <label class="url-label">
-              <md-icon class="url-icon">bookmark</md-icon>
-              Permanent Payment URL (Self-Service):
-            </label>
-            <div class="url-container">
-              <md-input
-                v-model="publicUrls.permanent_payment_url"
-                readonly
-                class="url-input"
-              />
-              <md-button
-                class="md-icon-button md-primary"
-                @click="copyToClipboard(publicUrls.permanent_payment_url)"
-                :disabled="!publicUrls.permanent_payment_url"
-              >
-                <md-icon>content_copy</md-icon>
-              </md-button>
-            </div>
-            <p class="url-description">
-              <md-icon>info</md-icon>
-              This URL never expires. Customers can bookmark it for regular
-              payments.
-            </p>
+        <div class="link-block">
+          <label class="field__label">
+            Permanent Payment URL (Self-Service)
+          </label>
+          <div class="link-row">
+            <span class="link-row__icon">
+              <md-icon>link</md-icon>
+            </span>
+            <input
+              class="link-row__input"
+              :value="publicUrls.permanent_payment_url"
+              readonly
+            />
+            <md-button
+              class="link-row__copy md-raised md-primary"
+              @click="copyToClipboard(publicUrls.permanent_payment_url)"
+              :disabled="!publicUrls.permanent_payment_url"
+            >
+              <md-icon>content_copy</md-icon>
+              Copy
+            </md-button>
           </div>
-
-          <div class="url-item callback-url">
-            <label class="url-label">
-              <md-icon class="url-icon">webhook</md-icon>
-              Callback URL (Result Page):
-            </label>
-            <div class="url-container">
-              <md-input
-                v-model="callbackUrl"
-                readonly
-                class="url-input"
-                placeholder="Loading callback URL..."
-              />
-              <md-button
-                class="md-icon-button md-primary"
-                @click="copyToClipboard(callbackUrl)"
-                :disabled="!callbackUrl"
-              >
-                <md-icon>content_copy</md-icon>
-              </md-button>
-            </div>
-
-            <div class="callback-instructions">
-              <h4>Instructions:</h4>
-              <ol>
-                <li>Copy the callback URL above</li>
-                <li>
-                  Paste this URL in the
-                  <strong>"Callback URL"</strong>
-                  field
-                </li>
-                <li>Save your settings</li>
-              </ol>
-
-              <div class="warning-box">
-                <md-icon class="warning-icon">warning</md-icon>
-                <div class="warning-content">
-                  <strong>Important:</strong>
-                  This callback URL is required for payment verification.
-                  Without it, customers won't see payment confirmation after
-                  completing their transactions.
-                </div>
-              </div>
-            </div>
-          </div>
+          <p class="link-block__note">
+            <md-icon>info_outline</md-icon>
+            This URL never expires. Customers can bookmark it for regular
+            payments.
+          </p>
         </div>
 
-        <div class="url-actions">
+        <div class="panel__actions panel__actions--start">
           <md-button
-            class="md-raised md-primary"
+            class="ghost-btn"
             @click="openPaymentPage"
             :disabled="!publicUrls.permanent_payment_url"
           >
             <md-icon>open_in_new</md-icon>
-            Test Payment Page
+            Open test payment page
           </md-button>
         </div>
       </md-card-content>
@@ -272,12 +232,11 @@ export default {
       publicUrls: {
         permanent_payment_url: "",
       },
-      callbackUrl: "",
     }
   },
-  mounted() {
-    this.getCredential()
-    this.generateUrls()
+  async mounted() {
+    await this.getCredential()
+    await this.generateUrls()
   },
   methods: {
     async getCredential() {
@@ -308,14 +267,12 @@ export default {
     async generateUrls() {
       try {
         const response = await this.credentialService.getPublicUrls()
-
-        this.publicUrls = {
-          permanent_payment_url: this.addFrontendPrefix(
-            response.permanent_payment_url,
-          ),
-        }
-
-        this.callbackUrl = this.addFrontendPrefix(
+        this.publicUrls.permanent_payment_url = this.addFrontendPrefix(
+          response.permanent_payment_url,
+        )
+        // The callback URL is derived from the payment URL and stored
+        // automatically, so operators never have to copy it by hand.
+        this.credentialService.credential.callbackUrl = this.addFrontendPrefix(
           response.permanent_payment_url.replace("/payment/", "/result/"),
         )
       } catch (error) {
@@ -353,144 +310,164 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.Credential-Form {
-  padding: 1rem;
+.paystack-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.public-urls-card {
-  margin-top: 2rem;
+/* Clip the pre-font-load ligature text inside every md-icon so its visible
+   width stays fixed regardless of whether Material Icons has finished loading
+   — without this, the literal text "info_outline" / "link" / etc. spills out
+   of the icon box before the font arrives and visibly shifts the surrounding
+   content once the ligature collapses to a glyph. */
+.md-icon {
+  overflow: hidden;
 }
 
-.url-section {
-  margin-bottom: 1.5rem;
+/* Panels */
+.panel {
+  border-radius: 10px;
 }
 
-.url-item {
-  margin-bottom: 1rem;
+.panel__head {
+  padding: 1.25rem 1.5rem 0.25rem;
 }
 
-.url-label {
+.panel__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $brand-primary-dark;
+}
+
+.panel__subtitle {
+  margin: 0.3rem 0 0;
+  font-size: 0.825rem;
+  color: #8a93a0;
+}
+
+.panel__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 1.5rem 1.25rem;
+}
+
+.panel__actions--start {
+  justify-content: flex-start;
+  padding-top: 1rem;
+}
+
+/* Fields */
+.field {
+  margin-bottom: 1.1rem;
+}
+
+.field__label {
   display: block;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #666;
+  margin-bottom: 0.1rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #8a93a0;
 }
 
-.url-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.field .md-field {
+  margin: 0;
+  min-height: 40px;
+  padding-top: 4px;
 }
 
-.url-input {
-  flex: 1;
-}
-
-.url-input .md-input {
-  background-color: #f5f5f5;
-}
-
-.url-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.url-actions .md-button {
-  min-width: 140px;
-}
-
-.permanent-url {
-  border-left: 4px solid #4caf50;
-  padding-left: 1rem;
-  background-color: #f1f8e9;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-}
-
-.url-icon {
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
-.url-description {
-  display: flex;
-  align-items: center;
-  margin-top: 0.5rem;
-  font-size: 12px;
-  color: #666;
+.field__note {
+  margin: 0.35rem 0 0;
+  font-size: 11.5px;
   font-style: italic;
+  color: #9aa3af;
 }
 
-.url-description .md-icon {
-  margin-right: 4px;
-  font-size: 16px;
-}
-
-/* Callback URL Section Styles */
-.callback-url {
-  border-left: 4px solid #4caf50;
-  padding-left: 1rem;
-  background-color: #e8f5e8;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-}
-
-.callback-instructions {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  border: 1px solid #e0e0e0;
-}
-
-.callback-instructions h4 {
-  margin: 0 0 1rem 0;
-  color: #333;
-  font-size: 16px;
+/* Buttons */
+.save-btn {
+  height: 44px;
+  border-radius: 9px;
+  padding: 0 1.75rem;
   font-weight: 600;
+  text-transform: none;
 }
 
-.callback-instructions ol {
-  margin: 0 0 1rem 0;
-  padding-left: 1.5rem;
-}
-
-.callback-instructions li {
-  margin-bottom: 0.5rem;
-  color: #555;
-  line-height: 1.4;
-}
-
-.callback-instructions strong {
-  color: #333;
+.ghost-btn {
+  height: 42px;
+  border-radius: 9px;
+  border: 1px solid #dde3e8;
   font-weight: 600;
+  text-transform: none;
+  color: $brand-primary-dark;
 }
 
-.warning-box {
+/* Public payment link block */
+.link-block {
+  background-color: $brand-background;
+  border: 1px solid #e1e9f0;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+}
+
+.link-row {
   display: flex;
-  align-items: flex-start;
-  padding: 1rem;
-  background-color: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 4px;
-  margin-top: 1rem;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
 }
 
-.warning-icon {
-  color: #f39c12;
-  margin-right: 0.75rem;
-  margin-top: 2px;
-  flex-shrink: 0;
+.link-row__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  border-radius: 8px;
+  background-color: rgba($brand-primary, 0.1);
+
+  .md-icon {
+    color: $brand-primary !important;
+    font-size: 20px !important;
+  }
 }
 
-.warning-content {
-  color: #856404;
-  line-height: 1.4;
+.link-row__input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  padding: 0 0.85rem;
+  font-size: 0.85rem;
+  color: $brand-primary-dark;
+  background-color: $brand-white;
+  border: 1px solid #dde3e8;
+  border-radius: 8px;
+  outline: none;
 }
 
-.warning-content strong {
-  color: #856404;
+.link-row__copy {
+  height: 42px;
+  margin: 0;
+  border-radius: 8px;
   font-weight: 600;
+  text-transform: none;
+}
+
+.link-block__note {
+  margin: 0.75rem 0 0;
+  font-size: 12px;
+  font-style: italic;
+  color: #6b7280;
+
+  .md-icon {
+    margin: 0 4px 0 0;
+    vertical-align: middle;
+    width: 16px;
+    min-width: 16px;
+    height: 16px;
+    color: $brand-primary-light !important;
+    font-size: 16px !important;
+  }
 }
 </style>

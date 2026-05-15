@@ -2,7 +2,7 @@
 title: Roadmap
 layout: page
 exclude_from_sidebar: true
-lastUpdated: March 2026
+lastUpdated: May 2026
 releases:
   - version: "MPM v1.0"
     title: "Stability and Off-Grid Readiness"
@@ -52,9 +52,9 @@ releases:
           issue: 489
 
       - id: "payment-paystack"
-        title: "Paystack (Nigeria)"
+        title: "Paystack (Nigeria) 🇳🇬"
         description: "Payment gateway integration for Paystack to support Nigerian operations."
-        status: "planned"
+        status: "completed"
         category: "Payments"
         github:
           issue: 176
@@ -62,7 +62,7 @@ releases:
       - id: "payment-sms-parser"
         title: "Transaction SMS Parser Proof-of-Concept"
         description: "Using an SMS Gateway on a phone which receives payment confirmation: Parse payment confirmation to generate transactions in MPM."
-        status: "in-progress"
+        status: "completed"
         category: "Payments"
         github:
           issue: 1345

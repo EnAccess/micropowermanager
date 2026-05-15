@@ -18,6 +18,7 @@ use App\Services\Interfaces\PaymentInitializer;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -92,21 +93,31 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
     }
 
     public function create(array $paystackTransactionData): PaystackTransaction {
-        /** @var PaystackTransaction $paystackTransaction */
-        $paystackTransaction = $this->paystackTransaction->newQuery()->create($paystackTransactionData);
+        try {
+            // Run on the tenant connection so a failure rolls back the right database.
+            DB::connection('tenant')->beginTransaction();
 
-        // Get customer's phone number for sender field
-        $customerPhone = $this->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
-        $sender = $customerPhone ?: '';
+            /** @var PaystackTransaction $paystackTransaction */
+            $paystackTransaction = $this->paystackTransaction->newQuery()->create($paystackTransactionData);
 
-        $paystackTransaction->transaction()->create([
-            'amount' => $paystackTransaction->getAmount(),
-            'sender' => $sender,
-            'message' => $paystackTransaction->getDeviceSerial(),
-            'type' => 'energy',
-        ]);
+            // Get customer's phone number for sender field
+            $customerPhone = $this->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
+            $sender = $customerPhone ?: '';
 
-        return $paystackTransaction;
+            $paystackTransaction->transaction()->create([
+                'amount' => $paystackTransaction->getAmount(),
+                'sender' => $sender,
+                'message' => $paystackTransaction->getDeviceSerial(),
+                'type' => 'energy',
+            ]);
+
+            DB::connection('tenant')->commit();
+
+            return $paystackTransaction;
+        } catch (\Exception $e) {
+            DB::connection('tenant')->rollBack();
+            throw $e;
+        }
     }
 
     public function delete($paystackTransaction): ?bool {
@@ -168,38 +179,48 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
             $deviceType = $device?->device_type;
         }
 
-        $paystackTxn = $this->paystackTransaction->newQuery()->create([
-            'amount' => $amount,
-            'currency' => config('paystack-payment-provider.currency.default', 'NGN'),
-            'order_id' => Uuid::uuid4()->toString(),
-            'reference_id' => Uuid::uuid4()->toString(),
-            'status' => PaystackTransaction::STATUS_REQUESTED,
-            'customer_id' => $customerId,
-            'serial_id' => $serialId,
-            'device_type' => $deviceType,
-            'metadata' => ['customer_id' => $customerId, 'serial_id' => $serialId, 'transaction_type' => $type],
-        ]);
+        try {
+            // A failed Paystack initialization must not leave orphaned transaction rows behind.
+            DB::connection('tenant')->beginTransaction();
 
-        /** @var Transaction $transaction */
-        $transaction = $paystackTxn->transaction()->create([
-            'amount' => $amount,
-            'sender' => $sender,
-            'message' => $message,
-            'type' => $type,
-        ]);
+            $paystackTxn = $this->paystackTransaction->newQuery()->create([
+                'amount' => $amount,
+                'currency' => config('paystack-payment-provider.currency.default', 'NGN'),
+                'order_id' => Uuid::uuid4()->toString(),
+                'reference_id' => Uuid::uuid4()->toString(),
+                'status' => PaystackTransaction::STATUS_REQUESTED,
+                'customer_id' => $customerId,
+                'serial_id' => $serialId,
+                'device_type' => $deviceType,
+                'metadata' => ['customer_id' => $customerId, 'serial_id' => $serialId, 'transaction_type' => $type],
+            ]);
 
-        $result = $this->paystackApiService->initializeTransaction($paystackTxn);
-        if ($result['error']) {
-            throw new \RuntimeException('Paystack initialization failed: '.$result['error']);
+            /** @var Transaction $transaction */
+            $transaction = $paystackTxn->transaction()->create([
+                'amount' => $amount,
+                'sender' => $sender,
+                'message' => $message,
+                'type' => $type,
+            ]);
+
+            $result = $this->paystackApiService->initializeTransaction($paystackTxn);
+            if ($result['error']) {
+                throw new \RuntimeException('Paystack initialization failed: '.$result['error']);
+            }
+
+            DB::connection('tenant')->commit();
+
+            return [
+                'transaction' => $transaction,
+                'provider_data' => [
+                    'redirect_url' => $result['redirectionUrl'],
+                    'reference' => $result['reference'],
+                ],
+            ];
+        } catch (\Exception $e) {
+            DB::connection('tenant')->rollBack();
+            throw $e;
         }
-
-        return [
-            'transaction' => $transaction,
-            'provider_data' => [
-                'redirect_url' => $result['redirectionUrl'],
-                'reference' => $result['reference'],
-            ],
-        ];
     }
 
     /**
@@ -304,7 +325,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
             $personService = app()->make(PersonService::class);
             $person = $personService->getById($customerId);
 
-            return $person->addresses->first()->phone;
+            return (string) $person->addresses->first()->phone;
         } catch (\Exception) {
             return null;
         }

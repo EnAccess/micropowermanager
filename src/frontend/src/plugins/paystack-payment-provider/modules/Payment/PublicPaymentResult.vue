@@ -1,50 +1,80 @@
 <template>
-  <div class="welcome">
-    <div class="content">
-      <div class="title">
-        <span class="title highlight">MicroPowerManager</span>
-      </div>
-      <div class="title-2">Payment Result - {{ companyName }}</div>
+  <div class="checkout">
+    <div class="checkout__inner">
+      <header class="brand">
+        <img class="brand__logo" :src="mpmLogo" alt="MicroPowerManager" />
+        <h1 class="brand__name">MicroPowerManager</h1>
+        <p class="brand__sub">
+          Payment result
+          <span v-if="companyName">&nbsp;·&nbsp;{{ companyName }}</span>
+        </p>
+      </header>
 
-      <div v-if="loading" class="loading-container">
-        <md-progress-spinner
-          md-diameter="60"
-          md-stroke="4"
-        ></md-progress-spinner>
-        <p>Verifying your payment...</p>
-      </div>
+      <section class="sheet">
+        <!-- Verifying -->
+        <div v-if="loading" class="verifying">
+          <md-progress-spinner
+            md-mode="indeterminate"
+            :md-diameter="48"
+            :md-stroke="3"
+          ></md-progress-spinner>
+          <p>Verifying your payment…</p>
+        </div>
 
-      <div v-else-if="paymentResult" class="result-container">
-        <!-- Success State -->
-        <div v-if="paymentResult.success" class="success-state">
-          <md-icon class="success-icon">check_circle</md-icon>
-          <h2 class="success-title">Payment Successful!</h2>
-          <p class="success-message">
-            {{ successMessage }}
-          </p>
+        <template v-else-if="paymentResult">
+          <!-- Status header -->
+          <div
+            class="status"
+            :class="paymentResult.success ? 'status--success' : 'status--fail'"
+          >
+            <span class="status__mark">
+              <md-icon>
+                {{ paymentResult.success ? "check" : "close" }}
+              </md-icon>
+            </span>
+            <h2 class="status__title">
+              {{
+                paymentResult.success ? "Payment Successful" : "Payment Failed"
+              }}
+            </h2>
+            <p class="status__message">
+              {{
+                paymentResult.success
+                  ? successMessage
+                  : paymentResult.verification?.error ||
+                    "Your payment could not be processed. Please try again."
+              }}
+            </p>
+          </div>
 
-          <div class="payment-details">
-            <div class="detail-row">
-              <span class="label">Transaction ID:</span>
-              <span class="value">{{ paymentResult.transaction.id }}</span>
+          <!-- Transaction summary -->
+          <div
+            v-if="paymentResult.success || paymentResult.transaction"
+            class="summary"
+          >
+            <div class="row">
+              <span class="row__label">Transaction ID</span>
+              <span class="row__value">{{ paymentResult.transaction.id }}</span>
             </div>
-            <div v-if="!isNonPaygoInstallment" class="detail-row">
-              <span class="label">{{ deviceLabel }}:</span>
-              <span class="value">
+            <div v-if="!isNonPaygoInstallment" class="row">
+              <span class="row__label">{{ deviceLabel }}</span>
+              <span class="row__value">
                 {{ paymentResult.transaction.serial_id }}
               </span>
             </div>
-            <div v-if="!isNonPaygoInstallment" class="detail-row">
-              <span class="label">Device Type:</span>
-              <span class="value">{{ deviceTypeName }}</span>
+            <div v-if="!isNonPaygoInstallment" class="row">
+              <span class="row__label">Device Type</span>
+              <span class="row__value">{{ deviceTypeName }}</span>
             </div>
-            <div v-if="isNonPaygoInstallment" class="detail-row">
-              <span class="label">Payment Type:</span>
-              <span class="value">Installment</span>
+            <div v-if="isNonPaygoInstallment" class="row">
+              <span class="row__label">Payment Type</span>
+              <span class="row__value">Installment</span>
             </div>
-            <div class="detail-row">
-              <span class="label">Amount Paid:</span>
-              <span class="value">
+            <div class="row">
+              <span class="row__label">
+                {{ paymentResult.success ? "Amount Paid" : "Amount" }}
+              </span>
+              <span class="row__value row__value--amount">
                 {{
                   formatCurrency(
                     paymentResult.transaction.amount,
@@ -53,193 +83,123 @@
                 }}
               </span>
             </div>
-            <div class="detail-row">
-              <span class="label">Payment Date:</span>
-              <span class="value">
+            <div v-if="paymentResult.success" class="row">
+              <span class="row__label">Payment Date</span>
+              <span class="row__value">
                 {{ formatDate(paymentResult.transaction.created_at) }}
               </span>
             </div>
           </div>
 
-          <!-- Token Information -->
-          <div v-if="!isNonPaygoInstallment" class="token-container">
-            <div class="token-header">
-              <h3 class="token-title">{{ tokenTitle }}</h3>
-              <div class="token-status">
+          <!-- Token -->
+          <div
+            v-if="paymentResult.success && !isNonPaygoInstallment"
+            class="token"
+          >
+            <div class="token__head">
+              <span class="token__title">{{ tokenTitle }}</span>
+              <div class="token__status">
                 <span
-                  class="status-indicator"
+                  class="badge"
                   :class="getTokenStatusClass(paymentResult.token_status)"
                 >
                   {{ formatTokenStatus(paymentResult.token_status) }}
                 </span>
                 <md-button
                   v-if="paymentResult.token_status !== 'generated'"
-                  class="md-icon-button refresh-button"
+                  class="md-icon-button token__refresh"
                   @click="refreshTokenStatus"
                   :disabled="refreshing"
                 >
                   <md-icon v-if="!refreshing">refresh</md-icon>
                   <md-progress-spinner
                     v-else
-                    md-diameter="20"
-                    md-stroke="2"
+                    md-mode="indeterminate"
+                    :md-diameter="18"
+                    :md-stroke="2"
                   ></md-progress-spinner>
                 </md-button>
               </div>
             </div>
 
-            <!-- Token Details (only show when token is generated) -->
-            <div
+            <!-- Generated token -->
+            <template
               v-if="
                 paymentResult.token &&
                 paymentResult.token_status === 'generated'
               "
-              class="token-details"
             >
-              <div class="token-row">
-                <span class="token-label">Token Code:</span>
-                <span class="token-value token-code">
-                  {{ paymentResult.token.token }}
-                </span>
+              <div class="token__code">{{ paymentResult.token.token }}</div>
+              <div class="token__meta">
+                <div class="row">
+                  <span class="row__label">{{ creditAmountLabel }}</span>
+                  <span class="row__value">
+                    {{ paymentResult.token.token_amount }}
+                    {{ paymentResult.token.token_unit }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="row__label">Token Type</span>
+                  <span class="row__value">
+                    {{ formatTokenType(paymentResult.token.token_type) }}
+                  </span>
+                </div>
               </div>
-              <div class="token-row">
-                <span class="token-label">{{ creditAmountLabel }}:</span>
-                <span class="token-value">
-                  {{ paymentResult.token.token_amount }}
-                  {{ paymentResult.token.token_unit }}
-                </span>
-              </div>
-              <div class="token-row">
-                <span class="token-label">Token Type:</span>
-                <span class="token-value">
-                  {{ formatTokenType(paymentResult.token.token_type) }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Status Messages -->
-            <div v-else class="token-status-message">
-              <div
-                v-if="paymentResult.token_status === 'processing'"
-                class="processing-message"
-              >
-                <md-icon class="processing-icon">hourglass_empty</md-icon>
-                <p>
-                  Your {{ tokenTypeText }} is being generated. Please wait a
-                  moment and refresh to check the status.
-                </p>
-              </div>
-              <div
-                v-else-if="paymentResult.token_status === 'failed'"
-                class="failed-message"
-              >
-                <md-icon class="failed-icon">error</md-icon>
-                <p>
-                  Token generation failed. Please try refreshing or contact
-                  support if the issue persists.
-                </p>
-              </div>
-              <div
-                v-else-if="paymentResult.token_status === 'pending'"
-                class="pending-message"
-              >
-                <md-icon class="pending-icon">schedule</md-icon>
-                <p>
-                  Token generation is pending. Please refresh to check the
-                  status.
-                </p>
-              </div>
-            </div>
-
-            <!-- Instructions (only show when token is generated) -->
-            <div
-              v-if="
-                paymentResult.token &&
-                paymentResult.token_status === 'generated'
-              "
-              class="token-instructions"
-            >
-              <p class="instruction-text">
-                <strong>Instructions:</strong>
+              <p class="token__instructions">
                 {{ tokenInstructions }}
               </p>
-            </div>
+            </template>
+
+            <!-- Pending / processing / failed -->
+            <p v-else class="token__pending">
+              <md-icon>{{ pendingIcon }}</md-icon>
+              <span>{{ pendingMessage }}</span>
+            </p>
           </div>
-        </div>
 
-        <!-- Failure State -->
-        <div v-else class="failure-state">
-          <md-icon class="failure-icon">error</md-icon>
-          <h2 class="failure-title">Payment Failed</h2>
-          <p class="failure-message">
-            {{
-              paymentResult.verification?.error ||
-              "Your payment could not be processed. Please try again."
-            }}
-          </p>
-
-          <div v-if="paymentResult.transaction" class="payment-details">
-            <div class="detail-row">
-              <span class="label">Transaction ID:</span>
-              <span class="value">{{ paymentResult.transaction.id }}</span>
-            </div>
-            <div v-if="!isNonPaygoInstallment" class="detail-row">
-              <span class="label">{{ deviceLabel }}:</span>
-              <span class="value">
-                {{ paymentResult.transaction.serial_id }}
-              </span>
-            </div>
-            <div v-if="!isNonPaygoInstallment" class="detail-row">
-              <span class="label">Device Type:</span>
-              <span class="value">{{ deviceTypeName }}</span>
-            </div>
-            <div v-if="isNonPaygoInstallment" class="detail-row">
-              <span class="label">Payment Type:</span>
-              <span class="value">Installment</span>
-            </div>
-            <div class="detail-row">
-              <span class="label">Amount:</span>
-              <span class="value">
-                {{
-                  formatCurrency(
-                    paymentResult.transaction.amount,
-                    paymentResult.transaction.currency,
-                  )
-                }}
-              </span>
-            </div>
+          <!-- Actions -->
+          <div class="actions">
+            <md-button
+              v-if="!paymentResult.success"
+              class="cta md-raised md-primary"
+              @click="retryPayment"
+            >
+              Try Again
+            </md-button>
+            <md-button
+              :class="
+                paymentResult.success ? 'cta md-raised md-primary' : 'ghost'
+              "
+              @click="goHome"
+            >
+              {{ paymentResult.success ? "Done" : "Cancel" }}
+            </md-button>
           </div>
-        </div>
+        </template>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-          <md-button
-            v-if="!paymentResult.success"
-            class="md-raised md-primary"
-            @click="retryPayment"
-          >
-            Try Again
-          </md-button>
-          <md-button class="md-raised" @click="goHome">
-            {{ paymentResult.success ? "Done" : "Cancel" }}
-          </md-button>
-        </div>
-      </div>
-
-      <div v-else class="error-state">
-        <md-icon class="error-icon">warning</md-icon>
-        <h2 class="error-title">Unable to Verify Payment</h2>
-        <p class="error-message">
-          We couldn't verify your payment status. Please contact support if you
-          have any questions.
-        </p>
-        <div class="action-buttons">
-          <md-button class="md-raised md-primary" @click="retryVerification">
-            Retry Verification
-          </md-button>
-          <md-button class="md-raised" @click="goHome">Go Back</md-button>
-        </div>
-      </div>
+        <!-- Unable to verify -->
+        <template v-else>
+          <div class="status status--warn">
+            <span class="status__mark">
+              <md-icon>priority_high</md-icon>
+            </span>
+            <h2 class="status__title">Unable to Verify Payment</h2>
+            <p class="status__message">
+              We couldn't verify your payment status. Please contact support if
+              you have any questions.
+            </p>
+          </div>
+          <div class="actions">
+            <md-button
+              class="cta md-raised md-primary"
+              @click="retryVerification"
+            >
+              Retry Verification
+            </md-button>
+            <md-button class="ghost" @click="goHome">Go Back</md-button>
+          </div>
+        </template>
+      </section>
     </div>
   </div>
 </template>
@@ -247,6 +207,7 @@
 <script>
 import { PublicPaymentService } from "../../services/PublicPaymentService.js"
 
+import mpmLogo from "@/assets/images/mpmlogo_raw.png"
 import { notify } from "@/mixins/notify.js"
 
 export default {
@@ -254,6 +215,7 @@ export default {
   mixins: [notify],
   data() {
     return {
+      mpmLogo,
       paymentService: new PublicPaymentService(),
       loading: true,
       paymentResult: null,
@@ -323,6 +285,24 @@ export default {
         return "Enter this token code into your Solar Home System device to activate your appliance."
       }
       return "Enter this token code into your meter to receive your energy credit."
+    },
+    pendingIcon() {
+      const icons = {
+        processing: "hourglass_empty",
+        failed: "error_outline",
+        pending: "schedule",
+      }
+      return icons[this.paymentResult?.token_status] || "schedule"
+    },
+    pendingMessage() {
+      const status = this.paymentResult?.token_status
+      if (status === "processing") {
+        return `Your ${this.tokenTypeText} is being generated. Please wait a moment, then refresh to check the status.`
+      }
+      if (status === "failed") {
+        return "Token generation failed. Please refresh, or contact support if the issue persists."
+      }
+      return "Token generation is pending. Please refresh to check the status."
     },
   },
   async mounted() {
@@ -436,7 +416,7 @@ export default {
       return statusMap[status] || status
     },
     getTokenStatusClass(status) {
-      return `status-${status}`
+      return `badge--${status}`
     },
     async refreshTokenStatus() {
       if (this.refreshing) return
@@ -457,317 +437,310 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.welcome {
+.checkout {
+  min-height: 100vh;
+  padding: 3.5rem 1.25rem;
+  background-color: $brand-background;
+}
+
+.checkout__inner {
+  width: 100%;
+  max-width: 416px;
+  margin: 0 auto;
+}
+
+/* Brand mark */
+.brand {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+/* width + height set explicitly (matching the asset's 512x265 ratio) so
+   the browser reserves the box before the image loads — prevents a CLS
+   shift that pushes everything below the logo by ~60px on first paint. */
+.brand__logo {
+  display: block;
+  width: 116px;
+  height: 60px;
+  margin: 0 auto 0.75rem;
+}
+
+.brand__name {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: $brand-primary-dark;
+}
+
+.brand__sub {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: #8a93a0;
+}
+
+.sheet {
+  border-top: 1px solid #e6ebef;
+  padding-top: 1.75rem;
+}
+
+/* Verifying */
+.verifying {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2.5rem 0;
+
+  p {
+    margin: 1rem 0 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
+/* Status header */
+.status {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.status__mark {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 720px;
-  text-align: center;
-  margin-top: 2rem;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  margin-bottom: 0.85rem;
+
+  // Box sized to fit the 38px glyph so overflow:hidden (below) doesn't crop it.
+  // !important: vue-material's themed icon-color selector out-specifies a class.
+  .md-icon {
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    font-size: 38px !important;
+  }
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+.status__title {
+  margin: 0 0 0.4rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
-.title-2 {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
+.status__message {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #6b7280;
 }
 
-.highlight {
-  color: #ffc107;
+.status--success {
+  .status__mark {
+    background-color: rgba($brand-accent, 0.18);
+  }
+  .status__mark .md-icon {
+    color: $brand-accent-dark !important;
+  }
+  .status__title {
+    color: $brand-accent-dark;
+  }
 }
 
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
+.status--fail {
+  .status__mark {
+    background-color: rgba(#d64545, 0.13);
+  }
+  .status__mark .md-icon {
+    color: #d64545 !important;
+  }
+  .status__title {
+    color: #c1372f;
+  }
 }
 
-.loading-container p {
-  margin-top: 1rem;
-  font-size: 16px;
-  color: #666;
+.status--warn {
+  .status__mark {
+    background-color: rgba($brand-secondary, 0.22);
+  }
+  .status__mark .md-icon {
+    color: $brand-secondary-dark !important;
+  }
+  .status__title {
+    color: $brand-secondary-dark;
+  }
 }
 
-.result-container {
-  width: 100%;
-  max-width: 500px;
+/* Summary rows */
+.summary,
+.token__meta {
+  margin-top: 1.5rem;
 }
 
-.success-state,
-.failure-state,
-.error-state {
-  padding: 2rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-}
-
-.success-state {
-  background-color: #f1f8e9;
-  border: 1px solid #4caf50;
-}
-
-.failure-state {
-  background-color: #ffebee;
-  border: 1px solid #f44336;
-}
-
-.error-state {
-  background-color: #fff3e0;
-  border: 1px solid #ff9800;
-}
-
-.success-icon {
-  font-size: 4rem !important;
-  color: #4caf50;
-  margin-bottom: 1rem;
-}
-
-.failure-icon {
-  font-size: 4rem !important;
-  color: #f44336;
-  margin-bottom: 1rem;
-}
-
-.error-icon {
-  font-size: 4rem !important;
-  color: #ff9800;
-  margin-bottom: 1rem;
-}
-
-.success-title,
-.failure-title,
-.error-title {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
-}
-
-.success-title {
-  color: #2e7d32;
-}
-
-.failure-title {
-  color: #c62828;
-}
-
-.error-title {
-  color: #ef6c00;
-}
-
-.success-message,
-.failure-message,
-.error-message {
-  margin: 0 0 2rem 0;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.payment-details {
-  background-color: white;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 2rem;
-}
-
-.detail-row {
+.row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #eef1f4;
 }
 
-.detail-row:last-child {
+.row:last-child {
   border-bottom: none;
 }
 
-.label {
-  font-weight: 500;
-  color: #666;
+.row__label {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a93a0;
 }
 
-.value {
-  font-weight: 600;
-  color: #333;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.action-buttons .md-button {
-  min-width: 120px;
-}
-
-.token-container {
-  background-color: #e8f5e8;
-  border: 1px solid #4caf50;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-top: 1rem;
-}
-
-.token-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.token-title {
-  margin: 0;
-  font-size: 1.25rem;
-  color: #2e7d32;
-  font-weight: 600;
-}
-
-.token-status {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.status-indicator {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+.row__value {
   font-size: 0.875rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: $brand-primary-dark;
+  text-align: right;
+  word-break: break-word;
 }
 
-.status-generated {
-  background-color: #4caf50;
-  color: white;
+.row__value--amount {
+  font-size: 1rem;
+  font-weight: 800;
 }
 
-.status-processing {
-  background-color: #ff9800;
-  color: white;
+/* Token */
+.token {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e6ebef;
 }
 
-.status-failed {
-  background-color: #f44336;
-  color: white;
-}
-
-.status-pending {
-  background-color: #9e9e9e;
-  color: white;
-}
-
-.refresh-button {
-  min-width: 40px !important;
-  width: 40px !important;
-  height: 40px !important;
-}
-
-.token-details {
-  background-color: white;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.token-row {
+.token__head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
 }
 
-.token-row:last-child {
-  border-bottom: none;
+.token__title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a93a0;
 }
 
-.token-label {
-  font-weight: 500;
-  color: #666;
-}
-
-.token-value {
-  font-weight: 600;
-  color: #333;
-}
-
-.token-code {
-  font-family: "Courier New", monospace;
-  font-size: 1.1rem;
-  background-color: #f5f5f5;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-
-.token-instructions {
-  background-color: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 4px;
-  padding: 1rem;
-}
-
-.instruction-text {
-  margin: 0;
-  font-size: 14px;
-  color: #856404;
-  line-height: 1.4;
-}
-
-.token-status-message {
-  background-color: white;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.processing-message,
-.failed-message,
-.pending-message {
+.token__status {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.25rem;
 }
 
-.processing-icon {
-  color: #ff9800 !important;
-  font-size: 1.5rem !important;
+.badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $brand-white;
 }
 
-.failed-icon {
-  color: #f44336 !important;
-  font-size: 1.5rem !important;
+.badge--generated {
+  background-color: $brand-accent-dark;
 }
 
-.pending-icon {
-  color: #9e9e9e !important;
-  font-size: 1.5rem !important;
+.badge--processing {
+  background-color: $brand-secondary-dark;
 }
 
-.processing-message p,
-.failed-message p,
-.pending-message p {
+.badge--failed {
+  background-color: #d64545;
+}
+
+.badge--pending {
+  background-color: #9aa3af;
+}
+
+.token__refresh {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
   margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
-  color: #333;
+}
+
+.token__code {
+  margin-top: 0.85rem;
+  padding: 1rem;
+  font-family: "Courier New", monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  color: $brand-primary-dark;
+  background-color: $brand-white;
+  border: 1px dashed rgba($brand-primary, 0.4);
+  border-radius: 10px;
+  word-break: break-all;
+}
+
+.token__instructions {
+  margin: 1rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+.token__pending {
+  margin: 1rem 0 0;
+  font-size: 0.825rem;
+  line-height: 1.6;
+  color: #6b7280;
+
+  .md-icon {
+    margin: 0 6px 0 0;
+    vertical-align: top;
+    width: 19px;
+    min-width: 19px;
+    height: 19px;
+    color: $brand-secondary-dark !important;
+    font-size: 19px !important;
+  }
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.75rem;
+}
+
+.cta {
+  width: 100%;
+  height: 52px;
+  margin: 0;
+  border-radius: 9px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.ghost {
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  border-radius: 9px;
+  border: 1px solid $brand-primary;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: none;
+  color: $brand-primary;
 }
 </style>

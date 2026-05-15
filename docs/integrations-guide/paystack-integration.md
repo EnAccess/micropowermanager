@@ -30,7 +30,7 @@ With Paystack enabled, MPM generates a public payment URL that you can share wit
 
 1. Enable the `Paystack Payment Provider` plugin in MPM
 2. Enter your API keys and merchant details on the overview page
-3. Copy the callback URL from MPM into your Paystack dashboard
+3. (Optional) Mirror the auto-generated callback URL in your Paystack dashboard for redundancy
 4. Share the generated payment URL with your customers
 
 > [!INFO]
@@ -68,36 +68,32 @@ With Paystack enabled, MPM generates a public payment URL that you can share wit
 2. Fill in the credential form:
    - **Secret Key** — your Paystack secret key from Step 2
    - **Public Key** — your Paystack public key from Step 2
-   - **Callback URL** — leave as default (MPM sets this automatically)
    - **Merchant Name** — your business or mini-grid name
    - **Merchant Email** — the email associated with your Paystack account
    - **Environment** — select `Test` for testing or `Live` for production
+   - **Callback URL** — read-only and auto-generated; MPM derives it from the public payment URL, so you don't need to fill or copy anything by hand
 3. Click **Save**
 4. The Configuration status box at the top should turn green and show "Configured"
 
 ![Paystack Credentials Configuration](images/paystack-plugin-configure-credentials.png)
 
-### Step 5: Set Up the Callback URL in Paystack
+### Step 5: Mirror the Callback URL in Paystack
 
-The callback URL tells Paystack where to redirect customers after payment. MPM generates this for you automatically.
+MPM passes the callback URL with every transaction it initialises with Paystack, so customers are redirected to the MPM result page out of the box — no manual configuration is required. Setting the same URL in the Paystack dashboard is purely a dashboard-level fallback.
 
-1. In the MPM Paystack overview page, scroll down to **Public Payment URLs**
-2. Copy the **Callback URL (Result Page)**
-3. Go to your [Paystack Dashboard](https://dashboard.paystack.com) → **Settings** → **API Keys & Webhooks**
-4. Paste the copied URL into the **Callback URL** field
-5. Save your settings
+1. In the MPM Paystack overview page, copy the value from the auto-generated **Callback URL** field on the credentials form
+2. Go to your [Paystack Dashboard](https://dashboard.paystack.com) → **Settings** → **API Keys & Webhooks**
+3. Paste the URL into the **Callback URL** field
+4. Save your settings
 
-> [!WARNING]
-> Without the callback URL, customers won't see a payment confirmation page after completing their transaction.
-
-![Paystack Public Payment URLs](images/paystack-plugin-urls-preview.png)
+![Paystack Public Payment Link](images/paystack-plugin-urls-preview.png)
 
 ### Step 6: Share the Payment URL with Customers
 
-1. In the MPM Paystack overview page, copy the **Permanent Payment URL**
+1. In the MPM Paystack overview page, find the **Public Payment Link** card and copy the **Permanent Payment URL**
 2. Share this URL with your customers through:
    - SMS messages
-   - Printed QR codes at your mini-grid office
+   - Printed QR codes at your office
    - WhatsApp or other messaging apps
    - Your website or customer portal
 
@@ -139,8 +135,8 @@ For detailed transaction history, navigate to **Paystack** → **Transactions** 
   - Check that the device is registered and active
 
 - **Customer not redirected after payment:**
-  - Verify the callback URL is correctly set in your Paystack dashboard (Step 5)
-  - Ensure your MPM instance is publicly accessible (not just on localhost)
+  - Ensure your MPM instance is publicly accessible (not just on localhost) so Paystack can reach the auto-generated callback URL
+  - If you also configured a fallback callback URL in the Paystack dashboard (Step 5), confirm it matches the value in MPM's credentials form
 
 - **Transaction not appearing in MPM:**
   - Check that your API keys match between MPM and Paystack dashboard
@@ -161,7 +157,7 @@ When moving from test to production:
 
 1. Switch your API keys to **Live** keys in both MPM and Paystack dashboard
 2. Change the environment setting to **Live** in MPM credentials
-3. Update the callback URL if your production domain differs from your test setup
+3. The callback URL re-derives itself from your production domain on save — no manual edit needed; if you also set a dashboard-level fallback, update it to match
 4. Test a real payment with a small amount to confirm everything works
 5. Monitor the first few transactions in both MPM and Paystack dashboards
 6. Ensure your MPM instance uses HTTPS — Paystack requires secure connections for live payments
