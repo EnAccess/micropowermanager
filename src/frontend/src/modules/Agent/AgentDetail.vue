@@ -218,8 +218,14 @@
     <widget
       :title="$tc('phrases.setNewPassword')"
       color="secondary"
+      :button="true"
+      :button-text="
+        passwordSectionOpen ? $tc('words.collapse') : $tc('words.expand')
+      "
+      :button-icon="passwordSectionOpen ? 'expand_less' : 'expand_more'"
+      @widgetAction="togglePasswordSection"
     >
-      <md-card>
+      <md-card v-show="passwordSectionOpen">
         <md-card-content>
           <p class="md-body-1" style="margin-top: 0">
             {{ $tc("phrases.setNewPasswordSubhead") }}
@@ -235,32 +241,49 @@
                 @submit.prevent="changePassword"
               >
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field>
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has($tc('words.newPassword')),
+                    }"
+                  >
                     <label for="newPassword">
                       {{ $tc("words.newPassword") }}
                     </label>
                     <md-input
                       id="newPassword"
-                      name="newPassword"
+                      :name="$tc('words.newPassword')"
                       type="password"
                       autocomplete="new-password"
                       v-model="passwordForm.password"
+                      v-validate="'required|min:6|max:128'"
+                      ref="newPasswordRef"
                     />
+                    <span class="md-error">
+                      {{ errors.first($tc("words.newPassword")) }}
+                    </span>
                   </md-field>
                 </div>
 
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field>
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has($tc('words.confirmNewPassword')),
+                    }"
+                  >
                     <label for="newPasswordConfirmation">
                       {{ $tc("words.confirmNewPassword") }}
                     </label>
                     <md-input
                       id="newPasswordConfirmation"
-                      name="newPasswordConfirmation"
+                      :name="$tc('words.confirmNewPassword')"
                       type="password"
                       autocomplete="new-password"
                       v-model="passwordForm.passwordConfirmation"
+                      v-validate="'required|confirmed:newPasswordRef'"
                     />
+                    <span class="md-error">
+                      {{ errors.first($tc("words.confirmNewPassword")) }}
+                    </span>
                   </md-field>
                 </div>
               </form>
@@ -272,7 +295,7 @@
           <md-button
             role="button"
             class="md-raised md-primary"
-            :disabled="!canSubmitPassword"
+            :disabled="passwordLoading"
             @click="changePassword"
           >
             {{ $tc("phrases.setNewPassword") }}
@@ -311,6 +334,7 @@ export default {
         passwordConfirmation: "",
       },
       passwordLoading: false,
+      passwordSectionOpen: false,
     }
   },
   props: {
@@ -338,13 +362,6 @@ export default {
       const last = person.surname?.charAt(0) ?? ""
 
       return (first + last).toUpperCase()
-    },
-    canSubmitPassword() {
-      return (
-        !this.passwordLoading &&
-        this.passwordForm.password.length >= 6 &&
-        this.passwordForm.password === this.passwordForm.passwordConfirmation
-      )
     },
   },
   methods: {
@@ -380,8 +397,17 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
+    togglePasswordSection() {
+      this.passwordSectionOpen = !this.passwordSectionOpen
+      if (!this.passwordSectionOpen) {
+        this.passwordForm.password = ""
+        this.passwordForm.passwordConfirmation = ""
+        this.$validator.reset()
+      }
+    },
     async changePassword() {
-      if (!this.canSubmitPassword) return
+      const valid = await this.$validator.validateAll()
+      if (!valid) return
       try {
         this.passwordLoading = true
         const result = await this.agentService.changePassword(
@@ -395,6 +421,7 @@ export default {
         }
         this.passwordForm.password = ""
         this.passwordForm.passwordConfirmation = ""
+        this.$validator.reset()
         this.alertNotify("success", this.$tc("messages.passwordUpdated"))
       } catch (e) {
         this.alertNotify("error", e.message)
