@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangeAgentPasswordRequest;
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Requests\UpdateAgentRequest;
 use App\Http\Resources\ApiResource;
@@ -94,6 +95,13 @@ class AgentWebController extends Controller {
         $paginate = $request->input('paginate', 1);
 
         return ApiResource::make($this->agentService->searchAgent($term, $paginate));
+    }
+
+    public function changePassword(int $agentId, ChangeAgentPasswordRequest $request): ApiResource {
+        $agent = $this->agentService->getById($agentId);
+        $this->agentService->changePassword($agent, $request->validated('password'));
+
+        return ApiResource::make(['message' => 'Password updated successfully']);
     }
 
     public function resetPassword(Request $request): JsonResponse {

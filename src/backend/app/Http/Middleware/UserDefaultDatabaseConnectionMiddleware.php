@@ -48,8 +48,12 @@ class UserDefaultDatabaseConnectionMiddleware {
     }
 
     private function resolveRoute(Request $request, \Closure $next): SymfonyResponse {
-        // webclient login
-        if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
+        // unauthenticated endpoints that identify the company via email in the body
+        if (in_array($request->path(), [
+            'api/auth/login',
+            'api/app/login',
+            'api/app/reset-password',
+        ], true)) {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login

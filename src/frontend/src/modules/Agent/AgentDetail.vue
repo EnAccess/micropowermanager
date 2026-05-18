@@ -1,11 +1,12 @@
 <template>
-  <widget
-    :title="$tc('words.detail', 2)"
-    :button="true"
-    :button-text="$tc('words.delete')"
-    button-icon="delete"
-    @widgetAction="confirmDelete"
-  >
+  <div>
+    <widget
+      :title="$tc('words.detail', 2)"
+      :button="true"
+      :button-text="$tc('words.delete')"
+      button-icon="delete"
+      @widgetAction="confirmDelete"
+    >
     <md-card>
       <md-card-content>
         <div class="md-layout md-gutter md-alignment-center" v-if="!editAgent">
@@ -159,6 +160,24 @@
                       </md-option>
                     </md-select>
                   </md-field>
+
+                  <md-field>
+                    <label for="miniGrid">{{ $tc("words.miniGrid") }} :</label>
+                    <md-select
+                      name="miniGrid"
+                      id="miniGrid"
+                      v-model="agent.miniGridId"
+                    >
+                      <md-option
+                        v-for="mg in miniGrids"
+                        :value="mg.id"
+                        :key="mg.id"
+                      >
+                        {{ mg.name }}
+                      </md-option>
+                    </md-select>
+                  </md-field>
+
                   <md-field>
                     <label for="phone">
                       {{ $tc("words.phone") }}
@@ -194,13 +213,82 @@
         </div>
       </md-card-content>
     </md-card>
-  </widget>
+    </widget>
+
+    <widget
+      :title="$tc('phrases.setNewPassword')"
+      color="secondary"
+    >
+      <md-card>
+        <md-card-content>
+          <p class="md-body-1" style="margin-top: 0">
+            {{ $tc("phrases.setNewPasswordSubhead") }}
+          </p>
+          <div class="md-layout md-gutter">
+            <div
+              class="md-layout-item md-large-size-100 md-medium-size-100 md-small-size-100"
+            >
+              <form
+                novalidate
+                class="md-layout md-gutter"
+                ref="passwordChangeForm"
+                @submit.prevent="changePassword"
+              >
+                <div class="md-layout-item md-size-50 md-small-size-100">
+                  <md-field>
+                    <label for="newPassword">
+                      {{ $tc("words.newPassword") }}
+                    </label>
+                    <md-input
+                      id="newPassword"
+                      name="newPassword"
+                      type="password"
+                      autocomplete="new-password"
+                      v-model="passwordForm.password"
+                    />
+                  </md-field>
+                </div>
+
+                <div class="md-layout-item md-size-50 md-small-size-100">
+                  <md-field>
+                    <label for="newPasswordConfirmation">
+                      {{ $tc("words.confirmNewPassword") }}
+                    </label>
+                    <md-input
+                      id="newPasswordConfirmation"
+                      name="newPasswordConfirmation"
+                      type="password"
+                      autocomplete="new-password"
+                      v-model="passwordForm.passwordConfirmation"
+                    />
+                  </md-field>
+                </div>
+              </form>
+            </div>
+          </div>
+          <md-progress-bar md-mode="indeterminate" v-show="passwordLoading" />
+        </md-card-content>
+        <md-card-actions>
+          <md-button
+            role="button"
+            class="md-raised md-primary"
+            :disabled="!canSubmitPassword"
+            @click="changePassword"
+          >
+            {{ $tc("phrases.setNewPassword") }}
+          </md-button>
+        </md-card-actions>
+      </md-card>
+    </widget>
+  </div>
 </template>
 <script>
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { AgentCommissionService } from "@/services/AgentCommissionService.js"
 import { AgentService } from "@/services/AgentService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
@@ -212,10 +300,17 @@ export default {
     return {
       agentService: new AgentService(),
       agentCommissionService: new AgentCommissionService(),
+      miniGridService: new MiniGridService(),
       agent: {},
       agentCommissions: [],
+      miniGrids: [],
       editAgent: false,
       loading: false,
+      passwordForm: {
+        password: "",
+        passwordConfirmation: "",
+      },
+      passwordLoading: false,
     }
   },
   props: {
@@ -226,6 +321,7 @@ export default {
   mounted() {
     this.getAgentDetail()
     this.getAgentCommissions()
+    this.getMiniGrids()
     EventBus.$on("balanceAdded", () => {
       this.getAgentDetail()
     })
@@ -242,6 +338,13 @@ export default {
       const last = person.surname?.charAt(0) ?? ""
 
       return (first + last).toUpperCase()
+    },
+    canSubmitPassword() {
+      return (
+        !this.passwordLoading &&
+        this.passwordForm.password.length >= 6 &&
+        this.passwordForm.password === this.passwordForm.passwordConfirmation
+      )
     },
   },
   methods: {
@@ -265,6 +368,38 @@ export default {
         this.agent = await this.agentService.getAgent(Number(this.agentId))
       } catch (e) {
         this.alertNotify("error", e.message)
+      }
+    },
+    async getMiniGrids() {
+      try {
+        const result = await this.miniGridService.getMiniGrids()
+        if (Array.isArray(result)) {
+          this.miniGrids = result
+        }
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
+    async changePassword() {
+      if (!this.canSubmitPassword) return
+      try {
+        this.passwordLoading = true
+        const result = await this.agentService.changePassword(
+          this.agent.id,
+          this.passwordForm.password,
+          this.passwordForm.passwordConfirmation,
+        )
+        if (result instanceof ErrorHandler) {
+          this.alertNotify("error", result.message)
+          return
+        }
+        this.passwordForm.password = ""
+        this.passwordForm.passwordConfirmation = ""
+        this.alertNotify("success", this.$tc("messages.passwordUpdated"))
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      } finally {
+        this.passwordLoading = false
       }
     },
     confirmDelete() {

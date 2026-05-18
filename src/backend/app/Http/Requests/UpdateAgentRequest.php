@@ -20,6 +20,7 @@ class UpdateAgentRequest extends FormRequest {
             'birthday' => ['sometimes', 'date'],
             'phone' => ['sometimes', 'string'],
             'commissionTypeId' => ['sometimes', 'integer'],
+            'miniGridId' => ['sometimes', 'integer', 'exists:tenant.mini_grids,id'],
         ];
     }
 }

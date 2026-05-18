@@ -39,6 +39,13 @@ class AgentService implements IBaseService {
         return $newPassword;
     }
 
+    public function changePassword(Agent $agent, #[\SensitiveParameter] string $password): Agent {
+        $agent->password = $password;
+        $agent->save();
+
+        return $agent->fresh();
+    }
+
     public function updateDevice(Agent $agent, string $deviceId): void {
         $agent->mobile_device_id = $deviceId;
         $agent->update();
@@ -153,7 +160,7 @@ class AgentService implements IBaseService {
             'surname' => $agentData['surname'] ?? null,
             'gender' => $agentData['gender'] ?? null,
             'birth_date' => $agentData['birthday'] ?? null,
-        ], fn ($value) => $value !== null);
+        ], fn ($value): bool => $value !== null);
 
         if ($personData !== []) {
             $this->personService->update($agent->person, $personData);
@@ -169,6 +176,11 @@ class AgentService implements IBaseService {
 
         if (array_key_exists('commissionTypeId', $agentData)) {
             $agent->agent_commission_id = $agentData['commissionTypeId'];
+        }
+        if (array_key_exists('miniGridId', $agentData)) {
+            $agent->mini_grid_id = $agentData['miniGridId'];
+        }
+        if ($agent->isDirty()) {
             $agent->update();
         }
 

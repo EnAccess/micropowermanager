@@ -19,8 +19,8 @@ Route::group([
     Route::get('/{agentId}', [AgentWebController::class, 'show'])->where('agentId', '[0-9]+');
     Route::post('/', [AgentWebController::class, 'store']);
     Route::put('/{agentId}', [AgentWebController::class, 'update']);
+    Route::put('/{agentId}/password', [AgentWebController::class, 'changePassword'])->where('agentId', '[0-9]+');
     Route::get('/search', [AgentWebController::class, 'search']);
-    Route::post('/reset-password', [AgentWebController::class, 'resetPassword']);
     Route::delete('/{agentId}', [AgentWebController::class, 'destroy']);
 
     Route::group(['prefix' => 'assigned'], function () {

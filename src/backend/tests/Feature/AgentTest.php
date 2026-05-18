@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Agent;
+use Illuminate\Support\Facades\Hash;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -84,7 +85,7 @@ class AgentTest extends TestCase {
         $this->assertEquals($putData['gender'], $response['data']['person']['gender']);
     }
 
-    public function testUserCanResetsAgentsPassword(): void {
+    public function testAdminCanChangeAgentPassword(): void {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -92,11 +93,68 @@ class AgentTest extends TestCase {
         $this->createAgentCommission();
         $this->createAgent();
 
-        $putData = [
-            'email' => $this->agents[0]->email,
-        ];
+        $newPassword = 'new-secret-123';
+        $response = $this->actingAs($this->user)->put(
+            sprintf('/api/agents/%s/password', $this->agents[0]->id),
+            [
+                'password' => $newPassword,
+                'password_confirmation' => $newPassword,
+            ],
+        );
 
-        $response = $this->actingAs($this->user)->post('/api/agents/reset-password', $putData);
+        $response->assertStatus(200);
+        $this->assertTrue(Hash::check($newPassword, $this->agents[0]->fresh()->password));
+    }
+
+    public function testChangeAgentPasswordRejectsMismatchedConfirmation(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $response = $this->actingAs($this->user)->putJson(
+            sprintf('/api/agents/%s/password', $this->agents[0]->id),
+            [
+                'password' => 'new-secret-123',
+                'password_confirmation' => 'does-not-match',
+            ],
+        );
+
+        $response->assertStatus(422);
+    }
+
+    public function testUserCanUpdateAgentMiniGrid(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid(2);
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $targetMiniGrid = $this->miniGrids[1];
+
+        $response = $this->actingAs($this->user)->put(
+            sprintf('/api/agents/%s', $this->agents[0]->id),
+            ['miniGridId' => $targetMiniGrid->id],
+        );
+
+        $response->assertStatus(200);
+        $this->assertEquals($targetMiniGrid->id, $this->agents[0]->fresh()->mini_grid_id);
+    }
+
+    public function testAgentCanResetOwnPasswordFromApp(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $response = $this->post('/api/app/reset-password', [
+            'email' => $this->agents[0]->email,
+        ]);
         $response->assertStatus(200);
     }
 

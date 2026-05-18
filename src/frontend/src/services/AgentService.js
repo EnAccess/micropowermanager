@@ -39,6 +39,7 @@ export class AgentService {
       id: data.id,
       personId: data.person_id,
       miniGrid: data.mini_grid.name,
+      miniGridId: data.mini_grid_id,
       deviceId: data.device_id,
       name: data.person.name,
       surname: data.person.surname,
@@ -112,7 +113,19 @@ export class AgentService {
 
   async updateAgent(agent) {
     try {
-      let response = await this.repository.update(agent)
+      const payload = {
+        id: agent.id,
+        name: agent.name,
+        surname: agent.surname,
+        gender: agent.gender,
+        birthday: agent.birthday
+          ? moment(agent.birthday).format("YYYY-MM-DD")
+          : null,
+        phone: agent.phone,
+        commissionTypeId: agent.commissionTypeId,
+        miniGridId: agent.miniGridId,
+      }
+      let response = await this.repository.update(payload)
       if (response.status === 200) {
         this.agent = this.fromJson(response.data.data)
         return this.agent
@@ -122,6 +135,23 @@ export class AgentService {
     } catch (e) {
       let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async changePassword(agentId, password, passwordConfirmation) {
+    try {
+      const response = await this.repository.changePassword(agentId, {
+        password,
+        password_confirmation: passwordConfirmation,
+      })
+      if (response.status === 200) {
+        return true
+      }
+      return new ErrorHandler(response.error, "http", response.status)
+    } catch (e) {
+      const errorMessage =
+        e.response?.data?.message || "Failed to update password"
+      return new ErrorHandler(errorMessage, "http", e.response?.status)
     }
   }
 

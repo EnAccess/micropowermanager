@@ -14,12 +14,14 @@ use App\Http\Controllers\AgentMeterController;
 use App\Http\Controllers\AgentSoldApplianceController;
 use App\Http\Controllers\AgentTicketController;
 use App\Http\Controllers\AgentTransactionsController;
+use App\Http\Controllers\AgentWebController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 // Android App Services
 Route::group(['prefix' => 'app'], function () {
     Route::post('login', [AgentAuthController::class, 'login']);
+    Route::post('reset-password', [AgentWebController::class, 'resetPassword']);
 
     Route::group(['middleware' => 'auth:agent_api'], static function () {
         Route::post('logout', [AgentAuthController::class, 'logout']);
