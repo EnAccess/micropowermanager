@@ -40,7 +40,7 @@ export class AgentService {
       personId: data.person_id,
       miniGrid: data.mini_grid.name,
       deviceId: data.device_id,
-      name: data.name,
+      name: data.person.name,
       surname: data.person.surname,
       email: data.email,
       balance: data.balance,
@@ -60,7 +60,7 @@ export class AgentService {
       personId: data.person_id,
       miniGrid: data.mini_grid?.name,
       deviceId: data.device_id,
-      name: data.name,
+      name: data.person?.name,
       email: data.email,
       balance: data.balance,
       person: data.person, // Include the person object for name/surname

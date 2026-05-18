@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
+use App\Http\Requests\UpdateAgentRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
@@ -71,11 +72,10 @@ class AgentWebController extends Controller {
         ));
     }
 
-    public function update(int $agentId, Request $request): ApiResource {
+    public function update(int $agentId, UpdateAgentRequest $request): ApiResource {
         $agent = $this->agentService->getById($agentId);
-        $agentData = $request->all();
 
-        return ApiResource::make($this->agentService->update($agent, $agentData));
+        return ApiResource::make($this->agentService->update($agent, $request->validated()));
     }
 
     public function destroy(int $agentId, Request $request): ApiResource {

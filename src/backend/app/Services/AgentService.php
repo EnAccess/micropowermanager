@@ -148,20 +148,29 @@ class AgentService implements IBaseService {
      * @param array<string, mixed> $agentData
      */
     public function update($agent, array $agentData): Agent {
-        $person = $this->personService->getById($agentData['personId']);
-        $personData = [
-            'name' => $agentData['name'],
-            'surname' => $agentData['surname'],
-            'gender' => $agentData['gender'],
-            'birth_date' => $agentData['birthday'],
-        ];
-        $person = $this->personService->update($person, $personData);
-        $address = $person->addresses()->where('is_primary', 1)->first();
-        $address->phone = $agentData['phone'];
-        $address->update();
-        $agent->person->name = $agentData['name'];
-        $agent->agent_commission_id = $agentData['commissionTypeId'];
-        $agent->update();
+        $personData = array_filter([
+            'name' => $agentData['name'] ?? null,
+            'surname' => $agentData['surname'] ?? null,
+            'gender' => $agentData['gender'] ?? null,
+            'birth_date' => $agentData['birthday'] ?? null,
+        ], fn ($value) => $value !== null);
+
+        if ($personData !== []) {
+            $this->personService->update($agent->person, $personData);
+        }
+
+        if (array_key_exists('phone', $agentData)) {
+            $address = $agent->person->addresses()->where('is_primary', 1)->first();
+            if ($address !== null) {
+                $address->phone = $agentData['phone'];
+                $address->update();
+            }
+        }
+
+        if (array_key_exists('commissionTypeId', $agentData)) {
+            $agent->agent_commission_id = $agentData['commissionTypeId'];
+            $agent->update();
+        }
 
         return $this->agent->with(['person', 'person.addresses', 'miniGrid', 'commission'])
             ->where('id', $agent->id)->first();
