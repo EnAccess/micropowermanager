@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgentAssignedAppliancesController;
 use App\Http\Controllers\AgentAuthController;
+use App\Http\Controllers\AgentAvailableDeviceController;
 use App\Http\Controllers\AgentBalanceController;
 use App\Http\Controllers\AgentCustomerController;
 use App\Http\Controllers\AgentCustomersPaymentHistoryController;
@@ -68,6 +69,9 @@ Route::group(['prefix' => 'app'], function () {
         });
         Route::group(['prefix' => 'appliance_types'], function () {
             Route::get('/', [AgentAssignedAppliancesController::class, 'index']);
+        });
+        Route::group(['prefix' => 'devices'], function () {
+            Route::get('/unassigned', [AgentAvailableDeviceController::class, 'index']);
         });
         Route::group(['prefix' => 'meters'], function () {
             Route::get('/', [AgentMeterController::class, 'index']);
