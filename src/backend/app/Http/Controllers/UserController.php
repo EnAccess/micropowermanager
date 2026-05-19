@@ -47,6 +47,12 @@ class UserController extends Controller {
         return new ApiResource($this->userService->get($user->id));
     }
 
+    public function destroy(User $user): ApiResource {
+        $this->userService->delete($user);
+
+        return ApiResource::make(['message' => 'User deleted']);
+    }
+
     public function update(User $user, Request $request): ApiResource {
         // Update user basic info
         $this->userService->update($user, $request->only(['name', 'password']));

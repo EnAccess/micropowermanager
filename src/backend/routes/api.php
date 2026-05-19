@@ -105,6 +105,7 @@ Route::group(['prefix' => 'auth'], static function () {
 Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], static function () {
     Route::post('/', [UserController::class, 'store'])->middleware('permission:users');
     Route::put('/{user}', [UserController::class, 'update'])->middleware('can:update,user');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user');
     Route::get('/{user}', [UserController::class, 'show'])->middleware('can:view,user');
     Route::get('/', [UserController::class, 'index'])->middleware('permission:users');
 

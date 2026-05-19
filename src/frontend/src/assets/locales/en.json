@@ -210,6 +210,7 @@
     "deleteMiniGrid": "Delete Mini-Grid",
     "deleteMiniGridNotify": "I confirm that {name} will be deleted",
     "deleteSoldAppliance": "Delete Sold Appliance | Sold Appliance Deleted | I confirm that {name} will be deleted",
+    "deleteUserConfirm": "Delete User | User Deleted Successfully | Are you sure you want to delete {name}?",
     "deleteVillage": "Delete Village",
     "deleteVillageNotify": "I confirm that {name} will be deleted",
     "deliveryReportsUrl": "Delivery Reports URL",
@@ -509,6 +510,7 @@
   },
   "words": {
     "access": "Access",
+    "actions": "Actions",
     "activate": "Activate | Activated",
     "active": "Active",
     "activity": "Activity",

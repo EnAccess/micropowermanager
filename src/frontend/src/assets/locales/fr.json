@@ -210,6 +210,7 @@
     "deleteMiniGrid": "Supprimer le mini-réseau",
     "deleteMiniGridNotify": "Je confirme que {name} sera supprimé",
     "deleteSoldAppliance": "Supprimer l'appareil vendu | Appareil vendu supprimé | Je confirme que {name} sera supprimé",
+    "deleteUserConfirm": "Supprimer l'utilisateur | Utilisateur supprimé avec succès | Êtes-vous sûr de vouloir supprimer {name} ?",
     "deleteVillage": "Supprimer le village",
     "deleteVillageNotify": "Je confirme que {name} sera supprimé",
     "deliveryReportsUrl": "Delivery Reports URL",
@@ -509,6 +510,7 @@
   },
   "words": {
     "access": "Access",
+    "actions": "Actions",
     "activate": "Activate | Activated",
     "active": "Active",
     "activity": "Activité",

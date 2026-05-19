@@ -210,6 +210,7 @@
     "deleteMiniGrid": "Mini-Grid ကိုဖျက်ပါ။",
     "deleteMiniGridNotify": "{name} ကိုဖျက်ပစ်မည်ဟု အတည်ပြုပါသည်။",
     "deleteSoldAppliance": "Delete Sold Appliance | Sold Appliance Deleted | I confirm that {name} will be deleted",
+    "deleteUserConfirm": "အသုံးပြုသူဖျက်ရန် | အသုံးပြုသူ ဖျက်ပြီးပါပြီ | {name} ကို ဖျက်ရန် သေချာပါသလား?",
     "deleteVillage": "ရွာကိုဖျက်ပါ။",
     "deleteVillageNotify": "{name} ကိုဖျက်ပစ်မည်ဟု အတည်ပြုပါသည်။",
     "deliveryReportsUrl": "မက်ေဆ့ချက်အမည်",
@@ -509,6 +510,7 @@
   },
   "words": {
     "access": "သံုးစဲွခွင့် ",
+    "actions": "လုပ်ဆောင်ချက်များ",
     "activate": "အသက်သွင်း | အသက်သွင်းNပီးပါNပီ",
     "active": "အသက်ဝင်",
     "activity": "လှုပ်ရှားမှု",

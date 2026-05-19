@@ -18,4 +18,7 @@ export default {
   get(id) {
     return Client.get(`${resource}/${id}`)
   },
+  delete(id) {
+    return Client.delete(`${resource}/${id}`)
+  },
 }

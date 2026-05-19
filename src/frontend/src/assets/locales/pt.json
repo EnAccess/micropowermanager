@@ -210,6 +210,7 @@
     "deleteMiniGrid": "Eliminar Mini-Rede",
     "deleteMiniGridNotify": "Confirmo que {name} será eliminada",
     "deleteSoldAppliance": "Eliminar Aparelho Vendido | Aparelho Vendido Eliminado | Confirmo que {name} será eliminado",
+    "deleteUserConfirm": "Excluir utilizador | Utilizador excluído com sucesso | Tem a certeza de que pretende excluir {name}?",
     "deleteVillage": "Eliminar Aldeia",
     "deleteVillageNotify": "Confirmo que {name} será eliminada",
     "deliveryReportsUrl": "URL dos Relatórios de Entrega",
@@ -509,6 +510,7 @@
   },
   "words": {
     "access": "Acesso",
+    "actions": "Ações",
     "activate": "Activar | Activado",
     "active": "Activo",
     "activity": "Actividade",

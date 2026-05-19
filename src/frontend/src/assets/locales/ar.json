@@ -210,6 +210,7 @@
     "deleteMiniGrid": "حذف المجمّع الكهربائي الصغير",
     "deleteMiniGridNotify": "‏{name}‏ أؤكد أنه سيتم حذف",
     "deleteSoldAppliance": "حذف الجهاز المباع | تم حذف الجهاز المباع | ‏{name}‏ أؤكد أنه سيتم حذف",
+    "deleteUserConfirm": "حذف المستخدم | تم حذف المستخدم بنجاح | هل أنت متأكد من حذف {name}؟",
     "deleteVillage": "حذف القرية",
     "deleteVillageNotify": "‏{name}‏ أؤكد أنه سيتم حذف",
     "deliveryReportsUrl": "رابط تقارير التسليم",
@@ -509,6 +510,7 @@
   },
   "words": {
     "access": "النفاذ",
+    "actions": "الإجراءات",
     "activate": "مفعّل | تفعيل",
     "active": "مفعل",
     "activity": "النشاط",
