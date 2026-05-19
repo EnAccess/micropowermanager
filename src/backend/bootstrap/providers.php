@@ -16,6 +16,7 @@ use App\Plugins\MesombPaymentProvider\Providers\MesombServiceProvider;
 use App\Plugins\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
 use App\Plugins\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
+use App\Plugins\PesapalPaymentProvider\Providers\PesapalPaymentProviderServiceProvider;
 use App\Plugins\Prospect\Providers\ProspectServiceProvider;
 use App\Plugins\SmsTransactionParser\Providers\SmsTransactionParserServiceProvider;
 use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
@@ -58,6 +59,7 @@ return [
     MicroStarMeterServiceProvider::class,
     OdysseyDataExportServiceProvider::class,
     PaystackPaymentProviderServiceProvider::class,
+    PesapalPaymentProviderServiceProvider::class,
     ProspectServiceProvider::class,
     SparkMeterServiceProvider::class,
     SteamaMeterServiceProvider::class,

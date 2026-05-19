@@ -39,6 +39,8 @@ import Kelin from "@/plugins/kelin-meter/modules/Overview/Credential.vue"
 import MicroStar from "@/plugins/micro-star-meter/modules/Overview/Credential.vue"
 import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component.vue"
 import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
+import PesapalPaymentProvider from "@/plugins/pesapal-payment-provider/Component.vue"
+import Pesapal from "@/plugins/pesapal-payment-provider/modules/Overview/Credential.vue"
 import Prospect from "@/plugins/prospect/modules/Overview/Credential.vue"
 import SmsTransactionParserSetup from "@/plugins/sms-transaction-parser/modules/Overview/Setup.vue"
 import Spark from "@/plugins/spark-meter/modules/Overview/Credential.vue"
@@ -80,10 +82,12 @@ Vue.component("SmsTransactionDetail", SmsTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
 Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
+Vue.component("Pesapal-Payment-Provider", PesapalPaymentProvider)
 Vue.component("Africas-Talking", AfricasTalking)
 Vue.component("Chint-Meter", ChintMeter)
 Vue.component("Prospect", Prospect)
 Vue.component("Paystack", Paystack)
+Vue.component("Pesapal", Pesapal)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
 Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
@@ -128,6 +132,8 @@ const publicRouteNames = new Set([
   "/wave-money/result",
   "/paystack/public/payment",
   "/paystack/public/result",
+  "/pesapal/public/payment",
+  "/pesapal/public/result",
 ])
 
 router.beforeEach(async (to, from, next) => {

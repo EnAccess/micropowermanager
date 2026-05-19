@@ -49,6 +49,7 @@ class MpmPlugin extends BaseModelCentral {
     public const ECREEE_E_TENDER = 27;
     public const SPARK_SHS = 28;
     public const SMS_TRANSACTION_PARSER = 29;
+    public const PESAPAL_PAYMENT_PROVIDER = 30;
 
     protected $table = 'mpm_plugins';
 
