@@ -4,6 +4,7 @@
       <div class="md-layout-item md-size-55 md-small-size-100">
         <client-personal-data :person="person" v-if="isLoaded" />
         <addresses :person-id="person.id" v-if="person !== null" />
+        <customer-documents :person-id="person.id" v-if="person !== null" />
         <sms-history :person-id="personId" person-name="System" />
       </div>
       <div
@@ -51,6 +52,7 @@ import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
 import Addresses from "@/modules/Client/Addresses.vue"
 import ClientPersonalData from "@/modules/Client/ClientPersonalData.vue"
+import CustomerDocuments from "@/modules/Client/CustomerDocuments.vue"
 import DeferredPayments from "@/modules/Client/DeferredPayments.vue"
 import Devices from "@/modules/Client/Devices.vue"
 import PaymentDetail from "@/modules/Client/PaymentDetail.vue"
@@ -71,6 +73,7 @@ export default {
   components: {
     DeferredPayments,
     ClientPersonalData,
+    CustomerDocuments,
     SmsHistory,
     PaymentFlow,
     Transactions,

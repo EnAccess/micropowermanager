@@ -56,7 +56,9 @@ use Illuminate\Support\Facades\DB;
  * @property-read PaymentHistory|null              $latestPayment
  * @property-read MiniGrid|null                    $miniGrid
  * @property-read Collection<int, PaymentHistory>  $payments
- * @property-read PersonDocument|null              $personDocument
+ * @property-read PersonDocument|null              $identityDocument
+ * @property-read Collection<int, PersonDocument>  $personDocuments
+ * @property-read Collection<int, PersonDocument>  $uploadedDocuments
  * @property-read Collection<int, Ticket>          $tickets
  */
 class Person extends BaseModel implements \Stringable, HasAddressesInterface {
@@ -157,10 +159,26 @@ class Person extends BaseModel implements \Stringable, HasAddressesInterface {
     }
 
     /**
+     * @return HasMany<PersonDocument, $this>
+     */
+    public function personDocuments(): HasMany {
+        return $this->hasMany(PersonDocument::class, 'person_id', 'id');
+    }
+
+    /**
      * @return HasOne<PersonDocument, $this>
      */
-    public function personDocument(): HasOne {
-        return $this->hasOne(PersonDocument::class, 'person_id', 'id');
+    public function identityDocument(): HasOne {
+        return $this->hasOne(PersonDocument::class, 'person_id', 'id')
+            ->where('category', PersonDocument::CATEGORY_IDENTITY_RECORD);
+    }
+
+    /**
+     * @return HasMany<PersonDocument, $this>
+     */
+    public function uploadedDocuments(): HasMany {
+        return $this->hasMany(PersonDocument::class, 'person_id', 'id')
+            ->where('category', PersonDocument::CATEGORY_CUSTOMER_UPLOAD);
     }
 
     public function __toString(): string {

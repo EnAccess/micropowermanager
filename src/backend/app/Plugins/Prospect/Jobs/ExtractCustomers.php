@@ -70,7 +70,7 @@ class ExtractCustomers extends AbstractJob {
                     'addresses.city.country',
                     'citizenship',
                     'miniGrid',
-                    'personDocument',
+                    'identityDocument',
                 ]);
 
             $customers = $query->get();
