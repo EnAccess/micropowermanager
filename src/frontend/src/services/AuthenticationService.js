@@ -55,9 +55,9 @@ export class AuthenticationService {
     }
   }
 
-  async refreshToken(token, intervalId) {
+  async refreshToken(intervalId) {
     try {
-      let response = await this.repository.refresh(token)
+      let response = await this.repository.refresh()
       clearInterval(intervalId)
       if (response.status === 200) {
         return this._fetchData(response.data)

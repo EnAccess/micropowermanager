@@ -1,9 +1,21 @@
 import axios from "axios"
 
 import { config } from "@/config.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export const baseUrl = config.mpmBackendUrl
 export const baseUrlExternal = config.mpmBackendUrlExternal
+
+// The Vuex store is wired in from main.js after construction. Importing it
+// here directly would create a load-order cycle: store -> auth module ->
+// AuthenticationRepository -> this file.
+let storeRef = null
+export function attachAuthStore(store) {
+  storeRef = store
+}
+
+const REFRESH_URL = "/api/auth/refresh"
+let pendingRefresh = null
 
 function loadCustomHeadersFromEnv() {
   const raw = process.env.VUE_APP_CUSTOM_HEADERS
@@ -47,6 +59,43 @@ axiosClient.interceptors.request.use(
   },
   (error) => {
     Promise.reject(error)
+  },
+)
+
+axiosClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config
+    const status = error.response && error.response.status
+
+    if (status !== 401 || !originalRequest || !storeRef) {
+      return Promise.reject(error)
+    }
+    if (originalRequest.url && originalRequest.url.includes(REFRESH_URL)) {
+      return Promise.reject(error)
+    }
+    if (originalRequest._retry) {
+      return Promise.reject(error)
+    }
+    originalRequest._retry = true
+
+    try {
+      if (!pendingRefresh) {
+        pendingRefresh = storeRef.dispatch("auth/refreshToken").finally(() => {
+          pendingRefresh = null
+        })
+      }
+      await pendingRefresh
+
+      const newToken = localStorage.getItem("token")
+      if (newToken) {
+        originalRequest.headers["Authorization"] = "Bearer " + newToken
+      }
+      return axiosClient(originalRequest)
+    } catch (refreshError) {
+      EventBus.$emit("session.end", true)
+      return Promise.reject(refreshError)
+    }
   },
 )
 

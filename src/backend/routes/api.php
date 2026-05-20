@@ -95,9 +95,13 @@ Route::group(['prefix' => 'auth'], static function () {
     // A named route 'login' is required for Laravel Auth handling.
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
+    // `refresh` must accept expired-but-refreshable tokens; the auth:api
+    // middleware would reject them as TokenExpiredException before the
+    // controller could swap them for a fresh token.
+    Route::post('refresh', [AuthController::class, 'refresh']);
+
     Route::group(['middleware' => 'auth:api'], static function () {
         Route::post('logout', [AuthController::class, 'logout']);
-        Route::post('refresh', [AuthController::class, 'refresh']);
         Route::get('me', [AuthController::class, 'me']);
     });
 });

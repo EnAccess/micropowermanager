@@ -86,7 +86,9 @@ export default {
   },
   methods: {
     logout() {
-      this.$router.replace("/login")
+      this.$store.dispatch("auth/logOut").then(() => {
+        this.$router.replace("/login")
+      })
     },
     toggle() {
       this.toggleCard = !this.toggleCard

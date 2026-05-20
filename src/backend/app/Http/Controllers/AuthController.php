@@ -69,14 +69,19 @@ class AuthController extends Controller {
     /**
      * Refresh User token.
      *
-     * Generates a new valid token for the next 3600 seconds
-     * Inorder to generate the new token, a working (Bearer)token has to be provided in the header.
+     * Rotates the bearer token in the request for a fresh one. Accepts expired tokens within JWT_REFRESH_TTL.
+     * Rejects tokens past that window or with an invalid signature.
      */
     public function refresh(): JsonResponse {
         /** @var JWTGuard $guard */
         $guard = auth()->guard('api');
+        $newToken = $guard->refresh();
+        // refresh() rotates the token but does not populate the guard's user
+        // cache. The route runs without auth:api so we authenticate with the
+        // freshly issued token before respondWithToken reads the user.
+        $guard->setToken($newToken)->authenticate();
 
-        return $this->respondWithToken($guard->refresh());
+        return $this->respondWithToken($newToken);
     }
 
     /**

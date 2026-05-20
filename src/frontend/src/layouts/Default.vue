@@ -108,7 +108,16 @@ export default {
     },
     extendToken() {
       this.confirmed = true
-      location.reload()
+      this.$store
+        .dispatch("auth/refreshToken")
+        .then(() => {
+          this.active = false
+          this.showed = false
+          this.confirmed = false
+        })
+        .catch(() => {
+          EventBus.$emit("session.end", true)
+        })
     },
     logout() {
       this.$store.commit("registrationTail/SET_IS_WIZARD_SHOWN", false)
