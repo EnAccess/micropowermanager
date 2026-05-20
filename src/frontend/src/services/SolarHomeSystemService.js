@@ -35,7 +35,7 @@ export class SolarHomeSystemService {
     this.paginator = new Paginator(this.repository.resource)
     this.list = []
     this.shs = {
-      serialNumber: null,
+      serialNumbers: [],
       applianceId: null,
       manufacturerId: null,
       personId: null,
