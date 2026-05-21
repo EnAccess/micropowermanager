@@ -5,6 +5,7 @@ use App\Http\Controllers\AgentAuthController;
 use App\Http\Controllers\AgentAvailableDeviceController;
 use App\Http\Controllers\AgentBalanceController;
 use App\Http\Controllers\AgentCustomerController;
+use App\Http\Controllers\AgentCustomerDocumentController;
 use App\Http\Controllers\AgentCustomersPaymentHistoryController;
 use App\Http\Controllers\AgentCustomerTicketController;
 use App\Http\Controllers\AgentDashboardBalanceHistoryController;
@@ -49,6 +50,13 @@ Route::group(['prefix' => 'app'], function () {
             );
             Route::get('/{customerId}', [AgentCustomerController::class, 'show'])
                 ->where('customerId', '[0-9]+');
+
+            Route::get('/{customerId}/documents', [AgentCustomerDocumentController::class, 'index'])
+                ->where('customerId', '[0-9]+');
+            Route::post('/{customerId}/documents', [AgentCustomerDocumentController::class, 'store'])
+                ->where('customerId', '[0-9]+');
+            Route::get('/documents/{personDocument}/download', [AgentCustomerDocumentController::class, 'show']);
+            Route::delete('/documents/{personDocument}', [AgentCustomerDocumentController::class, 'destroy']);
         });
         Route::group(['prefix' => 'transactions'], function () {
             Route::get('/', [AgentTransactionsController::class, 'index']);

@@ -25,8 +25,8 @@ class StorePersonDocumentRequest extends FormRequest {
     }
 
     public function withValidator(Validator $validator): void {
-        $validator->after(function (Validator $validator): void {
-            $personId = $this->route('personId');
+        $validator->after(function (): void {
+            $personId = $this->route('personId') ?? $this->route('customerId');
             $person = Person::query()->find($personId);
 
             if ($person === null) {
