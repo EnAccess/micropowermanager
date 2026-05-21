@@ -163,7 +163,7 @@ class PesapalApiService {
 
     private function resolveCallbackUrl(PesapalCredential $credential, PesapalTransaction $transaction): string {
         $callback = $credential->getCallbackUrl();
-        if (empty($callback)) {
+        if (in_array($callback, [null, '', '0'], true)) {
             throw new \InvalidArgumentException('PesaPal callback URL is not configured; save credentials to populate it.');
         }
         // Reference is appended so the customer's browser returns to a deep-linked result page.

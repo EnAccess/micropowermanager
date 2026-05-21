@@ -197,7 +197,7 @@ class PesapalPublicController extends Controller {
             }
 
             $transaction = $this->transactionService->getByReferenceId($reference);
-            if (!$transaction instanceof PesapalTransaction || empty($transaction->getOrderTrackingId())) {
+            if (!$transaction instanceof PesapalTransaction || in_array($transaction->getOrderTrackingId(), [null, '', '0'], true)) {
                 return response()->json(['error' => 'Transaction not found'], 404);
             }
 

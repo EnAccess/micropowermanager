@@ -27,7 +27,7 @@ class SubmitOrderRequestResource extends AbstractApiResource {
      */
     public function getBodyData(): array {
         $ipnId = $this->credential->getIpnId();
-        if (empty($ipnId)) {
+        if (in_array($ipnId, [null, '', '0'], true)) {
             throw new \InvalidArgumentException('PesaPal IPN is not registered for this merchant; save credentials again to register one.');
         }
 
@@ -118,10 +118,10 @@ class SubmitOrderRequestResource extends AbstractApiResource {
     private function buildBillingAddress(): array {
         $billingAddress = [];
         $email = $this->credential->getMerchantEmail();
-        if (!empty($email)) {
+        if (!in_array($email, [null, '', '0'], true)) {
             $billingAddress['email_address'] = $email;
         }
-        if (!empty($this->payerPhoneNumber)) {
+        if (!in_array($this->payerPhoneNumber, [null, '', '0'], true)) {
             $billingAddress['phone_number'] = $this->payerPhoneNumber;
         }
 

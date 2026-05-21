@@ -87,7 +87,7 @@ class PesapalCredentialService {
      */
     public function ensureIpnRegistered(PesapalCredential $credential): void {
         $callbackUrl = $credential->getCallbackUrl();
-        if (empty($callbackUrl)) {
+        if (in_array($callbackUrl, [null, '', '0'], true)) {
             return;
         }
 

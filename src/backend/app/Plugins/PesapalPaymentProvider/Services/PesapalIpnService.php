@@ -23,7 +23,7 @@ class PesapalIpnService {
 
     public function processIpn(Request $request, int $companyId): bool {
         $orderTrackingId = $this->extractOrderTrackingId($request);
-        if (empty($orderTrackingId)) {
+        if (in_array($orderTrackingId, [null, '', '0'], true)) {
             Log::warning('Pesapal IPN missing OrderTrackingId', ['payload' => $request->all()]);
 
             return false;
