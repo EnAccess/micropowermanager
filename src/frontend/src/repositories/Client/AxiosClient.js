@@ -68,7 +68,14 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config
     const status = error.response && error.response.status
 
-    if (status !== 401 || !originalRequest || !storeRef) {
+    if (status !== 401 || !originalRequest) {
+      return Promise.reject(error)
+    }
+    if (!storeRef) {
+      console.error(
+        "AxiosClient: auth store not attached; cannot refresh expired token. " +
+          "attachAuthStore(store) must run during app bootstrap (see main.js).",
+      )
       return Promise.reject(error)
     }
     if (originalRequest.url && originalRequest.url.includes(REFRESH_URL)) {
