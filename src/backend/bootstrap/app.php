@@ -60,6 +60,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        // Enrich every logged exception (e.g. Slack alerts) with the tenant company id.
+        $exceptions->context(fn (): array => array_filter([
+            'companyId' => request()->attributes->get('companyId'),
+        ]));
+
         // JWTExceptions happen quite frequently.
         // User token might expire, web scraper trying to access unauthrized areas, etc...
         // Lowering the LogLevel here to not spam our logging.
