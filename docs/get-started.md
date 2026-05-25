@@ -52,12 +52,9 @@ The MicroPowerManager package includes:
    Customer complaints and technical faults can also be managed in a centralized manner via this interface.
    "Bulk-registration" of an existing portfolio of customers (transferring customer data from legacy systems to MicroPowerManager software) can be offered by EnAccess as-a-service.
 
-2. **MPM Android Apps**:
-
-   2.1. **Customer Registration App**: it is required to be able to register new customers.
-
-   2.2. **Agent/Merchant App**: serves as the bilateral communication channel between the company headquarters (users of MicroPowerManager website interface) and the team of agents on site, managing and responding to customer complaints.
-   The Agent App is also used to manually generate STS tokens (where customers are not able to do so themselves with their own phones).
+2. **MPM Field App**: a single cross-platform app (Android) for the team of agents on site.
+   It lets agents register customers, sell appliances, and collect payments — online or offline — and manually generate STS tokens where customers cannot do so themselves with their own phones.
+   See [The Field App](/usage-guide/android-apps) for details.
 
 ## Get Started
 
