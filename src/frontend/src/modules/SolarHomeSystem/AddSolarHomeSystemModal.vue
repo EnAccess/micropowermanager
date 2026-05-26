@@ -129,7 +129,7 @@ import { SolarHomeSystemService } from "@/services/SolarHomeSystemService.js"
 const MANUFACTURER_TYPE = "shs"
 const APPLIANCE_TYPE_ID = 1
 const SERIAL_NUMBER_MIN_LENGTH = 8
-const SERIAL_NUMBER_MAX_LENGTH = 11
+const SERIAL_NUMBER_MAX_LENGTH = 15
 
 function splitSerialList(text) {
   return text

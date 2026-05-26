@@ -20,7 +20,7 @@ class StoreSolarHomeSystemRequest extends FormRequest {
     public function rules(): array {
         return [
             'serial_numbers' => ['required', 'array', 'min:1'],
-            'serial_numbers.*' => ['required', 'string', 'min:8', 'max:11', 'distinct', 'unique:tenant.devices,device_serial'],
+            'serial_numbers.*' => ['required', 'string', 'min:8', 'max:15', 'distinct', 'unique:tenant.devices,device_serial'],
             'manufacturer_id' => ['required', 'exists:tenant.manufacturers,id'],
             'appliance_id' => ['required', 'exists:tenant.appliances,id'],
         ];
