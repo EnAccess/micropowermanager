@@ -6,7 +6,6 @@ namespace App\Plugins\PesapalPaymentProvider\Http\Controllers;
 
 use App\Plugins\PesapalPaymentProvider\Http\Requests\PublicPaymentRequest;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
-use App\Plugins\PesapalPaymentProvider\Modules\Api\PesapalApiService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCompanyHashService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCredentialService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalIpnService;
@@ -21,7 +20,6 @@ class PesapalPublicController extends Controller {
     public function __construct(
         private PesapalCompanyHashService $hashService,
         private PesapalTransactionService $transactionService,
-        private PesapalApiService $apiService,
         private PesapalCredentialService $credentialService,
         private PesapalIpnService $ipnService,
         private CompanyService $companyService,
@@ -141,7 +139,7 @@ class PesapalPublicController extends Controller {
             }
 
             $verification = $transaction->getOrderTrackingId()
-                ? $this->apiService->getTransactionStatus($transaction->getOrderTrackingId())
+                ? $this->transactionService->syncStatusFromApi($transaction, $companyId)
                 : ['status_code' => null, 'error' => 'No order tracking id yet'];
 
             $response = [
@@ -201,7 +199,7 @@ class PesapalPublicController extends Controller {
                 return response()->json(['error' => 'Transaction not found'], 404);
             }
 
-            $verification = $this->apiService->getTransactionStatus($transaction->getOrderTrackingId());
+            $verification = $this->transactionService->syncStatusFromApi($transaction, $companyId);
 
             return response()->json([
                 'success' => isset($verification['status_code']) && $verification['status_code'] === 1,

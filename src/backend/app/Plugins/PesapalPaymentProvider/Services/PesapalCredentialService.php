@@ -4,11 +4,15 @@ namespace App\Plugins\PesapalPaymentProvider\Services;
 
 use App\Plugins\PesapalPaymentProvider\Models\PesapalCredential;
 use App\Plugins\PesapalPaymentProvider\Modules\Api\PesapalApiService;
+use App\Traits\EncryptsCredentials;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Crypt;
 
 class PesapalCredentialService {
+    use EncryptsCredentials;
+
+    private const ENCRYPTED_FIELDS = ['consumer_key', 'consumer_secret'];
+
     public function __construct(
         private PesapalCredential $pesapalCredential,
         private Container $container,
@@ -21,7 +25,7 @@ class PesapalCredentialService {
             return $this->createCredentials();
         }
 
-        return $credential;
+        return $this->decryptCredentialFields($credential, self::ENCRYPTED_FIELDS);
     }
 
     public function createCredentials(): PesapalCredential {
@@ -52,23 +56,17 @@ class PesapalCredentialService {
         $credential = $this->getCredentials();
         $tokenService = $this->container->make(PesapalTokenService::class);
 
+        // Caller is expected to drop blank consumer_key/secret from $data so the
+        // stored ciphertext is preserved. Anything still in $data is a real change.
         $secretsRotated = array_key_exists('consumer_key', $data)
             || array_key_exists('consumer_secret', $data);
-
-        if (array_key_exists('consumer_key', $data)) {
-            $data['consumer_key'] = Crypt::encrypt($data['consumer_key']);
-        }
-        if (array_key_exists('consumer_secret', $data)) {
-            $data['consumer_secret'] = Crypt::encrypt($data['consumer_secret']);
-        }
-
         $environmentChanged = array_key_exists('environment', $data)
             && $data['environment'] !== $credential->getEnvironment();
 
-        $credential->update($data);
-        $credential->refresh();
+        $credential->update($this->encryptCredentialFields($data, self::ENCRYPTED_FIELDS));
+        $this->decryptCredentialFields($credential, self::ENCRYPTED_FIELDS);
 
-        if (empty($credential->getAttribute('consumer_key')) || empty($credential->getAttribute('consumer_secret'))) {
+        if ($credential->getConsumerKey() === '' || $credential->getConsumerSecret() === '') {
             throw new \RuntimeException('Consumer key and consumer secret are required.');
         }
 
@@ -108,7 +106,7 @@ class PesapalCredentialService {
             'ipn_id' => $result['ipn_id'],
             'ipn_registered_at' => Carbon::now(),
         ]);
-        $credential->refresh();
+        $this->decryptCredentialFields($credential, self::ENCRYPTED_FIELDS);
     }
 
     private function buildIpnUrl(): ?string {

@@ -7,7 +7,6 @@ namespace App\Plugins\PesapalPaymentProvider\Http\Controllers;
 use App\Plugins\PesapalPaymentProvider\Http\Requests\TransactionInitializeRequest;
 use App\Plugins\PesapalPaymentProvider\Http\Resources\PesapalTransactionResource;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
-use App\Plugins\PesapalPaymentProvider\Modules\Api\PesapalApiService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +15,6 @@ use Illuminate\Routing\Controller;
 class PesapalController extends Controller {
     public function __construct(
         private PesapalTransactionService $transactionService,
-        private PesapalApiService $apiService,
     ) {}
 
     public function initializeTransaction(TransactionInitializeRequest $request): JsonResponse {
@@ -45,7 +43,13 @@ class PesapalController extends Controller {
     }
 
     public function verifyTransaction(Request $request, string $orderTrackingId): JsonResponse {
-        $result = $this->apiService->getTransactionStatus($orderTrackingId);
+        $transaction = $this->transactionService->getByOrderTrackingId($orderTrackingId);
+        if (!$transaction instanceof PesapalTransaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
+
+        $companyId = (int) $request->attributes->get('companyId');
+        $result = $this->transactionService->syncStatusFromApi($transaction, $companyId);
 
         if ($result['error']) {
             return response()->json(['error' => $result['error']], 400);

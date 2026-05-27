@@ -82,7 +82,10 @@
                 {{ formatAmount(item.amount, item.currency) }}
               </md-table-cell>
               <md-table-cell md-label="Status">
-                <md-chip :class="getStatusClass(item.status)" md-label="">
+                <md-chip
+                  :class="['pesapal-status-chip', getStatusClass(item.status)]"
+                  md-label=""
+                >
                   {{ getStatusText(item.status) }}
                 </md-chip>
               </md-table-cell>
@@ -100,23 +103,18 @@
 
     <div v-if="!isFullyConfigured" class="overview-line">
       <md-card class="setup-prompt">
-        <md-card-content>
-          <div class="setup-prompt__body">
-            <md-icon class="setup-prompt__icon">info</md-icon>
-            <div>
-              <h3 class="setup-prompt__title">
-                {{ setupPrompt.title }}
-              </h3>
-              <p class="setup-prompt__text">
-                {{ setupPrompt.description }}
-              </p>
-            </div>
+        <md-card-content class="setup-prompt__row">
+          <md-icon class="setup-prompt__icon">info</md-icon>
+          <div class="setup-prompt__text-block">
+            <h3 class="setup-prompt__title">{{ setupPrompt.title }}</h3>
+            <p class="setup-prompt__text">{{ setupPrompt.description }}</p>
           </div>
-          <div class="setup-prompt__actions">
-            <md-button class="md-raised md-primary" @click="goToCredentials">
-              {{ setupPrompt.cta }}
-            </md-button>
-          </div>
+          <md-button
+            class="md-raised md-primary setup-prompt__cta"
+            @click="goToCredentials"
+          >
+            {{ setupPrompt.cta }}
+          </md-button>
         </md-card-content>
       </md-card>
     </div>
@@ -341,20 +339,25 @@ export default {
   border-radius: 10px;
 }
 
-.setup-prompt__body {
+.setup-prompt__row {
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.25rem 0 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .setup-prompt__icon {
-  margin-top: 2px;
-  width: 22px;
-  min-width: 22px;
-  height: 22px;
+  flex-shrink: 0;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
   color: $brand-secondary-dark !important;
-  font-size: 22px !important;
+  font-size: 24px !important;
+}
+
+.setup-prompt__text-block {
+  flex: 1 1 0;
+  min-width: 220px;
 }
 
 .setup-prompt__title {
@@ -371,9 +374,25 @@ export default {
   color: #6b7280;
 }
 
-.setup-prompt__actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
+.setup-prompt__cta {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+::v-deep .pesapal-status-chip.md-error {
+  background-color: #d9534f !important;
+  color: #fff !important;
+}
+::v-deep .pesapal-status-chip.md-success {
+  background-color: #5cb85c !important;
+  color: #fff !important;
+}
+::v-deep .pesapal-status-chip.md-warning {
+  background-color: #f0ad4e !important;
+  color: #fff !important;
+}
+::v-deep .pesapal-status-chip.md-info {
+  background-color: #5bc0de !important;
+  color: #fff !important;
 }
 </style>

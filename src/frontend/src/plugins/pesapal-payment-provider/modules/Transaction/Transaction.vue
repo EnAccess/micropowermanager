@@ -31,7 +31,10 @@
             {{ formatAmount(item.amount, item.currency) }}
           </md-table-cell>
           <md-table-cell md-label="Status" md-sort-by="status">
-            <md-chip :class="getStatusClass(item.status)" md-label="">
+            <md-chip
+              :class="['pesapal-status-chip', getStatusClass(item.status)]"
+              md-label=""
+            >
               {{ getStatusText(item.status) }}
             </md-chip>
           </md-table-cell>
@@ -103,7 +106,12 @@
           <div class="detail-row">
             <span class="detail-label">Status:</span>
             <span class="detail-value">
-              <md-chip :class="getStatusClass(selectedTransaction.status)">
+              <md-chip
+                :class="[
+                  'pesapal-status-chip',
+                  getStatusClass(selectedTransaction.status),
+                ]"
+              >
                 {{ getStatusText(selectedTransaction.status) }}
               </md-chip>
             </span>
@@ -319,5 +327,22 @@ export default {
 
 .md-table {
   margin-top: 1rem;
+}
+
+::v-deep .pesapal-status-chip.md-error {
+  background-color: #d9534f !important;
+  color: #fff !important;
+}
+::v-deep .pesapal-status-chip.md-success {
+  background-color: #5cb85c !important;
+  color: #fff !important;
+}
+::v-deep .pesapal-status-chip.md-warning {
+  background-color: #f0ad4e !important;
+  color: #fff !important;
+}
+::v-deep .pesapal-status-chip.md-info {
+  background-color: #5bc0de !important;
+  color: #fff !important;
 }
 </style>

@@ -11,6 +11,7 @@ use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
 use App\Plugins\PesapalPaymentProvider\Modules\Api\PesapalApiService;
+use App\Plugins\PesapalPaymentProvider\Modules\Api\Resources\GetTransactionStatusResource;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\DeviceService;
 use App\Services\Interfaces\IBaseService;
@@ -159,10 +160,45 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     public function processFailedPayment(PesapalTransaction $transaction): void {
         $transaction->setStatus(PesapalTransaction::STATUS_FAILED);
         $transaction->save();
+    }
 
-        $relatedTransaction = $transaction->transaction;
-        if ($relatedTransaction) {
-            $relatedTransaction->update(['status' => PesapalTransaction::STATUS_FAILED]);
+    /**
+     * Fetches the authoritative status from PesaPal and persists it on the
+     * transaction. The same code path serves IPN callbacks and operator-driven
+     * verify calls so a transaction is never left stuck in REQUESTED just
+     * because PesaPal didn't fire an IPN (e.g. customer aborted on the gateway).
+     *
+     * @return array{status_code: ?int, status_description: string, amount: float, currency: string, payment_method: string, confirmation_code: string, merchant_reference: string, error: ?string}
+     */
+    public function syncStatusFromApi(PesapalTransaction $transaction, int $companyId): array {
+        $status = $this->pesapalApiService->getTransactionStatus($transaction->getOrderTrackingId());
+        if ($status['error'] !== null) {
+            return $status;
+        }
+
+        if (!empty($status['confirmation_code'])) {
+            $transaction->setExternalTransactionId($status['confirmation_code']);
+            $transaction->save();
+        }
+
+        $this->applyStatusCode($transaction, $status['status_code'], $companyId);
+
+        return $status;
+    }
+
+    private function applyStatusCode(PesapalTransaction $transaction, ?int $statusCode, int $companyId): void {
+        switch ($statusCode) {
+            case GetTransactionStatusResource::STATUS_COMPLETED:
+                $this->processSuccessfulPayment($companyId, $transaction);
+                break;
+            case GetTransactionStatusResource::STATUS_FAILED:
+            case GetTransactionStatusResource::STATUS_REVERSED:
+                $this->processFailedPayment($transaction);
+                break;
+            case GetTransactionStatusResource::STATUS_INVALID:
+                $transaction->setStatus(PesapalTransaction::STATUS_ABANDONED);
+                $transaction->save();
+                break;
         }
     }
 

@@ -4,7 +4,6 @@ namespace App\Plugins\PesapalPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Crypt;
 
 /**
  * @property int         $id
@@ -28,19 +27,11 @@ class PesapalCredential extends BaseModel {
     ];
 
     public function getConsumerKey(): string {
-        try {
-            return Crypt::decrypt($this->attributes['consumer_key']);
-        } catch (\Throwable) {
-            return $this->attributes['consumer_key'] ?? '';
-        }
+        return $this->consumer_key ?? '';
     }
 
     public function getConsumerSecret(): string {
-        try {
-            return Crypt::decrypt($this->attributes['consumer_secret']);
-        } catch (\Throwable) {
-            return $this->attributes['consumer_secret'] ?? '';
-        }
+        return $this->consumer_secret ?? '';
     }
 
     public function getMerchantName(): ?string {
