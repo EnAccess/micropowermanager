@@ -143,6 +143,22 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->assertSame(200, (int) $rate->fresh()->rate_cost);
     }
 
+    public function testPerRateUpdateAdjustsTotalCostByDifference(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [500, 500]);
+        $rate = $appliancePerson->rates()->oldest('due_date')->first();
+
+        $response = $this->actingAs($this->user)->put(
+            "/api/appliances/rates/{$rate->id}",
+            ['newCost' => 450, 'admin_id' => $this->user->id]
+        );
+
+        $response->assertStatus(200);
+        $this->assertSame(450, (int) $rate->fresh()->rate_cost);
+        $this->assertSame(450, (int) $rate->fresh()->remaining);
+        $this->assertSame(950, (int) $appliancePerson->fresh()->total_cost);
+    }
+
     /**
      * @param int[] $rates
      */

@@ -19,7 +19,6 @@ export class ApplianceRateService {
     try {
       let terms = {
         newCost: rate.tempCost,
-        cost: rate.rate_cost,
         admin_id: adminId,
         person_id: personId,
       }
