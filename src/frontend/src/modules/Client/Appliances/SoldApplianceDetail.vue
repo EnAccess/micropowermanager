@@ -937,6 +937,7 @@ export default {
   .md-icon {
     color: #f57c00;
     flex-shrink: 0;
+    margin: 0;
   }
 }
 </style>
