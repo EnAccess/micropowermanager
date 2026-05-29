@@ -219,17 +219,17 @@
             style="padding: 2vw"
           >
             <div class="md-layout-item md-size-50">
-              <h2 v-if="editTotalCostMode">
+              <h2 v-if="editTotalCostMode" class="total-cost-edit">
                 <b>{{ $tc("phrases.totalCost") }}:</b>
                 <md-field
                   :class="{
                     'md-invalid': errors.has($tc('phrases.totalCost')),
                   }"
-                  style="display: inline-flex; max-width: 14rem"
                 >
                   <span class="md-prefix">{{ currency }}</span>
                   <md-input
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     v-model="tempTotalCost"
                     :id="$tc('phrases.totalCost')"
                     :name="$tc('phrases.totalCost')"
@@ -655,7 +655,6 @@ export default {
     },
     cancelEditTotalCost() {
       this.editTotalCostMode = false
-      this.tempTotalCost = null
     },
     async confirmUpdateTotalCost() {
       const validator = await this.$validator.validateAll()
@@ -679,7 +678,6 @@ export default {
           throw response
         }
         this.editTotalCostMode = false
-        this.tempTotalCost = null
         this.alertNotify("success", this.$tc("phrases.totalCost"))
         await this.getSoldApplianceDetail()
         EventBus.$emit("reloadWidget", this.ratesSubscriber)
@@ -907,6 +905,21 @@ export default {
 <style scoped lang="scss">
 .due-date-row {
   background-color: #a1887f;
+}
+
+.total-cost-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  b {
+    white-space: nowrap;
+  }
+
+  .md-field {
+    flex: 0 0 8rem;
+    margin: 0;
+  }
 }
 
 .eaas-rate-info {
