@@ -3,6 +3,7 @@
 namespace App\Providers\Helpers;
 
 use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackTransactionProvider;
 use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
@@ -17,12 +18,7 @@ use App\Providers\AgentTransactionProvider;
 use App\Providers\Interfaces\ITransactionProvider;
 
 class TransactionAdapter {
-    /**
-     * @param ITransactionProvider $transactionProvider
-     *
-     * @return ITransactionProvider
-     */
-    public static function getTransaction($transactionProvider): ?ITransactionProvider {
+    public static function getTransaction(BasePaymentProviderTransaction $transactionProvider): ?ITransactionProvider {
         if ($transactionProvider instanceof AgentTransaction) {
             $baseTransaction = resolve(AgentTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
