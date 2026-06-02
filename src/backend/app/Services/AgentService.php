@@ -122,8 +122,8 @@ class AgentService implements IBaseService {
                 ->whereColumn('creator_id', 'agents.id')
                 ->where('creator_type', $this->agent->getMorphClass())])
             ->with(['person.addresses', 'miniGrid', 'commission'])
-            ->withCount(['soldAppliances as sales_count'])
-            ->withExists(['balanceHistory as is_active' => fn (Builder $query) => $query->where('created_at', '>=', now()->subDays(self::ACTIVE_WINDOW_DAYS))]);
+            ->withCount(['soldAppliances AS sales_count'])
+            ->withExists(['balanceHistory AS is_active' => fn (Builder $query) => $query->where('created_at', '>=', now()->subDays(self::ACTIVE_WINDOW_DAYS))]);
 
         if ($limit) {
             return $query->paginate($limit);
