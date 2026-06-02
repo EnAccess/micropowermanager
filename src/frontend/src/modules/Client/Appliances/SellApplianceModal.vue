@@ -624,6 +624,7 @@ import { mapGetters } from "vuex"
 
 import DeviceLocationPickerMap from "./DeviceLocationPickerMap.vue"
 
+import { computeRateAmount } from "@/Helpers/applianceRates.js"
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
@@ -923,13 +924,7 @@ export default {
       this.mappingService.setMarkerUrl(icon)
       this.locationPickerKey += 1
     },
-    getRate(index, rateCount, cost) {
-      if (index === parseInt(rateCount)) {
-        return cost - (rateCount - 1) * Math.floor(cost / rateCount)
-      } else {
-        return Math.floor(cost / rateCount)
-      }
-    },
+    getRate: computeRateAmount,
     checkDownPayment() {
       if (
         parseFloat(this.applianceService.appliance.downPayment) >

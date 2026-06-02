@@ -11,6 +11,7 @@ use App\Models\Log;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\Person\PersonFactory;
+use Illuminate\Support\Carbon;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -125,6 +126,117 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->assertSame($this->user->id, $log->user_id);
         $this->assertStringContainsString("User {$this->user->name} updated Total cost from 1000", $log->action);
         $this->assertStringContainsString('to 1500', $log->action);
+    }
+
+    public function testRegeneratesOutstandingRatesWhenRateCountChanges(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
+
+        $response = $this->actingAs($this->user)->put(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'monthly']
+        );
+
+        $response->assertStatus(200);
+        $appliancePerson->refresh();
+        $this->assertSame(1200, (int) $appliancePerson->total_cost);
+        $this->assertSame(3, (int) $appliancePerson->rate_count);
+
+        $rates = $appliancePerson->rates()->oldest('due_date')->get();
+        $this->assertCount(3, $rates);
+        $this->assertSame([400, 400, 400], $rates->pluck('rate_cost')->map(fn ($v): int => (int) $v)->all());
+        $firstGapInDays = (int) Carbon::parse($rates[0]->due_date)->diffInDays(Carbon::parse($rates[1]->due_date));
+        $this->assertGreaterThanOrEqual(28, $firstGapInDays);
+        $this->assertLessThanOrEqual(31, $firstGapInDays);
+    }
+
+    public function testRegenerateContinuesAfterLatestSettledRate(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
+        $rates = $appliancePerson->rates()->oldest('due_date')->get();
+        $rates[0]->update(['remaining' => 0]);
+        $latestSettledDueDate = Carbon::parse($rates[0]->due_date);
+
+        $response = $this->actingAs($this->user)->put(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 1000, 'admin_id' => $this->user->id, 'rate_count' => 2, 'rate_type' => 'weekly']
+        );
+
+        $response->assertStatus(200);
+        $newRates = $appliancePerson->rates()->oldest('due_date')->where('remaining', '>', 0)->get();
+        $this->assertCount(2, $newRates);
+        $firstNewDueDate = Carbon::parse($newRates->first()->due_date);
+        $this->assertTrue($firstNewDueDate->greaterThan($latestSettledDueDate));
+        $this->assertSame(
+            7,
+            (int) abs($firstNewDueDate->startOfDay()->diffInDays($latestSettledDueDate->copy()->startOfDay()))
+        );
+    }
+
+    public function testRegenerateKeepsPaidRatesAndAppendsNewOutstandingRates(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
+        $appliancePerson->rates()->oldest('due_date')->first()->update(['remaining' => 0]);
+
+        $response = $this->actingAs($this->user)->put(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 1000, 'admin_id' => $this->user->id, 'rate_count' => 2, 'rate_type' => 'monthly']
+        );
+
+        $response->assertStatus(200);
+        $appliancePerson->refresh();
+        $this->assertSame(3, (int) $appliancePerson->rate_count);
+
+        $rates = $appliancePerson->rates()->oldest('due_date')->get();
+        $this->assertCount(3, $rates);
+        $this->assertSame(200, (int) $rates[0]->rate_cost);
+        $this->assertSame(0, (int) $rates[0]->remaining);
+        $this->assertSame([400, 400], $rates->slice(1)->pluck('rate_cost')->map(fn ($v): int => (int) $v)->values()->all());
+    }
+
+    public function testRegenerateChangesScheduleToWeekly(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 900, rates: [300, 300, 300]);
+
+        $response = $this->actingAs($this->user)->put(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 900, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'weekly']
+        );
+
+        $response->assertStatus(200);
+        $rates = $appliancePerson->rates()->oldest('due_date')->get();
+        $this->assertCount(3, $rates);
+        $first = Carbon::parse($rates[0]->due_date);
+        $second = Carbon::parse($rates[1]->due_date);
+        $third = Carbon::parse($rates[2]->due_date);
+        $this->assertSame(7, (int) $first->diffInDays($second));
+        $this->assertSame(7, (int) $second->diffInDays($third));
+    }
+
+    public function testRejectsInvalidRateType(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
+
+        $response = $this->actingAs($this->user)->put(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'daily']
+        );
+
+        $response->assertStatus(422);
+        $response->assertJsonPath('errors.rate_type.0', 'Rate type must be monthly or weekly');
+    }
+
+    public function testRejectsRateCountBelowOne(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
+
+        $response = $this->actingAs($this->user)->put(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 0, 'rate_type' => 'monthly']
+        );
+
+        $response->assertStatus(422);
+        $response->assertJsonPath('errors.rate_count.0', 'Installment count must be at least 1');
     }
 
     public function testPerRateUpdateRejectsPaidRate(): void {
