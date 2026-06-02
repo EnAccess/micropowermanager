@@ -29,8 +29,6 @@ class SteamaSiteService implements ISynchronizeService {
         private Cluster $cluster,
         private GeographicalInformation $geographicalInformation,
         private City $city,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
     ) {}
 
     /**
@@ -50,8 +48,6 @@ class SteamaSiteService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaSite>
      */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Sites');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
             $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $site) {
@@ -74,11 +70,9 @@ class SteamaSiteService implements ISynchronizeService {
                     'hash' => $site['hash'],
                 ]);
             });
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
             return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama sites sync failed.', ['Error :' => $e->getMessage()]);
             throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
@@ -102,9 +96,6 @@ class SteamaSiteService implements ISynchronizeService {
                 }
             }
         } catch (SteamaApiResponseException $e) {
-            if ($returnData) {
-                return ['result' => false];
-            }
             throw new SteamaApiResponseException($e->getMessage());
         }
         // @phpstan-ignore argument.templateType,argument.templateType

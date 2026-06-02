@@ -32,8 +32,6 @@ class SteamaAgentService implements ISynchronizeService {
         private Person $person,
         private SteamaSite $site,
         private Address $address,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
     ) {}
 
     /**
@@ -70,8 +68,6 @@ class SteamaAgentService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaAgent>
      */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Agents');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
             $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $agent) {
@@ -100,14 +96,12 @@ class SteamaAgentService implements ISynchronizeService {
                     'hash' => $agent['hash'],
                 ]);
             });
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
             return $this->stmAgent->newQuery()->with([
                 'mpmAgent.person.addresses',
                 'site.mpmMiniGrid',
             ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama agents sync failed.', ['Error :' => $e->getMessage()]);
             throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
@@ -129,9 +123,6 @@ class SteamaAgentService implements ISynchronizeService {
                 }
             }
         } catch (SteamaApiResponseException $e) {
-            if ($returnData) {
-                return ['result' => false];
-            }
             throw new SteamaApiResponseException($e->getMessage());
         }
         // @phpstan-ignore argument.templateType,argument.templateType

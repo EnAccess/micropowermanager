@@ -36,6 +36,9 @@ class SteamaMeterApi implements IManufacturerAPI {
         $customerId = $stmCustomer->customer_id;
         $stmCustomer = $this->customerService->syncTransactionCustomer($stmCustomer->id);
         $customerEnergyPrice = $stmCustomer->energy_price;
+        if (!$customerEnergyPrice) {
+            throw new SteamaApiResponseException('Cannot charge device: no energy price for Steama customer '.$customerId.'.');
+        }
         $transactionContainer->chargeAmount += $transactionContainer->amount / $customerEnergyPrice;
         $transactionContainer->chargeUnit = Token::UNIT_KWH;
         $transactionContainer->chargeType = Token::TYPE_ENERGY;

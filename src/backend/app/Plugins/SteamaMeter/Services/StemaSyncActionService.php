@@ -51,4 +51,17 @@ class StemaSyncActionService {
             'next_sync' => Carbon::now()->add($interval),
         ]);
     }
+
+    /**
+     * Advances only the schedule (next_sync) without touching the attempts counter, so the
+     * dispatching command can space out runs while the queued job remains the source of truth
+     * for success/failure tracking on the sync-action row.
+     */
+    public function scheduleNextRun(SteamaSyncAction $syncAction, SteamaSyncSetting $syncSetting): bool {
+        $interval = CarbonInterval::make($syncSetting->sync_in_value_num.$syncSetting->sync_in_value_str);
+
+        return $syncAction->update([
+            'next_sync' => Carbon::now()->add($interval),
+        ]);
+    }
 }

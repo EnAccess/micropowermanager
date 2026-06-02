@@ -45,8 +45,6 @@ class SteamaCustomerService implements ISynchronizeService {
         private SteamaUserType $userType,
         private SteamaSite $stmSite,
         private City $city,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
         private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
     ) {}
 
@@ -67,8 +65,6 @@ class SteamaCustomerService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaCustomer>
      */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Customers');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
             $userTypes = $this->userType->newQuery()->get();
@@ -108,14 +104,12 @@ class SteamaCustomerService implements ISynchronizeService {
                 $this->setStmCustomerPaymentPlan($customer);
                 $this->steamaSmsNotifiedCustomerService->removeLowBalancedCustomer($customer['registeredStmCustomer']);
             });
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
             return $this->customer->newQuery()->with([
                 'mpmPerson.addresses',
                 'site.mpmMiniGrid',
             ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama customers sync failed.', ['Error :' => $e->getMessage()]);
             throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
@@ -138,9 +132,6 @@ class SteamaCustomerService implements ISynchronizeService {
                 }
             }
         } catch (SteamaApiResponseException $e) {
-            if ($returnData) {
-                return ['result' => false];
-            }
             throw new SteamaApiResponseException($e->getMessage());
         }
         // @phpstan-ignore argument.templateType,argument.templateType

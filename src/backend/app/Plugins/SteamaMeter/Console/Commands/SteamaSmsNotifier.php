@@ -114,7 +114,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
                 return true;
             }
             $this->smsService->sendSms(
-                $customer->toArray(),
+                $customer,
                 SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
                 SteamaSmsConfig::class
             );

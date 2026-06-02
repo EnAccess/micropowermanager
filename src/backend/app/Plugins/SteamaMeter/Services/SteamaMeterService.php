@@ -40,8 +40,6 @@ class SteamaMeterService implements ISynchronizeService {
         private MeterType $meterType,
         private SteamaMeterType $stmMeterType,
         private SteamaTariff $tariff,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
     ) {}
 
     /**
@@ -65,8 +63,6 @@ class SteamaMeterService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaMeter>
      */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Meters');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
             $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $meter) {
@@ -90,7 +86,6 @@ class SteamaMeterService implements ISynchronizeService {
                     'hash' => $meter['hash'],
                 ]);
             });
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
             return $this->stmMeter->newQuery()->with([
                 'mpmMeter',
@@ -98,7 +93,6 @@ class SteamaMeterService implements ISynchronizeService {
                 'stmCustomer.mpmPerson',
             ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama meters sync failed.', ['Error :' => $e->getMessage()]);
             throw $e;
         }
@@ -120,9 +114,6 @@ class SteamaMeterService implements ISynchronizeService {
                 }
             }
         } catch (SteamaApiResponseException $e) {
-            if ($returnData) {
-                return ['result' => false];
-            }
             throw new SteamaApiResponseException($e->getMessage());
         }
         // @phpstan-ignore argument.templateType, argument.templateType

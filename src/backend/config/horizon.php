@@ -10,6 +10,7 @@ $queues = [
     'prospect',
     'emails',
     'import',
+    'steama_meter',
 ];
 
 return [
