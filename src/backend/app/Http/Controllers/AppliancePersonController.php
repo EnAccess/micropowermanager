@@ -214,14 +214,25 @@ class AppliancePersonController extends Controller {
     public function updateTotalCost(int $appliancePersonId, Request $request): ApiResource {
         $newTotalCost = $request->integer('new_total_cost');
         $creatorId = $request->integer('admin_id');
+        $rateCount = $request->has('rate_count') ? $request->integer('rate_count') : null;
+        $rateType = $request->input('rate_type');
         $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
+
+        if ($rateType !== null && !in_array($rateType, ['monthly', 'weekly'], true)) {
+            throw ValidationException::withMessages(['rate_type' => 'Rate type must be monthly or weekly']);
+        }
+        if ($rateCount !== null && $rateCount < 1) {
+            throw ValidationException::withMessages(['rate_count' => 'Installment count must be at least 1']);
+        }
 
         try {
             DB::connection('tenant')->beginTransaction();
             $this->applianceRateService->recomputeRatesFromTotalCost(
                 $appliancePerson,
                 $newTotalCost,
-                $creatorId
+                $creatorId,
+                $rateCount,
+                $rateType,
             );
             DB::connection('tenant')->commit();
         } catch (ValidationException $e) {
