@@ -49,6 +49,24 @@ class SteamaMeterApiClient {
     }
 
     /**
+     * Fetches every page of a paginated Steama collection and returns the merged `results`.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAllResults(string $rootUrl): array {
+        $result = $this->get($rootUrl.'?page=1&page_size=100');
+        $results = $result['results'];
+        while ($result['next']) {
+            $result = $this->get($rootUrl.'?'.explode('?', $result['next'])[1]);
+            foreach ($result['results'] as $item) {
+                $results[] = $item;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * @param array<string, mixed> $postParams
      *
      * @return array<string, mixed>
@@ -80,18 +98,19 @@ class SteamaMeterApiClient {
     /**
      * @param array<string, mixed> $postParams
      *
-     * @return array<string, mixed>|string
+     * @return array<string, mixed>
      */
-    public function post(string $url, array $postParams): array|string {
+    public function post(string $url, array $postParams): array {
         try {
             $credential = $this->getCredentials();
-        } catch (ModelNotFoundException $e) {
+        } catch (\Exception $e) {
             throw new ModelNotFoundException($e->getMessage());
         }
         try {
             $request = $this->client->post(
                 $credential->api_url.$url,
                 [
+                    'timeout' => self::REQUEST_TIMEOUT,
                     'body' => json_encode($postParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
@@ -103,7 +122,7 @@ class SteamaMeterApiClient {
             throw new SteamaApiResponseException($exception->getMessage());
         }
 
-        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -117,11 +136,11 @@ class SteamaMeterApiClient {
         } catch (\Exception $e) {
             throw new ModelNotFoundException($e->getMessage());
         }
-
         try {
             $request = $this->client->put(
                 $credential->api_url.$url,
                 [
+                    'timeout' => self::REQUEST_TIMEOUT,
                     'body' => json_encode($putParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
@@ -133,7 +152,7 @@ class SteamaMeterApiClient {
             throw new SteamaApiResponseException($exception->getMessage());
         }
 
-        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -187,6 +206,7 @@ class SteamaMeterApiClient {
             $request = $this->client->get(
                 $apiUrl,
                 [
+                    'timeout' => self::REQUEST_TIMEOUT,
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
                         'Authorization' => 'Token '.$credential->authentication_token,
@@ -197,7 +217,7 @@ class SteamaMeterApiClient {
             throw new SteamaApiResponseException($exception->getMessage());
         }
 
-        return json_decode((string) $request->getBody(), true);
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
     }
 
     public function getCredentials(): SteamaCredential {

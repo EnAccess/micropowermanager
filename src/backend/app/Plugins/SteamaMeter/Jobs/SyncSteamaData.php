@@ -7,9 +7,9 @@ use App\Plugins\SteamaMeter\Services\SteamaAgentService;
 use App\Plugins\SteamaMeter\Services\SteamaCustomerService;
 use App\Plugins\SteamaMeter\Services\SteamaMeterService;
 use App\Plugins\SteamaMeter\Services\SteamaSiteService;
+use App\Plugins\SteamaMeter\Services\SteamaSyncActionService;
 use App\Plugins\SteamaMeter\Services\SteamaSyncSettingService;
 use App\Plugins\SteamaMeter\Services\SteamaTransactionsService;
-use App\Plugins\SteamaMeter\Services\StemaSyncActionService;
 
 class SyncSteamaData extends AbstractJob {
     public function __construct(private string $actionName, ?int $companyId = null) {
@@ -20,7 +20,7 @@ class SyncSteamaData extends AbstractJob {
     }
 
     public function executeJob(): void {
-        $syncActionService = app(StemaSyncActionService::class);
+        $syncActionService = app(SteamaSyncActionService::class);
         $syncSetting = app(SteamaSyncSettingService::class)->getSyncSettingsByActionName($this->actionName);
         $syncAction = $syncActionService->getSyncActionBySynSettingId($syncSetting->id);
 

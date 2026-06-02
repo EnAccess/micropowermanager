@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
 
-class StemaSyncActionService {
+class SteamaSyncActionService {
     public function __construct(
         private SteamaSyncAction $syncAction,
     ) {}

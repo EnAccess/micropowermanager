@@ -25,7 +25,7 @@ class SteamaCredentialService {
             'username' => null,
             'password' => null,
             'is_authenticated' => 0,
-            'api_url' => 'https://api.steama.co',
+            'api_url' => config('steama-meter.api_url'),
             'authentication_token' => null,
         ]);
     }

@@ -13,7 +13,7 @@ class SteamaSyncSettingService {
     public function __construct(
         private SteamaSyncSetting $syncSetting,
         private SteamaSetting $setting,
-        private StemaSyncActionService $syncActionService,
+        private SteamaSyncActionService $syncActionService,
     ) {}
 
     public function createDefaultSettings(): void {

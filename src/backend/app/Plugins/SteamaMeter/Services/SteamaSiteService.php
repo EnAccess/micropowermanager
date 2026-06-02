@@ -6,7 +6,6 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
-use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use App\Plugins\SteamaMeter\Models\SteamaSite;
@@ -41,7 +40,7 @@ class SteamaSiteService implements ISynchronizeService {
     }
 
     public function getSitesCount(): int {
-        return count($this->site->newQuery()->get());
+        return $this->site->newQuery()->count();
     }
 
     /**
@@ -82,23 +81,7 @@ class SteamaSiteService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        try {
-            $url = $this->rootUrl.'?page=1&page_size=100';
-            $result = $this->steamaApi->get($url);
-
-            $sites = $result['results'];
-
-            while ($result['next']) {
-                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                $result = $this->steamaApi->get($url);
-                foreach ($result['results'] as $site) {
-                    $sites[] = $site;
-                }
-            }
-        } catch (SteamaApiResponseException $e) {
-            throw new SteamaApiResponseException($e->getMessage());
-        }
-        // @phpstan-ignore argument.templateType,argument.templateType
+        $sites = $this->steamaApi->getAllResults($this->rootUrl);
         $sitesCollection = collect($sites);
         $stmSites = $this->site->newQuery()->get();
         $miniGrids = $this->miniGrid->newQuery()->get();

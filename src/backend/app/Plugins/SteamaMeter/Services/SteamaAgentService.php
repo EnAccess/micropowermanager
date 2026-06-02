@@ -6,7 +6,6 @@ use App\Models\Address\Address;
 use App\Models\Agent;
 use App\Models\AgentCommission;
 use App\Models\Person\Person;
-use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use App\Plugins\SteamaMeter\Models\SteamaAgent;
@@ -44,7 +43,7 @@ class SteamaAgentService implements ISynchronizeService {
     }
 
     public function getAgentsCount(): int {
-        return count($this->stmAgent->newQuery()->get());
+        return $this->stmAgent->newQuery()->count();
     }
 
     /**
@@ -111,21 +110,7 @@ class SteamaAgentService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        try {
-            $url = $this->rootUrl.'?page=1&page_size=100';
-            $result = $this->steamaApi->get($url);
-            $agents = $result['results'];
-            while ($result['next']) {
-                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                $result = $this->steamaApi->get($url);
-                foreach ($result['results'] as $agent) {
-                    $agents[] = $agent;
-                }
-            }
-        } catch (SteamaApiResponseException $e) {
-            throw new SteamaApiResponseException($e->getMessage());
-        }
-        // @phpstan-ignore argument.templateType,argument.templateType
+        $agents = $this->steamaApi->getAllResults($this->rootUrl);
         $agentsCollection = collect($agents);
         $stmAgents = $this->stmAgent->newQuery()->get();
         $agents = $this->agent->newQuery()->get();

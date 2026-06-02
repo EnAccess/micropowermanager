@@ -58,7 +58,7 @@ class SteamaCustomerService implements ISynchronizeService {
     }
 
     public function getCustomersCount(): int {
-        return count($this->customer->newQuery()->get());
+        return $this->customer->newQuery()->count();
     }
 
     /**
@@ -119,22 +119,7 @@ class SteamaCustomerService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        try {
-            $url = $this->rootUrl.'?page=1&page_size=100';
-            $result = $this->steamaApi->get($url);
-
-            $customers = $result['results'];
-            while ($result['next']) {
-                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                $result = $this->steamaApi->get($url);
-                foreach ($result['results'] as $customer) {
-                    $customers[] = $customer;
-                }
-            }
-        } catch (SteamaApiResponseException $e) {
-            throw new SteamaApiResponseException($e->getMessage());
-        }
-        // @phpstan-ignore argument.templateType,argument.templateType
+        $customers = $this->steamaApi->getAllResults($this->rootUrl);
         $customersCollection = collect($customers);
         $stmCustomers = $this->customer->newQuery()->get();
         $people = $this->person->newQuery()->get();

@@ -26,7 +26,7 @@ class SteamaTransactionsService implements ISynchronizeService {
     private string $rootUrl = '/transactions';
 
     public function __construct(
-        private SteamaMeterService $stemaMeterService,
+        private SteamaMeterService $steamaMeterService,
         private SteamaCustomerService $steamaCustomerService,
         private SteamaCredentialService $steamaCredentialService,
         private SteamaSiteService $steamaSiteService,
@@ -114,38 +114,26 @@ class SteamaTransactionsService implements ISynchronizeService {
      */
     public function syncCheck(bool $returnData = false): array {
         $credentials = $this->steamaCredentialService->getCredentials();
-        if ($credentials instanceof SteamaCredential) {
-            if ($credentials->is_authenticated) {
-                $siteSynchronized = $this->steamaSiteService->syncCheck();
-
-                if ($siteSynchronized['result']) {
-                    $customerSynchronized = $this->steamaCustomerService->syncCheck();
-
-                    if ($customerSynchronized['result']) {
-                        $meterSynchronized = $this->stemaMeterService->syncCheck();
-
-                        if ($meterSynchronized['result']) {
-                            $agentSynchronized = $this->steamaAgentService->syncCheck();
-                            if ($agentSynchronized['result']) {
-                                return ['result' => true, 'message' => 'Records are updated'];
-                            } else {
-                                return ['result' => false, 'message' => 'Agent records are not up to date.'];
-                            }
-                        } else {
-                            return ['result' => false, 'message' => 'Meter records are not up to date.'];
-                        }
-                    } else {
-                        return ['result' => false, 'message' => 'Customer records are not up to date.'];
-                    }
-                } else {
-                    return ['result' => false, 'message' => 'Site records are not up to date.'];
-                }
-            } else {
-                return ['result' => false, 'message' => 'Credentials records are not up to date.'];
-            }
-        } else {
+        if (!$credentials instanceof SteamaCredential) {
             return ['result' => false, 'message' => 'No Credentials record found.'];
         }
+        if (!$credentials->is_authenticated) {
+            return ['result' => false, 'message' => 'Credentials records are not up to date.'];
+        }
+        if (!$this->steamaSiteService->syncCheck()['result']) {
+            return ['result' => false, 'message' => 'Site records are not up to date.'];
+        }
+        if (!$this->steamaCustomerService->syncCheck()['result']) {
+            return ['result' => false, 'message' => 'Customer records are not up to date.'];
+        }
+        if (!$this->steamaMeterService->syncCheck()['result']) {
+            return ['result' => false, 'message' => 'Meter records are not up to date.'];
+        }
+        if (!$this->steamaAgentService->syncCheck()['result']) {
+            return ['result' => false, 'message' => 'Agent records are not up to date.'];
+        }
+
+        return ['result' => true, 'message' => 'Records are updated'];
     }
 
     /**

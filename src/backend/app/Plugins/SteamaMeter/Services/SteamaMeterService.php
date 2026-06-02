@@ -9,7 +9,6 @@ use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterType;
-use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use App\Plugins\SteamaMeter\Models\SteamaCustomer;
@@ -56,7 +55,7 @@ class SteamaMeterService implements ISynchronizeService {
     }
 
     public function getMetersCount(): int {
-        return count($this->stmMeter->newQuery()->get());
+        return $this->stmMeter->newQuery()->count();
     }
 
     /**
@@ -102,21 +101,7 @@ class SteamaMeterService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        try {
-            $url = $this->rootUrl.'?page=1&page_size=100';
-            $result = $this->steamaApi->get($url);
-            $meters = $result['results'];
-            while ($result['next']) {
-                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                $result = $this->steamaApi->get($url);
-                foreach ($result['results'] as $meter) {
-                    $meters[] = $meter;
-                }
-            }
-        } catch (SteamaApiResponseException $e) {
-            throw new SteamaApiResponseException($e->getMessage());
-        }
-        // @phpstan-ignore argument.templateType, argument.templateType
+        $meters = $this->steamaApi->getAllResults($this->rootUrl);
         $metersCollection = collect($meters)->filter(fn (array $meter): bool => $meter['customer'] !== null);
         $stmMeters = $this->stmMeter->newQuery()->get();
         $meters = $this->meter->newQuery()->get();

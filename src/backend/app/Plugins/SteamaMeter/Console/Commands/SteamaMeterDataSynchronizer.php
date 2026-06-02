@@ -5,8 +5,8 @@ namespace App\Plugins\SteamaMeter\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Plugins\SteamaMeter\Jobs\SyncSteamaData;
 use App\Plugins\SteamaMeter\Models\SteamaSyncSetting;
+use App\Plugins\SteamaMeter\Services\SteamaSyncActionService;
 use App\Plugins\SteamaMeter\Services\SteamaSyncSettingService;
-use App\Plugins\SteamaMeter\Services\StemaSyncActionService;
 use App\Traits\ScheduledPluginCommand;
 use Illuminate\Support\Carbon;
 
@@ -19,7 +19,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
 
     public function __construct(
         private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
+        private SteamaSyncActionService $steamaSyncActionService,
     ) {
         parent::__construct();
     }
