@@ -59,6 +59,21 @@ export class SolarHomeSystemService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+  async updateSolarHomeSystem(shsId, payload) {
+    try {
+      const { data, status, error } = await this.repository.update(
+        shsId,
+        convertObjectKeysToSnakeCase(payload),
+      )
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
+
+      return convertObjectKeysToCamelCase(data.data)
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
   search(term) {
     this.paginator = new Paginator(`${this.repository.resource}/search`)
     EventBus.$emit("loadPage", this.paginator, { term: term })

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSolarHomeSystemRequest;
+use App\Http\Requests\UpdateSolarHomeSystemRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\DeviceService;
 use App\Services\PaymentHistoryService;
@@ -65,6 +66,17 @@ class SolarHomeSystemController extends Controller {
 
     public function show(int $id): ApiResource {
         return ApiResource::make($this->solarHomeSystemService->getById($id));
+    }
+
+    public function update(int $id, UpdateSolarHomeSystemRequest $request): ApiResource {
+        $solarHomeSystem = $this->solarHomeSystemService->getById($id);
+
+        $updated = $this->solarHomeSystemService->update($solarHomeSystem, [
+            'manufacturer_id' => $request->integer('manufacturer_id'),
+            'appliance_id' => $request->integer('appliance_id'),
+        ]);
+
+        return ApiResource::make($updated);
     }
 
     public function transactions(int $id): ApiResource {
