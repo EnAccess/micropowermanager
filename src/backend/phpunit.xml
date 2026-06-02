@@ -20,6 +20,9 @@
     <testsuite name="SmsTransactionParser">
       <directory suffix="Test.php">app/Plugins/SmsTransactionParser/Tests</directory>
     </testsuite>
+    <testsuite name="SteamaMeter">
+      <directory suffix="Test.php">app/Plugins/SteamaMeter/Tests</directory>
+    </testsuite>
     <testsuite name="Feature">
       <directory suffix="Test.php">tests/Feature</directory>
     </testsuite>
