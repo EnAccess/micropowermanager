@@ -113,7 +113,7 @@ class SteamaCustomerService implements ISynchronizeService {
             return $this->customer->newQuery()->with([
                 'mpmPerson.addresses',
                 'site.mpmMiniGrid',
-            ])->paginate(config('steama.paginate'));
+            ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama customers sync failed.', ['Error :' => $e->getMessage()]);

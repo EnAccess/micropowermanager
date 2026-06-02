@@ -46,7 +46,7 @@ class SteamaAgentService implements ISynchronizeService {
     }
 
     public function getAgentsCount(): int {
-        return count($this->agent->newQuery()->get());
+        return count($this->stmAgent->newQuery()->get());
     }
 
     /**
@@ -105,7 +105,7 @@ class SteamaAgentService implements ISynchronizeService {
             return $this->stmAgent->newQuery()->with([
                 'mpmAgent.person.addresses',
                 'site.mpmMiniGrid',
-            ])->paginate(config('steama.paginate'));
+            ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama agents sync failed.', ['Error :' => $e->getMessage()]);

@@ -96,7 +96,7 @@ class SteamaMeterService implements ISynchronizeService {
                 'mpmMeter',
                 'stmCustomer.site.mpmMiniGrid',
                 'stmCustomer.mpmPerson',
-            ])->paginate(config('steama.paginate'));
+            ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama meters sync failed.', ['Error :' => $e->getMessage()]);
@@ -185,7 +185,7 @@ class SteamaMeterService implements ISynchronizeService {
                 if ($stmMeter['latitude'] !== null && $stmMeter['longitude'] !== null) {
                     $points = $stmMeter['latitude'].','.$stmMeter['longitude'];
                 } else {
-                    $points = explode(',', config('steama.geoLocation'));
+                    $points = explode(',', config('steama-meter.geoLocation'));
                     $latitude = strval(floatval($points[0]) - (mt_rand(10, 1000) / 10000));
                     $longitude = strval(floatval($points[1]) - (mt_rand(10, 1000) / 10000));
                     $points = $latitude.','.$longitude;
@@ -244,7 +244,7 @@ class SteamaMeterService implements ISynchronizeService {
         )->first();
         if ($stmCustomer) {
             $points = $stmMeter['latitude'] === null ?
-                config('steama.geoLocation') : $stmMeter['latitude'].','.$stmMeter['longitude'];
+                config('steama-meter.geoLocation') : $stmMeter['latitude'].','.$stmMeter['longitude'];
             $meter->device->geo()->update([
                 'points' => $points,
             ]);

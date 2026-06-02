@@ -34,14 +34,14 @@ class SteamaCustomerController extends Controller implements IBaseController {
         return $this->customerService->getCustomersCount();
     }
 
-    public function update(SteamaCustomer $stmCustomer, SteamaCustomerRequest $request): SteamaResource {
+    public function update(SteamaCustomer $customer, SteamaCustomerRequest $request): SteamaResource {
         $customerData = [
-            'id' => $stmCustomer->customer_id,
-            'low_balance_warning' => $request->input('low_balance_warning'),
-            'energy_price' => $request->input('energy_price'),
+            'id' => $customer->customer_id,
+            'low_balance_warning' => $request->float('low_balance_warning'),
+            'energy_price' => $request->float('energy_price'),
         ];
 
-        return new SteamaResource($this->customerService->updateSteamaCustomerInfo($stmCustomer, $customerData));
+        return new SteamaResource($this->customerService->updateSteamaCustomerInfo($customer, $customerData));
     }
 
     public function search(): SteamaResource {

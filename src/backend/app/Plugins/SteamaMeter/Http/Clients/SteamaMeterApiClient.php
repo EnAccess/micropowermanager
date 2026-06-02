@@ -6,10 +6,13 @@ use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
 use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Models\SteamaCredential;
+use App\Traits\EncryptsCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
 class SteamaMeterApiClient {
+    use EncryptsCredentials;
+
     public function __construct(
         private Client $client,
         private ApiHelpers $apiHelpers,
@@ -193,6 +196,9 @@ class SteamaMeterApiClient {
     }
 
     public function getCredentials(): SteamaCredential {
-        return $this->credential->newQuery()->firstOrFail();
+        $credential = $this->credential->newQuery()->firstOrFail();
+        $credential->authentication_token = $this->decryptCredentialField($credential->authentication_token);
+
+        return $credential;
     }
 }

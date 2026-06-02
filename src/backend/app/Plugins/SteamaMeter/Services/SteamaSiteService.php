@@ -76,7 +76,7 @@ class SteamaSiteService implements ISynchronizeService {
             });
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
-            return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate(config('steama.paginate'));
+            return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama sites sync failed.', ['Error :' => $e->getMessage()]);
@@ -179,7 +179,7 @@ class SteamaSiteService implements ISynchronizeService {
             }
         )->first();
         $points = $site['latitude'] === null ?
-            config('steama.geoLocation') : $site['latitude'].','.$site['longitude'];
+            config('steama-meter.geoLocation') : $site['latitude'].','.$site['longitude'];
 
         if ($geographicalInformation) {
             $geographicalInformation->update([

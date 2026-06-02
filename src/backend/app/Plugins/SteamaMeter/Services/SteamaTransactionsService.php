@@ -62,11 +62,9 @@ class SteamaTransactionsService implements ISynchronizeService {
             $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.device.person'])->get();
             try {
                 $result = $this->steamaApi->get($url);
-                $transactions = $result['results'];
-                while ($result['next']) {
+                while (true) {
                     // @phpstan-ignore argument.templateType, argument.templateType
-                    $transactionsCollection = collect($transactions);
-                    $transactionsCollection->each(function (array $transaction) use (
+                    collect($result['results'])->each(function (array $transaction) use (
                         $steamaMeters,
                         $lastRecordedTransactionId
                     ) {
@@ -86,15 +84,18 @@ class SteamaTransactionsService implements ISynchronizeService {
                                     $steamaMeter
                                 );
 
-                                $token = $this->createToken($steamaMeter, $mainTransaction);
+                                $token = $this->createToken($steamaMeter, $mainTransaction, $transaction);
 
                                 $this->createPayment($steamaMeter, $mainTransaction, $token);
                             }
                         }
                     });
+
+                    if (!$result['next']) {
+                        break;
+                    }
                     $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                     $result = $this->steamaApi->get($url);
-                    $transactions = $result['results'];
                 }
             } catch (SteamaApiResponseException $e) {
                 $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
@@ -154,7 +155,7 @@ class SteamaTransactionsService implements ISynchronizeService {
     public function getTransactionsByCustomer(SteamaCustomer $customer, Request $request): LengthAwarePaginator {
         $perPage = $request->integer('per_page', 15);
 
-        return $this->steamaTransaction->newQuery()->where('customer_id', $customer)->paginate($perPage);
+        return $this->steamaTransaction->newQuery()->where('customer_id', $customer->customer_id)->paginate($perPage);
     }
 
     /**
@@ -218,19 +219,24 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $transaction;
     }
 
-    private function createToken(SteamaMeter $steamaMeter, Transaction $mainTransaction): Token {
-        $stmCustomer = $steamaMeter->stmCustomer->first();
-        $customerEnergyPrice = $stmCustomer->energy_price;
+    /**
+     * @param array<string, mixed> $transaction
+     */
+    private function createToken(SteamaMeter $steamaMeter, Transaction $mainTransaction, array $transaction): Token {
+        $customerEnergyPrice = $steamaMeter->stmCustomer->energy_price;
         $chargedEnergy = $mainTransaction->amount / $customerEnergyPrice;
 
         $token = $this->token->newQuery()->where('transaction_id', $mainTransaction->id)->first();
         if (!$token) {
-            $token = $this->token->newQuery()->make([
+            $token = $this->token->newQuery()->create([
                 'transaction_id' => $mainTransaction->id,
-                'token' => $token,
-                'load' => $chargedEnergy,
+                'token' => $transaction['site_id'].'-'.$transaction['category'].'-'.
+                    ($transaction['provider'] ?? 'AP').'-'.$transaction['customer_id'],
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $chargedEnergy,
+                'device_id' => $steamaMeter->mpmMeter->device->id,
             ]);
-            $token->save();
         }
 
         return $token;
