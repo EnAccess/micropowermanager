@@ -16,6 +16,7 @@ data:
   CACHE_DRIVER: redis
   FILESYSTEM_DISK: gcs
   TRUSTEDPROXY_PROXIES: 35.191.0.0/16,130.211.0.0/22
+  JWT_TTL: "1440"
 ---
 apiVersion: v1
 kind: ConfigMap

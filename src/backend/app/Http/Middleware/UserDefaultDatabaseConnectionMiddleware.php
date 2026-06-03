@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tymon\JWTAuth\JWT;
 use Tymon\JWTAuth\JWTGuard;
 
 /**
@@ -23,6 +24,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         private DatabaseProxyManagerService $databaseProxyManager,
         private ApiCompanyResolverService $apiCompanyResolverService,
         private ApiResolverMap $apiResolverMap,
+        private JWT $jwt,
     ) {}
 
     public function handle(Request $request, \Closure $next): SymfonyResponse {
@@ -69,9 +71,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         } elseif ($this->resolveThirdPartyApi($request->path())) {
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { // web client authenticated user requests
-            /** @var JWTGuard */
-            $guard = auth('api');
-            $companyId = $guard->payload()->get('companyId');
+            $companyId = $this->resolveCompanyId($request);
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }
@@ -82,6 +82,30 @@ class UserDefaultDatabaseConnectionMiddleware {
 
             return $next($request);
         });
+    }
+
+    /**
+     * Resolve the companyId claim from the bearer token for web client requests.
+     *
+     * The /api/auth/refresh endpoint must accept expired-but-refreshable tokens,
+     * so we decode under tymon's refresh flow there -- signature and refresh_ttl
+     * are still enforced, only the exp check is relaxed.
+     */
+    private function resolveCompanyId(Request $request): mixed {
+        if ($request->path() === 'api/auth/refresh') {
+            $manager = $this->jwt->manager();
+            $manager->setRefreshFlow(true);
+            try {
+                return $this->jwt->parseToken()->getPayload()->get('companyId');
+            } finally {
+                $manager->setRefreshFlow(false);
+            }
+        }
+
+        /** @var JWTGuard */
+        $guard = auth('api');
+
+        return $guard->payload()->get('companyId');
     }
 
     private function resolveThirdPartyApi(string $requestPath): bool {

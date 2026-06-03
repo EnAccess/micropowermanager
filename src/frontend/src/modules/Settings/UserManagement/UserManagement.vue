@@ -44,6 +44,9 @@
                 <md-table-head>
                   {{ $tc("words.phone") }}
                 </md-table-head>
+                <md-table-head>
+                  {{ $tc("words.actions") }}
+                </md-table-head>
               </md-table-row>
 
               <md-table-row
@@ -65,6 +68,15 @@
                   </md-chip>
                 </md-table-cell>
                 <md-table-cell>{{ user.phone }}</md-table-cell>
+                <md-table-cell>
+                  <md-button
+                    v-if="canDeleteUser(user)"
+                    class="md-icon-button md-dense md-accent"
+                    @click.stop="confirmDelete(user)"
+                  >
+                    <md-icon>delete</md-icon>
+                  </md-button>
+                </md-table-cell>
               </md-table-row>
             </md-table>
           </div>
@@ -170,6 +182,44 @@ export default {
         this.alertNotify("error", error.message)
       }
       this.sending = false
+    },
+    canDeleteUser(user) {
+      const currentUserId =
+        this.$store.getters["auth/getAuthenticateUser"].id ||
+        this.$store.getters["auth/authenticationService"].authenticateUser.id
+      if (user.id === currentUserId) {
+        return false
+      }
+      const permissions = this.$store.getters["auth/getPermissions"] || []
+      const roles = user.roles || []
+      if (roles.includes("owner")) {
+        return permissions.includes("users.manage-owner")
+      }
+      if (roles.includes("admin")) {
+        return permissions.includes("users.manage-admin")
+      }
+      return permissions.includes("users")
+    },
+    confirmDelete(user) {
+      this.$swal({
+        type: "question",
+        title: this.$tc("phrases.deleteUserConfirm", 0),
+        text: this.$tc("phrases.deleteUserConfirm", 2, { name: user.name }),
+        showCancelButton: true,
+        cancelButtonText: this.$tc("words.cancel"),
+        confirmButtonText: this.$tc("words.delete"),
+      }).then(async (response) => {
+        if (!response.value) return
+        this.sending = true
+        try {
+          await this.userService.delete(user.id)
+          this.alertNotify("success", this.$tc("phrases.deleteUserConfirm", 1))
+          this.resetKey++
+        } catch (error) {
+          this.alertNotify("error", error.message)
+        }
+        this.sending = false
+      })
     },
   },
 }

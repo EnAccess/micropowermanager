@@ -264,4 +264,90 @@ export class PersonService {
     this.person.surname = x.splice(-1)
     this.person.name = x.join(" ")
   }
+
+  async listDocuments(personId) {
+    try {
+      const { data, status, error } =
+        await this.repository.documents.list(personId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      const errorMessage = e.response?.data?.message ?? e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async uploadDocument(personId, file, type, additionalJson) {
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("type", type)
+      if (additionalJson && Object.keys(additionalJson).length > 0) {
+        Object.entries(additionalJson).forEach(([key, value]) => {
+          formData.append(`additional_json[${key}]`, value)
+        })
+      }
+      const { data, status, error } = await this.repository.documents.upload(
+        personId,
+        formData,
+      )
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      if (e.response?.status === 422) {
+        const messages = e.response.data?.message ?? {}
+        const firstKey = Object.keys(messages)[0]
+        const firstMessage = firstKey
+          ? messages[firstKey][0]
+          : e.response.data?.message
+        return new ErrorHandler(firstMessage, "http", 422)
+      }
+      const errorMessage = e.response?.data?.message ?? e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async deleteDocument(documentId) {
+    try {
+      const { data, status, error } =
+        await this.repository.documents.delete(documentId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      const errorMessage = e.response?.data?.message ?? e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async downloadDocument(documentId, fallbackName = "document") {
+    try {
+      const response = await this.repository.documents.download(documentId)
+
+      const contentDisposition = response.headers["content-disposition"]
+      const filename =
+        contentDisposition?.split("filename=")[1]?.replace(/['"]/g, "") ??
+        fallbackName
+
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"] ?? "application/octet-stream",
+      })
+      const objectUrl = window.URL.createObjectURL(blob)
+      const anchor = document.createElement("a")
+      anchor.href = objectUrl
+      anchor.download = filename
+      document.body.appendChild(anchor)
+      anchor.click()
+      anchor.remove()
+      window.URL.revokeObjectURL(objectUrl)
+
+      return true
+    } catch (e) {
+      const errorMessage = e.response?.data?.message ?? e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 }

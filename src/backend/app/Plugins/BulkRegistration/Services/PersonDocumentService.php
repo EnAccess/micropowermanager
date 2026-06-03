@@ -28,6 +28,7 @@ class PersonDocumentService extends CreatorService {
         foreach ($personDocsConfig as $docConfig) {
             $personDocumentData = [
                 'person_id' => $csvData[$docConfig['person_id']],
+                'category' => PersonDocument::CATEGORY_IDENTITY_RECORD,
                 'name' => $csvData[$docConfig['type']],
                 'type' => $docConfig['type'],
                 'location' => $docConfig['location'],

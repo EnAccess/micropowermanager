@@ -126,7 +126,7 @@
                 <md-table-cell>{{ agent.customer_count || 0 }}</md-table-cell>
                 <md-table-cell>{{ agent.sales_count || 0 }}</md-table-cell>
                 <md-table-cell>
-                  {{ formatCurrency(agent.total_commission || 0) }}
+                  {{ formatCurrency(agent.commission_revenue || 0) }}
                 </md-table-cell>
                 <md-table-cell>
                   <md-chip

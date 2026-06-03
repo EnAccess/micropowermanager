@@ -120,6 +120,18 @@ export class UserService {
     this.resetUser()
     return this.user
   }
+  async delete(id) {
+    try {
+      const { status, error } = await this.repository.delete(id)
+      if (status !== 200) {
+        return new ErrorHandler(error, "http", status)
+      }
+      return true
+    } catch (e) {
+      let errorMessage = e.response?.data?.message || e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
   resetUser() {
     this.user = {
       id: null,

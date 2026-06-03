@@ -52,6 +52,7 @@ import TextbeeSmsGateway from "@/plugins/textbee-sms-gateway/modules/Overview/Cr
 import Viber from "@/plugins/viber-messaging/modules/Overview/Credential.vue"
 import WaveMoney from "@/plugins/wave-money-payment-provider/modules/Overview/Credential.vue"
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/modules/Component.vue"
+import { attachAuthStore } from "@/repositories/Client/AxiosClient.js"
 import Snackbar from "@/shared/Snackbar.vue"
 
 Vue.component("default", Default)
@@ -136,34 +137,21 @@ const publicRouteNames = new Set([
   "/pesapal/public/result",
 ])
 
-router.beforeEach(async (to, from, next) => {
-  const authToken = store.getters["auth/getToken"]
-  const intervalId = store.getters["auth/getIntervalId"]
+attachAuthStore(store)
+
+router.beforeEach((to, from, next) => {
   if (publicRouteNames.has(to.name) || publicRouteNames.has(to.path)) {
     return next()
   }
-  if (!authToken) {
+  if (!store.getters["auth/getToken"]) {
     return next({ name: "welcome" })
   }
-
-  try {
-    const result = await store.dispatch(
-      "auth/refreshToken",
-      authToken,
-      intervalId,
-    )
-    if (!result) {
-      return next({ name: "login" })
-    }
-    const userPermissions = store.getters["auth/getPermissions"] || []
-    const requiredPermissions = getPermissionsForRoute(to)
-    if (!userHasPermissions(userPermissions, requiredPermissions)) {
-      return next({ path: "/unauthorized" })
-    }
-    return next()
-  } catch (error) {
-    return next({ name: "welcome" })
+  const userPermissions = store.getters["auth/getPermissions"] || []
+  const requiredPermissions = getPermissionsForRoute(to)
+  if (!userHasPermissions(userPermissions, requiredPermissions)) {
+    return next({ path: "/unauthorized" })
   }
+  return next()
 })
 
 /*eslint-disable */

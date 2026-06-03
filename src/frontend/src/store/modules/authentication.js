@@ -43,11 +43,11 @@ export const actions = {
         })
     })
   },
-  refreshToken({ dispatch, commit, state }, token) {
+  refreshToken({ dispatch, commit, state }) {
     commit("AUTH_REQUEST")
     return new Promise((resolve, reject) => {
       state.service
-        .refreshToken(token, state.authenticateUser.intervalId)
+        .refreshToken(state.authenticateUser.intervalId)
         .then((user) => {
           commit("AUTH_SUCCESS", user)
           resolve(user)

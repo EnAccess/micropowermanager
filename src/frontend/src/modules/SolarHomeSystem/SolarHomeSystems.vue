@@ -114,10 +114,10 @@ export default {
         this.solarHomeSystemService.list.length,
       )
     },
-    updateList(shs) {
+    updateList(createdShs) {
       this.showAddSolarHomeSystem = false
-      const shsList = [...this.solarHomeSystemService.list]
-      shsList.unshift(shs)
+      const createdList = Array.isArray(createdShs) ? createdShs : [createdShs]
+      const shsList = [...createdList, ...this.solarHomeSystemService.list]
       this.solarHomeSystemService.updateList(shsList)
       EventBus.$emit(
         "widgetContentLoaded",

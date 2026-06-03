@@ -41,6 +41,7 @@ use App\Http\Controllers\OutstandingDebtsExportController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PersonAddressesController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\PersonDocumentController;
 use App\Http\Controllers\PersonExportController;
 use App\Http\Controllers\PersonMeterController;
 use App\Http\Controllers\PluginController;
@@ -94,9 +95,13 @@ Route::group(['prefix' => 'auth'], static function () {
     // A named route 'login' is required for Laravel Auth handling.
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
+    // `refresh` must accept expired-but-refreshable tokens; the auth:api
+    // middleware would reject them as TokenExpiredException before the
+    // controller could swap them for a fresh token.
+    Route::post('refresh', [AuthController::class, 'refresh']);
+
     Route::group(['middleware' => 'auth:api'], static function () {
         Route::post('logout', [AuthController::class, 'logout']);
-        Route::post('refresh', [AuthController::class, 'refresh']);
         Route::get('me', [AuthController::class, 'me']);
     });
 });
@@ -105,6 +110,7 @@ Route::group(['prefix' => 'auth'], static function () {
 Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], static function () {
     Route::post('/', [UserController::class, 'store'])->middleware('permission:users');
     Route::put('/{user}', [UserController::class, 'update'])->middleware('can:update,user');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user');
     Route::get('/{user}', [UserController::class, 'show'])->middleware('can:view,user');
     Route::get('/', [UserController::class, 'index'])->middleware('permission:users');
 
@@ -247,6 +253,14 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth:api'], static function
     Route::get('/{personId}/addresses', [PersonAddressesController::class, 'show'])->middleware('permission:customers');
     Route::post('/{personId}/addresses', [PersonAddressesController::class, 'store'])->middleware('permission:customers');
     Route::put('/{personId}/addresses', [PersonAddressesController::class, 'update'])->middleware('permission:customers');
+
+    Route::get('/{personId}/documents', [PersonDocumentController::class, 'index'])->middleware('permission:customers');
+    Route::post('/{personId}/documents', [PersonDocumentController::class, 'store'])->middleware('permission:customers');
+});
+
+Route::group(['prefix' => 'person-documents', 'middleware' => 'auth:api'], static function () {
+    Route::get('/{personDocument}/download', [PersonDocumentController::class, 'show'])->middleware('permission:customers');
+    Route::delete('/{personDocument}', [PersonDocumentController::class, 'destroy'])->middleware('permission:customers');
 });
 // Map Settings
 Route::group(['prefix' => 'map-settings'], static function () {

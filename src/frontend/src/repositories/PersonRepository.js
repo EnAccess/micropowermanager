@@ -1,6 +1,7 @@
 import Client from "@/repositories/Client/AxiosClient.js"
 
 const resource = `/api/people`
+const documentResource = `/api/person-documents`
 
 export default {
   get(page = 1) {
@@ -17,5 +18,21 @@ export default {
   },
   search(params) {
     return Client.get(`${resource}/search`, params)
+  },
+  documents: {
+    list(personId) {
+      return Client.get(`${resource}/${personId}/documents`)
+    },
+    upload(personId, formData) {
+      return Client.post(`${resource}/${personId}/documents`, formData)
+    },
+    delete(documentId) {
+      return Client.delete(`${documentResource}/${documentId}`)
+    },
+    download(documentId) {
+      return Client.get(`${documentResource}/${documentId}/download`, {
+        responseType: "blob",
+      })
+    },
   },
 }

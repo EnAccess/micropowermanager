@@ -86,6 +86,34 @@ class DeviceService implements IBaseService, IAssociative {
     }
 
     /**
+     * Unassigned devices (no owner yet) of the given morph class whose
+     * underlying unit belongs to the given appliance.
+     *
+     * @param class-string $deviceClass one of SolarHomeSystem::class or EBike::class
+     *
+     * @return Collection<int, Device>
+     */
+    public function getUnassignedByAppliance(int $applianceId, string $deviceClass): Collection {
+        /** @var array<string, \Closure|string> $relations */
+        $relations = [
+            'device' => function (MorphTo $morphTo) use ($deviceClass): void {
+                $morphTo->morphWith([$deviceClass => ['manufacturer', 'appliance']]);
+            },
+        ];
+
+        return $this->device->newQuery()
+            ->with($relations)
+            ->whereNull('person_id')
+            ->whereHasMorph(
+                'device',
+                [$deviceClass],
+                fn ($morph) => $morph->where('appliance_id', $applianceId),
+            )
+            ->latest()
+            ->get();
+    }
+
+    /**
      * @return Collection<int, Device>
      */
     public function getAllForExport(?string $miniGridName = null, ?string $villageName = null, ?string $deviceType = null, ?string $manufacturerName = null): Collection {

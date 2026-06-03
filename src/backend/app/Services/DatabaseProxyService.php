@@ -25,7 +25,13 @@ class DatabaseProxyService implements IBaseService {
     }
 
     public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
+        return $model->delete();
+    }
+
+    public function deleteByEmail(string $email): void {
+        $this->databaseProxy->newQuery()
+            ->where(DatabaseProxy::COL_EMAIL, '=', $email)
+            ->delete();
     }
 
     /**

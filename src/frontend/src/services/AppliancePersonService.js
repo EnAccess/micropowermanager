@@ -58,14 +58,23 @@ export class AppliancePersonService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
-  async updateTotalCost(appliancePersonId, newTotalCost, adminId) {
+  async updateTotalCost(
+    appliancePersonId,
+    newTotalCost,
+    adminId,
+    rateCount = null,
+    rateType = null,
+  ) {
     try {
+      const terms = {
+        new_total_cost: newTotalCost,
+        admin_id: adminId,
+      }
+      if (rateCount !== null) terms.rate_count = rateCount
+      if (rateType !== null) terms.rate_type = rateType
       const { data, status, error } = await this.repository.updateTotalCost(
         appliancePersonId,
-        {
-          new_total_cost: newTotalCost,
-          admin_id: adminId,
-        },
+        terms,
       )
       if (status !== 200 && status !== 201) {
         return new ErrorHandler(error, "http", status)
@@ -73,8 +82,8 @@ export class AppliancePersonService {
       return this.fromJson(data.data)
     } catch (e) {
       const responseData = e.response?.data ?? {}
-      const errorMessage =
-        responseData.errors?.new_total_cost?.[0] ?? responseData.message
+      const firstError = Object.values(responseData.errors ?? {})[0]?.[0]
+      const errorMessage = firstError ?? responseData.message
       return new ErrorHandler(errorMessage, "http", e.response?.status)
     }
   }

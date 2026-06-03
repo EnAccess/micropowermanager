@@ -9,12 +9,14 @@ use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\JWTGuard;
 
 class UserService {
     public function __construct(
         private User $user,
         private MailHelper $mailHelper,
+        private DatabaseProxyService $databaseProxyService,
     ) {}
 
     /**
@@ -140,7 +142,17 @@ class UserService {
     }
 
     public function delete(User $model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
+        $email = $model->getEmail();
+
+        return DB::transaction(function () use ($model, $email): ?bool {
+            $model->address()->delete();
+            $model->roles()->detach();
+            $deleted = $model->delete();
+
+            $this->databaseProxyService->deleteByEmail($email);
+
+            return $deleted;
+        });
     }
 
     /**
