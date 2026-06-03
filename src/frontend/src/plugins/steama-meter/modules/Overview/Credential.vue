@@ -47,7 +47,7 @@
                       type="password"
                       placeholder="Enter password to update credentials"
                       v-model="credentialService.credential.password"
-                      v-validate="'required|min:3'"
+                      v-validate="'min:3'"
                     />
                     <span class="md-error">
                       {{ errors.first("Credential-Form.password") }}
@@ -119,6 +119,13 @@ export default {
     async submitCredentialForm() {
       let validator = await this.$validator.validateAll("Credential-Form")
       if (!validator) {
+        return
+      }
+      if (!this.credentialService.credential.password) {
+        this.alertNotify(
+          "warn",
+          "Please enter your password to update credentials.",
+        )
         return
       }
       try {

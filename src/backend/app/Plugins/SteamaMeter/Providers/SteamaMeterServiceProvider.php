@@ -32,7 +32,7 @@ class SteamaMeterServiceProvider extends ServiceProvider {
             ReadHourlyMeterReadings::class,
         ]);
         $this->app->booted(function ($app) {
-            $app->make(Schedule::class)->command('steama-meter:dataSync')->withoutOverlapping(50)
+            $app->make(Schedule::class)->command('steama-meter:dataSync')->everyFiveMinutes()->withoutOverlapping(50)
                 ->appendOutputTo(storage_path('logs/cron.log'));
             $app->make(Schedule::class)->command('steama-meter:smsNotifier')->withoutOverlapping(50)
                 ->appendOutputTo(storage_path('logs/cron.log'));

@@ -12,6 +12,13 @@ use App\Plugins\SteamaMeter\Services\SteamaSyncSettingService;
 use App\Plugins\SteamaMeter\Services\SteamaTransactionsService;
 
 class SyncSteamaData extends AbstractJob {
+    /**
+     * Steama syncs paginate the remote API (each request up to request_timeout = 120s), so the
+     * default 60s queue timeout kills them mid-run. Allow up to 10 minutes; the redis connection's
+     * retry_after is kept above this so a slow run is not duplicated.
+     */
+    public int $timeout = 600;
+
     public function __construct(private string $actionName, ?int $companyId = null) {
         parent::__construct($companyId);
 
