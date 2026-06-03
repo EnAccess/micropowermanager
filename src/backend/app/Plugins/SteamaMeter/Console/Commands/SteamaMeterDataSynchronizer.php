@@ -39,7 +39,14 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
             }
 
             dispatch(new SyncSteamaData($syncSetting->action_name));
-            $this->steamaSyncActionService->scheduleNextRun($syncAction, $syncSetting);
+
+            // Sites/Customers/Meters/Agents advance next_sync only after their job writes to the DB
+            // successfully (SyncSteamaData::executeJob -> updateSyncAction), so a failed run stays due
+            // and is retried on the next tick instead of waiting a full day. Transactions runs every
+            // few minutes, so reserving its schedule on dispatch is fine.
+            if ($syncSetting->action_name === 'Transactions') {
+                $this->steamaSyncActionService->scheduleNextRun($syncAction, $syncSetting);
+            }
         });
 
         $this->info('Took '.(microtime(true) - $timeStart).' seconds.');
