@@ -28,7 +28,7 @@ export class FeedbackWordService {
       }
       return this.fromJson(response.data.data[0])
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -45,7 +45,7 @@ export class FeedbackWordService {
       }
       return this.fromJson(response.data.data)
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

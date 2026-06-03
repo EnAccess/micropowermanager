@@ -73,7 +73,7 @@ class SteamaSiteService implements ISynchronizeService {
             return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
             Log::critical('Steama sites sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -124,7 +124,7 @@ class SteamaSiteService implements ISynchronizeService {
         $this->city->newQuery()->create([
             'name' => $miniGrid->name.' Village',
             'mini_grid_id' => $miniGrid->id,
-            'cluster_id' => $miniGrid->cluster->id,
+            'country_id' => 0,
         ]);
 
         return $miniGrid;

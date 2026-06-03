@@ -26,21 +26,22 @@ export class SettingService {
       settingTypeId: settingData.setting_id,
       settingType: {},
     }
+    let settingType = settingData.setting ?? {}
 
     if (settingData.setting_type === "steama_sync_setting") {
       setting.settingType = {
-        id: settingData.setting_sync.id,
-        actionName: settingData.setting_sync.action_name,
-        syncInValueStr: settingData.setting_sync.sync_in_value_str,
-        syncInValueNum: settingData.setting_sync.sync_in_value_num,
-        maxAttempts: settingData.setting_sync.max_attempts,
+        id: settingType.id,
+        actionName: settingType.action_name,
+        syncInValueStr: settingType.sync_in_value_str,
+        syncInValueNum: settingType.sync_in_value_num,
+        maxAttempts: settingType.max_attempts,
       }
     } else {
       setting.settingType = {
-        id: settingData.setting_sms.id,
-        enabled: settingData.setting_sms.enabled > 0,
-        state: settingData.setting_sms.state,
-        NotSendElderThanMins: settingData.setting_sms.not_send_elder_than_mins,
+        id: settingType.id,
+        enabled: settingType.enabled > 0,
+        state: settingType.state,
+        NotSendElderThanMins: settingType.not_send_elder_than_mins,
       }
     }
     return setting
@@ -63,7 +64,7 @@ export class SettingService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

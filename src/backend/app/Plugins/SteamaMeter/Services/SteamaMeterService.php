@@ -66,6 +66,9 @@ class SteamaMeterService implements ISynchronizeService {
             $syncCheck = $this->syncCheck(true);
             $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $meter) {
                 $createdMeter = $this->createRelatedMeter($meter);
+                if (!$createdMeter instanceof Meter) {
+                    return;
+                }
                 $this->stmMeter->newQuery()->create([
                     'meter_id' => $meter['id'],
                     'customer_id' => $meter['customer'],
@@ -77,6 +80,9 @@ class SteamaMeterService implements ISynchronizeService {
             $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $meter) {
                 $relatedMeter = is_null($meter['relatedMeter']) ?
                     $this->createRelatedMeter($meter) : $this->updateRelatedMeter($meter, $meter['relatedMeter']);
+                if (!$relatedMeter instanceof Meter) {
+                    return;
+                }
                 $meter['registeredStmMeter']->update([
                     'meter_id' => $meter['id'],
                     'customer_id' => $meter['customer'],
@@ -133,69 +139,69 @@ class SteamaMeterService implements ISynchronizeService {
     /**
      * @param array<string, mixed> $stmMeter
      */
-    public function createRelatedMeter(array $stmMeter): Meter {
+    public function createRelatedMeter(array $stmMeter): ?Meter {
+        $stmCustomer = $this->customer->newQuery()->with('mpmPerson')->where(
+            'customer_id',
+            $stmMeter['customer']
+        )->first();
+        if (!$stmCustomer) {
+            Log::warning('Skipped Steama meter whose customer is not synced yet.', [
+                'meter' => $stmMeter['reference'],
+                'customer_id' => $stmMeter['customer'],
+            ]);
+
+            return null;
+        }
+
         try {
             DB::connection('tenant')->beginTransaction();
             $meterSerial = $stmMeter['reference'];
             $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->first();
-            $stmCustomer = $this->customer->newQuery()->with('mpmPerson')->where(
-                'customer_id',
-                $stmMeter['customer']
-            )->first();
             if (!$meter) {
                 $meter = new Meter();
                 $geoLocation = new GeographicalInformation();
             } else {
-                $geoLocation = $meter->device->geo()->first();
-                if ($geoLocation === null) {
-                    $geoLocation = new GeographicalInformation();
-                }
+                $geoLocation = $meter->device->geo()->first() ?? new GeographicalInformation();
             }
+
+            $connectionGroup = $this->connectionGroup->newQuery()->first()
+                ?? $this->connectionGroup->newQuery()->create(['name' => 'default']);
+            $tariff = $this->tariff->newQuery()->with('mpmTariff')->first();
+
             $meter->serial_number = $meterSerial;
-            $manufacturer = $this->manufacturer->newQuery()->where('name', 'Steama Meters')->firstOrFail();
-            $meter->manufacturer()->associate($manufacturer);
-            $meter->updated_at = now();
+            $meter->manufacturer()->associate($this->manufacturer->newQuery()->where('name', 'Steama Meters')->firstOrFail());
             $meter->meterType()->associate($this->getMeterType($stmMeter));
+            $meter->connection_type_id = $stmCustomer->userType->mpmConnectionType->id;
+            $meter->connection_group_id = $connectionGroup->id;
+            $meter->tariff()->associate($tariff->mpmTariff);
+            $meter->updated_at = now();
             $meter->save();
-            if ($stmCustomer) {
-                if ($stmMeter['latitude'] !== null && $stmMeter['longitude'] !== null) {
-                    $points = $stmMeter['latitude'].','.$stmMeter['longitude'];
-                } else {
-                    $points = explode(',', config('steama-meter.geoLocation'));
-                    $latitude = strval(floatval($points[0]) - (mt_rand(10, 1000) / 10000));
-                    $longitude = strval(floatval($points[1]) - (mt_rand(10, 1000) / 10000));
-                    $points = $latitude.','.$longitude;
-                }
 
-                $geoLocation->points = $points;
+            $device = $meter->device()->firstOrCreate([], [
+                'person_id' => $stmCustomer->mpmPerson->id,
+                'device_serial' => $meterSerial,
+            ]);
 
-                $connectionType = $stmCustomer->userType->mpmConnectionType;
-                $connectionGroup = $this->connectionGroup->newQuery()->first();
-                if (!$connectionGroup) {
-                    $connectionGroup = $this->connectionGroup->newQuery()->create([
-                        'name' => 'default',
-                    ]);
-                }
-                $meter->connection_type_id = $connectionType->id;
-                $meter->connection_group_id = $connectionGroup->id;
-
-                $tariff = $this->tariff->newQuery()->with('mpmTariff')->first();
-                $meter->tariff()->associate($tariff->mpmTariff);
-                $meter->save();
-                $stmCustomerAddress = $stmCustomer->mpmPerson->newQuery()->with('addresses.city')
-                    ->whereHas('addresses', fn ($q) => $q->where('is_primary', 1))->first();
-                $cityName = $stmCustomerAddress->addresses[0]->city->name;
-
-                $steamaCity = $this->city->newQuery()->with('miniGrid')->where('name', $cityName)->first();
-
-                $address = new Address();
-                $address = $address->newQuery()->create([
-                    'city_id' => request()->input('city_id', $steamaCity->id),
-                ]);
-                $address->owner()->associate($meter->device);
-                $address->save();
-                $meter->device->geo()->save($geoLocation);
+            if ($stmMeter['latitude'] !== null && $stmMeter['longitude'] !== null) {
+                $points = $stmMeter['latitude'].','.$stmMeter['longitude'];
+            } else {
+                $points = explode(',', config('steama-meter.geoLocation'));
+                $latitude = strval(floatval($points[0]) - (mt_rand(10, 1000) / 10000));
+                $longitude = strval(floatval($points[1]) - (mt_rand(10, 1000) / 10000));
+                $points = $latitude.','.$longitude;
             }
+            $geoLocation->points = $points;
+
+            $stmCustomerAddress = $stmCustomer->mpmPerson->newQuery()->with('addresses.city')
+                ->whereHas('addresses', fn ($q) => $q->where('is_primary', 1))->first();
+            $cityName = $stmCustomerAddress->addresses[0]->city->name;
+            $steamaCity = $this->city->newQuery()->with('miniGrid')->where('name', $cityName)->first();
+
+            $address = $this->meterAddress($steamaCity->id);
+            $address->owner()->associate($device);
+            $address->save();
+            $device->geo()->save($geoLocation);
+
             DB::connection('tenant')->commit();
 
             return $meter;
@@ -204,6 +210,12 @@ class SteamaMeterService implements ISynchronizeService {
             Log::critical('Error while synchronizing steama meters', ['message' => $e->getMessage()]);
             throw $e;
         }
+    }
+
+    private function meterAddress(int $cityId): Address {
+        return (new Address())->newQuery()->make([
+            'city_id' => request()->input('city_id', $cityId),
+        ]);
     }
 
     /**

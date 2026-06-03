@@ -13,8 +13,6 @@ use GuzzleHttp\Exception\GuzzleException;
 class SteamaMeterApiClient {
     use EncryptsCredentials;
 
-    private const REQUEST_TIMEOUT = 30;
-
     public function __construct(
         private Client $client,
         private ApiHelpers $apiHelpers,
@@ -34,7 +32,7 @@ class SteamaMeterApiClient {
             $request = $this->client->get(
                 $credential->api_url.$url,
                 [
-                    'timeout' => self::REQUEST_TIMEOUT,
+                    'timeout' => config('steama-meter.request_timeout'),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
                         'Authorization' => 'Token '.$credential->authentication_token,
@@ -81,7 +79,7 @@ class SteamaMeterApiClient {
             $request = $this->client->post(
                 $credential->api_url.$url,
                 [
-                    'timeout' => self::REQUEST_TIMEOUT,
+                    'timeout' => config('steama-meter.request_timeout'),
                     'body' => json_encode($postParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
@@ -110,7 +108,7 @@ class SteamaMeterApiClient {
             $request = $this->client->post(
                 $credential->api_url.$url,
                 [
-                    'timeout' => self::REQUEST_TIMEOUT,
+                    'timeout' => config('steama-meter.request_timeout'),
                     'body' => json_encode($postParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
@@ -140,7 +138,7 @@ class SteamaMeterApiClient {
             $request = $this->client->put(
                 $credential->api_url.$url,
                 [
-                    'timeout' => self::REQUEST_TIMEOUT,
+                    'timeout' => config('steama-meter.request_timeout'),
                     'body' => json_encode($putParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
@@ -170,7 +168,7 @@ class SteamaMeterApiClient {
             $request = $this->client->patch(
                 $credential->api_url.$url,
                 [
-                    'timeout' => self::REQUEST_TIMEOUT,
+                    'timeout' => config('steama-meter.request_timeout'),
                     'body' => json_encode($putParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
@@ -206,7 +204,7 @@ class SteamaMeterApiClient {
             $request = $this->client->get(
                 $apiUrl,
                 [
-                    'timeout' => self::REQUEST_TIMEOUT,
+                    'timeout' => config('steama-meter.request_timeout'),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
                         'Authorization' => 'Token '.$credential->authentication_token,

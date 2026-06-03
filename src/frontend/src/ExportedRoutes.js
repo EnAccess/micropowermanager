@@ -94,6 +94,7 @@ import SteamaCoMeterList from "@/plugins/steama-meter/modules/Meter/MeterList.vu
 import SteamaCoOverview from "@/plugins/steama-meter/modules/Overview/Overview.vue"
 import SteamaCoSettings from "@/plugins/steama-meter/modules/Setting/Setting.vue"
 import SteamaCoSiteList from "@/plugins/steama-meter/modules/Site/SiteList.vue"
+import SteamaCoTransactionList from "@/plugins/steama-meter/modules/Transaction/TransactionList.vue"
 import StronMeterOverview from "@/plugins/stron-meter/modules/Overview/Overview.vue"
 import SunKingShsOverview from "@/plugins/sun-king-shs/modules/Overview/Overview.vue"
 import SwiftaOverview from "@/plugins/swifta-payment-provider/modules/Overview/Overview.vue"
@@ -1058,6 +1059,17 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Agents",
+          },
+        },
+      },
+      {
+        path: "steama-transactions",
+        component: SteamaCoTransactionList,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
           },
         },
       },

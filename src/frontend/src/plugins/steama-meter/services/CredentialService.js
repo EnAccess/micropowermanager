@@ -16,7 +16,7 @@ export class CredentialService {
     this.credential = {
       id: credentialData.id,
       username: credentialData.username,
-      password: credentialData.password,
+      password: null,
       isAuthenticated: credentialData.is_authenticated > 0,
       alert: credentialData.alert,
     }
@@ -32,7 +32,7 @@ export class CredentialService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -51,7 +51,7 @@ export class CredentialService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

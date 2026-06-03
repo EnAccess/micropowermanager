@@ -28,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property-read MesombTransaction|null     $mesombTransaction
  * @property-read PaystackTransaction|null   $paystackTransaction
  * @property-read SteamaSite|null            $site
+ * @property-read SteamaCustomer|null        $stmCustomer
  * @property-read SwiftaTransaction|null     $swiftaTransaction
  * @property-read ThirdPartyTransaction|null $thirdPartyTransaction
  * @property-read WaveMoneyTransaction|null  $waveMoneyTransaction
@@ -35,10 +36,20 @@ use Illuminate\Support\Carbon;
 class SteamaTransaction extends BaseManufacturerTransaction {
     protected $table = 'steama_transactions';
 
+    /** @var array<string, string> */
+    protected $casts = ['timestamp' => 'datetime'];
+
     /**
      * @return BelongsTo<SteamaSite, $this>
      */
     public function site(): BelongsTo {
         return $this->belongsTo(SteamaSite::class, 'site_id', 'site_id');
+    }
+
+    /**
+     * @return BelongsTo<SteamaCustomer, $this>
+     */
+    public function stmCustomer(): BelongsTo {
+        return $this->belongsTo(SteamaCustomer::class, 'customer_id', 'customer_id');
     }
 }

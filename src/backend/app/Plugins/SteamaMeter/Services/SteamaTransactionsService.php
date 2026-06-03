@@ -26,11 +26,7 @@ class SteamaTransactionsService implements ISynchronizeService {
     private string $rootUrl = '/transactions';
 
     public function __construct(
-        private SteamaMeterService $steamaMeterService,
-        private SteamaCustomerService $steamaCustomerService,
         private SteamaCredentialService $steamaCredentialService,
-        private SteamaSiteService $steamaSiteService,
-        private SteamaAgentService $steamaAgentService,
         private SteamaTransaction $steamaTransaction,
         private SteamaMeterApiClient $steamaApi,
         private Transaction $transaction,
@@ -100,7 +96,7 @@ class SteamaTransactionsService implements ISynchronizeService {
                 }
             } catch (SteamaApiResponseException $e) {
                 Log::critical('Transaction synchronising cancelled', ['message' => $e->getMessage()]);
-                throw new SteamaApiResponseException($e->getMessage());
+                throw $e;
             }
         } else {
             Log::debug('Transaction synchronising cancelled', ['message' => $syncCheck['message']]);
@@ -120,20 +116,20 @@ class SteamaTransactionsService implements ISynchronizeService {
         if (!$credentials->is_authenticated) {
             return ['result' => false, 'message' => 'Credentials records are not up to date.'];
         }
-        if (!$this->steamaSiteService->syncCheck()['result']) {
-            return ['result' => false, 'message' => 'Site records are not up to date.'];
-        }
-        if (!$this->steamaCustomerService->syncCheck()['result']) {
-            return ['result' => false, 'message' => 'Customer records are not up to date.'];
-        }
-        if (!$this->steamaMeterService->syncCheck()['result']) {
-            return ['result' => false, 'message' => 'Meter records are not up to date.'];
-        }
-        if (!$this->steamaAgentService->syncCheck()['result']) {
-            return ['result' => false, 'message' => 'Agent records are not up to date.'];
-        }
 
         return ['result' => true, 'message' => 'Records are updated'];
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, SteamaTransaction>
+     */
+    public function getTransactions(Request $request): LengthAwarePaginator {
+        $perPage = $request->integer('per_page', 15);
+
+        return $this->steamaTransaction->newQuery()
+            ->with(['site.mpmMiniGrid', 'stmCustomer.mpmPerson'])
+            ->latest('timestamp')
+            ->paginate($perPage);
     }
 
     /**

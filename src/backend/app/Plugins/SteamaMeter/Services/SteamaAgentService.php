@@ -102,7 +102,7 @@ class SteamaAgentService implements ISynchronizeService {
             ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
             Log::critical('Steama agents sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -169,11 +169,13 @@ class SteamaAgentService implements ISynchronizeService {
 
         $agent = $this->agent->newQuery()->create([
             'person_id' => $person->id,
-            'name' => $person->name,
             'password' => $stmAgent['first_name'].$stmAgent['last_name'],
             'email' => 'StmAgent'.strval($counter + 1).'steama.co',
             'mini_grid_id' => $site->mpmMiniGrid->id,
             'agent_commission_id' => $agentCommission->id,
+            'mobile_device_id' => '-',
+            'fire_base_token' => '-',
+            'connection' => ' ',
         ]);
         $addressService->assignAddressToOwner($person, $address);
 
@@ -211,7 +213,6 @@ class SteamaAgentService implements ISynchronizeService {
             'is_primary' => 1,
         ]);
         $agent->update([
-            'name' => $relatedPerson->name,
             'password' => $stmAgent['first_name'].$stmAgent['last_name'],
             'mini_grid_id' => $site->mpmMiniGrid->id,
         ]);

@@ -3,8 +3,7 @@
     <widget
       id="meter-list"
       :title="title"
-      :paginator="true"
-      :paging_url="meterService.pagingUrl"
+      :paginator="meterService.paginator"
       :route_name="meterService.routeName"
       :show_per_page="true"
       :subscriber="subscriber"
@@ -50,9 +49,7 @@
 
 <script>
 import { CredentialService } from "../../services/CredentialService.js"
-import { CustomerService } from "../../services/CustomerService.js"
 import { MeterService } from "../../services/MeterService.js"
-import { SiteService } from "../../services/SiteService.js"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -66,8 +63,6 @@ export default {
   data() {
     return {
       credentialService: new CredentialService(),
-      siteService: new SiteService(),
-      customerService: new CustomerService(),
       meterService: new MeterService(),
       subscriber: "meter-list",
       loading: false,
@@ -92,57 +87,15 @@ export default {
         await this.credentialService.getCredential()
         if (!this.credentialService.credential.isAuthenticated) {
           this.redirectDialogActive = true
-        } else {
-          await this.checkSync()
         }
       } catch (e) {
         this.redirectDialogActive = true
-      }
-    },
-    async checkSync() {
-      try {
-        this.loading = true
-        this.isSynced = await this.meterService.checkMeters()
-        this.loading = false
-
-        if (!this.isSynced) {
-          let swalOptions = {
-            title: "Updates",
-            showCancelButton: true,
-            text: "Meter Records Not Up to Date.",
-            confirmButtonText: "Update",
-            cancelButtonText: "Cancel",
-          }
-          this.$swal(swalOptions).then((result) => {
-            if (result.value) {
-              this.syncMeters()
-            }
-          })
-        }
-      } catch (e) {
-        this.loading = false
-        this.alertNotify("error", e.message)
       }
     },
     async syncMeters() {
       if (!this.loading) {
         try {
           this.loading = true
-          let sitesSynced = await this.siteService.checkSites()
-          if (!sitesSynced) {
-            this.alertNotify("warn", "Sites must be updated to update Meters.")
-            this.isSynced = false
-            return
-          }
-          let customersSynced = await this.customerService.checkCustomers()
-          if (!customersSynced) {
-            this.alertNotify(
-              "warn",
-              "Customers must be updated to update Meters.",
-            )
-            this.isSynced = false
-            return
-          }
           this.isSynced = false
           await this.meterService.syncMeters()
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)

@@ -111,7 +111,7 @@ class SteamaCustomerService implements ISynchronizeService {
             ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
             Log::critical('Steama customers sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -155,7 +155,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $personData = [
             'name' => $customer['first_name'] ?: '',
             'surname' => $customer['last_name'] ?: '',
-            'phone' => $customer['telephone'] ?: null,
+            'phone' => $this->normalizePhone($customer['telephone'] ?? null),
             'street1' => $customer['site_name'] ?: null,
         ];
         $customerSite = $this->stmSite->newQuery()->with('mpmMiniGrid')->where('site_id', $customer['site'])->first();
@@ -192,7 +192,7 @@ class SteamaCustomerService implements ISynchronizeService {
 
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->update([
-            'phone' => $customer['telephone'] ?: null,
+            'phone' => $this->normalizePhone($customer['telephone'] ?? null),
             'street' => $customer['site_name'] ?: null,
             'city_id' => $customerCity->id,
         ]);
@@ -449,6 +449,27 @@ class SteamaCustomerService implements ISynchronizeService {
         return $this->customer->newQuery()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1));
+    }
+
+    /**
+     * Steama exposes raw, unvalidated telephone strings (blanks, lone "+", malformed prefixes) that the
+     * E164 cast on Address rejects with a NumberParseException, which would otherwise abort the whole
+     * customer sync. Normalize to E164 when parseable, otherwise drop the phone so the customer still syncs.
+     */
+    private function normalizePhone(?string $phone): ?string {
+        if (!$phone) {
+            return null;
+        }
+        try {
+            return phone($phone)->formatE164();
+        } catch (\Throwable $e) {
+            Log::warning('Skipped unparseable Steama customer phone number.', [
+                'phone' => $phone,
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     /**

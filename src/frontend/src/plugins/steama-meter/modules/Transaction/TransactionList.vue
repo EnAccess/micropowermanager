@@ -1,14 +1,14 @@
 <template>
   <div>
     <widget
-      id="site-list"
+      id="transaction-list"
       :title="title"
-      :paginator="siteService.paginator"
-      :route_name="siteService.routeName"
+      :paginator="transactionsService.paginator"
+      :route_name="transactionsService.routeName"
       :show_per_page="true"
       :subscriber="subscriber"
       color="primary"
-      @widgetAction="syncSites()"
+      @widgetAction="syncTransactions()"
       :button="true"
       buttonIcon="cloud_download"
       :button-text="buttonText"
@@ -17,23 +17,32 @@
       :newRecordButton="false"
     >
       <md-table
-        v-model="siteService.list"
+        v-model="transactionsService.list"
         md-sort="id"
         md-sort-order="asc"
         md-card
       >
         <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell md-label="ID" md-sort-by="id">
-            {{ item.id }}
+          <md-table-cell md-label="Transaction ID" md-sort-by="transactionId">
+            {{ item.transactionId }}
           </md-table-cell>
-          <md-table-cell md-label="Name" md-sort-by="name">
-            {{ item.name }}
+          <md-table-cell md-label="Customer" md-sort-by="customerName">
+            {{ item.customerName }}
           </md-table-cell>
-          <md-table-cell md-label="Latitude" md-sort-by="latitude">
-            {{ item.latitude }}
+          <md-table-cell md-label="Site" md-sort-by="siteName">
+            {{ item.siteName }}
           </md-table-cell>
-          <md-table-cell md-label="Longitude" md-sort-by="longitude">
-            {{ item.longitude }}
+          <md-table-cell md-label="Amount" md-sort-by="amount">
+            {{ moneyFormat(item.amount) }}
+          </md-table-cell>
+          <md-table-cell md-label="Category" md-sort-by="category">
+            {{ item.category }}
+          </md-table-cell>
+          <md-table-cell md-label="Provider" md-sort-by="provider">
+            {{ item.provider }}
+          </md-table-cell>
+          <md-table-cell md-label="Date" md-sort-by="timestamp">
+            {{ item.timestamp }}
           </md-table-cell>
         </md-table-row>
       </md-table>
@@ -49,33 +58,33 @@
 
 <script>
 import { CredentialService } from "../../services/CredentialService.js"
-import { SiteService } from "../../services/SiteService.js"
+import { SteamaTransactionsService } from "../../services/SteamaTransactionsService.js"
 
+import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
 import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
-  name: "SiteList",
-  mixins: [notify],
+  name: "TransactionList",
+  mixins: [notify, currency],
   components: { RedirectionModal, Widget },
   data() {
     return {
-      siteService: new SiteService(),
+      transactionsService: new SteamaTransactionsService(),
       credentialService: new CredentialService(),
-      subscriber: "site-list",
+      subscriber: "transaction-list",
       loading: false,
-      isSynced: false,
-      title: "Sites",
+      title: "Transactions",
       redirectionUrl: "/steama-meters/steama-overview",
       redirectDialogActive: false,
       buttonText: "Get Updates From Steama.co",
-      label: "Site Records Not Up to Date.",
+      label: "No transactions recorded yet.",
     }
   },
   mounted() {
-    this.checkLocation()
+    this.checkCredential()
     EventBus.$on("pageLoaded", this.reloadList)
   },
   beforeDestroy() {
@@ -92,14 +101,12 @@ export default {
         this.redirectDialogActive = true
       }
     },
-    async syncSites() {
+    async syncTransactions() {
       if (!this.loading) {
         try {
           this.loading = true
-          this.isSynced = false
-          await this.siteService.syncSites()
+          await this.transactionsService.syncTransactions()
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
-          this.isSynced = true
           this.loading = false
         } catch (e) {
           this.loading = false
@@ -107,24 +114,13 @@ export default {
         }
       }
     },
-    async checkLocation() {
-      let response = await this.siteService.checkLocation()
-
-      if (response.length === 0) {
-        this.redirectionUrl = "/locations/add-cluster"
-        this.redirectionMessage = "Please make your location settings first."
-        this.redirectDialogActive = true
-      } else {
-        await this.checkCredential()
-      }
-    },
     reloadList(subscriber, data) {
       if (subscriber !== this.subscriber) return
-      this.siteService.updateList(data)
+      this.transactionsService.updateList(data)
       EventBus.$emit(
         "widgetContentLoaded",
         this.subscriber,
-        this.siteService.list.length,
+        this.transactionsService.list.length,
       )
     },
   },

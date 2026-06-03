@@ -44,6 +44,8 @@
                     <md-input
                       id="password"
                       name="password"
+                      type="password"
+                      placeholder="Enter password to update credentials"
                       v-model="credentialService.credential.password"
                       v-validate="'required|min:3'"
                     />
