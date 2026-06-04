@@ -24,7 +24,7 @@ Customers visit the link, select their device, enter an amount, and pay via Pesa
 ### Pre-requisites
 
 1. Access to the MPM admin panel
-2. A [PesaPal merchant account](https://www.pesapal.com/registration) (a sandbox account is sufficient for initial setup)
+2. A [PesaPal merchant account](https://www.pesapal.com/dashboard/account/register) (a sandbox account is sufficient for initial setup)
 3. Your PesaPal **Consumer Key** and **Consumer Secret** from your PesaPal merchant dashboard
 
 ### Integration
@@ -41,7 +41,7 @@ Customers visit the link, select their device, enter an amount, and pay via Pesa
 
 ### Step 1: Create a PesaPal Account
 
-1. Visit [PesaPal Registration](https://www.pesapal.com/registration)
+1. Visit [PesaPal Registration](https://www.pesapal.com/dashboard/account/register)
 2. Fill in your business details and verify your email
 3. Complete the onboarding steps in the PesaPal dashboard
 
