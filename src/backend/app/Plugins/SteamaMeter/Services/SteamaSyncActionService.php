@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
 
-class StemaSyncActionService {
+class SteamaSyncActionService {
     public function __construct(
         private SteamaSyncAction $syncAction,
     ) {}
@@ -48,6 +48,19 @@ class StemaSyncActionService {
         return $syncAction->update([
             'attempts' => 0,
             'last_sync' => Carbon::now(),
+            'next_sync' => Carbon::now()->add($interval),
+        ]);
+    }
+
+    /**
+     * Advances only the schedule (next_sync) without touching the attempts counter, so the
+     * dispatching command can space out runs while the queued job remains the source of truth
+     * for success/failure tracking on the sync-action row.
+     */
+    public function scheduleNextRun(SteamaSyncAction $syncAction, SteamaSyncSetting $syncSetting): bool {
+        $interval = CarbonInterval::make($syncSetting->sync_in_value_num.$syncSetting->sync_in_value_str);
+
+        return $syncAction->update([
             'next_sync' => Carbon::now()->add($interval),
         ]);
     }

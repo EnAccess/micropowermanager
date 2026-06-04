@@ -25,11 +25,16 @@ class PersonObserver {
                 'addresses' => fn ($q) => $q->where('is_primary', 1),
             ])->where('id', $personId)->first();
 
+            $primaryAddress = $customer?->addresses->first();
+            if (!$primaryAddress) {
+                return;
+            }
+
             $customerData = [
                 'id' => $stmCustomer->customer_id,
                 'first_name' => $person->name,
                 'last_name' => $person->surname,
-                'telephone' => $customer->addresses[0]->phone,
+                'telephone' => $primaryAddress->phone,
             ];
             $this->stmCustomerService->updateSteamaCustomerInfo($stmCustomer, $customerData);
         }

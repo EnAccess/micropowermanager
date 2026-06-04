@@ -1,62 +1,76 @@
 <?php
 
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaAgentController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaCredentialController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaCustomerController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaMeterController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaSettingController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaSiteController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaSmsBodyController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaSmsFeedbackController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaSmsSettingController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaSmsVariableDefaultValueController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaSyncSettingController;
+use App\Plugins\SteamaMeter\Http\Controllers\SteamaTransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'steama-meters'], function () {
     Route::group(['prefix' => 'steama-credential'], function () {
-        Route::get('/', 'SteamaCredentialController@show');
-        Route::put('/', 'SteamaCredentialController@update');
+        Route::get('/', [SteamaCredentialController::class, 'show']);
+        Route::put('/', [SteamaCredentialController::class, 'update']);
     });
     Route::group(['prefix' => 'steama-site'], function () {
-        Route::get('/', 'SteamaSiteController@index');
-        Route::get('/sync', 'SteamaSiteController@sync');
-        Route::get('/sync-check', 'SteamaSiteController@checkSync');
-        Route::get('/count', 'SteamaSiteController@count');
-        Route::get('/location', 'SteamaSiteController@location');
+        Route::get('/', [SteamaSiteController::class, 'index']);
+        Route::get('/sync', [SteamaSiteController::class, 'sync']);
+        Route::get('/sync-check', [SteamaSiteController::class, 'checkSync']);
+        Route::get('/count', [SteamaSiteController::class, 'count']);
+        Route::get('/location', [SteamaSiteController::class, 'location']);
     });
     Route::group(['prefix' => 'steama-customer'], function () {
-        Route::get('/', 'SteamaCustomerController@index');
-        Route::get('/sync', 'SteamaCustomerController@sync');
-        Route::get('/sync-check', 'SteamaCustomerController@checkSync');
-        Route::get('/count', 'SteamaCustomerController@count');
-        Route::put('/{customer}', 'SteamaCustomerController@update');
-        Route::get('/{customerId}', 'SteamaCustomerController@get');
-        Route::get('/advanced/search', 'SteamaCustomerController@search');
+        Route::get('/', [SteamaCustomerController::class, 'index']);
+        Route::get('/sync', [SteamaCustomerController::class, 'sync']);
+        Route::get('/sync-check', [SteamaCustomerController::class, 'checkSync']);
+        Route::get('/count', [SteamaCustomerController::class, 'count']);
+        Route::put('/{customer}', [SteamaCustomerController::class, 'update']);
+        Route::get('/{customerId}', [SteamaCustomerController::class, 'get']);
+        Route::get('/advanced/search', [SteamaCustomerController::class, 'search']);
     });
     Route::group(['prefix' => 'steama-meter'], function () {
-        Route::get('/', 'SteamaMeterController@index');
-        Route::get('/sync', 'SteamaMeterController@sync');
-        Route::get('/sync-check', 'SteamaMeterController@checkSync');
-        Route::get('/count', 'SteamaMeterController@count');
+        Route::get('/', [SteamaMeterController::class, 'index']);
+        Route::get('/sync', [SteamaMeterController::class, 'sync']);
+        Route::get('/sync-check', [SteamaMeterController::class, 'checkSync']);
+        Route::get('/count', [SteamaMeterController::class, 'count']);
     });
     Route::group(['prefix' => 'steama-agent'], function () {
-        Route::get('/', 'SteamaAgentController@index');
-        Route::get('/sync', 'SteamaAgentController@sync');
-        Route::get('/sync-check', 'SteamaAgentController@checkSync');
-        Route::get('/count', 'SteamaAgentController@count');
+        Route::get('/', [SteamaAgentController::class, 'index']);
+        Route::get('/sync', [SteamaAgentController::class, 'sync']);
+        Route::get('/sync-check', [SteamaAgentController::class, 'checkSync']);
+        Route::get('/count', [SteamaAgentController::class, 'count']);
     });
     Route::group(['prefix' => 'steama-transaction'], function () {
-        Route::get('/{customer}', 'SteamaTransactionController@index');
+        Route::get('/', [SteamaTransactionController::class, 'index']);
+        Route::get('/sync', [SteamaTransactionController::class, 'sync']);
+        Route::get('/{customer}', [SteamaTransactionController::class, 'getByCustomer']);
     });
     Route::group(['prefix' => 'steama-setting'], function () {
-        Route::get('/', 'SteamaSettingController@index');
+        Route::get('/', [SteamaSettingController::class, 'index']);
         Route::group(['prefix' => 'sms-setting'], function () {
-            Route::put('/', 'SteamaSmsSettingController@update');
+            Route::put('/', [SteamaSmsSettingController::class, 'update']);
             // Sms
             Route::group(['prefix' => 'sms-body'], static function () {
-                Route::get('/', 'SteamaSmsBodyController@index');
-                Route::put('/', 'SteamaSmsBodyController@update');
+                Route::get('/', [SteamaSmsBodyController::class, 'index']);
+                Route::put('/', [SteamaSmsBodyController::class, 'update']);
             });
             Route::group(['prefix' => 'sms-variable-default-value'], static function () {
-                Route::get('/', 'SteamaSmsVariableDefaultValueController@index');
+                Route::get('/', [SteamaSmsVariableDefaultValueController::class, 'index']);
             });
         });
         Route::group(['prefix' => 'sync-setting'], function () {
-            Route::put('/', 'SteamaSyncSettingController@update');
+            Route::put('/', [SteamaSyncSettingController::class, 'update']);
         });
         Route::group(['prefix' => 'feedback-word'], function () {
-            Route::get('/', 'SteamaSmsFeedbackController@index');
-            Route::put('/{smsFeedbackWord}', 'SteamaSmsFeedbackController@update');
+            Route::get('/', [SteamaSmsFeedbackController::class, 'index']);
+            Route::put('/{smsFeedbackWord}', [SteamaSmsFeedbackController::class, 'update']);
         });
     });
 });

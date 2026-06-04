@@ -17,4 +17,9 @@ use Illuminate\Support\Carbon;
  */
 class SteamaCredential extends BaseModel {
     protected $table = 'steama_credentials';
+
+    /**
+     * @var list<string>
+     */
+    protected $hidden = ['password', 'authentication_token'];
 }

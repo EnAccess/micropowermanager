@@ -8,7 +8,7 @@ use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 class ApiHelpers {
     public function __construct(private Manufacturer $manufacturer) {}
 
-    public function registerSparkMeterManufacturer(): void {
+    public function registerSteamaManufacturer(): void {
         $api = $this->manufacturer->newQuery()->where('api_name', 'SteamaMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([

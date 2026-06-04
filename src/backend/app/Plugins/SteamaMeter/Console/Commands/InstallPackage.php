@@ -34,7 +34,7 @@ class InstallPackage extends Command {
         $this->info('Installing Steamaco Meter Integration Package\n');
 
         $this->packageInstallationService->createDefaultSettingRecords();
-        $this->apiHelpers->registerSparkMeterManufacturer();
+        $this->apiHelpers->registerSteamaManufacturer();
         $this->credentialService->createCredentials();
         $tariff = $this->tariffService->createTariff();
         $this->userTypeService->createUserTypes($tariff);

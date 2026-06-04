@@ -22,17 +22,17 @@ class SmsListener {
         if (!$steamaCustomer instanceof SteamaCustomer) {
             return;
         }
-        $smsFeedbackWords = $this->smsFeedbackWordService->getSmsFeedbackWords();
+        $feedbackWord = $this->smsFeedbackWordService->getSmsFeedbackWords()->first();
+        if (!$feedbackWord || !$feedbackWord->meter_balance) {
+            return;
+        }
 
-        $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
-        if ($meterBalance !== false) {
+        if (str_contains(strtolower($message), strtolower($feedbackWord->meter_balance))) {
             $this->smsService->sendSms(
-                $steamaCustomer->toArray(),
+                $steamaCustomer,
                 SteamaSmsTypes::BALANCE_FEEDBACK,
                 SteamaSmsConfig::class
             );
-
-            return;
         }
     }
 

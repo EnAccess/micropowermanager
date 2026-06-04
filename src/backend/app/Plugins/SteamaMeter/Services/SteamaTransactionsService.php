@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -25,24 +26,19 @@ class SteamaTransactionsService implements ISynchronizeService {
     private string $rootUrl = '/transactions';
 
     public function __construct(
-        private SteamaMeterService $stemaMeterService,
-        private SteamaCustomerService $steamaCustomerService,
         private SteamaCredentialService $steamaCredentialService,
-        private SteamaSiteService $steamaSiteService,
-        private SteamaAgentService $steamaAgentService,
         private SteamaTransaction $steamaTransaction,
         private SteamaMeterApiClient $steamaApi,
         private Transaction $transaction,
         private SteamaMeter $steamaMeter,
         private ThirdPartyTransaction $thirdPartyTransaction,
         private Token $token,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
     ) {}
 
+    /**
+     * @return LengthAwarePaginator<int, SteamaTransaction>
+     */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Transactions');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         $syncCheck = $this->syncCheck();
         if ($syncCheck['result']) {
             $lastCreatedTransaction = $this->steamaTransaction->newQuery()->latest('timestamp')->orderBy(
@@ -62,51 +58,51 @@ class SteamaTransactionsService implements ISynchronizeService {
             $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.device.person'])->get();
             try {
                 $result = $this->steamaApi->get($url);
-                $transactions = $result['results'];
-                while ($result['next']) {
+                while (true) {
                     // @phpstan-ignore argument.templateType, argument.templateType
-                    $transactionsCollection = collect($transactions);
-                    $transactionsCollection->each(function (array $transaction) use (
+                    collect($result['results'])->each(function (array $transaction) use (
                         $steamaMeters,
                         $lastRecordedTransactionId
                     ) {
                         $steamaMeter = $steamaMeters->firstWhere('customer_id', $transaction['customer_id']);
-                        if ($steamaMeter && $lastRecordedTransactionId < $transaction['id']) {
+                        if (!$steamaMeter || $lastRecordedTransactionId >= $transaction['id']) {
+                            return;
+                        }
+
+                        $payment = DB::transaction(function () use ($transaction, $steamaMeter): ?array {
                             $steamaTransaction = $this->createSteamaTransaction($transaction);
 
-                            if ($transaction['category'] == 'PAY') {
-                                $thirdPartyTransaction = $this->createThirdPartyTransaction(
-                                    $transaction,
-                                    $steamaTransaction
-                                );
-
-                                $mainTransaction = $this->createTransaction(
-                                    $transaction,
-                                    $thirdPartyTransaction,
-                                    $steamaMeter
-                                );
-
-                                $token = $this->createToken($steamaMeter, $mainTransaction);
-
-                                $this->createPayment($steamaMeter, $mainTransaction, $token);
+                            if ($transaction['category'] !== 'PAY') {
+                                return null;
                             }
+
+                            $thirdPartyTransaction = $this->createThirdPartyTransaction($transaction, $steamaTransaction);
+                            $mainTransaction = $this->createTransaction($transaction, $thirdPartyTransaction, $steamaMeter);
+                            $token = $this->createToken($steamaMeter, $mainTransaction, $transaction);
+
+                            return ['transaction' => $mainTransaction, 'token' => $token];
+                        });
+
+                        if ($payment !== null) {
+                            $this->createPayment($steamaMeter, $payment['transaction'], $payment['token']);
                         }
                     });
+
+                    if (!$result['next']) {
+                        break;
+                    }
                     $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                     $result = $this->steamaApi->get($url);
-                    $transactions = $result['results'];
                 }
             } catch (SteamaApiResponseException $e) {
-                $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
                 Log::critical('Transaction synchronising cancelled', ['message' => $e->getMessage()]);
-                throw new SteamaApiResponseException($e->getMessage());
+                throw $e;
             }
         } else {
             Log::debug('Transaction synchronising cancelled', ['message' => $syncCheck['message']]);
         }
-        $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
-        return $syncCheck['message'];
+        return $this->steamaTransaction->newQuery()->paginate(config('steama-meter.paginate'));
     }
 
     /**
@@ -114,38 +110,26 @@ class SteamaTransactionsService implements ISynchronizeService {
      */
     public function syncCheck(bool $returnData = false): array {
         $credentials = $this->steamaCredentialService->getCredentials();
-        if ($credentials instanceof SteamaCredential) {
-            if ($credentials->is_authenticated) {
-                $siteSynchronized = $this->steamaSiteService->syncCheck();
-
-                if ($siteSynchronized['result']) {
-                    $customerSynchronized = $this->steamaCustomerService->syncCheck();
-
-                    if ($customerSynchronized['result']) {
-                        $meterSynchronized = $this->stemaMeterService->syncCheck();
-
-                        if ($meterSynchronized['result']) {
-                            $agentSynchronized = $this->steamaAgentService->syncCheck();
-                            if ($agentSynchronized['result']) {
-                                return ['result' => true, 'message' => 'Records are updated'];
-                            } else {
-                                return ['result' => false, 'message' => 'Agent records are not up to date.'];
-                            }
-                        } else {
-                            return ['result' => false, 'message' => 'Meter records are not up to date.'];
-                        }
-                    } else {
-                        return ['result' => false, 'message' => 'Customer records are not up to date.'];
-                    }
-                } else {
-                    return ['result' => false, 'message' => 'Site records are not up to date.'];
-                }
-            } else {
-                return ['result' => false, 'message' => 'Credentials records are not up to date.'];
-            }
-        } else {
+        if (!$credentials instanceof SteamaCredential) {
             return ['result' => false, 'message' => 'No Credentials record found.'];
         }
+        if (!$credentials->is_authenticated) {
+            return ['result' => false, 'message' => 'Credentials records are not up to date.'];
+        }
+
+        return ['result' => true, 'message' => 'Records are updated'];
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, SteamaTransaction>
+     */
+    public function getTransactions(Request $request): LengthAwarePaginator {
+        $perPage = $request->integer('per_page', 15);
+
+        return $this->steamaTransaction->newQuery()
+            ->with(['site.mpmMiniGrid', 'stmCustomer.mpmPerson'])
+            ->latest('timestamp')
+            ->paginate($perPage);
     }
 
     /**
@@ -154,7 +138,7 @@ class SteamaTransactionsService implements ISynchronizeService {
     public function getTransactionsByCustomer(SteamaCustomer $customer, Request $request): LengthAwarePaginator {
         $perPage = $request->integer('per_page', 15);
 
-        return $this->steamaTransaction->newQuery()->where('customer_id', $customer)->paginate($perPage);
+        return $this->steamaTransaction->newQuery()->where('customer_id', $customer->customer_id)->paginate($perPage);
     }
 
     /**
@@ -218,19 +202,27 @@ class SteamaTransactionsService implements ISynchronizeService {
         return $transaction;
     }
 
-    private function createToken(SteamaMeter $steamaMeter, Transaction $mainTransaction): Token {
-        $stmCustomer = $steamaMeter->stmCustomer->first();
-        $customerEnergyPrice = $stmCustomer->energy_price;
+    /**
+     * @param array<string, mixed> $transaction
+     */
+    private function createToken(SteamaMeter $steamaMeter, Transaction $mainTransaction, array $transaction): Token {
+        $customerEnergyPrice = $steamaMeter->stmCustomer->energy_price;
+        if (!$customerEnergyPrice) {
+            throw new SteamaApiResponseException('Cannot create token: no energy price for Steama customer '.$steamaMeter->customer_id.'.');
+        }
         $chargedEnergy = $mainTransaction->amount / $customerEnergyPrice;
 
         $token = $this->token->newQuery()->where('transaction_id', $mainTransaction->id)->first();
         if (!$token) {
-            $token = $this->token->newQuery()->make([
+            $token = $this->token->newQuery()->create([
                 'transaction_id' => $mainTransaction->id,
-                'token' => $token,
-                'load' => $chargedEnergy,
+                'token' => $transaction['site_id'].'-'.$transaction['category'].'-'.
+                    ($transaction['provider'] ?? 'AP').'-'.$transaction['customer_id'],
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $chargedEnergy,
+                'device_id' => $steamaMeter->mpmMeter->device->id,
             ]);
-            $token->save();
         }
 
         return $token;

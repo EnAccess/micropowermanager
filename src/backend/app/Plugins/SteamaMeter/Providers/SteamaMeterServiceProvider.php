@@ -6,7 +6,6 @@ use App\Plugins\SteamaMeter\Console\Commands\InstallPackage;
 use App\Plugins\SteamaMeter\Console\Commands\ReadHourlyMeterReadings;
 use App\Plugins\SteamaMeter\Console\Commands\SteamaMeterDataSynchronizer;
 use App\Plugins\SteamaMeter\Console\Commands\SteamaSmsNotifier;
-use App\Plugins\SteamaMeter\Console\Commands\UpdatePackage;
 use App\Plugins\SteamaMeter\Models\SteamaAssetRatesPaymentPlan;
 use App\Plugins\SteamaMeter\Models\SteamaCustomerBasisTimeOfUsage;
 use App\Plugins\SteamaMeter\Models\SteamaFlatRatePaymentPlan;
@@ -30,11 +29,10 @@ class SteamaMeterServiceProvider extends ServiceProvider {
             InstallPackage::class,
             SteamaMeterDataSynchronizer::class,
             SteamaSmsNotifier::class,
-            UpdatePackage::class,
             ReadHourlyMeterReadings::class,
         ]);
         $this->app->booted(function ($app) {
-            $app->make(Schedule::class)->command('steama-meter:dataSync')->withoutOverlapping(50)
+            $app->make(Schedule::class)->command('steama-meter:dataSync')->everyFiveMinutes()->withoutOverlapping(50)
                 ->appendOutputTo(storage_path('logs/cron.log'));
             $app->make(Schedule::class)->command('steama-meter:smsNotifier')->withoutOverlapping(50)
                 ->appendOutputTo(storage_path('logs/cron.log'));

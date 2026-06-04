@@ -1,6 +1,7 @@
 import MeterRepository from "../repositories/MeterRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 
 export class MeterService {
   constructor() {
@@ -10,6 +11,7 @@ export class MeterService {
     this.count = 0
     this.pagingUrl = "/api/steama-meters/steama-meter"
     this.routeName = "/steama-meters/steama-meter"
+    this.paginator = new Paginator(this.pagingUrl)
     this.meter = {
       id: null,
       serial: null,
@@ -19,14 +21,12 @@ export class MeterService {
   }
 
   fromJson(meterData) {
+    let person = meterData.stm_customer?.mpm_person
     this.meter = {
       id: meterData.id,
-      serial: meterData.mpm_meter.serial_number,
-      site: meterData.stm_customer.site.mpm_mini_grid.name,
-      owner:
-        meterData.stm_customer.mpm_person.name +
-        " " +
-        meterData.stm_customer.mpm_person.surname,
+      serial: meterData.mpm_meter?.serial_number ?? null,
+      site: meterData.stm_customer?.site?.mpm_mini_grid?.name ?? null,
+      owner: person ? `${person.name} ${person.surname}` : null,
     }
     return this.meter
   }
@@ -48,21 +48,7 @@ export class MeterService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-
-  async checkMeters() {
-    try {
-      let response = await this.repository.syncCheck()
-      if (response.status === 200) {
-        return response.data.data.result
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
-    } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -77,7 +63,7 @@ export class MeterService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

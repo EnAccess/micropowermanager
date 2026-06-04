@@ -14,6 +14,6 @@ class SteamaSettingService {
      * @return Collection<int, SteamaSetting>
      */
     public function getSettings(): Collection {
-        return $this->steamaSetting->newQuery()->whereHasMorph('setting', '*')->get();
+        return $this->steamaSetting->newQuery()->whereHasMorph('setting', '*')->with('setting')->get();
     }
 }
