@@ -27,7 +27,13 @@ class ApplianceRateService {
         return $mainSettings->currency ?? '€';
     }
 
-    public function recomputeRatesFromTotalCost(AppliancePerson $appliancePerson, int $newTotalCost, int $creatorId): AppliancePerson {
+    public function recomputeRatesFromTotalCost(
+        AppliancePerson $appliancePerson,
+        int $newTotalCost,
+        int $creatorId,
+        ?int $rateCount = null,
+        ?string $rateType = null,
+    ): AppliancePerson {
         if ($newTotalCost < 0) {
             throw ValidationException::withMessages(['new_total_cost' => 'Total cost cannot be negative']);
         }
@@ -44,6 +50,38 @@ class ApplianceRateService {
             fn (ApplianceRate $rate): bool => $rate->rate_cost === $rate->remaining
         )->values();
 
+        if ($rateCount === null) {
+            $this->redistributeAcrossUnpaidRates($unpaidRates, $newOutstanding);
+        } else {
+            $this->regenerateUnpaidRates($appliancePerson, $rates, $unpaidRates, $newOutstanding, $rateCount, $rateType ?? 'monthly');
+        }
+
+        $oldTotalCost = (int) $appliancePerson->total_cost;
+        $appliancePerson->total_cost = $newTotalCost;
+        $appliancePerson->save();
+
+        $currency = $this->getCurrencyFromMainSettings();
+        $creatorName = $this->userService->getById($creatorId)->name ?? 'Unknown';
+        $action = "User {$creatorName} updated Total cost from {$oldTotalCost} {$currency} to {$newTotalCost} {$currency}";
+        if ($rateCount !== null) {
+            $action .= " and rescheduled the outstanding balance into {$rateCount} {$rateType} installments";
+        }
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $appliancePerson,
+            'action' => $action,
+        ]));
+
+        return $appliancePerson->refresh();
+    }
+
+    /**
+     * Spread the new outstanding amount across the existing unpaid rates,
+     * preserving their count and due dates.
+     *
+     * @param Collection<int, ApplianceRate> $unpaidRates
+     */
+    private function redistributeAcrossUnpaidRates(Collection $unpaidRates, int $newOutstanding): void {
         if ($unpaidRates->isEmpty() && $newOutstanding > 0) {
             throw ValidationException::withMessages(['new_total_cost' => 'All rates are paid or partially paid; edit individual rates instead']);
         }
@@ -57,20 +95,47 @@ class ApplianceRateService {
                 $rate->update(['rate_cost' => $rateCost, 'remaining' => $rateCost]);
             });
         }
+    }
 
-        $oldTotalCost = (int) $appliancePerson->total_cost;
-        $appliancePerson->total_cost = $newTotalCost;
-        $appliancePerson->save();
+    /**
+     * Replace the unpaid rates with a freshly generated schedule of the given
+     * count and cadence, leaving paid/partially paid rates untouched. New rates
+     * continue after the latest settled (paid/partially paid) rate, or from the
+     * plan's first payment date when nothing has been settled yet.
+     *
+     * @param Collection<int, ApplianceRate> $allRates
+     * @param Collection<int, ApplianceRate> $unpaidRates
+     */
+    private function regenerateUnpaidRates(
+        AppliancePerson $appliancePerson,
+        Collection $allRates,
+        Collection $unpaidRates,
+        int $newOutstanding,
+        int $rateCount,
+        string $rateType,
+    ): void {
+        if ($newOutstanding > 0 && $rateCount < 1) {
+            throw ValidationException::withMessages(['rate_count' => 'At least one installment is required for the outstanding amount']);
+        }
 
-        $currency = $this->getCurrencyFromMainSettings();
-        $creatorName = $this->userService->getById($creatorId)->name ?? 'Unknown';
-        event(new NewLogEvent([
-            'user_id' => $creatorId,
-            'affected' => $appliancePerson,
-            'action' => "User {$creatorName} updated Total cost from {$oldTotalCost} {$currency} to {$newTotalCost} {$currency}",
-        ]));
+        $keptRates = $allRates->filter(
+            fn (ApplianceRate $rate): bool => $rate->rate_cost !== $rate->remaining
+        );
+        $latestSettledDueDate = $keptRates->max(fn (ApplianceRate $rate) => $rate->due_date);
+        $anchor = $latestSettledDueDate
+            ? Carbon::parse($latestSettledDueDate)->format('Y-m-d')
+            : Carbon::parse($appliancePerson->first_payment_date ?? date('Y-m-d'))->format('Y-m-d');
 
-        return $appliancePerson->refresh();
+        $keptCount = $keptRates->count();
+        $unpaidRates->each(fn (ApplianceRate $rate) => $rate->delete());
+
+        if ($newOutstanding > 0) {
+            $installment = $rateType === 'weekly' ? 'week' : 'month';
+            $this->generateRateSchedule($appliancePerson->id, $newOutstanding, $rateCount, $installment, $anchor);
+            $appliancePerson->rate_count = $keptCount + $rateCount;
+        } else {
+            $appliancePerson->rate_count = $keptCount;
+        }
     }
 
     public function updateApplianceRateCost(ApplianceRate $applianceRate, int $creatorId, int $cost, int $newCost): ApplianceRate {
@@ -134,26 +199,40 @@ class ApplianceRateService {
     }
 
     public function create(object $appliancePerson, string $installmentType = 'monthly'): void {
-        $baseTime = $appliancePerson->first_payment_date ?? date('Y-m-d');
+        $baseDate = $appliancePerson->first_payment_date ?? date('Y-m-d');
         $installment = $installmentType === 'monthly' ? 'month' : 'week';
         if ($appliancePerson->down_payment > 0) {
             $appliancePerson->total_cost -= $appliancePerson->down_payment;
         }
-        foreach (range(1, $appliancePerson->rate_count) as $rate) {
-            if ($appliancePerson->rate_count === 0) {
-                $rateCost = 0;
-            } elseif ((int) $rate === (int) $appliancePerson->rate_count) {
-                // last rate
-                $rateCost = $appliancePerson->total_cost
-                    - (($rate - 1) * floor($appliancePerson->total_cost / $appliancePerson->rate_count));
-            } else {
-                $rateCost = floor($appliancePerson->total_cost / $appliancePerson->rate_count);
-            }
-            $rateDate = date('Y-m-d', strtotime('+'.$rate." $installment", strtotime($baseTime)));
+
+        $this->generateRateSchedule(
+            (int) $appliancePerson->id,
+            (float) $appliancePerson->total_cost,
+            (int) $appliancePerson->rate_count,
+            $installment,
+            $baseDate,
+        );
+    }
+
+    /**
+     * Create $count rate rows summing to $amount, split evenly with the last
+     * rate absorbing the rounding remainder, due $baseDate + i * $installment.
+     */
+    private function generateRateSchedule(int $appliancePersonId, float $amount, int $count, string $installment, string $baseDate): void {
+        if ($count < 1) {
+            return;
+        }
+
+        $base = floor($amount / $count);
+        foreach (range(1, $count) as $rate) {
+            $rateCost = ($rate === $count)
+                ? $amount - (($rate - 1) * $base)
+                : $base;
+            $rateDate = date('Y-m-d', strtotime('+'.$rate." $installment", strtotime($baseDate)));
 
             $this->applianceRate->newQuery()->create(
                 [
-                    'appliance_person_id' => $appliancePerson->id,
+                    'appliance_person_id' => $appliancePersonId,
                     'rate_cost' => $rateCost,
                     'remaining' => $rateCost,
                     'due_date' => $rateDate,

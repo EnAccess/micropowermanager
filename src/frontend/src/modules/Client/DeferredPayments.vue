@@ -28,10 +28,14 @@
           <md-table-row
             v-for="(item, index) in appliancePersonService.list"
             :key="index"
+            :class="item.deleted_at ? 'deleted-row' : ''"
             @click="showDetails(index)"
           >
             <md-table-cell md-label="Name" md-sort-by="name">
               {{ item.appliance.name }}
+              <span v-if="item.deleted_at" class="deleted-pill">
+                {{ $tc("words.deleted") }}
+              </span>
             </md-table-cell>
             <md-table-cell md-label="Cost" md-sort-by="total_cost">
               {{ moneyFormat(item.total_cost) }}
@@ -121,3 +125,21 @@ export default {
   },
 }
 </script>
+
+<style scoped lang="scss">
+.deleted-row {
+  opacity: 0.6;
+}
+
+.deleted-pill {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #d32f2f;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+</style>

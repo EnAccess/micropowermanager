@@ -70,6 +70,14 @@
           :title="$tc('phrases.editRate')"
           @confirmed="editRate"
         ></confirmation-box>
+        <modify-total-cost-modal
+          v-if="showModifyTotalCost"
+          :show="showModifyTotalCost"
+          :sold-appliance="soldAppliance"
+          :saving="totalCostSaving"
+          @save="handleTotalCostSaved"
+          @close="showModifyTotalCost = false"
+        />
         <md-dialog :md-active.sync="getPayment">
           <md-dialog-title>How Much Do You Want to Pay?</md-dialog-title>
           <div style="padding: 2vh">
@@ -219,48 +227,16 @@
             style="padding: 2vw"
           >
             <div class="md-layout-item md-size-50">
-              <h2 v-if="editTotalCostMode" class="total-cost-edit">
-                <b>{{ $tc("phrases.totalCost") }}:</b>
-                <md-field
-                  :class="{
-                    'md-invalid': errors.has($tc('phrases.totalCost')),
-                  }"
-                >
-                  <span class="md-prefix">{{ currency }}</span>
-                  <md-input
-                    type="text"
-                    inputmode="numeric"
-                    v-model="tempTotalCost"
-                    :id="$tc('phrases.totalCost')"
-                    :name="$tc('phrases.totalCost')"
-                    v-validate="'required|numeric|min_value:0'"
-                  />
-                  <span class="md-error">
-                    {{ errors.first($tc("phrases.totalCost")) }}
-                  </span>
-                </md-field>
-                <md-button
-                  class="md-icon-button"
-                  @click="confirmUpdateTotalCost()"
-                >
-                  <md-icon class="md-primary">save</md-icon>
-                </md-button>
-                <md-button
-                  class="md-icon-button"
-                  @click="cancelEditTotalCost()"
-                >
-                  <md-icon class="md-accent">cancel</md-icon>
-                </md-button>
-              </h2>
-              <h2 v-else>
+              <h2>
                 <b>{{ $tc("phrases.totalCost") }}:</b>
                 {{ moneyFormat(soldAppliance.totalCost) }}
                 <md-button
-                  class="md-icon-button"
-                  @click="startEditTotalCost()"
+                  class="md-primary md-raised md-dense"
+                  @click="openModifyTotalCost()"
                   :disabled="!canEditTotalCost || isDeleted"
                 >
-                  <md-icon>edit</md-icon>
+                  <md-icon style="color: white">edit</md-icon>
+                  {{ $tc("words.modify") }}
                 </md-button>
               </h2>
               <h4>
@@ -448,6 +424,7 @@
 <script>
 import moment from "moment"
 
+import ModifyTotalCostModal from "./ModifyTotalCostModal.vue"
 import SoldAppliancesList from "./SoldAppliancesList.vue"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
@@ -470,6 +447,7 @@ export default {
     SoldAppliancesList,
     ClientDetailCard,
     ConfirmationBox,
+    ModifyTotalCostModal,
   },
   mixins: [currency, notify],
   data() {
@@ -505,8 +483,8 @@ export default {
       detailedDeviceInfo: null,
       editRow: null,
       tempCost: null,
-      editTotalCostMode: false,
-      tempTotalCost: null,
+      showModifyTotalCost: false,
+      totalCostSaving: false,
       paymentProviders: [],
       selectedProviderId: 0,
       redirectUrl: null,
@@ -649,16 +627,10 @@ export default {
       this.selectedProviderId = 0
       this.redirectUrl = null
     },
-    startEditTotalCost() {
-      this.tempTotalCost = this.soldAppliance.totalCost
-      this.editTotalCostMode = true
+    openModifyTotalCost() {
+      this.showModifyTotalCost = true
     },
-    cancelEditTotalCost() {
-      this.editTotalCostMode = false
-    },
-    async confirmUpdateTotalCost() {
-      const validator = await this.$validator.validateAll()
-      if (!validator) return
+    async handleTotalCostSaved({ newTotalCost, rateCount, rateType }) {
       const result = await this.$swal({
         type: "question",
         title: this.$tc("phrases.editTotalCost"),
@@ -668,16 +640,19 @@ export default {
         cancelButtonText: this.$tc("words.cancel"),
       })
       if (!result.value) return
+      this.totalCostSaving = true
       try {
         const response = await this.appliancePersonService.updateTotalCost(
           this.selectedApplianceId,
-          parseInt(this.tempTotalCost),
+          newTotalCost,
           this.adminId,
+          rateCount,
+          rateType,
         )
         if (response instanceof ErrorHandler) {
           throw response
         }
-        this.editTotalCostMode = false
+        this.showModifyTotalCost = false
         this.alertNotify("success", this.$tc("phrases.totalCost"))
         await this.getSoldApplianceDetail()
         EventBus.$emit("reloadWidget", this.ratesSubscriber)
@@ -686,6 +661,8 @@ export default {
         const errorMessage =
           e instanceof ErrorHandler ? e.message : e.message || "Update failed"
         this.alertNotify("error", errorMessage)
+      } finally {
+        this.totalCostSaving = false
       }
     },
     async confirmDeleteSoldAppliance() {
@@ -950,6 +927,7 @@ export default {
   .md-icon {
     color: #f57c00;
     flex-shrink: 0;
+    margin: 0;
   }
 }
 </style>
