@@ -9,7 +9,6 @@ use App\Models\Transaction\AgentTransaction as AgentTransactionModel;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Providers\Interfaces\ITransactionProvider;
-use App\Services\FirebaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -22,7 +21,6 @@ class AgentTransactionProvider implements ITransactionProvider {
     public function __construct(
         private AgentTransactionModel $agentTransaction,
         private Transaction $transaction,
-        private FirebaseService $fireBaseService,
     ) {}
 
     public function saveTransaction(): void {
@@ -56,16 +54,13 @@ class AgentTransactionProvider implements ITransactionProvider {
 
     public function sendResult(bool $requestType, Transaction $transaction): void {
         $this->agentTransaction->update(['status' => $requestType ? 1 : -1]);
-        $agent = $this->agentTransaction->agent;
 
         if (!$requestType) {
-            $body = $this->prepareBodyFail($transaction);
-            $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
-
             return;
         }
 
-        $body = $this->prepareBodySuccess($transaction);
+        $agent = $this->agentTransaction->agent;
+
         $history = AgentBalanceHistory::query()->make([
             'agent_id' => $agent->id,
             'amount' => $transaction->amount > 0 ? (-1 * $transaction->amount) : ($transaction->amount),
@@ -92,46 +87,6 @@ class AgentTransactionProvider implements ITransactionProvider {
         );
         $history->trigger()->associate($commission);
         $history->save();
-
-        $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function prepareBodySuccess(Transaction $transaction): array {
-        $transaction = Transaction::with(
-            'token',
-            'originalTransaction',
-            'originalTransaction.conflicts',
-            'sms',
-            'device.person',
-            'device.device',
-            'paymentHistories'
-        )->where('id', $transaction->id)->first();
-
-        $transaction['firebase_notify_status'] = 1;
-        $transaction['title'] = 'Successful Payment!';
-        $transaction['content'] = 1;
-
-        return [
-            'id' => $transaction->id,
-            'firebase_notification_status' => 1,
-            'payload' => $transaction,
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function prepareBodyFail(Transaction $transaction): array {
-        return [
-            'message' => 'Transaction failed',
-            'type' => 'agent_transaction',
-            'firebase_notify_status' => -1,
-            'meter' => $transaction->message,
-            'date' => $transaction->created_at,
-        ];
     }
 
     public function validateRequest(mixed $request): void {
