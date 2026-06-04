@@ -7,6 +7,16 @@
     >
       <md-card>
         <md-card-content>
+          <div class="cluster-warning">
+            <md-icon class="cluster-warning__icon" style="color: #f9a825">
+              warning
+            </md-icon>
+            <span class="cluster-warning__text">
+              When you sync, every Steama site is registered as a MiniGrid under
+              your most recently created cluster. Before syncing sites, make
+              sure the intended cluster is the latest one you created.
+            </span>
+          </div>
           <div class="md-layout md-gutter">
             <div
               class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
@@ -150,5 +160,29 @@ export default {
 
 .Credential-Form {
   height: 100% !important;
+}
+
+.cluster-warning {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ffe082;
+  border-radius: 4px;
+  background: #fff8e1;
+  color: #8a6d3b;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.cluster-warning__icon {
+  flex: 0 0 auto;
+}
+
+.cluster-warning__text {
+  flex: 1 1 auto;
+  text-align: left;
 }
 </style>
