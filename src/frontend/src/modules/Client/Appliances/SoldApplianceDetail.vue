@@ -884,6 +884,21 @@ export default {
   background-color: #a1887f;
 }
 
+.total-cost-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  b {
+    white-space: nowrap;
+  }
+
+  .md-field {
+    flex: 0 0 8rem;
+    margin: 0;
+  }
+}
+
 .eaas-rate-info {
   margin-top: 0.75rem;
   padding: 0.5rem 0.75rem;

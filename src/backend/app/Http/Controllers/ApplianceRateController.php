@@ -18,7 +18,7 @@ class ApplianceRateController extends Controller {
             throw ValidationException::withMessages(['rate' => 'Cannot modify a rate that has been paid or partially paid']);
         }
 
-        $cost = $request->integer('cost');
+        $cost = $applianceRate->rate_cost;
         $newCost = $request->integer('newCost');
         $creatorId = $request->integer('admin_id');
         $amount = $newCost - $cost;
