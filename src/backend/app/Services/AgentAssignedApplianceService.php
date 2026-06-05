@@ -49,7 +49,7 @@ class AgentAssignedApplianceService implements IBaseService {
         $query = $this->agentAssignedAppliance->newQuery();
 
         if ($agentId) {
-            $query->with(['user', 'agent', 'appliance'])
+            $query->with(['user', 'agent', 'appliance.applianceType'])
                 ->whereHas(
                     'agent',
                     function ($q) use ($agentId) {
