@@ -7,7 +7,7 @@ use App\Plugins\VodacomMzPaymentProvider\Http\Requests\VodacomTransactionEnquiry
 use App\Plugins\VodacomMzPaymentProvider\Http\Requests\VodacomTransactionProcessRequest;
 use App\Plugins\VodacomMzPaymentProvider\Http\Requests\VodacomTransactionValidationRequest;
 use App\Plugins\VodacomMzPaymentProvider\Http\Resources\VodacomTransactionResource;
-use App\Plugins\VodacomMzPaymentProvider\Services\VodacomTransactionService;
+use App\Plugins\VodacomMzPaymentProvider\Services\VodacomMzTransactionService;
 use Dedoc\Scramble\Attributes\Group;
 
 /**
@@ -16,37 +16,16 @@ use Dedoc\Scramble\Attributes\Group;
  * API endpoints for integrating with Vodacom's M-Pesa payment services
  */
 #[Group('Plugins / Vodacom Mz')]
-class VodacomTransactionController extends Controller {
-    public function __construct(private VodacomTransactionService $vodacomService) {}
+class VodacomMzTransactionController extends Controller {
+    public function __construct(
+        private VodacomMzTransactionService $vodacomService,
+    ) {}
 
     /**
      * Validate Transaction.
      *
      * Validates a transaction before processing. Use this endpoint to verify if a transaction
      * can proceed based on the provided information. This is typically the first step in the payment flow.
-     *
-     * @bodyParam serialNumber string required Unique identifier for the product/service being purchased pattern: ^[A-Z0-9]{8,12}$ Example: ABC123456789
-     * @bodyParam amount number required Transaction amount in the local currency  Example: 15000
-     * @bodyParam payerPhoneNumber string required Customer's phone number in international format pattern: ^258[0-9]{9}$ Example: 258712345678
-     * @bodyParam referenceId string required Unique reference identifier for this transaction pattern: ^[A-Za-z0-9\-]{5,20}$ Example: ORD-12345-ABC
-     *
-     * @response scenario="Success" {
-     *   "data": {
-     *     "transactionId": "VOD-TXN-123456",
-     *     "status": "validated",
-     *     "details": {
-     *       "product": "Internet Bundle",
-     *       "validAmount": true
-     *     },
-     *     "success": true
-     *   }
-     * }
-     * @response 400 scenario="Validation Error" {
-     *   "data": {
-     *     "message": "Invalid amount specified for this product",
-     *     "success": false
-     *   }
-     * }
      */
     public function validateTransaction(VodacomTransactionValidationRequest $request): VodacomTransactionResource {
         $validatedData = $request->validated();

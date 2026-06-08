@@ -2,7 +2,28 @@
 
 namespace App\Plugins\VodacomMzPaymentProvider\Services;
 
-class VodacomTransactionService {
+use App\Models\Address\Address;
+use App\Models\Meter\Meter;
+use App\Models\Transaction\Transaction;
+use App\Plugins\VodacomMzPaymentProvider\Models\VodacomMzTransaction;
+use App\Services\AbstractPaymentAggregatorTransactionService;
+use App\Services\Interfaces\IBaseService;
+
+class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionService {
+    public function __construct(
+        private Meter $meter,
+        private Address $address,
+        private Transaction $transaction,
+        private VodacomMzTransaction $vodacomMzTransaction,
+    ) {
+        parent::__construct(
+            $this->meter,
+            $this->address,
+            $this->transaction,
+            $this->vodacomMzTransaction
+        );
+    }
+
     /**
      * Validate a transaction request.
      *
@@ -40,5 +61,9 @@ class VodacomTransactionService {
         return [
             'status' => [$randomStatus],
         ];
+    }
+
+    public function getById(int $id): ?PaystackTransaction {
+        return $this->paystackTransaction->newQuery()->find($id);
     }
 }
