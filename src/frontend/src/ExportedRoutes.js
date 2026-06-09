@@ -74,6 +74,11 @@ import PaystackOverview from "@/plugins/paystack-payment-provider/modules/Overvi
 import PaystackPublicPayment from "@/plugins/paystack-payment-provider/modules/Payment/PublicPaymentForm.vue"
 import PaystackPublicResult from "@/plugins/paystack-payment-provider/modules/Payment/PublicPaymentResult.vue"
 import PaystackTransaction from "@/plugins/paystack-payment-provider/modules/Transaction/Transaction.vue"
+import PesapalCredential from "@/plugins/pesapal-payment-provider/modules/Overview/Credential.vue"
+import PesapalOverview from "@/plugins/pesapal-payment-provider/modules/Overview/Overview.vue"
+import PesapalPublicPayment from "@/plugins/pesapal-payment-provider/modules/Payment/PublicPaymentForm.vue"
+import PesapalPublicResult from "@/plugins/pesapal-payment-provider/modules/Payment/PublicPaymentResult.vue"
+import PesapalTransaction from "@/plugins/pesapal-payment-provider/modules/Transaction/Transaction.vue"
 import ProspectOverview from "@/plugins/prospect/modules/Overview/Overview.vue"
 import ProspectSettings from "@/plugins/prospect/modules/Setting/Setting.vue"
 import SmsTransactionParserMessages from "@/plugins/sms-transaction-parser/modules/Messages/Messages.vue"
@@ -1410,6 +1415,68 @@ export const exportedRoutes = [
       {
         path: "transactions",
         component: PaystackTransaction,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/pesapal/public",
+    component: ChildRouteWrapper,
+    children: [
+      {
+        path: "payment/:companyHash",
+        component: PesapalPublicPayment,
+        name: "/pesapal/public/payment",
+      },
+      {
+        path: "result/:companyHash",
+        name: "/pesapal/public/result",
+        component: PesapalPublicResult,
+      },
+    ],
+  },
+  {
+    path: "/pesapal",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 30,
+        name: "Pesapal",
+        icon: "payment",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: PesapalOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "credential",
+        component: PesapalCredential,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Credentials",
+          },
+        },
+      },
+      {
+        path: "transactions",
+        component: PesapalTransaction,
         meta: {
           layout: "default",
           sidebar: {
