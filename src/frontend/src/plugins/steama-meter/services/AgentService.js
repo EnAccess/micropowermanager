@@ -1,6 +1,7 @@
 import AgentRepository from "../repositories/AgentRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 
 export class AgentService {
   constructor() {
@@ -10,6 +11,7 @@ export class AgentService {
     this.count = 0
     this.pagingUrl = "/api/steama-meters/steama-agent"
     this.routeName = "/steama-meters/steama-agent"
+    this.paginator = new Paginator(this.pagingUrl)
     this.agent = {
       id: null,
       name: null,
@@ -22,12 +24,13 @@ export class AgentService {
   }
 
   fromJson(agentData) {
+    let person = agentData.mpm_agent?.person
     this.agent = {
       id: agentData.id,
-      name: agentData.mpm_agent.person.name,
-      surname: agentData.mpm_agent.person.surname,
-      phone: agentData.mpm_agent.person.addresses[0].phone,
-      siteName: agentData.site.mpm_mini_grid.name,
+      name: person?.name ?? null,
+      surname: person?.surname ?? null,
+      phone: person?.addresses?.[0]?.phone ?? null,
+      siteName: agentData.site?.mpm_mini_grid?.name ?? null,
       isCreditLimited: agentData.is_credit_limited,
       creditBalance: agentData.credit_balance,
     }
@@ -50,20 +53,7 @@ export class AgentService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-  async checkAgents() {
-    try {
-      let response = await this.repository.syncCheck()
-      if (response.status === 200) {
-        return response.data.data.result
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
-    } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -77,7 +67,7 @@ export class AgentService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

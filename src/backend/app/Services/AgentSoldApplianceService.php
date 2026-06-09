@@ -153,6 +153,7 @@ class AgentSoldApplianceService implements IBaseService {
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
         $paymentType = $requestData['payment_type'] ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
+        $rateType = $requestData['rate_type'] ?? 'monthly';
         $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
 
         $downPayment = $requestData['down_payment'] ?: 0;
@@ -199,6 +200,11 @@ class AgentSoldApplianceService implements IBaseService {
         $this->agentAppliancePersonService->assign();
         $this->appliancePersonService->save($appliancePerson);
 
+        if (!$deviceSerial) {
+            $transaction->message = (string) $appliancePerson->id;
+            $this->transactionService->save($transaction);
+        }
+
         if ($deviceSerial) {
             $addressFromCustomer = $appliancePerson->person()->first()->addresses()->first();
             $addressData = $requestData['address'] ?? [
@@ -234,7 +240,7 @@ class AgentSoldApplianceService implements IBaseService {
         $buyer = $this->personService->getById($appliancePerson->person_id);
 
         if (!$isEnergyService) {
-            $this->applianceRateService->create($appliancePerson);
+            $this->applianceRateService->create($appliancePerson, $rateType);
         }
 
         if ($appliancePerson->down_payment > 0) {

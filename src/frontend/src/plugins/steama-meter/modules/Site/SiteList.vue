@@ -3,8 +3,7 @@
     <widget
       id="site-list"
       :title="title"
-      :paginator="true"
-      :paging_url="siteService.pagingUrl"
+      :paginator="siteService.paginator"
       :route_name="siteService.routeName"
       :show_per_page="true"
       :subscriber="subscriber"
@@ -88,37 +87,9 @@ export default {
         await this.credentialService.getCredential()
         if (!this.credentialService.credential.isAuthenticated) {
           this.redirectDialogActive = true
-        } else {
-          await this.checkSync()
         }
       } catch (e) {
         this.redirectDialogActive = true
-      }
-    },
-
-    async checkSync() {
-      try {
-        this.loading = true
-        this.isSynced = await this.siteService.checkSites()
-
-        this.loading = false
-        if (!this.isSynced) {
-          let swalOptions = {
-            title: "Updates",
-            showCancelButton: true,
-            text: "Site Records Not Up to Date.",
-            confirmButtonText: "Update",
-            cancelButtonText: "Cancel",
-          }
-          this.$swal(swalOptions).then((result) => {
-            if (result.value) {
-              this.syncSites()
-            }
-          })
-        }
-      } catch (e) {
-        this.loading = false
-        this.alertNotify("error", e.message)
       }
     },
     async syncSites() {

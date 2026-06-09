@@ -3,8 +3,7 @@
     <widget
       id="customer-list"
       :title="title"
-      :paginator="true"
-      :paging_url="customerService.pagingUrl"
+      :paginator="customerService.paginator"
       :route_name="customerService.routeName"
       :search="true"
       :show_per_page="true"
@@ -116,7 +115,6 @@
 <script>
 import { CredentialService } from "../../services/CredentialService.js"
 import { CustomerService } from "../../services/CustomerService.js"
-import { SiteService } from "../../services/SiteService.js"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -130,7 +128,6 @@ export default {
   data() {
     return {
       credentialService: new CredentialService(),
-      siteService: new SiteService(),
       customerService: new CustomerService(),
       subscriber: "customer-list",
       loading: false,
@@ -161,37 +158,9 @@ export default {
         await this.credentialService.getCredential()
         if (!this.credentialService.credential.isAuthenticated) {
           this.redirectDialogActive = true
-        } else {
-          await this.checkSync()
         }
       } catch (e) {
         this.redirectDialogActive = true
-      }
-    },
-
-    async checkSync() {
-      try {
-        this.loading = true
-        this.isSynced = await this.customerService.checkCustomers()
-        this.loading = false
-
-        if (!this.isSynced) {
-          let swalOptions = {
-            title: "Updates",
-            showCancelButton: true,
-            text: "Customer Records Not Up to Date.",
-            confirmButtonText: "Update",
-            cancelButtonText: "Cancel",
-          }
-          this.$swal(swalOptions).then((result) => {
-            if (result.value) {
-              this.syncCustomers()
-            }
-          })
-        }
-      } catch (e) {
-        this.loading = false
-        this.alertNotify("error", e.message)
       }
     },
 
@@ -199,15 +168,6 @@ export default {
       if (!this.loading) {
         try {
           this.loading = true
-          let sitesSynced = await this.siteService.checkSites()
-          if (!sitesSynced) {
-            this.alertNotify(
-              "warn",
-              "Sites must be updated to update Customers.",
-            )
-            this.loading = false
-            return
-          }
           this.isSynced = false
           await this.customerService.syncCustomers()
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)

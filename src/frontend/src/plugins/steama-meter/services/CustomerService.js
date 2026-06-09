@@ -1,6 +1,7 @@
 import CustomerRepository from "../repositories/CustomerRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 import { EventBus } from "@/shared/eventbus.js"
 
 export class CustomerService {
@@ -11,6 +12,7 @@ export class CustomerService {
     this.count = 0
     this.pagingUrl = "/api/steama-meters/steama-customer"
     this.routeName = "/steama-meters/steama-customer"
+    this.paginator = new Paginator(this.pagingUrl)
     this.customer = {
       id: null,
       steamaId: null,
@@ -28,11 +30,11 @@ export class CustomerService {
     this.customer = {
       id: customerData.id,
       steamaId: customerData.customer_id,
-      firstName: customerData.mpm_person.name,
-      lastName: customerData.mpm_person.surname,
-      telephone: customerData.mpm_person.addresses[0].phone,
-      siteId: customerData.site.mpm_mini_grid.id,
-      siteName: customerData.site.mpm_mini_grid.name,
+      firstName: customerData.mpm_person?.name ?? null,
+      lastName: customerData.mpm_person?.surname ?? null,
+      telephone: customerData.mpm_person?.addresses?.[0]?.phone ?? null,
+      siteId: customerData.site?.mpm_mini_grid?.id ?? null,
+      siteName: customerData.site?.mpm_mini_grid?.name ?? null,
       energyPrice: customerData.energy_price,
       lowBalanceWarning: customerData.low_balance_warning,
     }
@@ -56,21 +58,7 @@ export class CustomerService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-
-  async checkCustomers() {
-    try {
-      let response = await this.repository.syncCheck()
-      if (response.status === 200) {
-        return response.data.data.result
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
-    } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -85,7 +73,7 @@ export class CustomerService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -105,7 +93,7 @@ export class CustomerService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -119,7 +107,7 @@ export class CustomerService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

@@ -6,7 +6,6 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
-use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use App\Plugins\SteamaMeter\Models\SteamaSite;
@@ -29,8 +28,6 @@ class SteamaSiteService implements ISynchronizeService {
         private Cluster $cluster,
         private GeographicalInformation $geographicalInformation,
         private City $city,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
     ) {}
 
     /**
@@ -43,15 +40,13 @@ class SteamaSiteService implements ISynchronizeService {
     }
 
     public function getSitesCount(): int {
-        return count($this->site->newQuery()->get());
+        return $this->site->newQuery()->count();
     }
 
     /**
      * @return LengthAwarePaginator<int, SteamaSite>
      */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Sites');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
             $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $site) {
@@ -74,13 +69,11 @@ class SteamaSiteService implements ISynchronizeService {
                     'hash' => $site['hash'],
                 ]);
             });
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
-            return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate(config('steama.paginate'));
+            return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama sites sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -88,26 +81,7 @@ class SteamaSiteService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        try {
-            $url = $this->rootUrl.'?page=1&page_size=100';
-            $result = $this->steamaApi->get($url);
-
-            $sites = $result['results'];
-
-            while ($result['next']) {
-                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                $result = $this->steamaApi->get($url);
-                foreach ($result['results'] as $site) {
-                    $sites[] = $site;
-                }
-            }
-        } catch (SteamaApiResponseException $e) {
-            if ($returnData) {
-                return ['result' => false];
-            }
-            throw new SteamaApiResponseException($e->getMessage());
-        }
-        // @phpstan-ignore argument.templateType,argument.templateType
+        $sites = $this->steamaApi->getAllResults($this->rootUrl);
         $sitesCollection = collect($sites);
         $stmSites = $this->site->newQuery()->get();
         $miniGrids = $this->miniGrid->newQuery()->get();
@@ -150,7 +124,7 @@ class SteamaSiteService implements ISynchronizeService {
         $this->city->newQuery()->create([
             'name' => $miniGrid->name.' Village',
             'mini_grid_id' => $miniGrid->id,
-            'cluster_id' => $miniGrid->cluster->id,
+            'country_id' => 0,
         ]);
 
         return $miniGrid;
@@ -179,7 +153,7 @@ class SteamaSiteService implements ISynchronizeService {
             }
         )->first();
         $points = $site['latitude'] === null ?
-            config('steama.geoLocation') : $site['latitude'].','.$site['longitude'];
+            config('steama-meter.geoLocation') : $site['latitude'].','.$site['longitude'];
 
         if ($geographicalInformation) {
             $geographicalInformation->update([

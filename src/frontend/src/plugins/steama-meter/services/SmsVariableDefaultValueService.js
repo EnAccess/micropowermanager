@@ -31,7 +31,7 @@ export class SmsVariableDefaultValueService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let erorMessage = e.response.data.message
+      let erorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(erorMessage, "http")
     }
   }

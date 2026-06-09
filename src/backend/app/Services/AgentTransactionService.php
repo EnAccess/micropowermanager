@@ -27,7 +27,12 @@ class AgentTransactionService implements IAgentTransactionService {
         $query = $this->transaction->newQuery();
 
         if ($forApp) {
-            $query->with(['originalTransaction', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])]);
+            $query->with([
+                'originalTransaction',
+                'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person']),
+                'nonPaygoAppliance.person',
+                'nonPaygoAppliance.appliance',
+            ]);
         } else {
             $query->with(['device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])]);
         }

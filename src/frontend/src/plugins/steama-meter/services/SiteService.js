@@ -1,6 +1,7 @@
 import SiteRepository from "../repositories/SiteRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 
 export class SiteService {
   constructor() {
@@ -10,6 +11,7 @@ export class SiteService {
     this.count = 0
     this.pagingUrl = "/api/steama-meters/steama-site"
     this.routeName = "/steama-meters/steama-site"
+    this.paginator = new Paginator(this.pagingUrl)
     this.site = {
       id: null,
       name: null,
@@ -19,11 +21,12 @@ export class SiteService {
   }
 
   fromJson(siteData) {
+    let points = siteData.mpm_mini_grid?.location?.points?.split(",") ?? []
     this.site = {
       id: siteData.id,
-      name: siteData.mpm_mini_grid.name,
-      latitude: siteData.mpm_mini_grid.location.points.split(",")[0],
-      longitude: siteData.mpm_mini_grid.location.points.split(",")[1],
+      name: siteData.mpm_mini_grid?.name ?? null,
+      latitude: points[0] ?? null,
+      longitude: points[1] ?? null,
     }
     return this.site
   }
@@ -45,21 +48,7 @@ export class SiteService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-
-  async checkSites() {
-    try {
-      let response = await this.repository.syncCheck()
-      if (response.status === 200) {
-        return response.data.data.result
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
-    } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -74,7 +63,7 @@ export class SiteService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -88,7 +77,7 @@ export class SiteService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.message
+      let errorMessage = e.response?.data?.message ?? e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

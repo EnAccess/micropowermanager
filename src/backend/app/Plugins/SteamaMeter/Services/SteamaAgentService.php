@@ -6,7 +6,6 @@ use App\Models\Address\Address;
 use App\Models\Agent;
 use App\Models\AgentCommission;
 use App\Models\Person\Person;
-use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use App\Plugins\SteamaMeter\Models\SteamaAgent;
@@ -32,8 +31,6 @@ class SteamaAgentService implements ISynchronizeService {
         private Person $person,
         private SteamaSite $site,
         private Address $address,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
     ) {}
 
     /**
@@ -46,7 +43,7 @@ class SteamaAgentService implements ISynchronizeService {
     }
 
     public function getAgentsCount(): int {
-        return count($this->agent->newQuery()->get());
+        return $this->stmAgent->newQuery()->count();
     }
 
     /**
@@ -70,8 +67,6 @@ class SteamaAgentService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaAgent>
      */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Agents');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
             $syncCheck['data']->filter(fn (array $value): bool => $value['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $agent) {
@@ -100,16 +95,14 @@ class SteamaAgentService implements ISynchronizeService {
                     'hash' => $agent['hash'],
                 ]);
             });
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
             return $this->stmAgent->newQuery()->with([
                 'mpmAgent.person.addresses',
                 'site.mpmMiniGrid',
-            ])->paginate(config('steama.paginate'));
+            ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama agents sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -117,24 +110,7 @@ class SteamaAgentService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        try {
-            $url = $this->rootUrl.'?page=1&page_size=100';
-            $result = $this->steamaApi->get($url);
-            $agents = $result['results'];
-            while ($result['next']) {
-                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                $result = $this->steamaApi->get($url);
-                foreach ($result['results'] as $agent) {
-                    $agents[] = $agent;
-                }
-            }
-        } catch (SteamaApiResponseException $e) {
-            if ($returnData) {
-                return ['result' => false];
-            }
-            throw new SteamaApiResponseException($e->getMessage());
-        }
-        // @phpstan-ignore argument.templateType,argument.templateType
+        $agents = $this->steamaApi->getAllResults($this->rootUrl);
         $agentsCollection = collect($agents);
         $stmAgents = $this->stmAgent->newQuery()->get();
         $agents = $this->agent->newQuery()->get();
@@ -193,11 +169,13 @@ class SteamaAgentService implements ISynchronizeService {
 
         $agent = $this->agent->newQuery()->create([
             'person_id' => $person->id,
-            'name' => $person->name,
             'password' => $stmAgent['first_name'].$stmAgent['last_name'],
             'email' => 'StmAgent'.strval($counter + 1).'steama.co',
             'mini_grid_id' => $site->mpmMiniGrid->id,
             'agent_commission_id' => $agentCommission->id,
+            'mobile_device_id' => '-',
+            'fire_base_token' => '-',
+            'connection' => ' ',
         ]);
         $addressService->assignAddressToOwner($person, $address);
 
@@ -235,7 +213,6 @@ class SteamaAgentService implements ISynchronizeService {
             'is_primary' => 1,
         ]);
         $agent->update([
-            'name' => $relatedPerson->name,
             'password' => $stmAgent['first_name'].$stmAgent['last_name'],
             'mini_grid_id' => $site->mpmMiniGrid->id,
         ]);

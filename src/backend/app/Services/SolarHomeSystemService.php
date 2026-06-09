@@ -39,7 +39,7 @@ class SolarHomeSystemService implements IBaseService {
     public function getById(int $id): SolarHomeSystem {
         return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person.addresses', 'device.geo', 'tokens'])
-            ->find($id);
+            ->findOrFail($id);
     }
 
     /**
@@ -101,7 +101,9 @@ class SolarHomeSystemService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function update($model, array $data): SolarHomeSystem {
-        throw new \Exception('not implemented');
+        $model->update($data);
+
+        return $model->fresh(['manufacturer', 'appliance', 'device.person']);
     }
 
     public function delete($model): ?bool {

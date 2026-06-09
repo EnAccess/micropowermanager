@@ -13,7 +13,15 @@ class SteamaTransactionController extends Controller {
         private SteamaTransactionsService $steamaTransactionsService,
     ) {}
 
-    public function index(SteamaCustomer $customer, Request $request): SteamaResource {
+    public function index(Request $request): SteamaResource {
+        return new SteamaResource($this->steamaTransactionsService->getTransactions($request));
+    }
+
+    public function sync(): SteamaResource {
+        return new SteamaResource($this->steamaTransactionsService->sync());
+    }
+
+    public function getByCustomer(SteamaCustomer $customer, Request $request): SteamaResource {
         return new SteamaResource($this->steamaTransactionsService->getTransactionsByCustomer($customer, $request));
     }
 }

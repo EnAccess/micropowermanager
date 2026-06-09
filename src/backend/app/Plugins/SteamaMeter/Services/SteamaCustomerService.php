@@ -45,8 +45,6 @@ class SteamaCustomerService implements ISynchronizeService {
         private SteamaUserType $userType,
         private SteamaSite $stmSite,
         private City $city,
-        private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService,
         private SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
     ) {}
 
@@ -60,15 +58,13 @@ class SteamaCustomerService implements ISynchronizeService {
     }
 
     public function getCustomersCount(): int {
-        return count($this->customer->newQuery()->get());
+        return $this->customer->newQuery()->count();
     }
 
     /**
      * @return LengthAwarePaginator<int, SteamaCustomer>
      */
     public function sync(): LengthAwarePaginator {
-        $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Customers');
-        $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
             $syncCheck = $this->syncCheck(true);
             $userTypes = $this->userType->newQuery()->get();
@@ -108,16 +104,14 @@ class SteamaCustomerService implements ISynchronizeService {
                 $this->setStmCustomerPaymentPlan($customer);
                 $this->steamaSmsNotifiedCustomerService->removeLowBalancedCustomer($customer['registeredStmCustomer']);
             });
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
             return $this->customer->newQuery()->with([
                 'mpmPerson.addresses',
                 'site.mpmMiniGrid',
-            ])->paginate(config('steama.paginate'));
+            ])->paginate(config('steama-meter.paginate'));
         } catch (\Exception $e) {
-            $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama customers sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -125,25 +119,7 @@ class SteamaCustomerService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        try {
-            $url = $this->rootUrl.'?page=1&page_size=100';
-            $result = $this->steamaApi->get($url);
-
-            $customers = $result['results'];
-            while ($result['next']) {
-                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                $result = $this->steamaApi->get($url);
-                foreach ($result['results'] as $customer) {
-                    $customers[] = $customer;
-                }
-            }
-        } catch (SteamaApiResponseException $e) {
-            if ($returnData) {
-                return ['result' => false];
-            }
-            throw new SteamaApiResponseException($e->getMessage());
-        }
-        // @phpstan-ignore argument.templateType,argument.templateType
+        $customers = $this->steamaApi->getAllResults($this->rootUrl);
         $customersCollection = collect($customers);
         $stmCustomers = $this->customer->newQuery()->get();
         $people = $this->person->newQuery()->get();
@@ -179,7 +155,7 @@ class SteamaCustomerService implements ISynchronizeService {
         $personData = [
             'name' => $customer['first_name'] ?: '',
             'surname' => $customer['last_name'] ?: '',
-            'phone' => $customer['telephone'] ?: null,
+            'phone' => $this->normalizePhone($customer['telephone'] ?? null),
             'street1' => $customer['site_name'] ?: null,
         ];
         $customerSite = $this->stmSite->newQuery()->with('mpmMiniGrid')->where('site_id', $customer['site'])->first();
@@ -216,7 +192,7 @@ class SteamaCustomerService implements ISynchronizeService {
 
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->update([
-            'phone' => $customer['telephone'] ?: null,
+            'phone' => $this->normalizePhone($customer['telephone'] ?? null),
             'street' => $customer['site_name'] ?: null,
             'city_id' => $customerCity->id,
         ]);
@@ -473,6 +449,27 @@ class SteamaCustomerService implements ISynchronizeService {
         return $this->customer->newQuery()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1));
+    }
+
+    /**
+     * Steama exposes raw, unvalidated telephone strings (blanks, lone "+", malformed prefixes) that the
+     * E164 cast on Address rejects with a NumberParseException, which would otherwise abort the whole
+     * customer sync. Normalize to E164 when parseable, otherwise drop the phone so the customer still syncs.
+     */
+    private function normalizePhone(?string $phone): ?string {
+        if (!$phone) {
+            return null;
+        }
+        try {
+            return phone($phone)->formatE164();
+        } catch (\Throwable $e) {
+            Log::warning('Skipped unparseable Steama customer phone number.', [
+                'phone' => $phone,
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     /**

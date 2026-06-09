@@ -43,7 +43,7 @@ class SteamaCredentialResource extends JsonResource {
             ],
             default => [
                 'type' => 'warning',
-                'message' => 'An error occurred while reaching out to Spark Meter. Please try it again later.',
+                'message' => 'An error occurred while reaching out to Steama. Please try it again later.',
             ],
         };
     }

@@ -27,6 +27,7 @@ class CreateAgentSoldApplianceRequest extends FormRequest {
         return [
             'person_id' => ['required'],
             'payment_type' => ['nullable', 'string', 'in:installment,energy_service'],
+            'rate_type' => ['nullable', 'string', 'in:monthly,weekly'],
             'down_payment' => ['required_unless:payment_type,energy_service', 'numeric'],
             'tenure' => ['required_unless:payment_type,energy_service', 'numeric', 'min:0'],
             'first_payment_date' => ['required_unless:payment_type,energy_service'],
