@@ -74,6 +74,7 @@ class DeviceService implements IBaseService, IAssociative {
         $query = $this->device->newQuery()
             ->with(['person', 'device'])
             ->when($filters['device_type'] ?? null, fn ($q, $type) => $q->where('device_type', $type))
+            ->when($filters['serial'] ?? null, fn ($q, $serial) => $q->where('device_serial', 'LIKE', "%{$serial}%"))
             ->when($filters['appliance_id'] ?? null, fn ($q, $applianceId) => $q->whereHasMorph(
                 'device',
                 [SolarHomeSystem::class, EBike::class],
