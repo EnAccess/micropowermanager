@@ -41,12 +41,13 @@ export class DeviceService {
     }
   }
 
-  async getAvailableDevicesForAppliance(applianceId) {
+  async getAvailableDevicesForAppliance(applianceId, serial = null) {
     const params = {
       unassigned: 1,
       appliance_id: applianceId,
       per_page: 50,
     }
+    if (serial) params.serial = serial
     return this.getDevices(params)
   }
 }

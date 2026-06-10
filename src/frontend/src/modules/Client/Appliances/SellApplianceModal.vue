@@ -431,7 +431,10 @@
                       />
                     </md-field>
                   </div>
-                  <template v-if="!filteredDeviceSelectionList.length">
+                  <template v-if="isDeviceSearching">
+                    <md-option disabled>Searching…</md-option>
+                  </template>
+                  <template v-else-if="!deviceSelectionList.length">
                     <md-option disabled>
                       <md-tooltip md-direction="top">
                         Consider changing the search term or create a suitable
@@ -442,7 +445,7 @@
                   </template>
                   <template v-else>
                     <md-option
-                      v-for="device in filteredDeviceSelectionList"
+                      v-for="device in deviceSelectionList"
                       :key="device.id"
                       :value="device.serial"
                     >
@@ -635,6 +638,8 @@ import { DeviceService } from "@/services/DeviceService.js"
 import { ICONS, MappingService } from "@/services/MappingService.js"
 import Loader from "@/shared/Loader.vue"
 
+const debounce = require("debounce")
+
 const APPLIANCE_TYPE_SHS_ID = 1
 const APPLIANCE_TYPE_E_BIKE_ID = 2
 export default {
@@ -678,6 +683,7 @@ export default {
       paymentProviders: [],
       paymentProvider: 0,
       deviceSearchTerm: "",
+      isDeviceSearching: false,
     }
   },
   created() {
@@ -986,6 +992,22 @@ export default {
     resetDeviceSearch() {
       this.deviceSearchTerm = ""
     },
+    async loadDevicesForAppliance(serial = null) {
+      this.isDeviceSearching = true
+      const result = await this.deviceService.getAvailableDevicesForAppliance(
+        this.selectedApplianceId,
+        serial,
+      )
+      this.isDeviceSearching = false
+      if (result instanceof ErrorHandler) {
+        this.deviceSelectionList = []
+        return
+      }
+      this.deviceSelectionList = this.deviceService.list.map((device) => ({
+        id: device.id,
+        serial: device.deviceSerial,
+      }))
+    },
   },
   computed: {
     ...mapGetters({
@@ -1001,13 +1023,6 @@ export default {
     },
     showRatesButton() {
       return this.applianceService.appliance.rate > 1
-    },
-    filteredDeviceSelectionList() {
-      const term = this.deviceSearchTerm.trim().toLowerCase()
-      if (!term) return this.deviceSelectionList
-      return this.deviceSelectionList.filter((device) =>
-        device.serial.toLowerCase().includes(term),
-      )
     },
     formattedDeviceLatitude() {
       if (!this.deviceLocation) return ""
@@ -1037,6 +1052,10 @@ export default {
     },
   },
   watch: {
+    deviceSearchTerm: debounce(function () {
+      if (!this.isDeviceSelectionRequired || !this.selectedApplianceId) return
+      this.loadDevicesForAppliance(this.deviceSearchTerm.trim() || null)
+    }, 300),
     async showSellApplianceModal(value) {
       this.internalDialogVisible = value
       if (value) {
@@ -1057,14 +1076,9 @@ export default {
       if (this.isDeviceBindingRequired(appliance)) {
         this.isDeviceSelectionRequired = true
         this.selectedDeviceSerial = null
+        this.deviceSearchTerm = ""
         this.resetDeviceSelectionValidation()
-        await this.deviceService.getAvailableDevicesForAppliance(
-          this.selectedApplianceId,
-        )
-        this.deviceSelectionList = this.deviceService.list.map((device) => ({
-          id: device.id,
-          serial: device.deviceSerial,
-        }))
+        await this.loadDevicesForAppliance()
       } else {
         this.isDeviceSelectionRequired = false
         this.deviceSelectionList = []
