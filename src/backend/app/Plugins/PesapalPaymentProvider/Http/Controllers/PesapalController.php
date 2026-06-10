@@ -23,7 +23,7 @@ class PesapalController extends Controller {
         $amount = (float) $request->input('amount');
         $sender = $this->transactionService->getCustomerPhoneByCustomerId($customerId) ?? '';
 
-        $result = $this->transactionService->initializePayment(
+        $result = $this->transactionService->initiatePayment(
             amount: $amount,
             sender: $sender,
             message: $serialId,

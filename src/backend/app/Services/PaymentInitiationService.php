@@ -9,16 +9,16 @@ use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
-use App\Services\Interfaces\PaymentInitializer;
+use App\Services\Interfaces\PaymentInitiator;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Collection;
 
-class PaymentInitializationService {
+class PaymentInitiationService {
     /**
-     * Maps provider IDs to their PaymentInitializer implementation class.
+     * Maps provider IDs to their PaymentInitiator implementation class.
      * When adding a new payment provider plugin, register it here.
      *
-     * @var array<int, class-string<PaymentInitializer>>
+     * @var array<int, class-string<PaymentInitiator>>
      */
     private const PROVIDER_MAP = [
         0 => CashTransactionService::class,
@@ -44,7 +44,7 @@ class PaymentInitializationService {
      *
      * @return array{transaction: Transaction, provider_data: array<string, mixed>}
      */
-    public function initialize(
+    public function initiate(
         int $providerId,
         float $amount,
         string $sender,
@@ -57,9 +57,9 @@ class PaymentInitializationService {
             throw new \InvalidArgumentException("Unsupported payment provider ID: {$providerId}");
         }
 
-        $initializer = $this->container->make(self::PROVIDER_MAP[$providerId]);
+        $initiator = $this->container->make(self::PROVIDER_MAP[$providerId]);
 
-        return $initializer->initializePayment(
+        return $initiator->initiatePayment(
             $amount,
             $sender,
             $message,
@@ -76,7 +76,10 @@ class PaymentInitializationService {
         return $activePlugins->map(function (Plugins $plugin): array {
             $mpmPlugin = $this->mpmPluginService->getById($plugin->mpm_plugin_id);
 
-            return ['id' => $plugin->mpm_plugin_id, 'name' => $mpmPlugin instanceof MpmPlugin ? $mpmPlugin->name : 'Unknown'];
+            return [
+                'id' => $plugin->mpm_plugin_id,
+                'name' => $mpmPlugin instanceof MpmPlugin ? $mpmPlugin->name : 'Unknown',
+            ];
         });
     }
 }

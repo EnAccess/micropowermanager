@@ -18,7 +18,7 @@ use App\Services\ApplianceRateService;
 use App\Services\ApplianceService;
 use App\Services\DeviceService;
 use App\Services\GeographicalInformationService;
-use App\Services\PaymentInitializationService;
+use App\Services\PaymentInitiationService;
 use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -37,7 +37,7 @@ class AppliancePersonController extends Controller {
         private AddressesService $addressesService,
         private GeographicalInformationService $geographicalInformationService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
-        private PaymentInitializationService $paymentInitializationService,
+        private PaymentInitiationService $paymentInitiationService,
         private ApplianceService $applianceService,
         private ApplianceRateService $applianceRateService,
     ) {}
@@ -152,7 +152,7 @@ class AppliancePersonController extends Controller {
         $companyId = $request->attributes->get('companyId');
         $downPaymentInitData = [];
 
-        $result = $this->paymentInitializationService->initialize(
+        $result = $this->paymentInitiationService->initiate(
             providerId: $paymentProviderId,
             amount: $downPayment,
             sender: $sender,

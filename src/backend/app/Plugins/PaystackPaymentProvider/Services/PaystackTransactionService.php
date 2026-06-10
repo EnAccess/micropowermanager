@@ -14,7 +14,7 @@ use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\DeviceService;
 use App\Services\Interfaces\IBaseService;
-use App\Services\Interfaces\PaymentInitializer;
+use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,7 +24,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @implements IBaseService<PaystackTransaction>
  */
-class PaystackTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitializer {
+class PaystackTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -165,7 +165,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
      *
      * @return array{transaction: Transaction, provider_data: array<string, mixed>}
      */
-    public function initializePayment(
+    public function initiatePayment(
         float $amount,
         string $sender,
         string $message,
