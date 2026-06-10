@@ -8,17 +8,25 @@ use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
+use App\Models\SolarHomeSystem;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
-use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
-use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
-use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use App\Utils\MinimumPurchaseAmountValidator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-abstract class AbstractPaymentAggregatorTransactionService {
+/**
+ * @template T of BasePaymentProviderTransaction
+ *
+ * @implements IBaseService<T>
+ */
+abstract class AbstractPaymentAggregatorTransactionService implements IBaseService {
+    /** @use HasCrudOperations<T> */
+    use HasCrudOperations;
+
     private const MINIMUM_TRANSACTION_AMOUNT = 0;
     protected string $payerPhoneNumber;
     protected string $meterSerialNumber;
@@ -28,12 +36,20 @@ abstract class AbstractPaymentAggregatorTransactionService {
 
     public function __construct(
         private Meter $meter,
+        private SolarHomeSystem $solarHomeSystem,
         private Address $address,
         private Transaction $transaction,
-        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction $paymentAggregatorTransaction,
+        private BasePaymentProviderTransaction $paymentAggregatorTransaction,
     ) {}
 
-    public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
+    /**
+     * @return T
+     */
+    protected function crudModel(): Model {
+        return $this->paymentAggregatorTransaction;
+    }
+
+    public function validateMeterPayment(string $meterSerialNumber, float $amount): void {
         if (!($meter = $this->meter->findBySerialNumber($meterSerialNumber)) instanceof Meter) {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
@@ -55,6 +71,85 @@ abstract class AbstractPaymentAggregatorTransactionService {
             $this->payerPhoneNumber = $this->getTransactionSender($meterSerialNumber);
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
+        }
+    }
+
+    public function validatePaymentOwner(string $serialId, float $amount): void {
+        if (!$this->validateMeterSerial($serialId)) {
+            throw new \Exception('Invalid meter serial number');
+        }
+
+        $this->validateMeterPayment($serialId, $amount);
+
+        if ($amount <= 0) {
+            throw new \Exception('Invalid payment amount');
+        }
+    }
+
+    public function validateMeterSerial(string $serialId): bool {
+        $meter = $this->meter->newQuery()
+            ->where('serial_number', $serialId)
+            ->where('in_use', 1)
+            ->first();
+
+        return $meter !== null;
+    }
+
+    public function validateSHSSerial(string $serialId): bool {
+        $shs = $this->solarHomeSystem->newQuery()
+            ->where('serial_number', $serialId)
+            ->first();
+
+        return $shs !== null;
+    }
+
+    public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
+        if ($deviceType === 'shs') {
+            return $this->validateSHSSerial($serialId);
+        }
+
+        return $this->validateMeterSerial($serialId);
+    }
+
+    public function getCustomerIdByMeterSerial(string $serialId): ?int {
+        $meter = $this->meter->newQuery()
+            ->where('serial_number', $serialId)
+            ->where('in_use', 1)
+            ->first();
+
+        if (!$meter) {
+            return null;
+        }
+
+        return $meter->device->person->id;
+    }
+
+    public function getCustomerIdBySHSSerial(string $serialId): ?int {
+        $shs = app()->make(SolarHomeSystem::class)
+            ->newQuery()
+            ->where('serial_number', $serialId)
+            ->first();
+
+        if (!$shs) {
+            return null;
+        }
+
+        $device = $shs->device()->first();
+        if (!$device || !$device->person) {
+            return null;
+        }
+
+        return (int) $device->person->id;
+    }
+
+    public function getCustomerPhoneByCustomerId(int $customerId): ?string {
+        try {
+            $personService = app()->make(PersonService::class);
+            $person = $personService->getById($customerId);
+
+            return (string) $person->addresses->first()->phone;
+        } catch (\Exception) {
+            return null;
         }
     }
 
@@ -96,7 +191,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $validator = resolve(MinimumPurchaseAmountValidator::class);
 
         try {
-            if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
+            if (!$validator->validate($transactionData, $this->minimumPurchaseAmount)) {
                 throw new TransactionAmountNotEnoughException('Transaction amount is not enough');
             }
         } catch (TransactionAmountNotEnoughException $e) {
@@ -131,23 +226,10 @@ abstract class AbstractPaymentAggregatorTransactionService {
         }
     }
 
-    public function getCustomerId(): int {
-        return $this->customerId;
-    }
-
-    public function getMeterSerialNumber(): string {
-        return $this->meterSerialNumber;
-    }
-
-    public function getAmount(): float {
-        return $this->amount;
-    }
-
-    public function getMinimumPurchaseAmount(): float {
-        return $this->minimumPurchaseAmount;
-    }
-
-    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction {
+    /**
+     * @return T
+     */
+    public function getPaymentAggregatorTransaction(): BasePaymentProviderTransaction {
         return $this->paymentAggregatorTransaction;
     }
 }

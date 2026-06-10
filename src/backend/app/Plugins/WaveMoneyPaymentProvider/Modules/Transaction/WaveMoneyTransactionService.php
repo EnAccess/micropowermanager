@@ -6,28 +6,29 @@ namespace App\Plugins\WaveMoneyPaymentProvider\Modules\Transaction;
 
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
+use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Ramsey\Uuid\Uuid;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<WaveMoneyTransaction>
+ *
  * @implements IBaseService<WaveMoneyTransaction>
  */
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
     public function __construct(
         private Meter $meter,
+        private SolarHomeSystem $solarHomeSystem,
         private Address $address,
         private Transaction $transaction,
         private WaveMoneyTransaction $waveMoneyTransaction,
     ) {
         parent::__construct(
             $this->meter,
+            $this->solarHomeSystem,
             $this->address,
             $this->transaction,
             $this->waveMoneyTransaction
@@ -52,11 +53,11 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return [
             'order_id' => $orderId,
             'reference_id' => $referenceId,
-            'meter_serial' => $this->getMeterSerialNumber(),
+            'meter_serial' => $this->meterSerialNumber,
             'status' => WaveMoneyTransaction::STATUS_REQUESTED,
             'currency' => 'MMK',
-            'customer_id' => $this->getCustomerId(),
-            'amount' => $this->getAmount(),
+            'customer_id' => $this->customerId,
+            'amount' => $this->amount,
         ];
     }
 
@@ -70,44 +71,15 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             ->firstOrFail();
     }
 
-    /**
-     * @return Collection<int, WaveMoneyTransaction>
-     */
-    public function getByStatus(int $status): Collection {
-        return $this->waveMoneyTransaction->newQuery()->where('status', '=', $status)
-            ->get();
-    }
-
     public function getById(int $id): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->findOrFail($id);
-    }
-
-    public function update($waveMoneyTransaction, array $waveMoneyTransactionData): WaveMoneyTransaction {
-        $waveMoneyTransaction->update($waveMoneyTransactionData);
-        $waveMoneyTransaction->fresh();
-
-        return $waveMoneyTransaction;
     }
 
     public function create($waveMoneyTransactionData): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->create($waveMoneyTransactionData);
     }
 
-    public function delete($waveMoneyTransaction): ?bool {
-        return $waveMoneyTransaction->delete();
-    }
-
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        $query = $this->waveMoneyTransaction->newQuery();
-
-        if ($limit) {
-            return $query->paginate($limit);
-        }
-
-        return $this->waveMoneyTransaction->newQuery()->get();
-    }
-
-    public function getWaveMoneyTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
+    public function getWaveMoneyTransaction(): WaveMoneyTransaction {
         return $this->getPaymentAggregatorTransaction();
     }
 }
