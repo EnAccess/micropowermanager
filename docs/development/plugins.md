@@ -154,15 +154,15 @@ class InstallPackage extends Command
 
 If your plugin is a **payment provider** (processes transactions from an external payment gateway), there are additional integration steps required:
 
-1. **Implement the `PaymentInitializer` interface**
+1. **Implement the `PaymentInitiator` interface**
 
-   Your plugin's transaction service must implement `App\Services\Interfaces\PaymentInitializer`. This enforces a consistent `initializePayment()` method that creates the provider-specific record and an associated `Transaction` entry.
+   Your plugin's transaction service must implement `App\Services\Interfaces\PaymentInitiator`. This enforces a consistent `initiatePayment()` method that creates the provider-specific record and an associated `Transaction` entry.
 
    ```php
-   use App\Services\Interfaces\PaymentInitializer;
+   use App\Services\Interfaces\PaymentInitiator;
 
-   class YourProviderTransactionService implements PaymentInitializer {
-       public function initializePayment(
+   class YourProviderTransactionService implements PaymentInitiator {
+       public function initiatePayment(
            float $amount,
            string $sender,
            string $message,
@@ -180,7 +180,7 @@ If your plugin is a **payment provider** (processes transactions from an externa
 
 2. **Register in the provider map**
 
-   Add your plugin's MpmPlugin ID and service class to the `PROVIDER_MAP` constant in `App\Services\PaymentInitializationService`:
+   Add your plugin's MpmPlugin ID and service class to the `PROVIDER_MAP` constant in `App\Services\PaymentInitiationService`:
 
    ```php
    private const PROVIDER_MAP = [

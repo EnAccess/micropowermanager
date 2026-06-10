@@ -11,7 +11,7 @@ use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
-class PaystackTransactionServiceInitializePaymentTest extends TestCase {
+class PaystackTransactionServiceInitiatePaymentTest extends TestCase {
     use RefreshMultipleDatabases;
 
     /**
@@ -36,7 +36,7 @@ class PaystackTransactionServiceInitializePaymentTest extends TestCase {
             'reference' => 'ref_test_123',
         ]);
 
-        $result = $service->initializePayment(
+        $result = $service->initiatePayment(
             amount: 200.0,
             sender: '+2340000',
             message: '42',
@@ -64,7 +64,7 @@ class PaystackTransactionServiceInitializePaymentTest extends TestCase {
             'reference' => 'ref_serial',
         ]);
 
-        $service->initializePayment(
+        $service->initiatePayment(
             amount: 150.0,
             sender: '+2340001',
             message: 'SERIAL-XYZ',
@@ -90,7 +90,7 @@ class PaystackTransactionServiceInitializePaymentTest extends TestCase {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Paystack initialization failed: API error: invalid key');
 
-        $service->initializePayment(
+        $service->initiatePayment(
             amount: 100.0,
             sender: '-',
             message: '1',

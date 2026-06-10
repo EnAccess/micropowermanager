@@ -9,14 +9,14 @@ use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Services\CashTransactionService;
 use App\Services\MpmPluginService;
-use App\Services\PaymentInitializationService;
+use App\Services\PaymentInitiationService;
 use App\Services\PluginsService;
 use Illuminate\Contracts\Container\Container;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class PaymentInitializationServiceTest extends TestCase {
-    private PaymentInitializationService $service;
+class PaymentInitiationServiceTest extends TestCase {
+    private PaymentInitiationService $service;
 
     /** @var Container&MockObject */
     private MockObject $container;
@@ -41,7 +41,7 @@ class PaymentInitializationServiceTest extends TestCase {
             [PaystackTransactionService::class, [], $this->paystackService],
         ]);
 
-        $this->service = new PaymentInitializationService(
+        $this->service = new PaymentInitiationService(
             $pluginsService,
             $mpmPluginService,
             $this->container,
@@ -52,7 +52,7 @@ class PaymentInitializationServiceTest extends TestCase {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported payment provider ID: 999');
 
-        $this->service->initialize(
+        $this->service->initiate(
             providerId: 999,
             amount: 100.0,
             sender: '+2340000',
@@ -67,11 +67,11 @@ class PaymentInitializationServiceTest extends TestCase {
 
         $this->cashService
             ->expects($this->once())
-            ->method('initializePayment')
+            ->method('initiatePayment')
             ->with(100.0, '+2340000', '42', 'deferred_payment', 5, null)
             ->willReturn(['transaction' => $transaction, 'provider_data' => []]);
 
-        $result = $this->service->initialize(
+        $result = $this->service->initiate(
             providerId: 0,
             amount: 100.0,
             sender: '+2340000',
@@ -89,7 +89,7 @@ class PaymentInitializationServiceTest extends TestCase {
 
         $this->paystackService
             ->expects($this->once())
-            ->method('initializePayment')
+            ->method('initiatePayment')
             ->with(100.0, '+2340000', '42', 'deferred_payment', 5, null)
             ->willReturn([
                 'transaction' => $transaction,
@@ -99,7 +99,7 @@ class PaymentInitializationServiceTest extends TestCase {
                 ],
             ]);
 
-        $result = $this->service->initialize(
+        $result = $this->service->initiate(
             providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
             amount: 100.0,
             sender: '+2340000',
@@ -115,11 +115,11 @@ class PaymentInitializationServiceTest extends TestCase {
     public function testDoesNotCallPaystackServiceForCashProvider(): void {
         $transaction = new Transaction();
 
-        $this->cashService->method('initializePayment')
+        $this->cashService->method('initiatePayment')
             ->willReturn(['transaction' => $transaction, 'provider_data' => []]);
-        $this->paystackService->expects($this->never())->method('initializePayment');
+        $this->paystackService->expects($this->never())->method('initiatePayment');
 
-        $this->service->initialize(
+        $this->service->initiate(
             providerId: 0,
             amount: 50.0,
             sender: '-',
@@ -132,13 +132,13 @@ class PaymentInitializationServiceTest extends TestCase {
     public function testDoesNotCallCashServiceForPaystackProvider(): void {
         $transaction = new Transaction();
 
-        $this->paystackService->method('initializePayment')->willReturn([
+        $this->paystackService->method('initiatePayment')->willReturn([
             'transaction' => $transaction,
             'provider_data' => ['redirect_url' => 'https://paystack.com/pay/x', 'reference' => 'ref_x'],
         ]);
-        $this->cashService->expects($this->never())->method('initializePayment');
+        $this->cashService->expects($this->never())->method('initiatePayment');
 
-        $this->service->initialize(
+        $this->service->initiate(
             providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
             amount: 50.0,
             sender: '-',
@@ -153,14 +153,14 @@ class PaymentInitializationServiceTest extends TestCase {
 
         $this->paystackService
             ->expects($this->once())
-            ->method('initializePayment')
+            ->method('initiatePayment')
             ->with(200.0, '+2340000', 'SERIAL-001', 'deferred_payment', 5, 'SERIAL-001')
             ->willReturn([
                 'transaction' => $transaction,
                 'provider_data' => ['redirect_url' => 'https://paystack.com/pay/y', 'reference' => 'ref_y'],
             ]);
 
-        $this->service->initialize(
+        $this->service->initiate(
             providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
             amount: 200.0,
             sender: '+2340000',
