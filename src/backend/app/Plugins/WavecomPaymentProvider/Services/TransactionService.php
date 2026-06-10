@@ -16,6 +16,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use ParseCsv\Csv;
 
+/**
+ * TODO: This extends AbstractPaymentAggregatorTransactionService but never calls the parent
+ * constructor and only uses CSV import logic of its own. WaveComTransactionProvider::saveTransaction
+ * delegates to the inherited saveTransaction(), which would operate on uninitialised parent state,
+ * so that path is effectively dead. The inheritance should be removed once there is test coverage
+ * confirming the inbound provider flow is unused for Wavecom.
+ */
 class TransactionService extends AbstractPaymentAggregatorTransactionService {
     public function __construct(private Csv $csv) {}
 

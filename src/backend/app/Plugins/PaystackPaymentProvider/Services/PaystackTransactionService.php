@@ -7,24 +7,18 @@ namespace App\Plugins\PaystackPaymentProvider\Services;
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
-use App\Models\SolarHomeSystem;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
-use App\Services\AbstractPaymentAggregatorTransactionService;
-use App\Services\DeviceService;
-use App\Services\Interfaces\IBaseService;
-use App\Services\Interfaces\PaymentInitiator;
-use App\Services\PersonService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Services\AbstractRedirectPaymentInitiatorService;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @implements IBaseService<PaystackTransaction>
+ * @extends AbstractRedirectPaymentInitiatorService<PaystackTransaction>
  */
-class PaystackTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
+class PaystackTransactionService extends AbstractRedirectPaymentInitiatorService {
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -44,12 +38,9 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
      * @return array<string, mixed>
      */
     public function initializeTransactionData(): array {
-        $orderId = Uuid::uuid4()->toString();
-        $referenceId = Uuid::uuid4()->toString();
-
         return [
-            'order_id' => $orderId,
-            'reference_id' => $referenceId,
+            'order_id' => Uuid::uuid4()->toString(),
+            'reference_id' => Uuid::uuid4()->toString(),
             'serial_id' => $this->getSerialId(),
             'status' => PaystackTransaction::STATUS_REQUESTED,
             'currency' => 'NGN',
@@ -72,24 +63,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
 
     public function getByPaystackReference(string $reference): ?PaystackTransaction {
         return $this->paystackTransaction->newQuery()->where('paystack_reference', '=', $reference)->first();
-    }
-
-    /**
-     * @return Collection<int, PaystackTransaction>
-     */
-    public function getByStatus(int $status): Collection {
-        return $this->paystackTransaction->newQuery()->where('status', '=', $status)->get();
-    }
-
-    public function getById(int $id): ?PaystackTransaction {
-        return $this->paystackTransaction->newQuery()->find($id);
-    }
-
-    public function update($paystackTransaction, array $paystackTransactionData): PaystackTransaction {
-        $paystackTransaction->update($paystackTransactionData);
-        $paystackTransaction->fresh();
-
-        return $paystackTransaction;
     }
 
     public function create(array $paystackTransactionData): PaystackTransaction {
@@ -120,26 +93,8 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         }
     }
 
-    public function delete($paystackTransaction): ?bool {
-        return $paystackTransaction->delete();
-    }
-
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        $query = $this->paystackTransaction->newQuery();
-
-        if ($limit) {
-            return $query->paginate($limit);
-        }
-
-        return $this->paystackTransaction->newQuery()->get();
-    }
-
     public function getPaystackTransaction(): PaystackTransaction {
         return $this->getPaymentAggregatorTransaction();
-    }
-
-    public function getSerialId(): ?string {
-        return $this->getMeterSerialNumber();
     }
 
     public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
@@ -159,175 +114,28 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         }
     }
 
+    protected function resolveCurrency(): string {
+        return config('paystack-payment-provider.currency.default', 'NGN');
+    }
+
+    protected function requestedStatus(): int {
+        return PaystackTransaction::STATUS_REQUESTED;
+    }
+
     /**
-     * Create a PaystackTransaction + Transaction and initialize via the Paystack API.
-     * The caller supplies message and type, keeping routing knowledge outside this service.
+     * @param PaystackTransaction $transaction
      *
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array<string, mixed>
      */
-    public function initiatePayment(
-        float $amount,
-        string $sender,
-        string $message,
-        string $type,
-        int $customerId,
-        ?string $serialId = null,
-    ): array {
-        $deviceType = null;
-        if ($serialId !== null) {
-            $device = app(DeviceService::class)->getBySerialNumber($serialId);
-            $deviceType = $device?->device_type;
+    protected function submitToProvider(BasePaymentProviderTransaction $transaction, string $sender): array {
+        $result = $this->paystackApiService->initializeTransaction($transaction);
+        if ($result['error']) {
+            throw new \RuntimeException('Paystack initialization failed: '.$result['error']);
         }
 
-        try {
-            // A failed Paystack initialization must not leave orphaned transaction rows behind.
-            DB::connection('tenant')->beginTransaction();
-
-            $paystackTxn = $this->paystackTransaction->newQuery()->create([
-                'amount' => $amount,
-                'currency' => config('paystack-payment-provider.currency.default', 'NGN'),
-                'order_id' => Uuid::uuid4()->toString(),
-                'reference_id' => Uuid::uuid4()->toString(),
-                'status' => PaystackTransaction::STATUS_REQUESTED,
-                'customer_id' => $customerId,
-                'serial_id' => $serialId,
-                'device_type' => $deviceType,
-                'metadata' => ['customer_id' => $customerId, 'serial_id' => $serialId, 'transaction_type' => $type],
-            ]);
-
-            /** @var Transaction $transaction */
-            $transaction = $paystackTxn->transaction()->create([
-                'amount' => $amount,
-                'sender' => $sender,
-                'message' => $message,
-                'type' => $type,
-            ]);
-
-            $result = $this->paystackApiService->initializeTransaction($paystackTxn);
-            if ($result['error']) {
-                throw new \RuntimeException('Paystack initialization failed: '.$result['error']);
-            }
-
-            DB::connection('tenant')->commit();
-
-            return [
-                'transaction' => $transaction,
-                'provider_data' => [
-                    'redirect_url' => $result['redirectionUrl'],
-                    'reference' => $result['reference'],
-                ],
-            ];
-        } catch (\Exception $e) {
-            DB::connection('tenant')->rollBack();
-            throw $e;
-        }
-    }
-
-    /**
-     * @param array<string, mixed> $transactionData
-     */
-    public function createPublicTransaction(array $transactionData): PaystackTransaction {
-        // Create Paystack transaction without customer association
-        $transactionData['status'] = PaystackTransaction::STATUS_REQUESTED;
-        $transactionData['metadata'] = [
-            'serial_id' => $transactionData['serial_id'],
-            'customer_id' => $transactionData['customer_id'],
-            'public_payment' => true,
+        return [
+            'redirect_url' => $result['redirectionUrl'],
+            'reference' => $result['reference'],
         ];
-
-        // Add agent_id to metadata if provided
-        if (isset($transactionData['agent_id']) && $transactionData['agent_id']) {
-            $transactionData['metadata']['agent_id'] = $transactionData['agent_id'];
-        }
-
-        return $this->paystackTransaction->newQuery()->create($transactionData);
-    }
-
-    public function validateMeterSerial(string $serialId): bool {
-        // Check if meter exists and is active
-        $meter = $this->meter->newQuery()
-            ->where('serial_number', $serialId)
-            ->where('in_use', 1)
-            ->first();
-
-        return $meter !== null;
-    }
-
-    public function validateSHSSerial(string $serialId): bool {
-        // Check if SHS exists
-        $shs = app()->make(SolarHomeSystem::class)
-            ->newQuery()
-            ->where('serial_number', $serialId)
-            ->first();
-
-        return $shs !== null;
-    }
-
-    public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
-        if ($deviceType === 'shs') {
-            return $this->validateSHSSerial($serialId);
-        }
-
-        return $this->validateMeterSerial($serialId);
-    }
-
-    public function validatePaymentOwner(string $serialId, float $amount): void {
-        // For public payments, we only validate that the meter exists
-        if (!$this->validateMeterSerial($serialId)) {
-            throw new \Exception('Invalid meter serial number');
-        }
-
-        // Additional validation can be added here (e.g., amount limits)
-        if ($amount <= 0) {
-            throw new \Exception('Invalid payment amount');
-        }
-    }
-
-    public function getCustomerIdByMeterSerial(string $serialId): ?int {
-        // Find the meter by serial number and get the associated customer ID
-        $meter = $this->meter->newQuery()
-            ->where('serial_number', $serialId)
-            ->where('in_use', 1)
-            ->first();
-
-        if (!$meter) {
-            return null;
-        }
-
-        // Return the customer ID associated with the meter
-        $person = $meter->device->person->id;
-
-        return $person;
-    }
-
-    public function getCustomerIdBySHSSerial(string $serialId): ?int {
-        // Find SHS by serial number and resolve owning person via device relationship
-        $shs = app()->make(SolarHomeSystem::class)
-            ->newQuery()
-            ->where('serial_number', $serialId)
-            ->first();
-
-        if (!$shs) {
-            return null;
-        }
-
-        $device = $shs->device()->first();
-        if (!$device || !$device->person) {
-            return null;
-        }
-
-        return (int) $device->person->id;
-    }
-
-    public function getCustomerPhoneByCustomerId(int $customerId): ?string {
-        // Get the customer's phone number by customer ID
-        try {
-            $personService = app()->make(PersonService::class);
-            $person = $personService->getById($customerId);
-
-            return (string) $person->addresses->first()->phone;
-        } catch (\Exception) {
-            return null;
-        }
     }
 }

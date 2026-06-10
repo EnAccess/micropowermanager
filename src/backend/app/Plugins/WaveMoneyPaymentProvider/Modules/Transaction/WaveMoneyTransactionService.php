@@ -7,17 +7,13 @@ namespace App\Plugins\WaveMoneyPaymentProvider\Modules\Transaction;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @implements IBaseService<WaveMoneyTransaction>
+ * @extends AbstractPaymentAggregatorTransactionService<WaveMoneyTransaction>
  */
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
     public function __construct(
@@ -70,44 +66,15 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             ->firstOrFail();
     }
 
-    /**
-     * @return Collection<int, WaveMoneyTransaction>
-     */
-    public function getByStatus(int $status): Collection {
-        return $this->waveMoneyTransaction->newQuery()->where('status', '=', $status)
-            ->get();
-    }
-
     public function getById(int $id): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->findOrFail($id);
-    }
-
-    public function update($waveMoneyTransaction, array $waveMoneyTransactionData): WaveMoneyTransaction {
-        $waveMoneyTransaction->update($waveMoneyTransactionData);
-        $waveMoneyTransaction->fresh();
-
-        return $waveMoneyTransaction;
     }
 
     public function create($waveMoneyTransactionData): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->create($waveMoneyTransactionData);
     }
 
-    public function delete($waveMoneyTransaction): ?bool {
-        return $waveMoneyTransaction->delete();
-    }
-
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        $query = $this->waveMoneyTransaction->newQuery();
-
-        if ($limit) {
-            return $query->paginate($limit);
-        }
-
-        return $this->waveMoneyTransaction->newQuery()->get();
-    }
-
-    public function getWaveMoneyTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
+    public function getWaveMoneyTransaction(): WaveMoneyTransaction {
         return $this->getPaymentAggregatorTransaction();
     }
 }

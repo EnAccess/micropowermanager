@@ -8,17 +8,21 @@ use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
-use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
-use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
-use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use App\Services\Interfaces\IBaseService;
 use App\Utils\MinimumPurchaseAmountValidator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-abstract class AbstractPaymentAggregatorTransactionService {
+/**
+ * @template T of BasePaymentProviderTransaction
+ *
+ * @implements IBaseService<T>
+ */
+abstract class AbstractPaymentAggregatorTransactionService implements IBaseService {
     private const MINIMUM_TRANSACTION_AMOUNT = 0;
     protected string $payerPhoneNumber;
     protected string $meterSerialNumber;
@@ -30,7 +34,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction $paymentAggregatorTransaction,
+        private BasePaymentProviderTransaction $paymentAggregatorTransaction,
     ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
@@ -84,6 +88,62 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $this->paymentAggregatorTransaction->save();
         $paymentAggregatorTransaction = $this->paymentAggregatorTransaction;
         $this->transaction->originalTransaction()->associate($paymentAggregatorTransaction)->save();
+    }
+
+    /**
+     * @return T|null
+     */
+    public function getById(int $id): ?Model {
+        return $this->paymentAggregatorTransaction->newQuery()->find($id);
+    }
+
+    /**
+     * @return Collection<int, T>
+     */
+    public function getByStatus(int $status): Collection {
+        return $this->paymentAggregatorTransaction->newQuery()->where('status', '=', $status)->get();
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return T
+     */
+    public function create(array $data): Model {
+        return $this->paymentAggregatorTransaction->newQuery()->create($data);
+    }
+
+    /**
+     * @param T                    $model
+     * @param array<string, mixed> $data
+     *
+     * @return T
+     */
+    public function update(Model $model, array $data): Model {
+        $model->update($data);
+        $model->fresh();
+
+        return $model;
+    }
+
+    /**
+     * @param T $model
+     */
+    public function delete(Model $model): ?bool {
+        return $model->delete();
+    }
+
+    /**
+     * @return Collection<int, T>|LengthAwarePaginator<int, T>
+     */
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
+        $query = $this->paymentAggregatorTransaction->newQuery();
+
+        if ($limit) {
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
     }
 
     private function isImitationTransactionValid(Transaction $transaction): void {
@@ -147,7 +207,14 @@ abstract class AbstractPaymentAggregatorTransactionService {
         return $this->minimumPurchaseAmount;
     }
 
-    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction {
+    /**
+     * @return T
+     */
+    public function getPaymentAggregatorTransaction(): BasePaymentProviderTransaction {
         return $this->paymentAggregatorTransaction;
+    }
+
+    protected function getMeter(): Meter {
+        return $this->meter;
     }
 }

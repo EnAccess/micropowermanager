@@ -7,17 +7,13 @@ use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 /**
- * @implements IBaseService<SwiftaTransaction>
+ * @extends AbstractPaymentAggregatorTransactionService<SwiftaTransaction>
  */
 class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
     public function __construct(
@@ -62,7 +58,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         });
     }
 
-    public function getSwiftaTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
+    public function getSwiftaTransaction(): SwiftaTransaction {
         return $this->getPaymentAggregatorTransaction();
     }
 
@@ -82,30 +78,5 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
 
     public function getById(?int $id): SwiftaTransaction {
         return $this->swiftaTransaction->newQuery()->find($id);
-    }
-
-    public function update($swiftaTransaction, $swiftaTransactionData): SwiftaTransaction {
-        $swiftaTransaction->update($swiftaTransactionData);
-        $swiftaTransaction->fresh();
-
-        return $swiftaTransaction;
-    }
-
-    public function create(array $swiftaTransactionData): SwiftaTransaction {
-        return $this->swiftaTransaction->newQuery()->create($swiftaTransactionData);
-    }
-
-    public function delete($swiftaTransaction): ?bool {
-        return $swiftaTransaction->delete();
-    }
-
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        $query = $this->swiftaTransaction->newQuery();
-
-        if ($limit) {
-            return $query->paginate($limit);
-        }
-
-        return $this->swiftaTransaction->newQuery()->get();
     }
 }
