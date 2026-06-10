@@ -4,10 +4,7 @@ namespace App\Plugins\PesapalPaymentProvider\Models;
 
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
-use App\Models\Transaction\TransactionConflicts;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
@@ -18,7 +15,6 @@ use Illuminate\Support\Carbon;
  * @property      string                                $currency
  * @property      string                                $order_id
  * @property      string                                $reference_id
- * @property      int                                   $status
  * @property      string|null                           $external_transaction_id
  * @property      int                                   $customer_id
  * @property      string|null                           $serial_id
@@ -32,7 +28,6 @@ use Illuminate\Support\Carbon;
  * @property      int                                   $attempts
  * @property      Carbon|null                           $created_at
  * @property      Carbon|null                           $updated_at
- * @property-read Collection<int, TransactionConflicts> $conflicts
  * @property-read Model|\Eloquent|null                  $manufacturerTransaction
  * @property-read Transaction|null                      $transaction
  */
@@ -164,13 +159,6 @@ class PesapalTransaction extends BasePaymentProviderTransaction {
 
     public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
-    }
-
-    /**
-     * @return MorphMany<TransactionConflicts, $this>
-     */
-    public function conflicts(): MorphMany {
-        return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
     public static function getTransactionName(): string {
