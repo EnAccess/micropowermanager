@@ -63,7 +63,21 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
         ];
     }
 
-    public function getById(int $id): ?PaystackTransaction {
-        return $this->paystackTransaction->newQuery()->find($id);
+    public function initializePayment(
+        float $amount,
+        string $sender,
+        string $message,
+        string $type,
+        int $customerId,
+        ?string $serialId = null,
+    ): array {
+        // dd('Here we are!');
+        return [
+            // 'transaction' => $transaction,
+            // 'provider_data' => [
+            //     'redirect_url' => $result['redirectionUrl'],
+            //     'reference' => $result['reference'],
+            // ],
+        ];
     }
 }

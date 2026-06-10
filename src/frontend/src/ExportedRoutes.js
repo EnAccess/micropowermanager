@@ -87,6 +87,7 @@ import SparkMeterSiteList from "@/plugins/spark-meter/modules/Site/SiteList.vue"
 import SparkMeterTariffDetail from "@/plugins/spark-meter/modules/Tariff/TariffDetail.vue"
 import SparkMeterTariffList from "@/plugins/spark-meter/modules/Tariff/TariffList.vue"
 import SparkShsOverview from "@/plugins/spark-shs/modules/Overview/Overview.vue"
+import VodacomMzOverview from "@/plugins/vodacom-mz-payment-provider/modules/Overview/Overview.vue"
 import SteamaCoAgentList from "@/plugins/steama-meter/modules/Agent/AgentList.vue"
 import SteamaCoCustomerList from "@/plugins/steama-meter/modules/Customer/CustomerList.vue"
 import SteamaCoCustomerDetail from "@/plugins/steama-meter/modules/Customer/CustomerMovements.vue"
@@ -1724,6 +1725,30 @@ export const exportedRoutes = [
       {
         path: "overview",
         component: SparkShsOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/vodacom-mz",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 19,
+        name: "Vodacom MZ",
+        icon: "payments",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: VodacomMzOverview,
         meta: {
           layout: "default",
           sidebar: {

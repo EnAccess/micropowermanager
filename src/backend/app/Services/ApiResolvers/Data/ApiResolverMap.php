@@ -28,7 +28,7 @@ class ApiResolverMap {
     public const DATA_EXPORTING_API = 'api/export';
     public const ODYSSEY_PAYMENTS_API = 'api/odyssey';
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
-    public const VODACOM_MZ_PAYMENT_PROVIDER = 'api/vodacom_mz/';
+    public const VODACOM_MZ_PAYMENT_PROVIDER = 'api/vodacom_mz/transactions/';
     public const PAYSTACK_API = 'api/paystack/';
     public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
