@@ -1,0 +1,20 @@
+meta {
+  name: Add appliance Rate
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{mpm_backend_url}}/api/appliances/payment/41
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "person_id": 261,
+      "admin_id": null,
+      "amount": "500",
+      "payment_provider": 19
+  }
+}

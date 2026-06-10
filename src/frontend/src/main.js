@@ -45,6 +45,7 @@ import Prospect from "@/plugins/prospect/modules/Overview/Credential.vue"
 import SmsTransactionParserSetup from "@/plugins/sms-transaction-parser/modules/Overview/Setup.vue"
 import Spark from "@/plugins/spark-meter/modules/Overview/Credential.vue"
 import SparkShs from "@/plugins/spark-shs/modules/Overview/Credential.vue"
+import VodacomMzPaymentProvider from "@/plugins/vodacom-mz-payment-provider/modules/Overview/Credential.vue"
 import Steamaco from "@/plugins/steama-meter/modules/Overview/Credential.vue"
 import Stron from "@/plugins/stron-meter/modules/Overview/Credential.vue"
 import SunKing from "@/plugins/sun-king-shs/modules/Overview/Credential.vue"
@@ -92,6 +93,7 @@ Vue.component("Pesapal", Pesapal)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
 Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
+Vue.component("VodacomMzPaymentProvider", VodacomMzPaymentProvider)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {
