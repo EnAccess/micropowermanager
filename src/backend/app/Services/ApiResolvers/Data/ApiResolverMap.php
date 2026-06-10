@@ -11,6 +11,7 @@ use App\Services\ApiResolvers\DownloadingReportsResolver;
 use App\Services\ApiResolvers\EcreeeMeterDataApiResolver;
 use App\Services\ApiResolvers\OdysseyPaymentApiResolver;
 use App\Services\ApiResolvers\PaystackApiResolver;
+use App\Services\ApiResolvers\PesapalApiResolver;
 use App\Services\ApiResolvers\SwiftaPaymentApiResolver;
 use App\Services\ApiResolvers\TestApiResolver;
 use App\Services\ApiResolvers\TextbeeSmsGatewayApiResolver;
@@ -30,6 +31,7 @@ class ApiResolverMap {
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
     public const VODACOM_MZ_PAYMENT_PROVIDER = 'api/vodacom_mz/transactions/';
     public const PAYSTACK_API = 'api/paystack/';
+    public const PESAPAL_API = 'api/pesapal/';
     public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
 
@@ -45,6 +47,7 @@ class ApiResolverMap {
         self::VODACOM_MZ_PAYMENT_PROVIDER,
         self::ODYSSEY_PAYMENTS_API,
         self::PAYSTACK_API,
+        self::PESAPAL_API,
         self::ECREEE_METER_DATA_API,
         self::TEXTBEE_SMS_GATEWAY_API,
     ];
@@ -61,6 +64,7 @@ class ApiResolverMap {
         self::VODACOM_MZ_PAYMENT_PROVIDER => VodacomMzApiResolver::class,
         self::ODYSSEY_PAYMENTS_API => OdysseyPaymentApiResolver::class,
         self::PAYSTACK_API => PaystackApiResolver::class,
+        self::PESAPAL_API => PesapalApiResolver::class,
         self::ECREEE_METER_DATA_API => EcreeeMeterDataApiResolver::class,
         self::TEXTBEE_SMS_GATEWAY_API => TextbeeSmsGatewayApiResolver::class,
     ];
