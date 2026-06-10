@@ -15,7 +15,7 @@ use App\Plugins\PesapalPaymentProvider\Modules\Api\Resources\GetTransactionStatu
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\DeviceService;
 use App\Services\Interfaces\IBaseService;
-use App\Services\Interfaces\PaymentInitializer;
+use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -25,7 +25,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @implements IBaseService<PesapalTransaction>
  */
-class PesapalTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitializer {
+class PesapalTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -205,7 +205,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     /**
      * @return array{transaction: Transaction, provider_data: array<string, mixed>}
      */
-    public function initializePayment(
+    public function initiatePayment(
         float $amount,
         string $sender,
         string $message,
