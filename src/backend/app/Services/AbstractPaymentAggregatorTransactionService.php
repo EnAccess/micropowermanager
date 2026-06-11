@@ -39,13 +39,13 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction $paymentAggregatorTransaction,
+        private BasePaymentProviderTransaction $paymentAggregatorTransaction,
     ) {}
 
     /**
      * @return T
      */
-    protected function crudModel(): Model {
+    protected function crudModel(): BasePaymentProviderTransaction {
         return $this->paymentAggregatorTransaction;
     }
 
@@ -163,7 +163,10 @@ abstract class AbstractPaymentAggregatorTransactionService {
         return $this->minimumPurchaseAmount;
     }
 
-    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction {
+    /**
+     * @return T
+     */
+    public function getPaymentAggregatorTransaction(): BasePaymentProviderTransaction {
         return $this->paymentAggregatorTransaction;
     }
 }
