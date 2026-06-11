@@ -121,7 +121,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         return $this->validData;
     }
 
-    public function getSubTransaction(): WaveMoneyTransaction {
+    public function getProviderTransaction(): WaveMoneyTransaction {
         return $this->waveMoneyTransactionService->getWaveMoneyTransaction();
     }
 }

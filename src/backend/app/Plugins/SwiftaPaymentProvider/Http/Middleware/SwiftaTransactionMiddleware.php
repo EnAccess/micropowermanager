@@ -25,7 +25,7 @@ class SwiftaTransactionMiddleware {
             return new Response($data, 400);
         }
 
-        $swiftaTransaction = $transactionProvider->getSubTransaction();
+        $swiftaTransaction = $transactionProvider->getProviderTransaction();
         $transaction = $swiftaTransaction->transaction()->first();
         $owner = $transaction->device->person;
 

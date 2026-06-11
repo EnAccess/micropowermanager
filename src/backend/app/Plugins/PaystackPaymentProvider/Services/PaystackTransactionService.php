@@ -51,14 +51,14 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         return [
             'order_id' => $orderId,
             'reference_id' => $referenceId,
-            'serial_id' => $this->getSerialId(),
+            'serial_id' => $this->meterSerialNumber,
             'status' => PaystackTransaction::STATUS_REQUESTED,
             'currency' => 'NGN',
-            'customer_id' => $this->getCustomerId(),
-            'amount' => $this->getAmount(),
+            'customer_id' => $this->customerId,
+            'amount' => $this->amount,
             'metadata' => [
-                'serial_id' => $this->getSerialId(),
-                'customer_id' => $this->getCustomerId(),
+                'serial_id' => $this->meterSerialNumber,
+                'customer_id' => $this->customerId,
             ],
         ];
     }
@@ -112,14 +112,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
             DB::connection('tenant')->rollBack();
             throw $e;
         }
-    }
-
-    public function getPaystackTransaction(): PaystackTransaction {
-        return $this->getPaymentAggregatorTransaction();
-    }
-
-    public function getSerialId(): ?string {
-        return $this->getMeterSerialNumber();
     }
 
     public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {

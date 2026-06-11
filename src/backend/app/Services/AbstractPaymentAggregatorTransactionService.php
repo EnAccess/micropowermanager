@@ -23,23 +23,24 @@ abstract class AbstractPaymentAggregatorTransactionService {
 
     private const int MINIMUM_TRANSACTION_AMOUNT = 0;
     protected string $payerPhoneNumber;
-    protected string $meterSerialNumber;
-    protected float $minimumPurchaseAmount;
-    protected int $customerId;
-    protected float $amount;
+    public protected(set) string $meterSerialNumber;
+    public protected(set) float $minimumPurchaseAmount;
+    public protected(set) int $customerId;
+    public protected(set) float $amount;
 
     public function __construct(
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private BasePaymentProviderTransaction $paymentAggregatorTransaction,
+        /** @var T */
+        public private(set) BasePaymentProviderTransaction $paymentProviderTransaction,
     ) {}
 
     /**
      * @return T
      */
     protected function crudModel(): BasePaymentProviderTransaction {
-        return $this->paymentAggregatorTransaction;
+        return $this->paymentProviderTransaction;
     }
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
@@ -74,24 +75,24 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * @throws TransactionAmountNotEnoughException
      */
     public function imitateTransactionForValidation(array $transactionData): void {
-        $newTransaction = $this->paymentAggregatorTransaction->newQuery()->make($transactionData);
+        $newTransaction = $this->paymentProviderTransaction->newQuery()->make($transactionData);
 
-        $this->paymentAggregatorTransaction = $newTransaction;
+        $this->paymentProviderTransaction = $newTransaction;
 
         $this->transaction = $this->transaction->newQuery()->make([
             'amount' => $transactionData['amount'],
             'sender' => $this->payerPhoneNumber,
             'message' => $this->meterSerialNumber,
             'type' => 'energy',
-            'original_transaction_type' => $this->paymentAggregatorTransaction::class,
+            'original_transaction_type' => $this->paymentProviderTransaction::class,
         ]);
 
         $this->isImitationTransactionValid($this->transaction);
     }
 
     public function saveTransaction(): void {
-        $this->paymentAggregatorTransaction->save();
-        $paymentAggregatorTransaction = $this->paymentAggregatorTransaction;
+        $this->paymentProviderTransaction->save();
+        $paymentAggregatorTransaction = $this->paymentProviderTransaction;
         $this->transaction->originalTransaction()->associate($paymentAggregatorTransaction)->save();
     }
 
@@ -105,7 +106,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $validator = resolve(MinimumPurchaseAmountValidator::class);
 
         try {
-            if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
+            if (!$validator->validate($transactionData, $this->minimumPurchaseAmount)) {
                 throw new TransactionAmountNotEnoughException('Transaction amount is not enough');
             }
         } catch (TransactionAmountNotEnoughException $e) {
@@ -138,28 +139,5 @@ abstract class AbstractPaymentAggregatorTransactionService {
         } catch (ModelNotFoundException $exception) {
             throw new \Exception('No phone number record found by customer.', $exception->getCode(), $exception);
         }
-    }
-
-    public function getCustomerId(): int {
-        return $this->customerId;
-    }
-
-    public function getMeterSerialNumber(): string {
-        return $this->meterSerialNumber;
-    }
-
-    public function getAmount(): float {
-        return $this->amount;
-    }
-
-    public function getMinimumPurchaseAmount(): float {
-        return $this->minimumPurchaseAmount;
-    }
-
-    /**
-     * @return T
-     */
-    public function getPaymentAggregatorTransaction(): BasePaymentProviderTransaction {
-        return $this->paymentAggregatorTransaction;
     }
 }

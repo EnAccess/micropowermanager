@@ -54,14 +54,14 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
         return [
             'order_id' => $orderId,
             'reference_id' => $referenceId,
-            'serial_id' => $this->getSerialId(),
+            'serial_id' => $this->meterSerialNumber,
             'status' => PesapalTransaction::STATUS_REQUESTED,
             'currency' => $this->credentialService->getCredentials()->getCurrency(),
-            'customer_id' => $this->getCustomerId(),
-            'amount' => $this->getAmount(),
+            'customer_id' => $this->customerId,
+            'amount' => $this->amount,
             'metadata' => [
-                'serial_id' => $this->getSerialId(),
-                'customer_id' => $this->getCustomerId(),
+                'serial_id' => $this->meterSerialNumber,
+                'customer_id' => $this->customerId,
             ],
         ];
     }
@@ -142,14 +142,6 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
         }
 
         return $this->pesapalTransaction->newQuery()->get();
-    }
-
-    public function getPesapalTransaction(): PesapalTransaction {
-        return $this->getPaymentAggregatorTransaction();
-    }
-
-    public function getSerialId(): ?string {
-        return $this->getMeterSerialNumber();
     }
 
     public function processSuccessfulPayment(int $companyId, PesapalTransaction $transaction): void {
