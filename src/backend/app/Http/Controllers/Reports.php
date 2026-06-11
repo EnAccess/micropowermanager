@@ -353,7 +353,7 @@ class Reports {
 
             if ($paymentHistory->payment_type === 'access_rate' || $paymentHistory->payment_type === 'access rate') {
                 $nextCol = $column;
-                $sheet->setCellValue(++$nextCol.$index, $paymentHistory->amount);
+                $sheet->setCellValue(str_increment($nextCol).$index, $paymentHistory->amount);
                 $soldAmount['access_rate'] = (float) $paymentHistory->amount;
             } else {
                 $soldAmount['energy'] = (float) $paymentHistory->amount;
@@ -491,7 +491,7 @@ class Reports {
      * @return \Generator<int, string, mixed, void>
      */
     private function excelColumnRange(string $lower, string $upper): \Generator {
-        ++$upper;
+        str_increment($upper);
         for ($i = $lower; $i !== $upper; ++$i) {
             yield $i;
         }

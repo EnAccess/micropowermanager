@@ -24,7 +24,7 @@ class MaintenanceUserController extends Controller {
     }
 
     public function store(MaintenanceRequest $request): JsonResponse {
-        $phone = $request->get('phone');
+        $phone = $request->input('phone');
 
         try {
             $person = $this->person->newQuery()->whereHas(
@@ -37,7 +37,7 @@ class MaintenanceUserController extends Controller {
             $personData = $this->personService->createPersonDataFromRequest($request);
             // Create maintenance person with mini_grid_id if provided
             if ($request->has('mini_grid_id')) {
-                $personData['mini_grid_id'] = $request->get('mini_grid_id');
+                $personData['mini_grid_id'] = $request->input('mini_grid_id');
                 $person = $this->personService->createMaintenancePerson($personData);
             } else {
                 $person = $this->personService->createMaintenancePerson($personData);
@@ -49,7 +49,7 @@ class MaintenanceUserController extends Controller {
         if ($person->type !== 'maintenance') {
             $person->type = 'maintenance';
             if ($request->has('mini_grid_id') && !$person->mini_grid_id) {
-                $person->mini_grid_id = $request->get('mini_grid_id');
+                $person->mini_grid_id = $request->input('mini_grid_id');
             }
             $person->save();
         }

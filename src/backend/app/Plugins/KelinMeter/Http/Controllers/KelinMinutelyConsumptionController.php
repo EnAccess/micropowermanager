@@ -12,7 +12,7 @@ class KelinMinutelyConsumptionController extends Controller {
     public function __construct(private MinutelyConsumptionService $minutelyConsumptionService) {}
 
     public function index(KelinMeter $meter): MinutelyConsumptionCollection {
-        $perPage = (int) (\request()->get('per_page') ?? 15);
+        $perPage = (int) (\request()->input('per_page') ?? 15);
 
         return new MinutelyConsumptionCollection(
             MinutelyConsumptionResource::collection($this->minutelyConsumptionService->getDailyData(

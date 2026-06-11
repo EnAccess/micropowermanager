@@ -16,7 +16,7 @@ class SettingsExportController extends Controller {
     ) {}
 
     public function download(Request $request): StreamedResponse|JsonResponse {
-        $format = $request->get('format', 'json');
+        $format = $request->input('format', 'json');
 
         if ($format === 'excel') {
             return $this->downloadExcel($request);

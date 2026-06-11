@@ -22,7 +22,7 @@ class MeterTypeController extends Controller {
      * List.
      */
     public function index(Request $request): ApiResource {
-        $limit = $request->get('limit');
+        $limit = $request->input('limit');
 
         return ApiResource::make($this->meterTypeService->getAll($limit));
     }

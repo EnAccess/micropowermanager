@@ -131,14 +131,14 @@ class PersonService implements IBaseService {
      */
     public function createPersonDataFromRequest(Request $request): array {
         return [
-            'title' => $request->get('title'),
-            'education' => $request->get('education'),
-            'name' => $request->get('name'),
-            'surname' => $request->get('surname'),
-            'birth_date' => $request->get('birth_date'),
-            'gender' => $request->get('gender'),
-            'is_customer' => $request->get('is_customer') ?? 0,
-            'mini_grid_id' => $request->get('mini_grid_id'),
+            'title' => $request->input('title'),
+            'education' => $request->input('education'),
+            'name' => $request->input('name'),
+            'surname' => $request->input('surname'),
+            'birth_date' => $request->input('birth_date'),
+            'gender' => $request->input('gender'),
+            'is_customer' => $request->input('is_customer') ?? 0,
+            'mini_grid_id' => $request->input('mini_grid_id'),
         ];
     }
 
@@ -383,10 +383,10 @@ class PersonService implements IBaseService {
 
         $addressService = app()->make(AddressesService::class);
         $addressParams = [
-            'city_id' => $request->get('city_id') ?? 1,
-            'email' => $request->get('email') ?? '',
-            'phone' => $request->get('phone') ?? '',
-            'street' => $request->get('street') ?? '',
+            'city_id' => $request->input('city_id') ?? 1,
+            'email' => $request->input('email') ?? '',
+            'phone' => $request->input('phone') ?? '',
+            'street' => $request->input('street') ?? '',
             'is_primary' => 1,
         ];
 

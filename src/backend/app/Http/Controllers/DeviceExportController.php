@@ -16,7 +16,7 @@ class DeviceExportController extends Controller {
     ) {}
 
     public function download(Request $request): StreamedResponse|JsonResponse {
-        $format = $request->get('format', 'excel');
+        $format = $request->input('format', 'excel');
 
         if ($format === 'csv') {
             return $this->downloadCsv($request);
@@ -30,10 +30,10 @@ class DeviceExportController extends Controller {
     }
 
     public function downloadExcel(Request $request): StreamedResponse {
-        $miniGridName = $request->get('miniGrid');
-        $villageName = $request->get('village');
-        $deviceType = $request->get('deviceType');
-        $manufacturerName = $request->get('manufacturer');
+        $miniGridName = $request->input('miniGrid');
+        $villageName = $request->input('village');
+        $deviceType = $request->input('deviceType');
+        $manufacturerName = $request->input('manufacturer');
 
         $devices = $this->deviceService->getAllForExport($miniGridName, $villageName, $deviceType, $manufacturerName);
         $this->deviceExportService->createSpreadSheetFromTemplate($this->deviceExportService->getTemplatePath());
@@ -46,10 +46,10 @@ class DeviceExportController extends Controller {
     }
 
     public function downloadCsv(Request $request): StreamedResponse {
-        $miniGridName = $request->get('miniGrid');
-        $villageName = $request->get('village');
-        $deviceType = $request->get('deviceType');
-        $manufacturerName = $request->get('manufacturer');
+        $miniGridName = $request->input('miniGrid');
+        $villageName = $request->input('village');
+        $deviceType = $request->input('deviceType');
+        $manufacturerName = $request->input('manufacturer');
 
         $devices = $this->deviceService->getAllForExport($miniGridName, $villageName, $deviceType, $manufacturerName);
 
@@ -62,10 +62,10 @@ class DeviceExportController extends Controller {
     }
 
     public function downloadJson(Request $request): JsonResponse {
-        $miniGridName = $request->get('miniGrid');
-        $villageName = $request->get('village');
-        $deviceType = $request->get('deviceType');
-        $manufacturerName = $request->get('manufacturer');
+        $miniGridName = $request->input('miniGrid');
+        $villageName = $request->input('village');
+        $deviceType = $request->input('deviceType');
+        $manufacturerName = $request->input('manufacturer');
 
         $devices = $this->deviceService->getAllForExport($miniGridName, $villageName, $deviceType, $manufacturerName);
 

@@ -10,7 +10,7 @@ class ConnectionTypeController extends Controller {
     public function __construct(private ConnectionTypeService $connectionTypeService) {}
 
     public function index(Request $request): ApiResource {
-        $limit = $request->get('limit');
+        $limit = $request->input('limit');
 
         return ApiResource::make($this->connectionTypeService->getAll($limit));
     }

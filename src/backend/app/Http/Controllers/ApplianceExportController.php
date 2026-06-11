@@ -18,7 +18,7 @@ class ApplianceExportController extends Controller {
     ) {}
 
     public function download(Request $request): StreamedResponse|JsonResponse {
-        $format = $request->get('format', 'excel');
+        $format = $request->input('format', 'excel');
 
         if ($format === 'csv') {
             return $this->downloadCsv($request);

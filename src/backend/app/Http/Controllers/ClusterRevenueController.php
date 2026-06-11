@@ -25,10 +25,10 @@ class ClusterRevenueController extends Controller {
 
     public function index(Request $request): ApiResource {
         $dates =
-            $this->clusterRevenueService->setDatesForRequest($request->get('startDate'), $request->get('endDate'));
+            $this->clusterRevenueService->setDatesForRequest($request->input('startDate'), $request->input('endDate'));
         $startDate = $dates['startDate'];
         $endDate = $dates['endDate'];
-        $period = $request->get('period') ?? 'monthly';
+        $period = $request->input('period') ?? 'monthly';
         $clusters = $this->clusterMiniGridService->getClustersWithMiniGrids();
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, ['revenue' => 0]);
 
@@ -45,7 +45,7 @@ class ClusterRevenueController extends Controller {
 
     public function show(int $clusterId, Request $request): ApiResource {
         $dateRange =
-            $this->clusterRevenueService->setDateRangeForRequest($request->get('startDate'), $request->get('endDate'));
+            $this->clusterRevenueService->setDateRangeForRequest($request->input('startDate'), $request->input('endDate'));
         $cluster = $this->clusterService->getById($clusterId);
 
         $clusterData = $this->clusterService->getClusterWithComputedData(
