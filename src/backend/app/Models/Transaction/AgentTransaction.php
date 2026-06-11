@@ -6,7 +6,6 @@ use App\Models\Agent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,13 +30,6 @@ class AgentTransaction extends BasePaymentProviderTransaction {
      */
     public function agent(): BelongsTo {
         return $this->belongsTo(Agent::class);
-    }
-
-    /**
-     * @return MorphMany<TransactionConflicts, $this>
-     */
-    public function conflicts(): MorphMany {
-        return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
     public static function getTransactionName(): string {
