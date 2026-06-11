@@ -6,8 +6,6 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Plugins\SwiftaPaymentProvider\Services\SwiftaTransactionService;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Providers\Interfaces\ITransactionProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -85,7 +83,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         return $this->validData;
     }
 
-    public function getSubTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
+    public function getSubTransaction(): SwiftaTransaction {
         return $this->swiftaTransactionService->getSwiftaTransaction();
     }
 

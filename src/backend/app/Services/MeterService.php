@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -13,9 +14,16 @@ use Illuminate\Support\Facades\DB;
  * @implements IBaseService<Meter>
  */
 class MeterService implements IBaseService {
+    /** @use HasCrudOperations<Meter> */
+    use HasCrudOperations;
+
     public function __construct(
         private Meter $meter,
     ) {}
+
+    protected function crudModel(): Meter {
+        return $this->meter;
+    }
 
     public function getBySerialNumber(string $serialNumber): ?Meter {
         return $this->meter->newQuery()->with([
@@ -110,10 +118,6 @@ class MeterService implements IBaseService {
         ])->find($meterId);
     }
 
-    public function delete($meter): ?bool {
-        return $meter->delete();
-    }
-
     /**
      * @return LengthAwarePaginator<int, Meter>
      */
@@ -137,13 +141,6 @@ class MeterService implements IBaseService {
             ->when($meterTypeId !== null, fn ($q) => $q->where('meter_type_id', $meterTypeId))
             ->orderBy('serial_number')
             ->get();
-    }
-
-    public function update($meter, array $meterData): Meter {
-        $meter->update($meterData);
-        $meter->fresh();
-
-        return $meter;
     }
 
     /**

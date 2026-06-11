@@ -8,6 +8,7 @@ use App\Models\AgentSoldAppliance;
 use App\Models\AppliancePerson;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,6 +17,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<AgentSoldAppliance>
  */
 class AgentSoldApplianceService implements IBaseService {
+    /** @use HasCrudOperations<AgentSoldAppliance> */
+    use HasCrudOperations;
+
     public function __construct(
         private AddressesService $addressesService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
@@ -38,11 +42,8 @@ class AgentSoldApplianceService implements IBaseService {
         private TransactionService $transactionService,
     ) {}
 
-    /**
-     * @param array<string, mixed> $applianceData
-     */
-    public function create(array $applianceData): AgentSoldAppliance {
-        return $this->agentSoldAppliance->newQuery()->create($applianceData);
+    protected function crudModel(): AgentSoldAppliance {
+        return $this->agentSoldAppliance;
     }
 
     /**
@@ -60,21 +61,6 @@ class AgentSoldApplianceService implements IBaseService {
             ->where('person_id', $customerId)
             ->latest()
             ->paginate();
-    }
-
-    public function getById(int $id): AgentSoldAppliance {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): AgentSoldAppliance {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 
     /**

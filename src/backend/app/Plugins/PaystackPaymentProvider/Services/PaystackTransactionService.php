@@ -17,11 +17,12 @@ use App\Services\Interfaces\IBaseService;
 use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<PaystackTransaction>
+ *
  * @implements IBaseService<PaystackTransaction>
  */
 class PaystackTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
@@ -85,13 +86,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         return $this->paystackTransaction->newQuery()->find($id);
     }
 
-    public function update($paystackTransaction, array $paystackTransactionData): PaystackTransaction {
-        $paystackTransaction->update($paystackTransactionData);
-        $paystackTransaction->fresh();
-
-        return $paystackTransaction;
-    }
-
     public function create(array $paystackTransactionData): PaystackTransaction {
         try {
             // Run on the tenant connection so a failure rolls back the right database.
@@ -118,20 +112,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
             DB::connection('tenant')->rollBack();
             throw $e;
         }
-    }
-
-    public function delete($paystackTransaction): ?bool {
-        return $paystackTransaction->delete();
-    }
-
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        $query = $this->paystackTransaction->newQuery();
-
-        if ($limit) {
-            return $query->paginate($limit);
-        }
-
-        return $this->paystackTransaction->newQuery()->get();
     }
 
     public function getPaystackTransaction(): PaystackTransaction {

@@ -6,6 +6,7 @@ use App\Helpers\PasswordGenerator;
 use App\Models\Agent;
 use App\Models\AppliancePerson;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Complex\Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,6 +17,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Agent>
  */
 class AgentService implements IBaseService {
+    /** @use HasCrudOperations<Agent> */
+    use HasCrudOperations;
+
     /**
      * An agent counts as active when it has recorded balance history (a payment
      * or sale) within this many days.
@@ -26,6 +30,10 @@ class AgentService implements IBaseService {
         private Agent $agent,
         private PersonService $personService,
     ) {}
+
+    protected function crudModel(): Agent {
+        return $this->agent;
+    }
 
     public function resetPassword(string $email): string {
         try {
@@ -105,10 +113,6 @@ class AgentService implements IBaseService {
         return $this->agent->newQuery()
             ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
             ->where('id', $id)->firstOrFail();
-    }
-
-    public function delete($agent): ?bool {
-        return $agent->delete();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Manufacturer;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,9 +13,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Manufacturer>
  */
 class ManufacturerService implements IBaseService {
+    /** @use HasCrudOperations<Manufacturer> */
+    use HasCrudOperations;
+
     public function __construct(
         private Manufacturer $manufacturer,
     ) {}
+
+    protected function crudModel(): Manufacturer {
+        return $this->manufacturer;
+    }
 
     /**
      * @return array<string, mixed>
@@ -33,13 +41,6 @@ class ManufacturerService implements IBaseService {
     }
 
     /**
-     * @param array<string, mixed> $manufacturerData
-     */
-    public function create(array $manufacturerData): Manufacturer {
-        return $this->manufacturer->newQuery()->create($manufacturerData);
-    }
-
-    /**
      * @return Collection<int, Manufacturer>|LengthAwarePaginator<int, Manufacturer>
      */
     public function getAll(?int $limit = null, ?string $type = null): Collection|LengthAwarePaginator {
@@ -55,16 +56,5 @@ class ManufacturerService implements IBaseService {
 
     public function getByName(string $manufacturerName): ?Manufacturer {
         return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first();
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): Manufacturer {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 }

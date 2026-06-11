@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Ticket\TicketUser;
 use App\Models\User;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -13,10 +14,17 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<TicketUser>
  */
 class TicketUserService implements IBaseService {
+    /** @use HasCrudOperations<TicketUser> */
+    use HasCrudOperations;
+
     public function __construct(
         private TicketUser $ticketUser,
         private User $user,
     ) {}
+
+    protected function crudModel(): TicketUser {
+        return $this->ticketUser;
+    }
 
     public function getAll(?int $limit = null, ?bool $outsource = null): Collection|LengthAwarePaginator {
         $ticketUsers = $this->user::with('relationTicketUser');
@@ -40,18 +48,6 @@ class TicketUserService implements IBaseService {
 
     public function getById(int $userId): TicketUser {
         return $this->ticketUser->newQuery()->where('user_id', $userId)->first();
-    }
-
-    public function create($ticketUserData): TicketUser {
-        return $this->ticketUser->newQuery()->create($ticketUserData);
-    }
-
-    public function update($model, array $data): TicketUser {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function findByPhone(string $phone): TicketUser {

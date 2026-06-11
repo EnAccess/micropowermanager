@@ -8,6 +8,7 @@ use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,9 +18,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IAssociative<Device>
  */
 class DeviceService implements IBaseService, IAssociative {
+    /** @use HasCrudOperations<Device> */
+    use HasCrudOperations;
+
     public function __construct(
         private Device $device,
     ) {}
+
+    protected function crudModel(): Device {
+        return $this->device;
+    }
 
     public function make(mixed $deviceData): Device {
         return $this->device->newQuery()->make([
@@ -37,32 +45,6 @@ class DeviceService implements IBaseService, IAssociative {
 
     public function save($device): bool {
         return $device->save();
-    }
-
-    public function getById(int $id): Device {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): Device {
-        throw new \Exception('Method create() not yet implemented.');
-    }
-
-    /**
-     * @param Device               $device
-     * @param array<string, mixed> $deviceData
-     */
-    public function update($device, array $deviceData): Device {
-        $device->update($deviceData);
-        $device->fresh();
-
-        return $device;
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 
     /**

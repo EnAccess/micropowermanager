@@ -5,17 +5,23 @@ namespace App\Services;
 use App\Models\GeographicalInformation;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Traits\HasCrudOperations;
 
 /**
  * @implements IBaseService<GeographicalInformation>
  * @implements IAssociative<GeographicalInformation>
  */
 class GeographicalInformationService implements IBaseService, IAssociative {
+    /** @use HasCrudOperations<GeographicalInformation> */
+    use HasCrudOperations;
+
     public function __construct(
         private GeographicalInformation $geographicalInformation,
     ) {}
+
+    protected function crudModel(): GeographicalInformation {
+        return $this->geographicalInformation;
+    }
 
     // This function will be removed until devices feature migration is done
     public function changeOwnerWithAddress(object $meter, int $addressId): void {
@@ -29,38 +35,6 @@ class GeographicalInformationService implements IBaseService, IAssociative {
             $geoInfo->owner_id = $addressId;
             $geoInfo->save();
         }
-    }
-
-    public function getById(int $id): GeographicalInformation {
-        return $this->geographicalInformation->newQuery()->find($id);
-    }
-
-    public function delete($model): ?bool {
-        return $model->delete();
-    }
-
-    /**
-     * @return Collection<int, GeographicalInformation>|LengthAwarePaginator<int, GeographicalInformation>
-     */
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        return $this->geographicalInformation->newQuery()->get();
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): GeographicalInformation {
-        throw new \Exception('Method create() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): GeographicalInformation {
-        $model->update($data);
-        $model->fresh();
-
-        return $model;
     }
 
     /**

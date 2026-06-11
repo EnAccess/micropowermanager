@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\EntityHasChildrenException;
 use App\Models\MiniGrid;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -13,21 +14,17 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<MiniGrid>
  */
 class MiniGridService implements IBaseService {
+    /** @use HasCrudOperations<MiniGrid> */
+    use HasCrudOperations;
+
     public function __construct(private MiniGrid $miniGrid) {}
+
+    protected function crudModel(): MiniGrid {
+        return $this->miniGrid;
+    }
 
     public function getByIdWithLocation(int $miniGridId): ?MiniGrid {
         return $this->miniGrid->newQuery()->with(['location'])->find($miniGridId);
-    }
-
-    public function getById(int $miniGridId): ?MiniGrid {
-        return $this->miniGrid->newQuery()->find($miniGridId);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): MiniGrid {
-        return $this->miniGrid->newQuery()->create($data);
     }
 
     /**

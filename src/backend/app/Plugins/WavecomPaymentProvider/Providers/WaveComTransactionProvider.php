@@ -8,7 +8,7 @@ use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WavecomPaymentProvider\Services\TransactionService;
+use App\Plugins\WavecomPaymentProvider\Services\WaveMoneyTransactionService;
 use App\Providers\Interfaces\ITransactionProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class WaveComTransactionProvider implements ITransactionProvider {
     private Transaction $transaction;
 
     public function __construct(
-        private TransactionService $transactionService,
+        private WaveMoneyTransactionService $transactionService,
         private TransactionConflicts $transactionConflicts,
         private WaveComTransaction $waveComTransaction,
     ) {}
