@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
+use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use RectorLaravel\Rector\StaticCall\CarbonToDateFacadeRector;
 use RectorLaravel\Set\LaravelSetList;
@@ -28,7 +30,7 @@ return RectorConfig::configure()
         __DIR__.'/app/Console/Commands/MpmModelsCommand.php',
     ])
     ->withPhpSets(
-        php82: true
+        php85: true
     )
     ->withPreparedSets(
         codeQuality: true,
@@ -45,8 +47,10 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
-        ReadOnlyPropertyRector::class,
-        NullToStrictStringFuncCallArgRector::class,
+        AddOverrideAttributeToOverriddenMethodsRector::class,
+        AddOverrideAttributeToOverriddenPropertiesRector::class,
         CarbonToDateFacadeRector::class,
+        NullToStrictStringFuncCallArgRector::class,
+        ReadOnlyPropertyRector::class,
     ])
 ;
