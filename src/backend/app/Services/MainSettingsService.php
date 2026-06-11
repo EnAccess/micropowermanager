@@ -27,9 +27,6 @@ class MainSettingsService implements IBaseService {
         private MainSettings $mainSettings,
     ) {}
 
-    /**
-     * @return MainSettings
-     */
     protected function crudModel(): MainSettings {
         return $this->mainSettings;
     }
