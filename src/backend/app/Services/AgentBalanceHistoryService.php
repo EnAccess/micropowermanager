@@ -7,6 +7,7 @@ use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
@@ -17,10 +18,17 @@ use Illuminate\Support\Facades\DB;
  * @implements IAssociative<AgentBalanceHistory>
  */
 class AgentBalanceHistoryService implements IBaseService, IAssociative {
+    /** @use HasCrudOperations<AgentBalanceHistory> */
+    use HasCrudOperations;
+
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
     ) {}
+
+    protected function crudModel(): AgentBalanceHistory {
+        return $this->agentBalanceHistory;
+    }
 
     /**
      * @return Collection<int, AgentBalanceHistory>|LengthAwarePaginator<int, AgentBalanceHistory>
@@ -39,13 +47,6 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         }
 
         return $query->latest()->get();
-    }
-
-    /**
-     * @param array<string, mixed> $agentBalanceHistoryData
-     */
-    public function create(array $agentBalanceHistoryData): AgentBalanceHistory {
-        return $this->agentBalanceHistory->newQuery()->create($agentBalanceHistoryData);
     }
 
     /**
@@ -197,20 +198,5 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         }
 
         return $p;
-    }
-
-    public function getById(int $id): AgentBalanceHistory {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): AgentBalanceHistory {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Meter\Meter;
 use App\Models\Tariff;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -12,38 +13,22 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Tariff>
  */
 class TariffService implements IBaseService {
+    /** @use HasCrudOperations<Tariff> */
+    use HasCrudOperations;
+
     public function __construct(
         private Tariff $tariff,
         private Meter $meter,
     ) {}
 
+    protected function crudModel(): Tariff {
+        return $this->tariff;
+    }
+
     public function getById(int $tariffId): Tariff {
         return $this->tariff->newQuery()
             ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
             ->findOrFail($tariffId);
-    }
-
-    /**
-     * @param array<string, mixed> $tariffData
-     */
-    public function create(array $tariffData): Tariff {
-        return $this->tariff->newQuery()->create($tariffData);
-    }
-
-    /**
-     * @param array<string, mixed> $tariffData
-     */
-    public function update($tariff, array $tariffData): Tariff {
-        $tariff->update(
-            $tariffData
-        );
-        $tariff->fresh();
-
-        return $tariff;
-    }
-
-    public function delete($tariff): ?bool {
-        return $tariff->delete();
     }
 
     /**

@@ -4,40 +4,28 @@ namespace App\Services;
 
 use App\Models\DatabaseProxy;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
+use App\Traits\HasCrudOperations;
 
 /**
  * @implements IBaseService<DatabaseProxy>
  */
 class DatabaseProxyService implements IBaseService {
+    /** @use HasCrudOperations<DatabaseProxy> */
+    use HasCrudOperations;
+
     public function __construct(private DatabaseProxy $databaseProxy) {}
 
-    public function getById(int $id): DatabaseProxy {
-        throw new \Exception('Method getById() not yet implemented.');
+    protected function crudModel(): DatabaseProxy {
+        return $this->databaseProxy;
     }
 
     public function create(array $databaseProxyData): DatabaseProxy {
         return $this->databaseProxy->newQuery()->firstOrCreate($databaseProxyData);
     }
 
-    public function update($model, array $data): DatabaseProxy {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        return $model->delete();
-    }
-
     public function deleteByEmail(string $email): void {
         $this->databaseProxy->newQuery()
             ->where(DatabaseProxy::COL_EMAIL, '=', $email)
             ->delete();
-    }
-
-    /**
-     * @return Collection<int, DatabaseProxy>
-     */
-    public function getAll(?int $limit = null): Collection {
-        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

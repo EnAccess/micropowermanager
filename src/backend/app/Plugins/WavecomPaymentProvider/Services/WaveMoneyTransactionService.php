@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use ParseCsv\Csv;
 
-class TransactionService extends AbstractPaymentAggregatorTransactionService {
+/**
+ * @extends AbstractPaymentAggregatorTransactionService<WaveComTransaction>
+ */
+class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService {
     public function __construct(private Csv $csv) {}
 
     /** @return array<string> */

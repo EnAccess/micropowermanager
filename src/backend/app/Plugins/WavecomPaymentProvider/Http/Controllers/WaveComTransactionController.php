@@ -7,10 +7,10 @@ namespace App\Plugins\WavecomPaymentProvider\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResource;
 use App\Plugins\WavecomPaymentProvider\Http\Requests\UploadTransactionRequest;
-use App\Plugins\WavecomPaymentProvider\Services\TransactionService;
+use App\Plugins\WavecomPaymentProvider\Services\WaveMoneyTransactionService;
 
 class WaveComTransactionController extends Controller {
-    public function __construct(private TransactionService $transactionService) {}
+    public function __construct(private WaveMoneyTransactionService $transactionService) {}
 
     public function uploadTransaction(UploadTransactionRequest $request): ApiResource {
         $file = $request->getFile();

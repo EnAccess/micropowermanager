@@ -7,8 +7,6 @@ namespace App\Plugins\WaveMoneyPaymentProvider\Modules\Transaction;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
@@ -17,6 +15,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Ramsey\Uuid\Uuid;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<WaveMoneyTransaction>
+ *
  * @implements IBaseService<WaveMoneyTransaction>
  */
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
@@ -107,7 +107,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return $this->waveMoneyTransaction->newQuery()->get();
     }
 
-    public function getWaveMoneyTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
-        return $this->getPaymentAggregatorTransaction();
+    public function getWaveMoneyTransaction(): WaveMoneyTransaction {
+        return $this->waveMoneyTransaction;
     }
 }

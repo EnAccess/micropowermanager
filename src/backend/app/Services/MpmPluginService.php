@@ -4,52 +4,27 @@ namespace App\Services;
 
 use App\Models\MpmPlugin;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Traits\HasCrudOperations;
 
 /**
  * @implements IBaseService<MpmPlugin>
  */
 class MpmPluginService implements IBaseService {
+    /** @use HasCrudOperations<MpmPlugin> */
+    use HasCrudOperations;
+
     public function __construct(
         private MpmPlugin $mpmPlugin,
     ) {}
+
+    protected function crudModel(): MpmPlugin {
+        return $this->mpmPlugin;
+    }
 
     /**
      * @param int|string $id
      */
     public function getById($id): ?MpmPlugin {
         return $this->mpmPlugin->newQuery()->findOrFail($id);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): MpmPlugin {
-        throw new \Exception('Method create() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): MpmPlugin {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
-    }
-
-    /**
-     * @return Collection<int, MpmPlugin>|LengthAwarePaginator<int, MpmPlugin>
-     */
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        if ($limit) {
-            return $this->mpmPlugin->newQuery()
-                ->paginate($limit);
-        }
-
-        return $this->mpmPlugin->newQuery()
-            ->get();
     }
 }

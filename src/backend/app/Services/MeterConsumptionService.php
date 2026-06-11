@@ -5,15 +5,23 @@ namespace App\Services;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterConsumption;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @implements IBaseService<MeterConsumption>
  */
 class MeterConsumptionService implements IBaseService {
+    /** @use HasCrudOperations<MeterConsumption> */
+    use HasCrudOperations;
+
     public function __construct(
         private MeterConsumption $meterConsumption,
     ) {}
+
+    protected function crudModel(): MeterConsumption {
+        return $this->meterConsumption;
+    }
 
     /**
      * @return Collection<int, MeterConsumption>
@@ -24,34 +32,5 @@ class MeterConsumptionService implements IBaseService {
                 'reading_date',
                 [$start, $end]
             )->oldest('reading_date')->get();
-    }
-
-    public function getById(int $id): MeterConsumption {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): MeterConsumption {
-        throw new \Exception('Method create() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): MeterConsumption {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
-    }
-
-    /**
-     * @return Collection<int, MeterConsumption>
-     */
-    public function getAll(?int $limit = null): Collection {
-        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

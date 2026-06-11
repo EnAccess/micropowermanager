@@ -7,8 +7,6 @@ use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,6 +15,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<SwiftaTransaction>
+ *
  * @implements IBaseService<SwiftaTransaction>
  */
 class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
@@ -62,8 +62,8 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         });
     }
 
-    public function getSwiftaTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
-        return $this->getPaymentAggregatorTransaction();
+    public function getSwiftaTransaction(): SwiftaTransaction {
+        return $this->swiftaTransaction;
     }
 
     public function getTransactionById(int $transactionId): Transaction {
