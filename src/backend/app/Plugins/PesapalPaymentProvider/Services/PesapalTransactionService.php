@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<PesapalTransaction>
+ *
  * @implements IBaseService<PesapalTransaction>
  */
 class PesapalTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {

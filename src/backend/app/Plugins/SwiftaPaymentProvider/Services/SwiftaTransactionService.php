@@ -17,6 +17,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<SwiftaTransaction>
+ *
  * @implements IBaseService<SwiftaTransaction>
  */
 class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
