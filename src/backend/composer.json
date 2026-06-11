@@ -27,7 +27,7 @@
     "lcobucci/jwt": "^4.3",
     "league/flysystem-google-cloud-storage": "^3.0",
     "parsecsv/php-parsecsv": "^1.3",
-    "phpoffice/phpspreadsheet": "^1.7",
+    "phpoffice/phpspreadsheet": "^2.3",
     "predis/predis": "^1.1.7",
     "propaganistas/laravel-phone": "^6.0",
     "pusher/pusher-php-server": "^7.0",
@@ -81,7 +81,7 @@
       "Tests\\": "tests/"
     },
     "exclude-from-classmap": [
-        "tests/Legacy/"
+      "tests/Legacy/"
     ]
   },
   "minimum-stability": "stable",
