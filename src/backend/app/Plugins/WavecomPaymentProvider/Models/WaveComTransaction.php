@@ -6,26 +6,21 @@ namespace App\Plugins\WavecomPaymentProvider\Models;
 
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
-use App\Models\Transaction\TransactionConflicts;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
- * @property      int                                   $id
- * @property      string                                $transaction_id
- * @property      string                                $sender
- * @property      string                                $message
- * @property      int                                   $amount
- * @property      int                                   $status
- * @property      Carbon|null                           $created_at
- * @property      Carbon|null                           $updated_at
- * @property      string|null                           $manufacturer_transaction_type
- * @property      int|null                              $manufacturer_transaction_id
- * @property-read Collection<int, TransactionConflicts> $conflicts
- * @property-read Model|null                            $manufacturerTransaction
- * @property-read Transaction|null                      $transaction
+ * @property      int              $id
+ * @property      string           $transaction_id
+ * @property      string           $sender
+ * @property      string           $message
+ * @property      int              $amount
+ * @property      Carbon|null      $created_at
+ * @property      Carbon|null      $updated_at
+ * @property      string|null      $manufacturer_transaction_type
+ * @property      int|null         $manufacturer_transaction_id
+ * @property-read Model|null       $manufacturerTransaction
+ * @property-read Transaction|null $transaction
  */
 class WaveComTransaction extends BasePaymentProviderTransaction {
     protected $table = 'wavecom_transactions';
@@ -63,13 +58,6 @@ class WaveComTransaction extends BasePaymentProviderTransaction {
 
     public function setAmount(int $amount): void {
         $this->amount = $amount;
-    }
-
-    /**
-     * @return MorphMany<TransactionConflicts, $this>
-     */
-    public function conflicts(): MorphMany {
-        return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
     public function getManufacturerTransferType(): ?string {
