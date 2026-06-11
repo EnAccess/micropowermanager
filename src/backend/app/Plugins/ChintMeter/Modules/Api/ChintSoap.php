@@ -62,8 +62,6 @@ class ChintSoap {
             throw new ChintApiResponseException('ChintMeterApi error: '.curl_error($ch));
         }
 
-        curl_close($ch);
-
         return $response;
     }
 
