@@ -24,7 +24,6 @@ RUN docker-php-ext-install \
     bcmath \
     exif \
     gd \
-    opcache \
     pcntl \
     pdo \
     pdo_mysql \
