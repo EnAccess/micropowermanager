@@ -64,8 +64,8 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         });
     }
 
-    public function getSwiftaTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
-        return $this->getPaymentAggregatorTransaction();
+    public function getSwiftaTransaction(): SwiftaTransaction {
+        return $this->swiftaTransaction;
     }
 
     public function getTransactionById(int $transactionId): Transaction {

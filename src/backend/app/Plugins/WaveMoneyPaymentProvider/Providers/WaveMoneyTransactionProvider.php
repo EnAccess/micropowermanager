@@ -5,8 +5,6 @@ namespace App\Plugins\WaveMoneyPaymentProvider\Providers;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 use App\Providers\Interfaces\ITransactionProvider;
@@ -123,7 +121,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         return $this->validData;
     }
 
-    public function getSubTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction {
+    public function getSubTransaction(): WaveMoneyTransaction {
         return $this->waveMoneyTransactionService->getWaveMoneyTransaction();
     }
 }
