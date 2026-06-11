@@ -316,14 +316,14 @@ class KelinMeterService implements ISynchronizeService {
     }
 
     private function getEarlyRegisteredMetersWithChangeSerialNumbersAsSimilarAsKalinMeterData(): void {
-        $this->earlyRegisteredMeters = $this->meter->newQuery()->get()->map(function ($q): array {
-            $string = substr($q->serial_number, 0, -2);
+        $this->earlyRegisteredMeters = $this->meter->newQuery()->get()->map(function (Meter $meter): array {
+            $string = substr($meter->serial_number, 0, -2);
             $array = explode('-', $string);
             $serial = implode('', $array);
 
             return [
                 'meter_serial' => $serial,
-                'id' => $q->id,
+                'id' => $meter->id,
             ];
         });
     }

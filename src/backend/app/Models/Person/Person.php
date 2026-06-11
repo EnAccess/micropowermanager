@@ -72,7 +72,7 @@ class Person extends BaseModel implements \Stringable, HasAddressesInterface {
 
     protected $appends = ['is_active'];
 
-    /** @var array<string, string> */
+    /** @var array<string, class-string> */
     protected $dispatchesEvents = [
         'deleting' => PersonDeleting::class,
     ];
