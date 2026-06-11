@@ -9,7 +9,6 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -63,13 +62,6 @@ class WaveComTransaction extends BasePaymentProviderTransaction {
 
     public function setAmount(int $amount): void {
         $this->amount = $amount;
-    }
-
-    /**
-     * @return MorphMany<TransactionConflicts, $this>
-     */
-    public function conflicts(): MorphMany {
-        return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
     public function getManufacturerTransferType(): ?string {

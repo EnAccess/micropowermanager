@@ -9,7 +9,6 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -62,13 +61,6 @@ class SmsTransaction extends BasePaymentProviderTransaction {
 
     public function setStatus(int $status): void {
         $this->status = $status;
-    }
-
-    /**
-     * @return MorphMany<TransactionConflicts, $this>
-     */
-    public function conflicts(): MorphMany {
-        return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
     public function getManufacturerTransferType(): ?string {
