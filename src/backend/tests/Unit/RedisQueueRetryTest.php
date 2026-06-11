@@ -85,7 +85,7 @@ class RedisQueueRetryTest extends TestCase {
         $this->expectException(ConnectionException::class);
         $this->expectExceptionMessage('Connection refused');
 
-        $queue->pushRaw('{"job":"test"}', 'default');
+        $queue->pushRaw('{"uuid":"test-789","id":"test-789","displayName":"test","job":"test"}', 'default');
     }
 
     public function testRetryUsesExponentialBackoff(): void {
@@ -104,7 +104,7 @@ class RedisQueueRetryTest extends TestCase {
         $queue->setContainer(app());
 
         try {
-            $queue->pushRaw('{"job":"test"}', 'default');
+            $queue->pushRaw('{"uuid":"test-987","id":"test-987","displayName":"test","job":"test"}', 'default');
         } catch (ConnectionException) {
             // expected
         }
