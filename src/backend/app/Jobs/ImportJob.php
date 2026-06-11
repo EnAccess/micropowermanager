@@ -5,7 +5,7 @@ namespace App\Jobs;
 use Illuminate\Support\Facades\Cache;
 
 class ImportJob extends AbstractJob {
-    private const CACHE_TTL_SECONDS = 3600;
+    private const int CACHE_TTL_SECONDS = 3600;
 
     /**
      * @param array<int|string, mixed> $data

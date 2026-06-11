@@ -3,6 +3,7 @@
 namespace App\Sms\BodyParsers;
 
 use App\Models\PaymentHistory;
+use App\Models\Token;
 
 class ResendInformation extends SmsBodyParser {
     protected $variables = ['meter', 'token', 'energy', 'amount'];
@@ -10,7 +11,8 @@ class ResendInformation extends SmsBodyParser {
     public function __construct(protected PaymentHistory $paymentHistory) {}
 
     protected function getVariableValue(string $variable): mixed {
-        /** @var mixed $token */
+        // FIXME
+        /** @var Token $token */
         $token = $this->paymentHistory->paidFor()->first();
 
         $transaction = $this->paymentHistory->transaction()->first();
@@ -18,7 +20,7 @@ class ResendInformation extends SmsBodyParser {
         return match ($variable) {
             'meter' => $transaction->message,
             'token' => $token->token,
-            'energy' => $token->energy,
+            'energy' => $token->token_amount,
             'amount' => $this->paymentHistory->amount,
             default => $variable,
         };

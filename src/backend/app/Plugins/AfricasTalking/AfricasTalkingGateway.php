@@ -81,7 +81,7 @@ class AfricasTalkingGateway {
         } catch (\Exception $exception) {
             Log::error('AfricasTalking message sending failed', ['message' => $exception->getMessage()]);
 
-            throw new MessageNotSentException('AfricasTalking message sending failed');
+            throw new MessageNotSentException('AfricasTalking message sending failed', $exception->getCode(), $exception);
         }
     }
 }

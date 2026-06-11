@@ -114,10 +114,10 @@ class RevenueController extends Controller {
      * Prepares the data for revenue dashboard.
      */
     public function revenueData(Request $request): ApiResource {
-        $startDate = date('Y-m-d', strtotime($request->get('start_date') ?? '2018-01-01'));
-        $endDate = Carbon::parse(date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31')))->endOfDay();
-        $targetTypeId = $request->get('target_type_id'); // cluster or mini-grid id
-        $targetType = $request->get('target_type'); // cluster or mini-grid
+        $startDate = date('Y-m-d', strtotime($request->input('start_date') ?? '2018-01-01'));
+        $endDate = Carbon::parse(date('Y-m-d', strtotime($request->input('end_date') ?? '2018-12-31')))->endOfDay();
+        $targetTypeId = $request->input('target_type_id'); // cluster or mini-grid id
+        $targetType = $request->input('target_type'); // cluster or mini-grid
         if ($targetType !== 'mini-grid' && $targetType !== 'cluster') {
             throw new \Exception('target type must either mini-grid or cluster');
         }

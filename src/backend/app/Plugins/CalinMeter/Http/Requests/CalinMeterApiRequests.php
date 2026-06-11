@@ -44,7 +44,7 @@ class CalinMeterApiRequests {
                     'message :' => $gException->getMessage(),
                 ]
             );
-            throw new CalinApiResponseException($gException->getMessage());
+            throw new CalinApiResponseException($gException->getMessage(), $gException->getCode(), $gException);
         }
     }
 

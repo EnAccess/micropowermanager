@@ -131,7 +131,7 @@ class KelinMeterService implements ISynchronizeService {
             if ($returnData) {
                 return ['result' => false];
             }
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $metersCollection = collect($meters)->filter(fn (array $meter): bool => $meter['consNo'] !== null);
@@ -316,14 +316,14 @@ class KelinMeterService implements ISynchronizeService {
     }
 
     private function getEarlyRegisteredMetersWithChangeSerialNumbersAsSimilarAsKalinMeterData(): void {
-        $this->earlyRegisteredMeters = $this->meter->newQuery()->get()->map(function ($q): array {
-            $string = substr($q->serial_number, 0, -2);
+        $this->earlyRegisteredMeters = $this->meter->newQuery()->get()->map(function (Meter $meter): array {
+            $string = substr($meter->serial_number, 0, -2);
             $array = explode('-', $string);
             $serial = implode('', $array);
 
             return [
                 'meter_serial' => $serial,
-                'id' => $q->id,
+                'id' => $meter->id,
             ];
         });
     }

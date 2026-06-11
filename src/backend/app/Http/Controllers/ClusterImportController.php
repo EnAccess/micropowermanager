@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class ClusterImportController extends Controller {
-    private const ASYNC_THRESHOLD = 50;
-    private const CACHE_TTL_SECONDS = 3600;
+    private const int ASYNC_THRESHOLD = 50;
+    private const int CACHE_TTL_SECONDS = 3600;
 
     public function __construct(
         private ClusterImportService $clusterImportService,

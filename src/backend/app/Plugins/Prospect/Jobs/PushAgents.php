@@ -39,7 +39,7 @@ class PushAgents extends AbstractJob {
                 return;
             }
             $payload = ['data' => $data];
-            $response = app(ProspectApiClient::class)->postAgents($payload);
+            $response = resolve(ProspectApiClient::class)->postAgents($payload);
 
             if ($response->failed()) {
                 Log::error('Prospect: push agents failed', ['status' => $response->status(), 'body' => $response->body()]);
@@ -80,14 +80,14 @@ class PushAgents extends AbstractJob {
         Log::info('Loading agent data from: '.basename($filePath));
 
         $csvContent = Storage::get($filePath) ?: '';
-        $lines = array_values(array_filter(str_getcsv($csvContent, "\n"), fn ($l): bool => trim((string) $l) !== ''));
+        $lines = array_values(array_filter(str_getcsv($csvContent, "\n", escape: '\\'), fn ($l): bool => trim((string) $l) !== ''));
         if ($lines === []) {
             return [];
         }
-        $headers = array_map(trim(...), str_getcsv(array_shift($lines)));
+        $headers = array_map(trim(...), str_getcsv(array_shift($lines), escape: '\\'));
         $data = [];
         foreach ($lines as $line) {
-            $row = str_getcsv($line);
+            $row = str_getcsv($line, escape: '\\');
             if (count($row) !== count($headers)) {
                 continue;
             }

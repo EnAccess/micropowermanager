@@ -35,31 +35,30 @@ class GomeLongMeterApi implements IManufacturerAPI {
                 'token' => 'debug-token',
                 'energy' => $transactionContainer->chargeAmount,
             ];
-        } else {
-            $energy = $transactionContainer->chargeAmount;
-            $credentials = $this->credentialService->getCredentials();
-            $params = [
-                'U' => $credentials->getUserId(),
-                'K' => $credentials->getUserPassword(),
-                'meter' => $meter->serial_number,
-                'amt' => $transactionContainer->chargeAmount,
-            ];
-
-            $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
-
-            $manufacturerTransaction = $this->gomeLongTransaction->newQuery()->create([]);
-            $transactionContainer->transaction->originalTransaction()->first()->update([
-                'manufacturer_transaction_id' => $manufacturerTransaction->id,
-                'manufacturer_transaction_type' => 'gome_long_transaction',
-            ]);
-
-            return [
-                'token' => $response['Token'],
-                'token_type' => Token::TYPE_ENERGY,
-                'token_unit' => Token::UNIT_KWH,
-                'token_amount' => $energy,
-            ];
         }
+        $energy = $transactionContainer->chargeAmount;
+        $credentials = $this->credentialService->getCredentials();
+        $params = [
+            'U' => $credentials->getUserId(),
+            'K' => $credentials->getUserPassword(),
+            'meter' => $meter->serial_number,
+            'amt' => $transactionContainer->chargeAmount,
+        ];
+
+        $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
+
+        $manufacturerTransaction = $this->gomeLongTransaction->newQuery()->create([]);
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => 'gome_long_transaction',
+        ]);
+
+        return [
+            'token' => $response['Token'],
+            'token_type' => Token::TYPE_ENERGY,
+            'token_unit' => Token::UNIT_KWH,
+            'token_amount' => $energy,
+        ];
     }
 
     /**

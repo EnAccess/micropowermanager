@@ -25,7 +25,7 @@ class SteamaSiteServiceTest extends TestCase {
         $this->expectException(SteamaApiResponseException::class);
         $this->expectExceptionMessage('Steama API unavailable');
 
-        app(SteamaSiteService::class)->sync();
+        resolve(SteamaSiteService::class)->sync();
     }
 
     public function testSyncCreatesMiniGridSiteAndCityForANewSite(): void {
@@ -37,7 +37,7 @@ class SteamaSiteServiceTest extends TestCase {
             ]);
         });
 
-        app(SteamaSiteService::class)->sync();
+        resolve(SteamaSiteService::class)->sync();
 
         $this->assertTrue(SteamaSite::query()->where('site_id', 501)->exists());
         $this->assertTrue(City::query()->where('name', 'Calabar Village')->exists());

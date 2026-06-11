@@ -19,13 +19,13 @@ class CityController extends Controller {
     ) {}
 
     public function index(Request $request): ApiResource {
-        $limit = $request->get('limit');
+        $limit = $request->input('limit');
 
         return ApiResource::make($this->cityService->getAll($limit));
     }
 
     public function show(int $cityId, Request $request): ApiResource {
-        $relation = $request->get('relation');
+        $relation = $request->input('relation');
 
         if ($relation) {
             return ApiResource::make($this->cityService->getByIdWithRelation($cityId, ['location', 'country']));

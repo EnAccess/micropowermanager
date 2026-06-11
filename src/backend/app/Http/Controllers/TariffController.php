@@ -20,7 +20,7 @@ class TariffController extends Controller {
      * The list is paginated and each page contains 15 results.
      */
     public function index(Request $request): ApiResource {
-        $limit = $request->get('limit');
+        $limit = $request->input('limit');
 
         return ApiResource::make($this->tariffService->getAll($limit));
     }

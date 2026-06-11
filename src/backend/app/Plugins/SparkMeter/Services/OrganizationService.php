@@ -31,14 +31,14 @@ class OrganizationService {
                 'display_name' => $organizationData['display_name'],
                 'name' => $organizationData['name'],
             ]);
-        } else {
-            return $organization->update([
-                'organization_id' => $organizationData['id'],
-                'code' => $organizationData['code'],
-                'display_name' => $organizationData['display_name'],
-                'name' => $organizationData['name'],
-            ]);
         }
+
+        return $organization->update([
+            'organization_id' => $organizationData['id'],
+            'code' => $organizationData['code'],
+            'display_name' => $organizationData['display_name'],
+            'name' => $organizationData['name'],
+        ]);
     }
 
     public function deleteOrganization(): void {

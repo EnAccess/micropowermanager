@@ -103,7 +103,7 @@ class PersonController extends Controller {
                 $personData['mini_grid_id'] = $miniGridId;
                 $person = $this->personService->createMaintenancePerson($personData);
             } else {
-                $country = $this->countryService->getByCode($request->get('country_code'));
+                $country = $this->countryService->getByCode($request->input('country_code'));
                 $person = $this->personService->create($personData);
 
                 if ($country instanceof Country) {

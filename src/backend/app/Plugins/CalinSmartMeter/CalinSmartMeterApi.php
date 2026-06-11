@@ -39,7 +39,7 @@ class CalinSmartMeterApi implements IManufacturerAPI {
         try {
             $credentials = $this->credentials->newQuery()->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            throw new CalinSmartCreadentialsNotFoundException($e->getMessage());
+            throw new CalinSmartCreadentialsNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         $url = $credentials->api_url.$this->rootUrl;
         $tokenParams = [
@@ -91,7 +91,7 @@ class CalinSmartMeterApi implements IManufacturerAPI {
         try {
             $credentials = $this->credentials->newQuery()->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            throw new CalinSmartCreadentialsNotFoundException($e->getMessage());
+            throw new CalinSmartCreadentialsNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         $url = $credentials->api_url.$root;
         $tokenParams = [

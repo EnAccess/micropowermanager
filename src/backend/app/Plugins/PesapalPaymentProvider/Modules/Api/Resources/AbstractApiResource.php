@@ -45,14 +45,7 @@ abstract class AbstractApiResource {
         if (!is_array($error)) {
             return null;
         }
-
-        $hasContent = false;
-        foreach ($error as $value) {
-            if ($value !== null && $value !== '') {
-                $hasContent = true;
-                break;
-            }
-        }
+        $hasContent = array_any($error, fn ($value) => $value !== null && $value !== '');
         if (!$hasContent) {
             return null;
         }

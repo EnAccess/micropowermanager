@@ -12,7 +12,7 @@ class KelinDailyConsumptionController extends Controller {
     public function __construct(private DailyConsumptionService $dailyConsumptionService) {}
 
     public function index(KelinMeter $meter): DailyConsumptionCollection {
-        $perPage = (int) (\request()->get('per_page') ?? 15);
+        $perPage = (int) (\request()->input('per_page') ?? 15);
 
         return new DailyConsumptionCollection(
             DailyConsumptionResource::collection(

@@ -19,7 +19,7 @@ class SyncSteamaDataTest extends TestCase {
     }
 
     public function testIsGuardedAgainstOverlappingRunsPerActionAndCompany(): void {
-        $middleware = (new SyncSteamaData('Sites', 7))->middleware();
+        $middleware = new SyncSteamaData('Sites', 7)->middleware();
 
         $this->assertCount(1, $middleware);
         $overlap = $middleware[0];
@@ -31,8 +31,8 @@ class SyncSteamaDataTest extends TestCase {
 
     public function testAnActionForADifferentCompanyUsesADistinctLockKey(): void {
         $this->assertNotSame(
-            (new SyncSteamaData('Sites', 1))->middleware()[0]->key,
-            (new SyncSteamaData('Sites', 2))->middleware()[0]->key,
+            new SyncSteamaData('Sites', 1)->middleware()[0]->key,
+            new SyncSteamaData('Sites', 2)->middleware()[0]->key,
         );
     }
 }

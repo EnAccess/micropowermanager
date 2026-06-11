@@ -29,10 +29,10 @@ class ManufacturerService implements IBaseService {
      */
     public function createManufacturerDataFromRequest(Request $request): array {
         return [
-            'name' => $request->get('name'),
-            'contact_person' => $request->get('contact_person'),
-            'website' => $request->get('website'),
-            'api_name' => $request->get('api_name'),
+            'name' => $request->input('name'),
+            'contact_person' => $request->input('contact_person'),
+            'website' => $request->input('website'),
+            'api_name' => $request->input('api_name'),
         ];
     }
 

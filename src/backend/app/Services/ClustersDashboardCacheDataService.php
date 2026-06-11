@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Nette\Utils\DateTime;
 
 class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataService {
-    private const CACHE_KEY_CLUSTERS_DATA = 'ClustersData';
+    private const string CACHE_KEY_CLUSTERS_DATA = 'ClustersData';
 
     public function __construct(
         private PeriodService $periodService,

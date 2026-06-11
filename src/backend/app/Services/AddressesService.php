@@ -51,11 +51,11 @@ class AddressesService implements IBaseService, IAssociative {
      */
     public function createAddressDataFromRequest(Request $request): array {
         return [
-            'email' => $request->get('email') ?? '',
-            'phone' => $request->get('phone') ?? '',
-            'street' => $request->get('street') ?? '',
-            'city_id' => $request->get('city_id') ?? '',
-            'is_primary' => $request->get('is_primary') ?? 1,
+            'email' => $request->input('email') ?? '',
+            'phone' => $request->input('phone') ?? '',
+            'street' => $request->input('street') ?? '',
+            'city_id' => $request->input('city_id') ?? '',
+            'is_primary' => $request->input('is_primary') ?? 1,
         ];
     }
 

@@ -113,7 +113,7 @@ class ProspectAgentTransformer {
                 return null;
             }
 
-            $databaseProxy = app(DatabaseProxy::class);
+            $databaseProxy = resolve(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
             $company = Company::query()->find($companyId);
 

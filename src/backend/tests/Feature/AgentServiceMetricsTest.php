@@ -39,7 +39,7 @@ class AgentServiceMetricsTest extends TestCase {
 
         AgentBalanceHistoryFactory::new()->create(['agent_id' => $this->agent->id]);
 
-        $agent = app(AgentService::class)->getAll()->firstWhere('id', $this->agent->id);
+        $agent = resolve(AgentService::class)->getAll()->firstWhere('id', $this->agent->id);
 
         $this->assertSame(3, (int) $agent->sales_count);
         $this->assertSame(2, (int) $agent->customer_count);
@@ -54,7 +54,7 @@ class AgentServiceMetricsTest extends TestCase {
             'created_at' => now()->subDays(AgentService::ACTIVE_WINDOW_DAYS + 1),
         ]);
 
-        $agent = app(AgentService::class)->getAll()->firstWhere('id', $this->agent->id);
+        $agent = resolve(AgentService::class)->getAll()->firstWhere('id', $this->agent->id);
 
         $this->assertSame(0, (int) $agent->sales_count);
         $this->assertSame(0, (int) $agent->customer_count);

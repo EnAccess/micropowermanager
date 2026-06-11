@@ -204,7 +204,7 @@ class MeterTariffTest extends TestCase {
         $this->createMeterTariff();
         $tariff = $this->meterTariff;
         $tariffPrice = $tariff->total_price;
-        $service = app(TariffPricingComponentService::class);
+        $service = resolve(TariffPricingComponentService::class);
 
         $tariffComponent = $service->make([
             'name' => 'Installation Fee',

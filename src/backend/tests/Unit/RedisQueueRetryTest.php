@@ -30,7 +30,7 @@ class RedisQueueRetryTest extends TestCase {
     public function testPushSucceedsOnFirstAttempt(): void {
         $this->redisConnection->shouldReceive('eval')->once()->andReturn(1);
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60);
         $queue->setContainer(app());
 
         $payload = json_encode(['uuid' => 'test-123', 'id' => 'test-123', 'displayName' => 'test', 'job' => 'test']);
@@ -58,7 +58,7 @@ class RedisQueueRetryTest extends TestCase {
             ->once()
             ->withArgs(fn ($msg): bool => str_contains($msg, 'Redis connection failed'));
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60);
         $queue->setContainer(app());
 
         $queue->pushRaw('{"uuid":"test-456","id":"test-456","displayName":"test","job":"test"}', 'default');
@@ -79,13 +79,13 @@ class RedisQueueRetryTest extends TestCase {
 
         Log::shouldReceive('warning')->times(4);
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60);
         $queue->setContainer(app());
 
         $this->expectException(ConnectionException::class);
         $this->expectExceptionMessage('Connection refused');
 
-        $queue->pushRaw('{"job":"test"}', 'default');
+        $queue->pushRaw('{"uuid":"test-789","id":"test-789","displayName":"test","job":"test"}', 'default');
     }
 
     public function testRetryUsesExponentialBackoff(): void {
@@ -100,11 +100,11 @@ class RedisQueueRetryTest extends TestCase {
 
         Log::shouldReceive('warning')->times(4);
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60);
         $queue->setContainer(app());
 
         try {
-            $queue->pushRaw('{"job":"test"}', 'default');
+            $queue->pushRaw('{"uuid":"test-987","id":"test-987","displayName":"test","job":"test"}', 'default');
         } catch (ConnectionException) {
             // expected
         }
@@ -135,7 +135,7 @@ class RedisQueueRetryTest extends TestCase {
 
         Log::shouldReceive('warning')->once();
 
-        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60, null);
+        $queue = new RedisQueue($this->redisFactory, 'default', 'default', 60);
         $queue->setContainer(app());
 
         $result = $queue->pop('default');

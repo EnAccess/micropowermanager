@@ -20,7 +20,7 @@ trait RefreshMultipleDatabases {
             'migrate:fresh',
             ['--database' => 'micro_power_manager', '--path' => '/database/migrations/tenant']
         );
-        app(Kernel::class)->setArtisan(null);
+        resolve(Kernel::class)->setArtisan(null);
         $this->app[Kernel::class]->setArtisan(null);
     }
 
@@ -35,7 +35,7 @@ trait RefreshMultipleDatabases {
                 'migrate-tenant:fresh',
             );
 
-            app(Kernel::class)->setArtisan(null);
+            resolve(Kernel::class)->setArtisan(null);
 
             RefreshDatabaseState::$migrated = true;
         }

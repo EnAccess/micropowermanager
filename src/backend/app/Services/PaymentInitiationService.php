@@ -20,7 +20,7 @@ class PaymentInitiationService {
      *
      * @var array<int, class-string<PaymentInitiator>>
      */
-    private const PROVIDER_MAP = [
+    private const array PROVIDER_MAP = [
         0 => CashTransactionService::class,
         MpmPlugin::PAYSTACK_PAYMENT_PROVIDER => PaystackTransactionService::class,
         MpmPlugin::PESAPAL_PAYMENT_PROVIDER => PesapalTransactionService::class,

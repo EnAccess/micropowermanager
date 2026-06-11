@@ -45,7 +45,7 @@ abstract class AbstractExportService {
             Log::critical('An error occurred while creating the spreadsheet', [
                 'message' => $e->getMessage(),
             ]);
-            throw new SpreadSheetNotCreatedException($e->getMessage());
+            throw new SpreadSheetNotCreatedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -97,14 +97,14 @@ abstract class AbstractExportService {
             Log::critical('An error occurred while setting the active sheet survey on the spreadsheet.', [
                 'message' => $e->getMessage(),
             ]);
-            throw new ActiveSheetNotCreatedException($e->getMessage());
+            throw new ActiveSheetNotCreatedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
     public function saveSpreadSheet(): string {
         try {
             $user = User::query()->first();
-            $databaseProxy = app(DatabaseProxy::class);
+            $databaseProxy = resolve(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
             $directory = "export/{$companyId}";
@@ -121,7 +121,7 @@ abstract class AbstractExportService {
 
             return $path;
         } catch (\Exception $e) {
-            throw new SpreadSheetNotSavedException($e->getMessage());
+            throw new SpreadSheetNotSavedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -131,7 +131,7 @@ abstract class AbstractExportService {
     public function saveCsv(array $headers = []): string {
         try {
             $user = User::query()->first();
-            $databaseProxy = app(DatabaseProxy::class);
+            $databaseProxy = resolve(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
             $directory = "export/{$companyId}";
@@ -145,7 +145,7 @@ abstract class AbstractExportService {
             return $path;
         } catch (\Exception $e) {
             Log::critical('Error saving CSV', ['message' => $e->getMessage()]);
-            throw new CsvNotSavedException($e->getMessage());
+            throw new CsvNotSavedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -165,14 +165,14 @@ abstract class AbstractExportService {
 
         // Write headers
         if ($headers === []) {
-            fputcsv($stream, array_keys($this->exportingData->first()));
+            fputcsv($stream, array_keys($this->exportingData->first()), escape: '\\');
         } else {
-            fputcsv($stream, $headers);
+            fputcsv($stream, $headers, escape: '\\');
         }
 
         // Write rows
         foreach ($this->exportingData as $row) {
-            fputcsv($stream, $row);
+            fputcsv($stream, $row, escape: '\\');
         }
 
         rewind($stream);

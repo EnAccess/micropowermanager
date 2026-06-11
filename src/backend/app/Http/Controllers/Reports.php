@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
@@ -352,8 +353,8 @@ class Reports {
             $sheet->setCellValue($column.$index, $paymentHistory->amount);
 
             if ($paymentHistory->payment_type === 'access_rate' || $paymentHistory->payment_type === 'access rate') {
-                $nextCol = $column;
-                $sheet->setCellValue(++$nextCol.$index, $paymentHistory->amount);
+                $nextColumn = Coordinate::stringFromColumnIndex(Coordinate::columnIndexFromString($column) + 1);
+                $sheet->setCellValue($nextColumn.$index, $paymentHistory->amount);
                 $soldAmount['access_rate'] = (float) $paymentHistory->amount;
             } else {
                 $soldAmount['energy'] = (float) $paymentHistory->amount;
@@ -491,9 +492,10 @@ class Reports {
      * @return \Generator<int, string, mixed, void>
      */
     private function excelColumnRange(string $lower, string $upper): \Generator {
-        ++$upper;
-        for ($i = $lower; $i !== $upper; ++$i) {
-            yield $i;
+        $lowerIndex = Coordinate::columnIndexFromString($lower);
+        $upperIndex = Coordinate::columnIndexFromString($upper);
+        for ($columnIndex = $lowerIndex; $columnIndex <= $upperIndex; ++$columnIndex) {
+            yield Coordinate::stringFromColumnIndex($columnIndex);
         }
     }
 
@@ -574,7 +576,7 @@ class Reports {
 
         try {
             $user = User::query()->first();
-            $databaseProxy = app(DatabaseProxy::class);
+            $databaseProxy = resolve(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
             $fileName = Str::slug("{$reportType}-{$cityName}-{$dateRange}").'.xlsx';

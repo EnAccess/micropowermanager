@@ -20,7 +20,7 @@ class WebhookService {
             Log::info('Webhook created successfully');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            throw new WebhookNotCreatedException($e->getMessage());
+            throw new WebhookNotCreatedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

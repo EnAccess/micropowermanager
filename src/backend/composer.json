@@ -8,7 +8,7 @@
   ],
   "license": "MIT",
   "require": {
-    "php": "^8.2",
+    "php": "^8.5",
     "africastalking/africastalking": "^3.0",
     "barryvdh/laravel-dompdf": "^v3.1.1",
     "barryvdh/laravel-ide-helper": "^3.6",
@@ -79,10 +79,7 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/"
-    },
-    "exclude-from-classmap": [
-        "tests/Legacy/"
-    ]
+    }
   },
   "minimum-stability": "stable",
   "prefer-stable": true,

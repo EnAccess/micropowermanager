@@ -201,7 +201,7 @@ class AppliancePersonController extends Controller {
     }
 
     public function getRates(int $appliancePersonId, Request $request): ApiResource {
-        $perPage = $request->get('per_page', 15);
+        $perPage = $request->input('per_page', 15);
 
         $appliancePerson = $this->appliancePerson::withTrashed()->findOrFail($appliancePersonId);
 
@@ -249,7 +249,7 @@ class AppliancePersonController extends Controller {
     }
 
     public function getLogs(int $appliancePersonId, Request $request): ApiResource {
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->input('per_page', 10);
 
         $appliancePerson = $this->appliancePerson::withTrashed()->findOrFail($appliancePersonId);
 

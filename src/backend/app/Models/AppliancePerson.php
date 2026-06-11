@@ -46,7 +46,7 @@ class AppliancePerson extends BaseModel {
     public const PAYMENT_TYPE_INSTALLMENT = 'installment';
     public const PAYMENT_TYPE_ENERGY_SERVICE = 'energy_service';
 
-    /** @var array<string, string> */
+    /** @var array<string, class-string> */
     protected $dispatchesEvents = [
         'created' => AppliancePersonCreated::class,
     ];

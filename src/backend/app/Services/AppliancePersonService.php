@@ -132,7 +132,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
     public function getLoanIdsForCustomerId(int $customerId): SupportCollection {
         return $this->appliancePerson->newQuery()
             ->where('person_id', $customerId)
-            ->where('device_serial', null)
+            ->where('device_serial')
             ->orWhere('device_serial', '')->pluck('id');
     }
 

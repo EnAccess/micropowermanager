@@ -58,7 +58,7 @@ class SmsParsingRuleService {
      * @return Collection<int, SmsParsingRule>
      */
     public function installDefaults(): Collection {
-        $converter = app(TemplateToRegexConverter::class);
+        $converter = resolve(TemplateToRegexConverter::class);
 
         $defaults = [
             [

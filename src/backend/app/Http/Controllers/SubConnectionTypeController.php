@@ -11,7 +11,7 @@ class SubConnectionTypeController extends Controller {
     public function __construct(private SubConnectionTypeService $subConnectionTypeService) {}
 
     public function index(Request $request, ?int $connectionTypeId = null): ApiResource {
-        $limit = $request->get('limit');
+        $limit = $request->input('limit');
 
         if ($connectionTypeId !== null) {
             return ApiResource::make($this->subConnectionTypeService->getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit));

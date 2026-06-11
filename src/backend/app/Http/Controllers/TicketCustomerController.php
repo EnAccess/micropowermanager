@@ -42,7 +42,7 @@ class TicketCustomerController extends Controller {
         if ($categoryData->out_source) {
             $ticketOutsourceData = [
                 'ticket_id' => $ticket->id,
-                'amount' => (int) $request->get('outsourcing'),
+                'amount' => (int) $request->input('outsourcing'),
             ];
             $this->ticketOutSourceService->create($ticketOutsourceData);
         }

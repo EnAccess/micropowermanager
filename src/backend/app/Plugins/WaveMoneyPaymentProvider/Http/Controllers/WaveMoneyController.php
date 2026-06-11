@@ -18,14 +18,14 @@ class WaveMoneyController extends Controller {
     ) {}
 
     public function startTransaction(TransactionInitializeRequest $request): WaveMoneyResource {
-        $transaction = $request->get('waveMoneyTransaction');
+        $transaction = $request->input('waveMoneyTransaction');
 
         return WaveMoneyResource::make($this->apiService->requestPayment($transaction));
     }
 
     public function transactionCallBack(Request $request): void {
-        $transaction = $request->get('waveMoneyTransaction');
-        $status = $request->get('status');
+        $transaction = $request->input('waveMoneyTransaction');
+        $status = $request->input('status');
 
         $this->transactionService->update($transaction, [
             'status' => $status,

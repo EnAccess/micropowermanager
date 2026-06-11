@@ -37,7 +37,7 @@ class ApiRequests {
             Log::critical('Angaza API request failed', [
                 'message :' => $e->getMessage(),
             ]);
-            throw new AngazaApiResponseException($e->getMessage());
+            throw new AngazaApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -68,7 +68,7 @@ class ApiRequests {
                     'message :' => $e->getMessage(),
                 ]
             );
-            throw new AngazaApiResponseException($e->getMessage());
+            throw new AngazaApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

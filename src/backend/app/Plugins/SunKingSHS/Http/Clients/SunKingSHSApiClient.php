@@ -40,7 +40,7 @@ class SunKingSHSApiClient {
             Log::critical('SunKing Access Token API request failed', [
                 'message :' => $e->getMessage(),
             ]);
-            throw new SunKingApiResponseException($e->getMessage());
+            throw new SunKingApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -68,7 +68,7 @@ class SunKingSHSApiClient {
             Log::critical('SunKing API request failed', [
                 'message :' => $e->getMessage(),
             ]);
-            throw new SunKingApiResponseException($e->getMessage());
+            throw new SunKingApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -101,7 +101,7 @@ class SunKingSHSApiClient {
                     'message :' => $e->getMessage(),
                 ]
             );
-            throw new SunKingApiResponseException($e->getMessage());
+            throw new SunKingApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TextbeeSmsGateway {
-    private const BASE_URL = 'https://api.textbee.dev/api/v1';
+    private const string BASE_URL = 'https://api.textbee.dev/api/v1';
     private TextbeeCredential $credentials;
 
     public function __construct(
@@ -83,7 +83,7 @@ class TextbeeSmsGateway {
                 'trace' => $exception->getTraceAsString(),
             ]);
 
-            throw new MessageNotSentException('TextBee message sending failed: '.$exception->getMessage());
+            throw new MessageNotSentException('TextBee message sending failed: '.$exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 }

@@ -74,7 +74,7 @@ class ExtractAgents extends AbstractJob {
             $agents = $query->get();
             Log::info('Found '.$agents->count().' agents to process');
 
-            $transformer = app(ProspectAgentTransformer::class);
+            $transformer = resolve(ProspectAgentTransformer::class);
             $agentData = [];
 
             foreach ($agents as $agent) {
@@ -120,7 +120,7 @@ class ExtractAgents extends AbstractJob {
             $csvContent = $this->arrayToCsv($data, $headers);
 
             $user = User::query()->first();
-            $databaseProxy = app(DatabaseProxy::class);
+            $databaseProxy = resolve(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
             $filePath = "prospect/{$companyId}/agents/{$fileName}";
@@ -147,13 +147,13 @@ class ExtractAgents extends AbstractJob {
      */
     private function arrayToCsv(array $data, array $headers): string {
         $output = fopen('php://temp', 'r+');
-        fputcsv($output, $headers);
+        fputcsv($output, $headers, escape: '\\');
         foreach ($data as $row) {
             $csvRow = [];
             foreach ($headers as $header) {
                 $csvRow[] = $row[$header] ?? '';
             }
-            fputcsv($output, $csvRow);
+            fputcsv($output, $csvRow, escape: '\\');
         }
         rewind($output);
         $csvContent = stream_get_contents($output);

@@ -42,9 +42,9 @@ class AgentReceiptService implements IBaseService {
 
         if ($limit) {
             return $query->latest()->paginate($limit);
-        } else {
-            return $query->latest()->paginate();
         }
+
+        return $query->latest()->paginate();
     }
 
     public function getLastReceipt(int $agentId): ?AgentReceipt {

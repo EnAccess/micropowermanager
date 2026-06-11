@@ -45,7 +45,7 @@ class ProspectInstallationTransformer {
         $usageSubCategory = $this->mapUsageSubCategory($device, $deviceData, $usageCategory);
 
         $user = User::query()->first();
-        $databaseProxy = app(DatabaseProxy::class);
+        $databaseProxy = resolve(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
         $purchaseDate = null;

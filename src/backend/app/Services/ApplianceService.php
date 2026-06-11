@@ -14,7 +14,7 @@ class ApplianceService {
      * @return LengthAwarePaginator<int, Appliance>|Collection<int, Appliance>
      */
     public function getAppliances(Request $request): LengthAwarePaginator|Collection {
-        $perPage = $request->get('per_page');
+        $perPage = $request->input('per_page');
         if ($perPage) {
             return $this->appliance->newQuery()->with(['applianceType'])->paginate($perPage);
         }

@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TextbeeSmsPollingService {
-    private const BASE_URL = 'https://api.textbee.dev/api/v1';
-    private const CACHE_KEY_RECEIVED_AFTER = 'textbee_last_polled_at';
-    private const CACHE_KEY_RECENT_IDS = 'textbee_recent_message_ids';
+    private const string BASE_URL = 'https://api.textbee.dev/api/v1';
+    private const string CACHE_KEY_RECEIVED_AFTER = 'textbee_last_polled_at';
+    private const string CACHE_KEY_RECENT_IDS = 'textbee_recent_message_ids';
 
     public function __construct(
         private TextbeeCredentialService $credentialService,

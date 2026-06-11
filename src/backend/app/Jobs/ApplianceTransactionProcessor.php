@@ -85,7 +85,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
             return TransactionDataContainer::initialize($this->transaction);
         } catch (\Exception $e) {
             event(new TransactionFailedEvent($this->transaction, $e->getMessage()));
-            throw new TransactionNotInitializedException($e->getMessage());
+            throw new TransactionNotInitializedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

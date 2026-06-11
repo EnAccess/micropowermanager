@@ -92,7 +92,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     public function getGraphValues(Agent $agent, string $lastReceiptDate): array {
         $periodDate = $lastReceiptDate;
         $period = $this->getPeriod($agent, $periodDate);
-        /** @var SupportCollection<int, object{date: string, id: int, trigger_type: string, amount: float, available_balance: float, due_to_supplier: float}> $history */
+
         $history = $this->agentBalanceHistory->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as date,id,trigger_Type,amount,'.
                 'available_balance,due_to_supplier')
@@ -111,8 +111,8 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             $date = new \DateTime();
             $key = $date->format('Y-m-d');
             $period[$key] = [
-                'balance' => 0,
-                'due' => 0,
+                'balance' => 0.0,
+                'due' => 0.0,
             ];
 
             return $period;

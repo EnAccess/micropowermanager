@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Nette\Utils\DateTime;
 
 class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataService {
-    private const CACHE_KEY_MINI_GRIDS_DATA = 'MiniGridsData';
+    private const string CACHE_KEY_MINI_GRIDS_DATA = 'MiniGridsData';
 
     public function __construct(
         private MiniGridRevenueService $miniGridRevenueService,

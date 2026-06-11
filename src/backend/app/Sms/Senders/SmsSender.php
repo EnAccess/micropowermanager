@@ -56,7 +56,7 @@ abstract class SmsSender {
             $smsBody = $this->getSmsBody('header');
         } catch (MissingSmsReferencesException $exception) {
             Log::error('SMS Header preparing failed.', ['message : ' => $exception->getMessage()]);
-            throw new MissingSmsReferencesException($exception->getMessage());
+            throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $className = $this->parserSubPath.$this->references['header'];
@@ -66,7 +66,7 @@ abstract class SmsSender {
             $this->body .= $smsObject->parseSms($smsBody->body);
         } catch (\Exception $exception) {
             Log::error('SMS Header parsing failed.', ['message : ' => $exception->getMessage()]);
-            throw new MissingSmsReferencesException($exception->getMessage());
+            throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -75,7 +75,7 @@ abstract class SmsSender {
             $smsBody = $this->getSmsBody('body');
         } catch (MissingSmsReferencesException $exception) {
             Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
-            throw new MissingSmsReferencesException($exception->getMessage());
+            throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);
         }
         $className = $this->parserSubPath.$this->references['body'];
         $smsObject = new $className($this->data);
@@ -83,7 +83,7 @@ abstract class SmsSender {
             $this->body .= $smsObject->parseSms($smsBody->body);
         } catch (\Exception $exception) {
             Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
-            throw new MissingSmsReferencesException($exception->getMessage());
+            throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -93,7 +93,7 @@ abstract class SmsSender {
             $this->body .= ' '.$smsBody->body;
         } catch (MissingSmsReferencesException $exception) {
             Log::error('SMS Footer preparing failed.', ['message : ' => $exception->getMessage()]);
-            throw new MissingSmsReferencesException($exception->getMessage());
+            throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 

@@ -122,7 +122,7 @@ class TransactionService {
             $result = $this->sparkMeterApiRequests->postToKoios($koiosUrl, $params);
         } catch (SparkAPIResponseException $exception) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
         $params['cursor'] = $result['cursor'];
         $transactions = $result['results'];
@@ -222,7 +222,7 @@ class TransactionService {
                 $transactions = $result['results'];
             } catch (SparkAPIResponseException $exception) {
                 $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
-                throw new SparkAPIResponseException($exception->getMessage());
+                throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
             }
         } while ($params['cursor'] && $count > 0);
         $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, true);
@@ -334,7 +334,7 @@ class TransactionService {
         try {
             $tariff = $this->sparkTariffService->singleSync($sparkTariff);
         } catch (SparkAPIResponseException $exception) {
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $chargedEnergy = (int) $transaction['amount'] / ($tariff->total_price / 100);
