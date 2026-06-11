@@ -10,7 +10,6 @@ class ResendInformation extends SmsBodyParser {
     public function __construct(protected PaymentHistory $paymentHistory) {}
 
     protected function getVariableValue(string $variable): mixed {
-        /** @var mixed $token */
         $token = $this->paymentHistory->paidFor()->first();
 
         $transaction = $this->paymentHistory->transaction()->first();

@@ -9,10 +9,10 @@ use Carbon\Carbon;
 use Tests\TestCase;
 
 class SteamaSyncSettingServiceTest extends TestCase {
-    private const ACTION_NAMES = ['Sites', 'Customers', 'Meters', 'Agents', 'Transactions'];
+    private const array ACTION_NAMES = ['Sites', 'Customers', 'Meters', 'Agents', 'Transactions'];
 
     private function service(): SteamaSyncSettingService {
-        return app(SteamaSyncSettingService::class);
+        return resolve(SteamaSyncSettingService::class);
     }
 
     public function testCreateDefaultSettingsSeedsAnImmediatelyDueActionForEverySetting(): void {

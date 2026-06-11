@@ -35,7 +35,7 @@ class ViberGateway {
     ): void {
         try {
             $this->bot->getClient()->sendMessage(
-                (new Text())
+                new Text()
                     ->setSender($this->botSender)
                     ->setReceiver($viberId)
                     ->setText($body)
@@ -44,7 +44,7 @@ class ViberGateway {
         } catch (\Exception $exception) {
             Log::error('Viber message sending failed', ['message' => $exception->getMessage()]);
 
-            throw new MessageNotSentException('Viber message sending failed');
+            throw new MessageNotSentException('Viber message sending failed', $exception->getCode(), $exception);
         }
 
         if ($registeredSms instanceof Sms) {

@@ -29,7 +29,7 @@ class SteamaMeterApiClientTest extends TestCase {
     private function makeClient(array $responses): SteamaMeterApiClient {
         return new SteamaMeterApiClient(
             new Client(['handler' => HandlerStack::create(new MockHandler($responses))]),
-            app(ApiHelpers::class),
+            resolve(ApiHelpers::class),
             new SteamaCredential(),
         );
     }
@@ -37,7 +37,7 @@ class SteamaMeterApiClientTest extends TestCase {
     public function testGetCredentialsDecryptsTheAuthenticationToken(): void {
         $this->createCredential();
 
-        $credential = app(SteamaMeterApiClient::class)->getCredentials();
+        $credential = resolve(SteamaMeterApiClient::class)->getCredentials();
 
         $this->assertSame('plain-token', $credential->authentication_token);
     }

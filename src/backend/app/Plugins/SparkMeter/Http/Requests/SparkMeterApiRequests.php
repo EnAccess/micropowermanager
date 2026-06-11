@@ -33,7 +33,7 @@ class SparkMeterApiRequests {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
@@ -58,7 +58,7 @@ class SparkMeterApiRequests {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
@@ -83,7 +83,7 @@ class SparkMeterApiRequests {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
@@ -138,7 +138,7 @@ class SparkMeterApiRequests {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
@@ -161,7 +161,7 @@ class SparkMeterApiRequests {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
@@ -187,7 +187,7 @@ class SparkMeterApiRequests {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SparkAPIResponseException($exception->getMessage());
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));

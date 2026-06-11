@@ -29,7 +29,7 @@ class SteamaSyncActionServiceTest extends TestCase {
     }
 
     private function service(): SteamaSyncActionService {
-        return app(SteamaSyncActionService::class);
+        return resolve(SteamaSyncActionService::class);
     }
 
     public function testFailedSyncIncrementsAttemptsWithoutAdvancingSchedule(): void {

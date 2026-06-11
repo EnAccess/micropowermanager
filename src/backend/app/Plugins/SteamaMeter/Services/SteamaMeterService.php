@@ -213,7 +213,7 @@ class SteamaMeterService implements ISynchronizeService {
     }
 
     private function meterAddress(int $cityId): Address {
-        return (new Address())->newQuery()->make([
+        return new Address()->newQuery()->make([
             'city_id' => request()->input('city_id', $cityId),
         ]);
     }
@@ -255,27 +255,26 @@ class SteamaMeterService implements ISynchronizeService {
         if ($stmMeterType) {
             if ($stmMeterType->mpmMeterType) {
                 return $stmMeterType->mpmMeterType;
-            } else {
-                return $this->meterType->newQuery()->create([
-                    'online' => 1,
-                    'phase' => 1,
-                    'max_current' => $usageSpikeThreshold,
-                ]);
             }
-        } else {
-            $meterType = $this->meterType->newQuery()->create([
+
+            return $this->meterType->newQuery()->create([
                 'online' => 1,
                 'phase' => 1,
                 'max_current' => $usageSpikeThreshold,
             ]);
-            $this->stmMeterType->newQuery()->create([
-                'version' => $version,
-                'usage_spike_threshold' => $usageSpikeThreshold,
-                'mpm_meter_type_id' => $meterType->id,
-            ]);
-
-            return $meterType;
         }
+        $meterType = $this->meterType->newQuery()->create([
+            'online' => 1,
+            'phase' => 1,
+            'max_current' => $usageSpikeThreshold,
+        ]);
+        $this->stmMeterType->newQuery()->create([
+            'version' => $version,
+            'usage_spike_threshold' => $usageSpikeThreshold,
+            'mpm_meter_type_id' => $meterType->id,
+        ]);
+
+        return $meterType;
     }
 
     /**

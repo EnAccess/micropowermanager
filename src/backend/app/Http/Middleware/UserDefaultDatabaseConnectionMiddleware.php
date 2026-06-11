@@ -109,13 +109,7 @@ class UserDefaultDatabaseConnectionMiddleware {
     }
 
     private function resolveThirdPartyApi(string $requestPath): bool {
-        foreach ($this->apiResolverMap->getResolvableApis() as $apiPath) {
-            if (Str::startsWith(Str::lower($requestPath), Str::lower($apiPath))) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->apiResolverMap->getResolvableApis(), fn ($apiPath) => Str::startsWith(Str::lower($requestPath), Str::lower($apiPath)));
     }
 
     private function isAgentApp(string $path): bool {

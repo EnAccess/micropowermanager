@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class MicroStarCertificateService {
     public function upload(Request $request, MicroStarCredential $credentials): MicroStarCredential {
         $file = $request->file('cert');
-        $companyId = app(UserService::class)->getCompanyId();
+        $companyId = resolve(UserService::class)->getCompanyId();
 
         $certificatePath = "certs/companies/{$companyId}";
 
@@ -33,10 +33,9 @@ class MicroStarCertificateService {
 
         if (Storage::exists($filePath)) {
             return $credentials->certificate_file_name;
-        } else {
-            $credentials->update(['certificate_path' => null, 'certificate_file_name' => null]);
-
-            return '';
         }
+        $credentials->update(['certificate_path' => null, 'certificate_file_name' => null]);
+
+        return '';
     }
 }

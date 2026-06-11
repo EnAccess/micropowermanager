@@ -22,18 +22,17 @@ class Transaction {
     private function determineSender(Request $request): ITransactionProvider {
         if (preg_match('/\/agent/', $request->url()) && auth('agent_api')->user()) {
             return resolve(AgentTransactionProvider::class);
-        } else {
-            Log::warning(
-                'Unknown IP Sent Transaction',
-                [
-                    'id' => 43326782767462641456,
-                    'message' => 'Payment identifier not in the white list',
-                    'ip' => $request->ip(),
-                    'data' => $request->getContent(),
-                ]
-            );
-
-            throw new PaymentProviderNotIdentified('Payment identifier not in the white list', 43326782);
         }
+        Log::warning(
+            'Unknown IP Sent Transaction',
+            [
+                'id' => 43326782767462641456,
+                'message' => 'Payment identifier not in the white list',
+                'ip' => $request->ip(),
+                'data' => $request->getContent(),
+            ]
+        );
+
+        throw new PaymentProviderNotIdentified('Payment identifier not in the white list', 43326782);
     }
 }

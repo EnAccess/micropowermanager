@@ -15,8 +15,6 @@ class PersonDeleting {
 
     /**
      * Create a new event instance.
-     *
-     * @return void
      */
     public function __construct(private Person $person) {}
 

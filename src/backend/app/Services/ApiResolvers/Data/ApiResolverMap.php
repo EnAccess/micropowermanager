@@ -52,7 +52,7 @@ class ApiResolverMap {
         self::TEXTBEE_SMS_GATEWAY_API,
     ];
 
-    private const API_RESOLVER = [
+    private const array API_RESOLVER = [
         self::TEST_API => TestApiResolver::class,
         self::VIBER_API => ViberMessagingApiResolver::class,
         self::WAVE_MONEY_API => WaveMoneyApiResolver::class,

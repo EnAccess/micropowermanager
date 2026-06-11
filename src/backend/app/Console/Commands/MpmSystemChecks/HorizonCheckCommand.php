@@ -15,7 +15,7 @@ class HorizonCheckCommand extends Command {
         $this->info('Checking Horizon queue worker status...');
 
         try {
-            $masters = app(MasterSupervisorRepository::class)->all();
+            $masters = resolve(MasterSupervisorRepository::class)->all();
 
             if (empty($masters)) {
                 $this->error('Horizon is inactive — no master supervisor running.');
@@ -40,7 +40,7 @@ class HorizonCheckCommand extends Command {
 
             $this->info('Horizon is running with '.count($masters).' master supervisor(s).');
 
-            $supervisors = app(SupervisorRepository::class)->all();
+            $supervisors = resolve(SupervisorRepository::class)->all();
             $totalProcesses = 0;
 
             foreach ($supervisors as $supervisor) {
@@ -55,13 +55,13 @@ class HorizonCheckCommand extends Command {
 
             $this->info("Active worker processes: {$totalProcesses}.");
 
-            $failedCount = app(JobRepository::class)->countRecentlyFailed();
+            $failedCount = resolve(JobRepository::class)->countRecentlyFailed();
 
             if ($failedCount > 0) {
                 $this->warn("Recently failed jobs: {$failedCount}.");
             }
 
-            $pendingCount = app(JobRepository::class)->countPending();
+            $pendingCount = resolve(JobRepository::class)->countPending();
             $this->info("Pending jobs: {$pendingCount}.");
 
             return Command::SUCCESS;

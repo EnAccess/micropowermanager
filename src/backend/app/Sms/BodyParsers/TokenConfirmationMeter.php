@@ -22,7 +22,7 @@ class TokenConfirmationMeter extends SmsBodyParser {
     ) {}
 
     protected function getVariableValue(string $variable): mixed {
-        $meterService = app(MeterService::class);
+        $meterService = resolve(MeterService::class);
         $person = $this->transaction->device?->person;
         if ($person == null) {
             $person = $meterService->getPersonByDeviceSerialNumber($this->transaction->message);

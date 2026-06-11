@@ -17,7 +17,7 @@ class SmsTransactionServiceTest extends TestCase {
         Queue::fake();
 
         $template = 'Confirmed [transaction_ref].[*]amount of [amount]MT[*]reference [device_serial][*]';
-        $converter = app(TemplateToRegexConverter::class);
+        $converter = resolve(TemplateToRegexConverter::class);
 
         SmsParsingRule::query()->create([
             'provider_name' => 'Vodacom',
@@ -29,7 +29,7 @@ class SmsTransactionServiceTest extends TestCase {
     }
 
     public function testProcessesIncomingSmsAndCreatesSmsTransaction(): void {
-        $result = app(SmsTransactionService::class)->processIncomingSms($this->smsBody, 'M-Pesa');
+        $result = resolve(SmsTransactionService::class)->processIncomingSms($this->smsBody, 'M-Pesa');
 
         $this->assertNotNull($result);
         $this->assertInstanceOf(SmsTransaction::class, $result);
@@ -39,7 +39,7 @@ class SmsTransactionServiceTest extends TestCase {
     }
 
     public function testDeduplicatesByTransactionReference(): void {
-        $service = app(SmsTransactionService::class);
+        $service = resolve(SmsTransactionService::class);
 
         $first = $service->processIncomingSms($this->smsBody, 'M-Pesa');
         $this->assertNotNull($first);

@@ -57,7 +57,7 @@ class MaintenanceUserController extends Controller {
         $maintenanceUser = $person;
 
         return
-            (new ApiResource($maintenanceUser))
+            new ApiResource($maintenanceUser)
                 ->response()
                 ->setStatusCode(201);
     }

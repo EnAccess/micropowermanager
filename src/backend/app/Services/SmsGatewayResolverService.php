@@ -110,7 +110,7 @@ class SmsGatewayResolverService {
             // Special handling for Viber: check if receiver has Viber contact
             if ($gateway === self::VIBER_GATEWAY) {
                 $viberContact = $this->viberContactService->getByReceiverPhoneNumber($receiver);
-                if (!($viberContact instanceof ViberContact)) {
+                if (!$viberContact instanceof ViberContact) {
                     // Fall back to next available gateway if receiver doesn't have Viber
                     Log::warning('Receiver does not have Viber contact, falling back to alternative gateway', [
                         'receiver' => $receiver,

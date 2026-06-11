@@ -62,7 +62,7 @@ class EnergyTransactionProcessor extends AbstractJob {
             return TransactionDataContainer::initialize($this->transaction);
         } catch (\Exception $e) {
             event(new TransactionFailedEvent($this->transaction, $e->getMessage()));
-            throw new TransactionNotInitializedException($e->getMessage());
+            throw new TransactionNotInitializedException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -76,7 +76,7 @@ class EnergyTransactionProcessor extends AbstractJob {
                     throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->device->device_serial}");
                 }
             } catch (\Exception $e) {
-                throw new TransactionAmountNotEnoughException($e->getMessage());
+                throw new TransactionAmountNotEnoughException($e->getMessage(), $e->getCode(), $e);
             }
         }
     }

@@ -18,10 +18,10 @@ use Database\Factories\UserFactory;
 use Tests\TestCase;
 
 class SteamaMeterServiceTest extends TestCase {
-    private const CUSTOMER_ID = 55;
+    private const int CUSTOMER_ID = 55;
 
     private function service(): SteamaMeterService {
-        return app(SteamaMeterService::class);
+        return resolve(SteamaMeterService::class);
     }
 
     /**

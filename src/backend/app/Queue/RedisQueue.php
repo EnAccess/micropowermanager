@@ -3,7 +3,6 @@
 namespace App\Queue;
 
 use Illuminate\Contracts\Queue\Job;
-use Illuminate\Contracts\Redis\Factory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
 use Laravel\Horizon\RedisQueue as BaseRedisQueue;
@@ -37,16 +36,6 @@ class RedisQueue extends BaseRedisQueue {
         10000,
         60000,
     ];
-
-    public function __construct(
-        Factory $redis,
-        $default = 'default',
-        $connection = null,
-        $retryAfter = 60,
-        $blockFor = null,
-    ) {
-        parent::__construct($redis, $default, $connection, $retryAfter, $blockFor);
-    }
 
     public function push($job, $data = '', $queue = null): mixed {
         return $this->retryOnConnectionFailure(fn () => parent::push($job, $data, $queue));

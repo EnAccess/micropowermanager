@@ -386,7 +386,7 @@ class TariffService implements ISynchronizeService {
                 if ($returnData) {
                     $returnArray[] = ['result' => false];
                 }
-                throw new SparkAPIResponseException($e->getMessage());
+                throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
             }
             // @phpstan-ignore argument.templateType,argument.templateType
             $sparkTariffsCollection = collect($tariffs['tariffs'])->filter(fn (array $tariff): bool => $tariff['tariff_type'] == 'flat');
@@ -453,7 +453,7 @@ class TariffService implements ISynchronizeService {
             $tariffs = $this->sparkMeterApiRequests->get($this->rootUrl, $siteId);
         } catch (SparkAPIResponseException $e) {
             Log::critical('Spark meter tariffs sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
-            throw new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
 
         // @phpstan-ignore argument.templateType,argument.templateType

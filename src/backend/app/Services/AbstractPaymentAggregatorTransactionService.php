@@ -19,7 +19,7 @@ use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Utils\MinimumPurchaseAmountValidator;
 
 abstract class AbstractPaymentAggregatorTransactionService {
-    private const MINIMUM_TRANSACTION_AMOUNT = 0;
+    private const int MINIMUM_TRANSACTION_AMOUNT = 0;
     protected string $payerPhoneNumber;
     protected string $meterSerialNumber;
     protected float $minimumPurchaseAmount;
@@ -100,7 +100,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
                 throw new TransactionAmountNotEnoughException('Transaction amount is not enough');
             }
         } catch (TransactionAmountNotEnoughException $e) {
-            throw new TransactionAmountNotEnoughException($e->getMessage());
+            throw new TransactionAmountNotEnoughException($e->getMessage(), $e->getCode(), $e);
         } catch (\Exception) {
             throw new TransactionIsInvalidForProcessingIncomingRequestException('Invalid Transaction request.');
         }

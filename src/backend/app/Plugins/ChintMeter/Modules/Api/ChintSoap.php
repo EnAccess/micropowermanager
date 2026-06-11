@@ -103,7 +103,7 @@ class ChintSoap {
 
     private function getPasswordSignature(): string {
         $password = $this->credentials->user_password;
-        $date = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Ymd');
+        $date = new \DateTime('now', new \DateTimeZone('UTC'))->format('Ymd');
         $msgText = $date.'Chint'.$password;
 
         return strtoupper(md5($msgText));
@@ -147,7 +147,7 @@ class ChintSoap {
             ];
         } catch (\Exception $e) {
             Log::error('ChintMeterApi error: '.$e->getMessage());
-            throw new ChintApiResponseException('ChintMeterApi error: '.$e->getMessage());
+            throw new ChintApiResponseException('ChintMeterApi error: '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -176,7 +176,7 @@ class ChintSoap {
             ];
         } catch (\Exception $e) {
             Log::error('ChintMeterApi error: '.$e->getMessage());
-            throw new ChintApiResponseException('ChintMeterApi error: '.$e->getMessage());
+            throw new ChintApiResponseException('ChintMeterApi error: '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

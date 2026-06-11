@@ -112,7 +112,7 @@ class KelinCustomerService implements ISynchronizeService {
             if ($returnData) {
                 return ['result' => false];
             }
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
         $customersCollection = collect($customers)->filter(fn (array $q): bool => $q['consNo'] !== '');
 
@@ -134,21 +134,20 @@ class KelinCustomerService implements ISynchronizeService {
                 $customer['registeredKelinCustomer'] = null;
 
                 return $customer;
-            } else {
-                $relatedPerson = null;
-                if ($registeredKelinCustomer) {
-                    $customer['syncStatus'] = $customerHash === $registeredKelinCustomer->hash ?
-                        SyncStatus::SYNCED : SyncStatus::MODIFIED;
-                    $relatedPerson = $people->where('id', $registeredKelinCustomer->mpm_customer_id)->first();
-                } else {
-                    $customer['syncStatus'] = SyncStatus::NOT_REGISTERED_YET;
-                }
-                $customer['hash'] = $customerHash;
-                $customer['relatedPerson'] = $relatedPerson;
-                $customer['registeredKelinCustomer'] = $registeredKelinCustomer;
-
-                return $customer;
             }
+            $relatedPerson = null;
+            if ($registeredKelinCustomer) {
+                $customer['syncStatus'] = $customerHash === $registeredKelinCustomer->hash ?
+                    SyncStatus::SYNCED : SyncStatus::MODIFIED;
+                $relatedPerson = $people->where('id', $registeredKelinCustomer->mpm_customer_id)->first();
+            } else {
+                $customer['syncStatus'] = SyncStatus::NOT_REGISTERED_YET;
+            }
+            $customer['hash'] = $customerHash;
+            $customer['relatedPerson'] = $relatedPerson;
+            $customer['registeredKelinCustomer'] = $registeredKelinCustomer;
+
+            return $customer;
         });
         $customerSyncStatus = $customersCollection->whereNotIn('syncStatus', [SyncStatus::SYNCED])->count();
 

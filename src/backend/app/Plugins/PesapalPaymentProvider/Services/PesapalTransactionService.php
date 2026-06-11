@@ -215,7 +215,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     ): array {
         $deviceType = null;
         if ($serialId !== null) {
-            $device = app(DeviceService::class)->getBySerialNumber($serialId);
+            $device = resolve(DeviceService::class)->getBySerialNumber($serialId);
             $deviceType = $device?->device_type;
         }
 

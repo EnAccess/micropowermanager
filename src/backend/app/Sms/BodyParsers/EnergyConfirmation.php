@@ -11,7 +11,6 @@ class EnergyConfirmation extends SmsBodyParser {
 
     protected function getVariableValue(mixed $variable): mixed {
         // FIXME
-        /** @var mixed $token */
         $token = $this->paymentHistory->paidFor()->first();
         $transaction = $this->paymentHistory->transaction()->first();
 

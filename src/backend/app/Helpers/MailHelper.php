@@ -28,7 +28,7 @@ class MailHelper {
             Log::info("Email sent successfully to: {$to} with subject: {$title}");
         } catch (TransportExceptionInterface $e) {
             Log::error("Failed to send email to {$to}: ".$e->getMessage());
-            throw new MailNotSentException('Failed to send email: '.$e->getMessage());
+            throw new MailNotSentException('Failed to send email: '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -56,7 +56,7 @@ class MailHelper {
             Log::info("Template email sent successfully to: {$to} with subject: {$title}");
         } catch (TransportExceptionInterface $e) {
             Log::error("Failed to send template email to {$to}: ".$e->getMessage());
-            throw new MailNotSentException('Failed to send template email: '.$e->getMessage());
+            throw new MailNotSentException('Failed to send template email: '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

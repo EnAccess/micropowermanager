@@ -280,7 +280,7 @@ class CustomerService implements ISynchronizeService {
 
             return $this->modelHasher($sparkCustomersResult, $phone);
         } catch (GuzzleException $e) {
-            throw new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -473,7 +473,7 @@ class CustomerService implements ISynchronizeService {
             $sparkCustomers = $this->sparkMeterApiRequests->get('/customers', $siteId);
         } catch (SparkAPIResponseException $e) {
             Log::critical('Spark meter customers sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
-            throw new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
 
         // @phpstan-ignore argument.templateType,argument.templateType
@@ -514,7 +514,7 @@ class CustomerService implements ISynchronizeService {
             $this->sparkMeterApiRequests->post($rootUrl, null, $customer->site->site_id);
         } catch (SparkAPIResponseException $e) {
             Log::critical('Spark meter customer meter reset failed.', ['Error :' => $e->getMessage()]);
-            throw new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 
 // test-api passes the company id within the callback url
 class TestApiResolver implements IApiResolver {
-    private const QUERY_PARAM_COMPANY_ID = 'c';
+    private const string QUERY_PARAM_COMPANY_ID = 'c';
 
     public function resolveCompanyId(Request $request): int {
         $companyId = $request->input(self::QUERY_PARAM_COMPANY_ID);

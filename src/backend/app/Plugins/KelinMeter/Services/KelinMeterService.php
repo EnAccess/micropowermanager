@@ -131,7 +131,7 @@ class KelinMeterService implements ISynchronizeService {
             if ($returnData) {
                 return ['result' => false];
             }
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $metersCollection = collect($meters)->filter(fn (array $meter): bool => $meter['consNo'] !== null);

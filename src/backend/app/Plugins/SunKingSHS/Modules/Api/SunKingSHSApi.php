@@ -105,7 +105,7 @@ class SunKingSHSApi implements IManufacturerAPI {
                 'token_expires_in' => null,
             ]);
 
-            throw new SunKingApiResponseException($e->getMessage());
+            throw new SunKingApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

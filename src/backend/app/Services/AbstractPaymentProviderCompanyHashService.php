@@ -21,9 +21,9 @@ use Hashids\Hashids;
  * a raw integer ID.
  */
 abstract class AbstractPaymentProviderCompanyHashService {
-    private const HASH_LENGTH = 16;
-    private const TIME_BASED_WINDOW_SECONDS = 86400;
-    private const TIME_BASED_BUCKET_SECONDS = 3600;
+    private const int HASH_LENGTH = 16;
+    private const int TIME_BASED_WINDOW_SECONDS = 86400;
+    private const int TIME_BASED_BUCKET_SECONDS = 3600;
 
     abstract protected function getUrlPrefix(): string;
 
