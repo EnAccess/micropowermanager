@@ -74,10 +74,6 @@ class PesapalTransactionProvider implements ITransactionProvider {
      */
     public function setValidData($pesapalTransactionData): void {}
 
-    public function getSubTransaction(): PesapalTransaction {
-        return $this->pesapalTransactionService->getPesapalTransaction();
-    }
-
     /**
      * @param mixed $transaction
      */

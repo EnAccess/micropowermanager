@@ -83,8 +83,8 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         return $this->validData;
     }
 
-    public function getSubTransaction(): SwiftaTransaction {
-        return $this->swiftaTransactionService->getSwiftaTransaction();
+    public function getProviderTransaction(): SwiftaTransaction {
+        return $this->swiftaTransactionService->paymentProviderTransaction;
     }
 
     /**
