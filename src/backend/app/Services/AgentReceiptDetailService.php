@@ -4,15 +4,22 @@ namespace App\Services;
 
 use App\Models\AgentReceiptDetail;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
+use App\Traits\HasCrudOperations;
 
 /**
  * @implements IBaseService<AgentReceiptDetail>
  */
 class AgentReceiptDetailService implements IBaseService {
+    /** @use HasCrudOperations<AgentReceiptDetail> */
+    use HasCrudOperations;
+
     public function __construct(
         private AgentReceiptDetail $agentReceiptDetail,
     ) {}
+
+    protected function crudModel(): AgentReceiptDetail {
+        return $this->agentReceiptDetail;
+    }
 
     public function getSummary(int $agentId): mixed {
         return $this->agentReceiptDetail->newQuery()->select('summary')
@@ -24,32 +31,4 @@ class AgentReceiptDetailService implements IBaseService {
             )->latest()->firstOrFail()->summary;
     }
 
-    public function getById(int $id): AgentReceiptDetail {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $agentReceiptDetailData
-     */
-    public function create(array $agentReceiptDetailData): AgentReceiptDetail {
-        return $this->agentReceiptDetail->create($agentReceiptDetailData);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): AgentReceiptDetail {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
-    }
-
-    /**
-     * @return Collection<int, AgentReceiptDetail>
-     */
-    public function getAll(?int $limit = null): Collection {
-        throw new \Exception('Method getAll() not yet implemented.');
-    }
 }

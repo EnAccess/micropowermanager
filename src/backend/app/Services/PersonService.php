@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Country;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -18,9 +19,16 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @implements IBaseService<Person>
  */
 class PersonService implements IBaseService {
+    /** @use HasCrudOperations<Person> */
+    use HasCrudOperations;
+
     public function __construct(
         private Person $person,
     ) {}
+
+    protected function crudModel(): Person {
+        return $this->person;
+    }
 
     /**
      * @return Collection<int, Person>|array<int, Person>
@@ -142,17 +150,6 @@ class PersonService implements IBaseService {
         ];
     }
 
-    public function getById(int $personId): Person {
-        return $this->person->newQuery()->find($personId);
-    }
-
-    /**
-     * @param array<string, mixed> $personData
-     */
-    public function create(array $personData): Person {
-        return $this->person->newQuery()->create($personData);
-    }
-
     /**
      * @param array<string, mixed> $personData
      */
@@ -165,10 +162,6 @@ class PersonService implements IBaseService {
         $person->fresh();
 
         return $person;
-    }
-
-    public function delete($person): ?bool {
-        return $person->delete();
     }
 
     /**

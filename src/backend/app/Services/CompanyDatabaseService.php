@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\CompanyDatabase;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
+use App\Traits\HasCrudOperations;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
@@ -12,13 +12,16 @@ use Illuminate\Support\Facades\DB;
  * @implements IBaseService<CompanyDatabase>
  */
 class CompanyDatabaseService implements IBaseService {
+    /** @use HasCrudOperations<CompanyDatabase> */
+    use HasCrudOperations;
+
     public function __construct(
         private CompanyDatabase $companyDatabase,
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {}
 
-    public function getById(int $id): CompanyDatabase {
-        return $this->companyDatabase->newQuery()->find($id);
+    protected function crudModel(): CompanyDatabase {
+        return $this->companyDatabase;
     }
 
     /**
@@ -59,24 +62,6 @@ class CompanyDatabaseService implements IBaseService {
      */
     public function createRecord(array $data): CompanyDatabase {
         return $this->companyDatabase->newQuery()->create($data);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): CompanyDatabase {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    /**
-     * @return Collection<int, CompanyDatabase>
-     */
-    public function getAll(?int $limit = null): Collection {
-        throw new \Exception('Method getAll() not yet implemented.');
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase {

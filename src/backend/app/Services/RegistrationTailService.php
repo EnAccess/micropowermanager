@@ -5,26 +5,21 @@ namespace App\Services;
 use App\Models\MpmPlugin;
 use App\Models\RegistrationTail;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Traits\HasCrudOperations;
 
 /**
  * @implements IBaseService<RegistrationTail>
  */
 class RegistrationTailService implements IBaseService {
+    /** @use HasCrudOperations<RegistrationTail> */
+    use HasCrudOperations;
+
     public function __construct(
         private RegistrationTail $registrationTail,
     ) {}
 
-    public function getById(int $id): RegistrationTail {
-        return $this->registrationTail->newQuery()->find($id);
-    }
-
-    /**
-     * @param array<string, mixed> $registrationTailData
-     */
-    public function create(array $registrationTailData): RegistrationTail {
-        return $this->registrationTail->newQuery()->create($registrationTailData);
+    protected function crudModel(): RegistrationTail {
+        return $this->registrationTail;
     }
 
     /**
@@ -40,17 +35,6 @@ class RegistrationTailService implements IBaseService {
         $registrationTail->fresh();
 
         return $registrationTail;
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
-    }
-
-    /**
-     * @return Collection<int, RegistrationTail>|LengthAwarePaginator<int, RegistrationTail>
-     */
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        return $this->registrationTail->newQuery()->get();
     }
 
     public function getFirst(): RegistrationTail {

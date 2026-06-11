@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\EBike;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -11,9 +12,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<EBike>
  */
 class EBikeService implements IBaseService {
+    /** @use HasCrudOperations<EBike> */
+    use HasCrudOperations;
+
     public function __construct(
         private EBike $eBike,
     ) {}
+
+    protected function crudModel(): EBike {
+        return $this->eBike;
+    }
 
     /**
      * @return Collection<int, EBike>|LengthAwarePaginator<int, EBike>
@@ -28,13 +36,6 @@ class EBikeService implements IBaseService {
 
     public function getById(int $id): EBike {
         return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->find($id);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): EBike {
-        return $this->eBike->newQuery()->create($data);
     }
 
     /**
@@ -74,9 +75,5 @@ class EBikeService implements IBaseService {
                 'serial_number',
                 $serialNumber
             )->first();
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 }

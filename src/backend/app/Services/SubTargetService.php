@@ -4,18 +4,21 @@ namespace App\Services;
 
 use App\Models\SubTarget;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
+use App\Traits\HasCrudOperations;
 
 /**
  * @implements IBaseService<SubTarget>
  */
 class SubTargetService implements IBaseService {
+    /** @use HasCrudOperations<SubTarget> */
+    use HasCrudOperations;
+
     public function __construct(
         private SubTarget $subTarget,
     ) {}
 
-    public function getById(int $id): SubTarget {
-        throw new \Exception('Method getById() not yet implemented.');
+    protected function crudModel(): SubTarget {
+        return $this->subTarget;
     }
 
     /**
@@ -37,23 +40,5 @@ class SubTargetService implements IBaseService {
         }
 
         return $this->subTarget;
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): SubTarget {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
-    }
-
-    /**
-     * @return Collection<int, SubTarget>
-     */
-    public function getAll(?int $limit = null): Collection {
-        throw new \Exception('Method getAll() not yet implemented.');
     }
 }
