@@ -10,16 +10,9 @@ use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
-use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
-use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
-use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Traits\HasCrudOperations;
 use App\Utils\MinimumPurchaseAmountValidator;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * @template T of BasePaymentProviderTransaction

@@ -30,5 +30,4 @@ class AgentReceiptDetailService implements IBaseService {
                 }
             )->latest()->firstOrFail()->summary;
     }
-
 }
