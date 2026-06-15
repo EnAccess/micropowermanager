@@ -52,11 +52,11 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return [
             'order_id' => $orderId,
             'reference_id' => $referenceId,
-            'meter_serial' => $this->getMeterSerialNumber(),
+            'meter_serial' => $this->meterSerialNumber,
             'status' => WaveMoneyTransaction::STATUS_REQUESTED,
             'currency' => 'MMK',
-            'customer_id' => $this->getCustomerId(),
-            'amount' => $this->getAmount(),
+            'customer_id' => $this->customerId,
+            'amount' => $this->amount,
         ];
     }
 

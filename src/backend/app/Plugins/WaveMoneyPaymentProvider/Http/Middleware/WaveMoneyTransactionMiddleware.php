@@ -25,7 +25,7 @@ class WaveMoneyTransactionMiddleware {
             return new Response($data, 400);
         }
 
-        $waveMoneyTransaction = $transactionProvider->getSubTransaction();
+        $waveMoneyTransaction = $transactionProvider->getProviderTransaction();
         $request->attributes->add(['waveMoneyTransaction' => $waveMoneyTransaction]);
 
         return $next($request);
