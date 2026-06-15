@@ -41,8 +41,8 @@ class AgentCommissionTest extends TestCase {
         $this->createAgentCommission();
         $putData = [
             'name' => 'updated commission',
-            'energy_commission' => 1.5,
-            'appliance_commission' => 1.5,
+            'energy_commission' => 0.7,
+            'appliance_commission' => 0.7,
             'risk_balance' => -20000,
         ];
 
@@ -55,6 +55,22 @@ class AgentCommissionTest extends TestCase {
         $this->assertEquals($putData['energy_commission'], $response['data']['energy_commission']);
         $this->assertEquals($putData['appliance_commission'], $response['data']['appliance_commission']);
         $this->assertEquals($putData['risk_balance'], $response['data']['risk_balance']);
+    }
+
+    public function testCommissionRateAboveOneIsRejected(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $postData = [
+            'name' => 'test commission',
+            'energy_commission' => 50,
+            'appliance_commission' => 0.5,
+            'risk_balance' => -10000,
+        ];
+        $response = $this->actingAs($this->user)->postJson('/api/agents/commissions', $postData);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('energy_commission');
     }
 
     public function testUserCanDeleteAnAgent(): void {
