@@ -41,8 +41,8 @@ class PaystackPublicController extends Controller {
 
             return response()->json([
                 'company' => [
-                    'id' => $company->getId(),
-                    'name' => $company->getName(),
+                    'id' => $company->id,
+                    'name' => $company->name,
                 ],
                 'supported_currencies' => config('paystack-payment-provider.currency.supported', ['NGN', 'GHS', 'KES', 'ZAR']),
                 'default_currency' => config('paystack-payment-provider.currency.default', 'NGN'),
@@ -152,13 +152,13 @@ class PaystackPublicController extends Controller {
 
             $response = [
                 'transaction' => [
-                    'id' => $transaction->getId(),
-                    'amount' => $transaction->getAmount(),
-                    'currency' => $transaction->getCurrency(),
-                    'serial_id' => $transaction->getDeviceSerial(),
+                    'id' => $transaction->id,
+                    'amount' => $transaction->amount,
+                    'currency' => $transaction->currency,
+                    'serial_id' => $transaction->serial_id,
                     'device_type' => $transaction->getDeviceType(),
                     'payment_type' => $mainTransaction?->type,
-                    'status' => $transaction->getStatus(),
+                    'status' => $transaction->status,
                     'created_at' => $transaction->getAttribute('created_at'),
                 ],
                 'verification' => $verification,

@@ -37,8 +37,4 @@ class SmsAndroidSetting extends BaseModel {
 
         return null;
     }
-
-    public function getId(): int {
-        return $this->id;
-    }
 }

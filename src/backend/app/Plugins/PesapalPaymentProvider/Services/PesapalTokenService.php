@@ -49,7 +49,7 @@ class PesapalTokenService {
         } catch (GuzzleException|PesapalApiException $exception) {
             Log::error('Pesapal token request failed', [
                 'exception_message' => $exception->getMessage(),
-                'environment' => $credential->getEnvironment(),
+                'environment' => $credential->environment,
                 'base_url' => $baseUrl,
             ]);
             $detail = $exception->getMessage();
@@ -64,12 +64,12 @@ class PesapalTokenService {
         if (empty($token)) {
             $reason = $response->getError();
             if (empty($reason)) {
-                $reason = 'PesaPal RequestToken returned no token. Response: '.substr($response->getBody(), 0, 500);
+                $reason = 'PesaPal RequestToken returned no token. Response: '.substr($response->body, 0, 500);
             }
             Log::error('Pesapal RequestToken returned no token', [
-                'environment' => $credential->getEnvironment(),
+                'environment' => $credential->environment,
                 'base_url' => $baseUrl,
-                'response_body' => substr($response->getBody(), 0, 1000),
+                'response_body' => substr($response->body, 0, 1000),
             ]);
             throw new \RuntimeException('Failed to authenticate with PesaPal: '.$reason);
         }
@@ -86,6 +86,6 @@ class PesapalTokenService {
     }
 
     private function buildCacheKey(PesapalCredential $credential): string {
-        return sprintf('pesapal:token:%d:%s', $credential->id, $credential->getEnvironment());
+        return sprintf('pesapal:token:%d:%s', $credential->id, $credential->environment);
     }
 }

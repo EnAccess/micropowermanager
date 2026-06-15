@@ -33,11 +33,11 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
                 $this->validateTransaction($transactionData);
                 $transaction = new WaveComTransaction();
 
-                $transaction->setTransactionId($transactionData['transaction_id']);
-                $transaction->setSender($transactionData['sender']);
-                $transaction->setMessage($transactionData['message']);
-                $transaction->setAmount((int) $transactionData['amount']);
-                $transaction->setStatus(0);
+                $transaction->transaction_id = $transactionData['transaction_id'];
+                $transaction->sender = $transactionData['sender'];
+                $transaction->message = $transactionData['message'];
+                $transaction->amount = (int) $transactionData['amount'];
+                $transaction->status = 0;
                 $transaction->save();
             } catch (\Throwable $t) {
                 if ($t instanceof QueryException) {
@@ -51,11 +51,11 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             }
 
             $baseTransaction = new Transaction();
-            $baseTransaction->setAmount($transaction->getAmount());
-            $baseTransaction->setSender($transaction->getSender());
-            $baseTransaction->setMessage($transaction->getMessage());
+            $baseTransaction->amount = $transaction->amount;
+            $baseTransaction->sender = $transaction->sender;
+            $baseTransaction->message = $transaction->message;
             $baseTransaction->originalTransaction()->associate($transaction);
-            $baseTransaction->setType(Transaction::TYPE_IMPORTED);
+            $baseTransaction->type = Transaction::TYPE_IMPORTED;
             $baseTransaction->save();
 
             TransactionDataContainer::initialize($baseTransaction);
@@ -72,7 +72,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
 
     public function setStatus(WaveComTransaction $transaction, bool $status): void {
         $mappedStatus = $status ? WaveComTransaction::STATUS_SUCCESS : WaveComTransaction::STATUS_CANCELLED;
-        $transaction->setStatus($mappedStatus);
+        $transaction->status = $mappedStatus;
         $transaction->save();
     }
 

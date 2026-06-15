@@ -16,8 +16,4 @@ use Illuminate\Support\Carbon;
  */
 class MicroStarCredential extends BaseModel {
     protected $table = 'micro_star_api_credentials';
-
-    public function getApiUrl(): ?string {
-        return $this->api_url;
-    }
 }

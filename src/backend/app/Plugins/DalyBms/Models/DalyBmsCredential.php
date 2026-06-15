@@ -17,24 +17,4 @@ use Illuminate\Support\Carbon;
  */
 class DalyBmsCredential extends BaseModel {
     protected $table = 'daly_bms_api_credentials';
-
-    public function getUserName(): string {
-        return $this->user_name;
-    }
-
-    public function getPassword(): string {
-        return $this->password;
-    }
-
-    public function getApiUrl(): string {
-        return $this->api_url;
-    }
-
-    public function getAccessToken(): string {
-        return $this->access_token;
-    }
-
-    public function getExpirationTime(): int {
-        return $this->token_expires_in;
-    }
 }

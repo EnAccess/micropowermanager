@@ -19,7 +19,7 @@ class ApiRequests {
      * @return array<string, mixed>|string
      */
     public function get(GomeLongCredential $credentials, array $params, string $slug): array|string {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
         }
@@ -52,7 +52,7 @@ class ApiRequests {
      * @return array<string, mixed>|string
      */
     public function post(GomeLongCredential $credentials, array $params, string $slug): array|string {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         try {
             $request = $this->httpClient->post(
                 $url,

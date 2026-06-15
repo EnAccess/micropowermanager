@@ -32,15 +32,15 @@ class InitializeTransactionResource extends AbstractApiResource {
         $callbackUrl = $this->getCallbackUrl();
 
         // Get merchant email from credentials (tenant-specific) or fallback to config
-        $merchantEmail = $this->paystackCredential->getMerchantEmail()
+        $merchantEmail = $this->paystackCredential->merchant_email
             ?? config('paystack-payment-provider.merchant_email');
 
         $bodyData = [
             'email' => $merchantEmail, // MPM merchant email from tenant credentials
-            'amount' => $this->paystackTransaction->getAmount() * 100, // Paystack expects amount in kobo (smallest currency unit) as integer
-            'reference' => $this->paystackTransaction->getReferenceId(),
+            'amount' => $this->paystackTransaction->amount * 100, // Paystack expects amount in kobo (smallest currency unit) as integer
+            'reference' => $this->paystackTransaction->reference_id,
             'callback_url' => $callbackUrl,
-            'currency' => $this->paystackTransaction->getCurrency(),
+            'currency' => $this->paystackTransaction->currency,
             'metadata' => $this->getMetadata(),
         ];
 
@@ -91,7 +91,7 @@ class InitializeTransactionResource extends AbstractApiResource {
 
     private function getCallbackUrl(): string {
         // // Fallback to credential callback URL
-        return $this->paystackCredential->getCallbackUrl();
+        return $this->paystackCredential->callback_url;
     }
 
     /**
@@ -99,9 +99,9 @@ class InitializeTransactionResource extends AbstractApiResource {
      */
     private function getMetadata(): array {
         $metadata = [
-            'order_id' => $this->paystackTransaction->getOrderId(),
-            'serial_id' => $this->paystackTransaction->getDeviceSerial(),
-            'customer_id' => $this->paystackTransaction->getCustomerId(),
+            'order_id' => $this->paystackTransaction->order_id,
+            'serial_id' => $this->paystackTransaction->serial_id,
+            'customer_id' => $this->paystackTransaction->customer_id,
             'company_id' => $this->companyId,
         ];
 

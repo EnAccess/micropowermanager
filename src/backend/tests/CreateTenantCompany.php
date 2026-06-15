@@ -40,18 +40,18 @@ trait CreateTenantCompany {
         ]);
 
         $companyDatabaseService->create([
-            'company_id' => $company->getId(),
+            'company_id' => $company->id,
             'database_name' => TestCompany::TEST_COMPANY_DATABASE_NAME,
         ]);
 
         // Populate roles and permissions for the demo company
         $databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function (): void {
                 RolesPermissionsPopulator::populate();
             }
         );
 
-        return $company->getId();
+        return $company->id;
     }
 }

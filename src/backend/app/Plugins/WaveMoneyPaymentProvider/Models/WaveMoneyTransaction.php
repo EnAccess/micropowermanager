@@ -39,10 +39,6 @@ class WaveMoneyTransaction extends BasePaymentProviderTransaction {
 
     protected $table = 'wave_money_transactions';
 
-    public function getAmount(): float {
-        return (int) $this->amount;
-    }
-
     public static function getTransactionName(): string {
         return self::RELATION_NAME;
     }

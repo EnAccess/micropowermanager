@@ -39,8 +39,8 @@ class GomeLongMeterApi implements IManufacturerAPI {
         $energy = $transactionContainer->chargeAmount;
         $credentials = $this->credentialService->getCredentials();
         $params = [
-            'U' => $credentials->getUserId(),
-            'K' => $credentials->getUserPassword(),
+            'U' => $credentials->user_id,
+            'K' => $credentials->user_password,
             'meter' => $meter->serial_number,
             'amt' => $transactionContainer->chargeAmount,
         ];

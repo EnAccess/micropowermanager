@@ -57,7 +57,7 @@ class AgentWebController extends Controller {
         $databaseProxyData = [
             'email' => $request['email'],
             'fk_company_id' => $companyId,
-            'fk_company_database_id' => $companyDatabase->getId(),
+            'fk_company_database_id' => $companyDatabase->id,
         ];
         $this->databaseProxyService->create($databaseProxyData);
 

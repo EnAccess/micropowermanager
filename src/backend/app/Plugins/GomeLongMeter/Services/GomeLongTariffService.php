@@ -33,8 +33,8 @@ class GomeLongTariffService {
             $credentials = $this->credentialService->getCredentials();
             $vatEnergy = $this->mainSettings->newQuery()->first()->vat_energy;
             $params = [
-                'U' => $credentials->getUserId(),
-                'K' => $credentials->getUserPassword(),
+                'U' => $credentials->user_id,
+                'K' => $credentials->user_password,
                 'type' => 'e',
                 'VAT' => $vatEnergy,
                 'Name' => $tariff->name,
@@ -62,11 +62,11 @@ class GomeLongTariffService {
                 return true;
             }
 
-            $tariffId = $gomeLongTariff->getTariffId();
+            $tariffId = $gomeLongTariff->tariff_id;
             $credentials = $this->credentialService->getCredentials();
             $params = [
-                'U' => $credentials->getUserId(),
-                'K' => $credentials->getUserPassword(),
+                'U' => $credentials->user_id,
+                'K' => $credentials->user_password,
                 'ID' => $tariffId,
                 'VAT' => $this->mainSettings->newQuery()->first()->vat_energy,
                 'Name' => $tariff->name,
@@ -94,11 +94,11 @@ class GomeLongTariffService {
                 return true;
             }
 
-            $tariffId = $gomeLongTariff->getTariffId();
+            $tariffId = $gomeLongTariff->tariff_id;
             $credentials = $this->credentialService->getCredentials();
             $params = [
-                'U' => $credentials->getUserId(),
-                'K' => $credentials->getUserPassword(),
+                'U' => $credentials->user_id,
+                'K' => $credentials->user_password,
                 'ID' => $tariffId,
             ];
 
@@ -116,13 +116,13 @@ class GomeLongTariffService {
         try {
             $credentials = $this->credentialService->getCredentials();
 
-            if (!$credentials || ($credentials->getUserId() === null || $credentials->getUserPassword() === null)) {
+            if (!$credentials || ($credentials->user_id === null || $credentials->user_password === null)) {
                 return true;
             }
 
             $params = [
-                'U' => $credentials->getUserId(),
-                'K' => $credentials->getUserPassword(),
+                'U' => $credentials->user_id,
+                'K' => $credentials->user_password,
             ];
             $gomeLongTariffs = $this->apiRequests->post($credentials, $params, self::API_CALL_TARIFF_LIST);
 

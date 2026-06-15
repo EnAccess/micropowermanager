@@ -65,7 +65,7 @@ class AgentSeeder extends Seeder {
             // Create Agent user and DatabaseProxy
             if ($firstAgent) {
                 $company = $this->companyService->getByName(DemoCompany::DEMO_COMPANY_NAME);
-                $companyId = $company->getId();
+                $companyId = $company->id;
                 $companyDatabase = $this->companyDatabaseService->findByCompanyId($companyId);
                 $databaseProxyData = [
                     'email' => DemoCompany::DEMO_COMPANY_AGENT_EMAIL,
@@ -73,7 +73,7 @@ class AgentSeeder extends Seeder {
                     'fk_company_database_id' => $companyDatabase->id,
                 ];
                 $this->databaseProxyManagerService->runForCompany(
-                    $company->getId(),
+                    $company->id,
                     fn () => $this->databaseProxyService->create($databaseProxyData)
                 );
             }

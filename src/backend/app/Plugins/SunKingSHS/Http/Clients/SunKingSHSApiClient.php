@@ -19,11 +19,11 @@ class SunKingSHSApiClient {
     public function authentication(SunKingCredential $credential): array {
         try {
             $response =
-                $this->httpClient->post($credential->getAuthUrl(), [
+                $this->httpClient->post($credential->auth_url, [
                     'form_params' => [
                         'grant_type' => 'client_credentials',
-                        'client_id' => $credential->getClientId(),
-                        'client_secret' => $credential->getClientSecret(),
+                        'client_id' => $credential->client_id,
+                        'client_secret' => $credential->client_secret,
                         'scope' => 'roles',
                     ],
                 ]);
@@ -48,7 +48,7 @@ class SunKingSHSApiClient {
      * @param array<string, mixed> $params
      */
     public function get(SunKingCredential $credentials, array $params, string $slug): mixed {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
         }
@@ -58,7 +58,7 @@ class SunKingSHSApiClient {
                 [
                     'headers' => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer '.$credentials->getAccessToken(),
+                        'Authorization' => 'Bearer '.$credentials->access_token,
                     ],
                 ]
             );
@@ -78,14 +78,14 @@ class SunKingSHSApiClient {
      * @return array<string, mixed>|string
      */
     public function post(SunKingCredential $credentials, array $params, string $slug): array|string {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         try {
             $request = $this->httpClient->post(
                 $url,
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
-                        'Authorization' => 'Bearer '.$credentials->getAccessToken(),
+                        'Authorization' => 'Bearer '.$credentials->access_token,
                     ],
                     'body' => json_encode($params),
                 ]

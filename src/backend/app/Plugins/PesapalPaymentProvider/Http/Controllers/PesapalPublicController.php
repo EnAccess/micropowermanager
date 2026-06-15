@@ -37,10 +37,10 @@ class PesapalPublicController extends Controller {
 
             return response()->json([
                 'company' => [
-                    'id' => $company->getId(),
-                    'name' => $company->getName(),
+                    'id' => $company->id,
+                    'name' => $company->name,
                 ],
-                'currency' => $credentials->getCurrency(),
+                'currency' => $credentials->currency,
                 'supported_currencies' => config('pesapal-payment-provider.currency.supported', ['KES', 'UGX', 'TZS', 'USD']),
             ]);
         } catch (\Exception $e) {
@@ -138,21 +138,21 @@ class PesapalPublicController extends Controller {
                 }
             }
 
-            $verification = $transaction->getOrderTrackingId()
+            $verification = $transaction->order_tracking_id
                 ? $this->transactionService->syncStatusFromApi($transaction, $companyId)
                 : ['status_code' => null, 'error' => 'No order tracking id yet'];
 
             $response = [
                 'transaction' => [
-                    'id' => $transaction->getId(),
-                    'amount' => $transaction->getAmount(),
-                    'currency' => $transaction->getCurrency(),
-                    'serial_id' => $transaction->getDeviceSerial(),
+                    'id' => $transaction->id,
+                    'amount' => $transaction->amount,
+                    'currency' => $transaction->currency,
+                    'serial_id' => $transaction->serial_id,
                     'device_type' => $transaction->getDeviceType(),
                     'payment_type' => $mainTransaction?->type,
-                    'status' => $transaction->getStatus(),
-                    'order_tracking_id' => $transaction->getOrderTrackingId(),
-                    'merchant_reference' => $transaction->getMerchantReference(),
+                    'status' => $transaction->status,
+                    'order_tracking_id' => $transaction->order_tracking_id,
+                    'merchant_reference' => $transaction->merchant_reference,
                     'created_at' => $transaction->getAttribute('created_at'),
                 ],
                 'verification' => $verification,
@@ -195,7 +195,7 @@ class PesapalPublicController extends Controller {
             }
 
             $transaction = $this->transactionService->getByReferenceId($reference);
-            if (!$transaction instanceof PesapalTransaction || in_array($transaction->getOrderTrackingId(), [null, '', '0'], true)) {
+            if (!$transaction instanceof PesapalTransaction || in_array($transaction->order_tracking_id, [null, '', '0'], true)) {
                 return response()->json(['error' => 'Transaction not found'], 404);
             }
 

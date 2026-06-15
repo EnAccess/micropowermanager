@@ -30,14 +30,14 @@ class StartTransactionResource extends AbstractApiResource {
             'merchant_reference_id' => $this->waveMoneyTransaction->reference_id,
             'frontend_result_url' => $this->getFrontendCallback(),
             'backend_result_url' => $this->getBackendCallback(),
-            'amount' => $this->waveMoneyTransaction->getAmount(),
+            'amount' => (int) $this->waveMoneyTransaction->amount,
             'time_to_live_in_seconds' => self::REQUEST_TIME_TO_LIVE_IN_SECS,
             'payment_description' => 'MicroPowerManager transaction',
             'currency' => $this->waveMoneyTransaction->currency,
             'hash' => $this->generatePayloadHash(),
             'merchant_name' => $this->getMerchantName(),
             'items' => json_encode([
-                ['name' => 'payment', 'amount' => $this->waveMoneyTransaction->getAmount()],
+                ['name' => 'payment', 'amount' => (int) $this->waveMoneyTransaction->amount],
             ]),
         ];
     }
@@ -54,7 +54,7 @@ class StartTransactionResource extends AbstractApiResource {
             self::REQUEST_TIME_TO_LIVE_IN_SECS,
             $this->waveMoneyCredential->merchant_id,
             $this->waveMoneyTransaction->order_id,
-            $this->waveMoneyTransaction->getAmount(),
+            (int) $this->waveMoneyTransaction->amount,
             $this->getBackendCallback(),
             $this->waveMoneyTransaction->reference_id,
         ]), $this->waveMoneyCredential->secret_key);

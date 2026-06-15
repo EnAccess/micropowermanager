@@ -29,13 +29,13 @@ class TransactionInitializeRequest extends FormRequest {
     public function getPaystackTransaction(): PaystackTransaction {
         $transaction = new PaystackTransaction();
         $transaction->setAmount($this->input('amount'));
-        $transaction->setDeviceSerial($this->input('device_serial'));
-        $transaction->setCustomerId($this->input('customer_id'));
-        $transaction->setCurrency($this->input('currency', 'NGN'));
-        $transaction->setStatus(PaystackTransaction::STATUS_REQUESTED);
-        $transaction->setDeviceType($this->input('device_type'));
-        $transaction->setOrderId(Uuid::uuid4()->toString());
-        $transaction->setReferenceId(Uuid::uuid4()->toString());
+        $transaction->serial_id = $this->input('device_serial');
+        $transaction->customer_id = $this->input('customer_id');
+        $transaction->currency = $this->input('currency', 'NGN');
+        $transaction->status = PaystackTransaction::STATUS_REQUESTED;
+        $transaction->device_type = $this->input('device_type');
+        $transaction->order_id = Uuid::uuid4()->toString();
+        $transaction->reference_id = Uuid::uuid4()->toString();
 
         return $transaction;
     }

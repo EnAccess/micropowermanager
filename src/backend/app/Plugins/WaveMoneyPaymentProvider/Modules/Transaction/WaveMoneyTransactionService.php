@@ -24,7 +24,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private WaveMoneyTransaction $waveMoneyTransaction,
+        public private(set) WaveMoneyTransaction $waveMoneyTransaction,
     ) {
         parent::__construct(
             $this->meter,
@@ -105,9 +105,5 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         }
 
         return $this->waveMoneyTransaction->newQuery()->get();
-    }
-
-    public function getWaveMoneyTransaction(): WaveMoneyTransaction {
-        return $this->waveMoneyTransaction;
     }
 }

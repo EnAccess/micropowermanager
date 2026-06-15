@@ -151,7 +151,7 @@ class UserResourceTest extends TestCase {
 
         $target = User::query()->where('email', 'toremove@example.com')->firstOrFail();
         $this->assertNotNull(
-            DatabaseProxy::query()->where('email', $target->getEmail())->first()
+            DatabaseProxy::query()->where('email', $target->email)->first()
         );
 
         $this->actingAs($admin)->delete('/api/users/'.$target->id)->assertStatus(200);

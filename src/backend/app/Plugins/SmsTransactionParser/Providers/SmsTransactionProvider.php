@@ -31,7 +31,7 @@ class SmsTransactionProvider implements ITransactionProvider {
         /** @var SmsTransaction $smsTransaction */
         $smsTransaction = $transaction->originalTransaction()->first();
 
-        $smsTransaction->setStatus($requestType ? SmsTransaction::STATUS_SUCCESS : SmsTransaction::STATUS_FAILED);
+        $smsTransaction->status = $requestType ? SmsTransaction::STATUS_SUCCESS : SmsTransaction::STATUS_FAILED;
         $smsTransaction->save();
 
         if ($requestType) {
@@ -46,15 +46,15 @@ class SmsTransactionProvider implements ITransactionProvider {
     public function confirm(): void {}
 
     public function getMessage(): string {
-        return $this->getTransaction()->getMessage();
+        return $this->transaction->message;
     }
 
     public function getAmount(): float {
-        return $this->getTransaction()->getAmount();
+        return $this->transaction->amount;
     }
 
     public function getSender(): string {
-        return $this->getTransaction()->getSender();
+        return $this->transaction->sender;
     }
 
     public function saveCommonData(): Model {
@@ -75,9 +75,5 @@ class SmsTransactionProvider implements ITransactionProvider {
         ]);
         $conflict->transaction()->associate($this->smsTransaction);
         $conflict->save();
-    }
-
-    public function getTransaction(): Transaction {
-        return $this->transaction;
     }
 }

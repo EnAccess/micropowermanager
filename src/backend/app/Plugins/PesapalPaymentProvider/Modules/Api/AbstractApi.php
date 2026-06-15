@@ -31,7 +31,7 @@ abstract class AbstractApi {
             throw new PesapalApiException($statusCode, $resource->getUri(), $body, $message);
         }
 
-        $resource->setBody($response->getBody()->getContents());
+        $resource->body = $response->getBody()->getContents();
 
         return $resource;
     }
