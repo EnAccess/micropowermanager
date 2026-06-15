@@ -76,7 +76,7 @@ This is the agent's **outstanding balance** — the money owed to the company �
 
 The two differ on purpose: the agent keeps their commission.
 
-```
+```text
 suggested amount  =  cash collected  −  commission the agent keeps
 ```
 
