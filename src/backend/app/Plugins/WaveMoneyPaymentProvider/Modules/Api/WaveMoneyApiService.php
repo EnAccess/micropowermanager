@@ -29,7 +29,7 @@ class WaveMoneyApiService {
 
             if (array_key_exists(StartTransactionResource::RESPONSE_KEY_MESSAGE, $body)
                 && $body['message'] === StartTransactionResource::RESPONSE_SUCCESS) {
-                $transaction->setExternalTransactionId($body[StartTransactionResource::RESPONSE_KEY_TRANSACTION_ID]);
+                $transaction->external_transaction_id = $body[StartTransactionResource::RESPONSE_KEY_TRANSACTION_ID];
                 $transaction->save();
             }
 
@@ -39,7 +39,7 @@ class WaveMoneyApiService {
                 'error' => null,
             ];
         } catch (GuzzleException|ApiRequestFailedException $exception) {
-            $transaction->setStatus(WaveMoneyTransaction::STATUS_FAILED);
+            $transaction->status = WaveMoneyTransaction::STATUS_FAILED;
             $transaction->save();
 
             return [

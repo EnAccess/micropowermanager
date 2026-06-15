@@ -37,7 +37,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
             throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        $this->setValidData($waveMoneyTransactionData);
+        $this->validData = $waveMoneyTransactionData;
     }
 
     public function saveTransaction(): void {
@@ -105,20 +105,6 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
 
     public function getTransaction(): Transaction {
         return $this->transaction;
-    }
-
-    /**
-     * @param array<string, mixed> $waveMoneyTransactionData
-     */
-    public function setValidData(array $waveMoneyTransactionData): void {
-        $this->validData = $waveMoneyTransactionData;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getValidData(): array {
-        return $this->validData;
     }
 
     public function getProviderTransaction(): WaveMoneyTransaction {
