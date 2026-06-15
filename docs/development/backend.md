@@ -125,3 +125,11 @@ Objects and models may contain information specific to the manufacturer, for exa
 
 <!-- prettier-ignore -->
 OpenAPI documentation for MPM can be found here: [OpenAPI docs](/openapi/index.html){target="_self"}
+
+## Docker Compose and Docker Images
+
+To debug Docker build errors the following command can be used to examine errors locally
+
+```sh
+docker buildx build -t test-tag-for-debugging -f docker/DockerfileBackendProd .
+```
