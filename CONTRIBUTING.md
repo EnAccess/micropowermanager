@@ -1,67 +1,19 @@
 # OSEA Contributors Guide
 
 Welcome to the Open Source and Energy Access (OSEA) contributors' guide.
-We appreciate your consideration of contributing to this repository and celebrate all the contributors who add value to the community.
-This document guides you through smooth paths to a meaningful contribution to the project. Following the guide implies respecting the maintainers and developers who manage and develop the projects.
-In return, they will reciprocate by addressing your issue, assessing and helping you finalise your pull requests until they are merged. OSEA prioritizes and values its commitment to creating a safe and inclusive community where everyone can contribute and thrive.
+This guide covers how to make a meaningful contribution and what you can expect from maintainers in return.
+OSEA prioritises and values its commitment to creating a safe and inclusive community where everyone can contribute and thrive. 
 It is therefore essential to ensure that everyone adheres to our [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 ## Getting Started
 
 Review the existing issues and the discussion thread to ensure your issue has not been previously addressed.
-We have provided resources to reduce time wastage and increase productivity.
+This document narrows down by providing resources to reduce time wastage and increase productivity. 
 Most documentation is currently written in Markdown, making it easy to add, modify, and delete content as necessary.
-
-## Issues
-
-Issues are created [here](https://github.com/EnAccess/micropowermanager/issues/new/choose)
-
-### How to Contribute to Issues
-
-For any issue, there are fundamentally three ways an individual can contribute:
-
-- **By opening the issue for discussion:** If you believe that you have found a new bug in this project, you should report it by creating a new issue in the [issue tracker](https://github.com/EnAccess/micropowermanager/issues).
-- **By helping to triage the issue:** You can do this either by providing assistive details (a reproducible test case that demonstrates a bug) or by providing suggestions to address the issue.
-- **By helping to resolve the issue:** This can be done by demonstrating that the issue is not a bug or is fixed, but more often, by opening a pull request that changes the source in a concrete and reviewable manner.
-
-## Submitting a Bug Report
-
-To submit a bug report:
-
-- When opening a new issue in the [issue tracker](https://github.com/EnAccess/micropowermanager/issues/new/choose), users will be presented with a template that should be filled in.
-- If you believe that you have found a bug in this project, please fill out the template to the best of your ability.
-- The two most important pieces of information needed to evaluate the report are a description of the bug and a simple test case to recreate it. It is easier to fix a bug if it can be reproduced.
-- See [How to create a Minimal, Complete, and Verifiable example](https://stackoverflow.com/help/mcve).
-
-## Triaging a Bug Report
-
-It's common for open issues to involve discussion. Some contributors may have differing opinions, including whether the behavior is a bug or a feature.
-This discussion is part of the process and should be kept focused, helpful, and professional.
-
-Terse responses that provide neither additional context nor supporting detail are not helpful or professional.
-To many, such responses are annoying and unfriendly.
-
-Contributors are encouraged to collaborate on solving issues and help one another make progress.
-If you encounter an issue that you feel is invalid or that contains incorrect information, explain why you feel that way with additional supporting context, and be willing to be convinced that you may be wrong.
-By doing so, we can often reach the correct outcome faster.
-
-## Resolving a Bug Report
-
-Most issues are resolved by opening a pull request.
-The process for opening and reviewing a pull request is similar to that of opening and triaging issues, but carries with it a necessary review and approval workflow that ensures that the proposed changes meet the minimal quality and functional guidelines of this project.
-
-## Languages
-
-We accept issues in **any** language. When an issue is posted in a language besides English, it is acceptable and encouraged to post an English-translated copy as a reply.
-Anyone may post the translated reply.
-In most cases, a quick pass through translation software is sufficient.
-Having the original text as well as the translation can help mitigate translation errors.
-
-Responses to posted issues may or may not be in the original language.
 
 ## Setting up your Environment
 
-⚠️ **Heads up!** If you'd like to work on issues, please ensure you fork the repository, create a new branch, and work on this branch to avoid pushing your changes directly to the master/main branch.
+> ⚠️ **Heads up!** If you'd like to work on issues, please ensure you fork the repository, create a new branch, and work on this branch to avoid pushing your changes directly to the master/main branch.
 
 Follow the steps outlined in the repo's ReadMe file for local development.
 
@@ -77,66 +29,130 @@ Change the branch name to whatever you want. For example:
 git switch -c update-fixture
 ```
 
-## Pull Requests
+## Creating a Pull Request
 
-Pull Requests are the way concrete changes are made to the code, documentation, dependencies, and tools contained in this project's repository.
-
-Prior to creating a Pull Request, it is recommended to familiarize yourself with how a project can be developed and tested locally.
-
-This is usually documented in either a `DEVELOPMENT.md` file or the `docs` folder of the project.
-
-### Creating a Pull Request
-
-To create a pull request, please ensure that an existing issue exists and that you have been assigned to it, unless your change is minor, such as fixing a typo.
-This allows the maintainer to provide guidance and prioritize tasks; otherwise, you may risk spending time on something that doesn't get accepted for various reasons.
-
+> ⚠️  Heads up!  Please ensure that there is an existing issue first and that you've been assigned to it before opening a PR, unless your change is minor (e.g. fixing a typo).
+This allows the maintainer to provide guidance and prioritise tasks.
 We acknowledge everyone's contributions and strive for transparent communication.
-We highly recommend clear communication before undertaking any work.
-Upon issue assignment, two options are available to you:
 
-1. Use the GitHub interface to fork the repo, make an edit right here in the GitHub client, and then submit a pull request (no code or terminals or IDE required).
-   [This guide](https://guides.github.com/activities/hello-world/) shows just how to do that for a small personal repo. You would simply replace creating a new repository by navigating to this one and forking it instead.
-   This is a great idea if you simply plan to add to or edit one of the Markdown files we use for documentation in this project.
+### What makes a good PR?
+Every good PR should contain one logical block of work. Unrelated changes should go into separate PRs.
+The rule of thumb is: PR should be as small as possible, as large as necessary to form a meaningful, self-contained piece of work.
+Smaller PRs are easier to review, faster to merge. If you find yourself wanting to fix a typo, refactor a helper, and add a feature on the same branch, split them; each change gets its own PR. 
 
-2. Fork the repo, create a local copy of that fork, and work on your changes that way.
-   This is also the only option if the project expands to include an associated application.
-   For that, [we recommend this guide](https://www.dataschool.io/how-to-contribute-on-github).
+### Two ways to contribute
+- **GitHub interface**- Fork the repo, edit directly in the browser, and submit a PR. This [guide](https://guides.github.com/activities/hello-world) shows just how to do that for a small personal repo.
+- **Fork and Clone**- Fork, clone locally, and work in your IDE. Required for code changes and any project with an associated application.  For that, we recommend this [guide](https://www.dataschool.io/how-to-contribute-on-github/).
+
+### Commits and Pull Request Titles
+We use GitHub Flow. Every PR is squash-merged into a single commit on main. This shapes how you should think about commits and PR titles.
+- **Inside your PR**:commits do not need to follow any convention. Commit as often as you like, and use whatever messages help you track your own work. Frequent commits help reviewers follow your thinking.
+- **PR title**: becomes the squashed commit message on main, so it must be clean and follow Conventional Commits.
 
 ## Conventional Commits
 
-When creating a Pull Request, it is best practice to use **Conventional Commits** to describe the purpose of your changes:
-
-- `chore:` Miscellaneous commits, e.g., modifying a file.
-- `feat:` Commits that add or remove a feature.
-- `docs:` Commits that affect documentation only.
-- `fix:` Commits that fix a bug of a preceding feature commit.
-- `refactor:` Commits that rewrite/restructure your code.
-- `revert:` Creates a new commit that undoes the changes.
+| Prefix      | When to Use                                                    |
+|-------------|----------------------------------------------------------------|
+| chore:      | Miscellaneous commits, e.g., modifying .gitignore             |
+| feat:       | Commits that add or remove a feature to the API or UI         |
+| docs:       | Commits that affect documentation only                        |
+| fix:        | Commits that fix a bug of a preceding feat commit             |
+| refactor:   | Rewrites/restructures code without changing API or UI behaviour |
+| revert:     | Creates a new commit that undoes previous changes             |
 
 ## Waiting for Review
+The waiting period plays a pivotal role in your contributor journey. We kindly ask that you be patient if maintainers do not review your pull request immediately, as it may take time to give every PR the attention it deserves.
+If it has been over one week and you haven't received any acknowledgement, you can post a comment on your PR as a polite reminder.
 
-Waiting plays a pivotal role in your contributor journey.
-Please be patient if the maintainers do not review your pull request immediately after submission.
-It might take time for one to be in the right condition to review all submitted pull requests.
-We would rather not rush a response after someone has taken the time and effort to submit it.
-If it has been over one week and you haven't received any acknowledgement, you can post a comment on your PR as a reminder.
+## Using AI Tools as a Contributor
+OSEA is a learning community. Contributing here is not just about shipping code or documentation; it is about building skills and understanding that serve the broader energy access ecosystem. This shapes how we think about AI tools.
+AI coding assistants can genuinely help you learn and contribute more effectively. They can also produce plausible-looking work that neither you nor the maintainer fully understands, and reviewing that work takes real time. Our AI policy exists to protect both your learning and the maintainers' capacity.
+> **Guiding principle**: *Al is your assistant, not your author. If you cannot explain it, do not submit*.
 
-The purpose of reviews is to create the best experience we can for our contributors.
-Please be aware of the following:
+## What AI use is appropriate
+Use AI tools to support your understanding, not to replace it. For Example:
 
-1. Reviews are always respectful, acknowledging that everyone did the best possible job with the knowledge they had at the time.
-2. Reviews discuss content, not the person who created it.
-3. Reviews are constructive and start a conversation around feedback. Embrace the feedback!
+- Using AI to explain unfamiliar syntax, functions, or patterns before you implement something yourself
+- Asking AI to review code you have already written for edge cases or clarity
+- Using AI to help you draft a test scaffold, which you then review, correct, and extend
+- Asking AI to help you structure a bug report or feature proposal in your own words
+- Using AI to improve the grammar or clarity of the documentation you have already written
+  
+Uses that cross the line:
+- Asking AI to implement a feature and submitting the output with minor changes
+- Using AI to generate documentation for code you do not understand
+- Pasting a codebase into AI and asking "what should I change?" without attempting the problem yourself first
+- Using AI to respond to review comments on your behalf
 
-If the pull request looks good, a maintainer will typically provide feedback and merge the request immediately.
-Otherwise, they will let you know what questions they have or what needs to change before your work can be accepted.
-Once it is, you'll see your changes on the master branch, and your open-source contribution will be complete!
+If you are unsure whether a specific use is appropriate, describe it in your PR, and the maintainer will let you know.
 
-### Style Guides
+## Disclosure
+Transparency about AI use is required whenever AI meaningfully shapes your contribution. For instance, when it drafted code, suggested architecture, rewrote documentation, or helped diagnose a complex issue. It is not required for single-line autocomplete, minor grammar fixes, or syntax lookups.
 
-Coding style is enforced through automated checks on Pull Requests.
-[See the corresponding GitHub Actions](.github/workflows/) for information about which standards are adhered to in different parts of the project's codebase.
+ Add a note to your PR description:
+ > “*Cursor suggested the initial approach. I adapted it to fit our PAYGo data model, rewrote the core logic, and added all edge-case tests manually"*
 
-### Further Information
+Undisclosed AI use that becomes apparent during review is treated as a trust issue, not just a policy issue.
 
-Join the [**Open Source in Energy Access (OSEA)**](https://discord.osea-community.org/) community Discord server to connect with like-minded people.
+## Your responsibility as a contributor
+
+You are fully responsible for everything you submit, regardless of how you wrote it.
+- Be able to explain any block of code and how it fits the project. Maintainers may ask you to walk through your changes before a PR is merged.
+- Review AI output critically: AI can produce plausible-looking but incorrect or insecure code.
+- Never submit AI-assisted code without running the test suite locally.
+- AI output often introduces inconsistent formatting, naming conventions, or unnecessary complexity. Match the style of the surrounding codebase.
+- Own the edge cases: AI has no knowledge of low-connectivity environments, PAYGo loan structures, mini-grid constraints, or the specific conventions of this project. 
+- Verify generated tests: AI may assert incorrect values or miss domain-specific edge cases entirely. Every generated test needs your sign-off.
+- Remove AI filler: phrases like "This function efficiently handles…" belong in marketing copy, not documentation. Be precise and direct.
+
+## What contributors can expect from maintainers
+Contribution is a two-way relationship. In return, you can expect the following from OSEA maintainers:
+- If a week passes with no acknowledgement of your issue or PR, a polite reminder is welcome.
+- Reviews focus on the work, not the contributor. Comments aim to teach, not to gatekeep.
+- If a design decision in the codebase is not obvious, ask, and a maintainer will explain the reasoning behind it.
+- If a PR is declined or significantly reshaped, you will receive a clear explanation of why.
+- Contributions are publicly acknowledged, including documentation, bug reports, and thoughtful discussion, not just merged code.
+- Maintainers are held to the same standards we hold contributors to.
+
+If any of these expectations are not being met, you are welcome to raise them directly with the maintainer team or in our community channels.
+
+## AI and the human review process
+
+You are encouraged to use AI to review your own work before submitting as a quality step, for example, asking "What edge cases might this miss?" or "Is there a simpler way to write this?", but do not use it as a substitute for the human review process.
+Maintainer reviews are about knowledge transfer, mentorship, and project coherence. They cannot be replicated by an AI tool that has no knowledge of OSEA's history, design decisions, or community values.
+Issue discussions and PR conversations should remain human-to-human. Use AI to help you prepare your thoughts, but write in your own words and engage genuinely with the community.
+
+## A note to new contributors
+If you are new to Open Source, AI tools can feel like a shortcut past the uncomfortable parts of learning. We encourage you to sit with those uncomfortable parts. Reading unfamiliar code, debugging without a clear answer, and working through a reviewer's feedback are where real understanding develops.
+
+Use AI to unblock yourself when you are genuinely stuck, not to avoid getting stuck in the first place. The stuck moments are where the learning happens.
+
+If you are unsure where to start or how to approach a problem, ask in [Discord](https://community.oseas.org) or open a GitHub Discussion. We would rather help you find your footing than review a well-formatted PR that nobody fully understands.
+
+## A note to reviewers
+Maintainers are not expected to audit contributions for AI use. However, if a PR shows signs of AI generation, inconsistent style, logic that does not match the surrounding codebase, or documentation that does not reflect the contributor's apparent understanding, reviewers may ask the contributor to walk through their changes before merging. Pull requests that deviate significantly from our established stylistic conventions or impose an undue review burden on the maintainer team may be declined for those reasons.
+This is not punitive. It is part of how we ensure that contributions represent genuine understanding, and that every contributor walks away having learned something.
+
+## Style Guide & Further Information 
+Coding style is enforced through automated checks on Pull Requests. [See the corresponding GitHub Actions](https://github.com/EnAccess/micropowermanager/blob/main/.github/workflows) for information about which standards are adhered to in different parts of the project's codebase. 
+
+Join the [Open Source in Energy Access (OSEA) community Discord](https://community.oseas.org) server to connect with like-minded people. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
