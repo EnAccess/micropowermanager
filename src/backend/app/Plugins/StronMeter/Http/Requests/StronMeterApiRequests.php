@@ -23,7 +23,7 @@ class StronMeterApiRequests {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         $request = $this->client->post(
             $credential->api_url.$url,

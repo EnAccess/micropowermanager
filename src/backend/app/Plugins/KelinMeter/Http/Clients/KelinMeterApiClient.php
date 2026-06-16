@@ -26,7 +26,7 @@ class KelinMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
-            throw new KelinApiCredentialsNotFoundException($e->getMessage());
+            throw new KelinApiCredentialsNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         try {
             $response = $this->client->request(
@@ -34,7 +34,7 @@ class KelinMeterApiClient {
                 $credential->api_url.$url.'?param='.urlencode(json_encode($queryParams))
             );
         } catch (GuzzleException $exception) {
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $response->getBody(), true));
@@ -49,7 +49,7 @@ class KelinMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {
-            throw new KelinApiCredentialsNotFoundException($e->getMessage());
+            throw new KelinApiCredentialsNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         try {
             $requestingUri = $credential->api_url.$url.'?token='.$credential->authentication_token;
@@ -62,7 +62,7 @@ class KelinMeterApiClient {
             //  }
             $response = $this->client->request('GET', $requestingUri);
         } catch (GuzzleException $exception) {
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $response->getBody(), true));

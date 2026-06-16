@@ -7,6 +7,7 @@ use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -16,6 +17,9 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @implements IBaseService<Transaction>
  */
 class TransactionService implements IAssociative, IBaseService {
+    /** @use HasCrudOperations<Transaction> */
+    use HasCrudOperations;
+
     public const YESTERDAY = 0;
     public const SAME_DAY_LAST_WEEK = 1;
     public const LAST_SEVEN_DAYS = 2;
@@ -26,6 +30,10 @@ class TransactionService implements IAssociative, IBaseService {
     public function __construct(
         private Transaction $transaction,
     ) {}
+
+    protected function crudModel(): Transaction {
+        return $this->transaction;
+    }
 
     /**
      * @param array<int> $transactionIds
@@ -156,12 +164,12 @@ class TransactionService implements IAssociative, IBaseService {
                 $duration = new \DateInterval('P1D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime())->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime())->format('Y-m-d 23:59:59'),
+                        'begins' => new \DateTime()->format('Y-m-d 00:00:00'),
+                        'ends' => new \DateTime()->format('Y-m-d 23:59:59'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
+                        'begins' => new \DateTime()->sub($duration)->format('Y-m-d 00:00:00'),
+                        'ends' => new \DateTime()->sub($duration)->format('Y-m-d 23:59:59'),
                     ],
                 ];
                 break;
@@ -169,12 +177,12 @@ class TransactionService implements IAssociative, IBaseService {
                 $duration = new \DateInterval('P7D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime())->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime())->format('Y-m-d 23:59:59'),
+                        'begins' => new \DateTime()->format('Y-m-d 00:00:00'),
+                        'ends' => new \DateTime()->format('Y-m-d 23:59:59'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
+                        'begins' => new \DateTime()->sub($duration)->format('Y-m-d 00:00:00'),
+                        'ends' => new \DateTime()->sub($duration)->format('Y-m-d 23:59:59'),
                     ],
                 ];
                 break;
@@ -183,12 +191,12 @@ class TransactionService implements IAssociative, IBaseService {
                 $lastDuration = new \DateInterval('P14D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime())->format('Y-m-d'),
+                        'begins' => new \DateTime()->sub($currentDuration)->format('Y-m-d'),
+                        'ends' => new \DateTime()->format('Y-m-d'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime())->sub($lastDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'begins' => new \DateTime()->sub($lastDuration)->format('Y-m-d'),
+                        'ends' => new \DateTime()->sub($currentDuration)->format('Y-m-d'),
                     ],
                 ];
                 break;
@@ -197,12 +205,12 @@ class TransactionService implements IAssociative, IBaseService {
                 $lastDuration = new \DateInterval('P60D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime())->format('Y-m-d'),
+                        'begins' => new \DateTime()->sub($currentDuration)->format('Y-m-d'),
+                        'ends' => new \DateTime()->format('Y-m-d'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime())->sub($lastDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'begins' => new \DateTime()->sub($lastDuration)->format('Y-m-d'),
+                        'ends' => new \DateTime()->sub($currentDuration)->format('Y-m-d'),
                     ],
                 ];
                 break;
@@ -385,23 +393,5 @@ class TransactionService implements IAssociative, IBaseService {
             ->allowedSorts(['id', 'created_at', 'amount', 'sender', 'message', 'original_transaction_type'])
             ->defaultSort('-created_at')
             ->get();
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): Transaction {
-        throw new \Exception('Method create() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): Transaction {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 }

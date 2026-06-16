@@ -76,10 +76,6 @@ class PaystackTransactionProvider implements ITransactionProvider {
      */
     public function setValidData($paystackTransactionData): void {}
 
-    public function getSubTransaction(): PaystackTransaction {
-        return $this->paystackTransactionService->getPaystackTransaction();
-    }
-
     /**
      * @param mixed $transaction
      */

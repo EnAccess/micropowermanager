@@ -2,24 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Services\ApiResolvers\Data;
+namespace App\Services\ApiResolvers;
 
-use App\Services\ApiResolvers\AfricasTalkingApiResolver;
-use App\Services\ApiResolvers\AndroidGatewayCallbackApiResolver;
-use App\Services\ApiResolvers\DataExportResolver;
-use App\Services\ApiResolvers\DownloadingReportsResolver;
-use App\Services\ApiResolvers\EcreeeMeterDataApiResolver;
-use App\Services\ApiResolvers\OdysseyPaymentApiResolver;
-use App\Services\ApiResolvers\PaystackApiResolver;
-use App\Services\ApiResolvers\PesapalApiResolver;
-use App\Services\ApiResolvers\SwiftaPaymentApiResolver;
-use App\Services\ApiResolvers\TestApiResolver;
-use App\Services\ApiResolvers\TextbeeSmsGatewayApiResolver;
-use App\Services\ApiResolvers\ViberMessagingApiResolver;
-use App\Services\ApiResolvers\VodacomMzApiResolver;
-use App\Services\ApiResolvers\WaveMoneyApiResolver;
+use App\Services\Interfaces\IApiResolver;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
-class ApiResolverMap {
+/**
+ * Maps third-party API request paths to the resolver that identifies the
+ * company behind the request, and runs it. A request belongs to a resolver
+ * when its path starts with the resolver's registered prefix (case-insensitive).
+ */
+class ThirdPartyApiResolverService {
     public const VIBER_API = 'api/viber-messaging/webhook';
     public const TEST_API = 'api/testApi';
     public const WAVE_MONEY_API = 'api/wave-money/wave-money-transaction';
@@ -35,24 +30,10 @@ class ApiResolverMap {
     public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
 
-    public const RESOLVABLE_APIS = [
-        self::TEST_API,
-        self::VIBER_API,
-        self::WAVE_MONEY_API,
-        self::ANDROID_GATEWAY_CALLBACK_API,
-        self::SWIFTA_PAYMENT_API,
-        self::REPORT_DOWNLOADING_API,
-        self::DATA_EXPORTING_API,
-        self::AFRICAS_TALKING_API,
-        self::VODACOM_MZ_PAYMENT_PROVIDER,
-        self::ODYSSEY_PAYMENTS_API,
-        self::PAYSTACK_API,
-        self::PESAPAL_API,
-        self::ECREEE_METER_DATA_API,
-        self::TEXTBEE_SMS_GATEWAY_API,
-    ];
-
-    private const API_RESOLVER = [
+    /**
+     * @var array<string, class-string<IApiResolver>>
+     */
+    private const array RESOLVERS = [
         self::TEST_API => TestApiResolver::class,
         self::VIBER_API => ViberMessagingApiResolver::class,
         self::WAVE_MONEY_API => WaveMoneyApiResolver::class,
@@ -69,17 +50,34 @@ class ApiResolverMap {
         self::TEXTBEE_SMS_GATEWAY_API => TextbeeSmsGatewayApiResolver::class,
     ];
 
-    /**
-     * @return array<int, string>
-     */
-    public function getResolvableApis(): array {
-        return self::RESOLVABLE_APIS;
+    public function matches(string $requestPath): bool {
+        return $this->resolverClassFor($requestPath) !== null;
+    }
+
+    public function resolve(Request $request): int {
+        $resolverClass = $this->resolverClassFor($request->path());
+        if ($resolverClass === null) {
+            throw ValidationException::withMessages(['path' => 'No api resolver registered for '.$request->path()]);
+        }
+
+        /** @var IApiResolver $resolver */
+        $resolver = app()->make($resolverClass);
+        $companyId = $resolver->resolveCompanyId($request);
+        $request->attributes->add(['companyId' => $companyId]);
+
+        return $companyId;
     }
 
     /**
-     * @return class-string|null
+     * @return class-string<IApiResolver>|null
      */
-    public function getApiResolver(string $api): ?string {
-        return self::API_RESOLVER[$api] ?? null;
+    private function resolverClassFor(string $requestPath): ?string {
+        foreach (self::RESOLVERS as $apiPath => $resolverClass) {
+            if (Str::startsWith(Str::lower($requestPath), Str::lower($apiPath))) {
+                return $resolverClass;
+            }
+        }
+
+        return null;
     }
 }

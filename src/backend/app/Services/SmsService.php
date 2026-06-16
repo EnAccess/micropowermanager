@@ -116,7 +116,7 @@ class SmsService {
     }
 
     private function associateSmsWithForSmsType(SmsSender $sender, string $uuid, string $receiver, ?int $gatewayId): void {
-        if (!($sender instanceof ManualSms)) {
+        if (!$sender instanceof ManualSms) {
             $attrs = [
                 'uuid' => $uuid,
                 'body' => $sender->body,

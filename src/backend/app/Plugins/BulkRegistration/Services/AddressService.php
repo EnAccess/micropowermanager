@@ -29,7 +29,7 @@ class AddressService extends CreatorService {
             'is_primary' => 1,
         ];
         $returnAddresses[] = $firstAddressData;
-        if (array_key_exists($csvData[$addressConfig['alternative_phone']], $csvData)) {
+        if (array_key_exists((string) $csvData[$addressConfig['alternative_phone']], $csvData)) {
             $alternativeAddress = [
                 'owner_type' => 'person',
                 'owner_id' => $csvData[$addressConfig['person_id']],

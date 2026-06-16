@@ -42,7 +42,7 @@ class CalinSmartMeterApiRequests {
                     'message :' => $gException->getMessage(),
                 ]
             );
-            throw new CalinSmartApiResponseException($gException->getMessage());
+            throw new CalinSmartApiResponseException($gException->getMessage(), $gException->getCode(), $gException);
         }
     }
 }

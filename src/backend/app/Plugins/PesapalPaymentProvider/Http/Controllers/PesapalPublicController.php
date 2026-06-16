@@ -77,7 +77,7 @@ class PesapalPublicController extends Controller {
 
             $sender = $this->transactionService->getCustomerPhoneByCustomerId($customerId) ?? '';
 
-            $result = $this->transactionService->initializePayment(
+            $result = $this->transactionService->initiatePayment(
                 amount: (float) $validatedData['amount'],
                 sender: $sender,
                 message: $deviceSerial,

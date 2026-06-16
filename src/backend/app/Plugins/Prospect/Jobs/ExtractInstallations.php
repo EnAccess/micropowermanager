@@ -75,7 +75,7 @@ class ExtractInstallations extends AbstractJob {
             $devices = $query->get();
             Log::info('Found '.$devices->count().' devices to process');
 
-            $transformer = app(ProspectInstallationTransformer::class);
+            $transformer = resolve(ProspectInstallationTransformer::class);
             $installations = [];
 
             foreach ($devices as $device) {
@@ -125,7 +125,7 @@ class ExtractInstallations extends AbstractJob {
             $csvContent = $this->arrayToCsv($data, $headers);
 
             $user = User::query()->first();
-            $databaseProxy = app(DatabaseProxy::class);
+            $databaseProxy = resolve(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
             $filePath = "prospect/{$companyId}/installations/{$fileName}";
@@ -152,13 +152,13 @@ class ExtractInstallations extends AbstractJob {
      */
     private function arrayToCsv(array $data, array $headers): string {
         $output = fopen('php://temp', 'r+');
-        fputcsv($output, $headers);
+        fputcsv($output, $headers, escape: '\\');
         foreach ($data as $row) {
             $csvRow = [];
             foreach ($headers as $header) {
                 $csvRow[] = $row[$header] ?? '';
             }
-            fputcsv($output, $csvRow);
+            fputcsv($output, $csvRow, escape: '\\');
         }
         rewind($output);
         $csvContent = stream_get_contents($output);

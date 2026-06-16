@@ -203,7 +203,7 @@ class SiteService implements ISynchronizeService {
             if ($returnData) {
                 return ['result' => false];
             }
-            throw new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
         $sitesCollection = collect($sites);
         $sparkSites = $this->site->newQuery()->get();

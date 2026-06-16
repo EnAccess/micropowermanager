@@ -14,8 +14,8 @@ class MiniGridRevenueController {
     ) {}
 
     public function show(int $miniGridId, Request $request): ApiResource {
-        $startDate = $request->get('startDate');
-        $endDate = $request->get('endDate');
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
 
         if (preg_match('/\/energy/', $request->url())) {
             return ApiResource::make($this->miniGridRevenueService->getSoldEnergyById(

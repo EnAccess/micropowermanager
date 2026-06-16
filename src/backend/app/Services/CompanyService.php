@@ -5,16 +5,23 @@ namespace App\Services;
 use App\Exceptions\CompanyAlreadyExistsException;
 use App\Models\Company;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Database\Eloquent\Collection;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\UniqueConstraintViolationException;
 
 /**
  * @implements IBaseService<Company>
  */
 class CompanyService implements IBaseService {
+    /** @use HasCrudOperations<Company> */
+    use HasCrudOperations;
+
     public function __construct(
         private Company $company,
     ) {}
+
+    protected function crudModel(): Company {
+        return $this->company;
+    }
 
     public function getByName(string $name): Company {
         return $this->company->where('name', $name)->firstOrFail();
@@ -37,25 +44,5 @@ class CompanyService implements IBaseService {
         } catch (UniqueConstraintViolationException) {
             throw new CompanyAlreadyExistsException('Company already exists');
         }
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): Company {
-        $model->update($data);
-
-        return $model;
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
-    }
-
-    /**
-     * @return Collection<int, Company>
-     */
-    public function getAll(?int $limit = null): Collection {
-        return $this->company->newQuery()->get();
     }
 }

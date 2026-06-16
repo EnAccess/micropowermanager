@@ -52,24 +52,23 @@ class LoanDataContainer {
 
                 $this->transaction->amount = 0;
                 break;
-            } else {
-                event(new PaymentSuccessEvent(
-                    amount: $loan->remaining,
-                    paymentService: $this->transaction->original_transaction_type,
-                    paymentType: 'installment',
-                    sender: $this->transaction->sender,
-                    paidFor: $loan,
-                    payer: $this->meterOwner,
-                    transaction: $this->transaction,
-                ));
-                $this->paid_rates[] = [
-                    'appliance_type_name' => $loan->appliancePerson->appliance->applianceType->name,
-                    'paid' => $loan->remaining,
-                ];
-                $this->transaction->amount -= $loan->remaining;
-                $loan->remaining = 0;
-                $loan->update();
             }
+            event(new PaymentSuccessEvent(
+                amount: $loan->remaining,
+                paymentService: $this->transaction->original_transaction_type,
+                paymentType: 'installment',
+                sender: $this->transaction->sender,
+                paidFor: $loan,
+                payer: $this->meterOwner,
+                transaction: $this->transaction,
+            ));
+            $this->paid_rates[] = [
+                'appliance_type_name' => $loan->appliancePerson->appliance->applianceType->name,
+                'paid' => $loan->remaining,
+            ];
+            $this->transaction->amount -= $loan->remaining;
+            $loan->remaining = 0;
+            $loan->update();
         }
 
         return $this->transaction->amount;

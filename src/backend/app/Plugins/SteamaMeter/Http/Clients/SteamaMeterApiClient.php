@@ -26,7 +26,7 @@ class SteamaMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         try {
             $request = $this->client->get(
@@ -40,7 +40,7 @@ class SteamaMeterApiClient {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SteamaApiResponseException($exception->getMessage());
+            throw new SteamaApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
@@ -73,7 +73,7 @@ class SteamaMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         try {
             $request = $this->client->post(
@@ -87,7 +87,7 @@ class SteamaMeterApiClient {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SteamaApiResponseException($exception->getMessage());
+            throw new SteamaApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
@@ -102,7 +102,7 @@ class SteamaMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         try {
             $request = $this->client->post(
@@ -117,7 +117,7 @@ class SteamaMeterApiClient {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SteamaApiResponseException($exception->getMessage());
+            throw new SteamaApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
@@ -132,7 +132,7 @@ class SteamaMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         try {
             $request = $this->client->put(
@@ -147,7 +147,7 @@ class SteamaMeterApiClient {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SteamaApiResponseException($exception->getMessage());
+            throw new SteamaApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
@@ -162,7 +162,7 @@ class SteamaMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         try {
             $request = $this->client->patch(
@@ -177,7 +177,7 @@ class SteamaMeterApiClient {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SteamaApiResponseException($exception->getMessage());
+            throw new SteamaApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));
@@ -192,7 +192,7 @@ class SteamaMeterApiClient {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
         $apiUrl = $credential->api_url.$url.'?';
         foreach ($params as $key => $value) {
@@ -212,7 +212,7 @@ class SteamaMeterApiClient {
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw new SteamaApiResponseException($exception->getMessage());
+            throw new SteamaApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR));

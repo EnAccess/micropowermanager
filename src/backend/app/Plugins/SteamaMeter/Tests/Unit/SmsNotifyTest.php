@@ -52,7 +52,7 @@ class SmsNotifyTest extends TestCase {
             );
         });
 
-        app(SmsListener::class)->onSmsStored('+255700000001', 'Your BALANCE is low');
+        resolve(SmsListener::class)->onSmsStored('+255700000001', 'Your BALANCE is low');
     }
 
     public function testDoesNotSendWhenMessageDoesNotContainTheFeedbackWord(): void {
@@ -61,7 +61,7 @@ class SmsNotifyTest extends TestCase {
 
         $this->mock(SmsService::class, fn (MockInterface $mock) => $mock->shouldReceive('sendSms')->never());
 
-        app(SmsListener::class)->onSmsStored('+255700000002', 'unrelated message');
+        resolve(SmsListener::class)->onSmsStored('+255700000002', 'unrelated message');
     }
 
     public function testDoesNotSendWhenNoFeedbackWordIsConfigured(): void {
@@ -69,12 +69,12 @@ class SmsNotifyTest extends TestCase {
 
         $this->mock(SmsService::class, fn (MockInterface $mock) => $mock->shouldReceive('sendSms')->never());
 
-        app(SmsListener::class)->onSmsStored('+255700000003', 'balance');
+        resolve(SmsListener::class)->onSmsStored('+255700000003', 'balance');
     }
 
     public function testIgnoresSmsFromAnUnknownSender(): void {
         $this->mock(SmsService::class, fn (MockInterface $mock) => $mock->shouldReceive('sendSms')->never());
 
-        app(SmsListener::class)->onSmsStored('+255999999999', 'balance');
+        resolve(SmsListener::class)->onSmsStored('+255999999999', 'balance');
     }
 }

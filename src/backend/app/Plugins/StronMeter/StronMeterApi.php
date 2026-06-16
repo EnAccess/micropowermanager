@@ -70,7 +70,7 @@ class StronMeterApi implements IManufacturerAPI {
                         'message :' => $gException->getMessage(),
                     ]
                 );
-                throw new StronApiResponseException($gException->getMessage());
+                throw new StronApiResponseException($gException->getMessage(), $gException->getCode(), $gException);
             }
         }
 

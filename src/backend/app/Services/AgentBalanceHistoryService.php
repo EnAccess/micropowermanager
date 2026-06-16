@@ -7,6 +7,7 @@ use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
@@ -17,10 +18,17 @@ use Illuminate\Support\Facades\DB;
  * @implements IAssociative<AgentBalanceHistory>
  */
 class AgentBalanceHistoryService implements IBaseService, IAssociative {
+    /** @use HasCrudOperations<AgentBalanceHistory> */
+    use HasCrudOperations;
+
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
     ) {}
+
+    protected function crudModel(): AgentBalanceHistory {
+        return $this->agentBalanceHistory;
+    }
 
     /**
      * @return Collection<int, AgentBalanceHistory>|LengthAwarePaginator<int, AgentBalanceHistory>
@@ -39,13 +47,6 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         }
 
         return $query->latest()->get();
-    }
-
-    /**
-     * @param array<string, mixed> $agentBalanceHistoryData
-     */
-    public function create(array $agentBalanceHistoryData): AgentBalanceHistory {
-        return $this->agentBalanceHistory->newQuery()->create($agentBalanceHistoryData);
     }
 
     /**
@@ -91,7 +92,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     public function getGraphValues(Agent $agent, string $lastReceiptDate): array {
         $periodDate = $lastReceiptDate;
         $period = $this->getPeriod($agent, $periodDate);
-        /** @var SupportCollection<int, object{date: string, id: int, trigger_type: string, amount: float, available_balance: float, due_to_supplier: float}> $history */
+
         $history = $this->agentBalanceHistory->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as date,id,trigger_Type,amount,'.
                 'available_balance,due_to_supplier')
@@ -110,8 +111,8 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             $date = new \DateTime();
             $key = $date->format('Y-m-d');
             $period[$key] = [
-                'balance' => 0,
-                'due' => 0,
+                'balance' => 0.0,
+                'due' => 0.0,
             ];
 
             return $period;
@@ -197,20 +198,5 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         }
 
         return $p;
-    }
-
-    public function getById(int $id): AgentBalanceHistory {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): AgentBalanceHistory {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 }

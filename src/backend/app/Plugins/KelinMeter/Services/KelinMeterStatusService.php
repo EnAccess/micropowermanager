@@ -25,13 +25,13 @@ class KelinMeterStatusService {
 
             return (object) collect($result['data'])->all();
         } catch (KelinApiResponseException $exception) {
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         } catch (GuzzleException $exception) {
             Log::critical(
                 'Unknown exception while authenticating KelinMeter',
                 ['reason' => $exception->getMessage()]
             );
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -49,13 +49,13 @@ class KelinMeterStatusService {
 
             return $this->kelinApiClient->get($rootUrl, $queryParams);
         } catch (KelinApiResponseException $exception) {
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         } catch (GuzzleException $exception) {
             Log::critical(
                 'Unknown exception while authenticating KelinMeter',
                 ['reason' => $exception->getMessage()]
             );
-            throw new KelinApiResponseException($exception->getMessage());
+            throw new KelinApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 }

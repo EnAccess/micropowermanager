@@ -102,7 +102,7 @@ class TransactionConfirmation extends SmsSender {
             $smsBody = $this->smsBodyService->getSmsBodyByReference($reference);
         } catch (ModelNotFoundException $e) {
             Log::error('SMS body not found: '.$reference, ['message' => $e->getMessage()]);
-            throw new MissingSmsReferencesException($reference.' SMS body record not found in database');
+            throw new MissingSmsReferencesException($reference.' SMS body record not found in database', $e->getCode(), $e);
         }
 
         $className = $this->parserSubPath.$reference;
@@ -111,7 +111,7 @@ class TransactionConfirmation extends SmsSender {
             $this->body .= $smsObject->parseSms($smsBody->body);
         } catch (\Throwable $e) {
             Log::error('SMS body parse failed: '.$reference, ['message' => $e->getMessage()]);
-            throw new MissingSmsReferencesException('SMS body parsing failed for '.$reference);
+            throw new MissingSmsReferencesException('SMS body parsing failed for '.$reference, $e->getCode(), $e);
         }
     }
 }

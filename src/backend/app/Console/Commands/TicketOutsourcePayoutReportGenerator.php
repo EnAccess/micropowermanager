@@ -37,7 +37,7 @@ class TicketOutsourcePayoutReportGenerator extends AbstractSharedCommand {
 
         try {
             $user = User::query()->first();
-            $databaseProxy = app(DatabaseProxy::class);
+            $databaseProxy = resolve(DatabaseProxy::class);
             $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
             $fileName = "ticket_outsource_payout_report-{$startDay}-{$toDay}.xlsx";

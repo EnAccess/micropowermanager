@@ -15,7 +15,7 @@ use App\Plugins\PesapalPaymentProvider\Modules\Api\Resources\GetTransactionStatu
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\DeviceService;
 use App\Services\Interfaces\IBaseService;
-use App\Services\Interfaces\PaymentInitializer;
+use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -23,9 +23,11 @@ use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<PesapalTransaction>
+ *
  * @implements IBaseService<PesapalTransaction>
  */
-class PesapalTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitializer {
+class PesapalTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -52,14 +54,14 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
         return [
             'order_id' => $orderId,
             'reference_id' => $referenceId,
-            'serial_id' => $this->getSerialId(),
+            'serial_id' => $this->meterSerialNumber,
             'status' => PesapalTransaction::STATUS_REQUESTED,
             'currency' => $this->credentialService->getCredentials()->getCurrency(),
-            'customer_id' => $this->getCustomerId(),
-            'amount' => $this->getAmount(),
+            'customer_id' => $this->customerId,
+            'amount' => $this->amount,
             'metadata' => [
-                'serial_id' => $this->getSerialId(),
-                'customer_id' => $this->getCustomerId(),
+                'serial_id' => $this->meterSerialNumber,
+                'customer_id' => $this->customerId,
             ],
         ];
     }
@@ -142,14 +144,6 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
         return $this->pesapalTransaction->newQuery()->get();
     }
 
-    public function getPesapalTransaction(): PesapalTransaction {
-        return $this->getPaymentAggregatorTransaction();
-    }
-
-    public function getSerialId(): ?string {
-        return $this->getMeterSerialNumber();
-    }
-
     public function processSuccessfulPayment(int $companyId, PesapalTransaction $transaction): void {
         $id = $transaction->transaction->id;
         dispatch(new ProcessPayment($companyId, $id));
@@ -205,7 +199,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     /**
      * @return array{transaction: Transaction, provider_data: array<string, mixed>}
      */
-    public function initializePayment(
+    public function initiatePayment(
         float $amount,
         string $sender,
         string $message,
@@ -215,7 +209,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     ): array {
         $deviceType = null;
         if ($serialId !== null) {
-            $device = app(DeviceService::class)->getBySerialNumber($serialId);
+            $device = resolve(DeviceService::class)->getBySerialNumber($serialId);
             $deviceType = $device?->device_type;
         }
 

@@ -18,7 +18,7 @@ class TransactionExportController {
     ) {}
 
     public function download(Request $request): StreamedResponse|JsonResponse {
-        $format = $request->get('format', 'excel');
+        $format = $request->input('format', 'excel');
 
         if ($format === 'csv') {
             return $this->downloadCsv($request);
@@ -34,13 +34,13 @@ class TransactionExportController {
     public function downloadExcel(
         Request $request,
     ): StreamedResponse {
-        $deviceType = $request->get('deviceType', 'all');
-        $serialNumber = $request->get('serial_number');
-        $tariffId = $request->get('tariff');
-        $transactionProvider = $request->get('provider', 'all');
-        $status = $request->get('status');
-        $fromDate = $request->get('from');
-        $toDate = $request->get('to');
+        $deviceType = $request->input('deviceType', 'all');
+        $serialNumber = $request->input('serial_number');
+        $tariffId = $request->input('tariff');
+        $transactionProvider = $request->input('provider', 'all');
+        $status = $request->input('status');
+        $fromDate = $request->input('from');
+        $toDate = $request->input('to');
 
         $mainSettings = $this->mainSettingsService->getAll()->first();
         $this->transactionExportService->setCurrency($mainSettings->currency);
@@ -63,11 +63,11 @@ class TransactionExportController {
     }
 
     public function downloadCsv(Request $request): StreamedResponse {
-        $deviceType = $request->get('deviceType', 'all');
-        $transactionProvider = $request->get('provider', 'all');
-        $status = $request->get('status');
-        $fromDate = $request->get('from');
-        $toDate = $request->get('to');
+        $deviceType = $request->input('deviceType', 'all');
+        $transactionProvider = $request->input('provider', 'all');
+        $status = $request->input('status');
+        $fromDate = $request->input('from');
+        $toDate = $request->input('to');
 
         $mainSettings = $this->mainSettingsService->getAll()->first();
         $this->transactionExportService->setCurrency($mainSettings->currency);
@@ -89,12 +89,12 @@ class TransactionExportController {
     }
 
     public function downloadJson(Request $request): JsonResponse {
-        $deviceType = $request->get('deviceType', 'all');
-        $serialNumber = $request->get('serial_number');
-        $transactionProvider = $request->get('provider', 'all');
-        $status = $request->get('status');
-        $fromDate = $request->get('from');
-        $toDate = $request->get('to');
+        $deviceType = $request->input('deviceType', 'all');
+        $serialNumber = $request->input('serial_number');
+        $transactionProvider = $request->input('provider', 'all');
+        $status = $request->input('status');
+        $fromDate = $request->input('from');
+        $toDate = $request->input('to');
 
         $mainSettings = $this->mainSettingsService->getAll()->first();
         $this->transactionExportService->setCurrency($mainSettings->currency);

@@ -32,8 +32,9 @@
               :name="$tc('phrases.energyCommission')"
               id="energyCommission"
               v-model="agentCommissionService.agentCommission.energyCommission"
-              v-validate="'required|min_value:0'"
+              v-validate="'required|min_value:0|max_value:1'"
               type="number"
+              step="0.01"
             />
             <span class="md-error">
               {{ errors.first($tc("phrases.energyCommission")) }}
@@ -52,8 +53,9 @@
               v-model="
                 agentCommissionService.agentCommission.applianceCommission
               "
-              v-validate="'required|min_value:0'"
+              v-validate="'required|min_value:0|max_value:1'"
               type="number"
+              step="0.01"
             />
             <span class="md-error">
               {{ errors.first($tc("phrases.applianceCommission")) }}

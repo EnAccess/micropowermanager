@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -15,7 +16,14 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @implements IBaseService<SolarHomeSystem>
  */
 class SolarHomeSystemService implements IBaseService {
+    /** @use HasCrudOperations<SolarHomeSystem> */
+    use HasCrudOperations;
+
     public function __construct(private SolarHomeSystem $solarHomeSystem) {}
+
+    protected function crudModel(): SolarHomeSystem {
+        return $this->solarHomeSystem;
+    }
 
     /**
      * @return Collection<int, SolarHomeSystem>|LengthAwarePaginator<int, SolarHomeSystem>
@@ -40,13 +48,6 @@ class SolarHomeSystemService implements IBaseService {
         return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person.addresses', 'device.geo', 'tokens'])
             ->findOrFail($id);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): SolarHomeSystem {
-        return $this->solarHomeSystem->newQuery()->create($data);
     }
 
     /**
@@ -104,9 +105,5 @@ class SolarHomeSystemService implements IBaseService {
         $model->update($data);
 
         return $model->fresh(['manufacturer', 'appliance', 'device.person']);
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('not implemented');
     }
 }

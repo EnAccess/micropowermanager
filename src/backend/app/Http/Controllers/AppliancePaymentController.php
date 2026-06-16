@@ -8,7 +8,7 @@ use App\Models\AppliancePerson;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
-use App\Services\PaymentInitializationService;
+use App\Services\PaymentInitiationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,7 @@ class AppliancePaymentController extends Controller {
     public function __construct(
         private AppliancePaymentService $appliancePaymentService,
         private AppliancePersonService $appliancePersonService,
-        private PaymentInitializationService $paymentInitializationService,
+        private PaymentInitiationService $paymentInitiationService,
     ) {}
 
     public function store(AppliancePerson $appliancePerson, Request $request): ApiResource|JsonResponse {
@@ -52,7 +52,7 @@ class AppliancePaymentController extends Controller {
     }
 
     public function paymentProviders(): ApiResource {
-        $providers = $this->paymentInitializationService->paymentProviders();
+        $providers = $this->paymentInitiationService->paymentProviders();
 
         return ApiResource::make($providers);
     }
@@ -79,7 +79,7 @@ class AppliancePaymentController extends Controller {
 
         $message = $deviceSerial ?? (string) $appliancePerson->id;
 
-        $result = $this->paymentInitializationService->initialize(
+        $result = $this->paymentInitiationService->initiate(
             providerId: $providerId,
             amount: $amount,
             sender: $sender,

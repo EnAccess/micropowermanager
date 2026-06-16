@@ -43,7 +43,7 @@ class ApiRequests {
             Log::critical('Daly Bms Access Token API request failed', [
                 'message :' => $e->getMessage(),
             ]);
-            throw new DalyBmsApiResponseException($e->getMessage());
+            throw new DalyBmsApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

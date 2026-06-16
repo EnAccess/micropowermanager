@@ -11,7 +11,7 @@ use Illuminate\Support\Carbon;
 class PesapalCredentialService {
     use EncryptsCredentials;
 
-    private const ENCRYPTED_FIELDS = ['consumer_key', 'consumer_secret'];
+    private const array ENCRYPTED_FIELDS = ['consumer_key', 'consumer_secret'];
 
     public function __construct(
         private PesapalCredential $pesapalCredential,

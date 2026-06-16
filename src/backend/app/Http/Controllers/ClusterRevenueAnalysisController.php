@@ -16,9 +16,9 @@ class ClusterRevenueAnalysisController extends Controller {
     ) {}
 
     public function show(int $clusterId, Request $request): ApiResource {
-        $startDate = $request->get('startDate') ?? date('Y-01-01');
-        $endDate = $request->get('endDate') ?? date('Y-m-t');
-        $period = $request->get('period') ?? 'monthly';
+        $startDate = $request->input('startDate') ?? date('Y-01-01');
+        $endDate = $request->input('endDate') ?? date('Y-m-t');
+        $period = $request->input('period') ?? 'monthly';
         $cluster = $this->clusterService->getById($clusterId);
         $connectionTypes = $this->connectionTypeService->getAll();
 

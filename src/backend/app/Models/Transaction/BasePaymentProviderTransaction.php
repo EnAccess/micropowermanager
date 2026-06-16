@@ -4,14 +4,20 @@ namespace App\Models\Transaction;
 
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * Base class for payment provider transaction models.
  *
- * This abstract class provides common relationship methods that are shared across all payment provider transaction implementations.
+ * This abstract class provides common relationship methods that are shared across all payment
+ * provider transaction implementations.
+ *
+ * @property      int                                   $status
+ * @property-read Collection<int, TransactionConflicts> $conflicts
  */
 abstract class BasePaymentProviderTransaction extends BaseModel {
     /**
@@ -30,6 +36,15 @@ abstract class BasePaymentProviderTransaction extends BaseModel {
      */
     public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
+    }
+
+    /**
+     * Get the conflicts detected for this transaction.
+     *
+     * @return MorphMany<TransactionConflicts, $this>
+     */
+    public function conflicts(): MorphMany {
+        return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
     /**

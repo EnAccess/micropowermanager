@@ -72,9 +72,7 @@ class AccessRate {
         return $accessRate->debt;
     }
 
-    /**
-     * @deprecated
-     */
+    #[\Deprecated]
     public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer {
         $nonStaticGateway = new self();
         /** @var Device $device */

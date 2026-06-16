@@ -127,7 +127,7 @@ Please refer to the individual tools documentation.
 For example using `brew` on MacOS
 
 ```sh
-brew install php@8.2
+brew install php@8.5
 brew install composer
 pecl install redis
 ```

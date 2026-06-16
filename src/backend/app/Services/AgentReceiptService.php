@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AgentReceipt;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,9 +13,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<AgentReceipt>
  */
 class AgentReceiptService implements IBaseService {
+    /** @use HasCrudOperations<AgentReceipt> */
+    use HasCrudOperations;
+
     public function __construct(
         private AgentReceipt $agentReceipt,
     ) {}
+
+    protected function crudModel(): AgentReceipt {
+        return $this->agentReceipt;
+    }
 
     /**
      * @return Collection<int, AgentReceipt>|LengthAwarePaginator<int, AgentReceipt>
@@ -34,31 +42,9 @@ class AgentReceiptService implements IBaseService {
 
         if ($limit) {
             return $query->latest()->paginate($limit);
-        } else {
-            return $query->latest()->paginate();
         }
-    }
 
-    /**
-     * @param array<string, mixed> $receiptData
-     */
-    public function create(array $receiptData): AgentReceipt {
-        return $this->agentReceipt->newQuery()->create($receiptData);
-    }
-
-    public function getById(int $id): AgentReceipt {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): AgentReceipt {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
+        return $query->latest()->paginate();
     }
 
     public function getLastReceipt(int $agentId): ?AgentReceipt {

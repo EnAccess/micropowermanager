@@ -8,31 +8,40 @@ use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
-use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
-use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
-use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
-use App\Plugins\VodacomMzPaymentProvider\Models\VodacomMzTransaction;
-use App\Plugins\WavecomPaymentProvider\Models\WaveComTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use App\Traits\HasCrudOperations;
 use App\Utils\MinimumPurchaseAmountValidator;
 
+/**
+ * @template T of BasePaymentProviderTransaction
+ */
 abstract class AbstractPaymentAggregatorTransactionService {
-    private const MINIMUM_TRANSACTION_AMOUNT = 0;
+    /** @use HasCrudOperations<T> */
+    use HasCrudOperations;
+
+    private const int MINIMUM_TRANSACTION_AMOUNT = 0;
     protected string $payerPhoneNumber;
-    protected string $meterSerialNumber;
-    protected float $minimumPurchaseAmount;
-    protected int $customerId;
-    protected float $amount;
+    public protected(set) string $meterSerialNumber;
+    public protected(set) float $minimumPurchaseAmount;
+    public protected(set) int $customerId;
+    public protected(set) float $amount;
 
     public function __construct(
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction|VodacomMzTransaction $paymentAggregatorTransaction,
+        /** @var T */
+        public private(set) BasePaymentProviderTransaction $paymentProviderTransaction,
     ) {}
+
+    /**
+     * @return T
+     */
+    protected function crudModel(): BasePaymentProviderTransaction {
+        return $this->paymentProviderTransaction;
+    }
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
         if (!($meter = $this->meter->findBySerialNumber($meterSerialNumber)) instanceof Meter) {
@@ -66,24 +75,24 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * @throws TransactionAmountNotEnoughException
      */
     public function imitateTransactionForValidation(array $transactionData): void {
-        $newTransaction = $this->paymentAggregatorTransaction->newQuery()->make($transactionData);
+        $newTransaction = $this->paymentProviderTransaction->newQuery()->make($transactionData);
 
-        $this->paymentAggregatorTransaction = $newTransaction;
+        $this->paymentProviderTransaction = $newTransaction;
 
         $this->transaction = $this->transaction->newQuery()->make([
             'amount' => $transactionData['amount'],
             'sender' => $this->payerPhoneNumber,
             'message' => $this->meterSerialNumber,
             'type' => 'energy',
-            'original_transaction_type' => $this->paymentAggregatorTransaction::class,
+            'original_transaction_type' => $this->paymentProviderTransaction::class,
         ]);
 
         $this->isImitationTransactionValid($this->transaction);
     }
 
     public function saveTransaction(): void {
-        $this->paymentAggregatorTransaction->save();
-        $paymentAggregatorTransaction = $this->paymentAggregatorTransaction;
+        $this->paymentProviderTransaction->save();
+        $paymentAggregatorTransaction = $this->paymentProviderTransaction;
         $this->transaction->originalTransaction()->associate($paymentAggregatorTransaction)->save();
     }
 
@@ -97,11 +106,11 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $validator = resolve(MinimumPurchaseAmountValidator::class);
 
         try {
-            if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
+            if (!$validator->validate($transactionData, $this->minimumPurchaseAmount)) {
                 throw new TransactionAmountNotEnoughException('Transaction amount is not enough');
             }
         } catch (TransactionAmountNotEnoughException $e) {
-            throw new TransactionAmountNotEnoughException($e->getMessage());
+            throw new TransactionAmountNotEnoughException($e->getMessage(), $e->getCode(), $e);
         } catch (\Exception) {
             throw new TransactionIsInvalidForProcessingIncomingRequestException('Invalid Transaction request.');
         }
@@ -130,25 +139,5 @@ abstract class AbstractPaymentAggregatorTransactionService {
         } catch (ModelNotFoundException $exception) {
             throw new \Exception('No phone number record found by customer.', $exception->getCode(), $exception);
         }
-    }
-
-    public function getCustomerId(): int {
-        return $this->customerId;
-    }
-
-    public function getMeterSerialNumber(): string {
-        return $this->meterSerialNumber;
-    }
-
-    public function getAmount(): float {
-        return $this->amount;
-    }
-
-    public function getMinimumPurchaseAmount(): float {
-        return $this->minimumPurchaseAmount;
-    }
-
-    public function getPaymentAggregatorTransaction(): SwiftaTransaction|WaveMoneyTransaction|WaveComTransaction|PaystackTransaction|PesapalTransaction|SmsTransaction {
-        return $this->paymentAggregatorTransaction;
     }
 }

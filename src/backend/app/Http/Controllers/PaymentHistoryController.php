@@ -135,7 +135,7 @@ class PaymentHistoryController {
         );
         $result = [];
         foreach ($period as $p) {
-            $result[(new Carbon($p))->toDateString()] = ['date' => (new Carbon($p))->toDateString(), 'amount' => 0];
+            $result[new Carbon($p)->toDateString()] = ['date' => new Carbon($p)->toDateString(), 'amount' => 0];
         }
         $payments = $this->history->getOverview($begin, $end);
         foreach ($payments as $p) {

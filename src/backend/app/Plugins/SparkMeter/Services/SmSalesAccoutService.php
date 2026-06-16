@@ -104,7 +104,7 @@ class SmSalesAccoutService implements ISynchronizeService {
                 if ($returnData) {
                     $returnArray[] = ['result' => false];
                 }
-                throw new SparkAPIResponseException($e->getMessage());
+                throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
             }
             // @phpstan-ignore argument.templateType,argument.templateType
             $sparkSalesAccountsCollection = collect($sparkSalesAccounts['accounts']);
@@ -152,7 +152,7 @@ class SmSalesAccoutService implements ISynchronizeService {
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
         } catch (\Exception $e) {
             Log::critical('Spark meter sales-account sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
-            throw new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
         // @phpstan-ignore argument.templateType,argument.templateType
         $sparkSalesAccountsCollection = collect($sparkMeterModels['accounts']);
@@ -178,9 +178,9 @@ class SmSalesAccoutService implements ISynchronizeService {
 
         if ($salesAccountSyncStatus) {
             return ['result' => false, 'message' => 'sales accounts are not updated for site '.$siteId];
-        } else {
-            return ['result' => true, 'message' => 'Records are updated'];
         }
+
+        return ['result' => true, 'message' => 'Records are updated'];
     }
 
     /**

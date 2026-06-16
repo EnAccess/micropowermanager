@@ -13,7 +13,7 @@ use Database\Factories\UserFactory;
 use Tests\TestCase;
 
 class SteamaAgentServiceTest extends TestCase {
-    private const SITE_ID = 7;
+    private const int SITE_ID = 7;
 
     public function testCreateRelatedAgentPersistsTheAgentWithItsPersonName(): void {
         $cluster = ClusterFactory::new()->create(['manager_id' => UserFactory::new()->create()->id]);
@@ -31,7 +31,7 @@ class SteamaAgentServiceTest extends TestCase {
             'risk_balance' => 0,
         ]);
 
-        $agent = app(SteamaAgentService::class)->createRelatedAgent([
+        $agent = resolve(SteamaAgentService::class)->createRelatedAgent([
             'id' => 1,
             'first_name' => 'Bak',
             'last_name' => 'Steama',

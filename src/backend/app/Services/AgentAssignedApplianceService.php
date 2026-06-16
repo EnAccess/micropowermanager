@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AgentAssignedAppliances;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -11,9 +12,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<AgentAssignedAppliances>
  */
 class AgentAssignedApplianceService implements IBaseService {
+    /** @use HasCrudOperations<AgentAssignedAppliances> */
+    use HasCrudOperations;
+
     public function __construct(
         private AgentAssignedAppliances $agentAssignedAppliance,
     ) {}
+
+    protected function crudModel(): AgentAssignedAppliances {
+        return $this->agentAssignedAppliance;
+    }
 
     /**
      * @param array<string, mixed> $applianceData
@@ -29,17 +37,6 @@ class AgentAssignedApplianceService implements IBaseService {
 
     public function getById(int $id): ?AgentAssignedAppliances {
         return $this->agentAssignedAppliance->newQuery()->with('appliance')->find($id);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function update($model, array $data): AgentAssignedAppliances {
-        throw new \Exception('Method update() not yet implemented.');
-    }
-
-    public function delete($model): ?bool {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 
     /**

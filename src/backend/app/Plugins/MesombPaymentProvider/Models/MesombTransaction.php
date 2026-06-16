@@ -7,7 +7,6 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -32,13 +31,6 @@ use Illuminate\Support\Carbon;
 class MesombTransaction extends BasePaymentProviderTransaction {
     protected $table = 'mesomb_transactions';
     public const RELATION_NAME = 'mesomb_transactions';
-
-    /**
-     * @return MorphMany<TransactionConflicts, $this>
-     */
-    public function conflicts(): MorphMany {
-        return $this->morphMany(TransactionConflicts::class, 'transaction');
-    }
 
     public static function getTransactionName(): string {
         return self::RELATION_NAME;

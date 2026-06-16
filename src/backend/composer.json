@@ -8,7 +8,7 @@
   ],
   "license": "MIT",
   "require": {
-    "php": "^8.2",
+    "php": "^8.5",
     "africastalking/africastalking": "^3.0",
     "barryvdh/laravel-dompdf": "^v3.1.1",
     "barryvdh/laravel-ide-helper": "^3.6",
@@ -27,7 +27,7 @@
     "lcobucci/jwt": "^4.3",
     "league/flysystem-google-cloud-storage": "^3.0",
     "parsecsv/php-parsecsv": "^1.3",
-    "phpoffice/phpspreadsheet": "^1.7",
+    "phpoffice/phpspreadsheet": "^2.3",
     "predis/predis": "^1.1.7",
     "propaganistas/laravel-phone": "^6.0",
     "pusher/pusher-php-server": "^7.0",
@@ -79,10 +79,7 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/"
-    },
-    "exclude-from-classmap": [
-        "tests/Legacy/"
-    ]
+    }
   },
   "minimum-stability": "stable",
   "prefer-stable": true,

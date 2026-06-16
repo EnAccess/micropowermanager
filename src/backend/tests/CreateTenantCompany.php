@@ -19,7 +19,7 @@ trait CreateTenantCompany {
     protected $companyId = 1;
 
     protected function setUpCreateTenantCompany(): void {
-        $databaseProxyManagerService = app(DatabaseProxyManagerService::class);
+        $databaseProxyManagerService = resolve(DatabaseProxyManagerService::class);
 
         $databaseProxyManagerService->buildDatabaseConnectionTestCompany(TestCompany::TEST_COMPANY_DATABASE_NAME);
 
@@ -27,9 +27,9 @@ trait CreateTenantCompany {
     }
 
     public function createCompany(): string {
-        $companyService = app(CompanyService::class);
-        $companyDatabaseService = app(CompanyDatabaseService::class);
-        $databaseProxyManagerService = app(DatabaseProxyManagerService::class);
+        $companyService = resolve(CompanyService::class);
+        $companyDatabaseService = resolve(CompanyDatabaseService::class);
+        $databaseProxyManagerService = resolve(DatabaseProxyManagerService::class);
 
         $company = $companyService->create([
             'name' => TestCompany::TEST_COMPANY_NAME,

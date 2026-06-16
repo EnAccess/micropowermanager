@@ -36,14 +36,13 @@ class ApiRequests {
 
             if ($result['ReturnCode'] !== 0) {
                 return $result['Data'];
-            } else {
-                throw new GomeLongApiResponseException($result['ReturnMessage']);
             }
+            throw new GomeLongApiResponseException($result['ReturnMessage']);
         } catch (GuzzleException|GomeLongApiResponseException $e) {
             Log::critical('GomeLong API request failed', [
                 'message :' => $e->getMessage(),
             ]);
-            throw new GomeLongApiResponseException($e->getMessage());
+            throw new GomeLongApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -69,14 +68,13 @@ class ApiRequests {
 
             if ($result['ReturnCode'] !== 0) {
                 return $result['Data'];
-            } else {
-                throw new GomeLongApiResponseException($result['ReturnMessage']);
             }
+            throw new GomeLongApiResponseException($result['ReturnMessage']);
         } catch (GuzzleException|GomeLongApiResponseException $e) {
             Log::critical('GomeLong API request failed', [
                 'message :' => $e->getMessage(),
             ]);
-            throw new GomeLongApiResponseException($e->getMessage());
+            throw new GomeLongApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

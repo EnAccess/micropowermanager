@@ -24,9 +24,9 @@ class ReportController {
     }
 
     public function index(Request $request): ApiResource {
-        $type = $request->get('type');
-        $request->get('startDate');
-        $request->get('endDate');
+        $type = $request->input('type');
+        $request->input('startDate');
+        $request->input('endDate');
 
         $reports = match ($type) {
             'weekly' => $this->getVillageReportsWeekly(),

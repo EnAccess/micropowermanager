@@ -16,7 +16,7 @@ class TransactionController extends Controller {
     ) {}
 
     public function index(): ApiResource {
-        $limit = \request()->get('per_page') ?? 15;
+        $limit = \request()->input('per_page') ?? 15;
 
         return ApiResource::make($this->transactionService->getAll($limit));
     }

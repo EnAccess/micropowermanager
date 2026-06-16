@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\EntityHasChildrenException;
 use App\Models\City;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -13,9 +14,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<City>
  */
 class CityService implements IBaseService {
+    /** @use HasCrudOperations<City> */
+    use HasCrudOperations;
+
     public function __construct(
         private City $city,
     ) {}
+
+    protected function crudModel(): City {
+        return $this->city;
+    }
 
     /**
      * @return array<int, int>
@@ -31,10 +39,6 @@ class CityService implements IBaseService {
         return $this->city->newQuery()->with($relation)->find($cityId);
     }
 
-    public function getById(int $cityId): ?Model {
-        return $this->city->newQuery()->find($cityId);
-    }
-
     /**
      * @param array<string, mixed> $cityData
      */
@@ -47,13 +51,6 @@ class CityService implements IBaseService {
         $model->fresh();
 
         return $model;
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function create(array $data): Model {
-        return $this->city->newQuery()->create($data);
     }
 
     /**

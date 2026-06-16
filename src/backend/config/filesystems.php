@@ -53,12 +53,12 @@ return [
         ],
         'gcs' => [
             'driver' => 'gcs',
-            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE', null),
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
             // either key_file_path or key_file should be provided
             'key_file' => json_decode(env('GOOGLE_CLOUD_KEY_JSON', '[]'), true),
             'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', ''),
             'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', ''),
-            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', null),
+            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX'),
             'storage_api_uri' => env('GOOGLE_CLOUD_STORAGE_API_URI', 'https://storage.googleapis.com'),
             'api_endpoint' => env('GOOGLE_CLOUD_STORAGE_API_ENDPOINT', 'https://storage.googleapis.com'),
             'visibility' => 'public',

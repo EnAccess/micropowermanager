@@ -48,66 +48,65 @@ class SteamaMeterApi implements IManufacturerAPI {
                 'token' => 'debug-token',
                 'load' => $transactionContainer->chargeAmount,
             ];
-        } else {
-            $amount = $transactionContainer->transaction->amount;
-            $postParams = [
-                'amount' => $amount,
-                'category' => 'PAY',
-            ];
-            try {
-                $credential = $this->credentialService->getCredentials();
-            } catch (ModelNotFoundException $e) {
-                throw new ModelNotFoundException($e->getMessage());
-            }
-            $url = $credential->api_url.'/customers/'.strval($customerId).'/transactions/';
-            try {
-                $request = $this->api->post(
-                    $url,
-                    [
-                        'body' => json_encode($postParams),
-                        'headers' => [
-                            'Content-Type' => 'application/json;charset=utf-8',
-                            'Authorization' => 'Token '.$credential->authentication_token,
-                        ],
-                    ]
-                );
-                $transactionResult = json_decode((string) $request->getBody(), true);
-
-                $manufacturerTransaction = $this->steamaTransaction->newQuery()->create([
-                    'transaction_id' => $transactionResult['id'],
-                    'site_id' => $transactionResult['site_id'],
-                    'customer_id' => $transactionResult['customer_id'],
-                    'amount' => $transactionResult['amount'],
-                    'category' => $transactionResult['category'],
-                    'provider' => $transactionResult['provider'] ?? 'AP',
-                    'timestamp' => $transactionResult['timestamp'],
-                    'synchronization_status' => $transactionResult['synchronization_status'],
-                ]);
-
-                $transactionContainer->transaction->originalTransaction()->first()->update([
-                    'manufacturer_transaction_id' => $manufacturerTransaction->id,
-                    'manufacturer_transaction_type' => 'steama_transaction',
-                ]);
-            } catch (SteamaApiResponseException $e) {
-                Log::critical(
-                    'Steama API Transaction Failed',
-                    ['URL :' => $url, 'Body :' => json_encode($postParams), 'message :' => $e->getMessage()]
-                );
-                throw new SteamaApiResponseException($e->getMessage());
-            }
-
-            $token = $transactionResult['site_id'].'-'.
-                $transactionResult['category'].'-'.
-                $transactionResult['provider'].'-'.
-                $transactionResult['customer_id'];
-
-            return [
-                'token' => $token,
-                'token_type' => Token::TYPE_ENERGY,
-                'token_unit' => Token::UNIT_KWH,
-                'token_amount' => $transactionContainer->chargeAmount,
-            ];
         }
+        $amount = $transactionContainer->transaction->amount;
+        $postParams = [
+            'amount' => $amount,
+            'category' => 'PAY',
+        ];
+        try {
+            $credential = $this->credentialService->getCredentials();
+        } catch (ModelNotFoundException $e) {
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
+        }
+        $url = $credential->api_url.'/customers/'.strval($customerId).'/transactions/';
+        try {
+            $request = $this->api->post(
+                $url,
+                [
+                    'body' => json_encode($postParams),
+                    'headers' => [
+                        'Content-Type' => 'application/json;charset=utf-8',
+                        'Authorization' => 'Token '.$credential->authentication_token,
+                    ],
+                ]
+            );
+            $transactionResult = json_decode((string) $request->getBody(), true);
+
+            $manufacturerTransaction = $this->steamaTransaction->newQuery()->create([
+                'transaction_id' => $transactionResult['id'],
+                'site_id' => $transactionResult['site_id'],
+                'customer_id' => $transactionResult['customer_id'],
+                'amount' => $transactionResult['amount'],
+                'category' => $transactionResult['category'],
+                'provider' => $transactionResult['provider'] ?? 'AP',
+                'timestamp' => $transactionResult['timestamp'],
+                'synchronization_status' => $transactionResult['synchronization_status'],
+            ]);
+
+            $transactionContainer->transaction->originalTransaction()->first()->update([
+                'manufacturer_transaction_id' => $manufacturerTransaction->id,
+                'manufacturer_transaction_type' => 'steama_transaction',
+            ]);
+        } catch (SteamaApiResponseException $e) {
+            Log::critical(
+                'Steama API Transaction Failed',
+                ['URL :' => $url, 'Body :' => json_encode($postParams), 'message :' => $e->getMessage()]
+            );
+            throw new SteamaApiResponseException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $token = $transactionResult['site_id'].'-'.
+            $transactionResult['category'].'-'.
+            $transactionResult['provider'].'-'.
+            $transactionResult['customer_id'];
+
+        return [
+            'token' => $token,
+            'token_type' => Token::TYPE_ENERGY,
+            'token_unit' => Token::UNIT_KWH,
+            'token_amount' => $transactionContainer->chargeAmount,
+        ];
     }
 
     /**

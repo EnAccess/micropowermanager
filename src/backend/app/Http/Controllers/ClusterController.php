@@ -32,7 +32,7 @@ class ClusterController extends Controller {
      */
     public function show(int $clusterId, Request $request): ApiResource {
         $dateRange =
-            $this->clusterService->getDateRangeFromRequest($request->get('start_date'), $request->get('end_date'));
+            $this->clusterService->getDateRangeFromRequest($request->input('start_date'), $request->input('end_date'));
         $cluster = $this->clusterService->getById($clusterId);
 
         $clusterData = $this->clusterService->getClusterWithComputedData(

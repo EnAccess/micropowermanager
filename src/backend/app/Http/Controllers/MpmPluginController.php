@@ -10,7 +10,7 @@ class MpmPluginController extends Controller {
     public function __construct(private MpmPluginService $mpmPluginService) {}
 
     public function index(Request $request): ApiResource {
-        $limit = $request->get('limit');
+        $limit = $request->input('limit');
 
         return ApiResource::make($this->mpmPluginService->getAll($limit));
     }

@@ -171,7 +171,7 @@ class SmSyncSettingService {
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (ModelNotFoundException $exception) {
-            throw new ModelNotFoundException($exception->getMessage());
+            throw new ModelNotFoundException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 }

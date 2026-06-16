@@ -11,7 +11,7 @@ use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
-class PesapalTransactionServiceInitializePaymentTest extends TestCase {
+class PesapalTransactionServiceInitiatePaymentTest extends TestCase {
     use RefreshMultipleDatabases;
 
     /**
@@ -37,7 +37,7 @@ class PesapalTransactionServiceInitializePaymentTest extends TestCase {
             'merchant_reference' => 'mr_test_123',
         ]);
 
-        $result = $service->initializePayment(
+        $result = $service->initiatePayment(
             amount: 200.0,
             sender: '+254700000000',
             message: '42',
@@ -67,7 +67,7 @@ class PesapalTransactionServiceInitializePaymentTest extends TestCase {
             'merchant_reference' => 'mr_serial',
         ]);
 
-        $service->initializePayment(
+        $service->initiatePayment(
             amount: 150.0,
             sender: '+254700000001',
             message: 'SERIAL-XYZ',
@@ -94,7 +94,7 @@ class PesapalTransactionServiceInitializePaymentTest extends TestCase {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Pesapal initialization failed: API error: invalid consumer key');
 
-        $service->initializePayment(
+        $service->initiatePayment(
             amount: 100.0,
             sender: '-',
             message: '1',

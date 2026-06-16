@@ -54,11 +54,11 @@ class SmsController extends Controller {
     public function storeBulk(Request $request): void {
         $this->ensureSmsGatewayIsConfigured();
 
-        $type = $request->get('type');
-        $receivers = $request->get('receivers');
-        $message = $request->get('message');
-        $miniGrid = $request->get('miniGrid') ?? 0;
-        $senderId = $request->get('senderId');
+        $type = $request->input('type');
+        $receivers = $request->input('receivers');
+        $message = $request->input('message');
+        $miniGrid = $request->input('miniGrid') ?? 0;
+        $senderId = $request->input('senderId');
         if ($type === null) {
             return;
         }
@@ -171,8 +171,8 @@ class SmsController extends Controller {
     }
 
     public function store(StoreSmsRequest $request): ApiResource {
-        $sender = $request->get('sender');
-        $message = $request->get('message');
+        $sender = $request->input('sender');
+        $message = $request->input('message');
         $smsData = [
             'receiver' => $sender,
             'body' => $message,
@@ -194,18 +194,18 @@ class SmsController extends Controller {
     public function storeAndSend(SmsRequest $request): ApiResource {
         $this->ensureSmsGatewayIsConfigured();
 
-        $personId = $request->get('person_id');
-        $message = $request->get('message');
-        $senderId = $request->get('senderId');
+        $personId = $request->input('person_id');
+        $message = $request->input('message');
+        $senderId = $request->input('senderId');
         if ($personId !== null) {
             // get person primary phone; fall back to request phone if missing
             $phone = Address::where('owner_type', 'person')
                 ->where('owner_id', $personId)
                 ->where('is_primary', 1)
                 ->value('phone')
-                ?? $request->get('phone');
+                ?? $request->input('phone');
         } else {
-            $phone = $request->get('phone');
+            $phone = $request->input('phone');
         }
 
         if (!$phone) {

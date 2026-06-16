@@ -11,7 +11,7 @@ use Database\Factories\UserFactory;
 use Tests\TestCase;
 
 class SteamaCustomerServiceTest extends TestCase {
-    private const SITE_ID = 77;
+    private const int SITE_ID = 77;
 
     protected function setUp(): void {
         parent::setUp();
@@ -43,7 +43,7 @@ class SteamaCustomerServiceTest extends TestCase {
     }
 
     public function testCreateRelatedPersonStoresNullForAnUnparseablePhone(): void {
-        $person = app(SteamaCustomerService::class)->createRelatedPerson(
+        $person = resolve(SteamaCustomerService::class)->createRelatedPerson(
             $this->customerPayload(['telephone' => '+'])
         );
 
@@ -53,7 +53,7 @@ class SteamaCustomerServiceTest extends TestCase {
     }
 
     public function testCreateRelatedPersonNormalizesAValidPhoneToE164(): void {
-        $person = app(SteamaCustomerService::class)->createRelatedPerson(
+        $person = resolve(SteamaCustomerService::class)->createRelatedPerson(
             $this->customerPayload(['telephone' => '+255 712 345 678'])
         );
 

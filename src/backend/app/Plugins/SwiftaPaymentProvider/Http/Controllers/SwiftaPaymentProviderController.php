@@ -13,8 +13,8 @@ class SwiftaPaymentProviderController extends Controller {
     public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
 
     public function validation(SwiftaValidationRequest $request): Response {
-        $transactionId = $request->get('transactionId');
-        $customerName = $request->get('customerName');
+        $transactionId = $request->input('transactionId');
+        $customerName = $request->input('customerName');
         $data = collect([
             'success' => 1,
             'amount' => $request->input('amount'),
@@ -28,8 +28,8 @@ class SwiftaPaymentProviderController extends Controller {
     }
 
     public function transaction(SwiftaTransactionRequest $request): Response {
-        $transaction = $request->get('transaction');
-        $reference = $request->get('reference');
+        $transaction = $request->input('transaction');
+        $reference = $request->input('reference');
         $swiftaTransaction = $transaction->originalTransaction()->first();
         $updateData = [
             'status' => SwiftaTransaction::STATUS_PENDING,

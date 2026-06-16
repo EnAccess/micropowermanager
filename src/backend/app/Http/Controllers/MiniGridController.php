@@ -33,13 +33,13 @@ class MiniGridController extends Controller {
      * @bodyParam id int required
      */
     public function show(int $miniGridId, Request $request): ApiResource {
-        $relation = $request->get('relation');
+        $relation = $request->input('relation');
 
         if ((int) $relation === 1) {
             return ApiResource::make($this->miniGridService->getByIdWithLocation($miniGridId));
-        } else {
-            return ApiResource::make($this->miniGridService->getById($miniGridId));
         }
+
+        return ApiResource::make($this->miniGridService->getById($miniGridId));
     }
 
     public function store(StoreMiniGridRequest $request): ApiResource {

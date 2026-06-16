@@ -19,7 +19,7 @@ class OutstandingDebtsExportController {
     ) {}
 
     public function download(Request $request): StreamedResponse|JsonResponse {
-        $format = $request->get('format', 'excel');
+        $format = $request->input('format', 'excel');
 
         if ($format === 'json') {
             return $this->downloadJson($request);

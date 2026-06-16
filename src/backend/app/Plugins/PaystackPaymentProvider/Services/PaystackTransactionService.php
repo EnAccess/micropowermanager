@@ -14,17 +14,18 @@ use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\DeviceService;
 use App\Services\Interfaces\IBaseService;
-use App\Services\Interfaces\PaymentInitializer;
+use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<PaystackTransaction>
+ *
  * @implements IBaseService<PaystackTransaction>
  */
-class PaystackTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitializer {
+class PaystackTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -50,14 +51,14 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         return [
             'order_id' => $orderId,
             'reference_id' => $referenceId,
-            'serial_id' => $this->getSerialId(),
+            'serial_id' => $this->meterSerialNumber,
             'status' => PaystackTransaction::STATUS_REQUESTED,
             'currency' => 'NGN',
-            'customer_id' => $this->getCustomerId(),
-            'amount' => $this->getAmount(),
+            'customer_id' => $this->customerId,
+            'amount' => $this->amount,
             'metadata' => [
-                'serial_id' => $this->getSerialId(),
-                'customer_id' => $this->getCustomerId(),
+                'serial_id' => $this->meterSerialNumber,
+                'customer_id' => $this->customerId,
             ],
         ];
     }
@@ -83,13 +84,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
 
     public function getById(int $id): ?PaystackTransaction {
         return $this->paystackTransaction->newQuery()->find($id);
-    }
-
-    public function update($paystackTransaction, array $paystackTransactionData): PaystackTransaction {
-        $paystackTransaction->update($paystackTransactionData);
-        $paystackTransaction->fresh();
-
-        return $paystackTransaction;
     }
 
     public function create(array $paystackTransactionData): PaystackTransaction {
@@ -120,28 +114,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         }
     }
 
-    public function delete($paystackTransaction): ?bool {
-        return $paystackTransaction->delete();
-    }
-
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        $query = $this->paystackTransaction->newQuery();
-
-        if ($limit) {
-            return $query->paginate($limit);
-        }
-
-        return $this->paystackTransaction->newQuery()->get();
-    }
-
-    public function getPaystackTransaction(): PaystackTransaction {
-        return $this->getPaymentAggregatorTransaction();
-    }
-
-    public function getSerialId(): ?string {
-        return $this->getMeterSerialNumber();
-    }
-
     public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
         $id = $transaction->transaction->id;
         dispatch(new ProcessPayment($companyId, $id));
@@ -165,7 +137,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
      *
      * @return array{transaction: Transaction, provider_data: array<string, mixed>}
      */
-    public function initializePayment(
+    public function initiatePayment(
         float $amount,
         string $sender,
         string $message,
@@ -175,7 +147,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
     ): array {
         $deviceType = null;
         if ($serialId !== null) {
-            $device = app(DeviceService::class)->getBySerialNumber($serialId);
+            $device = resolve(DeviceService::class)->getBySerialNumber($serialId);
             $deviceType = $device?->device_type;
         }
 

@@ -15,6 +15,6 @@ class SteamaBitharvesterService {
         $result = $this->steamaApi->get($this->rootUrl);
         $bitHarvesters = $result['results'];
 
-        return array_values(array_filter($bitHarvesters, fn (array $obj): bool => $obj['site'] === $siteId))[0];
+        return array_first(array_filter($bitHarvesters, fn (array $obj): bool => $obj['site'] === $siteId));
     }
 }

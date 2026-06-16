@@ -24,7 +24,7 @@ class DatabaseProxy extends BaseModelCentral {
     public const COL_DATABASE_CONNECTION = 'database_connection';
     public const COL_COMPANY_ID = 'fk_company_id';
     public const COL_EMAIL = 'email';
-    private const CACHE_KEY_PREFIX = 'database_proxy';
+    private const string CACHE_KEY_PREFIX = 'database_proxy';
     private const CACHE_TTL = 3600 * 24; // 24 hours in seconds
 
     protected static function booted(): void {

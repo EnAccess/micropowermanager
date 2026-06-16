@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Services\ApiCompanyResolverService;
-use App\Services\ApiResolvers\Data\ApiResolverMap;
+use App\Services\ApiResolvers\ThirdPartyApiResolverService;
 use App\Services\DatabaseProxyManagerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,67 +15,78 @@ use Tymon\JWTAuth\JWT;
 use Tymon\JWTAuth\JWTGuard;
 
 /**
- * The goal is to have the database connection on each incomming http request.
- * This will save querying in each model the correct database connection string.
+ * Resolves the company that owns each incoming request and binds its database
+ * connection for the duration of the request, so models don't have to look up
+ * the connection themselves.
+ *
+ * Each request type identifies its company a different way; handle() dispatches
+ * to the matching strategy in order, falling through to the bearer-token
+ * resolver that serves the vast majority of (web client) routes.
  */
 class UserDefaultDatabaseConnectionMiddleware {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManager,
-        private ApiCompanyResolverService $apiCompanyResolverService,
-        private ApiResolverMap $apiResolverMap,
+        private ThirdPartyApiResolverService $thirdPartyApiResolver,
         private JWT $jwt,
     ) {}
 
     public function handle(Request $request, \Closure $next): SymfonyResponse {
-        // skip middleware for excluded routes
+        $path = $request->path();
+
         if ($this->isExcludedRoute($request)) {
             return $next($request);
         }
 
-        // skip middleware for third party api requests
-        if ($this->resolveThirdPartyApi($request->path())) {
-            return $this->resolveRoute($request, $next);
+        // Third-party APIs are matched by path prefix and need not be Laravel routes.
+        if ($this->thirdPartyApiResolver->matches($path)) {
+            return $this->handleForCompany(
+                $request,
+                $next,
+                $this->thirdPartyApiResolver->resolve($request)
+            );
         }
 
-        // Attempt to match against known Laravel routes
-        try {
-            Route::getRoutes()->match($request);
-        } catch (NotFoundHttpException) {
-            // Path doesn't exist in Laravel routes or third-party API map
+        // Every remaining endpoint must be a known Laravel route.
+        if (!$this->routeExists($request)) {
             return response()->json(['message' => 'Not found'], 404);
         }
 
-        return $this->resolveRoute($request, $next);
-    }
-
-    private function resolveRoute(Request $request, \Closure $next): SymfonyResponse {
-        // unauthenticated endpoints that identify the company via email in the body
-        if (in_array($request->path(), [
-            'api/auth/login',
-            'api/app/login',
-            'api/app/reset-password',
-        ], true)) {
-            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
-            $companyId = $databaseProxy->getCompanyId();
-        } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login
-            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
-            $companyId = $databaseProxy->getCompanyId();
-        } elseif ($this->isAgentApp($request->path())) { // agent app authenticated user requests
-            /** @var JWTGuard */
-            $guard = auth('agent_api');
-            $companyId = $guard->payload()->get('companyId');
-            if (!is_numeric($companyId)) {
-                throw new \Exception('JWT is not provided');
-            }
-        } elseif ($this->resolveThirdPartyApi($request->path())) {
-            $companyId = $this->apiCompanyResolverService->resolve($request);
-        } else { // web client authenticated user requests
-            $companyId = $this->resolveCompanyId($request);
-            if (!is_numeric($companyId)) {
-                throw new \Exception('JWT is not provided');
-            }
+        // Web client login is unauthenticated; the company comes from the email in the body.
+        if ($this->isWebLogin($path)) {
+            return $this->handleForCompany(
+                $request,
+                $next,
+                $this->companyIdFromEmail($request)
+            );
         }
 
+        // Agent app endpoints carry the company in the agent bearer token, except the
+        // unauthenticated login / reset endpoints which identify it by email.
+        if ($this->isAgentApp($path)) {
+            if ($this->isAgentAppLoginOrReset($path)) {
+                return $this->handleForCompany(
+                    $request,
+                    $next,
+                    $this->companyIdFromEmail($request)
+                );
+            }
+
+            return $this->handleForCompany(
+                $request,
+                $next,
+                $this->companyIdFromAgentToken()
+            );
+        }
+
+        // Standard web client: company comes from the bearer token.
+        return $this->handleForCompany(
+            $request,
+            $next,
+            $this->companyIdFromWebClientToken($request)
+        );
+    }
+
+    private function handleForCompany(Request $request, \Closure $next, int $companyId): SymfonyResponse {
         return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request, $companyId) {
             $request->attributes->add(['companyId' => $companyId]);
 
@@ -84,38 +94,78 @@ class UserDefaultDatabaseConnectionMiddleware {
         });
     }
 
+    private function isWebLogin(string $path): bool {
+        return $path === 'api/auth/login';
+    }
+
     /**
-     * Resolve the companyId claim from the bearer token for web client requests.
-     *
+     * Agent app login / reset are unauthenticated, so they identify the company
+     * via the email in the request body rather than the agent bearer token.
+     * Only called once the path is known to be an agent app endpoint.
+     */
+    private function isAgentAppLoginOrReset(string $path): bool {
+        return $path === 'api/app/reset-password' || Str::contains($path, 'login');
+    }
+
+    private function companyIdFromEmail(Request $request): int {
+        return $this->databaseProxyManager->findByEmail($request->input('email'))->getCompanyId();
+    }
+
+    private function companyIdFromAgentToken(): int {
+        /** @var JWTGuard $guard */
+        $guard = auth('agent_api');
+
+        return $this->companyIdFromGuard($guard);
+    }
+
+    private function companyIdFromWebClientToken(Request $request): int {
+        if ($request->path() === 'api/auth/refresh') {
+            return $this->companyIdFromRefreshableToken();
+        }
+
+        /** @var JWTGuard $guard */
+        $guard = auth('api');
+
+        return $this->companyIdFromGuard($guard);
+    }
+
+    /**
      * The /api/auth/refresh endpoint must accept expired-but-refreshable tokens,
      * so we decode under tymon's refresh flow there -- signature and refresh_ttl
      * are still enforced, only the exp check is relaxed.
      */
-    private function resolveCompanyId(Request $request): mixed {
-        if ($request->path() === 'api/auth/refresh') {
-            $manager = $this->jwt->manager();
-            $manager->setRefreshFlow(true);
-            try {
-                return $this->jwt->parseToken()->getPayload()->get('companyId');
-            } finally {
-                $manager->setRefreshFlow(false);
-            }
+    private function companyIdFromRefreshableToken(): int {
+        $manager = $this->jwt->manager();
+        $manager->setRefreshFlow(true);
+        try {
+            $companyId = $this->jwt->parseToken()->getPayload()->get('companyId');
+        } finally {
+            $manager->setRefreshFlow(false);
         }
 
-        /** @var JWTGuard */
-        $guard = auth('api');
-
-        return $guard->payload()->get('companyId');
+        return $this->requireNumericCompanyId($companyId);
     }
 
-    private function resolveThirdPartyApi(string $requestPath): bool {
-        foreach ($this->apiResolverMap->getResolvableApis() as $apiPath) {
-            if (Str::startsWith(Str::lower($requestPath), Str::lower($apiPath))) {
-                return true;
-            }
+    private function companyIdFromGuard(JWTGuard $guard): int {
+        return $this->requireNumericCompanyId($guard->payload()->get('companyId'));
+    }
+
+    private function requireNumericCompanyId(mixed $companyId): int {
+        if (!is_numeric($companyId)) {
+            throw new \Exception('JWT is not provided');
         }
 
-        return false;
+        return (int) $companyId;
+    }
+
+    private function routeExists(Request $request): bool {
+        try {
+            Route::getRoutes()->match($request);
+
+            return true;
+        } catch (NotFoundHttpException) {
+            return false;
+        }
     }
 
     private function isAgentApp(string $path): bool {
@@ -147,7 +197,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         }
 
         if ($method === 'POST') {
-            return $path == 'api/companies';
+            return $path === 'api/companies';
         }
 
         return false;

@@ -20,8 +20,6 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct(
         private Sms $sms,

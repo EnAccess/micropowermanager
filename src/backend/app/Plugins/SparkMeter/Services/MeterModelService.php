@@ -112,7 +112,7 @@ class MeterModelService implements ISynchronizeService {
                 if ($returnData) {
                     $returnArray[] = ['result' => false];
                 }
-                throw new SparkAPIResponseException($e->getMessage());
+                throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
             }
             // @phpstan-ignore argument.templateType,argument.templateType
             $sparkMeterModelsCollection = collect($sparkMeterModels['models']);
@@ -179,7 +179,7 @@ class MeterModelService implements ISynchronizeService {
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
         } catch (\Exception $e) {
             Log::critical('Spark meter meter-models sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
-            throw new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
         // @phpstan-ignore argument.templateType,argument.templateType
         $sparkMeterModelsCollection = collect($sparkMeterModels['models']);
@@ -209,9 +209,9 @@ class MeterModelService implements ISynchronizeService {
 
         if ($meterModelSyncStatus) {
             return ['result' => false, 'message' => 'meter models are not updated for site '.$siteId];
-        } else {
-            return ['result' => true, 'message' => 'Records are updated'];
         }
+
+        return ['result' => true, 'message' => 'Records are updated'];
     }
 
     /**

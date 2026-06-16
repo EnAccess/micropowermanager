@@ -221,7 +221,7 @@ class SteamaCustomerService implements ISynchronizeService {
 
             return $stmCustomer->fresh();
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException($e->getMessage());
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -239,7 +239,7 @@ class SteamaCustomerService implements ISynchronizeService {
 
             return $stmCustomer->fresh();
         } catch (ModelNotFoundException $e) {
-            throw new SteamaApiResponseException($e->getMessage());
+            throw new SteamaApiResponseException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

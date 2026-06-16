@@ -98,7 +98,7 @@ class KelinSyncSettingService {
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (\Exception $exception) {
-            throw new ModelNotFoundException($exception->getMessage());
+            throw new ModelNotFoundException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 }

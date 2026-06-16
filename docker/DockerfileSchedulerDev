@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.5-cli
 
 # install basic apt packages
 RUN apt-get update && apt-get install -y \
@@ -24,14 +24,13 @@ RUN docker-php-ext-install \
     bcmath \
     exif \
     gd \
-    opcache \
     pcntl \
     pdo \
     pdo_mysql \
     zip
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-configure pcntl --enable-pcntl
-RUN pecl install redis-5.3.7 && docker-php-ext-enable redis
+RUN pecl install redis-6.3.0 && docker-php-ext-enable redis
 
 # install composer
 RUN EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')" \

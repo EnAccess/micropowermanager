@@ -36,21 +36,21 @@ class SyncSteamaData extends AbstractJob {
      * @return array<int, object>
      */
     public function middleware(): array {
-        return [(new WithoutOverlapping($this->actionName.'-'.$this->companyId))->dontRelease()->expireAfter($this->timeout)];
+        return [new WithoutOverlapping($this->actionName.'-'.$this->companyId)->dontRelease()->expireAfter($this->timeout)];
     }
 
     public function executeJob(): void {
-        $syncActionService = app(SteamaSyncActionService::class);
-        $syncSetting = app(SteamaSyncSettingService::class)->getSyncSettingsByActionName($this->actionName);
+        $syncActionService = resolve(SteamaSyncActionService::class);
+        $syncSetting = resolve(SteamaSyncSettingService::class)->getSyncSettingsByActionName($this->actionName);
         $syncAction = $syncActionService->getSyncActionBySynSettingId($syncSetting->id);
 
         try {
             match ($this->actionName) {
-                'Sites' => app(SteamaSiteService::class)->sync(),
-                'Customers' => app(SteamaCustomerService::class)->sync(),
-                'Meters' => app(SteamaMeterService::class)->sync(),
-                'Agents' => app(SteamaAgentService::class)->sync(),
-                'Transactions' => app(SteamaTransactionsService::class)->sync(),
+                'Sites' => resolve(SteamaSiteService::class)->sync(),
+                'Customers' => resolve(SteamaCustomerService::class)->sync(),
+                'Meters' => resolve(SteamaMeterService::class)->sync(),
+                'Agents' => resolve(SteamaAgentService::class)->sync(),
+                'Transactions' => resolve(SteamaTransactionsService::class)->sync(),
                 default => throw new \InvalidArgumentException("Unknown Steama sync action: {$this->actionName}"),
             };
             if ($syncAction) {

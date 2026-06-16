@@ -6,6 +6,7 @@ use App\DTO\ClusterDashboardData;
 use App\Exceptions\EntityHasChildrenException;
 use App\Models\Cluster;
 use App\Services\Interfaces\IBaseService;
+use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,9 +15,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Cluster>
  */
 class ClusterService implements IBaseService {
+    /** @use HasCrudOperations<Cluster> */
+    use HasCrudOperations;
+
     public function __construct(
         private Cluster $cluster,
     ) {}
+
+    protected function crudModel(): Cluster {
+        return $this->cluster;
+    }
 
     /**
      * Creates a cluster dashboard data container with computed fields.
@@ -67,13 +75,6 @@ class ClusterService implements IBaseService {
 
     public function getById(int $clusterId): Cluster {
         return $this->cluster->newQuery()->with(['miniGrids.location', 'cities'])->find($clusterId);
-    }
-
-    /**
-     * @param array<string, mixed> $clusterData
-     */
-    public function create(array $clusterData): Cluster {
-        return $this->cluster->newQuery()->create($clusterData);
     }
 
     /**

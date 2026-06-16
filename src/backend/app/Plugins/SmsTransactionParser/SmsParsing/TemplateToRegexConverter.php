@@ -10,14 +10,14 @@ class TemplateToRegexConverter {
      *
      * @var array<string, string>
      */
-    private const VARIABLE_PATTERNS = [
+    private const array VARIABLE_PATTERNS = [
         'transaction_ref' => '[A-Za-z0-9.]+',
         'amount' => '[\d,]+(?:\.\d{1,2})?',
         'sender_phone' => '[\d+\s\-]+',
         'device_serial' => '[A-Za-z0-9]+',
     ];
 
-    private const WILDCARD_PATTERN = '[\s\S]*?';
+    private const string WILDCARD_PATTERN = '[\s\S]*?';
 
     /**
      * Convert a human-readable template with [variable] placeholders

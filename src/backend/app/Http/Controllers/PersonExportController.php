@@ -16,7 +16,7 @@ class PersonExportController extends Controller {
     ) {}
 
     public function download(Request $request): StreamedResponse|JsonResponse {
-        $format = $request->get('format', 'excel');
+        $format = $request->input('format', 'excel');
 
         if ($format === 'csv') {
             return $this->downloadCsv($request);
@@ -30,10 +30,10 @@ class PersonExportController extends Controller {
     }
 
     public function downloadExcel(Request $request): StreamedResponse {
-        $miniGridName = $request->get('miniGrid');
-        $villageName = $request->get('village');
-        $deviceType = $request->get('deviceType');
-        $isActive = $request->get('isActive');
+        $miniGridName = $request->input('miniGrid');
+        $villageName = $request->input('village');
+        $deviceType = $request->input('deviceType');
+        $isActive = $request->input('isActive');
         $isActive = $isActive === 'true' ? true : ($isActive === 'false' ? false : null);
 
         $people = $this->personService->getAllForExport($miniGridName, $villageName, $deviceType, $isActive);
@@ -47,10 +47,10 @@ class PersonExportController extends Controller {
     }
 
     public function downloadCsv(Request $request): StreamedResponse {
-        $miniGridName = $request->get('miniGrid');
-        $villageName = $request->get('village');
-        $deviceType = $request->get('deviceType');
-        $isActive = $request->get('isActive');
+        $miniGridName = $request->input('miniGrid');
+        $villageName = $request->input('village');
+        $deviceType = $request->input('deviceType');
+        $isActive = $request->input('isActive');
 
         $isActive = $isActive === 'true' ? true : ($isActive === 'false' ? false : null);
 
@@ -65,10 +65,10 @@ class PersonExportController extends Controller {
     }
 
     public function downloadJson(Request $request): JsonResponse {
-        $miniGridName = $request->get('miniGrid');
-        $villageName = $request->get('village');
-        $deviceType = $request->get('deviceType');
-        $isActive = $request->get('isActive');
+        $miniGridName = $request->input('miniGrid');
+        $villageName = $request->input('village');
+        $deviceType = $request->input('deviceType');
+        $isActive = $request->input('isActive');
 
         $isActive = $isActive === 'true' ? true : ($isActive === 'false' ? false : null);
 
