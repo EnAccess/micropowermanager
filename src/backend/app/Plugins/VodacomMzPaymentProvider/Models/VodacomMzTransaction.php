@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
  * @property int         $id
  * @property string      $serialNumber
  * @property float       $amount
- * @property string      $payerPhoneNumber
+ * @property string      $payerPhoneNumber stored in E.164 format, e.g. "+258848495010"
  * @property string      $referenceId
  * @property string      $status
  * @property Carbon|null $created_at

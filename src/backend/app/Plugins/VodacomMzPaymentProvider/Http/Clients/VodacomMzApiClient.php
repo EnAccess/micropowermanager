@@ -24,7 +24,8 @@ class VodacomMzApiClient {
      * @param string $transactionReference the reference of the transaction for the customer or
      *                                     business making the transaction, e.g. a smartcard number
      *                                     for a TV subscription or a utility bill reference number
-     * @param string $customerMsisdn       the payer's phone number in international format, e.g. "258848495010"
+     * @param string $customerMsisdn       the payer's phone number in E.164 format, e.g. "+258848495010";
+     *                                     it is converted to the bare MSISDN IPG expects here
      * @param float  $amount               the amount to charge the payer
      * @param string $thirdPartyReference  the unique reference of the third party system; used to
      *                                     track the transaction when querying its status
@@ -41,11 +42,20 @@ class VodacomMzApiClient {
 
         return $this->send($credential, 'POST', 18352, '/ipg/v1x/c2bPayment/singleStage/', [
             'input_TransactionReference' => $transactionReference,
-            'input_CustomerMSISDN' => $customerMsisdn,
-            'input_Amount' => (string) $amount,
+            'input_CustomerMSISDN' => $this->toMsisdn($customerMsisdn),
+            'input_Amount' => $amount,
             'input_ThirdPartyReference' => $thirdPartyReference,
-            'input_ServiceProviderCode' => $credential->service_provider_code,
+            'input_ServiceProviderCode' => $credential->getServiceProviderCode(),
         ]);
+    }
+
+    /**
+     * IPG expects the MSISDN as bare international digits with no leading "+", e.g. "258848495010".
+     * Everywhere else in MPM phone numbers are kept in E.164 ("+258848495010"); this is the single
+     * point where that canonical form is adapted to what Vodacom requires.
+     */
+    private function toMsisdn(string $e164PhoneNumber): string {
+        return ltrim(phone($e164PhoneNumber)->formatE164(), '+');
     }
 
     /**
@@ -57,7 +67,7 @@ class VodacomMzApiClient {
         return $this->send($credential, 'GET', 18353, '/ipg/v1x/queryTransactionStatus/', [
             'input_QueryReference' => $queryReference,
             'input_ThirdPartyReference' => $thirdPartyReference,
-            'input_ServiceProviderCode' => $credential->service_provider_code,
+            'input_ServiceProviderCode' => $credential->getServiceProviderCode(),
         ]);
     }
 

@@ -11,7 +11,7 @@ use App\Plugins\VodacomMzPaymentProvider\Models\VodacomMzTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\PaymentInitiator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @extends AbstractPaymentAggregatorTransactionService<VodacomMzTransaction>
@@ -115,7 +115,7 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
             );
 
             if (($response['output_ResponseCode'] ?? null) !== VodacomMzApiClient::RESPONSE_SUCCESS) {
-                throw new VodacomMzApiResponseException('Vodacom MZ c2b push was rejected: '.($response['output_ResponseDesc'] ?? 'unknown error'));
+                throw new VodacomMzApiResponseException('Vodacom MZ c2b push was rejected: '.($response['output_ResponseCode'] ?? 'unknown code').': '.($response['output_ResponseDesc'] ?? 'unknown error'));
             }
 
             DB::connection('tenant')->commit();
@@ -134,18 +134,15 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
      * Builds the unique reference IPG uses to identify this request (input_ThirdPartyReference),
      * which is also how we later reconcile the transaction via queryTransactionStatus.
      *
-     * The format prefixes the device serial for easy human mapping, follows it with a sortable
-     * timestamp, and ends with a short random suffix to guarantee uniqueness across requests that
-     * share a serial and second.
+     * IPG rejects non-alphanumeric characters (including "-" and "_"), so the serial — which may be
+     * a UUID containing dashes — is stripped down to alphanumerics and a unix timestamp is appended.
+     * The serial keeps it human-mappable; the timestamp keeps it ordered and unique per second.
      *
-     * @return string a reference such as "MTR12345-20260616143022-A4F1"
+     * @return string a reference such as "MTR123451718553600"
      */
     private function generateThirdPartyReference(?string $serialNumber): string {
-        return sprintf(
-            '%s-%s-%s',
-            $serialNumber ?? 'NA',
-            now()->format('YmdHis'),
-            Str::upper(Str::random(4))
-        );
+        $cleanSerial = preg_replace('/[^A-Za-z0-9]/', '', $serialNumber ?? 'NA');
+
+        return $cleanSerial.now()->timestamp;
     }
 }

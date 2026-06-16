@@ -73,25 +73,37 @@
                 </md-icon>
               </div>
 
-              <md-field
-                :class="{
-                  'md-invalid': errors.has(
-                    'Credential-Form.serviceProviderCode',
-                  ),
-                }"
-              >
-                <label for="serviceProviderCode">Service Provider Code</label>
-                <md-input
-                  id="serviceProviderCode"
-                  name="serviceProviderCode"
-                  v-model="credentialService.credential.serviceProviderCode"
-                  v-validate="'required|min:3'"
-                  placeholder="Service Provider Code (e.g. 171717)"
-                />
-                <span class="md-error">
-                  {{ errors.first("Credential-Form.serviceProviderCode") }}
-                </span>
-              </md-field>
+              <div class="field-with-help">
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has(
+                      'Credential-Form.serviceProviderCode',
+                    ),
+                  }"
+                >
+                  <label for="serviceProviderCode">Service Provider Code</label>
+                  <md-input
+                    id="serviceProviderCode"
+                    name="serviceProviderCode"
+                    v-model="credentialService.credential.serviceProviderCode"
+                    v-validate="'required|min:3'"
+                    placeholder="Service Provider Code (e.g. 171717)"
+                  />
+                  <span class="md-error">
+                    {{ errors.first("Credential-Form.serviceProviderCode") }}
+                  </span>
+                </md-field>
+                <md-icon
+                  v-if="!credentialService.credential.live"
+                  class="field-help"
+                >
+                  info_outline
+                  <md-tooltip md-direction="top">
+                    In the Sandbox environment this code is ignored — the test
+                    short code 171717 is always used instead.
+                  </md-tooltip>
+                </md-icon>
+              </div>
 
               <md-field>
                 <label for="environment">Environment</label>

@@ -19,6 +19,9 @@ class VodacomMzCredential extends BaseModel {
     private const string HOST_LIVE = 'api.vm.co.mz';
     private const string HOST_SANDBOX = 'api.sandbox.vm.co.mz';
 
+    /** The sandbox only accepts this fixed service provider code, regardless of the configured one. */
+    private const string SERVICE_PROVIDER_CODE_SANDBOX = '171717';
+
     protected $table = 'vodacom_mz_credentials';
 
     /** @var array<string, string> */
@@ -34,6 +37,14 @@ class VodacomMzCredential extends BaseModel {
         $host = $this->live ? self::HOST_LIVE : self::HOST_SANDBOX;
 
         return 'https://'.$host.':'.$port.$path;
+    }
+
+    /**
+     * The service provider code to send to IPG. In sandbox the configured code is ignored in
+     * favour of the fixed test code the sandbox requires; live uses the configured code as-is.
+     */
+    public function getServiceProviderCode(): ?string {
+        return $this->live ? $this->service_provider_code : self::SERVICE_PROVIDER_CODE_SANDBOX;
     }
 
     /**
