@@ -21,8 +21,8 @@ class VodacomTransactionResource extends JsonResource {
         // ];
 
         return [
-            'response_code' => 'asdf',
-            'response_desc' => $this->title,
+            'response_code' => 'dummy_code',
+            'response_desc' => 'dummy_desc',
             'simulation_id' => $this->id,
             'payment_details' => [
                 'beneficiary' => 'user_id',

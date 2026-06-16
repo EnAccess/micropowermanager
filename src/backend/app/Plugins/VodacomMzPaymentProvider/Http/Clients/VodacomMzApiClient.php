@@ -21,6 +21,14 @@ class VodacomMzApiClient {
     /**
      * Customer-to-business single-stage payment (pushes a PIN prompt to the payer).
      *
+     * @param string $transactionReference the reference of the transaction for the customer or
+     *                                     business making the transaction, e.g. a smartcard number
+     *                                     for a TV subscription or a utility bill reference number
+     * @param string $customerMsisdn       the payer's phone number in international format, e.g. "258848495010"
+     * @param float  $amount               the amount to charge the payer
+     * @param string $thirdPartyReference  the unique reference of the third party system; used to
+     *                                     track the transaction when querying its status
+     *
      * @return array<string, mixed>
      */
     public function c2bPayment(
@@ -76,7 +84,7 @@ class VodacomMzApiClient {
                 'url' => $url,
                 'message' => $exception->getMessage(),
             ]);
-            throw new VodacomMzApiResponseException($exception->getMessage());
+            throw new VodacomMzApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return json_decode((string) $response->getBody(), true) ?? [];

@@ -9,7 +9,7 @@ class VodacomMzCredentialService {
     use EncryptsCredentials;
 
     /** Fields stored encrypted at rest. */
-    private const ENCRYPTED_FIELDS = ['api_key'];
+    private const array ENCRYPTED_FIELDS = ['api_key'];
 
     public function __construct(
         private VodacomMzCredential $credential,

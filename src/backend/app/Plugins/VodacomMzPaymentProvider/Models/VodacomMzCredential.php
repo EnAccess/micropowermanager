@@ -16,8 +16,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 class VodacomMzCredential extends BaseModel {
-    private const HOST_LIVE = 'api.vm.co.mz';
-    private const HOST_SANDBOX = 'api.sandbox.vm.co.mz';
+    private const string HOST_LIVE = 'api.vm.co.mz';
+    private const string HOST_SANDBOX = 'api.sandbox.vm.co.mz';
 
     protected $table = 'vodacom_mz_credentials';
 
