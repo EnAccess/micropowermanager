@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 
@@ -15,8 +16,7 @@ require __DIR__.'/../vendor/autoload.php';
 |
 | Abort otherwise to prevent it running against a development or live database.
 */
-
-/** @var Illuminate\Foundation\Application $app */
+/** @var Application $app */
 $app = require __DIR__.'/../bootstrap/app.php';
 $app->bootstrapWith([
     LoadEnvironmentVariables::class,
