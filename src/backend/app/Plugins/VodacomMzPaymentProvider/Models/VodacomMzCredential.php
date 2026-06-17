@@ -30,7 +30,7 @@ class VodacomMzCredential extends BaseModel {
     ];
 
     /**
-     * Build a full IPG endpoint URL. Only the host changes between environments; the
+     * Build a full OpenAPI endpoint URL. Only the host changes between environments; the
      * ports observed so far are identical for sandbox and live.
      */
     public function buildUri(int $port, string $path): string {
@@ -40,7 +40,7 @@ class VodacomMzCredential extends BaseModel {
     }
 
     /**
-     * The service provider code to send to IPG. In sandbox the configured code is ignored in
+     * The service provider code to send to the OpenAPI. In sandbox the configured code is ignored in
      * favour of the fixed test code the sandbox requires; live uses the configured code as-is.
      */
     public function getServiceProviderCode(): ?string {
@@ -48,7 +48,7 @@ class VodacomMzCredential extends BaseModel {
     }
 
     /**
-     * Build the IPG Authorization bearer: the API key RSA-encrypted with the provider
+     * Build the OpenAPI Authorization bearer: the API key RSA-encrypted with the provider
      * public key (PKCS#1 v1.5) and base64-encoded. The public key is stored as bare
      * base64, so it is wrapped in a PEM envelope before use.
      */

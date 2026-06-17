@@ -82,10 +82,10 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
     ): array {
         $thirdPartyReference = $this->generateThirdPartyReference($serialId);
 
-        // c2bPayment is single-stage and synchronous: IPG only responds after the payer has
-        // entered their M-Pesa PIN and the payment has been processed. The transaction is
-        // therefore persisted as REQUESTED up front, so a timeout or a rejected push still
-        // leaves a record that can be reconciled later via queryTransactionStatus.
+        // The C2B Payment endpoint is single-stage and synchronous: the OpenAPI only responds after
+        // the payer has entered their M-Pesa PIN and the payment has been processed. The transaction
+        // is therefore persisted as REQUESTED up front, so a timeout or a rejected push still leaves
+        // a record that can be reconciled later via the Query Transaction Status endpoint.
         $vodacomMzTransaction = $this->vodacomMzTransaction->newQuery()->create([
             'serialNumber' => $serialId,
             'amount' => $amount,
@@ -117,7 +117,7 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
         ]);
 
         if (!$succeeded) {
-            throw new VodacomMzApiResponseException('Vodacom MZ c2b push was rejected: '.($response['output_ResponseCode'] ?? 'unknown code').': '.($response['output_ResponseDesc'] ?? 'unknown error'));
+            throw new VodacomMzApiResponseException('Vodacom MZ C2B payment was rejected: '.($response['output_ResponseCode'] ?? 'unknown code').': '.($response['output_ResponseDesc'] ?? 'unknown error'));
         }
 
         return [
@@ -128,10 +128,10 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
     }
 
     /**
-     * Builds the unique reference IPG uses to identify this request (input_ThirdPartyReference),
-     * which is also how we later reconcile the transaction via queryTransactionStatus.
+     * Builds the unique reference the OpenAPI uses to identify this request (input_ThirdPartyReference);
+     * also how we later reconcile the transaction via the Query Transaction Status endpoint.
      *
-     * IPG rejects non-alphanumeric characters (including "-" and "_"), so the serial — which may be
+     * The OpenAPI rejects non-alphanumeric characters (including "-" and "_"), so the serial — which may be
      * a UUID containing dashes — is stripped down to alphanumerics and a unix timestamp is appended.
      * The serial keeps it human-mappable; the timestamp keeps it ordered and unique per second.
      *

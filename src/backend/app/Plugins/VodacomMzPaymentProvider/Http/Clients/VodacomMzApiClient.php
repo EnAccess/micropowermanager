@@ -9,14 +9,19 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Client for Vodacom Mozambique's M-Pesa OpenAPI, the API MPM uses to initiate transactions.
+ * Each public method maps to one OpenAPI endpoint: C2B Payment and Query Transaction Status.
+ */
 class VodacomMzApiClient {
-    /** IPG returns this in `output_ResponseCode` when a request is accepted. */
+    /** The OpenAPI returns this in `output_ResponseCode` when a request is accepted. */
     public const RESPONSE_SUCCESS = 'INS-0';
 
     /**
-     * c2bPayment is single-stage and synchronous: IPG holds the connection open while the payer is
-     * prompted for their M-Pesa PIN and the payment is processed, only then responding. The request
-     * timeout must cover that whole interaction, so it is far longer than for other endpoints.
+     * The C2B Payment endpoint is single-stage and synchronous: the OpenAPI holds the connection
+     * open while the payer is prompted for their M-Pesa PIN and the payment is processed, only then
+     * responding. The request timeout must cover that whole interaction, so it is far longer than
+     * for other endpoints.
      */
     private const int C2B_TIMEOUT_SECONDS = 120;
 
@@ -30,13 +35,14 @@ class VodacomMzApiClient {
     ) {}
 
     /**
-     * Customer-to-business single-stage payment (pushes a PIN prompt to the payer).
+     * C2B Payment endpoint: single-stage customer-to-business push that prompts the payer for their
+     * M-Pesa PIN.
      *
      * @param string $transactionReference the reference of the transaction for the customer or
      *                                     business making the transaction, e.g. a smartcard number
      *                                     for a TV subscription or a utility bill reference number
      * @param string $customerMsisdn       the payer's phone number in E.164 format, e.g. "+258848495010";
-     *                                     it is converted to the bare MSISDN IPG expects here
+     *                                     it is converted to the bare MSISDN the OpenAPI expects here
      * @param float  $amount               the amount to charge the payer
      * @param string $thirdPartyReference  the unique reference of the third party system; used to
      *                                     track the transaction when querying its status
@@ -61,15 +67,18 @@ class VodacomMzApiClient {
     }
 
     /**
-     * IPG expects the MSISDN as bare international digits with no leading "+", e.g. "258848495010".
-     * Everywhere else in MPM phone numbers are kept in E.164 ("+258848495010"); this is the single
-     * point where that canonical form is adapted to what Vodacom requires.
+     * The OpenAPI expects the MSISDN as bare international digits with no leading "+", e.g.
+     * "258848495010". Everywhere else in MPM phone numbers are kept in E.164 ("+258848495010"); this
+     * is the single point where that canonical form is adapted to what Vodacom requires.
      */
     private function toMsisdn(string $e164PhoneNumber): string {
         return ltrim(phone($e164PhoneNumber)->formatE164(), '+');
     }
 
     /**
+     * Query Transaction Status endpoint: fetches the current state of a previously initiated C2B
+     * payment, used to reconcile transactions left unconfirmed by the synchronous push.
+     *
      * @return array<string, mixed>
      */
     public function queryTransactionStatus(string $queryReference, string $thirdPartyReference): array {
@@ -92,7 +101,7 @@ class VodacomMzApiClient {
         $payloadKey = $method === 'GET' ? 'query' : 'json';
 
         try {
-            // IPG returns business failures (e.g. INS-2006 insufficient balance) as a 4xx
+            // The OpenAPI returns business failures (e.g. INS-2006 insufficient balance) as a 4xx
             // with the detail in the body, so http_errors stays off and the decoded body
             // is returned as-is for the caller to inspect via `output_ResponseCode`.
             $response = $this->httpClient->request($method, $url, [
