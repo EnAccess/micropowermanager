@@ -5,43 +5,55 @@ order: 38
 <p align="center">
   <a href="https://www.vm.co.mz/m-pesa">
     <img
-      src="https://developer.mpesa.vm.co.mz/static/banner_logo.svg"
+      src="./images/vodacom-mz-logo.png"
       alt="Vodacom MZ"
-      width="160"
+      width="320"
     >
   </a>
 </p>
 
-# Vodacom MZ
+# Vodacom MZ / M-Pesa
 
-Vodacom MZ M-Pesa suppors two fundamentally different way to programmatically interact with transactions.
+[Vodacom MZ/M-Pesa](https://www.vm.co.mz/m-pesa) offers two distinct APIs for interacting with transactions:
 
-MPM-initiated transactions
+- M-Pesa OpenAPI (MPM-initiated transactions)
+- M-Pesa Generic C2B API (customer-initiated transactions)
 
-M-Pesa Generic C2B API Integration (customer-initiated transactions)
+## M-Pesa OpenAPI (MPM-initiated transactions)
 
-## M-Pesa OpenAPI Integration (MPM-initiated transactions)
+The OpenAPI integration must be validated by Vodacom before it can be used in production.
 
-### Onboarding (OpenAPI)
+Validation requires exercising a "handful" of transactions in the test/UAT environment.
 
-- Create an [Developer Portal](https://developer.mpesa.vm.co.mz/) account (this immediately gives access to Test environment)
-- API Keys
--
+"Handful" is not precisely defined, but in practice 5 transactions less than 14 days old have sufficed.
 
-Finally, click `Request Validation` to initiate the process on generating live API keys.
+### Onboarding to the test environment
+
+- Create a [Developer Portal](https://developer.mpesa.vm.co.mz/) account — this grants immediate access to the test environment.
+- Copy the API Key from the Profile section.
+  ![Developer Portal API details](images/vodacom-mz-developer-portal-api-details.png)
+- Reveal the public key via the `Public Key` button and paste it into the field.
+- Set the Service Provider Code if you already have one; otherwise use `171717` on the test environment.
+
+![Vodacom MZ credentials page in MPM](images/vodacom-mz-credentials-page.png)
+
+### Usage
+
+Generate a few transactions, ideally by creating a test SHS and selling it.
+
+### Requesting validation
+
+Click `Request Validation` to start generating live API keys.
 
 > [!INFO]
-> This is a manual process on Vodacom side and can take varying amount of time.
+> This is a manual process on Vodacom's side and can take a varying amount of time.
+> During it, your Service Provider Code is linked to the live API keys.
 
-### Usage (OpenAPI)
+## M-Pesa Generic C2B API (customer-initiated transactions)
 
-Because ...
+### Onboarding
 
-## M-Pesa Generic C2B API Integration (customer-initiated transactions)
+Onboarding for the Generic C2B API is a custom process with security implications.
+A full implementation may require a VPN tunnel and certificate exchange.
 
-### Onboarding (Generic C2B API)
-
-Onboarding to use the Vodacom Generic C2B API is a custom process with certain security implications.
-A full implementation might require the establishment of a VPN tunnel and certificate exchange.
-
-The exact steps are T.B.D.
+The exact steps are T.B.D. and not supported in MPM by default.
