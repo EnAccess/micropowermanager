@@ -12,6 +12,8 @@ use Illuminate\Support\Carbon;
  * @property string      $payerPhoneNumber stored in E.164 format, e.g. "+258848495010"
  * @property string      $referenceId
  * @property int         $status
+ * @property string|null $conversationId  IPG output_ConversationID, returned once the c2b push is confirmed
+ * @property string|null $transactionId   IPG output_TransactionID, returned once the c2b push is confirmed
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

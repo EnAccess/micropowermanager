@@ -10,8 +10,6 @@ use App\Plugins\VodacomMzPaymentProvider\Http\Clients\VodacomMzApiClient;
 use App\Plugins\VodacomMzPaymentProvider\Models\VodacomMzTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\PaymentInitiator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 /**
  * @extends AbstractPaymentAggregatorTransactionService<VodacomMzTransaction>
@@ -72,7 +70,7 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
     }
 
     /**
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
         float $amount,
@@ -84,49 +82,48 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
     ): array {
         $thirdPartyReference = $this->generateThirdPartyReference($serialId);
 
-        try {
-            DB::connection('tenant')->beginTransaction();
+        // c2bPayment is single-stage and synchronous: IPG only responds after the payer has
+        // entered their M-Pesa PIN and the payment has been processed. The transaction is
+        // therefore persisted as REQUESTED up front, so a timeout or a rejected push still
+        // leaves a record that can be reconciled later via queryTransactionStatus.
+        $vodacomMzTransaction = $this->vodacomMzTransaction->newQuery()->create([
+            'serialNumber' => $serialId,
+            'amount' => $amount,
+            'payerPhoneNumber' => $sender,
+            'status' => VodacomMzTransaction::STATUS_REQUESTED,
+            'referenceId' => $thirdPartyReference,
+        ]);
 
-            $vodacomMzTransaction = $this->vodacomMzTransaction->newQuery()->create([
-                'serialNumber' => $serialId,
-                'amount' => $amount,
-                'payerPhoneNumber' => $sender,
-                'status' => VodacomMzTransaction::STATUS_REQUESTED,
-                'referenceId' => $thirdPartyReference,
-            ]);
+        $transaction = $vodacomMzTransaction->transaction()->create([
+            'amount' => $amount,
+            'sender' => $sender,
+            'message' => $message,
+            'type' => $type,
+        ]);
 
-            /** @var Transaction $transaction */
-            $transaction = $vodacomMzTransaction->transaction()->create([
-                'amount' => $amount,
-                'sender' => $sender,
-                'message' => $message,
-                'type' => $type,
-            ]);
+        $response = $this->apiClient->c2bPayment(
+            (string) $serialId,
+            $sender,
+            $amount,
+            $thirdPartyReference
+        );
 
-            // Pushes a PIN prompt to the payer's handset; the customer confirms with
-            // their M-Pesa PIN. The final outcome arrives asynchronously and is
-            // reconciled via queryTransactionStatus, so we only assert the push was
-            // accepted here and leave the transaction in REQUESTED status.
-            $response = $this->apiClient->c2bPayment(
-                (string) $serialId,
-                $sender,
-                $amount,
-                $thirdPartyReference
-            );
+        $succeeded = ($response['output_ResponseCode'] ?? null) === VodacomMzApiClient::RESPONSE_SUCCESS;
 
-            if (($response['output_ResponseCode'] ?? null) !== VodacomMzApiClient::RESPONSE_SUCCESS) {
-                throw new VodacomMzApiResponseException('Vodacom MZ c2b push was rejected: '.($response['output_ResponseCode'] ?? 'unknown code').': '.($response['output_ResponseDesc'] ?? 'unknown error'));
-            }
+        $vodacomMzTransaction->update([
+            'status' => $succeeded ? VodacomMzTransaction::STATUS_SUCCESS : VodacomMzTransaction::STATUS_FAILED,
+            'conversationId' => $response['output_ConversationID'] ?? null,
+            'transactionId' => $response['output_TransactionID'] ?? null,
+        ]);
 
-            DB::connection('tenant')->commit();
-        } catch (\Throwable $exception) {
-            DB::connection('tenant')->rollBack();
-            throw $exception;
+        if (!$succeeded) {
+            throw new VodacomMzApiResponseException('Vodacom MZ c2b push was rejected: '.($response['output_ResponseCode'] ?? 'unknown code').': '.($response['output_ResponseDesc'] ?? 'unknown error'));
         }
 
         return [
             'transaction' => $transaction,
             'provider_data' => [],
+            'process_immediately' => true,
         ];
     }
 

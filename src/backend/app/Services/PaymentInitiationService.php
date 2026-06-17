@@ -44,7 +44,7 @@ class PaymentInitiationService {
      * @param int         $customerId Person ID of the customer
      * @param string|null $serialId   Device serial, if applicable
      *
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiate(
         int $providerId,

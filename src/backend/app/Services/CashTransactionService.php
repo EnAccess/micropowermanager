@@ -36,7 +36,7 @@ class CashTransactionService implements PaymentInitiator {
     }
 
     /**
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
         float $amount,
@@ -50,6 +50,6 @@ class CashTransactionService implements PaymentInitiator {
 
         $transaction = $this->createTransaction($creatorId, $amount, $sender, $message, $type);
 
-        return ['transaction' => $transaction, 'provider_data' => []];
+        return ['transaction' => $transaction, 'provider_data' => [], 'process_immediately' => true];
     }
 }

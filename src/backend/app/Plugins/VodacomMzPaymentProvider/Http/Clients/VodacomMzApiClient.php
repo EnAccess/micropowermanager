@@ -13,6 +13,17 @@ class VodacomMzApiClient {
     /** IPG returns this in `output_ResponseCode` when a request is accepted. */
     public const RESPONSE_SUCCESS = 'INS-0';
 
+    /**
+     * c2bPayment is single-stage and synchronous: IPG holds the connection open while the payer is
+     * prompted for their M-Pesa PIN and the payment is processed, only then responding. The request
+     * timeout must cover that whole interaction, so it is far longer than for other endpoints.
+     */
+    private const int C2B_TIMEOUT_SECONDS = 120;
+
+    private const int DEFAULT_TIMEOUT_SECONDS = 30;
+
+    private const int CONNECT_TIMEOUT_SECONDS = 30;
+
     public function __construct(
         private Client $httpClient,
         private VodacomMzCredentialService $credentialService,
@@ -46,7 +57,7 @@ class VodacomMzApiClient {
             'input_Amount' => $amount,
             'input_ThirdPartyReference' => $thirdPartyReference,
             'input_ServiceProviderCode' => $credential->getServiceProviderCode(),
-        ]);
+        ], self::C2B_TIMEOUT_SECONDS);
     }
 
     /**
@@ -76,7 +87,7 @@ class VodacomMzApiClient {
      *
      * @return array<string, mixed>
      */
-    private function send(VodacomMzCredential $credential, string $method, int $port, string $path, array $params): array {
+    private function send(VodacomMzCredential $credential, string $method, int $port, string $path, array $params, int $timeoutSeconds = self::DEFAULT_TIMEOUT_SECONDS): array {
         $url = $credential->buildUri($port, $path);
         $payloadKey = $method === 'GET' ? 'query' : 'json';
 
@@ -88,6 +99,8 @@ class VodacomMzApiClient {
                 $payloadKey => $params,
                 'headers' => $this->headers($credential),
                 'http_errors' => false,
+                'timeout' => $timeoutSeconds,
+                'connect_timeout' => self::CONNECT_TIMEOUT_SECONDS,
             ]);
         } catch (GuzzleException $exception) {
             Log::critical('Vodacom MZ API request failed', [

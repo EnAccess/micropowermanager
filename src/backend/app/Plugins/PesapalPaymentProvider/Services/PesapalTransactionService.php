@@ -197,7 +197,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     }
 
     /**
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
         float $amount,
@@ -252,6 +252,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
                     'order_tracking_id' => $result['order_tracking_id'],
                     'merchant_reference' => $result['merchant_reference'],
                 ],
+                'process_immediately' => false,
             ];
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
