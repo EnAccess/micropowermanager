@@ -41,6 +41,24 @@ This massively overstates the commission the agent keeps and corrupts the sugges
 Always enter the rate as a fraction, for example `0.1` for 10%.
 :::
 
+### Putting it together: a worked example
+
+It helps to follow the money through a single day.
+
+Suppose an agent is on a commission type with a **10% energy commission** and a **risk balance of 10,000**.
+
+A customer pays the agent **3,000** in cash for electricity, and the agent generates the token on the spot.
+The agent has now collected 3,000 on behalf of the company, so their outstanding balance rises by 3,000.
+Out of that sale the agent keeps **300** as commission (10% of 3,000), so the amount they actually owe the company is **2,700**.
+
+As the day goes on the agent keeps selling, and the outstanding balance keeps climbing.
+Once it reaches the **risk balance**, the app stops the agent from generating tokens or selling appliances until they settle up.
+This protects the company: the agent is holding its cash, and the risk balance caps how much it is willing to have out in the field at any one time.
+
+The agent then travels to headquarters and hands over the cash they owe.
+A staff member creates a **receipt** on the agent's profile for that amount.
+The receipt clears the outstanding balance back to zero and releases the commission the agent earned, and the agent can start serving customers again.
+
 ## Assigning or changing the commission of an agent
 
 1. Create a commission type under Agent --> Commission type (click on the ":heavy_plus_sign:" button at the top right corner).
