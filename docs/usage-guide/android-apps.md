@@ -2,86 +2,104 @@
 order: 19
 ---
 
-# Android Apps
+# The Field App
 
-As outlined in the [Get Started with MPM](../get-started), the MPM software package comes with 3 Android Apps, which are presented in more detail in this section:
+MicroPowerManager now ships a single, unified **Field App** that replaces the three separate Android apps it used to offer (Customer Registration, Agent/Merchant, and SMS Gateway).
+It is an Android app that lets a field agent register customers, sell appliances, and collect payments — **online or offline**.
 
-The 3 apps (APK files) can be downloaded and installed as follows:
+The app is the on-site companion to the MicroPowerManager website interface: agents act on behalf of the company in the field, and everything they record syncs back to headquarters.
 
-1. Accessing this link: <https://cloud.micropowermanager.io/#/welcome>
+## Installing and signing in
 
-2. Click on the APK app files via your phone (Android required) – For Agent App Android version 6 or above is required)
+1. Download and install the app on your phone or tablet (Android 6 or above).
 
-3. Apps get installed
+2. On first launch the app asks which backend to connect to:
 
-4. Once the app is installed on the phone, you will be asked for an URL.
-   Following URL can be used: <https://api.cloud.micropowermanager.io>
+   | Option   | Use when                                                                             |
+   | -------- | ------------------------------------------------------------------------------------ |
+   | `Demo`   | You want to explore against the public demo company                                  |
+   | `Cloud`  | Your company is on the hosted MicroPowerManager Cloud (`cloud.micropowermanager.io`) |
+   | `Custom` | Your company is self-hosted, local, or on a staging server                           |
 
-5. Log in to the apps with the login credentials used to access MPM website interface (in case you have access to the website interface) or with the credentials given to you by management.
+3. Log in with the credentials used for the MicroPowerManager website interface, or with the credentials given to you by management.
 
-![App Overview](images/apps-overview.png)
+## Home
 
-## Customer Registration App
+The Home tab is the agent's daily dashboard.
+It shows how much has been collected today, the number of payments and cash taken, and the agent's current **Balance** — the running figure of what the agent owes the company versus what they have settled (see [Agents](/usage-guide/agent-users) for how this balance and the risk limit work).
+Below the summary, "Your Day" lists the agent's activity, and the orange ":heavy_plus_sign:" button starts a new collection.
 
-New customer profiles can be created via this app or through the website directly.
-The Customer Registration App enables the user/Agent to register new SHS and e-bike devices.
-The Agent/user has to first install the app by following the steps outlined on the [Get Started with MPM](../get-started).
-The app can be accessed using the log in credentials provided to the Agent/user by the company management.
+![Field App Home](images/field-app-home.png)
 
-Once logged in, the user should go to "Add Customer" on the bottom right of the screen and introduce the relevant customer data.
+## Customers
 
-The device’s ID as per the manufacturer should be inserted on the field "Serial Number".
-This will serve as the device identified to receive payments for that device.
+The Customers tab lists every customer the agent is responsible for.
+You can search by name or phone and filter by those with a meter, with an SHS, or registered today.
+
+To register a new customer, tap the ":heavy_plus_sign:" and follow the steps.
+Registration starts with the customer's identity (name, phone, village, grid); the meter or SHS device can be linked afterwards, and documents can be attached once the customer is saved.
 
 > [!NOTE]
-> "Meter Type", "Tariff", "Connection Group", "Connection Type" and "Sub Connection Type" fields are only relevant for mini-grid customers (not SHS and e-bike devices).
+> Registration works offline.
+> If the agent has no connection, the customer is saved locally with a "PENDING SYNC" marker and uploaded automatically once the device is back online.
+> Actions that need a server record (such as linking a meter or selling an appliance) stay disabled on a pending customer until the sync completes.
 
-The app also enables the user to access the customer list for the systems for which it is in charge (see bottom left of the screenshot below).
+![Field App Customers](images/field-app-customers.png)
+![Field App Register Customer](images/field-app-register-customer.png)
 
-![Customer Registration App Overview](images/customer-registration-app-overview.png)
+## Sales
 
-## Agent/Merchant App
+The Sales tab is used to sell an appliance to a customer.
+The agent picks the customer and appliance, then chooses how it is paid for:
 
-The purpose of the Agent app is to:
+- **Outright** — the full price is paid up front.
+- **PAYG / credit** — the customer pays a down payment and clears the rest over time (for example a 12- or 24-month plan).
 
-1. **Generate electricity tokens** for registered devices (in case the customer cannot use mobile money, it can rely on a local Agent to generate a token on his/her behalf after a cash payment).
-   The Agent hands in the generated token by the app, which the customer can then use to top-up the applicable device (electricity meter, SHS or e-bike).
-   To generate a token, follow these steps:
+Once confirmed, the sale and its down payment are recorded against the customer and reflected in the agent's balance.
 
-   a) Select the "Customers" Menu on the Agent/Merchant app
+## Payments and token generation
 
-   b) Select the customer for which a token should be generated
+The Payments tab records the cash an agent collects and, for electricity devices, generates the STS token on the spot — useful when a customer cannot pay with their own phone via mobile money.
 
-   c) Click on the ":heavy_plus_sign:" at the bottom right of the skin
+To collect a payment and generate a token:
 
-   d) Insert the currency amount the customer has paid (which should be converted into a token)
+a) Open the **Payments** tab and tap the ":heavy_plus_sign:".
 
-   e) Press "Continue" and then "Confirm".
+b) Find and select the customer (or the device) being paid for.
 
-   f) The app will give you the token, which you then share with the customer.
+c) Enter the amount of cash the customer has handed over.
 
-   ![Agent App Token Generation](images/agent-app-token-generation.png)
+d) Press **Continue** and then **Confirm**.
 
-2. Sell an "Appliance" to a customer:
+e) The app records the payment and, for an electricity device, generates the token.
+Read the token to the customer or tap to copy it so they can top up their meter, SHS, or e-bike.
 
-   a) Select the "Customers" Menu on the Agent/Merchant app
+Every payment can be reopened to view its receipt — the amount, what it was for, the device, the sender, and whether it has **synced** to headquarters yet.
 
-   b) Select the customer to which an appliance is to be sold
+![Field App Payments](images/field-app-payments.png)
+![Field App Payment Detail](images/field-app-payment-detail.png)
 
-   c) Click on the "Appliance" logo at the bottom of the screen
+## Migrating from the legacy apps
 
-   d) Click on ":heavy_plus_sign:" and define the appliance data (name, cost, etc.).
+Earlier versions of MicroPowerManager were split across three separate Android apps.
+The unified Field App now covers their day-to-day work in one place.
 
-   ![Agent App Selling Appliance](images/agent-app-selling-appliance.png)
+![The three legacy apps](images/apps-overview.png)
 
-3. Issue a ticket for a customer:
+| Legacy app                    | Status in the Field App                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| **Customer Registration App** | Replaced by the **Customers** tab (now with offline registration).              |
+| **Agent/Merchant App**        | Replaced by **Home**, **Sales**, and **Payments** (including token generation). |
+| **SMS Gateway App**           | Not part of the Field App.                                                      |
 
-   a) Select the "Customers" Menu on the Agent/Merchant app
+> [!WARNING]
+> **SMS Gateway App — deprecated.**
+> Sending and receiving SMS is handled by the server-side SMS gateway integrations rather than a phone app.
+> See [SMS](/usage-guide/sms), [Africa's Talking](/integrations-guide/africastalking), and [TextBee](/integrations-guide/textbee).
 
-   b) Select the customer to which a ticket is to be issued
+<!-- -->
 
-   c) Click on the "Tickets" logo at the bottom right of the screen
-
-   d) Click on ":heavy_plus_sign:" and insert customer issue to be resolved.
-
-   ![Agent App Create Ticket](images/agent-app-create-ticket.png)
+> [!NOTE]
+> **Ticketing — to be added.**
+> Issuing customer tickets from the field is not yet available in the Field App.
+> In the meantime, tickets can be managed from the website interface (see [Tickets](/usage-guide/tickets)).
