@@ -97,6 +97,8 @@ The unified Field App now covers their day-to-day work in one place.
 > Sending and receiving SMS is handled by the server-side SMS gateway integrations rather than a phone app.
 > See [SMS](/usage-guide/sms), [Africa's Talking](/integrations-guide/africastalking), and [TextBee](/integrations-guide/textbee).
 
+<!-- -->
+
 > [!NOTE]
 > **Ticketing — to be added.**
 > Issuing customer tickets from the field is not yet available in the Field App.
