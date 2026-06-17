@@ -11,7 +11,7 @@ use Illuminate\Support\Carbon;
  * @property float       $amount
  * @property string      $payerPhoneNumber stored in E.164 format, e.g. "+258848495010"
  * @property string      $referenceId
- * @property string      $status
+ * @property int         $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
