@@ -96,6 +96,56 @@ class AgentAppDocumentTest extends TestCase {
         $response->assertHeader('content-disposition');
     }
 
+    public function testAgentUpdatesAdditionalJsonForOwnCustomerDocument(): void {
+        Storage::fake();
+        $this->bootstrapAgentWithCustomer();
+        $customer = Person::query()->where('is_customer', 1)->first();
+
+        $this->actingAs($this->agent)->post(
+            sprintf('/api/app/agents/customers/%d/documents', $customer->id),
+            [
+                'file' => UploadedFile::fake()->create('contract.pdf', 50, 'application/pdf'),
+                'type' => 'contract',
+                'additional_json' => ['signed_at' => '2026-05-21'],
+            ]
+        );
+        $document = $customer->uploadedDocuments()->first();
+
+        $response = $this->actingAs($this->agent)->patch(
+            '/api/app/agents/customers/documents/'.$document->id,
+            ['additional_json' => ['signed_at' => '2026-06-02', 'witness' => 'Ada']]
+        );
+
+        $response->assertStatus(200);
+        $this->assertEquals(
+            ['signed_at' => '2026-06-02', 'witness' => 'Ada'],
+            $document->fresh()->additional_json
+        );
+    }
+
+    public function testAgentCannotUpdateDocumentOfForeignCustomer(): void {
+        Storage::fake();
+        $this->bootstrapAgentWithCustomer();
+        $foreignCustomer = $this->createCustomerInForeignMiniGrid();
+
+        $foreignDocument = PersonDocument::query()->create([
+            'person_id' => $foreignCustomer->id,
+            'category' => PersonDocument::CATEGORY_CUSTOMER_UPLOAD,
+            'type' => 'contract',
+            'name' => 'stored.pdf',
+            'original_name' => 'contract.pdf',
+            'location' => 'documents/companies/1/persons/'.$foreignCustomer->id,
+        ]);
+
+        $response = $this->actingAs($this->agent)->patch(
+            '/api/app/agents/customers/documents/'.$foreignDocument->id,
+            ['additional_json' => ['tampered' => 'yes']]
+        );
+
+        $response->assertStatus(403);
+        $this->assertNull($foreignDocument->fresh()->additional_json);
+    }
+
     public function testAgentCannotDownloadDocumentOfForeignCustomer(): void {
         Storage::fake();
         $this->bootstrapAgentWithCustomer();

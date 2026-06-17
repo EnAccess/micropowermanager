@@ -310,6 +310,29 @@ export class PersonService {
     }
   }
 
+  async updateDocumentAdditional(documentId, additionalJson) {
+    try {
+      const { data, status, error } = await this.repository.documents.update(
+        documentId,
+        { additional_json: additionalJson ?? {} },
+      )
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
+    } catch (e) {
+      if (e.response?.status === 422) {
+        const messages = e.response.data?.message ?? {}
+        const firstKey = Object.keys(messages)[0]
+        const firstMessage = firstKey
+          ? messages[firstKey][0]
+          : e.response.data?.message
+        return new ErrorHandler(firstMessage, "http", 422)
+      }
+      const errorMessage = e.response?.data?.message ?? e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   async deleteDocument(documentId) {
     try {
       const { data, status, error } =
