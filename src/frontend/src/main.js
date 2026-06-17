@@ -25,6 +25,7 @@ import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactio
 import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail.vue"
 import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail.vue"
+import VodacomMzTransactionDetail from "@/modules/Transactions/VodacomMzTransactionDetail.vue"
 import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail.vue"
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail.vue"
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail.vue"
@@ -77,6 +78,7 @@ Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
 Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
 Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
 Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
+Vue.component("VodacomMzTransactionDetail", VodacomMzTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
