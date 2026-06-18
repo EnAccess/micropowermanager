@@ -20,8 +20,7 @@ return new class extends Migration {
                 }
                 foreach ($entries as $entry) {
                     $steps[] = [
-                        'tag' => $entry['tag'] ?? null,
-                        'component' => $entry['component'] ?? null,
+                        'component' => $entry['component'] ?? $entry['tag'] ?? null,
                         'adjusted' => !empty($entry['adjusted']),
                         'updated_by' => $row->updated_by ?? null,
                         'created_at' => Carbon::now(),
@@ -32,11 +31,8 @@ return new class extends Migration {
         }
 
         $schema->table('registration_tail', function (Blueprint $table) use ($schema) {
-            if (!$schema->hasColumn('registration_tail', 'tag')) {
-                $table->string('tag')->nullable()->after('id');
-            }
             if (!$schema->hasColumn('registration_tail', 'component')) {
-                $table->string('component')->nullable()->after('tag');
+                $table->string('component')->nullable()->after('id');
             }
             if (!$schema->hasColumn('registration_tail', 'adjusted')) {
                 $table->boolean('adjusted')->default(false)->after('component');
@@ -62,7 +58,7 @@ return new class extends Migration {
         $schema = Schema::connection('tenant');
 
         $tail = $connection->table('registration_tail')->get()->map(fn ($row) => [
-            'tag' => $row->tag,
+            'tag' => $row->component,
             'component' => $row->component,
             'adjusted' => (bool) $row->adjusted,
         ])->values()->all();
@@ -83,7 +79,7 @@ return new class extends Migration {
         ]);
 
         $schema->table('registration_tail', function (Blueprint $table) {
-            $table->dropColumn(['tag', 'component', 'adjusted']);
+            $table->dropColumn(['component', 'adjusted']);
         });
     }
 };

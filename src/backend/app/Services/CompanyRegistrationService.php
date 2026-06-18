@@ -217,7 +217,7 @@ class CompanyRegistrationService {
      * @param array<array{id: int}> $plugins
      */
     private function setupPluginsAndRegistrationTail(array $plugins): void {
-        $this->registrationTailService->create(['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => false]);
+        $this->registrationTailService->create(['component' => 'Settings', 'adjusted' => false]);
 
         foreach ($plugins as $plugin) {
             $pluginData = [

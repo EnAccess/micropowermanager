@@ -60,11 +60,10 @@ class MpmPlugin extends BaseModelCentral {
     }
 
     /**
-     * @return array{tag: string, component: string, adjusted: bool}
+     * @return array{component: string, adjusted: bool}
      */
     public function toRegistrationTailEntry(): array {
         return [
-            'tag' => $this->name,
             'component' => $this->name,
             'adjusted' => false,
         ];

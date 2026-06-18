@@ -7,7 +7,6 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int         $id
- * @property string|null $tag
  * @property string|null $component
  * @property bool        $adjusted
  * @property int|null    $updated_by

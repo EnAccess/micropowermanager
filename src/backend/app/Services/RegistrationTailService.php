@@ -27,10 +27,10 @@ class RegistrationTailService implements IBaseService {
     }
 
     public function removeMpmPluginFromRegistrationTail(MpmPlugin $mpmPlugin): void {
-        $this->crudModel()->newQuery()->where('tag', $mpmPlugin->name)->delete();
+        $this->crudModel()->newQuery()->where('component', $mpmPlugin->name)->delete();
     }
 
-    public function adjustStep(string $tag): void {
-        $this->crudModel()->newQuery()->where('tag', $tag)->update(['adjusted' => true]);
+    public function adjustStep(string $component): void {
+        $this->crudModel()->newQuery()->where('component', $component)->update(['adjusted' => true]);
     }
 }

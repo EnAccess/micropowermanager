@@ -14,8 +14,8 @@
             class="stepper-step"
             v-for="(tailObj, index) in tail"
             :key="index"
-            :id="tailObj.tag"
-            :md-label="tailObj.tag"
+            :id="tailObj.component"
+            :md-label="tailObj.component"
           >
             <div class="exclamation">
               <div class="md-layout-item md-size-100">
@@ -24,7 +24,7 @@
               <div class="md-layout-item md-size-100 exclamation-div">
                 <md-button
                   class="md-primary md-block"
-                  @click="nextStep(tailObj.tag, tail[index + 1])"
+                  @click="nextStep(tailObj.component, tail[index + 1])"
                 >
                   Do this later.
                 </md-button>
@@ -59,18 +59,18 @@ export default {
       return
     }
     for (const tailObj of this.tail) {
-      if (!("tag" in tailObj)) {
+      if (!("component" in tailObj)) {
         continue
       }
-      const handler = () => this.updateRegistrationTail(tailObj.tag)
-      this.tailListeners.push({ tag: tailObj.tag, handler })
-      EventBus.$on(tailObj.tag, handler)
+      const handler = () => this.updateRegistrationTail(tailObj.component)
+      this.tailListeners.push({ component: tailObj.component, handler })
+      EventBus.$on(tailObj.component, handler)
     }
-    this.activeStep = this.tail[0].tag
+    this.activeStep = this.tail[0].component
   },
   beforeDestroy() {
-    for (const { tag, handler } of this.tailListeners) {
-      EventBus.$off(tag, handler)
+    for (const { component, handler } of this.tailListeners) {
+      EventBus.$off(component, handler)
     }
   },
   data() {
@@ -85,7 +85,7 @@ export default {
   methods: {
     nextStep(step, nextStep) {
       if (nextStep) {
-        this.activeStep = nextStep.tag
+        this.activeStep = nextStep.component
       } else {
         this.activeStep = null
         this.wizardIsVisible = false
@@ -93,15 +93,17 @@ export default {
       }
     },
 
-    async updateRegistrationTail(tag) {
+    async updateRegistrationTail(component) {
       this.loadingNextStep = true
       try {
-        const stepIndex = this.tail.findIndex((step) => step.tag === tag)
+        const stepIndex = this.tail.findIndex(
+          (step) => step.component === component,
+        )
         const step = this.tail[stepIndex]
         if (step) {
           await this.registrationTailService.adjustStep(step.id)
         }
-        this.nextStep(tag, this.tail[stepIndex + 1])
+        this.nextStep(component, this.tail[stepIndex + 1])
       } catch (e) {
         this.alertNotify("error", e.message)
       } finally {
