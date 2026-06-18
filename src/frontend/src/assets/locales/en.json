@@ -127,6 +127,7 @@
     "addVillage": "Add Village",
     "additionalInfo": "Additional Information",
     "additionalInfoHint": "Optional key/value pairs stored as JSON.",
+    "additionalInfoUpdated": "Additional information updated",
     "agentCommissionDeleted": "Agent Commission Deleted!",
     "agentCommissionUpdated": "Agent Commission Updated!",
     "agentDashboard": "Agent Overview",

@@ -36,22 +36,6 @@ class PaystackCredential extends BaseModel {
         }
     }
 
-    public function getMerchantName(): ?string {
-        return $this->merchant_name;
-    }
-
-    public function getMerchantEmail(): ?string {
-        return $this->merchant_email;
-    }
-
-    public function getCallbackUrl(): ?string {
-        return $this->callback_url;
-    }
-
-    public function getEnvironment(): string {
-        return $this->environment;
-    }
-
     public function isLive(): bool {
         return $this->environment === 'live';
     }

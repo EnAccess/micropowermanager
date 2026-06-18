@@ -41,7 +41,7 @@ class TicketCommentService {
 
         if ($person && !$person->tickets->isEmpty()) {
             $ticketUser = $this->ticketUserService->findByPhone($sender);
-            $this->createComment($person->tickets[0]->id, 'Sms Comment'.$message, $ticketUser->getId());
+            $this->createComment($person->tickets[0]->id, 'Sms Comment'.$message, $ticketUser->id);
         }
     }
 }

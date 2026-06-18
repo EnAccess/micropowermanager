@@ -127,6 +127,7 @@
     "addVillage": "إضافة قرية",
     "additionalInfo": "معلومات إضافية",
     "additionalInfoHint": "أزواج مفتاح/قيمة اختيارية تُخزن بصيغة JSON.",
+    "additionalInfoUpdated": "تم تحديث المعلومات الإضافية",
     "agentCommissionDeleted": "!تم حذف عمولة الوكيل",
     "agentCommissionUpdated": "!تم تحديث عمولة الوكيل",
     "agentDashboard": "نظرة عامة على الوكلاء",

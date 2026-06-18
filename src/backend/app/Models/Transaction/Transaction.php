@@ -146,44 +146,4 @@ class Transaction extends BaseModel {
 
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
-
-    public function getAmount(): float {
-        return $this->amount;
-    }
-
-    public function getOriginalTransactionType(): string {
-        return $this->original_transaction_type;
-    }
-
-    public function getSender(): string {
-        return $this->sender;
-    }
-
-    public function setAmount(float $amount): void {
-        $this->amount = $amount;
-    }
-
-    public function setSender(string $sender): void {
-        $this->sender = $sender;
-    }
-
-    public function setMessage(string $message): void {
-        $this->message = $message;
-    }
-
-    public function setOriginalTransactionType(string $originalTransaction): void {
-        $this->original_transaction_type = $originalTransaction;
-    }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function setType(string $type): void {
-        $this->type = $type;
-    }
-
-    public function getMessage(): string {
-        return $this->message;
-    }
 }

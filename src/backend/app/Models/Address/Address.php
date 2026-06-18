@@ -65,29 +65,4 @@ class Address extends BaseModel {
     public function geo(): MorphOne {
         return $this->morphOne(GeographicalInformation::class, 'owner');
     }
-
-    public function setOwner(int $ownerId, string $ownerType): void {
-        $this->owner_id = $ownerId;
-        $this->owner_type = $ownerType;
-    }
-
-    public function setCityId(int $cityId): void {
-        $this->city_id = $cityId;
-    }
-
-    public function setPhone(?string $phone): void {
-        $this->phone = $phone;
-    }
-
-    public function setEmail(?string $email): void {
-        $this->email = $email;
-    }
-
-    public function setIsPrimary(bool $isPrimary): void {
-        $this->is_primary = $isPrimary ? 1 : 0;
-    }
-
-    public function setStreet(?string $street): void {
-        $this->street = $street;
-    }
 }

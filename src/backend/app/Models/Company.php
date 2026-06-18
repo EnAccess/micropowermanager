@@ -49,12 +49,4 @@ class Company extends BaseModelCentral {
     public function apiKeys(): HasMany {
         return $this->hasMany(ApiKey::class);
     }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function getName(): string {
-        return $this->name;
-    }
 }

@@ -39,7 +39,7 @@ class InstallPackage extends Command {
         $company = $this->companyService->getById($companyId);
 
         // Generate a valid email address by sanitizing the company name
-        $sanitizedCompanyName = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $company->getName()));
+        $sanitizedCompanyName = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $company->name));
         $email = 'swifta-user-'.Carbon::now()->timestamp.'@'.$sanitizedCompanyName.'.local';
 
         /** @var User $user */
@@ -51,9 +51,9 @@ class InstallPackage extends Command {
         ]);
         $companyDatabase = $this->companyDatabaseService->getById($companyId);
         $databaseProxyData = [
-            'email' => $user->getEmail(),
-            'fk_company_id' => $user->getCompanyId(),
-            'fk_company_database_id' => $companyDatabase->getId(),
+            'email' => $user->email,
+            'fk_company_id' => $user->company_id,
+            'fk_company_database_id' => $companyDatabase->id,
         ];
         $this->databaseProxyService->create($databaseProxyData);
 

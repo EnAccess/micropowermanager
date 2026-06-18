@@ -33,10 +33,6 @@ class SwiftaTransaction extends BasePaymentProviderTransaction {
 
     protected $table = 'swifta_transactions';
 
-    public function getAmount(): float {
-        return $this->amount;
-    }
-
     public static function getTransactionName(): string {
         return self::RELATION_NAME;
     }

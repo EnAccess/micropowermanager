@@ -16,7 +16,7 @@ class ApiRequests {
      * @param array<string, mixed> $params
      */
     public function get(AngazaCredential $credentials, array $params, string $slug): mixed {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
         }
@@ -45,7 +45,7 @@ class ApiRequests {
      * @param array<string, mixed> $params
      */
     public function put(AngazaCredential $credentials, array $params, string $slug): mixed {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         try {
             $request = $this->httpClient->put(
                 $url,
@@ -73,8 +73,8 @@ class ApiRequests {
     }
 
     private function getBasicAuthHeader(AngazaCredential $credentials): string {
-        $username = $credentials->getClientId();
-        $password = $credentials->getClientSecret();
+        $username = $credentials->client_id;
+        $password = $credentials->client_secret;
         $credentials = $username.':'.$password;
         $base64EncodedCredentials = base64_encode($credentials);
 

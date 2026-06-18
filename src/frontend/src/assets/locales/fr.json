@@ -127,6 +127,7 @@
     "addVillage": "Ajouter un village",
     "additionalInfo": "Informations supplémentaires",
     "additionalInfoHint": "Paires clé/valeur facultatives, stockées en JSON.",
+    "additionalInfoUpdated": "Informations complémentaires mises à jour",
     "agentCommissionDeleted": "Agent Commission Deleted!",
     "agentCommissionUpdated": "Agent Commission Updated!",
     "agentDashboard": "Agent Overview",

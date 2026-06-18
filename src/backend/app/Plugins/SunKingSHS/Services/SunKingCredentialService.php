@@ -73,12 +73,12 @@ class SunKingCredentialService {
     }
 
     public function isAccessTokenValid(SunKingCredential $credential): bool {
-        $accessToken = $credential->getAccessToken();
+        $accessToken = $credential->access_token;
 
         if ($accessToken == null) {
             return false;
         }
-        $tokenExpirationTime = $credential->getExpirationTime();
+        $tokenExpirationTime = $credential->token_expires_in;
 
         return $tokenExpirationTime != null && $tokenExpirationTime >= time();
     }

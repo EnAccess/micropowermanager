@@ -24,7 +24,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private SwiftaTransaction $swiftaTransaction,
+        public private(set) SwiftaTransaction $swiftaTransaction,
     ) {
         parent::__construct(
             $this->meter,
@@ -60,10 +60,6 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
             $conflict->save();
             Log::debug($message." Transaction Id : {$transaction->id}");
         });
-    }
-
-    public function getSwiftaTransaction(): SwiftaTransaction {
-        return $this->swiftaTransaction;
     }
 
     public function getTransactionById(int $transactionId): Transaction {

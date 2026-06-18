@@ -7,12 +7,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 class ApiKeyAuthenticatable implements Authenticatable {
     public function __construct(
-        private Company $company,
+        public private(set) Company $company,
     ) {}
-
-    public function getCompany(): Company {
-        return $this->company;
-    }
 
     public function getAuthIdentifierName(): string {
         return 'id';

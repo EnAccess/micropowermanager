@@ -203,10 +203,6 @@ class Person extends BaseModel implements \Stringable, HasAddressesInterface {
             ->orderBy('cities.id');
     }
 
-    public function getId(): int {
-        return $this->id;
-    }
-
     protected function getIsActiveAttribute(): bool {
         $lastPayment = $this->latestPayment;
 

@@ -57,14 +57,14 @@ class TicketUserService implements IBaseService {
 
     public function findOrCreateByUser(User $user): TicketUser {
         try {
-            $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->getId())
+            $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->id)
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
             $result = $this->ticketUser->newQuery()->create([
-                'user_name' => $user->getName(),
+                'user_name' => $user->name,
                 'phone' => null,
                 'out_source' => 0,
-                'user_id' => $user->getId(),
+                'user_id' => $user->id,
             ]);
         }
 

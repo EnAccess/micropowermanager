@@ -58,18 +58,6 @@ class CompanyDatabase extends BaseModelCentral {
             ->firstOrFail());
     }
 
-    public function getDatabaseName(): string {
-        return $this->database_name;
-    }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function getCompanyId(): int {
-        return $this->company_id;
-    }
-
     private function clearCache(): void {
         $cacheKey = self::CACHE_KEY_PREFIX.':'.$this->company_id;
         Cache::forget($cacheKey);

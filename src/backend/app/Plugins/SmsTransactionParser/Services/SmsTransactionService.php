@@ -64,7 +64,7 @@ class SmsTransactionService {
             $companyId = CompanyDatabase::query()
                 ->where('database_name', config('database.connections.tenant.database'))
                 ->first()
-                ?->getCompanyId();
+                ?->company_id;
 
             if ($companyId === null) {
                 throw new \RuntimeException('Could not determine company ID for current tenant');
@@ -72,7 +72,7 @@ class SmsTransactionService {
 
             dispatch(new ProcessPayment($companyId, $transaction->id));
 
-            $smsTransaction->setStatus(SmsTransaction::STATUS_SUCCESS);
+            $smsTransaction->status = SmsTransaction::STATUS_SUCCESS;
             $smsTransaction->save();
 
             return $smsTransaction;
@@ -83,7 +83,7 @@ class SmsTransactionService {
             ]);
 
             if (isset($smsTransaction) && $smsTransaction->exists) {
-                $smsTransaction->setStatus(SmsTransaction::STATUS_FAILED);
+                $smsTransaction->status = SmsTransaction::STATUS_FAILED;
                 $smsTransaction->save();
 
                 $smsTransaction->conflicts()->create([

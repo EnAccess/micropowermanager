@@ -117,11 +117,6 @@ class MesombTransactionProvider implements ITransactionProvider {
         // TODO: Implement addConflict() method.
     }
 
-    public function getTransaction(): Transaction {
-        // TODO: Implement getTransaction() method.
-        throw new \BadMethodCallException('Method getTransaction() not yet implemented.');
-    }
-
     public function getMessage(): string {
         // TODO: Implement getMessage() method.
         throw new \BadMethodCallException('Method getMessage() not yet implemented.');

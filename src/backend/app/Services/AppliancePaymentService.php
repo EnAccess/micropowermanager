@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 class AppliancePaymentService {
-    private float $paymentAmount;
+    public float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
 
     public function __construct(private MainSettings $mainSettings) {}
@@ -116,10 +116,6 @@ class AppliancePaymentService {
         } catch (\Exception) {
             return 30;
         }
-    }
-
-    public function setPaymentAmount(float $amount): void {
-        $this->paymentAmount = $amount;
     }
 
     /**

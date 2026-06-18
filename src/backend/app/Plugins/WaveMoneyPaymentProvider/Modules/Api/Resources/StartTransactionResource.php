@@ -25,19 +25,19 @@ class StartTransactionResource extends AbstractApiResource {
      */
     public function getBodyData(): array {
         return [
-            'merchant_id' => $this->waveMoneyCredential->getMerchantId(),
-            'order_id' => $this->waveMoneyTransaction->getOrderId(),
-            'merchant_reference_id' => $this->waveMoneyTransaction->getReferenceId(),
+            'merchant_id' => $this->waveMoneyCredential->merchant_id,
+            'order_id' => $this->waveMoneyTransaction->order_id,
+            'merchant_reference_id' => $this->waveMoneyTransaction->reference_id,
             'frontend_result_url' => $this->getFrontendCallback(),
             'backend_result_url' => $this->getBackendCallback(),
-            'amount' => $this->waveMoneyTransaction->getAmount(),
+            'amount' => (int) $this->waveMoneyTransaction->amount,
             'time_to_live_in_seconds' => self::REQUEST_TIME_TO_LIVE_IN_SECS,
             'payment_description' => 'MicroPowerManager transaction',
-            'currency' => $this->waveMoneyTransaction->getCurrency(),
+            'currency' => $this->waveMoneyTransaction->currency,
             'hash' => $this->generatePayloadHash(),
             'merchant_name' => $this->getMerchantName(),
             'items' => json_encode([
-                ['name' => 'payment', 'amount' => $this->waveMoneyTransaction->getAmount()],
+                ['name' => 'payment', 'amount' => (int) $this->waveMoneyTransaction->amount],
             ]),
         ];
     }
@@ -52,23 +52,23 @@ class StartTransactionResource extends AbstractApiResource {
     private function generatePayloadHash(): string {
         return hash_hmac('sha256', implode('', [
             self::REQUEST_TIME_TO_LIVE_IN_SECS,
-            $this->waveMoneyCredential->getMerchantId(),
-            $this->waveMoneyTransaction->getOrderId(),
-            $this->waveMoneyTransaction->getAmount(),
+            $this->waveMoneyCredential->merchant_id,
+            $this->waveMoneyTransaction->order_id,
+            (int) $this->waveMoneyTransaction->amount,
             $this->getBackendCallback(),
-            $this->waveMoneyTransaction->getReferenceId(),
-        ]), $this->waveMoneyCredential->getSecretKey());
+            $this->waveMoneyTransaction->reference_id,
+        ]), $this->waveMoneyCredential->secret_key);
     }
 
     public function getBackendCallback(): string {
-        return $this->waveMoneyCredential->getCallbackUrl();
+        return $this->waveMoneyCredential->callback_url;
     }
 
     public function getFrontendCallback(): string {
-        return $this->waveMoneyCredential->getResultUrl();
+        return $this->waveMoneyCredential->result_url;
     }
 
     public function getMerchantName(): string {
-        return $this->waveMoneyCredential->getMerchantName();
+        return $this->waveMoneyCredential->merchant_name;
     }
 }
