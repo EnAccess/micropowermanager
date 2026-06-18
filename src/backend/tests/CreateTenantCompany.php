@@ -16,7 +16,7 @@ class TestCompany {
 }
 
 trait CreateTenantCompany {
-    protected $companyId = 1;
+    protected int $companyId = 1;
 
     protected function setUpCreateTenantCompany(): void {
         $databaseProxyManagerService = resolve(DatabaseProxyManagerService::class);
@@ -26,7 +26,7 @@ trait CreateTenantCompany {
         $this->companyId = $this->createCompany();
     }
 
-    public function createCompany(): string {
+    public function createCompany(): int {
         $companyService = resolve(CompanyService::class);
         $companyDatabaseService = resolve(CompanyDatabaseService::class);
         $databaseProxyManagerService = resolve(DatabaseProxyManagerService::class);
