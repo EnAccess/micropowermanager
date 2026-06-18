@@ -14,10 +14,11 @@ class VodacomTransactionValidationRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'serialNumber' => ['required', 'string', 'regex:/^[A-Z0-9]{8,12}$/'],
-            'amount' => ['required', 'numeric', 'min:100', 'max:5000000'],
-            'payerPhoneNumber' => ['required', 'string', 'regex:/^258[0-9]{9}$/'],
-            'referenceId' => ['required', 'string', 'regex:/^[A-Za-z0-9\-]{5,20}$/'],
+            // `reference` has to match an existing Device's serial number else the transaction gets rejected.
+            'reference' => ['required', 'string', 'regex:/^[A-Z0-9]{8,12}$/'],
+            // Transaction `amount` in MZN (Mozambican metical)
+            'amount' => ['required', 'numeric', 'min:1', 'max:5000000'],
+            'request_id' => ['required', 'uuid'],
         ];
     }
 }

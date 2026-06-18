@@ -249,11 +249,11 @@
                     style="text-align: center !important"
                   >
                     <img
-                      v-if="item.service === 'vodacom_transaction'"
+                      v-if="item.service === 'vodacom_mz_transaction'"
                       class="logo"
                       alt="logo"
                       :src="vodacomLogo"
-                      style="max-height: 20px"
+                      style="max-height: 32px"
                     />
                     <img
                       v-if="item.service === 'third_party_transaction'"

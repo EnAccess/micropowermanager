@@ -135,7 +135,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
      * Create a PaystackTransaction + Transaction and initialize via the Paystack API.
      * The caller supplies message and type, keeping routing knowledge outside this service.
      *
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
         float $amount,
@@ -188,6 +188,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
                     'redirect_url' => $result['redirectionUrl'],
                     'reference' => $result['reference'],
                 ],
+                'process_immediately' => false,
             ];
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();

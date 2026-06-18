@@ -25,7 +25,7 @@ import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactio
 import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail.vue"
 import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail.vue"
-import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail.vue"
+import VodacomMzTransactionDetail from "@/modules/Transactions/VodacomMzTransactionDetail.vue"
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail.vue"
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail.vue"
 import AfricasTalking from "@/plugins/africas-talking/modules/Overview/Credential.vue"
@@ -50,6 +50,7 @@ import Stron from "@/plugins/stron-meter/modules/Overview/Credential.vue"
 import SunKing from "@/plugins/sun-king-shs/modules/Overview/Credential.vue"
 import TextbeeSmsGateway from "@/plugins/textbee-sms-gateway/modules/Overview/Credential.vue"
 import Viber from "@/plugins/viber-messaging/modules/Overview/Credential.vue"
+import VodacomMzPaymentProvider from "@/plugins/vodacom-mz-payment-provider/modules/Overview/Credential.vue"
 import WaveMoney from "@/plugins/wave-money-payment-provider/modules/Overview/Credential.vue"
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/modules/Component.vue"
 import { attachAuthStore } from "@/repositories/Client/AxiosClient.js"
@@ -75,7 +76,7 @@ Vue.component("WaveComTransaction", WaveComTransaction)
 Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
 Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
 Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
-Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
+Vue.component("VodacomMzTransactionDetail", VodacomMzTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
@@ -92,6 +93,7 @@ Vue.component("Pesapal", Pesapal)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
 Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
+Vue.component("VodacomMzPaymentProvider", VodacomMzPaymentProvider)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {

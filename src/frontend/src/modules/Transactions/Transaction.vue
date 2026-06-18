@@ -414,6 +414,8 @@ export default {
       switch (transactionType) {
         case "vodacom_transaction":
           return "VodacomTransactionDetail"
+        case "vodacom_mz_transaction":
+          return "VodacomMzTransactionDetail"
         case "agent_transaction":
           return "AgentTransactionDetail"
         case "third_party_transaction":
