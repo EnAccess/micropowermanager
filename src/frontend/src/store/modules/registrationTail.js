@@ -4,7 +4,7 @@ export const namespaced = true
 
 export const state = {
   service: new RegistrationTailService(),
-  registrationTail: {},
+  registrationTail: [],
   isWizardShown: false,
 }
 export const mutations = {

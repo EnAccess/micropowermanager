@@ -68,25 +68,8 @@ class PesapalCredentialController extends Controller {
         }
 
         try {
-            $registrationTail = $this->registrationTailService->getFirst();
-            $tailArray = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
-
             $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PESAPAL_PAYMENT_PROVIDER);
-            $pesapalTag = $mpmPlugin->tail_tag;
-
-            $updated = false;
-            foreach ($tailArray as &$item) {
-                if (isset($item['tag']) && $item['tag'] === $pesapalTag) {
-                    $item['adjusted'] = true;
-                    $updated = true;
-                    break;
-                }
-            }
-            unset($item);
-
-            if ($updated) {
-                $this->registrationTailService->update($registrationTail, ['tail' => json_encode($tailArray)]);
-            }
+            $this->registrationTailService->adjustStep($mpmPlugin->name);
         } catch (\Throwable) {
             // Tail update is non-blocking.
         }

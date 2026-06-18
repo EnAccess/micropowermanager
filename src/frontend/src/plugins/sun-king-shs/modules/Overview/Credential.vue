@@ -272,7 +272,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Authentication Successful")
-        EventBus.$emit("SunKing SHS")
+        EventBus.$emit("SunKingSHS")
       } catch (e) {
         this.alertNotify("error", e.message)
       }

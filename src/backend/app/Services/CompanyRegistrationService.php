@@ -217,7 +217,7 @@ class CompanyRegistrationService {
      * @param array<array{id: int}> $plugins
      */
     private function setupPluginsAndRegistrationTail(array $plugins): void {
-        $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => false]];
+        $this->registrationTailService->create(['component' => 'Settings', 'adjusted' => false]);
 
         foreach ($plugins as $plugin) {
             $pluginData = [
@@ -227,19 +227,9 @@ class CompanyRegistrationService {
             $this->pluginsService->create($pluginData);
 
             $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
-            $registrationTail[] = [
-                'tag' => $mpmPlugin->tail_tag,
-                'component' => isset($mpmPlugin->tail_tag) ? str_replace(
-                    ' ',
-                    '-',
-                    $mpmPlugin->tail_tag
-                ) : null,
-                'adjusted' => !isset($mpmPlugin->tail_tag),
-            ];
+            $this->registrationTailService->create($mpmPlugin->toRegistrationTailEntry());
             Artisan::call($mpmPlugin->installation_command);
         }
-
-        $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
     }
 
     /**

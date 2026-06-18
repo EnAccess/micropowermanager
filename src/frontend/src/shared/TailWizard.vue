@@ -14,8 +14,8 @@
             class="stepper-step"
             v-for="(tailObj, index) in tail"
             :key="index"
-            :id="tailObj.tag"
-            :md-label="tailObj.tag"
+            :id="tailObj.component"
+            :md-label="tailObj.component"
           >
             <div class="exclamation">
               <div class="md-layout-item md-size-100">
@@ -24,7 +24,7 @@
               <div class="md-layout-item md-size-100 exclamation-div">
                 <md-button
                   class="md-primary md-block"
-                  @click="nextStep(tailObj.tag, tail[index + 1])"
+                  @click="nextStep(tailObj.component, tail[index + 1])"
                 >
                   Do this later.
                 </md-button>
@@ -55,16 +55,22 @@ export default {
   },
   mounted() {
     this.wizardIsVisible = this.showWizard
-    if (this.tail && this.tail.length) {
-      for (const tailObj of this.tail) {
-        if ("tag" in tailObj) {
-          EventBus.$on(tailObj.tag, () => {
-            this.updateRegistrationTail(tailObj.tag)
-          })
-        }
+    if (!this.tail || !this.tail.length) {
+      return
+    }
+    for (const tailObj of this.tail) {
+      if (!("component" in tailObj)) {
+        continue
       }
-
-      this.activeStep = this.tail[0].tag
+      const handler = () => this.updateRegistrationTail(tailObj.component)
+      this.tailListeners.push({ component: tailObj.component, handler })
+      EventBus.$on(tailObj.component, handler)
+    }
+    this.activeStep = this.tail[0].component
+  },
+  beforeDestroy() {
+    for (const { component, handler } of this.tailListeners) {
+      EventBus.$off(component, handler)
     }
   },
   data() {
@@ -72,13 +78,14 @@ export default {
       loadingNextStep: false,
       activeStep: "",
       wizardIsVisible: false,
+      tailListeners: [],
       registrationTailService: new RegistrationTailService(),
     }
   },
   methods: {
     nextStep(step, nextStep) {
       if (nextStep) {
-        this.activeStep = nextStep.tag
+        this.activeStep = nextStep.component
       } else {
         this.activeStep = null
         this.wizardIsVisible = false
@@ -86,33 +93,21 @@ export default {
       }
     },
 
-    async updateRegistrationTail(tag) {
+    async updateRegistrationTail(component) {
       this.loadingNextStep = true
       try {
-        const tailId = this.$store.getters["registrationTail/getTail"].id
-        await this.registrationTailService.updateRegistrationTail(
-          tailId,
-          tag,
-          this.tail,
+        const stepIndex = this.tail.findIndex(
+          (step) => step.component === component,
         )
-        const step = tag
-        let stepIndex = 0
-        for (let i = 0; i < this.tail.length; i++) {
-          for (let [k, v] of Object.entries(this.tail[i])) {
-            if (k === "tag" && v === step) {
-              stepIndex = i
-              break
-            }
-          }
+        const step = this.tail[stepIndex]
+        if (step) {
+          await this.registrationTailService.adjustStep(step.id)
         }
-        const nextStep = this.tail[stepIndex + 1]
-        this.$store.commit(
-          "registrationTail/SET_REGISTRATION_TAIL",
-          this.registrationTailService.registrationTail,
-        )
-        this.nextStep(step, nextStep)
+        this.nextStep(component, this.tail[stepIndex + 1])
       } catch (e) {
         this.alertNotify("error", e.message)
+      } finally {
+        this.loadingNextStep = false
       }
     },
   },

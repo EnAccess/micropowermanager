@@ -23,7 +23,6 @@ class PluginController extends Controller {
     public function update(Request $request, int $mpmPluginId): ApiResource {
         $plugin = $this->pluginsService->getByMpmPluginId($mpmPluginId);
         $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
-        $registrationTail = $this->registrationTailService->getFirst();
 
         if (!$plugin && !$request->input('checked')) {
             throw new \Exception('Plugin not found');
@@ -44,7 +43,7 @@ class PluginController extends Controller {
             ];
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
 
-            $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
+            $this->registrationTailService->addMpmPluginToRegistrationTail($mpmPlugin);
         } else {
             $pluginData = [
                 'mpm_plugin_id' => $mpmPluginId,
@@ -52,7 +51,7 @@ class PluginController extends Controller {
             ];
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
 
-            $this->registrationTailService->removeMpmPluginFromRegistrationTail($registrationTail, $mpmPlugin);
+            $this->registrationTailService->removeMpmPluginFromRegistrationTail($mpmPlugin);
         }
 
         return ApiResource::make($updatedPlugin);

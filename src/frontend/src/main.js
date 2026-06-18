@@ -38,9 +38,7 @@ import GomeLong from "@/plugins/gome-long-meter/modules/Overview/Credential.vue"
 import Kelin from "@/plugins/kelin-meter/modules/Overview/Credential.vue"
 import MicroStar from "@/plugins/micro-star-meter/modules/Overview/Credential.vue"
 import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component.vue"
-import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 import PesapalPaymentProvider from "@/plugins/pesapal-payment-provider/Component.vue"
-import Pesapal from "@/plugins/pesapal-payment-provider/modules/Overview/Credential.vue"
 import Prospect from "@/plugins/prospect/modules/Overview/Credential.vue"
 import SmsTransactionParserSetup from "@/plugins/sms-transaction-parser/modules/Overview/Setup.vue"
 import Spark from "@/plugins/spark-meter/modules/Overview/Credential.vue"
@@ -59,19 +57,6 @@ import Snackbar from "@/shared/Snackbar.vue"
 Vue.component("default", Default)
 Vue.component("Snackbar", Snackbar)
 
-// global component to be displayed in RegistrationTail
-Vue.component("Spark-Meter", Spark)
-Vue.component("Steamaco-Meter", Steamaco)
-Vue.component("Calin-Meter", Calin)
-Vue.component("CalinSmart-Meter", CalinSmart)
-Vue.component("Kelin-Meter", Kelin)
-Vue.component("Stron-Meter", Stron)
-Vue.component("Settings", Settings)
-Vue.component("Viber-Messaging", Viber)
-Vue.component("WaveMoney", WaveMoney)
-Vue.component("MicroStar-Meter", MicroStar)
-Vue.component("SunKing-SHS", SunKing)
-Vue.component("GomeLong-Meter", GomeLong)
 Vue.component("WaveComTransaction", WaveComTransaction)
 Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
 Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
@@ -81,15 +66,29 @@ Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("SmsTransactionDetail", SmsTransactionDetail)
-Vue.component("Angaza-SHS", Angaza)
-Vue.component("Daly-Bms", DalyBms)
-Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
-Vue.component("Pesapal-Payment-Provider", PesapalPaymentProvider)
-Vue.component("Africas-Talking", AfricasTalking)
-Vue.component("Chint-Meter", ChintMeter)
+
+// Registration tail components. The registration tail keys each step on the
+// plugin's name (MpmPlugin.name), so these must be registered under that exact
+// name. A plugin without a registration step simply has no entry here.
+Vue.component("Settings", Settings)
+Vue.component("SparkMeter", Spark)
+Vue.component("SteamaMeter", Steamaco)
+Vue.component("CalinMeter", Calin)
+Vue.component("CalinSmartMeter", CalinSmart)
+Vue.component("KelinMeter", Kelin)
+Vue.component("StronMeter", Stron)
+Vue.component("ViberMessaging", Viber)
+Vue.component("WaveMoneyPayment", WaveMoney)
+Vue.component("MicroStarMeter", MicroStar)
+Vue.component("SunKingSHS", SunKing)
+Vue.component("GomeLongMeter", GomeLong)
+Vue.component("AngazaSHS", Angaza)
+Vue.component("DalyBms", DalyBms)
+Vue.component("PaystackPaymentProvider", PaystackPaymentProvider)
+Vue.component("PesapalPaymentProvider", PesapalPaymentProvider)
+Vue.component("AfricasTalking", AfricasTalking)
+Vue.component("ChintMeter", ChintMeter)
 Vue.component("Prospect", Prospect)
-Vue.component("Paystack", Paystack)
-Vue.component("Pesapal", Pesapal)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
 Vue.component("SmsTransactionParser", SmsTransactionParserSetup)

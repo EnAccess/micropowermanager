@@ -22,52 +22,15 @@ class RegistrationTailService implements IBaseService {
         return $this->registrationTail;
     }
 
-    /**
-     * @param array<string, mixed> $registrationTailData
-     */
-    public function update($registrationTail, array $registrationTailData): RegistrationTail {
-        if (array_key_exists('tail', $registrationTailData)) {
-            $registrationTail->update($registrationTailData);
-        } else {
-            $registrationTail->update(['tail' => $registrationTailData]);
-        }
-
-        $registrationTail->fresh();
-
-        return $registrationTail;
+    public function addMpmPluginToRegistrationTail(MpmPlugin $mpmPlugin): RegistrationTail {
+        return $this->create($mpmPlugin->toRegistrationTailEntry());
     }
 
-    public function getFirst(): RegistrationTail {
-        return $this->registrationTail->newQuery()->firstOr(fn () => $this->registrationTail->create(['tail' => json_encode([])]));
+    public function removeMpmPluginFromRegistrationTail(MpmPlugin $mpmPlugin): void {
+        $this->crudModel()->newQuery()->where('component', $mpmPlugin->name)->delete();
     }
 
-    public function addMpmPluginToRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
-        $tail = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
-
-        $tail[] = [
-            'tag' => $mpmPlugin->tail_tag,
-            'component' => isset($mpmPlugin->tail_tag) ? str_replace(
-                ' ',
-                '-',
-                $mpmPlugin->tail_tag
-            ) : null,
-            'adjusted' => !isset($mpmPlugin->tail_tag),
-        ];
-
-        return $this->update(
-            $registrationTail,
-            ['tail' => json_encode($tail)]
-        );
-    }
-
-    public function removeMpmPluginFromRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
-        $tail = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
-
-        $updatedTail = array_filter($tail, fn (array $item): bool => $item['tag'] !== $mpmPlugin->tail_tag);
-
-        return $this->update(
-            $registrationTail,
-            ['tail' => array_values($updatedTail)]
-        );
+    public function adjustStep(string $component): void {
+        $this->crudModel()->newQuery()->where('component', $component)->update(['adjusted' => true]);
     }
 }

@@ -97,7 +97,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Authentication Successful")
-        EventBus.$emit("Angaza SHS")
+        EventBus.$emit("AngazaSHS")
       } catch (e) {
         this.alertNotify("error", e.message)
       }
