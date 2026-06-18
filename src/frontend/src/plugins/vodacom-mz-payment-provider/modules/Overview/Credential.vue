@@ -232,7 +232,7 @@ export default {
   padding: 1.5rem;
   background-color: #f8f9fa;
   border-radius: 4px;
-  border-left: 4px solid #e60000;
+  border-left: 4px solid #4caf50;
 
   h3 {
     margin-top: 0;
