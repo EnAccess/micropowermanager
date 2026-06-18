@@ -56,6 +56,7 @@ Route::group(['prefix' => 'app'], function () {
             Route::post('/{customerId}/documents', [AgentCustomerDocumentController::class, 'store'])
                 ->where('customerId', '[0-9]+');
             Route::get('/documents/{personDocument}/download', [AgentCustomerDocumentController::class, 'show']);
+            Route::patch('/documents/{personDocument}', [AgentCustomerDocumentController::class, 'update']);
             Route::delete('/documents/{personDocument}', [AgentCustomerDocumentController::class, 'destroy']);
         });
         Route::group(['prefix' => 'transactions'], function () {

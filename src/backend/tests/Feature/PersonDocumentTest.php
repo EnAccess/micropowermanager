@@ -132,6 +132,86 @@ class PersonDocumentTest extends TestCase {
         $response->assertJsonValidationErrors('file');
     }
 
+    public function testItUpdatesAdditionalJsonForADocument(): void {
+        Storage::fake();
+        $user = UserFactory::new()->create();
+        $this->user = $user;
+        $this->assignRole($user, 'admin');
+        $person = PersonFactory::new()->create();
+
+        $this->actingAs($user)->post(
+            sprintf('/api/people/%s/documents', $person->id),
+            [
+                'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
+                'type' => 'contract',
+                'additional_json' => ['signed_at' => '2026-05-20'],
+            ]
+        );
+        $document = $person->uploadedDocuments()->first();
+
+        $response = $this->actingAs($user)->patch(
+            '/api/person-documents/'.$document->id,
+            ['additional_json' => ['signed_at' => '2026-06-01', 'witness' => 'Ada']]
+        );
+
+        $response->assertStatus(200);
+        $this->assertEquals(
+            ['signed_at' => '2026-06-01', 'witness' => 'Ada'],
+            $document->fresh()->additional_json
+        );
+    }
+
+    public function testItClearsAdditionalJsonWhenSentEmpty(): void {
+        Storage::fake();
+        $user = UserFactory::new()->create();
+        $this->user = $user;
+        $this->assignRole($user, 'admin');
+        $person = PersonFactory::new()->create();
+
+        $this->actingAs($user)->post(
+            sprintf('/api/people/%s/documents', $person->id),
+            [
+                'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
+                'type' => 'contract',
+                'additional_json' => ['signed_at' => '2026-05-20'],
+            ]
+        );
+        $document = $person->uploadedDocuments()->first();
+
+        $response = $this->actingAs($user)->patch(
+            '/api/person-documents/'.$document->id,
+            ['additional_json' => []]
+        );
+
+        $response->assertStatus(200);
+        $this->assertNull($document->fresh()->additional_json);
+    }
+
+    public function testItRejectsAnUpdateWithoutAdditionalJson(): void {
+        Storage::fake();
+        $user = UserFactory::new()->create();
+        $this->user = $user;
+        $this->assignRole($user, 'admin');
+        $person = PersonFactory::new()->create();
+
+        $this->actingAs($user)->post(
+            sprintf('/api/people/%s/documents', $person->id),
+            [
+                'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
+                'type' => 'contract',
+            ]
+        );
+        $document = $person->uploadedDocuments()->first();
+
+        $response = $this->actingAs($user)->patchJson(
+            '/api/person-documents/'.$document->id,
+            []
+        );
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('additional_json');
+    }
+
     public function testItDeletesADocumentAndItsFile(): void {
         Storage::fake();
         $user = UserFactory::new()->create();

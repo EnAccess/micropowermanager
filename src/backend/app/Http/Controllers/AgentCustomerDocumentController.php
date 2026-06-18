@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePersonDocumentRequest;
+use App\Http\Requests\UpdatePersonDocumentRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\PersonDocument;
 use App\Services\AgentCustomerService;
@@ -39,6 +40,17 @@ class AgentCustomerDocumentController extends Controller {
             $request->string('type')->toString(),
             $additional,
         );
+
+        return ApiResource::make($document);
+    }
+
+    public function update(PersonDocument $personDocument, UpdatePersonDocumentRequest $request): ApiResource {
+        $this->ensureAgentOwnsDocument($personDocument);
+
+        /** @var array<string, mixed> $additional */
+        $additional = $request->input('additional_json');
+
+        $document = $this->uploadService->updateAdditional($personDocument, $additional ?: null);
 
         return ApiResource::make($document);
     }

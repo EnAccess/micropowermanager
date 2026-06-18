@@ -26,6 +26,9 @@ export default {
     upload(personId, formData) {
       return Client.post(`${resource}/${personId}/documents`, formData)
     },
+    update(documentId, payload) {
+      return Client.patch(`${documentResource}/${documentId}`, payload)
+    },
     delete(documentId) {
       return Client.delete(`${documentResource}/${documentId}`)
     },

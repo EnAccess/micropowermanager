@@ -127,6 +127,7 @@
     "addVillage": "ရွာကိုထည့်ပါ။",
     "additionalInfo": "ထပ်ဆောင်းအချက်အလက်",
     "additionalInfoHint": "JSON အဖြစ်သိမ်းသော ရွေးချယ်နိုင်သည့် key/value တွဲများ။",
+    "additionalInfoUpdated": "ထပ်ဆောင်းအချက်အလက်ကို မွမ်းမံပြီးပါပြီ",
     "agentCommissionDeleted": "ေအးဂျင်ေ့ကာ်မGှင်ကိုဖျက်လိကု်ပါNပီ။!",
     "agentCommissionUpdated": "ေအးဂျင်ေ့ကာ်မGှင်ကိုြပ+ြပင်လိကု်ပါNပီ။!",
     "agentDashboard": "ေအးဂျင်ခြုံငုံသုံးသပ်ချက်",
