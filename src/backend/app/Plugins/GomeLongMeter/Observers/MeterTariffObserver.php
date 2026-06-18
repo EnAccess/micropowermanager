@@ -21,7 +21,7 @@ class MeterTariffObserver {
             return;
         }
         $credential = $this->credentialService->getCredentials();
-        if ($credential && $credential->getUserId() !== null && $credential->getUserPassword() !== null) {
+        if ($credential && $credential->user_id !== null && $credential->user_password !== null) {
             $this->gomeLongTariffService->createGomeLongTariff($tariff);
         }
     }
@@ -32,7 +32,7 @@ class MeterTariffObserver {
         }
         $credential = $this->credentialService->getCredentials();
 
-        if ($credential && $credential->getUserId() !== null && $credential->getUserPassword() !== null) {
+        if ($credential && $credential->user_id !== null && $credential->user_password !== null) {
             $this->gomeLongTariffService->updateGomeLongTariff($tariff);
         }
     }
@@ -43,7 +43,7 @@ class MeterTariffObserver {
         }
         $credential = $this->credentialService->getCredentials();
 
-        if ($credential && $credential->getUserId() !== null && $credential->getUserPassword() !== null) {
+        if ($credential && $credential->user_id !== null && $credential->user_password !== null) {
             $this->gomeLongTariffService->deleteGomeLongTariff($tariff);
         }
     }

@@ -25,8 +25,4 @@ class GomeLongTariff extends BaseModel {
     public function mpmTariff(): BelongsTo {
         return $this->belongsTo(Tariff::class, 'mpm_tariff_id');
     }
-
-    public function getTariffId(): string {
-        return $this->tariff_id;
-    }
 }

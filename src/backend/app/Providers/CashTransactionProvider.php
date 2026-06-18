@@ -86,8 +86,4 @@ class CashTransactionProvider implements ITransactionProvider {
         $conflict->transaction()->associate($this->cashTransaction);
         $conflict->save();
     }
-
-    public function getTransaction(): Transaction {
-        return $this->transaction;
-    }
 }

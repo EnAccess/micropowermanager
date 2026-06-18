@@ -28,12 +28,12 @@ class UserListener {
 
     public function handleUserCreatedEvent(UserCreatedEvent $event): void {
         if ($event->shouldSyncUser) {
-            $companyDatabase = $this->companyDatabaseService->findByCompanyId($event->user->getCompanyId());
+            $companyDatabase = $this->companyDatabaseService->findByCompanyId($event->user->company_id);
 
             $databaseProxyData = [
-                'email' => $event->user->getEmail(),
-                'fk_company_id' => $event->user->getCompanyId(),
-                'fk_company_database_id' => $companyDatabase->getId(),
+                'email' => $event->user->email,
+                'fk_company_id' => $event->user->company_id,
+                'fk_company_database_id' => $companyDatabase->id,
             ];
             // check if owner account email already exists in db proxy
             try {
@@ -43,16 +43,16 @@ class UserListener {
             }
         }
 
-        $company = $this->companyService->getById($event->user->getCompanyId());
+        $company = $this->companyService->getById($event->user->company_id);
         $this->ticketUserService->findOrCreateByUser($event->user);
 
         // Only send welcome email if the email address is valid
-        if (filter_var($event->user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+        if (filter_var($event->user->email, FILTER_VALIDATE_EMAIL)) {
             $this->mailHelper->sendViaTemplate(
-                $event->user->getEmail(),
+                $event->user->email,
                 'Welcome to MicroPowerManager',
                 'templates.mail.register_welcome',
-                ['userName' => $event->user->getName(), 'companyName' => $company->getName()]
+                ['userName' => $event->user->name, 'companyName' => $company->name]
             );
         }
     }

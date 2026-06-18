@@ -24,9 +24,9 @@ class WaveMoneyTransactionCallbackMiddleware {
         $companyId = $request->attributes->get('companyId') ?? null;
 
         try {
-            $waveMoneyTransaction = $this->transactionService->getByOrderId($callbackData->getOrderId());
+            $waveMoneyTransaction = $this->transactionService->getByOrderId($callbackData->orderId);
 
-            if ($callbackData->mapTransactionStatus($callbackData->getStatus()) ===
+            if ($callbackData->mapTransactionStatus($callbackData->status) ===
                 TransactionCallbackData::STATUS_FAILURE) {
                 $status = WaveMoneyTransaction::STATUS_FAILED;
             } else {
@@ -49,7 +49,7 @@ class WaveMoneyTransactionCallbackMiddleware {
                 }
             }
         } catch (\Exception $exception) {
-            Log::critical('WaveMoney transaction callback called with wrong orderId '.$callbackData->getOrderId());
+            Log::critical('WaveMoney transaction callback called with wrong orderId '.$callbackData->orderId);
 
             $data = collect([
                 'success' => 0,

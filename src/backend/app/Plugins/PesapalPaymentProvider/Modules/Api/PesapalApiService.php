@@ -86,17 +86,17 @@ class PesapalApiService {
                 ];
             }
 
-            $transaction->setOrderTrackingId($orderTrackingId);
+            $transaction->order_tracking_id = $orderTrackingId;
             if (!empty($merchantReference)) {
-                $transaction->setMerchantReference($merchantReference);
+                $transaction->merchant_reference = $merchantReference;
             }
-            $transaction->setPaymentUrl($redirectUrl);
+            $transaction->payment_url = $redirectUrl;
             $transaction->save();
 
             Log::info('Pesapal SubmitOrderRequest success', [
                 'order_tracking_id' => $orderTrackingId,
                 'merchant_reference' => $merchantReference,
-                'transaction_reference' => $transaction->getReferenceId(),
+                'transaction_reference' => $transaction->reference_id,
             ]);
 
             return [
@@ -108,10 +108,10 @@ class PesapalApiService {
         } catch (GuzzleException|PesapalApiException|\RuntimeException|\InvalidArgumentException $exception) {
             Log::error('Pesapal SubmitOrderRequest exception', [
                 'exception_message' => $exception->getMessage(),
-                'transaction_reference' => $transaction->getReferenceId(),
+                'transaction_reference' => $transaction->reference_id,
             ]);
 
-            $transaction->setStatus(PesapalTransaction::STATUS_FAILED);
+            $transaction->status = PesapalTransaction::STATUS_FAILED;
             $transaction->save();
 
             return [
@@ -162,14 +162,14 @@ class PesapalApiService {
     }
 
     private function resolveCallbackUrl(PesapalCredential $credential, PesapalTransaction $transaction): string {
-        $callback = $credential->getCallbackUrl();
+        $callback = $credential->callback_url;
         if (in_array($callback, [null, '', '0'], true)) {
             throw new \InvalidArgumentException('PesaPal callback URL is not configured; save credentials to populate it.');
         }
         // Reference is appended so the customer's browser returns to a deep-linked result page.
         $separator = str_contains($callback, '?') ? '&' : '?';
 
-        return $callback.$separator.'reference='.urlencode($transaction->getReferenceId());
+        return $callback.$separator.'reference='.urlencode($transaction->reference_id);
     }
 
     private function getBaseUrl(PesapalCredential $credential): string {

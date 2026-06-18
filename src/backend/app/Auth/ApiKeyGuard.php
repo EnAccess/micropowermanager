@@ -70,6 +70,6 @@ class ApiKeyGuard implements Guard {
         /** @var ApiKeyAuthenticatable|null $user */
         $user = $this->user();
 
-        return $user?->getCompany()?->id;
+        return $user?->company?->id;
     }
 }

@@ -58,7 +58,7 @@ class PaystackWebhookService {
                 return;
             }
 
-            $paystackTransaction->setExternalTransactionId((string) ($data['id'] ?? ''));
+            $paystackTransaction->external_transaction_id = (string) ($data['id'] ?? '');
             $paystackTransaction->save();
 
             $this->transactionService->processSuccessfulPayment($companyId, $paystackTransaction);
@@ -83,7 +83,7 @@ class PaystackWebhookService {
             return;
         }
 
-        $paystackTransaction->setExternalTransactionId((string) ($data['id'] ?? ''));
+        $paystackTransaction->external_transaction_id = (string) ($data['id'] ?? '');
         $paystackTransaction->save();
 
         $this->transactionService->processFailedPayment($paystackTransaction);

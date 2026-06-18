@@ -61,7 +61,7 @@ class PesapalCredentialService {
         $secretsRotated = array_key_exists('consumer_key', $data)
             || array_key_exists('consumer_secret', $data);
         $environmentChanged = array_key_exists('environment', $data)
-            && $data['environment'] !== $credential->getEnvironment();
+            && $data['environment'] !== $credential->environment;
 
         $credential->update($this->encryptCredentialFields($data, self::ENCRYPTED_FIELDS));
         $this->decryptCredentialFields($credential, self::ENCRYPTED_FIELDS);
@@ -84,7 +84,7 @@ class PesapalCredentialService {
      * Surfaces failures to the caller; the controller is expected to translate to a 422.
      */
     public function ensureIpnRegistered(PesapalCredential $credential): void {
-        $callbackUrl = $credential->getCallbackUrl();
+        $callbackUrl = $credential->callback_url;
         if (in_array($callbackUrl, [null, '', '0'], true)) {
             return;
         }

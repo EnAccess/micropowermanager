@@ -22,7 +22,7 @@ class EcreeeMeterDataApiResolver implements IApiResolver {
         }
 
         if ($user instanceof ApiKeyAuthenticatable) {
-            return $user->getCompany()->id;
+            return $user->company->id;
         }
 
         return $user->id;

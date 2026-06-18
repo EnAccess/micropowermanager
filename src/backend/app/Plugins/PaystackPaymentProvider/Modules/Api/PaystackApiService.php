@@ -33,14 +33,14 @@ class PaystackApiService {
                 $reference = $body['data']['reference'] ?? '';
                 $authorizationUrl = $body['data']['authorization_url'] ?? '';
 
-                $transaction->setPaystackReference($reference);
-                $transaction->setPaymentUrl($authorizationUrl);
+                $transaction->paystack_reference = $reference;
+                $transaction->payment_url = $authorizationUrl;
                 $transaction->save();
 
                 Log::info('Paystack Transaction Initialize Success', [
                     'reference' => $reference,
                     'authorization_url' => $authorizationUrl,
-                    'transaction_reference' => $transaction->getReferenceId(),
+                    'transaction_reference' => $transaction->reference_id,
                 ]);
 
                 return [
@@ -59,11 +59,11 @@ class PaystackApiService {
             Log::error('Paystack Transaction Initialize Exception', [
                 'exception_message' => $exception->getMessage(),
                 'exception_code' => $exception->getCode(),
-                'transaction_reference' => $transaction->getReferenceId(),
+                'transaction_reference' => $transaction->reference_id,
                 'trace' => $exception->getTraceAsString(),
             ]);
 
-            $transaction->setStatus(PaystackTransaction::STATUS_FAILED);
+            $transaction->status = PaystackTransaction::STATUS_FAILED;
             $transaction->save();
 
             return [

@@ -38,13 +38,13 @@ class TenantSeeder extends Seeder {
         ]);
 
         $this->companyDatabaseService->create([
-            'company_id' => $company->getId(),
+            'company_id' => $company->id,
             'database_name' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
         ]);
 
         // Populate roles and permissions for the demo company
         $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function (): void {
                 RolesPermissionsPopulator::populate();
             }
@@ -52,16 +52,16 @@ class TenantSeeder extends Seeder {
 
         // Create Admin user and assign owner role
         $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function () use ($company) {
                 $owner = $this->userService->create(
                     [
                         'name' => 'Demo Company Admin',
                         'email' => DemoCompany::DEMO_COMPANY_ADMIN_EMAIL,
                         'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
-                        'company_id' => $company->getId(),
+                        'company_id' => $company->id,
                     ],
-                    $company->getId()
+                    $company->id
                 );
 
                 // Assign 'owner' role to the demo admin user
@@ -71,16 +71,16 @@ class TenantSeeder extends Seeder {
 
         // Create Editor user
         $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function () use ($company) {
                 $editor = $this->userService->create(
                     [
                         'name' => 'Demo Manager',
                         'email' => DemoCompany::DEMO_COMPANY_FINANCIAL_MANAGER_EMAIL,
                         'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
-                        'company_id' => $company->getId(),
+                        'company_id' => $company->id,
                     ],
-                    $company->getId()
+                    $company->id
                 );
 
                 $editor->assignRole('financial-manager');
@@ -89,16 +89,16 @@ class TenantSeeder extends Seeder {
 
         // Create Reader user
         $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function () use ($company) {
                 $reader = $this->userService->create(
                     [
                         'name' => 'Demo User',
                         'email' => DemoCompany::DEMO_COMPANY_REGULAR_USER_EMAIL,
                         'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
-                        'company_id' => $company->getId(),
+                        'company_id' => $company->id,
                     ],
-                    $company->getId()
+                    $company->id
                 );
 
                 $reader->assignRole('user');
@@ -107,7 +107,7 @@ class TenantSeeder extends Seeder {
 
         // Set some meaningful settings by default
         $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function () {
                 $mainSettings = $this->mainSettingsService->getAll()->first();
                 $this->mainSettingsService->update(
@@ -122,7 +122,7 @@ class TenantSeeder extends Seeder {
 
         // Plugin and Registration Tail magic
         $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function () {
                 $this->pluginsService->setupDemoManufacturerPlugins();
             }

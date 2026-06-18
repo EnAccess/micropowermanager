@@ -75,7 +75,7 @@ abstract class AbstractSharedCommand extends Command {
                     if ($companyDatabase instanceof CompanyDatabase) {
                         $this->runForCompany(
                             $databaseProxyManagerService,
-                            $companyDatabase->getCompanyId(),
+                            $companyDatabase->company_id,
                             $input,
                             $output
                         );

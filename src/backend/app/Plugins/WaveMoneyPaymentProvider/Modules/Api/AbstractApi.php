@@ -27,7 +27,7 @@ abstract class AbstractApi {
             throw new ApiRequestFailedException($response->getStatusCode(), $resource->getUri(), $response->getBody()->getContents());
         }
 
-        $resource->setBody($response->getBody()->getContents());
+        $resource->body = $response->getBody()->getContents();
 
         return $resource;
     }

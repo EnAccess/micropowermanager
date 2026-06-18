@@ -15,16 +15,4 @@ use Illuminate\Support\Carbon;
  */
 class ChintCredential extends BaseModel {
     protected $table = 'chint_api_credentials';
-
-    public function getUserName(): string {
-        return $this->user_name;
-    }
-
-    public function getUserPassword(): string {
-        return $this->user_password;
-    }
-
-    public function getApiUrl(): string {
-        return $this->api_url;
-    }
 }

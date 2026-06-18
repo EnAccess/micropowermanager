@@ -47,15 +47,15 @@ class WaveComTransactionProvider implements ITransactionProvider {
     }
 
     public function getMessage(): string {
-        return $this->getTransaction()->getMessage();
+        return $this->transaction->message;
     }
 
     public function getAmount(): float {
-        return $this->getTransaction()->getAmount();
+        return $this->transaction->amount;
     }
 
     public function getSender(): string {
-        return $this->getTransaction()->getSender();
+        return $this->transaction->sender;
     }
 
     public function saveCommonData(): Model {
@@ -77,9 +77,5 @@ class WaveComTransactionProvider implements ITransactionProvider {
         ]);
         $conflict->transaction()->associate($this->waveComTransaction);
         $conflict->save();
-    }
-
-    public function getTransaction(): Transaction {
-        return $this->transaction;
     }
 }

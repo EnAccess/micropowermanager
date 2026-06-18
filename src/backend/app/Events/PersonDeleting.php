@@ -16,14 +16,7 @@ class PersonDeleting {
     /**
      * Create a new event instance.
      */
-    public function __construct(private Person $person) {}
-
-    /**
-     * Get the Person model instance associated with the event.
-     */
-    public function getPerson(): Person {
-        return $this->person;
-    }
+    public function __construct(public private(set) Person $person) {}
 
     /**
      * Get the channels the event should broadcast on.

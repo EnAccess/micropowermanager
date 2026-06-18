@@ -19,6 +19,6 @@ class TicketCommentController extends Controller {
 
         $ticketUser = $this->ticketUserService->findOrCreateByUser($user);
 
-        $this->ticketCommentService->createComment($ticketId, $comment, $ticketUser->getId());
+        $this->ticketCommentService->createComment($ticketId, $comment, $ticketUser->id);
     }
 }
