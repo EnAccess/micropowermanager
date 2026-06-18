@@ -8,63 +8,81 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
+        $connection = DB::connection('tenant');
+        $schema = Schema::connection('tenant');
+
         $steps = [];
-        foreach (DB::connection('tenant')->table('registration_tail')->get() as $row) {
-            $entries = empty($row->tail) ? [] : json_decode($row->tail, true);
-            if (!is_array($entries)) {
-                continue;
-            }
-            foreach ($entries as $entry) {
-                $steps[] = [
-                    'tag' => $entry['tag'] ?? null,
-                    'component' => $entry['component'] ?? null,
-                    'adjusted' => !empty($entry['adjusted']),
-                    'updated_by' => $row->updated_by ?? null,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ];
+        if ($schema->hasColumn('registration_tail', 'tail')) {
+            foreach ($connection->table('registration_tail')->get() as $row) {
+                $entries = empty($row->tail) ? [] : json_decode($row->tail, true);
+                if (!is_array($entries)) {
+                    continue;
+                }
+                foreach ($entries as $entry) {
+                    $steps[] = [
+                        'tag' => $entry['tag'] ?? null,
+                        'component' => $entry['component'] ?? null,
+                        'adjusted' => !empty($entry['adjusted']),
+                        'updated_by' => $row->updated_by ?? null,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ];
+                }
             }
         }
 
-        Schema::connection('tenant')->table('registration_tail', function (Blueprint $table) {
-            $table->string('tag')->nullable()->after('id');
-            $table->string('component')->nullable()->after('tag');
-            $table->boolean('adjusted')->default(false)->after('component');
+        $schema->table('registration_tail', function (Blueprint $table) use ($schema) {
+            if (!$schema->hasColumn('registration_tail', 'tag')) {
+                $table->string('tag')->nullable()->after('id');
+            }
+            if (!$schema->hasColumn('registration_tail', 'component')) {
+                $table->string('component')->nullable()->after('tag');
+            }
+            if (!$schema->hasColumn('registration_tail', 'adjusted')) {
+                $table->boolean('adjusted')->default(false)->after('component');
+            }
         });
 
-        DB::connection('tenant')->table('registration_tail')->delete();
+        // Drop the json column before inserting rows: it is NOT NULL with no
+        // default, so leaving it in place would reject the new step rows.
+        if ($schema->hasColumn('registration_tail', 'tail')) {
+            $schema->table('registration_tail', function (Blueprint $table) {
+                $table->dropColumn('tail');
+            });
+        }
 
         if ($steps !== []) {
-            DB::connection('tenant')->table('registration_tail')->insert($steps);
+            $connection->table('registration_tail')->delete();
+            $connection->table('registration_tail')->insert($steps);
         }
-
-        Schema::connection('tenant')->table('registration_tail', function (Blueprint $table) {
-            $table->dropColumn('tail');
-        });
     }
 
     public function down(): void {
-        $rows = DB::connection('tenant')->table('registration_tail')->get();
+        $connection = DB::connection('tenant');
+        $schema = Schema::connection('tenant');
 
-        $tail = $rows->map(fn ($row) => [
+        $tail = $connection->table('registration_tail')->get()->map(fn ($row) => [
             'tag' => $row->tag,
             'component' => $row->component,
             'adjusted' => (bool) $row->adjusted,
         ])->values()->all();
+        $updatedBy = optional($connection->table('registration_tail')->first())->updated_by;
 
-        Schema::connection('tenant')->table('registration_tail', function (Blueprint $table) {
-            $table->json('tail')->nullable();
-        });
+        if (!$schema->hasColumn('registration_tail', 'tail')) {
+            $schema->table('registration_tail', function (Blueprint $table) {
+                $table->json('tail')->nullable();
+            });
+        }
 
-        DB::connection('tenant')->table('registration_tail')->delete();
-        DB::connection('tenant')->table('registration_tail')->insert([
+        $connection->table('registration_tail')->delete();
+        $connection->table('registration_tail')->insert([
             'tail' => json_encode($tail),
-            'updated_by' => optional($rows->first())->updated_by,
+            'updated_by' => $updatedBy,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
 
-        Schema::connection('tenant')->table('registration_tail', function (Blueprint $table) {
+        $schema->table('registration_tail', function (Blueprint $table) {
             $table->dropColumn(['tag', 'component', 'adjusted']);
         });
     }
