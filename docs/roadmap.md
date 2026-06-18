@@ -157,7 +157,7 @@ releases:
         category: "Payments"
         features:
           - title: "Customer-initiated C2B transactions using Vodacom's Generic API protocol"
-          - title: "Establish a secure IPSec tunnel between MPM Cloud and Vodacom infrastructur"
+          - title: "Establish a secure IPSec tunnel between MPM Cloud and Vodacom infrastructure"
         github:
           issue: 489
 
