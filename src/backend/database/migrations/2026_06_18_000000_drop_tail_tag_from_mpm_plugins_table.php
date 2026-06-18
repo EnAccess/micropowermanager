@@ -5,13 +5,13 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up() {
+    public function up(): void {
         Schema::table('mpm_plugins', function (Blueprint $table) {
             $table->dropColumn('tail_tag');
         });
     }
 
-    public function down() {
+    public function down(): void {
         Schema::table('mpm_plugins', function (Blueprint $table) {
             $table->string('tail_tag')->nullable();
         });
