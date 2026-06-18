@@ -53,4 +53,18 @@ export class CredentialService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+  async checkCredential() {
+    try {
+      let response = await this.repository.check()
+
+      if (![200, 201].includes(response.status)) {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+
+      return response.data.valid
+    } catch (e) {
+      let errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http", e.response.status)
+    }
+  }
 }
