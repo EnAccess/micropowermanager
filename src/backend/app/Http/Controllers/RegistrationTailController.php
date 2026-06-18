@@ -15,12 +15,10 @@ class RegistrationTailController extends Controller {
     }
 
     public function update(RegistrationTail $registrationTail, Request $request): ApiResource {
-        $tail = $request->input('tail');
-        $registrationTailData = [
-            'tail' => $tail,
+        $this->registrationTailService->update($registrationTail, [
+            'adjusted' => $request->boolean('adjusted', true),
             'updated_by' => auth('api')->user()->id,
-        ];
-        $this->registrationTailService->update($registrationTail, $registrationTailData);
+        ]);
 
         return ApiResource::make($this->registrationTailService->getAll());
     }

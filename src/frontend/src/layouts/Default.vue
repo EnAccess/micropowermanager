@@ -74,7 +74,9 @@ export default {
       return
     }
     if (this.status !== "") {
-      const tail = JSON.parse(this.registrationTail.tail)
+      const tail = Array.isArray(this.registrationTail)
+        ? this.registrationTail
+        : []
       this.tail = tail.filter(
         (step) =>
           step.adjusted === false && !!Vue.options.components[step.component],

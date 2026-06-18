@@ -96,21 +96,16 @@ export default {
     async updateRegistrationTail(tag) {
       this.loadingNextStep = true
       try {
-        const tailId = this.$store.getters["registrationTail/getTail"].id
-        await this.registrationTailService.updateRegistrationTail(
-          tailId,
-          tag,
-          this.tail,
-        )
         const stepIndex = this.tail.findIndex((step) => step.tag === tag)
-        const nextStep = this.tail[stepIndex + 1]
-        this.$store.commit(
-          "registrationTail/SET_REGISTRATION_TAIL",
-          this.registrationTailService.registrationTail,
-        )
-        this.nextStep(tag, nextStep)
+        const step = this.tail[stepIndex]
+        if (step) {
+          await this.registrationTailService.adjustStep(step.id)
+        }
+        this.nextStep(tag, this.tail[stepIndex + 1])
       } catch (e) {
         this.alertNotify("error", e.message)
+      } finally {
+        this.loadingNextStep = false
       }
     },
   },

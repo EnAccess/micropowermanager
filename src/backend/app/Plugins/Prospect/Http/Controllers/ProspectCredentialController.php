@@ -38,25 +38,8 @@ class ProspectCredentialController extends Controller {
 
         // Mark Prospect step as adjusted in Registration Tail (credentials fully provided)
         try {
-            $registrationTail = $this->registrationTailService->getFirst();
-            $tailArray = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
-
             $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PROSPECT);
-            $prospectTag = $mpmPlugin->name;
-
-            $updated = false;
-            foreach ($tailArray as &$item) {
-                if (isset($item['tag']) && $item['tag'] === $prospectTag) {
-                    $item['adjusted'] = true;
-                    $updated = true;
-                    break;
-                }
-            }
-            unset($item);
-
-            if ($updated) {
-                $this->registrationTailService->update($registrationTail, ['tail' => json_encode($tailArray)]);
-            }
+            $this->registrationTailService->adjustStep($mpmPlugin->name);
         } catch (\Throwable) {
             // Fail silently; tail update should not block credential updates
         }
