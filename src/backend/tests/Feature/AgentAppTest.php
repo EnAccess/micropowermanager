@@ -527,7 +527,7 @@ class AgentAppTest extends TestCase {
         Queue::assertPushed(ProcessPayment::class);
     }
 
-    public function testAgentTransactionFailsWhenAmountExceedsFloat(): void {
+    public function testAgentTransactionRejectedWhenAmountExceedsRiskBalance(): void {
         Queue::fake();
         $this->createTestData();
         $this->createCluster();
@@ -542,7 +542,8 @@ class AgentAppTest extends TestCase {
         ];
         $response = $this->actingAs($this->agent)
             ->post('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
-        $response->assertStatus(500);
+        $response->assertStatus(403);
+        $response->assertJson(['message' => 'Risk balance exceeded']);
         $this->assertSame(0, Transaction::query()->where('message', 'MTR-TX-002')->count());
         Queue::assertNotPushed(ProcessPayment::class);
     }

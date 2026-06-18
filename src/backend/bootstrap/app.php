@@ -1,10 +1,14 @@
 <?php
 
 use App\Console\Commands\MailApplianceDebtsCommand;
+use App\Exceptions\AgentRiskBalanceExceeded;
 use App\Exceptions\CompanyAlreadyExistsException;
+use App\Exceptions\DownPaymentBiggerThanAmountException;
+use App\Exceptions\DownPaymentNotFoundException;
 use App\Exceptions\EntityHasChildrenException;
 use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Exceptions\SmsGatewayNotConfiguredException;
+use App\Exceptions\TransactionAmountNotFoundException;
 use App\Http\Middleware\AgentBalanceMiddleware;
 use App\Http\Middleware\TelescopeBasicAuthMiddleware;
 use App\Http\Middleware\Transaction;
@@ -102,6 +106,22 @@ return Application::configure(basePath: dirname(__DIR__))
             'status_code' => 422,
         ], 422));
         $exceptions->render(fn (EntityHasChildrenException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (AgentRiskBalanceExceeded $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 403,
+        ], 403));
+        $exceptions->render(fn (DownPaymentNotFoundException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (DownPaymentBiggerThanAmountException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'status_code' => 422,
+        ], 422));
+        $exceptions->render(fn (TransactionAmountNotFoundException $e) => response()->json([
             'message' => $e->getMessage(),
             'status_code' => 422,
         ], 422));
