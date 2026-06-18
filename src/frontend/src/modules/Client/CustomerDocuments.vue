@@ -43,14 +43,13 @@
           </md-table-cell>
           <md-table-cell :md-label="$tc('words.actions')">
             <md-button
-              v-if="hasAdditionalInfo(item)"
               class="md-icon-button md-dense"
-              @click="showAdditionalInfo(item)"
+              @click="openEditDialog(item)"
             >
               <md-tooltip md-direction="top">
                 {{ $tc("phrases.additionalInfo") }}
               </md-tooltip>
-              <md-icon>info_outline</md-icon>
+              <md-icon>edit_note</md-icon>
             </md-button>
             <md-button
               class="md-icon-button md-dense"
@@ -227,33 +226,87 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog class="document-info-dialog" :md-active.sync="infoDialogVisible">
+    <md-dialog
+      class="document-info-dialog"
+      :md-active.sync="editDialogVisible"
+      :md-click-outside-to-close="false"
+    >
       <header class="dialog-header">
         <div class="dialog-header__icon">
-          <md-icon>info_outline</md-icon>
+          <md-icon>edit_note</md-icon>
         </div>
         <div class="dialog-header__text">
           <h2 class="dialog-header__title">
             {{ $tc("phrases.additionalInfo") }}
           </h2>
           <p class="dialog-header__subtitle">
-            {{ infoDocumentName }}
+            {{ editDocumentName }}
           </p>
         </div>
       </header>
       <md-dialog-content class="md-scrollbar dialog-content">
-        <dl class="info-list">
-          <template v-for="(value, key) in infoEntries">
-            <dt :key="`${key}-k`" class="info-list__key">{{ key }}</dt>
-            <dd :key="`${key}-v`" class="info-list__value">
-              {{ value === "" || value === null ? "—" : value }}
-            </dd>
-          </template>
-        </dl>
+        <section class="form-section form-section--additional">
+          <header class="form-section__header">
+            <p class="form-section__hint">
+              {{ $tc("phrases.additionalInfoHint") }}
+            </p>
+            <md-button
+              class="md-icon-button md-dense md-primary md-raised"
+              @click="addEditField"
+            >
+              <md-tooltip md-direction="top">
+                {{ $tc("phrases.addField") }}
+              </md-tooltip>
+              <md-icon>add</md-icon>
+            </md-button>
+          </header>
+
+          <div
+            v-if="editFields.length === 0"
+            class="extra-fields-empty"
+            @click="addEditField"
+          >
+            <md-icon>note_add</md-icon>
+            <span>{{ $tc("phrases.addFirstField") }}</span>
+          </div>
+
+          <div v-else class="extra-fields">
+            <div
+              v-for="(field, index) in editFields"
+              :key="index"
+              class="extra-field-row"
+            >
+              <md-field class="extra-field-row__field">
+                <label>{{ $tc("words.key") }}</label>
+                <md-input v-model="field.key" />
+              </md-field>
+              <md-field class="extra-field-row__field">
+                <label>{{ $tc("words.value") }}</label>
+                <md-input v-model="field.value" />
+              </md-field>
+              <md-button
+                class="md-icon-button md-dense extra-field-row__remove"
+                @click="removeEditField(index)"
+              >
+                <md-icon>close</md-icon>
+              </md-button>
+            </div>
+          </div>
+        </section>
       </md-dialog-content>
       <md-dialog-actions class="dialog-actions">
-        <md-button class="md-primary" @click="infoDialogVisible = false">
+        <md-button @click="editDialogVisible = false">
           {{ $tc("words.close") }}
+        </md-button>
+        <md-button
+          class="md-primary md-raised"
+          :disabled="savingEdit"
+          @click="saveAdditionalInfo"
+        >
+          <md-icon>save</md-icon>
+          <span class="dialog-actions__label">
+            {{ $tc("words.save") }}
+          </span>
         </md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -293,8 +346,10 @@ export default {
       maxDocuments: MAX_DOCUMENTS,
       isDragging: false,
       downloadingId: null,
-      infoDialogVisible: false,
-      infoDocument: null,
+      editDialogVisible: false,
+      editDocument: null,
+      editFields: [],
+      savingEdit: false,
     }
   },
   computed: {
@@ -308,11 +363,8 @@ export default {
         this.newDocument.type.trim().length > 0
       )
     },
-    infoEntries() {
-      return this.infoDocument?.additional_json ?? {}
-    },
-    infoDocumentName() {
-      return this.infoDocument?.original_name ?? ""
+    editDocumentName() {
+      return this.editDocument?.original_name ?? ""
     },
   },
   mounted() {
@@ -438,13 +490,45 @@ export default {
       if (ext === "docx") return "article"
       return "insert_drive_file"
     },
-    hasAdditionalInfo(document) {
-      const info = document?.additional_json
-      return info && typeof info === "object" && Object.keys(info).length > 0
+    openEditDialog(document) {
+      this.editDocument = document
+      const info = document?.additional_json ?? {}
+      this.editFields = Object.entries(info).map(([key, value]) => ({
+        key,
+        value: value === null ? "" : String(value),
+      }))
+      this.editDialogVisible = true
     },
-    showAdditionalInfo(document) {
-      this.infoDocument = document
-      this.infoDialogVisible = true
+    addEditField() {
+      this.editFields.push({ key: "", value: "" })
+    },
+    removeEditField(index) {
+      this.editFields.splice(index, 1)
+    },
+    async saveAdditionalInfo() {
+      const additional = {}
+      this.editFields.forEach((field) => {
+        const key = field.key.trim()
+        if (key.length > 0) {
+          additional[key] = field.value
+        }
+      })
+      this.savingEdit = true
+      const response = await this.personService.updateDocumentAdditional(
+        this.editDocument.id,
+        additional,
+      )
+      this.savingEdit = false
+      if (response instanceof ErrorHandler) {
+        this.alertNotify("error", response.errorMessage)
+        return
+      }
+      const index = this.documents.findIndex((d) => d.id === response.id)
+      if (index !== -1) {
+        this.$set(this.documents, index, response)
+      }
+      this.alertNotify("success", this.$tc("phrases.additionalInfoUpdated"))
+      this.editDialogVisible = false
     },
     async download(document) {
       this.downloadingId = document.id
@@ -745,31 +829,6 @@ $text-muted: rgba(0, 0, 0, 0.55);
     max-width: 92vw;
     border-radius: 12px;
     overflow: hidden;
-  }
-}
-
-.info-list {
-  display: grid;
-  grid-template-columns: minmax(120px, 1fr) 2fr;
-  gap: 0.5rem 1rem;
-  margin: 0;
-
-  &__key {
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: $text-muted;
-    align-self: center;
-  }
-
-  &__value {
-    margin: 0;
-    color: rgba(0, 0, 0, 0.85);
-    word-break: break-word;
-    padding: 0.4rem 0.6rem;
-    background: rgba(0, 0, 0, 0.03);
-    border-radius: 6px;
   }
 }
 </style>

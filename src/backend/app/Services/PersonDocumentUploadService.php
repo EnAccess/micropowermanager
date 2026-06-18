@@ -47,6 +47,16 @@ class PersonDocumentUploadService {
         ]);
     }
 
+    /**
+     * @param array<string, mixed>|null $additional
+     */
+    public function updateAdditional(PersonDocument $document, ?array $additional): PersonDocument {
+        $document->additional_json = $additional;
+        $document->save();
+
+        return $document;
+    }
+
     public function download(PersonDocument $document): StreamedResponse {
         $path = $this->fullPath($document);
 
