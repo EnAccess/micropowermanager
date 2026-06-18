@@ -55,16 +55,22 @@ export default {
   },
   mounted() {
     this.wizardIsVisible = this.showWizard
-    if (this.tail && this.tail.length) {
-      for (const tailObj of this.tail) {
-        if ("tag" in tailObj) {
-          EventBus.$on(tailObj.tag, () => {
-            this.updateRegistrationTail(tailObj.tag)
-          })
-        }
+    if (!this.tail || !this.tail.length) {
+      return
+    }
+    for (const tailObj of this.tail) {
+      if (!("tag" in tailObj)) {
+        continue
       }
-
-      this.activeStep = this.tail[0].tag
+      const handler = () => this.updateRegistrationTail(tailObj.tag)
+      this.tailListeners.push({ tag: tailObj.tag, handler })
+      EventBus.$on(tailObj.tag, handler)
+    }
+    this.activeStep = this.tail[0].tag
+  },
+  beforeDestroy() {
+    for (const { tag, handler } of this.tailListeners) {
+      EventBus.$off(tag, handler)
     }
   },
   data() {
@@ -72,6 +78,7 @@ export default {
       loadingNextStep: false,
       activeStep: "",
       wizardIsVisible: false,
+      tailListeners: [],
       registrationTailService: new RegistrationTailService(),
     }
   },
@@ -95,22 +102,13 @@ export default {
           tag,
           this.tail,
         )
-        const step = tag
-        let stepIndex = 0
-        for (let i = 0; i < this.tail.length; i++) {
-          for (let [k, v] of Object.entries(this.tail[i])) {
-            if (k === "tag" && v === step) {
-              stepIndex = i
-              break
-            }
-          }
-        }
+        const stepIndex = this.tail.findIndex((step) => step.tag === tag)
         const nextStep = this.tail[stepIndex + 1]
         this.$store.commit(
           "registrationTail/SET_REGISTRATION_TAIL",
           this.registrationTailService.registrationTail,
         )
-        this.nextStep(step, nextStep)
+        this.nextStep(tag, nextStep)
       } catch (e) {
         this.alertNotify("error", e.message)
       }

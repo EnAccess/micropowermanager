@@ -44,15 +44,7 @@ class RegistrationTailService implements IBaseService {
     public function addMpmPluginToRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
         $tail = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
-        $tail[] = [
-            'tag' => $mpmPlugin->tail_tag,
-            'component' => isset($mpmPlugin->tail_tag) ? str_replace(
-                ' ',
-                '-',
-                $mpmPlugin->tail_tag
-            ) : null,
-            'adjusted' => !isset($mpmPlugin->tail_tag),
-        ];
+        $tail[] = $mpmPlugin->toRegistrationTailEntry();
 
         return $this->update(
             $registrationTail,
@@ -63,7 +55,7 @@ class RegistrationTailService implements IBaseService {
     public function removeMpmPluginFromRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
         $tail = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
-        $updatedTail = array_filter($tail, fn (array $item): bool => $item['tag'] !== $mpmPlugin->tail_tag);
+        $updatedTail = array_filter($tail, fn (array $item): bool => $item['tag'] !== $mpmPlugin->name);
 
         return $this->update(
             $registrationTail,

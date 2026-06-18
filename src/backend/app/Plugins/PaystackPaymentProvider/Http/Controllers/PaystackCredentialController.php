@@ -53,7 +53,7 @@ class PaystackCredentialController extends Controller {
             $tailArray = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
             $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PAYSTACK_PAYMENT_PROVIDER);
-            $paystackTag = $mpmPlugin->tail_tag;
+            $paystackTag = $mpmPlugin->name;
 
             $updated = false;
             foreach ($tailArray as &$item) {

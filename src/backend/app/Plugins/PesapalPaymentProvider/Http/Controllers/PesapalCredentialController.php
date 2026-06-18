@@ -72,7 +72,7 @@ class PesapalCredentialController extends Controller {
             $tailArray = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
             $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PESAPAL_PAYMENT_PROVIDER);
-            $pesapalTag = $mpmPlugin->tail_tag;
+            $pesapalTag = $mpmPlugin->name;
 
             $updated = false;
             foreach ($tailArray as &$item) {

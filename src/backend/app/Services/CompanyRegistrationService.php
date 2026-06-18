@@ -227,15 +227,7 @@ class CompanyRegistrationService {
             $this->pluginsService->create($pluginData);
 
             $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
-            $registrationTail[] = [
-                'tag' => $mpmPlugin->tail_tag,
-                'component' => isset($mpmPlugin->tail_tag) ? str_replace(
-                    ' ',
-                    '-',
-                    $mpmPlugin->tail_tag
-                ) : null,
-                'adjusted' => !isset($mpmPlugin->tail_tag),
-            ];
+            $registrationTail[] = $mpmPlugin->toRegistrationTailEntry();
             Artisan::call($mpmPlugin->installation_command);
         }
 

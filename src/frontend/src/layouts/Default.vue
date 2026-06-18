@@ -48,6 +48,7 @@
   </div>
 </template>
 <script>
+import Vue from "vue"
 import { mapGetters } from "vuex"
 
 import FooterBar from "../layouts/FooterBar.vue"
@@ -74,12 +75,11 @@ export default {
     }
     if (this.status !== "") {
       const tail = JSON.parse(this.registrationTail.tail)
-      for (const tailElement of tail) {
-        if (tailElement.adjusted === false && !this.isWizardShown) {
-          this.showWizard = true
-        }
-      }
-      this.tail = tail.filter((x) => x.adjusted === false && x.tag !== null)
+      this.tail = tail.filter(
+        (step) =>
+          step.adjusted === false && !!Vue.options.components[step.component],
+      )
+      this.showWizard = this.tail.length > 0 && !this.isWizardShown
     }
   },
   mounted() {

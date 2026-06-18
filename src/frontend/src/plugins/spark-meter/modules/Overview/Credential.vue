@@ -126,7 +126,7 @@ export default {
         this.loading = true
         const updatedData = await this.credentialService.updateCredential()
         this.alertNotify(updatedData.alert.type, updatedData.alert.message)
-        EventBus.$emit("Spark Meter")
+        EventBus.$emit("SparkMeter")
       } catch (e) {
         this.alertNotify("error", "MPM failed to verify your request")
       }

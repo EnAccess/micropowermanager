@@ -42,7 +42,7 @@ class ProspectCredentialController extends Controller {
             $tailArray = empty($registrationTail->tail) ? [] : json_decode($registrationTail->tail, true);
 
             $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PROSPECT);
-            $prospectTag = $mpmPlugin->tail_tag;
+            $prospectTag = $mpmPlugin->name;
 
             $updated = false;
             foreach ($tailArray as &$item) {
