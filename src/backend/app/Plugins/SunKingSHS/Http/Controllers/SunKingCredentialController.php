@@ -2,11 +2,11 @@
 
 namespace App\Plugins\SunKingSHS\Http\Controllers;
 
-use App\Plugins\SunKingSHS\Models\SunKingCredential;
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
 use App\Plugins\SunKingSHS\Http\Clients\SunKingSHSApiClient;
 use App\Plugins\SunKingSHS\Http\Requests\SunKingCredentialRequest;
 use App\Plugins\SunKingSHS\Http\Resources\SunKingResource;
+use App\Plugins\SunKingSHS\Models\SunKingCredential;
 use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
