@@ -41,7 +41,7 @@ class VodacomMzApiClient {
      * @param string $transactionReference the reference of the transaction for the customer or
      *                                     business making the transaction, e.g. a smartcard number
      *                                     for a TV subscription or a utility bill reference number
-     * @param string $customerMsisdn       the payer's phone number in E.164 format, e.g. "+258848495010";
+     * @param string $customerMsisdn       the payer's phone number in E.164 format, e.g. "+258123456789";
      *                                     it is converted to the bare MSISDN the OpenAPI expects here
      * @param float  $amount               the amount to charge the payer
      * @param string $thirdPartyReference  the unique reference of the third party system; used to
@@ -68,7 +68,7 @@ class VodacomMzApiClient {
 
     /**
      * The OpenAPI expects the MSISDN as bare international digits with no leading "+", e.g.
-     * "258848495010". Everywhere else in MPM phone numbers are kept in E.164 ("+258848495010"); this
+     * "258123456789". Everywhere else in MPM phone numbers are kept in E.164 ("+258123456789"); this
      * is the single point where that canonical form is adapted to what Vodacom requires.
      */
     private function toMsisdn(string $e164PhoneNumber): string {

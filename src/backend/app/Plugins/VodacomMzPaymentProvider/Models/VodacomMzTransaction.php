@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
  * @property int         $id
  * @property string      $serialNumber
  * @property float       $amount
- * @property string      $payerPhoneNumber stored in E.164 format, e.g. "+258848495010"
+ * @property string      $payerPhoneNumber stored in E.164 format, e.g. "+258123456789"
  * @property string      $referenceId
  * @property int         $status
  * @property string|null $conversationId   OpenAPI output_ConversationID, returned once the C2B push is confirmed
