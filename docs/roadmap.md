@@ -41,15 +41,14 @@ releases:
           issue: 1343
 
       - id: "payment-vodacom"
-        title: "Vodacom Mozambique (M-Pesa) 🇲🇿"
+        title: "Vodacom Mozambique (M-Pesa) 🇲🇿 - OpenAPI USSD push"
         description: "Enhanced payment capabilities for Vodacom Mozambique (M-Pesa) integration."
-        status: "in-progress"
+        status: "completed"
         category: "Payments"
         features:
-          - title: "Customer initiated C2B transactions using Vodacom's generic OpenAPI protocol"
-          - title: "Establish a secure IPSec tunnel between MPM Cloud and Vodacom infrastructur"
+          - title: "MPM-initiated C2B transactions using Vodacom's OpenAPI protocol"
         github:
-          issue: 489
+          issue: 1458
 
       - id: "payment-paystack"
         title: "Paystack (Nigeria) 🇳🇬"
@@ -150,6 +149,17 @@ releases:
           - title: "Simplified plugin development"
           - title: "Better plugin isolation"
           - title: "Hot-reload support"
+
+      - id: "payment-vodacom"
+        title: "Vodacom Mozambique (M-Pesa) 🇲🇿 - Generic C2B Integration"
+        description: "Enhanced payment capabilities for Vodacom Mozambique (M-Pesa) integration."
+        status: "in-progress"
+        category: "Payments"
+        features:
+          - title: "Customer-initiated C2B transactions using Vodacom's Generic API protocol"
+          - title: "Establish a secure IPSec tunnel between MPM Cloud and Vodacom infrastructure"
+        github:
+          issue: 489
 
       - id: "native-sms"
         title: "Native SMS Support"
