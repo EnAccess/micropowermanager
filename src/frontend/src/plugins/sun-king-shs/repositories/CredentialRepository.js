@@ -9,4 +9,7 @@ export default {
   put(credentials) {
     return Client.put(`${resource}`, credentials)
   },
+  check() {
+    return Client.post(`${resource}/check`)
+  },
 }

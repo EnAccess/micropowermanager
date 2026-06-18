@@ -2,14 +2,19 @@
 
 namespace App\Plugins\SunKingSHS\Http\Controllers;
 
+use App\Plugins\SunKingSHS\Models\SunKingCredential;
+use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
+use App\Plugins\SunKingSHS\Http\Clients\SunKingSHSApiClient;
 use App\Plugins\SunKingSHS\Http\Requests\SunKingCredentialRequest;
 use App\Plugins\SunKingSHS\Http\Resources\SunKingResource;
 use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
 class SunKingCredentialController extends Controller {
     public function __construct(
         private SunKingCredentialService $credentialService,
+        private SunKingSHSApiClient $apiClient,
     ) {}
 
     public function show(): SunKingResource {
@@ -29,5 +34,21 @@ class SunKingCredentialController extends Controller {
         );
 
         return SunKingResource::make($credentials);
+    }
+
+    public function check(): JsonResponse {
+        $credentials = $this->credentialService->getCredentials();
+
+        if (!$credentials instanceof SunKingCredential) {
+            return response()->json(['valid' => false]);
+        }
+
+        try {
+            $this->apiClient->authentication($credentials);
+        } catch (SunKingApiResponseException) {
+            return response()->json(['valid' => false]);
+        }
+
+        return response()->json(['valid' => true]);
     }
 }
