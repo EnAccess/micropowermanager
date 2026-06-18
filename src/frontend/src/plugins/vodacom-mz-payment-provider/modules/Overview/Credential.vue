@@ -8,7 +8,7 @@
       <md-card>
         <md-card-header>
           <div class="md-subhead">
-            Configure your Vodacom Mozambique M-Pesa (IPG) API credentials so
+            Configure your Vodacom Mozambique M-Pesa OpenAPI credentials so
             MicroPowerManager can initiate payments.
           </div>
         </md-card-header>
@@ -37,8 +37,9 @@
                 <md-icon class="field-help">
                   info_outline
                   <md-tooltip md-direction="top">
-                    The "API Key" from your M-Pesa app — a ~32-character
-                    alphanumeric secret used to authenticate each request.
+                    The API Key from the M-Pesa Developer Portal profile — a
+                    ~32-character alphanumeric secret used to authenticate each
+                    request.
                   </md-tooltip>
                 </md-icon>
               </div>
@@ -66,9 +67,9 @@
                 <md-icon class="field-help">
                   info_outline
                   <md-tooltip md-direction="top">
-                    The "Public Key" from your M-Pesa app — the long base64
-                    string Vodacom gave you (it starts with "MII"). Paste it
-                    exactly as provided.
+                    The Public Key from the M-Pesa Developer Portal — a long
+                    base64 string starting with "MII". Paste it exactly as
+                    provided.
                   </md-tooltip>
                 </md-icon>
               </div>
@@ -131,19 +132,21 @@
                     >
                       M-Pesa Developer Portal
                     </a>
-                    and open your application.
+                    and open your profile.
                   </li>
                   <li>
                     Copy the
                     <strong>API Key</strong>
                     and
                     <strong>Public Key</strong>
-                    for the environment you are using (sandbox or live).
+                    from your profile.
                   </li>
                   <li>
                     The
                     <strong>Service Provider Code</strong>
-                    is issued to your organisation by Vodacom.
+                    is issued by Vodacom; on Sandbox use
+                    <strong>171717</strong>
+                    .
                   </li>
                 </ol>
               </div>
