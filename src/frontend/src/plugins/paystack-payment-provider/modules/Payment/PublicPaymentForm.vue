@@ -31,7 +31,9 @@
                 @md-selected="onDeviceTypeChange"
               >
                 <md-option value="meter">Meter</md-option>
-                <md-option value="solar_home_system">Solar Home System</md-option>
+                <md-option value="solar_home_system">
+                  Solar Home System
+                </md-option>
               </md-select>
             </md-field>
           </div>
@@ -171,25 +173,33 @@ export default {
       )
     },
     serialLabel() {
-      if (this.paymentService.paymentRequest.deviceType === "solar_home_system") {
+      if (
+        this.paymentService.paymentRequest.deviceType === "solar_home_system"
+      ) {
         return "SHS Serial Number"
       }
       return "Meter Serial Number"
     },
     validatingMessage() {
-      if (this.paymentService.paymentRequest.deviceType === "solar_home_system") {
+      if (
+        this.paymentService.paymentRequest.deviceType === "solar_home_system"
+      ) {
         return "Validating SHS..."
       }
       return "Validating meter..."
     },
     validMessage() {
-      if (this.paymentService.paymentRequest.deviceType === "solar_home_system") {
+      if (
+        this.paymentService.paymentRequest.deviceType === "solar_home_system"
+      ) {
         return "SHS is valid"
       }
       return "Meter is valid"
     },
     invalidMessage() {
-      if (this.paymentService.paymentRequest.deviceType === "solar_home_system") {
+      if (
+        this.paymentService.paymentRequest.deviceType === "solar_home_system"
+      ) {
         return "Invalid SHS serial number"
       }
       return "Invalid meter serial number"
