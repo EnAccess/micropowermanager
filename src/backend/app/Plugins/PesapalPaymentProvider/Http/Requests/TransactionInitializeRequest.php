@@ -24,7 +24,7 @@ class TransactionInitializeRequest extends FormRequest {
             'device_serial' => ['required', 'string'],
             'customer_id' => ['required', 'integer'],
             'currency' => ['nullable', 'string', 'in:'.implode(',', $supportedCurrencies)],
-            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system,shs'],
+            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system'],
         ];
     }
 

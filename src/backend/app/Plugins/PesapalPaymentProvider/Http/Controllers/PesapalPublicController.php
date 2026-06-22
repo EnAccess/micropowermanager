@@ -65,7 +65,7 @@ class PesapalPublicController extends Controller {
             $deviceType = $validatedData['device_type'] ?? 'meter';
             $deviceSerial = $validatedData['device_serial'];
 
-            if ($deviceType === 'shs') {
+            if ($deviceType === 'solar_home_system') {
                 $customerId = $this->transactionService->getCustomerIdBySHSSerial($deviceSerial);
             } else {
                 $customerId = $this->transactionService->getCustomerIdByMeterSerial($deviceSerial);

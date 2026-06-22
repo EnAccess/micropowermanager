@@ -70,7 +70,7 @@ class PaystackPublicController extends Controller {
             $deviceSerial = $validatedData['device_serial'];
 
             // Get customer ID based on device type
-            if ($deviceType === 'shs') {
+            if ($deviceType === 'solar_home_system') {
                 $customerId = $this->transactionService->getCustomerIdBySHSSerial($deviceSerial);
             } else {
                 $customerId = $this->transactionService->getCustomerIdByMeterSerial($deviceSerial);
