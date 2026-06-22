@@ -1,6 +1,6 @@
 <template>
   <div class="md-layout md-gutter">
-    <div class="md-layout-item md-size-40">
+    <div class="md-layout-item md-size-40 md-small-size-100 md-xsmall-size-100">
       <client-detail-card
         :person-id="personId"
         :show-customer-information="false"
@@ -59,7 +59,7 @@
         </div>
       </widget>
     </div>
-    <div class="md-layout-item md-size-60">
+    <div class="md-layout-item md-size-60 md-small-size-100 md-xsmall-size-100">
       <widget
         :title="'Details of ' + soldAppliance.applianceType.name"
         color="primary"
@@ -177,7 +177,9 @@
             class="md-layout-item md-layout md-gutter md-size-100"
             style="padding: 2vw"
           >
-            <div class="md-layout-item md-size-50">
+            <div
+              class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100"
+            >
               <h2>
                 <b>{{ $tc("phrases.paymentType") }}:</b>
                 Energy as a Service
@@ -206,7 +208,9 @@
                 {{ moneyFormat(soldAppliance.pricePerDay) }}
               </div>
             </div>
-            <div class="md-layout-item md-size-50">
+            <div
+              class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100"
+            >
               <h3>
                 <b>{{ $tc("phrases.soldDate") }}:</b>
                 {{ formatReadableDate(soldAppliance.createdAt) }}
@@ -226,7 +230,9 @@
             class="md-layout-item md-layout md-gutter md-size-100"
             style="padding: 2vw"
           >
-            <div class="md-layout-item md-size-50">
+            <div
+              class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100"
+            >
               <h2>
                 <b>{{ $tc("phrases.totalCost") }}:</b>
                 {{ moneyFormat(soldAppliance.totalCost) }}
@@ -252,7 +258,9 @@
                 {{ moneyFormat(soldAppliance.totalRemainingAmount) }}
               </h4>
             </div>
-            <div class="md-layout-item md-size-50">
+            <div
+              class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100"
+            >
               <h3>
                 <b>{{ $tc("phrases.soldDate") }}:</b>
                 {{ formatReadableDate(soldAppliance.createdAt) }}
