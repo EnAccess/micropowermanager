@@ -297,7 +297,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     }
 
     public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
-        if ($deviceType === 'shs') {
+        if ($deviceType === 'solar_home_system') {
             return $this->validateSHSSerial($serialId);
         }
 

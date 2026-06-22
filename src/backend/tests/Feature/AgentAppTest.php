@@ -213,7 +213,8 @@ class AgentAppTest extends TestCase {
         $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/search?term=%s', $person->name));
         $response->assertStatus(200);
         $this->assertNotNull($response['data']);
-        $this->assertEquals($response['data'][0]['name'], $person->name);
+        $returnedIds = array_column($response['data'], 'id');
+        $this->assertContains($person->id, $returnedIds);
     }
 
     public function testAgentGetsCustomersPaymentFlow(): void {

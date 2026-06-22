@@ -17,7 +17,7 @@ class PublicPaymentRequest extends FormRequest {
     public function rules(): array {
         return [
             'device_serial' => ['required', 'string', 'min:3', 'max:50'],
-            'device_type' => ['nullable', 'string', 'in:meter,shs,other'],
+            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system,e_bike'],
             'amount' => [
                 'required',
                 'numeric',
