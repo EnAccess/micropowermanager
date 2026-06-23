@@ -37,8 +37,8 @@ class SafaricomTransactionController extends Controller {
 
     public function validateDevice(Request $request): JsonResponse {
         $request->validate([
-            'device_serial' => 'required|string|min:3|max:100',
-            'device_type' => 'nullable|string|in:meter,solar_home_system',
+            'device_serial' => ['required', 'string', 'min:3', 'max:100'],
+            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system'],
         ]);
         $deviceSerial = (string) $request->input('device_serial');
         $deviceType = (string) ($request->input('device_type') ?? 'meter');
@@ -83,8 +83,6 @@ class SafaricomTransactionController extends Controller {
                 customerId: $customerId,
                 serialId: $serialId,
             );
-        } catch (\InvalidArgumentException $e) {
-            return response()->json(['error' => $e->getMessage()], 422);
         } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }

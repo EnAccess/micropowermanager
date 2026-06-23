@@ -9,6 +9,7 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
+use App\Plugins\SafaricomMobileMoney\Models\SafaricomCredential;
 use App\Plugins\SafaricomMobileMoney\Models\SafaricomTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\DeviceService;
@@ -164,7 +165,7 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
     ): array {
         $deviceType = null;
         if ($serialId !== null) {
-            $device = app(DeviceService::class)->getBySerialNumber($serialId);
+            $device = resolve(DeviceService::class)->getBySerialNumber($serialId);
             $deviceType = $device?->device_type;
         }
 
@@ -434,7 +435,7 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
     /**
      * @return array{checkout_request_id: ?string, merchant_request_id: ?string, customer_message: ?string, raw: array<string, mixed>, error: ?string}
      */
-    private function sendStkPush(SafaricomTransaction $transaction, \App\Plugins\SafaricomMobileMoney\Models\SafaricomCredential $credential): array {
+    private function sendStkPush(SafaricomTransaction $transaction, SafaricomCredential $credential): array {
         $timestamp = date('YmdHis');
         $shortcode = $credential->getEffectiveShortcode();
         $passkey = $credential->getEffectivePasskey();
@@ -544,15 +545,15 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
         ];
     }
 
-    private function stkPushUrl(\App\Plugins\SafaricomMobileMoney\Models\SafaricomCredential $credential): string {
+    private function stkPushUrl(SafaricomCredential $credential): string {
         return $this->darajaBaseUrl($credential).'/mpesa/stkpush/v1/processrequest';
     }
 
-    private function stkPushQueryUrl(\App\Plugins\SafaricomMobileMoney\Models\SafaricomCredential $credential): string {
+    private function stkPushQueryUrl(SafaricomCredential $credential): string {
         return $this->darajaBaseUrl($credential).'/mpesa/stkpushquery/v1/query';
     }
 
-    private function darajaBaseUrl(\App\Plugins\SafaricomMobileMoney\Models\SafaricomCredential $credential): string {
+    private function darajaBaseUrl(SafaricomCredential $credential): string {
         return $credential->isProduction()
             ? (string) config('safaricom-mobile-money.api.production_url', 'https://api.safaricom.co.ke')
             : (string) config('safaricom-mobile-money.api.sandbox_url', 'https://sandbox.safaricom.co.ke');

@@ -46,7 +46,7 @@ class SafaricomAuthService {
                 'url' => $url,
                 'error' => $e->getMessage(),
             ]);
-            throw new \RuntimeException('Could not reach Daraja for token: '.$e->getMessage());
+            throw new \RuntimeException('Could not reach Daraja for token: '.$e->getMessage(), $e->getCode(), $e);
         }
 
         if (!$response->successful()) {

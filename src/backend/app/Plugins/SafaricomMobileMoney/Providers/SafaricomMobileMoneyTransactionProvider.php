@@ -46,7 +46,7 @@ class SafaricomMobileMoneyTransactionProvider implements ITransactionProvider {
         } else {
             Log::error('Safaricom transaction is being cancelled', [
                 'transaction_id' => $transaction->id,
-                'original_transaction_id' => optional($safaricomSubTx)->id,
+                'original_transaction_id' => $safaricomSubTx->id,
             ]);
         }
     }
