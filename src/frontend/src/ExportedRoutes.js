@@ -81,6 +81,10 @@ import PesapalPublicResult from "@/plugins/pesapal-payment-provider/modules/Paym
 import PesapalTransaction from "@/plugins/pesapal-payment-provider/modules/Transaction/Transaction.vue"
 import ProspectOverview from "@/plugins/prospect/modules/Overview/Overview.vue"
 import ProspectSettings from "@/plugins/prospect/modules/Setting/Setting.vue"
+import SafaricomMobileMoneyCredential from "@/plugins/safaricom-mobile-money/modules/Overview/Credential.vue"
+import SafaricomMobileMoneyOverview from "@/plugins/safaricom-mobile-money/modules/Overview/Overview.vue"
+import SafaricomMobileMoneySTKPush from "@/plugins/safaricom-mobile-money/modules/STKPush/STKPush.vue"
+import SafaricomMobileMoneyTransaction from "@/plugins/safaricom-mobile-money/modules/Transaction/Transaction.vue"
 import SmsTransactionParserMessages from "@/plugins/sms-transaction-parser/modules/Messages/Messages.vue"
 import SmsTransactionParserOverview from "@/plugins/sms-transaction-parser/modules/Overview/Overview.vue"
 import SparkMeterCustomerList from "@/plugins/spark-meter/modules/Customer/CustomerList.vue"
@@ -1856,6 +1860,63 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Messages",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/safaricom-mobile-money-overview",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 31,
+        name: "Safaricom M-PESA",
+        icon: "money",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: SafaricomMobileMoneyOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "credential",
+        component: SafaricomMobileMoneyCredential,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Credentials",
+          },
+        },
+      },
+      {
+        path: "transactions",
+        component: SafaricomMobileMoneyTransaction,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
+          },
+        },
+      },
+      {
+        path: "stk-push",
+        component: SafaricomMobileMoneySTKPush,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Initiate Payment",
           },
         },
       },
