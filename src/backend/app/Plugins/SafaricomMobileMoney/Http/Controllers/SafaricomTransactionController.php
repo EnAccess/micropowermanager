@@ -34,6 +34,7 @@ class SafaricomTransactionController extends Controller {
 
         return SafaricomTransactionResource::make($transaction);
     }
+
     public function validateDevice(Request $request): JsonResponse {
         $request->validate([
             'device_serial' => 'required|string|min:3|max:100',

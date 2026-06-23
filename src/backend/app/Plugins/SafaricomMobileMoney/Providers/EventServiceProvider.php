@@ -5,6 +5,9 @@ namespace App\Plugins\SafaricomMobileMoney\Providers;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider {
+    /**
+     * @var array<int|string, class-string|array<int, class-string>>
+     */
     protected $subscribe = [
     ];
 

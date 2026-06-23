@@ -5,27 +5,26 @@ namespace App\Plugins\SafaricomMobileMoney\Providers;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Plugins\SafaricomMobileMoney\Models\SafaricomTransaction;
-use App\Plugins\SafaricomMobileMoney\Services\SafaricomTransactionService;
 use App\Providers\Interfaces\ITransactionProvider;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class SafaricomMobileMoneyTransactionProvider implements ITransactionProvider {
-    private array $validData = [];
     private Transaction $transaction;
 
     public function __construct(
         private SafaricomTransaction $safaricomTransaction,
         private TransactionConflicts $transactionConflicts,
-        private SafaricomTransactionService $safaricomTransactionService,
         private SmsService $smsService,
     ) {}
 
-    public function validateRequest($request): void {
-        $this->validData = $request->all();
+    public function validateRequest(Request $request): void {
+        // Transactions are built server-side from the STK Push form via the
+        // service layer, so no per-request validation hand-off is needed here.
     }
 
     public function saveTransaction(): void {
@@ -60,8 +59,8 @@ class SafaricomMobileMoneyTransactionProvider implements ITransactionProvider {
         return $this->getTransaction()->message ?? '';
     }
 
-    public function getAmount(): int {
-        return (int) $this->getTransaction()->amount;
+    public function getAmount(): float {
+        return (float) $this->getTransaction()->amount;
     }
 
     public function getSender(): string {

@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 /**
+ * @extends AbstractPaymentAggregatorTransactionService<SafaricomTransaction>
+ *
  * @implements IBaseService<SafaricomTransaction>
  */
 class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
@@ -266,9 +268,8 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
         if (!empty($payload['transaction_date'])) {
             $transaction->transaction_date = $payload['transaction_date'];
         }
-        $existingResponse = $transaction->response_data ?? [];
         $transaction->response_data = array_merge(
-            is_array($existingResponse) ? $existingResponse : [],
+            $transaction->response_data ?? [],
             $payload,
             ['final_result_code' => $resultCode],
         );

@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
-    public function up() {
+    public function up(): void {
         DB::table('mpm_plugins')->insert([
             [
                 'id' => MpmPlugin::SAFARICOM_MOBILE_MONEY,
@@ -21,7 +21,7 @@ return new class extends Migration {
         ]);
     }
 
-    public function down() {
+    public function down(): void {
         DB::table('mpm_plugins')
             ->where('id', MpmPlugin::SAFARICOM_MOBILE_MONEY)
             ->delete();

@@ -9,6 +9,9 @@ class SafaricomSTKPushRequest extends FormRequest {
         return true;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function rules(): array {
         return [
             'amount' => 'required|numeric|min:1|max:150000',
@@ -21,6 +24,9 @@ class SafaricomSTKPushRequest extends FormRequest {
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array {
         return [
             'amount.min' => 'Amount must be at least 1 KES',
