@@ -189,9 +189,7 @@ export default {
       if (this.isSandbox) {
         return true
       }
-      return (
-        Boolean(this.credentials.shortcode) && this.credentials.passkeySet
-      )
+      return Boolean(this.credentials.shortcode) && this.credentials.passkeySet
     },
     isFullyConfigured() {
       return this.hasOauthKeys && this.hasMerchantConfig

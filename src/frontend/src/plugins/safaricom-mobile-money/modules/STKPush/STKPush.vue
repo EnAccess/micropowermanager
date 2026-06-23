@@ -29,7 +29,9 @@
                     @md-selected="onDeviceTypeChange"
                   >
                     <md-option value="meter">Meter</md-option>
-                    <md-option value="solar_home_system">Solar Home System</md-option>
+                    <md-option value="solar_home_system">
+                      Solar Home System
+                    </md-option>
                   </md-select>
                 </md-field>
               </div>
@@ -173,8 +175,10 @@
           <h3 class="waiting__title">Check the customer's phone</h3>
           <p class="waiting__text">
             An M-PESA prompt has been sent to
-            <strong>{{ formattedPhone }}</strong> for
-            <strong>KES {{ formatAmount(form.amount) }}</strong>.
+            <strong>{{ formattedPhone }}</strong>
+            for
+            <strong>KES {{ formatAmount(form.amount) }}</strong>
+            .
           </p>
           <p class="waiting__text waiting__text--muted">
             They need to enter their M-PESA PIN to complete the payment. This
@@ -401,10 +405,7 @@ export default {
       // Re-validate against the new type whenever the operator flips it,
       // so a serial that's a meter but not an SHS doesn't show a stale ✓.
       this.deviceValidation.valid = null
-      if (
-        this.form.deviceSerial &&
-        this.form.deviceSerial.length >= 3
-      ) {
+      if (this.form.deviceSerial && this.form.deviceSerial.length >= 3) {
         this.validateDevice()
       }
     },

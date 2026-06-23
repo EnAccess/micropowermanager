@@ -115,10 +115,7 @@
                   <md-icon>check_circle</md-icon>
                   Configured — leave blank to keep the current passkey.
                 </p>
-                <p
-                  v-else-if="isSandbox"
-                  class="field__note field__note--info"
-                >
+                <p v-else-if="isSandbox" class="field__note field__note--info">
                   <md-icon>info</md-icon>
                   Optional in sandbox — Daraja's public test passkey is used
                   when blank.
@@ -152,15 +149,17 @@
                   class="field__note field__note--info"
                 >
                   <md-icon>info</md-icon>
-                  Optional in sandbox — Daraja's test shortcode 174379 is
-                  used when blank.
+                  Optional in sandbox — Daraja's test shortcode 174379 is used
+                  when blank.
                 </p>
               </div>
             </div>
 
             <div class="md-layout-item md-size-50 md-small-size-100">
               <div class="field">
-                <label class="field__label" for="environment">Environment</label>
+                <label class="field__label" for="environment">
+                  Environment
+                </label>
                 <md-field>
                   <md-select
                     id="environment"
@@ -188,8 +187,8 @@
                   />
                 </md-field>
                 <p class="field__note">
-                  Daraja will POST STK Push results here. Leave blank to use
-                  the auto-generated webhook URL.
+                  Daraja will POST STK Push results here. Leave blank to use the
+                  auto-generated webhook URL.
                 </p>
               </div>
             </div>
