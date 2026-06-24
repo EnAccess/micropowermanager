@@ -253,6 +253,7 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth:api'], static function
     Route::get('/{personId}/addresses', [PersonAddressesController::class, 'show'])->middleware('permission:customers');
     Route::post('/{personId}/addresses', [PersonAddressesController::class, 'store'])->middleware('permission:customers');
     Route::put('/{personId}/addresses', [PersonAddressesController::class, 'update'])->middleware('permission:customers');
+    Route::delete('/{personId}/addresses/{addressId}', [PersonAddressesController::class, 'destroy'])->middleware('permission:customers');
 
     Route::get('/{personId}/documents', [PersonDocumentController::class, 'index'])->middleware('permission:customers');
     Route::post('/{personId}/documents', [PersonDocumentController::class, 'store'])->middleware('permission:customers');

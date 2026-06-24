@@ -70,4 +70,17 @@ export class Addresses {
       return new ErrorHandler(erorMessage, "http")
     }
   }
+  async deleteAddress(addressId) {
+    try {
+      let response = await this.repository.delete(this.personId, addressId)
+      if (response.status === 200 || response.status === 201) {
+        return response
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let erorMessage = e.response.data.message
+      return new ErrorHandler(erorMessage, "http")
+    }
+  }
 }
