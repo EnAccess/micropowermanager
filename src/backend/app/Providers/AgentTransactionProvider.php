@@ -149,8 +149,4 @@ class AgentTransactionProvider implements ITransactionProvider {
         $conflict->save();
         $this->agentTransaction->update(['status' => -1]);
     }
-
-    public function getTransaction(): Transaction {
-        return $this->transaction;
-    }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Plugins\WaveMoneyPaymentProvider\Modules\Api\Resources;
 
 abstract class AbstractApiResource {
-    protected string $body;
+    public string $body;
     protected const REQUEST_TIME_TO_LIVE_IN_SECS = 120;
 
     abstract public function getRequestMethod(): string;
@@ -37,14 +37,6 @@ abstract class AbstractApiResource {
      */
     public function getHeaders(): array {
         return ['Accept' => 'application/json'];
-    }
-
-    public function setBody(string $body): void {
-        $this->body = $body;
-    }
-
-    public function getBody(): string {
-        return $this->body;
     }
 
     /**

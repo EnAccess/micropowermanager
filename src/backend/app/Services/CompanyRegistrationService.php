@@ -54,9 +54,9 @@ class CompanyRegistrationService {
             DB::connection('micro_power_manager')->beginTransaction();
 
             $company = $this->createCompany($companyData);
-            $databaseName = $this->generateDatabaseName($company->getName());
+            $databaseName = $this->generateDatabaseName($company->name);
 
-            $this->createCompanyDatabaseRecord($company->getId(), $databaseName);
+            $this->createCompanyDatabaseRecord($company->id, $databaseName);
 
             DB::connection('micro_power_manager')->commit();
 
@@ -65,7 +65,7 @@ class CompanyRegistrationService {
             $databaseCreated = true;
 
             // Step 3: Run migrations for the tenant database
-            $this->runTenantMigrations($company->getId());
+            $this->runTenantMigrations($company->id);
 
             // Step 4: Setup tenant data in a transaction
             DB::connection('micro_power_manager')->beginTransaction();
@@ -81,7 +81,7 @@ class CompanyRegistrationService {
             }
 
             if ($company instanceof Company) {
-                $this->cleanupCompanyRecords($company->getId());
+                $this->cleanupCompanyRecords($company->id);
             }
 
             Log::error('Company registration failed', [
@@ -174,7 +174,7 @@ class CompanyRegistrationService {
         string $usageType,
     ): void {
         $this->databaseProxyManagerService->runForCompany(
-            $company->getId(),
+            $company->id,
             function () use ($company, $adminData, $plugins, $usageType) {
                 DB::connection('tenant')->beginTransaction();
 
@@ -187,9 +187,9 @@ class CompanyRegistrationService {
                             'name' => $adminData['name'],
                             'password' => $adminData['password'],
                             'email' => $adminData['email'],
-                            'company_id' => $company->getId(),
+                            'company_id' => $company->id,
                         ],
-                        $company->getId()
+                        $company->id
                     );
 
                     $adminUser->assignRole('owner');
@@ -217,7 +217,7 @@ class CompanyRegistrationService {
      * @param array<array{id: int}> $plugins
      */
     private function setupPluginsAndRegistrationTail(array $plugins): void {
-        $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => false]];
+        $this->registrationTailService->create(['component' => 'Settings', 'adjusted' => false]);
 
         foreach ($plugins as $plugin) {
             $pluginData = [
@@ -227,19 +227,9 @@ class CompanyRegistrationService {
             $this->pluginsService->create($pluginData);
 
             $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
-            $registrationTail[] = [
-                'tag' => $mpmPlugin->tail_tag,
-                'component' => isset($mpmPlugin->tail_tag) ? str_replace(
-                    ' ',
-                    '-',
-                    $mpmPlugin->tail_tag
-                ) : null,
-                'adjusted' => !isset($mpmPlugin->tail_tag),
-            ];
+            $this->registrationTailService->create($mpmPlugin->toRegistrationTailEntry());
             Artisan::call($mpmPlugin->installation_command);
         }
-
-        $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
     }
 
     /**

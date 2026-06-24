@@ -95,13 +95,13 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
             $paystackTransaction = $this->paystackTransaction->newQuery()->create($paystackTransactionData);
 
             // Get customer's phone number for sender field
-            $customerPhone = $this->getCustomerPhoneByCustomerId($paystackTransaction->getCustomerId());
+            $customerPhone = $this->getCustomerPhoneByCustomerId($paystackTransaction->customer_id);
             $sender = $customerPhone ?: '';
 
             $paystackTransaction->transaction()->create([
-                'amount' => $paystackTransaction->getAmount(),
+                'amount' => $paystackTransaction->amount,
                 'sender' => $sender,
-                'message' => $paystackTransaction->getDeviceSerial(),
+                'message' => $paystackTransaction->serial_id,
                 'type' => 'energy',
             ]);
 
@@ -117,12 +117,12 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
     public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
         $id = $transaction->transaction->id;
         dispatch(new ProcessPayment($companyId, $id));
-        $transaction->setStatus(PaystackTransaction::STATUS_SUCCESS);
+        $transaction->status = PaystackTransaction::STATUS_SUCCESS;
         $transaction->save();
     }
 
     public function processFailedPayment(PaystackTransaction $transaction): void {
-        $transaction->setStatus(PaystackTransaction::STATUS_FAILED);
+        $transaction->status = PaystackTransaction::STATUS_FAILED;
         $transaction->save();
 
         $relatedTransaction = $transaction->transaction;
@@ -135,7 +135,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
      * Create a PaystackTransaction + Transaction and initialize via the Paystack API.
      * The caller supplies message and type, keeping routing knowledge outside this service.
      *
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
         float $amount,
@@ -188,6 +188,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
                     'redirect_url' => $result['redirectionUrl'],
                     'reference' => $result['reference'],
                 ],
+                'process_immediately' => false,
             ];
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
@@ -236,7 +237,7 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
     }
 
     public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
-        if ($deviceType === 'shs') {
+        if ($deviceType === 'solar_home_system') {
             return $this->validateSHSSerial($serialId);
         }
 

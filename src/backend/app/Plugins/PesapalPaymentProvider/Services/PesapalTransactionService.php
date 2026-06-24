@@ -56,7 +56,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
             'reference_id' => $referenceId,
             'serial_id' => $this->meterSerialNumber,
             'status' => PesapalTransaction::STATUS_REQUESTED,
-            'currency' => $this->credentialService->getCredentials()->getCurrency(),
+            'currency' => $this->credentialService->getCredentials()->currency,
             'customer_id' => $this->customerId,
             'amount' => $this->amount,
             'metadata' => [
@@ -111,13 +111,13 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
             /** @var PesapalTransaction $pesapalTransaction */
             $pesapalTransaction = $this->pesapalTransaction->newQuery()->create($pesapalTransactionData);
 
-            $customerPhone = $this->getCustomerPhoneByCustomerId($pesapalTransaction->getCustomerId());
+            $customerPhone = $this->getCustomerPhoneByCustomerId($pesapalTransaction->customer_id);
             $sender = $customerPhone ?: '';
 
             $pesapalTransaction->transaction()->create([
-                'amount' => $pesapalTransaction->getAmount(),
+                'amount' => $pesapalTransaction->amount,
                 'sender' => $sender,
-                'message' => $pesapalTransaction->getDeviceSerial(),
+                'message' => $pesapalTransaction->serial_id,
                 'type' => 'energy',
             ]);
 
@@ -147,12 +147,12 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     public function processSuccessfulPayment(int $companyId, PesapalTransaction $transaction): void {
         $id = $transaction->transaction->id;
         dispatch(new ProcessPayment($companyId, $id));
-        $transaction->setStatus(PesapalTransaction::STATUS_SUCCESS);
+        $transaction->status = PesapalTransaction::STATUS_SUCCESS;
         $transaction->save();
     }
 
     public function processFailedPayment(PesapalTransaction $transaction): void {
-        $transaction->setStatus(PesapalTransaction::STATUS_FAILED);
+        $transaction->status = PesapalTransaction::STATUS_FAILED;
         $transaction->save();
     }
 
@@ -165,13 +165,13 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
      * @return array{status_code: ?int, status_description: string, amount: float, currency: string, payment_method: string, confirmation_code: string, merchant_reference: string, error: ?string}
      */
     public function syncStatusFromApi(PesapalTransaction $transaction, int $companyId): array {
-        $status = $this->pesapalApiService->getTransactionStatus($transaction->getOrderTrackingId());
+        $status = $this->pesapalApiService->getTransactionStatus($transaction->order_tracking_id);
         if ($status['error'] !== null) {
             return $status;
         }
 
         if (!empty($status['confirmation_code'])) {
-            $transaction->setExternalTransactionId($status['confirmation_code']);
+            $transaction->external_transaction_id = $status['confirmation_code'];
             $transaction->save();
         }
 
@@ -190,14 +190,14 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
                 $this->processFailedPayment($transaction);
                 break;
             case GetTransactionStatusResource::STATUS_INVALID:
-                $transaction->setStatus(PesapalTransaction::STATUS_ABANDONED);
+                $transaction->status = PesapalTransaction::STATUS_ABANDONED;
                 $transaction->save();
                 break;
         }
     }
 
     /**
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
         float $amount,
@@ -220,7 +220,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
 
             $pesapalTxn = $this->pesapalTransaction->newQuery()->create([
                 'amount' => $amount,
-                'currency' => $credential->getCurrency() ?: config('pesapal-payment-provider.currency.default', 'KES'),
+                'currency' => $credential->currency ?: config('pesapal-payment-provider.currency.default', 'KES'),
                 'order_id' => Uuid::uuid4()->toString(),
                 'reference_id' => Uuid::uuid4()->toString(),
                 'status' => PesapalTransaction::STATUS_REQUESTED,
@@ -252,6 +252,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
                     'order_tracking_id' => $result['order_tracking_id'],
                     'merchant_reference' => $result['merchant_reference'],
                 ],
+                'process_immediately' => false,
             ];
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
@@ -296,7 +297,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
     }
 
     public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
-        if ($deviceType === 'shs') {
+        if ($deviceType === 'solar_home_system') {
             return $this->validateSHSSerial($serialId);
         }
 

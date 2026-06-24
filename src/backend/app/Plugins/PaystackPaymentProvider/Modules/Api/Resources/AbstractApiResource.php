@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Plugins\PaystackPaymentProvider\Modules\Api\Resources;
 
 abstract class AbstractApiResource {
-    protected string $body = '';
+    public string $body = '';
 
     abstract public function getRequestMethod(): string;
 
@@ -23,14 +23,6 @@ abstract class AbstractApiResource {
 
     public function getUri(): string {
         return $this->getPaymentUri();
-    }
-
-    public function setBody(string $body): void {
-        $this->body = $body;
-    }
-
-    public function getBody(): string {
-        return $this->body;
     }
 
     /**

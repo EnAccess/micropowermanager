@@ -19,10 +19,10 @@ class ApiRequests {
     public function authentication(DalyBmsCredential $credential): array {
         try {
             $slug = '/Login/Authenticate?';
-            $userName = $credential->getUserName();
-            $password = $credential->getPassword();
+            $userName = $credential->user_name;
+            $password = $credential->password;
             $response =
-                $this->httpClient->post($credential->getApiUrl().$slug.'Username='.$userName.'&Password='.$password);
+                $this->httpClient->post($credential->api_url.$slug.'Username='.$userName.'&Password='.$password);
 
             $body = json_decode((string) $response->getBody(), true);
             $status = $body['status'];
@@ -53,14 +53,14 @@ class ApiRequests {
      * @return array<string, mixed>
      */
     public function postWithBodyParams(DalyBmsCredential $credentials, array $params, string $slug): array {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         try {
             $response = $this->httpClient->post(
                 $url,
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
-                        'Authorization' => 'Bearer '.$credentials->getAccessToken(),
+                        'Authorization' => 'Bearer '.$credentials->access_token,
                     ],
                     'body' => json_encode($params),
                 ]
@@ -92,7 +92,7 @@ class ApiRequests {
      * @return array<string, mixed>
      */
     public function postWithQueryParams(DalyBmsCredential $credentials, array $params, string $slug): array {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
 
         if (!str_contains($url, '?')) {
             $url .= '?'.http_build_query($params);
@@ -105,7 +105,7 @@ class ApiRequests {
                 $url,
                 [
                     'headers' => [
-                        'Authorization' => 'Bearer '.$credentials->getAccessToken(),
+                        'Authorization' => 'Bearer '.$credentials->access_token,
                     ],
                 ]
             );

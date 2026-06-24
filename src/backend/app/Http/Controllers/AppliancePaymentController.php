@@ -14,8 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AppliancePaymentController extends Controller {
-    public const CASH_TRANSACTION_PROVIVER = 0;
-
     public function __construct(
         private AppliancePaymentService $appliancePaymentService,
         private AppliancePersonService $appliancePersonService,
@@ -89,7 +87,7 @@ class AppliancePaymentController extends Controller {
             serialId: $deviceSerial,
         );
 
-        if ($providerId === $this::CASH_TRANSACTION_PROVIVER) {
+        if ($result['process_immediately']) {
             dispatch(new ProcessPayment($companyId, $result['transaction']->id));
         }
 

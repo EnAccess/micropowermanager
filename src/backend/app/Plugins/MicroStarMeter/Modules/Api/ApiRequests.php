@@ -21,7 +21,7 @@ class ApiRequests {
      * @return array<string, mixed>
      */
     public function get(MicroStarCredential $credentials, array $params, string $slug): array {
-        $url = $credentials->getApiUrl().$slug;
+        $url = $credentials->api_url.$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
         }

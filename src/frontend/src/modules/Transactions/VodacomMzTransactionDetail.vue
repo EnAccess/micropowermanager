@@ -11,10 +11,28 @@
     <hr class="hr-d" />
     <div class="md-layout">
       <div class="md-layout-item md-subheader">
-        {{ $tc("phrases.originatorConversationId") }}
+        {{ $tc("words.phone") }}
       </div>
       <div class="md-layout-item md-subheader n-font">
-        {{ ot.originator_conversation_id }}
+        {{ ot.payerPhoneNumber || "-" }}
+      </div>
+    </div>
+    <hr class="hr-d" />
+    <div class="md-layout">
+      <div class="md-layout-item md-subheader">
+        {{ $tc("phrases.deviceSerial") }}
+      </div>
+      <div class="md-layout-item md-subheader n-font">
+        {{ ot.serialNumber || "-" }}
+      </div>
+    </div>
+    <hr class="hr-d" />
+    <div class="md-layout">
+      <div class="md-layout-item md-subheader">
+        {{ $tc("phrases.referenceId") }}
+      </div>
+      <div class="md-layout-item md-subheader n-font">
+        {{ ot.referenceId || "-" }}
       </div>
     </div>
     <hr class="hr-d" />
@@ -23,25 +41,25 @@
         {{ $tc("phrases.conversationId") }}
       </div>
       <div class="md-layout-item md-subheader n-font">
-        {{ ot.conversation_id }}
+        {{ ot.conversationId || "-" }}
       </div>
     </div>
     <hr class="hr-d" />
     <div class="md-layout">
       <div class="md-layout-item md-subheader">
-        {{ $tc("phrases.mpesaReceipt") }}
+        {{ $tc("phrases.externalTransactionId") }}
       </div>
       <div class="md-layout-item md-subheader n-font">
-        {{ ot.mpesa_receipt }}
+        {{ ot.transactionId || "-" }}
       </div>
     </div>
     <hr class="hr-d" />
     <div class="md-layout">
       <div class="md-layout-item md-subheader">
-        {{ $tc("phrases.transactionId") }}
+        {{ $tc("words.status") }}
       </div>
       <div class="md-layout-item md-subheader n-font">
-        {{ ot.transaction_id }}
+        {{ statusLabel }}
       </div>
     </div>
   </div>
@@ -51,12 +69,24 @@
 import vodacomLogo from "@/assets/icons/vodacom.png"
 
 export default {
-  name: "VodacomTransactionDetail",
+  name: "VodacomMzTransactionDetail",
   props: ["ot"],
   data() {
     return {
       imgLogo: vodacomLogo,
+      statusLabels: {
+        "-1": "Failed",
+        0: "Requested",
+        1: "Successful",
+        2: "Completed",
+        3: "Abandoned",
+      },
     }
+  },
+  computed: {
+    statusLabel() {
+      return this.statusLabels[this.ot.status] ?? this.ot.status
+    },
   },
 }
 </script>
@@ -72,8 +102,6 @@ export default {
   padding: 0;
   display: block;
   border: 0;
-  /* transition: margin-left .3s cubic-bezier(.4,0,.2,1); */
-  /* will-change: margin-left; */
   background-color: rgba(0, 0, 0, 0.12);
 }
 </style>

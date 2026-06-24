@@ -37,8 +37,6 @@ class PaystackTransactionProvider implements ITransactionProvider {
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
-
-        $this->setValidData($paystackTransactionData);
     }
 
     public function saveTransaction(): void {
@@ -67,15 +65,6 @@ class PaystackTransactionProvider implements ITransactionProvider {
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction {
-        return $this->transaction;
-    }
-
-    /**
-     * @param mixed $paystackTransactionData
-     */
-    public function setValidData($paystackTransactionData): void {}
-
     /**
      * @param mixed $transaction
      */
@@ -94,11 +83,11 @@ class PaystackTransactionProvider implements ITransactionProvider {
     }
 
     public function getAmount(): float {
-        return (float) $this->getTransaction()->amount;
+        return (float) $this->transaction->amount;
     }
 
     public function getSender(): string {
-        return $this->getTransaction()->message;
+        return $this->transaction->message;
     }
 
     public function saveCommonData(): Model {

@@ -4,14 +4,14 @@ import RegistrationTailRepository from "@/repositories/RegistrationTailRepositor
 export class RegistrationTailService {
   constructor() {
     this.repository = RegistrationTailRepository
-    this.registrationTail = {}
+    this.registrationTail = []
   }
 
   async getRegistrationTail() {
     try {
       let response = await this.repository.list()
       if (response.status === 200) {
-        this.registrationTail = response.data.data[0]
+        this.registrationTail = response.data.data
         return this.registrationTail
       } else {
         return new ErrorHandler(response.error, "http", response.status)
@@ -22,21 +22,12 @@ export class RegistrationTailService {
     }
   }
 
-  async updateRegistrationTail(tailId, tag, tail) {
+  async adjustStep(stepId) {
     try {
-      for (const tailObj of tail) {
-        for (const tailObjKey in tailObj) {
-          if (tailObjKey === "tag" && tailObj[tailObjKey] === tag) {
-            tailObj["adjusted"] = true
-          }
-        }
-      }
-
-      let response = await this.repository.update(tailId, { tail: tail })
+      let response = await this.repository.update(stepId, { adjusted: true })
 
       if (response.status === 200) {
-        this.registrationTail = response.data.data[0]
-
+        this.registrationTail = response.data.data
         return this.registrationTail
       } else {
         return new ErrorHandler(response.error, "http", response.status)

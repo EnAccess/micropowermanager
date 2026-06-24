@@ -24,23 +24,23 @@ class TransactionInitializeRequest extends FormRequest {
             'device_serial' => ['required', 'string'],
             'customer_id' => ['required', 'integer'],
             'currency' => ['nullable', 'string', 'in:'.implode(',', $supportedCurrencies)],
-            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system,shs'],
+            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system'],
         ];
     }
 
     public function getPesapalTransaction(): PesapalTransaction {
         $transaction = new PesapalTransaction();
-        $transaction->setAmount((float) $this->input('amount'));
-        $transaction->setDeviceSerial($this->input('device_serial'));
-        $transaction->setCustomerId((int) $this->input('customer_id'));
-        $transaction->setCurrency($this->input('currency', config('pesapal-payment-provider.currency.default', 'KES')));
-        $transaction->setStatus(PesapalTransaction::STATUS_REQUESTED);
+        $transaction->amount = (float) $this->input('amount');
+        $transaction->serial_id = $this->input('device_serial');
+        $transaction->customer_id = (int) $this->input('customer_id');
+        $transaction->currency = $this->input('currency', config('pesapal-payment-provider.currency.default', 'KES'));
+        $transaction->status = PesapalTransaction::STATUS_REQUESTED;
         $deviceType = $this->input('device_type');
         if (is_string($deviceType) && $deviceType !== '') {
-            $transaction->setDeviceType($deviceType);
+            $transaction->device_type = $deviceType;
         }
-        $transaction->setOrderId(Uuid::uuid4()->toString());
-        $transaction->setReferenceId(Uuid::uuid4()->toString());
+        $transaction->order_id = Uuid::uuid4()->toString();
+        $transaction->reference_id = Uuid::uuid4()->toString();
 
         return $transaction;
     }

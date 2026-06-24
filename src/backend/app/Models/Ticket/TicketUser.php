@@ -25,8 +25,4 @@ class TicketUser extends BaseModel {
     public const TABLE_NAME = 'ticket_users';
     public const COL_USER_ID = 'user_id';
     protected $table = self::TABLE_NAME;
-
-    public function getId(): int {
-        return $this->id;
-    }
 }

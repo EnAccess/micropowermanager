@@ -32,11 +32,11 @@ class UserController extends Controller {
         if ($roles !== []) {
             $user->syncRoles($roles);
         }
-        $companyDatabase = $this->companyDatabaseService->findByCompanyId($user->getCompanyId());
+        $companyDatabase = $this->companyDatabaseService->findByCompanyId($user->company_id);
         $databaseProxyData = [
-            'email' => $user->getEmail(),
-            'fk_company_id' => $user->getCompanyId(),
-            'fk_company_database_id' => $companyDatabase->getId(),
+            'email' => $user->email,
+            'fk_company_id' => $user->company_id,
+            'fk_company_database_id' => $companyDatabase->id,
         ];
         $this->databaseProxyService->create($databaseProxyData);
 

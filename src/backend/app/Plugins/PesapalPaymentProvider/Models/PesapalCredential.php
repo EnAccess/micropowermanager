@@ -34,39 +34,11 @@ class PesapalCredential extends BaseModel {
         return $this->consumer_secret ?? '';
     }
 
-    public function getMerchantName(): ?string {
-        return $this->merchant_name;
-    }
-
-    public function getMerchantEmail(): ?string {
-        return $this->merchant_email;
-    }
-
-    public function getCallbackUrl(): ?string {
-        return $this->callback_url;
-    }
-
-    public function getEnvironment(): string {
-        return $this->environment;
-    }
-
     public function isLive(): bool {
         return $this->environment === 'live';
     }
 
     public function isTest(): bool {
         return $this->environment === 'test';
-    }
-
-    public function getCurrency(): string {
-        return $this->currency;
-    }
-
-    public function getIpnId(): ?string {
-        return $this->ipn_id;
-    }
-
-    public function getIpnRegisteredAt(): ?Carbon {
-        return $this->ipn_registered_at;
     }
 }

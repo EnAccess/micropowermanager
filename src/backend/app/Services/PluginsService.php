@@ -105,9 +105,8 @@ class PluginsService {
         ];
         $plugin = $this->create($pluginData);
 
-        // 2. Add registration tail (if exists)
-        $registrationTail = $this->registrationTailService->getFirst();
-        $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
+        // 2. Add registration tail step
+        $this->registrationTailService->addMpmPluginToRegistrationTail($mpmPlugin);
 
         // 3. Run installation command
         Artisan::call($mpmPlugin->installation_command);

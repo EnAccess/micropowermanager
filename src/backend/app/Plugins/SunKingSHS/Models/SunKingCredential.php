@@ -18,28 +18,4 @@ use Illuminate\Support\Carbon;
  */
 class SunKingCredential extends BaseModel {
     protected $table = 'sun_king_api_credentials';
-
-    public function getClientSecret(): string {
-        return $this->client_secret;
-    }
-
-    public function getClientId(): string {
-        return $this->client_id;
-    }
-
-    public function getApiUrl(): string {
-        return $this->api_url;
-    }
-
-    public function getAuthUrl(): string {
-        return $this->auth_url;
-    }
-
-    public function getAccessToken(): string {
-        return $this->access_token;
-    }
-
-    public function getExpirationTime(): int {
-        return $this->token_expires_in;
-    }
 }

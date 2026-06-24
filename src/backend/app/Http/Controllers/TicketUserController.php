@@ -37,10 +37,10 @@ class TicketUserController extends Controller {
         $user = $this->userService->get($request->getUserId());
 
         $ticketUserData = [
-            'user_name' => $user->getName(),
+            'user_name' => $user->name,
             'phone' => null,
             'out_source' => 0,
-            'user_id' => $user->getId(),
+            'user_id' => $user->id,
         ];
         $ticketUser = $this->ticketUserService->create($ticketUserData);
 

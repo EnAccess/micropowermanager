@@ -15,16 +15,4 @@ use Illuminate\Support\Carbon;
  */
 class GomeLongCredential extends BaseModel {
     protected $table = 'gome_long_api_credentials';
-
-    public function getUserId(): ?string {
-        return $this->user_id;
-    }
-
-    public function getUserPassword(): ?string {
-        return $this->user_password;
-    }
-
-    public function getApiUrl(): string {
-        return $this->api_url;
-    }
 }

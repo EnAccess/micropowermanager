@@ -34,6 +34,4 @@ interface ITransactionProvider {
     public function init(BasePaymentProviderTransaction $transaction): void;
 
     public function addConflict(?string $message): void;
-
-    public function getTransaction(): Transaction;
 }

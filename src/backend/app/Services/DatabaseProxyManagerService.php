@@ -24,7 +24,7 @@ class DatabaseProxyManagerService {
     public function runForCompany(int $companyId, callable $callable): mixed {
         if (!app()->environment('testing')) {
             $database = $this->companyDatabase->findByCompanyId($companyId);
-            $this->buildDatabaseConnection($database->getDatabaseName());
+            $this->buildDatabaseConnection($database->database_name);
         }
 
         return $callable();

@@ -105,6 +105,7 @@ import SunKingShsOverview from "@/plugins/sun-king-shs/modules/Overview/Overview
 import SwiftaOverview from "@/plugins/swifta-payment-provider/modules/Overview/Overview.vue"
 import TextbeeSmsGatewayOverview from "@/plugins/textbee-sms-gateway/modules/Overview/Overview.vue"
 import ViberMessagingOverview from "@/plugins/viber-messaging/modules/Overview/Overview.vue"
+import VodacomMzOverview from "@/plugins/vodacom-mz-payment-provider/modules/Overview/Overview.vue"
 import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Overview/Overview.vue"
 import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment.vue"
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
@@ -1791,6 +1792,30 @@ export const exportedRoutes = [
       {
         path: "overview",
         component: SparkShsOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/vodacom-mz",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 19,
+        name: "Vodacom MZ",
+        icon: "payments",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: VodacomMzOverview,
         meta: {
           layout: "default",
           sidebar: {

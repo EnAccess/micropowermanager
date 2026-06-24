@@ -25,7 +25,7 @@ import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactio
 import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail.vue"
 import ThirdPartyTransactionDetail from "@/modules/Transactions/ThirdPartyTransactionDetail.vue"
-import VodacomTransactionDetail from "@/modules/Transactions/VodacomTransactionDetail.vue"
+import VodacomMzTransactionDetail from "@/modules/Transactions/VodacomMzTransactionDetail.vue"
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail.vue"
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail.vue"
 import AfricasTalking from "@/plugins/africas-talking/modules/Overview/Credential.vue"
@@ -38,9 +38,7 @@ import GomeLong from "@/plugins/gome-long-meter/modules/Overview/Credential.vue"
 import Kelin from "@/plugins/kelin-meter/modules/Overview/Credential.vue"
 import MicroStar from "@/plugins/micro-star-meter/modules/Overview/Credential.vue"
 import PaystackPaymentProvider from "@/plugins/paystack-payment-provider/Component.vue"
-import Paystack from "@/plugins/paystack-payment-provider/modules/Overview/Credential.vue"
 import PesapalPaymentProvider from "@/plugins/pesapal-payment-provider/Component.vue"
-import Pesapal from "@/plugins/pesapal-payment-provider/modules/Overview/Credential.vue"
 import Prospect from "@/plugins/prospect/modules/Overview/Credential.vue"
 import SmsTransactionParserSetup from "@/plugins/sms-transaction-parser/modules/Overview/Setup.vue"
 import Spark from "@/plugins/spark-meter/modules/Overview/Credential.vue"
@@ -50,6 +48,7 @@ import Stron from "@/plugins/stron-meter/modules/Overview/Credential.vue"
 import SunKing from "@/plugins/sun-king-shs/modules/Overview/Credential.vue"
 import TextbeeSmsGateway from "@/plugins/textbee-sms-gateway/modules/Overview/Credential.vue"
 import Viber from "@/plugins/viber-messaging/modules/Overview/Credential.vue"
+import VodacomMzPaymentProvider from "@/plugins/vodacom-mz-payment-provider/modules/Overview/Credential.vue"
 import WaveMoney from "@/plugins/wave-money-payment-provider/modules/Overview/Credential.vue"
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/modules/Component.vue"
 import { attachAuthStore } from "@/repositories/Client/AxiosClient.js"
@@ -58,40 +57,42 @@ import Snackbar from "@/shared/Snackbar.vue"
 Vue.component("default", Default)
 Vue.component("Snackbar", Snackbar)
 
-// global component to be displayed in RegistrationTail
-Vue.component("Spark-Meter", Spark)
-Vue.component("Steamaco-Meter", Steamaco)
-Vue.component("Calin-Meter", Calin)
-Vue.component("CalinSmart-Meter", CalinSmart)
-Vue.component("Kelin-Meter", Kelin)
-Vue.component("Stron-Meter", Stron)
-Vue.component("Settings", Settings)
-Vue.component("Viber-Messaging", Viber)
-Vue.component("WaveMoney", WaveMoney)
-Vue.component("MicroStar-Meter", MicroStar)
-Vue.component("SunKing-SHS", SunKing)
-Vue.component("GomeLong-Meter", GomeLong)
 Vue.component("WaveComTransaction", WaveComTransaction)
 Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
 Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
 Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
-Vue.component("VodacomTransactionDetail", VodacomTransactionDetail)
+Vue.component("VodacomMzTransactionDetail", VodacomMzTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("SmsTransactionDetail", SmsTransactionDetail)
-Vue.component("Angaza-SHS", Angaza)
-Vue.component("Daly-Bms", DalyBms)
-Vue.component("Paystack-Payment-Provider", PaystackPaymentProvider)
-Vue.component("Pesapal-Payment-Provider", PesapalPaymentProvider)
-Vue.component("Africas-Talking", AfricasTalking)
-Vue.component("Chint-Meter", ChintMeter)
+
+// Registration tail components. The registration tail keys each step on the
+// plugin's name (MpmPlugin.name), so these must be registered under that exact
+// name. A plugin without a registration step simply has no entry here.
+Vue.component("Settings", Settings)
+Vue.component("SparkMeter", Spark)
+Vue.component("SteamaMeter", Steamaco)
+Vue.component("CalinMeter", Calin)
+Vue.component("CalinSmartMeter", CalinSmart)
+Vue.component("KelinMeter", Kelin)
+Vue.component("StronMeter", Stron)
+Vue.component("ViberMessaging", Viber)
+Vue.component("WaveMoneyPayment", WaveMoney)
+Vue.component("MicroStarMeter", MicroStar)
+Vue.component("SunKingSHS", SunKing)
+Vue.component("GomeLongMeter", GomeLong)
+Vue.component("AngazaSHS", Angaza)
+Vue.component("DalyBms", DalyBms)
+Vue.component("PaystackPaymentProvider", PaystackPaymentProvider)
+Vue.component("PesapalPaymentProvider", PesapalPaymentProvider)
+Vue.component("AfricasTalking", AfricasTalking)
+Vue.component("ChintMeter", ChintMeter)
 Vue.component("Prospect", Prospect)
-Vue.component("Paystack", Paystack)
-Vue.component("Pesapal", Pesapal)
 Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
 Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
+Vue.component("VodacomMzPaymentProvider", VodacomMzPaymentProvider)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {

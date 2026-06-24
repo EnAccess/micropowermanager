@@ -36,8 +36,6 @@ class PesapalTransactionProvider implements ITransactionProvider {
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
-
-        $this->setValidData($pesapalTransactionData);
     }
 
     public function saveTransaction(): void {
@@ -65,15 +63,6 @@ class PesapalTransactionProvider implements ITransactionProvider {
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction {
-        return $this->transaction;
-    }
-
-    /**
-     * @param mixed $pesapalTransactionData
-     */
-    public function setValidData($pesapalTransactionData): void {}
-
     /**
      * @param mixed $transaction
      */
@@ -89,11 +78,11 @@ class PesapalTransactionProvider implements ITransactionProvider {
     }
 
     public function getAmount(): float {
-        return (float) $this->getTransaction()->amount;
+        return (float) $this->transaction->amount;
     }
 
     public function getSender(): string {
-        return $this->getTransaction()->message;
+        return $this->transaction->message;
     }
 
     public function saveCommonData(): Model {

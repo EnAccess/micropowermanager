@@ -98,7 +98,7 @@ class User extends Authenticatable implements JWTSubject {
      */
     public function getJWTCustomClaims(): array {
         return [
-            'companyId' => $this->getCompanyId(),
+            'companyId' => $this->company_id,
         ];
     }
 
@@ -135,22 +135,6 @@ class User extends Authenticatable implements JWTSubject {
      */
     public function company(): BelongsTo {
         return $this->BelongsTo(Company::class, 'company_id');
-    }
-
-    public function getCompanyId(): int {
-        return $this->company_id;
-    }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function getName(): string {
-        return $this->name;
-    }
-
-    public function getEmail(): string {
-        return $this->email;
     }
 
     /**

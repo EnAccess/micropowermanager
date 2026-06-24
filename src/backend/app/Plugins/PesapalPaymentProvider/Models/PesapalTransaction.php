@@ -51,18 +51,6 @@ class PesapalTransaction extends BasePaymentProviderTransaction {
         'metadata' => 'array',
     ];
 
-    public function getAmount(): float {
-        return $this->amount;
-    }
-
-    public function getCurrency(): string {
-        return $this->currency;
-    }
-
-    public function getOrderId(): string {
-        return $this->order_id;
-    }
-
     /**
      * @return array<string, mixed>
      */
@@ -70,91 +58,8 @@ class PesapalTransaction extends BasePaymentProviderTransaction {
         return $this->metadata ?? [];
     }
 
-    public function getReferenceId(): string {
-        return $this->reference_id;
-    }
-
-    public function getDeviceSerial(): string {
-        return $this->serial_id;
-    }
-
-    public function getCustomerId(): int {
-        return $this->customer_id;
-    }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
     public function getDeviceType(): string {
         return $this->device_type ?? 'meter';
-    }
-
-    public function getStatus(): int {
-        return $this->status;
-    }
-
-    public function getOrderTrackingId(): ?string {
-        return $this->order_tracking_id;
-    }
-
-    public function getMerchantReference(): ?string {
-        return $this->merchant_reference;
-    }
-
-    public function setStatus(int $status): void {
-        $this->status = $status;
-    }
-
-    public function setExternalTransactionId(string $transactionId): void {
-        $this->external_transaction_id = $transactionId;
-    }
-
-    public function setOrderId(string $orderId): void {
-        $this->order_id = $orderId;
-    }
-
-    public function setReferenceId(string $referenceId): void {
-        $this->reference_id = $referenceId;
-    }
-
-    public function setCustomerId(int $customerId): void {
-        $this->customer_id = $customerId;
-    }
-
-    public function setDeviceType(string $deviceType): void {
-        $this->device_type = $deviceType;
-    }
-
-    public function setDeviceSerial(string $deviceSerialNumber): void {
-        $this->serial_id = $deviceSerialNumber;
-    }
-
-    public function setAmount(float $amount): void {
-        $this->amount = $amount;
-    }
-
-    public function setCurrency(string $currency): void {
-        $this->currency = $currency;
-    }
-
-    public function setOrderTrackingId(string $orderTrackingId): void {
-        $this->order_tracking_id = $orderTrackingId;
-    }
-
-    public function setMerchantReference(string $merchantReference): void {
-        $this->merchant_reference = $merchantReference;
-    }
-
-    public function setPaymentUrl(string $url): void {
-        $this->payment_url = $url;
-    }
-
-    /**
-     * @param array<string, mixed> $metadata
-     */
-    public function setMetadata(array $metadata): void {
-        $this->metadata = $metadata;
     }
 
     public function transaction(): MorphOne {

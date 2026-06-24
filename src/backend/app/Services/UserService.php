@@ -80,10 +80,10 @@ class UserService {
 
         try {
             $this->mailHelper->sendViaTemplate(
-                $user->getEmail(),
+                $user->email,
                 'Your new Password | Micro Power Manager',
                 'templates.mail.forgot_password',
-                ['userName' => $user->getName(), 'password' => $newPassword]
+                ['userName' => $user->name, 'password' => $newPassword]
             );
         } catch (MailNotSentException $exception) {
             report($exception);
@@ -130,7 +130,7 @@ class UserService {
             ->select(User::COL_COMPANY_ID)
             ->first();
 
-        return $user->getCompanyId();
+        return $user->company_id;
     }
 
     public function getById(int $id): ?User {
@@ -142,7 +142,7 @@ class UserService {
     }
 
     public function delete(User $model): ?bool {
-        $email = $model->getEmail();
+        $email = $model->email;
 
         return DB::transaction(function () use ($model, $email): ?bool {
             $model->address()->delete();

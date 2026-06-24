@@ -26,7 +26,7 @@ class SubmitOrderRequestResource extends AbstractApiResource {
      * @return array<string, mixed>
      */
     public function getBodyData(): array {
-        $ipnId = $this->credential->getIpnId();
+        $ipnId = $this->credential->ipn_id;
         if (in_array($ipnId, [null, '', '0'], true)) {
             throw new \InvalidArgumentException('PesaPal IPN is not registered for this merchant; save credentials again to register one.');
         }
@@ -39,8 +39,8 @@ class SubmitOrderRequestResource extends AbstractApiResource {
 
         return [
             'id' => $merchantReference,
-            'currency' => $this->transaction->getCurrency() ?: $this->credential->getCurrency(),
-            'amount' => round($this->transaction->getAmount(), 2),
+            'currency' => $this->transaction->currency ?: $this->credential->currency,
+            'amount' => round($this->transaction->amount, 2),
             'description' => $description,
             'callback_url' => $this->callbackUrl,
             'notification_id' => $ipnId,
@@ -98,14 +98,14 @@ class SubmitOrderRequestResource extends AbstractApiResource {
 
     private function buildMerchantReference(): string {
         // PesaPal restricts `id` to <= 50 chars, alphanumeric + dashes.
-        $candidate = $this->transaction->getReferenceId();
+        $candidate = $this->transaction->reference_id;
         $candidate = preg_replace('/[^A-Za-z0-9-]/', '-', $candidate) ?? $candidate;
 
         return substr($candidate, 0, 50);
     }
 
     private function buildDescription(): string {
-        $serial = $this->transaction->getDeviceSerial() ?: 'payment';
+        $serial = $this->transaction->serial_id ?: 'payment';
         $type = $this->transaction->getDeviceType() ?: 'energy';
         $description = "MPM {$type} payment for {$serial}";
 
@@ -117,7 +117,7 @@ class SubmitOrderRequestResource extends AbstractApiResource {
      */
     private function buildBillingAddress(): array {
         $billingAddress = [];
-        $email = $this->credential->getMerchantEmail();
+        $email = $this->credential->merchant_email;
         if (!in_array($email, [null, '', '0'], true)) {
             $billingAddress['email_address'] = $email;
         }

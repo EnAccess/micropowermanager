@@ -20,7 +20,7 @@ class PesapalTokenServiceTest extends TestCase {
         $api->expects($this->once())
             ->method('doRequest')
             ->willReturnCallback(function (RequestTokenResource $resource): RequestTokenResource {
-                $resource->setBody(json_encode(['token' => 'tok_first', 'expiryDate' => '2099-01-01T00:00:00Z']));
+                $resource->body = json_encode(['token' => 'tok_first', 'expiryDate' => '2099-01-01T00:00:00Z']);
 
                 return $resource;
             });
@@ -41,7 +41,7 @@ class PesapalTokenServiceTest extends TestCase {
             ->method('doRequest')
             ->willReturnCallback(function (RequestTokenResource $resource) use (&$tokens): RequestTokenResource {
                 $next = array_shift($tokens);
-                $resource->setBody(json_encode(['token' => $next]));
+                $resource->body = json_encode(['token' => $next]);
 
                 return $resource;
             });
@@ -59,7 +59,7 @@ class PesapalTokenServiceTest extends TestCase {
         $api = $this->createMock(PesapalApi::class);
 
         $api->method('doRequest')->willReturnCallback(function (RequestTokenResource $resource): RequestTokenResource {
-            $resource->setBody(json_encode(['error' => ['message' => 'invalid_credentials']]));
+            $resource->body = json_encode(['error' => ['message' => 'invalid_credentials']]);
 
             return $resource;
         });

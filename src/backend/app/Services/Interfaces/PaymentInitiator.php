@@ -31,7 +31,12 @@ use App\Models\Transaction\Transaction;
  */
 interface PaymentInitiator {
     /**
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>}
+     * `process_immediately` tells the caller whether the payment is already confirmed and should be
+     * processed now (e.g. cash, or a synchronous mobile-money push that returns the final outcome).
+     * Redirect-based providers return false: their payment is confirmed later via a provider callback,
+     * which dispatches the processing itself.
+     *
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
         float $amount,
