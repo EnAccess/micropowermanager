@@ -81,10 +81,10 @@ import PesapalPublicResult from "@/plugins/pesapal-payment-provider/modules/Paym
 import PesapalTransaction from "@/plugins/pesapal-payment-provider/modules/Transaction/Transaction.vue"
 import ProspectOverview from "@/plugins/prospect/modules/Overview/Overview.vue"
 import ProspectSettings from "@/plugins/prospect/modules/Setting/Setting.vue"
-import SafaricomMobileMoneyCredential from "@/plugins/safaricom-mobile-money/modules/Overview/Credential.vue"
-import SafaricomMobileMoneyOverview from "@/plugins/safaricom-mobile-money/modules/Overview/Overview.vue"
-import SafaricomMobileMoneySTKPush from "@/plugins/safaricom-mobile-money/modules/STKPush/STKPush.vue"
-import SafaricomMobileMoneyTransaction from "@/plugins/safaricom-mobile-money/modules/Transaction/Transaction.vue"
+import SafaricomKeCredential from "@/plugins/safaricom-ke-payment-provider/modules/Overview/Credential.vue"
+import SafaricomKeOverview from "@/plugins/safaricom-ke-payment-provider/modules/Overview/Overview.vue"
+import SafaricomKeSTKPush from "@/plugins/safaricom-ke-payment-provider/modules/STKPush/STKPush.vue"
+import SafaricomKeTransaction from "@/plugins/safaricom-ke-payment-provider/modules/Transaction/Transaction.vue"
 import SmsTransactionParserMessages from "@/plugins/sms-transaction-parser/modules/Messages/Messages.vue"
 import SmsTransactionParserOverview from "@/plugins/sms-transaction-parser/modules/Overview/Overview.vue"
 import SparkMeterCustomerList from "@/plugins/spark-meter/modules/Customer/CustomerList.vue"
@@ -1866,19 +1866,19 @@ export const exportedRoutes = [
     ],
   },
   {
-    path: "/safaricom-mobile-money-overview",
+    path: "/safaricom-ke-overview",
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
         enabled_by_mpm_plugin_id: 31,
-        name: "Safaricom M-PESA",
+        name: "Safaricom KE (M-Pesa)",
         icon: "money",
       },
     },
     children: [
       {
         path: "overview",
-        component: SafaricomMobileMoneyOverview,
+        component: SafaricomKeOverview,
         meta: {
           layout: "default",
           sidebar: {
@@ -1889,7 +1889,7 @@ export const exportedRoutes = [
       },
       {
         path: "credential",
-        component: SafaricomMobileMoneyCredential,
+        component: SafaricomKeCredential,
         meta: {
           layout: "default",
           sidebar: {
@@ -1900,7 +1900,7 @@ export const exportedRoutes = [
       },
       {
         path: "transactions",
-        component: SafaricomMobileMoneyTransaction,
+        component: SafaricomKeTransaction,
         meta: {
           layout: "default",
           sidebar: {
@@ -1911,7 +1911,7 @@ export const exportedRoutes = [
       },
       {
         path: "stk-push",
-        component: SafaricomMobileMoneySTKPush,
+        component: SafaricomKeSTKPush,
         meta: {
           layout: "default",
           sidebar: {

@@ -16,7 +16,7 @@ order: 30
 
 This guide walks you through integrating Safaricom's [Daraja API](https://developer.safaricom.co.ke/) with your MicroPowerManager (MPM) project to accept M-PESA payments from customers in Kenya for meter tokens and solar home system (SHS) services.
 
-Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (Lipa Na M-Pesa Online / M-Pesa Express). The operator initiates a payment from inside MPM; the customer's phone receives an M-PESA prompt; they enter their M-PESA PIN to confirm. There is no redirect — the page polls Safaricom until the transaction resolves.
+Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (M-Pesa Express). The operator initiates a payment from inside MPM; the customer's phone receives an M-PESA prompt; they enter their M-PESA PIN to confirm. There is no redirect — the page polls Safaricom until the transaction resolves.
 
 > [!INFO]
 > The **operator** initiates STK Push from the MPM sidebar (**Safaricom M-PESA → Initiate Payment**). There is no customer-facing public payment URL for M-PESA.
@@ -27,12 +27,12 @@ Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (
 
 1. Access to the MPM admin panel.
 2. A [Safaricom Developer account](https://developer.safaricom.co.ke/) (free).
-3. A Daraja **app** with the **M-Pesa Express** (Lipa Na M-Pesa Online) product enabled, and the **Consumer Key** and **Consumer Secret** that app issues.
+3. A Daraja **app** with the **M-Pesa Express** product enabled, and the **Consumer Key** and **Consumer Secret** that app issues. M-Pesa Express is Safaricom's official name for the STK Push API
 4. For **production only**: your own paybill or till shortcode and the matching production passkey (issued by Safaricom).
 
 ### Integration at a glance
 
-1. Enable the `Safaricom Mobile Money` plugin in MPM.
+1. Enable the `Safaricom KE` plugin in MPM.
 2. Save your Daraja **Consumer Key** and **Consumer Secret** on the Credentials page.
 3. Test against Daraja's sandbox — shortcode/passkey can be left blank and will fall back to Safaricom's published sandbox defaults.
 4. Initiate a test STK Push from **Safaricom M-PESA → Initiate Payment**.
@@ -52,7 +52,7 @@ Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (
 ### Step 2: Create a Daraja App
 
 1. From the developer portal dashboard, create a new app.
-2. When asked which products to subscribe the app to, select **Lipa Na M-Pesa Online** (also called **M-Pesa Express**).
+2. When asked which products to subscribe the app to, select **M-Pesa Express** 
 3. Save the app.
 4. Copy your **Consumer Key** and **Consumer Secret** from the app's detail page.
 
@@ -63,7 +63,7 @@ Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (
 
 1. Log into your MPM admin panel.
 2. Navigate to the **Plugin** page.
-3. Find **Safaricom Mobile Money** in the available plugins list.
+3. Find **Safaricom KE** in the available plugins list.
 4. Click **Enable** to activate the plugin.
 
 ### Step 4: Configure Credentials
@@ -82,15 +82,11 @@ Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (
 > [!INFO]
 > In sandbox the plugin pairs your Consumer Key/Secret with Daraja's public sandbox shortcode `174379` and the published LNM passkey `bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919`. This combination is the only one Daraja sandbox accepts. Custom shortcodes will fail with `Merchant does not exist`.
 
-### Step 5: Verify the Webhook URL is Reachable
+### Step 5: (Optional) Expose Your Webhook to Daraja
 
-For the asynchronous callback path to work, Daraja must be able to POST to your `CallBackURL` over HTTPS. Local development without a tunnel will not receive callbacks — but the plugin also polls Daraja's STK Push Query endpoint, so transactions still resolve correctly even when Daraja can't reach you.
+**You can skip this step.** The plugin polls Daraja's STK Push Query endpoint while a transaction is pending, so every status — success, insufficient funds, cancelled, timeout — resolves correctly even when Daraja can't reach your backend. The webhook is a faster path to the same result, not a required one.
 
-If you're testing locally:
-
-1. Expose your backend on a public HTTPS URL (e.g. via [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) or [ngrok](https://ngrok.com/)).
-2. Set `APP_URL` in `src/backend/.env` to that public URL.
-3. Restart the backend container so the new `APP_URL` is picked up.
+If you do want Daraja's asynchronous callback to land on your backend (lower latency on the final-state flip, plus a record in your logs), expose your backend over HTTPS. The general MPM setup for this — Cloudflare Tunnel or ngrok plus the `APP_URL` change — is documented in the [Development Environment guide](/development/development-environment#api-gateway-with-ngrok).
 
 ### Step 6: Test an STK Push
 

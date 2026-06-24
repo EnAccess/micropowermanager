@@ -29,7 +29,7 @@ class ThirdPartyApiResolverService {
     public const PESAPAL_API = 'api/pesapal/';
     public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
-    public const SAFARICOM_MOBILE_MONEY = 'api/safaricom/';
+    public const SAFARICOM_KE_PAYMENT_PROVIDER = 'api/safaricom/';
 
     /**
      * @var array<string, class-string<IApiResolver>>
@@ -49,7 +49,7 @@ class ThirdPartyApiResolverService {
         self::PESAPAL_API => PesapalApiResolver::class,
         self::ECREEE_METER_DATA_API => EcreeeMeterDataApiResolver::class,
         self::TEXTBEE_SMS_GATEWAY_API => TextbeeSmsGatewayApiResolver::class,
-        self::SAFARICOM_MOBILE_MONEY => SafaricomMobileMoneyApiResolver::class,
+        self::SAFARICOM_KE_PAYMENT_PROVIDER => SafaricomKeApiResolver::class,
     ];
 
     public function matches(string $requestPath): bool {

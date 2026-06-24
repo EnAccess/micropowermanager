@@ -6,8 +6,8 @@ use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackTransactionProvider;
-use App\Plugins\SafaricomMobileMoney\Models\SafaricomTransaction;
-use App\Plugins\SafaricomMobileMoney\Providers\SafaricomMobileMoneyTransactionProvider;
+use App\Plugins\SafaricomKePaymentProvider\Models\SafaricomTransaction;
+use App\Plugins\SafaricomKePaymentProvider\Providers\SafaricomKeTransactionProvider;
 use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
 use App\Plugins\SmsTransactionParser\Providers\SmsTransactionProvider;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -52,7 +52,7 @@ class TransactionAdapter {
 
             return $baseTransaction;
         } elseif ($transactionProvider instanceof SafaricomTransaction) {
-            $baseTransaction = resolve(SafaricomMobileMoneyTransactionProvider::class);
+            $baseTransaction = resolve(SafaricomKeTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;
