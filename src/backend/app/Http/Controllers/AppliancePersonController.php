@@ -11,13 +11,10 @@ use App\Models\AppliancePerson;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
-use App\Services\AddressesService;
-use App\Services\AddressGeographicalInformationService;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\ApplianceService;
 use App\Services\DeviceService;
-use App\Services\GeographicalInformationService;
 use App\Services\PaymentInitiationService;
 use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
@@ -34,9 +31,6 @@ class AppliancePersonController extends Controller {
         private UserAppliancePersonService $userAppliancePersonService,
         private UserService $userService,
         private DeviceService $deviceService,
-        private AddressesService $addressesService,
-        private GeographicalInformationService $geographicalInformationService,
-        private AddressGeographicalInformationService $addressGeographicalInformationService,
         private PaymentInitiationService $paymentInitiationService,
         private ApplianceService $applianceService,
         private ApplianceRateService $applianceRateService,
@@ -116,27 +110,13 @@ class AppliancePersonController extends Controller {
     }
 
     private function assignDevice(AppliancePerson $appliancePerson, Request $request): void {
-        $deviceSerial = $request->input('device_serial');
-        $addressData = $request->input('address');
-        $points = $request->input('points');
-
-        $device = $this->deviceService->getBySerialNumber($deviceSerial);
+        $device = $this->deviceService->getBySerialNumber($request->input('device_serial'));
         $this->deviceService->update($device, ['person_id' => $appliancePerson->person_id]);
 
-        $address = $this->addressesService->make([
-            'street' => $addressData['street'],
-            'city_id' => $addressData['city_id'],
-        ]);
-
-        $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
-
-        $geographicalInformation = $this->geographicalInformationService->make([
-            'points' => $points,
-        ]);
-        $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
-        $this->addressGeographicalInformationService->setAssignee($address);
-        $this->addressGeographicalInformationService->assign();
-        $this->geographicalInformationService->save($geographicalInformation);
+        $points = $request->input('points');
+        if ($points) {
+            $this->deviceService->assignLocation($device, $points);
+        }
     }
 
     /**
