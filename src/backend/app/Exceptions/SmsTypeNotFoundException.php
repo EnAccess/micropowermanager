@@ -2,4 +2,9 @@
 
 namespace App\Exceptions;
 
-class SmsTypeNotFoundException extends \Exception {}
+/**
+ * Thrown when the requested SMS type cannot be resolved.
+ */
+class SmsTypeNotFoundException extends MpmException {
+    protected int $httpStatusCode = 404;
+}

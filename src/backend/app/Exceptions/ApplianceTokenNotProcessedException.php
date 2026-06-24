@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class ApplianceTokenNotProcessedException extends \Exception {}
+/**
+ * Thrown when an appliance token cannot be processed.
+ */
+class ApplianceTokenNotProcessedException extends MpmException {}

@@ -2,4 +2,11 @@
 
 namespace App\Plugins\SteamaMeter\Exceptions;
 
-class SteamaApiResponseException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the Steama meter API returns an unexpected or error response.
+ */
+class SteamaApiResponseException extends MpmException {
+    protected int $httpStatusCode = 502;
+}

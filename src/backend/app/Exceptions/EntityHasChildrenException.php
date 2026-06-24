@@ -7,4 +7,4 @@ namespace App\Exceptions;
  * children. Soft-deletes should not leave orphaned child records in a state where
  * they point to a tombstone — the caller is expected to delete children first.
  */
-class EntityHasChildrenException extends \Exception {}
+class EntityHasChildrenException extends MpmException {}

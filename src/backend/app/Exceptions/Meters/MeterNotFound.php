@@ -2,4 +2,11 @@
 
 namespace App\Exceptions\Meters;
 
-class MeterNotFound extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the requested meter cannot be found.
+ */
+class MeterNotFound extends MpmException {
+    protected int $httpStatusCode = 404;
+}

@@ -2,4 +2,11 @@
 
 namespace App\Plugins\KelinMeter\Exceptions;
 
-class KelinApiResponseException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the Kelin meter API returns an unexpected or error response.
+ */
+class KelinApiResponseException extends MpmException {
+    protected int $httpStatusCode = 502;
+}

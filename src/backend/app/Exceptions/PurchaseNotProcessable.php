@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class PurchaseNotProcessable extends \Exception {}
+/**
+ * Thrown when a purchase cannot be processed in its current state.
+ */
+class PurchaseNotProcessable extends MpmException {}

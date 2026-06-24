@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class TransactionNotMatchedException extends \Exception {}
+/**
+ * Thrown when an incoming transaction cannot be matched to an existing record.
+ */
+class TransactionNotMatchedException extends MpmException {}
