@@ -57,7 +57,7 @@ class AppliancePersonDeviceAssignmentTest extends TestCase {
 
         $seller = UserFactory::new()->create(['company_id' => $this->companyId]);
 
-        $response = $this->actingAs($this->user)->post(
+        $response = $this->actingAs($this->user)->postJson(
             "/api/appliances/person/{$appliance->id}/people/{$person->id}",
             [
                 'id' => $appliance->id,

@@ -104,7 +104,7 @@ class AddressTest extends TestCase {
         $address->owner()->associate($person);
         $address->save();
 
-        $response = $this->actingAs($user)->delete(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
+        $response = $this->actingAs($user)->deleteJson(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
 
         $response->assertStatus(200);
         $this->assertEquals(0, $person->addresses()->count());
@@ -120,7 +120,7 @@ class AddressTest extends TestCase {
         $address->owner()->associate($person);
         $address->save();
 
-        $response = $this->actingAs($user)->delete(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
+        $response = $this->actingAs($user)->deleteJson(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('address');
