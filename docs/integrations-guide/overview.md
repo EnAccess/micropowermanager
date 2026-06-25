@@ -42,6 +42,7 @@ After the initial configuration, plugins generally run without requiring changes
 | **DalyBms (e-bike)**          | Ready (Battery Management System API, works only with e-bikes with Daly BMS installed)                 | [Website](https://www.dalybms.com/bms-electric-bike/)                                                                   |
 | **Wavecom Payment**           | (Manual) Ready (MicroPowerManager users must export transaction data, paste into template, and upload) | N/A                                                                                                                     |
 | **Angaza Solar Home System**  | (`unlockDevice` not implemented, see [here](https://github.com/EnAccess/micropowermanager/issues/570)) | [API Docs](https://developers.angaza.com/docs/dev-portal-nexus/77a9ea5040a3b-retrieve-a-unit-s-payg-credit-information) |
+| **Safaricom M-PESA (Daraja)** | Ready (STK Push via operator-facing Initiate Payment page; sandbox + production)                       | [Developer Portal](https://developer.safaricom.co.ke/) · [Plugin guide](./safaricom-mobile-money-integration.md)        |
 
 ## Needs Refactoring / Development
 

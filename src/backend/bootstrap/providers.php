@@ -18,6 +18,7 @@ use App\Plugins\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use App\Plugins\PesapalPaymentProvider\Providers\PesapalPaymentProviderServiceProvider;
 use App\Plugins\Prospect\Providers\ProspectServiceProvider;
+use App\Plugins\SafaricomKePaymentProvider\Providers\SafaricomKePaymentProviderServiceProvider;
 use App\Plugins\SmsTransactionParser\Providers\SmsTransactionParserServiceProvider;
 use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
 use App\Plugins\SparkShs\Providers\SparkShsServiceProvider;
@@ -61,6 +62,7 @@ return [
     PaystackPaymentProviderServiceProvider::class,
     PesapalPaymentProviderServiceProvider::class,
     ProspectServiceProvider::class,
+    SafaricomKePaymentProviderServiceProvider::class,
     SparkMeterServiceProvider::class,
     SteamaMeterServiceProvider::class,
     StronMeterServiceProvider::class,

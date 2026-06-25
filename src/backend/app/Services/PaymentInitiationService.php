@@ -9,6 +9,7 @@ use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
+use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomTransactionService;
 use App\Plugins\VodacomMzPaymentProvider\Services\VodacomMzTransactionService;
 use App\Services\Interfaces\PaymentInitiator;
 use Illuminate\Contracts\Container\Container;
@@ -26,6 +27,7 @@ class PaymentInitiationService {
         MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER => VodacomMzTransactionService::class,
         MpmPlugin::PAYSTACK_PAYMENT_PROVIDER => PaystackTransactionService::class,
         MpmPlugin::PESAPAL_PAYMENT_PROVIDER => PesapalTransactionService::class,
+        MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER => SafaricomTransactionService::class,
     ];
 
     public function __construct(
