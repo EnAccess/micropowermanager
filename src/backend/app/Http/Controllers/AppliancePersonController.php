@@ -215,7 +215,7 @@ class AppliancePersonController extends Controller {
                 $rateType,
             );
             DB::connection('tenant')->commit();
-        } catch (ValidationException|\Exception $e) {
+        } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             throw $e;
         }
