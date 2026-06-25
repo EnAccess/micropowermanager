@@ -93,4 +93,37 @@ class AddressTest extends TestCase {
         $this->assertEquals($streetName, $person->addresses()->first()->street);
         $this->assertEquals(0, $person->addresses()->first()->is_primary);
     }
+
+    public function testUserDeletesSecondaryAddressForOwnCompany(): void {
+        $user = UserFactory::new()->create();
+        $this->user = $user;
+        $this->assignRole($user, 'admin');
+        $person = PersonFactory::new()->create();
+
+        $address = AddressFactory::new()->make(['is_primary' => 0]);
+        $address->owner()->associate($person);
+        $address->save();
+
+        $response = $this->actingAs($user)->delete(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
+
+        $response->assertStatus(200);
+        $this->assertEquals(0, $person->addresses()->count());
+    }
+
+    public function testDeletingPrimaryAddressIsNotAllowed(): void {
+        $user = UserFactory::new()->create();
+        $this->user = $user;
+        $this->assignRole($user, 'admin');
+        $person = PersonFactory::new()->create();
+
+        $address = AddressFactory::new()->make(['is_primary' => 1]);
+        $address->owner()->associate($person);
+        $address->save();
+
+        $response = $this->actingAs($user)->delete(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('address');
+        $this->assertEquals(1, $person->addresses()->count());
+    }
 }

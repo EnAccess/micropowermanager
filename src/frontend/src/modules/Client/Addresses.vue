@@ -38,6 +38,18 @@
               onclick="return false;"
             />
           </md-table-cell>
+          <md-table-cell :md-label="$tc('words.actions')">
+            <md-button
+              v-if="!item.primary"
+              class="md-icon-button md-dense md-accent"
+              @click.stop="confirmDelete(item)"
+            >
+              <md-tooltip md-direction="top">
+                {{ $tc("words.delete") }}
+              </md-tooltip>
+              <md-icon>delete_outline</md-icon>
+            </md-button>
+          </md-table-cell>
         </md-table-row>
       </md-table>
     </widget>
@@ -153,6 +165,8 @@
 </template>
 
 <script>
+import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { notify } from "@/mixins/notify.js"
 import { Address, Addresses } from "@/services/AddressService.js"
 import { CityService } from "@/services/CityService.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -161,6 +175,7 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "Addresses",
   components: { Widget },
+  mixins: [notify],
   props: {
     personId: Number,
   },
@@ -300,6 +315,27 @@ export default {
     closeModal() {
       this.modalVisibility = false
       this.newAddress = {}
+    },
+    confirmDelete(address) {
+      this.$swal({
+        type: "warning",
+        title: this.$tc("phrases.deleteAddress"),
+        text: address.street,
+        showCancelButton: true,
+        cancelButtonText: this.$tc("words.cancel"),
+        confirmButtonText: this.$tc("words.delete"),
+      }).then(async (result) => {
+        if (!result.value) return
+        const response = await this.addresses.deleteAddress(address.id)
+        if (response instanceof ErrorHandler) {
+          this.alertNotify("error", response.errorMessage)
+          return
+        }
+        this.addresses.list = this.addresses.list.filter(
+          (item) => item.id !== address.id,
+        )
+        this.alertNotify("success", this.$tc("phrases.addressDeleted"))
+      })
     },
   },
 }
