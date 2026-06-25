@@ -14,6 +14,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -58,16 +59,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->context(fn (): array => array_filter([
             'companyId' => request()->attributes->get('companyId'),
         ]));
-
-        // The backend is a JSON API. Render exceptions (validation, not-found, auth, ...)
-        // as JSON for API routes even when the client omits an `Accept: application/json`
-        // header — otherwise Laravel redirects (302) on validation failures.
-        $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson()
-        );
-
-        // Domain exceptions (App\Exceptions\MpmException) carry their own HTTP status,
-        // render themselves, and decide their own reporting (see MpmException::report()).
 
         // JWTExceptions happen quite frequently.
         // User token might expire, web scraper trying to access unauthrized areas, etc...

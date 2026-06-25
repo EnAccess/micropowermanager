@@ -29,7 +29,8 @@ class PersonDocumentTest extends TestCase {
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
                 'additional_json' => ['signed_at' => '2026-05-20'],
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(201);
@@ -58,7 +59,8 @@ class PersonDocumentTest extends TestCase {
                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
                 ),
                 'type' => 'questionnaire',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(201);
@@ -77,7 +79,8 @@ class PersonDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->image('photo.jpg'),
                 'type' => 'photo',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(422);
@@ -96,7 +99,8 @@ class PersonDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('huge.pdf', 5121, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(422);
@@ -116,7 +120,8 @@ class PersonDocumentTest extends TestCase {
                 [
                     'file' => UploadedFile::fake()->create("doc{$i}.pdf", 50, 'application/pdf'),
                     'type' => 'contract',
-                ]
+                ],
+                ['Accept' => 'application/json']
             )->assertStatus(201);
         }
 
@@ -125,7 +130,8 @@ class PersonDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('overflow.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(422);
@@ -145,11 +151,12 @@ class PersonDocumentTest extends TestCase {
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
                 'additional_json' => ['signed_at' => '2026-05-20'],
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
         $document = $person->uploadedDocuments()->first();
 
-        $response = $this->actingAs($user)->patch(
+        $response = $this->actingAs($user)->patchJson(
             '/api/person-documents/'.$document->id,
             ['additional_json' => ['signed_at' => '2026-06-01', 'witness' => 'Ada']]
         );
@@ -174,11 +181,12 @@ class PersonDocumentTest extends TestCase {
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
                 'additional_json' => ['signed_at' => '2026-05-20'],
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
         $document = $person->uploadedDocuments()->first();
 
-        $response = $this->actingAs($user)->patch(
+        $response = $this->actingAs($user)->patchJson(
             '/api/person-documents/'.$document->id,
             ['additional_json' => []]
         );
@@ -199,7 +207,8 @@ class PersonDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
         $document = $person->uploadedDocuments()->first();
 
@@ -224,14 +233,15 @@ class PersonDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $document = $person->uploadedDocuments()->first();
         $storedPath = $document->location.'/'.$document->name;
         Storage::assertExists($storedPath);
 
-        $response = $this->actingAs($user)->delete('/api/person-documents/'.$document->id);
+        $response = $this->actingAs($user)->deleteJson('/api/person-documents/'.$document->id);
         $response->assertStatus(200);
 
         Storage::assertMissing($storedPath);
@@ -250,12 +260,13 @@ class PersonDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $document = $person->uploadedDocuments()->first();
 
-        $response = $this->actingAs($user)->get('/api/person-documents/'.$document->id.'/download');
+        $response = $this->actingAs($user)->getJson('/api/person-documents/'.$document->id.'/download');
 
         $response->assertStatus(200);
         $response->assertHeader('content-disposition');
