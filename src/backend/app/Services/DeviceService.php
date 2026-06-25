@@ -160,11 +160,12 @@ class DeviceService implements IBaseService, IAssociative {
      * @param array{lat: float|string, lon: float|string} $addressData
      */
     public function updateGeoInformation(Device $device, array $addressData): Device {
-        $points = $addressData['lat'].','.$addressData['lon'];
-        $device->geo()->update([
-            'points' => $points,
-        ]);
+        $this->assignLocation($device, $addressData['lat'].','.$addressData['lon']);
 
         return $device->fresh();
+    }
+
+    public function assignLocation(Device $device, string $points): void {
+        $device->geo()->updateOrCreate([], ['points' => $points]);
     }
 }
