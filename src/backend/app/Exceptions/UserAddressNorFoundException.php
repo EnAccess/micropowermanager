@@ -2,4 +2,9 @@
 
 namespace App\Exceptions;
 
-class UserAddressNorFoundException extends \Exception {}
+/**
+ * Thrown when the address associated with a user cannot be found.
+ */
+class UserAddressNorFoundException extends MpmException {
+    protected int $httpStatusCode = 404;
+}

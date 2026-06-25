@@ -119,7 +119,28 @@ class VodacomMzApiClient {
             throw new VodacomMzApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        return json_decode((string) $response->getBody(), true) ?? [];
+        $body = json_decode((string) $response->getBody(), true);
+
+        // A genuine business response from Vodacom OpenAPI always carries `output_ResponseCode`,
+        // irrespective of success or failure.
+        // Its absence means the request was rejected before reaching thepayment layer:
+        // typically an auth/session error reported as `{"output_error": "..."}`, or an
+        // unparseable gateway error. The caller cannot act on those, so surface them as an exception.
+        if (!is_array($body) || !array_key_exists('output_ResponseCode', $body)) {
+            $detail = is_array($body) && isset($body['output_error'])
+                ? $body['output_error']
+                : (string) $response->getBody();
+
+            Log::critical('Vodacom MZ API returned an unprocessable response', [
+                'url' => $url,
+                'status' => $response->getStatusCode(),
+                'body' => (string) $response->getBody(),
+            ]);
+
+            throw new VodacomMzApiResponseException(sprintf('Vodacom MZ API error (HTTP %d): %s', $response->getStatusCode(), $detail));
+        }
+
+        return $body;
     }
 
     /**

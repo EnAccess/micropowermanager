@@ -2,4 +2,9 @@
 
 namespace App\Exceptions;
 
-class ConnectionGroupNotFoundException extends \Exception {}
+/**
+ * Thrown when the requested connection group does not exist.
+ */
+class ConnectionGroupNotFoundException extends MpmException {
+    protected int $httpStatusCode = 404;
+}

@@ -2,4 +2,9 @@
 
 namespace App\Exceptions;
 
-class WeatherProviderUnreachable extends \Exception {}
+/**
+ * Thrown when the external weather data provider cannot be reached.
+ */
+class WeatherProviderUnreachable extends MpmException {
+    protected int $httpStatusCode = 502;
+}

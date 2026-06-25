@@ -2,4 +2,10 @@
 
 namespace App\Plugins\SparkMeter\Exceptions;
 
-class SitesNotUpToDateException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the locally stored SparkMeter sites are stale and must be synced
+ * before a transaction can be processed.
+ */
+class SitesNotUpToDateException extends MpmException {}

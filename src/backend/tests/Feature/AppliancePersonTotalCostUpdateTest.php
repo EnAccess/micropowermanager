@@ -22,7 +22,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1500, 'admin_id' => $this->user->id]
         );
@@ -40,7 +40,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 900, rates: [300, 300, 300]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1000, 'admin_id' => $this->user->id]
         );
@@ -57,7 +57,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $rates[0]->update(['remaining' => 0]);
         $rates[1]->update(['remaining' => 50]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1500, 'admin_id' => $this->user->id]
         );
@@ -82,7 +82,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
         $appliancePerson->rates()->oldest('due_date')->first()->update(['remaining' => 0]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 100, 'admin_id' => $this->user->id]
         );
@@ -99,7 +99,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
             $rate->update(['remaining' => 50]);
         }
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 800, 'admin_id' => $this->user->id]
         );
@@ -112,7 +112,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
 
-        $this->actingAs($this->user)->put(
+        $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1500, 'admin_id' => $this->user->id]
         )->assertStatus(200);
@@ -132,7 +132,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'monthly']
         );
@@ -157,7 +157,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $rates[0]->update(['remaining' => 0]);
         $latestSettledDueDate = Carbon::parse($rates[0]->due_date);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1000, 'admin_id' => $this->user->id, 'rate_count' => 2, 'rate_type' => 'weekly']
         );
@@ -178,7 +178,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
         $appliancePerson->rates()->oldest('due_date')->first()->update(['remaining' => 0]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1000, 'admin_id' => $this->user->id, 'rate_count' => 2, 'rate_type' => 'monthly']
         );
@@ -198,7 +198,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 900, rates: [300, 300, 300]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 900, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'weekly']
         );
@@ -217,7 +217,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'daily']
         );
@@ -230,7 +230,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
             ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 0, 'rate_type' => 'monthly']
         );
@@ -245,7 +245,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $rate = $appliancePerson->rates()->oldest('due_date')->first();
         $rate->update(['remaining' => 0]);
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/rates/{$rate->id}",
             ['cost' => 200, 'newCost' => 250, 'admin_id' => $this->user->id]
         );
@@ -260,7 +260,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [500, 500]);
         $rate = $appliancePerson->rates()->oldest('due_date')->first();
 
-        $response = $this->actingAs($this->user)->put(
+        $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/rates/{$rate->id}",
             ['newCost' => 450, 'admin_id' => $this->user->id]
         );

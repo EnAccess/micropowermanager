@@ -71,7 +71,7 @@ class AppliancePersonController extends Controller {
             return ApiResource::make($responseArray);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -215,12 +215,9 @@ class AppliancePersonController extends Controller {
                 $rateType,
             );
             DB::connection('tenant')->commit();
-        } catch (ValidationException $e) {
-            DB::connection('tenant')->rollBack();
-            throw $e;
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
 
         return ApiResource::make(
@@ -248,7 +245,7 @@ class AppliancePersonController extends Controller {
             DB::connection('tenant')->commit();
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
 
         return ApiResource::make(

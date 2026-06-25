@@ -2,4 +2,11 @@
 
 namespace App\Plugins\GomeLongMeter\Exceptions;
 
-class CronJobException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when a scheduled GomeLong meter job fails during execution.
+ */
+class CronJobException extends MpmException {
+    protected int $httpStatusCode = 500;
+}

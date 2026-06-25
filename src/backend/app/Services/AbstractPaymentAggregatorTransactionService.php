@@ -61,11 +61,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $this->customerId = $customerId;
         $this->amount = $amount;
 
-        try {
-            $this->payerPhoneNumber = $this->getTransactionSender($meterSerialNumber);
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
-        }
+        $this->payerPhoneNumber = $this->getTransactionSender($meterSerialNumber);
     }
 
     /**
@@ -97,11 +93,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
     }
 
     private function isImitationTransactionValid(Transaction $transaction): void {
-        try {
-            $transactionData = TransactionDataContainer::initialize($transaction);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
-        }
+        $transactionData = TransactionDataContainer::initialize($transaction);
 
         $validator = resolve(MinimumPurchaseAmountValidator::class);
 

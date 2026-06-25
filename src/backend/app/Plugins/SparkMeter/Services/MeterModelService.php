@@ -92,7 +92,7 @@ class MeterModelService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark meter models sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 

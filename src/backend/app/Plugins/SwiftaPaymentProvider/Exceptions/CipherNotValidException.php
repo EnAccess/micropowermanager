@@ -2,4 +2,10 @@
 
 namespace App\Plugins\SwiftaPaymentProvider\Exceptions;
 
-class CipherNotValidException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the cipher supplied in a Swifta request cannot be verified or
+ * decrypted.
+ */
+class CipherNotValidException extends MpmException {}
