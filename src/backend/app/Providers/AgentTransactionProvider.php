@@ -107,7 +107,7 @@ class AgentTransactionProvider implements ITransactionProvider {
 
             $query->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
         if ($agentId !== $agent->id) {
             throw new \Exception('Agent authorization failed.');

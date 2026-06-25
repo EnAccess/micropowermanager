@@ -35,7 +35,7 @@ class PaystackTransactionProvider implements ITransactionProvider {
             // We need to make sure that the payment is fully processable from our end .
             $this->paystackTransactionService->imitateTransactionForValidation($paystackTransactionData);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
+            throw $exception;
         }
     }
 

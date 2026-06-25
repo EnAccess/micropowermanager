@@ -64,7 +64,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         try {
             $this->payerPhoneNumber = $this->getTransactionSender($meterSerialNumber);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
+            throw $exception;
         }
     }
 
@@ -100,7 +100,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         try {
             $transactionData = TransactionDataContainer::initialize($transaction);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
 
         $validator = resolve(MinimumPurchaseAmountValidator::class);

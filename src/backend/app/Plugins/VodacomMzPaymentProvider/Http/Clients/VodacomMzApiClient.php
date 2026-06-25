@@ -119,6 +119,10 @@ class VodacomMzApiClient {
             throw new VodacomMzApiResponseException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
+        if ($response->getStatusCode() >= 400) {
+            throw new VodacomMzApiResponseException('ERROR'.$response->getBody());
+        }
+
         return json_decode((string) $response->getBody(), true) ?? [];
     }
 

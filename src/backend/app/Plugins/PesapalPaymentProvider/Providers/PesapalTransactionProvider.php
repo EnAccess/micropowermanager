@@ -34,7 +34,7 @@ class PesapalTransactionProvider implements ITransactionProvider {
 
             $this->pesapalTransactionService->imitateTransactionForValidation($pesapalTransactionData);
         } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
+            throw $exception;
         }
     }
 
