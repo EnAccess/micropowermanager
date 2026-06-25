@@ -22,16 +22,10 @@ class SwiftaTransactionProvider implements ITransactionProvider {
     public function validateRequest(Request $request): void {
         $meterSerial = $request->input('meter_number');
         $amount = $request->input('amount');
-
-        try {
-            $this->swiftaTransactionService->validatePaymentOwner($meterSerial, $amount);
-            $swiftaTransactionData = $this->swiftaTransactionService->initializeTransactionData($request->all());
-
-            // We need to make sure that the payment is fully processable from our end .
-            $this->swiftaTransactionService->imitateTransactionForValidation($swiftaTransactionData);
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $this->swiftaTransactionService->validatePaymentOwner($meterSerial, $amount);
+        $swiftaTransactionData = $this->swiftaTransactionService->initializeTransactionData($request->all());
+        // We need to make sure that the payment is fully processable from our end .
+        $this->swiftaTransactionService->imitateTransactionForValidation($swiftaTransactionData);
     }
 
     public function saveTransaction(): void {
