@@ -27,15 +27,4 @@ abstract class MpmException extends \Exception {
     public function render(Request $request): JsonResponse {
         return response()->json(['message' => $this->getMessage()], $this->httpStatusCode);
     }
-
-    /**
-     * Expected client errors (4xx) are not worth logging or alerting on; only
-     * server-side failures (5xx) fall through to the default logger.
-     *
-     * Laravel skips its default reporting when this method returns anything
-     * other than `false`, so returning `true` here suppresses logging.
-     */
-    public function report(): bool {
-        return $this->httpStatusCode < 500;
-    }
 }
