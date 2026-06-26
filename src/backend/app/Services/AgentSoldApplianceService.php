@@ -6,6 +6,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AppliancePerson;
+use App\Models\GeographicalInformation;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -192,12 +193,11 @@ class AgentSoldApplianceService implements IBaseService {
             $device = $this->deviceService->getBySerialNumber($deviceSerial);
             $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
 
-            $points = $requestData['points']
-                ?? $appliancePerson->person->addresses()->first()?->geo()->first()?->points;
+            $geoJson = empty($requestData['points'])
+                ? $appliancePerson->person->addresses()->first()?->geo()->first()?->geo_json
+                : GeographicalInformation::pointFromString($requestData['points']);
 
-            if ($points) {
-                $this->deviceService->assignLocation($device, $points);
-            }
+            $this->deviceService->assignLocation($device, $geoJson);
         }
 
         // initalize appliance Rates

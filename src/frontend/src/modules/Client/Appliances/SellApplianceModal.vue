@@ -629,6 +629,7 @@ import DeviceLocationPickerMap from "./DeviceLocationPickerMap.vue"
 
 import { computeRateAmount } from "@/Helpers/applianceRates.js"
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { AppliancePaymentService } from "@/services/AppliancePaymentService.js"
@@ -880,10 +881,10 @@ export default {
     getFallbackLocationFromSelectedAddress() {
       const address = this.getSelectedAddress()
       if (!address) return null
-      const addressPoints = this.parsePoints(address.geo?.points)
-      if (addressPoints) return addressPoints
-      const cityPoints = this.parsePoints(address.city?.location?.points)
-      if (cityPoints) return cityPoints
+      const addressLocation = this.parseGeoLocation(address.geo)
+      if (addressLocation) return addressLocation
+      const cityLocation = this.parseGeoLocation(address.city?.location)
+      if (cityLocation) return cityLocation
       return null
     },
     resetDeviceSelectionValidation() {
@@ -899,12 +900,11 @@ export default {
         this.$validator.reset(fieldName)
       }
     },
-    parsePoints(points) {
-      if (!points || typeof points !== "string") return null
-      const values = points.split(",").map((value) => value.trim())
-      if (values.length !== 2) return null
-      const lat = this.formatCoordinate(values[0], "lat")
-      const lon = this.formatCoordinate(values[1], "lon")
+    parseGeoLocation(geo) {
+      const location = geoJsonToLatLon(geo)
+      if (!location) return null
+      const lat = this.formatCoordinate(location.lat, "lat")
+      const lon = this.formatCoordinate(location.lon, "lon")
       if (lat === null || lon === null) return null
       return [lat, lon]
     },

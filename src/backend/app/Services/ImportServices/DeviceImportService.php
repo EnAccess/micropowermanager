@@ -192,17 +192,17 @@ class DeviceImportService extends AbstractImportService {
      */
     private function handleDeviceGeo(Device $device, array $deviceData): void {
         $geo = $deviceData['geo'] ?? null;
-        if (!is_array($geo) || empty($geo['points'])) {
+        if (!is_array($geo) || empty($geo['geo_json'])) {
             return;
         }
 
-        $points = $geo['points'];
+        $attributes = ['geo_json' => $geo['geo_json']];
         $existingGeo = $device->geo;
 
         if ($existingGeo instanceof GeographicalInformation) {
-            $existingGeo->update(['points' => $points]);
+            $existingGeo->update($attributes);
         } else {
-            $device->geo()->create(['points' => $points]);
+            $device->geo()->create($attributes);
         }
     }
 

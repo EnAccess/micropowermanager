@@ -201,7 +201,7 @@ class MeterTest extends TestCase {
                 'manufacturer_id' => 1,
                 'serial_number' => str_random(36),
             ]);
-            $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
+            $geographicalInformation = GeographicalInformation::query()->make(['geo_json' => GeographicalInformation::pointFromString('111,222')]);
             $person = PersonFactory::new()->create();
             $addressData = [
                 'city_id' => $this->city->id,

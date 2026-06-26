@@ -8,6 +8,7 @@ use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
+use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
@@ -113,10 +114,7 @@ class AppliancePersonController extends Controller {
         $device = $this->deviceService->getBySerialNumber($request->input('device_serial'));
         $this->deviceService->update($device, ['person_id' => $appliancePerson->person_id]);
 
-        $points = $request->input('points');
-        if ($points) {
-            $this->deviceService->assignLocation($device, $points);
-        }
+        $this->deviceService->assignLocation($device, GeographicalInformation::pointFromString($request->input('points')));
     }
 
     /**

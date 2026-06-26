@@ -9,39 +9,42 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class GeographicalInformationFactory extends Factory {
     protected $model = GeographicalInformation::class;
 
-    private function add_random_offset_to_coordinates(string $coord_string, int $distance): string {
-        list($lat, $lng) = explode(',', $coord_string);
-
-        $lat = (float) $lat;
-        $lng = (float) $lng;
-
-        // 0.01 is approx 1km when close to equator
-        $new_lat = $lat + (mt_rand(-100, 100) / 10000) * ($distance / 1000);
-        $new_lng = $lng + (mt_rand(-100, 100) / 10000) * ($distance / 1000);
-
-        return $new_lat.','.$new_lng;
-    }
-
     /**
-     * Randomize the location points by approx 1km.
+     * Randomize the location by approx 1km.
      */
     public function randomizePointsInVillage(): static {
-        return $this->state(function (array $attributes) {
-            return [
-                'points' => $this->add_random_offset_to_coordinates($attributes['points'], 1000),
-            ];
+        return $this->offsetCoordinates(1000);
+    }
+
+    /**
+     * Randomize the location by approx 10m.
+     */
+    public function randomizePointsInHousehold(): static {
+        return $this->offsetCoordinates(10);
+    }
+
+    private function offsetCoordinates(int $distanceInMeters): static {
+        return $this->state(function (array $attributes) use ($distanceInMeters): array {
+            [$latitude, $longitude] = $this->coordinatesFromGeoJson($attributes['geo_json']);
+
+            // 0.01 is approx 1km when close to equator
+            $newLatitude = $latitude + (mt_rand(-100, 100) / 10000) * ($distanceInMeters / 1000);
+            $newLongitude = $longitude + (mt_rand(-100, 100) / 10000) * ($distanceInMeters / 1000);
+
+            return ['geo_json' => GeographicalInformation::makePoint($newLatitude, $newLongitude)];
         });
     }
 
     /**
-     * Randomize the location points by approx 10m.
+     * @param array<string, mixed>|object $geoJson
+     *
+     * @return array{0: float, 1: float}
      */
-    public function randomizePointsInHousehold(): static {
-        return $this->state(function (array $attributes) {
-            return [
-                'points' => $this->add_random_offset_to_coordinates($attributes['points'], 10),
-            ];
-        });
+    private function coordinatesFromGeoJson(array|object $geoJson): array {
+        $geoJson = json_decode(json_encode($geoJson), true);
+        $coordinates = $geoJson['geometry']['coordinates'] ?? [0, 0];
+
+        return [(float) ($coordinates[1] ?? 0), (float) ($coordinates[0] ?? 0)];
     }
 
     /**
@@ -51,7 +54,7 @@ class GeographicalInformationFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'points' => '0.000000,0.000000',
+            'geo_json' => GeographicalInformation::makePoint(0.0, 0.0),
         ];
     }
 }

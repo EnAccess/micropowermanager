@@ -100,8 +100,8 @@ class ClusterSeeder extends Seeder {
             )
             ->has(
                 GeographicalInformation::factory()->sequence(
-                    ['points' => '-7.873645,39.754433'],
-                    ['points' => '-8.0573,39.7253123'],
+                    ['geo_json' => GeographicalInformation::pointFromString('-7.873645,39.754433')],
+                    ['geo_json' => GeographicalInformation::pointFromString('-8.0573,39.7253123')],
                 ),
                 'location'
             )
@@ -113,8 +113,8 @@ class ClusterSeeder extends Seeder {
                     )
                     ->has(
                         GeographicalInformation::factory()->sequence(
-                            ['points' => '-7.873645,39.754433'],
-                            ['points' => '-8.0573,39.7253123'],
+                            ['geo_json' => GeographicalInformation::pointFromString('-7.873645,39.754433')],
+                            ['geo_json' => GeographicalInformation::pointFromString('-8.0573,39.7253123')],
                         ),
                         'location'
                     )
@@ -132,9 +132,9 @@ class ClusterSeeder extends Seeder {
             )
             ->has(
                 GeographicalInformation::factory()->sequence(
-                    ['points' => '-4.942415,39.745391'],
-                    ['points' => '-5.056707,39.728021'],
-                    ['points' => '-4.950556,39.786280'],
+                    ['geo_json' => GeographicalInformation::pointFromString('-4.942415,39.745391')],
+                    ['geo_json' => GeographicalInformation::pointFromString('-5.056707,39.728021')],
+                    ['geo_json' => GeographicalInformation::pointFromString('-4.950556,39.786280')],
                 ),
                 'location'
             )
@@ -147,9 +147,9 @@ class ClusterSeeder extends Seeder {
                     )
                     ->has(
                         GeographicalInformation::factory()->sequence(
-                            ['points' => '-4.942415,39.745391'],
-                            ['points' => '-5.056707, 39.728021'],
-                            ['points' => '-4.950556,39.786280'],
+                            ['geo_json' => GeographicalInformation::pointFromString('-4.942415,39.745391')],
+                            ['geo_json' => GeographicalInformation::pointFromString('-5.056707, 39.728021')],
+                            ['geo_json' => GeographicalInformation::pointFromString('-4.950556,39.786280')],
                         ),
                         'location'
                     )

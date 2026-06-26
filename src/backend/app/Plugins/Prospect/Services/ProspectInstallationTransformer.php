@@ -210,19 +210,7 @@ class ProspectInstallationTransformer {
      * @return array{0: float|null, 1: float|null}
      */
     private function extractCoordinates(?Address $address): array {
-        $latitude = null;
-        $longitude = null;
-
-        $geoInfo = $address?->geo;
-        if ($geoInfo && $geoInfo->points) {
-            $coordinates = explode(',', $geoInfo->points);
-            if (count($coordinates) >= 2) {
-                $latitude = is_numeric($coordinates[0]) ? (float) trim($coordinates[0]) : null;
-                $longitude = is_numeric($coordinates[1]) ? (float) trim($coordinates[1]) : null;
-            }
-        }
-
-        return [$latitude, $longitude];
+        return $address?->geo?->latitudeLongitude() ?? [null, null];
     }
 
     /**
