@@ -2,6 +2,7 @@ import SiteRepository from "../repositories/SiteRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { Paginator } from "@/Helpers/Paginator.js"
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 
 export class SiteService {
   constructor() {
@@ -21,12 +22,12 @@ export class SiteService {
   }
 
   fromJson(siteData) {
-    let points = siteData.mpm_mini_grid?.location?.points?.split(",") ?? []
+    const location = geoJsonToLatLon(siteData.mpm_mini_grid?.location)
     this.site = {
       id: siteData.id,
       name: siteData.mpm_mini_grid?.name ?? null,
-      latitude: points[0] ?? null,
-      longitude: points[1] ?? null,
+      latitude: location?.lat ?? null,
+      longitude: location?.lon ?? null,
     }
     return this.site
   }

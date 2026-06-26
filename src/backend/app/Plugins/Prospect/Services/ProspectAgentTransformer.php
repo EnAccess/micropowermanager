@@ -32,16 +32,7 @@ class ProspectAgentTransformer {
         $addressString = empty($addressParts) ? null : implode(', ', $addressParts);
 
         $countryCode = $primaryAddress?->city?->country->country_code ?? null;
-        $latitude = null;
-        $longitude = null;
-
-        if ($primaryAddress?->geo?->points) {
-            $points = explode(',', $primaryAddress->geo->points);
-            if (count($points) >= 2) {
-                $latitude = (float) trim($points[0]);
-                $longitude = (float) trim($points[1]);
-            }
-        }
+        [$latitude, $longitude] = $primaryAddress?->geo?->latitudeLongitude() ?? [null, null];
 
         $email = $agent->email ?? $primaryAddress?->email;
 

@@ -38,7 +38,7 @@ class CustomerSeeder extends Seeder {
                                 // https://github.com/larastan/larastan/issues/2307
                                 // @phpstan-ignore argument.type
                                 ->state(function (array $attributes, Address $address) {
-                                    return ['points' => $address->city->location->points];
+                                    return ['geo_json' => $address->city->location->geo_json];
                                 })
                                 ->randomizePointsInVillage(),
                             'geo'

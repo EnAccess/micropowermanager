@@ -87,7 +87,7 @@ class SolarHomeSystemSeeder extends Seeder {
                         // https://github.com/larastan/larastan/issues/2307
                         // @phpstan-ignore argument.type
                         ->state(function (array $attributes, Device $device) {
-                            return ['points' => $device->person->addresses->first()->geo->points];
+                            return ['geo_json' => $device->person->addresses->first()->geo->geo_json];
                         })
                         ->randomizePointsInHousehold(),
                     'geo'

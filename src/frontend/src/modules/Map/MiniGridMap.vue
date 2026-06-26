@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 import { sharedMap } from "@/mixins/mapSharing.js"
 import { notify } from "@/mixins/notify.js"
 import { ClusterService } from "@/services/ClusterService.js"
@@ -313,13 +314,13 @@ export default {
       const markingInfos = []
       const miniGridWithGeoData =
         await this.miniGridService.getMiniGridGeoData(miniGridId)
-      const points = miniGridWithGeoData.location.points.split(",")
-      if (points.length !== 2) {
+      const location = geoJsonToLatLon(miniGridWithGeoData.location)
+      if (location == null) {
         this.alertNotify("error", "Mini-Grid has no location")
         return
       }
-      const lat = parseFloat(points[0])
-      const lon = parseFloat(points[1])
+      const lat = location.lat
+      const lon = location.lon
       const clusterId = miniGridWithGeoData.cluster_id
       const clusterGeoData =
         await this.clusterService.getClusterGeoLocation(clusterId)
@@ -360,15 +361,12 @@ export default {
       const devicesInMiniGrid =
         await this.miniGridDeviceService.getMiniGridDevices(miniGridId)
       devicesInMiniGrid.map((device) => {
-        if (!device.geo || !device.geo.points) {
+        const location = geoJsonToLatLon(device.geo)
+        if (location == null) {
           return
         }
-        const points = device.geo.points.split(",")
-        if (points.length !== 2) {
-          return
-        }
-        const lat = parseFloat(points[0])
-        const lon = parseFloat(points[1])
+        const lat = location.lat
+        const lon = location.lon
 
         let markerType = ""
         switch (device.device_type) {

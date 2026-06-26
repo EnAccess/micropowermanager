@@ -68,6 +68,7 @@
 <script>
 import moment from "moment"
 
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
 import BoxGroup from "@/modules/Dashboard/BoxGroup.vue"
 import FinancialOverview from "@/modules/Dashboard/FinancialOverview.vue"
@@ -164,13 +165,13 @@ export default {
 
           const miniGridsOfCluster = data.clusterData?.mini_grids || []
           miniGridsOfCluster.map((miniGrid) => {
-            const points = miniGrid.location.points.split(",")
-            if (points.length !== 2) {
+            const location = geoJsonToLatLon(miniGrid.location)
+            if (location == null) {
               this.alertNotify("error", "Mini-Grid has no location")
               return
             }
-            const lat = parseFloat(points[0])
-            const lon = parseFloat(points[1])
+            const lat = location.lat
+            const lon = location.lon
             markingInfos.push({
               id: miniGrid.id,
               name: miniGrid.name,

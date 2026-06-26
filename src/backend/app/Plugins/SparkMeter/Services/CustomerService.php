@@ -129,7 +129,7 @@ class CustomerService implements ISynchronizeService {
             $meter->updated_at = now();
             $meter->save();
 
-            $geoLocation->points = $customer['meters'][0]['coords'];
+            $geoLocation->geo_json = GeographicalInformation::pointFromString($customer['meters'][0]['coords']);
             $connectionType = $this->connectionType->newQuery()->first();
             $connectionGroup = $this->connectionGroup->newQuery()->first();
 
@@ -144,8 +144,8 @@ class CustomerService implements ISynchronizeService {
                 $meter->tariff()->associate($smTariff->mpmTariff);
             }
             $meter->save();
-            if ($geoLocation->points == null) {
-                $geoLocation->points = config('spark.geoLocation');
+            if ($geoLocation->geo_json == null) {
+                $geoLocation->geo_json = GeographicalInformation::pointFromString(config('spark.geoLocation'));
             }
             $meter->device->geo()->save($geoLocation);
 
@@ -240,8 +240,10 @@ class CustomerService implements ISynchronizeService {
         }
         $geo = $meter->device->geo()->first();
         if ($geo && array_key_exists('coords', $customer['meters'][0])) {
-            $geo->points = $customer['meters'][0]['coords'] === '' ?
-                config('spark.geoLocation') : $customer['meters'][0]['coords'];
+            $geo->geo_json = GeographicalInformation::pointFromString(
+                $customer['meters'][0]['coords'] === '' ?
+                    config('spark.geoLocation') : $customer['meters'][0]['coords']
+            );
             $geo->update();
         }
         $person->update([

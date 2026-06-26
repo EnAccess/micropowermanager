@@ -30,10 +30,10 @@ class GeographicalInformationObserver {
             ->first();
 
         if ($stmMeter) {
-            $points = explode(',', $geographicalInformation->points);
+            [$latitude, $longitude] = $geographicalInformation->latitudeLongitude();
             $putParams = [
-                'latitude' => floatval($points[0]),
-                'longitude' => floatval($points[1]),
+                'latitude' => $latitude,
+                'longitude' => $longitude,
             ];
             $this->stmMeterService->updateSteamaMeterInfo($stmMeter, $putParams);
         }

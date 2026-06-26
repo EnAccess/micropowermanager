@@ -21,13 +21,15 @@ class PersonObserver {
 
             $siteId = $smCustomer->site->site_id;
 
+            [$latitude, $longitude] = $customer->devices[0]->geo->latitudeLongitude();
+
             $customerData = [
                 'id' => $smCustomer->customer_id,
                 'active' => true,
                 'meter_tariff_name' => $customer->devices[0]->device->tariff->name,
                 'name' => $person->name.' '.$person->surname,
                 'phone_number' => $customer->addresses[0]->phone,
-                'coords' => $customer->devices[0]->geo->points,
+                'coords' => $latitude.','.$longitude,
                 'address' => $customer->addresses[0]->street,
             ];
 

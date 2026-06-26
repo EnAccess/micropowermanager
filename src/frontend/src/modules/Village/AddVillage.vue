@@ -175,6 +175,7 @@
 </template>
 
 <script>
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
 import { CityService } from "@/services/CityService.js"
@@ -338,13 +339,13 @@ export default {
       const miniGridWithGeoData = await this.getMiniGridWithGeoData(
         this.selectedMiniGridId,
       )
-      const points = miniGridWithGeoData.location.points.split(",")
-      if (points.length !== 2) {
+      const location = geoJsonToLatLon(miniGridWithGeoData.location)
+      if (location == null) {
         this.alertNotify("error", "Mini-Grid has no location")
         return
       }
-      const lat = parseFloat(points[0])
-      const lon = parseFloat(points[1])
+      const lat = location.lat
+      const lon = location.lon
       const clusterId = miniGridWithGeoData.cluster_id
       const clusterGeoData = await this.getClusterGeoData(clusterId)
 

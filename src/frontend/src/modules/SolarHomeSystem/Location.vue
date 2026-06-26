@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 import ClientMap from "@/modules/Map/ClientMap.vue"
 import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
 import Widget from "@/shared/Widget.vue"
@@ -49,32 +50,31 @@ export default {
   },
   methods: {
     setMapData() {
-      if (this.device.geo && this.device.geo.points) {
-        const points = this.device.geo.points.split(",")
-        if (points.length === 2) {
-          const lat = parseFloat(points[0])
-          const lon = parseFloat(points[1])
-
-          const markingInfo = {
-            id: this.id,
-            name: this.serialNumber,
-            serialNumber: this.serialNumber,
-            lat: lat,
-            lon: lon,
-            deviceType: "solar_home_system",
-            markerType: MARKER_TYPE.SHS,
-          }
-
-          this.mappingService.setCenter([lat, lon])
-          this.mappingService.setMarkingInfos([markingInfo])
-
-          this.$nextTick(() => {
-            if (this.$refs.mapRef) {
-              this.$refs.mapRef.setDeviceMarkers()
-            }
-          })
-        }
+      const location = geoJsonToLatLon(this.device.geo)
+      if (location == null) {
+        return
       }
+      const lat = location.lat
+      const lon = location.lon
+
+      const markingInfo = {
+        id: this.id,
+        name: this.serialNumber,
+        serialNumber: this.serialNumber,
+        lat: lat,
+        lon: lon,
+        deviceType: "solar_home_system",
+        markerType: MARKER_TYPE.SHS,
+      }
+
+      this.mappingService.setCenter([lat, lon])
+      this.mappingService.setMarkingInfos([markingInfo])
+
+      this.$nextTick(() => {
+        if (this.$refs.mapRef) {
+          this.$refs.mapRef.setDeviceMarkers()
+        }
+      })
     },
   },
 }

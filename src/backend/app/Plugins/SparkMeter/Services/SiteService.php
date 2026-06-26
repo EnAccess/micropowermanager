@@ -91,7 +91,7 @@ class SiteService implements ISynchronizeService {
         $longitude = strval(floatval($points[1]) + (mt_rand(10, 10000) / 10000));
         $points = $latitude.','.$longitude;
         $geographicalInformation->update([
-            'points' => $points,
+            'geo_json' => GeographicalInformation::pointFromString($points),
         ]);
     }
 

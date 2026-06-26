@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMiniGridRequest;
 use App\Http\Requests\UpdateMiniGridRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\GeographicalInformation;
 use App\Services\GeographicalInformationService;
 use App\Services\MiniGridGeographicalInformationService;
 use App\Services\MiniGridService;
@@ -45,7 +46,7 @@ class MiniGridController extends Controller {
     public function store(StoreMiniGridRequest $request): ApiResource {
         $data = $request->validationData();
         $miniGrid = $this->miniGridService->create($request->only(['name', 'cluster_id']));
-        $geographicalInformation = $this->geographicalInformationService->make(['points' => $data['geo_data']]);
+        $geographicalInformation = $this->geographicalInformationService->make(['geo_json' => GeographicalInformation::pointFromString($data['geo_data'])]);
         $this->miniGridGeographicalInformationService->setAssigned($geographicalInformation);
         $this->miniGridGeographicalInformationService->setAssignee($miniGrid);
         $this->miniGridGeographicalInformationService->assign();

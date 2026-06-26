@@ -113,7 +113,7 @@ class MiniGridTest extends TestCase {
             $this->clusterIds[] = $cluster->id;
 
             while ($miniGridCount > 0) {
-                $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
+                $geographicalInformation = GeographicalInformation::query()->make(['geo_json' => GeographicalInformation::pointFromString('111,222')]);
                 $miniGrid = MiniGridFactory::new()->create([
                     'cluster_id' => $cluster->id,
                     'name' => $this->faker->unique()->companySuffix(),
