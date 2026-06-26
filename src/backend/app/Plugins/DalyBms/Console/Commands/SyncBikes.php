@@ -3,6 +3,7 @@
 namespace App\Plugins\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Models\GeographicalInformation;
 use App\Plugins\DalyBms\Modules\Api\DalyBmsApi;
 use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
@@ -74,11 +75,7 @@ class SyncBikes extends AbstractSharedCommand {
         );
 
         $device = $eBike->device;
-        $geoData = [
-            'points' => $updatingData['lat'].','.$updatingData['lng'],
-        ];
-
-        $device->geo->points = $geoData['points'];
+        $device->geo->geo_json = GeographicalInformation::makePoint((float) $updatingData['lat'], (float) $updatingData['lng']);
         $device->geo->save();
     }
 }

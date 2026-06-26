@@ -56,6 +56,7 @@ class GeographicalInformationObserver {
         }
 
         $primaryAddress = $customer->addresses()->where('is_primary', 1)->first();
+        [$latitude, $longitude] = $geographicalInformation->latitudeLongitude();
         $customerData = [
             'id' => $smCustomer->customer_id,
             'active' => true,
@@ -63,7 +64,7 @@ class GeographicalInformationObserver {
             'name' => $customer->name.' '.$customer->surname,
             'code' => strval($customer->id),
             'phone_number' => $primaryAddress->phone,
-            'coords' => $geographicalInformation->points,
+            'coords' => $latitude.','.$longitude,
             'address' => $primaryAddress->street,
         ];
 

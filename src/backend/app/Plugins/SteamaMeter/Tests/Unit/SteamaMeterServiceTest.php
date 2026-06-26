@@ -82,6 +82,6 @@ class SteamaMeterServiceTest extends TestCase {
         $this->assertEquals($connectionType->id, $meter->connection_type_id);
         $this->assertGreaterThan(0, $meter->connection_group_id);
         $this->assertNotNull($meter->device);
-        $this->assertEquals('4.95,8.32', $meter->device->geo->points);
+        $this->assertEquals([4.95, 8.32], $meter->device->geo->latitudeLongitude());
     }
 }

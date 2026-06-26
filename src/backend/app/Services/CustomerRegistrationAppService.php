@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\AccessRatePaymentInitialize;
 use App\Http\Requests\AndroidAppRequest;
+use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 
@@ -62,7 +63,7 @@ class CustomerRegistrationAppService {
         $address = $this->addressService->make($addressData);
         $this->addressService->assignAddressToOwner($person, $address);
         $geographicalInformation = $this->geographicalInformationService->make([
-            'points' => $geoPoints,
+            'geo_json' => GeographicalInformation::pointFromString($geoPoints),
         ]);
         $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
         $this->addressGeographicalInformationService->setAssignee($address);

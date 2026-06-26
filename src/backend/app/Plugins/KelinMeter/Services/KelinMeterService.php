@@ -226,11 +226,9 @@ class KelinMeterService implements ISynchronizeService {
 
             if ($kelinCustomer) {
                 // $geographicalCoordinatesResult = $this->geographicalLocationFinder->getCoordinatesGivenAddress($kelinCustomer->address);
-                // $geoLocation->points = $geographicalCoordinatesResult['lat'] . ',' . $geographicalCoordinatesResult['lng'];
+                // $geoLocation->geo_json = GeographicalInformation::makePoint($geographicalCoordinatesResult['lat'], $geographicalCoordinatesResult['lng']);
 
-                $points = $kelinCustomer->mpmPerson->addresses[0]->geo->points;
-                $p = $points == null ? ',' : $kelinCustomer->mpmPerson->addresses[0];
-                $geoLocation->points = $p;
+                $geoLocation->geo_json = $kelinCustomer->mpmPerson->addresses[0]->geo?->geo_json;
                 $connectionType = $this->connectionType->newQuery()->first();
                 if (!$connectionType) {
                     $connectionType = $this->connectionType->newQuery()->create([
@@ -290,13 +288,12 @@ class KelinMeterService implements ISynchronizeService {
         if ($kelinCustomer) {
             // commented out because of address definition type changed on kelin side
             //   $geographicalCoordinatesResult = $this->geographicalLocationFinder->getCoordinatesGivenAddress($kelinCustomer->address);
-            //   $points = $geographicalCoordinatesResult['lat'] . ',' . $geographicalCoordinatesResult['lng'];
-            $points = $kelinCustomer->address ?? ',';
+            //   $geoJson = GeographicalInformation::makePoint($geographicalCoordinatesResult['lat'], $geographicalCoordinatesResult['lng']);
+            $geoJson = GeographicalInformation::pointFromString($kelinCustomer->address ?? '');
             $meter->device->person()->associate($kelinCustomer->mpmPerson);
-            $p = $points == null ? '' : $points;
-            $meter->device->geo()->update([
-                'points' => $p,
-            ]);
+            if ($geoJson !== null) {
+                $meter->device->geo()->update(['geo_json' => $geoJson]);
+            }
             $meter->save();
         }
 

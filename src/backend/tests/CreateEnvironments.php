@@ -179,7 +179,7 @@ trait CreateEnvironments {
                 'manufacturer_id' => 1,
                 'serial_number' => str_random(36),
             ]);
-            $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
+            $geographicalInformation = GeographicalInformation::query()->make(['geo_json' => GeographicalInformation::pointFromString('111,222')]);
             $this->person = PersonFactory::new()->create();
             $addressData = [
                 'city_id' => $this->city->id,
@@ -349,7 +349,7 @@ trait CreateEnvironments {
                 'connection_group_id' => $this->connectionGroup->id,
                 'tariff_id' => $this->meterTariffs[0]->id,
             ]);
-            $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
+            $geographicalInformation = GeographicalInformation::query()->make(['geo_json' => GeographicalInformation::pointFromString('111,222')]);
             $person = PersonFactory::new()->create();
             $addressData = [
                 'city_id' => $this->getRandomIdFromList($this->cities),
@@ -727,7 +727,7 @@ trait CreateEnvironments {
             ->has(
                 GeographicalInformation::factory()
                     ->state(fn (array $attributes): array => [
-                        'points' => '-7.873645,39.754433',
+                        'geo_json' => GeographicalInformation::pointFromString('-7.873645,39.754433'),
                     ])
                     ->randomizePointsInHousehold(),
                 'geo'

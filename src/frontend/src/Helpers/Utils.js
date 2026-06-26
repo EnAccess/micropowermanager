@@ -48,3 +48,13 @@ export const convertObjectKeysToSnakeCase = (obj) => {
 const camelToSnake = (str) => {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
 }
+
+// Extract { lat, lon } from a GeographicalInformation's GeoJSON Point Feature.
+// GeoJSON stores coordinates as [longitude, latitude]. Returns null when no valid point is set.
+export const geoJsonToLatLon = (geo) => {
+  const coordinates = geo?.geo_json?.geometry?.coordinates
+  if (!Array.isArray(coordinates) || coordinates.length < 2) {
+    return null
+  }
+  return { lat: coordinates[1], lon: coordinates[0] }
+}

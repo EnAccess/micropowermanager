@@ -82,6 +82,6 @@ class AppliancePersonDeviceAssignmentTest extends TestCase {
 
         $device->refresh();
         $this->assertSame($person->id, $device->person_id);
-        $this->assertSame('12.34,56.78', $device->geo?->points);
+        $this->assertSame([12.34, 56.78], $device->geo?->latitudeLongitude());
     }
 }

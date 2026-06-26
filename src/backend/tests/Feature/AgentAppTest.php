@@ -449,7 +449,7 @@ class AgentAppTest extends TestCase {
         $address = $person->addresses()->where('is_primary', 1)->firstOrFail();
         $this->assertEquals($this->city->id, $address->city_id);
         $this->assertEquals('+14155550100', $address->phone);
-        $this->assertEquals('52.5200,13.4050', $address->geo->points);
+        $this->assertEquals([52.52, 13.405], $address->geo->latitudeLongitude());
     }
 
     public function testAgentCannotRegisterCustomerWithDuplicatePhone(): void {

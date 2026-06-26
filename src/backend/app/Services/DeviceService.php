@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\EBike;
+use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IAssociative;
@@ -160,12 +161,16 @@ class DeviceService implements IBaseService, IAssociative {
      * @param array{lat: float|string, lon: float|string} $addressData
      */
     public function updateGeoInformation(Device $device, array $addressData): Device {
-        $this->assignLocation($device, $addressData['lat'].','.$addressData['lon']);
+        $this->assignLocation($device, GeographicalInformation::makePoint((float) $addressData['lat'], (float) $addressData['lon']));
 
         return $device->fresh();
     }
 
-    public function assignLocation(Device $device, string $points): void {
-        $device->geo()->updateOrCreate([], ['points' => $points]);
+    public function assignLocation(Device $device, ?object $geoJson): void {
+        if ($geoJson === null) {
+            return;
+        }
+
+        $device->geo()->updateOrCreate([], ['geo_json' => $geoJson]);
     }
 }

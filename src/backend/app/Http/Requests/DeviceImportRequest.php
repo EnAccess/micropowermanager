@@ -23,7 +23,7 @@ class DeviceImportRequest extends FormRequest {
             'data.*.device_info.serial_number' => ['required', 'string', 'min:1'],
             'data.*.tokens' => ['sometimes', 'nullable', 'array'],
             'data.*.geo' => ['sometimes', 'nullable', 'array'],
-            'data.*.geo.points' => ['sometimes', 'nullable', 'string'],
+            'data.*.geo.geo_json' => ['sometimes', 'nullable', 'array'],
             'data.*.created_at' => ['sometimes', 'nullable', 'string'],
             'data.*.updated_at' => ['sometimes', 'nullable', 'string'],
         ];

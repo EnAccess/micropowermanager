@@ -42,7 +42,7 @@ class GeographicalInformationService implements IBaseService, IAssociative {
      */
     public function make(array $geographicalInformationData): GeographicalInformation {
         return $this->geographicalInformation->newQuery()->make([
-            'points' => $geographicalInformationData['points'],
+            'geo_json' => $geographicalInformationData['geo_json'],
         ]);
     }
 
