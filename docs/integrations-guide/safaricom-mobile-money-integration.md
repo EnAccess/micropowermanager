@@ -52,7 +52,7 @@ Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (
 ### Step 2: Create a Daraja App
 
 1. From the developer portal dashboard, create a new app.
-2. When asked which products to subscribe the app to, select **M-Pesa Express** 
+2. When asked which products to subscribe the app to, select **M-Pesa Express**
 3. Save the app.
 4. Copy your **Consumer Key** and **Consumer Secret** from the app's detail page.
 
