@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use Database\Factories\GeographicalInformationFactory;
+use GeoJson\Feature\Feature;
+use GeoJson\Geometry\Point;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -40,29 +42,23 @@ class GeographicalInformation extends BaseModel {
     }
 
     /**
-     * Build a GeoJSON Point Feature from a latitude/longitude pair. The shape mirrors the
-     * Cluster model's `geo_json` (a Feature with `geometry` + `properties`) so the whole codebase
-     * has one GeoJSON convention. GeoJSON orders coordinates as [longitude, latitude] — the reverse
-     * of how humans say them — and this is the single place that ordering is encoded.
+     * Build a GeoJSON Point Feature from a latitude/longitude pair, matching the Cluster model's
+     * `geo_json` so the codebase has one GeoJSON convention. GeoJSON follows RFC 7946, which orders
+     * coordinates as [longitude, latitude]; most humans use the ISO 6709 latitude/longitude order.
+     * This is the single place that ordering is encoded.
      *
-     * Returns an object (not an array) to match the `geo_json` cast and the Cluster convention.
+     * The empty properties array serializes to a `{}` object (per RFC 7946); the `geo_json` cast
+     * `json_encode`s the Feature on save and reads it back as a `stdClass`.
      */
-    public static function makePoint(float $latitude, float $longitude): object {
-        return (object) [
-            'type' => 'Feature',
-            'geometry' => (object) [
-                'type' => 'Point',
-                'coordinates' => [$longitude, $latitude],
-            ],
-            'properties' => new \stdClass(),
-        ];
+    public static function makePoint(float $latitude, float $longitude): Feature {
+        return new Feature(new Point([$longitude, $latitude]), []);
     }
 
     /**
      * Build a GeoJSON Point Feature from an inbound "latitude,longitude" string (the format sent by
      * the UI forms and several third-party meter APIs). Returns null for blank/malformed input.
      */
-    public static function pointFromString(?string $latitudeLongitude): ?object {
+    public static function pointFromString(?string $latitudeLongitude): ?Feature {
         if ($latitudeLongitude === null || trim($latitudeLongitude) === '') {
             return null;
         }

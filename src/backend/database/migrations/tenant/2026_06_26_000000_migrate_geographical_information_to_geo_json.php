@@ -1,5 +1,7 @@
 <?php
 
+use GeoJson\Feature\Feature;
+use GeoJson\Geometry\Point;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -27,14 +29,7 @@ return new class extends Migration {
                         ->table('geographical_informations')
                         ->where('id', $row->id)
                         ->update([
-                            'geo_json' => json_encode([
-                                'type' => 'Feature',
-                                'geometry' => [
-                                    'type' => 'Point',
-                                    'coordinates' => [$longitude, $latitude],
-                                ],
-                                'properties' => new stdClass(),
-                            ]),
+                            'geo_json' => json_encode(new Feature(new Point([$longitude, $latitude]), [])),
                         ]);
                 }
             });
