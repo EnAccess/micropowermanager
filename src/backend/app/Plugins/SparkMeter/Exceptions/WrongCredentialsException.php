@@ -2,4 +2,9 @@
 
 namespace App\Plugins\SparkMeter\Exceptions;
 
-class WrongCredentialsException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the configured SparkMeter API credentials are invalid.
+ */
+class WrongCredentialsException extends MpmException {}

@@ -39,7 +39,7 @@ class AppliancePaymentController extends Controller {
             return response()->json(['message' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);
+            throw $e;
         }
     }
 

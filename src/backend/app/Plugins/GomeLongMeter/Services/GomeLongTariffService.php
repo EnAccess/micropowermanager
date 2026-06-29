@@ -79,7 +79,7 @@ class GomeLongTariffService {
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -108,7 +108,7 @@ class GomeLongTariffService {
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -171,7 +171,7 @@ class GomeLongTariffService {
                 'syncing tariff info from gomelong api failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 }

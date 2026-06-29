@@ -25,7 +25,7 @@ class AgentAppTest extends TestCase {
         $this->createAgent();
         $agent = $this->agent;
 
-        $response = $this->post('/api/app/login', [
+        $response = $this->postJson('/api/app/login', [
             'email' => $agent->email,
             'password' => '123456',
         ], [
@@ -43,7 +43,7 @@ class AgentAppTest extends TestCase {
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
-        $response = $this->actingAs($this->agent)->get('/api/app/me');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/me');
         $response->assertStatus(200);
         $this->assertEquals($agent->id, $response['agent']['id']);
         $this->assertEquals($agent->email, $response['agent']['email']);
@@ -64,7 +64,7 @@ class AgentAppTest extends TestCase {
             'company_name' => 'Acme Mini-Grid',
         ]);
 
-        $response = $this->post('/api/app/login', [
+        $response = $this->postJson('/api/app/login', [
             'email' => $this->agent->email,
             'password' => '123456',
         ]);
@@ -90,7 +90,7 @@ class AgentAppTest extends TestCase {
             'company_name' => 'Acme Mini-Grid',
         ]);
 
-        $response = $this->actingAs($this->agent)->get('/api/app/me');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/me');
 
         $response->assertStatus(200);
         $response->assertJsonPath('settings.currency', 'TZS');
@@ -108,7 +108,7 @@ class AgentAppTest extends TestCase {
         $this->createAgent();
         MainSettings::query()->delete();
 
-        $response = $this->post('/api/app/login', [
+        $response = $this->postJson('/api/app/login', [
             'email' => $this->agent->email,
             'password' => '123456',
         ]);
@@ -138,7 +138,7 @@ class AgentAppTest extends TestCase {
         $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
-        $response = $this->actingAs($this->agent)->post('/api/app/logout');
+        $response = $this->actingAs($this->agent)->postJson('/api/app/logout');
         $response->assertStatus(200);
         $this->assertEquals($response->json('message'), 'Successfully logged out');
     }
@@ -150,7 +150,7 @@ class AgentAppTest extends TestCase {
         $this->createCity();
         $this->createAgentCommission();
         $this->createAgent();
-        $response = $this->actingAs($this->agent)->post('/api/app/refresh');
+        $response = $this->actingAs($this->agent)->postJson('/api/app/refresh');
         $response->assertStatus(200);
     }
 
@@ -164,7 +164,7 @@ class AgentAppTest extends TestCase {
         $postData = [
             'fire_base_token' => '123456789',
         ];
-        $response = $this->actingAs($this->agent)->post('/api/app/agents/firebase', $postData);
+        $response = $this->actingAs($this->agent)->postJson('/api/app/agents/firebase', $postData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['fire_base_token'], $postData['fire_base_token']);
     }
@@ -177,7 +177,7 @@ class AgentAppTest extends TestCase {
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/balance');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/balance');
         $response->assertStatus(200);
         $this->assertEquals($agent->balance, $response->getContent());
     }
@@ -193,7 +193,7 @@ class AgentAppTest extends TestCase {
         $this->createAgent();
         $personCount = 10;
         $this->createPerson($personCount);
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/customers');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/customers');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $personCount);
     }
@@ -210,7 +210,7 @@ class AgentAppTest extends TestCase {
         $personCount = 10;
         $this->createPerson($personCount);
         $person = Person::query()->where('is_customer', 1)->first();
-        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/search?term=%s', $person->name));
+        $response = $this->actingAs($this->agent)->getJson(sprintf('/api/app/agents/customers/search?term=%s', $person->name));
         $response->assertStatus(200);
         $this->assertNotNull($response['data']);
         $returnedIds = array_column($response['data'], 'id');
@@ -235,7 +235,7 @@ class AgentAppTest extends TestCase {
         $amount = 100;
         $agentId = $this->agents[0]->id;
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
-        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/graph/%s', 'D'));
+        $response = $this->actingAs($this->agent)->getJson(sprintf('/api/app/agents/customers/graph/%s', 'D'));
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
     }
@@ -260,7 +260,7 @@ class AgentAppTest extends TestCase {
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
         $customerId = $this->person->id;
         $response =
-            $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/%s/graph/%s', $customerId, 'D'));
+            $this->actingAs($this->agent)->getJson(sprintf('/api/app/agents/customers/%s/graph/%s', $customerId, 'D'));
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
     }
@@ -283,7 +283,7 @@ class AgentAppTest extends TestCase {
         $amount = 100;
         $agentId = $this->agents[0]->id;
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/transactions');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/transactions');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $agentTransactionCount);
     }
@@ -306,7 +306,7 @@ class AgentAppTest extends TestCase {
         $amount = 100;
         $agentId = $this->agents[0]->id;
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
-        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/transactions/%s', $this->person->id));
+        $response = $this->actingAs($this->agent)->getJson(sprintf('/api/app/agents/transactions/%s', $this->person->id));
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $agentTransactionCount);
     }
@@ -320,7 +320,7 @@ class AgentAppTest extends TestCase {
         $this->createAgent();
         $this->createAssignedAppliances();
         $this->createAgentSoldAppliance();
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/appliances');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/appliances');
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
         $this->assertEquals(count($response['data']), 1);
@@ -335,7 +335,7 @@ class AgentAppTest extends TestCase {
         $this->createAgent();
         $this->createAssignedAppliances();
         $this->createAgentSoldAppliance();
-        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/appliances/%s', $this->person->id));
+        $response = $this->actingAs($this->agent)->getJson(sprintf('/api/app/agents/appliances/%s', $this->person->id));
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
         $this->assertEquals(count($response['data']), 1);
@@ -357,7 +357,7 @@ class AgentAppTest extends TestCase {
             'tenure' => 10,
             'first_payment_date' => date('Y-m-d', strtotime('+1 month')),
         ];
-        $response = $this->actingAs($this->agent)->post('/api/app/agents/appliances', $postData);
+        $response = $this->actingAs($this->agent)->postJson('/api/app/agents/appliances', $postData);
         $response->assertStatus(201);
     }
 
@@ -371,7 +371,7 @@ class AgentAppTest extends TestCase {
         $assignedApplianceCount = 2;
         $this->createAssignedAppliances($assignedApplianceCount);
         AgentAssignedAppliances::query()->first();
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/appliance_types');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/appliance_types');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $assignedApplianceCount);
     }
@@ -394,7 +394,7 @@ class AgentAppTest extends TestCase {
         $amount = 100;
         $agentId = $this->agents[0]->id;
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/dashboard/boxes');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/dashboard/boxes');
         $response->assertStatus(200);
         $this->assertEquals(array_key_exists('balance', $response['data']), true);
         $this->assertEquals(array_key_exists('profit', $response['data']), true);
@@ -421,7 +421,7 @@ class AgentAppTest extends TestCase {
         $amount = 100;
         $agentId = $this->agents[0]->id;
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/dashboard/graph');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/dashboard/graph');
         $response->assertStatus(200);
     }
 
@@ -440,7 +440,7 @@ class AgentAppTest extends TestCase {
             'city_id' => $this->city->id,
             'geo_points' => '52.5200,13.4050',
         ];
-        $response = $this->actingAs($this->agent)->post('/api/app/agents/customers', $postData);
+        $response = $this->actingAs($this->agent)->postJson('/api/app/agents/customers', $postData);
         $response->assertStatus(201);
         $this->assertEquals('Jane', $response['data']['name']);
         $this->assertEquals(1, $response['data']['is_customer']);
@@ -466,8 +466,8 @@ class AgentAppTest extends TestCase {
             'phone' => '+14155550100',
             'city_id' => $this->city->id,
         ];
-        $this->actingAs($this->agent)->post('/api/app/agents/customers', $postData)->assertStatus(201);
-        $response = $this->actingAs($this->agent)->post('/api/app/agents/customers', $postData);
+        $this->actingAs($this->agent)->postJson('/api/app/agents/customers', $postData)->assertStatus(201);
+        $response = $this->actingAs($this->agent)->postJson('/api/app/agents/customers', $postData);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['phone']);
     }
@@ -494,7 +494,7 @@ class AgentAppTest extends TestCase {
             'phone' => '+14155550100',
             'city_id' => $foreignCity->id,
         ];
-        $response = $this->actingAs($this->agent)->post('/api/app/agents/customers', $postData);
+        $response = $this->actingAs($this->agent)->postJson('/api/app/agents/customers', $postData);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['city_id']);
     }
@@ -513,7 +513,7 @@ class AgentAppTest extends TestCase {
             'amount' => 500,
         ];
         $response = $this->actingAs($this->agent)
-            ->post('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
+            ->postJson('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
         $response->assertStatus(200);
 
         $transaction = Transaction::query()->where('message', 'MTR-TX-001')->firstOrFail();
@@ -528,7 +528,7 @@ class AgentAppTest extends TestCase {
         Queue::assertPushed(ProcessPayment::class);
     }
 
-    public function testAgentTransactionFailsWhenAmountExceedsFloat(): void {
+    public function testAgentTransactionRejectedWhenAmountExceedsRiskBalance(): void {
         Queue::fake();
         $this->createTestData();
         $this->createCluster();
@@ -542,8 +542,9 @@ class AgentAppTest extends TestCase {
             'amount' => 999_999_999,
         ];
         $response = $this->actingAs($this->agent)
-            ->post('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
-        $response->assertStatus(500);
+            ->postJson('/api/app/agents/transactions', $postData, ['device-id' => $this->agent->mobile_device_id]);
+        $response->assertStatus(403);
+        $response->assertJson(['message' => 'Risk balance exceeded']);
         $this->assertSame(0, Transaction::query()->where('message', 'MTR-TX-002')->count());
         Queue::assertNotPushed(ProcessPayment::class);
     }
@@ -566,7 +567,7 @@ class AgentAppTest extends TestCase {
         $amount = 100;
         $agentId = $this->agents[0]->id;
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
-        $response = $this->actingAs($this->agent)->get('/api/app/agents/dashboard/revenue');
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/dashboard/revenue');
         $response->assertStatus(200);
     }
 }

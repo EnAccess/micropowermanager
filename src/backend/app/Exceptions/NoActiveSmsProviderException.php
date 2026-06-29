@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class NoActiveSmsProviderException extends \Exception {}
+/**
+ * Thrown when no active SMS provider is configured to send a message.
+ */
+class NoActiveSmsProviderException extends MpmException {}

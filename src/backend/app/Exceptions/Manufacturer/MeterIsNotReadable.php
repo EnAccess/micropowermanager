@@ -2,4 +2,9 @@
 
 namespace App\Exceptions\Manufacturer;
 
-class MeterIsNotReadable extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when a meter cannot be read through the manufacturer integration.
+ */
+class MeterIsNotReadable extends MpmException {}

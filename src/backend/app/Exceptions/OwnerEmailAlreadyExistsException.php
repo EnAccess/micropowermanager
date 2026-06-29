@@ -2,4 +2,8 @@
 
 namespace App\Exceptions;
 
-class OwnerEmailAlreadyExistsException extends \Exception {}
+/**
+ * Thrown when registering a company whose owner email is already in use by
+ * another account.
+ */
+class OwnerEmailAlreadyExistsException extends MpmException {}

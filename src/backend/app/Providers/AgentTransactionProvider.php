@@ -10,7 +10,6 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Providers\Interfaces\ITransactionProvider;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -94,21 +93,15 @@ class AgentTransactionProvider implements ITransactionProvider {
         $agent = Agent::query()->find(auth('agent_api')->user()->id);
         $agentId = $agent->id;
         $agent = auth('agent_api')->user();
-        try {
-            Log::info('AgentTransactionProvider validateRequest', [
-                'deviceId' => $deviceId,
-                'agentId' => $agentId,
-            ]);
-            $query = Agent::query()->where('id', $agent->id);
-
-            if (!empty($deviceId)) {
-                $query->where('mobile_device_id', $deviceId);
-            }
-
-            $query->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+        Log::info('AgentTransactionProvider validateRequest', [
+            'deviceId' => $deviceId,
+            'agentId' => $agentId,
+        ]);
+        $query = Agent::query()->where('id', $agent->id);
+        if (!empty($deviceId)) {
+            $query->where('mobile_device_id', $deviceId);
         }
+        $query->firstOrFail();
         if ($agentId !== $agent->id) {
             throw new \Exception('Agent authorization failed.');
         }

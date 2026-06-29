@@ -1,0 +1,25 @@
+meta {
+  name: Get Agent Devices
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/devices/unassigned?appliance_id=6&type=solar_home_system
+  body: none
+  auth: inherit
+}
+
+params:query {
+  appliance_id: 6
+  type: solar_home_system
+}
+
+headers {
+  Accept: text/plain
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

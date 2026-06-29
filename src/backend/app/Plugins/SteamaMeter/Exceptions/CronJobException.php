@@ -2,4 +2,11 @@
 
 namespace App\Plugins\SteamaMeter\Exceptions;
 
-class CronJobException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when a Steama meter scheduled (cron) job fails to complete.
+ */
+class CronJobException extends MpmException {
+    protected int $httpStatusCode = 500;
+}

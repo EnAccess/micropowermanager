@@ -24,7 +24,7 @@ class AddressTest extends TestCase {
         $this->createMiniGrid(1);
         $this->createCity(1);
 
-        $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
+        $response = $this->actingAs($user)->postJson(sprintf('/api/people/%s/addresses', $person->id), [
             'email' => $this->faker->email(),
             'phone' => $this->faker->e164PhoneNumber(),
             'street' => $this->faker->streetAddress(),
@@ -49,7 +49,7 @@ class AddressTest extends TestCase {
         $this->createMiniGrid(1);
         $this->createCity(1);
 
-        $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
+        $response = $this->actingAs($user)->postJson(sprintf('/api/people/%s/addresses', $person->id), [
             'email' => $this->faker->email(),
             'phone' => '0712345678',
             'street' => $this->faker->streetAddress(),
@@ -79,7 +79,7 @@ class AddressTest extends TestCase {
 
         $streetName = $this->faker->streetName();
 
-        $response = $this->actingAs($user)->put(sprintf('/api/people/%s/addresses', $person->id), [
+        $response = $this->actingAs($user)->putJson(sprintf('/api/people/%s/addresses', $person->id), [
             'id' => $address->id,
             'street' => $streetName,
             'country_id' => 1,
@@ -104,7 +104,7 @@ class AddressTest extends TestCase {
         $address->owner()->associate($person);
         $address->save();
 
-        $response = $this->actingAs($user)->delete(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
+        $response = $this->actingAs($user)->deleteJson(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
 
         $response->assertStatus(200);
         $this->assertEquals(0, $person->addresses()->count());
@@ -120,7 +120,7 @@ class AddressTest extends TestCase {
         $address->owner()->associate($person);
         $address->save();
 
-        $response = $this->actingAs($user)->delete(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
+        $response = $this->actingAs($user)->deleteJson(sprintf('/api/people/%s/addresses/%s', $person->id, $address->id));
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('address');

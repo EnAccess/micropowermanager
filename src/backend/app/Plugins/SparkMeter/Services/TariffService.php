@@ -228,7 +228,7 @@ class TariffService implements ISynchronizeService {
             return $sparkTariff['tariff'];
         } catch (\Exception $e) {
             Log::critical('Getting tariff info from spark api failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -267,7 +267,7 @@ class TariffService implements ISynchronizeService {
                 'updating tariff info from spark api failed.',
                 ['Error :' => $e->getMessage(), 'data :' => $tariffData]
             );
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -366,7 +366,7 @@ class TariffService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark meter tariffs sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 

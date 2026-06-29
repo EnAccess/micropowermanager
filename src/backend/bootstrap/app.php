@@ -1,10 +1,6 @@
 <?php
 
 use App\Console\Commands\MailApplianceDebtsCommand;
-use App\Exceptions\CompanyAlreadyExistsException;
-use App\Exceptions\EntityHasChildrenException;
-use App\Exceptions\OwnerEmailAlreadyExistsException;
-use App\Exceptions\SmsGatewayNotConfiguredException;
 use App\Http\Middleware\AgentBalanceMiddleware;
 use App\Http\Middleware\TelescopeBasicAuthMiddleware;
 use App\Http\Middleware\Transaction;
@@ -12,14 +8,11 @@ use App\Http\Middleware\TransactionRequest;
 use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\ValidationException;
 use Psr\Log\LogLevel;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -70,41 +63,15 @@ return Application::configure(basePath: dirname(__DIR__))
         // Lowering the LogLevel here to not spam our logging.
         $exceptions->level(JWTException::class, LogLevel::INFO);
 
-        $exceptions->render(fn (AuthenticationException $e, Request $request) => response()->json(
+        $exceptions->render(fn (AuthenticationException $e) => response()->json(
             ['message' => 'Unauthorized. Make sure you are logged in.'],
             401
         ));
 
         $exceptions->render(fn (JWTException $e) => response()->json(
-            ['error' => 'Unauthorized. Make sure you are logged in. ('.$e->getMessage().')'],
+            ['message' => 'Unauthorized. Make sure you are logged in. ('.$e->getMessage().')'],
             401
         ));
-
-        $exceptions->render(fn (ModelNotFoundException $e) => response()->json([
-            'message' => 'Model not found '.implode(' ', $e->getIds()),
-            'status_code' => 404,
-        ]));
-        $exceptions->render(fn (ValidationException $e) => response()->json([
-            'message' => 'Validation failed',
-            'errors' => $e->errors(),
-            'status_code' => 422,
-        ], 422));
-        $exceptions->render(fn (SmsGatewayNotConfiguredException $e) => response()->json([
-            'message' => 'No active SMS provider is configured. Please configure an SMS gateway in Main Settings like AfricasTalking or TextBee.',
-            'status_code' => 422,
-        ], 422));
-        $exceptions->render(fn (CompanyAlreadyExistsException $e) => response()->json([
-            'message' => $e->getMessage(),
-            'status_code' => 422,
-        ], 422));
-        $exceptions->render(fn (OwnerEmailAlreadyExistsException $e) => response()->json([
-            'message' => $e->getMessage(),
-            'status_code' => 422,
-        ], 422));
-        $exceptions->render(fn (EntityHasChildrenException $e) => response()->json([
-            'message' => $e->getMessage(),
-            'status_code' => 422,
-        ], 422));
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');

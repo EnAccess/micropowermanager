@@ -2,4 +2,9 @@
 
 namespace App\Plugins\BulkRegistration\Exceptions;
 
-class CsvDataParserException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when a CSV file submitted for bulk registration cannot be parsed.
+ */
+class CsvDataParserException extends MpmException {}
