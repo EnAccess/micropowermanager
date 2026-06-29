@@ -2,4 +2,9 @@
 
 namespace App\Plugins\KelinMeter\Exceptions;
 
-class KelinApiCredentialsNotFoundException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when no Kelin meter API credentials are configured for the request.
+ */
+class KelinApiCredentialsNotFoundException extends MpmException {}

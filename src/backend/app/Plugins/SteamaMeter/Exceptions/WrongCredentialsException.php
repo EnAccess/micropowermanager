@@ -2,4 +2,9 @@
 
 namespace App\Plugins\SteamaMeter\Exceptions;
 
-class WrongCredentialsException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the configured Steama meter API credentials are invalid.
+ */
+class WrongCredentialsException extends MpmException {}

@@ -27,15 +27,9 @@ class PesapalTransactionProvider implements ITransactionProvider {
     public function validateRequest($request): void {
         $meterSerial = $request->input('meterSerial');
         $amount = $request->input('amount');
-
-        try {
-            $this->pesapalTransactionService->validatePaymentOwner($meterSerial, $amount);
-            $pesapalTransactionData = $this->pesapalTransactionService->initializeTransactionData();
-
-            $this->pesapalTransactionService->imitateTransactionForValidation($pesapalTransactionData);
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
-        }
+        $this->pesapalTransactionService->validatePaymentOwner($meterSerial, $amount);
+        $pesapalTransactionData = $this->pesapalTransactionService->initializeTransactionData();
+        $this->pesapalTransactionService->imitateTransactionForValidation($pesapalTransactionData);
     }
 
     public function saveTransaction(): void {

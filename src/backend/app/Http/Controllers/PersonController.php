@@ -121,7 +121,7 @@ class PersonController extends Controller {
             return ApiResource::make($person)->response()->setStatusCode(201);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 

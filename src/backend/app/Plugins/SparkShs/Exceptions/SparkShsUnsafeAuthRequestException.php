@@ -2,6 +2,8 @@
 
 namespace App\Plugins\SparkShs\Exceptions;
 
+use App\Exceptions\MpmException;
+
 /**
  * Exception thrown when an authentication request to Spark SHS is refused.
  *
@@ -10,4 +12,6 @@ namespace App\Plugins\SparkShs\Exceptions;
  * we perform sanity checks, such as preventing requests to interal IPs to mitigate
  * SSRF attacks.
  */
-class SparkShsUnsafeAuthRequestException extends \Exception {}
+class SparkShsUnsafeAuthRequestException extends MpmException {
+    protected int $httpStatusCode = 403;
+}

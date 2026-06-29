@@ -27,16 +27,10 @@ class PaystackTransactionProvider implements ITransactionProvider {
     public function validateRequest($request): void {
         $meterSerial = $request->input('meterSerial');
         $amount = $request->input('amount');
-
-        try {
-            $this->paystackTransactionService->validatePaymentOwner($meterSerial, $amount);
-            $paystackTransactionData = $this->paystackTransactionService->initializeTransactionData();
-
-            // We need to make sure that the payment is fully processable from our end .
-            $this->paystackTransactionService->imitateTransactionForValidation($paystackTransactionData);
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage(), $exception->getCode(), $exception);
-        }
+        $this->paystackTransactionService->validatePaymentOwner($meterSerial, $amount);
+        $paystackTransactionData = $this->paystackTransactionService->initializeTransactionData();
+        // We need to make sure that the payment is fully processable from our end .
+        $this->paystackTransactionService->imitateTransactionForValidation($paystackTransactionData);
     }
 
     public function saveTransaction(): void {

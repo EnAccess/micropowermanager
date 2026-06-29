@@ -2,4 +2,9 @@
 
 namespace App\Exceptions;
 
-class SmsBodyParserNotExtendedException extends \Exception {}
+/**
+ * Thrown when an SMS body parser does not extend the expected base parser class.
+ */
+class SmsBodyParserNotExtendedException extends MpmException {
+    protected int $httpStatusCode = 500;
+}

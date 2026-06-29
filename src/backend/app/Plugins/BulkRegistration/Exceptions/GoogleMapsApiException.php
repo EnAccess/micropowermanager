@@ -2,10 +2,15 @@
 
 namespace App\Plugins\BulkRegistration\Exceptions;
 
+use App\Exceptions\MpmException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class GoogleMapsApiException extends \Exception {
+/**
+ * Thrown when a Google Maps API request fails during bulk registration
+ * geocoding.
+ */
+class GoogleMapsApiException extends MpmException {
     public function render(Request $request): JsonResponse {
         return response()->json([
             'errors' => [

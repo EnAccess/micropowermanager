@@ -6,6 +6,8 @@ namespace App\Http\Middleware;
 
 use App\Services\ApiResolvers\ThirdPartyApiResolverService;
 use App\Services\DatabaseProxyManagerService;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -56,7 +58,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             return $this->handleForCompany(
                 $request,
                 $next,
-                $this->companyIdFromEmail($request)
+                $this->companyIdFromLoginEmail($request)
             );
         }
 
@@ -67,7 +69,7 @@ class UserDefaultDatabaseConnectionMiddleware {
                 return $this->handleForCompany(
                     $request,
                     $next,
-                    $this->companyIdFromEmail($request)
+                    $this->companyIdFromLoginEmail($request)
                 );
             }
 
@@ -107,8 +109,15 @@ class UserDefaultDatabaseConnectionMiddleware {
         return $path === 'api/app/reset-password' || Str::contains($path, 'login');
     }
 
-    private function companyIdFromEmail(Request $request): int {
-        return $this->databaseProxyManager->findByEmail($request->input('email'))->getCompanyId();
+    private function companyIdFromLoginEmail(Request $request): int {
+        try {
+            return $this->databaseProxyManager->findByEmail($request->input('email'))->getCompanyId();
+        } catch (ModelNotFoundException|NotFoundHttpException) {
+            // These email-based paths (web + agent login, password reset) are unauthenticated.
+            // An unknown email must fail exactly like a wrong password, otherwise the
+            // difference lets an attacker enumerate which emails have accounts in MPM.
+            throw new AuthenticationException();
+        }
     }
 
     private function companyIdFromAgentToken(): int {

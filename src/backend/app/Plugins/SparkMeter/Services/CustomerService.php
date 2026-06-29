@@ -86,7 +86,7 @@ class CustomerService implements ISynchronizeService {
             return $sparkCustomerId['customer_id'];
         } catch (\Exception $e) {
             Log::critical('updating customer info from spark api failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -172,7 +172,7 @@ class CustomerService implements ISynchronizeService {
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             Log::critical('Error while synchronizing spark customers', ['message' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -377,7 +377,7 @@ class CustomerService implements ISynchronizeService {
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark customers sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
@@ -396,7 +396,7 @@ class CustomerService implements ISynchronizeService {
                 if ($returnData) {
                     $returnArray[] = ['result' => false];
                 }
-                throw new \Exception($e->getMessage(), $e->getCode(), $e);
+                throw $e;
             }
 
             // @phpstan-ignore argument.templateType,argument.templateType

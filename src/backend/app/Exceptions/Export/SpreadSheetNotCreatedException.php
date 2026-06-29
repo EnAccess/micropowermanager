@@ -2,4 +2,11 @@
 
 namespace App\Exceptions\Export;
 
-class SpreadSheetNotCreatedException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when a spreadsheet export file cannot be created.
+ */
+class SpreadSheetNotCreatedException extends MpmException {
+    protected int $httpStatusCode = 500;
+}

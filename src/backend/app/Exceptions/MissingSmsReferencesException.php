@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class MissingSmsReferencesException extends \Exception {}
+/**
+ * Thrown when required SMS reference data is missing while composing a message.
+ */
+class MissingSmsReferencesException extends MpmException {}

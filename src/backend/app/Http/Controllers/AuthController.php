@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Utils\DemoCompany;
 use Dedoc\Scramble\Attributes\BodyParameter;
 use Dedoc\Scramble\Attributes\Group;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\JWTGuard;
 
@@ -22,7 +23,7 @@ class AuthController extends Controller {
         $credentials = request(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
+            throw new AuthenticationException('');
         }
 
         return $this->respondWithToken((string) $token);

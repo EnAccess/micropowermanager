@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class GeoFormatException extends \Exception {}
+/**
+ * Thrown when a geographic coordinate or location value is malformed.
+ */
+class GeoFormatException extends MpmException {}

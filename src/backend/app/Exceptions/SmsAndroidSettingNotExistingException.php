@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class SmsAndroidSettingNotExistingException extends \Exception {}
+/**
+ * Thrown when the SMS Android gateway settings have not been configured.
+ */
+class SmsAndroidSettingNotExistingException extends MpmException {}

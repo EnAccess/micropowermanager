@@ -2,4 +2,9 @@
 
 namespace App\Plugins\CalinSmartMeter\Exceptions;
 
-class CalinSmartCreadentialsNotFoundException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when the Calin Smart meter API credentials are not configured for the tenant.
+ */
+class CalinSmartCreadentialsNotFoundException extends MpmException {}

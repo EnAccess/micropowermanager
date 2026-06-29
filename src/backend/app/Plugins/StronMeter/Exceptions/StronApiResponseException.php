@@ -2,4 +2,11 @@
 
 namespace App\Plugins\StronMeter\Exceptions;
 
-class StronApiResponseException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when a call to the external Stron meter API fails or returns an error response.
+ */
+class StronApiResponseException extends MpmException {
+    protected int $httpStatusCode = 502;
+}

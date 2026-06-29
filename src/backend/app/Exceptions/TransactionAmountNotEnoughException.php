@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class TransactionAmountNotEnoughException extends \Exception {}
+/**
+ * Thrown when a transaction amount is insufficient to cover the requested operation.
+ */
+class TransactionAmountNotEnoughException extends MpmException {}

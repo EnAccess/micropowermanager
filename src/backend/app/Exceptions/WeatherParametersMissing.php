@@ -2,4 +2,7 @@
 
 namespace App\Exceptions;
 
-class WeatherParametersMissing extends \Exception {}
+/**
+ * Thrown when required parameters for a weather data request are missing.
+ */
+class WeatherParametersMissing extends MpmException {}

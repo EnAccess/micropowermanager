@@ -27,6 +27,12 @@ Read the [root `AGENTS.md`](../../AGENTS.md) first for repo-wide rules. This fil
 - **Queue processing.** Laravel Horizon on Redis. Workers run in a separate container.
 - **Routes.** `routes/api.php` includes sub-route files from `routes/api_paths/`. Agent and customer registration apps have their own route groups.
 
+## Anti-patterns to avoid
+
+Please avoid the following (non-exclusive) list of anti-patterns
+
+- **Never re-throw a caught exception wrapped in a generic `\Exception`.** `catch (\Exception $e) { throw new \Exception($e->getMessage(), $e->getCode(), $e); }` strips the original type, so the exception loses its `render()`/HTTP status and Laravel falls back to a generic 500 — silently defeating exception surfacing. After any cleanup (e.g. `rollBack()`), re-throw the original with `throw $e;`. Domain/business errors should extend `App\Exceptions\MpmException`, which renders itself as a JSON `{"message": ...}` body with its `$httpStatusCode` (default 422); subclasses set the status and the throw site passes the message.
+
 ## Tests
 
 Run tests directly from `src/backend/` (not via Docker). Requires MySQL on port 53306 and Redis.

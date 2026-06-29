@@ -9,6 +9,7 @@ use App\Services\MainSettingsService;
 use App\Utils\DemoCompany;
 use Dedoc\Scramble\Attributes\BodyParameter;
 use Dedoc\Scramble\Attributes\Group;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTGuard;
@@ -47,7 +48,7 @@ class AgentAuthController extends Controller {
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = $this->guard()->setTTL(525600)->attempt($credentials)) {
-            return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
+            throw new AuthenticationException();
         }
 
         // if the Agent app sends us a agent-device-id in the header

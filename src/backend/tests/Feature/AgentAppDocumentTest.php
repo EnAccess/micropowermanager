@@ -28,7 +28,8 @@ class AgentAppDocumentTest extends TestCase {
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
                 'additional_json' => ['signed_at' => '2026-05-21'],
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(201);
@@ -49,11 +50,12 @@ class AgentAppDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response = $this->actingAs($this->agent)
-            ->get(sprintf('/api/app/agents/customers/%d/documents', $customer->id));
+            ->getJson(sprintf('/api/app/agents/customers/%d/documents', $customer->id));
 
         $response->assertStatus(200);
         $this->assertCount(1, $response['data']);
@@ -69,7 +71,8 @@ class AgentAppDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(404);
@@ -85,12 +88,13 @@ class AgentAppDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
         $document = $customer->uploadedDocuments()->first();
 
         $response = $this->actingAs($this->agent)
-            ->get('/api/app/agents/customers/documents/'.$document->id.'/download');
+            ->getJson('/api/app/agents/customers/documents/'.$document->id.'/download');
 
         $response->assertStatus(200);
         $response->assertHeader('content-disposition');
@@ -107,11 +111,12 @@ class AgentAppDocumentTest extends TestCase {
                 'file' => UploadedFile::fake()->create('contract.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
                 'additional_json' => ['signed_at' => '2026-05-21'],
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
         $document = $customer->uploadedDocuments()->first();
 
-        $response = $this->actingAs($this->agent)->patch(
+        $response = $this->actingAs($this->agent)->patchJson(
             '/api/app/agents/customers/documents/'.$document->id,
             ['additional_json' => ['signed_at' => '2026-06-02', 'witness' => 'Ada']]
         );
@@ -137,7 +142,7 @@ class AgentAppDocumentTest extends TestCase {
             'location' => 'documents/companies/1/persons/'.$foreignCustomer->id,
         ]);
 
-        $response = $this->actingAs($this->agent)->patch(
+        $response = $this->actingAs($this->agent)->patchJson(
             '/api/app/agents/customers/documents/'.$foreignDocument->id,
             ['additional_json' => ['tampered' => 'yes']]
         );
@@ -161,7 +166,7 @@ class AgentAppDocumentTest extends TestCase {
         ]);
 
         $response = $this->actingAs($this->agent)
-            ->get('/api/app/agents/customers/documents/'.$foreignDocument->id.'/download');
+            ->getJson('/api/app/agents/customers/documents/'.$foreignDocument->id.'/download');
 
         $response->assertStatus(403);
     }
@@ -176,14 +181,15 @@ class AgentAppDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
         $document = $customer->uploadedDocuments()->first();
         $storedPath = $document->location.'/'.$document->name;
         Storage::assertExists($storedPath);
 
         $response = $this->actingAs($this->agent)
-            ->delete('/api/app/agents/customers/documents/'.$document->id);
+            ->deleteJson('/api/app/agents/customers/documents/'.$document->id);
 
         $response->assertStatus(200);
         Storage::assertMissing($storedPath);
@@ -201,7 +207,8 @@ class AgentAppDocumentTest extends TestCase {
                 [
                     'file' => UploadedFile::fake()->create("doc{$i}.pdf", 50, 'application/pdf'),
                     'type' => 'contract',
-                ]
+                ],
+                ['Accept' => 'application/json']
             )->assertStatus(201);
         }
 
@@ -210,7 +217,8 @@ class AgentAppDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('overflow.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
-            ]
+            ],
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(422);

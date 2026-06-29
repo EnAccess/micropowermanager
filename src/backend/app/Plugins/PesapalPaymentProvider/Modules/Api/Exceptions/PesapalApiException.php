@@ -2,7 +2,15 @@
 
 namespace App\Plugins\PesapalPaymentProvider\Modules\Api\Exceptions;
 
-class PesapalApiException extends \Exception {
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when a request to the Pesapal API fails or returns an unexpected
+ * response.
+ */
+class PesapalApiException extends MpmException {
+    protected int $httpStatusCode = 502;
+
     public function __construct(
         public private(set) int $statusCode,
         public private(set) string $uri,

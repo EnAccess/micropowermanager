@@ -2,4 +2,11 @@
 
 namespace App\Plugins\KelinMeter\Exceptions;
 
-class KelinApiAuthenticationException extends \Exception {}
+use App\Exceptions\MpmException;
+
+/**
+ * Thrown when authenticating against the Kelin meter API fails.
+ */
+class KelinApiAuthenticationException extends MpmException {
+    protected int $httpStatusCode = 502;
+}

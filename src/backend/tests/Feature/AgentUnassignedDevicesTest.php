@@ -21,7 +21,7 @@ class AgentUnassignedDevicesTest extends TestCase {
         $assignedToPerson = $this->createShsDevice('SHS-SOLD-0001', $applianceId, $this->people[0]->id);
 
         $response = $this->actingAs($this->agent)
-            ->get(sprintf('/api/app/agents/devices/unassigned?appliance_id=%d&type=solar_home_system', $applianceId));
+            ->getJson(sprintf('/api/app/agents/devices/unassigned?appliance_id=%d&type=solar_home_system', $applianceId));
 
         $response->assertStatus(200);
         $serials = collect($response->json('data'))->pluck('device_serial')->all();
@@ -39,7 +39,7 @@ class AgentUnassignedDevicesTest extends TestCase {
         $siblingDevice = $this->createShsDevice('SHS-SIBLING-0001', $siblingAppliance->id, null);
 
         $response = $this->actingAs($this->agent)
-            ->get(sprintf('/api/app/agents/devices/unassigned?appliance_id=%d&type=solar_home_system', $applianceId));
+            ->getJson(sprintf('/api/app/agents/devices/unassigned?appliance_id=%d&type=solar_home_system', $applianceId));
 
         $response->assertStatus(200);
         $serials = collect($response->json('data'))->pluck('device_serial')->all();
@@ -55,7 +55,7 @@ class AgentUnassignedDevicesTest extends TestCase {
         $this->createShsDevice('SHS-FOREIGN-0001', $foreignAppliance->id, null);
 
         $response = $this->actingAs($this->agent)
-            ->get(sprintf(
+            ->getJson(sprintf(
                 '/api/app/agents/devices/unassigned?appliance_id=%d&type=solar_home_system',
                 $foreignAppliance->id
             ));
@@ -68,7 +68,7 @@ class AgentUnassignedDevicesTest extends TestCase {
         $this->seedAgentAndAssignedAppliance();
 
         $response = $this->actingAs($this->agent)
-            ->get('/api/app/agents/devices/unassigned');
+            ->getJson('/api/app/agents/devices/unassigned');
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['appliance_id', 'type']);
@@ -78,7 +78,7 @@ class AgentUnassignedDevicesTest extends TestCase {
         $this->seedAgentAndAssignedAppliance();
 
         $response = $this->actingAs($this->agent)
-            ->get(sprintf(
+            ->getJson(sprintf(
                 '/api/app/agents/devices/unassigned?appliance_id=%d&type=bogus',
                 $this->assignedAppliance->appliance_id
             ));
@@ -88,7 +88,7 @@ class AgentUnassignedDevicesTest extends TestCase {
     }
 
     public function testUnauthenticatedRequestIsRejected(): void {
-        $response = $this->get('/api/app/agents/devices/unassigned?appliance_id=1&type=solar_home_system');
+        $response = $this->getJson('/api/app/agents/devices/unassigned?appliance_id=1&type=solar_home_system');
 
         $response->assertStatus(401);
     }
