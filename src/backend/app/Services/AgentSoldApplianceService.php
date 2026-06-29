@@ -21,8 +21,6 @@ class AgentSoldApplianceService implements IBaseService {
     use HasCrudOperations;
 
     public function __construct(
-        private AddressesService $addressesService,
-        private AddressGeographicalInformationService $addressGeographicalInformationService,
         private AgentAppliancePersonService $agentAppliancePersonService,
         private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
@@ -37,7 +35,6 @@ class AgentSoldApplianceService implements IBaseService {
         private ApplianceRateService $applianceRateService,
         private AppliancePerson $appliancePerson,
         private DeviceService $deviceService,
-        private GeographicalInformationService $geographicalInformationService,
         private PersonService $personService,
         private TransactionService $transactionService,
     ) {}
@@ -192,33 +189,14 @@ class AgentSoldApplianceService implements IBaseService {
         }
 
         if ($deviceSerial) {
-            $addressFromCustomer = $appliancePerson->person()->first()->addresses()->first();
-            $addressData = $requestData['address'] ?? [
-                'street' => $addressFromCustomer->street,
-                'city_id' => $addressFromCustomer->city_id,
-            ];
-            $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()?->points;
-
             $device = $this->deviceService->getBySerialNumber($deviceSerial);
             $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
 
-            $address = $this->addressesService->make([
-                'street' => $addressData['street'],
-                'city_id' => $addressData['city_id'],
-            ]);
-
-            // Attach the new address to the buyer (person) rather than the device.
-            $this->addressesService->assignAddressToOwner($appliancePerson->person, $address);
+            $points = $requestData['points']
+                ?? $appliancePerson->person->addresses()->first()?->geo()->first()?->points;
 
             if ($points) {
-                $geoInfo = $this->geographicalInformationService->make([
-                    'points' => $points,
-                ]);
-
-                $this->addressGeographicalInformationService->setAssigned($geoInfo);
-                $this->addressGeographicalInformationService->setAssignee($address);
-                $this->addressGeographicalInformationService->assign();
-                $this->geographicalInformationService->save($geoInfo);
+                $this->deviceService->assignLocation($device, $points);
             }
         }
 

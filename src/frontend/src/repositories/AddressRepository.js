@@ -15,4 +15,7 @@ export default {
   update(newAddress, personId) {
     return Client.put(`${resource}/${personId}/addresses`, newAddress)
   },
+  delete(personId, addressId) {
+    return Client.delete(`${resource}/${personId}/addresses/${addressId}`)
+  },
 }

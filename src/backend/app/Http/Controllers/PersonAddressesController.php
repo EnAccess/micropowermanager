@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAddressRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
+use Illuminate\Validation\ValidationException;
 
 class PersonAddressesController extends Controller {
     public function __construct(
@@ -61,5 +61,19 @@ class PersonAddressesController extends Controller {
         $this->personService->updatePersonUpdatedDate($person);
 
         return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));
+    }
+
+    public function destroy(int $personId, int $addressId): ApiResource {
+        $person = $this->personService->getById($personId);
+        $address = $person->addresses()->findOrFail($addressId);
+
+        if ($address->is_primary) {
+            throw ValidationException::withMessages(['address' => ['The primary address cannot be deleted.']]);
+        }
+
+        $this->addressService->delete($address);
+        $this->personService->updatePersonUpdatedDate($person);
+
+        return ApiResource::make($address);
     }
 }
