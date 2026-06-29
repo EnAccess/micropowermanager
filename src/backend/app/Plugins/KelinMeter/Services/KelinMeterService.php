@@ -2,6 +2,7 @@
 
 namespace App\Plugins\KelinMeter\Services;
 
+use GeoJson\Feature\Feature;
 use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
@@ -291,7 +292,7 @@ class KelinMeterService implements ISynchronizeService {
             //   $geoJson = GeographicalInformation::makePoint($geographicalCoordinatesResult['lat'], $geographicalCoordinatesResult['lng']);
             $geoJson = GeographicalInformation::pointFromString($kelinCustomer->address ?? '');
             $meter->device->person()->associate($kelinCustomer->mpmPerson);
-            if ($geoJson !== null) {
+            if ($geoJson instanceof Feature) {
                 $meter->device->geo()->update(['geo_json' => $geoJson]);
             }
             $meter->save();
