@@ -2,7 +2,6 @@
 
 namespace App\Plugins\KelinMeter\Services;
 
-use GeoJson\Feature\Feature;
 use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
@@ -18,6 +17,7 @@ use App\Plugins\KelinMeter\Http\Clients\KelinMeterApiClient;
 use App\Plugins\KelinMeter\Models\KelinCustomer;
 use App\Plugins\KelinMeter\Models\KelinMeter;
 use App\Plugins\KelinMeter\Models\SyncStatus;
+use GeoJson\Feature\Feature;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
