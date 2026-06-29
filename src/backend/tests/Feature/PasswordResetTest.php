@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Tests\TestCompany;
 
 class PasswordResetTest extends TestCase {
     public function testWebForgotPasswordDoesNotRevealWhetherTheEmailExists(): void {

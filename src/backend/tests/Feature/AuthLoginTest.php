@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCompany;
 use Tests\TestCase;
+use Tests\TestCompany;
 
 class AuthLoginTest extends TestCase {
     public function testUnknownEmailIsIndistinguishableFromAWrongPassword(): void {
