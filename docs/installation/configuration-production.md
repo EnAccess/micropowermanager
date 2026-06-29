@@ -106,9 +106,9 @@ MicroPowerManager uses Laravel's Trusted Proxy feature to correctly handle reque
 
    ```yaml
    # In your ConfigMap (e.g. k8s/base/gcp_gke/configmaps.yaml)
-   TRUSTEDPROXY_PROXIES: 35.191.0.0/16,130.211.0.0/22  # GCP load balancer IP ranges
+   TRUSTEDPROXY_PROXIES: 35.191.0.0/16,130.211.0.0/22 # GCP load balancer IP ranges
    # For AWS, use the appropriate AWS ELB IP ranges or '*', if you understand the risks
-   TRUSTEDPROXY_PROXIES: '*'  # Trust all proxies (not recommended for production)
+   TRUSTEDPROXY_PROXIES: "*" # Trust all proxies (not recommended for production)
    ```
 
 2. **The application will automatically use this value** via the `src/backend/config/trustedproxy.php` config file.
