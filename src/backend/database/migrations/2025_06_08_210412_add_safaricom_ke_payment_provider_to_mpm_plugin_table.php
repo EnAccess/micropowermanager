@@ -12,7 +12,6 @@ return new class extends Migration {
                 'id' => MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER,
                 'name' => 'SafaricomKePaymentProvider',
                 'description' => 'Safaricom M-PESA integration for MicroPowerManager.',
-                'tail_tag' => 'Safaricom M-PESA',
                 'installation_command' => 'safaricom-ke-payment-provider:install',
                 'root_class' => 'SafaricomKePaymentProvider',
                 'created_at' => Carbon::now(),
