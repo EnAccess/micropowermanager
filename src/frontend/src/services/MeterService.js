@@ -1,5 +1,6 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { Paginator } from "@/Helpers/Paginator.js"
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 import MeterRepository from "@/repositories/MeterRepository.js"
 import { resources } from "@/resources.js"
 import { Manufacturers } from "@/services/ManufacturerService.js"
@@ -105,10 +106,7 @@ export class MeterService {
 
       if (response.status === 200) {
         let data = response.data.data
-        let points = [0, 0]
-        if (data.meter_parameter.geo != null) {
-          points = data.meter_parameter.geo.points.split(",")
-        }
+        const location = geoJsonToLatLon(data.meter_parameter.geo)
         this.meter = {
           id: meterId,
           meter_parameter: data.meter_parameter,
@@ -120,7 +118,7 @@ export class MeterService {
             name: data.meter_parameter.tariff.name,
             price: data.meter_parameter.tariff.price,
           },
-          geo: [points[0], points[1]],
+          geo: location ? [location.lat, location.lon] : [0, 0],
         }
         return this.meter
       } else {

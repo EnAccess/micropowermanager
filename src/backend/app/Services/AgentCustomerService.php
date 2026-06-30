@@ -7,6 +7,7 @@ use App\Http\Requests\AssignMeterToCustomerRequest;
 use App\Http\Requests\CreateAgentCustomerRequest;
 use App\Models\Agent;
 use App\Models\City;
+use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -45,7 +46,7 @@ class AgentCustomerService {
         if ($geoPoints !== '') {
             $address = $person->addresses()->where('is_primary', 1)->first();
             $geographicalInformation = $this->geographicalInformationService->make([
-                'points' => $geoPoints,
+                'geo_json' => GeographicalInformation::pointFromString($geoPoints),
             ]);
             $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
             $this->addressGeographicalInformationService->setAssignee($address);
@@ -92,7 +93,7 @@ class AgentCustomerService {
 
         $geoPoints = $request->string('geo_points')->toString();
         if ($geoPoints !== '') {
-            $geographicalInformation = $this->geographicalInformationService->make(['points' => $geoPoints]);
+            $geographicalInformation = $this->geographicalInformationService->make(['geo_json' => GeographicalInformation::pointFromString($geoPoints)]);
             $this->addressGeographicalInformationService->setAssigned($geographicalInformation);
             $this->addressGeographicalInformationService->setAssignee($primaryAddress);
             $this->addressGeographicalInformationService->assign();

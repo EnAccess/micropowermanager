@@ -157,13 +157,13 @@ class SteamaSiteService implements ISynchronizeService {
 
         if ($geographicalInformation) {
             $geographicalInformation->update([
-                'points' => $points,
+                'geo_json' => GeographicalInformation::pointFromString($points),
             ]);
         } else {
             $this->geographicalInformation->create([
                 'owner_type' => 'mini-grid',
                 'owner_id' => $miniGridId,
-                'points' => $points,
+                'geo_json' => GeographicalInformation::pointFromString($points),
             ]);
         }
     }

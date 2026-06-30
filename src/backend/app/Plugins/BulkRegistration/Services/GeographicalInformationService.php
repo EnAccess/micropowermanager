@@ -29,7 +29,7 @@ class GeographicalInformationService {
      */
     public function resolveCsvDataFromComingRow(array $csvData, object $ownerModel): void {
         $this->geographicalInformationConfig = config('bulk-registration.csv_fields.geographical_information');
-        $geographicalInformationData = ['points' => ''];
+        $geographicalInformationData = [];
         if ($ownerModel instanceof MiniGrid) {
             $this->createMiniGridRelatedGeographicalInformation($ownerModel);
         } else {
@@ -53,13 +53,13 @@ class GeographicalInformationService {
                 }
             )->first();
 
-        if ($geographicalInformation->points !== '') {
+        if ($geographicalInformation->geo_json !== null) {
             return false;
         }
         if ($geographicalInformation->owner instanceof MiniGrid) {
             $geographicalLocationFinder = app()->make(GeographicalLocationFinder::class);
             $geographicalCoordinatesResult = $geographicalLocationFinder->getCoordinatesGivenAddress($geographicalInformation->owner->name);
-            $geographicalInformation->points = $geographicalCoordinatesResult['lat'].','.$geographicalCoordinatesResult['lng'];
+            $geographicalInformation->geo_json = GeographicalInformation::makePoint((float) $geographicalCoordinatesResult['lat'], (float) $geographicalCoordinatesResult['lng']);
         }
 
         return $geographicalInformation->save();
@@ -89,7 +89,10 @@ class GeographicalInformationService {
             return false;
         }
 
-        $geographicalInformationData['points'] = $csvData[$this->geographicalInformationConfig['household_latitude']].','.$csvData[$this->geographicalInformationConfig['household_longitude']];
+        $geographicalInformationData['geo_json'] = GeographicalInformation::makePoint(
+            (float) $csvData[$this->geographicalInformationConfig['household_latitude']],
+            (float) $csvData[$this->geographicalInformationConfig['household_longitude']]
+        );
 
         return $geographicalInformationData;
     }

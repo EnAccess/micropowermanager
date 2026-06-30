@@ -48,6 +48,7 @@
   </section>
 </template>
 <script>
+import { geoJsonToLatLon } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
 import Addresses from "@/modules/Client/Addresses.vue"
@@ -106,18 +107,12 @@ export default {
   },
   mounted() {
     EventBus.$on("setMapCenterForDevice", (device) => {
-      if (!device.geo || !device.geo.points) {
+      const location = geoJsonToLatLon(device.geo)
+      if (location == null) {
         this.alertNotify("warn", "Device has no location")
         return
       }
-      const points = device.geo.points.split(",")
-      if (points.length !== 2) {
-        this.alertNotify("warn", "Device has no location")
-        return
-      }
-      const lat = parseFloat(points[0])
-      const lon = parseFloat(points[1])
-      this.$refs.clientMapRef.focusOnItem([lat, lon])
+      this.$refs.clientMapRef.focusOnItem([location.lat, location.lon])
     })
   },
   methods: {
@@ -144,15 +139,12 @@ export default {
     setClientMapData() {
       const markingInfos = []
       this.devices.map((device) => {
-        if (!device.geo || !device.geo.points) {
+        const location = geoJsonToLatLon(device.geo)
+        if (location == null) {
           return
         }
-        const points = device.geo.points.split(",")
-        if (points.length !== 2) {
-          return
-        }
-        const lat = parseFloat(points[0])
-        const lon = parseFloat(points[1])
+        const lat = location.lat
+        const lon = location.lon
         let markerType = ""
         switch (device.device_type) {
           case "e_bike":

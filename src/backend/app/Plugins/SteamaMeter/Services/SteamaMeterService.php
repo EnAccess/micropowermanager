@@ -190,7 +190,7 @@ class SteamaMeterService implements ISynchronizeService {
                 $longitude = strval(floatval($points[1]) - (mt_rand(10, 1000) / 10000));
                 $points = $latitude.','.$longitude;
             }
-            $geoLocation->points = $points;
+            $geoLocation->geo_json = GeographicalInformation::pointFromString($points);
 
             $stmCustomerAddress = $stmCustomer->mpmPerson->newQuery()->with('addresses.city')
                 ->whereHas('addresses', fn ($q) => $q->where('is_primary', 1))->first();
@@ -234,7 +234,7 @@ class SteamaMeterService implements ISynchronizeService {
             $points = $stmMeter['latitude'] === null ?
                 config('steama-meter.geoLocation') : $stmMeter['latitude'].','.$stmMeter['longitude'];
             $meter->device->geo()->update([
-                'points' => $points,
+                'geo_json' => GeographicalInformation::pointFromString($points),
             ]);
             $meter->save();
         }

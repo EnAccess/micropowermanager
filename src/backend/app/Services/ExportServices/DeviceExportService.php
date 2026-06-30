@@ -119,7 +119,7 @@ class DeviceExportService extends AbstractExportService {
             $geo = null;
             if ($device->geo !== null) {
                 $geo = [
-                    'points' => $device->geo->points,
+                    'geo_json' => $device->geo->geo_json,
                 ];
             }
 
