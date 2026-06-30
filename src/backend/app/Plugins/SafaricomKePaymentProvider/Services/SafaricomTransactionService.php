@@ -454,6 +454,10 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
 
         $callbackUrl = $credential->result_url ?: $this->buildDefaultResultUrl();
 
+        // We persist phone numbers as canonical E164 (`+2547…`); Daraja rejects
+        // the leading `+`, so strip it only here at the API boundary.
+        $darajaPhone = ltrim($transaction->phone_number, '+');
+
         // account_reference + transaction_desc were already truncated to the
         // Daraja-enforced 12/13 char limits during transaction creation.
         $payload = [
@@ -462,9 +466,9 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
             'Timestamp' => $timestamp,
             'TransactionType' => 'CustomerPayBillOnline',
             'Amount' => (int) round($transaction->amount),
-            'PartyA' => $transaction->phone_number,
+            'PartyA' => $darajaPhone,
             'PartyB' => $shortcode,
-            'PhoneNumber' => $transaction->phone_number,
+            'PhoneNumber' => $darajaPhone,
             'CallBackURL' => $callbackUrl,
             'AccountReference' => $transaction->account_reference ?: substr($transaction->reference_id, 0, 8),
             'TransactionDesc' => $transaction->transaction_desc ?: 'MPM Payment',
@@ -570,15 +574,16 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
     }
 
     /**
-     * Return Daraja's canonical 2547XXXXXXXX form. Daraja rejects the leading
-     * `+` E164 ships with, so we strip it. libphonenumber (via the phone()
+     * Return the customer's number in canonical E164 (`+2547XXXXXXXX`) — the
+     * form we persist on every transaction. libphonenumber (via the phone()
      * helper) accepts every common operator input — `0712…`, `712…`,
      * `+254712…`, `254712…` — and rejects everything else with a thrown
-     * exception, which we collapse to null for the caller.
+     * exception, which we collapse to null for the caller. Daraja itself
+     * rejects the leading `+`, so sendStkPush() strips it at the API boundary.
      */
     public function normalisePhoneNumber(string $raw): ?string {
         try {
-            return ltrim(phone($raw, 'KE')->formatE164(), '+');
+            return phone($raw, 'KE')->formatE164();
         } catch (\Throwable) {
             return null;
         }
