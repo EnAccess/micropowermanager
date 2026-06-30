@@ -159,5 +159,7 @@ DESC,
         RestrictedDocsAccess::class,
     ],
 
-    'extensions' => [],
+    'extensions' => [
+        \App\Utils\ScrambleExtensions\ApiResourceTypeToSchema::class,
+    ],
 ];
