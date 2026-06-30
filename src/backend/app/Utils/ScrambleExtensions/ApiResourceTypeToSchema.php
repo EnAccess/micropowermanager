@@ -48,7 +48,7 @@ class ApiResourceTypeToSchema extends TypeToSchemaExtension {
     public function shouldHandle(Type $type): bool {
         return $type instanceof Generic
             && $type->name === ApiResource::class
-            && $this->wrappedSchemaType($type->templateTypes[0] ?? null) !== null;
+            && $this->wrappedSchemaType($type->templateTypes[0] ?? null) instanceof Type;
     }
 
     /**
@@ -70,7 +70,7 @@ class ApiResourceTypeToSchema extends TypeToSchemaExtension {
         foreach ($branches as $branch) {
             if ($branch instanceof Generic
                 && $branch->isInstanceOf(LengthAwarePaginator::class)
-                && $this->itemModel($branch) !== null) {
+                && $this->itemModel($branch) instanceof ObjectType) {
                 return $branch;
             }
         }
@@ -78,7 +78,7 @@ class ApiResourceTypeToSchema extends TypeToSchemaExtension {
         foreach ($branches as $branch) {
             if ($branch instanceof Generic
                 && $this->isCollectionLike($branch)
-                && ($itemModel = $this->itemModel($branch)) !== null) {
+                && ($itemModel = $this->itemModel($branch)) instanceof ObjectType) {
                 return new ArrayType(value: $itemModel);
             }
         }
