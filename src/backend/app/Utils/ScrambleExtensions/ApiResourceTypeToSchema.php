@@ -11,6 +11,7 @@ use Dedoc\Scramble\Support\Type\ObjectType;
 use Dedoc\Scramble\Support\Type\Type;
 use Dedoc\Scramble\Support\Type\Union;
 use Illuminate\Contracts\Pagination\Paginator as PaginatorContract;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Enumerable;
 
@@ -20,12 +21,14 @@ use Illuminate\Support\Enumerable;
  * discouraged for newly added code, we need to document existing functionality.
  *
  * This extension aims to document those `ApiResource::make(...)` calls that Scramble
- * otherwise collapses into a single empty `ApiResource` component.
+ * otherwise collapses into a single empty `ApiResource` component. `new ApiResource(...)`
+ * is covered too — Scramble resolves `make()` to the constructor, so both are identical.
  *
  * The wrapped value is read from the resource's first template type (`TResource`) and
  * documented to match the *runtime* output of `ApiResource::make($value)`:
  *
  *   - literal keyed array — `make(['token' => $tx->token])` → `{data: {...}}`;
+ *   - single model        — `new ApiResource($model)`       → `{data: Model}`;
  *   - model `Collection`   — `make($query->get())`         → `{data: [Model]}`;
  *   - `LengthAwarePaginator` — `make($query->paginate())`  → the bare paginator
  *     `{current_page, data: [Model], links, total, ...}`.
@@ -77,6 +80,12 @@ class ApiResourceTypeToSchema extends TypeToSchemaExtension {
                 && $this->isCollectionLike($branch)
                 && ($itemModel = $this->itemModel($branch)) !== null) {
                 return new ArrayType(value: $itemModel);
+            }
+        }
+
+        foreach ($branches as $branch) {
+            if ($branch instanceof ObjectType && $branch->isInstanceOf(Model::class)) {
+                return $branch;
             }
         }
 
