@@ -87,10 +87,9 @@ Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (
 > [!WARNING]
 > This step is **required**, including for local development. Without a public HTTPS `APP_URL`, no STK Push can be initiated at all.
 
-Daraja validates the `CallBackURL` when it *accepts* an STK Push, and it rejects `localhost` and any non-HTTPS URL up front with `400.002.02 — Bad Request - Invalid CallBackURL`. MPM derives the callback from your `APP_URL`, so a default local setup (`APP_URL=http://localhost`) fails before the push is ever sent.
+Daraja validates the `CallBackURL` when it _accepts_ an STK Push, and it rejects `localhost` and any non-HTTPS URL up front with `400.002.02 — Bad Request - Invalid CallBackURL`. MPM derives the callback from your `APP_URL`, so a default local setup (`APP_URL=http://localhost`) fails before the push is ever sent.
 
 Expose your backend over HTTPS and point `APP_URL` at it before testing. The general MPM setup — Cloudflare Tunnel or ngrok plus the `APP_URL` change — is documented in the [Development Environment guide](/development/development-environment#api-gateway-with-ngrok).
-
 
 ### Step 6: Test an STK Push
 
