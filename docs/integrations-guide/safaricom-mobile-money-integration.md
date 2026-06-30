@@ -75,18 +75,22 @@ Unlike hosted-checkout providers (Paystack, PesaPal), M-PESA uses **STK Push** (
    - **Passkey** — leave **blank** for sandbox; required for production.
    - **Shortcode** — leave **blank** for sandbox; required for production.
    - **Environment** — `Sandbox` while testing, `Production` when going live.
-   - **Result URL / Validation URL / Confirmation URL / Timeout URL** — optional. When left blank, MPM auto-derives the STK Push result URL from your `APP_URL` and uses it as `CallBackURL` on every STK Push request.
+   - **Result URL / Validation URL / Confirmation URL / Timeout URL** — optional. When left blank, MPM auto-derives the STK Push result URL from your `APP_URL` and uses it as `CallBackURL` on every STK Push request. Either way the URL must be a public HTTPS endpoint — Daraja rejects `localhost`/HTTP callbacks (see Step 5).
 3. Click **Save**.
 4. The Configuration status box on the Overview page should turn green and show **Configured (Sandbox)**.
 
 > [!INFO]
 > In sandbox the plugin pairs your Consumer Key/Secret with Daraja's public sandbox shortcode `174379` and the published LNM passkey `bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919`. This combination is the only one Daraja sandbox accepts. Custom shortcodes will fail with `Merchant does not exist`.
 
-### Step 5: (Optional) Expose Your Webhook to Daraja
+### Step 5: Expose Your Backend to Daraja
 
-**You can skip this step.** The plugin polls Daraja's STK Push Query endpoint while a transaction is pending, so every status — success, insufficient funds, cancelled, timeout — resolves correctly even when Daraja can't reach your backend. The webhook is a faster path to the same result, not a required one.
+> [!WARNING]
+> This step is **required**, including for local development. Without a public HTTPS `APP_URL`, no STK Push can be initiated at all.
 
-If you do want Daraja's asynchronous callback to land on your backend (lower latency on the final-state flip, plus a record in your logs), expose your backend over HTTPS. The general MPM setup for this — Cloudflare Tunnel or ngrok plus the `APP_URL` change — is documented in the [Development Environment guide](/development/development-environment#api-gateway-with-ngrok).
+Daraja validates the `CallBackURL` when it *accepts* an STK Push, and it rejects `localhost` and any non-HTTPS URL up front with `400.002.02 — Bad Request - Invalid CallBackURL`. MPM derives the callback from your `APP_URL`, so a default local setup (`APP_URL=http://localhost`) fails before the push is ever sent.
+
+Expose your backend over HTTPS and point `APP_URL` at it before testing. The general MPM setup — Cloudflare Tunnel or ngrok plus the `APP_URL` change — is documented in the [Development Environment guide](/development/development-environment#api-gateway-with-ngrok).
+
 
 ### Step 6: Test an STK Push
 
