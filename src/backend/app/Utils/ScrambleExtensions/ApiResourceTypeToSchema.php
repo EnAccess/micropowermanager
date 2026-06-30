@@ -4,6 +4,7 @@ namespace App\Utils\ScrambleExtensions;
 
 use App\Http\Resources\ApiResource;
 use Dedoc\Scramble\Extensions\TypeToSchemaExtension;
+use Dedoc\Scramble\Support\Generator\Types\Type as TypesType;
 use Dedoc\Scramble\Support\Type\ArrayType;
 use Dedoc\Scramble\Support\Type\Generic;
 use Dedoc\Scramble\Support\Type\KeyedArrayType;
@@ -54,7 +55,7 @@ class ApiResourceTypeToSchema extends TypeToSchemaExtension {
     /**
      * @param Generic $type
      */
-    public function toSchema(Type $type) {
+    public function toSchema(Type $type): TypesType {
         return $this->openApiTransformer->transform(
             $this->wrappedSchemaType($type->templateTypes[0] ?? null),
         );
