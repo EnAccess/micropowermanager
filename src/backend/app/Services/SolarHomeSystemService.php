@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Lib\IManufacturerDeviceInfo;
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -105,5 +106,31 @@ class SolarHomeSystemService implements IBaseService {
         $model->update($data);
 
         return $model->fresh(['manufacturer', 'appliance', 'device.person']);
+    }
+
+    /**
+     * Queries the manufacturer API to check whether the device unit is mapped
+     * on the manufacturer side, so users can diagnose unit remappings before a
+     * payment fails. Manufacturers without a device-lookup API are reported as
+     * unsupported.
+     *
+     * @return array{supported: bool, mapped?: bool, device?: array<string, mixed>|null}
+     */
+    public function verifyDeviceMapping(int $id): array {
+        $solarHomeSystem = $this->solarHomeSystem->newQuery()
+            ->with(['manufacturer', 'device'])
+            ->findOrFail($id);
+
+        $manufacturer = $solarHomeSystem->manufacturer;
+        if (!$manufacturer || !$manufacturer->api_name) {
+            return ['supported' => false];
+        }
+
+        $api = resolve($manufacturer->api_name);
+        if (!$api instanceof IManufacturerDeviceInfo) {
+            return ['supported' => false];
+        }
+
+        return ['supported' => true, ...$api->getDeviceInfo($solarHomeSystem->device)];
     }
 }

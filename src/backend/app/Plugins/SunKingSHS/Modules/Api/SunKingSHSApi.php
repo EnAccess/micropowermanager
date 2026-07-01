@@ -6,6 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
+use App\Lib\IManufacturerDeviceInfo;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
@@ -13,10 +14,12 @@ use App\Plugins\SunKingSHS\Http\Clients\SunKingSHSApiClient;
 use App\Plugins\SunKingSHS\Models\SunKingCredential;
 use App\Plugins\SunKingSHS\Models\SunKingTransaction;
 use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SunKingSHSApi implements IManufacturerAPI {
+class SunKingSHSApi implements IManufacturerAPI, IManufacturerDeviceInfo {
     public const API_CALL_TOKEN_GENERATION = '/token';
+    public const API_CALL_DEVICE_DETAILS = '/device_details/';
     public const COMMAND_ADD_CREDIT = 'add_credit';
     public const COMMAND_UNLOCK_DEVICE = 'unlock';
 
@@ -133,5 +136,31 @@ class SunKingSHSApi implements IManufacturerAPI {
      */
     public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
+
+    /**
+     * Queries SunKing for the device unit so callers can tell whether the
+     * serial stored on MPM is still mapped on the manufacturer side. A missing
+     * device (404) is reported as not mapped rather than as a failure.
+     *
+     * @return array{mapped: bool, device: array<string, mixed>|null}
+     */
+    public function getDeviceInfo(Device $device): array {
+        $credentials = $this->credentialService->getCredentials();
+        $authResponse = $this->apiClient->authentication($credentials);
+        $this->credentialService->updateCredentials($credentials, $authResponse);
+
+        $response = $this->apiClient->get($credentials, self::API_CALL_DEVICE_DETAILS.$device->device_serial);
+
+        if ($response === null) {
+            return ['mapped' => false, 'device' => null];
+        }
+
+        $deviceData = $response['device'] ?? $response;
+
+        return [
+            'mapped' => true,
+            'device' => Arr::only($deviceData, ['code', 'name', 'is_paygo', 'is_gsm', 'version']),
+        ];
     }
 }

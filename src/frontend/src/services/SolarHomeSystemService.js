@@ -108,4 +108,17 @@ export class SolarHomeSystemService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+
+  async getDeviceInfo(id) {
+    try {
+      const response = await this.repository.deviceInfo(id)
+      if (response && response.data && response.data.data) {
+        return convertObjectKeysToCamelCase(response.data.data)
+      }
+      return null
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 }
