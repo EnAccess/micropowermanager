@@ -6,13 +6,16 @@ use App\DTO\TransactionDataContainer;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
+use App\Lib\IManufacturerDeviceInfo;
 use App\Models\Device;
 use App\Models\Token;
+use App\Plugins\SparkShs\Exceptions\SparkShsApiResponseException;
 use App\Plugins\SparkShs\Http\Clients\SparkShsApiClient;
 use App\Plugins\SparkShs\Models\SparkShsTransaction;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SparkShsApi implements IManufacturerAPI {
+class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceInfo {
     public function __construct(
         private SparkShsTransaction $sparkShsTransaction,
         private SparkShsApiClient $apiClient,
@@ -106,5 +109,26 @@ class SparkShsApi implements IManufacturerAPI {
      */
     public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
+
+    /**
+     * Looks up the kit on Spark to check whether the serial stored on MPM is
+     * still mapped on the manufacturer side. A forbidden response status (403) is reported as
+     * not mapped rather than as a failure.
+     *
+     * @return array{mapped: bool, device: array<string, mixed>|null}
+     */
+    public function getDeviceInfo(Device $device): array {
+        $response = $this->apiClient->get("products/kits/{$device->device_serial}");
+
+        if ($response->status() === 403) {
+            return ['mapped' => false, 'device' => null];
+        }
+
+        if (!$response->successful()) {
+            throw new SparkShsApiResponseException("Spark SHS device lookup failed with status {$response->status()}.");
+        }
+
+        return ['mapped' => true, 'device' => Arr::only((array) $response->json(), ['serial', 'type'])];
     }
 }
