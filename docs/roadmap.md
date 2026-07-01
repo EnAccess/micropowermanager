@@ -6,7 +6,7 @@ lastUpdated: May 2026
 releases:
   - version: "MPM v1.0"
     title: "Stability and Off-Grid Readiness"
-    target: "End of Q1 2026"
+    target: "End of Q3 2026"
     description: "Deliver a stable, production-ready version of MPM tailored for off-grid use cases. We want to make MPM dependable for real-world operators and new adopters."
     milestones:
       - id: "transaction-abstraction"
@@ -126,7 +126,7 @@ releases:
 
   - version: "MPM v1.1"
     title: "Broader Use and Ecosystem Growth"
-    target: "End of 2026"
+    target: "Early 2027"
     description: "Expand MPM's coverage for diverse use cases, improve developer experience, and strengthen integration options."
     milestones:
       - id: "manufacturer-plugins-v1.1"
@@ -250,7 +250,7 @@ releases:
 
   - version: "MPM v2.0"
     title: "Scaling for the Future"
-    target: "2027"
+    target: "Late 2027"
     description: "Evolve MPM into a platform capable of supporting large-scale operations — from off-grid operators to energy manufacturers."
     milestones:
       - id: "plugin-isolation"
