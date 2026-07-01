@@ -1,5 +1,6 @@
 <?php
 
+use App\Utils\ScrambleExtensions\ApiResourceTypeToSchema;
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
 return [
@@ -159,5 +160,7 @@ DESC,
         RestrictedDocsAccess::class,
     ],
 
-    'extensions' => [],
+    'extensions' => [
+        ApiResourceTypeToSchema::class,
+    ],
 ];
