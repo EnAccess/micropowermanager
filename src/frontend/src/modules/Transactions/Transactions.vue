@@ -224,7 +224,10 @@
                   style="cursor: pointer"
                 >
                   <md-table-cell :md-label="$tc('words.status')">
-                    <md-icon v-if="item.status === 1" style="color: green">
+                    <md-icon
+                      v-if="item.status === 1 || item.status === 2"
+                      style="color: green"
+                    >
                       check_circle_outline
                       <md-tooltip md-direction="right">
                         {{ $tc("words.confirm", 2) }}
@@ -240,6 +243,12 @@
                       cancel
                       <md-tooltip md-direction="right">
                         {{ $tc("words.reject", 2) }}
+                      </md-tooltip>
+                    </md-icon>
+                    <md-icon v-if="item.status === 3" style="color: grey">
+                      do_not_disturb_on
+                      <md-tooltip md-direction="right">
+                        {{ $tc("words.cancel", 2) }}
                       </md-tooltip>
                     </md-icon>
                   </md-table-cell>
@@ -290,6 +299,11 @@
                     <img
                       v-if="item.service === 'paystack_transaction'"
                       :src="paystackLogo"
+                      style="max-height: 32px; max-width: 100px"
+                    />
+                    <img
+                      v-if="item.service === 'safaricom_transaction'"
+                      :src="safaricomLogo"
                       style="max-height: 32px; max-width: 100px"
                     />
                     <span
@@ -452,6 +466,7 @@ import { mapGetters } from "vuex"
 import agentIcon from "@/assets/icons/agent-icon.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
 import paystackLogo from "@/assets/icons/Paystack.png"
+import safaricomLogo from "@/assets/icons/safaricom.svg"
 import swifta from "@/assets/icons/Swifta.png"
 import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
 import vodacomLogo from "@/assets/icons/vodacom.png"
@@ -516,6 +531,7 @@ export default {
       swiftaLogo: swifta,
       waveComLogo: WaveComLogo,
       paystackLogo: paystackLogo,
+      safaricomLogo: safaricomLogo,
     }
   },
   created() {

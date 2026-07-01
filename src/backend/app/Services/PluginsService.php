@@ -62,6 +62,7 @@ class PluginsService {
             MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
             MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
             MpmPlugin::PESAPAL_PAYMENT_PROVIDER,
+            MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER,
         ];
 
         return $this->plugin->newQuery()

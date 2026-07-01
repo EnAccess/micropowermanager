@@ -81,6 +81,10 @@ import PesapalPublicResult from "@/plugins/pesapal-payment-provider/modules/Paym
 import PesapalTransaction from "@/plugins/pesapal-payment-provider/modules/Transaction/Transaction.vue"
 import ProspectOverview from "@/plugins/prospect/modules/Overview/Overview.vue"
 import ProspectSettings from "@/plugins/prospect/modules/Setting/Setting.vue"
+import SafaricomKeCredential from "@/plugins/safaricom-ke-payment-provider/modules/Overview/Credential.vue"
+import SafaricomKeOverview from "@/plugins/safaricom-ke-payment-provider/modules/Overview/Overview.vue"
+import SafaricomKeSTKPush from "@/plugins/safaricom-ke-payment-provider/modules/STKPush/STKPush.vue"
+import SafaricomKeTransaction from "@/plugins/safaricom-ke-payment-provider/modules/Transaction/Transaction.vue"
 import SmsTransactionParserMessages from "@/plugins/sms-transaction-parser/modules/Messages/Messages.vue"
 import SmsTransactionParserOverview from "@/plugins/sms-transaction-parser/modules/Overview/Overview.vue"
 import SparkMeterCustomerList from "@/plugins/spark-meter/modules/Customer/CustomerList.vue"
@@ -1856,6 +1860,63 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Messages",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/safaricom-ke-overview",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 31,
+        name: "Safaricom KE (M-Pesa)",
+        icon: "money",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: SafaricomKeOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "credential",
+        component: SafaricomKeCredential,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Credentials",
+          },
+        },
+      },
+      {
+        path: "transactions",
+        component: SafaricomKeTransaction,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
+          },
+        },
+      },
+      {
+        path: "stk-push",
+        component: SafaricomKeSTKPush,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Initiate Payment",
           },
         },
       },
