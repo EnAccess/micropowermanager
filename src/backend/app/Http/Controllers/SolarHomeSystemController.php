@@ -85,4 +85,8 @@ class SolarHomeSystemController extends Controller {
 
         return ApiResource::make($this->paymentHistoryService->getBySerialNumber($shs->serial_number, $paginate));
     }
+
+    public function deviceInfo(int $id): ApiResource {
+        return ApiResource::make($this->solarHomeSystemService->verifyDeviceMapping($id));
+    }
 }

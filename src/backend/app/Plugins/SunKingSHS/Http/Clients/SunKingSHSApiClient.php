@@ -5,6 +5,7 @@ namespace App\Plugins\SunKingSHS\Http\Clients;
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
 use App\Plugins\SunKingSHS\Models\SunKingCredential;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
@@ -45,13 +46,16 @@ class SunKingSHSApiClient {
     }
 
     /**
-     * @param array<string, mixed> $params
+     * Performs an authenticated GET against the SunKing API.
+     *
+     * A 404 is a legitimate "not found" outcome (e.g. a device that is not
+     * mapped on SunKing) rather than a failure, so it returns null without
+     * logging an alert. Callers branch on the null to express absence.
+     *
+     * @return array<string, mixed>|null
      */
-    public function get(SunKingCredential $credentials, array $params, string $slug): mixed {
+    public function get(SunKingCredential $credentials, string $slug): ?array {
         $url = $credentials->api_url.$slug;
-        foreach ($params as $key => $value) {
-            $url .= $key.'='.$value.'&';
-        }
         try {
             $request = $this->httpClient->get(
                 $url,
@@ -64,8 +68,18 @@ class SunKingSHSApiClient {
             );
 
             return json_decode((string) $request->getBody(), true);
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 404) {
+                return null;
+            }
+            Log::critical('SunKing API request failed', [
+                'URL :' => $url,
+                'message :' => $e->getMessage(),
+            ]);
+            throw new SunKingApiResponseException($e->getMessage(), $e->getCode(), $e);
         } catch (GuzzleException $e) {
             Log::critical('SunKing API request failed', [
+                'URL :' => $url,
                 'message :' => $e->getMessage(),
             ]);
             throw new SunKingApiResponseException($e->getMessage(), $e->getCode(), $e);

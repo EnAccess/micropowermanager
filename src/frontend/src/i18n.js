@@ -11,6 +11,7 @@ Vue.use(VueI18n)
 
 const i18n = new VueI18n({
   locale: localStorage.getItem("lang") || "en",
+  fallbackLocale: "en",
   messages: {
     ar: ar,
     bu: bu,

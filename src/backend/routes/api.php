@@ -418,6 +418,7 @@ Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'auth:api'], sta
     Route::get('/{id}', [SolarHomeSystemController::class, 'show']);
     Route::put('/{id}', [SolarHomeSystemController::class, 'update']);
     Route::get('/{id}/transactions', [SolarHomeSystemController::class, 'transactions']);
+    Route::get('/{id}/device-info', [SolarHomeSystemController::class, 'deviceInfo']);
 });
 Route::group(['prefix' => 'e-bikes'], static function () {
     Route::get('/', [EBikeController::class, 'index']);
