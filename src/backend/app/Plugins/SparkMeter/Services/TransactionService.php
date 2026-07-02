@@ -21,7 +21,6 @@ use App\Plugins\SparkMeter\Models\SmSite;
 use App\Plugins\SparkMeter\Models\SmTariff;
 use App\Plugins\SparkMeter\Models\SmTransaction;
 use Carbon\Carbon;
-use Error;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;

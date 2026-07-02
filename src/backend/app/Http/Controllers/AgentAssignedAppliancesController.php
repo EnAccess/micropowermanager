@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
 use App\Services\AgentAssignedApplianceService;
 use App\Services\AgentService;
 use Illuminate\Http\Request;
