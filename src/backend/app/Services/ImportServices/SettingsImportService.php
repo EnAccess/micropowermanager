@@ -3,7 +3,6 @@
 namespace App\Services\ImportServices;
 
 use App\Services\MainSettingsService;
-use Illuminate\Support\Facades\Log;
 
 class SettingsImportService extends AbstractImportService {
     public function __construct(
@@ -12,10 +11,8 @@ class SettingsImportService extends AbstractImportService {
 
     /**
      * @param array<string, mixed> $data
-     *
-     * @return array<string, mixed>
      */
-    public function import(array $data): array {
+    public function import(array $data): ImportResult {
         // Handle export format: data might be wrapped in 'data' key or direct array
         $importData = $data;
         if (isset($data['data']) && is_array($data['data'])) {
@@ -29,13 +26,7 @@ class SettingsImportService extends AbstractImportService {
             $settingsData = $importData[0];
         }
 
-        $errors = $this->validate($settingsData);
-        if ($errors !== []) {
-            return [
-                'success' => false,
-                'errors' => $errors,
-            ];
-        }
+        $this->assertValid($this->validate($settingsData));
 
         try {
             $settings = $this->mainSettingsService->getAll()->first();
@@ -82,25 +73,14 @@ class SettingsImportService extends AbstractImportService {
                 $settings = $this->mainSettingsService->update($settings, $updateData);
             }
 
-            return [
-                'success' => true,
-                'message' => 'Settings imported successfully',
-                'imported_count' => 1,
-                'added_count' => $isNew ? 1 : 0,
-                'modified_count' => $isNew ? 0 : 1,
-                'failed_count' => 0,
-                'data' => $settings->toArray(),
-            ];
+            return new ImportResult(
+                message: 'Settings imported successfully',
+                added: $isNew ? [$settings->toArray()] : [],
+                modified: $isNew ? [] : [$settings->toArray()],
+                failed: [],
+            );
         } catch (\Exception $e) {
-            Log::error('Error importing settings', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return [
-                'success' => false,
-                'errors' => ['import' => 'Failed to import settings: '.$e->getMessage()],
-            ];
+            $this->throwTransactionFailure('settings', $e);
         }
     }
 

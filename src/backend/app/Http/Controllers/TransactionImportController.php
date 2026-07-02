@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TransactionImportRequest;
-use App\Http\Resources\ApiResource;
+use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
 use App\Services\ImportServices\TransactionImportService;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +18,7 @@ class TransactionImportController extends Controller {
         private TransactionImportService $transactionImportService,
     ) {}
 
-    public function import(TransactionImportRequest $request): JsonResponse|ApiResource {
+    public function import(TransactionImportRequest $request): JsonResponse|ImportResource {
         $data = $request->input('data');
 
         if (isset($data['data']) && is_array($data['data'])) {
@@ -29,16 +29,7 @@ class TransactionImportController extends Controller {
             return $this->dispatchAsync($data, $request);
         }
 
-        $result = $this->transactionImportService->import($data);
-
-        if (!$result['success'] && isset($result['errors'])) {
-            return response()->json([
-                'success' => false,
-                'errors' => $result['errors'],
-            ], 422);
-        }
-
-        return ApiResource::make($result);
+        return ImportResource::make($this->transactionImportService->import($data));
     }
 
     /**

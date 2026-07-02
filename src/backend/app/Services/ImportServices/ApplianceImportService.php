@@ -10,22 +10,14 @@ use Illuminate\Support\Facades\Log;
 class ApplianceImportService extends AbstractImportService {
     /**
      * @param array<string, mixed> $data
-     *
-     * @return array<string, mixed>
      */
-    public function import(array $data): array {
+    public function import(array $data): ImportResult {
         $importData = $data;
         if (isset($data['data']) && is_array($data['data'])) {
             $importData = $data['data'];
         }
 
-        $errors = $this->validate($importData);
-        if ($errors !== []) {
-            return [
-                'success' => false,
-                'errors' => $errors,
-            ];
-        }
+        $this->assertValid($this->validate($importData));
 
         $imported = [];
         $failed = [];
@@ -61,28 +53,15 @@ class ApplianceImportService extends AbstractImportService {
             $allFailed = count($imported) === 0 && count($failed) > 0;
             $partitioned = $this->partitionResults($imported);
 
-            return [
-                'success' => !$allFailed,
-                'message' => $allFailed ? 'All appliance imports failed' : 'Appliances imported successfully',
-                'imported_count' => count($imported),
-                'added_count' => $partitioned['added_count'],
-                'modified_count' => $partitioned['modified_count'],
-                'failed_count' => count($failed),
-                'added' => $partitioned['added'],
-                'modified' => $partitioned['modified'],
-                'failed' => $failed,
-            ];
+            return new ImportResult(
+                message: $allFailed ? 'All appliance imports failed' : 'Appliances imported successfully',
+                added: $partitioned['added'],
+                modified: $partitioned['modified'],
+                failed: $failed,
+            );
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            Log::error('Error during appliance import transaction', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return [
-                'success' => false,
-                'errors' => ['transaction' => 'Failed to import appliances: '.$e->getMessage()],
-            ];
+            $this->throwTransactionFailure('appliances', $e);
         }
     }
 

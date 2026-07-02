@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerImportRequest;
-use App\Http\Resources\ApiResource;
+use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
 use App\Services\ImportServices\CustomerImportService;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +18,7 @@ class CustomerImportController extends Controller {
         private CustomerImportService $customerImportService,
     ) {}
 
-    public function import(CustomerImportRequest $request): JsonResponse|ApiResource {
+    public function import(CustomerImportRequest $request): JsonResponse|ImportResource {
         $data = $request->input('data');
 
         if (isset($data['data']) && is_array($data['data'])) {
@@ -29,16 +29,7 @@ class CustomerImportController extends Controller {
             return $this->dispatchAsync($data, $request);
         }
 
-        $result = $this->customerImportService->import($data);
-
-        if (!$result['success'] && isset($result['errors'])) {
-            return response()->json([
-                'success' => false,
-                'errors' => $result['errors'],
-            ], 422);
-        }
-
-        return ApiResource::make($result);
+        return ImportResource::make($this->customerImportService->import($data));
     }
 
     /**

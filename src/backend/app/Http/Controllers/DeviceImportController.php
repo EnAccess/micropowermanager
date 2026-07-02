@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DeviceImportRequest;
-use App\Http\Resources\ApiResource;
+use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
 use App\Services\ImportServices\DeviceImportService;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +18,7 @@ class DeviceImportController extends Controller {
         private DeviceImportService $deviceImportService,
     ) {}
 
-    public function import(DeviceImportRequest $request): JsonResponse|ApiResource {
+    public function import(DeviceImportRequest $request): JsonResponse|ImportResource {
         $data = $request->input('data');
 
         if (isset($data['data']) && is_array($data['data'])) {
@@ -29,16 +29,7 @@ class DeviceImportController extends Controller {
             return $this->dispatchAsync($data, $request);
         }
 
-        $result = $this->deviceImportService->import($data);
-
-        if (!$result['success'] && isset($result['errors'])) {
-            return response()->json([
-                'success' => false,
-                'errors' => $result['errors'],
-            ], 422);
-        }
-
-        return ApiResource::make($result);
+        return ImportResource::make($this->deviceImportService->import($data));
     }
 
     /**
