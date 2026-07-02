@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\ImportServices\SettingsImportItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SettingsImportRequest extends FormRequest {
@@ -26,6 +27,24 @@ class SettingsImportRequest extends FormRequest {
             'data.*.sms_gateway_id' => ['sometimes', 'nullable', 'string'],
             'data.*.transaction_sms_enabled' => ['sometimes', 'nullable', 'boolean'],
         ];
+    }
+
+    /**
+     * @return list<SettingsImportItem>
+     */
+    public function items(): array {
+        return array_map(fn (array $item): SettingsImportItem => new SettingsImportItem(
+            siteTitle: $item['site_title'] ?? null,
+            companyName: $item['company_name'] ?? null,
+            currency: $item['currency'] ?? null,
+            country: $item['country'] ?? null,
+            language: $item['language'] ?? null,
+            vatEnergy: isset($item['vat_energy']) ? (float) $item['vat_energy'] : null,
+            vatAppliance: isset($item['vat_appliance']) ? (float) $item['vat_appliance'] : null,
+            usageType: $item['usage_type'] ?? null,
+            smsGatewayId: $item['sms_gateway_id'] ?? null,
+            transactionSmsEnabled: isset($item['transaction_sms_enabled']) ? (bool) $item['transaction_sms_enabled'] : null,
+        ), $this->validated('data'));
     }
 
     /**

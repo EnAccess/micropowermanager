@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\ImportServices\CustomerImportItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CustomerImportRequest extends FormRequest {
@@ -26,6 +27,24 @@ class CustomerImportRequest extends FormRequest {
             'data.*.city' => ['sometimes', 'nullable', 'string'],
             'data.*.devices' => ['sometimes', 'nullable', 'string'],
         ];
+    }
+
+    /**
+     * @return list<CustomerImportItem>
+     */
+    public function items(): array {
+        return array_map(fn (array $item): CustomerImportItem => new CustomerImportItem(
+            name: $item['name'],
+            surname: $item['surname'] ?? '',
+            title: $item['title'] ?? null,
+            birthDate: $item['birth_date'] ?? null,
+            gender: $item['gender'] ?? null,
+            email: $item['email'] ?? null,
+            phone: $item['phone'] ?? null,
+            street: $item['street'] ?? null,
+            city: $item['city'] ?? null,
+            devices: $item['devices'] ?? null,
+        ), $this->validated('data'));
     }
 
     /**

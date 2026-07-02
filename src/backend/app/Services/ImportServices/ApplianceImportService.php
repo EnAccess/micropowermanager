@@ -7,9 +7,12 @@ use App\Models\ApplianceType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @extends AbstractImportService<ApplianceImportItem>
+ */
 class ApplianceImportService extends AbstractImportService {
     /**
-     * @param list<array<string, mixed>> $data
+     * @param list<ApplianceImportItem> $data
      */
     public function import(array $data): ImportResult {
         $imported = [];
@@ -18,24 +21,24 @@ class ApplianceImportService extends AbstractImportService {
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($data as $applianceData) {
+            foreach ($data as $item) {
                 try {
-                    $result = $this->importAppliance($applianceData);
+                    $result = $this->importAppliance($item);
                     if ($result['success']) {
                         $imported[] = $result['appliance'];
                     } else {
                         $failed[] = [
-                            'name' => $applianceData['appliance_name'] ?? 'unknown',
+                            'name' => $item->applianceName,
                             'errors' => $result['errors'],
                         ];
                     }
                 } catch (\Exception $e) {
                     Log::error('Error importing appliance', [
-                        'name' => $applianceData['appliance_name'] ?? 'unknown',
+                        'name' => $item->applianceName,
                         'error' => $e->getMessage(),
                     ]);
                     $failed[] = [
-                        'name' => $applianceData['appliance_name'] ?? 'unknown',
+                        'name' => $item->applianceName,
                         'errors' => ['import' => $e->getMessage()],
                     ];
                 }
@@ -59,43 +62,34 @@ class ApplianceImportService extends AbstractImportService {
     }
 
     /**
-     * @param array<string, mixed> $applianceData
-     *
      * @return array<string, mixed>
      */
-    private function importAppliance(array $applianceData): array {
-        $applianceTypeName = $applianceData['appliance_type'] ?? null;
+    private function importAppliance(ApplianceImportItem $item): array {
         $applianceType = null;
-
-        if ($applianceTypeName !== null && $applianceTypeName !== '') {
-            $applianceType = ApplianceType::query()->where('name', $applianceTypeName)->first();
+        if ($item->applianceType !== null && $item->applianceType !== '') {
+            $applianceType = ApplianceType::query()->where('name', $item->applianceType)->first();
             if ($applianceType === null) {
                 $applianceType = ApplianceType::query()->create([
-                    'name' => $applianceTypeName,
+                    'name' => $item->applianceType,
                 ]);
             }
         }
 
-        $price = $applianceData['price'] ?? 0;
-        if (is_string($price)) {
-            $price = (int) str_replace([',', ' '], '', $price);
-        }
-
         $appliance = Appliance::query()
-            ->where('name', $applianceData['appliance_name'])
+            ->where('name', $item->applianceName)
             ->first();
         $isNew = $appliance === null;
 
         if ($isNew) {
             $appliance = Appliance::query()->create([
-                'name' => $applianceData['appliance_name'],
+                'name' => $item->applianceName,
                 'appliance_type_id' => $applianceType?->id,
-                'price' => $price,
+                'price' => $item->price,
             ]);
         } else {
             $appliance->update([
                 'appliance_type_id' => $applianceType !== null ? $applianceType->id : $appliance->appliance_type_id,
-                'price' => $price,
+                'price' => $item->price,
             ]);
         }
 

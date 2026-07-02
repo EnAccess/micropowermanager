@@ -12,6 +12,9 @@ use App\Services\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @extends AbstractImportService<UserImportItem>
+ */
 class UserPermissionImportService extends AbstractImportService {
     public function __construct(
         private UserService $userService,
@@ -20,7 +23,7 @@ class UserPermissionImportService extends AbstractImportService {
     ) {}
 
     /**
-     * @param list<array<string, mixed>> $data
+     * @param list<UserImportItem> $data
      */
     public function import(array $data): ImportResult {
         // Ensure roles and permissions exist
@@ -32,24 +35,24 @@ class UserPermissionImportService extends AbstractImportService {
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($data as $userData) {
+            foreach ($data as $item) {
                 try {
-                    $result = $this->importUser($userData);
+                    $result = $this->importUser($item);
                     if ($result['success']) {
                         $imported[] = $result['user'];
                     } else {
                         $failed[] = [
-                            'email' => $userData['email'] ?? 'unknown',
+                            'email' => $item->email,
                             'errors' => $result['errors'],
                         ];
                     }
                 } catch (\Exception $e) {
                     Log::error('Error importing user', [
-                        'email' => $userData['email'] ?? 'unknown',
+                        'email' => $item->email,
                         'error' => $e->getMessage(),
                     ]);
                     $failed[] = [
-                        'email' => $userData['email'] ?? 'unknown',
+                        'email' => $item->email,
                         'errors' => ['import' => $e->getMessage()],
                     ];
                 }
@@ -75,33 +78,15 @@ class UserPermissionImportService extends AbstractImportService {
     /**
      * Import a single user with roles and permissions.
      *
-     * @param array<string, mixed> $userData
-     *
      * @return array<string, mixed>
      */
-    private function importUser(array $userData): array {
-        // Validate required fields
-        if (empty($userData['email'])) {
-            return [
-                'success' => false,
-                'errors' => ['email' => 'Email is required'],
-            ];
-        }
-
-        if (empty($userData['name'])) {
-            return [
-                'success' => false,
-                'errors' => ['name' => 'Name is required'],
-            ];
-        }
-
+    private function importUser(UserImportItem $item): array {
         // Find or create user
-        $user = $this->userService->getByEmail($userData['email']);
+        $user = $this->userService->getByEmail($item->email);
         $isNew = !$user instanceof User;
 
         if ($isNew) {
-            // Create new user
-            if (empty($userData['password'])) {
+            if ($item->password === null || $item->password === '') {
                 return [
                     'success' => false,
                     'errors' => ['password' => 'Password is required for new users'],
@@ -109,14 +94,13 @@ class UserPermissionImportService extends AbstractImportService {
             }
 
             $createData = [
-                'name' => $userData['name'],
-                'email' => $userData['email'],
-                'password' => $userData['password'],
+                'name' => $item->name,
+                'email' => $item->email,
+                'password' => $item->password,
             ];
 
-            // Handle company_id if provided (matches export format)
-            if (isset($userData['company_id'])) {
-                $createData['company_id'] = $userData['company_id'];
+            if ($item->companyId !== null) {
+                $createData['company_id'] = $item->companyId;
             }
 
             $user = $this->userService->create($createData);
@@ -133,76 +117,42 @@ class UserPermissionImportService extends AbstractImportService {
             } catch (\Exception $e) {
                 // Database proxy might already exist, continue
                 Log::warning('Could not create database proxy for user', [
-                    'email' => $userData['email'],
+                    'email' => $item->email,
                     'error' => $e->getMessage(),
                 ]);
             }
         } else {
-            // Update existing user (name validated above)
-            $updateData = ['name' => $userData['name']];
-            if (isset($userData['password']) && $userData['password'] !== '') {
-                $updateData['password'] = $userData['password'];
+            $updateData = ['name' => $item->name];
+            if ($item->password !== null && $item->password !== '') {
+                $updateData['password'] = $item->password;
             }
             $this->userService->update($user, $updateData);
         }
 
-        // Handle roles - matches export format: array of {name, permissions}
-        if (isset($userData['roles']) && is_array($userData['roles'])) {
-            $roleNames = [];
-            foreach ($userData['roles'] as $roleData) {
-                if (is_string($roleData)) {
-                    $roleNames[] = $roleData;
-                } elseif (is_array($roleData) && isset($roleData['name'])) {
-                    $roleNames[] = $roleData['name'];
+        $roleNames = [];
+        foreach ($item->roles as $roleItem) {
+            $role = Role::firstOrCreate(['name' => $roleItem->name, 'guard_name' => 'api']);
 
-                    // Ensure role permissions exist
-                    if (isset($roleData['permissions']) && is_array($roleData['permissions'])) {
-                        foreach ($roleData['permissions'] as $permissionName) {
-                            if (is_string($permissionName)) {
-                                Permission::firstOrCreate(
-                                    ['name' => $permissionName, 'guard_name' => 'api']
-                                );
-                            }
-                        }
-                    }
+            if ($roleItem->permissions !== null) {
+                foreach ($roleItem->permissions as $permissionName) {
+                    Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'api']);
                 }
+                $role->syncPermissions($roleItem->permissions);
             }
 
-            // Ensure all roles exist
-            foreach ($roleNames as $roleName) {
-                $role = Role::firstOrCreate(
-                    ['name' => $roleName, 'guard_name' => 'api']
-                );
-
-                // Sync role permissions if provided
-                foreach ($userData['roles'] as $roleData) {
-                    if (is_array($roleData) && isset($roleData['name']) && $roleData['name'] === $roleName && (isset($roleData['permissions']) && is_array($roleData['permissions']))) {
-                        $permissionNames = array_filter($roleData['permissions'], is_string(...));
-                        $role->syncPermissions($permissionNames);
-                    }
-                }
-            }
-
-            if ($roleNames !== []) {
-                $user->syncRoles($roleNames);
-            }
+            $roleNames[] = $roleItem->name;
         }
 
-        // Handle all_permissions - matches export format: array of permission names
-        if (isset($userData['all_permissions']) && is_array($userData['all_permissions'])) {
-            $permissionNames = [];
-            foreach ($userData['all_permissions'] as $permissionName) {
-                if (is_string($permissionName)) {
-                    Permission::firstOrCreate(
-                        ['name' => $permissionName, 'guard_name' => 'api']
-                    );
-                    $permissionNames[] = $permissionName;
-                }
-            }
+        if ($roleNames !== []) {
+            $user->syncRoles($roleNames);
+        }
 
-            if ($permissionNames !== []) {
-                $user->syncPermissions($permissionNames);
-            }
+        foreach ($item->allPermissions as $permissionName) {
+            Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'api']);
+        }
+
+        if ($item->allPermissions !== []) {
+            $user->syncPermissions($item->allPermissions);
         }
 
         return [

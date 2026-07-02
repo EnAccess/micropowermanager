@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClusterImportRequest;
 use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
+use App\Services\ImportServices\ClusterImportItem;
 use App\Services\ImportServices\ClusterImportService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -27,17 +28,17 @@ class ClusterImportController extends Controller {
      * the response is a 202 with a `job_id` to poll via the import status endpoint.
      */
     public function import(ClusterImportRequest $request): JsonResponse|ImportResource {
-        $data = $request->validated('data');
+        $items = $request->items();
 
-        if (count($data) >= self::ASYNC_THRESHOLD) {
-            return $this->dispatchAsync($data, $request);
+        if (count($items) >= self::ASYNC_THRESHOLD) {
+            return $this->dispatchAsync($items, $request);
         }
 
-        return ImportResource::make($this->clusterImportService->import($data));
+        return ImportResource::make($this->clusterImportService->import($items));
     }
 
     /**
-     * @param array<int, array<string, mixed>> $data
+     * @param list<ClusterImportItem> $data
      */
     private function dispatchAsync(array $data, ClusterImportRequest $request): JsonResponse {
         $companyId = (int) $request->attributes->get('companyId');

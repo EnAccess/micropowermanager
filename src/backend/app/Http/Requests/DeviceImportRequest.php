@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Services\ImportServices\DeviceImportItem;
+use App\Services\ImportServices\DeviceInfoItem;
+use App\Services\ImportServices\MeterTypeItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DeviceImportRequest extends FormRequest {
@@ -31,6 +34,35 @@ class DeviceImportRequest extends FormRequest {
             'data.*.geo' => ['sometimes', 'nullable', 'array'],
             'data.*.geo.geo_json' => ['sometimes', 'nullable', 'array'],
         ];
+    }
+
+    /**
+     * @return list<DeviceImportItem>
+     */
+    public function items(): array {
+        return array_map(function (array $item): DeviceImportItem {
+            $info = $item['device_info'];
+            $meterType = $info['meter_type'] ?? null;
+
+            return new DeviceImportItem(
+                customer: $item['customer'] ?? null,
+                deviceInfo: new DeviceInfoItem(
+                    serialNumber: $info['serial_number'],
+                    type: $info['type'] ?? 'meter',
+                    manufacturer: $info['manufacturer'] ?? null,
+                    meterType: $meterType === null ? null : new MeterTypeItem(
+                        online: (bool) ($meterType['online'] ?? false),
+                        phase: (int) ($meterType['phase'] ?? 1),
+                        maxCurrent: (float) ($meterType['max_current'] ?? 10),
+                    ),
+                    connectionType: $info['connection_type'] ?? null,
+                    connectionGroup: $info['connection_group'] ?? null,
+                    tariff: $info['tariff'] ?? null,
+                    appliance: $info['appliance'] ?? null,
+                ),
+                geoJson: $item['geo']['geo_json'] ?? null,
+            );
+        }, $this->validated('data'));
     }
 
     /**

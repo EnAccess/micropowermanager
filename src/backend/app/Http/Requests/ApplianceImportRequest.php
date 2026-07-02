@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\ImportServices\ApplianceImportItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ApplianceImportRequest extends FormRequest {
@@ -19,6 +20,28 @@ class ApplianceImportRequest extends FormRequest {
             'data.*.appliance_type' => ['sometimes', 'nullable', 'string'],
             'data.*.price' => ['sometimes', 'nullable'],
         ];
+    }
+
+    /**
+     * @return list<ApplianceImportItem>
+     */
+    public function items(): array {
+        return array_map(fn (array $item): ApplianceImportItem => new ApplianceImportItem(
+            applianceName: $item['appliance_name'],
+            applianceType: $item['appliance_type'] ?? null,
+            price: $this->parsePrice($item['price'] ?? 0),
+        ), $this->validated('data'));
+    }
+
+    /**
+     * Export files carry prices as display strings ("1,500") as well as plain numbers.
+     */
+    private function parsePrice(mixed $price): int {
+        if (is_string($price)) {
+            return (int) str_replace([',', ' '], '', $price);
+        }
+
+        return is_numeric($price) ? (int) $price : 0;
     }
 
     /**

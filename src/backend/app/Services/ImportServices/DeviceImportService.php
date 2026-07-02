@@ -19,9 +19,12 @@ use App\Models\Tariff;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @extends AbstractImportService<DeviceImportItem>
+ */
 class DeviceImportService extends AbstractImportService {
     /**
-     * @param list<array<string, mixed>> $data
+     * @param list<DeviceImportItem> $data
      */
     public function import(array $data): ImportResult {
         $imported = [];
@@ -30,26 +33,24 @@ class DeviceImportService extends AbstractImportService {
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($data as $deviceData) {
+            foreach ($data as $item) {
                 try {
-                    $result = $this->importDevice($deviceData);
+                    $result = $this->importDevice($item);
                     if ($result['success']) {
                         $imported[] = $result['device'];
                     } else {
-                        $serialNumber = $deviceData['device_info']['serial_number'] ?? 'unknown';
                         $failed[] = [
-                            'serial_number' => $serialNumber,
+                            'serial_number' => $item->deviceInfo->serialNumber,
                             'errors' => $result['errors'],
                         ];
                     }
                 } catch (\Exception $e) {
-                    $serialNumber = $deviceData['device_info']['serial_number'] ?? 'unknown';
                     Log::error('Error importing device', [
-                        'serial_number' => $serialNumber,
+                        'serial_number' => $item->deviceInfo->serialNumber,
                         'error' => $e->getMessage(),
                     ]);
                     $failed[] = [
-                        'serial_number' => $serialNumber,
+                        'serial_number' => $item->deviceInfo->serialNumber,
                         'errors' => ['import' => $e->getMessage()],
                     ];
                 }
@@ -73,23 +74,20 @@ class DeviceImportService extends AbstractImportService {
     }
 
     /**
-     * @param array<string, mixed> $deviceData
-     *
      * @return array<string, mixed>
      */
-    private function importDevice(array $deviceData): array {
-        $deviceInfo = $deviceData['device_info'];
-        $serialNumber = $deviceInfo['serial_number'];
-        $deviceType = $deviceInfo['type'] ?? 'meter';
-        $manufacturerName = $deviceInfo['manufacturer'] ?? null;
+    private function importDevice(DeviceImportItem $item): array {
+        $info = $item->deviceInfo;
+        $serialNumber = $info->serialNumber;
+        $deviceType = $info->type;
 
         // Resolve manufacturer
         $manufacturer = null;
-        if ($manufacturerName !== null && $manufacturerName !== '') {
-            $manufacturer = Manufacturer::query()->where('name', $manufacturerName)->first();
+        if ($info->manufacturer !== null && $info->manufacturer !== '') {
+            $manufacturer = Manufacturer::query()->where('name', $info->manufacturer)->first();
             if ($manufacturer === null) {
                 $manufacturer = Manufacturer::query()->create([
-                    'name' => $manufacturerName,
+                    'name' => $info->manufacturer,
                     'type' => $this->mapDeviceTypeToManufacturerType($deviceType),
                 ]);
             }
@@ -97,8 +95,8 @@ class DeviceImportService extends AbstractImportService {
 
         // Resolve customer by full name if provided
         $personId = null;
-        if (!empty($deviceData['customer'])) {
-            $nameParts = explode(' ', $deviceData['customer'], 2);
+        if ($item->customer !== null && $item->customer !== '') {
+            $nameParts = explode(' ', $item->customer, 2);
             $name = $nameParts[0];
             $surname = $nameParts[1] ?? '';
 
@@ -119,8 +117,8 @@ class DeviceImportService extends AbstractImportService {
                 $existingDevice->update(['person_id' => $personId]);
             }
 
-            $this->updateSpecificDevice($existingDevice, $manufacturer, $deviceInfo);
-            $this->handleDeviceGeo($existingDevice, $deviceData);
+            $this->updateSpecificDevice($existingDevice, $manufacturer, $info);
+            $this->handleDeviceGeo($existingDevice, $item->geoJson);
 
             return [
                 'success' => true,
@@ -135,7 +133,7 @@ class DeviceImportService extends AbstractImportService {
         }
 
         // Create the type-specific device model
-        $specificDevice = $this->createSpecificDevice($deviceType, $serialNumber, $manufacturer, $deviceInfo);
+        $specificDevice = $this->createSpecificDevice($deviceType, $serialNumber, $manufacturer, $info);
 
         // Create the polymorphic Device record
         $device = Device::query()->create([
@@ -145,7 +143,7 @@ class DeviceImportService extends AbstractImportService {
             'device_serial' => $serialNumber,
         ]);
 
-        $this->handleDeviceGeo($device, $deviceData);
+        $this->handleDeviceGeo($device, $item->geoJson);
 
         return [
             'success' => true,
@@ -160,15 +158,14 @@ class DeviceImportService extends AbstractImportService {
     }
 
     /**
-     * @param array<string, mixed> $deviceData
+     * @param array<string, mixed>|null $geoJson
      */
-    private function handleDeviceGeo(Device $device, array $deviceData): void {
-        $geo = $deviceData['geo'] ?? null;
-        if (!is_array($geo) || empty($geo['geo_json'])) {
+    private function handleDeviceGeo(Device $device, ?array $geoJson): void {
+        if ($geoJson === null || $geoJson === []) {
             return;
         }
 
-        $attributes = ['geo_json' => $geo['geo_json']];
+        $attributes = ['geo_json' => $geoJson];
         $existingGeo = $device->geo;
 
         if ($existingGeo instanceof GeographicalInformation) {
@@ -178,10 +175,7 @@ class DeviceImportService extends AbstractImportService {
         }
     }
 
-    /**
-     * @param array<string, mixed> $deviceInfo
-     */
-    private function updateSpecificDevice(Device $device, ?Manufacturer $manufacturer, array $deviceInfo): void {
+    private function updateSpecificDevice(Device $device, ?Manufacturer $manufacturer, DeviceInfoItem $info): void {
         $specificDevice = $device->device;
 
         $updates = [];
@@ -190,24 +184,24 @@ class DeviceImportService extends AbstractImportService {
         }
 
         if ($specificDevice instanceof Meter) {
-            if (!empty($deviceInfo['connection_type'])) {
-                $updates['connection_type_id'] = $this->resolveConnectionTypeId($deviceInfo['connection_type']);
+            if ($info->connectionType !== null && $info->connectionType !== '') {
+                $updates['connection_type_id'] = $this->resolveConnectionTypeId($info->connectionType);
             }
-            if (!empty($deviceInfo['connection_group'])) {
-                $updates['connection_group_id'] = $this->resolveConnectionGroupId($deviceInfo['connection_group']);
+            if ($info->connectionGroup !== null && $info->connectionGroup !== '') {
+                $updates['connection_group_id'] = $this->resolveConnectionGroupId($info->connectionGroup);
             }
-            if (!empty($deviceInfo['tariff'])) {
-                $updates['tariff_id'] = $this->resolveTariffId($deviceInfo['tariff']);
+            if ($info->tariff !== null && $info->tariff !== '') {
+                $updates['tariff_id'] = $this->resolveTariffId($info->tariff);
             }
-            if (isset($deviceInfo['meter_type'])) {
-                $updates['meter_type_id'] = $this->resolveMeterTypeId($deviceInfo['meter_type']);
+            if ($info->meterType instanceof MeterTypeItem) {
+                $updates['meter_type_id'] = $this->resolveMeterTypeId($info->meterType);
             }
         } elseif ($specificDevice instanceof SolarHomeSystem) {
-            if (!empty($deviceInfo['appliance'])) {
-                $updates['appliance_id'] = $this->resolveApplianceId($deviceInfo['appliance']);
+            if ($info->appliance !== null && $info->appliance !== '') {
+                $updates['appliance_id'] = $this->resolveApplianceId($info->appliance);
             }
-        } elseif (!empty($deviceInfo['appliance'])) {
-            $updates['appliance_id'] = $this->resolveApplianceId($deviceInfo['appliance']);
+        } elseif ($info->appliance !== null && $info->appliance !== '') {
+            $updates['appliance_id'] = $this->resolveApplianceId($info->appliance);
         }
 
         if ($updates !== []) {
@@ -215,14 +209,11 @@ class DeviceImportService extends AbstractImportService {
         }
     }
 
-    /**
-     * @param array<string, mixed> $deviceInfo
-     */
-    private function createSpecificDevice(string $type, string $serialNumber, ?Manufacturer $manufacturer, array $deviceInfo): Meter|SolarHomeSystem|EBike {
+    private function createSpecificDevice(string $type, string $serialNumber, ?Manufacturer $manufacturer, DeviceInfoItem $info): Meter|SolarHomeSystem|EBike {
         $manufacturerId = $manufacturer?->id;
 
         $applianceId = in_array($type, ['solar_home_system', 'e_bike'])
-            ? $this->resolveApplianceId($deviceInfo['appliance'] ?? '')
+            ? $this->resolveApplianceId($info->appliance ?? '')
             : null;
 
         return match ($type) {
@@ -240,23 +231,20 @@ class DeviceImportService extends AbstractImportService {
                 'serial_number' => $serialNumber,
                 'manufacturer_id' => $manufacturerId,
                 'in_use' => true,
-                'meter_type_id' => $this->resolveMeterTypeId($deviceInfo['meter_type'] ?? null),
-                'connection_type_id' => $this->resolveConnectionTypeId($deviceInfo['connection_type'] ?? ''),
-                'connection_group_id' => $this->resolveConnectionGroupId($deviceInfo['connection_group'] ?? ''),
-                'tariff_id' => $this->resolveTariffId($deviceInfo['tariff'] ?? ''),
+                'meter_type_id' => $this->resolveMeterTypeId($info->meterType),
+                'connection_type_id' => $this->resolveConnectionTypeId($info->connectionType ?? ''),
+                'connection_group_id' => $this->resolveConnectionGroupId($info->connectionGroup ?? ''),
+                'tariff_id' => $this->resolveTariffId($info->tariff ?? ''),
             ]),
         };
     }
 
-    /**
-     * @param array<string, mixed>|null $meterTypeData
-     */
-    private function resolveMeterTypeId(?array $meterTypeData): int {
-        if ($meterTypeData !== null) {
+    private function resolveMeterTypeId(?MeterTypeItem $meterTypeItem): int {
+        if ($meterTypeItem instanceof MeterTypeItem) {
             $meterType = MeterType::query()->firstOrCreate([
-                'online' => $meterTypeData['online'] ?? false,
-                'phase' => $meterTypeData['phase'] ?? 1,
-                'max_current' => $meterTypeData['max_current'] ?? 10,
+                'online' => $meterTypeItem->online,
+                'phase' => $meterTypeItem->phase,
+                'max_current' => $meterTypeItem->maxCurrent,
             ]);
 
             return $meterType->id;

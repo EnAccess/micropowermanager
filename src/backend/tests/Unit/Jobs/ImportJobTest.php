@@ -6,7 +6,9 @@ namespace Tests\Unit\Jobs;
 
 use App\Exceptions\ImportFailedException;
 use App\Jobs\ImportJob;
+use App\Services\ImportServices\DeviceImportItem;
 use App\Services\ImportServices\DeviceImportService;
+use App\Services\ImportServices\DeviceInfoItem;
 use App\Services\ImportServices\ImportResult;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -16,7 +18,7 @@ class ImportJobTest extends TestCase {
     public function testStoresCompletedStatusAndResultOnSuccess(): void {
         $jobId = Str::uuid()->toString();
         $job = new ImportJob($this->companyId, $jobId, DeviceImportService::class, [
-            ['device_info' => ['serial_number' => 'IMPORT-JOB-TEST-OK', 'manufacturer' => 'Test Manufacturer']],
+            $this->deviceItem('IMPORT-JOB-TEST-OK', manufacturer: 'Test Manufacturer'),
         ]);
 
         $job->executeJob();
@@ -30,8 +32,10 @@ class ImportJobTest extends TestCase {
 
     public function testStoresCompletedStatusWithFailureDetailsWhenAllItemsFail(): void {
         $jobId = Str::uuid()->toString();
+        // A meter without a manufacturer currently fails on the NOT NULL meters.manufacturer_id
+        // column — if a default-manufacturer fallback gets added, pick a new failure trigger here.
         $job = new ImportJob($this->companyId, $jobId, DeviceImportService::class, [
-            ['device_info' => []],
+            $this->deviceItem('IMPORT-JOB-TEST-FAIL', manufacturer: null),
         ]);
 
         $job->executeJob();
@@ -52,7 +56,7 @@ class ImportJobTest extends TestCase {
 
         $jobId = Str::uuid()->toString();
         $job = new ImportJob($this->companyId, $jobId, DeviceImportService::class, [
-            ['device_info' => ['serial_number' => 'IRRELEVANT']],
+            $this->deviceItem('IRRELEVANT', manufacturer: 'Test Manufacturer'),
         ]);
 
         $job->executeJob();
@@ -62,5 +66,22 @@ class ImportJobTest extends TestCase {
         $this->assertSame('failed', $cached['status']);
         $this->assertFalse($cached['result']['success']);
         $this->assertArrayHasKey('transaction', $cached['result']['errors']);
+    }
+
+    private function deviceItem(string $serialNumber, ?string $manufacturer): DeviceImportItem {
+        return new DeviceImportItem(
+            customer: null,
+            deviceInfo: new DeviceInfoItem(
+                serialNumber: $serialNumber,
+                type: 'meter',
+                manufacturer: $manufacturer,
+                meterType: null,
+                connectionType: null,
+                connectionGroup: null,
+                tariff: null,
+                appliance: null,
+            ),
+            geoJson: null,
+        );
     }
 }

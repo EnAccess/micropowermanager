@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserPermissionImportRequest;
 use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
+use App\Services\ImportServices\UserImportItem;
 use App\Services\ImportServices\UserPermissionImportService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -27,17 +28,17 @@ class UserPermissionImportController extends Controller {
      * the response is a 202 with a `job_id` to poll via the import status endpoint.
      */
     public function import(UserPermissionImportRequest $request): JsonResponse|ImportResource {
-        $data = $request->validated('data');
+        $items = $request->items();
 
-        if (count($data) >= self::ASYNC_THRESHOLD) {
-            return $this->dispatchAsync($data, $request);
+        if (count($items) >= self::ASYNC_THRESHOLD) {
+            return $this->dispatchAsync($items, $request);
         }
 
-        return ImportResource::make($this->userPermissionImportService->import($data));
+        return ImportResource::make($this->userPermissionImportService->import($items));
     }
 
     /**
-     * @param array<int, array<string, mixed>> $data
+     * @param list<UserImportItem> $data
      */
     private function dispatchAsync(array $data, UserPermissionImportRequest $request): JsonResponse {
         $companyId = (int) $request->attributes->get('companyId');

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Services\ImportServices\UserImportItem;
+use App\Services\ImportServices\UserRoleItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserPermissionImportRequest extends FormRequest {
@@ -28,6 +30,26 @@ class UserPermissionImportRequest extends FormRequest {
             'data.*.all_permissions' => ['sometimes', 'nullable', 'array'],
             'data.*.all_permissions.*' => ['string'],
         ];
+    }
+
+    /**
+     * @return list<UserImportItem>
+     */
+    public function items(): array {
+        return array_map(fn (array $item): UserImportItem => new UserImportItem(
+            name: $item['name'],
+            email: $item['email'],
+            password: $item['password'] ?? null,
+            companyId: $item['company_id'] ?? null,
+            roles: array_values(array_map(
+                fn (array $role): UserRoleItem => new UserRoleItem(
+                    name: $role['name'],
+                    permissions: isset($role['permissions']) ? array_values($role['permissions']) : null,
+                ),
+                $item['roles'] ?? [],
+            )),
+            allPermissions: array_values($item['all_permissions'] ?? []),
+        ), $this->validated('data'));
     }
 
     /**

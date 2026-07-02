@@ -19,8 +19,6 @@ class SettingsImportController extends Controller {
      * Replaces the tenant's main settings with the single settings object in `data`.
      */
     public function import(SettingsImportRequest $request): ImportResource {
-        $data = $request->validated('data');
-
-        return ImportResource::make($this->settingsImportService->import($data));
+        return ImportResource::make($this->settingsImportService->import($request->items()));
     }
 }

@@ -10,9 +10,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @extends AbstractImportService<ClusterImportItem>
+ */
 class ClusterImportService extends AbstractImportService {
     /**
-     * @param list<array<string, mixed>> $data
+     * @param list<ClusterImportItem> $data
      */
     public function import(array $data): ImportResult {
         $imported = [];
@@ -21,24 +24,24 @@ class ClusterImportService extends AbstractImportService {
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($data as $clusterData) {
+            foreach ($data as $item) {
                 try {
-                    $result = $this->importCluster($clusterData);
+                    $result = $this->importCluster($item);
                     if ($result['success']) {
                         $imported[] = $result['cluster'];
                     } else {
                         $failed[] = [
-                            'name' => $clusterData['cluster_name'] ?? 'unknown',
+                            'name' => $item->clusterName,
                             'errors' => $result['errors'],
                         ];
                     }
                 } catch (\Exception $e) {
                     Log::error('Error importing cluster', [
-                        'name' => $clusterData['cluster_name'] ?? 'unknown',
+                        'name' => $item->clusterName,
                         'error' => $e->getMessage(),
                     ]);
                     $failed[] = [
-                        'name' => $clusterData['cluster_name'] ?? 'unknown',
+                        'name' => $item->clusterName,
                         'errors' => ['import' => $e->getMessage()],
                     ];
                 }
@@ -62,40 +65,34 @@ class ClusterImportService extends AbstractImportService {
     }
 
     /**
-     * @param array<string, mixed> $clusterData
-     *
      * @return array<string, mixed>
      */
-    private function importCluster(array $clusterData): array {
-        $clusterName = $clusterData['cluster_name'];
-
+    private function importCluster(ClusterImportItem $item): array {
         // Resolve manager by name, fall back to the authenticated user
         $managerId = auth('api')->user()->id;
-        if (!empty($clusterData['manager'])) {
-            $manager = User::query()->where('name', $clusterData['manager'])->first();
+        if ($item->manager !== null && $item->manager !== '') {
+            $manager = User::query()->where('name', $item->manager)->first();
             if ($manager !== null) {
                 $managerId = $manager->id;
             }
         }
 
-        $cluster = Cluster::query()->where('name', $clusterName)->first();
+        $cluster = Cluster::query()->where('name', $item->clusterName)->first();
         $isNew = $cluster === null;
 
         if ($isNew) {
-            $geoJson = $clusterData['geo_json'] ?? '{}';
-
             $cluster = Cluster::query()->create([
-                'name' => $clusterName,
+                'name' => $item->clusterName,
                 'manager_id' => $managerId,
-                'geo_json' => $geoJson,
+                'geo_json' => $item->geoJson ?? '{}',
             ]);
         } else {
             $cluster->update(['manager_id' => $managerId]);
         }
 
         // Parse and create mini-grids (comma-separated string from export)
-        if (!empty($clusterData['mini_grids'])) {
-            $miniGridNames = array_map(trim(...), explode(',', $clusterData['mini_grids']));
+        if ($item->miniGrids !== null && $item->miniGrids !== '') {
+            $miniGridNames = array_map(trim(...), explode(',', $item->miniGrids));
             foreach ($miniGridNames as $miniGridName) {
                 if ($miniGridName === '') {
                     continue;
@@ -107,14 +104,14 @@ class ClusterImportService extends AbstractImportService {
         }
 
         // Parse and create villages/cities (comma-separated string from export)
-        if (!empty($clusterData['villages'])) {
-            $villageNames = array_map(trim(...), explode(',', $clusterData['villages']));
+        if ($item->villages !== null && $item->villages !== '') {
+            $villageNames = array_map(trim(...), explode(',', $item->villages));
             $miniGrid = MiniGrid::query()->where('cluster_id', $cluster->id)->first();
             $country = Country::query()->first();
 
             if ($miniGrid === null || $country === null) {
                 Log::warning('Skipping village import for cluster: missing mini-grid or country', [
-                    'cluster' => $clusterName,
+                    'cluster' => $item->clusterName,
                     'has_mini_grid' => $miniGrid !== null,
                     'has_country' => $country !== null,
                 ]);

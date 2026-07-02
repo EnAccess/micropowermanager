@@ -5,12 +5,16 @@ namespace App\Services\ImportServices;
 use App\Exceptions\ImportFailedException;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @template TItem the per-entity item object import() consumes, materialized
+ *                 from validated input by the endpoint's FormRequest
+ */
 abstract class AbstractImportService {
     /**
      * Import a list of items (the `data` list of a JSON export file, validated
      * by the endpoint's FormRequest).
      *
-     * @param list<array<string, mixed>> $data
+     * @param list<TItem> $data
      *
      * @throws ImportFailedException if the import transaction had to be rolled back
      */

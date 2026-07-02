@@ -9,9 +9,12 @@ use App\Models\Person\Person;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @extends AbstractImportService<CustomerImportItem>
+ */
 class CustomerImportService extends AbstractImportService {
     /**
-     * @param list<array<string, mixed>> $data
+     * @param list<CustomerImportItem> $data
      */
     public function import(array $data): ImportResult {
         $imported = [];
@@ -20,24 +23,24 @@ class CustomerImportService extends AbstractImportService {
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($data as $customerData) {
+            foreach ($data as $item) {
                 try {
-                    $result = $this->importCustomer($customerData);
+                    $result = $this->importCustomer($item);
                     if ($result['success']) {
                         $imported[] = $result['customer'];
                     } else {
                         $failed[] = [
-                            'name' => trim(($customerData['name'] ?? '').' '.($customerData['surname'] ?? '')),
+                            'name' => trim($item->name.' '.$item->surname),
                             'errors' => $result['errors'],
                         ];
                     }
                 } catch (\Exception $e) {
                     Log::error('Error importing customer', [
-                        'name' => $customerData['name'] ?? 'unknown',
+                        'name' => $item->name,
                         'error' => $e->getMessage(),
                     ]);
                     $failed[] = [
-                        'name' => $customerData['name'] ?? 'unknown',
+                        'name' => $item->name,
                         'errors' => ['import' => $e->getMessage()],
                     ];
                 }
@@ -61,35 +64,30 @@ class CustomerImportService extends AbstractImportService {
     }
 
     /**
-     * @param array<string, mixed> $customerData
-     *
      * @return array<string, mixed>
      */
-    private function importCustomer(array $customerData): array {
-        $name = $customerData['name'];
-        $surname = $customerData['surname'] ?? '';
-
+    private function importCustomer(CustomerImportItem $item): array {
         // Find or create person by name + surname
         $person = Person::query()
-            ->where('name', $name)
-            ->where('surname', $surname)
+            ->where('name', $item->name)
+            ->where('surname', $item->surname)
             ->first();
 
         $personFields = [
-            'name' => $name,
-            'surname' => $surname,
+            'name' => $item->name,
+            'surname' => $item->surname,
             'is_customer' => 1,
             'type' => 'customer',
         ];
 
-        if (isset($customerData['title'])) {
-            $personFields['title'] = $customerData['title'];
+        if ($item->title !== null) {
+            $personFields['title'] = $item->title;
         }
-        if (isset($customerData['birth_date'])) {
-            $personFields['birth_date'] = $customerData['birth_date'];
+        if ($item->birthDate !== null) {
+            $personFields['birth_date'] = $item->birthDate;
         }
-        if (isset($customerData['gender'])) {
-            $personFields['gender'] = $customerData['gender'];
+        if ($item->gender !== null) {
+            $personFields['gender'] = $item->gender;
         }
 
         $isNew = $person === null;
@@ -102,17 +100,17 @@ class CustomerImportService extends AbstractImportService {
 
         // Resolve city by name and create/update primary address
         $cityId = null;
-        if (!empty($customerData['city'])) {
-            $city = City::query()->where('name', $customerData['city'])->first();
+        if ($item->city !== null && $item->city !== '') {
+            $city = City::query()->where('name', $item->city)->first();
             if ($city !== null) {
                 $cityId = $city->id;
             }
         }
 
         // Check phone uniqueness
-        if (!empty($customerData['phone'])) {
+        if ($item->phone !== null && $item->phone !== '') {
             $phoneInUse = Address::query()
-                ->where('phone', $customerData['phone'])
+                ->where('phone', $item->phone)
                 ->where(function ($query) use ($person): void {
                     $query->where('owner_id', '!=', $person->id)
                         ->orWhere('owner_type', '!=', Person::class);
@@ -122,7 +120,7 @@ class CustomerImportService extends AbstractImportService {
             if ($phoneInUse) {
                 return [
                     'success' => false,
-                    'errors' => ['phone' => "Phone number '{$customerData['phone']}' is already assigned to another customer"],
+                    'errors' => ['phone' => "Phone number '{$item->phone}' is already assigned to another customer"],
                 ];
             }
         }
@@ -130,9 +128,9 @@ class CustomerImportService extends AbstractImportService {
         $existingAddress = $person->addresses()->where('is_primary', 1)->first();
 
         $addressFields = [
-            'email' => $customerData['email'] ?? null,
-            'phone' => $customerData['phone'] ?? null,
-            'street' => $customerData['street'] ?? null,
+            'email' => $item->email,
+            'phone' => $item->phone,
+            'street' => $item->street,
             'city_id' => $cityId,
             'is_primary' => 1,
         ];
@@ -146,8 +144,8 @@ class CustomerImportService extends AbstractImportService {
         }
 
         // Link devices by serial number
-        if (!empty($customerData['devices'])) {
-            $serialNumbers = array_map(trim(...), explode(',', $customerData['devices']));
+        if ($item->devices !== null && $item->devices !== '') {
+            $serialNumbers = array_map(trim(...), explode(',', $item->devices));
             Device::query()
                 ->whereIn('device_serial', $serialNumbers)
                 ->update(['person_id' => $person->id]);

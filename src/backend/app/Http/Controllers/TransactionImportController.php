@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TransactionImportRequest;
 use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
+use App\Services\ImportServices\TransactionImportItem;
 use App\Services\ImportServices\TransactionImportService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -27,17 +28,17 @@ class TransactionImportController extends Controller {
      * the response is a 202 with a `job_id` to poll via the import status endpoint.
      */
     public function import(TransactionImportRequest $request): JsonResponse|ImportResource {
-        $data = $request->validated('data');
+        $items = $request->items();
 
-        if (count($data) >= self::ASYNC_THRESHOLD) {
-            return $this->dispatchAsync($data, $request);
+        if (count($items) >= self::ASYNC_THRESHOLD) {
+            return $this->dispatchAsync($items, $request);
         }
 
-        return ImportResource::make($this->transactionImportService->import($data));
+        return ImportResource::make($this->transactionImportService->import($items));
     }
 
     /**
-     * @param array<int, array<string, mixed>> $data
+     * @param list<TransactionImportItem> $data
      */
     private function dispatchAsync(array $data, TransactionImportRequest $request): JsonResponse {
         $companyId = (int) $request->attributes->get('companyId');

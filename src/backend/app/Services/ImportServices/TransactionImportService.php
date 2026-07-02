@@ -17,9 +17,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+/**
+ * @extends AbstractImportService<TransactionImportItem>
+ */
 class TransactionImportService extends AbstractImportService {
     /**
-     * @param list<array<string, mixed>> $data
+     * @param list<TransactionImportItem> $data
      */
     public function import(array $data): ImportResult {
         $imported = [];
@@ -28,24 +31,24 @@ class TransactionImportService extends AbstractImportService {
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($data as $transactionData) {
+            foreach ($data as $item) {
                 try {
-                    $result = $this->importTransaction($transactionData);
+                    $result = $this->importTransaction($item);
                     if ($result['success']) {
                         $imported[] = $result['transaction'];
                     } else {
                         $failed[] = [
-                            'device_id' => $transactionData['device_id'] ?? 'unknown',
+                            'device_id' => $item->deviceId,
                             'errors' => $result['errors'],
                         ];
                     }
                 } catch (\Exception $e) {
                     Log::error('Error importing transaction', [
-                        'device_id' => $transactionData['device_id'] ?? 'unknown',
+                        'device_id' => $item->deviceId,
                         'error' => $e->getMessage(),
                     ]);
                     $failed[] = [
-                        'device_id' => $transactionData['device_id'] ?? 'unknown',
+                        'device_id' => $item->deviceId,
                         'errors' => ['import' => $e->getMessage()],
                     ];
                 }
@@ -69,34 +72,24 @@ class TransactionImportService extends AbstractImportService {
     }
 
     /**
-     * @param array<string, mixed> $transactionData
-     *
      * @return array<string, mixed>
      */
-    private function importTransaction(array $transactionData): array {
-        $deviceSerial = $transactionData['device_id'];
-
+    private function importTransaction(TransactionImportItem $item): array {
         // Verify device exists
-        $device = Device::query()->where('device_serial', $deviceSerial)->first();
+        $device = Device::query()->where('device_serial', $item->deviceId)->first();
         if ($device === null) {
             return [
                 'success' => false,
-                'errors' => ['device_id' => "Device with serial '{$deviceSerial}' not found"],
+                'errors' => ['device_id' => "Device with serial '{$item->deviceId}' not found"],
             ];
         }
 
-        // Parse amount — export format includes currency symbol and comma separators
-        $amount = $transactionData['amount'] ?? 0;
-        if (is_string($amount)) {
-            $amount = (float) preg_replace('/[^0-9.]/', '', str_replace(',', '', $amount));
-        }
-
-        $sentDate = $transactionData['sent_date'] ?? now();
+        $sentDate = $item->sentDate ?? now();
 
         // Check for duplicate transaction
         $existingTransaction = Transaction::query()
-            ->where('message', $deviceSerial)
-            ->where('amount', $amount)
+            ->where('message', $item->deviceId)
+            ->where('amount', $item->amount)
             ->where('created_at', $sentDate)
             ->first();
 
@@ -107,21 +100,20 @@ class TransactionImportService extends AbstractImportService {
                 'transaction' => [
                     'id' => $existingTransaction->id,
                     'amount' => $existingTransaction->amount,
-                    'device_serial' => $deviceSerial,
+                    'device_serial' => $item->deviceId,
                     'action' => 'modified',
                 ],
             ];
         }
 
         // Create the provider-specific transaction record matching the original type
-        $transactionType = $transactionData['transaction_type'] ?? ThirdPartyTransaction::RELATION_NAME;
-        $originalData = $transactionData['original_transaction'] ?? [];
-        $originalTransaction = $this->createOriginalTransaction($transactionType, $originalData);
+        $transactionType = $item->transactionType ?? ThirdPartyTransaction::RELATION_NAME;
+        $originalTransaction = $this->createOriginalTransaction($transactionType, $item->originalTransaction ?? []);
 
         $transaction = Transaction::query()->create([
-            'amount' => $amount,
-            'sender' => $transactionData['customer'] ?? '',
-            'message' => $deviceSerial,
+            'amount' => $item->amount,
+            'sender' => $item->customer ?? '',
+            'message' => $item->deviceId,
             'type' => Transaction::TYPE_IMPORTED,
             'original_transaction_id' => $originalTransaction->getKey(),
             'original_transaction_type' => $transactionType,
@@ -134,7 +126,7 @@ class TransactionImportService extends AbstractImportService {
             'transaction' => [
                 'id' => $transaction->id,
                 'amount' => $transaction->amount,
-                'device_serial' => $deviceSerial,
+                'device_serial' => $item->deviceId,
                 'action' => 'added',
             ],
         ];

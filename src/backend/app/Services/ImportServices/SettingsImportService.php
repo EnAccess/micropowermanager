@@ -4,16 +4,19 @@ namespace App\Services\ImportServices;
 
 use App\Services\MainSettingsService;
 
+/**
+ * @extends AbstractImportService<SettingsImportItem>
+ */
 class SettingsImportService extends AbstractImportService {
     public function __construct(
         private MainSettingsService $mainSettingsService,
     ) {}
 
     /**
-     * @param list<array<string, mixed>> $data
+     * @param list<SettingsImportItem> $data
      */
     public function import(array $data): ImportResult {
-        $settingsData = $data[0];
+        $item = $data[0];
 
         try {
             $settings = $this->mainSettingsService->getAll()->first();
@@ -22,39 +25,39 @@ class SettingsImportService extends AbstractImportService {
             if ($isNew) {
                 // Create new settings if none exist
                 $settings = $this->mainSettingsService->create([
-                    'site_title' => $settingsData['site_title'] ?? '',
-                    'company_name' => $settingsData['company_name'] ?? '',
-                    'currency' => $settingsData['currency'] ?? '€',
-                    'country' => $settingsData['country'] ?? '',
-                    'language' => $settingsData['language'] ?? 'en',
-                    'vat_energy' => $settingsData['vat_energy'] ?? 0,
-                    'vat_appliance' => $settingsData['vat_appliance'] ?? 0,
-                    'usage_type' => $settingsData['usage_type'] ?? null,
-                    'sms_gateway_id' => $settingsData['sms_gateway_id'] ?? null,
-                    'transaction_sms_enabled' => $settingsData['transaction_sms_enabled'] ?? true,
+                    'site_title' => $item->siteTitle ?? '',
+                    'company_name' => $item->companyName ?? '',
+                    'currency' => $item->currency ?? '€',
+                    'country' => $item->country ?? '',
+                    'language' => $item->language ?? 'en',
+                    'vat_energy' => $item->vatEnergy ?? 0,
+                    'vat_appliance' => $item->vatAppliance ?? 0,
+                    'usage_type' => $item->usageType,
+                    'sms_gateway_id' => $item->smsGatewayId,
+                    'transaction_sms_enabled' => $item->transactionSmsEnabled ?? true,
                 ]);
             } else {
                 // Update existing settings
                 $updateData = [
-                    'site_title' => $settingsData['site_title'] ?? $settings->site_title,
-                    'company_name' => $settingsData['company_name'] ?? $settings->company_name,
-                    'currency' => $settingsData['currency'] ?? $settings->currency,
-                    'country' => $settingsData['country'] ?? $settings->country,
-                    'language' => $settingsData['language'] ?? $settings->language,
-                    'vat_energy' => $settingsData['vat_energy'] ?? $settings->vat_energy,
-                    'vat_appliance' => $settingsData['vat_appliance'] ?? $settings->vat_appliance,
+                    'site_title' => $item->siteTitle ?? $settings->site_title,
+                    'company_name' => $item->companyName ?? $settings->company_name,
+                    'currency' => $item->currency ?? $settings->currency,
+                    'country' => $item->country ?? $settings->country,
+                    'language' => $item->language ?? $settings->language,
+                    'vat_energy' => $item->vatEnergy ?? $settings->vat_energy,
+                    'vat_appliance' => $item->vatAppliance ?? $settings->vat_appliance,
                 ];
 
-                if (isset($settingsData['usage_type'])) {
-                    $updateData['usage_type'] = $settingsData['usage_type'] === '' ? null : $settingsData['usage_type'];
+                if ($item->usageType !== null) {
+                    $updateData['usage_type'] = $item->usageType === '' ? null : $item->usageType;
                 }
 
-                if (isset($settingsData['sms_gateway_id'])) {
-                    $updateData['sms_gateway_id'] = $settingsData['sms_gateway_id'] === '' ? null : $settingsData['sms_gateway_id'];
+                if ($item->smsGatewayId !== null) {
+                    $updateData['sms_gateway_id'] = $item->smsGatewayId === '' ? null : $item->smsGatewayId;
                 }
 
-                if (isset($settingsData['transaction_sms_enabled'])) {
-                    $updateData['transaction_sms_enabled'] = (bool) $settingsData['transaction_sms_enabled'];
+                if ($item->transactionSmsEnabled !== null) {
+                    $updateData['transaction_sms_enabled'] = $item->transactionSmsEnabled;
                 }
 
                 $settings = $this->mainSettingsService->update($settings, $updateData);
