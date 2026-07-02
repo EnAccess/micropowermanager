@@ -19,12 +19,12 @@ class CustomerImportRequest extends FormRequest {
             'data.*.title' => ['sometimes', 'nullable', 'string'],
             'data.*.name' => ['required', 'string', 'min:1'],
             'data.*.surname' => ['sometimes', 'nullable', 'string'],
-            'data.*.birth_date' => ['sometimes', 'nullable', 'string'],
+            'data.*.birth_date' => ['sometimes', 'nullable', 'date'],
             'data.*.gender' => ['sometimes', 'nullable', 'string'],
-            'data.*.email' => ['sometimes', 'nullable', 'string'],
-            'data.*.phone' => ['sometimes', 'nullable', 'string'],
+            'data.*.email' => ['sometimes', 'nullable', 'email'],
+            'data.*.phone' => ['sometimes', 'nullable', 'phone:INTERNATIONAL'],
             'data.*.street' => ['sometimes', 'nullable', 'string'],
-            'data.*.city' => ['sometimes', 'nullable', 'string'],
+            'data.*.city' => ['sometimes', 'nullable', 'exists:tenant.cities,name'],
             'data.*.devices' => ['sometimes', 'nullable', 'string'],
         ];
     }
