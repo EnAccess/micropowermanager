@@ -14,14 +14,12 @@ class TransactionImportRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'data' => ['required', 'array'],
-            'data.*.status' => ['sometimes', 'nullable', 'string'],
-            'data.*.transaction_type' => ['sometimes', 'nullable', 'string'],
-            'data.*.customer' => ['sometimes', 'nullable', 'string'],
+            'data' => ['required', 'array', 'list'],
             'data.*.device_id' => ['required', 'string', 'min:1'],
-            'data.*.device_type' => ['sometimes', 'nullable', 'string'],
-            'data.*.currency' => ['sometimes', 'nullable', 'string'],
             'data.*.amount' => ['required'],
+            'data.*.customer' => ['sometimes', 'nullable', 'string'],
+            'data.*.transaction_type' => ['sometimes', 'nullable', 'string'],
+            'data.*.original_transaction' => ['sometimes', 'nullable', 'array'],
             'data.*.sent_date' => ['sometimes', 'nullable', 'string'],
         ];
     }

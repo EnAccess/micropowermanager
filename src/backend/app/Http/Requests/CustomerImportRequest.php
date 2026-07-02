@@ -14,7 +14,7 @@ class CustomerImportRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'data' => ['required', 'array'],
+            'data' => ['required', 'array', 'list'],
             'data.*.title' => ['sometimes', 'nullable', 'string'],
             'data.*.name' => ['required', 'string', 'min:1'],
             'data.*.surname' => ['sometimes', 'nullable', 'string'],
@@ -22,9 +22,9 @@ class CustomerImportRequest extends FormRequest {
             'data.*.gender' => ['sometimes', 'nullable', 'string'],
             'data.*.email' => ['sometimes', 'nullable', 'string'],
             'data.*.phone' => ['sometimes', 'nullable', 'string'],
+            'data.*.street' => ['sometimes', 'nullable', 'string'],
             'data.*.city' => ['sometimes', 'nullable', 'string'],
             'data.*.devices' => ['sometimes', 'nullable', 'string'],
-            'data.*.agent' => ['sometimes', 'nullable', 'string'],
         ];
     }
 

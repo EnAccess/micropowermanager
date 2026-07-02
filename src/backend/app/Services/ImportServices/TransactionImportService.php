@@ -19,23 +19,16 @@ use Illuminate\Support\Str;
 
 class TransactionImportService extends AbstractImportService {
     /**
-     * @param array<string, mixed> $data
+     * @param list<array<string, mixed>> $data
      */
     public function import(array $data): ImportResult {
-        $importData = $data;
-        if (isset($data['data']) && is_array($data['data'])) {
-            $importData = $data['data'];
-        }
-
-        $this->assertValid($this->validate($importData));
-
         $imported = [];
         $failed = [];
 
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($importData as $transactionData) {
+            foreach ($data as $transactionData) {
                 try {
                     $result = $this->importTransaction($transactionData);
                     if ($result['success']) {
@@ -180,31 +173,5 @@ class TransactionImportService extends AbstractImportService {
             PaystackTransaction::RELATION_NAME => PaystackTransaction::class,
             default => ThirdPartyTransaction::class,
         };
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
-     */
-    public function validate(array $data): array {
-        $errors = [];
-
-        foreach ($data as $index => $transactionData) {
-            if (!is_array($transactionData)) {
-                $errors["transaction_{$index}"] = 'Transaction data must be an array';
-                continue;
-            }
-
-            if (empty($transactionData['device_id'])) {
-                $errors["transaction_{$index}.device_id"] = 'Device serial number is required';
-            }
-
-            if (!isset($transactionData['amount'])) {
-                $errors["transaction_{$index}.amount"] = 'Amount is required';
-            }
-        }
-
-        return $errors;
     }
 }

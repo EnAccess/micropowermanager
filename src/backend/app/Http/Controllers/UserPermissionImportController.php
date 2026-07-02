@@ -6,10 +6,12 @@ use App\Http\Requests\UserPermissionImportRequest;
 use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
 use App\Services\ImportServices\UserPermissionImportService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
+#[Group('Import', 'Import data from a MicroPowerManager JSON export.', weight: 10)]
 class UserPermissionImportController extends Controller {
     private const int ASYNC_THRESHOLD = 50;
     private const int CACHE_TTL_SECONDS = 3600;
@@ -18,13 +20,14 @@ class UserPermissionImportController extends Controller {
         private UserPermissionImportService $userPermissionImportService,
     ) {}
 
+    /**
+     * Import users and their permissions.
+     *
+     * Imports of 50 or more items are queued for background processing —
+     * the response is a 202 with a `job_id` to poll via the import status endpoint.
+     */
     public function import(UserPermissionImportRequest $request): JsonResponse|ImportResource {
-        $data = $request->input('data');
-
-        // Handle export format: data might be wrapped in 'data' key
-        if (isset($data['data']) && is_array($data['data'])) {
-            $data = $data['data'];
-        }
+        $data = $request->validated('data');
 
         if (count($data) >= self::ASYNC_THRESHOLD) {
             return $this->dispatchAsync($data, $request);

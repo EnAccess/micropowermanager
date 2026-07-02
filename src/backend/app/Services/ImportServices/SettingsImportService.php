@@ -10,23 +10,10 @@ class SettingsImportService extends AbstractImportService {
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param list<array<string, mixed>> $data
      */
     public function import(array $data): ImportResult {
-        // Handle export format: data might be wrapped in 'data' key or direct array
-        $importData = $data;
-        if (isset($data['data']) && is_array($data['data'])) {
-            $importData = $data['data'];
-        }
-
-        // Handle export format: array with one element (settings object), or direct settings object
-        $settingsData = $importData;
-        if (isset($importData[0]) && is_array($importData[0])) {
-            // Export format: array with one element
-            $settingsData = $importData[0];
-        }
-
-        $this->assertValid($this->validate($settingsData));
+        $settingsData = $data[0];
 
         try {
             $settings = $this->mainSettingsService->getAll()->first();
@@ -82,34 +69,5 @@ class SettingsImportService extends AbstractImportService {
         } catch (\Exception $e) {
             $this->throwTransactionFailure('settings', $e);
         }
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
-     */
-    public function validate(array $data): array {
-        $errors = [];
-
-        // Settings import is flexible - most fields are optional
-        // Only validate data types if provided
-        if (isset($data['vat_energy']) && !is_numeric($data['vat_energy'])) {
-            $errors['vat_energy'] = 'VAT energy must be a number';
-        }
-
-        if (isset($data['vat_appliance']) && !is_numeric($data['vat_appliance'])) {
-            $errors['vat_appliance'] = 'VAT appliance must be a number';
-        }
-
-        if (isset($data['currency']) && !is_string($data['currency'])) {
-            $errors['currency'] = 'Currency must be a string';
-        }
-
-        if (isset($data['language']) && !is_string($data['language'])) {
-            $errors['language'] = 'Language must be a string';
-        }
-
-        return $errors;
     }
 }

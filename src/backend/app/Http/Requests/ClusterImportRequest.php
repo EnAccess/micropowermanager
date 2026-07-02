@@ -14,13 +14,12 @@ class ClusterImportRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'data' => ['required', 'array'],
+            'data' => ['required', 'array', 'list'],
             'data.*.cluster_name' => ['required', 'string', 'min:1'],
             'data.*.manager' => ['sometimes', 'nullable', 'string'],
             'data.*.mini_grids' => ['sometimes', 'nullable', 'string'],
             'data.*.villages' => ['sometimes', 'nullable', 'string'],
-            'data.*.created_at' => ['sometimes', 'nullable', 'string'],
-            'data.*.updated_at' => ['sometimes', 'nullable', 'string'],
+            'data.*.geo_json' => ['sometimes', 'nullable', 'array'],
         ];
     }
 

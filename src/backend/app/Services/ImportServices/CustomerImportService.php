@@ -11,23 +11,16 @@ use Illuminate\Support\Facades\Log;
 
 class CustomerImportService extends AbstractImportService {
     /**
-     * @param array<string, mixed> $data
+     * @param list<array<string, mixed>> $data
      */
     public function import(array $data): ImportResult {
-        $importData = $data;
-        if (isset($data['data']) && is_array($data['data'])) {
-            $importData = $data['data'];
-        }
-
-        $this->assertValid($this->validate($importData));
-
         $imported = [];
         $failed = [];
 
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($importData as $customerData) {
+            foreach ($data as $customerData) {
                 try {
                     $result = $this->importCustomer($customerData);
                     if ($result['success']) {
@@ -170,27 +163,5 @@ class CustomerImportService extends AbstractImportService {
                 'action' => $isNew ? 'added' : 'modified',
             ],
         ];
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
-     */
-    public function validate(array $data): array {
-        $errors = [];
-
-        foreach ($data as $index => $customerData) {
-            if (!is_array($customerData)) {
-                $errors["customer_{$index}"] = 'Customer data must be an array';
-                continue;
-            }
-
-            if (empty($customerData['name'])) {
-                $errors["customer_{$index}.name"] = 'Name is required';
-            }
-        }
-
-        return $errors;
     }
 }

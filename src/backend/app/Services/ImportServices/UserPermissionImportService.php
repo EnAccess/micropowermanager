@@ -20,17 +20,9 @@ class UserPermissionImportService extends AbstractImportService {
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param list<array<string, mixed>> $data
      */
     public function import(array $data): ImportResult {
-        // Handle export format: data might be wrapped in 'data' key or direct array
-        $importData = $data;
-        if (isset($data['data']) && is_array($data['data'])) {
-            $importData = $data['data'];
-        }
-
-        $this->assertValid($this->validate($importData));
-
         // Ensure roles and permissions exist
         RolesPermissionsPopulator::populate();
 
@@ -40,7 +32,7 @@ class UserPermissionImportService extends AbstractImportService {
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($importData as $userData) {
+            foreach ($data as $userData) {
                 try {
                     $result = $this->importUser($userData);
                     if ($result['success']) {
@@ -224,34 +216,5 @@ class UserPermissionImportService extends AbstractImportService {
                 'action' => $isNew ? 'added' : 'modified',
             ],
         ];
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
-     */
-    public function validate(array $data): array {
-        $errors = [];
-
-        // Validate each user entry
-        foreach ($data as $index => $userData) {
-            if (!is_array($userData)) {
-                $errors["user_{$index}"] = 'User data must be an array';
-                continue;
-            }
-
-            if (empty($userData['email'])) {
-                $errors["user_{$index}.email"] = 'Email is required';
-            } elseif (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-                $errors["user_{$index}.email"] = 'Email must be valid';
-            }
-
-            if (empty($userData['name'])) {
-                $errors["user_{$index}.name"] = 'Name is required';
-            }
-        }
-
-        return $errors;
     }
 }

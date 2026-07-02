@@ -7,33 +7,14 @@ use Illuminate\Support\Facades\Log;
 
 abstract class AbstractImportService {
     /**
-     * Import data from an array (typically from JSON export).
+     * Import a list of items (the `data` list of a JSON export file, validated
+     * by the endpoint's FormRequest).
      *
-     * @param array<string, mixed> $data
+     * @param list<array<string, mixed>> $data
      *
-     * @throws ImportFailedException if the input is invalid or the import transaction had to be rolled back
+     * @throws ImportFailedException if the import transaction had to be rolled back
      */
     abstract public function import(array $data): ImportResult;
-
-    /**
-     * Validate the import data structure.
-     *
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
-     */
-    abstract public function validate(array $data): array;
-
-    /**
-     * @param array<string, string> $errors
-     *
-     * @throws ImportFailedException if $errors is non-empty
-     */
-    protected function assertValid(array $errors): void {
-        if ($errors !== []) {
-            throw new ImportFailedException($errors);
-        }
-    }
 
     /**
      * Logs the failure and throws, for use in the catch block wrapping an import transaction.

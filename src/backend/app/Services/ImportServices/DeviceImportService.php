@@ -21,23 +21,16 @@ use Illuminate\Support\Facades\Log;
 
 class DeviceImportService extends AbstractImportService {
     /**
-     * @param array<string, mixed> $data
+     * @param list<array<string, mixed>> $data
      */
     public function import(array $data): ImportResult {
-        $importData = $data;
-        if (isset($data['data']) && is_array($data['data'])) {
-            $importData = $data['data'];
-        }
-
-        $this->assertValid($this->validate($importData));
-
         $imported = [];
         $failed = [];
 
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($importData as $deviceData) {
+            foreach ($data as $deviceData) {
                 try {
                     $result = $this->importDevice($deviceData);
                     if ($result['success']) {
@@ -365,32 +358,5 @@ class DeviceImportService extends AbstractImportService {
         }
 
         return $appliance->id;
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
-     */
-    public function validate(array $data): array {
-        $errors = [];
-
-        foreach ($data as $index => $deviceData) {
-            if (!is_array($deviceData)) {
-                $errors["device_{$index}"] = 'Device data must be an array';
-                continue;
-            }
-
-            if (!isset($deviceData['device_info']) || !is_array($deviceData['device_info'])) {
-                $errors["device_{$index}.device_info"] = 'Device info is required and must be an array';
-                continue;
-            }
-
-            if (empty($deviceData['device_info']['serial_number'])) {
-                $errors["device_{$index}.device_info.serial_number"] = 'Serial number is required';
-            }
-        }
-
-        return $errors;
     }
 }

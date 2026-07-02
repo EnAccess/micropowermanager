@@ -24,4 +24,18 @@ class DeviceImportControllerTest extends TestCase {
         $response->assertJsonPath('data.added_count', 1);
         $response->assertJsonCount(1, 'data.added');
     }
+
+    public function testImportRejectsADoubleWrappedExportFilePayload(): void {
+        $user = UserFactory::new()->create();
+        $this->assignPermission($user, 'customers');
+
+        $response = $this->actingAs($user)->postJson('/api/import/devices', [
+            'data' => [
+                'data' => [['device_info' => ['serial_number' => 'WRAPPED-1']]],
+                'meta' => ['exported_at' => '2026-01-01'],
+            ],
+        ]);
+
+        $response->assertStatus(422);
+    }
 }
