@@ -1,0 +1,21 @@
+meta {
+  name: Get Import Status
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{mpm_backend_url}}/api/import/status/1
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}
+
+docs {
+  Imports of 50 or more items respond with 202 and a `job_id`.
+  Set the `import_job_id` variable to that value to poll the job here.
+}

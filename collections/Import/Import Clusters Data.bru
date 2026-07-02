@@ -1,0 +1,29 @@
+meta {
+  name: Import Clusters Data
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{mpm_backend_url}}/api/import/clusters
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "data": [
+      {
+        "cluster_name": "Demo Cluster",
+        "manager": "Demo Manager",
+        "mini_grids": "Demo Grid A, Demo Grid B",
+        "villages": "Demo Village"
+      }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

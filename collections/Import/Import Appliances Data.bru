@@ -1,0 +1,28 @@
+meta {
+  name: Import Appliances Data
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{mpm_backend_url}}/api/import/appliances
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "data": [
+      {
+        "appliance_name": "Solar Home System 50W",
+        "appliance_type": "SHS",
+        "price": "1,500"
+      }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

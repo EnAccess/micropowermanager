@@ -1,0 +1,30 @@
+meta {
+  name: Import Transactions Data
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{mpm_backend_url}}/api/import/transactions
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "data": [
+      {
+        "device_id": "DEMO-METER-001",
+        "amount": "1,234.56 TZS",
+        "customer": "Name surname",
+        "transaction_type": "third_party_transaction",
+        "sent_date": "2026-01-15 10:00:00"
+      }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}
