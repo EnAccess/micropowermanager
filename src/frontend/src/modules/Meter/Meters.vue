@@ -23,6 +23,9 @@
           </md-table-head>
           <md-table-head>{{ $tc("words.type") }}</md-table-head>
           <md-table-head>
+            {{ $tc("phrases.deviceMapping") }}
+          </md-table-head>
+          <md-table-head>
             {{ $tc("phrases.lastUpdate") }}
           </md-table-head>
         </md-table-row>
@@ -42,6 +45,9 @@
             <md-icon v-if="meter.online">wifi</md-icon>
           </md-table-cell>
           <md-table-cell>
+            {{ mappingStatusLabel(meter.manufacturerMappingStatus) }}
+          </md-table-cell>
+          <md-table-cell>
             {{ timeForTimeZone(meter.lastUpdate) }}
           </md-table-cell>
         </md-table-row>
@@ -51,6 +57,7 @@
 </template>
 
 <script>
+import { mappingStatus } from "@/mixins/mappingStatus.js"
 import { timing } from "@/mixins/timing.js"
 import Client from "@/repositories/Client/AxiosClient.js"
 import { Manufacturers } from "@/services/ManufacturerService.js"
@@ -60,7 +67,7 @@ import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Meters",
-  mixins: [timing],
+  mixins: [timing, mappingStatus],
   components: { Widget },
   data() {
     return {

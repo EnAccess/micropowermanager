@@ -12,9 +12,6 @@ export default {
   transactions(shsId) {
     return Client.get(`${resource}/${shsId}/transactions`)
   },
-  deviceInfo(shsId) {
-    return Client.get(`${resource}/${shsId}/device-info`)
-  },
   update(shsId, shs) {
     return Client.put(`${resource}/${shsId}`, shs)
   },

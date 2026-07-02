@@ -6,7 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
-use App\Lib\IManufacturerDeviceInfo;
+use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\DemoShsManufacturer\Models\DemoShsTransaction;
@@ -15,7 +15,7 @@ use App\Plugins\DemoShsManufacturer\Models\DemoShsTransaction;
  * Demo SHS Manufacturer API for demo purposes.
  * Returns random tokens for device charging operations without making real API calls.
  */
-class DemoShsManufacturerApi implements IManufacturerAPI, IManufacturerDeviceInfo {
+class DemoShsManufacturerApi implements IManufacturerAPI, IManufacturerDeviceControl {
     public function __construct(
         private DemoShsTransaction $demoShsTransaction,
     ) {}

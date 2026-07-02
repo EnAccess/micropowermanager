@@ -6,7 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
-use App\Lib\IManufacturerDeviceInfo;
+use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SparkShs\Exceptions\SparkShsApiResponseException;
@@ -15,7 +15,7 @@ use App\Plugins\SparkShs\Models\SparkShsTransaction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceInfo {
+class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceControl {
     public function __construct(
         private SparkShsTransaction $sparkShsTransaction,
         private SparkShsApiClient $apiClient,

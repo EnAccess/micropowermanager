@@ -6,7 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
-use App\Lib\IManufacturerDeviceInfo;
+use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
@@ -17,7 +17,7 @@ use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SunKingSHSApi implements IManufacturerAPI, IManufacturerDeviceInfo {
+class SunKingSHSApi implements IManufacturerAPI, IManufacturerDeviceControl {
     public const API_CALL_TOKEN_GENERATION = '/token';
     public const API_CALL_DEVICE_DETAILS = '/device_details/';
     public const COMMAND_ADD_CREDIT = 'add_credit';

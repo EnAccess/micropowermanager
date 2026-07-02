@@ -17,6 +17,18 @@
       </div>
       <div
         class="md-layout-item md-size-100 md-small-size-100"
+        v-if="showDetails && meterDetailService.meter.deviceId"
+      >
+        <manufacturer-control
+          :device-id="meterDetailService.meter.deviceId"
+          :serial-number="meterDetailService.meter.serialNumber"
+          :manufacturer-name="meterDetailService.meter.manufacturer?.name"
+          :status="meterDetailService.meter.manufacturerMappingStatus"
+          :checked-at="meterDetailService.meter.manufacturerMappingCheckedAt"
+        />
+      </div>
+      <div
+        class="md-layout-item md-size-100 md-small-size-100"
         v-if="$can('transactions')"
       >
         <meter-transactions :transactions="transactions" />
@@ -33,6 +45,7 @@
 
 <script>
 import { notify } from "@/mixins/notify.js"
+import ManufacturerControl from "@/modules/Device/ManufacturerControl.vue"
 import MeterBasic from "@/modules/Meter/Basic.vue"
 import MeterDetails from "@/modules/Meter/Details.vue"
 import MeterReadings from "@/modules/Meter/Readings.vue"
@@ -43,7 +56,13 @@ import { Transactions } from "@/services/TransactionService.js"
 export default {
   name: "Meter",
   mixins: [notify],
-  components: { MeterBasic, MeterDetails, MeterTransactions, MeterReadings },
+  components: {
+    MeterBasic,
+    MeterDetails,
+    MeterTransactions,
+    MeterReadings,
+    ManufacturerControl,
+  },
   data() {
     return {
       serialNumber: this.$route.params.id,

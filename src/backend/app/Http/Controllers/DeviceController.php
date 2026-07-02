@@ -14,7 +14,7 @@ class DeviceController extends Controller {
 
     public function index(Request $request): ApiResource {
         $limit = $request->integer('per_page', 15);
-        $filters = $request->only(['device_type', 'appliance_id', 'unassigned', 'serial']);
+        $filters = $request->only(['device_type', 'appliance_id', 'unassigned', 'serial', 'manufacturer_mapping_status']);
 
         return ApiResource::make($this->deviceService->getAll($limit, $filters));
     }
@@ -32,6 +32,10 @@ class DeviceController extends Controller {
         ]));
 
         return ApiResource::make($updatedDevice);
+    }
+
+    public function deviceInfo(Device $device): ApiResource {
+        return ApiResource::make($this->deviceService->refreshManufacturerMapping($device));
     }
 
     public function updateGeoInformation(Request $request): ApiResource {
