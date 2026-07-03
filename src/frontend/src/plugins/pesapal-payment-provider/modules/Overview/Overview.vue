@@ -95,19 +95,18 @@
     </div>
 
     <div v-if="!isFullyConfigured" class="overview-line">
-      <md-card>
-        <md-card-header>
-          <div class="md-title">{{ setupPrompt.title }}</div>
-        </md-card-header>
-        <md-card-content>
-          {{ setupPrompt.description }}
-        </md-card-content>
-        <md-card-actions>
-          <md-button class="md-raised md-primary" @click="goToCredentials">
-            {{ setupPrompt.cta }}
-          </md-button>
-        </md-card-actions>
-      </md-card>
+      <widget color="primary" :title="setupPrompt.title">
+        <md-card>
+          <md-card-content>
+            {{ setupPrompt.description }}
+          </md-card-content>
+          <md-card-actions>
+            <md-button class="md-raised md-primary" @click="goToCredentials">
+              {{ setupPrompt.cta }}
+            </md-button>
+          </md-card-actions>
+        </md-card>
+      </widget>
     </div>
   </div>
 </template>

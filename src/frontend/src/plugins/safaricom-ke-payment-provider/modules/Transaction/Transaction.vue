@@ -74,91 +74,108 @@
     >
       <md-dialog-title>{{ $tc("phrases.transactionDetails") }}</md-dialog-title>
       <md-dialog-content>
-        <div v-if="selectedTransaction" class="transaction-details">
-          <div class="detail-row">
-            <span class="detail-label">ID:</span>
-            <span class="detail-value">{{ selectedTransaction.id }}</span>
+        <div v-if="selectedTransaction">
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">ID</div>
+            <div class="md-layout-item md-subheader">
+              {{ selectedTransaction.id }}
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Reference:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Reference</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.reference_id }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Order ID:</span>
-            <span class="detail-value">{{ selectedTransaction.order_id }}</span>
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Order ID</div>
+            <div class="md-layout-item md-subheader">
+              {{ selectedTransaction.order_id }}
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Amount:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Amount</div>
+            <div class="md-layout-item md-subheader">
               {{
                 formatAmount(
                   selectedTransaction.amount,
                   selectedTransaction.currency,
                 )
               }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Status</div>
+            <div class="md-layout-item md-subheader">
               {{ getStatusText(selectedTransaction.status) }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Customer ID:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Customer ID</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.customer_id }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Serial ID:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Serial ID</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.serial_id || "—" }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Equipment Type:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Equipment Type</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.device_type || "—" }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Phone:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Phone</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.phone_number }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">M-Pesa Receipt:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">M-Pesa Receipt</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.mpesa_receipt_number || "—" }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">CheckoutRequestID:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">CheckoutRequestID</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.checkout_request_id || "—" }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">MerchantRequestID:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">MerchantRequestID</div>
+            <div class="md-layout-item md-subheader">
               {{ selectedTransaction.merchant_request_id || "—" }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Transaction Date:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Transaction Date</div>
+            <div class="md-layout-item md-subheader">
               {{ formatDate(selectedTransaction.transaction_date) }}
-            </span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Created:</span>
-            <span class="detail-value">
+          <md-divider />
+          <div class="md-layout">
+            <div class="md-layout-item md-subheader">Created</div>
+            <div class="md-layout-item md-subheader">
               {{ formatDate(selectedTransaction.created_at) }}
-            </span>
+            </div>
           </div>
         </div>
       </md-dialog-content>
@@ -263,28 +280,6 @@ export default {
 <style scoped lang="scss">
 .transaction-dialog {
   min-width: 600px;
-}
-
-.transaction-details {
-  padding: 1rem 0;
-}
-
-.detail-row {
-  display: flex;
-  margin-bottom: 0.5rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-}
-
-.detail-label {
-  font-weight: bold;
-  min-width: 150px;
-  color: #666;
-}
-
-.detail-value {
-  flex: 1;
-  margin-left: 1rem;
 }
 
 .md-table {
