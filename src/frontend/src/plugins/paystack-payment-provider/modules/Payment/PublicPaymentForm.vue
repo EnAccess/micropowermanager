@@ -1,157 +1,128 @@
 <template>
-  <div class="checkout">
-    <div class="checkout__inner">
-      <header class="brand">
-        <img class="brand__logo" :src="mpmLogo" alt="MicroPowerManager" />
-        <h1 class="brand__name">MicroPowerManager</h1>
-        <p class="brand__sub">
-          Online payments
-          <span v-if="companyName">&nbsp;·&nbsp;{{ companyName }}</span>
-        </p>
-      </header>
+  <checkout-page subtitle="Online payments" :company-name="companyName">
+    <p>
+      Pay for energy or solar home system credit. Enter your device details and
+      the amount you want to pay.
+    </p>
 
-      <section class="sheet">
-        <p class="sheet__intro">
-          Pay for energy or solar home system credit. Enter your device details
-          and the amount you want to pay.
-        </p>
-
-        <form
-          @submit.prevent="submitPaymentRequestForm"
-          data-vv-scope="Payment-Form"
-          class="form"
+    <form
+      @submit.prevent="submitPaymentRequestForm"
+      data-vv-scope="Payment-Form"
+    >
+      <md-field>
+        <label for="deviceType">Device type</label>
+        <md-select
+          id="deviceType"
+          name="deviceType"
+          v-model="paymentService.paymentRequest.deviceType"
+          @md-selected="onDeviceTypeChange"
         >
-          <div class="field">
-            <label class="field__label" for="deviceType">Device type</label>
-            <md-field>
-              <md-select
-                id="deviceType"
-                name="deviceType"
-                v-model="paymentService.paymentRequest.deviceType"
-                @md-selected="onDeviceTypeChange"
-              >
-                <md-option value="meter">Meter</md-option>
-                <md-option value="solar_home_system">
-                  Solar Home System
-                </md-option>
-              </md-select>
-            </md-field>
-          </div>
+          <md-option value="meter">Meter</md-option>
+          <md-option value="solar_home_system">Solar Home System</md-option>
+        </md-select>
+      </md-field>
 
-          <div class="field">
-            <label class="field__label" for="deviceSerial">
-              {{ serialLabel }}
-            </label>
-            <md-field
-              :class="{
-                'md-invalid': errors.has('Payment-Form.deviceSerial'),
-              }"
-            >
-              <md-input
-                id="deviceSerial"
-                name="deviceSerial"
-                v-model="paymentService.paymentRequest.deviceSerial"
-                v-validate="'required|min:3'"
-                placeholder="Enter the serial number"
-                @blur="validateDevice"
-              />
-              <span class="md-error">
-                {{ errors.first("Payment-Form.deviceSerial") }}
-              </span>
-            </md-field>
-            <div v-if="deviceValidation.loading" class="hint hint--muted">
-              <md-progress-spinner
-                md-mode="indeterminate"
-                :md-diameter="14"
-                :md-stroke="2"
-              ></md-progress-spinner>
-              <span>{{ validatingMessage }}</span>
-            </div>
-            <div
-              v-else-if="deviceValidation.valid === true"
-              class="hint hint--ok"
-            >
-              <md-icon>check_circle</md-icon>
-              <span>{{ validMessage }}</span>
-            </div>
-            <div
-              v-else-if="deviceValidation.valid === false"
-              class="hint hint--error"
-            >
-              <md-icon>error</md-icon>
-              <span>{{ invalidMessage }}</span>
-            </div>
-          </div>
+      <md-field
+        :class="{
+          'md-invalid': errors.has('Payment-Form.deviceSerial'),
+        }"
+      >
+        <label for="deviceSerial">{{ serialLabel }}</label>
+        <md-input
+          id="deviceSerial"
+          name="deviceSerial"
+          v-model="paymentService.paymentRequest.deviceSerial"
+          v-validate="'required|min:3'"
+          @blur="validateDevice"
+        />
+        <span class="md-error">
+          {{ errors.first("Payment-Form.deviceSerial") }}
+        </span>
+      </md-field>
+      <p v-if="deviceValidation.loading" class="md-caption">
+        <md-progress-spinner
+          md-mode="indeterminate"
+          :md-diameter="14"
+          :md-stroke="2"
+        ></md-progress-spinner>
+        {{ validatingMessage }}
+      </p>
+      <p
+        v-else-if="deviceValidation.valid === true"
+        class="md-caption"
+        style="color: green"
+      >
+        {{ validMessage }}
+      </p>
+      <p
+        v-else-if="deviceValidation.valid === false"
+        class="md-caption"
+        style="color: red"
+      >
+        {{ invalidMessage }}
+      </p>
 
-          <div class="field">
-            <label class="field__label" for="amount">
-              Amount ({{ selectedCurrency }})
-            </label>
-            <md-field
-              :class="{
-                'md-invalid': errors.has('Payment-Form.amount'),
-              }"
-            >
-              <md-input
-                id="amount"
-                name="amount"
-                v-model="paymentService.paymentRequest.amount"
-                v-validate="'required|decimal:2|min_value:1'"
-                type="number"
-                step="0.01"
-                min="1"
-                placeholder="0.00"
-              />
-              <span class="md-error">
-                {{ errors.first("Payment-Form.amount") }}
-              </span>
-            </md-field>
-          </div>
+      <md-field
+        :class="{
+          'md-invalid': errors.has('Payment-Form.amount'),
+        }"
+      >
+        <label for="amount">Amount ({{ selectedCurrency }})</label>
+        <md-input
+          id="amount"
+          name="amount"
+          v-model="paymentService.paymentRequest.amount"
+          v-validate="'required|decimal:2|min_value:1'"
+          type="number"
+          step="0.01"
+          min="1"
+        />
+        <span class="md-error">
+          {{ errors.first("Payment-Form.amount") }}
+        </span>
+      </md-field>
 
-          <div class="field">
-            <label class="field__label" for="currency">Currency</label>
-            <md-field>
-              <md-select
-                id="currency"
-                name="currency"
-                v-model="paymentService.paymentRequest.currency"
-              >
-                <md-option
-                  v-for="currency in supportedCurrencies"
-                  :key="currency"
-                  :value="currency"
-                >
-                  {{ currency }}
-                </md-option>
-              </md-select>
-            </md-field>
-          </div>
-
-          <md-button
-            type="submit"
-            class="cta md-raised md-primary"
-            :disabled="!isFormValid || loading"
+      <md-field>
+        <label for="currency">Currency</label>
+        <md-select
+          id="currency"
+          name="currency"
+          v-model="paymentService.paymentRequest.currency"
+        >
+          <md-option
+            v-for="currency in supportedCurrencies"
+            :key="currency"
+            :value="currency"
           >
-            {{ loading ? "Processing…" : "Make Payment" }}
-          </md-button>
-        </form>
-      </section>
-    </div>
-  </div>
+            {{ currency }}
+          </md-option>
+        </md-select>
+      </md-field>
+
+      <md-button
+        type="submit"
+        class="md-raised md-primary"
+        style="width: 100%"
+        :disabled="!isFormValid || loading"
+      >
+        {{ loading ? "Processing…" : "Make Payment" }}
+      </md-button>
+    </form>
+  </checkout-page>
 </template>
 
 <script>
 import { PublicPaymentService } from "../../services/PublicPaymentService.js"
 
-import mpmLogo from "@/assets/images/mpmlogo_raw.png"
 import { notify } from "@/mixins/notify.js"
+import CheckoutPage from "@/shared/CheckoutPage.vue"
 
 export default {
   name: "PublicPaymentForm",
   mixins: [notify],
+  components: { CheckoutPage },
   data() {
     return {
-      mpmLogo,
       paymentService: new PublicPaymentService(),
       loading: false,
       companyName: "",
@@ -326,140 +297,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-.checkout {
-  min-height: 100vh;
-  padding: 3.5rem 1.25rem;
-  background-color: $brand-background;
-}
-
-.checkout__inner {
-  width: 100%;
-  max-width: 416px;
-  margin: 0 auto;
-}
-
-/* Brand mark */
-.brand {
-  text-align: center;
-  margin-bottom: 1.75rem;
-}
-
-/* width + height set explicitly (matching the asset's 512x265 ratio) so
-   the browser reserves the box before the image loads — prevents a CLS
-   shift that pushes everything below the logo by ~60px on first paint. */
-.brand__logo {
-  display: block;
-  width: 116px;
-  height: 60px;
-  margin: 0 auto 0.75rem;
-}
-
-.brand__name {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: $brand-primary-dark;
-}
-
-.brand__sub {
-  margin: 0.3rem 0 0;
-  font-size: 0.85rem;
-  color: #8a93a0;
-}
-
-/* Content sheet */
-.sheet {
-  border-top: 1px solid #e6ebef;
-  padding-top: 1.75rem;
-}
-
-.sheet__intro {
-  margin: 0 0 1.75rem;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: #6b7280;
-  text-align: center;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Fields */
-.field {
-  margin-bottom: 1.3rem;
-}
-
-.field__label {
-  display: block;
-  margin-bottom: 0.1rem;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: #8a93a0;
-}
-
-.field .md-field {
-  margin: 0;
-  min-height: 40px;
-  padding-top: 4px;
-}
-
-/* Inline validation hints */
-.hint {
-  margin-top: 6px;
-  font-size: 12px;
-
-  .md-icon,
-  .md-progress-spinner {
-    margin: 0 4px 0 0;
-    vertical-align: middle;
-  }
-}
-
-.hint--muted {
-  color: #8a93a0;
-}
-
-.hint--ok {
-  color: $brand-accent-dark;
-
-  // !important: vue-material's themed icon-color selector out-specifies a class.
-  .md-icon {
-    width: 15px;
-    min-width: 15px;
-    height: 15px;
-    color: $brand-accent-dark !important;
-    font-size: 15px !important;
-  }
-}
-
-.hint--error {
-  color: #d64545;
-
-  .md-icon {
-    width: 15px;
-    min-width: 15px;
-    height: 15px;
-    color: #d64545 !important;
-    font-size: 15px !important;
-  }
-}
-
-/* Call to action */
-.cta {
-  width: 100%;
-  height: 52px;
-  margin: 0.75rem 0 0;
-  border-radius: 9px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  text-transform: none;
-}
-</style>
