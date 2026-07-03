@@ -50,76 +50,67 @@
     </div>
 
     <div v-if="recentTransactions.length > 0" class="overview-line">
-      <md-card class="recent-card">
-        <md-card-header>
-          <div class="recent-card__header">
-            <h3 class="recent-card__title">Latest transactions</h3>
-            <md-button
-              class="md-primary md-dense recent-card__view-all"
-              @click="goToTransactions"
-            >
-              View all
-            </md-button>
-          </div>
-        </md-card-header>
-        <md-card-content>
-          <md-table>
-            <md-table-row>
-              <md-table-head>ID</md-table-head>
-              <md-table-head>Amount</md-table-head>
-              <md-table-head>Status</md-table-head>
-              <md-table-head>Phone</md-table-head>
-              <md-table-head>M-Pesa Receipt</md-table-head>
-              <md-table-head>Created</md-table-head>
-            </md-table-row>
-            <md-table-row
-              v-for="item in recentTransactions"
-              :key="item.id"
-              class="recent-card__row"
-              @click.native="goToTransactions"
-            >
-              <md-table-cell md-label="ID">{{ item.id }}</md-table-cell>
-              <md-table-cell md-label="Amount">
-                {{ formatAmount(item.amount, item.currency) }}
-              </md-table-cell>
-              <md-table-cell md-label="Status">
-                <md-icon :style="{ color: getStatusIcon(item.status).color }">
-                  {{ getStatusIcon(item.status).icon }}
-                  <md-tooltip md-direction="right">
-                    {{ getStatusText(item.status) }}
-                  </md-tooltip>
-                </md-icon>
-              </md-table-cell>
-              <md-table-cell md-label="Phone">
-                {{ item.phone_number || "—" }}
-              </md-table-cell>
-              <md-table-cell md-label="M-Pesa Receipt">
-                {{ item.mpesa_receipt_number || "—" }}
-              </md-table-cell>
-              <md-table-cell md-label="Created">
-                {{ formatDate(item.created_at) }}
-              </md-table-cell>
-            </md-table-row>
-          </md-table>
-        </md-card-content>
-      </md-card>
+      <widget
+        title="Latest transactions"
+        color="primary"
+        button-text="View all"
+        button-icon="visibility"
+        @widgetAction="goToTransactions"
+      >
+        <md-table>
+          <md-table-row>
+            <md-table-head>ID</md-table-head>
+            <md-table-head>Amount</md-table-head>
+            <md-table-head>Status</md-table-head>
+            <md-table-head>Phone</md-table-head>
+            <md-table-head>M-Pesa Receipt</md-table-head>
+            <md-table-head>Created</md-table-head>
+          </md-table-row>
+          <md-table-row
+            v-for="item in recentTransactions"
+            :key="item.id"
+            style="cursor: pointer"
+            @click.native="goToTransactions"
+          >
+            <md-table-cell md-label="ID">{{ item.id }}</md-table-cell>
+            <md-table-cell md-label="Amount">
+              {{ formatAmount(item.amount, item.currency) }}
+            </md-table-cell>
+            <md-table-cell md-label="Status">
+              <md-icon :style="{ color: getStatusIcon(item.status).color }">
+                {{ getStatusIcon(item.status).icon }}
+                <md-tooltip md-direction="right">
+                  {{ getStatusText(item.status) }}
+                </md-tooltip>
+              </md-icon>
+            </md-table-cell>
+            <md-table-cell md-label="Phone">
+              {{ item.phone_number || "—" }}
+            </md-table-cell>
+            <md-table-cell md-label="M-Pesa Receipt">
+              {{ item.mpesa_receipt_number || "—" }}
+            </md-table-cell>
+            <md-table-cell md-label="Created">
+              {{ formatDate(item.created_at) }}
+            </md-table-cell>
+          </md-table-row>
+        </md-table>
+      </widget>
     </div>
 
     <div v-if="!isFullyConfigured" class="overview-line">
-      <md-card class="setup-prompt">
-        <md-card-content class="setup-prompt__row">
-          <md-icon class="setup-prompt__icon">info</md-icon>
-          <div class="setup-prompt__text-block">
-            <h3 class="setup-prompt__title">{{ setupPrompt.title }}</h3>
-            <p class="setup-prompt__text">{{ setupPrompt.description }}</p>
-          </div>
-          <md-button
-            class="md-raised md-primary setup-prompt__cta"
-            @click="goToCredentials"
-          >
+      <md-card>
+        <md-card-header>
+          <div class="md-title">{{ setupPrompt.title }}</div>
+        </md-card-header>
+        <md-card-content>
+          {{ setupPrompt.description }}
+        </md-card-content>
+        <md-card-actions>
+          <md-button class="md-raised md-primary" @click="goToCredentials">
             {{ setupPrompt.cta }}
           </md-button>
-        </md-card-content>
+        </md-card-actions>
       </md-card>
     </div>
   </div>
@@ -132,13 +123,14 @@ import { TransactionService } from "../../services/TransactionService.js"
 import { notify } from "@/mixins/notify.js"
 import Box from "@/shared/Box.vue"
 import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 const RECENT_LIMIT = 5
 
 export default {
   name: "Overview",
   mixins: [notify],
-  components: { Box },
+  components: { Box, Widget },
   data() {
     return {
       transactionService: new TransactionService(),
@@ -334,75 +326,5 @@ export default {
 <style scoped lang="scss">
 .overview-line {
   margin-top: 1rem;
-}
-
-.recent-card {
-  border-radius: 10px;
-}
-
-.recent-card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.recent-card__title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  color: $brand-primary-dark;
-}
-
-.recent-card__view-all {
-  margin: 0;
-}
-
-.recent-card__row {
-  cursor: pointer;
-}
-
-.setup-prompt {
-  border-radius: 10px;
-}
-
-.setup-prompt__row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.setup-prompt__icon {
-  flex-shrink: 0;
-  width: 24px;
-  min-width: 24px;
-  height: 24px;
-  color: $brand-secondary-dark !important;
-  font-size: 24px !important;
-}
-
-.setup-prompt__text-block {
-  flex: 1 1 0;
-  min-width: 220px;
-}
-
-.setup-prompt__title {
-  margin: 0 0 0.2rem;
-  font-size: 1rem;
-  font-weight: 700;
-  color: $brand-primary-dark;
-}
-
-.setup-prompt__text {
-  margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: #6b7280;
-}
-
-.setup-prompt__cta {
-  flex-shrink: 0;
-  margin-left: auto;
 }
 </style>
