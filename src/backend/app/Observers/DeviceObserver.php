@@ -4,21 +4,19 @@ namespace App\Observers;
 
 use App\Jobs\VerifyDeviceMappingJob;
 use App\Models\Device;
-use App\Services\UserService;
 
 class DeviceObserver {
     /**
-     * Auto-checks the manufacturer mapping when a device is added. Guarded on an
-     * authenticated user so the check only runs for user-initiated creations —
-     * not for seeders, tests, or background factories where no request/company
-     * context exists.
+     * Auto-checks the manufacturer mapping on device creation, using the
+     * request-scoped companyId set by UserDefaultDatabaseConnectionMiddleware.
+     * It is absent outside HTTP requests (seeders, workers), which are skipped.
      */
     public function created(Device $device): void {
-        if (!auth()->hasUser()) {
+        $companyId = request()->attributes->get('companyId');
+        if ($companyId === null) {
             return;
         }
 
-        $companyId = resolve(UserService::class)->getCompanyId();
         dispatch(new VerifyDeviceMappingJob($companyId, $device->id));
     }
 }
