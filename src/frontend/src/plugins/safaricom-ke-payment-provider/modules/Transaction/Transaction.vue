@@ -33,12 +33,12 @@
             {{ formatAmount(item.amount, item.currency) }}
           </md-table-cell>
           <md-table-cell md-label="Status" md-sort-by="status">
-            <md-chip
-              :class="['safaricom-status-chip', getStatusClass(item.status)]"
-              md-label=""
-            >
-              {{ getStatusText(item.status) }}
-            </md-chip>
+            <md-icon :style="{ color: getStatusIcon(item.status).color }">
+              {{ getStatusIcon(item.status).icon }}
+              <md-tooltip md-direction="right">
+                {{ getStatusText(item.status) }}
+              </md-tooltip>
+            </md-icon>
           </md-table-cell>
           <md-table-cell md-label="Phone" md-sort-by="phone_number">
             {{ item.phone_number }}
@@ -103,14 +103,7 @@
           <div class="detail-row">
             <span class="detail-label">Status:</span>
             <span class="detail-value">
-              <md-chip
-                :class="[
-                  'safaricom-status-chip',
-                  getStatusClass(selectedTransaction.status),
-                ]"
-              >
-                {{ getStatusText(selectedTransaction.status) }}
-              </md-chip>
+              {{ getStatusText(selectedTransaction.status) }}
             </span>
           </div>
           <div class="detail-row">
@@ -218,19 +211,19 @@ export default {
       this.selectedTransaction = transaction
       this.showTransactionDialog = true
     },
-    getStatusClass(status) {
+    getStatusIcon(status) {
       switch (status) {
         case 0:
-          return "md-warning"
+          return { icon: "contact_support", color: "goldenrod" }
         case 1:
         case 2:
-          return "md-success"
+          return { icon: "check_circle_outline", color: "green" }
         case -1:
-          return "md-error"
+          return { icon: "cancel", color: "red" }
         case 3:
-          return "md-info"
+          return { icon: "do_not_disturb_on", color: "grey" }
         default:
-          return "md-default"
+          return { icon: "help_outline", color: "grey" }
       }
     },
     getStatusText(status) {
@@ -296,22 +289,5 @@ export default {
 
 .md-table {
   margin-top: 1rem;
-}
-
-::v-deep .safaricom-status-chip.md-error {
-  background-color: #d9534f !important;
-  color: #fff !important;
-}
-::v-deep .safaricom-status-chip.md-success {
-  background-color: #5cb85c !important;
-  color: #fff !important;
-}
-::v-deep .safaricom-status-chip.md-warning {
-  background-color: #f0ad4e !important;
-  color: #fff !important;
-}
-::v-deep .safaricom-status-chip.md-info {
-  background-color: #5bc0de !important;
-  color: #fff !important;
 }
 </style>

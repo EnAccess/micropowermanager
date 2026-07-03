@@ -83,15 +83,12 @@
                 {{ formatAmount(item.amount, item.currency) }}
               </md-table-cell>
               <md-table-cell md-label="Status">
-                <md-chip
-                  :class="[
-                    'safaricom-status-chip',
-                    getStatusClass(item.status),
-                  ]"
-                  md-label=""
-                >
-                  {{ getStatusText(item.status) }}
-                </md-chip>
+                <md-icon :style="{ color: getStatusIcon(item.status).color }">
+                  {{ getStatusIcon(item.status).icon }}
+                  <md-tooltip md-direction="right">
+                    {{ getStatusText(item.status) }}
+                  </md-tooltip>
+                </md-icon>
               </md-table-cell>
               <md-table-cell md-label="Phone">
                 {{ item.phone_number || "—" }}
@@ -285,19 +282,19 @@ export default {
       this.$router.push("/safaricom-ke-overview/transactions")
     },
 
-    getStatusClass(status) {
+    getStatusIcon(status) {
       switch (status) {
         case 0:
-          return "md-warning"
+          return { icon: "contact_support", color: "goldenrod" }
         case 1:
         case 2:
-          return "md-success"
+          return { icon: "check_circle_outline", color: "green" }
         case -1:
-          return "md-error"
+          return { icon: "cancel", color: "red" }
         case 3:
-          return "md-info"
+          return { icon: "do_not_disturb_on", color: "grey" }
         default:
-          return "md-default"
+          return { icon: "help_outline", color: "grey" }
       }
     },
     getStatusText(status) {
@@ -407,25 +404,5 @@ export default {
 .setup-prompt__cta {
   flex-shrink: 0;
   margin-left: auto;
-}
-
-// Vue Material's md-chip only themes md-primary / md-accent by default;
-// our status modifier classes need explicit colours so the pills don't
-// fall through to grey.
-::v-deep .safaricom-status-chip.md-error {
-  background-color: #d9534f !important;
-  color: #fff !important;
-}
-::v-deep .safaricom-status-chip.md-success {
-  background-color: #5cb85c !important;
-  color: #fff !important;
-}
-::v-deep .safaricom-status-chip.md-warning {
-  background-color: #f0ad4e !important;
-  color: #fff !important;
-}
-::v-deep .safaricom-status-chip.md-info {
-  background-color: #5bc0de !important;
-  color: #fff !important;
 }
 </style>

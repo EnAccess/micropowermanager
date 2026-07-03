@@ -31,9 +31,12 @@
             {{ formatAmount(item.amount, item.currency) }}
           </md-table-cell>
           <md-table-cell md-label="Status" md-sort-by="status">
-            <md-chip :class="getStatusClass(item.status)" md-label="">
-              {{ getStatusText(item.status) }}
-            </md-chip>
+            <md-icon :style="{ color: getStatusIcon(item.status).color }">
+              {{ getStatusIcon(item.status).icon }}
+              <md-tooltip md-direction="right">
+                {{ getStatusText(item.status) }}
+              </md-tooltip>
+            </md-icon>
           </md-table-cell>
           <md-table-cell md-label="Customer ID" md-sort-by="customer_id">
             {{ item.customer_id }}
@@ -104,9 +107,7 @@
           <div class="detail-row">
             <span class="detail-label">Status:</span>
             <span class="detail-value">
-              <md-chip :class="getStatusClass(selectedTransaction.status)">
-                {{ getStatusText(selectedTransaction.status) }}
-              </md-chip>
+              {{ getStatusText(selectedTransaction.status) }}
             </span>
           </div>
           <div class="detail-row">
@@ -235,18 +236,17 @@ export default {
       this.selectedTransaction = transaction
       this.showTransactionDialog = true
     },
-    getStatusClass(status) {
+    getStatusIcon(status) {
       switch (status) {
         case 0:
-          return "md-warning"
+          return { icon: "contact_support", color: "goldenrod" }
         case 1:
-          return "md-success"
-        case 2:
-          return "md-error"
         case 3:
-          return "md-info"
+          return { icon: "check_circle_outline", color: "green" }
+        case 2:
+          return { icon: "cancel", color: "red" }
         default:
-          return "md-default"
+          return { icon: "help_outline", color: "grey" }
       }
     },
     getStatusText(status) {
