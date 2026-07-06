@@ -2,13 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Models\MiniGrid;
+use App\Rules\GeoJsonPoint;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @bodyParam name string required The name of the mini-grid.
+ * @bodyParam cluster_id int required The id of the cluster that owns the mini-grid.
+ * @bodyParam geo_json object required The GPS location of the mini-grid as a GeoJSON Point Feature.
+ */
 class StoreMiniGridRequest extends FormRequest {
-    public const PARAM_CLUSTER_ID = 'cluster_id';
-    public const PARAM_NAME = 'name';
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -19,21 +21,13 @@ class StoreMiniGridRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, array<int, string>>
+     * @return array<string, mixed>
      */
     public function rules(): array {
         return [
             'name' => ['required', 'min:3'],
             'cluster_id' => ['required'],
-            'geo_data' => ['required', 'string'],
+            'geo_json' => ['required', 'array', new GeoJsonPoint()],
         ];
-    }
-
-    public function getMiniGrid(): MiniGrid {
-        $miniGrid = new MiniGrid();
-        $miniGrid->cluster_id = $this->input(self::PARAM_CLUSTER_ID);
-        $miniGrid->name = $this->input(self::PARAM_NAME);
-
-        return $miniGrid;
     }
 }

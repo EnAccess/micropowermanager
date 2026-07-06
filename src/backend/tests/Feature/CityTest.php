@@ -52,12 +52,15 @@ class CityTest extends TestCase {
         $cityData = [
             'mini_grid_id' => $this->miniGridIds[0],
             'country_id' => 1,
-            'points' => '-7.873645,39.754433',
+            'geo_json' => $this->pointFeature(-7.873645, 39.754433),
             'name' => $this->faker->city(),
         ];
         $response = $this->actingAs($this->user)->post('/api/cities', $cityData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['name'], $cityData['name']);
+
+        $city = City::query()->find($response['data']['id']);
+        $this->assertEquals([39.754433, -7.873645], $city->location->geo_json->geometry->coordinates);
     }
 
     public function testUserSoftDeletesAnUnusedCity(): void {
@@ -97,15 +100,36 @@ class CityTest extends TestCase {
         $miniGridCount = 2;
         $this->createTestData($clusterCount, $miniGridCount);
         $city = City::query()->first();
+        $this->assertNull($city->location);
         $cityData = [
             'name' => 'updatedName',
             'mini_grid_id' => $this->miniGridIds[1],
             'country_id' => 1,
-            'points' => '-7.873645,39.754433',
+            'geo_json' => $this->pointFeature(-7.873645, 39.754433),
         ];
         $response = $this->actingAs($this->user)->put(sprintf('/api/cities/%s', $city->id), $cityData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $cityData['name']);
+        // The village had no location yet — the update must create one.
+        $this->assertEquals([39.754433, -7.873645], $city->fresh()->location->geo_json->geometry->coordinates);
+    }
+
+    public function testCityUpdateRejectsMalformedGeoJson(): void {
+        $this->createTestData();
+        $city = City::query()->first();
+
+        $singleCoordinate = $this->pointFeature(-7.873645, 39.754433);
+        $singleCoordinate['geometry']['coordinates'] = [39.754433];
+        $this->actingAs($this->user)
+            ->putJson(sprintf('/api/cities/%s', $city->id), ['geo_json' => $singleCoordinate])
+            ->assertStatus(422);
+
+        $outOfRange = $this->pointFeature(-100.0, 39.754433);
+        $this->actingAs($this->user)
+            ->putJson(sprintf('/api/cities/%s', $city->id), ['geo_json' => $outOfRange])
+            ->assertStatus(422);
+
+        $this->assertNull($city->fresh()->location);
     }
 
     protected function createTestData($clusterCount = 1, $miniGridCount = 1, $cityCount = 1) {
@@ -149,5 +173,16 @@ class CityTest extends TestCase {
     protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function pointFeature(float $latitude, float $longitude): array {
+        return [
+            'type' => 'Feature',
+            'geometry' => ['type' => 'Point', 'coordinates' => [$longitude, $latitude]],
+            'properties' => [],
+        ];
     }
 }

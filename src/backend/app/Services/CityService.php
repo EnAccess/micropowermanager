@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\EntityHasChildrenException;
 use App\Models\City;
+use App\Models\GeographicalInformation;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,15 +43,33 @@ class CityService implements IBaseService {
     /**
      * @param array<string, mixed> $cityData
      */
+    public function create(array $cityData): City {
+        $city = $this->city->newQuery()->create([
+            'name' => $cityData['name'],
+            'mini_grid_id' => $cityData['mini_grid_id'],
+            'country_id' => $cityData['country_id'],
+        ]);
+        $city->location()->create(['geo_json' => GeographicalInformation::pointFromInputGeoJson($cityData['geo_json'])]);
+
+        return $city;
+    }
+
+    /**
+     * @param City                 $model
+     * @param array<string, mixed> $cityData
+     */
     public function update(Model $model, array $cityData): Model {
         $model->update([
             'name' => $cityData['name'] ?? $model->name,
             'mini_grid_id' => $cityData['mini_grid_id'] ?? $model->mini_grid_id,
             'country_id' => $cityData['country_id'] ?? $model->country_id,
         ]);
-        $model->fresh();
 
-        return $model;
+        if (isset($cityData['geo_json'])) {
+            $model->location()->updateOrCreate([], ['geo_json' => GeographicalInformation::pointFromInputGeoJson($cityData['geo_json'])]);
+        }
+
+        return $model->load('location');
     }
 
     /**

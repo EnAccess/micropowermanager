@@ -5,18 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CityRequest;
 use App\Http\Requests\UpdateCityRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\GeographicalInformation;
-use App\Services\CityGeographicalInformationService;
 use App\Services\CityService;
-use App\Services\GeographicalInformationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CityController extends Controller {
     public function __construct(
         private CityService $cityService,
-        private GeographicalInformationService $geographicalInformationService,
-        private CityGeographicalInformationService $cityGeographicalInformationService,
     ) {}
 
     public function index(Request $request): ApiResource {
@@ -42,15 +37,7 @@ class CityController extends Controller {
     }
 
     public function store(CityRequest $request): ApiResource {
-        $data = $request->validationData();
-        $city = $this->cityService->create($data);
-        $geographicalInformation = $this->geographicalInformationService->make(['geo_json' => GeographicalInformation::pointFromString($data['points'])]);
-        $this->cityGeographicalInformationService->setAssigned($geographicalInformation);
-        $this->cityGeographicalInformationService->setAssignee($city);
-        $this->cityGeographicalInformationService->assign();
-        $this->geographicalInformationService->save($geographicalInformation);
-
-        return ApiResource::make($city);
+        return ApiResource::make($this->cityService->create($request->validated()));
     }
 
     public function destroy(int $cityId): JsonResponse {

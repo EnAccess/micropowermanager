@@ -54,11 +54,15 @@ class MiniGridTest extends TestCase {
 
         $response = $this->actingAs($this->user)->put("/api/mini-grids/{$miniGrid->id}", [
             'name' => 'updatedMiniGridName',
+            'geo_json' => $this->pointFeature(-7.873645, 39.754433),
         ]);
 
         $response->assertStatus(200);
         $this->assertEquals('updatedMiniGridName', $response['data']['name']);
         $this->assertEquals('updatedMiniGridName', $miniGrid->fresh()->name);
+        // The mini-grid already had a location — it must be updated in place, not duplicated.
+        $this->assertEquals([39.754433, -7.873645], $miniGrid->fresh()->location->geo_json->geometry->coordinates);
+        $this->assertEquals(1, $miniGrid->location()->count());
     }
 
     public function testUserSoftDeletesChildlessMiniGrid(): void {
@@ -93,12 +97,15 @@ class MiniGridTest extends TestCase {
         $miGridData = [
             'cluster_id' => $this->clusterIds[0],
             'name' => $this->faker->name(),
-            'geo_data' => $this->faker->latitude().','.$this->faker->longitude(),
+            'geo_json' => $this->pointFeature(-7.873645, 39.754433),
         ];
         $response = $this->actingAs($this->user)->post('/api/mini-grids', $miGridData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['name'], $miGridData['name']);
         $this->assertEquals(count(MiniGrid::query()->get()), 1);
+
+        $miniGrid = MiniGrid::query()->find($response['data']['id']);
+        $this->assertEquals([39.754433, -7.873645], $miniGrid->location->geo_json->geometry->coordinates);
     }
 
     protected function createTestData($clusterCount = 1, $miniGridCount = 1) {
@@ -135,5 +142,16 @@ class MiniGridTest extends TestCase {
     protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function pointFeature(float $latitude, float $longitude): array {
+        return [
+            'type' => 'Feature',
+            'geometry' => ['type' => 'Point', 'coordinates' => [$longitude, $latitude]],
+            'properties' => [],
+        ];
     }
 }

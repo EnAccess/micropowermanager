@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\EntityHasChildrenException;
+use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -28,6 +29,19 @@ class MiniGridService implements IBaseService {
     }
 
     /**
+     * @param array<string, mixed> $miniGridData
+     */
+    public function create(array $miniGridData): MiniGrid {
+        $miniGrid = $this->miniGrid->newQuery()->create([
+            'name' => $miniGridData['name'],
+            'cluster_id' => $miniGridData['cluster_id'],
+        ]);
+        $miniGrid->location()->create(['geo_json' => GeographicalInformation::pointFromInputGeoJson($miniGridData['geo_json'])]);
+
+        return $miniGrid;
+    }
+
+    /**
      * @param MiniGrid             $model
      * @param array<string, mixed> $miniGridData
      */
@@ -37,7 +51,11 @@ class MiniGridService implements IBaseService {
             'cluster_id' => $miniGridData['cluster_id'] ?? $model->cluster_id,
         ]);
 
-        return $model->fresh();
+        if (isset($miniGridData['geo_json'])) {
+            $model->location()->updateOrCreate([], ['geo_json' => GeographicalInformation::pointFromInputGeoJson($miniGridData['geo_json'])]);
+        }
+
+        return $model->load('location');
     }
 
     /**
