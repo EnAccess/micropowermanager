@@ -38,6 +38,32 @@ class ClusterTest extends TestCase {
         $this->assertEquals('Renamed', $cluster->fresh()->name);
     }
 
+    public function testUserUpdatesAClusterPolygon(): void {
+        $cluster = ClusterFactory::new()->create([
+            'name' => 'Original',
+            'manager_id' => $this->user->id,
+        ]);
+        $polygon = [
+            'type' => 'Feature',
+            'geometry' => [
+                'type' => 'Polygon',
+                'coordinates' => [[[39.7, -7.8], [39.8, -7.8], [39.8, -7.9], [39.7, -7.8]]],
+            ],
+            'properties' => [],
+        ];
+
+        $response = $this->actingAs($this->user)->putJson("/api/clusters/{$cluster->id}", [
+            'geo_json' => $polygon,
+        ]);
+
+        $response->assertStatus(200);
+        $storedGeoJson = $cluster->fresh()->geo_json;
+        $this->assertEquals('Polygon', $storedGeoJson->geometry->type);
+        $this->assertEquals([[39.7, -7.8], [39.8, -7.8], [39.8, -7.9], [39.7, -7.8]], $storedGeoJson->geometry->coordinates[0]);
+        // Empty properties must round-trip as a JSON object, not an array.
+        $this->assertIsObject($storedGeoJson->properties);
+    }
+
     public function testUserSoftDeletesAChildlessCluster(): void {
         $cluster = ClusterFactory::new()->create(['manager_id' => $this->user->id]);
 
