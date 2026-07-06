@@ -17,50 +17,38 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+/**
+ * @extends AbstractImportService<TransactionImportItem>
+ */
 class TransactionImportService extends AbstractImportService {
     /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, mixed>
+     * @param list<TransactionImportItem> $data
      */
-    public function import(array $data): array {
-        $importData = $data;
-        if (isset($data['data']) && is_array($data['data'])) {
-            $importData = $data['data'];
-        }
-
-        $errors = $this->validate($importData);
-        if ($errors !== []) {
-            return [
-                'success' => false,
-                'errors' => $errors,
-            ];
-        }
-
+    public function import(array $data): ImportResult {
         $imported = [];
         $failed = [];
 
         DB::connection('tenant')->beginTransaction();
 
         try {
-            foreach ($importData as $transactionData) {
+            foreach ($data as $item) {
                 try {
-                    $result = $this->importTransaction($transactionData);
+                    $result = $this->importTransaction($item);
                     if ($result['success']) {
                         $imported[] = $result['transaction'];
                     } else {
                         $failed[] = [
-                            'device_id' => $transactionData['device_id'] ?? 'unknown',
+                            'device_id' => $item->deviceId,
                             'errors' => $result['errors'],
                         ];
                     }
                 } catch (\Exception $e) {
                     Log::error('Error importing transaction', [
-                        'device_id' => $transactionData['device_id'] ?? 'unknown',
+                        'device_id' => $item->deviceId,
                         'error' => $e->getMessage(),
                     ]);
                     $failed[] = [
-                        'device_id' => $transactionData['device_id'] ?? 'unknown',
+                        'device_id' => $item->deviceId,
                         'errors' => ['import' => $e->getMessage()],
                     ];
                 }
@@ -71,60 +59,37 @@ class TransactionImportService extends AbstractImportService {
             $allFailed = count($imported) === 0 && count($failed) > 0;
             $partitioned = $this->partitionResults($imported);
 
-            return [
-                'success' => !$allFailed,
-                'message' => $allFailed ? 'All transaction imports failed' : 'Transactions imported successfully',
-                'imported_count' => count($imported),
-                'added_count' => $partitioned['added_count'],
-                'modified_count' => $partitioned['modified_count'],
-                'failed_count' => count($failed),
-                'added' => $partitioned['added'],
-                'modified' => $partitioned['modified'],
-                'failed' => $failed,
-            ];
+            return new ImportResult(
+                message: $allFailed ? 'All transaction imports failed' : 'Transactions imported successfully',
+                added: $partitioned['added'],
+                modified: $partitioned['modified'],
+                failed: $failed,
+            );
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            Log::error('Error during transaction import', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return [
-                'success' => false,
-                'errors' => ['transaction' => 'Failed to import transactions: '.$e->getMessage()],
-            ];
+            $this->throwTransactionFailure('transactions', $e);
         }
     }
 
     /**
-     * @param array<string, mixed> $transactionData
-     *
      * @return array<string, mixed>
      */
-    private function importTransaction(array $transactionData): array {
-        $deviceSerial = $transactionData['device_id'];
-
+    private function importTransaction(TransactionImportItem $item): array {
         // Verify device exists
-        $device = Device::query()->where('device_serial', $deviceSerial)->first();
+        $device = Device::query()->where('device_serial', $item->deviceId)->first();
         if ($device === null) {
             return [
                 'success' => false,
-                'errors' => ['device_id' => "Device with serial '{$deviceSerial}' not found"],
+                'errors' => ['device_id' => "Device with serial '{$item->deviceId}' not found"],
             ];
         }
 
-        // Parse amount — export format includes currency symbol and comma separators
-        $amount = $transactionData['amount'] ?? 0;
-        if (is_string($amount)) {
-            $amount = (float) preg_replace('/[^0-9.]/', '', str_replace(',', '', $amount));
-        }
-
-        $sentDate = $transactionData['sent_date'] ?? now();
+        $sentDate = $item->sentDate ?? now();
 
         // Check for duplicate transaction
         $existingTransaction = Transaction::query()
-            ->where('message', $deviceSerial)
-            ->where('amount', $amount)
+            ->where('message', $item->deviceId)
+            ->where('amount', $item->amount)
             ->where('created_at', $sentDate)
             ->first();
 
@@ -135,21 +100,20 @@ class TransactionImportService extends AbstractImportService {
                 'transaction' => [
                     'id' => $existingTransaction->id,
                     'amount' => $existingTransaction->amount,
-                    'device_serial' => $deviceSerial,
+                    'device_serial' => $item->deviceId,
                     'action' => 'modified',
                 ],
             ];
         }
 
         // Create the provider-specific transaction record matching the original type
-        $transactionType = $transactionData['transaction_type'] ?? ThirdPartyTransaction::RELATION_NAME;
-        $originalData = $transactionData['original_transaction'] ?? [];
-        $originalTransaction = $this->createOriginalTransaction($transactionType, $originalData);
+        $transactionType = $item->transactionType ?? ThirdPartyTransaction::RELATION_NAME;
+        $originalTransaction = $this->createOriginalTransaction($transactionType, $item->originalTransaction ?? []);
 
         $transaction = Transaction::query()->create([
-            'amount' => $amount,
-            'sender' => $transactionData['customer'] ?? '',
-            'message' => $deviceSerial,
+            'amount' => $item->amount,
+            'sender' => $item->customer ?? '',
+            'message' => $item->deviceId,
             'type' => Transaction::TYPE_IMPORTED,
             'original_transaction_id' => $originalTransaction->getKey(),
             'original_transaction_type' => $transactionType,
@@ -162,7 +126,7 @@ class TransactionImportService extends AbstractImportService {
             'transaction' => [
                 'id' => $transaction->id,
                 'amount' => $transaction->amount,
-                'device_serial' => $deviceSerial,
+                'device_serial' => $item->deviceId,
                 'action' => 'added',
             ],
         ];
@@ -201,31 +165,5 @@ class TransactionImportService extends AbstractImportService {
             PaystackTransaction::RELATION_NAME => PaystackTransaction::class,
             default => ThirdPartyTransaction::class,
         };
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
-     */
-    public function validate(array $data): array {
-        $errors = [];
-
-        foreach ($data as $index => $transactionData) {
-            if (!is_array($transactionData)) {
-                $errors["transaction_{$index}"] = 'Transaction data must be an array';
-                continue;
-            }
-
-            if (empty($transactionData['device_id'])) {
-                $errors["transaction_{$index}.device_id"] = 'Device serial number is required';
-            }
-
-            if (!isset($transactionData['amount'])) {
-                $errors["transaction_{$index}.amount"] = 'Amount is required';
-            }
-        }
-
-        return $errors;
     }
 }

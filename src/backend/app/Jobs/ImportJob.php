@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\ImportFailedException;
 use Illuminate\Support\Facades\Cache;
 
 class ImportJob extends AbstractJob {
@@ -27,13 +28,22 @@ class ImportJob extends AbstractJob {
         $this->updateCache($cacheKey, ['status' => 'processing']);
 
         $service = app()->make($this->importServiceClass);
-        $result = $service->import($this->data);
 
-        $this->updateCache($cacheKey, [
-            'status' => $result['success'] ? 'completed' : 'failed',
-            'result' => $result,
-            'completed_at' => now()->toISOString(),
-        ]);
+        try {
+            $result = $service->import($this->data);
+
+            $this->updateCache($cacheKey, [
+                'status' => 'completed',
+                'result' => $result->toArray(),
+                'completed_at' => now()->toISOString(),
+            ]);
+        } catch (ImportFailedException $exception) {
+            $this->updateCache($cacheKey, [
+                'status' => 'failed',
+                'result' => ['success' => false, 'errors' => $exception->errors()],
+                'completed_at' => now()->toISOString(),
+            ]);
+        }
     }
 
     public function failed(?\Throwable $t = null): void {

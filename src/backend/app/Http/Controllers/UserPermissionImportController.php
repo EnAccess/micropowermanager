@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserPermissionImportRequest;
-use App\Http\Resources\ApiResource;
+use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
+use App\Services\ImportServices\UserImportItem;
 use App\Services\ImportServices\UserPermissionImportService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
+#[Group('Import', 'Import data from a MicroPowerManager JSON export.', weight: 10)]
 class UserPermissionImportController extends Controller {
     private const int ASYNC_THRESHOLD = 50;
     private const int CACHE_TTL_SECONDS = 3600;
@@ -18,32 +21,24 @@ class UserPermissionImportController extends Controller {
         private UserPermissionImportService $userPermissionImportService,
     ) {}
 
-    public function import(UserPermissionImportRequest $request): JsonResponse|ApiResource {
-        $data = $request->input('data');
+    /**
+     * Import users and their permissions.
+     *
+     * Imports of 50 or more items are queued for background processing —
+     * the response is a 202 with a `job_id` to poll via the import status endpoint.
+     */
+    public function import(UserPermissionImportRequest $request): JsonResponse|ImportResource {
+        $items = $request->items();
 
-        // Handle export format: data might be wrapped in 'data' key
-        if (isset($data['data']) && is_array($data['data'])) {
-            $data = $data['data'];
+        if (count($items) >= self::ASYNC_THRESHOLD) {
+            return $this->dispatchAsync($items, $request);
         }
 
-        if (count($data) >= self::ASYNC_THRESHOLD) {
-            return $this->dispatchAsync($data, $request);
-        }
-
-        $result = $this->userPermissionImportService->import($data);
-
-        if (!$result['success'] && isset($result['errors'])) {
-            return response()->json([
-                'success' => false,
-                'errors' => $result['errors'],
-            ], 422);
-        }
-
-        return ApiResource::make($result);
+        return ImportResource::make($this->userPermissionImportService->import($items));
     }
 
     /**
-     * @param array<int, array<string, mixed>> $data
+     * @param list<UserImportItem> $data
      */
     private function dispatchAsync(array $data, UserPermissionImportRequest $request): JsonResponse {
         $companyId = (int) $request->attributes->get('companyId');

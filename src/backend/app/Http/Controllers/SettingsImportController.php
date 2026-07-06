@@ -3,27 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SettingsImportRequest;
-use App\Http\Resources\ApiResource;
+use App\Http\Resources\ImportResource;
 use App\Services\ImportServices\SettingsImportService;
-use Illuminate\Http\JsonResponse;
+use Dedoc\Scramble\Attributes\Group;
 
+#[Group('Import', 'Import data from a MicroPowerManager JSON export.', weight: 10)]
 class SettingsImportController extends Controller {
     public function __construct(
         private SettingsImportService $settingsImportService,
     ) {}
 
-    public function import(SettingsImportRequest $request): JsonResponse|ApiResource {
-        $data = $request->input('data');
-
-        $result = $this->settingsImportService->import($data);
-
-        if (!$result['success']) {
-            return response()->json([
-                'success' => false,
-                'errors' => $result['errors'],
-            ], 422);
-        }
-
-        return ApiResource::make($result);
+    /**
+     * Import main settings.
+     *
+     * Replaces the tenant's main settings with the single settings object in `data`.
+     */
+    public function import(SettingsImportRequest $request): ImportResource {
+        return ImportResource::make($this->settingsImportService->import($request->items()));
     }
 }

@@ -2,41 +2,49 @@
 
 namespace App\Services\ImportServices;
 
+use App\Exceptions\ImportFailedException;
+use Illuminate\Support\Facades\Log;
+
+/**
+ * @template TItem the per-entity item object import() consumes, materialized
+ *                 from validated input by the endpoint's FormRequest
+ */
 abstract class AbstractImportService {
     /**
-     * Import data from an array (typically from JSON export).
+     * Import a list of items (the `data` list of a JSON export file, validated
+     * by the endpoint's FormRequest).
      *
-     * @param array<string, mixed> $data
+     * @param list<TItem> $data
      *
-     * @return array<string, mixed>
+     * @throws ImportFailedException if the import transaction had to be rolled back
      */
-    abstract public function import(array $data): array;
+    abstract public function import(array $data): ImportResult;
 
     /**
-     * Validate the import data structure.
+     * Logs the failure and throws, for use in the catch block wrapping an import transaction.
      *
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, string>
+     * @throws ImportFailedException always
      */
-    abstract public function validate(array $data): array;
+    protected function throwTransactionFailure(string $entityLabel, \Throwable $exception): never {
+        Log::error("Error during {$entityLabel} import transaction", [
+            'error' => $exception->getMessage(),
+            'trace' => $exception->getTraceAsString(),
+        ]);
+
+        throw new ImportFailedException(['transaction' => "Failed to import {$entityLabel}: ".$exception->getMessage()]);
+    }
 
     /**
      * Partition imported records into added and modified based on the 'action' key.
      *
      * @param array<int, array<string, mixed>> $imported
      *
-     * @return array{added: array<int, array<string, mixed>>, modified: array<int, array<string, mixed>>, added_count: int, modified_count: int}
+     * @return array{added: list<array<string, mixed>>, modified: list<array<string, mixed>>}
      */
     protected function partitionResults(array $imported): array {
-        $added = array_values(array_filter($imported, fn (array $r): bool => ($r['action'] ?? '') === 'added'));
-        $modified = array_values(array_filter($imported, fn (array $r): bool => ($r['action'] ?? '') === 'modified'));
-
         return [
-            'added' => $added,
-            'modified' => $modified,
-            'added_count' => count($added),
-            'modified_count' => count($modified),
+            'added' => array_values(array_filter($imported, fn (array $r): bool => ($r['action'] ?? '') === 'added')),
+            'modified' => array_values(array_filter($imported, fn (array $r): bool => ($r['action'] ?? '') === 'modified')),
         ];
     }
 }

@@ -1,0 +1,39 @@
+meta {
+  name: Import Devices Data
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{mpm_backend_url}}/api/import/devices
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "data": [
+      {
+        "customer": "Name surname",
+        "device_info": {
+          "serial_number": "DEMO-METER-001",
+          "type": "meter",
+          "manufacturer": "Demo Manufacturer",
+          "meter_type": {
+            "online": false,
+            "phase": 1,
+            "max_current": 10
+          },
+          "connection_type": "Household",
+          "connection_group": "Default",
+          "tariff": "Default Tariff"
+        }
+      }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\ImportServices\ApplianceImportItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ApplianceImportRequest extends FormRequest {
@@ -14,19 +15,33 @@ class ApplianceImportRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'data' => ['required', 'array'],
+            'data' => ['required', 'array', 'list'],
             'data.*.appliance_name' => ['required', 'string', 'min:1'],
             'data.*.appliance_type' => ['sometimes', 'nullable', 'string'],
             'data.*.price' => ['sometimes', 'nullable'],
-            'data.*.currency' => ['sometimes', 'nullable', 'string'],
-            'data.*.total_sold' => ['sometimes', 'nullable', 'integer'],
-            'data.*.payment_plans' => ['sometimes', 'nullable', 'array'],
-            'data.*.payment_plans.*.total_cost' => ['sometimes', 'nullable'],
-            'data.*.payment_plans.*.rate_count' => ['sometimes', 'nullable', 'integer'],
-            'data.*.payment_plans.*.down_payment' => ['sometimes', 'nullable'],
-            'data.*.created_at' => ['sometimes', 'nullable', 'string'],
-            'data.*.updated_at' => ['sometimes', 'nullable', 'string'],
         ];
+    }
+
+    /**
+     * @return list<ApplianceImportItem>
+     */
+    public function items(): array {
+        return array_map(fn (array $item): ApplianceImportItem => new ApplianceImportItem(
+            applianceName: $item['appliance_name'],
+            applianceType: $item['appliance_type'] ?? null,
+            price: $this->parsePrice($item['price'] ?? 0),
+        ), $this->validated('data'));
+    }
+
+    /**
+     * Export files carry prices as display strings ("1,500") as well as plain numbers.
+     */
+    private function parsePrice(mixed $price): int {
+        if (is_string($price)) {
+            return (int) str_replace([',', ' '], '', $price);
+        }
+
+        return is_numeric($price) ? (int) $price : 0;
     }
 
     /**

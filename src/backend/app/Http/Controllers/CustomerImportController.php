@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerImportRequest;
-use App\Http\Resources\ApiResource;
+use App\Http\Resources\ImportResource;
 use App\Jobs\ImportJob;
+use App\Services\ImportServices\CustomerImportItem;
 use App\Services\ImportServices\CustomerImportService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
+#[Group('Import', 'Import data from a MicroPowerManager JSON export.', weight: 10)]
 class CustomerImportController extends Controller {
     private const int ASYNC_THRESHOLD = 50;
     private const int CACHE_TTL_SECONDS = 3600;
@@ -18,31 +21,24 @@ class CustomerImportController extends Controller {
         private CustomerImportService $customerImportService,
     ) {}
 
-    public function import(CustomerImportRequest $request): JsonResponse|ApiResource {
-        $data = $request->input('data');
+    /**
+     * Import customers.
+     *
+     * Imports of 50 or more items are queued for background processing —
+     * the response is a 202 with a `job_id` to poll via the import status endpoint.
+     */
+    public function import(CustomerImportRequest $request): JsonResponse|ImportResource {
+        $items = $request->items();
 
-        if (isset($data['data']) && is_array($data['data'])) {
-            $data = $data['data'];
+        if (count($items) >= self::ASYNC_THRESHOLD) {
+            return $this->dispatchAsync($items, $request);
         }
 
-        if (count($data) >= self::ASYNC_THRESHOLD) {
-            return $this->dispatchAsync($data, $request);
-        }
-
-        $result = $this->customerImportService->import($data);
-
-        if (!$result['success'] && isset($result['errors'])) {
-            return response()->json([
-                'success' => false,
-                'errors' => $result['errors'],
-            ], 422);
-        }
-
-        return ApiResource::make($result);
+        return ImportResource::make($this->customerImportService->import($items));
     }
 
     /**
-     * @param array<int, array<string, mixed>> $data
+     * @param list<CustomerImportItem> $data
      */
     private function dispatchAsync(array $data, CustomerImportRequest $request): JsonResponse {
         $companyId = (int) $request->attributes->get('companyId');
