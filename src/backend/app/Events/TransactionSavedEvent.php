@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Transaction\Transaction;
 use App\Providers\Interfaces\ITransactionProvider;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

@@ -2,10 +2,8 @@
 
 namespace App\Plugins\GomeLongMeter\Providers;
 
-use App\Plugins\GomeLongMeter\Console\Commands\GomeLongMeterDataSynchronizer;
 use App\Plugins\GomeLongMeter\Console\Commands\InstallPackage;
 use App\Plugins\GomeLongMeter\Modules\Api\GomeLongMeterApi;
-use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
