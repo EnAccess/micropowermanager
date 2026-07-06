@@ -1,27 +1,19 @@
 <template>
-  <div class="stk-push">
-    <md-card class="panel">
-      <div class="panel__head">
-        <h2 class="panel__title">Initiate M-PESA Payment</h2>
-        <p class="panel__subtitle">
-          Sends an STK Push to the customer's phone. They confirm by entering
-          their M-PESA PIN — no redirect, the page polls Daraja until the
-          transaction resolves.
-        </p>
-      </div>
-
-      <!-- Step 1: Collect details -->
-      <md-card-content v-if="stage === 'form'">
-        <form
-          @submit.prevent="sendStkPush"
-          data-vv-scope="STK-Form"
-          class="form"
-        >
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="deviceType">Device type</label>
+  <div>
+    <widget color="primary" title="Initiate M-PESA Payment">
+      <md-card>
+        <!-- Step 1: Collect details -->
+        <md-card-content v-if="stage === 'form'">
+          <p>
+            Sends an STK Push to the customer's phone. They confirm by entering
+            their M-PESA PIN — no redirect, the page polls Daraja until the
+            transaction resolves.
+          </p>
+          <form @submit.prevent="sendStkPush" data-vv-scope="STK-Form">
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
+                  <label for="deviceType">Device type</label>
                   <md-select
                     id="deviceType"
                     name="deviceType"
@@ -35,65 +27,56 @@
                   </md-select>
                 </md-field>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="deviceSerial">
-                  {{ serialLabel }}
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
                     'md-invalid': errors.has('STK-Form.deviceSerial'),
                   }"
                 >
+                  <label for="deviceSerial">{{ serialLabel }}</label>
                   <md-input
                     id="deviceSerial"
                     name="deviceSerial"
                     v-model="form.deviceSerial"
                     v-validate="'required|min:3'"
-                    placeholder="Enter the serial number"
                     @blur="validateDevice"
                   />
                   <span class="md-error">
                     {{ errors.first("STK-Form.deviceSerial") }}
                   </span>
                 </md-field>
-                <div v-if="deviceValidation.loading" class="hint hint--muted">
+                <p v-if="deviceValidation.loading" class="md-caption">
                   <md-progress-spinner
                     md-mode="indeterminate"
                     :md-diameter="14"
                     :md-stroke="2"
                   ></md-progress-spinner>
-                  <span>{{ validatingMessage }}</span>
-                </div>
-                <div
+                  {{ validatingMessage }}
+                </p>
+                <p
                   v-else-if="deviceValidation.valid === true"
-                  class="hint hint--ok"
+                  class="md-caption"
+                  style="color: green"
                 >
-                  <md-icon>check_circle</md-icon>
-                  <span>{{ validMessage }}</span>
-                </div>
-                <div
+                  {{ validMessage }}
+                </p>
+                <p
                   v-else-if="deviceValidation.valid === false"
-                  class="hint hint--error"
+                  class="md-caption"
+                  style="color: red"
                 >
-                  <md-icon>error</md-icon>
-                  <span>{{ invalidMessage }}</span>
-                </div>
+                  {{ invalidMessage }}
+                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="phoneNumber">
-                  Customer Phone
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
                     'md-invalid': errors.has('STK-Form.phoneNumber'),
                   }"
                 >
+                  <label for="phoneNumber">Customer Phone</label>
                   <md-input
                     id="phoneNumber"
                     name="phoneNumber"
@@ -102,24 +85,23 @@
                     placeholder="e.g. 0712345678"
                     type="tel"
                   />
+                  <span class="md-helper-text">
+                    Accepts 0712…, 712…, +254…, or 254… — normalised
+                    server-side.
+                  </span>
                   <span class="md-error">
                     {{ errors.first("STK-Form.phoneNumber") }}
                   </span>
                 </md-field>
-                <p class="field__note">
-                  Accepts 0712…, 712…, +254…, or 254… — normalised server-side.
-                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="amount">Amount (KES)</label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
                     'md-invalid': errors.has('STK-Form.amount'),
                   }"
                 >
+                  <label for="amount">Amount (KES)</label>
                   <md-input
                     id="amount"
                     name="amount"
@@ -130,22 +112,18 @@
                     step="1"
                     placeholder="e.g. 1500"
                   />
+                  <span class="md-helper-text">
+                    Daraja accepts whole numbers only — decimals are rounded.
+                  </span>
                   <span class="md-error">
                     {{ errors.first("STK-Form.amount") }}
                   </span>
                 </md-field>
-                <p class="field__note">
-                  Daraja accepts whole numbers only — decimals are rounded.
-                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-100">
-              <div class="field">
-                <label class="field__label" for="transactionDesc">
-                  Description
-                </label>
+              <div class="md-layout-item md-size-100">
                 <md-field>
+                  <label for="transactionDesc">Description</label>
                   <md-input
                     id="transactionDesc"
                     name="transactionDesc"
@@ -153,105 +131,109 @@
                     maxlength="50"
                     placeholder="What the customer is paying for"
                   />
+                  <span class="md-helper-text">
+                    Truncated to 13 chars (Daraja TransactionDesc limit) before
+                    sending.
+                  </span>
                 </md-field>
-                <p class="field__note">
-                  Truncated to 13 chars (Daraja TransactionDesc limit) before
-                  sending.
-                </p>
               </div>
             </div>
-          </div>
-        </form>
-      </md-card-content>
+          </form>
+        </md-card-content>
 
-      <!-- Step 2: Waiting -->
-      <md-card-content v-else-if="stage === 'waiting'">
-        <div class="waiting">
+        <!-- Step 2: Waiting -->
+        <md-card-content v-else-if="stage === 'waiting'" class="text-center">
           <md-progress-spinner
             md-mode="indeterminate"
             :md-diameter="60"
             :md-stroke="4"
           />
-          <h3 class="waiting__title">Check the customer's phone</h3>
-          <p class="waiting__text">
+          <div class="md-title">Check the customer's phone</div>
+          <p>
             An M-PESA prompt has been sent to
             <strong>{{ formattedPhone }}</strong>
             for
             <strong>KES {{ formatAmount(form.amount) }}</strong>
             .
           </p>
-          <p class="waiting__text waiting__text--muted">
+          <p class="md-caption">
             They need to enter their M-PESA PIN to complete the payment. This
             page polls Safaricom every few seconds and will update
             automatically.
           </p>
-          <p class="waiting__countdown">
-            Checking again in {{ secondsUntilNextPoll }}s
-            <span class="waiting__pollcount">
-              · attempt {{ pollAttempts }} of {{ maxPollAttempts }}
-            </span>
+          <p class="md-caption">
+            Checking again in {{ secondsUntilNextPoll }}s · attempt
+            {{ pollAttempts }} of {{ maxPollAttempts }}
           </p>
-          <md-button class="waiting__cancel" @click="cancelWaiting">
-            Cancel and start over
-          </md-button>
-        </div>
-      </md-card-content>
+          <md-button @click="cancelWaiting">Cancel and start over</md-button>
+        </md-card-content>
 
-      <!-- Step 3: Result -->
-      <md-card-content v-else-if="stage === 'result'">
-        <div class="result" :class="`result--${resultMeta.tone}`">
-          <md-icon class="result__icon">{{ resultMeta.icon }}</md-icon>
-          <h3 class="result__title">{{ resultMeta.title }}</h3>
-          <p class="result__body">{{ resultMeta.body }}</p>
-
-          <div class="result__details" v-if="lastStatus">
-            <div class="detail-row">
-              <span class="detail-label">Reference:</span>
-              <span class="detail-value">{{ lastStatus.reference_id }}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Phone:</span>
-              <span class="detail-value">
-                {{ lastStatus.phone_number || formattedPhone }}
-              </span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Amount:</span>
-              <span class="detail-value">
-                KES {{ formatAmount(lastStatus.amount || form.amount) }}
-              </span>
-            </div>
-            <div v-if="lastStatus.mpesa_receipt_number" class="detail-row">
-              <span class="detail-label">M-PESA Receipt:</span>
-              <span class="detail-value detail-value--strong">
-                {{ lastStatus.mpesa_receipt_number }}
-              </span>
-            </div>
-            <div v-if="lastStatus.result_code !== null" class="detail-row">
-              <span class="detail-label">Daraja code:</span>
-              <span class="detail-value">{{ lastStatus.result_code }}</span>
-            </div>
+        <!-- Step 3: Result -->
+        <md-card-content v-else-if="stage === 'result'">
+          <div class="text-center">
+            <md-icon class="md-size-2x" :style="{ color: resultIconColor }">
+              {{ resultMeta.icon }}
+            </md-icon>
+            <div class="md-title">{{ resultMeta.title }}</div>
+            <p>{{ resultMeta.body }}</p>
           </div>
-        </div>
-      </md-card-content>
 
-      <md-progress-bar md-mode="indeterminate" v-if="submitting" />
+          <template v-if="lastStatus">
+            <div class="md-layout">
+              <div class="md-layout-item md-subheader">Reference</div>
+              <div class="md-layout-item md-subheader">
+                {{ lastStatus.reference_id }}
+              </div>
+            </div>
+            <md-divider />
+            <div class="md-layout">
+              <div class="md-layout-item md-subheader">Phone</div>
+              <div class="md-layout-item md-subheader">
+                {{ lastStatus.phone_number || formattedPhone }}
+              </div>
+            </div>
+            <md-divider />
+            <div class="md-layout">
+              <div class="md-layout-item md-subheader">Amount</div>
+              <div class="md-layout-item md-subheader">
+                KES {{ formatAmount(lastStatus.amount || form.amount) }}
+              </div>
+            </div>
+            <md-divider v-if="lastStatus.mpesa_receipt_number" />
+            <div v-if="lastStatus.mpesa_receipt_number" class="md-layout">
+              <div class="md-layout-item md-subheader">M-PESA Receipt</div>
+              <div class="md-layout-item md-subheader">
+                {{ lastStatus.mpesa_receipt_number }}
+              </div>
+            </div>
+            <md-divider v-if="lastStatus.result_code !== null" />
+            <div v-if="lastStatus.result_code !== null" class="md-layout">
+              <div class="md-layout-item md-subheader">Daraja code</div>
+              <div class="md-layout-item md-subheader">
+                {{ lastStatus.result_code }}
+              </div>
+            </div>
+          </template>
+        </md-card-content>
 
-      <div class="panel__actions" v-if="stage === 'form'">
-        <md-button
-          class="md-raised md-primary"
-          :disabled="submitting"
-          @click="sendStkPush"
-        >
-          Send STK Push
-        </md-button>
-      </div>
-      <div class="panel__actions" v-else-if="stage === 'result'">
-        <md-button class="md-raised md-primary" @click="reset">
-          Start a new payment
-        </md-button>
-      </div>
-    </md-card>
+        <md-progress-bar md-mode="indeterminate" v-if="submitting" />
+
+        <md-card-actions v-if="stage === 'form'">
+          <md-button
+            class="md-raised md-primary"
+            :disabled="submitting"
+            @click="sendStkPush"
+          >
+            Send STK Push
+          </md-button>
+        </md-card-actions>
+        <md-card-actions v-else-if="stage === 'result'">
+          <md-button class="md-raised md-primary" @click="reset">
+            Start a new payment
+          </md-button>
+        </md-card-actions>
+      </md-card>
+    </widget>
   </div>
 </template>
 
@@ -259,6 +241,7 @@
 import { TransactionService } from "../../services/TransactionService.js"
 
 import { notify } from "@/mixins/notify.js"
+import Widget from "@/shared/Widget.vue"
 
 // Daraja v3 ResultCodes mapped to operator-facing messaging. Anything not
 // listed falls back to a generic failure message including the raw code so
@@ -334,12 +317,21 @@ const TIMEOUT_MESSAGE = {
   body: "The payment didn't resolve within the polling window. It may still come through via the async callback — check the Transactions page in a minute.",
 }
 
+// Same palette as the transaction status icons on the core Transactions page.
+const TONE_COLORS = {
+  success: "green",
+  error: "red",
+  warning: "goldenrod",
+  info: "grey",
+}
+
 const POLL_INTERVAL_MS = 3000
 const MAX_POLL_ATTEMPTS = 20 // ~60 seconds total
 
 export default {
   name: "SafaricomSTKPush",
   mixins: [notify],
+  components: { Widget },
   data() {
     return {
       transactionService: new TransactionService(),
@@ -375,6 +367,9 @@ export default {
         return `${phone.substring(0, 6)}****${phone.substring(10)}`
       }
       return phone
+    },
+    resultIconColor() {
+      return TONE_COLORS[this.resultMeta.tone] || TONE_COLORS.info
     },
     serialLabel() {
       return this.form.deviceType === "solar_home_system"
@@ -574,237 +569,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-.stk-push {
-  display: flex;
-  justify-content: center;
-  padding: 1.5rem 1rem;
-}
-
-.panel {
-  width: 100%;
-  max-width: 760px;
-  border-radius: 10px;
-}
-
-.panel__head {
-  padding: 1.25rem 1.5rem 0.5rem;
-}
-
-.panel__title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: $brand-primary-dark;
-}
-
-.panel__subtitle {
-  margin: 0.35rem 0 0;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: #8a93a0;
-}
-
-.panel__actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.5rem 1.5rem 1.25rem;
-}
-
-.form {
-  padding: 0.5rem 0;
-}
-
-.field {
-  margin-bottom: 1.1rem;
-}
-
-.field__label {
-  display: block;
-  margin-bottom: 0.1rem;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: #8a93a0;
-}
-
-.field .md-field {
-  margin: 0;
-  min-height: 40px;
-  padding-top: 4px;
-}
-
-.field__note {
-  margin: 0.3rem 0 0;
-  font-size: 11.5px;
-  font-style: italic;
-  color: #9aa3af;
-}
-
-.hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 0.35rem;
-  font-size: 12px;
-
-  .md-icon {
-    font-size: 16px !important;
-    width: 16px;
-    min-width: 16px;
-    height: 16px;
-  }
-}
-
-.hint--muted {
-  color: #8a93a0;
-}
-
-.hint--ok {
-  color: #2e7d32;
-
-  .md-icon {
-    color: #2e7d32 !important;
-  }
-}
-
-.hint--error {
-  color: #d9534f;
-
-  .md-icon {
-    color: #d9534f !important;
-  }
-}
-
-.waiting {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2rem 1rem;
-  gap: 0.75rem;
-}
-
-.waiting__title {
-  margin: 0.75rem 0 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: $brand-primary-dark;
-}
-
-.waiting__text {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #4b5563;
-  max-width: 480px;
-  line-height: 1.5;
-}
-
-.waiting__text--muted {
-  color: #8a93a0;
-  font-size: 0.825rem;
-}
-
-.waiting__countdown {
-  margin-top: 0.5rem;
-  font-size: 0.825rem;
-  color: $brand-primary;
-  font-weight: 600;
-}
-
-.waiting__pollcount {
-  color: #8a93a0;
-  font-weight: 400;
-}
-
-.waiting__cancel {
-  margin-top: 0.5rem;
-}
-
-.result {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2rem 1rem 1rem;
-  gap: 0.5rem;
-}
-
-.result__icon {
-  width: 56px !important;
-  min-width: 56px;
-  height: 56px;
-  font-size: 56px !important;
-}
-
-.result--success .result__icon {
-  color: #5cb85c !important;
-}
-.result--error .result__icon {
-  color: #d9534f !important;
-}
-.result--warning .result__icon {
-  color: #f0ad4e !important;
-}
-.result--info .result__icon {
-  color: #5bc0de !important;
-}
-
-.result__title {
-  margin: 0.5rem 0 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: $brand-primary-dark;
-}
-
-.result__body {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #4b5563;
-  max-width: 480px;
-  line-height: 1.5;
-}
-
-.result__details {
-  margin-top: 1rem;
-  width: 100%;
-  max-width: 480px;
-  background: #f8fafc;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-}
-
-.detail-row {
-  display: flex;
-  margin-bottom: 0.4rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid #edf0f3;
-  font-size: 0.85rem;
-
-  &:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-}
-
-.detail-label {
-  font-weight: 600;
-  min-width: 140px;
-  color: #6b7280;
-}
-
-.detail-value {
-  flex: 1;
-  text-align: right;
-  color: #1f2937;
-}
-
-.detail-value--strong {
-  font-weight: 700;
-  color: #5cb85c;
-  letter-spacing: 0.03em;
-}
-</style>
