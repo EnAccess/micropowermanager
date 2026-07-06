@@ -31,10 +31,10 @@ use Composer\Script\Event;
  * which is why this file is excluded from PHPStan analysis.
  */
 class ScrambleProInstaller {
-    private const PACKAGE = 'dedoc/scramble-pro';
-    private const DEFAULT_CONSTRAINT = '*';
-    private const REPOSITORY_URL = 'https://satis.dedoc.co';
-    private const AUTH_HOST = 'satis.dedoc.co';
+    private const string PACKAGE = 'dedoc/scramble-pro';
+    private const string DEFAULT_CONSTRAINT = '*';
+    private const string REPOSITORY_URL = 'https://satis.dedoc.co';
+    private const string AUTH_HOST = 'satis.dedoc.co';
 
     private static bool $running = false;
 
@@ -89,7 +89,7 @@ class ScrambleProInstaller {
         );
 
         $platformRepo = new PlatformRepository([], $composer->getConfig()->get('platform') ?: []);
-        $target = (new VersionSelector($repositorySet, $platformRepo))
+        $target = new VersionSelector($repositorySet, $platformRepo)
             ->findBestCandidate(self::PACKAGE, $constraint, 'stable', null, 0, $io);
         if ($target === false) {
             throw new \RuntimeException(sprintf('could not resolve %s (%s) from %s', self::PACKAGE, $constraint, self::REPOSITORY_URL));
