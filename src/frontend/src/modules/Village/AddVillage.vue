@@ -175,24 +175,21 @@
 </template>
 
 <script>
-import { geoJsonToLatLon } from "@/Helpers/Utils.js"
+import { latLonToGeoJsonPoint } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
+import { villageMapContext } from "@/mixins/villageMapContext.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
 import { CityService } from "@/services/CityService.js"
 import { ClusterService } from "@/services/ClusterService.js"
 import CountryService from "@/services/CountryService.js"
-import {
-  ICONS,
-  MappingService,
-  MARKER_TYPE,
-} from "@/services/MappingService.js"
+import { ICONS, MappingService } from "@/services/MappingService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import RedirectionModal from "@/shared/RedirectionModal.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AddVillage",
-  mixins: [notify],
+  mixins: [notify, villageMapContext],
   components: {
     VillageMap,
     Widget,
@@ -215,10 +212,6 @@ export default {
       countryService: new CountryService(),
       countries: [],
       selectedCountryId: null,
-      cityLatLng: {
-        lat: null,
-        lon: null,
-      },
       redirectionUrl: "/locations/add-mini-grid",
       imperativeItem: "Mini-Grid",
       redirectDialogActive: false,
@@ -261,21 +254,6 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    async getMiniGridWithGeoData(miniGridId) {
-      try {
-        return await this.miniGridService.getMiniGridGeoData(miniGridId)
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
-    async getClusterGeoData(clusterId) {
-      try {
-        this.clusterId = clusterId
-        return await this.clusterService.getClusterGeoLocation(clusterId)
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
     async getCountries() {
       try {
         await this.countryService.getCountries()
@@ -297,7 +275,10 @@ export default {
             name: this.cityName,
             miniGridId: this.selectedMiniGridId,
             countryId: this.selectedCountryId,
-            points: `${this.cityLatLng.lat},${this.cityLatLng.lon}`,
+            geoJson: latLonToGeoJsonPoint(
+              this.cityLatLng.lat,
+              this.cityLatLng.lon,
+            ),
           }
           await this.cityService.createCity(city)
           this.alertNotify("success", this.$tc("phrases.newVillageNotify", 1))
@@ -311,111 +292,19 @@ export default {
         }
       }
     },
-    villageLocationSet(data) {
-      if (!data.error) {
-        this.cityLatLng.lat = Number(
-          data.geoDataItem.coordinates.lat.toFixed(5),
-        )
-        this.cityLatLng.lon = Number(
-          data.geoDataItem.coordinates.lng.toFixed(5),
-        )
-      } else {
-        this.cityLatLng.lat = null
-        this.cityLatLng.lon = null
-        this.$swal({
-          type: "warning",
-          text: data.error,
-        })
-      }
-    },
-    setPoints() {
-      const location = [this.cityLatLng.lat, this.cityLatLng.lon]
-      this.$refs.villageMapRef.setVillageMarkerManually(location)
-    },
   },
   watch: {
     async selectedMiniGridId() {
-      const markingInfos = []
-      const miniGridWithGeoData = await this.getMiniGridWithGeoData(
-        this.selectedMiniGridId,
-      )
-      const location = geoJsonToLatLon(miniGridWithGeoData.location)
-      if (location == null) {
-        this.alertNotify("error", "Mini-Grid has no location")
-        return
-      }
-      const lat = location.lat
-      const lon = location.lon
-      const clusterId = miniGridWithGeoData.cluster_id
-      const clusterGeoData = await this.getClusterGeoData(clusterId)
-
-      if (!clusterGeoData || !clusterGeoData.geo_json) {
-        this.alertNotify("error", "Cluster has no geo data")
-        return
-      }
-
-      // Extract geo_json and convert to Feature if needed
-      let geoJsonFeature
-      if (clusterGeoData.geo_json.type === "Feature") {
-        geoJsonFeature = clusterGeoData.geo_json
-      } else if (clusterGeoData.geo_json.type === "FeatureCollection") {
-        geoJsonFeature = clusterGeoData.geo_json.features[0]
-      } else {
-        throw new Error(
-          "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
+      try {
+        const miniGridWithGeoData = await this.loadVillageMapContext(
+          this.selectedMiniGridId,
         )
+        if (!miniGridWithGeoData) return
+        this.$refs.villageMapRef.drawCluster()
+        this.$refs.villageMapRef.setMiniGridMarker()
+      } catch (e) {
+        this.alertNotify("error", e.message)
       }
-
-      geoJsonFeature = {
-        ...geoJsonFeature,
-        properties: {
-          ...geoJsonFeature.properties,
-          name: clusterGeoData.name || "",
-        },
-      }
-
-      // Calculate center from GeoJSON bounds or geometry
-      let centerLat, centerLon
-      if (geoJsonFeature.bbox && geoJsonFeature.bbox.length >= 4) {
-        centerLon = (geoJsonFeature.bbox[0] + geoJsonFeature.bbox[2]) / 2
-        centerLat = (geoJsonFeature.bbox[1] + geoJsonFeature.bbox[3]) / 2
-      } else if (geoJsonFeature.geometry) {
-        const coords = geoJsonFeature.geometry.coordinates
-        if (geoJsonFeature.geometry.type === "Point") {
-          centerLon = coords[0]
-          centerLat = coords[1]
-        } else if (
-          geoJsonFeature.geometry.type === "Polygon" &&
-          coords[0] &&
-          coords[0][0]
-        ) {
-          // Use first coordinate
-          centerLon = coords[0][0][0]
-          centerLat = coords[0][0][1]
-        } else {
-          // Fallback to first available coordinate
-          centerLon = coords[0]?.[0]?.[0] || 0
-          centerLat = coords[0]?.[0]?.[1] || 0
-        }
-      }
-
-      if (centerLat && centerLon) {
-        this.mappingService.setCenter([centerLat, centerLon])
-      }
-
-      this.mappingService.setGeoData(geoJsonFeature)
-      markingInfos.push({
-        id: miniGridWithGeoData.id,
-        name: miniGridWithGeoData.name,
-        serialNumber: null,
-        lat: lat,
-        lon: lon,
-        deviceType: null,
-        markerType: MARKER_TYPE.MINI_GRID,
-      })
-      this.mappingService.setMarkingInfos(markingInfos)
-      this.$refs.villageMapRef.drawCluster()
-      this.$refs.villageMapRef.setMiniGridMarker()
     },
   },
 }

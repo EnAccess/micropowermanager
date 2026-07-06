@@ -1,5 +1,5 @@
 <template>
-  <div id="map"></div>
+  <div :id="mapContainerId" class="leaflet-map"></div>
 </template>
 
 <script>
@@ -325,30 +325,12 @@ export default {
       const clusterGeoData =
         await this.clusterService.getClusterGeoLocation(clusterId)
 
-      if (!clusterGeoData.geo_json) {
+      const clusterFeature =
+        this.mappingService.setClusterGeoData(clusterGeoData)
+      if (!clusterFeature) {
         throw new Error("clusterGeoData.geo_json is required")
       }
 
-      let geoJsonFeature
-      if (clusterGeoData.geo_json.type === "Feature") {
-        geoJsonFeature = clusterGeoData.geo_json
-      } else if (clusterGeoData.geo_json.type === "FeatureCollection") {
-        geoJsonFeature = clusterGeoData.geo_json.features[0]
-      } else {
-        throw new Error(
-          "clusterGeoData.geo_json must be a GeoJSON Feature or FeatureCollection",
-        )
-      }
-
-      geoJsonFeature = {
-        ...geoJsonFeature,
-        properties: {
-          ...geoJsonFeature.properties,
-          name: clusterGeoData.name || "",
-        },
-      }
-
-      this.mappingService.setGeoData(geoJsonFeature)
       markingInfos.push({
         id: miniGridWithGeoData.id,
         name: miniGridWithGeoData.name,
@@ -399,7 +381,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#map {
+.leaflet-map {
   height: 100%;
   min-height: 500px;
   width: 100%;

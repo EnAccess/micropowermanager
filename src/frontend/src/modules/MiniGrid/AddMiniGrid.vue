@@ -146,6 +146,7 @@
 </template>
 
 <script>
+import { latLonToGeoJsonPoint } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
 import MgMap from "@/modules/Map/MiniGridMap.vue"
 import { ClusterService } from "@/services/ClusterService.js"
@@ -213,7 +214,10 @@ export default {
           this.loading = true
           const miniGrid = {
             clusterId: this.selectedClusterId,
-            geoData: `${this.miniGridLatLng.lat},${this.miniGridLatLng.lon}`,
+            geoJson: latLonToGeoJsonPoint(
+              this.miniGridLatLng.lat,
+              this.miniGridLatLng.lon,
+            ),
             name: this.miniGridName,
           }
           await this.miniGridService.createMiniGrid(miniGrid)
@@ -254,61 +258,13 @@ export default {
         this.selectedClusterId,
       )
 
-      if (!clusterGeoData || !clusterGeoData.geo_json) {
+      const clusterFeature =
+        this.mappingService.setClusterGeoData(clusterGeoData)
+      if (!clusterFeature) {
         this.alertNotify("error", "Cluster has no geo data")
         return
       }
 
-      // Extract geo_json and convert to Feature if needed
-      let geoJsonFeature
-      if (clusterGeoData.geo_json.type === "Feature") {
-        geoJsonFeature = clusterGeoData.geo_json
-      } else if (clusterGeoData.geo_json.type === "FeatureCollection") {
-        geoJsonFeature = clusterGeoData.geo_json.features[0]
-      } else {
-        throw new Error(
-          "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
-        )
-      }
-
-      geoJsonFeature = {
-        ...geoJsonFeature,
-        properties: {
-          ...geoJsonFeature.properties,
-          name: clusterGeoData.name || "",
-        },
-      }
-
-      // Calculate center from GeoJSON bounds or geometry
-      let centerLat, centerLon
-      if (geoJsonFeature.bbox && geoJsonFeature.bbox.length >= 4) {
-        centerLon = (geoJsonFeature.bbox[0] + geoJsonFeature.bbox[2]) / 2
-        centerLat = (geoJsonFeature.bbox[1] + geoJsonFeature.bbox[3]) / 2
-      } else if (geoJsonFeature.geometry) {
-        const coords = geoJsonFeature.geometry.coordinates
-        if (geoJsonFeature.geometry.type === "Point") {
-          centerLon = coords[0]
-          centerLat = coords[1]
-        } else if (
-          geoJsonFeature.geometry.type === "Polygon" &&
-          coords[0] &&
-          coords[0][0]
-        ) {
-          // Use first coordinate
-          centerLon = coords[0][0][0]
-          centerLat = coords[0][0][1]
-        } else {
-          // Fallback to first available coordinate
-          centerLon = coords[0]?.[0]?.[0] || 0
-          centerLat = coords[0]?.[0]?.[1] || 0
-        }
-      }
-
-      if (centerLat && centerLon) {
-        this.mappingService.setCenter([centerLat, centerLon])
-      }
-
-      this.mappingService.setGeoData(geoJsonFeature)
       this.$refs.miniGridMapRef.drawCluster()
     },
   },
