@@ -1,29 +1,24 @@
 <template>
-  <div class="safaricom-settings">
-    <form
-      @submit.prevent="submitCredentialForm"
-      data-vv-scope="Credential-Form"
-    >
-      <md-card class="panel">
-        <div class="panel__head">
-          <h2 class="panel__title">Safaricom M-PESA Credentials</h2>
-          <p class="panel__subtitle">
-            Enter the keys from your Daraja portal to start accepting M-PESA
-            payments via STK Push.
-          </p>
-        </div>
-        <md-card-content>
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="consumerKey">
-                  Consumer Key
-                </label>
+  <div>
+    <widget color="primary" title="Safaricom M-PESA Credentials">
+      <form
+        @submit.prevent="submitCredentialForm"
+        data-vv-scope="Credential-Form"
+      >
+        <md-card>
+          <md-card-content>
+            <p>
+              Enter the keys from your Daraja portal to start accepting M-PESA
+              payments via STK Push.
+            </p>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
                     'md-invalid': errors.has('Credential-Form.consumerKey'),
                   }"
                 >
+                  <label for="consumerKey">Consumer Key</label>
                   <md-input
                     id="consumerKey"
                     name="consumerKey"
@@ -36,30 +31,25 @@
                         : 'Paste your Daraja consumer key'
                     "
                   />
+                  <span
+                    v-if="credentialService.credential.consumerKeySet"
+                    class="md-helper-text"
+                  >
+                    Configured — leave blank to keep the current key.
+                  </span>
                   <span class="md-error">
                     {{ errors.first("Credential-Form.consumerKey") }}
                   </span>
                 </md-field>
-                <p
-                  v-if="credentialService.credential.consumerKeySet"
-                  class="field__note field__note--ok"
-                >
-                  <md-icon>check_circle</md-icon>
-                  Configured — leave blank to keep the current key.
-                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="consumerSecret">
-                  Consumer Secret
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
                     'md-invalid': errors.has('Credential-Form.consumerSecret'),
                   }"
                 >
+                  <label for="consumerSecret">Consumer Secret</label>
                   <md-input
                     id="consumerSecret"
                     name="consumerSecret"
@@ -72,30 +62,25 @@
                         : 'Paste your Daraja consumer secret'
                     "
                   />
+                  <span
+                    v-if="credentialService.credential.consumerSecretSet"
+                    class="md-helper-text"
+                  >
+                    Configured — leave blank to keep the current secret.
+                  </span>
                   <span class="md-error">
                     {{ errors.first("Credential-Form.consumerSecret") }}
                   </span>
                 </md-field>
-                <p
-                  v-if="credentialService.credential.consumerSecretSet"
-                  class="field__note field__note--ok"
-                >
-                  <md-icon>check_circle</md-icon>
-                  Configured — leave blank to keep the current secret.
-                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="passkey">
-                  STK Push Passkey
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
                     'md-invalid': errors.has('Credential-Form.passkey'),
                   }"
                 >
+                  <label for="passkey">STK Push Passkey</label>
                   <md-input
                     id="passkey"
                     name="passkey"
@@ -104,35 +89,29 @@
                     type="password"
                     :placeholder="passkeyPlaceholder"
                   />
+                  <span
+                    v-if="credentialService.credential.passkeySet"
+                    class="md-helper-text"
+                  >
+                    Configured — leave blank to keep the current passkey.
+                  </span>
+                  <span v-else-if="isSandbox" class="md-helper-text">
+                    Optional in sandbox — Daraja's public test passkey is used
+                    when blank.
+                  </span>
                   <span class="md-error">
                     {{ errors.first("Credential-Form.passkey") }}
                   </span>
                 </md-field>
-                <p
-                  v-if="credentialService.credential.passkeySet"
-                  class="field__note field__note--ok"
-                >
-                  <md-icon>check_circle</md-icon>
-                  Configured — leave blank to keep the current passkey.
-                </p>
-                <p v-else-if="isSandbox" class="field__note field__note--info">
-                  <md-icon>info</md-icon>
-                  Optional in sandbox — Daraja's public test passkey is used
-                  when blank.
-                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="shortcode">
-                  Shortcode (Paybill / Till)
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
                     'md-invalid': errors.has('Credential-Form.shortcode'),
                   }"
                 >
+                  <label for="shortcode">Shortcode (Paybill / Till)</label>
                   <md-input
                     id="shortcode"
                     name="shortcode"
@@ -140,27 +119,22 @@
                     v-validate="shortcodeRules"
                     :placeholder="shortcodePlaceholder"
                   />
+                  <span
+                    v-if="isSandbox && !credentialService.credential.shortcode"
+                    class="md-helper-text"
+                  >
+                    Optional in sandbox — Daraja's test shortcode 174379 is used
+                    when blank.
+                  </span>
                   <span class="md-error">
                     {{ errors.first("Credential-Form.shortcode") }}
                   </span>
                 </md-field>
-                <p
-                  v-if="isSandbox && !credentialService.credential.shortcode"
-                  class="field__note field__note--info"
-                >
-                  <md-icon>info</md-icon>
-                  Optional in sandbox — Daraja's test shortcode 174379 is used
-                  when blank.
-                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="environment">
-                  Environment
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
+                  <label for="environment">Environment</label>
                   <md-select
                     id="environment"
                     name="environment"
@@ -171,34 +145,26 @@
                   </md-select>
                 </md-field>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="resultUrl">
-                  STK Push Result URL
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
+                  <label for="resultUrl">STK Push Result URL</label>
                   <md-input
                     id="resultUrl"
                     name="resultUrl"
                     v-model="credentialService.credential.resultUrl"
                     placeholder="Auto-derived if left blank"
                   />
+                  <span class="md-helper-text">
+                    Daraja will POST STK Push results here. Leave blank to use
+                    the auto-generated webhook URL.
+                  </span>
                 </md-field>
-                <p class="field__note">
-                  Daraja will POST STK Push results here. Leave blank to use the
-                  auto-generated webhook URL.
-                </p>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="confirmationUrl">
-                  C2B Confirmation URL
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
+                  <label for="confirmationUrl">C2B Confirmation URL</label>
                   <md-input
                     id="confirmationUrl"
                     name="confirmationUrl"
@@ -207,14 +173,10 @@
                   />
                 </md-field>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="validationUrl">
-                  C2B Validation URL
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
+                  <label for="validationUrl">C2B Validation URL</label>
                   <md-input
                     id="validationUrl"
                     name="validationUrl"
@@ -223,14 +185,10 @@
                   />
                 </md-field>
               </div>
-            </div>
 
-            <div class="md-layout-item md-size-50 md-small-size-100">
-              <div class="field">
-                <label class="field__label" for="timeoutUrl">
-                  Queue Timeout URL
-                </label>
+              <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
+                  <label for="timeoutUrl">Queue Timeout URL</label>
                   <md-input
                     id="timeoutUrl"
                     name="timeoutUrl"
@@ -240,16 +198,16 @@
                 </md-field>
               </div>
             </div>
-          </div>
-        </md-card-content>
-        <md-progress-bar md-mode="indeterminate" v-if="loading" />
-        <div class="panel__actions">
-          <md-button class="md-raised md-primary" type="submit">
-            {{ $tc("words.save") }}
-          </md-button>
-        </div>
-      </md-card>
-    </form>
+          </md-card-content>
+          <md-progress-bar md-mode="indeterminate" v-if="loading" />
+          <md-card-actions>
+            <md-button class="md-raised md-primary" type="submit">
+              {{ $tc("words.save") }}
+            </md-button>
+          </md-card-actions>
+        </md-card>
+      </form>
+    </widget>
   </div>
 </template>
 
@@ -258,10 +216,12 @@ import { CredentialService } from "../../services/CredentialService.js"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Credential",
   mixins: [notify],
+  components: { Widget },
   data() {
     return {
       credentialService: new CredentialService(),
@@ -339,97 +299,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-.safaricom-settings {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.panel {
-  border-radius: 10px;
-}
-
-.panel__head {
-  padding: 1.25rem 1.5rem 0.25rem;
-}
-
-.panel__title {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: $brand-primary-dark;
-}
-
-.panel__subtitle {
-  margin: 0.3rem 0 0;
-  font-size: 0.825rem;
-  color: #8a93a0;
-}
-
-.panel__actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.5rem 1.5rem 1.25rem;
-}
-
-.field {
-  margin-bottom: 1.1rem;
-}
-
-.field__label {
-  display: block;
-  margin-bottom: 0.1rem;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: #8a93a0;
-}
-
-.field .md-field {
-  margin: 0;
-  min-height: 40px;
-  padding-top: 4px;
-}
-
-.field__note {
-  margin: 0.35rem 0 0;
-  font-size: 11.5px;
-  font-style: italic;
-  color: #9aa3af;
-}
-
-.field__note--ok {
-  color: $brand-accent-dark;
-  font-style: normal;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  .md-icon {
-    color: $brand-accent-dark !important;
-    font-size: 16px !important;
-    width: 16px;
-    min-width: 16px;
-    height: 16px;
-  }
-}
-
-.field__note--info {
-  color: $brand-primary;
-  font-style: normal;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  .md-icon {
-    color: $brand-primary !important;
-    font-size: 16px !important;
-    width: 16px;
-    min-width: 16px;
-    height: 16px;
-  }
-}
-</style>
