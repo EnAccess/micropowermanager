@@ -148,10 +148,6 @@ class MiniGridTest extends TestCase {
      * @return array<string, mixed>
      */
     private function pointFeature(float $latitude, float $longitude): array {
-        return [
-            'type' => 'Feature',
-            'geometry' => ['type' => 'Point', 'coordinates' => [$longitude, $latitude]],
-            'properties' => [],
-        ];
+        return json_decode(json_encode(GeographicalInformation::makePoint($latitude, $longitude)), true);
     }
 }
