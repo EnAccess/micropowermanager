@@ -75,8 +75,20 @@ class PaystackCredentialController extends Controller {
             'permanent_payment_url' => $permanentPaymentUrl,
             'time_based_payment_url' => $timeBasedPaymentUrl,
             'time_based_result_url' => $timeBasedResultUrl,
+            'webhook_url' => $this->buildWebhookUrl($companyId),
             'company_id' => $companyId,
         ]);
+    }
+
+    /**
+     * The URL operators must register in their Paystack dashboard so Paystack
+     * can deliver charge events. Unlike the payment callback URL this points at the
+     * backend.
+     */
+    private function buildWebhookUrl(int $companyId): string {
+        $appUrl = rtrim((string) config('app.url'), '/');
+
+        return $appUrl.'/api/paystack/webhook/'.$companyId;
     }
 
     /**

@@ -188,6 +188,41 @@
         </md-card>
       </widget>
     </div>
+
+    <div class="widget-line">
+      <widget color="primary" title="Paystack Webhook Link">
+        <md-card>
+          <md-card-content>
+            <p>
+              Paystack notifies MicroPowerManager about payment events through
+              this webhook. In your Paystack dashboard, go to
+              <strong>Settings &rarr; API Keys &amp; Webhooks</strong>
+              and paste this URL into the Webhook URL field for the environment
+              you are using (test or live). Without it, payments cannot be
+              confirmed automatically.
+            </p>
+            <md-field>
+              <label>Webhook URL</label>
+              <md-input :value="publicUrls.webhook_url" readonly />
+              <span class="md-helper-text">
+                Unique to your company — keep it configured in Paystack at all
+                times.
+              </span>
+            </md-field>
+          </md-card-content>
+          <md-card-actions md-alignment="left">
+            <md-button
+              class="md-primary"
+              @click="copyToClipboard(publicUrls.webhook_url)"
+              :disabled="!publicUrls.webhook_url"
+            >
+              <md-icon>content_copy</md-icon>
+              Copy
+            </md-button>
+          </md-card-actions>
+        </md-card>
+      </widget>
+    </div>
   </div>
 </template>
 
@@ -208,6 +243,7 @@ export default {
       loading: false,
       publicUrls: {
         permanent_payment_url: "",
+        webhook_url: "",
       },
     }
   },
@@ -247,6 +283,7 @@ export default {
         this.publicUrls.permanent_payment_url = this.addFrontendPrefix(
           response.permanent_payment_url,
         )
+        this.publicUrls.webhook_url = response.webhook_url
         // The callback URL is derived from the payment URL and stored
         // automatically, so operators never have to copy it by hand.
         this.credentialService.credential.callbackUrl = this.addFrontendPrefix(
