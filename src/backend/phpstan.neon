@@ -22,6 +22,11 @@ parameters:
     # Ensure PHPStan scans vendor for class discovery
     scanDirectories:
         - vendor/spatie/laravel-query-builder
+
+    excludePaths:
+        # Composer script; its Composer\* classes are provided by the running
+        # composer binary, not by vendor/, so PHPStan cannot resolve them.
+        - app/Utils/ScrambleProInstaller.php
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
 #
