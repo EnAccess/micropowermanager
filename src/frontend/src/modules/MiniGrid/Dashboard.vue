@@ -172,6 +172,7 @@
       </div>
 
       <md-dialog
+        class="mini-grid-edit-dialog"
         :md-active.sync="showModal"
         :md-close-on-esc="true"
         :md-click-outside-to-close="true"
@@ -182,6 +183,35 @@
             <label>{{ $tc("words.name") }}</label>
             <md-input v-model="editName" />
           </md-field>
+          <div class="md-layout md-gutter">
+            <div class="md-layout-item md-size-35 md-small-size-100">
+              <md-field>
+                <label>{{ $tc("words.latitude") }}</label>
+                <md-input v-model="editLatLng.lat" step="any" maxlength="8" />
+              </md-field>
+            </div>
+            <div class="md-layout-item md-size-35 md-small-size-100">
+              <md-field>
+                <label>{{ $tc("words.longitude") }}</label>
+                <md-input v-model="editLatLng.lon" step="any" maxlength="8" />
+              </md-field>
+            </div>
+            <div class="md-layout-item md-size-30 md-small-size-100">
+              <md-button class="md-primary" @click="setEditPoints">
+                {{ $tc("phrases.setPoints") }}
+              </md-button>
+            </div>
+          </div>
+          <div class="map-area">
+            <mini-grid-map
+              v-if="showModal"
+              ref="miniGridEditMapRef"
+              :mapping-service="editMappingService"
+              :marker="true"
+              map-container-id="mini-grid-edit-map"
+              @locationSet="editLocationSet"
+            />
+          </div>
         </md-dialog-content>
         <md-dialog-actions>
           <md-button @click="showModal = false">
@@ -199,6 +229,7 @@
 <script>
 import moment from "moment"
 
+import { geoJsonToLatLon, latLonToGeoJsonPoint } from "@/Helpers/Utils.js"
 import i18n from "@/i18n.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
@@ -209,6 +240,7 @@ import RevenueTargetPerCustomerType from "@/modules/MiniGrid/RevenueTargetPerCus
 import RevenueTrends from "@/modules/MiniGrid/RevenueTrends.vue"
 import TicketsOverview from "@/modules/MiniGrid/TicketsOverview.vue"
 import { BatchRevenueService } from "@/services/BatchRevenueService.js"
+import { ClusterService } from "@/services/ClusterService.js"
 import { DeviceAddressService } from "@/services/DeviceAddressService.js"
 import { ICONS, MappingService } from "@/services/MappingService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
@@ -230,11 +262,17 @@ export default {
   data() {
     return {
       miniGridService: new MiniGridService(),
+      clusterService: new ClusterService(),
       mappingService: new MappingService(),
+      editMappingService: new MappingService(),
       batchRevenueService: new BatchRevenueService(),
       deviceAddressService: new DeviceAddressService(),
       showModal: false,
       editName: "",
+      editLatLng: {
+        lat: null,
+        lon: null,
+      },
       miniGridData: {},
       miniGridId: null,
       chartOptions: {
@@ -279,6 +317,7 @@ export default {
     this.miniGridId = this.$route.params.id
     this.redirectionUrl += "/" + this.miniGridId
     this.mappingService.setMarkerUrl(ICONS.MINI_GRID)
+    this.editMappingService.setMarkerUrl(ICONS.MINI_GRID)
   },
   mounted() {
     this.getMiniGridData()
@@ -514,9 +553,60 @@ export default {
       }
       return this.trendChartData.base
     },
-    openEditModal() {
+    async openEditModal() {
       this.editName = this.miniGridData.name || ""
+      this.editLatLng.lat = null
+      this.editLatLng.lon = null
       this.showModal = true
+      try {
+        const miniGridWithGeoData =
+          await this.miniGridService.getMiniGridGeoData(this.miniGridId)
+        const location = geoJsonToLatLon(miniGridWithGeoData.location)
+        if (location) {
+          this.editLatLng.lat = location.lat
+          this.editLatLng.lon = location.lon
+        }
+        const clusterGeoData = await this.clusterService.getClusterGeoLocation(
+          miniGridWithGeoData.cluster_id,
+        )
+        const clusterFeature =
+          this.editMappingService.setClusterGeoData(clusterGeoData)
+        await this.$nextTick()
+        const editMap = this.$refs.miniGridEditMapRef
+        if (!editMap) return
+        editMap.map.invalidateSize()
+        if (clusterFeature) {
+          editMap.drawCluster()
+        }
+        if (location) {
+          editMap.setMiniGridMarkerManually([location.lat, location.lon])
+        }
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
+    editLocationSet(data) {
+      if (!data.error) {
+        this.editLatLng.lat = Number(
+          data.geoDataItem.coordinates.lat.toFixed(5),
+        )
+        this.editLatLng.lon = Number(
+          data.geoDataItem.coordinates.lng.toFixed(5),
+        )
+      } else {
+        this.editLatLng.lat = null
+        this.editLatLng.lon = null
+        this.$swal({
+          type: "warning",
+          text: data.error,
+        })
+      }
+    },
+    setEditPoints() {
+      this.$refs.miniGridEditMapRef.setMiniGridMarkerManually([
+        this.editLatLng.lat,
+        this.editLatLng.lon,
+      ])
     },
     async updateMiniGrid() {
       if (!this.editName || !this.editName.trim()) {
@@ -524,12 +614,21 @@ export default {
         return
       }
       try {
-        await this.miniGridService.updateMiniGrid(this.miniGridId, {
+        const miniGridData = {
           name: this.editName.trim(),
-        })
+        }
+        if (this.editLatLng.lat !== null && this.editLatLng.lon !== null) {
+          miniGridData.geoJson = latLonToGeoJsonPoint(
+            this.editLatLng.lat,
+            this.editLatLng.lon,
+          )
+        }
+        await this.miniGridService.updateMiniGrid(this.miniGridId, miniGridData)
         this.showModal = false
         this.alertNotify("success", this.$tc("phrases.miniGridUpdated"))
         await this.getMiniGridData()
+        // Redraw the map so the mini-grid marker reflects the new coordinates.
+        await this.$refs.miniGridMapRef.setMiniGridMapData(this.miniGridId)
       } catch (e) {
         this.alertNotify("error", e.message || this.$tc("phrases.updateFailed"))
       }
@@ -584,6 +683,13 @@ export default {
 <style scoped lang="scss">
 .map-area {
   z-index: 1 !important;
+}
+
+.mini-grid-edit-dialog {
+  ::v-deep .md-dialog-container {
+    width: 70%;
+    max-width: 900px;
+  }
 }
 .period-selector {
   position: absolute;
