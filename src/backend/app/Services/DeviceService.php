@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Lib\DeviceMappingResult;
 use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
 use App\Models\EBike;
@@ -180,31 +181,29 @@ class DeviceService implements IBaseService, IAssociative {
      * Asks the device's manufacturer API whether the unit is mapped on the
      * manufacturer side, so users can diagnose unit remappings before a payment
      * fails. Manufacturers without a device management API report as unsupported.
-     *
-     * @return array{supported: bool, mapped?: bool, device?: array<string, mixed>|null}
      */
-    public function verifyManufacturerMapping(Device $device): array {
+    public function verifyManufacturerMapping(Device $device): DeviceMappingResult {
         $manufacturer = $device->device->manufacturer;
         if (!$manufacturer || !$manufacturer->api_name) {
-            return ['supported' => false];
+            return new DeviceMappingResult(supported: false);
         }
 
         $api = resolve($manufacturer->api_name);
         if (!$api instanceof IManufacturerDeviceControl) {
-            return ['supported' => false];
+            return new DeviceMappingResult(supported: false);
         }
 
-        return ['supported' => true, ...$api->getDeviceInfo($device)];
+        $deviceInfo = $api->getDeviceInfo($device);
+
+        return new DeviceMappingResult(supported: true, mapped: $deviceInfo['mapped'], device: $deviceInfo['device']);
     }
 
     /**
      * Runs the mapping check and persists its outcome on the device, so the
      * status is available in lists and exports without re-querying the
-     * manufacturer. Returns the same payload as {@see verifyManufacturerMapping}.
-     *
-     * @return array{supported: bool, mapped?: bool, device?: array<string, mixed>|null}
+     * manufacturer.
      */
-    public function refreshManufacturerMapping(Device $device): array {
+    public function refreshManufacturerMapping(Device $device): DeviceMappingResult {
         $result = $this->verifyManufacturerMapping($device);
 
         $device->update([
@@ -215,15 +214,12 @@ class DeviceService implements IBaseService, IAssociative {
         return $result;
     }
 
-    /**
-     * @param array{supported: bool, mapped?: bool} $result
-     */
-    private function mappingStatus(array $result): string {
-        if (!$result['supported']) {
+    private function mappingStatus(DeviceMappingResult $result): string {
+        if (!$result->supported) {
             return Device::MAPPING_STATUS_UNSUPPORTED;
         }
 
-        return ($result['mapped'] ?? false)
+        return $result->mapped
             ? Device::MAPPING_STATUS_MAPPED
             : Device::MAPPING_STATUS_NOT_MAPPED;
     }

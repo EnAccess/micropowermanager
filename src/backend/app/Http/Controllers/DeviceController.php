@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\NewLogEvent;
 use App\Http\Requests\UpdateDeviceRequest;
 use App\Http\Resources\ApiResource;
+use App\Http\Resources\DeviceMappingResource;
 use App\Models\Device;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
@@ -34,8 +35,15 @@ class DeviceController extends Controller {
         return ApiResource::make($updatedDevice);
     }
 
-    public function deviceInfo(Device $device): ApiResource {
-        return ApiResource::make($this->deviceService->refreshManufacturerMapping($device));
+    /**
+     * Verify manufacturer device mapping.
+     *
+     * Queries the manufacturer's device management API to check whether the
+     * device is still mapped on the manufacturer side and persists the outcome
+     * on the device as `mapped`, `not_mapped` or `unsupported`.
+     */
+    public function deviceInfo(Device $device): DeviceMappingResource {
+        return DeviceMappingResource::make($this->deviceService->refreshManufacturerMapping($device));
     }
 
     public function updateGeoInformation(Request $request): ApiResource {
