@@ -166,8 +166,8 @@ If your plugin is a **payment provider** (processes transactions from an externa
    }
    ```
 
-   If your provider only *receives* payments through gateway callbacks (inbound only), this is all that is needed.
-   If it also supports *initiating* payments from MPM, continue with the next steps.
+   If your provider only _receives_ payments through gateway callbacks (inbound only), this is all that is needed.
+   If it also supports _initiating_ payments from MPM, continue with the next steps.
 
 2. **Implement the `PaymentInitiator` interface**
 
