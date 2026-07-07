@@ -4,32 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\MpmPlugin;
+use App\Enums\PaymentInitiationProvider;
 use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
-use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
-use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
-use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomTransactionService;
-use App\Plugins\VodacomMzPaymentProvider\Services\VodacomMzTransactionService;
-use App\Services\Interfaces\PaymentInitiator;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Collection;
 
 class PaymentInitiationService {
-    /**
-     * Maps provider IDs to their PaymentInitiator implementation class.
-     * When adding a new payment provider plugin, register it here.
-     *
-     * @var array<int, class-string<PaymentInitiator>>
-     */
-    private const array PROVIDER_MAP = [
-        0 => CashTransactionService::class,
-        MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER => VodacomMzTransactionService::class,
-        MpmPlugin::PAYSTACK_PAYMENT_PROVIDER => PaystackTransactionService::class,
-        MpmPlugin::PESAPAL_PAYMENT_PROVIDER => PesapalTransactionService::class,
-        MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER => SafaricomTransactionService::class,
-    ];
-
     public function __construct(
         private PluginsService $pluginsService,
         private MpmPluginService $mpmPluginService,
@@ -57,11 +38,10 @@ class PaymentInitiationService {
         int $customerId,
         ?string $serialId = null,
     ): array {
-        if (!isset(self::PROVIDER_MAP[$providerId])) {
-            throw new \InvalidArgumentException("Unsupported payment provider ID: {$providerId}");
-        }
+        $provider = PaymentInitiationProvider::tryFrom($providerId)
+            ?? throw new \InvalidArgumentException("Unsupported payment provider ID: {$providerId}");
 
-        $initiator = $this->container->make(self::PROVIDER_MAP[$providerId]);
+        $initiator = $this->container->make($provider->initiatorClass());
 
         return $initiator->initiatePayment(
             $amount,
@@ -73,17 +53,19 @@ class PaymentInitiationService {
         );
     }
 
-    /** @return Collection<int, array{id: int, name: string}> */
+    /**
+     * Active payment provider plugins that can initiate a payment.
+     * Inbound-only providers (e.g. Swifta, MeSomb) are excluded.
+     *
+     * @return Collection<int, array{id: int, name: string}>
+     */
     public function paymentProviders(): Collection {
-        $activePlugins = $this->pluginsService->getActivePaymentProviders();
-
-        return $activePlugins->map(function (Plugins $plugin): array {
-            $mpmPlugin = $this->mpmPluginService->getById($plugin->mpm_plugin_id);
-
-            return [
+        return $this->pluginsService->getActivePaymentProviders()
+            ->filter(fn (Plugins $plugin): bool => PaymentInitiationProvider::tryFrom($plugin->mpm_plugin_id) !== null)
+            ->values()
+            ->map(fn (Plugins $plugin): array => [
                 'id' => $plugin->mpm_plugin_id,
-                'name' => $mpmPlugin instanceof MpmPlugin ? $mpmPlugin->name : 'Unknown',
-            ];
-        });
+                'name' => $this->mpmPluginService->getById($plugin->mpm_plugin_id)->name,
+            ]);
     }
 }

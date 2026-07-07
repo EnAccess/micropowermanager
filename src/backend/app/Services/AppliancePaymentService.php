@@ -119,24 +119,15 @@ class AppliancePaymentService {
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{status: 'processing'|'processed', processed: bool, transaction_id: int}
      */
-    public function checkPaymentStatus(int $transactionId): array {
-        $transaction = Transaction::query()->find($transactionId);
-
-        if (!$transaction) {
-            return [
-                'status' => 'not_found',
-                'processed' => false,
-            ];
-        }
-
-        $hasPaymentHistories = $transaction->paymentHistories()->exists();
+    public function checkPaymentStatus(Transaction $transaction): array {
+        $processed = $transaction->paymentHistories()->exists();
 
         return [
-            'status' => $hasPaymentHistories ? 'processed' : 'processing',
-            'processed' => $hasPaymentHistories,
-            'transaction_id' => $transactionId,
+            'status' => $processed ? 'processed' : 'processing',
+            'processed' => $processed,
+            'transaction_id' => $transaction->id,
         ];
     }
 }

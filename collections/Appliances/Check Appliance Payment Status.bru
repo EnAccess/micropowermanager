@@ -1,0 +1,11 @@
+meta {
+  name: Check Appliance Payment Status
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{mpm_backend_url}}/api/appliances/payment/status/19
+  body: json
+  auth: inherit
+}

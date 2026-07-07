@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PaymentProvider;
 use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use Illuminate\Database\Eloquent\Collection;
@@ -54,20 +55,9 @@ class PluginsService {
      * @return Collection<int, Plugins>
      */
     public function getActivePaymentProviders(): Collection {
-        $paymentProviderIds = [
-            MpmPlugin::SWIFTA_PAYMENT_PROVIDER,
-            MpmPlugin::MESOMB_PAYMENT_PROVIDER,
-            MpmPlugin::WAVE_MONEY_PAYMENT_PROVIDER,
-            MpmPlugin::WAVECOM_PAYMENT_PROVIDER,
-            MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
-            MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
-            MpmPlugin::PESAPAL_PAYMENT_PROVIDER,
-            MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER,
-        ];
-
         return $this->plugin->newQuery()
             ->where('status', Plugins::ACTIVE)
-            ->whereIn('mpm_plugin_id', $paymentProviderIds)
+            ->whereIn('mpm_plugin_id', array_column(PaymentProvider::cases(), 'value'))
             ->get();
     }
 
@@ -95,9 +85,6 @@ class PluginsService {
     public function enablePlugin(int $mpmPluginId): Plugins {
         // Get the MpmPlugin from central database
         $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
-        if (!$mpmPlugin instanceof MpmPlugin) {
-            throw new \Exception("Plugin with ID {$mpmPluginId} not found");
-        }
 
         // 1. Create the plugin DB entry
         $pluginData = [

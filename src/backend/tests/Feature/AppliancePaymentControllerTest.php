@@ -34,6 +34,12 @@ class AppliancePaymentControllerTest extends TestCase {
             'status' => Plugins::INACTIVE,
         ]);
 
+        // Active, but inbound-only: cannot initiate payments, so it must not be offered.
+        Plugins::query()->create([
+            'mpm_plugin_id' => MpmPlugin::SWIFTA_PAYMENT_PROVIDER,
+            'status' => Plugins::ACTIVE,
+        ]);
+
         $response = $this->actingAs($this->user)->get('/api/appliances/payment/providers');
 
         $response->assertStatus(200);
@@ -92,6 +98,27 @@ class AppliancePaymentControllerTest extends TestCase {
         $this->assertNotNull($response['data']['transaction_id']);
 
         Queue::assertPushed(ProcessPayment::class);
+
+        // The queue is faked, so the transaction exists but has not been processed yet.
+        $statusResponse = $this->actingAs($this->user)
+            ->getJson("/api/appliances/payment/status/{$response['data']['transaction_id']}");
+
+        $statusResponse->assertStatus(200);
+        $statusResponse->assertJson([
+            'data' => [
+                'status' => 'processing',
+                'processed' => false,
+                'transaction_id' => $response['data']['transaction_id'],
+            ],
+        ]);
+    }
+
+    public function testReturnsNotFoundForUnknownTransactionStatus(): void {
+        $this->createTestData();
+
+        $response = $this->actingAs($this->user)->getJson('/api/appliances/payment/status/999999');
+
+        $response->assertStatus(404);
     }
 
     public function testReturnsRedirectUrlForPaystackPayment(): void {
@@ -174,7 +201,7 @@ class AppliancePaymentControllerTest extends TestCase {
             'due_date' => now()->addMonth(),
         ]);
 
-        $response = $this->actingAs($this->user)->post(
+        $response = $this->actingAs($this->user)->postJson(
             "/api/appliances/payment/{$appliancePerson->id}",
             [
                 'amount' => 100,
@@ -183,6 +210,18 @@ class AppliancePaymentControllerTest extends TestCase {
         );
 
         $response->assertStatus(422);
-        $response->assertJsonFragment(['message' => 'Unsupported payment provider ID: 999']);
+        $response->assertJsonValidationErrors('payment_provider');
+
+        // Inbound-only providers exist in the PaymentProvider enum but cannot initiate payments.
+        $response = $this->actingAs($this->user)->postJson(
+            "/api/appliances/payment/{$appliancePerson->id}",
+            [
+                'amount' => 100,
+                'payment_provider' => MpmPlugin::SWIFTA_PAYMENT_PROVIDER,
+            ]
+        );
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('payment_provider');
     }
 }

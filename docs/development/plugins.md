@@ -154,7 +154,22 @@ class InstallPackage extends Command
 
 If your plugin is a **payment provider** (processes transactions from an external payment gateway), there are additional integration steps required:
 
-1. **Implement the `PaymentInitiator` interface**
+1. **Register in the `PaymentProvider` enum**
+
+   Add a case with your plugin's MpmPlugin ID to the `App\Enums\PaymentProvider` enum, which lists all payment provider plugins.
+
+   ```php
+   enum PaymentProvider: int {
+       // ...other providers
+       /** Your Provider */
+       case YourProvider = MpmPlugin::YOUR_PAYMENT_PROVIDER;
+   }
+   ```
+
+   If your provider only *receives* payments through gateway callbacks (inbound only), this is all that is needed.
+   If it also supports *initiating* payments from MPM, continue with the next steps.
+
+2. **Implement the `PaymentInitiator` interface**
 
    Your plugin's transaction service must implement `App\Services\Interfaces\PaymentInitiator`. This enforces a consistent `initiatePayment()` method that creates the provider-specific record and an associated `Transaction` entry.
 
@@ -178,21 +193,26 @@ If your plugin is a **payment provider** (processes transactions from an externa
    }
    ```
 
-2. **Register in the provider map**
+3. **Register in the `PaymentInitiationProvider` enum**
 
-   Add your plugin's MpmPlugin ID and service class to the `PROVIDER_MAP` constant in `App\Services\PaymentInitiationService`:
+   Add a case to the `App\Enums\PaymentInitiationProvider` enum and map it to your transaction service in `initiatorClass()`.
+   This is required for your provider to appear as an available payment option in the UI.
+   Give the case a short docblock with the provider's display name — this enum is rendered in the public API documentation.
 
    ```php
-   private const PROVIDER_MAP = [
-       0 => CashTransactionService::class,
-       MpmPlugin::PAYSTACK_PAYMENT_PROVIDER => PaystackTransactionService::class,
-       MpmPlugin::YOUR_PAYMENT_PROVIDER => YourProviderTransactionService::class,
-   ];
+   enum PaymentInitiationProvider: int {
+       // ...other providers
+       /** Your Provider */
+       case YourProvider = MpmPlugin::YOUR_PAYMENT_PROVIDER;
+
+       public function initiatorClass(): string {
+           return match ($this) {
+               // ...other providers
+               self::YourProvider => YourProviderTransactionService::class,
+           };
+       }
+   }
    ```
-
-3. **Register in the active providers list**
-
-   Add your plugin's MpmPlugin ID to the `$paymentProviderIds` array in `App\Services\PluginsService::getActivePaymentProviders()`. This is required for your provider to appear as an available payment option in the UI.
 
 4. **Provider validation**
 
