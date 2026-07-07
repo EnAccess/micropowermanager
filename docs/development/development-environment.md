@@ -134,6 +134,34 @@ pecl install redis
 
 Alternatively [Laravel Herd](https://herd.laravel.com/) can be used.
 
+### Scramble PRO
+
+MicroPowerManager uses [Scramble](https://scramble.dedoc.co/) to generate its OpenAPI documentation.
+Contributors with a [Scramble PRO](https://scramble.dedoc.co/pro) license additionally get the `dedoc/scramble-pro` extension.
+
+> [!INFO]
+> It is absolutely not mandatory to own a Scramble PRO license to meanigfully develop MicroPowerManager.
+
+Scramble PRO is a paid, license-gated package and therefore deliberately not tracked in `composer.json`/`composer.lock`.
+Instead, the Composer script [`App\Utils\ScrambleProInstaller`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/app/Utils/ScrambleProInstaller.php) installs it automatically for everyone with credentials for `satis.dedoc.co`.
+Without credentials the plugin silently skips and MicroPowerManager works normally without Scramble PRO.
+
+To set it up on your machine
+
+- Configure your license credentials once
+
+  ```sh
+  composer config --global http-basic.satis.dedoc.co <email> <license-key>
+  ```
+
+- Trigger the installation from `src/backend`
+
+  ```sh
+  composer dump-autoload
+  ```
+
+The desired version constraint is maintained under `extra.scramble-pro-installer.constraint` in [`src/backend/composer.json`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/composer.json).
+
 ### Access Docker MySQL database locally
 
 Certain PHP tools (such as migration or seeding utilities) work more conveniently when they can connect directly to the database from your local environment, rather than from inside a Docker container.

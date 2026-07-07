@@ -60,6 +60,11 @@ jobs:
           VERSION=$(cat version)
           echo "SCRAMBLE_OPEN_API_VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Install Scramble PRO
+        working-directory: ./src/backend
+        run: |
+          composer config http-basic.satis.dedoc.co ${{ secrets.SCRAMBLE_PRO_USERNAME }} ${{ secrets.SCRAMBLE_PRO_PASSWORD }}
+
       - name: Install Composer Dependencies
         working-directory: ./src/backend
         run: |
