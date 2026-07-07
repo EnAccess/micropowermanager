@@ -15,8 +15,6 @@ class CreateAddressRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @bodyParam city_id int required
-     *
      * @return array<string, mixed>
      */
     public function rules(): array {

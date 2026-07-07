@@ -13,12 +13,7 @@ class AgentAssignedApplianceWebController extends Controller {
     ) {}
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @bodyParam agent_id integer required
-     * @bodyParam user_id integer required
-     * @bodyParam appliance_type_id integer required
-     * @bodyParam cost integer required
+     * Assign an appliance to an agent.
      *
      * @return ApiResource
      */
@@ -34,7 +29,7 @@ class AgentAssignedApplianceWebController extends Controller {
     }
 
     /**
-     * List for Web interface.
+     * List appliances assigned to an agent.
      *
      * @param int $agentId
      *

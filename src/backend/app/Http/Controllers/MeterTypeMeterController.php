@@ -10,10 +10,9 @@ class MeterTypeMeterController extends Controller {
     public function __construct(private MeterTypeMeterService $meterTypeMeterService) {}
 
     /**
-     * List with Meters
-     * Displays the meter types with the associated meters.
+     * List meters of a meter type.
      *
-     * @urlParam id required
+     * Displays the meter type with its associated meters.
      *
      * @return ApiResource
      */

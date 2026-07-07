@@ -15,8 +15,9 @@ class TariffController extends Controller {
     ) {}
 
     /**
-     * List
-     * a list of all tariffs.
+     * List tariffs.
+     *
+     * A list of all tariffs.
      * The list is paginated and each page contains 15 results.
      */
     public function index(Request $request): ApiResource {
@@ -26,21 +27,14 @@ class TariffController extends Controller {
     }
 
     /**
-     * Detail.
-     *
-     * @urlParam     id int required
+     * Get tariff details.
      */
     public function show(Request $request, int $tariffId): ApiResource {
         return ApiResource::make($this->tariffService->getById($tariffId));
     }
 
     /**
-     * Create.
-     *
-     * @bodyParam name string required
-     * @bodyParam factor int. The factor between two different sub tariffs. Like day/night sub-tariffs.
-     * @bodyParam currency string
-     * @bodyParam price int required.
+     * Create a tariff.
      */
     public function store(TariffCreateRequest $request): JsonResponse {
         $tariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);

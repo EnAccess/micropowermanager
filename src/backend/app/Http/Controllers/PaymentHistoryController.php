@@ -9,11 +9,8 @@ use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Dedoc\Scramble\Attributes\BodyParameter;
 
-/**
- * @group   Payment-History
- * Class PaymentHistoryController
- */
 class PaymentHistoryController {
     /**
      * PaymentHistoryController constructor.
@@ -21,12 +18,7 @@ class PaymentHistoryController {
     public function __construct(private PaymentHistory $history) {}
 
     /**
-     * Detail.
-     *
-     * @urlParam payerId integer required
-     * @urlParam period string required
-     * @urlParam limit integer
-     * @urlParam order string
+     * Get person payment flow grouped by period.
      *
      * @return array<string, array<string, mixed>>
      */
@@ -50,9 +42,7 @@ class PaymentHistoryController {
     }
 
     /**
-     * Payment Periods.
-     *
-     * @urlParam personId integer required
+     * Get person payment period overview.
      *
      * @throws \Exception
      */
@@ -73,9 +63,7 @@ class PaymentHistoryController {
     }
 
     /**
-     * Person payment flow per year.
-     *
-     * @urlParam personId integer required
+     * Get person payment flow per year.
      *
      * @return array<int, float>
      */
@@ -91,10 +79,9 @@ class PaymentHistoryController {
     }
 
     /**
-     * Person Debts.
+     * Get person debts.
      *
-     * @urlParam personId integer required
-     * checks if the person has any debts to the system
+     * Checks if the person has any debts to the system.
      */
     public function debts(int $personId): ApiResource {
         $accessRateDebt = 0;
@@ -117,13 +104,12 @@ class PaymentHistoryController {
     }
 
     /**
-     * Payments list with date range.
-     *
-     * @bodyParam begin string
-     * @bodyParam end string
+     * List payments within a date range.
      *
      * @throws \Exception
      */
+    #[BodyParameter('begin', description: 'Start date of the range.', type: 'string', format: 'date')]
+    #[BodyParameter('end', description: 'End date of the range.', type: 'string', format: 'date')]
     public function getPaymentRange(): ApiResource {
         $begin = request('begin'); // Y-m-d
         $end = request('end'); // Y-m- d

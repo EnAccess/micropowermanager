@@ -38,9 +38,6 @@ class AgentAuthController extends Controller {
      * Agent login.
      *
      * Login a user of the Agent App and get JWT token via given credentials.
-     *
-     * @bodyParam email string required
-     * @bodyParam password string required
      */
     #[BodyParameter('email', type: 'string', format: 'email', example: DemoCompany::DEMO_COMPANY_AGENT_EMAIL)]
     #[BodyParameter('password', type: 'string', format: 'password', example: DemoCompany::DEMO_COMPANY_PASSWORD)]

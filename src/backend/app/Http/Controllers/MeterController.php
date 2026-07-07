@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateMeterRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Meter\Meter;
 use App\Services\MeterService;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -18,13 +19,12 @@ class MeterController extends Controller {
     ) {}
 
     /**
-     * List
-     * Lists all used meters with meterType
-     * The response is paginated with 15 results on each page/request.
+     * List meters.
      *
-     * @urlParam     page int
-     * @urlParam     in_use int to list wether used or all meters
+     * Lists all used meters with their meter type.
+     * The response is paginated with 15 results on each page/request.
      */
+    #[QueryParameter('in_use', description: 'Whether to list only meters in use or all meters.', type: 'int')]
     public function index(Request $request): ApiResource {
         $inUse = $request->input('in_use');
         $limit = $request->input('limit', 15);
@@ -33,12 +33,7 @@ class MeterController extends Controller {
     }
 
     /**
-     * Create
-     * Stores a new meter.
-     *
-     * @bodyParam serial_number string required
-     * @bodyParam meter_type_id int required
-     * @bodyParam manufacturer_id int required
+     * Create a meter.
      *
      * @return mixed
      *
@@ -51,27 +46,25 @@ class MeterController extends Controller {
     }
 
     /**
-     * Detail
+     * Get meter details.
+     *
      * Detailed meter with following relations
      * - Tariff.tariff
      * - Meter Type
      * - Meter.connectionType
      * - Meter.connectionGroup
      * - Manufacturer.
-     *
-     * @urlParam serialNumber string
      */
     public function show(string $serialNumber): ApiResource {
         return ApiResource::make($this->meterService->getBySerialNumber($serialNumber));
     }
 
     /**
-     * Search
+     * Search meters.
+     *
      * The search term will be searched in following fields
      * - Tariff.name
      * - Serial number.
-     *
-     * @bodyParam term string required
      */
     public function search(): ApiResource {
         $term = request('term');
@@ -81,10 +74,9 @@ class MeterController extends Controller {
     }
 
     /**
-     * Delete
-     * Deletes the meter with its all releations.
+     * Delete a meter.
      *
-     * @urlParam meterId. The ID of the meter to be delete
+     * Deletes the meter with all its relations.
      */
     public function destroy(int $meterId): JsonResponse {
         $this->meterService->getById($meterId);

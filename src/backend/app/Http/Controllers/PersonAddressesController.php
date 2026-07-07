@@ -17,12 +17,9 @@ class PersonAddressesController extends Controller {
     ) {}
 
     /**
-     * Addresses
+     * List person addresses.
+     *
      * A list of registered addresses for that person.
-     *
-     * @bodyParam    person int required the ID of the person. Example: 2
-     *
-     * @apiResourceModel \App\Models\Person\Person
      */
     public function show(int $personId): ApiResource {
         $person = $this->personService->getById($personId);
