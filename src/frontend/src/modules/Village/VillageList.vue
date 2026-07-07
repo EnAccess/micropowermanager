@@ -48,32 +48,65 @@
     </widget>
 
     <md-dialog
+      class="village-edit-dialog"
       :md-active.sync="editDialogActive"
       :md-close-on-esc="true"
       :md-click-outside-to-close="true"
     >
       <md-dialog-title>{{ $tc("phrases.editVillage") }}</md-dialog-title>
       <md-dialog-content>
-        <md-field>
-          <label>{{ $tc("words.name") }}</label>
-          <md-input v-model="editName" />
-        </md-field>
-        <md-field>
-          <label for="editCountry">{{ $tc("words.country") }}</label>
-          <md-select
-            v-model="editCountryId"
-            name="editCountry"
-            id="editCountry"
-          >
-            <md-option
-              v-for="country in countries"
-              :value="country.id"
-              :key="country.id"
-            >
-              {{ country.country_name }}
-            </md-option>
-          </md-select>
-        </md-field>
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-50 md-small-size-100">
+            <md-field>
+              <label>{{ $tc("words.name") }}</label>
+              <md-input v-model="editName" />
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-50 md-small-size-100">
+            <md-field>
+              <label for="editCountry">{{ $tc("words.country") }}</label>
+              <md-select
+                v-model="editCountryId"
+                name="editCountry"
+                id="editCountry"
+              >
+                <md-option
+                  v-for="country in countries"
+                  :value="country.id"
+                  :key="country.id"
+                >
+                  {{ country.country_name }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-35 md-small-size-100">
+            <md-field>
+              <label>{{ $tc("words.latitude") }}</label>
+              <md-input v-model="cityLatLng.lat" step="any" maxlength="8" />
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-35 md-small-size-100">
+            <md-field>
+              <label>{{ $tc("words.longitude") }}</label>
+              <md-input v-model="cityLatLng.lon" step="any" maxlength="8" />
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-30 md-small-size-100">
+            <md-button class="md-primary" @click="setPoints">
+              {{ $tc("phrases.setPoints") }}
+            </md-button>
+          </div>
+        </div>
+        <div class="map-area">
+          <village-map
+            v-if="editDialogActive"
+            ref="villageMapRef"
+            :mapping-service="mappingService"
+            :marker="true"
+            @locationSet="villageLocationSet"
+          />
+        </div>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button @click="editDialogActive = false">
@@ -88,21 +121,31 @@
 </template>
 
 <script>
+import { geoJsonToLatLon, latLonToGeoJsonPoint } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
+import { villageMapContext } from "@/mixins/villageMapContext.js"
+import VillageMap from "@/modules/Map/VillageMap.vue"
 import { CityService } from "@/services/CityService.js"
+import { ClusterService } from "@/services/ClusterService.js"
 import CountryService from "@/services/CountryService.js"
+import { ICONS, MappingService } from "@/services/MappingService.js"
+import { MiniGridService } from "@/services/MiniGridService.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "VillageList",
-  mixins: [notify],
+  mixins: [notify, villageMapContext],
   components: {
+    VillageMap,
     Widget,
   },
   data() {
     return {
       cityService: new CityService(),
+      clusterService: new ClusterService(),
       countryService: new CountryService(),
+      miniGridService: new MiniGridService(),
+      mappingService: new MappingService(),
       cities: [],
       countries: [],
       loading: false,
@@ -111,6 +154,10 @@ export default {
       editName: "",
       editCountryId: null,
     }
+  },
+  created() {
+    this.mappingService.setConstantMarkerUrl(ICONS.MINI_GRID)
+    this.mappingService.setMarkerUrl(ICONS.VILLAGE)
   },
   mounted() {
     this.loadCities()
@@ -138,11 +185,32 @@ export default {
     goToAddVillage() {
       this.$router.push("/locations/add-village")
     },
-    openEditDialog(city) {
+    async openEditDialog(city) {
       this.editingCity = city
       this.editName = city.name || ""
       this.editCountryId = city.country_id || null
+      const location = geoJsonToLatLon(city.location)
+      this.cityLatLng.lat = location ? location.lat : null
+      this.cityLatLng.lon = location ? location.lon : null
       this.editDialogActive = true
+
+      try {
+        const miniGridWithGeoData = await this.loadVillageMapContext(
+          city.mini_grid_id,
+        )
+        if (!miniGridWithGeoData) return
+        await this.$nextTick()
+        const villageMap = this.$refs.villageMapRef
+        if (!villageMap) return
+        villageMap.map.invalidateSize()
+        villageMap.drawCluster()
+        villageMap.setMiniGridMarker()
+        if (location) {
+          villageMap.setVillageMarkerManually([location.lat, location.lon])
+        }
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
     },
     async saveEdit() {
       if (!this.editName || !this.editName.trim()) {
@@ -150,11 +218,18 @@ export default {
         return
       }
       try {
-        await this.cityService.updateCity(this.editingCity.id, {
+        const cityData = {
           name: this.editName.trim(),
           miniGridId: this.editingCity.mini_grid_id,
           countryId: this.editCountryId,
-        })
+        }
+        if (this.cityLatLng.lat !== null && this.cityLatLng.lon !== null) {
+          cityData.geoJson = latLonToGeoJsonPoint(
+            this.cityLatLng.lat,
+            this.cityLatLng.lon,
+          )
+        }
+        await this.cityService.updateCity(this.editingCity.id, cityData)
         this.editDialogActive = false
         this.alertNotify("success", this.$tc("phrases.villageUpdated"))
         await this.loadCities()
@@ -196,5 +271,16 @@ export default {
   padding: 2rem;
   text-align: center;
   color: #777;
+}
+
+.village-edit-dialog {
+  ::v-deep .md-dialog-container {
+    width: 70%;
+    max-width: 900px;
+  }
+}
+
+.map-area {
+  z-index: 1 !important;
 }
 </style>

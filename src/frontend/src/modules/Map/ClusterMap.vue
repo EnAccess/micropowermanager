@@ -1,5 +1,5 @@
 <template>
-  <div id="map"></div>
+  <div :id="mapContainerId" class="leaflet-map"></div>
 </template>
 
 <script>
@@ -211,6 +211,15 @@ export default {
         this.map.fitBounds(bounds)
       }
     },
+    // Current geometry of the drawn cluster polygon, including any unsaved
+    // leaflet-draw vertex edits. Leaflet's toGeoJSON emits [lng, lat] and a
+    // closed ring. Returns null when no polygon is on the map.
+    getDrawnPolygonGeometry() {
+      const polygonLayer = this.editableLayer
+        .getLayers()
+        .find((layer) => layer._latlngs)
+      return polygonLayer ? polygonLayer.toGeoJSON().geometry : null
+    },
     setMiniGridMarkers() {
       const control = L.control.layers(null, null, { collapsed: false })
       control.addTo(this.map)
@@ -250,7 +259,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#map {
+.leaflet-map {
   height: 100%;
   min-height: 500px;
   width: 100%;

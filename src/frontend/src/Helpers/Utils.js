@@ -1,3 +1,5 @@
+import L from "leaflet"
+
 export const convertObjectKeysToCamelCase = (obj) => {
   const result = {}
   for (const [key, value] of Object.entries(obj)) {
@@ -58,3 +60,8 @@ export const geoJsonToLatLon = (geo) => {
   }
   return { lat: coordinates[1], lon: coordinates[0] }
 }
+
+// Build the GeoJSON Point Feature the backend expects (inverse of geoJsonToLatLon).
+// Delegates to Leaflet, which emits RFC 7946 [longitude, latitude] coordinates.
+export const latLonToGeoJsonPoint = (lat, lon) =>
+  L.marker([Number(lat), Number(lon)]).toGeoJSON()

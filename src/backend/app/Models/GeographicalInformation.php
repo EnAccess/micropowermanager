@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use Database\Factories\GeographicalInformationFactory;
+use GeoJson\Exception\Exception as GeoJsonException;
 use GeoJson\Feature\Feature;
+use GeoJson\GeoJson;
 use GeoJson\Geometry\Point;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -68,6 +70,31 @@ class GeographicalInformation extends BaseModel {
         if (!is_numeric(trim((string) $latitude)) || !is_numeric(trim((string) $longitude))) {
             return null;
         }
+
+        return self::makePoint((float) $latitude, (float) $longitude);
+    }
+
+    /**
+     * Build a GeoJSON Point Feature from a client-sent Feature array. Rebuilding through makePoint
+     * instead of persisting the raw request payload keeps the stored shape canonical: `properties`
+     * stays a `{}` object (a decoded empty JSON object is a PHP array, which would re-encode as
+     * `[]`) and stray client keys are dropped. Returns null for malformed input.
+     *
+     * @param array<string, mixed> $feature
+     */
+    public static function pointFromInputGeoJson(array $feature): ?Feature {
+        try {
+            $geoJson = GeoJson::jsonUnserialize($feature);
+        } catch (GeoJsonException) {
+            return null;
+        }
+
+        if (!$geoJson instanceof Feature || !$geoJson->getGeometry() instanceof Point) {
+            return null;
+        }
+
+        // GeoJSON coordinates are [longitude, latitude].
+        [$longitude, $latitude] = $geoJson->getGeometry()->getCoordinates();
 
         return self::makePoint((float) $latitude, (float) $longitude);
     }

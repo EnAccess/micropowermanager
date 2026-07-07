@@ -7,6 +7,8 @@ use App\Models\Cluster;
 use Database\Factories\ClusterFactory;
 use Database\Factories\MiniGridFactory;
 use Database\Factories\UserFactory;
+use GeoJson\Feature\Feature;
+use GeoJson\Geometry\Polygon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -36,6 +38,26 @@ class ClusterTest extends TestCase {
         $response->assertStatus(200);
         $this->assertEquals('Renamed', $response['data']['name']);
         $this->assertEquals('Renamed', $cluster->fresh()->name);
+    }
+
+    public function testUserUpdatesAClusterPolygon(): void {
+        $cluster = ClusterFactory::new()->create([
+            'name' => 'Original',
+            'manager_id' => $this->user->id,
+        ]);
+        $ring = [[39.7, -7.8], [39.8, -7.8], [39.8, -7.9], [39.7, -7.8]];
+        $polygon = new Feature(new Polygon([$ring]), []);
+
+        $response = $this->actingAs($this->user)->putJson("/api/clusters/{$cluster->id}", [
+            'geo_json' => json_decode(json_encode($polygon), true),
+        ]);
+
+        $response->assertStatus(200);
+        $storedGeoJson = $cluster->fresh()->geo_json;
+        $this->assertEquals('Polygon', $storedGeoJson->geometry->type);
+        $this->assertEquals($ring, $storedGeoJson->geometry->coordinates[0]);
+        // Empty properties must round-trip as a JSON object, not an array.
+        $this->assertIsObject($storedGeoJson->properties);
     }
 
     public function testUserSoftDeletesAChildlessCluster(): void {

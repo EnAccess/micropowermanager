@@ -41,7 +41,7 @@
           </md-button>
           <md-button class="md-raised" @click="openEditDialog">
             <md-icon>edit</md-icon>
-            {{ $tc("words.rename") }}
+            {{ $tc("words.edit") }}
           </md-button>
           <md-button class="md-raised md-accent" @click="confirmDelete">
             <md-icon>delete</md-icon>
@@ -51,16 +51,26 @@
       </div>
     </md-toolbar>
     <md-dialog
+      class="cluster-edit-dialog"
       :md-active.sync="editDialogActive"
       :md-close-on-esc="true"
       :md-click-outside-to-close="true"
     >
-      <md-dialog-title>{{ $tc("phrases.renameCluster") }}</md-dialog-title>
+      <md-dialog-title>{{ $tc("phrases.editCluster") }}</md-dialog-title>
       <md-dialog-content>
         <md-field>
           <label>{{ $tc("words.name") }}</label>
           <md-input v-model="editName" />
         </md-field>
+        <div class="map-area">
+          <cluster-map
+            v-if="editDialogActive"
+            ref="clusterEditMapRef"
+            :mapping-service="editMappingService"
+            :edit="true"
+            map-container-id="cluster-edit-map"
+          />
+        </div>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button @click="editDialogActive = false">
@@ -130,6 +140,7 @@ export default {
     return {
       clusterData: {},
       mappingService: new MappingService(),
+      editMappingService: new MappingService(),
       clusterService: new ClusterService(),
       clusterId: null,
       loading: false,
@@ -183,28 +194,7 @@ export default {
       const markingInfos = []
       const cluster = this.clusterData.clusterData || this.clusterData
 
-      if (cluster.geo_json !== null && cluster.geo_json !== undefined) {
-        let geoJsonFeature
-        if (cluster.geo_json.type === "Feature") {
-          geoJsonFeature = cluster.geo_json
-        } else if (cluster.geo_json.type === "FeatureCollection") {
-          geoJsonFeature = cluster.geo_json.features[0]
-        } else {
-          throw new Error(
-            "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
-          )
-        }
-
-        geoJsonFeature = {
-          ...geoJsonFeature,
-          properties: {
-            ...geoJsonFeature.properties,
-            name: cluster.name || "",
-          },
-        }
-
-        this.mappingService.setGeoData(geoJsonFeature)
-      }
+      this.mappingService.setClusterGeoData(cluster)
 
       const miniGridsOfCluster = this.clusterData.clusterData?.mini_grids || []
       miniGridsOfCluster.map((miniGrid) => {
@@ -279,9 +269,18 @@ export default {
       this.boxData["people"] = data
       this.boxData["meters"] = data
     },
-    openEditDialog() {
+    async openEditDialog() {
       this.editName = this.clusterData.name || ""
       this.editDialogActive = true
+      const cluster = this.clusterData.clusterData || this.clusterData
+      const clusterFeature = this.editMappingService.setClusterGeoData(cluster)
+      await this.$nextTick()
+      const editMap = this.$refs.clusterEditMapRef
+      if (!editMap) return
+      editMap.map.invalidateSize()
+      if (clusterFeature) {
+        editMap.drawCluster()
+      }
     },
     async saveEdit() {
       if (!this.editName || !this.editName.trim()) {
@@ -289,13 +288,31 @@ export default {
         return
       }
       try {
-        await this.clusterService.updateCluster(this.clusterId, {
+        const clusterData = {
           name: this.editName.trim(),
-        })
+        }
+        const geometry = this.$refs.clusterEditMapRef?.getDrawnPolygonGeometry()
+        if (geometry) {
+          clusterData.geo_json = {
+            type: "Feature",
+            geometry: geometry,
+            properties: {},
+          }
+        }
+        await this.clusterService.updateCluster(this.clusterId, clusterData)
         this.editDialogActive = false
         this.alertNotify("success", this.$tc("phrases.clusterUpdated"))
         await this.$store.dispatch("clusterDashboard/list")
         this.loadClusterData(this.clusterId)
+        if (clusterData.geo_json) {
+          // The dashboard store is cache-backed and may still hold the old
+          // polygon — redraw the page map from the just-saved geometry.
+          this.mappingService.setClusterGeoData({
+            geo_json: clusterData.geo_json,
+            name: clusterData.name,
+          })
+          this.$refs.clusterMapRef.drawCluster()
+        }
       } catch (e) {
         this.alertNotify("error", e.message || this.$tc("phrases.updateFailed"))
       }
@@ -344,4 +361,15 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.cluster-edit-dialog {
+  ::v-deep .md-dialog-container {
+    width: 70%;
+    max-width: 900px;
+  }
+}
+
+.map-area {
+  z-index: 1 !important;
+}
+</style>

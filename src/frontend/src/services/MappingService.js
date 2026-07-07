@@ -213,6 +213,68 @@ export class MappingService {
     }
   }
 
+  /**
+   * Load a cluster ({ geo_json, name }) as the map's geo data: normalizes its
+   * geo_json (Feature or FeatureCollection) into a single Feature carrying the
+   * cluster name, centers the map on it, and returns the Feature.
+   * Returns null when the cluster has no geo data.
+   */
+  setClusterGeoData(cluster) {
+    if (!cluster || !cluster.geo_json) {
+      return null
+    }
+
+    let feature
+    if (cluster.geo_json.type === "Feature") {
+      feature = cluster.geo_json
+    } else if (cluster.geo_json.type === "FeatureCollection") {
+      feature = cluster.geo_json.features[0]
+    } else {
+      throw new Error(
+        "cluster.geo_json must be a GeoJSON Feature or FeatureCollection",
+      )
+    }
+
+    feature = {
+      ...feature,
+      properties: {
+        ...feature.properties,
+        name: cluster.name || "",
+      },
+    }
+
+    const center = this.featureCenter(feature)
+    if (center) {
+      this.setCenter(center)
+    }
+
+    this.setGeoData(feature)
+    return feature
+  }
+
+  // Returns a [lat, lon] center for a Feature from its bbox or first coordinate, or null.
+  featureCenter(feature) {
+    const bbox = feature.bbox
+    if (bbox && bbox.length >= 4) {
+      return [(bbox[1] + bbox[3]) / 2, (bbox[0] + bbox[2]) / 2]
+    }
+
+    const geometry = feature.geometry
+    if (!geometry) {
+      return null
+    }
+
+    const coordinates = geometry.coordinates
+    if (geometry.type === "Point") {
+      return [coordinates[1], coordinates[0]]
+    }
+    if (coordinates?.[0]?.[0]) {
+      const [lon, lat] = coordinates[0][0]
+      return lat && lon ? [lat, lon] : null
+    }
+    return null
+  }
+
   setConstantMarkerUrl(constantMarkerUrl) {
     this.constantMarkerUrl = constantMarkerUrl
   }
