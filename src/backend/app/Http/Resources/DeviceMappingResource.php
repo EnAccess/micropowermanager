@@ -15,11 +15,11 @@ class DeviceMappingResource extends JsonResource {
      */
     public function toArray(Request $request): array {
         return [
-            /** Whether the device's manufacturer exposes a device management API. */
+            /* Whether the device's manufacturer exposes a device management API. */
             'supported' => $this->supported,
-            /** Whether the device is still mapped to this company on the manufacturer side. Omitted when unsupported. */
+            /* Whether the device is still mapped to this company on the manufacturer side. Omitted when unsupported. */
             'mapped' => $this->when($this->supported, $this->mapped),
-            /**
+            /*
              * Manufacturer-specific device details, when the manufacturer returns them. Omitted when unsupported.
              *
              * @var array<string, mixed>|null
