@@ -15,7 +15,7 @@ class MiniGridController extends Controller {
     ) {}
 
     /**
-     * List.
+     * List mini-grids.
      */
     public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
@@ -24,9 +24,7 @@ class MiniGridController extends Controller {
     }
 
     /**
-     * Detail.
-     *
-     * @bodyParam id int required
+     * Get mini-grid details.
      */
     public function show(int $miniGridId, Request $request): ApiResource {
         $relation = $request->input('relation');

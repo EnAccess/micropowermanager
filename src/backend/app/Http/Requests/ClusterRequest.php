@@ -4,14 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * @urlParam  id required The ID of the post.
- * @urlParam  lang The language.
- *
- * @bodyParam name string required The name  of the cluster.
- * @bodyParam geo_json string required. GeoJSON polygon coordinates.
- * @bodyParam manager_id int required. The id of the user who is responsible for the cluster.
- */
 class ClusterRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +19,11 @@ class ClusterRequest extends FormRequest {
      */
     public function rules(): array {
         return [
+            // The name of the cluster.
             'name' => ['required'],
+            // GeoJSON polygon coordinates.
             'geo_json' => ['required'],
+            // The id of the user who is responsible for the cluster.
             'manager_id' => ['required'],
         ];
     }

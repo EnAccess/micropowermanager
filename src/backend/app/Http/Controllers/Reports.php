@@ -27,11 +27,6 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-/**
- * Class Reports.
- *
- * @group Export
- */
 class Reports {
     /** @var array<string, array{energy: int, access_rate: int, unit: float}> */
     private array $totalSold = [];

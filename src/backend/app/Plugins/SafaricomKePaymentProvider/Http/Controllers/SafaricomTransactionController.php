@@ -98,6 +98,8 @@ class SafaricomTransactionController extends Controller {
     }
 
     /**
+     * Get the status of a transaction.
+     *
      * Polled by the STK Push page while the customer is entering their PIN.
      * For pending transactions this hits Daraja's STK Push Query so we don't
      * have to wait for the (frequently delayed) async callback. Once the

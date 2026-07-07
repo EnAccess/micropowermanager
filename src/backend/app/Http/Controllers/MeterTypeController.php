@@ -9,17 +9,13 @@ use App\Services\MeterTypeService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
-/**
- * @group   MeterTypes
- * Class MeterTypeController
- */
 class MeterTypeController extends Controller {
     use SoftDeletes;
 
     public function __construct(private MeterTypeService $meterTypeService) {}
 
     /**
-     * List.
+     * List meter types.
      */
     public function index(Request $request): ApiResource {
         $limit = $request->input('limit');
@@ -28,12 +24,7 @@ class MeterTypeController extends Controller {
     }
 
     /**
-     * Store
-     * Creates a new meter type.
-     *
-     * @bodyParam online int required
-     * @bodyParam phase int required
-     * @bodyParam max_current int required
+     * Create a meter type.
      *
      * @return ApiResource
      */
@@ -44,23 +35,14 @@ class MeterTypeController extends Controller {
     }
 
     /**
-     * Detail.
-     *
-     * @bodyParam id int required
+     * Get meter type details.
      */
     public function show(int $meterTypeId): ApiResource {
         return ApiResource::make($this->meterTypeService->getById($meterTypeId));
     }
 
     /**
-     * Update
-     * Updates the given meter type.
-     *
-     * @urlParam  id required
-     *
-     * @bodyParam online int required
-     * @bodyParam phase int required
-     * @bodyParam max_current int required
+     * Update a meter type.
      */
     public function update(MeterTypeUpdateRequest $request, int $meterTypeId): ApiResource {
         $meterType = $this->meterTypeService->getById($meterTypeId);

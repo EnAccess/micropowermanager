@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Services\AgentAssignedApplianceService;
 use App\Services\AgentService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
-/**
- * @group   Agent-Appliances
- * Class AgentAssignedApplianceController
- */
+#[Group('AgentApp', weight: 21)]
 class AgentAssignedAppliancesController extends Controller {
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
@@ -18,7 +16,7 @@ class AgentAssignedAppliancesController extends Controller {
     ) {}
 
     /**
-     * List for Android-APP.
+     * List appliances assigned to the authenticated agent.
      *
      * @return ApiResource
      */

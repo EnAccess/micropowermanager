@@ -2,21 +2,17 @@
 
 namespace App\Http\Requests;
 
-/**
- * @urlParam clusterId required The ID of the cluster.
- *
- * @bodyParam name string The name of the cluster.
- * @bodyParam geo_json object GeoJSON polygon coordinates.
- * @bodyParam manager_id int The id of the user who is responsible for the cluster.
- */
 class UpdateClusterRequest extends ClusterRequest {
     /**
      * @return array<string, mixed>
      */
     public function rules(): array {
         return [
+            // The name of the cluster.
             'name' => ['sometimes', 'string', 'min:1'],
+            // GeoJSON polygon coordinates.
             'geo_json' => ['sometimes'],
+            // The id of the user who is responsible for the cluster.
             'manager_id' => ['sometimes', 'integer'],
         ];
     }

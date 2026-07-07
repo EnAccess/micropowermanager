@@ -9,15 +9,11 @@ use App\Services\AddressesService;
 use App\Services\CountryService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Class PersonController.
- *
- * @group People
- */
 class PersonController extends Controller {
     public function __construct(
         private AddressesService $addressService,
@@ -27,22 +23,22 @@ class PersonController extends Controller {
     ) {}
 
     /**
-     * List customer/other
-     * [ To get a list of registered customers or non-customer like contact person of Meter Manufacturer. ].
+     * List people.
      *
-     * @urlParam is_customer int optinal. To get a list of customers or non customer. Default : 1
-     * @urlParam agent_id int optional. To get a list of customers of a specific agent.
-     * @urlParam limit int optional. The number of items per page.
-     * @urlParam active_customer int optional. To get a list of active customers. Default: 0
-     * @urlParam city_id int optional. Filter by primary address city/village id.
-     * @urlParam total_paid_min float optional. Minimum total paid amount for the customer.
-     * @urlParam total_paid_max float optional. Maximum total paid amount for the customer.
-     * @urlParam latest_payment_from string optional. ISO date string for minimum latest payment date.
-     * @urlParam latest_payment_to string optional. ISO date string for maximum latest payment date.
-     * @urlParam registration_from string optional. ISO date string for minimum registration date.
-     * @urlParam registration_to string optional. ISO date string for maximum registration date.
-     * @urlParam device_type string optional. Filter by device/appliance type.
+     * To get a list of registered customers or non-customers, like the contact person of a meter manufacturer.
      */
+    #[QueryParameter('is_customer', description: 'To get a list of customers or non customer.', type: 'int', default: 1)]
+    #[QueryParameter('agent_id', description: 'To get a list of customers of a specific agent.', type: 'int')]
+    #[QueryParameter('per_page', description: 'The number of items per page.', type: 'int', default: 15)]
+    #[QueryParameter('active_customer', description: 'To get a list of active customers.', type: 'int', default: 0)]
+    #[QueryParameter('city_id', description: 'Filter by primary address city/village id.', type: 'int')]
+    #[QueryParameter('total_paid_min', description: 'Minimum total paid amount for the customer.', type: 'float')]
+    #[QueryParameter('total_paid_max', description: 'Maximum total paid amount for the customer.', type: 'float')]
+    #[QueryParameter('latest_payment_from', description: 'ISO date string for minimum latest payment date.', type: 'string')]
+    #[QueryParameter('latest_payment_to', description: 'ISO date string for maximum latest payment date.', type: 'string')]
+    #[QueryParameter('registration_from', description: 'ISO date string for minimum registration date.', type: 'string')]
+    #[QueryParameter('registration_to', description: 'ISO date string for maximum registration date.', type: 'string')]
+    #[QueryParameter('device_type', description: 'Filter by device/appliance type.', type: 'string')]
     public function index(Request $request): ApiResource {
         $customerType = $request->input('is_customer', 1);
         $perPage = $request->input('per_page', 15);
@@ -76,21 +72,20 @@ class PersonController extends Controller {
     }
 
     /**
-     * Detail
+     * Get person details.
+     *
      * Displays the person with following relations
      * - Addresses
      * - Citizenship
      * - Role
      * - Meter list.
-     *
-     * @apiResourceModel App\Models\Person\Person
      */
     public function show(int $personId): ApiResource {
         return ApiResource::make($this->personService->getDetails($personId, true));
     }
 
     /**
-     * Create.
+     * Create a person.
      */
     public function store(PersonRequest $request): JsonResponse {
         try {
@@ -126,19 +121,9 @@ class PersonController extends Controller {
     }
 
     /**
-     * Update
+     * Update a person.
+     *
      * Updates the given parameter of that person.
-     *
-     * @urlParam  id required The ID of the person to update
-     *
-     * @bodyParam title string. The title of the person. Example: Dr.
-     * @bodyParam name string. The title of the person. Example: Dr.
-     * @bodyParam surname string. The title of the person. Example: Dr.
-     * @bodyParam birth_date string. The title of the person. Example: Dr.
-     * @bodyParam gender string. The title of the person. Example: Dr.
-     * @bodyParam education string. The title of the person. Example: Dr.
-     *
-     * @apiResourceModel App\Models\Person\Person
      */
     public function update(
         int $personId,
@@ -151,11 +136,10 @@ class PersonController extends Controller {
     }
 
     /**
-     * Transactions
+     * List person transactions.
+     *
      * The list of all transactions(paginated) which belong to that person.
      * Each page contains 7 entries of the last transaction.
-     *
-     * @bodyParam    person_id int required the ID of the person. Example: 2
      */
     public function transactions(
         int $personId,
@@ -166,17 +150,16 @@ class PersonController extends Controller {
     }
 
     /**
-     * Search
+     * Search people.
+     *
      * Searches in person list according to the search term.
-     *  Term could be one of the following attributes;
+     * Term could be one of the following attributes;
      * - phone number
      * - meter serial number
      * - name
      * - surname.
-     *
-     * @urlParam term  The ID of the post. Example: John Doe
-     * @urlParam paginage int The page number. Example:1
      */
+    #[QueryParameter('term', description: 'The search term.', type: 'string', example: 'John Doe')]
     public function search(
         Request $request,
     ): ApiResource {
@@ -188,15 +171,12 @@ class PersonController extends Controller {
     }
 
     /**
-     * Delete
-     * Deletes that person with all his/her relations from the database. The person model uses soft deletes.
-     * That means the orinal record wont be deleted but all mentioned relations will be removed permanently.
+     * Delete a person.
      *
-     * @urlParam person required The ID of the person. Example:1
+     * Deletes that person with all his/her relations from the database. The person model uses soft deletes.
+     * That means the original record wont be deleted but all mentioned relations will be removed permanently.
      *
      * @throws \Exception
-     *
-     * @apiResourceModel App\Models\Person\Person
      */
     public function destroy(
         int $personId,

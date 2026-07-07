@@ -25,6 +25,7 @@ class TariffCreateRequest extends FormRequest {
             'name' => ['required'],
             'price' => ['required', 'numeric'], // 100 times of original price to support 2 decimal numbers.
             'currency' => ['required', 'string', 'max:20'],
+            // The factor between two different sub tariffs. Like day/night sub-tariffs.
             'factor' => ['sometimes', 'integer'],
             'access_rate_period' => ['integer', 'min:1'],
             'access_rate_amount' => ['integer'],

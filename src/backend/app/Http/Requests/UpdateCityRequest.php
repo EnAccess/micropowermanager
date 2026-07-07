@@ -5,14 +5,6 @@ namespace App\Http\Requests;
 use App\Rules\GeoJsonPoint;
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * @urlParam cityId required The ID of the village (city).
- *
- * @bodyParam name string The name of the village.
- * @bodyParam mini_grid_id int The id of the mini-grid the village belongs to.
- * @bodyParam country_id int The id of the country the village belongs to.
- * @bodyParam geo_json object The GPS location of the village as a GeoJSON Point Feature.
- */
 class UpdateCityRequest extends FormRequest {
     public function authorize(): bool {
         return true;
@@ -23,9 +15,13 @@ class UpdateCityRequest extends FormRequest {
      */
     public function rules(): array {
         return [
+            // The name of the village.
             'name' => ['sometimes', 'string', 'min:1'],
+            // The id of the mini-grid the village belongs to.
             'mini_grid_id' => ['sometimes', 'integer', 'exists:tenant.mini_grids,id'],
+            // The id of the country the village belongs to.
             'country_id' => ['sometimes', 'integer', 'exists:tenant.countries,id'],
+            // The GPS location of the village as a GeoJSON Point Feature.
             'geo_json' => ['sometimes', 'array', new GeoJsonPoint()],
         ];
     }

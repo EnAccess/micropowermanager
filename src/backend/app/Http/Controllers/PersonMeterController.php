@@ -11,11 +11,9 @@ class PersonMeterController {
     ) {}
 
     /**
-     * @group    People
-     * Person with Meters & Tariff
-     * Person details with his/her owned meter(s) and its assigned tariff
+     * Get person meters with tariffs.
      *
-     * @urlParam person required The ID of the person
+     * Person details with his/her owned meter(s) and its assigned tariff.
      */
     public function show(int $personId): ApiResource {
         return ApiResource::make($this->personMeterService->getPersonMeters($personId));

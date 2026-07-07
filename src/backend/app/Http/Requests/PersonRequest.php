@@ -4,19 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * @bodyParam title string optional. The title of the person. Example: Dr.
- * @bodyParam name string required. Example: John
- * @bodyParam surname string required. Example: Doe
- * @bodyParam birth_date string optional. Example: 1970-01-01
- * @bodyParam gender string optional Example: male
- * @bodyParam education string optional. Example: University
- * @bodyParam city_id int optional. Example: 1
- * @bodyParam street string optional. Example: Some Street 1/13
- * @bodyParam email string optional. Example: john.doe@mail.com
- * @bodyParam phone string optional. Example: +1111
- * @bodyParam country_code string optional. Example: NG, US, etc.
- */
 class PersonRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,16 +19,48 @@ class PersonRequest extends FormRequest {
      */
     public function rules(): array {
         return [
+            /*
+             * The title of the person.
+             *
+             * @example Dr.
+             */
             'title' => ['sometimes', 'nullable', 'string'],
+            /*
+             * @example John
+             */
             'name' => ['required', 'min:2'],
+            /*
+             * @example Doe
+             */
             'surname' => ['required', 'min:2'],
+            /*
+             * @example 1970-01-01
+             */
             'birth_date' => ['sometimes', 'nullable', 'date'],
+            /*
+             * @example male
+             */
             'gender' => ['sometimes', 'nullable', 'string'],
+            /*
+             * @example University
+             */
             'education' => ['sometimes', 'nullable', 'string'],
             'city_id' => ['sometimes', 'integer', 'exists:tenant.cities,id'],
+            /*
+             * @example Some Street 1/13
+             */
             'street' => ['sometimes', 'nullable', 'string', 'min:5'],
+            /*
+             * @example john.doe@mail.com
+             */
             'email' => ['sometimes', 'nullable', 'email'],
+            /*
+             * @example +1111
+             */
             'phone' => ['sometimes', 'min:11'],
+            /*
+             * @example NG
+             */
             'country_code' => ['sometimes', 'nullable', 'string'],
         ];
     }

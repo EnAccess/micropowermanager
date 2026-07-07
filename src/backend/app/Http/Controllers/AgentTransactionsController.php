@@ -30,7 +30,9 @@ class AgentTransactionsController extends Controller {
     }
 
     /**
-     * Return the token generated for one of the agent's transactions, if any.
+     * Get the token of an agent transaction.
+     *
+     * Returns the token generated for one of the agent's transactions, if any.
      * Token generation is asynchronous (queued in ProcessPayment), so the
      * field app polls this endpoint after a successful POST until the token
      * appears or it gives up.
