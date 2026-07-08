@@ -34,7 +34,7 @@ features:
 highlights:
   - header: Monitor your business
     description: Set your business goals and monitor your performance with real time revenue and asset data visualization.
-    image: /features/Feature-1.png
+    image: /features/main_dashboard.png
     highlightItems:
       - title: Integrated prepayment metering
         details: with secure mobile money connection, compatible with STS prepaid meters and smart metering technology on request
@@ -51,7 +51,7 @@ highlights:
 
   - header: Manage your customers
     description: Instantly connect with your customers, view payments and deliver excellent customer service even in the most remote areas.
-    image: /features/Feature-2.png
+    image: /features/customer_detail.png
     highlightItems:
       - title: Two-way SMS messaging
         details: allows easy communication and interactive marketing campaigns for all your clients, selected groups or individual customers.
@@ -65,7 +65,7 @@ highlights:
 
   - header: Open Source community
     description: Be part of the Open Source community. Contribute ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
-    image: /features/Feature-3-2.png
+    image: /features/shs_detail.png
     highlightItems:
       - title: Join our Open Source community.
         details: Get in touch via Github or Discord.
