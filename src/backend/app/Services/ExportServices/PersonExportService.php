@@ -4,8 +4,23 @@ namespace App\Services\ExportServices;
 
 use App\Models\Person\Person;
 use Illuminate\Support\Collection;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class PersonExportService extends AbstractExportService {
+    public const HEADERS = [
+        'Title',
+        'Name',
+        'Surname',
+        'Registered Date',
+        'Birth Date',
+        'Gender',
+        'Email',
+        'Phone',
+        'City',
+        'Device Serial',
+        'Agent Name',
+    ];
+
     /** @var Collection<int, Person> */
     private Collection $peopleData;
 
@@ -13,17 +28,9 @@ class PersonExportService extends AbstractExportService {
         $this->setActivatedSheet('Sheet1');
 
         foreach ($this->exportingData as $key => $value) {
-            $this->worksheet->setCellValue('A'.($key + 2), $value[0]);
-            $this->worksheet->setCellValue('B'.($key + 2), $value[1]);
-            $this->worksheet->setCellValue('C'.($key + 2), $value[2]);
-            $this->worksheet->setCellValue('D'.($key + 2), $value[3]);
-            $this->worksheet->setCellValue('E'.($key + 2), $value[4]);
-            $this->worksheet->setCellValue('F'.($key + 2), $value[5]);
-            $this->worksheet->setCellValue('G'.($key + 2), $value[6]);
-            $this->worksheet->setCellValue('H'.($key + 2), $value[7]);
-            $this->worksheet->setCellValue('I'.($key + 2), $value[8]);
-            $this->worksheet->setCellValue('J'.($key + 2), $value[9]);
-            $this->worksheet->setCellValue('K'.($key + 2), $value[10]);
+            foreach (array_values($value) as $columnIndex => $cellValue) {
+                $this->worksheet->setCellValue(Coordinate::stringFromColumnIndex($columnIndex + 1).($key + 2), $cellValue);
+            }
         }
 
         foreach ($this->worksheet->getColumnIterator() as $column) {
@@ -41,12 +48,12 @@ class PersonExportService extends AbstractExportService {
                 $person->title,
                 $person->name,
                 $person->surname,
+                $person->created_at?->format('d/m/Y'),
                 $person->birth_date,
                 $person->gender,
                 $primaryAddress?->email,
                 $primaryAddress?->phone,
                 $primaryAddress?->city?->name,
-                $primaryAddress?->street,
                 $devices,
                 $agent->person->name ?? '',
             ];
@@ -86,12 +93,12 @@ class PersonExportService extends AbstractExportService {
                 'title' => $person->title,
                 'name' => $person->name,
                 'surname' => $person->surname,
+                'registered_date' => $person->created_at?->format('d/m/Y'),
                 'birth_date' => $person->birth_date,
                 'gender' => $person->gender,
                 'email' => $primaryAddress?->email,
                 'phone' => $primaryAddress?->phone,
                 'city' => $primaryAddress?->city?->name,
-                'street' => $primaryAddress?->street,
                 'devices' => $devices,
                 'agent' => $agent->person->name ?? '',
             ];
