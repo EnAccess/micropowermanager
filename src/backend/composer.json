@@ -70,7 +70,7 @@
       ]
     },
     "scramble-pro-installer": {
-      "constraint": "^0.9.5"
+      "constraint": "^0.9.7"
     }
   },
   "autoload": {
