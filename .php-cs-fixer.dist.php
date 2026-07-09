@@ -42,6 +42,9 @@ return (new PhpCsFixer\Config())
         ],
         'phpdoc_to_comment' => [
             'allow_before_return_statement' => true,
+            // Keep inline `/** @var */` docblocks intact — Scramble reads them
+            // to document resource response fields.
+            'ignored_tags' => ['var'],
         ],
         // disabled for editor integration
         'no_unused_imports' => false,

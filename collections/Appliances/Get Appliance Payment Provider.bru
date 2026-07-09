@@ -1,0 +1,11 @@
+meta {
+  name: Get Appliance Payment Provider
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{mpm_backend_url}}/api/appliances/payment/providers
+  body: json
+  auth: inherit
+}
