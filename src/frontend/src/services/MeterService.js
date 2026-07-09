@@ -16,6 +16,8 @@ export class Meter {
     this.lastUpdate = jsonData.updated_at
     this.manufacturerId = jsonData.manufacturer_id
     this.manufacturer = null
+    this.manufacturerMappingStatus =
+      jsonData.device?.manufacturer_mapping_status
     this.type =
       jsonData.meter_type.max_current +
       " A " +

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Lib\DeviceMappingResult;
+use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
 use App\Models\EBike;
 use App\Models\GeographicalInformation;
@@ -58,6 +60,7 @@ class DeviceService implements IBaseService, IAssociative {
             ->with(['person', 'device'])
             ->when($filters['device_type'] ?? null, fn ($q, $type) => $q->where('device_type', $type))
             ->when($filters['serial'] ?? null, fn ($q, $serial) => $q->where('device_serial', 'LIKE', "%{$serial}%"))
+            ->when($filters['manufacturer_mapping_status'] ?? null, fn ($q, $status) => $q->where('manufacturer_mapping_status', $status))
             ->when($filters['appliance_id'] ?? null, fn ($q, $applianceId) => $q->whereHasMorph(
                 'device',
                 [SolarHomeSystem::class, EBike::class],
@@ -172,5 +175,52 @@ class DeviceService implements IBaseService, IAssociative {
         }
 
         $device->geo()->updateOrCreate([], ['geo_json' => $geoJson]);
+    }
+
+    /**
+     * Asks the device's manufacturer API whether the unit is mapped on the
+     * manufacturer side, so users can diagnose unit remappings before a payment
+     * fails. Manufacturers without a device management API report as unsupported.
+     */
+    public function verifyManufacturerMapping(Device $device): DeviceMappingResult {
+        $manufacturer = $device->device->manufacturer;
+        if (!$manufacturer || !$manufacturer->api_name) {
+            return new DeviceMappingResult(supported: false);
+        }
+
+        $api = resolve($manufacturer->api_name);
+        if (!$api instanceof IManufacturerDeviceControl) {
+            return new DeviceMappingResult(supported: false);
+        }
+
+        $deviceInfo = $api->getDeviceInfo($device);
+
+        return new DeviceMappingResult(supported: true, mapped: $deviceInfo['mapped'], device: $deviceInfo['device']);
+    }
+
+    /**
+     * Runs the mapping check and persists its outcome on the device, so the
+     * status is available in lists and exports without re-querying the
+     * manufacturer.
+     */
+    public function refreshManufacturerMapping(Device $device): DeviceMappingResult {
+        $result = $this->verifyManufacturerMapping($device);
+
+        $device->update([
+            'manufacturer_mapping_status' => $this->mappingStatus($result),
+            'manufacturer_mapping_checked_at' => now(),
+        ]);
+
+        return $result;
+    }
+
+    private function mappingStatus(DeviceMappingResult $result): string {
+        if (!$result->supported) {
+            return Device::MAPPING_STATUS_UNSUPPORTED;
+        }
+
+        return $result->mapped
+            ? Device::MAPPING_STATUS_MAPPED
+            : Device::MAPPING_STATUS_NOT_MAPPED;
     }
 }

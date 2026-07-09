@@ -24,6 +24,8 @@ use Illuminate\Support\Carbon;
  * @property      string                       $device_type
  * @property      int                          $device_id
  * @property      string                       $device_serial
+ * @property      string                       $manufacturer_mapping_status
+ * @property      Carbon|null                  $manufacturer_mapping_checked_at
  * @property      Carbon|null                  $created_at
  * @property      Carbon|null                  $updated_at
  * @property-read Address|null                 $address
@@ -40,6 +42,20 @@ class Device extends BaseModel {
     use HasFactory;
 
     public const RELATION_NAME = 'device';
+
+    /** Mapping has never been checked, or the last check errored. */
+    public const MAPPING_STATUS_UNKNOWN = 'unknown';
+    /** The unit is known/mapped on the manufacturer side. */
+    public const MAPPING_STATUS_MAPPED = 'mapped';
+    /** The manufacturer API responded that the unit is not mapped. */
+    public const MAPPING_STATUS_NOT_MAPPED = 'not_mapped';
+    /** The device's manufacturer exposes no device management API. */
+    public const MAPPING_STATUS_UNSUPPORTED = 'unsupported';
+
+    /** @var array<string, string> */
+    protected $casts = [
+        'manufacturer_mapping_checked_at' => 'datetime',
+    ];
 
     // TODO: This name seems unintuive and confusing.
     // The device table now has a column called `id` and a column called `device_id`

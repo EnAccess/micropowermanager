@@ -28,6 +28,8 @@ export class MeterDetailService {
       id: data.id,
       serialNumber: data.serial_number,
       deviceId: data.device.id,
+      manufacturerMappingStatus: data.device.manufacturer_mapping_status,
+      manufacturerMappingCheckedAt: data.device.manufacturer_mapping_checked_at,
       registered: data.created_at,
       manufacturer: data.manufacturer,
       tariff: data.tariff,

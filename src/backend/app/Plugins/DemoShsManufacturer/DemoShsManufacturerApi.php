@@ -6,6 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
+use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\DemoShsManufacturer\Models\DemoShsTransaction;
@@ -14,7 +15,7 @@ use App\Plugins\DemoShsManufacturer\Models\DemoShsTransaction;
  * Demo SHS Manufacturer API for demo purposes.
  * Returns random tokens for device charging operations without making real API calls.
  */
-class DemoShsManufacturerApi implements IManufacturerAPI {
+class DemoShsManufacturerApi implements IManufacturerAPI, IManufacturerDeviceControl {
     public function __construct(
         private DemoShsTransaction $demoShsTransaction,
     ) {}
@@ -63,6 +64,31 @@ class DemoShsManufacturerApi implements IManufacturerAPI {
      */
     public function clearDevice(Device $device): ?array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
+
+    /**
+     * Simulates a manufacturer device lookup. A serial ending in 0 (or empty)
+     * is reported as not mapped so both the mapped and not-mapped outcomes can
+     * be demonstrated without a real manufacturer account.
+     *
+     * @return array{mapped: bool, device: array<string, mixed>|null}
+     */
+    public function getDeviceInfo(Device $device): array {
+        $serial = (string) $device->device_serial;
+
+        if ($serial === '' || str_ends_with($serial, '0')) {
+            return ['mapped' => false, 'device' => null];
+        }
+
+        return [
+            'mapped' => true,
+            'device' => [
+                'serial' => $serial,
+                'model' => 'Demo SHS Unit',
+                'status' => 'active',
+                'firmware' => '1.0.0',
+            ],
+        ];
     }
 
     private function generateRandomToken(): string {

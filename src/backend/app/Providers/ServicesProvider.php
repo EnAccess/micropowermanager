@@ -8,12 +8,14 @@ use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 use App\Models\AgentReceipt;
 use App\Models\Country;
+use App\Models\Device;
 use App\Models\Person\Person;
 use App\Observers\AddressesObserver;
 use App\Observers\AgentBalanceHistoryObserver;
 use App\Observers\AgentChargeObserver;
 use App\Observers\AgentObserver;
 use App\Observers\AgentReceiptObserver;
+use App\Observers\DeviceObserver;
 use App\Observers\PersonObserver;
 use App\Services\CountryService;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +31,7 @@ class ServicesProvider extends ServiceProvider {
         AgentReceipt::observe(AgentReceiptObserver::class);
         Agent::observe(AgentObserver::class);
         AgentCharge::observe(AgentChargeObserver::class);
+        Device::observe(DeviceObserver::class);
     }
 
     /**

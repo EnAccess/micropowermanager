@@ -50,4 +50,17 @@ export class DeviceService {
     if (serial) params.serial = serial
     return this.getDevices(params)
   }
+
+  async getManufacturerInfo(deviceId) {
+    try {
+      const response = await this.repository.deviceInfo(deviceId)
+      if (response && response.data && response.data.data) {
+        return convertObjectKeysToCamelCase(response.data.data)
+      }
+      return null
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 }

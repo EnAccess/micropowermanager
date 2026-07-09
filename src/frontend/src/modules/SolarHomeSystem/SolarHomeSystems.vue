@@ -52,6 +52,9 @@
           <md-table-cell :md-label="$tc('words.name')">
             {{ item.appliance ? item.appliance.name : "-" }}
           </md-table-cell>
+          <md-table-cell :md-label="$tc('phrases.deviceMapping')">
+            {{ mappingStatusLabel(item.device?.manufacturerMappingStatus) }}
+          </md-table-cell>
           <md-table-cell :md-label="$tc('words.owner')" md-sort-by="owner">
             <template v-if="item.device && item.device.person">
               <router-link :to="`/people/${item.device.person.id}`">
@@ -73,6 +76,7 @@
 </template>
 
 <script>
+import { mappingStatus } from "@/mixins/mappingStatus.js"
 import { timing } from "@/mixins/timing.js"
 import AddSolarHomeSystemModal from "@/modules/SolarHomeSystem/AddSolarHomeSystemModal.vue"
 import { SolarHomeSystemService } from "@/services/SolarHomeSystemService.js"
@@ -81,7 +85,7 @@ import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SolarHomeSystems",
-  mixins: [timing],
+  mixins: [timing, mappingStatus],
   components: { AddSolarHomeSystemModal, Widget },
   data() {
     return {

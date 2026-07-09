@@ -9,4 +9,7 @@ export default {
   list(params = {}) {
     return Client.get(`${resource}`, { params })
   },
+  deviceInfo(deviceId) {
+    return Client.get(`${resource}/${deviceId}/device-info`)
+  },
 }

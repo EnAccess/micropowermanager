@@ -20,6 +20,18 @@
       </div>
     </div>
 
+    <div class="md-layout md-gutter" v-if="shs.device">
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <manufacturer-control
+          :device-id="shs.device.id"
+          :serial-number="shs.serialNumber"
+          :manufacturer-name="shs.manufacturer?.name"
+          :status="shs.device.manufacturerMappingStatus"
+          :checked-at="shs.device.manufacturerMappingCheckedAt"
+        />
+      </div>
+    </div>
+
     <div class="md-layout md-gutter" v-if="hasAddressData">
       <div class="md-layout-item md-size-100">
         <location
@@ -49,6 +61,7 @@ import Owner from "./Owner.vue"
 import Transactions from "./Transactions.vue"
 
 import { notify } from "@/mixins/notify.js"
+import ManufacturerControl from "@/modules/Device/ManufacturerControl.vue"
 import {
   SolarHomeSystemService,
   Transactions as TransactionsService,
@@ -63,6 +76,7 @@ export default {
     Owner,
     Location,
     Transactions,
+    ManufacturerControl,
   },
   data() {
     return {
