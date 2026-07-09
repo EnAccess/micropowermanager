@@ -1,0 +1,16 @@
+meta {
+  name: Search SHS
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{mpm_backend_url}}/api/solar-home-systems/search?term=123&sort_by=id
+  body: none
+  auth: inherit
+}
+
+params:query {
+  term: 123
+  sort_by: id
+}
