@@ -4,8 +4,10 @@ namespace App\Plugins\SparkMeter\Http\Controllers;
 
 use App\Plugins\SparkMeter\Http\Resources\SparkResource;
 use App\Plugins\SparkMeter\Services\SmSalesAccoutService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
+#[Group('Plugins / Spark Meter')]
 class SmSalesAccountController implements IBaseController {
     public function __construct(private SmSalesAccoutService $smSalesAccountService) {}
 

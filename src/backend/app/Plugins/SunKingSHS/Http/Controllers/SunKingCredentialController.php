@@ -8,9 +8,11 @@ use App\Plugins\SunKingSHS\Http\Requests\SunKingCredentialRequest;
 use App\Plugins\SunKingSHS\Http\Resources\SunKingResource;
 use App\Plugins\SunKingSHS\Models\SunKingCredential;
 use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Sun King SHS', 'API endpoints for integrating with Sun King solar home systems')]
 class SunKingCredentialController extends Controller {
     public function __construct(
         private SunKingCredentialService $credentialService,

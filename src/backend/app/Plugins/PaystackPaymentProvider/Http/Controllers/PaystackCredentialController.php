@@ -10,10 +10,12 @@ use App\Plugins\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackCredentialService;
 use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Paystack')]
 class PaystackCredentialController extends Controller {
     public function __construct(
         private PaystackCredentialService $credentialService,

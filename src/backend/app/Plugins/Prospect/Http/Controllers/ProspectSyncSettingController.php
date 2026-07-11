@@ -4,10 +4,12 @@ namespace App\Plugins\Prospect\Http\Controllers;
 
 use App\Plugins\Prospect\Http\Resources\ProspectSyncSettingResource;
 use App\Plugins\Prospect\Services\ProspectSyncSettingService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Prospect')]
 class ProspectSyncSettingController extends Controller {
     public function __construct(private ProspectSyncSettingService $syncSettingService) {}
 

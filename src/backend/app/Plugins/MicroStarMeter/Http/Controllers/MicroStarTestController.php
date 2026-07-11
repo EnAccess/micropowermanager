@@ -3,8 +3,10 @@
 namespace App\Plugins\MicroStarMeter\Http\Controllers;
 
 use App\Plugins\MicroStarMeter\Modules\Api\ApiRequests;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Micro Star Meter')]
 class MicroStarTestController extends Controller {
     public function __construct(private ApiRequests $apiRequests) {}
 

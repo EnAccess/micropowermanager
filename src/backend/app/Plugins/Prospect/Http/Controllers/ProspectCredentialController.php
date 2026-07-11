@@ -7,10 +7,12 @@ use App\Plugins\Prospect\Http\Resources\ProspectResource;
 use App\Plugins\Prospect\Services\ProspectCredentialService;
 use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Prospect', 'API endpoints for integrating with the Prospect platform')]
 class ProspectCredentialController extends Controller {
     public function __construct(
         private ProspectCredentialService $credentialService,

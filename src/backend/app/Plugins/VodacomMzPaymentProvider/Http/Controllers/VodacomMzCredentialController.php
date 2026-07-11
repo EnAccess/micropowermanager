@@ -5,8 +5,10 @@ namespace App\Plugins\VodacomMzPaymentProvider\Http\Controllers;
 use App\Plugins\VodacomMzPaymentProvider\Http\Requests\VodacomMzCredentialRequest;
 use App\Plugins\VodacomMzPaymentProvider\Http\Resources\VodacomMzCredentialResource;
 use App\Plugins\VodacomMzPaymentProvider\Services\VodacomMzCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Vodacom Mz')]
 class VodacomMzCredentialController extends Controller {
     public function __construct(
         private VodacomMzCredentialService $credentialService,

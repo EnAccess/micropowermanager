@@ -4,9 +4,11 @@ namespace App\Plugins\SteamaMeter\Http\Controllers;
 
 use App\Plugins\SteamaMeter\Http\Resources\SteamaResource;
 use App\Plugins\SteamaMeter\Services\SteamaMeterService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Steama Meter')]
 class SteamaMeterController extends Controller implements IBaseController {
     public function __construct(private SteamaMeterService $meterService) {}
 

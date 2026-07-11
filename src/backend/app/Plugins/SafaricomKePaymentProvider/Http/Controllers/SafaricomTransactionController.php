@@ -8,10 +8,12 @@ use App\Plugins\SafaricomKePaymentProvider\Http\Requests\SafaricomSTKPushRequest
 use App\Plugins\SafaricomKePaymentProvider\Http\Resources\SafaricomTransactionResource;
 use App\Plugins\SafaricomKePaymentProvider\Models\SafaricomTransaction;
 use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomTransactionService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Safaricom Ke', "API endpoints for integrating with Safaricom's M-Pesa payment services")]
 class SafaricomTransactionController extends Controller {
     public function __construct(
         private SafaricomTransactionService $transactionService,

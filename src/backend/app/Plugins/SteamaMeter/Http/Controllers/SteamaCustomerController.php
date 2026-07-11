@@ -6,9 +6,11 @@ use App\Plugins\SteamaMeter\Http\Requests\SteamaCustomerRequest;
 use App\Plugins\SteamaMeter\Http\Resources\SteamaResource;
 use App\Plugins\SteamaMeter\Models\SteamaCustomer;
 use App\Plugins\SteamaMeter\Services\SteamaCustomerService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Steama Meter')]
 class SteamaCustomerController extends Controller implements IBaseController {
     public function __construct(private SteamaCustomerService $customerService) {}
 

@@ -8,10 +8,12 @@ use App\Plugins\PesapalPaymentProvider\Http\Requests\TransactionInitializeReques
 use App\Plugins\PesapalPaymentProvider\Http\Resources\PesapalTransactionResource;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Pesapal', 'API endpoints for integrating with Pesapal payment services')]
 class PesapalController extends Controller {
     public function __construct(
         private PesapalTransactionService $transactionService,

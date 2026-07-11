@@ -6,10 +6,12 @@ namespace App\Plugins\SafaricomKePaymentProvider\Http\Controllers;
 
 use App\Plugins\SafaricomKePaymentProvider\Http\Resources\SafaricomCredentialResource;
 use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\ValidationException;
 
+#[Group('Plugins / Safaricom Ke')]
 class SafaricomCredentialController extends Controller {
     public function __construct(
         private SafaricomCredentialService $credentialService,

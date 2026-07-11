@@ -6,9 +6,11 @@ namespace App\Plugins\SmsTransactionParser\Http\Controllers;
 
 use App\Plugins\SmsTransactionParser\Services\SmsParsingRuleService;
 use App\Plugins\SmsTransactionParser\Services\SmsTransactionService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / SMS Transaction Parser')]
 class SmsTransactionController extends Controller {
     public function __construct(
         private SmsTransactionService $smsTransactionService,

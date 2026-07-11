@@ -11,6 +11,7 @@ use App\Services\SmsResendInformationKeyService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,7 @@ use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Viber\Bot;
 
+#[Group('Plugins / Viber')]
 class WebhookController extends Controller {
     private ?Bot $bot = null;
     private Sender $botSender;

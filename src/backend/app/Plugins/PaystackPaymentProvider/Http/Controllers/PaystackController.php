@@ -10,11 +10,13 @@ use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackWebhookService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 
+#[Group('Plugins / Paystack', 'API endpoints for integrating with Paystack payment services')]
 class PaystackController extends Controller {
     public function __construct(
         private PaystackTransactionService $transactionService,

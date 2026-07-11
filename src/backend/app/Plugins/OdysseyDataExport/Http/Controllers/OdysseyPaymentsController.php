@@ -7,9 +7,11 @@ use App\Models\PaymentHistory;
 use App\Models\Token;
 use App\Plugins\OdysseyDataExport\Services\OdysseyPaymentTransformer;
 use Carbon\CarbonImmutable;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+#[Group('Plugins / Odyssey Data Export', 'API endpoints for exporting payment data to Odyssey')]
 class OdysseyPaymentsController extends Controller {
     public function index(Request $request, OdysseyPaymentTransformer $transformer): JsonResponse {
         $fromParam = $request->query('FROM');

@@ -6,8 +6,10 @@ use App\Plugins\SparkMeter\Http\Requests\SmCustomerRequest;
 use App\Plugins\SparkMeter\Http\Resources\SparkResource;
 use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Services\CustomerService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
+#[Group('Plugins / Spark Meter')]
 class SmCustomerController implements IBaseController {
     public function __construct(private CustomerService $customerService) {}
 

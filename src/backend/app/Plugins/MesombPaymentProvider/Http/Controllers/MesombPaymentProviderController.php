@@ -6,10 +6,12 @@ use App\Events\TransactionSavedEvent;
 use App\Jobs\ProcessPayment;
 use App\Plugins\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
 use App\Plugins\MesombPaymentProvider\Providers\MesombTransactionProvider;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 
+#[Group('Plugins / Mesomb', 'API endpoints for integrating with MeSomb payment services')]
 class MesombPaymentProviderController extends Controller {
     public function store(Request $request): MesombTransactionProcessingResource {
         $transactionProvider = resolve(MesombTransactionProvider::class);

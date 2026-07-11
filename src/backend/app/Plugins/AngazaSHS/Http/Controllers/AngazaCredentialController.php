@@ -5,8 +5,10 @@ namespace App\Plugins\AngazaSHS\Http\Controllers;
 use App\Plugins\AngazaSHS\Http\Requests\AngazaCredentialRequest;
 use App\Plugins\AngazaSHS\Http\Resources\AngazaResource;
 use App\Plugins\AngazaSHS\Services\AngazaCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Angaza SHS', 'API endpoints for integrating with Angaza solar home systems')]
 class AngazaCredentialController extends Controller {
     public function __construct(private AngazaCredentialService $credentialService) {}
 

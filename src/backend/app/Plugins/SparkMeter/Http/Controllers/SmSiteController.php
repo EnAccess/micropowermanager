@@ -6,8 +6,10 @@ use App\Plugins\SparkMeter\Http\Requests\SmSiteRequest;
 use App\Plugins\SparkMeter\Http\Resources\SparkResource;
 use App\Plugins\SparkMeter\Models\SmSite;
 use App\Plugins\SparkMeter\Services\SiteService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
+#[Group('Plugins / Spark Meter')]
 class SmSiteController implements IBaseController {
     public function __construct(private SiteService $siteService) {}
 

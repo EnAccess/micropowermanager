@@ -6,9 +6,11 @@ use App\Plugins\SwiftaPaymentProvider\Http\Requests\SwiftaTransactionRequest;
 use App\Plugins\SwiftaPaymentProvider\Http\Requests\SwiftaValidationRequest;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Plugins\SwiftaPaymentProvider\Services\SwiftaTransactionService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Swifta', 'API endpoints for integrating with Swifta payment services')]
 class SwiftaPaymentProviderController extends Controller {
     public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
 

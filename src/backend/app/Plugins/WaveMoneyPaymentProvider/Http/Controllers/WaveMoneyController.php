@@ -8,9 +8,11 @@ use App\Plugins\WaveMoneyPaymentProvider\Http\Requests\TransactionInitializeRequ
 use App\Plugins\WaveMoneyPaymentProvider\Http\Resources\WaveMoneyResource;
 use App\Plugins\WaveMoneyPaymentProvider\Modules\Api\WaveMoneyApiService;
 use App\Plugins\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Wave Money', 'API endpoints for integrating with Wave Money payment services')]
 class WaveMoneyController extends Controller {
     public function __construct(
         private WaveMoneyTransactionService $transactionService,
