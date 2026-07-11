@@ -19,6 +19,9 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 abstract class AbstractExportService {
+    public const string XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    public const string CSV_CONTENT_TYPE = 'text/csv';
+
     protected IReader $reader;
     protected Worksheet $worksheet;
     protected Spreadsheet $spreadsheet;
