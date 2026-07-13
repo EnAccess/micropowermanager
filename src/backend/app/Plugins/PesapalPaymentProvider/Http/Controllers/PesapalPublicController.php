@@ -11,11 +11,13 @@ use App\Plugins\PesapalPaymentProvider\Services\PesapalCredentialService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalIpnService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
 use App\Services\CompanyService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 
+#[Group('Plugins / Pesapal')]
 class PesapalPublicController extends Controller {
     public function __construct(
         private PesapalCompanyHashService $hashService,

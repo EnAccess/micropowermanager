@@ -10,11 +10,13 @@ use App\Plugins\PesapalPaymentProvider\Services\PesapalCompanyHashService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCredentialService;
 use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\ValidationException;
 
+#[Group('Plugins / Pesapal')]
 class PesapalCredentialController extends Controller {
     public function __construct(
         private PesapalCredentialService $credentialService,

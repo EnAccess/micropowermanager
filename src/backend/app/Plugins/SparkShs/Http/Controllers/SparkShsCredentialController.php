@@ -5,11 +5,13 @@ namespace App\Plugins\SparkShs\Http\Controllers;
 use App\Plugins\SparkShs\Http\Requests\SparkShsCredentialRequest;
 use App\Plugins\SparkShs\Http\Resources\SparkShsResource;
 use App\Plugins\SparkShs\Services\SparkShsCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
 
+#[Group('Plugins / Spark SHS', 'API endpoints for integrating with Spark solar home systems')]
 class SparkShsCredentialController extends Controller {
     public function __construct(
         private SparkShsCredentialService $credentialService,

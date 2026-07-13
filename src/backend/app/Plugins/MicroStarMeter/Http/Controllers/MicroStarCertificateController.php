@@ -6,10 +6,12 @@ use App\Plugins\MicroStarMeter\Http\Requests\ImportCertificateRequest;
 use App\Plugins\MicroStarMeter\Http\Resources\MicroStarResource;
 use App\Plugins\MicroStarMeter\Services\MicroStarCertificateService;
 use App\Plugins\MicroStarMeter\Services\MicroStarCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Micro Star Meter')]
 class MicroStarCertificateController extends Controller {
     public function __construct(
         private MicroStarCertificateService $certificateService,

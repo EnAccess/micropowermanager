@@ -5,9 +5,11 @@ namespace App\Plugins\EcreeeETender\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Plugins\EcreeeETender\Services\EcreeeMeterDataService;
 use Carbon\CarbonImmutable;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+#[Group('Plugins / ECREEE E-Tender', 'API endpoints providing meter data for the ECREEE e-tender platform')]
 class EcreeeMeterDataController extends Controller {
     public function __construct(
         private EcreeeMeterDataService $ecreeeMeterDataService,

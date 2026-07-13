@@ -5,8 +5,10 @@ namespace App\Plugins\CalinSmartMeter\Http\Controllers;
 use App\Plugins\CalinSmartMeter\Http\Requests\CalinSmartCredentialRequest;
 use App\Plugins\CalinSmartMeter\Http\Resources\CalinSmartResource;
 use App\Plugins\CalinSmartMeter\Services\CalinSmartCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Calin Smart Meter', 'API endpoints for integrating with Calin Smart meters')]
 class CalinSmartCredentialController extends Controller {
     public function __construct(private CalinSmartCredentialService $credentialService) {}
 

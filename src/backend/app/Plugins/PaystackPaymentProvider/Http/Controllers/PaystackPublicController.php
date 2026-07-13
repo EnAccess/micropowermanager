@@ -11,11 +11,13 @@ use App\Plugins\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackCredentialService;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Services\CompanyService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 
+#[Group('Plugins / Paystack')]
 class PaystackPublicController extends Controller {
     public function __construct(
         private PaystackCompanyHashService $hashService,

@@ -4,9 +4,11 @@ namespace App\Plugins\KelinMeter\Http\Controllers;
 
 use App\Plugins\KelinMeter\Http\Resources\KelinResource;
 use App\Plugins\KelinMeter\Services\KelinSyncSettingService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Kelin Meter')]
 class KelinSyncSettingController extends Controller {
     public function __construct(private KelinSyncSettingService $syncSettingService) {}
 

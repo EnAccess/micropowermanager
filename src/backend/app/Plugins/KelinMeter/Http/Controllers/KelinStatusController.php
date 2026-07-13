@@ -6,9 +6,11 @@ use App\Plugins\KelinMeter\Http\Resources\KelinMeterStatusResource;
 use App\Plugins\KelinMeter\Http\Resources\KelinResource;
 use App\Plugins\KelinMeter\Models\KelinMeter;
 use App\Plugins\KelinMeter\Services\KelinMeterStatusService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Kelin Meter')]
 class KelinStatusController extends Controller {
     public function __construct(private KelinMeterStatusService $kelinMeterStatusService) {}
 

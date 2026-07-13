@@ -6,8 +6,10 @@ use App\Plugins\KelinMeter\Http\Resources\DailyConsumptionCollection;
 use App\Plugins\KelinMeter\Http\Resources\DailyConsumptionResource;
 use App\Plugins\KelinMeter\Models\KelinMeter;
 use App\Plugins\KelinMeter\Services\DailyConsumptionService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Kelin Meter')]
 class KelinDailyConsumptionController extends Controller {
     public function __construct(private DailyConsumptionService $dailyConsumptionService) {}
 

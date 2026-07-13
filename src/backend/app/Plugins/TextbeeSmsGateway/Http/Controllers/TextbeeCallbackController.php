@@ -8,10 +8,12 @@ use App\Models\Sms;
 use App\Plugins\TextbeeSmsGateway\Services\TextbeeCredentialService;
 use App\Services\AddressesService;
 use App\Services\SmsService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Textbee SMS Gateway')]
 class TextbeeCallbackController extends Controller {
     public function __construct(
         private TextbeeCredentialService $credentialService,

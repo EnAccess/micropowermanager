@@ -5,7 +5,9 @@ namespace App\Plugins\SteamaMeter\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Plugins\SteamaMeter\Http\Resources\SteamaResource;
 use App\Plugins\SteamaMeter\Services\SteamaSmsVariableDefaultValueService;
+use Dedoc\Scramble\Attributes\Group;
 
+#[Group('Plugins / Steama Meter')]
 class SteamaSmsVariableDefaultValueController extends Controller {
     public function __construct(private SteamaSmsVariableDefaultValueService $smsVariableDefaultSValueService) {}
 

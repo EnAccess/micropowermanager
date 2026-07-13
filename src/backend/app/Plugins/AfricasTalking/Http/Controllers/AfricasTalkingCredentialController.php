@@ -5,8 +5,10 @@ namespace App\Plugins\AfricasTalking\Http\Controllers;
 use App\Plugins\AfricasTalking\Http\Requests\AfricasTalkingCredentialRequest;
 use App\Plugins\AfricasTalking\Http\Resources\AfricasTalkingResource;
 use App\Plugins\AfricasTalking\Services\AfricasTalkingCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Africas Talking', "API endpoints for integrating with the Africa's Talking SMS gateway")]
 class AfricasTalkingCredentialController extends Controller {
     public function __construct(
         private AfricasTalkingCredentialService $credentialService,

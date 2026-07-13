@@ -5,8 +5,10 @@ namespace App\Plugins\TextbeeSmsGateway\Http\Controllers;
 use App\Plugins\TextbeeSmsGateway\Http\Requests\TextbeeCredentialRequest;
 use App\Plugins\TextbeeSmsGateway\Http\Resources\TextbeeResource;
 use App\Plugins\TextbeeSmsGateway\Services\TextbeeCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Textbee SMS Gateway', 'API endpoints for integrating with the Textbee SMS gateway')]
 class TextbeeCredentialController extends Controller {
     public function __construct(
         private TextbeeCredentialService $credentialService,

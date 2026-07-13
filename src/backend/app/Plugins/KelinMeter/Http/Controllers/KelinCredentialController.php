@@ -5,8 +5,10 @@ namespace App\Plugins\KelinMeter\Http\Controllers;
 use App\Plugins\KelinMeter\Http\Requests\KelinCredentialRequest;
 use App\Plugins\KelinMeter\Http\Resources\KelinCredentialResource;
 use App\Plugins\KelinMeter\Services\KelinCredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Kelin Meter', 'API endpoints for integrating with Kelin meters')]
 class KelinCredentialController extends Controller {
     public function __construct(private KelinCredentialService $credentialService) {}
 

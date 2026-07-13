@@ -6,9 +6,11 @@ use App\Plugins\KelinMeter\Http\Resources\KelinCustomerResource;
 use App\Plugins\KelinMeter\Http\Resources\KelinResource;
 use App\Plugins\KelinMeter\Http\Resources\KelinSettingCollection;
 use App\Plugins\KelinMeter\Services\KelinCustomerService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Kelin Meter')]
 class KelinCustomerController extends Controller implements IBaseController {
     public function __construct(private KelinCustomerService $customerService) {}
 

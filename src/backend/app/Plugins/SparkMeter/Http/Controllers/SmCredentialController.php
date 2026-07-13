@@ -6,8 +6,10 @@ use App\Plugins\SparkMeter\Http\Requests\SmCredentialRequest;
 use App\Plugins\SparkMeter\Http\Resources\SparkMeterCredentialResource;
 use App\Plugins\SparkMeter\Http\Resources\SparkResource;
 use App\Plugins\SparkMeter\Services\CredentialService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Spark Meter', 'API endpoints for integrating with SparkMeter meters')]
 class SmCredentialController extends Controller {
     public function __construct(private CredentialService $credentialService) {}
 

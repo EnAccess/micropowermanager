@@ -8,10 +8,12 @@ use App\Models\Sms;
 use App\Plugins\AfricasTalking\Services\AfricasTalkingMessageService;
 use App\Services\AddressesService;
 use App\Services\SmsService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / Africas Talking')]
 class AfricasTalkingCallbackController extends Controller {
     public function __construct(
         private AfricasTalkingMessageService $messageService,

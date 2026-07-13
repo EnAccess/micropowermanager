@@ -7,9 +7,11 @@ namespace App\Plugins\SmsTransactionParser\Http\Controllers;
 use App\Plugins\SmsTransactionParser\Http\Requests\SmsParsingRuleRequest;
 use App\Plugins\SmsTransactionParser\Services\SmsParsingRuleService;
 use App\Plugins\SmsTransactionParser\SmsParsing\TemplateToRegexConverter;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
+#[Group('Plugins / SMS Transaction Parser', 'API endpoints for parsing payment transactions from SMS messages')]
 class SmsParsingRuleController extends Controller {
     public function __construct(
         private SmsParsingRuleService $smsParsingRuleService,

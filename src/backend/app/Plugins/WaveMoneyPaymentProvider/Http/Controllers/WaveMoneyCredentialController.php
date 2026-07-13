@@ -7,9 +7,11 @@ use App\Plugins\WaveMoneyPaymentProvider\Http\Resources\WaveMoneyResource;
 use App\Plugins\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyManagerService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\URL;
 
+#[Group('Plugins / Wave Money')]
 class WaveMoneyCredentialController extends Controller {
     public function __construct(
         private WaveMoneyCredentialService $credentialService,
