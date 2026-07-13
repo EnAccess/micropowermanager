@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\PaystackPaymentProvider\Http\Controllers;
 
+use App\Enums\DeviceType;
 use App\Plugins\PaystackPaymentProvider\Http\Requests\PublicPaymentRequest;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
@@ -66,11 +67,11 @@ class PaystackPublicController extends Controller {
             }
 
             $validatedData = $request->validated();
-            $deviceType = $validatedData['device_type'] ?? 'meter';
+            $deviceType = $validatedData['device_type'] ?? DeviceType::Meter->value;
             $deviceSerial = $validatedData['device_serial'];
 
             // Get customer ID based on device type
-            if ($deviceType === 'solar_home_system') {
+            if ($deviceType === DeviceType::SolarHomeSystem->value) {
                 $customerId = $this->transactionService->getCustomerIdBySHSSerial($deviceSerial);
             } else {
                 $customerId = $this->transactionService->getCustomerIdByMeterSerial($deviceSerial);
@@ -228,7 +229,7 @@ class PaystackPublicController extends Controller {
             }
 
             $deviceSerial = $request->input('device_serial') ?? $request->input('meter_serial');
-            $deviceType = $request->input('device_type', 'meter');
+            $deviceType = $request->string('device_type', DeviceType::Meter->value)->toString();
 
             if (!$deviceSerial) {
                 return response()->json(['error' => 'Device serial required'], 400);
@@ -248,7 +249,7 @@ class PaystackPublicController extends Controller {
                 'company_hash' => $companyHash,
                 'company_id' => $companyId,
                 'device_serial' => $request->input('device_serial') ?? $request->input('meter_serial'),
-                'device_type' => $request->input('device_type', 'meter'),
+                'device_type' => $request->string('device_type', DeviceType::Meter->value)->toString(),
             ]);
 
             return response()->json(['error' => 'Failed to validate device'], 500);

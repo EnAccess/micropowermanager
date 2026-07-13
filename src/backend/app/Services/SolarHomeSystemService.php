@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DeviceType;
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -89,7 +90,7 @@ class SolarHomeSystemService implements IBaseService {
                     ->selectRaw('CONCAT(p.name, " ", p.surname)')
                     ->join('people as p', 'p.id', '=', 'devices.person_id')
                     ->whereColumn('devices.device_id', 'solar_home_systems.id')
-                    ->where('devices.device_type', 'solar_home_system')
+                    ->where('devices.device_type', DeviceType::SolarHomeSystem)
                     ->limit(1);
 
                 $query->orderByRaw('('.$subquery->toSql().') '.$direction)

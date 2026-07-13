@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\PesapalPaymentProvider\Services;
 
+use App\Enums\DeviceType;
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
@@ -296,8 +297,8 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
         return $shs !== null;
     }
 
-    public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
-        if ($deviceType === 'solar_home_system') {
+    public function validateDeviceSerial(string $serialId, string $deviceType = DeviceType::Meter->value): bool {
+        if ($deviceType === DeviceType::SolarHomeSystem->value) {
             return $this->validateSHSSerial($serialId);
         }
 

@@ -1,0 +1,15 @@
+meta {
+  name: Get Device by Serial Number
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{mpm_backend_url}}/api/devices?serial=121
+  body: none
+  auth: inherit
+}
+
+params:query {
+  serial: 121
+}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\ManufacturerMappingStatus;
 use App\Jobs\VerifyDeviceMappingJob;
 use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
@@ -83,14 +84,14 @@ class DeviceManufacturerInfoTest extends TestCase {
         $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/device-info")->assertStatus(200);
 
         $device->refresh();
-        $this->assertSame(Device::MAPPING_STATUS_MAPPED, $device->manufacturer_mapping_status);
+        $this->assertSame(ManufacturerMappingStatus::Mapped, $device->manufacturer_mapping_status);
         $this->assertNotNull($device->manufacturer_mapping_checked_at);
     }
 
     public function testItFiltersDevicesByMappingStatus(): void {
         $this->createTestData();
-        $this->seedDevice(null, '111')->update(['manufacturer_mapping_status' => Device::MAPPING_STATUS_MAPPED]);
-        $this->seedDevice(null, '222')->update(['manufacturer_mapping_status' => Device::MAPPING_STATUS_NOT_MAPPED]);
+        $this->seedDevice(null, '111')->update(['manufacturer_mapping_status' => ManufacturerMappingStatus::Mapped]);
+        $this->seedDevice(null, '222')->update(['manufacturer_mapping_status' => ManufacturerMappingStatus::NotMapped]);
 
         $response = $this->actingAs($this->user)->getJson('/api/devices?manufacturer_mapping_status=not_mapped');
 
@@ -107,7 +108,7 @@ class DeviceManufacturerInfoTest extends TestCase {
         new VerifyDeviceMappingJob($this->companyId, $device->id)->executeJob();
 
         $device->refresh();
-        $this->assertSame(Device::MAPPING_STATUS_NOT_MAPPED, $device->manufacturer_mapping_status);
+        $this->assertSame(ManufacturerMappingStatus::NotMapped, $device->manufacturer_mapping_status);
         $this->assertNotNull($device->manufacturer_mapping_checked_at);
     }
 

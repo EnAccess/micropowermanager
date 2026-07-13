@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DeviceType;
 use App\Services\ImportServices\DeviceImportItem;
 use App\Services\ImportServices\DeviceInfoItem;
 use App\Services\ImportServices\MeterTypeItem;
@@ -48,7 +49,7 @@ class DeviceImportRequest extends FormRequest {
                 customer: $item['customer'] ?? null,
                 deviceInfo: new DeviceInfoItem(
                     serialNumber: $info['serial_number'],
-                    type: $info['type'] ?? 'meter',
+                    type: $info['type'] ?? DeviceType::Meter->value,
                     manufacturer: $info['manufacturer'] ?? null,
                     meterType: $meterType === null ? null : new MeterTypeItem(
                         online: (bool) ($meterType['online'] ?? false),

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Plugins\PaystackPaymentProvider\Http\Requests;
 
+use App\Enums\DeviceType;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
 class TransactionInitializeRequest extends FormRequest {
@@ -14,7 +16,7 @@ class TransactionInitializeRequest extends FormRequest {
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array {
         return [
@@ -22,7 +24,7 @@ class TransactionInitializeRequest extends FormRequest {
             'device_serial' => ['required', 'string'],
             'customer_id' => ['required', 'integer'],
             'currency' => ['string', 'in:NGN,GHS,KES'],
-            'device_type' => ['string', 'in:meter,solar_home_system'],
+            'device_type' => ['string', Rule::in([DeviceType::Meter->value, DeviceType::SolarHomeSystem->value])],
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Services\ExportServices;
 
+use App\Enums\DeviceType;
 use App\Models\Device;
 use App\Models\Meter\Meter;
 use Illuminate\Support\Collection;
@@ -86,7 +87,7 @@ class DeviceExportService extends AbstractExportService {
             ];
 
             // Include meter-specific details
-            if ($device->device_type === 'meter' && $device->device instanceof Meter) {
+            if ($device->device_type === DeviceType::Meter->value && $device->device instanceof Meter) {
                 $meter = $device->device;
                 $meterType = $meter->meterType;
                 if ($meterType !== null) {
@@ -102,7 +103,7 @@ class DeviceExportService extends AbstractExportService {
             }
 
             // Include appliance name for SHS and e-bikes
-            if (in_array($device->device_type, ['solar_home_system', 'e_bike'])) {
+            if (in_array($device->device_type, [DeviceType::SolarHomeSystem->value, DeviceType::EBike->value], true)) {
                 $deviceDetails['appliance'] = $device->device->appliance->name ?? '';
             }
 

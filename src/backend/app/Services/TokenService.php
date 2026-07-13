@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DeviceType;
 use App\Models\Token;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -28,7 +29,7 @@ class TokenService implements IBaseService {
     public function getTokensInRange(?string $startDate, ?string $endDate): Collection {
         return $this->token->newQuery()->with(['transaction.device'])
             ->whereHas('transaction.device', function ($query) {
-                $query->where('device_type', 'meter');
+                $query->where('device_type', DeviceType::Meter);
             })
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();

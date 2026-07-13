@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Plugins\PesapalPaymentProvider\Http\Requests;
 
+use App\Enums\DeviceType;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
 class TransactionInitializeRequest extends FormRequest {
@@ -14,7 +16,7 @@ class TransactionInitializeRequest extends FormRequest {
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array {
         $supportedCurrencies = config('pesapal-payment-provider.currency.supported', ['KES', 'UGX', 'TZS', 'USD']);
@@ -24,7 +26,7 @@ class TransactionInitializeRequest extends FormRequest {
             'device_serial' => ['required', 'string'],
             'customer_id' => ['required', 'integer'],
             'currency' => ['nullable', 'string', 'in:'.implode(',', $supportedCurrencies)],
-            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system'],
+            'device_type' => ['nullable', 'string', Rule::in([DeviceType::Meter->value, DeviceType::SolarHomeSystem->value])],
         ];
     }
 
