@@ -19,8 +19,8 @@ class DeviceController extends Controller {
     /**
      * List devices.
      *
-     * Paginated list of devices with optional filter paramenters.
-     * Call the endpoints without filter parameters returns all devices.
+     * List of devices with optional filter parameters. Calling the endpoints without filter 
+     * parameters returns all devices.
      *
      * The endpoint returns device owner and type-specific details.
      */
