@@ -16,6 +16,14 @@ use Illuminate\Validation\Rule;
 class DeviceController extends Controller {
     public function __construct(private DeviceService $deviceService) {}
 
+    /**
+     * List devices.
+     *
+     * Paginated list of devices with optional filter paramenters.
+     * Call the endpoints without filter parameters returns all devices.
+     *
+     * The endpoint returns device owner and type-specific details.
+     */
     public function index(Request $request): ApiResource {
         $request->validate([
             // Filter by device type.
@@ -43,10 +51,16 @@ class DeviceController extends Controller {
         return ApiResource::make($this->deviceService->getAll($request->integer('per_page', 15), $filters));
     }
 
+    /**
+     * Update a device.
+     *
+     * Primarily used to assign a device to another customer.
+     * The owner change is also written to the audit log.
+     */
     public function update(Device $device, UpdateDeviceRequest $request): ApiResource {
         $creatorId = auth('api')->user()->id;
         $previousOwner = $device->person_id;
-        $newOwner = $request->input('person_id');
+        $newOwner = $request->integer('person_id');
         $deviceData = $request->validated();
         $updatedDevice = $this->deviceService->update($device, $deviceData);
         event(new NewLogEvent([
@@ -69,6 +83,12 @@ class DeviceController extends Controller {
         return DeviceMappingResource::make($this->deviceService->refreshManufacturerMapping($device));
     }
 
+    /**
+     * Update device locations.
+     *
+     * Accepts a list of `{serial_number, lat, lon}` items and moves each
+     * device to the given coordinates. Changes are also written to the audit log.
+     */
     public function updateGeoInformation(Request $request): ApiResource {
         $creatorId = auth('api')->user()->id;
         $devices = $request->all();
