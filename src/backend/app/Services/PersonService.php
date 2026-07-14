@@ -64,15 +64,24 @@ class PersonService implements IBaseService {
     }
 
     /**
-     * @param string                          $searchTerm could either phone, name or surname
-     * @param Request|array<mixed>|int|string $paginate
-     *
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
-    public function searchPerson(string $searchTerm, $paginate, int $per_page): Builder|Collection|LengthAwarePaginator {
+    public function searchPerson(string $searchTerm, int $paginate, int $perPage): Builder|Collection|LengthAwarePaginator {
+        // Phone numbers are stored in E.164 format (with a leading `+`), but the
+        // term usually arrives without one: query strings decode a literal `+` as
+        // a space (form-encoding rules) and the TrimStrings middleware strips it,
+        // unless the client encodes it as `%2B`.
+        // Match the term both with and without the leading `+`, keeping every pattern prefix-anchored so the
+        // index on `addresses.phone` stays usable.
+        $phonePrefixes = array_unique([$searchTerm, '+'.ltrim($searchTerm, '+')]);
+
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn ($q) => $q->where('phone', 'LIKE', $searchTerm.'%')
+            fn ($q) => $q->where(function ($phoneQuery) use ($phonePrefixes) {
+                foreach ($phonePrefixes as $phonePrefix) {
+                    $phoneQuery->orWhere('phone', 'LIKE', $phonePrefix.'%');
+                }
+            })
         )->orWhereHas(
             'devices',
             fn ($q) => $q->where('device_serial', 'LIKE', $searchTerm.'%')
@@ -80,7 +89,7 @@ class PersonService implements IBaseService {
             ->orWhere('surname', 'LIKE', $searchTerm.'%');
 
         if ($paginate === 1) {
-            return $query->paginate($per_page);
+            return $query->paginate($perPage);
         }
 
         return $query->get();

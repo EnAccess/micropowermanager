@@ -9,6 +9,7 @@ use App\Services\AddressesService;
 use App\Services\CountryService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
+use Dedoc\Scramble\Attributes\Example;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -152,22 +153,31 @@ class PersonController extends Controller {
     /**
      * Search people.
      *
-     * Searches in person list according to the search term.
-     * Term could be one of the following attributes;
+     * Searches the person list with a "begins with" match:
+     * a person is returned when at least one of the following attributes starts with the search term.
      * - phone number
-     * - meter serial number
+     * - device serial number
      * - name
      * - surname.
+     *
+     * The leading `+` of a phone number is optional.
+     * If provided (to distinguish the term from a device serial number),
+     * it has to be URL-encoded as `%2B`.
      */
-    #[QueryParameter('term', description: 'The search term.', type: 'string', example: 'John Doe')]
+    #[QueryParameter('term', description: 'The search term. Matched against the beginning of each searchable attribute.', type: 'string', examples: [
+        'name' => new Example('John Doe', summary: 'By name'),
+        'phone' => new Example('49123456', summary: 'By phone number (without leading +)'),
+        'serial' => new Example('47001231', summary: 'By device serial number'),
+        'encoded-phone' => new Example('%2B49123456', summary: 'By phone number (URL-encoded leading +)'),
+    ])]
     public function search(
         Request $request,
     ): ApiResource {
-        $term = $request->input('term', '');
-        $paginate = $request->input('paginate', 1);
-        $per_page = $request->input('per_page', 15);
+        $term = $request->string('term')->toString();
+        $paginate = $request->integer('paginate', 1);
+        $perPage = $request->integer('per_page', 15);
 
-        return ApiResource::make($this->personService->searchPerson($term, $paginate, $per_page));
+        return ApiResource::make($this->personService->searchPerson($term, $paginate, $perPage));
     }
 
     /**
