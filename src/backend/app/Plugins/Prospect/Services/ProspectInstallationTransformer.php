@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Prospect\Services;
 
+use App\Enums\DeviceType;
 use App\Models\Address\Address;
 use App\Models\AppliancePerson;
 use App\Models\DatabaseProxy;
@@ -217,10 +218,9 @@ class ProspectInstallationTransformer {
      * Map device type to device category.
      */
     private function mapDeviceCategory(string $deviceType): string {
-        return match ($deviceType) {
-            'meter' => 'meter',
-            'solar_home_system' => 'solar_home_system',
-            'e_bike' => 'other_production_use',
+        return match (DeviceType::tryFrom($deviceType)) {
+            DeviceType::Meter => 'meter',
+            DeviceType::SolarHomeSystem => 'solar_home_system',
             default => 'other_production_use',
         };
     }
@@ -229,7 +229,7 @@ class ProspectInstallationTransformer {
      * Map connection type to Prospect usage_category enum (household, institutional, commercial).
      */
     private function mapUsageCategory(Device $device, mixed $deviceData): ?string {
-        if ($device->device_type === 'meter' && $deviceData instanceof Meter) {
+        if ($device->device_type === DeviceType::Meter->value && $deviceData instanceof Meter) {
             $deviceData->load('connectionType');
             $category = $deviceData->connectionType?->name;
         } else {
@@ -265,7 +265,7 @@ class ProspectInstallationTransformer {
             return null;
         }
 
-        if ($device->device_type === 'meter' && $deviceData instanceof Meter) {
+        if ($device->device_type === DeviceType::Meter->value && $deviceData instanceof Meter) {
             $subConnectionType = SubConnectionType::query()
                 ->where('connection_type_id', $deviceData->connection_type_id)
                 ->first();

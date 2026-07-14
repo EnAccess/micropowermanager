@@ -2,6 +2,7 @@
 
 namespace App\Models\Meter;
 
+use App\Enums\DeviceType;
 use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Base\BaseModel;
@@ -106,7 +107,7 @@ class Meter extends BaseModel {
             'device_id',
             'id',
             'id'
-        )->where('device_type', 'meter');
+        )->where('device_type', DeviceType::Meter);
     }
 
     /** @return HasMany<MeterConsumption, $this> */

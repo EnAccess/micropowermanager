@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DeviceType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateDeviceRequest extends FormRequest {
     /**
@@ -15,13 +17,13 @@ class UpdateDeviceRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, array<int, string>>
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array {
         return [
             'id' => ['required', 'numeric'],
             'person_id' => ['required', 'numeric'],
-            'device_type' => ['required'],
+            'device_type' => ['required', Rule::enum(DeviceType::class)],
             'device_serial' => ['required'],
             'device_id' => ['required', 'numeric'],
         ];

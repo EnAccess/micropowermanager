@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\SafaricomKePaymentProvider\Http\Controllers;
 
+use App\Enums\DeviceType;
 use App\Plugins\SafaricomKePaymentProvider\Http\Requests\SafaricomSTKPushRequest;
 use App\Plugins\SafaricomKePaymentProvider\Http\Resources\SafaricomTransactionResource;
 use App\Plugins\SafaricomKePaymentProvider\Models\SafaricomTransaction;
@@ -12,6 +13,7 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rule;
 
 #[Group('Plugins / Safaricom Ke', "API endpoints for integrating with Safaricom's M-Pesa payment services")]
 class SafaricomTransactionController extends Controller {
@@ -40,10 +42,10 @@ class SafaricomTransactionController extends Controller {
     public function validateDevice(Request $request): JsonResponse {
         $request->validate([
             'device_serial' => ['required', 'string', 'min:3', 'max:100'],
-            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system'],
+            'device_type' => ['nullable', 'string', Rule::in([DeviceType::Meter->value, DeviceType::SolarHomeSystem->value])],
         ]);
         $deviceSerial = (string) $request->input('device_serial');
-        $deviceType = (string) ($request->input('device_type') ?? 'meter');
+        $deviceType = (string) ($request->input('device_type') ?? DeviceType::Meter->value);
 
         $isValid = $this->transactionService->validateDeviceSerial($deviceSerial, $deviceType);
         $customerId = $isValid
@@ -61,7 +63,7 @@ class SafaricomTransactionController extends Controller {
     public function initiateStkPush(SafaricomSTKPushRequest $request): JsonResponse {
         $data = $request->validated();
         $serialId = $data['device_serial'] ?? ($data['serial_id'] ?? null);
-        $deviceType = (string) ($data['device_type'] ?? 'meter');
+        $deviceType = (string) ($data['device_type'] ?? DeviceType::Meter->value);
 
         if (!$serialId || !$this->transactionService->validateDeviceSerial((string) $serialId, $deviceType)) {
             return response()->json([

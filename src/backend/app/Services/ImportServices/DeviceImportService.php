@@ -2,6 +2,7 @@
 
 namespace App\Services\ImportServices;
 
+use App\Enums\DeviceType;
 use App\Models\Appliance;
 use App\Models\ApplianceType;
 use App\Models\ConnectionGroup;
@@ -211,23 +212,25 @@ class DeviceImportService extends AbstractImportService {
 
     private function createSpecificDevice(string $type, string $serialNumber, ?Manufacturer $manufacturer, DeviceInfoItem $info): Meter|SolarHomeSystem|EBike {
         $manufacturerId = $manufacturer?->id;
+        // Unknown types fall back to meter, matching the pre-enum import behavior.
+        $deviceType = DeviceType::tryFrom($type) ?? DeviceType::Meter;
 
-        $applianceId = in_array($type, ['solar_home_system', 'e_bike'])
+        $applianceId = in_array($deviceType, [DeviceType::SolarHomeSystem, DeviceType::EBike], true)
             ? $this->resolveApplianceId($info->appliance ?? '')
             : null;
 
-        return match ($type) {
-            'solar_home_system' => SolarHomeSystem::query()->create([
+        return match ($deviceType) {
+            DeviceType::SolarHomeSystem => SolarHomeSystem::query()->create([
                 'serial_number' => $serialNumber,
                 'manufacturer_id' => $manufacturerId,
                 'appliance_id' => $applianceId,
             ]),
-            'e_bike' => EBike::query()->create([
+            DeviceType::EBike => EBike::query()->create([
                 'serial_number' => $serialNumber,
                 'manufacturer_id' => $manufacturerId,
                 'appliance_id' => $applianceId,
             ]),
-            default => Meter::query()->create([
+            DeviceType::Meter => Meter::query()->create([
                 'serial_number' => $serialNumber,
                 'manufacturer_id' => $manufacturerId,
                 'in_use' => true,
@@ -318,9 +321,9 @@ class DeviceImportService extends AbstractImportService {
     }
 
     private function mapDeviceTypeToManufacturerType(string $deviceType): string {
-        return match ($deviceType) {
-            'solar_home_system' => 'shs',
-            'e_bike' => 'e-bike',
+        return match (DeviceType::tryFrom($deviceType)) {
+            DeviceType::SolarHomeSystem => 'shs',
+            DeviceType::EBike => 'e-bike',
             default => 'meter',
         };
     }

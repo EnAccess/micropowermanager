@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\GeographicalInformation;
+use App\Models\Meter\Meter;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -26,7 +27,7 @@ class GeographicalInformationService implements IBaseService, IAssociative {
     // This function will be removed until devices feature migration is done
     public function changeOwnerWithAddress(object $meter, int $addressId): void {
         $geoInfo = $this->geographicalInformation->newQuery()
-            ->where('owner_type', 'meter')
+            ->where('owner_type', Meter::RELATION_NAME)
             ->where('owner_id', $meter->id)
             ->first();
 

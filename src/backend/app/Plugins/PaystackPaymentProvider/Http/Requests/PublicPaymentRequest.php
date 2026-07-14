@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Plugins\PaystackPaymentProvider\Http\Requests;
 
+use App\Enums\DeviceType;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
 class PublicPaymentRequest extends FormRequest {
@@ -14,14 +16,14 @@ class PublicPaymentRequest extends FormRequest {
     }
 
     /**
-     * @return array<string, array<int, string|int>>
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array {
         $supportedCurrencies = config('paystack-payment-provider.currency.supported', ['NGN', 'GHS', 'KES', 'ZAR']);
 
         return [
             'device_serial' => ['required', 'string', 'min:3', 'max:50'],
-            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system,e_bike'],
+            'device_type' => ['nullable', 'string', Rule::enum(DeviceType::class)],
             'amount' => [
                 'required',
                 'numeric',
@@ -62,7 +64,7 @@ class PublicPaymentRequest extends FormRequest {
             'amount' => $validated['amount'],
             'currency' => $validated['currency'],
             'serial_id' => $validated['device_serial'],
-            'device_type' => $validated['device_type'] ?? 'meter',
+            'device_type' => $validated['device_type'] ?? DeviceType::Meter->value,
             'customer_id' => 0, // Public payment
             'order_id' => Uuid::uuid4()->toString(),
             'reference_id' => Uuid::uuid4()->toString(),

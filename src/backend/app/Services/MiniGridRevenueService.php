@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DeviceType;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -52,7 +53,7 @@ class MiniGridRevenueService {
         $soldEnergy = $this->token->newQuery()
             ->selectRaw('COUNT(id) as amount, SUM(token_amount) as token_amount')
             ->whereHas('device', function ($query) use ($miniGridMeters) {
-                $query->where('device_type', 'meter')
+                $query->where('device_type', DeviceType::Meter)
                     ->whereIn('device_id', $miniGridMeters->pluck('id'));
             })
             ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Plugins\PesapalPaymentProvider\Http\Requests;
 
+use App\Enums\DeviceType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PublicPaymentRequest extends FormRequest {
     public function authorize(): bool {
@@ -12,12 +14,12 @@ class PublicPaymentRequest extends FormRequest {
     }
 
     /**
-     * @return array<string, array<int, string|int>>
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array {
         return [
             'device_serial' => ['required', 'string', 'min:3', 'max:50'],
-            'device_type' => ['nullable', 'string', 'in:meter,solar_home_system,e_bike'],
+            'device_type' => ['nullable', 'string', Rule::enum(DeviceType::class)],
             'amount' => [
                 'required',
                 'numeric',

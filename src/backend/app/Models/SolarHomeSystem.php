@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DeviceType;
 use App\Models\Base\BaseModel;
 use Database\Factories\SolarHomeSystemFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -74,6 +75,6 @@ class SolarHomeSystem extends BaseModel {
             'device_id',         // Foreign key on Token table that points to Device.id
             'id',               // Local key on SolarHomeSystem table
             'id'                // Local key on Device table
-        )->where('device_type', 'solar_home_system'); // Ensure we only get SHS devices
+        )->where('device_type', DeviceType::SolarHomeSystem);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DeviceType;
 use App\Models\ConnectionGroup;
 use App\Models\Meter\Meter;
 use App\Models\Token;
@@ -49,7 +50,7 @@ class MeterRevenueService {
                     ->from('meters')
                     ->join('devices', function ($join) {
                         $join->on('devices.device_id', '=', 'meters.id')
-                            ->where('devices.device_type', '=', 'meter');
+                            ->where('devices.device_type', '=', DeviceType::Meter);
                     })
                     ->join('people', 'people.id', '=', 'devices.person_id')
                     ->join('addresses', function ($join) {
@@ -89,7 +90,7 @@ class MeterRevenueService {
                     ->from('meters')
                     ->join('devices', function ($join) {
                         $join->on('devices.device_id', '=', 'meters.id')
-                            ->where('devices.device_type', '=', 'meter');
+                            ->where('devices.device_type', '=', DeviceType::Meter);
                     })
                     ->join('people', 'people.id', '=', 'devices.person_id')
                     ->join('addresses', function ($join) {
@@ -133,7 +134,7 @@ class MeterRevenueService {
                     ->from('meters')
                     ->join('devices', function ($join) {
                         $join->on('devices.device_id', '=', 'meters.id')
-                            ->where('devices.device_type', '=', 'meter');
+                            ->where('devices.device_type', '=', DeviceType::Meter);
                     })
                     ->join('people', 'people.id', '=', 'devices.person_id')
                     ->join('addresses', function ($join) {
@@ -169,7 +170,7 @@ class MeterRevenueService {
             ->selectRaw('COUNT(meters.id) as registered_connections')
             ->join('devices', function ($join) {
                 $join->on('devices.device_id', '=', 'meters.id')
-                    ->where('devices.device_type', '=', 'meter');
+                    ->where('devices.device_type', '=', DeviceType::Meter);
             })
             ->join('people', 'people.id', '=', 'devices.person_id')
             ->join('addresses', function ($join) {
@@ -201,7 +202,7 @@ class MeterRevenueService {
             ->selectRaw('COUNT(meters.id) as registered_connections, connection_groups.name, YEARWEEK(meters.created_at, 3) as period')
             ->join('devices', function ($join) {
                 $join->on('devices.device_id', '=', 'meters.id')
-                    ->where('devices.device_type', '=', 'meter');
+                    ->where('devices.device_type', '=', DeviceType::Meter);
             })
             ->join('people', 'people.id', '=', 'devices.person_id')
             ->join('addresses', function ($join) {
@@ -235,7 +236,7 @@ class MeterRevenueService {
             ->selectRaw('COUNT(meters.serial_number) as registered_connections, connection_groups.name, YEARWEEK(meters.created_at, 3) as period')
             ->join('devices', function ($join) {
                 $join->on('devices.device_id', '=', 'meters.id')
-                    ->where('devices.device_type', '=', 'meter');
+                    ->where('devices.device_type', '=', DeviceType::Meter);
             })
             ->join('people', 'people.id', '=', 'devices.person_id')
             ->join('addresses', function ($join) {
@@ -268,7 +269,7 @@ class MeterRevenueService {
             ->selectRaw('COUNT(meters.id) as registered_connections')
             ->join('devices', function ($join) {
                 $join->on('devices.device_id', '=', 'meters.id')
-                    ->where('devices.device_type', '=', 'meter');
+                    ->where('devices.device_type', '=', DeviceType::Meter);
             })
             ->join('people', 'people.id', '=', 'devices.person_id')
             ->join('addresses', function ($join) {

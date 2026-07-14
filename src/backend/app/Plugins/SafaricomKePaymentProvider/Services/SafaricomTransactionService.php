@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\SafaricomKePaymentProvider\Services;
 
+use App\Enums\DeviceType;
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
@@ -614,8 +615,8 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
             ->exists();
     }
 
-    public function validateDeviceSerial(string $serialId, string $deviceType = 'meter'): bool {
-        if ($deviceType === 'solar_home_system') {
+    public function validateDeviceSerial(string $serialId, string $deviceType = DeviceType::Meter->value): bool {
+        if ($deviceType === DeviceType::SolarHomeSystem->value) {
             return $this->validateSHSSerial($serialId);
         }
 
@@ -649,8 +650,8 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
         return $person ? (int) $person->id : null;
     }
 
-    public function getCustomerIdByDeviceSerial(string $serialId, string $deviceType = 'meter'): ?int {
-        return $deviceType === 'solar_home_system'
+    public function getCustomerIdByDeviceSerial(string $serialId, string $deviceType = DeviceType::Meter->value): ?int {
+        return $deviceType === DeviceType::SolarHomeSystem->value
             ? $this->getCustomerIdBySHSSerial($serialId)
             : $this->getCustomerIdByMeterSerial($serialId);
     }

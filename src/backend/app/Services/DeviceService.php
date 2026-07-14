@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\DeviceType;
+use App\Enums\ManufacturerMappingStatus;
 use App\Lib\DeviceMappingResult;
 use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
@@ -51,7 +53,7 @@ class DeviceService implements IBaseService, IAssociative {
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param array{device_type?: DeviceType|null, appliance_id?: int, unassigned?: bool, serial?: string, manufacturer_mapping_status?: ManufacturerMappingStatus|null} $filters
      *
      * @return Collection<int, Device>|LengthAwarePaginator<int, Device>
      */
@@ -214,13 +216,13 @@ class DeviceService implements IBaseService, IAssociative {
         return $result;
     }
 
-    private function mappingStatus(DeviceMappingResult $result): string {
+    private function mappingStatus(DeviceMappingResult $result): ManufacturerMappingStatus {
         if (!$result->supported) {
-            return Device::MAPPING_STATUS_UNSUPPORTED;
+            return ManufacturerMappingStatus::Unsupported;
         }
 
         return $result->mapped
-            ? Device::MAPPING_STATUS_MAPPED
-            : Device::MAPPING_STATUS_NOT_MAPPED;
+            ? ManufacturerMappingStatus::Mapped
+            : ManufacturerMappingStatus::NotMapped;
     }
 }
