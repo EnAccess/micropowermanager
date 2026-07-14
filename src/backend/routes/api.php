@@ -406,10 +406,10 @@ Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', [CompanyController::class, 'store']);
     Route::get('/{email}', [CompanyController::class, 'get']);
 });
-Route::group(['prefix' => 'devices'], static function () {
+Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static function () {
     Route::put('/{device}', [DeviceController::class, 'update']);
     Route::get('/', [DeviceController::class, 'index']);
-    Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo'])->middleware('auth:api');
+    Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
 Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'auth:api'], static function () {
@@ -420,7 +420,7 @@ Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'auth:api'], sta
     Route::put('/{id}', [SolarHomeSystemController::class, 'update']);
     Route::get('/{id}/transactions', [SolarHomeSystemController::class, 'transactions']);
 });
-Route::group(['prefix' => 'e-bikes'], static function () {
+Route::group(['prefix' => 'e-bikes', 'middleware' => 'auth:api'], static function () {
     Route::get('/', [EBikeController::class, 'index']);
     Route::post('/', [EBikeController::class, 'store']);
     Route::get('/search', [EBikeController::class, 'search']);
