@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Services\ConnectionTypeService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
 class ConnectionTypeController extends Controller {
@@ -13,6 +14,18 @@ class ConnectionTypeController extends Controller {
         $limit = $request->input('limit');
 
         return ApiResource::make($this->connectionTypeService->getAll($limit));
+    }
+
+    /**
+     * List connection types (customer registration app).
+     *
+     * Alias of `GET /api/connection-types` for the customer registration app.
+     *
+     * @deprecated use `GET /api/connection-types` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(Request $request): ApiResource {
+        return ApiResource::make($this->connectionTypeService->getAll($request->input('limit')));
     }
 
     public function show(int $connectionTypeId, Request $request): ApiResource {

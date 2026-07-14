@@ -6,6 +6,7 @@ use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\TariffService;
 use App\Utils\TariffPriceCalculator;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -24,6 +25,18 @@ class TariffController extends Controller {
         $limit = $request->input('limit');
 
         return ApiResource::make($this->tariffService->getAll($limit));
+    }
+
+    /**
+     * List tariffs (customer registration app).
+     *
+     * Alias of `GET /api/tariffs` for the customer registration app.
+     *
+     * @deprecated use `GET /api/tariffs` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(Request $request): ApiResource {
+        return ApiResource::make($this->tariffService->getAll($request->input('limit')));
     }
 
     /**

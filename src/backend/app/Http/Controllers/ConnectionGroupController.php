@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateConnectionGroupRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\ConnectionGroupService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
 class ConnectionGroupController {
@@ -16,6 +17,18 @@ class ConnectionGroupController {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->connectionGroupService->getAll($limit));
+    }
+
+    /**
+     * List connection groups (customer registration app).
+     *
+     * Alias of `GET /api/connection-groups` for the customer registration app.
+     *
+     * @deprecated use `GET /api/connection-groups` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(Request $request): ApiResource {
+        return ApiResource::make($this->connectionGroupService->getAll($request->input('per_page')));
     }
 
     public function show(int $connectionGroupId, Request $request): ApiResource {

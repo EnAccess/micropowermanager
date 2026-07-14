@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SubConnectionTypeCreateRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\SubConnectionTypeService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
 class SubConnectionTypeController extends Controller {
@@ -18,6 +19,18 @@ class SubConnectionTypeController extends Controller {
         }
 
         return ApiResource::make($this->subConnectionTypeService->getAll($limit));
+    }
+
+    /**
+     * List sub connection types (customer registration app).
+     *
+     * Alias of `GET /api/sub-connection-types` for the customer registration app.
+     *
+     * @deprecated use `GET /api/sub-connection-types` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(Request $request): ApiResource {
+        return ApiResource::make($this->subConnectionTypeService->getAll($request->input('limit')));
     }
 
     /**

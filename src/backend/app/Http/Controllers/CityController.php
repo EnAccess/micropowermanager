@@ -6,6 +6,7 @@ use App\Http\Requests\CityRequest;
 use App\Http\Requests\UpdateCityRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\CityService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,18 @@ class CityController extends Controller {
         $limit = $request->input('limit');
 
         return ApiResource::make($this->cityService->getAll($limit));
+    }
+
+    /**
+     * List cities (customer registration app).
+     *
+     * Alias of `GET /api/cities` for the customer registration app.
+     *
+     * @deprecated use `GET /api/cities` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(Request $request): ApiResource {
+        return ApiResource::make($this->cityService->getAll($request->input('limit')));
     }
 
     public function show(int $cityId, Request $request): ApiResource {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PersonListRequest;
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Country;
@@ -10,6 +11,7 @@ use App\Services\CountryService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Dedoc\Scramble\Attributes\Example;
+use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,48 +30,45 @@ class PersonController extends Controller {
      *
      * To get a list of registered customers or non-customers, like the contact person of a meter manufacturer.
      */
-    #[QueryParameter('is_customer', description: 'To get a list of customers or non customer.', type: 'int', default: 1)]
-    #[QueryParameter('agent_id', description: 'To get a list of customers of a specific agent.', type: 'int')]
-    #[QueryParameter('per_page', description: 'The number of items per page.', type: 'int', default: 15)]
-    #[QueryParameter('active_customer', description: 'To get a list of active customers.', type: 'int', default: 0)]
-    #[QueryParameter('city_id', description: 'Filter by primary address city/village id.', type: 'int')]
-    #[QueryParameter('total_paid_min', description: 'Minimum total paid amount for the customer.', type: 'float')]
-    #[QueryParameter('total_paid_max', description: 'Maximum total paid amount for the customer.', type: 'float')]
-    #[QueryParameter('latest_payment_from', description: 'ISO date string for minimum latest payment date.', type: 'string')]
-    #[QueryParameter('latest_payment_to', description: 'ISO date string for maximum latest payment date.', type: 'string')]
-    #[QueryParameter('registration_from', description: 'ISO date string for minimum registration date.', type: 'string')]
-    #[QueryParameter('registration_to', description: 'ISO date string for maximum registration date.', type: 'string')]
-    #[QueryParameter('device_type', description: 'Filter by device/appliance type.', type: 'string')]
-    public function index(Request $request): ApiResource {
-        $customerType = $request->input('is_customer', 1);
-        $perPage = $request->input('per_page', 15);
-        $agentId = $request->input('agent_id');
-        $activeCustomer = $request->has('active_customer') ? (bool) $request->input('active_customer') : null;
-        $cityId = $request->input('city_id');
-        $totalPaidMin = $request->input('total_paid_min');
-        $totalPaidMax = $request->input('total_paid_max');
-        $latestPaymentFrom = $request->input('latest_payment_from');
-        $latestPaymentTo = $request->input('latest_payment_to');
-        $registrationFrom = $request->input('registration_from');
-        $registrationTo = $request->input('registration_to');
-        $deviceType = $request->input('device_type');
+    public function index(PersonListRequest $request): ApiResource {
+        return $this->listPeople($request);
+    }
 
+    /**
+     * Shared implementation for all people list routes (`index` and its deprecated aliases).
+     * The aliases must not call `index` directly:
+     * a route method calling another route method breaks Scramble's request documentation generation
+     * ("Scope is not initialized for route").
+     */
+    private function listPeople(PersonListRequest $request): ApiResource {
         return ApiResource::make(
-            $this->personService->getAll(
-                $perPage,
-                $customerType,
-                $agentId,
-                $activeCustomer,
-                $cityId,
-                $totalPaidMin,
-                $totalPaidMax,
-                $latestPaymentFrom,
-                $latestPaymentTo,
-                $registrationFrom,
-                $registrationTo,
-                $deviceType,
-            )
+            $this->personService->getAll($request->integer('per_page', 15), $request->filters())
         );
+    }
+
+    /**
+     * List people (legacy alias).
+     *
+     * Alias of `GET /api/people`, kept for backwards compatibility with older clients.
+     * It accepts the same query parameters.
+     *
+     * @deprecated use `GET /api/people` instead
+     */
+    public function indexAll(PersonListRequest $request): ApiResource {
+        return $this->listPeople($request);
+    }
+
+    /**
+     * List people (customer registration app).
+     *
+     * Alias of `GET /api/people`, kept for backwards compatibility with the customer registration app.
+     * It accepts the same query parameters.
+     *
+     * @deprecated use `GET /api/people` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(PersonListRequest $request): ApiResource {
+        return $this->listPeople($request);
     }
 
     /**

@@ -174,22 +174,23 @@ class PersonService implements IBaseService {
     }
 
     /**
+     * @param array{is_customer?: int, agent_id?: int|null, active_customer?: bool|null, city_id?: int|null, total_paid_min?: float|null, total_paid_max?: float|null, latest_payment_from?: string|null, latest_payment_to?: string|null, registration_from?: string|null, registration_to?: string|null, device_type?: string|null} $filters
+     *
      * @return LengthAwarePaginator<int, Person>
      */
-    public function getAll(
-        ?int $limit = null,
-        ?int $customerType = 1,
-        ?int $agentId = null,
-        ?bool $activeCustomer = null,
-        ?int $cityId = null,
-        ?float $totalPaidMin = null,
-        ?float $totalPaidMax = null,
-        ?string $latestPaymentFrom = null,
-        ?string $latestPaymentTo = null,
-        ?string $registrationFrom = null,
-        ?string $registrationTo = null,
-        ?string $deviceType = null,
-    ): LengthAwarePaginator {
+    public function getAll(?int $perPage = null, array $filters = []): LengthAwarePaginator {
+        $customerType = $filters['is_customer'] ?? 1;
+        $agentId = $filters['agent_id'] ?? null;
+        $activeCustomer = $filters['active_customer'] ?? null;
+        $cityId = $filters['city_id'] ?? null;
+        $totalPaidMin = $filters['total_paid_min'] ?? null;
+        $totalPaidMax = $filters['total_paid_max'] ?? null;
+        $latestPaymentFrom = $filters['latest_payment_from'] ?? null;
+        $latestPaymentTo = $filters['latest_payment_to'] ?? null;
+        $registrationFrom = $filters['registration_from'] ?? null;
+        $registrationTo = $filters['registration_to'] ?? null;
+        $deviceType = $filters['device_type'] ?? null;
+
         $query = $this->person->newQuery()
             ->with([
                 'addresses.city',
@@ -319,7 +320,7 @@ class PersonService implements IBaseService {
                 }),
             ])
             ->defaultSort('-created_at')
-            ->paginate($limit);
+            ->paginate($perPage);
     }
 
     /**

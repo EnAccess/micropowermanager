@@ -242,7 +242,7 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth:api'], static function
 
     Route::get('/', [PersonController::class, 'index'])->middleware('permission:customers');
     // https://github.com/EnAccess/micropowermanager-customer-registration-app/issues/5
-    Route::get('/all', [PersonController::class, 'index'])->middleware('permission:customers');
+    Route::get('/all', [PersonController::class, 'indexAll'])->middleware('permission:customers');
     Route::post('/', [PersonController::class, 'store'])->middleware('permission:customers');
     Route::get('/search', [PersonController::class, 'search'])->middleware('permission:customers');
     Route::get('/{personId}', [PersonController::class, 'show'])->middleware('permission:customers');

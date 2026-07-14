@@ -7,6 +7,7 @@ use App\Http\Resources\ApiResource;
 use App\Services\AddressesService;
 use App\Services\ManufacturerAddressService;
 use App\Services\ManufacturerService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,20 @@ class ManufacturerController extends Controller {
         $type = $request->input('type');
 
         return ApiResource::make($this->manufacturerService->getAll($limit, $type));
+    }
+
+    /**
+     * List manufacturers (customer registration app).
+     *
+     * Alias of `GET /api/manufacturers` for the customer registration app.
+     *
+     * @deprecated use `GET /api/manufacturers` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(Request $request): ApiResource {
+        return ApiResource::make(
+            $this->manufacturerService->getAll($request->input('per_page'), $request->input('type'))
+        );
     }
 
     /**
