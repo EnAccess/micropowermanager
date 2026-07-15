@@ -136,7 +136,7 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'auth:api'], function ()
     Route::group(['prefix' => 'person'], function () {
         Route::post('/{appliance}/people/{person}', [AppliancePersonController::class, 'store'])->middleware('permission:appliances');
         Route::get('/people/{person}', [AppliancePersonController::class, 'index'])->middleware('permission:appliances');
-        Route::get('/people/detail/{applianceId}', [AppliancePersonController::class, 'show'])->middleware('permission:appliances');
+        Route::get('/people/detail/{appliancePersonId}', [AppliancePersonController::class, 'show'])->middleware('permission:appliances');
         Route::get('/{appliancePersonId}/rates', [AppliancePersonController::class, 'getRates'])->middleware('permission:appliances');
         Route::get('/{appliancePersonId}/logs', [AppliancePersonController::class, 'getLogs'])->middleware('permission:appliances');
         Route::put('/{appliancePersonId}/total-cost', [AppliancePersonController::class, 'updateTotalCost'])->middleware('permission:appliances');

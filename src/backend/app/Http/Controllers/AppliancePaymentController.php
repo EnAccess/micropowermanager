@@ -98,7 +98,7 @@ class AppliancePaymentController extends Controller {
      * @return array{appliance_person: AppliancePerson, transaction_id: int, provider_data: array<string, mixed>}
      */
     private function makePaymentForAppliance(float $amount, AppliancePerson $appliancePerson, int $providerId, int $companyId): array {
-        $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
+        $applianceDetail = $this->appliancePersonService->getSoldApplianceDetails($appliancePerson->id);
         $this->appliancePaymentService->validateAmount($applianceDetail, $amount);
         $deviceSerial = $applianceDetail->device_serial;
         $applianceOwner = $appliancePerson->person;
