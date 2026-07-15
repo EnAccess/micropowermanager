@@ -9,6 +9,7 @@ resources:
 
 components:
   - ../../components/internal_ingress
+  - ../../components/vertical_pod_autoscaler
 
 images:
   - name: enaccess/micropowermanager-backend:latest

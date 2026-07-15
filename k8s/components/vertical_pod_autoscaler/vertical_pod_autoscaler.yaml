@@ -1,0 +1,59 @@
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: mpm-backend
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mpm-backend
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: mpm-frontend
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mpm-frontend
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: mpm-scheduler
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mpm-scheduler
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: mpm-queue-worker
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mpm-queue-worker
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: redis-db
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: redis-db
+  updatePolicy:
+    updateMode: "Off"
