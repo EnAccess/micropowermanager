@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
+use Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
@@ -57,5 +58,8 @@ return RectorConfig::configure()
         ReadOnlyPropertyRector::class,
         // exclude temporarily as creating too much noise.
         SafeDeclareStrictTypesRector::class,
+        // Scramble cannot parse #[\Deprecated(...]] attributes
+        // https://github.com/dedoc/scramble/issues/1220
+        DeprecatedAnnotationToDeprecatedAttributeRector::class,
     ])
 ;

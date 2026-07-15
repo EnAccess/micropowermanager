@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\PersonListFilters;
 use App\Models\Country;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
@@ -64,15 +65,24 @@ class PersonService implements IBaseService {
     }
 
     /**
-     * @param string                          $searchTerm could either phone, name or surname
-     * @param Request|array<mixed>|int|string $paginate
-     *
      * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<int, Person>
      */
-    public function searchPerson(string $searchTerm, $paginate, int $per_page): Builder|Collection|LengthAwarePaginator {
+    public function searchPerson(string $searchTerm, int $paginate, int $perPage): Builder|Collection|LengthAwarePaginator {
+        // Phone numbers are stored in E.164 format (with a leading `+`), but the
+        // term usually arrives without one: query strings decode a literal `+` as
+        // a space (form-encoding rules) and the TrimStrings middleware strips it,
+        // unless the client encodes it as `%2B`.
+        // Match the term both with and without the leading `+`, keeping every pattern prefix-anchored so the
+        // index on `addresses.phone` stays usable.
+        $phonePrefixes = array_unique([$searchTerm, '+'.ltrim($searchTerm, '+')]);
+
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn ($q) => $q->where('phone', 'LIKE', $searchTerm.'%')
+            fn ($q) => $q->where(function ($phoneQuery) use ($phonePrefixes) {
+                foreach ($phonePrefixes as $phonePrefix) {
+                    $phoneQuery->orWhere('phone', 'LIKE', $phonePrefix.'%');
+                }
+            })
         )->orWhereHas(
             'devices',
             fn ($q) => $q->where('device_serial', 'LIKE', $searchTerm.'%')
@@ -80,7 +90,7 @@ class PersonService implements IBaseService {
             ->orWhere('surname', 'LIKE', $searchTerm.'%');
 
         if ($paginate === 1) {
-            return $query->paginate($per_page);
+            return $query->paginate($perPage);
         }
 
         return $query->get();
@@ -167,20 +177,7 @@ class PersonService implements IBaseService {
     /**
      * @return LengthAwarePaginator<int, Person>
      */
-    public function getAll(
-        ?int $limit = null,
-        ?int $customerType = 1,
-        ?int $agentId = null,
-        ?bool $activeCustomer = null,
-        ?int $cityId = null,
-        ?float $totalPaidMin = null,
-        ?float $totalPaidMax = null,
-        ?string $latestPaymentFrom = null,
-        ?string $latestPaymentTo = null,
-        ?string $registrationFrom = null,
-        ?string $registrationTo = null,
-        ?string $deviceType = null,
-    ): LengthAwarePaginator {
+    public function getAll(?int $perPage = null, PersonListFilters $filters = new PersonListFilters()): LengthAwarePaginator {
         $query = $this->person->newQuery()
             ->with([
                 'addresses.city',
@@ -188,17 +185,17 @@ class PersonService implements IBaseService {
                 'agentSoldAppliance',
                 'latestPayment',
             ])
-            ->where('people.is_customer', $customerType);
+            ->where('people.is_customer', $filters->isCustomer);
 
-        if ($agentId) {
-            $query->whereHas('agentSoldAppliance.assignedAppliance.agent', function ($q) use ($agentId) {
-                $q->where('id', $agentId);
+        if ($filters->agentId) {
+            $query->whereHas('agentSoldAppliance.assignedAppliance.agent', function ($q) use ($filters) {
+                $q->where('id', $filters->agentId);
             });
         }
 
-        if (!is_null($activeCustomer)) {
+        if (!is_null($filters->activeCustomer)) {
             // For active customers (true), show those with recent payments
-            if ($activeCustomer) {
+            if ($filters->activeCustomer) {
                 $query->whereHas('payments', function ($q) {
                     $q->where('created_at', '>=', Carbon::now()->subDays(25));
                 });
@@ -210,55 +207,55 @@ class PersonService implements IBaseService {
             }
         }
 
-        if ($cityId) {
-            $query->whereHas('addresses', function ($q) use ($cityId) {
-                $q->where('city_id', $cityId)
+        if ($filters->cityId) {
+            $query->whereHas('addresses', function ($q) use ($filters) {
+                $q->where('city_id', $filters->cityId)
                     ->where('is_primary', 1);
             });
         }
 
-        if ($deviceType) {
-            $query->whereHas('devices', function ($q) use ($deviceType) {
-                $q->where('device_type', $deviceType);
+        if ($filters->deviceType) {
+            $query->whereHas('devices', function ($q) use ($filters) {
+                $q->where('device_type', $filters->deviceType);
             });
         }
 
-        if ($latestPaymentFrom) {
-            $from = Carbon::parse($latestPaymentFrom);
+        if ($filters->latestPaymentFrom) {
+            $from = Carbon::parse($filters->latestPaymentFrom);
             $query->whereHas('latestPayment', function ($q) use ($from) {
                 $q->where('created_at', '>=', $from);
             });
         }
 
-        if ($latestPaymentTo) {
-            $to = Carbon::parse($latestPaymentTo);
+        if ($filters->latestPaymentTo) {
+            $to = Carbon::parse($filters->latestPaymentTo);
             $query->whereHas('latestPayment', function ($q) use ($to) {
                 $q->where('created_at', '<=', $to);
             });
         }
 
-        if ($registrationFrom) {
-            $from = Carbon::parse($registrationFrom)->startOfDay();
+        if ($filters->registrationFrom) {
+            $from = Carbon::parse($filters->registrationFrom)->startOfDay();
             $query->where('people.created_at', '>=', $from);
         }
 
-        if ($registrationTo) {
-            $to = Carbon::parse($registrationTo)->endOfDay();
+        if ($filters->registrationTo) {
+            $to = Carbon::parse($filters->registrationTo)->endOfDay();
             $query->where('people.created_at', '<=', $to);
         }
 
-        if (!is_null($totalPaidMin) || !is_null($totalPaidMax)) {
-            $query->whereIn('people.id', function ($sub) use ($totalPaidMin, $totalPaidMax) {
+        if (!is_null($filters->totalPaidMin) || !is_null($filters->totalPaidMax)) {
+            $query->whereIn('people.id', function ($sub) use ($filters) {
                 $sub->from('payment_histories')
                     ->select('payer_id')
                     ->groupBy('payer_id');
 
-                if (!is_null($totalPaidMin)) {
-                    $sub->havingRaw('SUM(amount) >= ?', [$totalPaidMin]);
+                if (!is_null($filters->totalPaidMin)) {
+                    $sub->havingRaw('SUM(amount) >= ?', [$filters->totalPaidMin]);
                 }
 
-                if (!is_null($totalPaidMax)) {
-                    $sub->havingRaw('SUM(amount) <= ?', [$totalPaidMax]);
+                if (!is_null($filters->totalPaidMax)) {
+                    $sub->havingRaw('SUM(amount) <= ?', [$filters->totalPaidMax]);
                 }
             });
         }
@@ -310,7 +307,7 @@ class PersonService implements IBaseService {
                 }),
             ])
             ->defaultSort('-created_at')
-            ->paginate($limit);
+            ->paginate($perPage);
     }
 
     /**

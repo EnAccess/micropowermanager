@@ -6,6 +6,7 @@ use App\Http\Requests\MeterTypeCreateRequest;
 use App\Http\Requests\MeterTypeUpdateRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\MeterTypeService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,18 @@ class MeterTypeController extends Controller {
         $limit = $request->input('limit');
 
         return ApiResource::make($this->meterTypeService->getAll($limit));
+    }
+
+    /**
+     * List meter types (customer registration app).
+     *
+     * Alias of `GET /api/meter-types` for the customer registration app.
+     *
+     * @deprecated use `GET /api/meter-types` instead
+     */
+    #[Group('Customer Registration App')]
+    public function indexForCustomerRegistrationApp(Request $request): ApiResource {
+        return ApiResource::make($this->meterTypeService->getAll($request->input('limit')));
     }
 
     /**

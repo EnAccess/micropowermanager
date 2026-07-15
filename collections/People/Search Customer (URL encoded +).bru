@@ -1,0 +1,17 @@
+meta {
+  name: Search Customer (URL encoded +)
+  type: http
+  seq: 29
+}
+
+get {
+  url: {{mpm_backend_url}}/api/people/search?term=%2B49
+  body: none
+  auth: inherit
+}
+
+params:query {
+  term: %2B49
+  ~page: 1
+  ~per_page: 15
+}
