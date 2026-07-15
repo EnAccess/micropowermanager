@@ -26,7 +26,7 @@ patches:
   # https://docs.cloud.google.com/kubernetes-engine/docs/how-to/autopilot-spot-pods
   - target:
       kind: Deployment
-      name: "mpm-.*"
+      name: mpm-.*
     patch: |-
       - op: add
         path: /spec/template/spec/nodeSelector
