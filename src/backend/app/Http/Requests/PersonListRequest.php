@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\DTO\PersonListFilters;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PersonListRequest extends FormRequest {
@@ -41,22 +42,19 @@ class PersonListRequest extends FormRequest {
         ];
     }
 
-    /**
-     * @return array{is_customer: int, agent_id: int|null, active_customer: bool|null, city_id: int|null, total_paid_min: float|null, total_paid_max: float|null, latest_payment_from: string|null, latest_payment_to: string|null, registration_from: string|null, registration_to: string|null, device_type: string|null}
-     */
-    public function filters(): array {
-        return [
-            'is_customer' => $this->integer('is_customer', 1),
-            'agent_id' => $this->integer('agent_id') ?: null,
-            'active_customer' => $this->has('active_customer') ? $this->boolean('active_customer') : null,
-            'city_id' => $this->integer('city_id') ?: null,
-            'total_paid_min' => $this->filled('total_paid_min') ? $this->float('total_paid_min') : null,
-            'total_paid_max' => $this->filled('total_paid_max') ? $this->float('total_paid_max') : null,
-            'latest_payment_from' => $this->string('latest_payment_from')->toString() ?: null,
-            'latest_payment_to' => $this->string('latest_payment_to')->toString() ?: null,
-            'registration_from' => $this->string('registration_from')->toString() ?: null,
-            'registration_to' => $this->string('registration_to')->toString() ?: null,
-            'device_type' => $this->string('device_type')->toString() ?: null,
-        ];
+    public function filters(): PersonListFilters {
+        return new PersonListFilters(
+            isCustomer: $this->integer('is_customer', 1),
+            agentId: $this->integer('agent_id') ?: null,
+            activeCustomer: $this->has('active_customer') ? $this->boolean('active_customer') : null,
+            cityId: $this->integer('city_id') ?: null,
+            totalPaidMin: $this->filled('total_paid_min') ? $this->float('total_paid_min') : null,
+            totalPaidMax: $this->filled('total_paid_max') ? $this->float('total_paid_max') : null,
+            latestPaymentFrom: $this->string('latest_payment_from')->toString() ?: null,
+            latestPaymentTo: $this->string('latest_payment_to')->toString() ?: null,
+            registrationFrom: $this->string('registration_from')->toString() ?: null,
+            registrationTo: $this->string('registration_to')->toString() ?: null,
+            deviceType: $this->string('device_type')->toString() ?: null,
+        );
     }
 }
