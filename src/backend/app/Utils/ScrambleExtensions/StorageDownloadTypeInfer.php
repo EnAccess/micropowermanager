@@ -15,12 +15,18 @@ use Illuminate\Filesystem\FilesystemManager;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Scramble cannot see through `Storage::download(...)` (the facade resolves to
- * FilesystemManager, whose `download` lives behind `__call`), so file-download
- * endpoints would be documented as a generic JSON object instead of a file.
- * This extension types those calls as the streamed response Scramble knows how
- * to document; the response content type is picked up from a literal
- * `Content-Type` header passed to `Storage::download()` at the call site.
+ * `download()` is only implemented on the concrete FilesystemAdapter, and no
+ * static path leads Scramble there: the `Storage` facade resolves to
+ * FilesystemManager, which forwards unknown methods to the default disk via
+ * `__call` (declared `@return mixed`), and `Storage::disk()` is typed as the
+ * Filesystem contract, which does not declare `download()` either. With no
+ * reachable method definition to infer a return type from, Scramble documents
+ * these endpoints as a generic JSON object instead of a file download.
+ *
+ * This extension supplies the missing return type — the StreamedResponse that
+ * `download()` returns at runtime — carrying the literal headers from the call
+ * site so the schema extensions can derive the response content type (and mark
+ * binary formats accordingly, see BinaryStreamedResponseToSchema).
  */
 class StorageDownloadTypeInfer implements MethodReturnTypeExtension {
     public function shouldHandle(ObjectType $type): bool {
