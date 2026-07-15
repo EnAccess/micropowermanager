@@ -41,6 +41,9 @@ patches:
   # Setting a static internal IP address and TLS for our internal loadbalancer, see
   # https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#static_ip_addressing
   # https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#https_between_client_and_load_balancer
+  # Run Internal loadbalancer "HTTPS only" mode to reduce costs (Each forwarding rule deploys
+  # a minimum of Envoy Proxy Instances).
+  # https://docs.cloud.google.com/kubernetes-engine/docs/concepts/ingress-routing-security#enforcing_https-only_traffic
   - patch: |-
       apiVersion: networking.k8s.io/v1
       kind: Ingress
@@ -48,6 +51,7 @@ patches:
         name: mpm-ingress-internal
         annotations:
           ingress.gcp.kubernetes.io/pre-shared-cert: internal-loadbalancer-cert-cloud
+          kubernetes.io/ingress.allow-http: false
           kubernetes.io/ingress.regional-static-ip-name: internal-loadbalancer-address-cloud
   - patch: |-
       apiVersion: networking.gke.io/v1
