@@ -22,6 +22,19 @@ images:
     newTag: latest
 
 patches:
+  # Run Demo on (cheaper) Spot Pods
+  # https://docs.cloud.google.com/kubernetes-engine/docs/how-to/autopilot-spot-pods
+  - target:
+      kind: Deployment
+      name: "mpm-.*"
+    patch: |-
+      - op: add
+        path: /spec/template/spec/nodeSelector
+        value:
+          cloud.google.com/gke-spot: "true"
+      - op: add
+        path: /spec/template/spec/terminationGracePeriodSeconds
+        value: 15
   # Setting a static IP external address for our external loadbalancer, see
   # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
   - patch: |-
