@@ -58,7 +58,8 @@ return RectorConfig::configure()
         ReadOnlyPropertyRector::class,
         // exclude temporarily as creating too much noise.
         SafeDeclareStrictTypesRector::class,
-        // Scramble can parse Deprecated annotion but not Deprecated Attribute
+        // Scramble cannot parse #[\Deprecated(...]] attributes
+        // https://github.com/dedoc/scramble/issues/1220
         DeprecatedAnnotationToDeprecatedAttributeRector::class,
     ])
 ;
