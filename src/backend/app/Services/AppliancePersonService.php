@@ -4,12 +4,13 @@ namespace App\Services;
 
 use App\Events\NewLogEvent;
 use App\Models\AppliancePerson;
+use App\Models\ApplianceRate;
 use App\Models\Device;
+use App\Models\Log;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
@@ -61,13 +62,43 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
-    public function getApplianceDetails(int $applianceId): AppliancePerson {
-        $appliance = $this->appliancePerson::withTrashed()
+    public function getSoldApplianceDetails(int $appliancePersonId): AppliancePerson {
+        $appliancePerson = $this->appliancePerson->newQuery()->withTrashed()
             ->with('appliance', 'rates.logs', 'logs.owner', 'device')
-            ->where('id', '=', $applianceId)
+            ->where('id', '=', $appliancePersonId)
             ->first();
 
-        return $this->sumTotalPaymentsAndTotalRemainingAmount($appliance);
+        return $this->sumTotalPaymentsAndTotalRemainingAmount($appliancePerson);
+    }
+
+    /**
+     * @return Collection<int, AppliancePerson>
+     */
+    public function getSoldAppliancesForPerson(int $personId): Collection {
+        return $this->appliancePerson->newQuery()->withTrashed()
+            ->with('appliance.applianceType', 'rates.logs', 'logs.owner')
+            ->where('person_id', $personId)
+            ->get();
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, ApplianceRate>
+     */
+    public function getRates(AppliancePerson $appliancePerson, int $perPage): LengthAwarePaginator {
+        return $appliancePerson->rates()
+            ->with('logs.owner')
+            ->oldest('due_date')
+            ->paginate($perPage);
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, Log>
+     */
+    public function getLogs(AppliancePerson $appliancePerson, int $perPage): LengthAwarePaginator {
+        return $appliancePerson->logs()
+            ->with('owner')
+            ->latest()
+            ->paginate($perPage);
     }
 
     public function deleteWithDeviceRelease(AppliancePerson $appliancePerson, int $creatorId): AppliancePerson {
@@ -89,26 +120,19 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $appliancePerson;
     }
 
-    private function sumTotalPaymentsAndTotalRemainingAmount(AppliancePerson $appliance): AppliancePerson {
-        $rates = collect($appliance->rates);
-        $appliance['totalRemainingAmount'] = 0;
-        $appliance['totalPayments'] = 0;
+    private function sumTotalPaymentsAndTotalRemainingAmount(AppliancePerson $appliancePerson): AppliancePerson {
+        $rates = collect($appliancePerson->rates);
+        $appliancePerson['totalRemainingAmount'] = 0;
+        $appliancePerson['totalPayments'] = 0;
 
-        $rates->map(function ($rate) use ($appliance) {
-            $appliance['totalRemainingAmount'] += $rate->remaining;
+        $rates->map(function ($rate) use ($appliancePerson) {
+            $appliancePerson['totalRemainingAmount'] += $rate->remaining;
             if ($rate->remaining !== $rate->rate_cost) {
-                $appliance['totalPayments'] += $rate->rate_cost - $rate->remaining;
+                $appliancePerson['totalPayments'] += $rate->rate_cost - $rate->remaining;
             }
         });
 
-        return $appliance;
-    }
-
-    /**
-     * @return Builder<AppliancePerson>
-     */
-    public function getLoansForCustomerId(int $customerId) {
-        return $this->appliancePerson->newQuery()->where('person_id', $customerId);
+        return $appliancePerson;
     }
 
     public function getById(int $id): AppliancePerson {

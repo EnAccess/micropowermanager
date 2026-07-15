@@ -1,0 +1,11 @@
+meta {
+  name: Get sold appliance details
+  type: http
+  seq: 35
+}
+
+get {
+  url: {{mpm_backend_url}}/api/appliances/person/people/detail/1
+  body: none
+  auth: inherit
+}

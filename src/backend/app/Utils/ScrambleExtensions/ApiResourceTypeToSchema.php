@@ -40,10 +40,12 @@ use Illuminate\Support\Enumerable;
  * skips re-wrapping when a `data` key is already present — so the documented shape
  * matches exactly, pagination metadata included.
  *
- * When the wrapped type is a union (e.g. `Collection|LengthAwarePaginator`, a common
- * "paginate when ?per_page is set" return), the paginator branch is preferred because
- * it is the richer, metadata-carrying shape. Anything else (single models,
- * untyped/non-model collections) falls through to Scramble's defaults.
+ * When the wrapped type is a union, the most descriptive branch wins: a literal keyed
+ * array first (e.g. a `['x' => ...]` literal unioned with an untyped helper return),
+ * then a paginator (e.g. `Collection|LengthAwarePaginator`, a common "paginate when
+ * ?per_page is set" return) because it is the richer, metadata-carrying shape.
+ * Anything else (single models, untyped/non-model collections) falls through to
+ * Scramble's defaults.
  */
 class ApiResourceTypeToSchema extends TypeToSchemaExtension {
     public function shouldHandle(Type $type): bool {
@@ -62,11 +64,13 @@ class ApiResourceTypeToSchema extends TypeToSchemaExtension {
     }
 
     private function wrappedSchemaType(?Type $wrapped): ?Type {
-        if ($wrapped instanceof KeyedArrayType) {
-            return $wrapped;
-        }
-
         $branches = $wrapped instanceof Union ? $wrapped->types : [$wrapped];
+
+        foreach ($branches as $branch) {
+            if ($branch instanceof KeyedArrayType) {
+                return $branch;
+            }
+        }
 
         foreach ($branches as $branch) {
             if ($branch instanceof Generic

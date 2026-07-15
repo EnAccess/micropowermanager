@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionSuccessfulEvent;
+use App\Http\Requests\CreateAppliancePersonRequest;
+use App\Http\Requests\UpdateAppliancePersonTotalCostRequest;
 use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use App\Models\Appliance;
@@ -14,14 +16,14 @@ use App\Models\Transaction\Transaction;
 use App\Models\User;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
-use App\Services\ApplianceService;
 use App\Services\DeviceService;
 use App\Services\PaymentInitiationService;
 use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
+use Dedoc\Scramble\Attributes\PathParameter;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class AppliancePersonController extends Controller {
     public const CASH_TRANSACTION_PROVIVER = 0;
@@ -33,39 +35,47 @@ class AppliancePersonController extends Controller {
         private UserService $userService,
         private DeviceService $deviceService,
         private PaymentInitiationService $paymentInitiationService,
-        private ApplianceService $applianceService,
         private ApplianceRateService $applianceRateService,
     ) {}
 
+    /**
+     * Sell an appliance to a person.
+     *
+     * Creates a new AppliancePerson record linking the appliance to the person.
+     *
+     * For `installment` sales the installment rates are generated immediately, for `energy_service` sales no rates are created.
+     * When a `device_serial` is given, that device is assigned to the person.
+     * When a `down_payment` is given, it is processed as well:
+     * cash payments (`payment_provider: 0`) are booked immediately,
+     * online payments are initiated and the provider's initiation data (e.g. a payment page URL) is returned next to `appliance_person`.
+     */
+    #[PathParameter('appliance', description: 'ID of the appliance (the product) being sold.')]
+    #[PathParameter('person', description: 'ID of the person (customer) buying the appliance.')]
     public function store(
         Appliance $appliance,
-        Request $request,
+        Person $person,
+        CreateAppliancePersonRequest $request,
     ): ApiResource {
         try {
-            $user = $this->userService->getById($request->input('user_id'));
-            $appliance = $this->applianceService->getById($request->input('id'));
-            $paymentType = $request->input('payment_type', AppliancePerson::PAYMENT_TYPE_INSTALLMENT);
-            $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
+            $user = $this->userService->getById($request->integer('user_id'));
+            $paymentType = $request->input('payment_type') ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
             $downPayment = (float) $request->input('down_payment', 0);
-            $deviceSerial = $request->input('device_serial');
 
             DB::connection('tenant')->beginTransaction();
 
-            $appliancePerson = $this->createAppliancePerson($request, $user, $paymentType);
+            $appliancePerson = $this->createAppliancePerson($appliance, $person, $request, $user, $paymentType);
 
-            if (!$isEnergyService) {
+            if (!$appliancePerson->isEnergyService()) {
                 $this->createInstallmentRates($appliancePerson, $appliance, $request->input('rate_type'));
             }
 
-            if ($deviceSerial) {
+            if ($request->input('device_serial')) {
                 $this->assignDevice($appliancePerson, $request);
             }
 
-            $responseArray = ['appliance_person' => $appliancePerson];
-
-            if ($downPayment > 0) {
-                $responseArray = $this->processDownPayment($appliancePerson, $downPayment, $request);
-            }
+            $responseArray = $downPayment > 0
+                ? $this->processDownPayment($appliancePerson, $downPayment, $request)
+                : ['appliance_person' => $appliancePerson];
 
             DB::connection('tenant')->commit();
 
@@ -76,12 +86,12 @@ class AppliancePersonController extends Controller {
         }
     }
 
-    private function createAppliancePerson(Request $request, ?User $user, string $paymentType): AppliancePerson {
+    private function createAppliancePerson(Appliance $appliance, Person $person, Request $request, ?User $user, string $paymentType): AppliancePerson {
         $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
 
         $appliancePerson = $this->appliancePersonService->make([
-            'appliance_id' => $request->input('id'),
-            'person_id' => $request->input('person_id'),
+            'appliance_id' => $appliance->id,
+            'person_id' => $person->id,
             'total_cost' => $isEnergyService ? 0 : $request->integer('cost'),
             'rate_count' => $isEnergyService ? 0 : $request->integer('rate'),
             'down_payment' => (float) $request->input('down_payment', 0),
@@ -118,7 +128,7 @@ class AppliancePersonController extends Controller {
     }
 
     /**
-     * @return array<string, mixed>
+     * @return non-empty-array<string, mixed>
      */
     private function processDownPayment(AppliancePerson $appliancePerson, float $downPayment, Request $request): array {
         $addressData = $request->input('address');
@@ -161,47 +171,57 @@ class AppliancePersonController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * List sold appliances of a person.
+     *
+     * Returns all AppliancePerson records of the given person, including soft-deleted ones,
+     * each with the sold appliance, its installment rates and its activity logs.
      */
-    public function index(Person $person, Request $request): ApiResource {
-        $appliances = $this->appliancePerson::withTrashed()
-            ->with('appliance.applianceType', 'rates.logs', 'logs.owner')
-            ->where('person_id', $person->id)
-            ->get();
-
-        return ApiResource::make($appliances);
+    #[PathParameter('person', description: 'ID of the person (customer) whose sold appliances are listed.')]
+    public function index(Person $person): ApiResource {
+        return ApiResource::make($this->appliancePersonService->getSoldAppliancesForPerson($person->id));
     }
 
-    public function show(int $applianceId): ApiResource {
-        $appliance = $this->appliancePersonService->getApplianceDetails($applianceId);
-
-        return ApiResource::make($appliance);
+    /**
+     * Get sold appliance details.
+     *
+     * Returns a single AppliancePerson record with the sold appliance, its installment rates,
+     * its activity logs, the assigned device and the computed `totalPayments` and `totalRemainingAmount`.
+     */
+    #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
+    public function show(int $appliancePersonId): ApiResource {
+        return ApiResource::make($this->appliancePersonService->getSoldApplianceDetails($appliancePersonId));
     }
 
+    /**
+     * List installment rates of a sold appliance.
+     *
+     * Returns the paginated installment rates of the given AppliancePerson record,
+     * ordered by due date (oldest first), each with its activity logs.
+     */
+    #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
+    #[QueryParameter('per_page', description: 'Number of installment rates per page.', type: 'int', default: 15)]
     public function getRates(int $appliancePersonId, Request $request): ApiResource {
-        $perPage = $request->input('per_page', 15);
+        $perPage = $request->integer('per_page', 15);
+        $appliancePerson = $this->appliancePersonService->getById($appliancePersonId);
 
-        $appliancePerson = $this->appliancePerson::withTrashed()->findOrFail($appliancePersonId);
-
-        return ApiResource::make($appliancePerson->rates()
-            ->with('logs.owner')
-            ->oldest('due_date')
-            ->paginate($perPage));
+        return ApiResource::make($this->appliancePersonService->getRates($appliancePerson, $perPage));
     }
 
-    public function updateTotalCost(int $appliancePersonId, Request $request): ApiResource {
+    /**
+     * Update the total cost of a sold appliance.
+     *
+     * Sets a new total cost on the AppliancePerson record and redistributes the outstanding amount
+     * across the unpaid installment rates.
+     * When `rate_count` (and `rate_type`) are given, the unpaid rates are regenerated on a new schedule instead.
+     * Returns the refreshed sold appliance details.
+     */
+    #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
+    public function updateTotalCost(int $appliancePersonId, UpdateAppliancePersonTotalCostRequest $request): ApiResource {
         $newTotalCost = $request->integer('new_total_cost');
         $creatorId = $request->integer('admin_id');
         $rateCount = $request->has('rate_count') ? $request->integer('rate_count') : null;
         $rateType = $request->input('rate_type');
         $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
-
-        if ($rateType !== null && !in_array($rateType, ['monthly', 'weekly'], true)) {
-            throw ValidationException::withMessages(['rate_type' => 'Rate type must be monthly or weekly']);
-        }
-        if ($rateCount !== null && $rateCount < 1) {
-            throw ValidationException::withMessages(['rate_count' => 'Installment count must be at least 1']);
-        }
 
         try {
             DB::connection('tenant')->beginTransaction();
@@ -219,20 +239,33 @@ class AppliancePersonController extends Controller {
         }
 
         return ApiResource::make(
-            $this->appliancePersonService->getApplianceDetails($appliancePersonId)
+            $this->appliancePersonService->getSoldApplianceDetails($appliancePersonId)
         );
     }
 
+    /**
+     * List activity logs of a sold appliance.
+     *
+     * Returns the paginated activity logs of the given AppliancePerson record, newest first.
+     */
+    #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
+    #[QueryParameter('per_page', description: 'Number of log entries per page.', type: 'int', default: 10)]
     public function getLogs(int $appliancePersonId, Request $request): ApiResource {
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->integer('per_page', 10);
+        $appliancePerson = $this->appliancePersonService->getById($appliancePersonId);
 
-        $appliancePerson = $this->appliancePerson::withTrashed()->findOrFail($appliancePersonId);
-
-        return ApiResource::make($appliancePerson->logs()
-            ->with('owner')->latest()
-            ->paginate($perPage));
+        return ApiResource::make($this->appliancePersonService->getLogs($appliancePerson, $perPage));
     }
 
+    /**
+     * Delete a sold appliance.
+     *
+     * Soft-deletes the AppliancePerson record, releases the assigned device (if any)
+     * and writes an activity log entry.
+     * Returns the details of the deleted record.
+     */
+    #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
+    #[QueryParameter('admin_id', description: 'ID of the MPM user performing the deletion; recorded in the activity log.', type: 'int')]
     public function destroy(int $appliancePersonId, Request $request): ApiResource {
         $creatorId = $request->integer('admin_id');
         $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
@@ -247,7 +280,7 @@ class AppliancePersonController extends Controller {
         }
 
         return ApiResource::make(
-            $this->appliancePersonService->getApplianceDetails($appliancePersonId)
+            $this->appliancePersonService->getSoldApplianceDetails($appliancePersonId)
         );
     }
 }
