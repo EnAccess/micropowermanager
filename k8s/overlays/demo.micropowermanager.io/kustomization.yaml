@@ -9,6 +9,7 @@ resources:
 
 components:
   - ../../components/internal_ingress
+  - ../../components/vertical_pod_autoscaler
 
 # customise `newTag` to deploy a specific version of MicroPowerManager
 images:
