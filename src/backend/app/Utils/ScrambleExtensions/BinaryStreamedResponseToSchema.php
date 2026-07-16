@@ -23,7 +23,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * binary formats such as xlsx. This extension documents streamed responses whose
  * literal `Content-Type` header is a binary mime type with a `format: binary`
  * string schema instead. Everything else (SSE, `text/csv`, JSON streams, or no
- * literal content type) falls through to the built-in extension by returning null.
+ * literal content type) falls through to the built-in extension by returning
+ * null.
+ *
  * https://github.com/dedoc/scramble/issues/1224
  */
 class BinaryStreamedResponseToSchema extends TypeToSchemaExtension {

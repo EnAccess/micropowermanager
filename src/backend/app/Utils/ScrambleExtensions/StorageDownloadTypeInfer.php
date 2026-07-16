@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * `download()` returns at runtime — carrying the literal headers from the call
  * site so the schema extensions can derive the response content type (and mark
  * binary formats accordingly, see BinaryStreamedResponseToSchema).
+ *
  * https://github.com/dedoc/scramble/discussions/1223
  */
 class StorageDownloadTypeInfer implements MethodReturnTypeExtension {
