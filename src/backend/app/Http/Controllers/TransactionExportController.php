@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransactionExportRequest;
+use App\Services\ExportServices\AbstractExportService;
 use App\Services\ExportServices\TransactionExportService;
 use App\Services\MainSettingsService;
 use App\Services\TransactionService;
+use Dedoc\Scramble\Attributes\Group;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+#[Group('Export', 'Export data as Excel, CSV, or JSON.', weight: 11)]
 class TransactionExportController {
     public function __construct(
         private TransactionService $transactionService,
@@ -17,7 +22,15 @@ class TransactionExportController {
         private MainSettingsService $mainSettingsService,
     ) {}
 
-    public function download(Request $request): StreamedResponse|JsonResponse {
+    /**
+     * Export transactions.
+     *
+     * Downloads transactions as an Excel or CSV file, or returns them as JSON.
+     *
+     * @throws AuthenticationException
+     * @throws AuthorizationException
+     */
+    public function download(TransactionExportRequest $request): StreamedResponse|JsonResponse {
         $format = $request->input('format', 'excel');
 
         if ($format === 'csv') {
@@ -31,9 +44,7 @@ class TransactionExportController {
         return $this->downloadExcel($request);
     }
 
-    public function downloadExcel(
-        Request $request,
-    ): StreamedResponse {
+    public function downloadExcel(TransactionExportRequest $request): StreamedResponse {
         $deviceType = $request->input('deviceType', 'all');
         $serialNumber = $request->input('serial_number');
         $tariffId = $request->input('tariff');
@@ -59,10 +70,10 @@ class TransactionExportController {
         $this->transactionExportService->writeTransactionData();
         $pathToSpreadSheet = $this->transactionExportService->saveSpreadSheet();
 
-        return Storage::download($pathToSpreadSheet, 'transaction_export_'.now()->format('Ymd_His').'.xlsx');
+        return Storage::download($pathToSpreadSheet, 'transaction_export_'.now()->format('Ymd_His').'.xlsx', ['Content-Type' => AbstractExportService::XLSX_CONTENT_TYPE]);
     }
 
-    public function downloadCsv(Request $request): StreamedResponse {
+    public function downloadCsv(TransactionExportRequest $request): StreamedResponse {
         $deviceType = $request->input('deviceType', 'all');
         $transactionProvider = $request->input('provider', 'all');
         $status = $request->input('status');
@@ -85,10 +96,10 @@ class TransactionExportController {
         $headers = ['Status', 'Payment Service', 'Customer', 'Device Serial Number', 'Device Type', 'Amount', 'Type', 'Date'];
         $csvPath = $this->transactionExportService->saveCsv($headers);
 
-        return Storage::download($csvPath, 'transaction_export_'.now()->format('Ymd_His').'.csv');
+        return Storage::download($csvPath, 'transaction_export_'.now()->format('Ymd_His').'.csv', ['Content-Type' => AbstractExportService::CSV_CONTENT_TYPE]);
     }
 
-    public function downloadJson(Request $request): JsonResponse {
+    public function downloadJson(TransactionExportRequest $request): JsonResponse {
         $deviceType = $request->input('deviceType', 'all');
         $serialNumber = $request->input('serial_number');
         $transactionProvider = $request->input('provider', 'all');
