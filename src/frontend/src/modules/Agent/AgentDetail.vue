@@ -84,7 +84,27 @@
                   <div class="md-list-item-text">
                     <span>{{ $tc("words.balance") }}</span>
                     <span>
-                      {{ formatCurrency(agent.balance || 0) }}
+                      {{ moneyFormat(agent.balance || 0) }}
+                    </span>
+                  </div>
+                </md-list-item>
+                <md-divider></md-divider>
+                <md-list-item>
+                  <md-icon>savings</md-icon>
+                  <div class="md-list-item-text">
+                    <span>{{ $tc("words.commission") }}</span>
+                    <span>
+                      {{ moneyFormat(agent.commissionRevenue || 0) }}
+                    </span>
+                  </div>
+                </md-list-item>
+                <md-divider></md-divider>
+                <md-list-item>
+                  <md-icon>request_quote</md-icon>
+                  <div class="md-list-item-text">
+                    <span>{{ $tc("phrases.dueToCompany") }}</span>
+                    <span>
+                      {{ moneyFormat(agent.dueToEnergySupplier || 0) }}
                     </span>
                   </div>
                 </md-list-item>
@@ -485,11 +505,6 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
-    },
-    formatCurrency(amount) {
-      const currency =
-        this.$store.getters["settings/getMainSettings"]?.currency || "TZS"
-      return this.readable(amount) + currency
     },
   },
 }

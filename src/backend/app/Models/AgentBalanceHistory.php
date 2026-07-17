@@ -32,6 +32,13 @@ class AgentBalanceHistory extends BaseModel {
 
     protected $guarded = [];
 
+    // Snapshot columns are NOT NULL; AgentBalanceHistoryObserver overwrites them
+    // with the post-mutation agent state right after the row is created.
+    protected $attributes = [
+        'available_balance' => 0,
+        'due_to_supplier' => 0,
+    ];
+
     /**
      * @return BelongsTo<Agent, $this>
      */

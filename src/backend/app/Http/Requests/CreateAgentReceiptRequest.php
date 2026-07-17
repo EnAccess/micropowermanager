@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Agent;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentReceiptRequest extends FormRequest {
@@ -19,8 +20,18 @@ class CreateAgentReceiptRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'agent_id' => ['required'],
-            'amount' => ['required'],
+            'agent_id' => ['required', 'exists:tenant.agents,id'],
+            'amount' => [
+                'required',
+                'numeric',
+                'min:0.01',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $agent = Agent::query()->find($this->input('agent_id'));
+                    if ($agent && (float) $value > $agent->due_to_energy_supplier) {
+                        $fail('The receipt amount cannot exceed the amount the agent owes ('.$agent->due_to_energy_supplier.').');
+                    }
+                },
+            ],
         ];
     }
 }

@@ -225,8 +225,6 @@ class AgentSoldApplianceService implements IBaseService {
             'agent_id' => $agent->id,
             'amount' => (-1 * $requestData['down_payment']),
             'transaction_id' => $transaction->id,
-            'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentAssignedApplianceHistoryBalanceService->setAssignee($assignedAppliance);
@@ -242,8 +240,6 @@ class AgentSoldApplianceService implements IBaseService {
             'agent_id' => $agent->id,
             'amount' => ($assignedAppliance->cost * $agentCommission->appliance_commission),
             'transaction_id' => $transaction->id,
-            'available_balance' => $agent->commission_revenue,
-            'due_to_supplier' => $agent->due_to_energy_supplier,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentCommissionHistoryBalanceService->setAssignee($agentCommission);

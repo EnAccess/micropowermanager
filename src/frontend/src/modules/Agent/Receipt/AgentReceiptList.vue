@@ -2,7 +2,7 @@
   <div>
     <new-receipt :addNewReceipt="showNewReceipt" :agent="agent" />
     <widget
-      :class="'col-sm-6 col-md-5'"
+      :class="'col-sm-12'"
       :button-text="$tc('phrases.addReceipt', 0)"
       :button="true"
       :title="$tc('words.receipt')"
@@ -18,17 +18,23 @@
             {{ item }}
           </md-table-head>
         </md-table-row>
-        <md-table-row
-          v-for="(item, index) in agentReceiptService.list"
-          :key="index"
-        >
+        <md-table-row v-for="item in agentReceiptService.list" :key="item.id">
           <md-table-cell md-sort-by="id" md-label="ID">
             {{ item.id }}
           </md-table-cell>
           <md-table-cell md-label="Amount">
             {{ moneyFormat(item.amount) }}
           </md-table-cell>
-          <md-table-cell md-label="Amount">
+          <md-table-cell md-label="Commission Credited">
+            {{ moneyFormat(item.commissionCredited) }}
+          </md-table-cell>
+          <md-table-cell md-label="Due at Visit">
+            {{ moneyFormat(item.dueAtVisit) }}
+          </md-table-cell>
+          <md-table-cell md-label="Collected Since Last Visit">
+            {{ moneyFormat(item.collectedSinceLastVisit) }}
+          </md-table-cell>
+          <md-table-cell md-label="Receiver">
             {{ item.receiver }}
           </md-table-cell>
           <md-table-cell md-label="Date">
@@ -42,6 +48,7 @@
 <script>
 import NewReceipt from "./NewReceipt.vue"
 
+import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { AgentReceiptService } from "@/services/AgentReceiptService.js"
 import { AgentService } from "@/services/AgentService.js"
@@ -50,7 +57,7 @@ import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AgentReceiptList",
-  mixins: [notify],
+  mixins: [notify, currency],
   data() {
     return {
       subscriber: "agent-receipts",
@@ -62,6 +69,9 @@ export default {
       headers: [
         this.$tc("words.id"),
         this.$tc("words.amount"),
+        this.$tc("phrases.commissionCredited"),
+        this.$tc("phrases.dueAtVisit"),
+        this.$tc("phrases.collectedSinceLastVisit"),
         this.$tc("words.receiver"),
         this.$tc("words.date"),
       ],
@@ -116,5 +126,4 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss"></style>
 <style scoped lang="scss"></style>

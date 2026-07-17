@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Models\Agent;
+use App\Models\AgentAssignedAppliances;
 use App\Models\AgentBalanceHistory;
+use App\Models\AgentCharge;
+use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
+use App\Models\Transaction\AgentTransaction;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -21,6 +25,16 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     /** @use HasCrudOperations<AgentBalanceHistory> */
     use HasCrudOperations;
 
+    public const TYPE_BALANCE = 'balance';
+    public const TYPE_COMMISSION = 'commission';
+
+    public const BALANCE_TRIGGER_TYPES = [
+        AgentTransaction::RELATION_NAME,
+        AgentAssignedAppliances::RELATION_NAME,
+        AgentCharge::RELATION_NAME,
+        AgentReceipt::RELATION_NAME,
+    ];
+
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
@@ -33,14 +47,19 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     /**
      * @return Collection<int, AgentBalanceHistory>|LengthAwarePaginator<int, AgentBalanceHistory>
      */
-    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
-        $query = $this->agentBalanceHistory->newQuery()
-            ->whereHasMorph(
-                'trigger',
-                '*'
-            );
+    public function getAll(
+        ?int $limit = null,
+        ?int $agentId = null,
+        ?string $type = null,
+    ): Collection|LengthAwarePaginator {
+        $query = $this->agentBalanceHistory->newQuery();
         if ($agentId) {
             $query->where('agent_id', $agentId);
+        }
+        if ($type === self::TYPE_COMMISSION) {
+            $query->where('trigger_type', AgentCommission::RELATION_NAME);
+        } elseif ($type === self::TYPE_BALANCE) {
+            $query->whereIn('trigger_type', self::BALANCE_TRIGGER_TYPES);
         }
         if ($limit) {
             return $query->latest()->paginate($limit);
@@ -67,14 +86,14 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     public function getTotalAmountSinceLastVisit(int $agentBalanceHistoryId, int $agentId): float {
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)
             ->where('id', '>', $agentBalanceHistoryId)
-            ->whereIn('trigger_type', ['agent_appliance', 'agent_transaction'])
+            ->whereIn('trigger_type', [AgentAssignedAppliances::RELATION_NAME, AgentTransaction::RELATION_NAME])
             ->sum('amount');
     }
 
     public function getTransactionAverage(Agent $agent, ?AgentReceipt $lastReceipt): float {
         $query = $this->agentBalanceHistory->newQuery()
             ->where('agent_id', $agent->id)
-            ->where('trigger_type', 'agent_transaction');
+            ->where('trigger_type', AgentTransaction::RELATION_NAME);
 
         if ($lastReceipt instanceof AgentReceipt) {
             $query->where('created_at', '>', $lastReceipt->created_at);
@@ -87,88 +106,28 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     }
 
     /**
-     * @return array<string, array{balance: float|null, due: float|null}>
+     * @return array<string, array{balance: float, due: float}>
      */
     public function getGraphValues(Agent $agent, string $lastReceiptDate): array {
-        $periodDate = $lastReceiptDate;
-        $period = $this->getPeriod($agent, $periodDate);
-
         $history = $this->agentBalanceHistory->newQuery()
-            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as date,id,trigger_Type,amount,'.
-                'available_balance,due_to_supplier')
             ->where('agent_id', $agent->id)
-            ->where('created_at', '>=', $periodDate)
-            ->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
-                ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\'),date,id,trigger_Type,amount,'.
-                    'available_balance,due_to_supplier'))->get();
+            ->where('created_at', '>=', $lastReceiptDate)
+            ->orderBy('id')
+            ->get();
 
-        if (count($history) === 1 && $history[0]->trigger_type === 'agent_receipt') {
-            /** @var object{date: string, trigger_type: string, amount: float, due_to_supplier: float} $firstHistory */
-            $firstHistory = $history[0];
-            $period[$firstHistory->date]['balance'] = -1 * ($firstHistory->due_to_supplier - $firstHistory->amount);
-            $period[$firstHistory->date]['due'] = $firstHistory->due_to_supplier - $firstHistory->amount;
-        } elseif (count($history) === 0) {
-            $date = new \DateTime();
-            $key = $date->format('Y-m-d');
-            $period[$key] = [
-                'balance' => 0.0,
-                'due' => 0.0,
-            ];
+        if ($history->isEmpty()) {
+            $today = new \DateTime()->format('Y-m-d');
 
-            return $period;
-        } else {
-            foreach (array_keys($period) as $key) {
-                /** @var object{date: string, trigger_type: string, amount: float, available_balance: float, due_to_supplier: float} $h */
-                foreach ($history as $h) {
-                    if ($key === $h->date) {
-                        /** @var object{date: string, trigger_type: string, amount: float, available_balance: float, due_to_supplier: float}|null $lastRow */
-                        $lastRow = $history->where('trigger_Type', '!=', 'agent_commission')
-                            ->where('trigger_Type', '!=', 'agent_receipt')
-                            ->where(
-                                'date',
-                                '=',
-                                $h->date
-                            )->last();
-
-                        $lastComissionRow = $history->where('trigger_Type', '=', 'agent_commission')
-                            ->where('trigger_Type', '!=', 'agent_receipt')
-                            ->where(
-                                'date',
-                                '=',
-                                $h->date
-                            )->last();
-                        $period[$key]['balance'] = $lastRow !== null ?
-                            $lastRow->amount + $lastRow->available_balance : null;
-                        $period[$key]['due'] = $lastRow !== null ? ((-1 * $lastRow->amount) + $lastRow->due_to_supplier)
-                            - (1 * $lastComissionRow->amount) : null;
-                    }
-                }
-            }
+            return [$today => ['balance' => 0.0, 'due' => 0.0]];
         }
 
-        return $period;
-    }
-
-    /**
-     * @return array<string, array{balance: int, due: int}>
-     */
-    public function getPeriod(Agent $agent, string $date): array {
-        /** @var SupportCollection<int, object{day: string}> $days */
-        $days = $this->agentBalanceHistory->newQuery()->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as day')
-            ->where('agent_id', $agent->id)
-            ->where(
-                'created_at',
-                '>=',
-                $date
-            )->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
-            ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
-            ->get();
+        // Every history row snapshots the agent's post-mutation state, so the
+        // last row of each day is that day's closing position.
         $period = [];
-        /** @var object{day: string} $item */
-        foreach ($days as $item) {
-            $period[$item->day] = [
-                'balance' => 0,
-                'due' => 0,
+        foreach ($history as $row) {
+            $period[$row->created_at->format('Y-m-d')] = [
+                'balance' => $row->available_balance,
+                'due' => $row->due_to_supplier,
             ];
         }
 
@@ -185,7 +144,9 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         /** @var SupportCollection<int, object{period: string, revenue: float}> $Revenues */
         $Revenues = $this->agentBalanceHistory->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%u\') as period, SUM(amount) as revenue')
-            ->where('trigger_type', 'agent_commission')
+            ->where('trigger_type', AgentCommission::RELATION_NAME)
+            // Exclude payout rows (negative) so weekly revenue reflects what was earned.
+            ->where('amount', '>', 0)
             ->where('agent_id', $agent->id)
             ->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
                 ->raw('DATE_FORMAT(created_at,\'%Y-%u\')'))

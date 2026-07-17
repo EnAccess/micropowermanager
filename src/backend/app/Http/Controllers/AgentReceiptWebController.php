@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentReceiptRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\AgentBalanceHistory;
 use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentReceiptService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class AgentReceiptWebController extends Controller {
     public function __construct(
@@ -43,6 +45,11 @@ class AgentReceiptWebController extends Controller {
         $userId = auth('api')->user()->id;
         $agentId = $request->input('agent_id');
         $lastBalanceHistory = $this->agentBalanceHistoryService->getLastAgentBalanceHistory($agentId);
+
+        if (!$lastBalanceHistory instanceof AgentBalanceHistory) {
+            throw ValidationException::withMessages(['agent_id' => 'The agent has no recorded activity to create a receipt for.']);
+        }
+
         $receiptData = [
             'user_id' => $userId,
             'agent_id' => $agentId,

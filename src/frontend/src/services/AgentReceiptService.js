@@ -19,9 +19,14 @@ export class AgentReceiptService {
   }
 
   fromJson(data) {
+    const detail = (data.detail && data.detail[0]) || {}
     let receipt = {
       id: data.id,
       amount: data.amount,
+      commissionCredited: detail.commission_credited || 0,
+      dueAtVisit: detail.due || 0,
+      // sale rows are stored with negative amounts, so the sum comes back negative
+      collectedSinceLastVisit: Math.abs(detail.since_last_visit || 0),
       receiver: data.user.name,
       createdAt: data.created_at
         .toString()

@@ -62,10 +62,8 @@ class AgentTransactionProvider implements ITransactionProvider {
 
         $history = AgentBalanceHistory::query()->make([
             'agent_id' => $agent->id,
-            'amount' => $transaction->amount > 0 ? (-1 * $transaction->amount) : ($transaction->amount),
+            'amount' => -1 * abs($transaction->amount),
             'transaction_id' => $transaction->id,
-            'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier,
         ]);
 
         $history->trigger()->associate($this->agentTransaction);
@@ -73,17 +71,11 @@ class AgentTransactionProvider implements ITransactionProvider {
 
         // create agent commission
         $commission = AgentCommission::query()->find($agent->agent_commission_id);
-        $history = AgentBalanceHistory::query()->make(
-            [
-                'agent_id' => $agent->id,
-                'amount' => ($transaction->amount * $commission->energy_commission) < 0 ?
-                    -1 * ($transaction->amount * $commission->energy_commission) :
-                    ($transaction->amount * $commission->energy_commission),
-                'transaction_id' => $transaction->id,
-                'available_balance' => $agent->commission_revenue,
-                'due_to_supplier' => $agent->due_to_energy_supplier,
-            ]
-        );
+        $history = AgentBalanceHistory::query()->make([
+            'agent_id' => $agent->id,
+            'amount' => abs($transaction->amount * $commission->energy_commission),
+            'transaction_id' => $transaction->id,
+        ]);
         $history->trigger()->associate($commission);
         $history->save();
     }
