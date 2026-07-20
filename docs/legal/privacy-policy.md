@@ -9,7 +9,7 @@ order: 2
 This Privacy Policy explains how **MicroPowerManager** (“we”, “our”, “us”) collects, uses, and protects personal data through our website and through the **MPM Field App** mobile application.
 We are committed to protecting your privacy and processing your data in accordance with the **General Data Protection Regulation (GDPR)** and the **Dutch Data Protection Act (Uitvoeringswet AVG)**.
 
-The sections below up to and including *Third-Party Links* describe our **website**. The [MicroPowerManager Field App](#the-micropowermanager-field-app) section describes the **mobile application** used by field agents. The *Children’s Privacy*, *Changes to This Policy*, and *Contact Us* sections apply to both.
+The sections below up to and including _Third-Party Links_ describe our **website**. The [MicroPowerManager Field App](#the-micropowermanager-field-app) section describes the **mobile application** used by field agents. The _Children’s Privacy_, _Changes to This Policy_, and _Contact Us_ sections apply to both.
 
 ## Information We Collect
 
@@ -135,11 +135,11 @@ When you open the map to pick a location, the app loads map tiles from [OpenStre
 
 ### App Permissions
 
-| Permission | Why the app asks for it |
-| --- | --- |
-| Location | To geotag customers and devices you register in the field. |
-| Camera | To capture customer documents, such as signed contracts, and attach them to a customer record. |
-| Photos | To attach an existing photo of a document to a customer record. |
+| Permission | Why the app asks for it                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| Location   | To geotag customers and devices you register in the field.                                     |
+| Camera     | To capture customer documents, such as signed contracts, and attach them to a customer record. |
+| Photos     | To attach an existing photo of a document to a customer record.                                |
 
 Each permission is requested only when the corresponding feature is first used, and the app remains usable if a permission is declined.
 
