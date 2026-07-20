@@ -6,8 +6,10 @@ order: 2
 
 ## Introduction
 
-This Privacy Policy explains how **MicroPowerManager** (“we”, “our”, “us”) collects, uses, and protects personal data through our website.
+This Privacy Policy explains how **MicroPowerManager** (“we”, “our”, “us”) collects, uses, and protects personal data through our website and through the **MPM Field App** mobile application.
 We are committed to protecting your privacy and processing your data in accordance with the **General Data Protection Regulation (GDPR)** and the **Dutch Data Protection Act (Uitvoeringswet AVG)**.
+
+The sections below up to and including _Third-Party Links_ describe our **website**. The [MicroPowerManager Field App](#the-micropowermanager-field-app) section describes the **mobile application** used by field agents. The _Children’s Privacy_, _Changes to This Policy_, and _Contact Us_ sections apply to both.
 
 ## Information We Collect
 
@@ -101,9 +103,54 @@ Since we use only performance cookies, **no sensitive or personally identifiable
 Our Site may contain links to external websites not operated by us. We are not responsible for the content or privacy practices of those third-party websites.
 We encourage you to review the privacy and cookie policies of any external sites you visit.
 
+## The MicroPowerManager Field App
+
+The **MPM Field App** is a mobile application for field agents of energy service providers that use MicroPowerManager to manage mini-grid customers, meters, and payments. It is free and open source; its complete source code is available at [github.com/EnAccess/micropowermanager-field-app](https://github.com/EnAccess/micropowermanager-field-app).
+
+This section explains what data the app handles, where that data goes, and who is responsible for it.
+
+### Data the App Handles
+
+The app is a data-collection tool operated by trained field agents. It handles:
+
+- **Agent account data** — your sign-in email address and password.
+- **Customer records** — names, phone numbers, addresses, and registration questionnaire answers.
+- **Location data** — the device’s GPS position, used to geotag customers and meters, captured only while the app is in use.
+- **Photos and documents** — camera or library images attached to a customer record, such as signed contracts.
+- **Payment records** — payment and transaction entries recorded for customers.
+
+### Where the Data Goes
+
+All data is transmitted over HTTPS to exactly one destination: the MicroPowerManager server selected at sign-in — the MicroPowerManager Cloud, the public demo server, or a server hosted by your own organization. Your organization determines how the data is used, how long it is retained, and who can access it, and remains responsible for it as the data controller.
+
+EnAccess operates the MicroPowerManager Cloud and the demo server. When your organization uses one of these, EnAccess stores the data on your organization’s behalf as a data processor and does not use it for any other purpose. When your organization hosts its own server, EnAccess has no access to the data at all.
+
+### Data Stored on the Device
+
+Sign-in credentials are stored in the operating system’s encrypted secure storage, and records created offline are cached on the device until they can be uploaded. All locally stored data is removed when the app is uninstalled.
+
+### Third-Party Services
+
+When you open the map to pick a location, the app loads map tiles from [OpenStreetMap](https://www.openstreetmap.org) and the Leaflet map library from the unpkg.com content delivery network. Those services receive your device’s IP address and the map area being viewed, as is inherent to loading any web content. No other third-party service is contacted, and no data is sold or shared for advertising or marketing purposes.
+
+### App Permissions
+
+| Permission | Why the app asks for it                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| Location   | To geotag customers and devices you register in the field.                                     |
+| Camera     | To capture customer documents, such as signed contracts, and attach them to a customer record. |
+| Photos     | To attach an existing photo of a document to a customer record.                                |
+
+Each permission is requested only when the corresponding feature is first used, and the app remains usable if a permission is declined.
+
+### Your Rights and Data Deletion (Field App)
+
+Because customer data is held by the energy service provider operating the MicroPowerManager server, requests to access, correct, or delete personal data collected through the app should be directed to that provider. If you are a customer, contact your energy service provider. If you are a field agent, contact your employer. Uninstalling the app removes all data stored on the device itself.
+
 ## Children’s Privacy
 
 Our Site and Service are not directed toward children under 16, and we do not knowingly collect personal information from anyone under that age.
+The Field App is a professional tool for field agents and is likewise not directed at children.
 If you believe a child has provided us with personal data, please contact us and we will delete it promptly.
 
 ## Changes to This Policy
@@ -120,6 +167,8 @@ Address: Industrieweg 9
 2254AE Voorschoten
 The Netherlands
 
+For questions specific to the MPM Field App, you can also open an issue at [github.com/EnAccess/micropowermanager-field-app/issues](https://github.com/EnAccess/micropowermanager-field-app/issues).
+
 ---
 
-**Last updated:** 11 November 2025
+**Last updated:** 20 July 2026
