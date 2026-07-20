@@ -41,7 +41,7 @@ class AgentSeeder extends Seeder {
         $firstAgent = true; // Flag to ensure one agent gets the test email
 
         // For each Mini-Grid we create one Agent
-        foreach ($minigrids as $minigrid) {
+        foreach ($minigrids as $index => $minigrid) {
             $village = $minigrid->cities()->get()->random();
 
             $person = Person::factory()
@@ -87,12 +87,18 @@ class AgentSeeder extends Seeder {
                     'password' => $firstAgent ? DemoCompany::DEMO_COMPANY_PASSWORD : fake()->password(),
                 ]);
 
-            $firstAgent = false; // Ensure only one agent gets the test email
+            // Keep the demo-login agent well-funded; vary the rest so some end up owing the company.
+            if ($firstAgent) {
+                AgentCharge::factory()->for($agent)->create();
+            } else {
+                match ($index % 3) {
+                    1 => AgentCharge::factory()->for($agent)->create(['amount' => fake()->numberBetween(500, 1500)]),
+                    2 => null,
+                    default => AgentCharge::factory()->for($agent)->create(),
+                };
+            }
 
-            // Give our Agent some balance
-            $agent_charge = AgentCharge::factory()
-                ->for($agent)
-                ->create();
+            $firstAgent = false; // Ensure only one agent gets the test email
         }
     }
 }
