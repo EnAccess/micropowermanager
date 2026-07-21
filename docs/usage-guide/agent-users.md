@@ -18,19 +18,27 @@ For more information on how to generate and manage tickets, see [Tickets](/usage
 ![Agent Commission Types](images/agent-commission-types.png)
 
 Agents receive cash from customers on site.
-MicroPowerManager tracks three separate totals for every agent, all visible on the agent's profile card:
+MicroPowerManager tracks two totals for every agent, both visible on the agent's profile card:
 
-- **Balance**: the agent's running position.
-  It goes negative as the agent sells on the company's behalf and positive when the company pre-loads credit or the agent settles up.
+- **Balance**: the amount of company money the agent currently holds.
+  It is a single, positive figure.
+  Every energy or appliance sale **adds** to the balance, because the agent has collected the company's cash.
+  Handing that cash back to the company (a receipt) **subtracts** from the balance, and so does the agent's commission when it is paid out at receipt time.
+  This balance is what the agent owes the company at any moment.
 - **Commission**: the commission the agent has earned but not yet been credited.
   It accumulates with every sale and is kept strictly separate from the balance until a receipt is created.
-- **Due to Company**: the cash the agent has collected on behalf of the company and still has to hand over.
 
-The **risk balance** is the maximum amount of money that an agent can collect before it has to transfer the money to the company.
-When that balance is reached, agents will not be able to collect money anymore (generate tokens) or sell appliances (their account on the app will not work).
+The **risk balance** is the ceiling the balance may not rise above — the maximum amount of company money an agent is allowed to hold before they must transfer it back.
+When a sale would push the balance above the risk balance, agents will not be able to collect money anymore (generate tokens) or sell appliances (their account on the app will not work).
 So, when the agent hands the collected money to the company, headquarters records this through MicroPowerManager desktop.
 This is done by creating a **receipt** on the specific agent’s profile.
-When that receipt is created, the amount due to the company is cleared and the agent's earned commission is credited to their balance as an explicit **Payout** entry.
+When that receipt is created, the handed-over cash comes off the balance and the agent's earned commission is credited to them as an explicit **Payout** entry, which also reduces the balance.
+
+::: warning Balance sign change after the upgrade
+For existing installations, the agent balance figures flip sign after this upgrade.
+What used to display as a negative balance while the agent held company cash now displays as a positive "money held" figure.
+The number is the same amount — only the sign and its meaning changed — so there is no cause for alarm.
+:::
 
 Agents are paid on a commission-basis.
 There are 2 commission types:
@@ -54,18 +62,18 @@ It helps to follow the money through a single day.
 Suppose an agent is on a commission type with a **10% energy commission** and a **risk balance of 10,000**.
 
 A customer pays the agent **3,000** in cash for electricity, and the agent generates the token on the spot.
-The agent has now collected 3,000 on behalf of the company, so their **Due to Company** rises to 3,000 and their balance drops to -3,000.
+The agent has now collected 3,000 on behalf of the company, so their **Balance** rises to +3,000.
 Out of that sale the agent earns **300** as commission (10% of 3,000), which appears in their **Commission** total and in the commission history as an **Earned** entry.
-The commission does not reduce what is shown as due — the full 3,000 of collected cash stays visible until the agent settles up.
+The commission does not reduce the balance yet — the full 3,000 of collected cash stays on the balance until the agent settles up.
 
-As the day goes on the agent keeps selling, and the amount due keeps climbing.
-Once it reaches the **risk balance**, the app stops the agent from generating tokens or selling appliances until they settle up.
+As the day goes on the agent keeps selling, and the balance keeps climbing.
+Once a sale would push it above the **risk balance**, the app stops the agent from generating tokens or selling appliances until they settle up.
 This protects the company: the agent is holding its cash, and the risk balance caps how much it is willing to have out in the field at any one time.
 
 The agent then travels to headquarters and hands over cash.
 A staff member creates a **receipt** on the agent's profile for the amount handed over.
-The receipt credits the cash plus the agent's earned commission to their balance, clears the amount due, and records the commission credit as a **Payout** entry in the commission history.
-If the agent kept their commission in cash (handing over 2,700 in the example), the commission credit covers the difference and the due still clears to zero.
+Suppose the agent hands over the full 3,000: the 3,000 comes off the balance, and the 300 earned commission is paid out as a **Payout** entry that also comes off the balance, so the balance settles at -300 and the agent keeps their commission as company money owed to them.
+If instead the agent keeps their 300 commission in cash and hands over only 2,700, the 2,700 and the 300 payout together clear the balance back to zero.
 Either way, the agent can start serving customers again.
 
 ## Assigning or changing the commission of an agent
@@ -81,58 +89,58 @@ These records track money given to and returned by agents, keeping their balance
 
 ### Agent Charges
 
-An **agent charge** represents money the company gives to the agent so that they can continue serving customers.
+An **agent charge** represents money the company gives (or lends) to the agent so that they can continue serving customers.
 Charges are created from the agent's profile, via the ":heavy_plus_sign:" button on the **Balance Histories** panel.
-When a charge is saved, a matching balance entry is added so the credit appears in the agent’s ledger.
+A charge **adds** to the balance, because the agent now holds more of the company's money.
+When a charge is saved, a matching balance entry is added so it appears in the agent’s ledger.
 
 ### Agent Receipts
 
 An **agent receipt** records money the agent hands back to the company.
-This is how you "collect" an agent's outstanding balance from the web.
+This is how you "collect" an agent's balance from the web.
 You create receipts from the agent profile (`Agents` → `Receipt` → `+`).
 
-Receipts do the opposite of charges: they settle the debt the agent owes the company.
+Receipts do the opposite of charges: a receipt **subtracts** from the balance, settling what the agent owes the company.
 When a receipt is saved, the system will:
 
-- record the cash amount plus the agent's pending commission as a single credit in the balance history,
-- record the commission credit as an explicit **Payout** entry in the commission history,
-- store a breakdown of the visit — the amount that was due, what was collected since the last visit, and the commission credited,
-- and update the agent’s totals — the amount due to the company, the commission they’ve earned, and their current balance.
+- subtract the cash amount handed over from the balance, recorded in the balance history,
+- pay out the agent's pending commission as an explicit **Payout** entry in the commission history, which also subtracts from the balance,
+- store a breakdown of the visit — the balance that was owed, what was collected since the last visit, and the commission paid out,
+- and update the agent’s totals — their current balance and the commission they’ve earned.
 
 #### Understanding the receipt dialog
 
 The receipt dialog shows three figures before you enter an amount:
 
-- **Due to Company**: the full cash the agent has collected and not yet handed over.
+- **Balance**: the amount of company money the agent currently holds and still has to hand over.
 - **Pending Commission**: the commission the agent has earned since their last receipt.
-- **Total Balance Credit**: the amount you enter plus the pending commission — this is what will be credited to the agent's balance.
+- **Total Balance Reduction**: the amount you enter plus the pending commission — this is what will come off the agent's balance.
 
 Enter the amount of cash the agent **actually hands over**.
-If the agent kept their commission in cash, that is the amount due minus the pending commission — the system credits the commission automatically, so the due still clears to zero.
-If the agent hands over the full amount due, their commission lands as positive balance instead.
-The form rejects anything higher than the amount due.
+If the agent kept their commission in cash, that is the balance minus the pending commission — the system pays out the commission automatically, so the balance still clears to zero.
+If the agent hands over the full balance, their commission is paid out on top, leaving the balance negative by the commission amount (the company now owes it back to them).
+The form rejects anything higher than the balance.
 
 #### When the amount due looks wrong
 
-If the amount due looks far too high, the cause is almost always a **commission type that was set up with the wrong scale** — a whole number such as `10` or `50` instead of a fraction like `0.1` or `0.5` (see the warning under [Agent Commission Types](#agent-commission-types)).
+If the balance looks far too high, the cause is almost always a **commission type that was set up with the wrong scale** — a whole number such as `10` or `50` instead of a fraction like `0.1` or `0.5` (see the warning under [Agent Commission Types](#agent-commission-types)).
 An inflated commission rate distorts every commission figure derived from it.
 
 To recover:
 
 1. Fix the commission type so the rate is a fraction between 0 and 1.
-2. Create a receipt to clear the agent's amount due back to zero.
-   This resets the balance and the risk balance.
+2. Create a receipt to clear the agent's balance back to zero.
 3. From then on, new transactions apply the corrected commission.
 
 #### Receipt breakdown
 
-The receipt list on the agent profile shows how each receipt was calculated: the cash amount handed in, the commission credited, what was due at the time of the visit, and how much sales activity happened since the last visit.
+The receipt list on the agent profile shows how each receipt was calculated: the cash amount handed in, the commission paid out, the balance the agent was carrying at the time of the visit, and how much sales activity happened since the last visit.
 
 ![Agent balance history](images/agent-balance-history.png)
 
 The agent profile shows two history panels:
 
-- **Balance Histories** lists everything that moves the agent's balance — energy sales, appliance sales, balance charges, and receipts — with the current balance shown above the list.
+- **Balance Histories** lists everything that moves the agent's balance — energy sales, appliance sales, and charges that add to it, and receipts that subtract from it — with the current balance shown above the list.
 - **Commission Histories** lists commission movements — **Earned** entries for each sale (with the transaction ID it came from) and **Payout** entries created by receipts — with the commission balance shown above the list.
 
 Each ledger sums to its total, so you can reconcile both figures at a glance.
