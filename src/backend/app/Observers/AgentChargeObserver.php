@@ -19,8 +19,6 @@ class AgentChargeObserver {
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
             'amount' => $agentCharge->amount,
-            'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentChargeHistoryBalanceService->setAssigned($agentBalanceHistory);

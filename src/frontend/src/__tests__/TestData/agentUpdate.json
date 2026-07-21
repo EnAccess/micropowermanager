@@ -11,6 +11,5 @@
   "birthday": "2000-01-02",
   "commissionType": "Basic Commission",
   "commissionRevenue": 0,
-  "commissionTypeId": 1,
-  "dueToEnergySupplier": 0
+  "commissionTypeId": 1
 }

@@ -29,7 +29,7 @@ class AgentReceiptService implements IBaseService {
      */
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentReceipt->newQuery()
-            ->with(['user', 'agent', 'history']);
+            ->with(['user', 'agent', 'history', 'detail']);
 
         if ($agentId) {
             $query->whereHas(

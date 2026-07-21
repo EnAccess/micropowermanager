@@ -126,7 +126,7 @@
                 <md-table-cell>{{ agent.customer_count || 0 }}</md-table-cell>
                 <md-table-cell>{{ agent.sales_count || 0 }}</md-table-cell>
                 <md-table-cell>
-                  {{ formatCurrency(agent.commission_revenue || 0) }}
+                  {{ moneyFormat(agent.commission_revenue || 0) }}
                 </md-table-cell>
                 <md-table-cell>
                   <md-chip
@@ -240,11 +240,6 @@ export default {
     },
     viewAgentDetail(agentId) {
       this.$router.push({ path: `/agents/${agentId}` })
-    },
-    formatCurrency(amount) {
-      const currency =
-        this.$store.getters["settings/getMainSettings"]?.currency || "TZS"
-      return this.readable(amount) + currency
     },
     // Add these new methods
     showAddAgentModal() {

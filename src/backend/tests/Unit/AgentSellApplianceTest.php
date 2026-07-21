@@ -80,7 +80,7 @@ class AgentSellApplianceTest extends TestCase {
             'name' => 'alper',
             'energy_commission' => 21,
             'appliance_commission' => 3,
-            'risk_balance' => -3,
+            'risk_balance' => 10000,
         ]);
 
         $agent = Agent::query()->create([

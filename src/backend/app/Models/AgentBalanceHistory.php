@@ -18,7 +18,6 @@ use Illuminate\Support\Carbon;
  * @property      int              $trigger_id
  * @property      float            $amount
  * @property      float            $available_balance
- * @property      float            $due_to_supplier
  * @property      int|null         $transaction_id
  * @property      Carbon|null      $created_at
  * @property      Carbon|null      $updated_at
@@ -31,6 +30,12 @@ class AgentBalanceHistory extends BaseModel {
     use HasFactory;
 
     protected $guarded = [];
+
+    // available_balance is NOT NULL; AgentBalanceHistoryObserver overwrites it
+    // with the post-mutation agent balance right after the row is created.
+    protected $attributes = [
+        'available_balance' => 0,
+    ];
 
     /**
      * @return BelongsTo<Agent, $this>

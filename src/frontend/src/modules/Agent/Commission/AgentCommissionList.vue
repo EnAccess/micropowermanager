@@ -14,8 +14,12 @@
 
       <md-table md-sort="id" md-sort-order="asc">
         <md-table-row>
-          <md-table-head v-for="(item, index) in headers" :key="index">
-            {{ item }}
+          <md-table-head v-for="(header, index) in headers" :key="index">
+            {{ header.label }}
+            <md-icon v-if="header.hint" class="header-hint-icon">
+              info_outline
+              <md-tooltip md-direction="top">{{ header.hint }}</md-tooltip>
+            </md-icon>
           </md-table-head>
         </md-table-row>
         <md-table-row
@@ -107,16 +111,14 @@
                 }"
               >
                 <label>
-                  {{ $tc("phrases.riskBalance") }} ({{
-                    $tc("phrases.mustBeNegative")
-                  }})
+                  {{ $tc("phrases.riskBalance") }}
                 </label>
                 <md-input
                   :name="$tc('phrases.riskBalance')"
                   id="riskBalance"
-                  max="0"
+                  min="0"
                   v-model="item.riskBalance"
-                  v-validate="'required|max_value:0'"
+                  v-validate="'required|min_value:0'"
                   type="number"
                 />
                 <span class="md-error">
@@ -182,11 +184,20 @@ export default {
       agentCommissionService: new AgentCommissionService(),
       showNewCommission: false,
       headers: [
-        this.$tc("words.name"),
-        this.$tc("phrases.energyCommission"),
-        this.$tc("phrases.applianceCommission"),
-        this.$tc("phrases.riskBalance"),
-        "#",
+        { label: this.$tc("words.name") },
+        {
+          label: this.$tc("phrases.energyCommission"),
+          hint: this.$tc("phrases.energyCommissionHint"),
+        },
+        {
+          label: this.$tc("phrases.applianceCommission"),
+          hint: this.$tc("phrases.applianceCommissionHint"),
+        },
+        {
+          label: this.$tc("phrases.riskBalance"),
+          hint: this.$tc("phrases.riskBalanceHint"),
+        },
+        { label: "#" },
       ],
       tableName: "Agent Commission Types",
       editCommission: null,
@@ -313,4 +324,12 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.header-hint-icon {
+  font-size: 16px !important;
+  margin-left: 4px;
+  color: rgba(0, 0, 0, 0.38);
+  cursor: help;
+  vertical-align: middle;
+}
+</style>

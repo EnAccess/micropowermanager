@@ -1,11 +1,19 @@
 <template>
   <div>
-    <add-agent-balance :addNewBalance="showNewBalance" :agent-id="agentId" />
+    <add-agent-balance
+      v-if="isBalanceType"
+      :addNewBalance="showNewBalance"
+      :agent-id="agentId"
+    />
     <widget
-      :class="'col-sm-6 col-md-5'"
-      :button-text="$tc('phrases.addBalance')"
-      :button="true"
-      :title="$tc('phrases.balanceHistories')"
+      :class="'col-sm-12'"
+      :button-text="isBalanceType ? $tc('phrases.addBalance') : null"
+      :button="isBalanceType"
+      :title="
+        isBalanceType
+          ? $tc('phrases.balanceHistories')
+          : $tc('phrases.commissionHistories')
+      "
       :button-color="'red'"
       @widgetAction="showAddBalance"
       :paginator="agentBalanceHistoryService.paginator"
@@ -15,6 +23,16 @@
       color="primary"
     >
       <div>
+        <div class="history-total">
+          <span>
+            {{
+              isBalanceType
+                ? $tc("phrases.currentBalance")
+                : $tc("phrases.commissionBalance")
+            }}
+          </span>
+          <strong>{{ moneyFormat(total) }}</strong>
+        </div>
         <md-table md-sort="id" md-sort-order="asc">
           <md-table-row>
             <md-table-head v-for="(item, index) in headers" :key="index">
@@ -22,14 +40,17 @@
             </md-table-head>
           </md-table-row>
           <md-table-row
-            v-for="(item, index) in agentBalanceHistoryService.list"
-            :key="index"
+            v-for="item in agentBalanceHistoryService.list"
+            :key="item.id"
           >
             <md-table-cell md-sort-by="id" md-label="ID">
               {{ item.id }}
             </md-table-cell>
             <md-table-cell md-label="Type">
-              {{ item.type }}
+              {{ typeLabel(item) }}
+            </md-table-cell>
+            <md-table-cell md-label="Transaction ID">
+              {{ item.transactionId || "—" }}
             </md-table-cell>
             <md-table-cell md-label="Amount">
               {{ moneyFormat(item.amount) }}
@@ -58,47 +79,55 @@ export default {
   mixins: [notify, currency],
   data() {
     return {
-      subscriber: "agent-balance-histories",
+      subscriber: `agent-balance-histories-${this.type}`,
       agentService: new AgentService(),
-      agentBalanceHistoryService: new AgentBalanceHistoryService(this.agentId),
+      agentBalanceHistoryService: new AgentBalanceHistoryService(
+        this.agentId,
+        this.type,
+      ),
       showNewBalance: false,
       agent: {},
-      newBalance: {},
-      loading: false,
       resetKey: 0,
-      headers: [
-        this.$tc("words.id"),
-        this.$tc("words.type"),
-        this.$tc("words.amount"),
-        this.$tc("words.date"),
-      ],
-      tableName: "Agent Balance History",
     }
   },
   props: {
     agentId: {
       default: null,
     },
+    type: {
+      type: String,
+      default: "balance",
+    },
   },
-
+  computed: {
+    isBalanceType() {
+      return this.type === "balance"
+    },
+    headers() {
+      return [
+        this.$tc("words.id"),
+        this.$tc("words.type"),
+        this.$tc("phrases.transactionId"),
+        this.$tc("words.amount"),
+        this.$tc("words.date"),
+      ]
+    },
+    total() {
+      if (this.isBalanceType) return this.agent.balance || 0
+      return this.agent.commissionRevenue || 0
+    },
+  },
   mounted() {
-    EventBus.$on("balanceAdded", () => {
-      this.showNewBalance = false
-      this.resetKey += 1
-    })
-
-    EventBus.$on("addBalanceClosed", () => {
-      this.showNewBalance = false
-    })
-    EventBus.$on("receiptAdded", () => {
-      this.resetKey += 1
-    })
+    this.getAgentDetail()
+    EventBus.$on("balanceAdded", this.refresh)
+    EventBus.$on("receiptAdded", this.refresh)
+    EventBus.$on("addBalanceClosed", this.hideAddBalance)
     EventBus.$on("pageLoaded", this.reloadList)
   },
   beforeDestroy() {
-    EventBus.$off("addBalanceClosed", () => {
-      this.showNewBalance = false
-    })
+    EventBus.$off("balanceAdded", this.refresh)
+    EventBus.$off("receiptAdded", this.refresh)
+    EventBus.$off("addBalanceClosed", this.hideAddBalance)
     EventBus.$off("pageLoaded", this.reloadList)
   },
   components: {
@@ -109,6 +138,28 @@ export default {
     showAddBalance() {
       this.showNewBalance = true
     },
+    hideAddBalance() {
+      this.showNewBalance = false
+    },
+    refresh() {
+      this.showNewBalance = false
+      this.resetKey += 1
+      this.getAgentDetail()
+    },
+    typeLabel(item) {
+      if (!this.isBalanceType) {
+        return item.amount < 0
+          ? this.$tc("words.payout")
+          : this.$tc("words.earned")
+      }
+      const labels = {
+        agent_transaction: this.$tc("phrases.energySale"),
+        agent_appliance: this.$tc("phrases.applianceSale"),
+        agent_charge: this.$tc("phrases.balanceCharge"),
+        agent_receipt: this.$tc("words.receipt"),
+      }
+      return labels[item.type] || item.type
+    },
     reloadList(subscriber, data) {
       if (subscriber !== this.subscriber) return
       this.agentBalanceHistoryService.updateList(data)
@@ -118,16 +169,21 @@ export default {
         this.agentBalanceHistoryService.list.length,
       )
     },
-    async saveBalance() {
-      let validator = await this.$validator("Balance-Form")
-      if (validator) {
-        console.log(validator)
+    async getAgentDetail() {
+      try {
+        this.agent = await this.agentService.getAgent(this.agentId)
+      } catch (e) {
+        this.alertNotify("error", e.message)
       }
-    },
-    hide() {
-      this.showNewAppliance = false
     },
   },
 }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.history-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+</style>

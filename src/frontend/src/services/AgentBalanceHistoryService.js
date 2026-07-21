@@ -3,7 +3,7 @@ import AgentBalanceHistoryRepository from "@/repositories/AgentBalanceHistoryRep
 import { resources } from "@/resources.js"
 
 export class AgentBalanceHistoryService {
-  constructor(agentId) {
+  constructor(agentId, type) {
     this.repository = AgentBalanceHistoryRepository
     this.list = []
     this.agentId = null
@@ -13,7 +13,10 @@ export class AgentBalanceHistoryService {
       amount: false,
       createdAt: null,
     }
-    this.paginator = new Paginator(resources.agents.balance_histories + agentId)
+    const typeQuery = type ? `?type=${type}` : ""
+    this.paginator = new Paginator(
+      resources.agents.balance_histories + agentId + typeQuery,
+    )
   }
 
   fromJson(data) {
@@ -21,6 +24,7 @@ export class AgentBalanceHistoryService {
       id: data.id,
       type: data.trigger_type,
       amount: data.amount,
+      transactionId: data.transaction_id,
       createdAt: data.created_at
         .toString()
         .replace(/T/, " ")

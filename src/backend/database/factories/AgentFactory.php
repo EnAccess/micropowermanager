@@ -22,7 +22,6 @@ class AgentFactory extends Factory {
             'fire_base_token' => '-',
             'balance' => 0,
             'commission_revenue' => 0,
-            'due_to_energy_supplier' => 0,
             'connection' => 'tenant',
         ];
     }

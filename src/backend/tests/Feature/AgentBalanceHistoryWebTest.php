@@ -28,5 +28,18 @@ class AgentBalanceHistoryWebTest extends TestCase {
         $response = $this->actingAs($this->user)->get(sprintf('/api/agents/balance/history/%s', $agentId));
         $response->assertStatus(200);
         $this->assertEquals($agentBalanceHistoryCount, count($response['data']));
+
+        // one transaction produces one row per ledger
+        $response = $this->actingAs($this->user)
+            ->get(sprintf('/api/agents/balance/history/%s?type=balance', $agentId));
+        $response->assertStatus(200);
+        $this->assertEquals(1, count($response['data']));
+        $this->assertEquals('agent_transaction', $response['data'][0]['trigger_type']);
+
+        $response = $this->actingAs($this->user)
+            ->get(sprintf('/api/agents/balance/history/%s?type=commission', $agentId));
+        $response->assertStatus(200);
+        $this->assertEquals(1, count($response['data']));
+        $this->assertEquals('agent_commission', $response['data'][0]['trigger_type']);
     }
 }

@@ -34,7 +34,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property      string                                   $fire_base_token
  * @property      float                                    $balance
  * @property      float                                    $commission_revenue
- * @property      float                                    $due_to_energy_supplier
  * @property      string|null                              $remember_token
  * @property      Carbon|null                              $created_at
  * @property      Carbon|null                              $updated_at

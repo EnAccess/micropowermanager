@@ -67,17 +67,13 @@
               'md-invalid': errors.has($tc('phrases.riskBalance')),
             }"
           >
-            <label>
-              {{ $tc("phrases.riskBalance") }} ({{
-                $tc("phrases.mustBeNegative")
-              }})
-            </label>
+            <label>{{ $tc("phrases.riskBalance") }}</label>
             <md-input
               :name="$tc('phrases.riskBalance')"
               id="riskBalance"
-              max="0"
+              min="0"
               v-model="agentCommissionService.agentCommission.riskBalance"
-              v-validate="'required|max_value:0'"
+              v-validate="'required|min_value:0'"
               type="number"
             />
             <span class="md-error">
