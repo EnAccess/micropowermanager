@@ -223,7 +223,7 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent assigned appliance to agent balance history
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
-            'amount' => (-1 * $requestData['down_payment']),
+            'amount' => $requestData['down_payment'],
             'transaction_id' => $transaction->id,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);

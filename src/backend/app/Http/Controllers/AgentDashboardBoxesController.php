@@ -24,7 +24,7 @@ class AgentDashboardBoxesController extends Controller {
             'data' => [
                 'balance' => $agent->balance,
                 'profit' => $agent->commission_revenue,
-                'dept' => $agent->due_to_energy_supplier,
+                'dept' => max(0.0, (float) $agent->balance),
                 'average' => $average,
                 'since' => $since,
                 'status_code' => 200,

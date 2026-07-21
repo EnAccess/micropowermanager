@@ -83,30 +83,28 @@
                   <md-icon>account_balance_wallet</md-icon>
                   <div class="md-list-item-text">
                     <span>{{ $tc("words.balance") }}</span>
-                    <span>
-                      {{ moneyFormat(agent.balance || 0) }}
-                    </span>
+                    <span>{{ moneyFormat(agent.balance || 0) }}</span>
                   </div>
+                  <md-icon class="hint-icon">
+                    info_outline
+                    <md-tooltip md-direction="left">
+                      {{ $tc("phrases.companyBalanceHint") }}
+                    </md-tooltip>
+                  </md-icon>
                 </md-list-item>
                 <md-divider></md-divider>
                 <md-list-item>
                   <md-icon>savings</md-icon>
                   <div class="md-list-item-text">
                     <span>{{ $tc("words.commission") }}</span>
-                    <span>
-                      {{ moneyFormat(agent.commissionRevenue || 0) }}
-                    </span>
+                    <span>{{ moneyFormat(agent.commissionRevenue || 0) }}</span>
                   </div>
-                </md-list-item>
-                <md-divider></md-divider>
-                <md-list-item>
-                  <md-icon>request_quote</md-icon>
-                  <div class="md-list-item-text">
-                    <span>{{ $tc("phrases.dueToCompany") }}</span>
-                    <span>
-                      {{ moneyFormat(agent.dueToEnergySupplier || 0) }}
-                    </span>
-                  </div>
+                  <md-icon class="hint-icon">
+                    info_outline
+                    <md-tooltip md-direction="left">
+                      {{ $tc("phrases.pendingCommissionHint") }}
+                    </md-tooltip>
+                  </md-icon>
                 </md-list-item>
               </md-list>
             </div>
@@ -509,4 +507,9 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.hint-icon {
+  color: rgba(0, 0, 0, 0.38);
+  cursor: help;
+}
+</style>

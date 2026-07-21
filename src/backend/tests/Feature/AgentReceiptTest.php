@@ -47,7 +47,7 @@ class AgentReceiptTest extends TestCase {
     public function testUserCreatesNewReceipt(): void {
         $this->createReceiptEnvironment();
         $agentId = $this->agents[0]->id;
-        // sale of 100 -> balance -100, due 100, accrued commission 100 * 0.05 = 5
+        // sale of 100 -> balance 100 (company money held), accrued commission 100 * 0.05 = 5
         $this->createAgentTransaction(1, 100, $agentId);
         $postData = [
             'agent_id' => $agentId,
@@ -58,11 +58,11 @@ class AgentReceiptTest extends TestCase {
         $this->assertEquals($response['data']['agent_id'], $postData['agent_id']);
         $this->assertEquals($response['data']['amount'], $postData['amount']);
 
-        // cash (50) plus pending commission (5) is credited to the balance ledger
+        // cash (50) plus pending commission (5) leaves the balance ledger as a transfer
         $receiptRow = AgentBalanceHistory::query()->where('agent_id', $agentId)
             ->where('trigger_type', AgentReceipt::RELATION_NAME)
             ->sole();
-        $this->assertEquals(55, $receiptRow->amount);
+        $this->assertEquals(-55, $receiptRow->amount);
 
         // the commission payout is an explicit negative row on the commission ledger
         $payoutRow = AgentBalanceHistory::query()->where('agent_id', $agentId)
@@ -72,9 +72,8 @@ class AgentReceiptTest extends TestCase {
         $this->assertEquals(-5, $payoutRow->amount);
 
         $agent = Agent::query()->find($agentId);
-        $this->assertEquals(-45, $agent->balance);
+        $this->assertEquals(45, $agent->balance);
         $this->assertEquals(0, $agent->commission_revenue);
-        $this->assertEquals(45, $agent->due_to_energy_supplier);
 
         $detail = AgentReceiptDetail::query()->where('agent_receipt_id', $response['data']['id'])->sole();
         $this->assertEquals(5, $detail->commission_credited);
@@ -112,7 +111,7 @@ class AgentReceiptTest extends TestCase {
         );
         $agent = Agent::query()->find($agentId);
         $this->assertEquals(0, $agent->commission_revenue);
-        $this->assertEquals(25, $agent->due_to_energy_supplier);
+        $this->assertEquals(25, $agent->balance);
     }
 
     public function testReceiptExceedingAgentDueIsRejected(): void {

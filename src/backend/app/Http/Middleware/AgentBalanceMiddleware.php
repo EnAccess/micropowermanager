@@ -42,7 +42,7 @@ class AgentBalanceMiddleware {
                 throw new DownPaymentNotFoundException('DownPayment not found');
             }
 
-            $agentBalance -= $downPayment;
+            $agentBalance += $downPayment;
 
             if ($assignedApplianceCost->cost < $request->input('down_payment')) {
                 throw new DownPaymentBiggerThanAmountException('Down payment is bigger than amount');
@@ -50,13 +50,15 @@ class AgentBalanceMiddleware {
         }
         if (in_array($routeName, ['agent-transaction', 'agent-app-transaction'], true)) {
             if ($transactionAmount = $request->input('amount')) {
-                $agentBalance -= $transactionAmount;
+                $agentBalance += $transactionAmount;
             } else {
                 throw new TransactionAmountNotFoundException('Transaction amount not found');
             }
         }
 
-        if ($agentBalance < $commission->risk_balance) {
+        // risk_balance is the ceiling of company money the agent may hold before
+        // they must transfer it back; once the sale would push them over, block it.
+        if ($agentBalance > $commission->risk_balance) {
             throw new AgentRiskBalanceExceeded('Risk balance exceeded');
         }
 

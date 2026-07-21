@@ -62,7 +62,7 @@ class AgentTransactionProvider implements ITransactionProvider {
 
         $history = AgentBalanceHistory::query()->make([
             'agent_id' => $agent->id,
-            'amount' => -1 * abs($transaction->amount),
+            'amount' => abs($transaction->amount),
             'transaction_id' => $transaction->id,
         ]);
 

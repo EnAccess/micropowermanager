@@ -19,18 +19,14 @@ class AgentBalanceHistoryObserver {
             // Commission ledger: accruals are positive, payouts (at receipt time) negative.
             $agent->commission_revenue += $agentBalanceHistory->amount;
         } else {
-            // Balance ledger: sales (AgentTransaction/AgentAssignedAppliances, negative),
-            // charges and receipts (positive). due_to_energy_supplier mirrors how far
-            // the balance sits below zero, so it moves by the below-zero delta only.
-            $oldBalance = $agent->balance;
+            // Balance ledger: a single signed number for the company money the agent
+            // holds. Sales and charges add; transfers (receipts) subtract.
             $agent->balance += $agentBalanceHistory->amount;
-            $agent->due_to_energy_supplier += min($oldBalance, 0) - min($agent->balance, 0);
         }
 
         $agent->update();
 
         $agentBalanceHistory->available_balance = $agent->balance;
-        $agentBalanceHistory->due_to_supplier = $agent->due_to_energy_supplier;
         $agentBalanceHistory->saveQuietly();
     }
 }

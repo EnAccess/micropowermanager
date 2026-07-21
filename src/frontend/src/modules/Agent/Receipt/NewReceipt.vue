@@ -1,6 +1,6 @@
 <template>
   <md-dialog :md-active.sync="addNewReceipt" :md-clicked-outside="true">
-    <div v-if="agent.balance < 0">
+    <div v-if="agent.balance > 0">
       <form novalidate class="md-layout" @submit.prevent="saveReceipt">
         <md-card class="md-layout-item">
           <md-card-header>
@@ -14,7 +14,7 @@
               <div class="receipt-summary-row">
                 <span>{{ $tc("phrases.dueToCompany") }}</span>
                 <strong>
-                  {{ moneyFormat(agent.dueToEnergySupplier || 0) }}
+                  {{ moneyFormat(agent.balance || 0) }}
                 </strong>
               </div>
               <div class="receipt-summary-row">
@@ -36,10 +36,9 @@
                 :name="$tc('words.amount')"
                 id="amount"
                 v-model="agentReceiptService.newReceipt.amount"
-                :max="agent.dueToEnergySupplier"
+                :max="agent.balance"
                 v-validate="
-                  'required|min_value:0.01|max_value:' +
-                  (agent.dueToEnergySupplier || 0)
+                  'required|min_value:0.01|max_value:' + (agent.balance || 0)
                 "
                 type="number"
               />
@@ -120,16 +119,11 @@ export default {
   },
   methods: {
     async saveReceipt() {
-      if (
-        this.agentReceiptService.newReceipt.amount >
-        this.agent.dueToEnergySupplier
-      ) {
+      if (this.agentReceiptService.newReceipt.amount > this.agent.balance) {
         this.alertNotify(
           "warn",
           this.$tc("phrases.addReceiptNotify", 2, {
-            dueToEnergySupplier: this.moneyFormat(
-              this.agent.dueToEnergySupplier,
-            ),
+            balance: this.moneyFormat(this.agent.balance),
           }),
         )
       } else {

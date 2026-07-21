@@ -102,7 +102,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         // Use avg directly on the query
         $averageTransactionAmounts = $query->avg('amount');
 
-        return -1 * $averageTransactionAmounts;
+        return (float) $averageTransactionAmounts;
     }
 
     /**
@@ -122,12 +122,13 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         }
 
         // Every history row snapshots the agent's post-mutation state, so the
-        // last row of each day is that day's closing position.
+        // last row of each day is that day's closing position. "Due" is the
+        // company money still out with the agent — the positive part of balance.
         $period = [];
         foreach ($history as $row) {
             $period[$row->created_at->format('Y-m-d')] = [
                 'balance' => $row->available_balance,
-                'due' => $row->due_to_supplier,
+                'due' => max(0.0, (float) $row->available_balance),
             ];
         }
 

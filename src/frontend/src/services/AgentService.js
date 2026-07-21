@@ -24,7 +24,6 @@ export class AgentService {
       email: null,
       balance: null,
       commissionRevenue: null,
-      dueToEnergySupplier: null,
       phone: null,
       gender: null,
       birthday: null,
@@ -51,7 +50,6 @@ export class AgentService {
       commissionType: data.commission.name,
       commissionRevenue: data.commission_revenue,
       commissionTypeId: data.commission.id,
-      dueToEnergySupplier: data.due_to_energy_supplier,
     }
     return this.agent
   }
