@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 
 class PersonObserver {
@@ -24,12 +23,10 @@ class PersonObserver {
         foreach ($person->addresses()->get() as $address) {
             $address->delete();
         }
-        foreach ($person->devices()->get() as $device) {
-            if ($device->device instanceof Meter) {
-                $device->device->delete();
-            }
-            $device->delete();
-        }
+
+        // Detach devices instead of deleting them so the hardware (and its
+        // underlying meter/SHS) can be reassigned to another customer.
+        $person->devices()->update(['person_id' => null]);
 
         // delete all transactions which are belong to that person
         foreach ($person->payments()->get() as $transaction) {

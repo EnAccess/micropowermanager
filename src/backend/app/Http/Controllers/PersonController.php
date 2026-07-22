@@ -182,8 +182,8 @@ class PersonController extends Controller {
     /**
      * Delete a person.
      *
-     * Deletes that person with all his/her relations from the database. The person model uses soft deletes.
-     * That means the original record wont be deleted but all mentioned relations will be removed permanently.
+     * The person model uses soft deletes, so the record is retained. Addresses and payments are
+     * removed permanently, while assigned devices are only unassigned so they can be reused.
      *
      * @throws \Exception
      */
