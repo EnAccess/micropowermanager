@@ -317,7 +317,10 @@ class PersonService implements IBaseService {
         $query = $this->person->newQuery()->with([
             'addresses' => fn ($q) => $q->where('is_primary', 1),
             'addresses.city',
+            'addresses.geo',
             'devices',
+            'latestPayment',
+            'agentSoldAppliance.assignedAppliance.agent.person',
         ])->where('is_customer', 1);
 
         if ($miniGridName) {
