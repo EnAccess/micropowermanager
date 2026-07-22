@@ -17,8 +17,11 @@ class PersonExportService extends AbstractExportService {
         'Email',
         'Phone',
         'City',
+        'Street',
+        'Geographical Information (Lat, Long)',
         'Device Serial',
         'Agent Name',
+        'Last Payment',
     ];
 
     /** @var Collection<int, Person> */
@@ -39,25 +42,33 @@ class PersonExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->peopleData->map(function (Person $person): array {
-            $primaryAddress = $person->addresses->first();
-            $devices = $person->devices->pluck('device_serial')->filter()->implode(', ');
-            $agent = optional($person->agentSoldAppliance?->assignedAppliance?->agent);
+        $this->exportingData = $this->peopleData->map(fn (Person $person): array => array_values($this->mapPerson($person)));
+    }
 
-            return [
-                $person->title,
-                $person->name,
-                $person->surname,
-                $person->created_at?->format('d/m/Y'),
-                $person->birth_date,
-                $person->gender,
-                $primaryAddress?->email,
-                $primaryAddress?->phone,
-                $primaryAddress?->city?->name,
-                $devices,
-                $agent->person->name ?? '',
-            ];
-        });
+    /**
+     * @return array<string, mixed>
+     */
+    private function mapPerson(Person $person): array {
+        $primaryAddress = $person->addresses->first();
+        [$latitude, $longitude] = $primaryAddress?->geo?->latitudeLongitude() ?? [null, null];
+        $geographicalInformation = $latitude !== null && $longitude !== null ? "{$latitude}, {$longitude}" : null;
+
+        return [
+            'title' => $person->title,
+            'name' => $person->name,
+            'surname' => $person->surname,
+            'registered_date' => $person->created_at?->format('d/m/Y'),
+            'birth_date' => $person->birth_date,
+            'gender' => $person->gender,
+            'email' => $primaryAddress?->email,
+            'phone' => $primaryAddress?->phone,
+            'city' => $primaryAddress?->city?->name,
+            'street' => $primaryAddress?->street,
+            'geographical_information' => $geographicalInformation,
+            'devices' => $person->devices->pluck('device_serial')->filter()->implode(', '),
+            'agent' => $person->agentSoldAppliance?->assignedAppliance?->agent?->person->name ?? '',
+            'last_payment' => $person->latestPayment?->created_at?->format('d/m/Y'),
+        ];
     }
 
     /**
@@ -82,28 +93,8 @@ class PersonExportService extends AbstractExportService {
         if ($this->peopleData->isEmpty()) {
             return [];
         }
+
         // TODO: support some form of pagination to limit the data to be exported using json
-        // transform exporting data to JSON structure for person export
-        $jsonDataTransform = $this->peopleData->map(function (Person $person): array {
-            $primaryAddress = $person->addresses->first();
-            $devices = $person->devices->pluck('device_serial')->filter()->implode(', ');
-            $agent = optional($person->agentSoldAppliance?->assignedAppliance?->agent);
-
-            return [
-                'title' => $person->title,
-                'name' => $person->name,
-                'surname' => $person->surname,
-                'registered_date' => $person->created_at?->format('d/m/Y'),
-                'birth_date' => $person->birth_date,
-                'gender' => $person->gender,
-                'email' => $primaryAddress?->email,
-                'phone' => $primaryAddress?->phone,
-                'city' => $primaryAddress?->city?->name,
-                'devices' => $devices,
-                'agent' => $agent->person->name ?? '',
-            ];
-        });
-
-        return $jsonDataTransform->all();
+        return $this->peopleData->map(fn (Person $person): array => $this->mapPerson($person))->all();
     }
 }
