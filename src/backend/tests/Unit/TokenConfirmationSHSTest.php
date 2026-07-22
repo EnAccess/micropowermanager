@@ -12,7 +12,7 @@ use App\Sms\BodyParsers\TokenConfirmationSHS;
 use Tests\TestCase;
 
 class TokenConfirmationSHSTest extends TestCase {
-    private const TEMPLATE = 'Dear [name] [surname], your transaction is confirmed. Device Serial: [device_serial]. Token: [token], Duration: [duration] [unit]. Amount: [amount].';
+    private const string TEMPLATE = 'Dear [name] [surname], your transaction is confirmed. Device Serial: [device_serial]. Token: [token], Duration: [duration] [unit]. Amount: [amount].';
 
     public function testIncludesAmountFromTransaction(): void {
         $body = $this->parse(amount: 1500, message: 'SERIAL123');
@@ -45,6 +45,6 @@ class TokenConfirmationSHSTest extends TestCase {
             'token_amount' => 3,
         ]);
 
-        return (new TokenConfirmationSHS($transaction, $token))->parseSms(self::TEMPLATE);
+        return new TokenConfirmationSHS($transaction, $token)->parseSms(self::TEMPLATE);
     }
 }
