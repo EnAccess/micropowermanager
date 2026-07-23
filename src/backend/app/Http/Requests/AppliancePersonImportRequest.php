@@ -13,11 +13,10 @@ class AppliancePersonImportRequest extends FormRequest {
     }
 
     /**
-     * Financial fields are validated loosely here (they may arrive as display
-     * strings like "1,500") and normalized in {@see items()}. The per-payment-type
-     * requirements — installments need a cost and rate count, and the customer and
-     * appliance must already exist — are enforced per row by the import service so a
-     * single bad row fails on its own instead of rejecting the whole batch.
+     * The per-payment-type requirements — installments need a cost and rate count,
+     * and the customer and appliance must already exist — are enforced per row by the
+     * import service so a single bad row fails on its own instead of rejecting the
+     * whole batch.
      *
      * @return array<string, mixed>
      */
@@ -28,14 +27,14 @@ class AppliancePersonImportRequest extends FormRequest {
             'data.*.customer_surname' => ['sometimes', 'nullable', 'string'],
             'data.*.appliance_name' => ['required', 'string', 'min:1'],
             'data.*.payment_type' => ['sometimes', 'nullable', Rule::in([AppliancePerson::PAYMENT_TYPE_INSTALLMENT, AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE])],
-            'data.*.total_cost' => ['sometimes', 'nullable'],
+            'data.*.total_cost' => ['sometimes', 'nullable', 'integer', 'min:0'],
             'data.*.rate_count' => ['sometimes', 'nullable', 'integer', 'min:0'],
             'data.*.rate_type' => ['sometimes', 'nullable', Rule::in(['monthly', 'weekly'])],
-            'data.*.down_payment' => ['sometimes', 'nullable'],
+            'data.*.down_payment' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'data.*.first_payment_date' => ['sometimes', 'nullable', 'date'],
             'data.*.device_serial' => ['sometimes', 'nullable', 'string'],
-            'data.*.minimum_payable_amount' => ['sometimes', 'nullable'],
-            'data.*.price_per_day' => ['sometimes', 'nullable'],
+            'data.*.minimum_payable_amount' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'data.*.price_per_day' => ['sometimes', 'nullable', 'integer', 'min:0'],
         ];
     }
 
@@ -50,40 +49,16 @@ class AppliancePersonImportRequest extends FormRequest {
             customerSurname: $item['customer_surname'] ?? '',
             applianceName: $item['appliance_name'],
             paymentType: $item['payment_type'] ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT,
-            totalCost: $this->parseInt($item['total_cost'] ?? null),
+            totalCost: isset($item['total_cost']) ? (int) $item['total_cost'] : null,
             rateCount: isset($item['rate_count']) ? (int) $item['rate_count'] : null,
             rateType: $item['rate_type'] ?? null,
-            downPayment: $this->parseFloat($item['down_payment'] ?? null),
+            downPayment: isset($item['down_payment']) ? (float) $item['down_payment'] : null,
             firstPaymentDate: $item['first_payment_date'] ?? null,
             deviceSerial: $item['device_serial'] ?? null,
-            minimumPayableAmount: $this->parseInt($item['minimum_payable_amount'] ?? null),
-            pricePerDay: $this->parseInt($item['price_per_day'] ?? null),
+            minimumPayableAmount: isset($item['minimum_payable_amount']) ? (int) $item['minimum_payable_amount'] : null,
+            pricePerDay: isset($item['price_per_day']) ? (int) $item['price_per_day'] : null,
             creatorId: $creatorId,
         ), $this->validated('data'));
-    }
-
-    private function parseInt(mixed $value): ?int {
-        if ($value === null || $value === '') {
-            return null;
-        }
-
-        if (is_string($value)) {
-            return (int) str_replace([',', ' '], '', $value);
-        }
-
-        return is_numeric($value) ? (int) $value : null;
-    }
-
-    private function parseFloat(mixed $value): ?float {
-        if ($value === null || $value === '') {
-            return null;
-        }
-
-        if (is_string($value)) {
-            return (float) str_replace([',', ' '], '', $value);
-        }
-
-        return is_numeric($value) ? (float) $value : null;
     }
 
     /**
