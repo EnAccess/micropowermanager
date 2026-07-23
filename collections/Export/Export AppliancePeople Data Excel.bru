@@ -1,0 +1,11 @@
+meta {
+  name: Export AppliancePeople Data Excel
+  type: http
+  seq: 25
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/appliance-people
+  body: none
+  auth: inherit
+}
