@@ -353,6 +353,19 @@ export default {
         registrationTo: null,
         deviceType: null,
       },
+      // ISO-normalized filters; `customerFilters` holds raw Dates for the datepickers.
+      appliedFilters: {
+        status: "all",
+        agentId: null,
+        totalPaidMin: null,
+        totalPaidMax: null,
+        cityId: null,
+        latestPaymentFrom: null,
+        latestPaymentTo: null,
+        registrationFrom: null,
+        registrationTo: null,
+        deviceType: null,
+      },
     }
   },
   computed: {
@@ -709,52 +722,52 @@ export default {
       const params = {}
 
       // Agent
-      if (this.customerFilters.agentId) {
-        this.selectedAgentId = this.customerFilters.agentId
-        params.agent_id = this.customerFilters.agentId
+      if (this.appliedFilters.agentId) {
+        this.selectedAgentId = this.appliedFilters.agentId
+        params.agent_id = this.appliedFilters.agentId
       } else if (this.selectedAgentId) {
         params.agent_id = this.selectedAgentId
       }
 
       // Active / inactive
-      if (this.customerFilters.status === "active") {
+      if (this.appliedFilters.status === "active") {
         params.active_customer = 1
-      } else if (this.customerFilters.status === "inactive") {
+      } else if (this.appliedFilters.status === "inactive") {
         params.active_customer = 0
       }
 
       // City / village
-      if (this.customerFilters.cityId) {
-        params.city_id = this.customerFilters.cityId
+      if (this.appliedFilters.cityId) {
+        params.city_id = this.appliedFilters.cityId
       }
 
       // Total paid interval
-      if (this.customerFilters.totalPaidMin != null) {
-        params.total_paid_min = this.customerFilters.totalPaidMin
+      if (this.appliedFilters.totalPaidMin != null) {
+        params.total_paid_min = this.appliedFilters.totalPaidMin
       }
-      if (this.customerFilters.totalPaidMax != null) {
-        params.total_paid_max = this.customerFilters.totalPaidMax
+      if (this.appliedFilters.totalPaidMax != null) {
+        params.total_paid_max = this.appliedFilters.totalPaidMax
       }
 
       // Latest payment date
-      if (this.customerFilters.latestPaymentFrom) {
-        params.latest_payment_from = this.customerFilters.latestPaymentFrom
+      if (this.appliedFilters.latestPaymentFrom) {
+        params.latest_payment_from = this.appliedFilters.latestPaymentFrom
       }
-      if (this.customerFilters.latestPaymentTo) {
-        params.latest_payment_to = this.customerFilters.latestPaymentTo
+      if (this.appliedFilters.latestPaymentTo) {
+        params.latest_payment_to = this.appliedFilters.latestPaymentTo
       }
 
       // Registration date
-      if (this.customerFilters.registrationFrom) {
-        params.registration_from = this.customerFilters.registrationFrom
+      if (this.appliedFilters.registrationFrom) {
+        params.registration_from = this.appliedFilters.registrationFrom
       }
-      if (this.customerFilters.registrationTo) {
-        params.registration_to = this.customerFilters.registrationTo
+      if (this.appliedFilters.registrationTo) {
+        params.registration_to = this.appliedFilters.registrationTo
       }
 
       // Device / appliance type
-      if (this.customerFilters.deviceType) {
-        params.device_type = this.customerFilters.deviceType
+      if (this.appliedFilters.deviceType) {
+        params.device_type = this.appliedFilters.deviceType
       }
 
       return params
@@ -764,7 +777,10 @@ export default {
       Object.assign(params, this.buildFilterParams())
     },
 
-    onFilterApply() {
+    onFilterApply(payload) {
+      // Build params from the ISO payload, never the raw Dates in customerFilters.
+      this.appliedFilters = payload
+
       // Ensure paginator uses filters for all subsequent pages.
       // Let Paginate.vue handle the actual loading to avoid duplicate requests.
       const term = {}
@@ -779,7 +795,7 @@ export default {
       this.showFilter = false
     },
 
-    onFilterClear() {
+    onFilterClear(payload) {
       this.customerFilters = {
         status: "all",
         agentId: null,
@@ -792,6 +808,7 @@ export default {
         registrationTo: null,
         deviceType: null,
       }
+      this.appliedFilters = payload
       this.selectedAgentId = null
       const term = {}
       if (this.currentSortBy) {
