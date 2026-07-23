@@ -7,6 +7,8 @@ use App\Http\Controllers\ApplianceExportController;
 use App\Http\Controllers\ApplianceImportController;
 use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AppliancePersonController;
+use App\Http\Controllers\AppliancePersonExportController;
+use App\Http\Controllers\AppliancePersonImportController;
 use App\Http\Controllers\ApplianceRateController;
 use App\Http\Controllers\ApplianceTypeController;
 use App\Http\Controllers\AuthController;
@@ -433,6 +435,7 @@ Route::group(['prefix' => 'export'], static function () {
     Route::get('/customers', [PersonExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/devices', [DeviceExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/appliances', [ApplianceExportController::class, 'download'])->middleware('permission:exports');
+    Route::get('/appliance-people', [AppliancePersonExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/clusters', [ClusterExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/settings', [SettingsExportController::class, 'download'])->middleware('permission:exports');
     Route::get('/user-permissions', [UserPermissionExportController::class, 'download'])->middleware('permission:exports');
@@ -445,6 +448,7 @@ Route::group(['prefix' => 'import'], static function () {
     Route::post('/customers', [CustomerImportController::class, 'import'])->middleware('permission:customers');
     Route::post('/transactions', [TransactionImportController::class, 'import'])->middleware('permission:transactions');
     Route::post('/appliances', [ApplianceImportController::class, 'import'])->middleware('permission:appliances');
+    Route::post('/appliance-people', [AppliancePersonImportController::class, 'import'])->middleware('permission:appliances');
     Route::get('/status/{jobId}', [ImportStatusController::class, 'show']);
 });
 Route::group(['prefix' => 'usage-types'], static function () {

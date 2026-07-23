@@ -53,6 +53,8 @@ src/backend/public/vendor/
 InternalApi
 
 *.xlsx
+# Export templates are shipped with the app and must stay tracked despite the blanket *.xlsx rule above.
+!src/backend/resources/templates/*.xlsx
 
 src/backend/.env_production
 src/backend/.env_staging
