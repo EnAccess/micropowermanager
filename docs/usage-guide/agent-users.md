@@ -21,7 +21,6 @@ Agents receive cash from customers on site.
 MicroPowerManager tracks two totals for every agent, both visible on the agent's profile card:
 
 - **Balance**: the amount of company money the agent currently holds.
-  It is a single, positive figure.
   Every energy or appliance sale **adds** to the balance, because the agent has collected the company's cash.
   Handing that cash back to the company (a receipt) **subtracts** from the balance, and so does the agent's commission when it is paid out at receipt time.
   This balance is what the agent owes the company at any moment.
@@ -48,12 +47,6 @@ There are 2 commission types:
 
 Both values are stored as a **fraction between 0 and 1**, not as a percentage number.
 So `0.1` means 10%, `0.05` means 5%, and `0.5` means 50%.
-
-::: warning Do not enter a whole number
-Entering `10` to mean "10%" is interpreted as 1000%, and `50` becomes 5000%.
-This massively overstates the commission the agent keeps and corrupts the suggested receipt amount (see [Agent Receipts](#agent-receipts) below).
-Always enter the rate as a fraction, for example `0.1` for 10%.
-:::
 
 ### Putting it together: a worked example
 
