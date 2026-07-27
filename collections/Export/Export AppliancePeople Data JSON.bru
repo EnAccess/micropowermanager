@@ -1,0 +1,17 @@
+meta {
+  name: Export AppliancePeople Data JSON
+  type: http
+  seq: 26
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/appliance-people?format=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: json
+  ~paymentType: installment
+  ~personId: 1
+}

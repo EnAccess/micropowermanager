@@ -1,0 +1,50 @@
+meta {
+  name: Import AppliancePeople Data
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{mpm_backend_url}}/api/import/appliance-people
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "data": [
+      {
+        "customer_name": "Name",
+        "customer_surname": "surname",
+        "appliance_name": "Solar Home System 50W",
+        "payment_type": "installment",
+        "total_cost": 300,
+        "rate_count": 3,
+        "rate_type": "monthly",
+        "down_payment": 0,
+        "first_payment_date": "2026-01-01",
+        "device_serial": null
+      },
+      {
+        "customer_name": "Name",
+        "customer_surname": "surname",
+        "appliance_name": "Solar Home System 50W",
+        "payment_type": "energy_service",
+        "minimum_payable_amount": 500,
+        "price_per_day": 50,
+        "device_serial": null
+      }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}
+
+docs {
+  The customer (matched by name + surname) and the appliance (matched by name) must already exist,
+  so run `Create Customer` and `Import Appliances Data` first.
+  Imports of 50 or more items respond with 202 and a `job_id` to poll via `Get Import Status`.
+}
