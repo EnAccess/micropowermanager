@@ -151,6 +151,17 @@ class AppliancePersonService implements IBaseService, IAssociative {
     }
 
     /**
+     * @return Collection<int, AppliancePerson>
+     */
+    public function getAllForExport(?string $paymentType = null, ?int $personId = null): Collection {
+        return $this->appliancePerson->newQuery()
+            ->with(['person', 'appliance.applianceType'])
+            ->when($paymentType !== null, fn ($query) => $query->where('payment_type', $paymentType))
+            ->when($personId !== null, fn ($query) => $query->where('person_id', $personId))
+            ->get();
+    }
+
+    /**
      * @return SupportCollection<int, int>
      */
     public function getLoanIdsForCustomerId(int $customerId): SupportCollection {
