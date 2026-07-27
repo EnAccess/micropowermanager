@@ -13,7 +13,7 @@ class TokenConfirmationSHS extends SmsBodyParser {
     /**
      * @var array<int, string>
      */
-    protected $variables = ['name', 'surname', 'token', 'duration', 'unit', 'device_serial'];
+    protected $variables = ['name', 'surname', 'token', 'duration', 'unit', 'device_serial', 'amount'];
 
     public function __construct(
         protected Transaction $transaction,
@@ -33,6 +33,7 @@ class TokenConfirmationSHS extends SmsBodyParser {
             'duration' => $this->formatDuration($this->token->token_amount),
             'unit' => $this->token->token_unit ?? Token::UNIT_DAYS,
             'device_serial' => $this->transaction->message ?: '-',
+            'amount' => $this->transaction->amount,
             default => $variable,
         };
     }
