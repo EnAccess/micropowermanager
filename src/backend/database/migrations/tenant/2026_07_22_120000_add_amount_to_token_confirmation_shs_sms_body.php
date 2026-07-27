@@ -12,7 +12,6 @@ return new class extends Migration {
         DB::connection('tenant')->table('sms_bodies')
             ->where('reference', 'TokenConfirmationSHS')
             ->update([
-                'body' => self::BODY_WITH_AMOUNT,
                 'place_holder' => self::BODY_WITH_AMOUNT,
                 'variables' => 'name,surname,token,duration,unit,device_serial,amount',
                 'updated_at' => Carbon::now(),
@@ -23,7 +22,6 @@ return new class extends Migration {
         DB::connection('tenant')->table('sms_bodies')
             ->where('reference', 'TokenConfirmationSHS')
             ->update([
-                'body' => self::BODY_WITHOUT_AMOUNT,
                 'place_holder' => self::BODY_WITHOUT_AMOUNT,
                 'variables' => 'name,surname,token,duration,unit,device_serial',
                 'updated_at' => Carbon::now(),
