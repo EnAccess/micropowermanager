@@ -67,5 +67,13 @@ abstract class TestCase extends BaseTestCase {
     protected function tearDown(): void {
         DB::connection('tenant')->rollBack();
         parent::tearDown();
+
+        // Each test boots a fresh application whose object graph (application <->
+        // providers <-> container bindings) is a reference cycle that plain
+        // refcounting cannot reclaim. Left alone across a sequential run of the
+        // whole suite it accumulates until the process exhausts memory_limit
+        // mid-bootstrap. Forcing cycle collection after every test keeps the
+        // resident set flat.
+        gc_collect_cycles();
     }
 }
