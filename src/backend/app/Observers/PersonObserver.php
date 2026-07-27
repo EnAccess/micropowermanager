@@ -24,7 +24,7 @@ class PersonObserver {
             $address->delete();
         }
 
-        // Detach devices instead of deleting them so the hardware (and its
+        // Detach devices so the hardware (and its
         // underlying meter/SHS) can be reassigned to another customer.
         $person->devices()->update(['person_id' => null]);
 
