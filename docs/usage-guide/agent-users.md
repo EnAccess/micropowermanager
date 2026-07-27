@@ -33,10 +33,9 @@ So, when the agent hands the collected money to the company, headquarters record
 This is done by creating a **receipt** on the specific agent’s profile.
 When that receipt is created, the handed-over cash comes off the balance and the agent's earned commission is credited to them as an explicit **Payout** entry, which also reduces the balance.
 
-::: tip Note on the balance sign
-Prior to version 0.1.34, an agent holding company cash was displayed as a negative balance.
-It is now shown as a positive "money held" figure of the same amount — only the sign and its meaning changed.
-:::
+> [!NOTE]
+> Prior to version 0.1.34, an agent holding company cash was displayed as a negative balance.
+> It is now shown as a positive "money held" figure of the same amount — only the sign and its meaning changed.
 
 Agents are paid on a commission-basis.
 There are 2 commission types:
@@ -47,11 +46,11 @@ There are 2 commission types:
 Both values are stored as a **fraction between 0 and 1**, not as a percentage number.
 So `0.1` means 10%, `0.05` means 5%, and `0.5` means 50%.
 
-::: warning Do not enter a whole number
-Entering `10` to mean "10%" is interpreted as 1000%, and `50` becomes 5000%.
-This massively overstates the commission the agent keeps and corrupts the suggested receipt amount (see [Agent Receipts](#agent-receipts) below).
-Always enter the rate as a fraction, for example `0.1` for 10%.
-:::
+> [!WARNING]
+> Do not enter a whole number.
+> Entering `10` to mean "10%" is interpreted as 1000%, and `50` becomes 5000%.
+> This massively overstates the commission the agent keeps and corrupts the suggested receipt amount (see [Agent Receipts](#agent-receipts) below).
+> Always enter the rate as a fraction, for example `0.1` for 10%.
 
 ### Putting it together: a worked example
 
