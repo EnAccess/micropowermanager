@@ -24,13 +24,13 @@ Start all services with Docker Compose from the repo root:
 docker compose up
 ```
 
-| Service          | Port  |
-| ---------------- | ----- |
-| backend          | 8000  |
-| frontend         | 8001  |
-| mysql            | 3306  |
-| mysql_testing    | 53306 |
-| redis, scheduler, queue-worker | — |
+| Service                        | Port  |
+| ------------------------------ | ----- |
+| backend                        | 8000  |
+| frontend                       | 8001  |
+| mysql                          | 3306  |
+| mysql_testing                  | 53306 |
+| redis, scheduler, queue-worker | —     |
 
 Backend source is mounted at `/var/www/html` inside the container.
 Exec into the backend container with:
@@ -92,6 +92,7 @@ Apply the following to all code:
 
 - Do not write organizational comments that summarize the code.
   Comments should only be written in order to explain "why" the code is written in some way in the case there is a reason that is tricky / non-obvious.
+  Comments should not refrence old behaviour (previously existing behaviour) not present in the code, always ensure the reference if necessary is on existing code behaviour.
 - Use full words for variable names (no abbreviations like "q" for "queue").
 - Explicit is better than implicit.
 - Encourage a low level of code nesting.
@@ -118,8 +119,8 @@ Apply the following to backend related code:
 
 These agent files come in two flavors — keep them separate:
 
-- **Rules sections** (this file's *Working Agreement*, *Code style guidelines*, and per-subtree *Conventions*) are **traps to avoid** — non-obvious, repeatedly encountered, specific-enough-to-act-on.
-- **Awareness sections** (*Project Overview*, *Repository Structure*, *Common Patterns*) are **maps to follow** — concise orientation for a fresh session.
+- **Rules sections** (this file's _Working Agreement_, _Code style guidelines_, and per-subtree _Conventions_) are **traps to avoid** — non-obvious, repeatedly encountered, specific-enough-to-act-on.
+- **Awareness sections** (_Project Overview_, _Repository Structure_, _Common Patterns_) are **maps to follow** — concise orientation for a fresh session.
 
 Rules go stale slowly; maps go stale fast. Keep maps short and link to the code; resist the urge to describe what the reader can learn by opening the file.
 
@@ -144,4 +145,4 @@ The workflow is:
 
 1. Agent or human reviewer notes a pattern during a session.
 2. Team validates the pattern in code review.
-3. A dedicated commit adds the rule with context on *why* it exists.
+3. A dedicated commit adds the rule with context on _why_ it exists.
