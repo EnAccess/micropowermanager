@@ -70,7 +70,7 @@
                 :box-color="'green'"
                 :center-text="true"
                 :header-text="$tc('phrases.totalCommission')"
-                :sub-text="formatCurrency(metrics.total_commission || 0)"
+                :sub-text="moneyFormat(metrics.total_commission || 0)"
                 :box-icon="'attach_money'"
               />
             </div>
@@ -109,7 +109,7 @@
                 <md-table-cell>{{ agent.agent }}</md-table-cell>
                 <md-table-cell>{{ agent.customers }}</md-table-cell>
                 <md-table-cell>
-                  {{ formatCurrency(agent.commission) }}
+                  {{ moneyFormat(agent.commission) }}
                 </md-table-cell>
                 <md-table-cell>{{ agent.sales }}</md-table-cell>
               </md-table-row>
@@ -261,11 +261,6 @@ export default {
     viewAgentDetail(agentName) {
       // Navigate to agent detail page
       this.$router.push({ path: `/agents`, query: { search: agentName } })
-    },
-    formatCurrency(amount) {
-      const currency =
-        this.$store.getters["settings/getMainSettings"]?.currency || "TZS"
-      return this.readable(amount) + currency
     },
   },
 }

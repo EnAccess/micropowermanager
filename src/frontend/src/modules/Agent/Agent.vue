@@ -15,7 +15,8 @@
       <div
         class="md-layout-item md-large-size-50 md-medium-size-50 md-xlarge-size-50 md-small-size-100 md-small-size-100"
       >
-        <agent-balance-history-list :agent-id="agentId" />
+        <agent-balance-history-list :agent-id="agentId" type="balance" />
+        <agent-balance-history-list :agent-id="agentId" type="commission" />
       </div>
 
       <div

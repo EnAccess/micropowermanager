@@ -22,7 +22,7 @@ class CreateAgentCommissionRequest extends FormRequest {
             'name' => ['required'],
             'energy_commission' => ['required', 'numeric', 'between:0,1'],
             'appliance_commission' => ['required', 'numeric', 'between:0,1'],
-            'risk_balance' => ['required', 'numeric', 'max:0'],
+            'risk_balance' => ['required', 'numeric', 'min:0'],
         ];
     }
 

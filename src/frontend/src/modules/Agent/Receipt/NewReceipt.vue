@@ -1,6 +1,6 @@
 <template>
   <md-dialog :md-active.sync="addNewReceipt" :md-clicked-outside="true">
-    <div v-if="agent.balance < 0">
+    <div v-if="agent.balance > 0">
       <form novalidate class="md-layout" @submit.prevent="saveReceipt">
         <md-card class="md-layout-item">
           <md-card-header>
@@ -10,18 +10,20 @@
             </div>
           </md-card-header>
           <md-card-content>
-            <div class="exclamation">
-              <span class="success-span">
-                <md-icon style="color: green">done</md-icon>
-              </span>
-              <div class="md-layout-item md-size-100 exclamation-div">
-                <span>
-                  {{
-                    $tc("phrases.addReceiptNotify", 1, {
-                      energySupplier: agent.dueToEnergySupplier,
-                    })
-                  }}
-                </span>
+            <div class="receipt-summary">
+              <div class="receipt-summary-row">
+                <span>{{ $tc("phrases.dueToCompany") }}</span>
+                <strong>
+                  {{ moneyFormat(agent.balance || 0) }}
+                </strong>
+              </div>
+              <div class="receipt-summary-row">
+                <span>{{ $tc("phrases.pendingCommission") }}</span>
+                <strong>{{ moneyFormat(agent.commissionRevenue || 0) }}</strong>
+              </div>
+              <div class="receipt-summary-row">
+                <span>{{ $tc("phrases.totalBalanceCredit") }}</span>
+                <strong>{{ moneyFormat(totalBalanceCredit) }}</strong>
               </div>
             </div>
             <md-field
@@ -34,8 +36,10 @@
                 :name="$tc('words.amount')"
                 id="amount"
                 v-model="agentReceiptService.newReceipt.amount"
-                :max="agent.dueToEnergySupplier"
-                v-validate="'required|min_value:0'"
+                :max="agent.balance"
+                v-validate="
+                  'required|min_value:0.01|max_value:' + (agent.balance || 0)
+                "
                 type="number"
               />
               <span class="md-error">
@@ -81,6 +85,7 @@
   </md-dialog>
 </template>
 <script>
+import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { AgentReceiptService } from "@/services/AgentReceiptService.js"
 import { AgentService } from "@/services/AgentService.js"
@@ -88,7 +93,7 @@ import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "NewReceipt",
-  mixins: [notify],
+  mixins: [notify, currency],
   data() {
     return {
       agentReceiptService: new AgentReceiptService(),
@@ -104,16 +109,21 @@ export default {
       default: false,
     },
   },
+  computed: {
+    totalBalanceCredit() {
+      return (
+        Number(this.agentReceiptService.newReceipt.amount || 0) +
+        (this.agent.commissionRevenue || 0)
+      )
+    },
+  },
   methods: {
     async saveReceipt() {
-      if (
-        this.agentReceiptService.newReceipt.amount >
-        this.agent.dueToEnergySupplier
-      ) {
+      if (this.agentReceiptService.newReceipt.amount > this.agent.balance) {
         this.alertNotify(
           "warn",
           this.$tc("phrases.addReceiptNotify", 2, {
-            dueToEnergySupplier: this.agent.dueToEnergySupplier,
+            balance: this.moneyFormat(this.agent.balance),
           }),
         )
       } else {
@@ -146,8 +156,18 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss"></style>
 <style scoped lang="scss">
+.receipt-summary {
+  margin-bottom: 1rem;
+}
+
+.receipt-summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 .success-span {
   font-size: large;
   font-weight: 700;

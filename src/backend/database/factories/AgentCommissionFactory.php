@@ -19,7 +19,7 @@ class AgentCommissionFactory extends Factory {
             'name' => 'Sample Commission',
             'energy_commission' => 0.05,
             'appliance_commission' => 0.05,
-            'risk_balance' => -10000,
+            'risk_balance' => 10000,
         ];
     }
 }

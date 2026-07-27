@@ -537,7 +537,6 @@ trait CreateEnvironments {
                 'amount' => $this->faker->randomFloat(2, 1, 100),
                 'transaction_id' => $this->getRandomIdFromList($this->transactions),
                 'available_balance' => 0,
-                'due_to_supplier' => (-1 * $this->faker->randomFloat(2, 1, 100)),
                 'trigger_id' => $this->getRandomIdFromList($this->transactions),
                 'trigger_type' => 'agent_transaction',
             ]);
@@ -598,10 +597,9 @@ trait CreateEnvironments {
 
             $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
                 'agent_id' => $agent->id,
-                'amount' => $amount > 0 ? (-1 * $amount) : ($amount),
+                'amount' => abs($amount),
                 'transaction_id' => $agentTransaction->id,
                 'available_balance' => $agent->balance,
-                'due_to_supplier' => $agent->due_to_energy_supplier,
                 'trigger_id' => $agentTransaction->id,
                 'trigger_type' => 'agent_transaction',
             ]);
@@ -611,11 +609,9 @@ trait CreateEnvironments {
 
             $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
                 'agent_id' => $agent->id,
-                'amount' => ($amount * $commission->energy_commission) < 0 ?
-                    (-1 * ($amount * $commission->energy_commission)) : ($amount * $commission->energy_commission),
+                'amount' => abs($amount * $commission->energy_commission),
                 'transaction_id' => $agentTransaction->id,
                 'available_balance' => $agent->balance,
-                'due_to_supplier' => $agent->due_to_energy_supplier,
                 'trigger_id' => $commission->id,
                 'trigger_type' => 'agent_commission',
             ]);
@@ -649,10 +645,9 @@ trait CreateEnvironments {
 
             $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
                 'agent_id' => $agent->id,
-                'amount' => $amount > 0 ? (-1 * $amount) : ($amount),
+                'amount' => abs($amount),
                 'transaction_id' => $paymentHistory->id,
                 'available_balance' => $agent->balance,
-                'due_to_supplier' => $agent->due_to_energy_supplier,
                 'trigger_id' => $paymentHistory->id,
                 'trigger_type' => 'payment_history',
             ]);

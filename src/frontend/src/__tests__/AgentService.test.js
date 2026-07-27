@@ -16,7 +16,6 @@ const agentProperties = [
   "commissionType",
   "commissionRevenue",
   "commissionTypeId",
-  "dueToEnergySupplier",
 ]
 
 describe("AgentService #create", () => {

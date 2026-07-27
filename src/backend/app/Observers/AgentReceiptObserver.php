@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Models\AgentReceipt;
 use App\Services\AgentBalanceHistoryService;
+use App\Services\AgentCommissionHistoryBalanceService;
+use App\Services\AgentCommissionService;
 use App\Services\AgentReceiptDetailService;
 use App\Services\AgentReceiptHistoryBalanceService;
 use App\Services\AgentReceiptService;
@@ -17,12 +19,15 @@ class AgentReceiptObserver {
         private AgentReceiptService $agentReceiptService,
         private AgentReceiptDetailService $agentReceiptDetailService,
         private AgentReceiptHistoryBalanceService $agentReceiptHistoryBalanceService,
+        private AgentCommissionService $agentCommissionService,
+        private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
     ) {}
 
     public function created(AgentReceipt $receipt): void {
         $agentId = $receipt->agent_id;
         $agent = $this->agentService->getById($agentId);
-        $due = $agent->due_to_energy_supplier ?? 0;
+        $due = $agent->balance ?? 0;
+        $commissionCredited = $agent->commission_revenue;
         $sinceLastVisit = 0;
         $lastReceipt = $this->agentReceiptService->getLastReceipt($agentId);
 
@@ -37,28 +42,40 @@ class AgentReceiptObserver {
             $earlier = 0;
         }
 
-        $summary = $receipt->amount - $agent->due_to_energy_supplier;
-        $collected = $receipt->amount;
-        $agentReceiptDetailData = [
+        $summary = $receipt->amount - $due;
+        $this->agentReceiptDetailService->create([
             'agent_receipt_id' => $receipt->id,
             'due' => $due,
-            'collected' => $collected,
+            'collected' => $receipt->amount,
             'since_last_visit' => $sinceLastVisit,
             'earlier' => $earlier ?? 0,
             'summary' => $summary < 0 ? 0 : $summary,
-        ];
-        $this->agentReceiptDetailService->create($agentReceiptDetailData);
-        $agentBalanceHistoryData = [
+            'commission_credited' => $commissionCredited,
+        ]);
+
+        // A receipt is money leaving the agent, so it reduces the company money
+        // they hold: the handed-over cash plus the accrued commission come off the
+        // balance in one row. The commission payout itself is recorded as an
+        // explicit negative row on the commission ledger below.
+        $balanceCredit = $this->agentBalanceHistoryService->make([
             'agent_id' => $agent->id,
-            'amount' => $receipt->amount,
-            'transaction_id' => $receipt->id,
-            'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier,
-        ];
-        $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
+            'amount' => -1 * ($receipt->amount + $commissionCredited),
+        ]);
         $this->agentReceiptHistoryBalanceService->setAssignee($receipt);
-        $this->agentReceiptHistoryBalanceService->setAssigned($agentBalanceHistory);
+        $this->agentReceiptHistoryBalanceService->setAssigned($balanceCredit);
         $this->agentReceiptHistoryBalanceService->assign();
-        $this->agentBalanceHistoryService->save($agentBalanceHistory);
+        $this->agentBalanceHistoryService->save($balanceCredit);
+
+        if ($commissionCredited > 0) {
+            $commission = $this->agentCommissionService->getById($agent->agent_commission_id);
+            $commissionPayout = $this->agentBalanceHistoryService->make([
+                'agent_id' => $agent->id,
+                'amount' => -1 * $commissionCredited,
+            ]);
+            $this->agentCommissionHistoryBalanceService->setAssignee($commission);
+            $this->agentCommissionHistoryBalanceService->setAssigned($commissionPayout);
+            $this->agentCommissionHistoryBalanceService->assign();
+            $this->agentBalanceHistoryService->save($commissionPayout);
+        }
     }
 }

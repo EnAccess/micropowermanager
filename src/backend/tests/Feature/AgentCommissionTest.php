@@ -28,7 +28,7 @@ class AgentCommissionTest extends TestCase {
             'name' => 'test commission',
             'energy_commission' => 0.5,
             'appliance_commission' => 0.5,
-            'risk_balance' => -10000,
+            'risk_balance' => 10000,
         ];
         $response = $this->actingAs($this->user)->post('/api/agents/commissions', $postData);
         $response->assertStatus(201);
@@ -43,7 +43,7 @@ class AgentCommissionTest extends TestCase {
             'name' => 'updated commission',
             'energy_commission' => 0.7,
             'appliance_commission' => 0.7,
-            'risk_balance' => -20000,
+            'risk_balance' => 20000,
         ];
 
         $response = $this->actingAs($this->user)->put(sprintf(
@@ -66,7 +66,7 @@ class AgentCommissionTest extends TestCase {
             'name' => 'test commission',
             'energy_commission' => 50,
             'appliance_commission' => 0.5,
-            'risk_balance' => -10000,
+            'risk_balance' => 10000,
         ];
         $response = $this->actingAs($this->user)->postJson('/api/agents/commissions', $postData);
         $response->assertStatus(422);
