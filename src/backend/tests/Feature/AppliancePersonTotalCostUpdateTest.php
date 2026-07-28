@@ -24,7 +24,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1500, 'admin_id' => $this->user->id]
+            ['new_total_cost' => 1500]
         );
 
         $response->assertStatus(200);
@@ -42,7 +42,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1000, 'admin_id' => $this->user->id]
+            ['new_total_cost' => 1000]
         );
 
         $response->assertStatus(200);
@@ -59,7 +59,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1500, 'admin_id' => $this->user->id]
+            ['new_total_cost' => 1500]
         );
 
         $response->assertStatus(200);
@@ -84,7 +84,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 100, 'admin_id' => $this->user->id]
+            ['new_total_cost' => 100]
         );
 
         $response->assertStatus(422);
@@ -101,7 +101,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 800, 'admin_id' => $this->user->id]
+            ['new_total_cost' => 800]
         );
 
         $response->assertStatus(422);
@@ -114,7 +114,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1500, 'admin_id' => $this->user->id]
+            ['new_total_cost' => 1500]
         )->assertStatus(200);
 
         $log = Log::query()
@@ -134,7 +134,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'monthly']
+            ['new_total_cost' => 1200, 'rate_count' => 3, 'rate_type' => 'monthly']
         );
 
         $response->assertStatus(200);
@@ -159,7 +159,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1000, 'admin_id' => $this->user->id, 'rate_count' => 2, 'rate_type' => 'weekly']
+            ['new_total_cost' => 1000, 'rate_count' => 2, 'rate_type' => 'weekly']
         );
 
         $response->assertStatus(200);
@@ -180,7 +180,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1000, 'admin_id' => $this->user->id, 'rate_count' => 2, 'rate_type' => 'monthly']
+            ['new_total_cost' => 1000, 'rate_count' => 2, 'rate_type' => 'monthly']
         );
 
         $response->assertStatus(200);
@@ -200,7 +200,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 900, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'weekly']
+            ['new_total_cost' => 900, 'rate_count' => 3, 'rate_type' => 'weekly']
         );
 
         $response->assertStatus(200);
@@ -219,7 +219,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 3, 'rate_type' => 'daily']
+            ['new_total_cost' => 1200, 'rate_count' => 3, 'rate_type' => 'daily']
         );
 
         $response->assertStatus(422);
@@ -232,7 +232,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/appliances/person/{$appliancePerson->id}/total-cost",
-            ['new_total_cost' => 1200, 'admin_id' => $this->user->id, 'rate_count' => 0, 'rate_type' => 'monthly']
+            ['new_total_cost' => 1200, 'rate_count' => 0, 'rate_type' => 'monthly']
         );
 
         $response->assertStatus(422);

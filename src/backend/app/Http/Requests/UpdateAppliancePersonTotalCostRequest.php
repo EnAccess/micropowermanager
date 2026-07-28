@@ -22,8 +22,6 @@ class UpdateAppliancePersonTotalCostRequest extends FormRequest {
         return [
             // New total cost of the sold appliance.
             'new_total_cost' => ['required', 'integer', 'min:0'],
-            // ID of the MPM user performing the change; recorded in the activity log.
-            'admin_id' => ['required', 'integer'],
             // New number of outstanding installment rates. When given (together with `rate_type`), the outstanding rates are regenerated instead of redistributed.
             'rate_count' => ['sometimes', 'integer', 'min:1'],
             // New installment schedule for regenerated rates.

@@ -23,8 +23,7 @@ class AppliancePersonDeleteTest extends TestCase {
         $appliancePerson = $this->seedAppliance();
 
         $response = $this->actingAs($this->user)->delete(
-            "/api/appliances/person/{$appliancePerson->id}",
-            ['admin_id' => $this->user->id]
+            "/api/appliances/person/{$appliancePerson->id}"
         );
 
         $response->assertStatus(200);
@@ -43,8 +42,7 @@ class AppliancePersonDeleteTest extends TestCase {
         ]);
 
         $this->actingAs($this->user)->delete(
-            "/api/appliances/person/{$appliancePerson->id}",
-            ['admin_id' => $this->user->id]
+            "/api/appliances/person/{$appliancePerson->id}"
         )->assertStatus(200);
 
         $device = Device::query()->where('device_serial', 'SN-TEST-1')->first();
@@ -58,8 +56,7 @@ class AppliancePersonDeleteTest extends TestCase {
         $appliancePerson->rates()->oldest('due_date')->first()->update(['remaining' => 0]);
 
         $response = $this->actingAs($this->user)->delete(
-            "/api/appliances/person/{$appliancePerson->id}",
-            ['admin_id' => $this->user->id]
+            "/api/appliances/person/{$appliancePerson->id}"
         );
 
         $response->assertStatus(200);
@@ -71,8 +68,7 @@ class AppliancePersonDeleteTest extends TestCase {
         $appliancePerson = $this->seedAppliance();
 
         $this->actingAs($this->user)->delete(
-            "/api/appliances/person/{$appliancePerson->id}",
-            ['admin_id' => $this->user->id]
+            "/api/appliances/person/{$appliancePerson->id}"
         )->assertStatus(200);
 
         $log = Log::query()
@@ -90,8 +86,7 @@ class AppliancePersonDeleteTest extends TestCase {
         $appliancePerson = $this->seedAppliance();
 
         $this->actingAs($this->user)->delete(
-            "/api/appliances/person/{$appliancePerson->id}",
-            ['admin_id' => $this->user->id]
+            "/api/appliances/person/{$appliancePerson->id}"
         )->assertStatus(200);
 
         $response = $this->actingAs($this->user)->get(

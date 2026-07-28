@@ -218,7 +218,7 @@ class AppliancePersonController extends Controller {
     #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
     public function updateTotalCost(int $appliancePersonId, UpdateAppliancePersonTotalCostRequest $request): ApiResource {
         $newTotalCost = $request->integer('new_total_cost');
-        $creatorId = $request->integer('admin_id');
+        $creatorId = auth('api')->user()->id;
         $rateCount = $request->has('rate_count') ? $request->integer('rate_count') : null;
         $rateType = $request->input('rate_type');
         $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
@@ -265,9 +265,8 @@ class AppliancePersonController extends Controller {
      * Returns the details of the deleted record.
      */
     #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
-    #[QueryParameter('admin_id', description: 'ID of the MPM user performing the deletion; recorded in the activity log.', type: 'int')]
-    public function destroy(int $appliancePersonId, Request $request): ApiResource {
-        $creatorId = $request->integer('admin_id');
+    public function destroy(int $appliancePersonId): ApiResource {
+        $creatorId = auth('api')->user()->id;
         $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
 
         try {
