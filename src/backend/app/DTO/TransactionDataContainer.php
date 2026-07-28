@@ -111,8 +111,7 @@ class TransactionDataContainer {
             } else {
                 $installments = $this->appliancePerson->rates;
                 $appliancePaymentService = app()->make(AppliancePaymentService::class);
-                $secondInstallment = $installments[1] ?? null;
-                $this->installmentCost = $secondInstallment ? $secondInstallment['rate_cost'] : 0;
+                $this->installmentCost = $appliancePaymentService->getNextPayableInstallmentAmount($installments);
                 $this->dayDifferenceBetweenTwoInstallments =
                     $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
             }

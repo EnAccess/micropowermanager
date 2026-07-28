@@ -65,7 +65,7 @@ class AppliancePaymentService {
         }
 
         $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
-        $installmentCost = $applianceDetail->rates[1]['rate_cost'] ?? 0;
+        $installmentCost = $this->getNextPayableInstallmentAmount($applianceDetail->rates);
 
         if ($amount > $totalRemainingAmount) {
             throw new PaymentAmountBiggerThanTotalRemainingAmount('Payment Amount can not bigger than Total Remaining Amount');
@@ -74,6 +74,24 @@ class AppliancePaymentService {
         if ($amount < $installmentCost && $amount != $totalRemainingAmount) {
             throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than installment cost');
         }
+    }
+
+    /**
+     * The amount needed to settle the next outstanding installment — the smallest
+     * payment we accept, since payments waterfall onto the earliest unpaid rate.
+     * Uses the next unpaid rate's remaining rather than a fixed position, so it stays
+     * correct when the schedule holds uneven or already-settled rates.
+     *
+     * @param Collection<int, ApplianceRate> $rates
+     */
+    public function getNextPayableInstallmentAmount(Collection $rates): float {
+        foreach ($rates as $rate) {
+            if ($rate->remaining > 0) {
+                return (float) $rate->remaining;
+            }
+        }
+
+        return 0.0;
     }
 
     public function payInstallment(ApplianceRate $installment, AppliancePerson $applianceOwner, Transaction $transaction): void {
