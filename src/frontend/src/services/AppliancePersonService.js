@@ -87,9 +87,8 @@ export class AppliancePersonService {
   }
   async delete(appliancePersonId) {
     try {
-      const { data, status, error } = await this.repository.delete(
-        appliancePersonId,
-      )
+      const { data, status, error } =
+        await this.repository.delete(appliancePersonId)
       if (status !== 200 && status !== 201) {
         return new ErrorHandler(error, "http", status)
       }
