@@ -36,7 +36,19 @@ patches:
       - op: add
         path: /spec/template/spec/terminationGracePeriodSeconds
         value: 15
-  # Setting a static IP external address for our external loadbalancer, see
+  # Right-size Demo pods to half of the GKE Autopilot general-purpose defaults (defaults 0.5 vCPU / 2Gi memory)
+  # https://docs.cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests
+  - target:
+      kind: Deployment
+      name: mpm-.*
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 250m
+            memory: 1Gi
+  # Setting a static IP external address for our external loadbalancer
   # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
   - patch: |-
       apiVersion: networking.k8s.io/v1
