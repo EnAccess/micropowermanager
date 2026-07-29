@@ -224,4 +224,72 @@ class AppliancePaymentControllerTest extends TestCase {
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('payment_provider');
     }
+
+    public function testAllowsPayingExactlyTheNextUnpaidInstallmentWhenRatesAreUneven(): void {
+        $this->createTestData();
+        Queue::fake();
+
+        $appliancePerson = $this->seedUnevenRatePlan();
+
+        $response = $this->actingAs($this->user)->postJson(
+            "/api/appliances/payment/{$appliancePerson->id}",
+            ['amount' => 385, 'payment_provider' => 0]
+        );
+
+        $response->assertStatus(200);
+        Queue::assertPushed(ProcessPayment::class);
+    }
+
+    public function testRejectsPaymentBelowNextUnpaidInstallment(): void {
+        $this->createTestData();
+        Queue::fake();
+        $this->withoutExceptionHandling();
+
+        $appliancePerson = $this->seedUnevenRatePlan();
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Payment amount can not smaller than installment cost');
+
+        $this->actingAs($this->user)->postJson(
+            "/api/appliances/payment/{$appliancePerson->id}",
+            ['amount' => 384, 'payment_provider' => 0]
+        );
+    }
+
+    /**
+     * A plan whose first two (settled) rates are uneven catch-up rates and whose
+     * next unpaid installment is 385 — the shape that exposed the fixed-index bug.
+     */
+    private function seedUnevenRatePlan(): AppliancePerson {
+        $person = PersonFactory::new()->create();
+        $applianceType = ApplianceTypeFactory::new()->create();
+        $appliance = Appliance::query()->create([
+            'name' => 'Test Appliance',
+            'price' => 1690,
+            'appliance_type_id' => $applianceType->id,
+        ]);
+
+        /** @var AppliancePerson $appliancePerson */
+        $appliancePerson = AppliancePersonFactory::new()->create([
+            'appliance_id' => $appliance->id,
+            'person_id' => $person->id,
+            'total_cost' => 1690,
+            'rate_count' => 5,
+            'down_payment' => 40,
+        ]);
+
+        // [rate_cost, remaining]: two settled uneven rates, then even 385 installments.
+        $plan = [[40, 0], [495, 0], [385, 385], [385, 385], [385, 385]];
+        foreach ($plan as $index => [$cost, $remaining]) {
+            ApplianceRate::query()->create([
+                'appliance_person_id' => $appliancePerson->id,
+                'rate_cost' => $cost,
+                'remaining' => $remaining,
+                'remind' => 0,
+                'due_date' => now()->addMonths($index + 1),
+            ]);
+        }
+
+        return $appliancePerson->fresh();
+    }
 }

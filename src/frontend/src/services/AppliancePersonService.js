@@ -61,14 +61,12 @@ export class AppliancePersonService {
   async updateTotalCost(
     appliancePersonId,
     newTotalCost,
-    adminId,
     rateCount = null,
     rateType = null,
   ) {
     try {
       const terms = {
         new_total_cost: newTotalCost,
-        admin_id: adminId,
       }
       if (rateCount !== null) terms.rate_count = rateCount
       if (rateType !== null) terms.rate_type = rateType
@@ -87,12 +85,10 @@ export class AppliancePersonService {
       return new ErrorHandler(errorMessage, "http", e.response?.status)
     }
   }
-  async delete(appliancePersonId, adminId) {
+  async delete(appliancePersonId) {
     try {
-      const { data, status, error } = await this.repository.delete(
-        appliancePersonId,
-        { admin_id: adminId },
-      )
+      const { data, status, error } =
+        await this.repository.delete(appliancePersonId)
       if (status !== 200 && status !== 201) {
         return new ErrorHandler(error, "http", status)
       }

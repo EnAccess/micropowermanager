@@ -473,8 +473,7 @@ export default {
         rates: [],
         device: null,
       },
-      adminId:
-        this.$store.getters["auth/authenticationService"].authenticateUser.id,
+      adminId: this.$store.getters["auth/getAuthenticateUser"].id,
       personId: null,
       getPayment: false,
       errorLabel: false,
@@ -653,7 +652,6 @@ export default {
         const response = await this.appliancePersonService.updateTotalCost(
           this.selectedApplianceId,
           newTotalCost,
-          this.adminId,
           rateCount,
           rateType,
         )
@@ -688,7 +686,6 @@ export default {
       try {
         const response = await this.appliancePersonService.delete(
           this.selectedApplianceId,
-          this.adminId,
         )
         if (response instanceof ErrorHandler) {
           throw response
