@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Carbon\WeekDay;
+use Carbon\Month;
 use App\Events\NewLogEvent;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
@@ -137,7 +139,7 @@ class AppliancePaymentService {
             $dueDates = $installments
                 ->map(fn (ApplianceRate $installment) => $installment->due_date)
                 ->filter()
-                ->map(fn ($dueDate): Carbon => Carbon::parse($dueDate))
+                ->map(fn (\DateTimeInterface|WeekDay|Month|string|int|float|null $dueDate): Carbon => Carbon::parse($dueDate))
                 ->sort()
                 ->values();
 
