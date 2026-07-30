@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Plugins\PesapalPaymentProvider\Tests\Unit;
 
 use App\Models\Transaction\Transaction;
+use App\Plugins\PesapalPaymentProvider\Models\PesapalCredential;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
 use App\Plugins\PesapalPaymentProvider\Modules\Api\PesapalApiService;
+use App\Plugins\PesapalPaymentProvider\Services\PesapalCredentialService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -17,11 +19,17 @@ class PesapalTransactionServiceInitiatePaymentTest extends TestCase {
     /**
      * @param array<string, mixed> $apiResponse
      */
-    private function makeServiceWithMockedApi(array $apiResponse): PesapalTransactionService {
+    private function makeServiceWithMockedApi(array $apiResponse, string $currency = 'UGX'): PesapalTransactionService {
         $apiService = $this->createMock(PesapalApiService::class);
         $apiService->method('submitOrder')->willReturn($apiResponse);
 
+        $credential = new PesapalCredential();
+        $credential->currency = $currency;
+        $credentialService = $this->createMock(PesapalCredentialService::class);
+        $credentialService->method('getCredentials')->willReturn($credential);
+
         $this->app->instance(PesapalApiService::class, $apiService);
+        $this->app->instance(PesapalCredentialService::class, $credentialService);
 
         /** @var PesapalTransactionService $service */
         $service = $this->app->make(PesapalTransactionService::class);
@@ -54,6 +62,7 @@ class PesapalTransactionServiceInitiatePaymentTest extends TestCase {
 
         $pesapalTxn = PesapalTransaction::query()->where('customer_id', 1)->where('amount', 200.0)->first();
         $this->assertNotNull($pesapalTxn);
+        $this->assertSame('UGX', $pesapalTxn->currency);
 
         $transaction = Transaction::query()->where('message', '42')->where('type', 'deferred_payment')->first();
         $this->assertNotNull($transaction);

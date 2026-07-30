@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\PesapalPaymentProvider\Tests\Unit;
 
+use App\Jobs\ProcessPayment;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
 use App\Plugins\PesapalPaymentProvider\Modules\Api\PesapalApiService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
@@ -38,7 +39,7 @@ class PesapalTransactionServiceSyncStatusTest extends TestCase {
             'status' => PesapalTransaction::STATUS_REQUESTED,
             'customer_id' => 1,
             'order_tracking_id' => 'ot_'.uniqid(),
-            'merchant_reference' => 'mr_'.uniqid(),
+            'merchant_reference' => 'mr_abc',
         ]);
         $pesapalTxn->transaction()->create([
             'amount' => 100.0,
@@ -61,6 +62,66 @@ class PesapalTransactionServiceSyncStatusTest extends TestCase {
         $this->assertNull($result['error']);
         $this->assertSame('CONF_99', $transaction->fresh()->external_transaction_id);
         $this->assertSame(PesapalTransaction::STATUS_SUCCESS, $transaction->fresh()->status);
+        Bus::assertDispatchedTimes(ProcessPayment::class, 1);
+    }
+
+    public function testCompletedStatusIsIdempotentWhenReplayed(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+        $service = $this->makeService($this->statusResult(1, 'COMPLETED', 'CONF_99'));
+
+        $service->syncStatusFromApi($transaction, 42);
+        $service->syncStatusFromApi($transaction, 42);
+        $service->syncStatusFromApi($transaction->fresh(), 42);
+
+        Bus::assertDispatchedTimes(ProcessPayment::class, 1);
+        $this->assertSame(PesapalTransaction::STATUS_SUCCESS, $transaction->fresh()->status);
+    }
+
+    public function testCompletedStatusWithMerchantReferenceMismatchRefusesCredit(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+        $response = $this->statusResult(1, 'COMPLETED', 'CONF_99');
+        $response['merchant_reference'] = 'another-reference';
+        $service = $this->makeService($response);
+
+        $result = $service->syncStatusFromApi($transaction, 42);
+
+        $this->assertSame(
+            'PesaPal merchant reference does not match the stored transaction.',
+            $result['error']
+        );
+        $this->assertSame(PesapalTransaction::STATUS_REQUESTED, $transaction->fresh()->status);
+        $this->assertNull($transaction->fresh()->external_transaction_id);
+        Bus::assertNotDispatched(ProcessPayment::class);
+    }
+
+    public function testCompletedStatusWithCurrencyMismatchRefusesCredit(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+        $response = $this->statusResult(1, 'COMPLETED', 'CONF_99');
+        $response['currency'] = 'UGX';
+        $service = $this->makeService($response);
+
+        $result = $service->syncStatusFromApi($transaction, 42);
+
+        $this->assertSame('PesaPal currency does not match the stored transaction.', $result['error']);
+        $this->assertSame(PesapalTransaction::STATUS_REQUESTED, $transaction->fresh()->status);
+        Bus::assertNotDispatched(ProcessPayment::class);
+    }
+
+    public function testCompletedStatusWithAmountMismatchRefusesCredit(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+        $response = $this->statusResult(1, 'COMPLETED', 'CONF_99');
+        $response['amount'] = 99.99;
+        $service = $this->makeService($response);
+
+        $result = $service->syncStatusFromApi($transaction, 42);
+
+        $this->assertSame('PesaPal amount does not match the stored transaction.', $result['error']);
+        $this->assertSame(PesapalTransaction::STATUS_REQUESTED, $transaction->fresh()->status);
+        Bus::assertNotDispatched(ProcessPayment::class);
     }
 
     public function testStatusCodeTwoMarksFailed(): void {

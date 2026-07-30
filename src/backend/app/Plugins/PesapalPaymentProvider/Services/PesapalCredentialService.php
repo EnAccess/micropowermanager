@@ -102,11 +102,18 @@ class PesapalCredentialService {
             throw new \RuntimeException('PesaPal IPN registration failed: '.$result['error']);
         }
 
-        $credential->update([
+        $registeredAt = Carbon::now();
+        $credential->newQuery()->whereKey($credential->getKey())->update([
             'ipn_id' => $result['ipn_id'],
-            'ipn_registered_at' => Carbon::now(),
+            'ipn_registered_at' => $registeredAt,
         ]);
-        $this->decryptCredentialFields($credential, self::ENCRYPTED_FIELDS);
+
+        // The credential model is deliberately decrypted in memory for API use.
+        // Persist only the IPN fields through a separate query so dirty plaintext
+        // credentials can never be written back as a side effect of registration.
+        $credential->ipn_id = $result['ipn_id'];
+        $credential->ipn_registered_at = $registeredAt;
+        $credential->syncOriginalAttributes(['ipn_id', 'ipn_registered_at']);
     }
 
     private function buildIpnUrl(): ?string {

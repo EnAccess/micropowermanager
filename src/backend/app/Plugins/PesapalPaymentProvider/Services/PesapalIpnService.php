@@ -47,10 +47,44 @@ class PesapalIpnService {
         return true;
     }
 
+    /**
+     * @return array{orderNotificationType: string, orderTrackingId: string, orderMerchantReference: string, status: int}
+     */
+    public function acknowledgement(Request $request, bool $processed): array {
+        return [
+            'orderNotificationType' => $this->extractValue($request, [
+                'OrderNotificationType',
+                'orderNotificationType',
+            ]),
+            'orderTrackingId' => $this->extractValue($request, [
+                'OrderTrackingId',
+                'orderTrackingId',
+            ]),
+            'orderMerchantReference' => $this->extractValue($request, [
+                'OrderMerchantReference',
+                'orderMerchantReference',
+            ]),
+            'status' => $processed ? 200 : 500,
+        ];
+    }
+
     private function extractOrderTrackingId(Request $request): ?string {
-        return $request->input('OrderTrackingId')
-            ?? $request->input('orderTrackingId')
-            ?? $request->query('OrderTrackingId')
-            ?? $request->query('orderTrackingId');
+        $value = $this->extractValue($request, ['OrderTrackingId', 'orderTrackingId']);
+
+        return $value === '' ? null : $value;
+    }
+
+    /**
+     * @param list<string> $keys
+     */
+    private function extractValue(Request $request, array $keys): string {
+        foreach ($keys as $key) {
+            $value = $request->input($key);
+            if (is_scalar($value)) {
+                return (string) $value;
+            }
+        }
+
+        return '';
     }
 }

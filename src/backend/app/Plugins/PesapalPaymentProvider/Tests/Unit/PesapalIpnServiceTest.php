@@ -86,6 +86,40 @@ class PesapalIpnServiceTest extends TestCase {
         $this->assertFalse($service->processIpn($request, 42));
     }
 
+    public function testBuildsDocumentedAcknowledgementForGetIpn(): void {
+        $transactionService = $this->createMock(PesapalTransactionService::class);
+        $service = new PesapalIpnService($transactionService);
+        $request = Request::create('/api/pesapal/ipn/42', 'GET', [
+            'OrderNotificationType' => 'IPNCHANGE',
+            'OrderTrackingId' => 'ot_abc',
+            'OrderMerchantReference' => 'mr_abc',
+        ]);
+
+        $this->assertSame([
+            'orderNotificationType' => 'IPNCHANGE',
+            'orderTrackingId' => 'ot_abc',
+            'orderMerchantReference' => 'mr_abc',
+            'status' => 200,
+        ], $service->acknowledgement($request, true));
+    }
+
+    public function testBuildsDocumentedAcknowledgementForPostIpnFailure(): void {
+        $transactionService = $this->createMock(PesapalTransactionService::class);
+        $service = new PesapalIpnService($transactionService);
+        $request = Request::create('/api/pesapal/ipn/42', 'POST', [
+            'orderNotificationType' => 'IPNCHANGE',
+            'orderTrackingId' => 'ot_abc',
+            'orderMerchantReference' => 'mr_abc',
+        ]);
+
+        $this->assertSame([
+            'orderNotificationType' => 'IPNCHANGE',
+            'orderTrackingId' => 'ot_abc',
+            'orderMerchantReference' => 'mr_abc',
+            'status' => 500,
+        ], $service->acknowledgement($request, false));
+    }
+
     private function createPersistedTransaction(): PesapalTransaction {
         return PesapalTransaction::query()->create([
             'amount' => 100.0,

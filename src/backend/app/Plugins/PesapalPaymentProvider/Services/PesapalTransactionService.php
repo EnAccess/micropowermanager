@@ -145,16 +145,46 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
         return $this->pesapalTransaction->newQuery()->get();
     }
 
-    public function processSuccessfulPayment(int $companyId, PesapalTransaction $transaction): void {
-        $id = $transaction->transaction->id;
-        dispatch(new ProcessPayment($companyId, $id));
-        $transaction->status = PesapalTransaction::STATUS_SUCCESS;
-        $transaction->save();
+    public function processSuccessfulPayment(
+        int $companyId,
+        PesapalTransaction $transaction,
+        string $confirmationCode = '',
+    ): void {
+        DB::connection('tenant')->transaction(function () use ($companyId, $transaction, $confirmationCode): void {
+            /** @var PesapalTransaction $lockedTransaction */
+            $lockedTransaction = $this->pesapalTransaction
+                ->newQuery()
+                ->lockForUpdate()
+                ->findOrFail($transaction->getKey());
+
+            if ($confirmationCode !== '' && $lockedTransaction->external_transaction_id !== $confirmationCode) {
+                $lockedTransaction->external_transaction_id = $confirmationCode;
+            }
+
+            if ($lockedTransaction->status === PesapalTransaction::STATUS_SUCCESS) {
+                if ($lockedTransaction->isDirty()) {
+                    $lockedTransaction->save();
+                }
+
+                return;
+            }
+
+            $mpmTransaction = $lockedTransaction->transaction()->first();
+            if (!$mpmTransaction instanceof Transaction) {
+                throw new \RuntimeException('PesaPal transaction is missing its MPM transaction.');
+            }
+
+            $lockedTransaction->status = PesapalTransaction::STATUS_SUCCESS;
+            $lockedTransaction->save();
+
+            dispatch(new ProcessPayment($companyId, $mpmTransaction->id));
+        });
+
+        $transaction->refresh();
     }
 
     public function processFailedPayment(PesapalTransaction $transaction): void {
-        $transaction->status = PesapalTransaction::STATUS_FAILED;
-        $transaction->save();
+        $this->updateStatusUnlessSuccessful($transaction, PesapalTransaction::STATUS_FAILED);
     }
 
     /**
@@ -171,7 +201,26 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
             return $status;
         }
 
-        if (!empty($status['confirmation_code'])) {
+        if ($status['status_code'] === GetTransactionStatusResource::STATUS_COMPLETED) {
+            $mismatch = $this->completedPaymentMismatch($transaction, $status);
+            if ($mismatch !== null) {
+                $status['error'] = $mismatch;
+
+                logger()->warning('PesaPal completed payment did not match the stored transaction', [
+                    'pesapal_transaction_id' => $transaction->id,
+                    'order_tracking_id' => $transaction->order_tracking_id,
+                    'mismatch' => $mismatch,
+                ]);
+
+                return $status;
+            }
+
+            $this->processSuccessfulPayment($companyId, $transaction, $status['confirmation_code']);
+
+            return $status;
+        }
+
+        if ($status['confirmation_code'] !== '') {
             $transaction->external_transaction_id = $status['confirmation_code'];
             $transaction->save();
         }
@@ -191,10 +240,50 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
                 $this->processFailedPayment($transaction);
                 break;
             case GetTransactionStatusResource::STATUS_INVALID:
-                $transaction->status = PesapalTransaction::STATUS_ABANDONED;
-                $transaction->save();
+                $this->updateStatusUnlessSuccessful($transaction, PesapalTransaction::STATUS_ABANDONED);
                 break;
         }
+    }
+
+    /**
+     * @param array{status_code: ?int, status_description: string, amount: float, currency: string, payment_method: string, confirmation_code: string, merchant_reference: string, error: ?string} $status
+     */
+    private function completedPaymentMismatch(PesapalTransaction $transaction, array $status): ?string {
+        if ($transaction->merchant_reference === null
+            || !hash_equals($transaction->merchant_reference, $status['merchant_reference'])) {
+            return 'PesaPal merchant reference does not match the stored transaction.';
+        }
+
+        if (strcasecmp($transaction->currency, $status['currency']) !== 0) {
+            return 'PesaPal currency does not match the stored transaction.';
+        }
+
+        $storedAmount = number_format((float) $transaction->amount, 2, '.', '');
+        $paidAmount = number_format($status['amount'], 2, '.', '');
+        if ($storedAmount !== $paidAmount) {
+            return 'PesaPal amount does not match the stored transaction.';
+        }
+
+        return null;
+    }
+
+    private function updateStatusUnlessSuccessful(PesapalTransaction $transaction, int $status): void {
+        DB::connection('tenant')->transaction(function () use ($transaction, $status): void {
+            /** @var PesapalTransaction $lockedTransaction */
+            $lockedTransaction = $this->pesapalTransaction
+                ->newQuery()
+                ->lockForUpdate()
+                ->findOrFail($transaction->getKey());
+
+            if ($lockedTransaction->status === PesapalTransaction::STATUS_SUCCESS) {
+                return;
+            }
+
+            $lockedTransaction->status = $status;
+            $lockedTransaction->save();
+        });
+
+        $transaction->refresh();
     }
 
     /**
