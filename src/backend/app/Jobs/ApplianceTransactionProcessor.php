@@ -92,7 +92,8 @@ class ApplianceTransactionProcessor extends AbstractJob {
     private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void {
         $minimumPurchaseAmount = $container->appliancePerson->isEnergyService()
             ? ($container->appliancePerson->minimum_payable_amount ?? 0)
-            : $container->installmentCost;
+            : resolve(AppliancePaymentService::class)
+                ->getNextPayableInstallmentAmount($container->appliancePerson->rates);
 
         if ($minimumPurchaseAmount > 0 && $container->amount < $minimumPurchaseAmount) {
             throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for appliance with serial id:{$container->transaction->message}");

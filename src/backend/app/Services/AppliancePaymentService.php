@@ -11,9 +11,14 @@ use App\Models\ApplianceRate;
 use App\Models\MainSettings;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
+use Carbon\Month;
+use Carbon\WeekDay;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class AppliancePaymentService {
+    public const DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS = 30;
+
     public float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
 
@@ -77,21 +82,39 @@ class AppliancePaymentService {
     }
 
     /**
-     * The amount needed to settle the next outstanding installment — the smallest
-     * payment we accept, since payments waterfall onto the earliest unpaid rate.
-     * Uses the next unpaid rate's remaining rather than a fixed position, so it stays
-     * correct when the schedule holds uneven or already-settled rates.
+     * The balance still owed on the next outstanding installment — the smallest payment
+     * we accept, since payments waterfall onto the earliest unpaid rate. Shrinks as that
+     * rate is paid down, so it is a payment floor only, never a price.
      *
      * @param Collection<int, ApplianceRate> $rates
      */
     public function getNextPayableInstallmentAmount(Collection $rates): float {
-        foreach ($rates as $rate) {
-            if ($rate->remaining > 0) {
-                return (float) $rate->remaining;
-            }
-        }
+        return (float) ($this->nextPayableRate($rates)->remaining ?? 0);
+    }
 
-        return 0.0;
+    /**
+     * The scheduled cost of the next outstanding installment — what one installment
+     * period costs under the plan, unaffected by how much of that rate is already
+     * settled. Token day math divides by this, so it must not shrink as the customer
+     * pays: doing so collapses the per-day price and inflates the issued token.
+     *
+     * @param Collection<int, ApplianceRate> $rates
+     */
+    public function getNextPayableInstallmentCost(Collection $rates): float {
+        return (float) ($this->nextPayableRate($rates)->rate_cost ?? 0);
+    }
+
+    /**
+     * The earliest rate still carrying a balance. Sorted by due date because the
+     * rates relation is unordered and rescheduling recreates rows, so insertion
+     * order does not reliably follow the schedule.
+     *
+     * @param Collection<int, ApplianceRate> $rates
+     */
+    private function nextPayableRate(Collection $rates): ?ApplianceRate {
+        return $rates
+            ->sortBy(fn (ApplianceRate $rate): int => Carbon::parse($rate->due_date)->getTimestamp())
+            ->first(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
     }
 
     public function payInstallment(ApplianceRate $installment, AppliancePerson $applianceOwner, Transaction $transaction): void {
@@ -113,27 +136,25 @@ class AppliancePaymentService {
      */
     public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {
         try {
-            $secondInstallment = $installments[1];
-            $thirdInstallment = $installments[2];
+            $dueDates = $installments
+                ->map(fn (ApplianceRate $installment) => $installment->due_date)
+                ->filter()
+                ->map(fn (\DateTimeInterface|WeekDay|Month|string|int|float|null $dueDate): Carbon => Carbon::parse($dueDate))
+                ->sort()
+                ->values();
 
-            if (!$secondInstallment || !$thirdInstallment) {
-                return 30;
+            if ($dueDates->count() < 3) {
+                return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
             }
 
-            $secondDueDate = $secondInstallment->due_date ?? null;
-            $thirdDueDate = $thirdInstallment->due_date ?? null;
+            $dayDifference = (int) $dueDates[1]->diffInDays($dueDates[2], absolute: true);
+        } catch (\Exception $e) {
+            Log::warning('Falling back to the default installment cadence.', ['message' => $e->getMessage()]);
 
-            if (!$secondDueDate || !$thirdDueDate) {
-                return 30;
-            }
-
-            $dueDateSecondRow = Carbon::parse($secondDueDate);
-            $dueDateThirdRow = Carbon::parse($thirdDueDate);
-
-            return (int) $dueDateSecondRow->diffInDays($dueDateThirdRow);
-        } catch (\Exception) {
-            return 30;
+            return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
         }
+
+        return $dayDifference > 0 ? $dayDifference : self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
     }
 
     /**
