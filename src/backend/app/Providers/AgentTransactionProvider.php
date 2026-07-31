@@ -10,7 +10,6 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Providers\Interfaces\ITransactionProvider;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class AgentTransactionProvider implements ITransactionProvider {
@@ -55,6 +54,13 @@ class AgentTransactionProvider implements ITransactionProvider {
         $this->agentTransaction->update(['status' => $requestType ? 1 : -1]);
 
         if (!$requestType) {
+            return;
+        }
+
+        // A queue retry can replay the success event for a transaction that is
+        // already on the ledger; crediting the agent twice for one payment would
+        // inflate both their balance and their commission.
+        if (AgentBalanceHistory::query()->where('transaction_id', $transaction->id)->exists()) {
             return;
         }
 

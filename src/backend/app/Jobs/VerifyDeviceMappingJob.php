@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 class VerifyDeviceMappingJob extends AbstractJob {
     public function __construct(int $companyId, private int $deviceId) {
         $this->onConnection('redis');
+        $this->onQueue('device');
         $this->afterCommit = true;
         parent::__construct($companyId);
     }

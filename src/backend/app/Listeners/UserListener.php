@@ -23,10 +23,6 @@ class UserListener {
     ) {}
 
     public function handle(UserCreatedEvent $event): void {
-        $this->handleUserCreatedEvent($event);
-    }
-
-    public function handleUserCreatedEvent(UserCreatedEvent $event): void {
         if ($event->shouldSyncUser) {
             $companyDatabase = $this->companyDatabaseService->findByCompanyId($event->user->company_id);
 

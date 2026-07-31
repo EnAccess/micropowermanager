@@ -11,6 +11,7 @@ $queues = [
     'emails',
     'import',
     'steama_meter',
+    'device',
 ];
 
 return [
