@@ -20,21 +20,29 @@ export class AgentSoldApplianceService {
   }
 
   fromJson(data) {
-    let soldAppliance = {
-      id: data.id,
-      applianceName: data.assigned_appliance.appliance.name,
-      amount: data.assigned_appliance.cost,
-      customerName: data.person.name + " " + data.person.surname,
-      createdAt: data.created_at
-        .toString()
-        .replace(/T/, " ")
-        .replace(/\..+/, ""),
+    try {
+      return {
+        id: data.id,
+        applianceName: data.assigned_appliance?.appliance?.name ?? "-",
+        amount: data.assigned_appliance?.cost ?? 0,
+        customerName: data.person
+          ? `${data.person.name} ${data.person.surname}`
+          : "-",
+        createdAt: data.created_at
+          ? data.created_at.toString().replace(/T/, " ").replace(/\..+/, "")
+          : "-",
+      }
+    } catch (err) {
+      console.error("Failed to parse sold appliance:", data, err)
+      return null
     }
-    return soldAppliance
   }
 
   updateList(data) {
-    this.list = data.map(this.fromJson)
+    this.list = data
+      .map((item) => this.fromJson(item))
+      .filter((item) => item !== null)
+
     return this.list
   }
 }
