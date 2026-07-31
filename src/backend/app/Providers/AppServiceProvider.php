@@ -3,11 +3,6 @@
 namespace App\Providers;
 
 use App\DTO\LoanDataContainer;
-use App\Events\TransactionSuccessfulEvent;
-use App\Events\UserCreatedEvent;
-use App\Listeners\SendTransactionConfirmationSmsListener;
-use App\Listeners\TransactionSuccessfulListener;
-use App\Listeners\UserListener;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
 use App\Models\Agent;
@@ -52,7 +47,6 @@ use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Dedoc\Scramble\Support\RouteInfo;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
@@ -160,25 +154,6 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->alias(ApplianceInstallmentPayer::class, 'ApplianceInstallmentPayer');
         $this->app->bind(AccessRatePayer::class);
         $this->app->alias(AccessRatePayer::class, 'AccessRatePayer');
-
-        // Register custom MPM Events
-
-        Event::listen(
-            UserCreatedEvent::class,
-            UserListener::class
-        );
-
-        // App\Listeners namespace
-        // manually register TransactionSuccessfulEvent to listener.
-        // because TransactionSuccessfulEvent is also registered in SparkMeter namespace.
-        Event::listen(
-            TransactionSuccessfulEvent::class,
-            TransactionSuccessfulListener::class
-        );
-        Event::listen(
-            TransactionSuccessfulEvent::class,
-            SendTransactionConfirmationSmsListener::class
-        );
 
         // Register TelescopeServiceProvider
         if (config('telescope.enabled', false)) {
