@@ -102,7 +102,6 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * those deliveries, so the row is locked and re-read before the transition: a second
      * notification finds STATUS_SUCCESS and returns without queueing another ProcessPayment.
      *
-     *
      * @param T $transaction may carry unsaved provider data (confirmation code, M-PESA
      *                       receipt, transaction reference) — it is written to the locked
      *                       row on replays too, so a late payload still enriches the record
