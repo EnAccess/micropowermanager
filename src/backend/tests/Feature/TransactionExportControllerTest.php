@@ -38,9 +38,10 @@ class TransactionExportControllerTest extends TestCase {
         $json = $this->actingAs($user)->getJson('/api/export/transactions?format=json');
         $json->assertStatus(200);
         $json->assertJsonPath('meta.total', 2);
-        $json->assertJsonPath('data.0.customer', '');
-        $json->assertJsonPath('data.0.device_id', 'SER-WITHOUT-PERSON');
-        $json->assertJsonPath('data.1.customer', 'Ada Lovelace');
+
+        $customerNamesByDeviceSerial = array_column($json->json('data'), 'customer', 'device_id');
+        $this->assertSame('', $customerNamesByDeviceSerial['SER-WITHOUT-PERSON']);
+        $this->assertSame('Ada Lovelace', $customerNamesByDeviceSerial['SER-WITH-PERSON']);
 
         $csv = $this->actingAs($user)->get('/api/export/transactions?format=csv');
         $csv->assertStatus(200);
