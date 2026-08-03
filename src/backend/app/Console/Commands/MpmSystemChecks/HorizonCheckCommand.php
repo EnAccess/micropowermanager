@@ -36,7 +36,7 @@ class HorizonCheckCommand extends Command {
         if ($this->option('alert')) {
             Log::critical('Horizon is not processing jobs. Recover with: supervisorctl restart horizon', [
                 'problems' => $problems,
-                'host' => $this->option('local') ? MasterSupervisor::basename() : 'any',
+                'scope' => $this->option('local') ? MasterSupervisor::basename() : 'all hosts',
             ]);
         }
 
