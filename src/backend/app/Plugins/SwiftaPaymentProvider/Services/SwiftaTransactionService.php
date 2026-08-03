@@ -70,6 +70,25 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         }
     }
 
+    /**
+     * Settle the Swifta transaction behind an MPM transaction. Swifta's cipher covers only the
+     * timestamp and amount, so a captured callback stays valid indefinitely and replaying it is
+     * trivial — the base service's row lock is what stops it crediting the device twice.
+     */
+    public function applyCallback(Transaction $transaction, ?string $transactionReference, int $companyId): void {
+        $swiftaTransaction = $transaction->originalTransaction()->first();
+        if (!$swiftaTransaction instanceof SwiftaTransaction) {
+            throw new \Exception("Transaction {$transaction->id} has no Swifta transaction to settle.");
+        }
+
+        // Left unsaved so it is persisted while the settlement holds the row lock.
+        if ($transactionReference !== null) {
+            $swiftaTransaction->transaction_reference = $transactionReference;
+        }
+
+        $this->processSuccessfulPayment($companyId, $swiftaTransaction);
+    }
+
     public function checkAmountIsSame(int $amount, Transaction $transaction): void {
         if ($amount !== (int) $transaction->amount) {
             throw new \Exception('amount validation field.');
