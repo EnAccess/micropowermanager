@@ -145,6 +145,10 @@ class PesapalPublicController extends Controller {
                 ? $this->transactionService->syncStatusFromApi($transaction, $companyId)
                 : ['status_code' => null, 'error' => 'No order tracking id yet'];
 
+            $successfulTxCheck = $verification['error'] === null
+                && isset($verification['status_code'])
+                && $verification['status_code'] === 1;
+
             $response = [
                 'transaction' => [
                     'id' => $transaction->id,
@@ -159,9 +163,7 @@ class PesapalPublicController extends Controller {
                     'created_at' => $transaction->getAttribute('created_at'),
                 ],
                 'verification' => $verification,
-                'success' => $verification['error'] === null
-                    && isset($verification['status_code'])
-                    && $verification['status_code'] === 1,
+                'success' => $successfulTxCheck,
                 'token_status' => $tokenStatus,
             ];
 

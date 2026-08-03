@@ -21,6 +21,7 @@ use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -206,7 +207,7 @@ class PesapalTransactionService extends AbstractPaymentAggregatorTransactionServ
             if ($mismatch !== null) {
                 $status['error'] = $mismatch;
 
-                logger()->warning('PesaPal completed payment did not match the stored transaction', [
+                Log::warning('PesaPal completed payment did not match the stored transaction', [
                     'pesapal_transaction_id' => $transaction->id,
                     'order_tracking_id' => $transaction->order_tracking_id,
                     'mismatch' => $mismatch,
