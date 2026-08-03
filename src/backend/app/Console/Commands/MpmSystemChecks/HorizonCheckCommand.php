@@ -3,72 +3,111 @@
 namespace App\Console\Commands\MpmSystemChecks;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
+use Laravel\Horizon\MasterSupervisor;
 
 class HorizonCheckCommand extends Command {
-    protected $signature = 'mpm-system-checks:horizon';
+    protected $signature = 'mpm-system-checks:horizon
+                            {--local : Restrict the check to the master supervisor of the current host}
+                            {--alert : Log a critical message when the check fails}';
     protected $description = 'Check Horizon queue worker status';
 
     public function handle(): int {
         $this->info('Checking Horizon queue worker status...');
 
         try {
-            $masters = resolve(MasterSupervisorRepository::class)->all();
+            $problems = $this->collectProblems();
+        } catch (\Exception $e) {
+            $problems = ['Horizon check failed: '.$e->getMessage()];
+        }
 
-            if (empty($masters)) {
-                $this->error('Horizon is inactive — no master supervisor running.');
+        if (count($problems) === 0) {
+            return Command::SUCCESS;
+        }
 
-                return Command::FAILURE;
+        foreach ($problems as $problem) {
+            $this->error($problem);
+        }
+
+        if ($this->option('alert')) {
+            Log::critical('Horizon is not processing jobs. Recover with: supervisorctl restart horizon', [
+                'problems' => $problems,
+                'host' => $this->option('local') ? MasterSupervisor::basename() : 'any',
+            ]);
+        }
+
+        return Command::FAILURE;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function collectProblems(): array {
+        $masters = resolve(MasterSupervisorRepository::class)->all();
+
+        if ($this->option('local')) {
+            // A master's Redis name is `basename()-<token>`, where the token is generated
+            // per PHP process. Scoping by basename is therefore the only way a separate
+            // process can match the running master, and is what Horizon's own console
+            // commands do.
+            $masters = array_filter(
+                $masters,
+                fn ($master) => Str::startsWith($master->name, MasterSupervisor::basename())
+            );
+        }
+
+        if (count($masters) === 0) {
+            // The master's monitor loop refreshes this record every second under a 15s
+            // TTL, so an absent record means the loop has stopped. The OS process can
+            // still be alive, and supervisord still reports it as RUNNING.
+            return ['Horizon is inactive — no master supervisor heartbeat.'];
+        }
+
+        $working = array_filter($masters, fn ($master) => ($master->status ?? 'inactive') !== 'paused');
+
+        if (count($working) === 0) {
+            return ['Horizon is paused — all master supervisors are paused.'];
+        }
+
+        $this->info('Horizon is running with '.count($working).' master supervisor(s).');
+
+        $problems = [];
+        $workerProcesses = 0;
+
+        foreach ($working as $master) {
+            $supervisors = resolve(SupervisorRepository::class)->get($master->supervisors ?? []);
+
+            if (count($supervisors) === 0) {
+                $problems[] = "Master supervisor {$master->name} has no child supervisor heartbeat.";
+
+                continue;
             }
-
-            $allPaused = true;
-            foreach ($masters as $master) {
-                if (($master->status ?? 'inactive') !== 'paused') {
-                    $allPaused = false;
-
-                    break;
-                }
-            }
-
-            if ($allPaused) {
-                $this->error('Horizon is paused — all master supervisors are paused.');
-
-                return Command::FAILURE;
-            }
-
-            $this->info('Horizon is running with '.count($masters).' master supervisor(s).');
-
-            $supervisors = resolve(SupervisorRepository::class)->all();
-            $totalProcesses = 0;
 
             foreach ($supervisors as $supervisor) {
-                $totalProcesses += count($supervisor->processes ?? []);
+                // `processes` maps queue name to the number of worker processes serving it,
+                // so the worker total is the sum of its values.
+                $workerProcesses += array_sum($supervisor->processes ?? []);
             }
-
-            if ($totalProcesses === 0) {
-                $this->error('No active worker processes found.');
-
-                return Command::FAILURE;
-            }
-
-            $this->info("Active worker processes: {$totalProcesses}.");
-
-            $failedCount = resolve(JobRepository::class)->countRecentlyFailed();
-
-            if ($failedCount > 0) {
-                $this->warn("Recently failed jobs: {$failedCount}.");
-            }
-
-            $pendingCount = resolve(JobRepository::class)->countPending();
-            $this->info("Pending jobs: {$pendingCount}.");
-
-            return Command::SUCCESS;
-        } catch (\Exception $e) {
-            $this->error('Horizon check failed: '.$e->getMessage());
-
-            return Command::FAILURE;
         }
+
+        if ($workerProcesses === 0) {
+            $problems[] = 'No active worker processes found.';
+        } else {
+            $this->info("Active worker processes: {$workerProcesses}.");
+        }
+
+        $failedCount = resolve(JobRepository::class)->countRecentlyFailed();
+
+        if ($failedCount > 0) {
+            $this->warn("Recently failed jobs: {$failedCount}.");
+        }
+
+        $this->info('Pending jobs: '.resolve(JobRepository::class)->countPending().'.');
+
+        return $problems;
     }
 }
