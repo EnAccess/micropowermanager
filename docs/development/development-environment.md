@@ -129,7 +129,7 @@ For example using `brew` on MacOS
 ```sh
 brew install php@8.5
 brew install composer
-pecl install redis
+pie install phpredis/phpredis
 ```
 
 Alternatively [Laravel Herd](https://herd.laravel.com/) can be used.
