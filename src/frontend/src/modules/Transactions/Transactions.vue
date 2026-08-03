@@ -434,7 +434,7 @@
                 <label>{{ $tc("words.format") }}</label>
                 <md-select v-model="exportFilters.format">
                   <md-option value="csv">CSV</md-option>
-                  <md-option value="xlsx">Excel</md-option>
+                  <md-option value="excel">Excel</md-option>
                 </md-select>
               </md-field>
             </div>

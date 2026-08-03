@@ -4,7 +4,7 @@ namespace App\Services\ExportServices;
 
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class TransactionExportService extends AbstractExportService {
     /**
@@ -32,28 +32,23 @@ class TransactionExportService extends AbstractExportService {
     }
 
     public function setExportingData(): void {
-        $this->exportingData = $this->transactionData->map(function (Transaction $transaction): array {
-            $status = $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->originalTransaction->status == 0 ? 'Pending' : 'Failed');
-            $readableAmount = $this->readable($transaction->amount);
-
-            return [
-                $status,
-                $transaction->original_transaction_type,
-                $transaction->device->person->name.' '.$transaction->device->person->surname,
-                $transaction->message,
-                $transaction->device->device_type,
-                $readableAmount.$this->currency,
-                $transaction->type,
-                $this->convertUtcDateToTimezone($transaction->created_at),
-            ];
-        });
+        $this->exportingData = $this->transactionData->map(fn (Transaction $transaction): array => [
+            $this->resolveStatus($transaction),
+            $transaction->original_transaction_type,
+            $this->resolveCustomerName($transaction),
+            $transaction->message,
+            $transaction->device->device_type ?? '',
+            $this->readable($transaction->amount).$this->currency,
+            $transaction->type,
+            $this->convertUtcDateToTimezone($transaction->created_at),
+        ]);
     }
 
     /**
      * @param Collection<int, Transaction> $transactionData
      */
     public function setTransactionData(Collection $transactionData): void {
-        $this->transactionData = $transactionData;
+        $this->transactionData = $transactionData->load('device.person');
     }
 
     public function getTemplatePath(): string {
@@ -74,11 +69,11 @@ class TransactionExportService extends AbstractExportService {
         // TODO: support some form of pagination to limit the data to be exported using json
         // transform exporting data to JSON structure for transaction export
         $jsonDataTransform = $this->transactionData->map(fn (Transaction $transaction): array => [
-            'status' => $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->originalTransaction->status == 0 ? 'Pending' : 'Failed'),
+            'status' => $this->resolveStatus($transaction),
             'transaction_type' => $transaction->original_transaction_type,
-            'customer' => $transaction->device->person->name.' '.$transaction->device->person->surname,
-            'device_id' => $transaction->device->device_serial,
-            'device_type' => $transaction->device->device_type,
+            'customer' => $this->resolveCustomerName($transaction),
+            'device_id' => $transaction->device->device_serial ?? '',
+            'device_type' => $transaction->device->device_type ?? '',
             'currency' => $this->currency,
             'amount' => $this->readable($transaction->amount).$this->currency,
             'sent_date' => $this->convertUtcDateToTimezone($transaction->created_at),
@@ -86,6 +81,23 @@ class TransactionExportService extends AbstractExportService {
         ]);
 
         return $jsonDataTransform->all();
+    }
+
+    private function resolveStatus(Transaction $transaction): string {
+        /** @var BasePaymentProviderTransaction|null $original */
+        $original = $transaction->originalTransaction;
+
+        return match ($original?->status) {
+            1 => 'Success',
+            0 => 'Pending',
+            default => 'Failed',
+        };
+    }
+
+    private function resolveCustomerName(Transaction $transaction): string {
+        $person = $transaction->device?->person;
+
+        return trim(($person->name ?? '').' '.($person->surname ?? ''));
     }
 
     /**
