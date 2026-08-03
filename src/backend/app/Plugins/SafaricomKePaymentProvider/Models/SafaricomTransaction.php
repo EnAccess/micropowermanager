@@ -35,8 +35,6 @@ class SafaricomTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'safaricom_transaction';
 
     public const STATUS_REQUESTED = 0;
-    public const STATUS_FAILED = -1;
-    public const STATUS_SUCCESS = 1;
     public const STATUS_COMPLETED = 2;
     public const STATUS_ABANDONED = 3;
     public const MAX_ATTEMPTS = 5;

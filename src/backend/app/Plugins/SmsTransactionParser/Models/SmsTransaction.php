@@ -31,9 +31,7 @@ use Illuminate\Support\Carbon;
 class SmsTransaction extends BasePaymentProviderTransaction {
     protected $table = 'sms_transactions';
     public const RELATION_NAME = 'sms_transaction';
-    public const STATUS_FAILED = -1;
     public const STATUS_PENDING = 0;
-    public const STATUS_SUCCESS = 1;
 
     public function getManufacturerTransferType(): ?string {
         return 'SmsTransaction';

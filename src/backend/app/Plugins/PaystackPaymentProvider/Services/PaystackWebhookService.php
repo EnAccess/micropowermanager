@@ -31,61 +31,68 @@ class PaystackWebhookService {
         return hash_equals($expectedSignature, $signature);
     }
 
-    public function processWebhook(Request $request, int $companyId): void {
-        $payload = $request->all();
-        $event = $payload['event'] ?? null;
-        $data = $payload['data'] ?? [];
+    public function processWebhook(Request $request, int $companyId): bool {
+        $event = $request->string('event')->toString();
+        $data = $request->array('data');
 
-        if ($event === 'charge.success') {
-            $this->handleSuccessfulPayment($data, $companyId);
-        } elseif ($event === 'charge.failed') {
-            $this->handleFailedPayment($data);
-        }
+        return match ($event) {
+            'charge.success' => $this->handleSuccessfulPayment($data, $companyId),
+            'charge.failed' => $this->handleFailedPayment($data),
+            default => false,
+        };
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    private function handleSuccessfulPayment(array $data, int $companyId): void {
+    private function handleSuccessfulPayment(array $data, int $companyId): bool {
         try {
-            $reference = $data['reference'] ?? null;
-            if (!$reference) {
-                return;
+            $paystackTransaction = $this->findTransaction($data);
+            if (!$paystackTransaction instanceof PaystackTransaction) {
+                return false;
             }
 
-            $paystackTransaction = $this->transactionService->getByPaystackReference($reference);
-            if (!$paystackTransaction instanceof PaystackTransaction) {
-                return;
+            if ($this->transactionService->verifyCharge($paystackTransaction, $data) !== null) {
+                return false;
             }
 
             $paystackTransaction->external_transaction_id = (string) ($data['id'] ?? '');
-            $paystackTransaction->save();
-
             $this->transactionService->processSuccessfulPayment($companyId, $paystackTransaction);
+
+            return true;
         } catch (\Exception $e) {
             Log::error('PaystackWebhookService: Failed to process payment', [
                 'error' => $e->getMessage(),
             ]);
+
+            return false;
         }
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    private function handleFailedPayment(array $data): void {
-        $reference = $data['reference'] ?? null;
-        if (!$reference) {
-            return;
-        }
-
-        $paystackTransaction = $this->transactionService->getByPaystackReference($reference);
+    private function handleFailedPayment(array $data): bool {
+        $paystackTransaction = $this->findTransaction($data);
         if (!$paystackTransaction instanceof PaystackTransaction) {
-            return;
+            return false;
         }
 
         $paystackTransaction->external_transaction_id = (string) ($data['id'] ?? '');
-        $paystackTransaction->save();
-
         $this->transactionService->processFailedPayment($paystackTransaction);
+
+        return true;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function findTransaction(array $data): ?PaystackTransaction {
+        $reference = $data['reference'] ?? null;
+        if (!is_string($reference) || $reference === '') {
+            return null;
+        }
+
+        return $this->transactionService->getByPaystackReference($reference);
     }
 }

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Plugins\PaystackPaymentProvider\Services;
 
 use App\Enums\DeviceType;
-use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
@@ -19,6 +19,7 @@ use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -115,20 +116,53 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         }
     }
 
-    public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
-        $id = $transaction->transaction->id;
-        dispatch(new ProcessPayment($companyId, $id));
-        $transaction->status = PaystackTransaction::STATUS_SUCCESS;
-        $transaction->save();
+    /**
+     * The webhook signature proves the payload came from Paystack; this proves it describes the
+     * payment we actually initiated. Returns the reason the charge could not be verified, having
+     * logged it and recorded a conflict, or null when it matches the stored transaction.
+     *
+     * @param array<string, mixed> $chargeData the `data` object of a charge.* webhook event
+     */
+    public function verifyCharge(PaystackTransaction $transaction, array $chargeData): ?string {
+        $mismatch = $this->paymentMismatch(
+            'Paystack',
+            [
+                'amount' => (float) $transaction->amount,
+                'currency' => $transaction->currency,
+                'reference' => $transaction->paystack_reference,
+            ],
+            [
+                // Paystack reports minor units (kobo); InitializeTransactionResource sends
+                // the major-unit amount multiplied by 100.
+                'amount' => ((float) ($chargeData['amount'] ?? 0)) / 100,
+                'currency' => isset($chargeData['currency']) ? (string) $chargeData['currency'] : null,
+                'reference' => isset($chargeData['reference']) ? (string) $chargeData['reference'] : null,
+            ],
+        );
+
+        if ($mismatch === null) {
+            return null;
+        }
+
+        Log::warning('Paystack charge did not match the stored transaction', [
+            'paystack_transaction_id' => $transaction->id,
+            'paystack_reference' => $transaction->paystack_reference,
+            'mismatch' => $mismatch,
+        ]);
+        $this->recordPaymentConflict($transaction, $mismatch);
+
+        return $mismatch;
     }
 
-    public function processFailedPayment(PaystackTransaction $transaction): void {
-        $transaction->status = PaystackTransaction::STATUS_FAILED;
-        $transaction->save();
+    public function processFailedPayment(
+        BasePaymentProviderTransaction $transaction,
+        int $status = BasePaymentProviderTransaction::STATUS_FAILED,
+    ): void {
+        parent::processFailedPayment($transaction, $status);
 
         $relatedTransaction = $transaction->transaction;
         if ($relatedTransaction) {
-            $relatedTransaction->update(['status' => PaystackTransaction::STATUS_FAILED]);
+            $relatedTransaction->update(['status' => $transaction->status]);
         }
     }
 
