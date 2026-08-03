@@ -14,7 +14,7 @@ Nothing here yet 🫣
 
 **Background:** Horizon runs as three nested levels of processes inside the queue worker container.
 
-```
+```text
 supervisord
 └─ php artisan horizon               the Horizon master supervisor
    └─ php artisan horizon:supervisor  the child supervisor
