@@ -145,6 +145,10 @@ class PesapalPublicController extends Controller {
                 ? $this->transactionService->syncStatusFromApi($transaction, $companyId)
                 : ['status_code' => null, 'error' => 'No order tracking id yet'];
 
+            $successfulTxCheck = $verification['error'] === null
+                && isset($verification['status_code'])
+                && $verification['status_code'] === 1;
+
             $response = [
                 'transaction' => [
                     'id' => $transaction->id,
@@ -159,7 +163,7 @@ class PesapalPublicController extends Controller {
                     'created_at' => $transaction->getAttribute('created_at'),
                 ],
                 'verification' => $verification,
-                'success' => isset($verification['status_code']) && $verification['status_code'] === 1,
+                'success' => $successfulTxCheck,
                 'token_status' => $tokenStatus,
             ];
 
@@ -205,7 +209,9 @@ class PesapalPublicController extends Controller {
             $verification = $this->transactionService->syncStatusFromApi($transaction, $companyId);
 
             return response()->json([
-                'success' => isset($verification['status_code']) && $verification['status_code'] === 1,
+                'success' => $verification['error'] === null
+                    && isset($verification['status_code'])
+                    && $verification['status_code'] === 1,
                 'verification' => $verification,
             ]);
         } catch (\Exception $e) {
@@ -255,8 +261,10 @@ class PesapalPublicController extends Controller {
     }
 
     public function handleIpn(Request $request, int $companyId): JsonResponse {
+        $processed = false;
+
         try {
-            $this->ipnService->processIpn($request, $companyId);
+            $processed = $this->ipnService->processIpn($request, $companyId);
         } catch (\Exception $e) {
             Log::error('PesapalPublicController: Failed to handle IPN', [
                 'error' => $e->getMessage(),
@@ -265,7 +273,6 @@ class PesapalPublicController extends Controller {
             ]);
         }
 
-        // PesaPal expects a 200 response so it stops retrying the IPN.
-        return response()->json(['status' => 'received']);
+        return response()->json($this->ipnService->acknowledgement($request, $processed));
     }
 }
