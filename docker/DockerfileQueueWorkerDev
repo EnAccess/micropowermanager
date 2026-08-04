@@ -30,7 +30,9 @@ RUN docker-php-ext-install \
     zip
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-configure pcntl --enable-pcntl
-RUN pecl install redis-6.3.0 && docker-php-ext-enable redis
+# install the redis extension with PIE
+COPY --from=ghcr.io/php/pie:bin /pie /usr/bin/pie
+RUN pie install phpredis/phpredis:6.3.0 && docker-php-ext-enable redis
 
 # install composer
 RUN EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')" \
