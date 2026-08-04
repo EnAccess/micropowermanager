@@ -44,7 +44,7 @@ class ViberGateway {
         } catch (\Exception $exception) {
             Log::error('Viber message sending failed', ['message' => $exception->getMessage()]);
 
-            throw new MessageNotSentException('Viber message sending failed', $exception->getCode(), $exception);
+            throw new MessageNotSentException('Viber message sending failed: '.$exception->getMessage(), $exception->getCode(), $exception);
         }
 
         if ($registeredSms instanceof Sms) {

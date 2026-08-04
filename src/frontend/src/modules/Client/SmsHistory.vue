@@ -47,6 +47,11 @@
                     <small>
                       {{ formatDate(sms.created_at) }} -
                       {{ getTimeAgo(sms.created_at) }}
+                      <sms-delivery-status
+                        v-if="sms.direction !== 0"
+                        :status="sms.status"
+                        :error-message="sms.error_message"
+                      />
                     </small>
                   </span>
                 </div>
@@ -93,12 +98,13 @@ import { mapGetters } from "vuex"
 import { notify } from "@/mixins/notify.js"
 import { SmsService } from "@/services/SmsService.js"
 import { EventBus } from "@/shared/eventbus.js"
+import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SmsHistory",
   mixins: [notify],
-  components: { Widget },
+  components: { SmsDeliveryStatus, Widget },
   props: {
     personId: {
       type: String,

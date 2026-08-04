@@ -46,6 +46,7 @@ export class SmsService {
         message: sms.body,
         owner: "",
         total: 0,
+        failedTotal: sms.failed_total ?? 0,
       }
       if (sms.address !== null) {
         smsObj.owner = sms.address.owner
@@ -59,20 +60,20 @@ export class SmsService {
   }
 
   searchSms(text) {
-    if (text.length === 0) {
+    const term = (text ?? "").trim().toLowerCase()
+    if (term.length === 0) {
       return this.numberList
     }
-    return this.numberList.filter((n) => {
-      return (
-        n.number.includes(text) ||
-        (n.owner !== null &&
-          n.owner !== undefined &&
-          n.owner.name !== undefined &&
-          n.owner.surname !== undefined) ||
-        n.owner.name.toLowerCase().includes(text.toLowerCase()) ||
-        n.owner.surname.toLowerCase().includes(text.toLowerCase())
-      )
-    })
+
+    // Conversations without a customer carry an empty-string owner, so every
+    // field has to tolerate being absent.
+    return this.numberList.filter((sms) =>
+      [sms.number, sms.owner?.name, sms.owner?.surname].some((field) =>
+        String(field ?? "")
+          .toLowerCase()
+          .includes(term),
+      ),
+    )
   }
 
   addReceiver(receiverToAdd) {
@@ -239,6 +240,7 @@ export class SmsService {
       if (response.status !== 200 && response.status !== 201) {
         return new ErrorHandler(response.error, "http", response.status)
       }
+      return response.data.data
     } catch (e) {
       return new ErrorHandler(e, "http")
     }

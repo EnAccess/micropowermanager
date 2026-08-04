@@ -52,6 +52,13 @@
                           <small>
                             {{ sms.number }}
                           </small>
+                          <md-icon
+                            class="sms-failed-hint"
+                            v-if="sms.failedTotal > 0"
+                            :title="$tc('phrases.smsNotDelivered')"
+                          >
+                            error_outline
+                          </md-icon>
                         </div>
                       </div>
                     </div>
@@ -130,6 +137,11 @@
                     <md-icon>schedule</md-icon>
                     {{ formatDate(sms.created_at) }} -
                     {{ getTimeAgo(sms.created_at) }}
+                    <sms-delivery-status
+                      v-if="sms.direction === 1"
+                      :status="sms.status"
+                      :error-message="sms.error_message"
+                    />
                   </small>
                 </div>
               </div>
@@ -175,6 +187,7 @@ import moment from "moment"
 import { notify } from "@/mixins/notify.js"
 import { SmsService } from "@/services/SmsService.js"
 import { EventBus } from "@/shared/eventbus.js"
+import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
 import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
@@ -182,12 +195,10 @@ const debounce = require("debounce")
 export default {
   name: "List",
   mixins: [notify],
-  components: { Widget },
+  components: { SmsDeliveryStatus, Widget },
   watch: {
     filterNumber: debounce(function () {
-      if (this.filterNumber.length > 0) {
-        this.searchSms(this.filterNumber)
-      }
+      this.searchSms(this.filterNumber)
     }, 1000),
   },
 
@@ -427,5 +438,15 @@ td.active {
 
 .sms-owner {
   font-weight: 500;
+}
+
+.sms-failed-hint {
+  font-size: 14px;
+  width: 14px;
+  min-width: 14px;
+  height: 14px;
+  margin: 0 0 0 6px;
+  vertical-align: middle;
+  color: #b26a00 !important;
 }
 </style>

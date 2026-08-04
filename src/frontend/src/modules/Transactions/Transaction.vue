@@ -329,6 +329,20 @@
                       {{ transaction.sms.body }}
                     </div>
                   </div>
+                  <div
+                    class="md-layout md-gutter md-size-100"
+                    v-if="smsDeliveryIsKnown"
+                  >
+                    <div class="md-layout-item md-subheader md-size-20">
+                      {{ $tc("phrases.smsDelivery") }}
+                    </div>
+                    <div class="md-layout-item md-subheader md-size-75">
+                      <sms-delivery-status
+                        :status="transaction.sms.status"
+                        :error-message="transaction.sms.error_message"
+                      />
+                    </div>
+                  </div>
                 </md-card-content>
               </md-card>
             </widget>
@@ -376,6 +390,9 @@ import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart.vue"
 import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
 import { PersonService } from "@/services/PersonService.js"
 import { TransactionService } from "@/services/TransactionService.js"
+import SmsDeliveryStatus, {
+  hasDeliveryStatus,
+} from "@/shared/SmsDeliveryStatus.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
@@ -385,6 +402,7 @@ export default {
     Widget,
     AgentTransactionDetail,
     CashTransactionDetail,
+    SmsDeliveryStatus,
     SmsTransactionDetail,
     PaymentHistoryChart,
   },
@@ -408,6 +426,9 @@ export default {
   computed: {
     ot() {
       return this.transaction.original_transaction
+    },
+    smsDeliveryIsKnown() {
+      return hasDeliveryStatus(this.transaction.sms?.status)
     },
     providerDetail() {
       const transactionType = this.transaction.original_transaction_type
