@@ -199,7 +199,7 @@ export default {
   watch: {
     filterNumber: debounce(function () {
       this.searchSms(this.filterNumber)
-    }, 1000),
+    }, 400),
   },
 
   mounted() {
@@ -273,17 +273,6 @@ export default {
         this.numberList.length,
       )
     },
-    async loadList() {
-      this.list = []
-      this.numberList = []
-      try {
-        this.numberList = await this.smsService.getList()
-        if (this.numberList.length > 0)
-          this.list = this.smsDetail(this.numberList[0].number)
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
     async smsDetail(phone) {
       this.showNumberList = false
       this.selectedNumber = phone
@@ -313,7 +302,13 @@ export default {
       this.$validator.reset()
     },
     searchSms(text) {
-      this.numberList = this.smsService.searchSms(text)
+      const term = (text ?? "").trim()
+      if (term.length === 0) {
+        this.smsService.showAll()
+
+        return
+      }
+      this.smsService.search(term)
     },
   },
 }

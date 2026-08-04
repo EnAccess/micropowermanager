@@ -18,6 +18,7 @@ use App\Services\SmsService;
 use App\Services\TicketCommentService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -40,19 +41,49 @@ class SmsController extends Controller {
         }
     }
 
-    public function index(): ApiResource {
+    public function index(Request $request): ApiResource {
+        $term = trim($request->string('term')->toString());
+
         $list = $this->sms::with('address.owner')
             ->select(
                 'receiver',
                 DB::raw('COUNT(*) AS total'),
                 DB::raw('SUM(CASE WHEN status = '.Sms::STATUS_FAILED.' THEN 1 ELSE 0 END) AS failed_total')
             )
+            ->when($term !== '', fn (Builder $query) => $this->constrainToSearchTerm($query, $term))
             ->groupBy('receiver')
+            ->orderByDesc(DB::raw('MAX(created_at)'))
+            ->orderBy('receiver')
             ->paginate(20);
 
         $transformedData = $list->through(fn (object $item): array => SmsDataContainer::fromQuery($item)->toArray());
 
         return new ApiResource($transformedData);
+    }
+
+    /**
+     * Narrow the conversation list to receivers whose number, or whose customer's
+     * name, contains the term. Conversations are keyed by phone number, so the
+     * customer match resolves to the numbers registered against those people.
+     *
+     * @param Builder<Sms> $query
+     */
+    private function constrainToSearchTerm(Builder $query, string $term): void {
+        $pattern = '%'.$term.'%';
+
+        $query->where(function (Builder $conversationQuery) use ($pattern): void {
+            $conversationQuery
+                ->where('receiver', 'LIKE', $pattern)
+                ->orWhereIn('receiver', Address::query()
+                    ->select('phone')
+                    ->whereHasMorph(
+                        'owner',
+                        [Person::class],
+                        fn (Builder $ownerQuery) => $ownerQuery
+                            ->where('name', 'LIKE', $pattern)
+                            ->orWhere('surname', 'LIKE', $pattern)
+                    ));
+        });
     }
 
     public function storeBulk(Request $request): ApiResource {

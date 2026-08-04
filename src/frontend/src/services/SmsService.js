@@ -27,14 +27,14 @@ export class SmsService {
     this.paginator = new Paginator(resources.sms.list)
   }
 
+  // Searching narrows the same paginated conversation list, so the term travels
+  // as a query parameter and page navigation keeps it.
   search(term) {
-    this.paginator = new Paginator(resources.sms.search)
     EventBus.$emit("loadPage", this.paginator, { term: term })
   }
 
   showAll() {
-    this.paginator = new Paginator(resources.sms.list)
-    EventBus.$emit("loadPage", this.paginator)
+    EventBus.$emit("loadPage", this.paginator, {})
   }
 
   updateList(smsList) {
@@ -57,23 +57,6 @@ export class SmsService {
       return smsObj
     })
     return this.numberList
-  }
-
-  searchSms(text) {
-    const term = (text ?? "").trim().toLowerCase()
-    if (term.length === 0) {
-      return this.numberList
-    }
-
-    // Conversations without a customer carry an empty-string owner, so every
-    // field has to tolerate being absent.
-    return this.numberList.filter((sms) =>
-      [sms.number, sms.owner?.name, sms.owner?.surname].some((field) =>
-        String(field ?? "")
-          .toLowerCase()
-          .includes(term),
-      ),
-    )
   }
 
   addReceiver(receiverToAdd) {
