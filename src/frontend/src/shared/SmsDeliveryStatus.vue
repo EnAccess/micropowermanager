@@ -84,15 +84,21 @@ export default {
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0 6px;
+  gap: 0 0.4em;
+  margin-left: 0.3em;
+  font-size: 1em;
   vertical-align: middle;
 }
 
+.delivery--flush {
+  margin-left: 0;
+}
+
 .delivery__icon {
-  font-size: 14px;
-  width: 14px;
-  min-width: 14px;
-  height: 14px;
+  font-size: 1em;
+  width: 1em;
+  min-width: 1em;
+  height: 1em;
   // Vue Material centres icons with auto margins, which swallows the flex gap.
   margin: 0;
 }

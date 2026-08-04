@@ -338,6 +338,7 @@
                     </div>
                     <div class="md-layout-item md-subheader md-size-75">
                       <sms-delivery-status
+                        class="delivery--flush"
                         :status="transaction.sms.status"
                         :error-message="transaction.sms.error_message"
                       />
