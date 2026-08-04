@@ -16,7 +16,6 @@ class SmsDataContainer {
     public function __construct(
         public string $receiver,
         public int $total,
-        public int $failedTotal = 0,
         public ?Address $address = null,
         public array $owner = [],
     ) {}
@@ -40,7 +39,6 @@ class SmsDataContainer {
         return new self(
             receiver: $smsData->receiver,
             total: (int) $smsData->total,
-            failedTotal: (int) ($smsData->failed_total ?? 0),
             address: $address,
             owner: $owner,
         );
@@ -55,7 +53,6 @@ class SmsDataContainer {
         return [
             'receiver' => $this->receiver,
             'total' => $this->total,
-            'failed_total' => $this->failedTotal,
             'address' => $this->owner ? [
                 'owner' => $this->owner,
             ] : null,

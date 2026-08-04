@@ -45,11 +45,7 @@ class SmsController extends Controller {
         $term = trim($request->string('term')->toString());
 
         $list = $this->sms::with('address.owner')
-            ->select(
-                'receiver',
-                DB::raw('COUNT(*) AS total'),
-                DB::raw('SUM(CASE WHEN status = '.Sms::STATUS_FAILED.' THEN 1 ELSE 0 END) AS failed_total')
-            )
+            ->select('receiver', DB::raw('COUNT(*) AS total'))
             ->when($term !== '', fn (Builder $query) => $this->constrainToSearchTerm($query, $term))
             ->groupBy('receiver')
             ->orderByDesc(DB::raw('MAX(created_at)'))

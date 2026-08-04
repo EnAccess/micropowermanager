@@ -52,13 +52,6 @@
                           <small>
                             {{ sms.number }}
                           </small>
-                          <md-icon
-                            class="sms-failed-hint"
-                            v-if="sms.failedTotal > 0"
-                            :title="$tc('phrases.smsNotDelivered')"
-                          >
-                            error_outline
-                          </md-icon>
                         </div>
                       </div>
                     </div>
@@ -433,15 +426,5 @@ td.active {
 
 .sms-owner {
   font-weight: 500;
-}
-
-.sms-failed-hint {
-  font-size: 14px;
-  width: 14px;
-  min-width: 14px;
-  height: 14px;
-  margin: 0 0 0 6px;
-  vertical-align: middle;
-  color: #b26a00 !important;
 }
 </style>

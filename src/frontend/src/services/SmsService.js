@@ -46,7 +46,6 @@ export class SmsService {
         message: sms.body,
         owner: "",
         total: 0,
-        failedTotal: sms.failed_total ?? 0,
       }
       if (sms.address !== null) {
         smsObj.owner = sms.address.owner

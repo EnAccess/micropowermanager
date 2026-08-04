@@ -6,7 +6,6 @@ use App\Jobs\SmsProcessor;
 use App\Models\MainSettings;
 use App\Models\MpmPlugin;
 use App\Models\Sms;
-use App\Models\User;
 use App\Plugins\TextbeeSmsGateway\Exceptions\MessageNotSentException;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Services\SmsService;
@@ -24,13 +23,11 @@ class SmsDeliveryStatusTest extends TestCase {
     private const string RECEIVER = '+255712345678';
     private const string MESSAGE = 'Your token is 1234';
 
-    private User $user;
-
     protected function setUp(): void {
         parent::setUp();
 
         // AbstractJob resolves the tenant it belongs to from the first user on record.
-        $this->user = UserFactory::new()->create(['company_id' => $this->companyId]);
+        UserFactory::new()->create(['company_id' => $this->companyId]);
     }
 
     public function testSuccessfulSendMarksTheSmsAsSent(): void {
@@ -80,25 +77,6 @@ class SmsDeliveryStatusTest extends TestCase {
 
         $this->assertSame(Sms::STATUS_FAILED, $sms->status);
         $this->assertStringContainsString('No active SMS provider', (string) $sms->error_message);
-    }
-
-    public function testConversationListCountsFailedMessagesPerReceiver(): void {
-        foreach ([Sms::STATUS_FAILED, Sms::STATUS_FAILED, Sms::STATUS_SENT] as $status) {
-            Sms::query()->create([
-                'receiver' => self::RECEIVER,
-                'body' => self::MESSAGE,
-                'direction' => Sms::DIRECTION_OUTGOING,
-                'status' => $status,
-            ]);
-        }
-
-        $response = $this->actingAs($this->user)->get('/api/sms');
-        $response->assertOk();
-
-        $conversation = collect($response['data'])->firstWhere('receiver', self::RECEIVER);
-
-        $this->assertSame(3, $conversation['total']);
-        $this->assertSame(2, $conversation['failed_total']);
     }
 
     private function configureTextbeeGateway(): void {
