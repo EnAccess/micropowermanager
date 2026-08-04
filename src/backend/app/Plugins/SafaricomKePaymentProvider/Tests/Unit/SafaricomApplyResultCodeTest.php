@@ -142,6 +142,59 @@ class SafaricomApplyResultCodeTest extends TestCase {
         $this->assertSame('M-PESA amount does not match the stored transaction.', $conflicts->first()->state);
     }
 
+    public function testMismatchStillPersistsTheMpesaReceiptAndResultCode(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+
+        $this->makeService()->applyResultCode(
+            $transaction,
+            self::RESULT_SUCCESS,
+            $this->callbackPayload(self::RESULT_SUCCESS, 5.0),
+            self::COMPANY_ID
+        );
+
+        $stored = $transaction->fresh();
+        $this->assertSame('QGR11ABCDE', $stored->mpesa_receipt_number);
+        $this->assertSame('QGR11ABCDE', $stored->external_transaction_id);
+        $this->assertSame(self::RESULT_SUCCESS, ($stored->response_data ?? [])['final_result_code']);
+    }
+
+    /**
+     * Daraja redelivers callbacks and the STK page polls, so the same mismatch is seen repeatedly.
+     */
+    public function testRepeatedMismatchRecordsASingleConflict(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+        $service = $this->makeService();
+        $payload = $this->callbackPayload(self::RESULT_SUCCESS, 5.0);
+
+        $service->applyResultCode($transaction, self::RESULT_SUCCESS, $payload, self::COMPANY_ID);
+        $service->applyResultCode($transaction->fresh(), self::RESULT_SUCCESS, $payload, self::COMPANY_ID);
+        $service->applyResultCode($transaction->fresh(), self::RESULT_SUCCESS, $payload, self::COMPANY_ID);
+
+        $this->assertCount(1, $transaction->conflicts()->get());
+        Bus::assertNotDispatched(ProcessPayment::class);
+    }
+
+    /**
+     * A conflicted transaction is terminal: the poll must stop rather than run to its attempt cap
+     * and report a timeout.
+     */
+    public function testConflictedTransactionIsReportedAsResolved(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+
+        $this->makeService()->applyResultCode(
+            $transaction,
+            self::RESULT_SUCCESS,
+            $this->callbackPayload(self::RESULT_SUCCESS, 5.0),
+            self::COMPANY_ID
+        );
+
+        $snapshot = $this->makeService()->queryStatus($transaction->fresh(), self::COMPANY_ID);
+        $this->assertTrue($snapshot['resolved']);
+    }
+
     public function testUserCancelledMarksAbandoned(): void {
         Bus::fake();
         $transaction = $this->persistTransaction();

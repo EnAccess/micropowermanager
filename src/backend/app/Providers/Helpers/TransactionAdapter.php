@@ -4,8 +4,11 @@ namespace App\Providers\Helpers;
 
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\BasePaymentProviderTransaction;
+use App\Models\Transaction\CashTransaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackTransactionProvider;
+use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
+use App\Plugins\PesapalPaymentProvider\Providers\PesapalTransactionProvider;
 use App\Plugins\SafaricomKePaymentProvider\Models\SafaricomTransaction;
 use App\Plugins\SafaricomKePaymentProvider\Providers\SafaricomKeTransactionProvider;
 use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
@@ -17,6 +20,7 @@ use App\Plugins\WavecomPaymentProvider\Providers\WaveComTransactionProvider;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 use App\Providers\AgentTransactionProvider;
+use App\Providers\CashTransactionProvider;
 use App\Providers\Interfaces\ITransactionProvider;
 
 class TransactionAdapter {
@@ -53,6 +57,16 @@ class TransactionAdapter {
             return $baseTransaction;
         } elseif ($transactionProvider instanceof SafaricomTransaction) {
             $baseTransaction = resolve(SafaricomKeTransactionProvider::class);
+            $baseTransaction->init($transactionProvider);
+
+            return $baseTransaction;
+        } elseif ($transactionProvider instanceof PesapalTransaction) {
+            $baseTransaction = resolve(PesapalTransactionProvider::class);
+            $baseTransaction->init($transactionProvider);
+
+            return $baseTransaction;
+        } elseif ($transactionProvider instanceof CashTransaction) {
+            $baseTransaction = resolve(CashTransactionProvider::class);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;

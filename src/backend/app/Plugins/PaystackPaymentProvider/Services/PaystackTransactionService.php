@@ -8,7 +8,6 @@ use App\Enums\DeviceType;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
-use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
@@ -152,18 +151,6 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         $this->recordPaymentConflict($transaction, $mismatch);
 
         return $mismatch;
-    }
-
-    public function processFailedPayment(
-        BasePaymentProviderTransaction $transaction,
-        int $status = BasePaymentProviderTransaction::STATUS_FAILED,
-    ): void {
-        parent::processFailedPayment($transaction, $status);
-
-        $relatedTransaction = $transaction->transaction;
-        if ($relatedTransaction) {
-            $relatedTransaction->update(['status' => $transaction->status]);
-        }
     }
 
     /**

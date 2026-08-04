@@ -193,7 +193,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * @param T $transaction
      */
     protected function recordPaymentConflict(BasePaymentProviderTransaction $transaction, string $mismatch): void {
-        $transaction->conflicts()->create(['state' => $mismatch]);
+        $transaction->conflicts()->firstOrCreate(['state' => $mismatch]);
     }
 
     /**

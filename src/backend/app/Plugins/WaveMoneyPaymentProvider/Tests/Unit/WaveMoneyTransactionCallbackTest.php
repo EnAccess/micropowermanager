@@ -156,6 +156,19 @@ class WaveMoneyTransactionCallbackTest extends TestCase {
         $this->assertSame('Wave Money currency does not match the stored transaction.', $conflicts->first()->state);
     }
 
+    public function testRepeatedMismatchedCallbackRecordsASingleConflict(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+        $service = $this->makeService();
+
+        $service->applyCallback($transaction, $this->callbackData($transaction, amount: 5.0), self::COMPANY_ID);
+        $service->applyCallback($transaction->fresh(), $this->callbackData($transaction, amount: 5.0), self::COMPANY_ID);
+        $service->applyCallback($transaction->fresh(), $this->callbackData($transaction, amount: 5.0), self::COMPANY_ID);
+
+        $this->assertCount(1, $transaction->conflicts()->get());
+        Bus::assertNotDispatched(ProcessPayment::class);
+    }
+
     /**
      * A refused callback still counts as a delivery attempt.
      */

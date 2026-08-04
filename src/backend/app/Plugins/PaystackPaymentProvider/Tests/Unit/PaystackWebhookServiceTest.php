@@ -157,6 +157,36 @@ class PaystackWebhookServiceTest extends TestCase {
         $this->assertSame('Paystack currency does not match the stored transaction.', $conflicts->first()->state);
     }
 
+    /**
+     * Paystack retries a webhook it got no 2xx for, so the same mismatch arrives repeatedly.
+     */
+    public function testRepeatedMismatchedChargeRecordsASingleConflict(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+        $service = $this->makeService();
+
+        $service->processWebhook($this->chargeRequest($transaction, dataOverrides: ['amount' => 500]), self::COMPANY_ID);
+        $service->processWebhook($this->chargeRequest($transaction, dataOverrides: ['amount' => 500]), self::COMPANY_ID);
+        $service->processWebhook($this->chargeRequest($transaction, dataOverrides: ['amount' => 500]), self::COMPANY_ID);
+
+        $this->assertCount(1, $transaction->conflicts()->get());
+        Bus::assertNotDispatched(ProcessPayment::class);
+    }
+
+    public function testChargeFailedMarksTheTransactionFailed(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+
+        $processed = $this->makeService()->processWebhook(
+            $this->chargeRequest($transaction, 'charge.failed'),
+            self::COMPANY_ID
+        );
+
+        $this->assertTrue($processed);
+        $this->assertSame(PaystackTransaction::STATUS_FAILED, $transaction->fresh()->status);
+        Bus::assertNotDispatched(ProcessPayment::class);
+    }
+
     public function testChargeForUnknownReferenceIsIgnored(): void {
         Bus::fake();
         $transaction = $this->persistTransaction();

@@ -256,7 +256,8 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
             return;
         }
 
-        // Left unsaved so the settlement transaction persists them while holding the row lock.
+        // Left unsaved so a settlement folds them into the write it makes under the row lock.
+        // The mismatch path below settles nothing, so it persists them itself.
         if (!empty($payload['mpesa_receipt'])) {
             $transaction->mpesa_receipt_number = (string) $payload['mpesa_receipt'];
             $transaction->external_transaction_id = (string) $payload['mpesa_receipt'];
@@ -278,6 +279,7 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
                     'checkout_request_id' => $transaction->checkout_request_id,
                     'mismatch' => $mismatch,
                 ]);
+                $transaction->save();
                 $this->recordPaymentConflict($transaction, $mismatch);
 
                 return;
@@ -300,12 +302,19 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
      * Whether Daraja has already given us a final answer for this transaction.
      */
     private function isResolved(SafaricomTransaction $transaction): bool {
-        return in_array($transaction->status, [
+        if (in_array($transaction->status, [
             SafaricomTransaction::STATUS_SUCCESS,
             SafaricomTransaction::STATUS_COMPLETED,
             SafaricomTransaction::STATUS_FAILED,
             SafaricomTransaction::STATUS_ABANDONED,
-        ], true);
+        ], true)) {
+            return true;
+        }
+
+        // A conflict is terminal too. The status stays as it was because an unverifiable payment
+        // is not a failed one, so without this the STK page would poll a mismatch to its attempt
+        // cap and report a timeout instead of an outcome.
+        return $transaction->conflicts()->exists();
     }
 
     /**
