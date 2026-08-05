@@ -87,7 +87,7 @@ services:
 
   redis:
     container_name: redis
-    image: redis:5
+    image: redis:7
     volumes:
       - redis_data:/data
     ports:
