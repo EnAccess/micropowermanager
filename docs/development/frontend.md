@@ -125,15 +125,20 @@ When you add a new feature or change existing UI text, you need to update **all*
 
 2. **Add the same key to every other locale file** (`fr.json`, `pt.json`, `ar.json`, `bu.json`). If you don't know the correct translation, add the English text as a placeholder and flag it for a translator — an English fallback is better than a missing key that shows a raw key string in the UI.
 
-### Sorting translation files
+### Checking and fixing translation files
 
-After adding or renaming translation keys, run the sorting script to keep JSON files consistently ordered across locales.
+CI verifies that every locale file is deep-sorted and has the same keys as `en.json`.
+Run these from `src/frontend/`:
 
 ```sh
-sh tools/sort_lang_json.sh src/frontend/src/assets/locales
+npm run i18n:check-json    # verify sorting and key parity (what CI runs, as `npm run lang:check`)
+npm run i18n:fix-json      # sort and format all locale files in place
+npm run i18n:translate-json   # fill keys missing from a locale via Google Translate (local use only, not run in CI)
 ```
 
-This requires `jq` to be installed.
+`i18n:translate-json` takes an optional locale argument (e.g. `npm run i18n:translate-json -- pt`); with no argument it fills every locale.
+It calls the Google Cloud Translation API, so it requires a `GOOGLE_TRANSLATE_API_KEY` environment variable (get one from the Google Cloud Console, with the Cloud Translation API enabled on a billed project). Add it to `dev/.env.micropowermanager-frontend` and run the script inside the frontend container (`docker compose exec frontend-dev npm run i18n:translate-json`) so it inherits that env — docker-compose only re-reads `env_file` on container creation, so recreate the container (`docker compose up -d frontend-dev`) after editing it, a plain `docker compose restart` isn't enough. Pass `--dry-run` to list missing keys without translating (no key required).
+Always review machine-translated text before committing it.
 
 ## MPM Brand guidelines
 

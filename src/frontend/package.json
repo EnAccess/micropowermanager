@@ -5,9 +5,14 @@
     "test": "jest",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint src scripts",
     "prettier": "prettier --check .",
-    "prettier:fix": "prettier --write ."
+    "prettier:fix": "prettier --write .",
+    "i18n:check-json": "node scripts/i18n/check.js",
+    "i18n:fix-json": "node scripts/i18n/fix.js",
+    "i18n:translate-json": "node scripts/i18n/translate.js",
+    "lang:check": "npm run i18n:check-json",
+    "lang:fix": "npm run i18n:fix-json"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
