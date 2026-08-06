@@ -31,6 +31,7 @@ use App\Plugins\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use App\Plugins\VodacomMzPaymentProvider\Providers\VodacomMzPaymentProviderServiceProvider;
 use App\Plugins\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
 use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
+use App\Plugins\FlutterwavePaymentProvider\Providers\FlutterwavePaymentProviderServiceProvider;
 use App\Providers\ApiKeyServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\HorizonServiceProvider;
@@ -74,4 +75,5 @@ return [
     WavecomPaymentProviderServiceProvider::class,
     EcreeeETenderServiceProvider::class,
     SparkShsServiceProvider::class,
+    FlutterwavePaymentProviderServiceProvider::class,
 ];
