@@ -71,7 +71,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
     }
 
     public function setStatus(WaveComTransaction $transaction, bool $status): void {
-        $mappedStatus = $status ? WaveComTransaction::STATUS_SUCCESS : WaveComTransaction::STATUS_CANCELLED;
+        $mappedStatus = $status ? WaveComTransaction::STATUS_SUCCESS : WaveComTransaction::STATUS_FAILED;
         $transaction->status = $mappedStatus;
         $transaction->save();
     }
