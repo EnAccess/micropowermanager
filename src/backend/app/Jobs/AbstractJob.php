@@ -36,13 +36,32 @@ abstract class AbstractJob implements ShouldQueue {
     }
 
     public function failed(?\Throwable $t = null): void {
-        if ($t instanceof \Throwable) {
-            Log::error(static::class.' failed for company '.$this->companyId, [
-                'message' => $t->getMessage(),
-                'trace' => $t->getTraceAsString(),
+        if (!$t instanceof \Throwable) {
+            return;
+        }
+
+        Log::error(static::class.' failed for company '.$this->companyId, [
+            'message' => $t->getMessage(),
+            'trace' => $t->getTraceAsString(),
+        ]);
+
+        try {
+            app()->make(DatabaseProxyManagerService::class)
+                ->runForCompany($this->companyId, function () use ($t): void {
+                    $this->handleFailure($t);
+                });
+        } catch (\Throwable $throwable) {
+            Log::error(static::class.' could not record its failure for company '.$this->companyId, [
+                'message' => $throwable->getMessage(),
             ]);
         }
     }
+
+    /**
+     * Runs inside the tenant database context, which `failed()` itself does not
+     * establish. Override to persist the outcome of a job that gave up.
+     */
+    protected function handleFailure(\Throwable $throwable): void {}
 
     /**
      * Dispatch the job for all tenants.

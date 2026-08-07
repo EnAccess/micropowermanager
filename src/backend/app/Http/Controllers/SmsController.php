@@ -18,6 +18,7 @@ use App\Services\SmsService;
 use App\Services\TicketCommentService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -40,10 +41,15 @@ class SmsController extends Controller {
         }
     }
 
-    public function index(): ApiResource {
+    public function index(Request $request): ApiResource {
+        $term = trim($request->string('term')->toString());
+
         $list = $this->sms::with('address.owner')
             ->select('receiver', DB::raw('COUNT(*) AS total'))
+            ->when($term !== '', fn (Builder $query) => $this->constrainToSearchTerm($query, $term))
             ->groupBy('receiver')
+            ->orderByDesc(DB::raw('MAX(created_at)'))
+            ->orderBy('receiver')
             ->paginate(20);
 
         $transformedData = $list->through(fn (object $item): array => SmsDataContainer::fromQuery($item)->toArray());
@@ -51,123 +57,116 @@ class SmsController extends Controller {
         return new ApiResource($transformedData);
     }
 
-    public function storeBulk(Request $request): void {
+    /**
+     * Narrow the conversation list to receivers whose number, or whose customer's
+     * name, contains the term. Conversations are keyed by phone number, so the
+     * customer match resolves to the numbers registered against those people.
+     *
+     * @param Builder<Sms> $query
+     */
+    private function constrainToSearchTerm(Builder $query, string $term): void {
+        $pattern = '%'.$term.'%';
+
+        $query->where(function (Builder $conversationQuery) use ($pattern): void {
+            $conversationQuery
+                ->where('receiver', 'LIKE', $pattern)
+                ->orWhereIn('receiver', Address::query()
+                    ->select('phone')
+                    ->whereHasMorph(
+                        'owner',
+                        [Person::class],
+                        fn (Builder $ownerQuery) => $ownerQuery
+                            ->where('name', 'LIKE', $pattern)
+                            ->orWhere('surname', 'LIKE', $pattern)
+                    ));
+        });
+    }
+
+    public function storeBulk(Request $request): ApiResource {
         $this->ensureSmsGatewayIsConfigured();
 
-        $type = $request->input('type');
-        $receivers = $request->input('receivers');
-        $message = $request->input('message');
-        $miniGrid = $request->input('miniGrid') ?? 0;
-        $senderId = $request->input('senderId');
-        if ($type === null) {
-            return;
-        }
-        if ($type === 'person') {
-            foreach ($receivers as $receiver) {
-                $phone = $receiver;
-                $smsData = [
-                    'receiver' => $phone,
-                    'body' => $message,
-                    'direction' => Sms::DIRECTION_OUTGOING,
-                    'sender_id' => $senderId,
-                    'status' => Sms::STATUS_STORED,
-                ];
-                $this->smsService->createSms($smsData);
-                $data = [
-                    'message' => $message,
-                    'phone' => $phone,
-                ];
-                $this->smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
-            }
-        } elseif (in_array($type, ['group', 'type', 'all'], true)) {
-            // get connection group meters and owners
-            if ($type === 'group') {
-                $meters = $this->meter::with(
-                    [
-                        'device.person.addresses' => static function ($q) {
-                            $q->where('is_primary', 1);
-                        },
-                    ]
-                )
-                    ->whereHas(
-                        'device.person.addresses',
-                        static function ($q) use ($miniGrid) {
-                            if ((int) $miniGrid === 0) {
-                                $q->where('city_id', '>', 0);
-                            } else {
-                                $q->where('city_id', $miniGrid);
-                            }
-                        }
-                    )->whereHas(
-                        'connectionGroup',
-                        function ($q) use ($receivers) {
-                            $q->where('id', $receivers);
-                        }
-                    )->get();
-            } elseif ($type === 'all') {
-                $meters = $this->meter::with(
-                    [
-                        'device.person.addresses' => static function ($q) {
-                            $q->where('is_primary', 1);
-                        },
-                    ]
-                )
-                    ->whereHas(
-                        'device.person.addresses',
-                        static function ($q) use ($miniGrid) {
-                            if ((int) $miniGrid === 0) {
-                                $q->where('city_id', '>', 0);
-                            } else {
-                                $q->where('city_id', $miniGrid);
-                            }
-                        }
-                    )->get();
-            } else {
-                $meters = $this->meter::with(
-                    [
-                        'device.person.addresses' => static function ($q) {
-                            $q->where('is_primary', 1);
-                        },
-                    ]
-                )
-                    ->whereHas(
-                        'device.person.addresses',
-                        static function ($q) use ($miniGrid) {
-                            if ((int) $miniGrid === 0) {
-                                $q->where('city_id', '>', 0);
-                            } else {
-                                $q->where('city_id', $miniGrid);
-                            }
-                        }
-                    )->whereHas(
-                        'connectionType',
-                        function ($q) use ($receivers) {
-                            $q->where('id', $receivers);
-                        }
-                    )->get();
-            }
+        $type = $request->string('type')->toString();
+        $message = $request->string('message')->toString();
+        $senderId = $request->integer('senderId');
+        $receivers = $request->array('receivers');
 
-            $addresses = $meters->pluck('device.person.addresses');
-            foreach ($addresses as $address) {
-                if ($address === null) {
-                    continue;
-                }
-                $this->sms->newQuery()->create(
-                    [
-                        'receiver' => $address[0]->phone,
-                        'body' => $message,
-                        'direction' => Sms::DIRECTION_OUTGOING,
-                        'sender_id' => $senderId,
-                        'status' => Sms::STATUS_STORED,
-                    ]
+        $phoneNumbers = match ($type) {
+            'person' => $receivers,
+            'group', 'type', 'all' => $this->resolveBulkPhoneNumbers($type, $receivers, $request->integer('miniGrid')),
+            default => [],
+        };
+
+        $queued = 0;
+        $failedReceivers = [];
+
+        foreach ($phoneNumbers as $phone) {
+            $sms = $this->smsService->createSms([
+                'receiver' => $phone,
+                'body' => $message,
+                'direction' => Sms::DIRECTION_OUTGOING,
+                'sender_id' => $senderId,
+                'status' => Sms::STATUS_STORED,
+            ]);
+
+            try {
+                $this->smsService->sendSms(
+                    ['message' => $message, 'phone' => $phone],
+                    SmsTypes::MANUAL_SMS,
+                    SmsConfigs::class,
+                    $sms
                 );
-                $data = [
-                    'message' => $message,
-                    'phone' => $address[0]->phone,
-                ];
-                $this->smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
+                ++$queued;
+            } catch (\Throwable $exception) {
+                Log::error('Bulk sms send failed.', ['receiver' => $phone, 'message' => $exception->getMessage()]);
+                $this->smsService->markFailed($sms, $exception);
+                $failedReceivers[] = $phone;
             }
         }
+
+        return new ApiResource([
+            'queued' => $queued,
+            'failed' => count($failedReceivers),
+            'failed_receivers' => $failedReceivers,
+        ]);
+    }
+
+    /**
+     * @param array<int, mixed> $receivers
+     *
+     * @return array<int, string>
+     */
+    private function resolveBulkPhoneNumbers(string $type, array $receivers, int $miniGrid): array {
+        $query = $this->meter::with([
+            'device.person.addresses' => static function ($q) {
+                $q->where('is_primary', 1);
+            },
+        ])->whereHas('device.person.addresses', static function ($q) use ($miniGrid) {
+            if ($miniGrid === 0) {
+                $q->where('city_id', '>', 0);
+            } else {
+                $q->where('city_id', $miniGrid);
+            }
+        });
+
+        $connectionRelation = match ($type) {
+            'group' => 'connectionGroup',
+            'type' => 'connectionType',
+            default => null,
+        };
+
+        if ($connectionRelation !== null) {
+            $query->whereHas($connectionRelation, static function ($q) use ($receivers) {
+                $q->where('id', $receivers);
+            });
+        }
+
+        return $query->get()
+            ->pluck('device.person.addresses')
+            ->filter()
+            ->map(static fn ($addresses) => $addresses[0]->phone ?? null)
+            ->filter()
+            ->values()
+            ->all();
     }
 
     public function store(StoreSmsRequest $request): ApiResource {

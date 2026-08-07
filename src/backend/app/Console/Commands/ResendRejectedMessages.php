@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\NoActiveSmsProviderException;
 use App\Models\Sms;
 use App\Services\SmsGatewayResolverService;
+use App\Services\SmsService;
 use Illuminate\Support\Facades\Log;
 
 class ResendRejectedMessages extends AbstractSharedCommand {
@@ -24,6 +24,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
     public function __construct(
         private Sms $sms,
         private SmsGatewayResolverService $gatewayResolver,
+        private SmsService $smsService,
     ) {
         parent::__construct();
     }
@@ -50,12 +51,11 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
                     $resolved['gateway']->sendSms(...$resolved['args']);
 
-                    $sms->status = 0;
-                    $sms->gateway_id = $resolved['gatewayId'];
-                    $sms->save();
-                } catch (NoActiveSmsProviderException $exception) {
+                    $this->smsService->markSent($sms, $resolved['gatewayId']);
+                } catch (\Throwable $exception) {
                     Log::error("Failed to resend message {$sms->id}: {$exception->getMessage()}");
-                    $this->error("Failed to resend message {$sms->id}: No active SMS provider");
+                    $this->smsService->markFailed($sms, $exception);
+                    $this->error("Failed to resend message {$sms->id}: {$exception->getMessage()}");
                 }
             });
     }
