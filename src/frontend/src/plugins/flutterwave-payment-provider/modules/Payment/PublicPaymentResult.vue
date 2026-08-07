@@ -182,9 +182,9 @@
 </template>
 
 <script>
-import { PublicPaymentService } from "../../services/PublicPaymentService.js"
+import {PublicPaymentService} from "../../services/PublicPaymentService.js"
 
-import { notify } from "@/mixins/notify.js"
+import {notify} from "@/mixins/notify.js"
 import CheckoutPage from "@/shared/CheckoutPage.vue"
 
 export default {
@@ -319,13 +319,12 @@ export default {
 
       try {
         this.loading = true
-        const response = await this.paymentService.getPaymentResult(
-          this.companyHash,
-          this.companyIdToken,
-          this.reference,
-          this.transactionId,
+        this.paymentResult = await this.paymentService.getPaymentResult(
+            this.companyHash,
+            this.companyIdToken,
+            this.reference,
+            this.transactionId,
         )
-        this.paymentResult = response
       } catch (error) {
         console.error("Payment verification error:", error)
         this.paymentResult = null

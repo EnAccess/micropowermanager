@@ -1,4 +1,4 @@
-import { Paginator } from "@/Helpers/Paginator.js"
+import {Paginator} from "@/Helpers/Paginator.js"
 import Client from "@/repositories/Client/AxiosClient.js"
 
 const resource = `/api/flutterwave`
@@ -18,8 +18,7 @@ export class TransactionService {
 
   async getTransactions() {
     try {
-      const response = await Client.get(`${resource}/transactions`)
-      return response
+        return await Client.get(`${resource}/transactions`)
     } catch (error) {
       console.error("Error fetching transactions:", error)
       throw error
@@ -28,8 +27,7 @@ export class TransactionService {
 
   async getTransaction(id) {
     try {
-      const response = await Client.get(`${resource}/transactions/${id}`)
-      return response
+        return await Client.get(`${resource}/transactions/${id}`)
     } catch (error) {
       console.error("Error fetching transaction:", error)
       throw error
@@ -38,11 +36,10 @@ export class TransactionService {
 
   async createTransaction(transactionData) {
     try {
-      const response = await Client.post(
-        `${resource}/transaction/initialize`,
-        transactionData,
+        return await Client.post(
+          `${resource}/transaction/initialize`,
+          transactionData,
       )
-      return response
     } catch (error) {
       console.error("Error creating transaction:", error)
       throw error
@@ -54,10 +51,9 @@ export class TransactionService {
   // result page has recorded it.
   async verifyTransaction(transactionId) {
     try {
-      const response = await Client.get(
-        `${resource}/transaction/verify/${transactionId}`,
+        return await Client.get(
+          `${resource}/transaction/verify/${transactionId}`,
       )
-      return response
     } catch (error) {
       console.error("Error verifying transaction:", error)
       throw error
@@ -66,11 +62,10 @@ export class TransactionService {
 
   async updateTransaction(id, transactionData) {
     try {
-      const response = await Client.put(
-        `${resource}/transactions/${id}`,
-        transactionData,
+        return await Client.put(
+          `${resource}/transactions/${id}`,
+          transactionData,
       )
-      return response
     } catch (error) {
       console.error("Error updating transaction:", error)
       throw error
@@ -79,8 +74,7 @@ export class TransactionService {
 
   async deleteTransaction(id) {
     try {
-      const response = await Client.delete(`${resource}/transactions/${id}`)
-      return response
+        return await Client.delete(`${resource}/transactions/${id}`)
     } catch (error) {
       console.error("Error deleting transaction:", error)
       throw error
