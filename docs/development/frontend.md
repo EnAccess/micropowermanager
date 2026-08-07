@@ -141,11 +141,7 @@ npm run i18n:translate-json   # fill keys missing from a locale via Google Trans
 1. **Get an API key.** Create one in the Google Cloud Console, with the Cloud Translation API enabled on a billed project.
 2. **Add it to `dev/.env.micropowermanager-frontend`** as `GOOGLE_TRANSLATE_API_KEY`.
 3. **Recreate the frontend container** so it picks up the new variable: `docker compose up -d frontend-dev`. `env_file` is only read on container creation, so a plain `docker compose restart` won't pick it up.
-4. **Run the script inside the container**, so it inherits that env: `docker compose exec frontend-dev npm run i18n:translate-json`.
-
-By default this fills every locale; pass a locale code to limit it to one, e.g. `npm run i18n:translate-json -- pt`.
-Pass `--dry-run` to list missing keys without translating — no API key required for that.
-Always review machine-translated text before committing it.
+4. **Run the script inside the container**, so it inherits that env: `docker compose exec frontend-dev npm run i18n:translate-json`. By default this fills every locale; pass a locale code to limit it to one, e.g. `npm run i18n:translate-json -- pt`. Pass `--dry-run` to list missing keys without translating — no API key required for that.
 
 ## MPM Brand guidelines
 
