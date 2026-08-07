@@ -59,6 +59,11 @@ import CalinSmartMeterOverview from "@/plugins/calin-smart-meter/modules/Overvie
 import ChintMeterOverview from "@/plugins/chint-meter/modules/Overview/Overview.vue"
 import DalyBmsOverview from "@/plugins/daly-bms/modules/Overview/Overview.vue"
 import EcreeeETenderOverview from "@/plugins/ecreee-e-tender/modules/Overview/Overview.vue"
+import FlutterwaveCredential from "@/plugins/flutterwave-payment-provider/modules/Overview/Credential.vue"
+import FlutterwaveOverview from "@/plugins/flutterwave-payment-provider/modules/Overview/Overview.vue"
+import FlutterwavePublicPayment from "@/plugins/flutterwave-payment-provider/modules/Payment/PublicPaymentForm.vue"
+import FlutterwavePublicResult from "@/plugins/flutterwave-payment-provider/modules/Payment/PublicPaymentResult.vue"
+import FlutterwaveTransaction from "@/plugins/flutterwave-payment-provider/modules/Transaction/Transaction.vue"
 import GomeLongOverview from "@/plugins/gome-long-meter/modules/Overview/Overview.vue"
 import KelinMeterCustomerList from "@/plugins/kelin-meter/modules/Customer/List.vue"
 import KelinMeterConsumptionDaily from "@/plugins/kelin-meter/modules/Meter/Consumption/Daily.vue"
@@ -114,7 +119,6 @@ import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Ove
 import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment.vue"
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
 import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
-import FlutterwavePaymentProviderOverview from "@/plugins/flutterwave-payment-provider/modules/Overview/Overview.vue"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1924,24 +1928,62 @@ export const exportedRoutes = [
     ],
   },
   {
-    path: "/flutterwave-payment-provider",
+    path: "/flutterwave/public",
+    component: ChildRouteWrapper,
+    children: [
+      {
+        path: "payment/:companyHash",
+        component: FlutterwavePublicPayment,
+        name: "/flutterwave/public/payment",
+      },
+      {
+        path: "result/:companyHash",
+        name: "/flutterwave/public/result",
+        component: FlutterwavePublicResult,
+      },
+    ],
+  },
+  {
+    path: "/flutterwave",
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
         enabled_by_mpm_plugin_id: 32,
-        name: "Flutterwave Payment Provider",
-        icon: "cloud_upload",
+        name: "Flutterwave",
+        icon: "payment",
       },
     },
     children: [
       {
         path: "overview",
-        component: FlutterwavePaymentProviderOverview,
+        component: FlutterwaveOverview,
         meta: {
           layout: "default",
           sidebar: {
             enabled: true,
             name: "Overview",
+          },
+        },
+      },
+      {
+        path: "credential",
+        component: FlutterwaveCredential,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Credentials",
+          },
+        },
+      },
+      {
+        path: "transactions",
+        component: FlutterwaveTransaction,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
           },
         },
       },

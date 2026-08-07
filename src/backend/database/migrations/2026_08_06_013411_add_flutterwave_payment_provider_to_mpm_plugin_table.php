@@ -6,13 +6,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         DB::table('mpm_plugins')->insert([
             [
                 'id' => MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER,
                 'name' => 'FlutterwavePaymentProvider',
-                'description' => 'This plugin adds FlutterwavePaymentProvider functionality to MicroPowerManager.',
-                'tail_tag' => 'FlutterwavePaymentProvider',
+                'description' => 'This plugin developed to payment via flutterwave payment provider',
                 'installation_command' => 'flutterwave-payment-provider:install',
                 'root_class' => 'FlutterwavePaymentProvider',
                 'created_at' => Carbon::now(),
@@ -21,7 +25,14 @@ return new class extends Migration {
         ]);
     }
 
-    public function down(): void {
-        DB::table('mpm_plugins')->where('id', MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER)->delete();
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
+        DB::table('mpm_plugins')
+            ->where('id', MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER)
+            ->delete();
     }
 };

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\Plugins\FlutterwavePaymentProvider\Services;
+namespace App\Plugins\FlutterwavePaymentProvider\Services;
 
 use App\Enums\DeviceType;
 use App\Jobs\ProcessPayment;
@@ -10,35 +10,36 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
-use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
-use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
+use App\Plugins\FlutterwavePaymentProvider\Models\FlutterwaveTransaction;
+use App\Plugins\FlutterwavePaymentProvider\Modules\Api\FlutterwaveApiService;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\DeviceService;
 use App\Services\Interfaces\IBaseService;
 use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @extends AbstractPaymentAggregatorTransactionService<PaystackTransaction>
+ * @extends AbstractPaymentAggregatorTransactionService<FlutterwaveTransaction>
  *
- * @implements IBaseService<PaystackTransaction>
+ * @implements IBaseService<FlutterwaveTransaction>
  */
 class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
     public function __construct(
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private PaystackTransaction $paystackTransaction,
-        private PaystackApiService $paystackApiService,
+        private FlutterwaveTransaction $flutterwaveTransaction,
+        private FlutterwaveApiService $flutterwaveApiService,
     ) {
         parent::__construct(
             $this->meter,
             $this->address,
             $this->transaction,
-            $this->paystackTransaction
+            $this->flutterwaveTransaction
         );
     }
 
@@ -53,7 +54,7 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
             'order_id' => $orderId,
             'reference_id' => $referenceId,
             'serial_id' => $this->meterSerialNumber,
-            'status' => PaystackTransaction::STATUS_REQUESTED,
+            'status' => FlutterwaveTransaction::STATUS_REQUESTED,
             'currency' => 'NGN',
             'customer_id' => $this->customerId,
             'amount' => $this->amount,
@@ -64,76 +65,89 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
         ];
     }
 
-    public function getByOrderId(string $orderId): ?PaystackTransaction {
-        return $this->paystackTransaction->newQuery()->where('order_id', '=', $orderId)->first();
+    public function getByOrderId(string $orderId): ?FlutterwaveTransaction {
+        return $this->flutterwaveTransaction->newQuery()->where('order_id', '=', $orderId)->first();
     }
 
-    public function getByExternalTransactionId(string $externalTransactionId): ?PaystackTransaction {
-        return $this->paystackTransaction->newQuery()->where('external_transaction_id', '=', $externalTransactionId)->first();
+    public function getByExternalTransactionId(string $externalTransactionId): ?FlutterwaveTransaction {
+        return $this->flutterwaveTransaction->newQuery()->where('external_transaction_id', '=', $externalTransactionId)->first();
     }
 
-    public function getByPaystackReference(string $reference): ?PaystackTransaction {
-        return $this->paystackTransaction->newQuery()->where('paystack_reference', '=', $reference)->first();
+    public function getByFlutterwaveReference(string $reference): ?FlutterwaveTransaction {
+        return $this->flutterwaveTransaction->newQuery()->where('flutterwave_reference', '=', $reference)->first();
     }
 
     /**
-     * @return Collection<int, PaystackTransaction>
+     * @return Collection<int, FlutterwaveTransaction>
      */
     public function getByStatus(int $status): Collection {
-        return $this->paystackTransaction->newQuery()->where('status', '=', $status)->get();
+        return $this->flutterwaveTransaction->newQuery()->where('status', '=', $status)->get();
     }
 
-    public function getById(int $id): ?PaystackTransaction {
-        return $this->paystackTransaction->newQuery()->find($id);
+    public function getById(int $id): ?FlutterwaveTransaction {
+        return $this->flutterwaveTransaction->newQuery()->find($id);
     }
 
-    public function create(array $paystackTransactionData): PaystackTransaction {
+    /**
+     * @return Collection<int, FlutterwaveTransaction>|LengthAwarePaginator<int, FlutterwaveTransaction>
+     */
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
+        $query = $this->flutterwaveTransaction->newQuery()->orderByDesc('created_at');
+
+        if ($limit) {
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    public function create(array $flutterwaveTransactionData): FlutterwaveTransaction {
         try {
             // Run on the tenant connection so a failure rolls back the right database.
             DB::connection('tenant')->beginTransaction();
 
-            /** @var PaystackTransaction $paystackTransaction */
-            $paystackTransaction = $this->paystackTransaction->newQuery()->create($paystackTransactionData);
+            /** @var FlutterwaveTransaction $flutterwaveTransaction */
+            $flutterwaveTransaction = $this->flutterwaveTransaction->newQuery()->create($flutterwaveTransactionData);
 
             // Get customer's phone number for sender field
-            $customerPhone = $this->getCustomerPhoneByCustomerId($paystackTransaction->customer_id);
+            $customerPhone = $this->getCustomerPhoneByCustomerId($flutterwaveTransaction->customer_id);
             $sender = $customerPhone ?: '';
 
-            $paystackTransaction->transaction()->create([
-                'amount' => $paystackTransaction->amount,
+            $flutterwaveTransaction->transaction()->create([
+                'amount' => $flutterwaveTransaction->amount,
                 'sender' => $sender,
-                'message' => $paystackTransaction->serial_id,
+                'message' => $flutterwaveTransaction->serial_id,
                 'type' => 'energy',
             ]);
 
             DB::connection('tenant')->commit();
 
-            return $paystackTransaction;
+            return $flutterwaveTransaction;
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             throw $e;
         }
     }
 
-    public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
+    public function processSuccessfulPayment(int $companyId, FlutterwaveTransaction $transaction): void {
         $id = $transaction->transaction->id;
         dispatch(new ProcessPayment($companyId, $id));
-        $transaction->status = PaystackTransaction::STATUS_SUCCESS;
+        $transaction->status = FlutterwaveTransaction::STATUS_SUCCESS;
         $transaction->save();
     }
 
-    public function processFailedPayment(PaystackTransaction $transaction): void {
-        $transaction->status = PaystackTransaction::STATUS_FAILED;
+    public function processFailedPayment(FlutterwaveTransaction $transaction): void {
+        $transaction->status = FlutterwaveTransaction::STATUS_FAILED;
         $transaction->save();
 
         $relatedTransaction = $transaction->transaction;
         if ($relatedTransaction) {
-            $relatedTransaction->update(['status' => PaystackTransaction::STATUS_FAILED]);
+            $relatedTransaction->update(['status' => FlutterwaveTransaction::STATUS_FAILED]);
         }
     }
 
     /**
-     * Create a PaystackTransaction + Transaction and initialize via the Paystack API.
+     * Create a FlutterwaveTransaction + Transaction and initialize via the Flutterwave API.
      * The caller supplies message and type, keeping routing knowledge outside this service.
      *
      * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
@@ -153,15 +167,15 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
         }
 
         try {
-            // A failed Paystack initialization must not leave orphaned transaction rows behind.
+            // A failed Flutterwave initialization must not leave orphaned transaction rows behind.
             DB::connection('tenant')->beginTransaction();
 
-            $paystackTxn = $this->paystackTransaction->newQuery()->create([
+            $flutterwaveTxn = $this->flutterwaveTransaction->newQuery()->create([
                 'amount' => $amount,
-                'currency' => config('paystack-payment-provider.currency.default', 'NGN'),
+                'currency' => config('flutterwave-payment-provider.currency.default', 'NGN'),
                 'order_id' => Uuid::uuid4()->toString(),
                 'reference_id' => Uuid::uuid4()->toString(),
-                'status' => PaystackTransaction::STATUS_REQUESTED,
+                'status' => FlutterwaveTransaction::STATUS_REQUESTED,
                 'customer_id' => $customerId,
                 'serial_id' => $serialId,
                 'device_type' => $deviceType,
@@ -169,17 +183,20 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
             ]);
 
             /** @var Transaction $transaction */
-            $transaction = $paystackTxn->transaction()->create([
+            $transaction = $flutterwaveTxn->transaction()->create([
                 'amount' => $amount,
                 'sender' => $sender,
                 'message' => $message,
                 'type' => $type,
             ]);
 
-            $result = $this->paystackApiService->initializeTransaction($paystackTxn);
+            $result = $this->flutterwaveApiService->initializeTransaction($flutterwaveTxn);
             if ($result['error']) {
-                throw new \RuntimeException('Paystack initialization failed: '.$result['error']);
+                throw new \RuntimeException('Flutterwave initialization failed: '.$result['error']);
             }
+
+            $flutterwaveTxn->flutterwave_reference = $flutterwaveTxn->reference_id;
+            $flutterwaveTxn->save();
 
             DB::connection('tenant')->commit();
 
@@ -200,9 +217,9 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
     /**
      * @param array<string, mixed> $transactionData
      */
-    public function createPublicTransaction(array $transactionData): PaystackTransaction {
-        // Create Paystack transaction without customer association
-        $transactionData['status'] = PaystackTransaction::STATUS_REQUESTED;
+    public function createPublicTransaction(array $transactionData): FlutterwaveTransaction {
+        // Create Flutterwave transaction without customer association
+        $transactionData['status'] = FlutterwaveTransaction::STATUS_REQUESTED;
         $transactionData['metadata'] = [
             'serial_id' => $transactionData['serial_id'],
             'customer_id' => $transactionData['customer_id'],
@@ -214,7 +231,7 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
             $transactionData['metadata']['agent_id'] = $transactionData['agent_id'];
         }
 
-        return $this->paystackTransaction->newQuery()->create($transactionData);
+        return $this->flutterwaveTransaction->newQuery()->create($transactionData);
     }
 
     public function validateMeterSerial(string $serialId): bool {

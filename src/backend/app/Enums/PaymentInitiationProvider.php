@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use App\Models\MpmPlugin;
-use app\Plugins\FlutterwavePaymentProvider\Services\FlutterwaveTransactionService;
+use App\Plugins\FlutterwavePaymentProvider\Services\FlutterwaveTransactionService;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
 use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomTransactionService;
