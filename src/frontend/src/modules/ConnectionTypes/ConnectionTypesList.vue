@@ -52,6 +52,12 @@ export default {
     EventBus.$on("connectionTypeAdded", this.getConnectionTypes)
     this.getConnectionTypes()
   },
+  beforeDestroy() {
+    EventBus.$off("pageLoaded", this.reloadList)
+    EventBus.$off("searching", this.searching)
+    EventBus.$off("end_searching", this.endSearching)
+    EventBus.$off("connectionTypeAdded", this.getConnectionTypes)
+  },
 
   data() {
     return {
