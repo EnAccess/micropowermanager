@@ -92,7 +92,7 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
      * @return Collection<int, FlutterwaveTransaction>|LengthAwarePaginator<int, FlutterwaveTransaction>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
-        $query = $this->flutterwaveTransaction->newQuery()->orderByDesc('created_at');
+        $query = $this->flutterwaveTransaction->newQuery()->latest();
 
         if ($limit) {
             return $query->paginate($limit);
