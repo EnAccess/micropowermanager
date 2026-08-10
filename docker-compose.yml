@@ -4,10 +4,6 @@ services:
     container_name: backend-dev
     build:
       dockerfile: docker/DockerfileBackendDev
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-      - "micropowermanager.dev:host-gateway"
-      - "api.micropowermanager.dev:host-gateway"
     env_file:
       - path: ./dev/.env.micropowermanager-backend
         required: true
@@ -108,7 +104,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
+      - 6379:6379
 
   mysql:
     container_name: mysql
@@ -121,7 +117,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - 33061:3306
+      - 3306:3306
     healthcheck:
       test: [ CMD, mysqladmin, ping, -h, localhost ]
       start_period: 10s
