@@ -51,9 +51,8 @@ class PersonController extends Controller {
      *
      * Alias of `GET /api/people`, kept for backwards compatibility with older clients.
      * It accepts the same query parameters.
-     *
-     * @deprecated use `GET /api/people` instead
      */
+    #[\Deprecated(message: 'use `GET /api/people` instead')]
     public function indexAll(PersonListRequest $request): ApiResource {
         return $this->listPeople($request);
     }
@@ -63,10 +62,9 @@ class PersonController extends Controller {
      *
      * Alias of `GET /api/people`, kept for backwards compatibility with the customer registration app.
      * It accepts the same query parameters.
-     *
-     * @deprecated use `GET /api/people` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/people` instead')]
     public function indexForCustomerRegistrationApp(PersonListRequest $request): ApiResource {
         return $this->listPeople($request);
     }
