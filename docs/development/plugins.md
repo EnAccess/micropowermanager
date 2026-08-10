@@ -93,7 +93,7 @@ class YourPluginApiResolver implements IApiResolver {
 
 #### Database Setup
 
-Your plugin will might need several database migrations to integrate with MPM:
+Your plugin will/might need several database migrations to integrate with MPM:
 
 ##### Create Plugin Tables
 
