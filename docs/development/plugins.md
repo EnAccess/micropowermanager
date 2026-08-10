@@ -65,7 +65,7 @@ The backend integration process involves several key steps to make your plugin d
 #### Register API Routes
 
 Plugin routes carry no auth guard of their own — there is no JWT on a public payment page or an inbound webhook.
-Instead, MicroPowerManager resolves *which company* a third-party API request belongs to via a path-prefix registry, `App\Services\ApiResolvers\ThirdPartyApiResolverService`.
+Instead, MicroPowerManager resolves _which company_ a third-party API request belongs to via a path-prefix registry, `App\Services\ApiResolvers\ThirdPartyApiResolverService`.
 Register your plugin's URL prefix there, and implement `App\Services\Interfaces\IApiResolver` to say how a company id is found for that prefix:
 
 ```php
