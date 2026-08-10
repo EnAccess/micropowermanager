@@ -10,11 +10,7 @@ Vue 2 is long deprecated — see the root _Known tech debt_ section. Avoid doubl
 - **Vue `<style>` blocks.** Must use `<style lang="scss" scoped>`. Both `lang="scss"` (`vue/block-lang`) and `scoped` (`vue/enforce-style-attribute`) are required.
 - **Import order.** Imports must be alphabetically sorted with consistent spacing (`import/order`).
 - **CSS.** Avoid `!important`.
-- **i18n locales.** Files in `src/assets/locales/` must be alphabetically sorted JSON with the same number of keys as `en.json`. CI enforces this. To fix drift:
-
-  ```bash
-  cd src/assets/locales && for file in *.json; do cat "$file" | jq -S . > tmp.json && mv tmp.json "$file"; done
-  ```
+- **i18n locales.** Files in `src/assets/locales/` must be deep-sorted JSON with the same keys as `en.json` (the source of truth). CI enforces this via `npm run lang:check`. To check/fix locally: `npm run i18n:check-json`, `npm run i18n:fix-json`. `npm run i18n:translate-json` fills keys missing from a locale via the Google Cloud Translation API (`GOOGLE_TRANSLATE_API_KEY` env var required) — local use only, review its output before committing.
 
 ## Common Patterns
 

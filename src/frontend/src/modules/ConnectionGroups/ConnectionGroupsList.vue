@@ -98,6 +98,12 @@ export default {
 
     this.getConnectionGroups()
   },
+  beforeDestroy() {
+    EventBus.$off("pageLoaded", this.reloadList)
+    EventBus.$off("searching", this.searching)
+    EventBus.$off("end_searching", this.endSearching)
+    EventBus.$off("connectionGroupAdded", this.getConnectionGroups)
+  },
 
   data() {
     return {
