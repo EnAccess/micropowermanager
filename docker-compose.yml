@@ -25,7 +25,7 @@ services:
       - backend_php_vendor:/var/www/html/vendor
       - storage_data:/var/www/html/storage
     healthcheck:
-      test: [ CMD, curl, -f, http://localhost/up ]
+      test: [CMD, curl, -f, http://localhost/up]
       start_period: 60s
       interval: 30s
       timeout: 10s
@@ -92,7 +92,7 @@ services:
       - queue_worker_php_vendor:/var/www/html/vendor
       - storage_data:/var/www/html/storage
     healthcheck:
-      test: [ CMD, php, /var/www/html/artisan, mpm-system-checks:horizon, --local, --quiet ]
+      test: [CMD, php, /var/www/html/artisan, mpm-system-checks:horizon, --local, --quiet]
       start_period: 60s
       interval: 30s
       timeout: 10s
@@ -119,7 +119,7 @@ services:
     ports:
       - 3306:3306
     healthcheck:
-      test: [ CMD, mysqladmin, ping, -h, localhost ]
+      test: [CMD, mysqladmin, ping, -h, localhost]
       start_period: 10s
       interval: 10s
       timeout: 5s
