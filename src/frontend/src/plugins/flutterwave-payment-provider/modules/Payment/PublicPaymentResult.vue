@@ -3,9 +3,9 @@
     <!-- Verifying -->
     <div v-if="loading" class="text-center">
       <md-progress-spinner
-        md-mode="indeterminate"
-        :md-diameter="48"
-        :md-stroke="3"
+          md-mode="indeterminate"
+          :md-diameter="48"
+          :md-stroke="3"
       ></md-progress-spinner>
       <p>Verifying your payment…</p>
     </div>
@@ -14,8 +14,8 @@
       <!-- Status header -->
       <div class="text-center">
         <md-icon
-          class="md-size-2x"
-          :style="{ color: paymentResult.success ? 'green' : 'red' }"
+            class="md-size-2x"
+            :style="{ color: paymentResult.success ? 'green' : 'red' }"
         >
           {{ paymentResult.success ? "check_circle_outline" : "cancel" }}
         </md-icon>
@@ -25,8 +25,8 @@
         <p>
           {{
             paymentResult.success
-              ? successMessage
-              : paymentResult.verification?.error ||
+                ? successMessage
+                : paymentResult.verification?.error ||
                 "Your payment could not be processed. Please try again."
           }}
         </p>
@@ -40,14 +40,14 @@
             {{ paymentResult.transaction.id }}
           </div>
         </div>
-        <md-divider />
+        <md-divider/>
         <div v-if="!isNonPaygoInstallment" class="md-layout">
           <div class="md-layout-item md-subheader">{{ deviceLabel }}</div>
           <div class="md-layout-item md-subheader">
             {{ paymentResult.transaction.serial_id }}
           </div>
         </div>
-        <md-divider v-if="!isNonPaygoInstallment" />
+        <md-divider v-if="!isNonPaygoInstallment"/>
         <div v-if="!isNonPaygoInstallment" class="md-layout">
           <div class="md-layout-item md-subheader">Device Type</div>
           <div class="md-layout-item md-subheader">{{ deviceTypeName }}</div>
@@ -56,7 +56,7 @@
           <div class="md-layout-item md-subheader">Payment Type</div>
           <div class="md-layout-item md-subheader">Installment</div>
         </div>
-        <md-divider />
+        <md-divider/>
         <div class="md-layout">
           <div class="md-layout-item md-subheader">
             {{ paymentResult.success ? "Amount Paid" : "Amount" }}
@@ -64,13 +64,13 @@
           <div class="md-layout-item md-subheader">
             {{
               formatCurrency(
-                paymentResult.transaction.amount,
-                paymentResult.transaction.currency,
+                  paymentResult.transaction.amount,
+                  paymentResult.transaction.currency,
               )
             }}
           </div>
         </div>
-        <md-divider v-if="paymentResult.success" />
+        <md-divider v-if="paymentResult.success"/>
         <div v-if="paymentResult.success" class="md-layout">
           <div class="md-layout-item md-subheader">Payment Date</div>
           <div class="md-layout-item md-subheader">
@@ -81,23 +81,23 @@
 
       <!-- Token -->
       <template v-if="paymentResult.success && !isNonPaygoInstallment">
-        <md-divider />
+        <md-divider/>
         <div class="md-layout">
           <div class="md-layout-item md-subheader">{{ tokenTitle }}</div>
           <div class="md-layout-item md-subheader">
             {{ formatTokenStatus(paymentResult.token_status) }}
             <md-button
-              v-if="paymentResult.token_status !== 'generated'"
-              class="md-icon-button md-dense"
-              @click="refreshTokenStatus"
-              :disabled="refreshing"
+                v-if="paymentResult.token_status !== 'generated'"
+                class="md-icon-button md-dense"
+                @click="refreshTokenStatus"
+                :disabled="refreshing"
             >
               <md-icon v-if="!refreshing">refresh</md-icon>
               <md-progress-spinner
-                v-else
-                md-mode="indeterminate"
-                :md-diameter="18"
-                :md-stroke="2"
+                  v-else
+                  md-mode="indeterminate"
+                  :md-diameter="18"
+                  :md-stroke="2"
               ></md-progress-spinner>
             </md-button>
           </div>
@@ -105,7 +105,7 @@
 
         <!-- Generated token -->
         <template
-          v-if="
+            v-if="
             paymentResult.token && paymentResult.token_status === 'generated'
           "
         >
@@ -119,7 +119,7 @@
               {{ paymentResult.token.token_unit }}
             </div>
           </div>
-          <md-divider />
+          <md-divider/>
           <div class="md-layout">
             <div class="md-layout-item md-subheader">Token Type</div>
             <div class="md-layout-item md-subheader">
@@ -138,18 +138,18 @@
 
       <!-- Actions -->
       <md-button
-        v-if="!paymentResult.success"
-        class="md-raised md-primary"
-        style="width: 100%"
-        @click="retryPayment"
+          v-if="!paymentResult.success"
+          class="md-raised md-primary"
+          style="width: 100%"
+          @click="retryPayment"
       >
         Try Again
       </md-button>
       <md-button
-        :class="{ 'md-raised': paymentResult.success }"
-        class="md-primary"
-        style="width: 100%"
-        @click="goHome"
+          :class="{ 'md-raised': paymentResult.success }"
+          class="md-primary"
+          style="width: 100%"
+          @click="goHome"
       >
         {{ paymentResult.success ? "Done" : "Cancel" }}
       </md-button>
@@ -168,9 +168,9 @@
         </p>
       </div>
       <md-button
-        class="md-raised md-primary"
-        style="width: 100%"
-        @click="retryVerification"
+          class="md-raised md-primary"
+          style="width: 100%"
+          @click="retryVerification"
       >
         Retry Verification
       </md-button>
@@ -190,7 +190,7 @@ import CheckoutPage from "@/shared/CheckoutPage.vue"
 export default {
   name: "PublicPaymentResult",
   mixins: [notify],
-  components: { CheckoutPage },
+  components: {CheckoutPage},
   data() {
     return {
       paymentService: new PublicPaymentService(),
@@ -207,8 +207,8 @@ export default {
     companyIdToken() {
       // Try to get from query params first, fallback to sessionStorage
       return (
-        this.$route.query.ct ||
-        sessionStorage.getItem("flutterwave_company_token")
+          this.$route.query.ct ||
+          sessionStorage.getItem("flutterwave_company_token")
       )
     },
     // Flutterwave's redirect callback returns both `tx_ref` (our reference)
@@ -238,7 +238,7 @@ export default {
     },
     isSHS() {
       return (
-        this.deviceType === "solar_home_system" || this.deviceType === "shs"
+          this.deviceType === "solar_home_system" || this.deviceType === "shs"
       )
     },
     deviceTypeName() {
@@ -303,8 +303,8 @@ export default {
     async loadCompanyInfo() {
       try {
         const response = await this.paymentService.getCompanyInfo(
-          this.companyHash,
-          this.companyIdToken,
+            this.companyHash,
+            this.companyIdToken,
         )
         this.companyName = response.company.name
       } catch (error) {
@@ -338,14 +338,14 @@ export default {
     retryPayment() {
       // Navigate back to payment form with company token
       const ct =
-        this.companyIdToken ||
-        sessionStorage.getItem("flutterwave_company_token")
+          this.companyIdToken ||
+          sessionStorage.getItem("flutterwave_company_token")
       this.$router.push({
         name: "/flutterwave/public/payment",
         params: {
           companyHash: this.companyHash,
         },
-        query: ct ? { ct } : {},
+        query: ct ? {ct} : {},
       })
     },
     goHome() {
@@ -357,14 +357,14 @@ export default {
         window.close()
       } else {
         const ct =
-          this.companyIdToken ||
-          sessionStorage.getItem("flutterwave_company_token")
+            this.companyIdToken ||
+            sessionStorage.getItem("flutterwave_company_token")
         this.$router.push({
           name: "/flutterwave/public/payment",
           params: {
             companyHash: this.companyHash,
           },
-          query: ct ? { ct } : {},
+          query: ct ? {ct} : {},
         })
       }
     },
