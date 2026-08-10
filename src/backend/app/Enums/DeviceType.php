@@ -22,4 +22,16 @@ enum DeviceType: string {
     case SolarHomeSystem = SolarHomeSystem::RELATION_NAME;
     /** E-Bike */
     case EBike = EBike::RELATION_NAME;
+
+    /**
+     * The credit a token for this kind of unit carries. Manufacturer APIs hard-code
+     * it per device kind — meters vend energy, the battery-powered units vend time —
+     * so it cannot be read off the API and follows from the device type instead.
+     */
+    public function creditUnit(): DeviceTokenUnit {
+        return match ($this) {
+            self::Meter => DeviceTokenUnit::Kwh,
+            self::SolarHomeSystem, self::EBike => DeviceTokenUnit::Days,
+        };
+    }
 }

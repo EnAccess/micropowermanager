@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Events\NewLogEvent;
 use App\Http\Requests\DeviceListRequest;
+use App\Http\Requests\GenerateDeviceTokenRequest;
 use App\Http\Requests\UpdateDeviceRequest;
 use App\Http\Resources\ApiResource;
+use App\Http\Resources\DeviceCapabilitiesResource;
 use App\Http\Resources\DeviceMappingResource;
+use App\Http\Resources\TokenResource;
 use App\Models\Device;
+use App\Services\DeviceControlService;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller {
-    public function __construct(private DeviceService $deviceService) {}
+    public function __construct(
+        private DeviceService $deviceService,
+        private DeviceControlService $deviceControlService,
+    ) {}
 
     /**
      * List devices.
@@ -57,7 +64,38 @@ class DeviceController extends Controller {
      * on the device as `mapped`, `not_mapped` or `unsupported`.
      */
     public function deviceInfo(Device $device): DeviceMappingResource {
-        return DeviceMappingResource::make($this->deviceService->refreshManufacturerMapping($device));
+        return DeviceMappingResource::make($this->deviceControlService->refreshManufacturerMapping($device));
+    }
+
+    /**
+     * Read what the manufacturer lets MPM do with a device.
+     *
+     * Tells callers whether a token can be generated on demand, so the action is
+     * offered only where the manufacturer actually supports it.
+     */
+    public function capabilities(Device $device): DeviceCapabilitiesResource {
+        return DeviceCapabilitiesResource::make($this->deviceControlService->capabilities($device));
+    }
+
+    /**
+     * Generate a token without a customer payment.
+     *
+     * Issues credit straight from the manufacturer and books it as an ad-hoc
+     * transaction. The amount is read either as a currency amount or as the credit
+     * unit the device carries; the response reports the credit actually issued,
+     * which can differ because manufacturers round.
+     *
+     * Access rates and appliance installments are not settled by this call.
+     */
+    public function generateToken(Device $device, GenerateDeviceTokenRequest $request): TokenResource {
+        $token = $this->deviceControlService->generateToken(
+            $device,
+            (float) $request->float('amount'),
+            $request->unit(),
+            auth('api')->user()->id,
+        );
+
+        return TokenResource::make($token);
     }
 
     /**
