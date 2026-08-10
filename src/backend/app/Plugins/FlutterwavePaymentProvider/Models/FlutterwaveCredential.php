@@ -48,9 +48,9 @@ class FlutterwaveCredential extends BaseModel {
 
     /**
      * The value set in Flutterwave's dashboard under Settings → Webhooks →
-     * Secret Hash — distinct from the API secret key. Flutterwave only signs
-     * webhook payloads (via the `flutterwave-signature` header) when this is
-     * configured on their end; it must match what's stored here.
+     * Secret Hash — distinct from the API secret key. Flutterwave echoes this
+     * back verbatim in the `verif-hash` header on every webhook delivery; it
+     * must match what's stored here for the webhook to be trusted.
      */
     public function getWebhookSecretHash(): string {
         try {

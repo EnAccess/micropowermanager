@@ -64,31 +64,29 @@ The backend integration process involves several key steps to make your plugin d
 
 #### Register API Routes
 
-If your plugin needs to handle API requests (e.g., webhooks, custom endpoints), register your route resolver:
+Plugin routes carry no auth guard of their own — there is no JWT on a public payment page or an inbound webhook.
+Instead, MicroPowerManager resolves *which company* a third-party API request belongs to via a path-prefix registry, `App\Services\ApiResolvers\ThirdPartyApiResolverService`.
+Register your plugin's URL prefix there, and implement `App\Services\Interfaces\IApiResolver` to say how a company id is found for that prefix:
 
 ```php
-// src/backend/app/Services/ApiResolvers/Data/ApiResolvers
+// src/backend/app/Services/ApiResolvers/ThirdPartyApiResolverService.php
 
-class ApiResolverMap {
+class ThirdPartyApiResolverService {
     // ...other API constants
-    public const YOUR_PLUGIN_API = 'api/your-plugin/callback';
+    public const YOUR_PLUGIN_API = 'api/your-plugin/';
 
-    public const RESOLVABLE_APIS = [
-        // ...other resolvable APIs
-        self::YOUR_PLUGIN_API,
-    ];
-
-    private const API_RESOLVER = [
-        // ...other API resolvers
+    private const array RESOLVERS = [
+        // ...other resolvers
         self::YOUR_PLUGIN_API => YourPluginApiResolver::class,
     ];
+}
+```
 
-    public function getResolvableApis(): array {
-        return self::RESOLVABLE_APIS;
-    }
+```php
+// src/backend/app/Services/ApiResolvers/YourPluginApiResolver.php
 
-    public function getApiResolver(string $api): string {
-        return self::API_RESOLVER[$api];
+class YourPluginApiResolver implements IApiResolver {
+    public function resolveCompanyId(Request $request): int {
     }
 }
 ```
