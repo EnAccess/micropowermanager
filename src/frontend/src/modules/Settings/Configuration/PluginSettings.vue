@@ -1,10 +1,14 @@
 <template>
   <div>
-    <div class="md-layout md-gutter">
+    <md-field md-clearable class="plugin-search">
+      <md-icon>search</md-icon>
+      <label>{{ $tc("words.search") }}</label>
+      <md-input v-model="searchTerm" />
+    </md-field>
+
+    <div class="md-layout md-gutter" v-if="visiblePlugins.length">
       <div
-        v-for="plugin in enrichedPlugins.filter(
-          (p) => p.plugin_for_usage_type || p.checked,
-        )"
+        v-for="plugin in visiblePlugins"
         :key="plugin.id"
         class="box md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
@@ -26,13 +30,17 @@
         />
       </div>
     </div>
+    <md-empty-state
+      v-else-if="searchTerm"
+      md-icon="search"
+      :md-label="$tc('phrases.noDataFoundFor', 1, { data: searchTerm })"
+    />
     <md-progress-bar md-mode="indeterminate" v-if="progressing" />
   </div>
 </template>
 
 <script>
 import { notify } from "@/mixins/notify.js"
-import { MpmPluginService } from "@/services/MpmPluginService.js"
 import { PluginService } from "@/services/PluginService.js"
 
 export default {
@@ -40,9 +48,9 @@ export default {
   mixins: [notify],
   data() {
     return {
-      mpmPluginsService: new MpmPluginService(),
       pluginService: new PluginService(),
       progressing: false,
+      searchTerm: "",
       switching: false,
     }
   },
@@ -60,14 +68,23 @@ export default {
     await this.$store.dispatch("settings/fetchPlugins")
   },
   computed: {
-    enrichedPlugins: function () {
-      return this.plugins.map((plugin) => ({
-        ...plugin,
-        plugin_for_usage_type: this.validUsageType(
-          plugin.usage_type,
-          this.mainSettings.usageType,
-        ),
-      }))
+    visiblePlugins: function () {
+      const term = this.searchTerm.trim().toLowerCase()
+
+      return this.plugins
+        .map((plugin) => ({
+          ...plugin,
+          plugin_for_usage_type: this.validUsageType(
+            plugin.usage_type,
+            this.mainSettings.usageType,
+          ),
+        }))
+        .filter((plugin) => plugin.plugin_for_usage_type || plugin.checked)
+        .filter(
+          (plugin) =>
+            !term ||
+            `${plugin.name} ${plugin.description}`.toLowerCase().includes(term),
+        )
     },
   },
   methods: {
@@ -98,6 +115,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.plugin-search {
+  max-width: 400px;
+  margin-bottom: 1rem;
+}
+
 .box {
   border-radius: 5px;
   padding: 1.3vw;

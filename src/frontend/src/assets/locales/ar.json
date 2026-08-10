@@ -71,12 +71,12 @@
       "Tariffs": "التعريفات",
       "Transactions": "المعاملات",
       "Types": "الأنواع",
-      "User Management": "إدارة المستخدمين",
       "Users": "المستخدمون",
       "addCluster": "إضافة مجموعة",
       "addMiniGrid": "إضافة مجمّع كهربائي صغير",
       "addVillage": "إضافة قرية",
-      "manageVillages": "إدارة القرى"
+      "manageVillages": "إدارة القرى",
+      "userManagement": "إدارة المستخدمين"
     }
   },
   "messages": {

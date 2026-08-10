@@ -96,6 +96,11 @@ export default {
     EventBus.$on("searching", this.searching)
     EventBus.$on("end_searching", this.endSearching)
   },
+  beforeDestroy() {
+    EventBus.$off("pageLoaded", this.reloadList)
+    EventBus.$off("searching", this.searching)
+    EventBus.$off("end_searching", this.endSearching)
+  },
   data() {
     return {
       expandedRow: null,

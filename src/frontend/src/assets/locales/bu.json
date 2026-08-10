@@ -71,12 +71,12 @@
       "Tariffs": "အခွနJ် ှ+နး်",
       "Transactions": "ငွေပေးငွေယူများ",
       "Types": "အမျ+ိးအစားများ",
-      "User Management": "အသုံးပြုသူများ စီမံခန့်ခွဲမှု",
       "Users": "အသံုးြပ+သူများ",
       "addCluster": "Cluster ထည့်ပါ။",
       "addMiniGrid": "MiniGrid ကိုထည့်ပါ။",
       "addVillage": "ရွာကိုထည့်ပါ။",
-      "manageVillages": "ရွာများကို စီမံပါ။"
+      "manageVillages": "ရွာများကို စီမံပါ။",
+      "userManagement": "အသုံးပြုသူများ စီမံခန့်ခွဲမှု"
     }
   },
   "messages": {
