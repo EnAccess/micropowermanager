@@ -16,6 +16,7 @@ use App\Traits\HasCrudOperations;
 use App\Utils\MinimumPurchaseAmountValidator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @template T of BasePaymentProviderTransaction
@@ -160,21 +161,22 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * Compare what the provider says was paid against what we recorded when the payment was
      * initiated, so a tampered or misrouted notification cannot credit the wrong amount.
      *
-     * @param array{amount: float, currency: ?string, reference: ?string} $expected the stored transaction
-     * @param array{amount: float, currency: ?string, reference: ?string} $reported what the provider reports;
-     *                                                                              a null field is one this provider does not send
+     * @param array{amount: float, currency?: ?string, reference?: ?string} $expected the stored transaction
+     * @param array{amount: float, currency?: ?string, reference?: ?string} $reported what the provider reports;
+     *                                                                                an omitted field is one this provider does not send
      *
      * @return string|null the first mismatch found, or null when the notification is trustworthy
      */
     protected function paymentMismatch(string $providerLabel, array $expected, array $reported): ?string {
-        if ($reported['reference'] !== null
-            && ($expected['reference'] === null
-                || !hash_equals($expected['reference'], $reported['reference']))) {
+        $reportedReference = $reported['reference'] ?? null;
+        if ($reportedReference !== null
+            && !hash_equals((string) ($expected['reference'] ?? ''), $reportedReference)) {
             return $providerLabel.' merchant reference does not match the stored transaction.';
         }
 
-        if ($reported['currency'] !== null
-            && strcasecmp((string) $expected['currency'], $reported['currency']) !== 0) {
+        $reportedCurrency = $reported['currency'] ?? null;
+        if ($reportedCurrency !== null
+            && strcasecmp((string) ($expected['currency'] ?? ''), $reportedCurrency) !== 0) {
             return $providerLabel.' currency does not match the stored transaction.';
         }
 
@@ -190,9 +192,19 @@ abstract class AbstractPaymentAggregatorTransactionService {
      * the status is deliberately left alone. The conflict is how the rest of the codebase flags a
      * transaction that needs a human — see ITransactionProvider::addConflict.
      *
-     * @param T $transaction
+     * @param T                    $transaction
+     * @param array<string, mixed> $context     the provider's own correlation ids, for the log line
      */
-    protected function recordPaymentConflict(BasePaymentProviderTransaction $transaction, string $mismatch): void {
+    protected function recordPaymentConflict(
+        BasePaymentProviderTransaction $transaction,
+        string $mismatch,
+        array $context = [],
+    ): void {
+        Log::warning($mismatch, array_merge([
+            'transaction_type' => $transaction::class,
+            'transaction_id' => $transaction->getKey(),
+        ], $context));
+
         $transaction->conflicts()->firstOrCreate(['state' => $mismatch]);
     }
 

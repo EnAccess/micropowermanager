@@ -6,6 +6,8 @@ namespace App\Plugins\SwiftaPaymentProvider\Tests\Unit;
 
 use App\Jobs\ProcessPayment;
 use App\Models\Transaction\Transaction;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionAmountDifferentException;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionNotSettleableException;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Plugins\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use Illuminate\Support\Facades\Bus;
@@ -103,7 +105,7 @@ class SwiftaTransactionCallbackTest extends TestCase {
         $orphan = $this->mpmTransaction($swiftaTransaction);
         $swiftaTransaction->delete();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(TransactionNotSettleableException::class);
         $this->expectExceptionMessage("Transaction {$orphan->id} has no Swifta transaction to settle.");
 
         try {
@@ -116,7 +118,7 @@ class SwiftaTransactionCallbackTest extends TestCase {
     public function testCheckAmountIsSameRejectsAMismatchedAmount(): void {
         $swiftaTransaction = $this->persistTransaction();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(TransactionAmountDifferentException::class);
         $this->expectExceptionMessage('amount validation field.');
 
         $this->makeService()->checkAmountIsSame(5, $this->mpmTransaction($swiftaTransaction));

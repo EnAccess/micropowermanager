@@ -29,6 +29,9 @@ use Ramsey\Uuid\Uuid;
  * @implements IBaseService<SafaricomTransaction>
  */
 class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
+    private const int RESULT_SUCCESS = 0;
+    private const int RESULT_USER_CANCELLED = 1032;
+
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -271,16 +274,13 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
             ['final_result_code' => $resultCode],
         );
 
-        if ($resultCode === 0) {
+        if ($resultCode === self::RESULT_SUCCESS) {
             $mismatch = $this->paidAmountMismatch($transaction, $payload);
             if ($mismatch !== null) {
-                Log::warning('Safaricom reported a paid amount that does not match the stored transaction', [
-                    'safaricom_transaction_id' => $transaction->id,
-                    'checkout_request_id' => $transaction->checkout_request_id,
-                    'mismatch' => $mismatch,
-                ]);
                 $transaction->save();
-                $this->recordPaymentConflict($transaction, $mismatch);
+                $this->recordPaymentConflict($transaction, $mismatch, [
+                    'checkout_request_id' => $transaction->checkout_request_id,
+                ]);
 
                 return;
             }
@@ -290,11 +290,13 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
             return;
         }
 
-        // 1032 = user cancelled is conceptually "abandoned", not a hard failure.
+        // A user cancelling is conceptually "abandoned", not a hard failure.
         // Everything else non-zero is a failure.
         $this->processFailedPayment(
             $transaction,
-            $resultCode === 1032 ? SafaricomTransaction::STATUS_ABANDONED : SafaricomTransaction::STATUS_FAILED,
+            $resultCode === self::RESULT_USER_CANCELLED
+                ? SafaricomTransaction::STATUS_ABANDONED
+                : SafaricomTransaction::STATUS_FAILED,
         );
     }
 
@@ -332,16 +334,8 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
 
         return $this->paymentMismatch(
             'M-PESA',
-            [
-                'amount' => round((float) $transaction->amount),
-                'currency' => null,
-                'reference' => null,
-            ],
-            [
-                'amount' => (float) $payload['amount'],
-                'currency' => null,
-                'reference' => null,
-            ],
+            ['amount' => round((float) $transaction->amount)],
+            ['amount' => (float) $payload['amount']],
         );
     }
 

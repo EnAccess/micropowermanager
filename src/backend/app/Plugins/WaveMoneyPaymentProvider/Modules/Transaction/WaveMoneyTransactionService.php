@@ -13,7 +13,6 @@ use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -92,21 +91,14 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             [
                 'amount' => (float) $transaction->amount,
                 'currency' => $transaction->currency,
-                'reference' => null,
             ],
             [
                 'amount' => $callbackData->amount,
                 'currency' => $callbackData->currency,
-                'reference' => null,
             ],
         );
         if ($mismatch !== null) {
-            Log::warning('Wave Money callback did not match the stored transaction', [
-                'wave_money_transaction_id' => $transaction->id,
-                'order_id' => $transaction->order_id,
-                'mismatch' => $mismatch,
-            ]);
-            $this->recordPaymentConflict($transaction, $mismatch);
+            $this->recordPaymentConflict($transaction, $mismatch, ['order_id' => $transaction->order_id]);
 
             return;
         }

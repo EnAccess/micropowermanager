@@ -4,7 +4,6 @@ namespace App\Plugins\PaystackPaymentProvider\Services;
 
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class PaystackWebhookService {
     public function __construct(
@@ -46,27 +45,19 @@ class PaystackWebhookService {
      * @param array<string, mixed> $data
      */
     private function handleSuccessfulPayment(array $data, int $companyId): bool {
-        try {
-            $paystackTransaction = $this->findTransaction($data);
-            if (!$paystackTransaction instanceof PaystackTransaction) {
-                return false;
-            }
-
-            if ($this->transactionService->verifyCharge($paystackTransaction, $data) !== null) {
-                return false;
-            }
-
-            $paystackTransaction->external_transaction_id = (string) ($data['id'] ?? '');
-            $this->transactionService->processSuccessfulPayment($companyId, $paystackTransaction);
-
-            return true;
-        } catch (\Exception $e) {
-            Log::error('PaystackWebhookService: Failed to process payment', [
-                'error' => $e->getMessage(),
-            ]);
-
+        $paystackTransaction = $this->findTransaction($data);
+        if (!$paystackTransaction instanceof PaystackTransaction) {
             return false;
         }
+
+        if (!$this->transactionService->verifyCharge($paystackTransaction, $data)) {
+            return false;
+        }
+
+        $paystackTransaction->external_transaction_id = (string) ($data['id'] ?? '');
+        $this->transactionService->processSuccessfulPayment($companyId, $paystackTransaction);
+
+        return true;
     }
 
     /**

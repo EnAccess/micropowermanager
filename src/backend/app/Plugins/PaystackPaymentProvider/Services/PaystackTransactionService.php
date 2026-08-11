@@ -18,7 +18,6 @@ use App\Services\Interfaces\PaymentInitiator;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -117,12 +116,12 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
 
     /**
      * The webhook signature proves the payload came from Paystack; this proves it describes the
-     * payment we actually initiated. Returns the reason the charge could not be verified, having
-     * logged it and recorded a conflict, or null when it matches the stored transaction.
+     * payment we actually initiated. A charge that cannot be verified records a conflict for an
+     * operator to pick up.
      *
      * @param array<string, mixed> $chargeData the `data` object of a charge.* webhook event
      */
-    public function verifyCharge(PaystackTransaction $transaction, array $chargeData): ?string {
+    public function verifyCharge(PaystackTransaction $transaction, array $chargeData): bool {
         $mismatch = $this->paymentMismatch(
             'Paystack',
             [
@@ -140,17 +139,14 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         );
 
         if ($mismatch === null) {
-            return null;
+            return true;
         }
 
-        Log::warning('Paystack charge did not match the stored transaction', [
-            'paystack_transaction_id' => $transaction->id,
+        $this->recordPaymentConflict($transaction, $mismatch, [
             'paystack_reference' => $transaction->paystack_reference,
-            'mismatch' => $mismatch,
         ]);
-        $this->recordPaymentConflict($transaction, $mismatch);
 
-        return $mismatch;
+        return false;
     }
 
     /**

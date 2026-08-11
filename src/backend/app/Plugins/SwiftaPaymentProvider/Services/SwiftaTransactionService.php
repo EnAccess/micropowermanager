@@ -6,6 +6,9 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionAmountDifferentException;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionNotExistsException;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionNotSettleableException;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
@@ -66,7 +69,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         try {
             return $this->transaction->newQuery()->findOrFail($transactionId);
         } catch (ModelNotFoundException $exception) {
-            throw new \Exception('transaction_id validation field.', $exception->getCode(), $exception);
+            throw new TransactionNotExistsException('transaction_id validation field.', $exception->getCode(), $exception);
         }
     }
 
@@ -78,7 +81,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
     public function applyCallback(Transaction $transaction, ?string $transactionReference, int $companyId): void {
         $swiftaTransaction = $transaction->originalTransaction()->first();
         if (!$swiftaTransaction instanceof SwiftaTransaction) {
-            throw new \Exception("Transaction {$transaction->id} has no Swifta transaction to settle.");
+            throw new TransactionNotSettleableException("Transaction {$transaction->id} has no Swifta transaction to settle.");
         }
 
         // Left unsaved so it is persisted while the settlement holds the row lock.
@@ -91,7 +94,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
 
     public function checkAmountIsSame(int $amount, Transaction $transaction): void {
         if ($amount !== (int) $transaction->amount) {
-            throw new \Exception('amount validation field.');
+            throw new TransactionAmountDifferentException('amount validation field.');
         }
     }
 

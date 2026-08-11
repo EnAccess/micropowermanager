@@ -14,27 +14,21 @@ class SwiftaTransactionCallbackMiddleware {
      * @return Request|Response
      */
     public function handle(Request $request, \Closure $next) {
-        try {
-            $transaction = $this->swiftaTransactionService->getTransactionById(
-                $request->integer('transaction_id')
-            );
-            $this->swiftaTransactionService->checkAmountIsSame($request->integer('amount'), $transaction);
-
-            if (!is_int($request->attributes->get('companyId'))) {
-                Log::warning('Swifta callback arrived without a company id', [
-                    'transaction_id' => $transaction->id,
-                ]);
-
-                throw new \Exception('Company could not be resolved for this callback.');
-            }
-        } catch (\Exception $exception) {
-            $response = collect([
-                'success' => 0,
-                'message' => $exception->getMessage(),
+        if (!is_int($request->attributes->get('companyId'))) {
+            Log::warning('Swifta callback arrived without a company id', [
+                'transaction_id' => $request->integer('transaction_id'),
             ]);
 
-            return new Response($response, 400);
+            return new Response(collect([
+                'success' => 0,
+                'message' => 'Company could not be resolved for this callback.',
+            ]), 400);
         }
+
+        $transaction = $this->swiftaTransactionService->getTransactionById(
+            $request->integer('transaction_id')
+        );
+        $this->swiftaTransactionService->checkAmountIsSame($request->integer('amount'), $transaction);
 
         $request->attributes->add([
             'transaction' => $transaction,
