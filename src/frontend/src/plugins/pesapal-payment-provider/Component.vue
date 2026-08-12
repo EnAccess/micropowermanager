@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
@@ -77,7 +78,14 @@ export default {
   },
   methods: {
     goToConfiguration() {
-      this.$router.push("/pesapal/overview")
+      // Only closes the dialog — the registration-tail step must stay unadjusted
+      // until credentials are actually saved on the overview page.
+      EventBus.$emit("tail-wizard.close")
+      this.$router.push("/pesapal/overview").catch((error) => {
+        if (error.name !== "NavigationDuplicated") {
+          throw error
+        }
+      })
     },
   },
 }
