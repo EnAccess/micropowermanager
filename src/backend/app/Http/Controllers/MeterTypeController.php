@@ -28,10 +28,9 @@ class MeterTypeController extends Controller {
      * List meter types (customer registration app).
      *
      * Alias of `GET /api/meter-types` for the customer registration app.
-     *
-     * @deprecated use `GET /api/meter-types` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/meter-types` instead')]
     public function indexForCustomerRegistrationApp(Request $request): ApiResource {
         return ApiResource::make($this->meterTypeService->getAll($request->input('limit')));
     }
