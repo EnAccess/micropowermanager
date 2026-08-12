@@ -38,6 +38,8 @@ Customers visit the link, select their device, enter an amount, and pay via Flut
 > [!INFO]
 > You can start with Flutterwave **Test** credentials to verify the integration before switching to **Live** keys for production.
 
+<!-- -->
+
 > [!WARNING]
 > Flutterwave does not sign webhooks with your Secret Key.
 > It echoes back whatever **Secret Hash** you configure in **Settings → Webhooks** on their dashboard, and MPM checks that it matches what you entered in Step 4 below.
