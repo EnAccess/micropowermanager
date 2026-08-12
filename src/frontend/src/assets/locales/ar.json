@@ -284,6 +284,8 @@
     "financeOverview": "‏{period} ‏ ملخّص مالي: الفترة",
     "flatLoadLimit": "حد الحمل الثابت",
     "flatPrice": "السعر الثابت",
+    "flutterwaveReference": "مرجع Flutterwave",
+    "flutterwaveTransaction": "معاملة Flutterwave",
     "forgotPassword": "يرجى إدخال بريدك الإلكتروني المستخدم في النظام | نسيت كلمة السر",
     "fromDate": "من تاريخ",
     "generatePaymentLink": "إنشاء رابط الدفع",

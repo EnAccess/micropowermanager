@@ -302,6 +302,11 @@
                       style="max-height: 32px; max-width: 100px"
                     />
                     <img
+                        v-if="item.service === 'flutterwave_transaction'"
+                        :src="flutterwaveLogo"
+                        style="max-height: 32px; max-width: 100px"
+                    />
+                    <img
                       v-if="item.service === 'safaricom_transaction'"
                       :src="safaricomLogo"
                       style="max-height: 32px; max-width: 100px"
@@ -466,6 +471,7 @@ import { mapGetters } from "vuex"
 import agentIcon from "@/assets/icons/agent-icon.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
 import paystackLogo from "@/assets/icons/Paystack.png"
+import flutterwaveLogo from "@/assets/icons/FlutterwaveLogo.png"
 import safaricomLogo from "@/assets/icons/safaricom.svg"
 import swifta from "@/assets/icons/Swifta.png"
 import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
@@ -531,6 +537,7 @@ export default {
       swiftaLogo: swifta,
       waveComLogo: WaveComLogo,
       paystackLogo: paystackLogo,
+      flutterwaveLogo: flutterwaveLogo,
       safaricomLogo: safaricomLogo,
     }
   },

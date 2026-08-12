@@ -450,6 +450,8 @@ export default {
           return "WaveComTransactionDetail"
         case "paystack_transaction":
           return "PaystackTransactionDetail"
+        case "flutterwave_transaction":
+          return "FlutterwaveTransactionDetail"
         case "cash_transaction":
           return "CashTransactionDetail"
         case "sms_transaction":

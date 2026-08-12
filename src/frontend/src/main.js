@@ -21,6 +21,7 @@ import {
 } from "@/Helpers/PermissionGuard.js"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
 import Settings from "@/modules/Settings/Configuration/MainSettings.vue"
+import FlutterwaveTransactionDetail from "@/modules/Transactions/FlutterwaveTransactionDetail.vue"
 import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail.vue"
 import SmsTransactionDetail from "@/modules/Transactions/SmsTransactionDetail.vue"
 import SwiftaTransactionDetail from "@/modules/Transactions/SwiftaTransactionDetail.vue"
@@ -65,6 +66,7 @@ Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
 Vue.component("VodacomMzTransactionDetail", VodacomMzTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
+Vue.component("FlutterwaveTransactionDetail", FlutterwaveTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("SmsTransactionDetail", SmsTransactionDetail)
 

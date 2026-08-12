@@ -284,6 +284,8 @@
     "financeOverview": "Finance Overview (Period:{period})",
     "flatLoadLimit": "Flat Load Limit",
     "flatPrice": "Flat Price",
+    "flutterwaveReference": "Flutterwave Reference",
+    "flutterwaveTransaction": "Flutterwave Transaction",
     "forgotPassword": "Forgot Password | Please insert your email address that you use in system.",
     "fromDate": "From Date",
     "generatePaymentLink": "Generate Payment Link",
