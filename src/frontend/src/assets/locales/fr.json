@@ -70,12 +70,12 @@
       "Tariffs": "Tariffs",
       "Transactions": "Transactions",
       "Types": "Types",
-      "User Management": "Gestion des utilisateurs",
       "Users": "Users",
       "addCluster": "Add Cluster",
       "addMiniGrid": "Add MiniGrid",
       "addVillage": "Add Village",
-      "manageVillages": "Gérer les villages"
+      "manageVillages": "Gérer les villages",
+      "userManagement": "Gestion des utilisateurs"
     }
   },
   "messages": {
@@ -169,6 +169,7 @@
     "batteryLevel": "Niveau de la batterie",
     "batteryVoltage": "Tension de la batterie",
     "bulkSms": "SMS en vrac |  Êtes-vous sûr(e) de vouloir envoyer les SMS en vrac ? | Les SMS sont envoyés.",
+    "bulkSmsPartiallyFailed": "{failed} message(s) sur {total} n'ont pas pu être envoyés",
     "businessNumber": "Numéro de l'entreprise",
     "callbackUrl": "URL de rappel",
     "cashTransaction": "Transaction en espèces",
@@ -470,9 +471,13 @@
     "shareWithCustomer": "Share with Customer",
     "shortCode": "Short Code",
     "signIn": "Sign In",
+    "smsDelivered": "Distribué",
+    "smsDelivery": "Distribution",
     "smsHistory": "SMS History",
     "smsList": "SMS List",
     "smsListNotify": "Message should contain more than 3 letters | The SMS is send out",
+    "smsNotDelivered": "Non distribué",
+    "smsSent": "Envoyé",
     "socialTariff": "Social Tariff | Price per kWh | Initial energy budget",
     "socialTariffLabels": "Daily allowance at social tariff | Maximum stacked energy",
     "socialTariffOptions": "Show Social Tariff Options | Hide Social Tariff Options ",

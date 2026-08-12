@@ -199,6 +199,12 @@ export default {
     this.exportFilters.currency =
       store.getters["settings/getMainSettings"].currency
   },
+  beforeDestroy() {
+    EventBus.$off("dataLoaded", this.dataLoaded)
+    EventBus.$off("pageLoaded", this.reloadList)
+    EventBus.$off("searching", this.searching)
+    EventBus.$off("end_searching", this.endSearching)
+  },
   methods: {
     hydrateFromRoute(query) {
       // Reset to defaults first

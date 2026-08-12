@@ -82,10 +82,16 @@ services:
       - redis:redis
     volumes:
       - storage_data:/var/www/html/storage
+    healthcheck:
+      test: [CMD, php, /var/www/html/artisan, mpm-system-checks:horizon, --local, --quiet]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   redis:
     container_name: redis
-    image: redis:5
+    image: redis:7
     volumes:
       - redis_data:/data
     ports:

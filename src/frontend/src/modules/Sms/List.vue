@@ -130,6 +130,11 @@
                     <md-icon>schedule</md-icon>
                     {{ formatDate(sms.created_at) }} -
                     {{ getTimeAgo(sms.created_at) }}
+                    <sms-delivery-status
+                      v-if="sms.direction === 1"
+                      :status="sms.status"
+                      :error-message="sms.error_message"
+                    />
                   </small>
                 </div>
               </div>
@@ -175,6 +180,7 @@ import moment from "moment"
 import { notify } from "@/mixins/notify.js"
 import { SmsService } from "@/services/SmsService.js"
 import { EventBus } from "@/shared/eventbus.js"
+import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
 import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
@@ -182,13 +188,11 @@ const debounce = require("debounce")
 export default {
   name: "List",
   mixins: [notify],
-  components: { Widget },
+  components: { SmsDeliveryStatus, Widget },
   watch: {
     filterNumber: debounce(function () {
-      if (this.filterNumber.length > 0) {
-        this.searchSms(this.filterNumber)
-      }
-    }, 1000),
+      this.searchSms(this.filterNumber)
+    }, 400),
   },
 
   mounted() {
@@ -262,17 +266,6 @@ export default {
         this.numberList.length,
       )
     },
-    async loadList() {
-      this.list = []
-      this.numberList = []
-      try {
-        this.numberList = await this.smsService.getList()
-        if (this.numberList.length > 0)
-          this.list = this.smsDetail(this.numberList[0].number)
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
     async smsDetail(phone) {
       this.showNumberList = false
       this.selectedNumber = phone
@@ -302,7 +295,13 @@ export default {
       this.$validator.reset()
     },
     searchSms(text) {
-      this.numberList = this.smsService.searchSms(text)
+      const term = (text ?? "").trim()
+      if (term.length === 0) {
+        this.smsService.showAll()
+
+        return
+      }
+      this.smsService.search(term)
     },
   },
 }

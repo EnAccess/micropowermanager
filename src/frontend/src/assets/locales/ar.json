@@ -70,12 +70,12 @@
       "Tariffs": "التعريفات",
       "Transactions": "المعاملات",
       "Types": "الأنواع",
-      "User Management": "إدارة المستخدمين",
       "Users": "المستخدمون",
       "addCluster": "إضافة مجموعة",
       "addMiniGrid": "إضافة مجمّع كهربائي صغير",
       "addVillage": "إضافة قرية",
-      "manageVillages": "إدارة القرى"
+      "manageVillages": "إدارة القرى",
+      "userManagement": "إدارة المستخدمين"
     }
   },
   "messages": {
@@ -169,6 +169,7 @@
     "batteryLevel": "مستوى البطارية",
     "batteryVoltage": "جهد البطارية",
     "bulkSms": "تم إرسال الرسائل بنجاح | هل أنت متأكد من إرسال الرسائل الجماعية؟ | رسائل قصيرة جماعية",
+    "bulkSmsPartiallyFailed": "تعذر إرسال {failed} من أصل {total} رسالة",
     "businessNumber": "رقم العمل",
     "callbackUrl": "رابط الاستدعاء",
     "cashTransaction": "معاملة نقدية",
@@ -470,9 +471,13 @@
     "shareWithCustomer": "مشاركة مع العميل",
     "shortCode": "الرمز المختصر",
     "signIn": "تسجيل الدخول",
+    "smsDelivered": "تم التسليم",
+    "smsDelivery": "التسليم",
     "smsHistory": "سجل الرسائل القصيرة",
     "smsList": "قائمة الرسائل القصيرة",
     "smsListNotify": "تم إرسال الرسالة القصيرة | يجب أن تحتوي الرسالة على أكثر من 3 أحرف",
+    "smsNotDelivered": "لم يتم التسليم",
+    "smsSent": "تم الإرسال",
     "socialTariff": "ميزانية الطاقة الأولية | السعر لكل كيلو واط ساعة | التعريفة الاجتماعية",
     "socialTariffLabels": "الحد الأقصى للطاقة المكدسة | الإعانة اليومية في التعريفة الاجتماعية",
     "socialTariffOptions": "إخفاء خيارات التعريفة الاجتماعية | عرض خيارات التعريفة الاجتماعية",
