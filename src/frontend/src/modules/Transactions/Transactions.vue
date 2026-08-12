@@ -302,9 +302,9 @@
                       style="max-height: 32px; max-width: 100px"
                     />
                     <img
-                        v-if="item.service === 'flutterwave_transaction'"
-                        :src="flutterwaveLogo"
-                        style="max-height: 32px; max-width: 100px"
+                      v-if="item.service === 'flutterwave_transaction'"
+                      :src="flutterwaveLogo"
+                      style="max-height: 32px; max-width: 100px"
                     />
                     <img
                       v-if="item.service === 'safaricom_transaction'"

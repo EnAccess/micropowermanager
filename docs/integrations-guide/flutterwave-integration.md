@@ -96,7 +96,7 @@ Unlike some providers, Flutterwave requires you to register the webhook URL and 
 1. In MPM, on the **Flutterwave** → **Overview** page, find the **Flutterwave Webhook Link** card and copy the **Webhook URL**
 2. Log into your Flutterwave dashboard and navigate to **Settings** → **Webhooks**
 3. Paste MPM's webhook URL into the **Webhook URL** field for the environment you're using (Test or Live)
-4. Set the **Secret Hash** field to the *exact same value* you entered as "Webhook Secret Hash" in Step 4 — a mismatch here means every webhook will be silently rejected
+4. Set the **Secret Hash** field to the _exact same value_ you entered as "Webhook Secret Hash" in Step 4 — a mismatch here means every webhook will be silently rejected
 5. Save the webhook settings on Flutterwave's side
 
 ![Flutterwave Webhook and Public Payment URLs](images/flutterwave-plugin-urls-preview.png)
