@@ -4,7 +4,6 @@ namespace App\Plugins\FlutterwavePaymentProvider\Services;
 
 use App\Plugins\FlutterwavePaymentProvider\Models\FlutterwaveTransaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class FlutterwaveWebhookService {
     public function __construct(
@@ -41,60 +40,61 @@ class FlutterwaveWebhookService {
      * `id`, ...), not the nested `{event, data}` shape their newer REST API
      * responses use — confirmed against a real delivery via ngrok's request
      * inspector.
+     *
+     * @return bool whether the notification was recognized and settled; the caller
+     *              uses this to distinguish "processed" from "ignored" in its response
      */
-    public function processWebhook(Request $request, int $companyId): void {
+    public function processWebhook(Request $request, int $companyId): bool {
         $payload = $request->all();
 
-        if (($payload['status'] ?? null) === 'successful') {
-            $this->handleSuccessfulPayment($payload, $companyId);
-        } else {
-            $this->handleFailedPayment($payload);
-        }
+        return ($payload['status'] ?? null) === 'successful'
+            ? $this->handleSuccessfulPayment($payload, $companyId)
+            : $this->handleFailedPayment($payload);
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    private function handleSuccessfulPayment(array $data, int $companyId): void {
-        try {
-            $reference = $data['txRef'] ?? null;
-            if (!$reference) {
-                return;
-            }
-
-            $flutterwaveTransaction = $this->transactionService->getByFlutterwaveReference($reference);
-            if (!$flutterwaveTransaction instanceof FlutterwaveTransaction) {
-                return;
-            }
-
-            $flutterwaveTransaction->external_transaction_id = (string) ($data['id'] ?? '');
-            $flutterwaveTransaction->save();
-
-            $this->transactionService->processSuccessfulPayment($companyId, $flutterwaveTransaction);
-        } catch (\Exception $e) {
-            Log::error('FlutterwaveWebhookService: Failed to process payment', [
-                'error' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    private function handleFailedPayment(array $data): void {
-        $reference = $data['txRef'] ?? null;
-        if (!$reference) {
-            return;
-        }
-
-        $flutterwaveTransaction = $this->transactionService->getByFlutterwaveReference($reference);
+    private function handleSuccessfulPayment(array $data, int $companyId): bool {
+        $flutterwaveTransaction = $this->findTransaction($data);
         if (!$flutterwaveTransaction instanceof FlutterwaveTransaction) {
-            return;
+            return false;
+        }
+
+        if (!$this->transactionService->verifyCharge($flutterwaveTransaction, $data)) {
+            return false;
         }
 
         $flutterwaveTransaction->external_transaction_id = (string) ($data['id'] ?? '');
-        $flutterwaveTransaction->save();
+        $this->transactionService->processSuccessfulPayment($companyId, $flutterwaveTransaction);
 
+        return true;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function handleFailedPayment(array $data): bool {
+        $flutterwaveTransaction = $this->findTransaction($data);
+        if (!$flutterwaveTransaction instanceof FlutterwaveTransaction) {
+            return false;
+        }
+
+        $flutterwaveTransaction->external_transaction_id = (string) ($data['id'] ?? '');
         $this->transactionService->processFailedPayment($flutterwaveTransaction);
+
+        return true;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function findTransaction(array $data): ?FlutterwaveTransaction {
+        $reference = $data['txRef'] ?? null;
+        if (!is_string($reference) || $reference === '') {
+            return null;
+        }
+
+        return $this->transactionService->getByFlutterwaveReference($reference);
     }
 }

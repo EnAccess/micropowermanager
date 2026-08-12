@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Plugins\FlutterwavePaymentProvider\Services;
 
 use App\Enums\DeviceType;
-use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
@@ -129,21 +128,38 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
         }
     }
 
-    public function processSuccessfulPayment(int $companyId, FlutterwaveTransaction $transaction): void {
-        $id = $transaction->transaction->id;
-        dispatch(new ProcessPayment($companyId, $id));
-        $transaction->status = FlutterwaveTransaction::STATUS_SUCCESS;
-        $transaction->save();
-    }
+    /**
+     * Verifies a webhook's reported amount/currency/reference against what MPM recorded when
+     * the payment was initiated. A mismatch is recorded as a conflict (status is left alone,
+     * since a mismatch means unverifiable, not failed) and the caller must not settle the
+     * payment when this returns false.
+     *
+     * @param array<string, mixed> $data the flat Flutterwave webhook payload
+     */
+    public function verifyCharge(FlutterwaveTransaction $transaction, array $data): bool {
+        $mismatch = $this->paymentMismatch(
+            'Flutterwave',
+            [
+                'amount' => (float) $transaction->amount,
+                'currency' => $transaction->currency,
+                'reference' => $transaction->flutterwave_reference,
+            ],
+            [
+                'amount' => (float) ($data['amount'] ?? 0),
+                'currency' => isset($data['currency']) ? (string) $data['currency'] : null,
+                'reference' => isset($data['txRef']) ? (string) $data['txRef'] : null,
+            ],
+        );
 
-    public function processFailedPayment(FlutterwaveTransaction $transaction): void {
-        $transaction->status = FlutterwaveTransaction::STATUS_FAILED;
-        $transaction->save();
-
-        $relatedTransaction = $transaction->transaction;
-        if ($relatedTransaction) {
-            $relatedTransaction->update(['status' => FlutterwaveTransaction::STATUS_FAILED]);
+        if ($mismatch === null) {
+            return true;
         }
+
+        $this->recordPaymentConflict($transaction, $mismatch, [
+            'flutterwave_reference' => $transaction->flutterwave_reference,
+        ]);
+
+        return false;
     }
 
     /**

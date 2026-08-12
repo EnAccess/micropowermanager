@@ -114,6 +114,7 @@ class FlutterwaveCredentialController extends Controller {
      */
     private function buildWebhookUrl(int $companyId): string {
         $appUrl = rtrim((string) config('app.url'), '/');
+
         return \URL::to($appUrl.'/api/flutterwave/webhook/'.$companyId);
     }
 

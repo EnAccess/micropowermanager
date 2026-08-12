@@ -155,8 +155,16 @@ class FlutterwavePublicController extends Controller {
                 }
             }
 
-            // Verify transaction with Flutterwave using its own transaction id
-            $transactionId = $request->query('transaction_id') ?? $transaction->external_transaction_id;
+            // Verify transaction with Flutterwave using its own transaction id.
+            // Flutterwave's redirect can carry the literal string "null" for this param
+            // (confirmed on a cancelled/abandoned checkout) rather than omitting it, which
+            // defeats a plain truthiness check and a `??` fallback alike — both treat a
+            // non-empty string as present. Normalize it to genuinely absent first.
+            $queryTransactionId = $request->query('transaction_id');
+            $transactionId = (is_string($queryTransactionId) && $queryTransactionId !== '' && $queryTransactionId !== 'null')
+                ? $queryTransactionId
+                : $transaction->external_transaction_id;
+
             $verification = $transactionId
                 ? $this->apiService->verifyTransaction((string) $transactionId)
                 : ['status' => null, 'error' => 'No Flutterwave transaction id available yet'];

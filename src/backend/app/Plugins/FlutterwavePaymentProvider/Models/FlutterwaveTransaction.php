@@ -22,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property      int                                   $customer_id
  * @property      string|null                           $serial_id
  * @property      string|null                           $device_type
- * @property      string|null                           $paystack_reference
+ * @property      string|null                           $flutterwave_reference
  * @property      string|null                           $manufacturer_transaction_type
  * @property      int|null                              $manufacturer_transaction_id
  * @property      string|null                           $payment_url
@@ -38,8 +38,6 @@ class FlutterwaveTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'flutterwave_transaction';
 
     public const STATUS_REQUESTED = 0;
-    public const STATUS_FAILED = -1;
-    public const STATUS_SUCCESS = 1;
     public const STATUS_COMPLETED = 2;
     public const STATUS_ABANDONED = 3;
     public const MAX_ATTEMPTS = 5;
