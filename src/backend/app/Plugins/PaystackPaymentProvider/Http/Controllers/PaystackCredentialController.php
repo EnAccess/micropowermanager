@@ -14,6 +14,7 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\URL;
 
 #[Group('Plugins / Paystack')]
 class PaystackCredentialController extends Controller {
@@ -88,9 +89,7 @@ class PaystackCredentialController extends Controller {
      * backend.
      */
     private function buildWebhookUrl(int $companyId): string {
-        $appUrl = rtrim((string) config('app.url'), '/');
-
-        return $appUrl.'/api/paystack/webhook/'.$companyId;
+        return URL::to('/api/paystack/webhook/'.$companyId);
     }
 
     /**

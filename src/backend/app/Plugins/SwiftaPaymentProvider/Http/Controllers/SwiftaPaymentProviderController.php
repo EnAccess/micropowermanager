@@ -2,9 +2,9 @@
 
 namespace App\Plugins\SwiftaPaymentProvider\Http\Controllers;
 
+use App\Models\Transaction\Transaction;
 use App\Plugins\SwiftaPaymentProvider\Http\Requests\SwiftaTransactionRequest;
 use App\Plugins\SwiftaPaymentProvider\Http\Requests\SwiftaValidationRequest;
-use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Plugins\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Response;
@@ -15,8 +15,10 @@ class SwiftaPaymentProviderController extends Controller {
     public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
 
     public function validation(SwiftaValidationRequest $request): Response {
-        $transactionId = $request->input('transactionId');
-        $customerName = $request->input('customerName');
+        // SwiftaTransactionMiddleware resolves both onto the request attributes; they are not
+        // request input, so they cannot be read with input()/string().
+        $transactionId = $request->attributes->getInt('transactionId');
+        $customerName = $request->attributes->getString('customerName');
         $data = collect([
             'success' => 1,
             'amount' => $request->input('amount'),
@@ -30,15 +32,14 @@ class SwiftaPaymentProviderController extends Controller {
     }
 
     public function transaction(SwiftaTransactionRequest $request): Response {
-        $transaction = $request->input('transaction');
-        $reference = $request->input('reference');
-        $swiftaTransaction = $transaction->originalTransaction()->first();
-        $updateData = [
-            'status' => SwiftaTransaction::STATUS_PENDING,
-            'transaction_reference' => $reference,
-        ];
+        /** @var Transaction $transaction */
+        $transaction = $request->attributes->get('transaction');
 
-        $this->swiftaTransactionService->update($swiftaTransaction, $updateData);
+        $this->swiftaTransactionService->applyCallback(
+            $transaction,
+            $request->attributes->getString('reference'),
+            $request->attributes->getInt('companyId'),
+        );
 
         $data = collect(
             [
