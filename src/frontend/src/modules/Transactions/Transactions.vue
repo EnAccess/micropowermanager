@@ -469,9 +469,9 @@
 import { mapGetters } from "vuex"
 
 import agentIcon from "@/assets/icons/agent-icon.png"
+import flutterwaveLogo from "@/assets/icons/FlutterwaveLogo.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
 import paystackLogo from "@/assets/icons/Paystack.png"
-import flutterwaveLogo from "@/assets/icons/FlutterwaveLogo.png"
 import safaricomLogo from "@/assets/icons/safaricom.svg"
 import swifta from "@/assets/icons/Swifta.png"
 import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
