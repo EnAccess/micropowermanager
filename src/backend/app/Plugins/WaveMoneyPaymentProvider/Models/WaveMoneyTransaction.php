@@ -32,9 +32,6 @@ class WaveMoneyTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'wave_money_transaction';
 
     public const STATUS_REQUESTED = 0;
-    public const STATUS_FAILED = -1;
-    public const STATUS_SUCCESS = 1;
-    public const STATUS_COMPLETED_BY_WAVE_MONEY = 2;
     public const MAX_ATTEMPTS = 5;
 
     protected $table = 'wave_money_transactions';

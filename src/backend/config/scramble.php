@@ -1,8 +1,6 @@
 <?php
 
 use App\Utils\ScrambleExtensions\ApiResourceTypeToSchema;
-use App\Utils\ScrambleExtensions\BinaryStreamedResponseToSchema;
-use App\Utils\ScrambleExtensions\StorageDownloadTypeInfer;
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
 return [
@@ -164,7 +162,5 @@ DESC,
 
     'extensions' => [
         ApiResourceTypeToSchema::class,
-        BinaryStreamedResponseToSchema::class,
-        StorageDownloadTypeInfer::class,
     ],
 ];

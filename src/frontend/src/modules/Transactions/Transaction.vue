@@ -94,7 +94,6 @@
                     <div
                       class="md-layout-item md-subheader n-font"
                       v-if="
-                        transaction.payment_histories[0].paymentHistory &&
                         transaction.device &&
                         transaction.device.device_type === 'meter'
                       "
@@ -111,7 +110,6 @@
                     <div
                       class="md-layout-item md-subheader n-font"
                       v-else-if="
-                        transaction.payment_histories[0].paymentHistory &&
                         transaction.device &&
                         transaction.device.device_type === 'solar_home_system'
                       "
@@ -171,7 +169,7 @@
                     </div>
                     <div
                       class="md-layout-item md-subheader n-font"
-                      v-if="transaction.payment_histories[0].paymentHistory"
+                      v-if="personId"
                     >
                       <router-link
                         :to="{
@@ -230,7 +228,7 @@
                   </md-card-content>
                 </div>
                 <div v-else>
-                  <md-card-content v-if="ot.status === 1">
+                  <md-card-content v-if="ot.status === 1 && hasPaymentHistory">
                     <div class="md-layout md-gutter md-size-100">
                       <div
                         class="md-layout-item md-size-55"
@@ -244,9 +242,7 @@
                         class="md-layout-item md-size-45"
                         style="max-height: 320px; overflow-y: scroll"
                       >
-                        <md-table
-                          v-if="transaction.payment_histories[0].paymentHistory"
-                        >
+                        <md-table>
                           <md-table-row>
                             <md-table-head>
                               {{ $tc("phrases.paidFor") }}
@@ -272,18 +268,23 @@
                       </div>
                     </div>
                   </md-card-content>
-                  <md-card-content v-if="ot.status === -1">
-                    <h2>Transaction cancelled</h2>
-                    <md-list class="md-double-line">
-                      <md-subheader style="color: #a81e10">
-                        {{ $tc("phrases.transactionCancelled") }}
+                  <md-card-content v-if="showConflicts">
+                    <md-list>
+                      <md-subheader
+                        :class="
+                          isCancelled
+                            ? 'conflict-cancelled'
+                            : 'conflict-attention'
+                        "
+                      >
+                        {{ conflictHeadline }}
                       </md-subheader>
 
                       <md-list-item
                         :key="conflict.id"
-                        v-for="conflict in ot.conflicts"
+                        v-for="conflict in conflicts"
                       >
-                        <span class="margin-top-5">
+                        <span class="conflict-state">
                           {{ conflict.state }}
                         </span>
                       </md-list-item>
@@ -428,14 +429,39 @@ export default {
     ot() {
       return this.transaction.original_transaction
     },
+    // TransactionService pushes a placeholder entry when the backend returns none,
+    // so the flag on the first entry is what says whether any payment was recorded.
+    hasPaymentHistory() {
+      return this.transaction?.payment_histories?.[0]?.paymentHistory === true
+    },
+    conflicts() {
+      return this.ot?.conflicts ?? []
+    },
+    showConflicts() {
+      return this.isCancelled || this.conflicts.length > 0
+    },
+    isCancelled() {
+      return this.ot?.status === -1
+    },
+    // Three different situations land here and an operator acts on each differently:
+    // the payment failed, or it settled and the customer got nothing for it, or the
+    // provider reported something we could not match against what we recorded, which
+    // leaves the transaction pending and the money unaccounted for.
+    conflictHeadline() {
+      if (this.isCancelled) {
+        return this.$tc("phrases.transactionCancelled")
+      }
+      if (this.ot?.status === 1) {
+        return this.$tc("phrases.paymentNotDelivered")
+      }
+      return this.$tc("phrases.paymentNeedsReview")
+    },
     smsDeliveryIsKnown() {
       return hasDeliveryStatus(this.transaction.sms?.status)
     },
     providerDetail() {
       const transactionType = this.transaction.original_transaction_type
       switch (transactionType) {
-        case "vodacom_transaction":
-          return "VodacomTransactionDetail"
         case "vodacom_mz_transaction":
           return "VodacomMzTransactionDetail"
         case "agent_transaction":
@@ -452,6 +478,12 @@ export default {
           return "PaystackTransactionDetail"
         case "flutterwave_transaction":
           return "FlutterwaveTransactionDetail"
+        case "pesapal_transaction":
+          return "PesapalTransactionDetail"
+        case "safaricom_transaction":
+          return "SafaricomTransactionDetail"
+        case "mesomb_transactions":
+          return "MesombTransactionDetail"
         case "cash_transaction":
           return "CashTransactionDetail"
         case "sms_transaction":
@@ -522,12 +554,14 @@ export default {
     async getDetail(id) {
       try {
         this.transaction = await this.transactionService.getTransaction(id)
-        console.log(this.transaction)
-        if (this.transaction.payment_histories[0].paymentHistory === true) {
+        if (this.hasPaymentHistory) {
           await this.getRelatedPerson(
             this.transaction.payment_histories[0].payer_id,
           )
+
+          return
         }
+        this.setPersonFromDeviceOwner()
       } catch (e) {
         if (e.response && e.response.status === 403) {
           this.alertNotify(
@@ -539,6 +573,15 @@ export default {
           this.alertNotify("error", e.message)
         }
       }
+    },
+    setPersonFromDeviceOwner() {
+      const owner = this.transaction.device?.person
+      if (!owner) {
+        return
+      }
+
+      this.personName = `${owner.name} ${owner.surname}`
+      this.personId = owner.id
     },
     async getRelatedPerson(personId) {
       try {
@@ -558,6 +601,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.md-subheader.conflict-cancelled {
+  color: #a81e10;
+  font-weight: 500;
+}
+
+// Amber rather than red: the payment was not rejected, so this is something to
+// reconcile rather than a transaction that is over.
+.md-subheader.conflict-attention {
+  color: #b26a00;
+  font-weight: 500;
+}
+
+.conflict-state {
+  white-space: normal;
+}
+
 .transaction-detail-card {
   margin-top: 1rem !important;
   margin-right: 1rem !important;

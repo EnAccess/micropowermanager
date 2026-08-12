@@ -4,8 +4,11 @@ namespace App\Providers\Helpers;
 
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\BasePaymentProviderTransaction;
+use App\Models\Transaction\CashTransaction;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackTransactionProvider;
+use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
+use App\Plugins\PesapalPaymentProvider\Providers\PesapalTransactionProvider;
 use App\Plugins\SafaricomKePaymentProvider\Models\SafaricomTransaction;
 use App\Plugins\SafaricomKePaymentProvider\Providers\SafaricomKeTransactionProvider;
 use App\Plugins\SmsTransactionParser\Models\SmsTransaction;
@@ -17,42 +20,36 @@ use App\Plugins\WavecomPaymentProvider\Providers\WaveComTransactionProvider;
 use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 use App\Providers\AgentTransactionProvider;
+use App\Providers\CashTransactionProvider;
 use App\Providers\Interfaces\ITransactionProvider;
 
 class TransactionAdapter {
+    /**
+     * Every payment source MPM can settle, mapped to the provider that knows how to talk to it.
+     * A source missing from here resolves to null and silently loses the conflict reporting and
+     * SMS notification the listeners drive off it, so new payment plugins must register here.
+     *
+     * @var array<class-string<BasePaymentProviderTransaction>, class-string<ITransactionProvider>>
+     */
+    private const array PROVIDER_BY_TRANSACTION = [
+        AgentTransaction::class => AgentTransactionProvider::class,
+        CashTransaction::class => CashTransactionProvider::class,
+        PaystackTransaction::class => PaystackTransactionProvider::class,
+        PesapalTransaction::class => PesapalTransactionProvider::class,
+        SafaricomTransaction::class => SafaricomKeTransactionProvider::class,
+        SmsTransaction::class => SmsTransactionProvider::class,
+        SwiftaTransaction::class => SwiftaTransactionProvider::class,
+        WaveComTransaction::class => WaveComTransactionProvider::class,
+        WaveMoneyTransaction::class => WaveMoneyTransactionProvider::class,
+    ];
+
     public static function getTransaction(BasePaymentProviderTransaction $transactionProvider): ?ITransactionProvider {
-        if ($transactionProvider instanceof AgentTransaction) {
-            $baseTransaction = resolve(AgentTransactionProvider::class);
-            $baseTransaction->init($transactionProvider);
+        foreach (self::PROVIDER_BY_TRANSACTION as $transactionClass => $providerClass) {
+            if (!$transactionProvider instanceof $transactionClass) {
+                continue;
+            }
 
-            return $baseTransaction;
-        } elseif ($transactionProvider instanceof WaveMoneyTransaction) {
-            $baseTransaction = resolve(WaveMoneyTransactionProvider::class);
-            $baseTransaction->init($transactionProvider);
-
-            return $baseTransaction;
-        } elseif ($transactionProvider instanceof SwiftaTransaction) {
-            $baseTransaction = resolve(SwiftaTransactionProvider::class);
-            $baseTransaction->init($transactionProvider);
-
-            return $baseTransaction;
-        } elseif ($transactionProvider instanceof PaystackTransaction) {
-            $baseTransaction = resolve(PaystackTransactionProvider::class);
-            $baseTransaction->init($transactionProvider);
-
-            return $baseTransaction;
-        } elseif ($transactionProvider instanceof WaveComTransaction) {
-            $baseTransaction = resolve(WaveComTransactionProvider::class);
-            $baseTransaction->init($transactionProvider);
-
-            return $baseTransaction;
-        } elseif ($transactionProvider instanceof SmsTransaction) {
-            $baseTransaction = resolve(SmsTransactionProvider::class);
-            $baseTransaction->init($transactionProvider);
-
-            return $baseTransaction;
-        } elseif ($transactionProvider instanceof SafaricomTransaction) {
-            $baseTransaction = resolve(SafaricomKeTransactionProvider::class);
+            $baseTransaction = resolve($providerClass);
             $baseTransaction->init($transactionProvider);
 
             return $baseTransaction;

@@ -6,6 +6,9 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionAmountDifferentException;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionNotExistsException;
+use App\Plugins\SwiftaPaymentProvider\Exceptions\TransactionNotSettleableException;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
@@ -66,13 +69,32 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         try {
             return $this->transaction->newQuery()->findOrFail($transactionId);
         } catch (ModelNotFoundException $exception) {
-            throw new \Exception('transaction_id validation field.', $exception->getCode(), $exception);
+            throw new TransactionNotExistsException('transaction_id validation field.', $exception->getCode(), $exception);
         }
+    }
+
+    /**
+     * Settle the Swifta transaction behind an MPM transaction. Swifta's cipher covers only the
+     * timestamp and amount, so a captured callback stays valid indefinitely and replaying it is
+     * trivial — the base service's row lock is what stops it crediting the device twice.
+     */
+    public function applyCallback(Transaction $transaction, ?string $transactionReference, int $companyId): void {
+        $swiftaTransaction = $transaction->originalTransaction()->first();
+        if (!$swiftaTransaction instanceof SwiftaTransaction) {
+            throw new TransactionNotSettleableException("Transaction {$transaction->id} has no Swifta transaction to settle.");
+        }
+
+        // Left unsaved so it is persisted while the settlement holds the row lock.
+        if ($transactionReference !== null) {
+            $swiftaTransaction->transaction_reference = $transactionReference;
+        }
+
+        $this->processSuccessfulPayment($companyId, $swiftaTransaction);
     }
 
     public function checkAmountIsSame(int $amount, Transaction $transaction): void {
         if ($amount !== (int) $transaction->amount) {
-            throw new \Exception('amount validation field.');
+            throw new TransactionAmountDifferentException('amount validation field.');
         }
     }
 

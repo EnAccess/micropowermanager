@@ -25,10 +25,9 @@ class CityController extends Controller {
      * List cities (customer registration app).
      *
      * Alias of `GET /api/cities` for the customer registration app.
-     *
-     * @deprecated use `GET /api/cities` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/cities` instead')]
     public function indexForCustomerRegistrationApp(Request $request): ApiResource {
         return ApiResource::make($this->cityService->getAll($request->input('limit')));
     }

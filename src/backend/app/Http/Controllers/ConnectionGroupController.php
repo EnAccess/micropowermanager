@@ -23,10 +23,9 @@ class ConnectionGroupController {
      * List connection groups (customer registration app).
      *
      * Alias of `GET /api/connection-groups` for the customer registration app.
-     *
-     * @deprecated use `GET /api/connection-groups` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/connection-groups` instead')]
     public function indexForCustomerRegistrationApp(Request $request): ApiResource {
         return ApiResource::make($this->connectionGroupService->getAll($request->input('per_page')));
     }
