@@ -123,7 +123,7 @@ class SmsGatewayResolverService {
         }
 
         if ($gateway === null) {
-            Log::error('No active SMS provider configured', ['receiver' => $receiver]);
+            Log::warning('No active SMS provider configured', ['receiver' => $receiver]);
 
             throw new NoActiveSmsProviderException('No active SMS provider is configured. Please configure an SMS gateway in Main Settings or enable a plugin (AfricasTalking, TextBee, or Viber Messaging).');
         }
