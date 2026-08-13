@@ -26,7 +26,7 @@ return new class extends Migration {
         });
 
         DB::connection('tenant')->table('main_settings')->insert([
-            'site_title' => 'MPM - The easiest way to manage your Mini-Grid',
+            'site_title' => 'MPM - The easiest way to manage your Site',
             'company_name' => 'MicroPowerManager',
             'currency' => '€',
             'country' => 'Germany',
