@@ -98,8 +98,8 @@ class ConnectionTypeGroupSeeder extends Seeder {
 
         ConnectionGroup::factory()
             ->forEachSequence(
-                ['name' => 'Pilot Mini-grid A (Lakeview)'],
-                ['name' => 'Pilot Mini-grid B (Hilltop)'],
+                ['name' => 'Pilot Site A (Lakeview)'],
+                ['name' => 'Pilot Site B (Hilltop)'],
                 ['name' => 'Institutional Electrification Program 2025'],
                 ['name' => 'Commercial Productive Use Initiative'],
                 ['name' => 'Solar Village Cluster North'],
