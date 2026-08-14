@@ -15,7 +15,6 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
 
 #[Group('Plugins / Flutterwave', 'API endpoints for integrating with Flutterwave payment services')]
 class FlutterwaveController extends Controller {
@@ -26,9 +25,9 @@ class FlutterwaveController extends Controller {
     ) {}
 
     public function initializeTransaction(TransactionInitializeRequest $request): JsonResponse {
-        $customerId = (int) $request->input('customer_id');
+        $customerId = $request->integer('customer_id');
         $serialId = $request->input('device_serial');
-        $amount = (float) $request->input('amount');
+        $amount = $request->float('amount');
         $sender = $this->transactionService->getCustomerPhoneByCustomerId($customerId) ?? '';
 
         $result = $this->transactionService->initiatePayment(
@@ -60,12 +59,6 @@ class FlutterwaveController extends Controller {
         try {
             $processed = $this->webhookService->processWebhook($request, $companyId);
         } catch (\Exception $e) {
-            Log::error('FlutterwaveController: Failed to handle webhook', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'company_id' => $companyId,
-            ]);
-
             // Flutterwave retries on a non-2xx, which is what we want for a transient failure.
             return response()->json(['error' => 'Failed to process webhook'], 500);
         }

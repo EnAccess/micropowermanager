@@ -199,4 +199,82 @@ class FlutterwaveWebhookServiceTest extends TestCase {
         $this->assertSame(FlutterwaveTransaction::STATUS_REQUESTED, $transaction->fresh()->status);
         Bus::assertNotDispatched(ProcessPayment::class);
     }
+
+    /**
+     * @param array<string, mixed> $overrides
+     */
+    private function v3ChargeRequest(
+        FlutterwaveTransaction $transaction,
+        string $status = 'successful',
+        array $overrides = [],
+    ): Request {
+        // The "v3 webhook" toggle on Flutterwave's dashboard sends this nested,
+        // snake_case shape instead — see normalizePayload()'s docblock.
+        return Request::create(
+            '/flutterwave/webhook/'.self::COMPANY_ID,
+            'POST',
+            [],
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            (string) json_encode([
+                'data' => array_merge([
+                    'id' => 998877,
+                    'tx_ref' => $transaction->flutterwave_reference,
+                    'status' => $status,
+                    'amount' => $transaction->amount,
+                    'currency' => $transaction->currency,
+                ], $overrides),
+                'event' => 'charge.completed',
+                'event.type' => 'CARD_TRANSACTION',
+            ]),
+        );
+    }
+
+    public function testV3ChargeSuccessCreditsPaymentAndDispatchesProcessing(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+
+        $processed = $this->makeService()->processWebhook(
+            $this->v3ChargeRequest($transaction),
+            self::COMPANY_ID
+        );
+
+        $this->assertTrue($processed);
+        $this->assertSame(FlutterwaveTransaction::STATUS_SUCCESS, $transaction->fresh()->status);
+        $this->assertSame('998877', $transaction->fresh()->external_transaction_id);
+        Bus::assertDispatchedTimes(ProcessPayment::class, 1);
+    }
+
+    public function testV3ChargeWithTamperedAmountRefusesCreditAndRecordsAConflict(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+
+        $processed = $this->makeService()->processWebhook(
+            $this->v3ChargeRequest($transaction, overrides: ['amount' => 500]),
+            self::COMPANY_ID
+        );
+
+        $this->assertFalse($processed);
+        $this->assertSame(FlutterwaveTransaction::STATUS_REQUESTED, $transaction->fresh()->status);
+        Bus::assertNotDispatched(ProcessPayment::class);
+
+        $conflicts = $transaction->conflicts()->get();
+        $this->assertCount(1, $conflicts);
+        $this->assertSame('Flutterwave amount does not match the stored transaction.', $conflicts->first()->state);
+    }
+
+    public function testV3ChargeFailedMarksTheTransactionFailed(): void {
+        Bus::fake();
+        $transaction = $this->persistTransaction();
+
+        $processed = $this->makeService()->processWebhook(
+            $this->v3ChargeRequest($transaction, 'failed'),
+            self::COMPANY_ID
+        );
+
+        $this->assertTrue($processed);
+        $this->assertSame(FlutterwaveTransaction::STATUS_FAILED, $transaction->fresh()->status);
+        Bus::assertNotDispatched(ProcessPayment::class);
+    }
 }

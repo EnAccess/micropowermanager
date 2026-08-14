@@ -112,11 +112,9 @@ class FlutterwavePublicController extends Controller {
         }
     }
 
-    /**
-     * Flutterwave's redirect callback returns both `tx_ref` (our reference) and its
-     * own numeric `transaction_id` as query params — we need the former to find our
-     * record and the latter to verify with Flutterwave's API.
-     */
+    // Flutterwave's redirect callback returns both `tx_ref` (our reference) and its
+    // own numeric `transaction_id` as query params — we need the former to find our
+    // record and the latter to verify with Flutterwave's API.
     public function showResult(Request $request, string $companyHash, ?int $companyId = null): JsonResponse {
         try {
             $companyId ??= $this->hashService->parseHashFromCompanyId((string) $request->query('ct'));
