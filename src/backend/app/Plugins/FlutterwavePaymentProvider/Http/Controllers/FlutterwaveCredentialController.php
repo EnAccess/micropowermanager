@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Plugins\FlutterwavePaymentProvider\Http\Controllers;
 
 use App\Models\MpmPlugin;
+use App\Plugins\FlutterwavePaymentProvider\Http\Requests\UpdateCredentialRequest;
 use App\Plugins\FlutterwavePaymentProvider\Http\Resources\FlutterwaveCredentialResource;
 use App\Plugins\FlutterwavePaymentProvider\Services\FlutterwaveCompanyHashService;
 use App\Plugins\FlutterwavePaymentProvider\Services\FlutterwaveCredentialService;
@@ -31,24 +32,7 @@ class FlutterwaveCredentialController extends Controller {
         return FlutterwaveCredentialResource::make($credential);
     }
 
-    public function update(Request $request): FlutterwaveCredentialResource {
-        // The four secret fields are write-only: the resource never returns the
-        // stored values, so the form re-submits them blank unless the operator
-        // actually retypes them. They're nullable here for that reason — the
-        // service treats a blank field as "keep the existing value" and throws
-        // if the credential ends up without a required value after the merge
-        // (i.e. on first save).
-        $request->validate([
-            'secret_key' => ['nullable', 'string', 'min:3'],
-            'public_key' => ['nullable', 'string', 'min:3'],
-            'encryption_key' => ['nullable', 'string', 'min:3'],
-            'webhook_secret_hash' => ['nullable', 'string', 'min:3'],
-            'callback_url' => ['required', 'url'],
-            'merchant_name' => ['required', 'string', 'min:2'],
-            'merchant_email' => ['required', 'email'],
-            'environment' => ['required', 'in:test,live'],
-        ]);
-
+    public function update(UpdateCredentialRequest $request): FlutterwaveCredentialResource {
         $updateData = [
             'callback_url' => $request->input('callback_url'),
             'merchant_name' => $request->input('merchant_name'),
@@ -116,23 +100,5 @@ class FlutterwaveCredentialController extends Controller {
         $appUrl = rtrim((string) config('app.url'), '/');
 
         return \URL::to($appUrl.'/api/flutterwave/webhook/'.$companyId);
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function generateAgentPaymentUrl(Request $request) {
-        $companyId = $request->attributes->get('companyId');
-        $customerId = $request->input('customer_id');
-        $agentId = $request->input('agent_id');
-
-        $agentPaymentUrl = $this->hashService->generateAgentPaymentUrl($companyId, $customerId, $agentId);
-
-        return response()->json([
-            'agent_payment_url' => $agentPaymentUrl,
-            'expires_in_hours' => 24,
-            'customer_id' => $customerId,
-            'agent_id' => $agentId,
-        ]);
     }
 }

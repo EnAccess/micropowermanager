@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Plugins\FlutterwavePaymentProvider\Http\Controllers;
 
 use App\Plugins\FlutterwavePaymentProvider\Http\Requests\TransactionInitializeRequest;
+use app\Plugins\FlutterwavePaymentProvider\Http\Requests\UpdateTransactionRequest;
 use App\Plugins\FlutterwavePaymentProvider\Http\Resources\FlutterwaveTransactionResource;
 use App\Plugins\FlutterwavePaymentProvider\Models\FlutterwaveTransaction;
 use App\Plugins\FlutterwavePaymentProvider\Modules\Api\FlutterwaveApiService;
@@ -111,18 +112,12 @@ class FlutterwaveController extends Controller {
     /**
      * @return FlutterwaveTransactionResource|JsonResponse
      */
-    public function updateTransaction(Request $request, int $id) {
+    public function updateTransaction(UpdateTransactionRequest $request, int $id) {
         $transaction = $this->transactionService->getById($id);
 
         if (!$transaction instanceof FlutterwaveTransaction) {
             return response()->json(['error' => 'Transaction not found'], 404);
         }
-
-        $request->validate([
-            'amount' => ['sometimes', 'numeric', 'min:0'],
-            'currency' => ['sometimes', 'string', 'in:NGN,USD,GHS,KES,ZAR'],
-            'status' => ['sometimes', 'integer', 'in:0,1,2,3'],
-        ]);
 
         $updatedTransaction = $this->transactionService->update($transaction, $request->only([
             'amount', 'currency', 'status',

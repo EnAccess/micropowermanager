@@ -10,7 +10,6 @@ Route::prefix('flutterwave')->group(function () {
     Route::get('/credential', [FlutterwaveCredentialController::class, 'show']);
     Route::put('/credential', [FlutterwaveCredentialController::class, 'update']);
     Route::get('/credential/public-urls', [FlutterwaveCredentialController::class, 'generatePublicUrls']);
-    Route::post('/credential/agent-payment-url', [FlutterwaveCredentialController::class, 'generateAgentPaymentUrl']);
 
     // Transaction management
     Route::post('/transaction/initialize', [FlutterwaveController::class, 'initializeTransaction']);
