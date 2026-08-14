@@ -58,7 +58,7 @@ class FlutterwaveController extends Controller {
 
         try {
             $processed = $this->webhookService->processWebhook($request, $companyId);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Flutterwave retries on a non-2xx, which is what we want for a transient failure.
             return response()->json(['error' => 'Failed to process webhook'], 500);
         }
