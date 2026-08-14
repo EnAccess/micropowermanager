@@ -64,38 +64,37 @@ The backend integration process involves several key steps to make your plugin d
 
 #### Register API Routes
 
-If your plugin needs to handle API requests (e.g., webhooks, custom endpoints), register your route resolver:
+Plugins use their own API resolver to manage authorization instead of the standard JWT-based middleware,
+which is also how they can expose genuinely public endpoints — a public payment page, an inbound webhook — that still resolve to the correct tenant without a JWT.
+Register your plugin's URL prefix in `App\Services\ApiResolvers\ThirdPartyApiResolverService`, and
+implement `App\Services\Interfaces\IApiResolver` to say how a company id is resolved for that prefix (from a path segment, a hash token, or a JWT where one is actually present):
 
 ```php
-// src/backend/app/Services/ApiResolvers/Data/ApiResolvers
+// src/backend/app/Services/ApiResolvers/ThirdPartyApiResolverService.php
 
-class ApiResolverMap {
+class ThirdPartyApiResolverService {
     // ...other API constants
-    public const YOUR_PLUGIN_API = 'api/your-plugin/callback';
+    public const YOUR_PLUGIN_API = 'api/your-plugin/';
 
-    public const RESOLVABLE_APIS = [
-        // ...other resolvable APIs
-        self::YOUR_PLUGIN_API,
-    ];
-
-    private const API_RESOLVER = [
-        // ...other API resolvers
+    private const array RESOLVERS = [
+        // ...other resolvers
         self::YOUR_PLUGIN_API => YourPluginApiResolver::class,
     ];
+}
+```
 
-    public function getResolvableApis(): array {
-        return self::RESOLVABLE_APIS;
-    }
+```php
+// src/backend/app/Services/ApiResolvers/YourPluginApiResolver.php
 
-    public function getApiResolver(string $api): string {
-        return self::API_RESOLVER[$api];
+class YourPluginApiResolver implements IApiResolver {
+    public function resolveCompanyId(Request $request): int {
     }
 }
 ```
 
 #### Database Setup
 
-Your plugin will might need several database migrations to integrate with MPM:
+Your plugin will/might need several database migrations to integrate with MPM:
 
 ##### Create Plugin Tables
 
@@ -166,8 +165,8 @@ If your plugin is a **payment provider** (processes transactions from an externa
    }
    ```
 
-   If your provider only _receives_ payments through gateway callbacks (inbound only), this is all that is needed.
-   If it also supports _initiating_ payments from MPM, continue with the next steps.
+   If your provider only **receives** payments through gateway callbacks (inbound only), this is all that is needed.
+   If it also supports **initiating** payments from MPM, continue with the next steps.
 
 2. **Implement the `PaymentInitiator` interface**
 

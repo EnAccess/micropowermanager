@@ -10,6 +10,7 @@ use App\Plugins\DalyBms\Providers\DalyBmsServiceProvider;
 use App\Plugins\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
 use App\Plugins\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
 use App\Plugins\EcreeeETender\Providers\EcreeeETenderServiceProvider;
+use App\Plugins\FlutterwavePaymentProvider\Providers\FlutterwavePaymentProviderServiceProvider;
 use App\Plugins\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
 use App\Plugins\KelinMeter\Providers\KelinMeterServiceProvider;
 use App\Plugins\MesombPaymentProvider\Providers\MesombServiceProvider;
@@ -74,4 +75,5 @@ return [
     WavecomPaymentProviderServiceProvider::class,
     EcreeeETenderServiceProvider::class,
     SparkShsServiceProvider::class,
+    FlutterwavePaymentProviderServiceProvider::class,
 ];
