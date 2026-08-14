@@ -19,6 +19,8 @@ class DeviceCapabilitiesResource extends JsonResource {
             'token_generation' => $this->tokenGeneration,
             /* The unit this device's tokens carry credit in, next to a plain currency amount. */
             'credit_unit' => $this->creditUnit?->value,
+            /* Why this device cannot be issued a token, e.g. it has no customer or no price to convert money into credit. Null when it can. */
+            'token_generation_blocked_reason' => $this->tokenGenerationBlockedReason,
         ];
     }
 }

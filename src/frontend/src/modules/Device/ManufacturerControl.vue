@@ -14,6 +14,12 @@
           <span>{{ checkedAtDisplay }}</span>
         </div>
       </md-list-item>
+      <md-list-item v-if="capabilities.tokenGenerationBlockedReason">
+        <div class="md-list-item-text">
+          <span>{{ $tc("phrases.generateToken") }}</span>
+          <span>{{ capabilities.tokenGenerationBlockedReason }}</span>
+        </div>
+      </md-list-item>
     </md-list>
 
     <div class="control-actions">
@@ -239,6 +245,7 @@ export default {
       capabilities: {
         tokenGeneration: false,
         creditUnit: null,
+        tokenGenerationBlockedReason: null,
       },
       generatedToken: null,
       amount: null,
@@ -270,14 +277,6 @@ export default {
   methods: {
     isExpandable(value) {
       return value !== null && typeof value === "object"
-    },
-    unitLabel(unit) {
-      const labels = {
-        currency: this.$tc("words.currency"),
-        days: this.$tc("words.days"),
-        kWh: this.$tc("words.kwh"),
-      }
-      return labels[unit] || unit
     },
     async loadCapabilities() {
       try {

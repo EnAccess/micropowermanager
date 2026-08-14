@@ -10,7 +10,9 @@ use App\Enums\DeviceType;
 use App\Enums\ManufacturerMappingStatus;
 use App\Events\NewLogEvent;
 use App\Exceptions\Device\CreditPriceNotFoundException;
+use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
+use App\Exceptions\MpmException;
 use App\Lib\DeviceCapabilities;
 use App\Lib\DeviceMappingResult;
 use App\Lib\IManufacturerAPI;
@@ -20,6 +22,7 @@ use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Everything MPM asks a manufacturer to do to a single device outside the payment
@@ -34,11 +37,18 @@ class DeviceControlService {
     ) {}
 
     public function capabilities(Device $device): DeviceCapabilities {
-        $api = $this->resolveApi($device);
+        $blocker = null;
+
+        try {
+            $this->assertTokenGenerationPossible($device);
+        } catch (MpmException $e) {
+            $blocker = $e;
+        }
 
         return new DeviceCapabilities(
-            tokenGeneration: $api instanceof IManufacturerAPI,
+            tokenGeneration: !$blocker instanceof MpmException,
             creditUnit: DeviceType::from($device->device_type)->creditUnit(),
+            tokenGenerationBlockedReason: $blocker?->getMessage(),
         );
     }
 
@@ -52,26 +62,33 @@ class DeviceControlService {
      * deliberately not applied — this grants credit, it does not settle a debt.
      */
     public function generateToken(Device $device, float $amount, DeviceTokenUnit $unit, int $creatorId): Token {
-        $api = $this->resolveApi($device);
+        $api = $this->assertTokenGenerationPossible($device);
+        $amountInCurrency = $this->toCurrency($device, $amount, $unit);
+        $senderPhone = (string) ($device->person->addresses()->value('phone') ?? '');
 
-        if (!$api instanceof IManufacturerAPI) {
-            throw new ApiCallDoesNotSupportedException('The manufacturer of this device does not support token generation.');
-        }
+        // The manufacturer call needs a persisted transaction to write its reference
+        // onto, so the grant is booked first and rolled back when the call fails —
+        // an ad-hoc transaction nobody was charged for reads as revenue. The rows all
+        // live on the tenant connection, which the request does not make the default
+        // one, so the transaction has to name it.
+        $token = DB::connection('tenant')->transaction(function () use ($api, $device, $amountInCurrency, $senderPhone, $creatorId) {
+            $transaction = $this->cashTransactionService->createTransaction(
+                $creatorId,
+                $amountInCurrency,
+                $senderPhone,
+                $device->device_serial,
+                Transaction::TYPE_AD_HOC,
+            );
 
-        $transaction = $this->cashTransactionService->createTransaction(
-            $creatorId,
-            $this->toCurrency($device, $amount, $unit),
-            (string) ($device->person?->addresses()->first()->phone ?? ''),
-            $device->device_serial,
-            Transaction::TYPE_AD_HOC,
-        );
+            $tokenData = $api->chargeDevice(TransactionDataContainer::initialize($transaction));
 
-        $tokenData = $api->chargeDevice(TransactionDataContainer::initialize($transaction));
+            $token = Token::query()->make($tokenData);
+            $token->device_id = $device->id;
+            $token->transaction()->associate($transaction);
+            $token->save();
 
-        $token = Token::query()->make($tokenData);
-        $token->device_id = $device->id;
-        $token->transaction()->associate($transaction);
-        $token->save();
+            return $token;
+        });
 
         event(new NewLogEvent([
             'user_id' => $creatorId,
@@ -80,6 +97,30 @@ class DeviceControlService {
         ]));
 
         return $token;
+    }
+
+    /**
+     * Everything that has to hold before a device can be issued credit out of band:
+     * an API that vends tokens, a customer to book the grant against — several
+     * manufacturers vend against the customer record, not the unit — and a price to
+     * turn money into credit. {@see self::capabilities()} reports a failure as a
+     * reason and {@see self::generateToken()} raises it, so the endpoint and the UI
+     * cannot disagree on the rules.
+     */
+    private function assertTokenGenerationPossible(Device $device): IManufacturerAPI {
+        $api = $this->resolveApi($device);
+
+        if (!$api instanceof IManufacturerAPI) {
+            throw new ApiCallDoesNotSupportedException('The manufacturer of this device does not support token generation.');
+        }
+
+        if ($device->person === null) {
+            throw new DeviceIsNotAssignedToCustomer("Device {$device->device_serial} is not assigned to a customer, so credit cannot be issued for it.");
+        }
+
+        $this->creditPrice($device);
+
+        return $api;
     }
 
     /**
@@ -146,16 +187,26 @@ class DeviceControlService {
             throw new CreditPriceNotFoundException("A {$deviceType->value} issues its credit in {$deviceType->creditUnit()->value}, not in {$unit->value}.");
         }
 
+        return $amount * $this->creditPrice($device);
+    }
+
+    /**
+     * What one credit unit costs. Manufacturer APIs divide the currency amount they
+     * are handed by this same price to decide how much credit to vend, so a device
+     * that cannot be priced cannot be charged at all — not even for a request already
+     * denominated in currency.
+     */
+    private function creditPrice(Device $device): float {
         $deviceModel = $device->device;
 
         if ($deviceModel instanceof Meter) {
             $tariff = $deviceModel->tariff()->first();
 
-            if ($tariff === null) {
+            if ($tariff === null || $tariff->total_price <= 0) {
                 throw new CreditPriceNotFoundException('This meter has no tariff, so an energy amount cannot be priced.');
             }
 
-            return $amount * $tariff->total_price;
+            return (float) $tariff->total_price;
         }
 
         /** @var AppliancePerson|null $appliancePerson */
@@ -169,7 +220,7 @@ class DeviceControlService {
             throw new CreditPriceNotFoundException('This device has no appliance plan with a daily price, so a number of days cannot be priced.');
         }
 
-        return $amount * $dailyPrice;
+        return $dailyPrice;
     }
 
     private function mappingStatus(DeviceMappingResult $result): ManufacturerMappingStatus {

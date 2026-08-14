@@ -90,7 +90,7 @@ class DeviceController extends Controller {
     public function generateToken(Device $device, GenerateDeviceTokenRequest $request): TokenResource {
         $token = $this->deviceControlService->generateToken(
             $device,
-            (float) $request->float('amount'),
+            $request->float('amount'),
             $request->unit(),
             auth('api')->user()->id,
         );

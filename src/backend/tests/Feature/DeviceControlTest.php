@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\DTO\TransactionDataContainer;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
 use App\Models\AppliancePerson;
@@ -34,6 +35,7 @@ class DeviceControlTest extends TestCase {
     public function testItReportsTokenGenerationForAResolvableManufacturer(): void {
         $this->createTestData();
         $device = $this->seedShs('TokenApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
         $this->bindManufacturerApi('TokenApi');
 
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
@@ -41,6 +43,7 @@ class DeviceControlTest extends TestCase {
         $response->assertStatus(200);
         $response->assertJsonPath('data.token_generation', true);
         $response->assertJsonPath('data.credit_unit', 'days');
+        $response->assertJsonPath('data.token_generation_blocked_reason', null);
     }
 
     public function testItReportsNoCapabilitiesWhenTheManufacturerHasNoApi(): void {
@@ -51,6 +54,21 @@ class DeviceControlTest extends TestCase {
 
         $response->assertStatus(200);
         $response->assertJsonPath('data.token_generation', false);
+    }
+
+    public function testItReportsWhyADeviceWithoutACustomerCannotBeIssuedAToken(): void {
+        $this->createTestData();
+        $device = $this->seedShs('BlockedApi', withCustomer: false);
+        $this->bindManufacturerApi('BlockedApi');
+
+        $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.token_generation', false);
+        $response->assertJsonPath(
+            'data.token_generation_blocked_reason',
+            "Device {$device->device_serial} is not assigned to a customer, so credit cannot be issued for it."
+        );
     }
 
     public function testItReportsKwhAsTheCreditUnitOfAMeter(): void {
@@ -66,6 +84,7 @@ class DeviceControlTest extends TestCase {
     public function testItGeneratesATokenForACurrencyAmount(): void {
         $this->createTestData();
         $device = $this->seedShs('CurrencyApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
         $this->bindManufacturerApi('CurrencyApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
@@ -85,6 +104,31 @@ class DeviceControlTest extends TestCase {
         $this->assertTrue(
             Log::query()->where('affected_id', $device->id)->where('affected_type', Device::RELATION_NAME)->exists()
         );
+    }
+
+    /**
+     * The transaction detail page reads the token off the transaction to show what an
+     * ad-hoc grant issued, so the relation has to reach the endpoint.
+     */
+    public function testItExposesTheTokenOnTheAdHocTransactionDetail(): void {
+        $this->createTestData();
+        $device = $this->seedShs('DetailApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
+        $this->bindManufacturerApi('DetailApi');
+
+        $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'amount' => 500,
+            'unit' => 'currency',
+        ])->assertStatus(201);
+
+        $token = Token::query()->where('device_id', $device->id)->firstOrFail();
+
+        $response = $this->actingAs($this->user)->getJson("/api/transactions/{$token->transaction_id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.type', Transaction::TYPE_AD_HOC);
+        $response->assertJsonPath('data.token.token', 'FAKE-TOKEN');
+        $response->assertJsonPath('data.token.token_unit', 'days');
     }
 
     public function testItPricesADayRequestWithTheApplianceDailyPrice(): void {
@@ -138,6 +182,7 @@ class DeviceControlTest extends TestCase {
     public function testItRejectsACreditUnitTheDeviceDoesNotIssue(): void {
         $this->createTestData();
         $device = $this->seedShs('MismatchApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
         $this->bindManufacturerApi('MismatchApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
@@ -174,6 +219,67 @@ class DeviceControlTest extends TestCase {
         ]);
 
         $response->assertStatus(422);
+    }
+
+    public function testItRejectsTokenGenerationForADeviceWithoutACustomer(): void {
+        $this->createTestData();
+        $device = $this->seedShs('NoCustomerApi', withCustomer: false);
+        $this->bindManufacturerApi('NoCustomerApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'amount' => 500,
+            'unit' => 'currency',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertSame(0, Token::query()->where('device_id', $device->id)->count());
+        $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
+    }
+
+    public function testItRejectsACurrencyAmountForADeviceWithoutAnAppliancePlan(): void {
+        $this->createTestData();
+        $device = $this->seedShs('UnpricedApi');
+        $this->bindManufacturerApi('UnpricedApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'amount' => 500,
+            'unit' => 'currency',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
+    }
+
+    public function testItRejectsACurrencyAmountWhenTheMeterTariffIsGone(): void {
+        $this->createTestData();
+        $device = $this->seedMeter('UnpricedMeterApi');
+        $device->device->tariff()->first()->delete();
+        $this->bindManufacturerApi('UnpricedMeterApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'amount' => 500,
+            'unit' => 'currency',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
+    }
+
+    public function testItBooksNoTransactionWhenTheManufacturerCallFails(): void {
+        $this->createTestData();
+        $device = $this->seedShs('FailingApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
+        $this->bindFailingManufacturerApi('FailingApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'amount' => 500,
+            'unit' => 'currency',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertSame(0, Token::query()->where('device_id', $device->id)->count());
+        $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
+        $this->assertSame(0, CashTransaction::query()->count());
     }
 
     public function testItRejectsTokenGenerationWhenTheManufacturerHasNoApi(): void {
@@ -220,7 +326,7 @@ class DeviceControlTest extends TestCase {
             ->assertForbidden();
     }
 
-    private function seedShs(?string $apiName): Device {
+    private function seedShs(?string $apiName, bool $withCustomer = true): Device {
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'shs', 'api_name' => $apiName]);
         $appliance = ApplianceFactory::new()->create([
             'appliance_type_id' => ApplianceTypeFactory::new()->create()->id,
@@ -231,7 +337,7 @@ class DeviceControlTest extends TestCase {
         ]);
 
         return DeviceFactory::new()->create([
-            'person_id' => PersonFactory::new()->create()->id,
+            'person_id' => $withCustomer ? PersonFactory::new()->create()->id : null,
             'device_id' => $solarHomeSystem->id,
             'device_type' => SolarHomeSystem::RELATION_NAME,
         ]);
@@ -298,5 +404,25 @@ class DeviceControlTest extends TestCase {
         $this->app->bind($apiName, fn () => $api);
 
         return $api;
+    }
+
+    /**
+     * Binds a manufacturer API that rejects the charge the way a vendor outage does,
+     * after the ad-hoc transaction has already been written.
+     */
+    private function bindFailingManufacturerApi(string $apiName): void {
+        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
+            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('The manufacturer refused the charge.');
+            }
+
+            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+                return [];
+            }
+
+            public function clearDevice(Device $device): ?array {
+                return null;
+            }
+        });
     }
 }

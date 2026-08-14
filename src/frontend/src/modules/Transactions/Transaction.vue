@@ -203,7 +203,59 @@
         </div>
       </div>
       <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-50 md-small-size-100">
+        <div
+          class="md-layout-item md-size-50 md-small-size-100"
+          v-if="isAdHoc && transaction.token"
+        >
+          <div class="transaction-detail-card">
+            <widget
+              :title="$tc('phrases.generatedToken')"
+              :show-spinner="false"
+              color="primary"
+            >
+              <md-card>
+                <md-card-content>
+                  <div class="md-layout">
+                    <div class="md-layout-item md-subheader">
+                      {{ $tc("words.token") }}
+                    </div>
+                    <div
+                      class="md-layout-item md-subheader n-font issued-token"
+                    >
+                      {{ formatToken(transaction.token.token) }}
+                    </div>
+                  </div>
+                  <hr class="hr-d" />
+                  <div class="md-layout">
+                    <div class="md-layout-item md-subheader">
+                      {{ $tc("phrases.issuedCredit") }}
+                    </div>
+                    <div class="md-layout-item md-subheader n-font">
+                      {{ readable(transaction.token.token_amount) }}
+                      {{ unitLabel(transaction.token.token_unit) }}
+                    </div>
+                  </div>
+                  <hr class="hr-d" />
+                  <div class="md-layout">
+                    <div class="md-layout-item md-subheader">
+                      {{ $tc("words.date") }}
+                    </div>
+                    <div class="md-layout-item md-subheader n-font">
+                      {{ timeForHuman(transaction.token.created_at) }}
+                      <small style="margin-left: 0.2rem">
+                        ({{ timeForTimeZone(transaction.token.created_at) }})
+                      </small>
+                    </div>
+                  </div>
+                </md-card-content>
+              </md-card>
+            </widget>
+          </div>
+        </div>
+        <div
+          class="md-layout-item md-size-50 md-small-size-100"
+          v-if="!isAdHoc || showConflicts"
+        >
           <div class="transaction-detail-card">
             <widget
               title="Transaction Processing"
@@ -386,6 +438,7 @@
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
+import { token } from "@/mixins/token.js"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
 import CashTransactionDetail from "@/modules/Transactions/CashTransactionDetail.vue"
 import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart.vue"
@@ -399,7 +452,7 @@ import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Transaction",
-  mixins: [timing, currency, notify],
+  mixins: [timing, currency, notify, token],
   components: {
     Widget,
     AgentTransactionDetail,
@@ -510,12 +563,16 @@ export default {
         ? this.transaction.message
         : this.$tc("phrases.noDeviceAssigned")
     },
+    isAdHoc() {
+      return this.transaction.type === "ad_hoc"
+    },
     transactionTypeLabel() {
       const labels = {
         energy: this.$tc("words.energy"),
         deferred_payment: this.$tc("phrases.deferredPayment"),
         eaas_rate: this.$tc("phrases.eaasRate"),
         down_payment: this.$tc("phrases.downPayment"),
+        ad_hoc: this.$tc("phrases.adHoc"),
       }
       return labels[this.transaction.type] || this.transaction.type
     },
@@ -622,6 +679,15 @@ export default {
 
 .n-font {
   font-weight: 100 !important;
+}
+
+// The code is read off this page and typed into the device, so it stays in full
+// and in a font where a 0 cannot be mistaken for an O.
+.issued-token {
+  font-family: monospace;
+  font-weight: 500 !important;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .hr-d {
