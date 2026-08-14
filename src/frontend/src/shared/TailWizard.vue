@@ -55,6 +55,7 @@ export default {
   },
   mounted() {
     this.wizardIsVisible = this.showWizard
+    EventBus.$on("tail-wizard.close", this.closeWizard)
     if (!this.tail || !this.tail.length) {
       return
     }
@@ -69,6 +70,7 @@ export default {
     this.activeStep = this.tail[0].component
   },
   beforeDestroy() {
+    EventBus.$off("tail-wizard.close", this.closeWizard)
     for (const { component, handler } of this.tailListeners) {
       EventBus.$off(component, handler)
     }
@@ -83,6 +85,15 @@ export default {
     }
   },
   methods: {
+    // Dismisses the dialog without marking any step adjusted — for a step whose
+    // component navigates the user away to finish configuring elsewhere, where
+    // marking it "done" here would be premature (nothing's been saved yet).
+    closeWizard() {
+      this.activeStep = null
+      this.wizardIsVisible = false
+      this.$store.commit("registrationTail/SET_IS_WIZARD_SHOWN", true)
+    },
+
     nextStep(step, nextStep) {
       if (nextStep) {
         this.activeStep = nextStep.component
