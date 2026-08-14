@@ -22,8 +22,7 @@ class UpdateTransactionRequest extends FormRequest {
         ];
     }
 
-    public function messages(): array
-    {
+    public function messages(): array {
         return [
             'amount.required' => 'The amount field is required.',
             'amount.numeric' => 'The amount must be a number.',

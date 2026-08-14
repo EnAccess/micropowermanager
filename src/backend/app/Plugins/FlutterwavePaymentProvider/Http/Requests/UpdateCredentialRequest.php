@@ -16,7 +16,7 @@ class UpdateCredentialRequest extends FormRequest {
      * stored values, so the form re-submits them blank unless the operator
      * actually retypes them. They're nullable here for that reason — the
      * service treats a blank field as "keep the existing value" and throws
-     * if the credential ends up without a required value after the merge
+     * if the credential ends up without a required value after the merge.
      *
      * @return array<string, array<int, mixed>>
      */
