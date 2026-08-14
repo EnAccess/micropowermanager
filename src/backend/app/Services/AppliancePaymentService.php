@@ -132,6 +132,21 @@ class AppliancePaymentService {
     }
 
     /**
+     * What one day of usage costs under the customer's plan. Manufacturer APIs that
+     * vend time divide a payment by this to get the number of days to grant, and
+     * ad-hoc token generation multiplies by it to go the other way.
+     */
+    public function getDailyPrice(AppliancePerson $appliancePerson): float {
+        if ($appliancePerson->isEnergyService()) {
+            return (float) ($appliancePerson->price_per_day ?? 0);
+        }
+
+        $rates = $appliancePerson->rates;
+
+        return $this->getNextPayableInstallmentCost($rates) / $this->getDayDifferenceBetweenTwoInstallments($rates);
+    }
+
+    /**
      * @param Collection<int, ApplianceRate> $installments
      */
     public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {

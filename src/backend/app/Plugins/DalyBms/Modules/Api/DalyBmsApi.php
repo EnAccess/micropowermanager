@@ -7,6 +7,7 @@ use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
+use App\Models\EBike;
 use App\Models\Token;
 use App\Models\User;
 use App\Plugins\DalyBms\Exceptions\DalyBmsApiResponseException;
@@ -84,6 +85,10 @@ class DalyBmsApi implements IManufacturerAPI {
     }
 
     /**
+     * Sends the relay command and mirrors the new state onto the stored e-bike, so
+     * every caller — a payment, the overdue-payment scheduler, an operator — leaves
+     * the record agreeing with the unit.
+     *
      * @return array<string, mixed>
      */
     public function switchDevice(string $code, bool $isOn): array {
@@ -102,7 +107,18 @@ class DalyBmsApi implements IManufacturerAPI {
             $this->credentialService->updateCredentials($credentials, $authResponse);
         }
 
-        return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_SWITCH);
+        $response = $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_SWITCH);
+
+        $eBike = $this->eBikeService->getBySerialNumber($code);
+        if ($eBike instanceof EBike) {
+            $this->eBikeService->update($eBike, [
+                'status' => $isOn
+                    ? str_replace('ACCOFF', 'ACCON', (string) $eBike->status)
+                    : str_replace('ACCON', 'ACCOFF', (string) $eBike->status),
+            ]);
+        }
+
+        return $response;
     }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -127,14 +143,6 @@ class DalyBmsApi implements IManufacturerAPI {
             'manufacturer_transaction_type' => 'daly_bms_transaction',
         ]);
         $eBike = $this->eBikeService->getBySerialNumber($deviceSerial);
-        $status = $eBike->status;
-        $updatingData = [
-            'status' => str_replace('ACCOFF', 'ACCON', $status),
-        ];
-        $this->eBikeService->update(
-            $eBike,
-            $updatingData
-        );
         $creator = User::query()->firstOrCreate([
             'name' => 'System',
         ]);

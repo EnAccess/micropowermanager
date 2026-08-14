@@ -1,9 +1,9 @@
 <template>
-  <widget :title="$tc('phrases.deviceMapping')" color="primary">
+  <widget :title="$tc('phrases.manufacturerControl')" color="primary">
     <md-list class="md-double-line">
       <md-list-item>
         <div class="md-list-item-text">
-          <span>{{ $tc("words.status") }}</span>
+          <span>{{ $tc("phrases.deviceMapping") }}</span>
           <span>{{ mappingStatusLabel(displayStatus) }}</span>
         </div>
       </md-list-item>
@@ -14,9 +14,15 @@
           <span>{{ checkedAtDisplay }}</span>
         </div>
       </md-list-item>
+      <md-list-item v-if="capabilities.tokenGenerationBlockedReason">
+        <div class="md-list-item-text">
+          <span>{{ $tc("phrases.generateToken") }}</span>
+          <span>{{ capabilities.tokenGenerationBlockedReason }}</span>
+        </div>
+      </md-list-item>
     </md-list>
 
-    <div class="verify-action">
+    <div class="control-actions">
       <md-button
         class="md-raised verify-button"
         :disabled="verifying"
@@ -26,6 +32,19 @@
         {{ $tc("phrases.verifyDeviceMapping") }}
         <md-tooltip md-direction="top">
           {{ $tc("phrases.verifyDeviceMappingHelp") }}
+        </md-tooltip>
+      </md-button>
+
+      <md-button
+        v-if="canControl && capabilities.tokenGeneration"
+        class="md-raised verify-button"
+        :disabled="generating"
+        @click="openTokenDialog"
+      >
+        <md-icon>vpn_key</md-icon>
+        {{ $tc("phrases.generateToken") }}
+        <md-tooltip md-direction="top">
+          {{ $tc("phrases.generateTokenHelp") }}
         </md-tooltip>
       </md-button>
     </div>
@@ -106,19 +125,92 @@
         </md-button>
       </md-dialog-actions>
     </md-dialog>
+
+    <md-dialog :md-active.sync="showTokenDialog">
+      <md-dialog-title>{{ $tc("phrases.generateToken") }}</md-dialog-title>
+      <md-dialog-content>
+        <md-progress-bar md-mode="indeterminate" v-if="generating" />
+
+        <div v-if="generatedToken">
+          <md-list class="md-double-line">
+            <md-list-item>
+              <md-icon style="color: green">check_circle</md-icon>
+              <div class="md-list-item-text">
+                <span>{{ $tc("words.token") }}</span>
+                <span>{{ formatToken(generatedToken.token) }}</span>
+              </div>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item>
+              <div class="md-list-item-text">
+                <span>{{ $tc("phrases.issuedCredit") }}</span>
+                <span>
+                  {{ generatedToken.tokenAmount }}
+                  {{ unitLabel(generatedToken.tokenUnit) }}
+                </span>
+              </div>
+            </md-list-item>
+          </md-list>
+          <p class="rounding-note" v-if="creditWasRounded">
+            {{
+              $tc("phrases.issuedCreditDiffers", 1, {
+                requested: `${amount} ${unitLabel(unit)}`,
+              })
+            }}
+          </p>
+        </div>
+
+        <div v-else-if="!generating">
+          <p class="dialog-hint">{{ $tc("phrases.generateTokenHint") }}</p>
+          <md-field>
+            <label>{{ $tc("words.amount") }}</label>
+            <md-input v-model="amount" type="number" step="any" min="0" />
+          </md-field>
+          <md-field>
+            <label>{{ $tc("phrases.amountUnit") }}</label>
+            <md-select v-model="unit">
+              <md-option value="currency">
+                {{ unitLabel("currency") }}
+              </md-option>
+              <md-option
+                v-if="capabilities.creditUnit"
+                :value="capabilities.creditUnit"
+              >
+                {{ unitLabel(capabilities.creditUnit) }}
+              </md-option>
+            </md-select>
+          </md-field>
+        </div>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button
+          v-if="!generatedToken"
+          class="md-primary"
+          :disabled="generating || !amount"
+          @click="generateToken"
+        >
+          {{ $tc("words.generate", 1) }}
+        </md-button>
+        <md-button class="md-primary" @click="showTokenDialog = false">
+          {{ $tc("words.close") }}
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </widget>
 </template>
 
 <script>
+import { currency } from "@/mixins/currency.js"
 import { mappingStatus } from "@/mixins/mappingStatus.js"
 import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
+import { token } from "@/mixins/token.js"
 import { DeviceService } from "@/services/DeviceService.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "ManufacturerControl",
-  mixins: [notify, timing, mappingStatus],
+  mixins: [notify, timing, mappingStatus, token, currency],
   components: { Widget },
   props: {
     deviceId: {
@@ -146,13 +238,26 @@ export default {
     return {
       deviceService: new DeviceService(),
       verifying: false,
+      generating: false,
       showDialog: false,
+      showTokenDialog: false,
       result: null,
+      capabilities: {
+        tokenGeneration: false,
+        creditUnit: null,
+        tokenGenerationBlockedReason: null,
+      },
+      generatedToken: null,
+      amount: null,
+      unit: "currency",
       currentStatus: this.status,
       currentCheckedAt: this.checkedAt,
     }
   },
   computed: {
+    canControl() {
+      return this.$can("transactions")
+    },
     displayStatus() {
       return this.currentStatus || "unknown"
     },
@@ -161,10 +266,26 @@ export default {
         ? this.timeForTimeZone(this.currentCheckedAt)
         : null
     },
+    creditWasRounded() {
+      if (!this.generatedToken || this.unit === "currency") return false
+      return Number(this.generatedToken.tokenAmount) !== Number(this.amount)
+    },
+  },
+  created() {
+    if (this.canControl) this.loadCapabilities()
   },
   methods: {
     isExpandable(value) {
       return value !== null && typeof value === "object"
+    },
+    async loadCapabilities() {
+      try {
+        this.capabilities = await this.deviceService.getCapabilities(
+          this.deviceId,
+        )
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
     },
     async verify() {
       this.verifying = true
@@ -183,6 +304,27 @@ export default {
         this.verifying = false
       }
     },
+    openTokenDialog() {
+      this.generatedToken = null
+      this.amount = null
+      this.unit = "currency"
+      this.showTokenDialog = true
+    },
+    async generateToken() {
+      this.generating = true
+      try {
+        this.generatedToken = await this.deviceService.generateToken(
+          this.deviceId,
+          Number(this.amount),
+          this.unit,
+        )
+        this.$emit("tokenGenerated", this.generatedToken)
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      } finally {
+        this.generating = false
+      }
+    },
     statusFromResult(result) {
       if (!result.supported) return "unsupported"
       return result.mapped ? "mapped" : "not_mapped"
@@ -192,10 +334,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.verify-action {
+.control-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   padding: 8px 16px 16px;
+}
+
+.dialog-hint {
+  margin-bottom: 8px;
+}
+
+.rounding-note {
+  margin-top: 8px;
+  font-style: italic;
 }
 
 .md-button.md-raised.verify-button:not([disabled]) {
