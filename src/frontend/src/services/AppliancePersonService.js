@@ -24,6 +24,7 @@ export class AppliancePersonService {
       firstPaymentDate: data.first_payment_date,
       personId: data.person_id,
       rateCount: data.rate_count,
+      rateType: data.rateType,
       totalCost: data.total_cost,
       totalRemainingAmount: data.totalRemainingAmount,
       totalPayments: data.totalPayments,

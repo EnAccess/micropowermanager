@@ -8,6 +8,7 @@ use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\Log;
+use App\Services\AppliancePaymentService;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\Person\PersonFactory;
@@ -211,6 +212,49 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         $third = Carbon::parse($rates[2]->due_date);
         $this->assertSame(7, (int) $first->diffInDays($second));
         $this->assertSame(7, (int) $second->diffInDays($third));
+    }
+
+    /**
+     * The daily price drives the number of days a manufacturer vends for a payment, so
+     * switching a part-paid plan to weekly rates has to reprice the very next token.
+     */
+    public function testRegenerateRepricesTheDailyPriceOntoTheNewRateType(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
+        foreach ($appliancePerson->rates()->oldest('due_date')->take(3)->get() as $rate) {
+            $rate->update(['remaining' => 0]);
+        }
+
+        $response = $this->actingAs($this->user)->putJson(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 1000, 'rate_count' => 4, 'rate_type' => 'weekly']
+        );
+
+        $response->assertStatus(200);
+
+        $service = resolve(AppliancePaymentService::class);
+
+        $this->assertEqualsWithDelta(100 / 7, $service->getDailyPrice($appliancePerson->fresh()), 0.0001);
+    }
+
+    /**
+     * The modify dialog preselects the reported rate type and only regenerates the schedule
+     * when the user picks a different one, so a stale value drops their change silently.
+     */
+    public function testSaleDetailsReportTheRateTypeOfTheOutstandingRates(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
+        foreach ($appliancePerson->rates()->oldest('due_date')->take(3)->get() as $rate) {
+            $rate->update(['remaining' => 0]);
+        }
+
+        $response = $this->actingAs($this->user)->putJson(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 1000, 'rate_count' => 4, 'rate_type' => 'weekly']
+        );
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.rateType', 'weekly');
     }
 
     public function testRejectsInvalidRateType(): void {
