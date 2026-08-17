@@ -8,6 +8,8 @@ use App\Services\SmsService;
 use Illuminate\Support\Facades\Log;
 
 class ResendRejectedMessages extends AbstractSharedCommand {
+    public const MAX_ATTEMPTS = 3;
+
     /**
      * The name and signature of the console command.
      */
@@ -36,8 +38,9 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
         $amountToSend = (int) $this->argument('amount');
         $this->sms
-            ->where('direction', 1)
-            ->where('status', -1)
+            ->where('direction', Sms::DIRECTION_OUTGOING)
+            ->where('status', Sms::STATUS_FAILED)
+            ->where('attempts', '<=', self::MAX_ATTEMPTS)
             ->orderBy('id')
             ->take($amountToSend)
             ->get()->each(function (Sms $sms) {
@@ -53,9 +56,16 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
                     $this->smsService->markSent($sms, $resolved['gatewayId']);
                 } catch (\Throwable $exception) {
-                    Log::error("Failed to resend message {$sms->id}: {$exception->getMessage()}");
                     $this->smsService->markFailed($sms, $exception);
-                    $this->error("Failed to resend message {$sms->id}: {$exception->getMessage()}");
+                    $message = "Failed to resend message {$sms->id}: {$exception->getMessage()}";
+
+                    if ($sms->attempts >= self::MAX_ATTEMPTS) {
+                        Log::error($message);
+                    } else {
+                        Log::warning($message);
+                    }
+
+                    $this->error($message);
                 }
             });
     }

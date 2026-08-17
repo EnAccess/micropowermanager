@@ -72,15 +72,7 @@ class CheckPayments extends AbstractSharedCommand {
         $this->info('Locking the bike with id: '.$eBike->serial_number);
         $this->dalyBmsApi->switchDevice($eBike->serial_number, false);
 
-        $status = $eBike->status;
         $serialNumber = $eBike->serial_number;
-        $updatingData = [
-            'status' => str_replace('ACCON', 'ACCOFF', $status),
-        ];
-        $this->eBikeService->update(
-            $eBike,
-            $updatingData
-        );
 
         $creator = $this->user->newQuery()->firstOrCreate([
             'name' => 'System',

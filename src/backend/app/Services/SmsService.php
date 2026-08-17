@@ -13,6 +13,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -108,6 +109,7 @@ class SmsService {
         $this->sms->newQuery()->whereKey($sms->getKey())->update([
             'status' => Sms::STATUS_FAILED,
             'error_message' => Str::limit($exception->getMessage(), self::ERROR_MESSAGE_MAX_LENGTH),
+            'attempts' => DB::raw('attempts + 1'),
         ]);
     }
 

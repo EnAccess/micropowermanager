@@ -32,4 +32,6 @@ enum PaymentProvider: int {
     case Pesapal = MpmPlugin::PESAPAL_PAYMENT_PROVIDER;
     /** Safaricom Kenya M-PESA */
     case SafaricomKe = MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER;
+    /** Flutterwave */
+    case Flutterwave = MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER;
 }
