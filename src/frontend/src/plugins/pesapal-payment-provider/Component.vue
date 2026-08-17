@@ -65,12 +65,13 @@
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus.js"
+import { tailWizard } from "@/mixins/tailWizard.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "PesapalConfiguration",
   components: { Widget },
+  mixins: [tailWizard],
   data() {
     return {
       title: "Pesapal Payment Provider",
@@ -78,14 +79,7 @@ export default {
   },
   methods: {
     goToConfiguration() {
-      // Only closes the dialog — the registration-tail step must stay unadjusted
-      // until credentials are actually saved on the overview page.
-      EventBus.$emit("tail-wizard.close")
-      this.$router.push("/pesapal/overview").catch((error) => {
-        if (error.name !== "NavigationDuplicated") {
-          throw error
-        }
-      })
+      this.closeTailWizardAndGoTo("/pesapal/overview")
     },
   },
 }
