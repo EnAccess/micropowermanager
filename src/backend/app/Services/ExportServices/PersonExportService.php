@@ -85,7 +85,7 @@ class PersonExportService extends AbstractExportService {
                 ->unique()
                 ->implode(', '),
             'cluster_name' => $primaryAddress?->city?->cluster?->name,
-            'site_name' => $primaryAddress?->city?->miniGrid?->name,
+            'minigrid' => $primaryAddress?->city?->miniGrid?->name,
             'agent' => $person->agentSoldAppliance?->assignedAppliance?->agent?->person->name ?? '',
             'last_payment' => $person->latestPayment?->created_at?->format('d/m/Y'),
         ];
