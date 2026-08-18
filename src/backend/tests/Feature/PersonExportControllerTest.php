@@ -88,7 +88,7 @@ class PersonExportControllerTest extends TestCase {
             explode(', ', (string) $row['appliance_name']),
         );
         $this->assertSame('Northern Cluster', $row['cluster_name']);
-        $this->assertSame('Abuja Site', $row['site_name']);
+        $this->assertSame('Abuja Site', $row['minigrid']);
 
         $csv = $this->actingAs($user)->get('/api/export/customers?format=csv');
         $csv->assertStatus(200);
