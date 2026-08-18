@@ -2,7 +2,10 @@
 
 namespace App\Services\ExportServices;
 
+use App\Models\Device;
+use App\Models\EBike;
 use App\Models\Person\Person;
+use App\Models\SolarHomeSystem;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
@@ -20,6 +23,9 @@ class PersonExportService extends AbstractExportService {
         'Street',
         'Geographical Information (Lat, Long)',
         'Device Serial',
+        'Appliance Name',
+        'Cluster Name',
+        'Site Name (MiniGrid Name)',
         'Agent Name',
         'Last Payment',
     ];
@@ -66,6 +72,20 @@ class PersonExportService extends AbstractExportService {
             'street' => $primaryAddress?->street,
             'geographical_information' => $geographicalInformation,
             'devices' => $person->devices->pluck('device_serial')->filter()->implode(', '),
+            'appliance_name' => $person->devices
+                ->flatMap(function (Device $device) {
+                    $names = [$device->appliance?->name];
+                    if ($device->device instanceof SolarHomeSystem || $device->device instanceof EBike) {
+                        $names[] = $device->device->appliance?->name;
+                    }
+
+                    return $names;
+                })
+                ->filter()
+                ->unique()
+                ->implode(', '),
+            'cluster_name' => $primaryAddress?->city?->cluster?->name,
+            'site_name' => $primaryAddress?->city?->miniGrid?->name,
             'agent' => $person->agentSoldAppliance?->assignedAppliance?->agent?->person->name ?? '',
             'last_payment' => $person->latestPayment?->created_at?->format('d/m/Y'),
         ];
