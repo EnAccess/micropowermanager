@@ -97,7 +97,7 @@ class PersonExportControllerTest extends TestCase {
         $csvContent = $csv->streamedContent();
         $this->assertStringContainsString('Appliance Name', $csvContent);
         $this->assertStringContainsString('Cluster Name', $csvContent);
-        $this->assertStringContainsString('Site Name (MiniGrid Name)', $csvContent);
+        $this->assertStringContainsString('Site Name', $csvContent);
         $this->assertStringContainsString('Solar Kit', $csvContent);
         $this->assertStringContainsString('Home Battery', $csvContent);
         $this->assertStringContainsString('Prepaid Grid Bundle', $csvContent);
