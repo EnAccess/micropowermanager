@@ -25,7 +25,7 @@ class PersonExportService extends AbstractExportService {
         'Device Serial',
         'Appliance Name',
         'Cluster Name',
-        'Site Name (MiniGrid Name)',
+        'Site Name',
         'Agent Name',
         'Last Payment',
     ];
