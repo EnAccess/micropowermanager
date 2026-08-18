@@ -11,13 +11,12 @@ use App\Models\ApplianceRate;
 use App\Models\MainSettings;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
-use Carbon\Month;
-use Carbon\WeekDay;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class AppliancePaymentService {
     public const DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS = 30;
+    private const int WEEKLY_RATE_TYPE_MAX_DAYS = 10;
 
     public float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
@@ -105,16 +104,27 @@ class AppliancePaymentService {
     }
 
     /**
-     * The earliest rate still carrying a balance. Sorted by due date because the
-     * rates relation is unordered and rescheduling recreates rows, so insertion
-     * order does not reliably follow the schedule.
+     * The earliest rate still carrying a balance.
      *
      * @param Collection<int, ApplianceRate> $rates
      */
     private function nextPayableRate(Collection $rates): ?ApplianceRate {
+        return $this->inScheduleOrder($rates)->first(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
+    }
+
+    /**
+     * The rates in schedule order, re-keyed from zero. The rates relation is
+     * unordered and rescheduling recreates rows, so insertion order does not
+     * reliably follow the schedule; due date does.
+     *
+     * @param Collection<int, ApplianceRate> $rates
+     *
+     * @return Collection<int, ApplianceRate>
+     */
+    private function inScheduleOrder(Collection $rates): Collection {
         return $rates
             ->sortBy(fn (ApplianceRate $rate): int => Carbon::parse($rate->due_date)->getTimestamp())
-            ->first(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
+            ->values();
     }
 
     public function payInstallment(ApplianceRate $installment, AppliancePerson $applianceOwner, Transaction $transaction): void {
@@ -147,22 +157,40 @@ class AppliancePaymentService {
     }
 
     /**
+     * The rate type of the outstanding installments, in the vocabulary the reschedule
+     * endpoint accepts. A plan does not store its rate type, so it is read back here.
+     */
+    public function getRateType(AppliancePerson $appliancePerson): string {
+        $dayDifference = $this->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates);
+
+        return $dayDifference <= self::WEEKLY_RATE_TYPE_MAX_DAYS ? 'weekly' : 'monthly';
+    }
+
+    /**
+     * How many days the installment period being paid right now covers, measured from the
+     * next payable rate because that is the period the customer's money buys. Rescheduling
+     * leaves the settled rates on the spacing they were sold on, so measuring from the
+     * start of the schedule would price tokens off a schedule that no longer applies.
+     *
      * @param Collection<int, ApplianceRate> $installments
      */
     public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {
         try {
-            $dueDates = $installments
-                ->map(fn (ApplianceRate $installment) => $installment->due_date)
-                ->filter()
-                ->map(fn (\DateTimeInterface|WeekDay|Month|string|int|float|null $dueDate): Carbon => Carbon::parse($dueDate))
-                ->sort()
-                ->values();
+            $rates = $this->inScheduleOrder($installments);
+            $currentIndex = $rates->search(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
 
-            if ($dueDates->count() < 3) {
+            if ($currentIndex === false) {
                 return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
             }
 
-            $dayDifference = (int) $dueDates[1]->diffInDays($dueDates[2], absolute: true);
+            $neighbour = $rates->get($currentIndex + 1) ?? $rates->get($currentIndex - 1);
+
+            if ($neighbour === null) {
+                return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
+            }
+
+            $dayDifference = (int) Carbon::parse($rates[$currentIndex]->due_date)
+                ->diffInDays(Carbon::parse($neighbour->due_date), absolute: true);
         } catch (\Exception $e) {
             Log::warning('Falling back to the default installment cadence.', ['message' => $e->getMessage()]);
 
