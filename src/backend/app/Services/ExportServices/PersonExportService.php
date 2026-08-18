@@ -73,7 +73,7 @@ class PersonExportService extends AbstractExportService {
             'geographical_information' => $geographicalInformation,
             'devices' => $person->devices->pluck('device_serial')->filter()->implode(', '),
             'appliance_name' => $person->devices
-                ->flatMap(function (Device $device) {
+                ->flatMap(function (Device $device): array {
                     $names = [$device->appliance?->name];
                     if ($device->device instanceof SolarHomeSystem || $device->device instanceof EBike) {
                         $names[] = $device->device->appliance?->name;
