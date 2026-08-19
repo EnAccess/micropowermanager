@@ -45,6 +45,9 @@ class AgentCustomerDocumentController extends Controller {
      * The route stays registered so agent app versions that still call it get a
      * definitive answer instead of a silent success. Questionnaire answers now
      * live on the customer, see `PUT /api/app/agents/customers/{customerId}/onboarding`.
+     *
+     * TODO: once agent app installs calling this have had time to
+     * update, delete this method and its route in routes/resources/AgentApp.php.
      */
     #[\Deprecated(message: 'use `PUT /api/app/agents/customers/{customerId}/onboarding` instead')]
     public function update(): never {
