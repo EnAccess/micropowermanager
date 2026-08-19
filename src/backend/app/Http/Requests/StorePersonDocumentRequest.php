@@ -20,7 +20,16 @@ class StorePersonDocumentRequest extends FormRequest {
         return [
             'file' => ['required', 'file', 'mimes:pdf,docx', 'max:5120'],
             'type' => ['required', 'string', 'max:255'],
-            'additional_json' => ['nullable', 'array'],
+            'additional_json' => ['prohibited'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array {
+        return [
+            'additional_json.prohibited' => __('Questionnaire fields are stored on the customer. Update the app and send them to the customer onboarding endpoint.'),
         ];
     }
 

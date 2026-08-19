@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonListRequest;
+use App\Http\Requests\PersonOnboardingRequest;
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Country;
+use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\CountryService;
 use App\Services\PersonAddressService;
@@ -131,6 +133,24 @@ class PersonController extends Controller {
         $personData = $request->all();
 
         return ApiResource::make($this->personService->update($person, $personData));
+    }
+
+    /**
+     * Replace a person's onboarding answers.
+     *
+     * The whole answer set is replaced on every call, send an empty `answers` array to clear it.
+     * The request takes an ordered list of question/answer rows, while `GET /api/people/{personId}`
+     * returns the stored answers as a question-keyed `onboarding_json` object.
+     */
+    public function updateOnboarding(
+        Person $person,
+        PersonOnboardingRequest $request,
+    ): ApiResource {
+        $answers = $request->answers();
+
+        return ApiResource::make(
+            $this->personService->update($person, ['onboarding_json' => $answers === [] ? null : $answers])
+        );
     }
 
     /**

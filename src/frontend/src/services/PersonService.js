@@ -193,6 +193,7 @@ export class PersonService {
         addresses: personData.addresses,
         devices: personData.devices,
         is_active: personData.is_active,
+        onboardingJson: personData.onboarding_json ?? {},
       }
 
       return this.person
@@ -278,16 +279,11 @@ export class PersonService {
     }
   }
 
-  async uploadDocument(personId, file, type, additionalJson) {
+  async uploadDocument(personId, file, type) {
     try {
       const formData = new FormData()
       formData.append("file", file)
       formData.append("type", type)
-      if (additionalJson && Object.keys(additionalJson).length > 0) {
-        Object.entries(additionalJson).forEach(([key, value]) => {
-          formData.append(`additional_json[${key}]`, value)
-        })
-      }
       const { data, status, error } = await this.repository.documents.upload(
         personId,
         formData,
@@ -310,11 +306,11 @@ export class PersonService {
     }
   }
 
-  async updateDocumentAdditional(documentId, additionalJson) {
+  async updateOnboarding(personId, answers) {
     try {
-      const { data, status, error } = await this.repository.documents.update(
-        documentId,
-        { additional_json: additionalJson ?? {} },
+      const { data, status, error } = await this.repository.updateOnboarding(
+        personId,
+        { answers },
       )
       if (status !== 200) return new ErrorHandler(error, "http", status)
 

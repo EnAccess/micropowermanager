@@ -45,7 +45,7 @@ use Illuminate\Support\Facades\DB;
  * @property      \Illuminate\Support\Carbon|null  $deleted_at
  * @property      \Illuminate\Support\Carbon|null  $created_at
  * @property      \Illuminate\Support\Carbon|null  $updated_at
- * @property      array<array-key, mixed>|null     $additional_json
+ * @property      array<array-key, mixed>|null     $onboarding_json
  * @property-read Collection<int, Address>         $addresses
  * @property-read Agent|null                       $agent
  * @property-read AgentSoldAppliance|null          $agentSoldAppliance
@@ -222,7 +222,7 @@ class Person extends BaseModel implements \Stringable, HasAddressesInterface {
 
     protected function casts(): array {
         return [
-            'additional_json' => 'array',
+            'onboarding_json' => 'array',
         ];
     }
 }

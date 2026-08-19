@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePersonDocumentRequest;
-use App\Http\Requests\UpdatePersonDocumentRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\PersonDocument;
 use App\Services\AgentCustomerService;
@@ -31,28 +30,25 @@ class AgentCustomerDocumentController extends Controller {
         $agent = $this->agentService->getByAuthenticatedUser();
         $person = $this->agentCustomerService->findForAgent($agent, $customerId);
 
-        /** @var array<string, mixed>|null $additional */
-        $additional = $request->input('additional_json');
-
         $document = $this->uploadService->upload(
             $person,
             $request->file('file'),
             $request->string('type')->toString(),
-            $additional,
         );
 
         return ApiResource::make($document);
     }
 
-    public function update(PersonDocument $personDocument, UpdatePersonDocumentRequest $request): ApiResource {
-        $this->ensureAgentOwnsDocument($personDocument);
-
-        /** @var array<string, mixed> $additional */
-        $additional = $request->input('additional_json');
-
-        $document = $this->uploadService->updateAdditional($personDocument, $additional ?: null);
-
-        return ApiResource::make($document);
+    /**
+     * Removed: document questionnaire fields.
+     *
+     * The route stays registered so agent app versions that still call it get a
+     * definitive answer instead of a silent success. Questionnaire answers now
+     * live on the customer, see `PUT /api/app/agents/customers/{customerId}/onboarding`.
+     */
+    #[\Deprecated(message: 'use `PUT /api/app/agents/customers/{customerId}/onboarding` instead')]
+    public function update(): never {
+        abort(410, 'Document questionnaire fields were replaced by customer onboarding answers. Update the agent app to continue capturing them.');
     }
 
     public function show(PersonDocument $personDocument): StreamedResponse {
