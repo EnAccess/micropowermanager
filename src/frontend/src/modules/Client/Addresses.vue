@@ -66,25 +66,18 @@
       <md-dialog-content class="md-scrollbar">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50 md-small-size-100">
-            <md-field name="city">
+            <md-autocomplete
+              md-input-name="city"
+              md-input-id="city"
+              v-model="citySearchTerm"
+              :md-options="cities"
+              @md-selected="onCitySelected"
+            >
               <label for="city">{{ $tc("words.city") }}</label>
-              <md-select name="city" id="city" v-model="newAddress.city_id">
-                <md-option
-                  value="0"
-                  disabled
-                  v-if="!editFlag || newAddress.city_id === null"
-                >
-                  {{ $tc("words.city") }}
-                </md-option>
-                <md-option
-                  v-for="city in cities"
-                  :key="city.id"
-                  :value="city.id"
-                >
-                  {{ city.name }}
-                </md-option>
-              </md-select>
-            </md-field>
+              <template slot="md-autocomplete-item" slot-scope="{ item }">
+                {{ item.name }}
+              </template>
+            </md-autocomplete>
           </div>
 
           <div class="md-layout-item md-size-50 md-small-size-100">
@@ -186,6 +179,7 @@ export default {
       subscriber: "personAddresses",
       modalVisibility: false,
       newAddress: {},
+      citySearchTerm: "",
       cities: [],
       editFlag: false,
       addressIndex: 0,
@@ -212,6 +206,7 @@ export default {
     },
     addNewAddress() {
       this.editFlag = false
+      this.citySearchTerm = ""
       this.showModal()
     },
     showModal() {
@@ -231,6 +226,7 @@ export default {
         city_id: address.city_id,
         primary: address.primary,
       }
+      this.citySearchTerm = address.city || ""
       this.showModal()
     },
     async getCities() {
@@ -272,7 +268,12 @@ export default {
           })
         }
         this.newAddress = {}
+        this.citySearchTerm = ""
       }
+    },
+    onCitySelected(city) {
+      this.newAddress.city_id = city.id
+      this.citySearchTerm = city.name
     },
     validatePhone(phone) {
       this.phone = phone
@@ -315,6 +316,7 @@ export default {
     closeModal() {
       this.modalVisibility = false
       this.newAddress = {}
+      this.citySearchTerm = ""
     },
     confirmDelete(address) {
       this.$swal({

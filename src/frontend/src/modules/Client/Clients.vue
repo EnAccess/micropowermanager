@@ -211,19 +211,16 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-50">
-            <md-field>
+            <md-autocomplete
+              v-model="villageSearchTerm"
+              :md-options="cityService.list"
+              @md-selected="onVillageSelected"
+            >
               <label>{{ $tc("words.village") }}</label>
-              <md-select v-model="exportFilters.village">
-                <md-option value="">{{ $tc("words.all") }}</md-option>
-                <md-option
-                  v-for="city in cityService.list"
-                  :key="city.id"
-                  :value="city.name"
-                >
-                  {{ city.name }}
-                </md-option>
-              </md-select>
-            </md-field>
+              <template slot="md-autocomplete-item" slot-scope="{ item }">
+                {{ item.name }}
+              </template>
+            </md-autocomplete>
           </div>
         </div>
 
@@ -335,6 +332,7 @@ export default {
         village: "",
         deviceType: "",
       },
+      villageSearchTerm: "",
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
       isSearching: false,
@@ -377,6 +375,12 @@ export default {
     searchTerm: debounce(function () {
       this.handleSearch()
     }, 300),
+    villageSearchTerm(newVal) {
+      // The autocomplete's built-in clear button empties this field directly,
+      if (newVal === "") {
+        this.exportFilters.village = ""
+      }
+    },
   },
 
   mounted() {
@@ -402,6 +406,10 @@ export default {
   },
 
   methods: {
+    onVillageSelected(city) {
+      this.exportFilters.village = city.name
+      this.villageSearchTerm = city.name
+    },
     handleSearch() {
       if (this.searchTerm.length > 2) {
         this.performSearch()

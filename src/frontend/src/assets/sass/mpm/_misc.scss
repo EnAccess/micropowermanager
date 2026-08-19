@@ -179,3 +179,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 .md-theme-default :not(input):not(textarea)::selection {
   background-color: #c8c8c8 !important;
 }
+
+.md-menu-content {
+  z-index: 115 !important;
+}
