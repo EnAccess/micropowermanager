@@ -284,6 +284,7 @@ class ApplianceRateService {
     public function queryOutstandingDebtsByApplianceRates(CarbonImmutable $toDate): Builder {
         return $this->applianceRate->newQuery()
             ->with(['appliancePerson.appliance', 'appliancePerson.person', 'appliancePerson.rates'])
+            ->whereHas('appliancePerson', fn (Builder $query) => $query->whereHas('person'))
             ->where('due_date', '<', $toDate->format('Y-m-d'))
             ->where('remaining', '>', 0)
             ->orderBy('id');
