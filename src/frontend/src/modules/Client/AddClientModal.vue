@@ -207,32 +207,28 @@
                 </div>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field
+                <md-autocomplete
+                  name="city"
+                  md-input-name="city"
+                  md-input-id="city"
+                  v-model="citySearchTerm"
+                  v-validate="'required'"
                   :class="{
                     'md-invalid': errors.has('customer-add-form.city'),
                   }"
+                  :md-options="cityService.list"
+                  @md-selected="onCitySelected"
                 >
                   <label for="city">
                     {{ $tc("words.city") }}
                   </label>
-                  <md-select
-                    name="city"
-                    id="city"
-                    v-model="selectedCityId"
-                    v-validate="'required'"
-                  >
-                    <md-option
-                      v-for="city in cityService.list"
-                      :key="city.id"
-                      :value="city.id"
-                    >
-                      {{ city.name }}
-                    </md-option>
-                  </md-select>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }">
+                    {{ item.name }}
+                  </template>
                   <span class="md-error">
                     {{ errors.first("customer-add-form.city") }}
                   </span>
-                </md-field>
+                </md-autocomplete>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
@@ -301,6 +297,7 @@ export default {
       cityService: new CityService(),
       loading: false,
       selectedCityId: null,
+      citySearchTerm: "",
       phone: {
         valid: true,
       },
@@ -357,6 +354,10 @@ export default {
     },
     onPhoneInput(_, phone) {
       this.phone = phone
+    },
+    onCitySelected(city) {
+      this.selectedCityId = city.id
+      this.citySearchTerm = city.name
     },
   },
   watch: {
