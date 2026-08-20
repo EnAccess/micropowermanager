@@ -19,15 +19,15 @@ export default {
   search(params) {
     return Client.get(`${resource}/search`, params)
   },
+  updateOnboarding(personId, payload) {
+    return Client.put(`${resource}/${personId}/onboarding`, payload)
+  },
   documents: {
     list(personId) {
       return Client.get(`${resource}/${personId}/documents`)
     },
     upload(personId, formData) {
       return Client.post(`${resource}/${personId}/documents`, formData)
-    },
-    update(documentId, payload) {
-      return Client.patch(`${documentResource}/${documentId}`, payload)
     },
     delete(documentId) {
       return Client.delete(`${documentResource}/${documentId}`)

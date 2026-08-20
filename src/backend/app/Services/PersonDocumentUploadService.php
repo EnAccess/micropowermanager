@@ -24,10 +24,7 @@ class PersonDocumentUploadService {
         private UserService $userService,
     ) {}
 
-    /**
-     * @param array<string, mixed>|null $additional
-     */
-    public function upload(Person $person, UploadedFile $file, string $type, ?array $additional = null): PersonDocument {
+    public function upload(Person $person, UploadedFile $file, string $type): PersonDocument {
         $companyId = $this->userService->getCompanyId();
         $directory = "documents/companies/{$companyId}/persons/{$person->id}";
         $storedName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
@@ -43,18 +40,7 @@ class PersonDocumentUploadService {
             'mime_type' => $file->getClientMimeType(),
             'file_size' => $file->getSize(),
             'location' => $directory,
-            'additional_json' => $additional,
         ]);
-    }
-
-    /**
-     * @param array<string, mixed>|null $additional
-     */
-    public function updateAdditional(PersonDocument $document, ?array $additional): PersonDocument {
-        $document->additional_json = $additional;
-        $document->save();
-
-        return $document;
     }
 
     public function download(PersonDocument $document): StreamedResponse {

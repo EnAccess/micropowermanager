@@ -259,11 +259,12 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth:api'], static function
 
     Route::get('/{personId}/documents', [PersonDocumentController::class, 'index'])->middleware('permission:customers');
     Route::post('/{personId}/documents', [PersonDocumentController::class, 'store'])->middleware('permission:customers');
+
+    Route::put('/{person}/onboarding', [PersonController::class, 'updateOnboarding'])->middleware('permission:customers');
 });
 
 Route::group(['prefix' => 'person-documents', 'middleware' => 'auth:api'], static function () {
     Route::get('/{personDocument}/download', [PersonDocumentController::class, 'show'])->middleware('permission:customers');
-    Route::patch('/{personDocument}', [PersonDocumentController::class, 'update'])->middleware('permission:customers');
     Route::delete('/{personDocument}', [PersonDocumentController::class, 'destroy'])->middleware('permission:customers');
 });
 // Map Settings
