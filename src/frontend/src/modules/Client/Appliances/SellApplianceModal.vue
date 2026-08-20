@@ -461,29 +461,39 @@
             <div class="coordinate-section">
               <div class="md-layout md-gutter">
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field>
+                  <md-field
+                    :class="{ 'md-invalid': errors.has('device_latitude') }"
+                  >
                     <label for="device_latitude">
                       {{ $tc("words.latitude") }}
                     </label>
                     <md-input
                       id="device_latitude"
                       name="device_latitude"
-                      :value="formattedDeviceLatitude"
-                      readonly
+                      v-model="formattedDeviceLatitude"
+                      v-validate="'decimal:6|min_value:-90|max_value:90'"
                     />
+                    <span class="md-error">
+                      {{ errors.first("device_latitude") }}
+                    </span>
                   </md-field>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field>
+                  <md-field
+                    :class="{ 'md-invalid': errors.has('device_longitude') }"
+                  >
                     <label for="device_longitude">
                       {{ $tc("words.longitude") }}
                     </label>
                     <md-input
                       id="device_longitude"
                       name="device_longitude"
-                      :value="formattedDeviceLongitude"
-                      readonly
+                      v-model="formattedDeviceLongitude"
+                      v-validate="'decimal:6|min_value:-180|max_value:180'"
                     />
+                    <span class="md-error">
+                      {{ errors.first("device_longitude") }}
+                    </span>
                   </md-field>
                 </div>
               </div>
@@ -1024,13 +1034,29 @@ export default {
     showRatesButton() {
       return this.applianceService.appliance.rate > 1
     },
-    formattedDeviceLatitude() {
-      if (!this.deviceLocation) return ""
-      return this.deviceLocation.lat
+    formattedDeviceLatitude: {
+      get() {
+        if (!this.deviceLocation) return ""
+        return this.deviceLocation.lat
+      },
+      set(value) {
+        this.deviceLocation = {
+          lat: value,
+          lon: this.deviceLocation ? this.deviceLocation.lon : null,
+        }
+      },
     },
-    formattedDeviceLongitude() {
-      if (!this.deviceLocation) return ""
-      return this.deviceLocation.lon
+    formattedDeviceLongitude: {
+      get() {
+        if (!this.deviceLocation) return ""
+        return this.deviceLocation.lon
+      },
+      set(value) {
+        this.deviceLocation = {
+          lat: this.deviceLocation ? this.deviceLocation.lat : null,
+          lon: value,
+        }
+      },
     },
     deviceCoordinatesAvailable() {
       return (
