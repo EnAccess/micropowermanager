@@ -76,6 +76,12 @@ a {
   }
 }
 
+@keyframes ops-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes ops-indeterminate {
   0% {
     left: -35%;

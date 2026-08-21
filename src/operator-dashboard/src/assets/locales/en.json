@@ -34,6 +34,7 @@
     "refreshData": "Refresh data",
     "refreshFailed": "The refresh did not complete. Please try again.",
     "refreshTimedOut": "The refresh is taking longer than expected. The data will update once it finishes.",
+    "refreshing": "Refreshing…",
     "registeredIn": "Registered {month}",
     "reportedLastSevenDays": "Reported in last 7 days",
     "searchTenants": "Search by name or country…",

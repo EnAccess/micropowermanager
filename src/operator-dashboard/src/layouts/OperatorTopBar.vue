@@ -25,12 +25,17 @@
       </span>
       <button
         type="button"
-        class="topbar__button"
+        class="topbar__refresh"
+        :class="{ 'topbar__refresh--busy': refreshing }"
         :disabled="refreshing"
-        :title="$tc('phrases.refreshData')"
         @click="refresh"
       >
-        <span class="material-icons topbar__button-icon">update</span>
+        <span class="material-icons topbar__refresh-icon">update</span>
+        <span class="topbar__refresh-label">
+          {{
+            refreshing ? $tc("phrases.refreshing") : $tc("phrases.refreshData")
+          }}
+        </span>
       </button>
       <div class="topbar__operator">
         <span class="material-icons topbar__operator-icon">person</span>
@@ -138,30 +143,43 @@ export default {
   font-weight: 300;
 }
 
-.topbar__button {
+.topbar__refresh {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 32px;
+  gap: 7px;
   height: 32px;
+  padding: 0 14px;
   border: none;
   border-radius: $ops-radius-control;
-  background: $ops-shell-button;
+  background: $brand-primary;
   color: $brand-white;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    background: $ops-shell-button-hover;
+    background: $brand-primary-light;
   }
 
   &:disabled {
     cursor: default;
-    opacity: 0.6;
+    background: $ops-shell-button;
+    color: $ops-shell-text-muted;
   }
 }
 
-.topbar__button-icon {
+.topbar__refresh-icon {
   font-size: 18px;
+}
+
+// Mirrors the spinning refresh affordance in the tenant admin panel.
+.topbar__refresh--busy .topbar__refresh-icon {
+  animation: ops-rotate 1.4s linear infinite;
+}
+
+.topbar__refresh-label {
+  white-space: nowrap;
 }
 
 .topbar__operator {
