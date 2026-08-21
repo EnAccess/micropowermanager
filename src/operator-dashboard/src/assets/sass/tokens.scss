@@ -1,0 +1,55 @@
+@forward "brand";
+@use "brand" as *;
+
+// Surfaces and hairlines
+$ops-card-border: #e3edf4;
+$ops-row-border: #eef4f8;
+
+// Text ramp
+$ops-text: #495057;
+$ops-text-strong: #525252;
+$ops-text-muted: #949494;
+$ops-text-faint: #b0bec5;
+$ops-text-dormant: #78909c;
+$ops-icon-faint: #c2ccd3;
+
+// Status tints
+$ops-tint-positive: #eef5e9;
+$ops-tint-watch: #fdf0e4;
+$ops-tint-dormant: #eceff1;
+$ops-tint-link: #e8f3fa;
+$ops-text-watch: #e0762a;
+
+// Shell
+$ops-shell-sidebar: #2b2b2b;
+$ops-shell-topbar: #424040;
+$ops-shell-button: #3d3d3d;
+$ops-shell-button-hover: #4a4a4a;
+$ops-shell-text: #e0e0e0;
+$ops-shell-text-muted: #b5b5b5;
+$ops-shell-text-faint: #8a8a8a;
+
+// Geometry
+$ops-radius-card: 6px;
+$ops-radius-control: 3px;
+$ops-radius-pill: 12px;
+$ops-gap: 20px;
+
+// One map drives every status dot, label and chip.
+$ops-status: (
+  active: (
+    dot: $brand-accent,
+    text: $brand-accent-dark,
+    tint: $ops-tint-positive,
+  ),
+  watch: (
+    dot: $brand-secondary-dark,
+    text: $ops-text-watch,
+    tint: $ops-tint-watch,
+  ),
+  dormant: (
+    dot: $ops-text-faint,
+    text: $ops-text-dormant,
+    tint: $ops-tint-dormant,
+  ),
+);

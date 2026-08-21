@@ -1,0 +1,38 @@
+{
+  "name": "operator-dashboard",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
+    "lint": "vue-cli-service lint src",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write ."
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "core-js": "^3.8.3",
+    "echarts": "^5.5.1",
+    "vue": "2.7.16",
+    "vue-echarts": "^7.0.3",
+    "vue-i18n": "^8.22.1",
+    "vue-router": "^3.6.5",
+    "vuex": "^3.5.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.28.6",
+    "@import-meta-env/unplugin": "^0.6.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-webpack": "^0.13.10",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-vue": "^9.1.1",
+    "prettier": "3.2.5",
+    "sass": "^1.26.11",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "2.7.16"
+  }
+}

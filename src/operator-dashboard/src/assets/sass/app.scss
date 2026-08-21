@@ -1,0 +1,92 @@
+@use "tokens" as *;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: $brand-background;
+  color: $ops-text;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5em;
+}
+
+a {
+  color: $brand-primary;
+  text-decoration: none;
+
+  &:hover {
+    color: $brand-primary-dark;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfe0eb;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+// Numbers that sit in columns must not shift width between digits.
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@each $status, $spec in $ops-status {
+  .status-dot--#{$status} {
+    background: map-get($spec, dot);
+  }
+
+  .status-text--#{$status} {
+    color: map-get($spec, text);
+  }
+
+  .status-chip--#{$status} {
+    color: map-get($spec, text);
+    background: map-get($spec, tint);
+  }
+}
+
+@keyframes ops-indeterminate {
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -35%;
+  }
+  100% {
+    left: 100%;
+    right: -35%;
+  }
+}
