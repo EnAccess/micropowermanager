@@ -2,7 +2,7 @@
 
 use App\Console\Commands\MailApplianceDebtsCommand;
 use App\Http\Middleware\AgentBalanceMiddleware;
-use App\Http\Middleware\TelescopeBasicAuthMiddleware;
+use App\Http\Middleware\BasicAuthMiddleware;
 use App\Http\Middleware\Transaction;
 use App\Http\Middleware\TransactionRequest;
 use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
@@ -44,7 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
-            'telescope.auth' => TelescopeBasicAuthMiddleware::class,
+            'basic.auth' => BasicAuthMiddleware::class,
         ]);
 
         // additional middleware group to `web` and `api` default groups
@@ -83,6 +83,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // there to Slack when LOG_SLACK_WEBHOOK_URL is configured.
         $schedule->command('mpm-system-checks:horizon --alert')->everyFiveMinutes();
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
+        $schedule->command('operator-dashboard:rebuild')->dailyAt('02:30')->onOneServer();
         $schedule->command('appliance-rate:check')->dailyAt('00:00');
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');

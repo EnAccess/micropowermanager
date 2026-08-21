@@ -1,0 +1,6 @@
+.env
+.env.local
+*.log
+coverage/
+.eslintcache
+dist/

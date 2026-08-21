@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\CompanyDatabase;
 use App\Services\DatabaseProxyManagerService;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -63,25 +61,17 @@ abstract class AbstractSharedCommand extends Command {
         InputInterface $input,
         OutputInterface $output,
     ): void {
-        $databaseProxyManagerService->queryAllConnections()
-            ->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
-                /* @var \Illuminate\Support\Collection<int, \App\Models\CompanyDatabase> $modelCollection */
-                $modelCollection->each(function ($companyDatabase) use (
-                    $databaseProxyManagerService,
-                    $input,
-                    $output
-                ) {
-                    // @phpstan-ignore instanceof.alwaysTrue
-                    if ($companyDatabase instanceof CompanyDatabase) {
-                        $this->runForCompany(
-                            $databaseProxyManagerService,
-                            $companyDatabase->company_id,
-                            $input,
-                            $output
-                        );
-                    }
-                });
-            });
+        $databaseProxyManagerService->eachCompany(
+            function (int $companyId) use ($input, $output): void {
+                $this->info('Running '.$this->name.' for company ID : '.$companyId);
+                parent::execute($input, $output);
+            },
+            function (int $companyId, \Throwable $throwable): void {
+                $this->logFailure($companyId, $throwable);
+
+                throw $throwable;
+            }
+        );
     }
 
     private function runForCompany(
@@ -97,15 +87,19 @@ abstract class AbstractSharedCommand extends Command {
                 parent::execute($input, $output);
             });
         } catch (\Throwable $e) {
-            Log::error('Command ['.$this->name.'] failed for company ID: '.$companyId, [
-                'company_id' => $companyId,
-                'exception' => $e::class,
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ]);
+            $this->logFailure($companyId, $e);
 
             throw $e;
         }
+    }
+
+    private function logFailure(int $companyId, \Throwable $throwable): void {
+        Log::error('Command ['.$this->name.'] failed for company ID: '.$companyId, [
+            'company_id' => $companyId,
+            'exception' => $throwable::class,
+            'message' => $throwable->getMessage(),
+            'file' => $throwable->getFile(),
+            'line' => $throwable->getLine(),
+        ]);
     }
 }

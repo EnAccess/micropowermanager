@@ -1,0 +1,16 @@
+FROM node:20.18-alpine3.20
+
+WORKDIR /app
+
+# get MicroPowerManager source code and configuration
+VOLUME ["/app/"]
+
+# Reuses the frontend dev entrypoint: both apps are npm dev servers with the
+# same install-and-serve startup.
+COPY docker/entrypoint-frontend-dev.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-frontend-dev.sh
+
+# serve the application via entrypoint script
+ENTRYPOINT ["/usr/local/bin/entrypoint-frontend-dev.sh"]
+
+EXPOSE 8080
