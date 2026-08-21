@@ -8,7 +8,7 @@ use App\Services\SmsService;
 use Illuminate\Support\Facades\Log;
 
 class ResendRejectedMessages extends AbstractSharedCommand {
-    public const MAX_ATTEMPTS = 3;
+    public const MAX_ATTEMPTS = 2;
 
     /**
      * The name and signature of the console command.
