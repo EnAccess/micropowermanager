@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Mail\PlainEmail;
 use App\Models\Agent;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -156,6 +158,51 @@ class AgentTest extends TestCase {
             'email' => $this->agents[0]->email,
         ]);
         $response->assertStatus(200);
+    }
+
+    public function testAgentResetPasswordDoesNotLeakWhetherEmailExists(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $knownEmailResponse = $this->post('/api/app/reset-password', [
+            'email' => $this->agents[0]->email,
+        ]);
+        $unknownEmailResponse = $this->post('/api/app/reset-password', [
+            'email' => 'no-such-agent@example.com',
+        ]);
+
+        $knownEmailResponse->assertStatus(200);
+        $unknownEmailResponse->assertStatus(200);
+        $this->assertEquals($knownEmailResponse->json(), $unknownEmailResponse->json());
+    }
+
+    public function testAgentResetPasswordDoesNotReturnPasswordInResponse(): void {
+        Mail::fake();
+
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $originalPassword = $this->agents[0]->password;
+
+        $response = $this->post('/api/app/reset-password', [
+            'email' => $this->agents[0]->email,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonMissingPath('data.password');
+        $this->assertNotEquals($originalPassword, $this->agents[0]->fresh()->password);
+
+        Mail::assertQueued(PlainEmail::class, function (PlainEmail $mail) {
+            return $mail->hasTo($this->agents[0]->email);
+        });
     }
 
     public function testUserCanSearchAnAgentByName(): void {
