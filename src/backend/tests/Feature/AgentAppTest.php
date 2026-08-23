@@ -3,12 +3,14 @@
 namespace Tests\Feature;
 
 use App\Jobs\ProcessPayment;
+use App\Models\Address\Address;
 use App\Models\AgentAssignedAppliances;
 use App\Models\City;
 use App\Models\MainSettings;
 use App\Models\Person\Person;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
+use Database\Factories\Person\PersonFactory;
 use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
@@ -497,6 +499,66 @@ class AgentAppTest extends TestCase {
         $response = $this->actingAs($this->agent)->postJson('/api/app/agents/customers', $postData);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['city_id']);
+    }
+
+    public function testAgentStoresOnboardingAnswersForOwnCustomer(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->createPerson(1);
+        $customer = Person::query()->where('is_customer', 1)->firstOrFail();
+
+        $response = $this->actingAs($this->agent)->putJson(
+            sprintf('/api/app/agents/customers/%d/onboarding', $customer->id),
+            ['answers' => [
+                ['question' => 'Household size', 'answer' => '6'],
+                ['question' => 'Primary cooking fuel', 'answer' => 'Charcoal'],
+            ]]
+        );
+
+        $response->assertStatus(200);
+        $this->assertSame(
+            ['Household size' => '6', 'Primary cooking fuel' => 'Charcoal'],
+            $customer->fresh()->onboarding_json
+        );
+    }
+
+    public function testAgentCannotStoreOnboardingAnswersForForeignCustomer(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid(2);
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $foreignMiniGrid = collect($this->miniGrids)
+            ->first(fn ($miniGrid): bool => $miniGrid->id !== $this->agent->mini_grid_id);
+        $foreignCity = City::query()->create([
+            'name' => 'Foreignville',
+            'country_id' => 1,
+            'mini_grid_id' => $foreignMiniGrid->id,
+        ]);
+        $foreignCustomer = PersonFactory::new()->create(['is_customer' => 1]);
+        $address = Address::query()->make([
+            'email' => $this->faker->email(),
+            'phone' => $this->faker->e164PhoneNumber(),
+            'street' => '',
+            'city_id' => $foreignCity->id,
+            'is_primary' => 1,
+        ]);
+        $address->owner()->associate($foreignCustomer);
+        $address->save();
+
+        $response = $this->actingAs($this->agent)->putJson(
+            sprintf('/api/app/agents/customers/%d/onboarding', $foreignCustomer->id),
+            ['answers' => [['question' => 'Tampered', 'answer' => 'yes']]]
+        );
+
+        $response->assertStatus(404);
+        $this->assertNull($foreignCustomer->fresh()->onboarding_json);
     }
 
     public function testAgentRecordsCashTransaction(): void {
