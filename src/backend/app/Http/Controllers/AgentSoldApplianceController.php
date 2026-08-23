@@ -9,8 +9,6 @@ use App\Services\AgentSoldApplianceService;
 use Illuminate\Http\Request;
 
 class AgentSoldApplianceController extends Controller {
-    public const FOR_APP = true;
-
     public function __construct(
         private AgentSoldApplianceService $agentSoldApplianceService,
         private AgentService $agentService,
@@ -18,12 +16,12 @@ class AgentSoldApplianceController extends Controller {
 
     public function index(Request $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
-        $limit = $request->input('per_page');
+        $limit = $request->has('per_page') ? $request->integer('per_page') : null;
 
-        return ApiResource::make($this->agentSoldApplianceService->getAll($limit, $agent->id, null, self::FOR_APP));
+        return ApiResource::make($this->agentSoldApplianceService->list($agent->id, $limit));
     }
 
-    public function show(int $customerId, Request $request): ApiResource {
+    public function show(int $customerId): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return ApiResource::make($this->agentSoldApplianceService->getByCustomerId($agent->id, $customerId));
@@ -31,16 +29,8 @@ class AgentSoldApplianceController extends Controller {
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return ApiResource
      */
-    public function store(CreateAgentSoldApplianceRequest $request) {
-        $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);
-
-        $soldAppliance = $this->agentSoldApplianceService->create($soldApplianceData);
-        // proccess agent sales
-        $this->agentSoldApplianceService->processSaleFromRequest($soldAppliance, $request->all());
-
-        return ApiResource::make($soldAppliance);
+    public function store(CreateAgentSoldApplianceRequest $request): ApiResource {
+        return ApiResource::make($this->agentSoldApplianceService->sell($request->all()));
     }
 }
