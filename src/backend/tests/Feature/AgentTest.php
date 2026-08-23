@@ -200,9 +200,7 @@ class AgentTest extends TestCase {
         $response->assertJsonMissingPath('data.password');
         $this->assertNotEquals($originalPassword, $this->agents[0]->fresh()->password);
 
-        Mail::assertQueued(PlainEmail::class, function (PlainEmail $mail) {
-            return $mail->hasTo($this->agents[0]->email);
-        });
+        Mail::assertQueued(PlainEmail::class, fn (PlainEmail $mail) => $mail->hasTo($this->agents[0]->email));
     }
 
     public function testUserCanSearchAnAgentByName(): void {
