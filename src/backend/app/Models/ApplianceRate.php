@@ -7,24 +7,23 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 
 /**
  * Class ApplianceRate.
  *
- * @property      int                  $id
- * @property      int                  $appliance_person_id
- * @property      int                  $rate_cost
- * @property      int                  $remaining
- * @property      Carbon               $due_date
- * @property      int                  $remind
- * @property      Carbon|null          $created_at
- * @property      Carbon|null          $updated_at
- * @property-read ApplianceType|null   $appliance
- * @property-read AppliancePerson|null $appliancePerson
- * @property-read Collection<int, Log> $logs
- * @property-read PaymentHistory|null  $paymentHistory
+ * @property      int                             $id
+ * @property      int                             $appliance_person_id
+ * @property      int                             $rate_cost
+ * @property      int                             $remaining
+ * @property      Carbon                          $due_date
+ * @property      int                             $remind
+ * @property      Carbon|null                     $created_at
+ * @property      Carbon|null                     $updated_at
+ * @property-read ApplianceType|null              $appliance
+ * @property-read AppliancePerson|null            $appliancePerson
+ * @property-read Collection<int, Log>            $logs
+ * @property-read Collection<int, PaymentHistory> $paymentHistories
  */
 class ApplianceRate extends BaseModel {
     public const RELATION_NAME = 'appliance_rate';
@@ -52,10 +51,10 @@ class ApplianceRate extends BaseModel {
     }
 
     /**
-     * @return MorphOne<PaymentHistory, $this>
+     * @return MorphMany<PaymentHistory, $this>
      */
-    public function paymentHistory(): MorphOne {
-        return $this->morphOne(PaymentHistory::class, 'paid_for');
+    public function paymentHistories(): MorphMany {
+        return $this->morphMany(PaymentHistory::class, 'paid_for');
     }
 
     /**
