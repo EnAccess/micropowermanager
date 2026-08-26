@@ -30,8 +30,8 @@ patches:
     target:
       kind: ConfigMap
       name: mpm-configmap-frontend
-  # Right-size Cloud pods to their VPA-recommended usage (GKE Autopilot applies
-  # defaults of 0.5 vCPU / 2Gi memory to containers that declare no requests).
+  # Right-size Cloud pods (GKE Autopilot applies defaults of 0.5 vCPU / 2Gi memory
+  # to containers that declare no requests).
   # https://docs.cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests
   # https://docs.cloud.google.com/kubernetes-engine/docs/how-to/pod-bursting-gke
   - patch: |-
@@ -60,8 +60,8 @@ patches:
               - name: mpm-frontend
                 resources:
                   requests:
-                    cpu: 100m
-                    memory: 256Mi
+                    cpu: 250m
+                    memory: 1Gi
   - patch: |-
       apiVersion: apps/v1
       kind: Deployment
@@ -88,8 +88,8 @@ patches:
               - name: mpm-scheduler
                 resources:
                   requests:
-                    cpu: 200m
-                    memory: 512Mi
+                    cpu: 350m
+                    memory: 1Gi
   # Setting a static IP external address for our external loadbalancer, see
   # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
   - patch: |-
