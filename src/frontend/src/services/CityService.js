@@ -133,12 +133,26 @@ export class CityService {
     }
   }
 
-  async deleteCity(cityId) {
+  async deleteCity(cityId, options = {}) {
     try {
-      const { status, error } = await this.repository.delete(cityId)
+      const params = convertObjectKeysToSnakeCase(options)
+      const { status, error } = await this.repository.delete(cityId, params)
       if (status !== 200) return new ErrorHandler(error, "http", status)
 
       return true
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async getLinkedAddresses(cityId) {
+    try {
+      const { data, status, error } =
+        await this.repository.linkedAddresses(cityId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
     } catch (e) {
       const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")

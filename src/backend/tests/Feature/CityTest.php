@@ -6,6 +6,7 @@ use App\Exceptions\EntityHasChildrenException;
 use App\Models\Address\Address;
 use App\Models\City;
 use App\Models\GeographicalInformation;
+use App\Models\Person\Person;
 use Database\Factories\CityFactory;
 use Database\Factories\ClusterFactory;
 use Database\Factories\MiniGridFactory;
@@ -78,12 +79,7 @@ class CityTest extends TestCase {
         $this->createTestData();
         $cityId = $this->cityIds[0];
 
-        $person = PersonFactory::new()->create();
-        $address = Address::query()->make([
-            'city_id' => $cityId,
-            'is_primary' => 1,
-        ]);
-        $address->owner()->associate($person)->save();
+        $this->makeAddress(PersonFactory::new()->create(), $cityId, isPrimary: 1);
 
         $this->withoutExceptionHandling();
         $this->expectException(EntityHasChildrenException::class);
@@ -93,6 +89,122 @@ class CityTest extends TestCase {
         } finally {
             $this->assertNotNull(City::query()->find($cityId));
         }
+    }
+
+    public function testCityDeleteBlockedMessageNamesTheLinkedRecords(): void {
+        $this->createTestData(1, 1, 2);
+        [$oldCityId, $newCityId] = $this->cityIds;
+
+        $mover = PersonFactory::new()->create();
+        $this->makeAddress($mover, $oldCityId, isPrimary: 0);
+        $this->makeAddress($mover, $newCityId, isPrimary: 1);
+        $this->makeAddress(PersonFactory::new()->create(), $oldCityId, isPrimary: 1);
+
+        $response = $this->actingAs($this->user)->deleteJson("/api/cities/{$oldCityId}");
+
+        $response->assertStatus(422);
+        $this->assertStringContainsString('2 addresses still point to it', $response['message']);
+        $this->assertStringContainsString('2 customers, 1 of them through a former address', $response['message']);
+        $this->assertNotNull(City::query()->find($oldCityId));
+    }
+
+    public function testCityDeleteDiscardsAddressesWhoseOwnerIsGone(): void {
+        $this->createTestData();
+        $cityId = $this->cityIds[0];
+
+        $person = PersonFactory::new()->create();
+        $address = $this->makeAddress($person, $cityId, isPrimary: 1);
+        // Mass delete bypasses PersonObserver, so the address is left dangling.
+        Person::query()->where('id', $person->id)->forceDelete();
+
+        $response = $this->actingAs($this->user)->deleteJson("/api/cities/{$cityId}");
+
+        $response->assertStatus(200);
+        $this->assertNull(City::query()->find($cityId));
+        $this->assertNull(Address::query()->find($address->id));
+    }
+
+    public function testCityDeleteDiscardsAddressesOfSoftDeletedCustomers(): void {
+        $this->createTestData();
+        $cityId = $this->cityIds[0];
+
+        $person = PersonFactory::new()->create();
+        $address = $this->makeAddress($person, $cityId, isPrimary: 1);
+        Person::query()->where('id', $person->id)->delete();
+        $this->assertNotNull(Person::withTrashed()->find($person->id)->deleted_at);
+
+        $response = $this->actingAs($this->user)->deleteJson("/api/cities/{$cityId}");
+
+        $response->assertStatus(200);
+        $this->assertNull(City::query()->find($cityId));
+        $this->assertNull(Address::query()->find($address->id));
+    }
+
+    public function testAddressesOfSoftDeletedCustomersAreNotListedAsLinked(): void {
+        $this->createTestData();
+        $cityId = $this->cityIds[0];
+
+        $activePerson = PersonFactory::new()->create();
+        $activeAddress = $this->makeAddress($activePerson, $cityId, isPrimary: 1);
+        $deletedPerson = PersonFactory::new()->create();
+        $this->makeAddress($deletedPerson, $cityId, isPrimary: 1);
+        Person::query()->where('id', $deletedPerson->id)->delete();
+
+        $response = $this->actingAs($this->user)->getJson("/api/cities/{$cityId}/addresses");
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'data');
+        $this->assertEquals($activeAddress->id, $response['data'][0]['id']);
+    }
+
+    public function testUserDeletesCityAfterReassigningItsAddresses(): void {
+        $this->createTestData(1, 1, 2);
+        [$sourceCityId, $targetCityId] = $this->cityIds;
+
+        $address = $this->makeAddress(PersonFactory::new()->create(), $sourceCityId, isPrimary: 1);
+        $deletedPerson = PersonFactory::new()->create();
+        $residueAddress = $this->makeAddress($deletedPerson, $sourceCityId, isPrimary: 1);
+        Person::query()->where('id', $deletedPerson->id)->delete();
+
+        $response = $this->actingAs($this->user)
+            ->deleteJson("/api/cities/{$sourceCityId}", ['reassign_addresses_to' => $targetCityId]);
+
+        $response->assertStatus(200);
+        $this->assertNull(City::query()->find($sourceCityId));
+        $this->assertEquals($targetCityId, $address->fresh()->city_id);
+        // Residue must not be carried over into the village that survives.
+        $this->assertNull(Address::query()->find($residueAddress->id));
+    }
+
+    public function testCityDeleteRejectsReassigningAddressesToItself(): void {
+        $this->createTestData();
+        $cityId = $this->cityIds[0];
+        $this->makeAddress(PersonFactory::new()->create(), $cityId, isPrimary: 1);
+
+        $response = $this->actingAs($this->user)
+            ->deleteJson("/api/cities/{$cityId}", ['reassign_addresses_to' => $cityId]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('reassign_addresses_to');
+        $this->assertNotNull(City::query()->find($cityId));
+    }
+
+    public function testUserGetsAddressesLinkedToACity(): void {
+        $this->createTestData(1, 1, 2);
+        [$oldCityId, $newCityId] = $this->cityIds;
+
+        $mover = PersonFactory::new()->create();
+        $formerAddress = $this->makeAddress($mover, $oldCityId, isPrimary: 0);
+        $this->makeAddress($mover, $newCityId, isPrimary: 1);
+
+        $response = $this->actingAs($this->user)->getJson("/api/cities/{$oldCityId}/addresses");
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'data');
+        $this->assertEquals($formerAddress->id, $response['data'][0]['id']);
+        $this->assertFalse($response['data'][0]['is_primary']);
+        $this->assertEquals('person', $response['data'][0]['owner_type']);
+        $this->assertEquals("{$mover->name} {$mover->surname}", $response['data'][0]['owner_name']);
     }
 
     public function testUserUpdatesACity(): void {
@@ -110,6 +222,7 @@ class CityTest extends TestCase {
         $response = $this->actingAs($this->user)->put(sprintf('/api/cities/%s', $city->id), $cityData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $cityData['name']);
+        $this->assertEquals($this->miniGridIds[1], $city->fresh()->mini_grid_id);
         // The village had no location yet — the update must create one.
         $this->assertEquals([39.754433, -7.873645], $city->fresh()->location->geo_json->geometry->coordinates);
     }
@@ -152,7 +265,6 @@ class CityTest extends TestCase {
 
                 while ($cityCount > 0) {
                     $city = CityFactory::new()->create([
-                        'name' => $this->faker->unique()->citySuffix(),
                         'country_id' => 1,
                         'mini_grid_id' => $miniGrid->id,
                     ]);
@@ -168,6 +280,16 @@ class CityTest extends TestCase {
 
             --$clusterCount;
         }
+    }
+
+    private function makeAddress(Person $owner, int $cityId, int $isPrimary): Address {
+        $address = Address::query()->make([
+            'city_id' => $cityId,
+            'is_primary' => $isPrimary,
+        ]);
+        $address->owner()->associate($owner)->save();
+
+        return $address;
     }
 
     protected function generateUniqueNumber(): int {
