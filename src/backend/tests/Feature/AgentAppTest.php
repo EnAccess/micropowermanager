@@ -4,13 +4,19 @@ namespace Tests\Feature;
 
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
+use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\City;
+use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Person\Person;
+use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
+use Database\Factories\AgentTransactionFactory;
 use Database\Factories\Person\PersonFactory;
+use Database\Factories\TokenFactory;
+use Database\Factories\TransactionFactory;
 use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
@@ -313,6 +319,102 @@ class AgentAppTest extends TestCase {
         $this->assertEquals(count($response['data']), $agentTransactionCount);
     }
 
+    public function testAgentGetsTokenOfCustomerTransactionRecordedByAnotherAgent(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createMeterType();
+        $this->createMeterTariff();
+        $this->createMeterManufacturer();
+        $this->createAgentCommission();
+        $this->createAgent(2);
+        $this->createPerson();
+        $customer = Person::query()->where('is_customer', 1)->firstOrFail();
+        $token = $this->createTokenizedTransactionFor($customer, $this->agents[1]);
+
+        $response = $this->actingAs($this->agent)
+            ->getJson(sprintf('/api/app/agents/transactions/%d/token', $token->transaction_id));
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.transaction_id', $token->transaction_id);
+        $response->assertJsonPath('data.token.token', $token->token);
+    }
+
+    public function testAgentGetsTokenOfOwnTransactionForUnassignedDevice(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $agentTransaction = AgentTransactionFactory::new()->create(['agent_id' => $this->agent->id]);
+        $transaction = TransactionFactory::new()->make(['message' => 'MTR-UNASSIGNED-001']);
+        $transaction->originalTransaction()->associate($agentTransaction);
+        $transaction->save();
+        $token = TokenFactory::new()->create(['transaction_id' => $transaction->id]);
+
+        $response = $this->actingAs($this->agent)
+            ->getJson(sprintf('/api/app/agents/transactions/%d/token', $transaction->id));
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.token.token', $token->token);
+    }
+
+    public function testAgentCannotGetTokenOfTransactionOutsideOwnMiniGrid(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid(2);
+        $this->createCity();
+        $this->createMeterType();
+        $this->createMeterTariff();
+        $this->createMeterManufacturer();
+        $this->createAgentCommission();
+        $this->createAgent(2);
+
+        $foreignMiniGrid = collect($this->miniGrids)
+            ->first(fn ($miniGrid): bool => $miniGrid->id !== $this->agent->mini_grid_id);
+        $foreignCity = City::query()->create([
+            'name' => 'Foreignville',
+            'country_id' => 1,
+            'mini_grid_id' => $foreignMiniGrid->id,
+        ]);
+        $foreignCustomer = PersonFactory::new()->create(['is_customer' => 1]);
+        $address = Address::query()->make([
+            'email' => $this->faker->email(),
+            'phone' => $this->faker->e164PhoneNumber(),
+            'street' => '',
+            'city_id' => $foreignCity->id,
+            'is_primary' => 1,
+        ]);
+        $address->owner()->associate($foreignCustomer);
+        $address->save();
+        $token = $this->createTokenizedTransactionFor($foreignCustomer, $this->agents[1]);
+
+        $response = $this->actingAs($this->agent)
+            ->getJson(sprintf('/api/app/agents/transactions/%d/token', $token->transaction_id));
+
+        $response->assertStatus(404);
+    }
+
+    /**
+     * Record a transaction against a meter of $customer on $recordedBy's behalf
+     * and return the token it generated.
+     */
+    private function createTokenizedTransactionFor(Person $customer, Agent $recordedBy): Token {
+        $meter = $this->getMeter();
+        Device::factory()->for($customer)->for($meter, 'device')
+            ->create(['device_serial' => $meter->serial_number]);
+
+        $agentTransaction = AgentTransactionFactory::new()->create(['agent_id' => $recordedBy->id]);
+        $transaction = TransactionFactory::new()->make(['message' => $meter->serial_number]);
+        $transaction->originalTransaction()->associate($agentTransaction);
+        $transaction->save();
+
+        return TokenFactory::new()->create(['transaction_id' => $transaction->id]);
+    }
+
     public function testAgentGetsSoldAppliances(): void {
         $this->createTestData();
         $this->createCluster();
@@ -341,6 +443,82 @@ class AgentAppTest extends TestCase {
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
         $this->assertEquals(count($response['data']), 1);
+    }
+
+    public function testAgentSoldAppliancesByCustomerIdCarryRatePaymentHistories(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->createAssignedAppliances();
+        $downPaymentTransaction = $this->sellApplianceWithDownPayment();
+
+        $response = $this->actingAs($this->agent)
+            ->getJson(sprintf('/api/app/agents/appliances/%s', $this->person->id));
+
+        $response->assertStatus(200);
+        $this->assertRatesCarryDownPayment($response->json('data.0.rates'), $downPaymentTransaction);
+    }
+
+    public function testAgentSoldAppliancesCarryRatePaymentHistories(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->createAssignedAppliances();
+        $downPaymentTransaction = $this->sellApplianceWithDownPayment();
+
+        $response = $this->actingAs($this->agent)->getJson('/api/app/agents/appliances');
+
+        $response->assertStatus(200);
+        $this->assertRatesCarryDownPayment($response->json('data.0.rates'), $downPaymentTransaction);
+    }
+
+    /**
+     * Sell an assigned appliance to $this->person on installments. The down
+     * payment settles a rate right away, which is the only rate with a payment
+     * history directly after the sale.
+     */
+    private function sellApplianceWithDownPayment(): Transaction {
+        $assignedAppliance = AgentAssignedAppliances::query()->firstOrFail();
+
+        $this->actingAs($this->agent)->postJson('/api/app/agents/appliances', [
+            'down_payment' => (int) floor($assignedAppliance->cost),
+            'person_id' => $this->person->id,
+            'agent_assigned_appliance_id' => $assignedAppliance->id,
+            'tenure' => 10,
+            'first_payment_date' => date('Y-m-d', strtotime('+1 month')),
+        ])->assertStatus(201);
+
+        return Transaction::query()->where('type', Transaction::TYPE_DOWN_PAYMENT)->firstOrFail();
+    }
+
+    /**
+     * The field app resolves the token issued for an installment through the
+     * transaction on that rate's payment history, so every rate has to come
+     * back with the relation loaded — settled or not.
+     *
+     * @param array<int, array<string, mixed>> $rates
+     */
+    private function assertRatesCarryDownPayment(array $rates, Transaction $downPaymentTransaction): void {
+        $this->assertNotEmpty($rates);
+        foreach ($rates as $rate) {
+            $this->assertArrayHasKey('payment_histories', $rate);
+        }
+
+        $settledRates = array_values(array_filter($rates, fn (array $rate): bool => $rate['payment_histories'] !== []));
+        $this->assertCount(1, $settledRates);
+        $this->assertEquals($downPaymentTransaction->amount, $settledRates[0]['rate_cost']);
+        $this->assertEquals(0, $settledRates[0]['remaining']);
+
+        $paymentHistories = $settledRates[0]['payment_histories'];
+        $this->assertCount(1, $paymentHistories);
+        $this->assertEquals($downPaymentTransaction->id, $paymentHistories[0]['transaction_id']);
+        $this->assertEquals($downPaymentTransaction->amount, $paymentHistories[0]['amount']);
     }
 
     public function testAgentSalesAppliances(): void {

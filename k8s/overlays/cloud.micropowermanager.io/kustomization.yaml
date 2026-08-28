@@ -13,13 +13,13 @@ components:
 
 images:
   - name: enaccess/micropowermanager-backend:latest
-    newTag: 0.1.39
+    newTag: 0.1.40
   - name: enaccess/micropowermanager-frontend:latest
-    newTag: 0.1.39
+    newTag: 0.1.40
   - name: enaccess/micropowermanager-scheduler:latest
-    newTag: 0.1.39
+    newTag: 0.1.40
   - name: enaccess/micropowermanager-queue-worker:latest
-    newTag: 0.1.39
+    newTag: 0.1.40
 
 patches:
   - path: configmap-cloud-backend.yaml
@@ -30,6 +30,66 @@ patches:
     target:
       kind: ConfigMap
       name: mpm-configmap-frontend
+  # Right-size Cloud pods (GKE Autopilot applies defaults of 0.5 vCPU / 2Gi memory
+  # to containers that declare no requests).
+  # https://docs.cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests
+  # https://docs.cloud.google.com/kubernetes-engine/docs/how-to/pod-bursting-gke
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: mpm-backend
+      spec:
+        template:
+          spec:
+            containers:
+              - name: mpm-backend
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 1Gi
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: mpm-frontend
+      spec:
+        template:
+          spec:
+            containers:
+              - name: mpm-frontend
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 1Gi
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: mpm-queue-worker
+      spec:
+        template:
+          spec:
+            containers:
+              - name: mpm-queue-worker
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 1536Mi
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: mpm-scheduler
+      spec:
+        template:
+          spec:
+            containers:
+              - name: mpm-scheduler
+                resources:
+                  requests:
+                    cpu: 350m
+                    memory: 1Gi
   # Setting a static IP external address for our external loadbalancer, see
   # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
   - patch: |-
