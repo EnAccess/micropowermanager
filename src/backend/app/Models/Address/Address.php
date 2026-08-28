@@ -29,7 +29,7 @@ use Propaganistas\LaravelPhone\Casts\E164PhoneNumberCast;
  * @property      Carbon|null                  $updated_at
  * @property-read City|null                    $city
  * @property-read GeographicalInformation|null $geo
- * @property-read Model                        $owner
+ * @property-read Model|null                   $owner
  */
 class Address extends BaseModel {
     /** @use HasFactory<AddressFactory> */

@@ -65,6 +65,24 @@ class MiniGridTest extends TestCase {
         $this->assertEquals(1, $miniGrid->location()->count());
     }
 
+    public function testUserMovesMiniGridToAnotherCluster(): void {
+        $this->createTestData(2, 1);
+        $miniGrid = MiniGrid::query()->find($this->miniGridIds[0]);
+        $targetClusterId = $this->clusterIds[1];
+        $this->assertNotEquals($targetClusterId, $miniGrid->cluster_id);
+
+        $response = $this->actingAs($this->user)->putJson("/api/mini-grids/{$miniGrid->id}", [
+            'cluster_id' => $targetClusterId,
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertEquals($targetClusterId, $miniGrid->fresh()->cluster_id);
+
+        $listed = $this->actingAs($this->user)->getJson('/api/mini-grids');
+        $listed->assertStatus(200);
+        $this->assertEquals($targetClusterId, $listed['data'][0]['cluster']['id']);
+    }
+
     public function testUserSoftDeletesChildlessMiniGrid(): void {
         $this->createTestData(1, 1);
         // createTestData adds a city — delete it first so the mini-grid is childless.

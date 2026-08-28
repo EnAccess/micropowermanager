@@ -12,7 +12,10 @@ export default {
   update(cityId, city) {
     return Client.put(`${resource}/${cityId}`, city)
   },
-  delete(cityId) {
-    return Client.delete(`${resource}/${cityId}`)
+  delete(cityId, params) {
+    return Client.delete(`${resource}/${cityId}`, { data: params })
+  },
+  linkedAddresses(cityId) {
+    return Client.get(`${resource}/${cityId}/addresses`)
   },
 }

@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CityRequest;
+use App\Http\Requests\DeleteCityRequest;
 use App\Http\Requests\UpdateCityRequest;
 use App\Http\Resources\ApiResource;
+use App\Http\Resources\LinkedAddressResource;
 use App\Services\CityService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class CityController extends Controller {
     public function __construct(
@@ -52,9 +56,32 @@ class CityController extends Controller {
         return ApiResource::make($this->cityService->create($request->validated()));
     }
 
-    public function destroy(int $cityId): JsonResponse {
+    /**
+     * List the addresses linked to a village.
+     */
+    public function addresses(int $cityId, Request $request): AnonymousResourceCollection {
         $city = $this->cityService->getById($cityId);
-        $this->cityService->delete($city);
+
+        return LinkedAddressResource::collection($this->cityService->getLinkedAddresses($city, $request->integer('limit') ?: null));
+    }
+
+    /**
+     * Delete a village.
+     *
+     * Pass `reassign_addresses_to` to move every address linked to this village over
+     * to another village first — which is how two duplicate villages get merged.
+     */
+    public function destroy(int $cityId, DeleteCityRequest $request): JsonResponse {
+        $city = $this->cityService->getById($cityId);
+        $targetCityId = $request->integer('reassign_addresses_to');
+
+        DB::connection('tenant')->transaction(function () use ($city, $targetCityId): void {
+            if ($targetCityId) {
+                $this->cityService->moveAddressesTo($city, $this->cityService->getById($targetCityId));
+            }
+
+            $this->cityService->delete($city);
+        });
 
         return response()->json(['message' => 'Village deleted.']);
     }
