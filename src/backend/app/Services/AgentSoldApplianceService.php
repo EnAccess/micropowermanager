@@ -48,7 +48,7 @@ class AgentSoldApplianceService implements IBaseService {
      * @return Collection<int, AppliancePerson>|LengthAwarePaginator<int, AppliancePerson>
      */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
-        return $this->appliancePerson->newQuery()->with(['person', 'device', 'rates'])
+        return $this->appliancePerson->newQuery()->with($this->agentAppEagerLoads())
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
@@ -59,6 +59,21 @@ class AgentSoldApplianceService implements IBaseService {
             ->where('person_id', $customerId)
             ->latest()
             ->paginate();
+    }
+
+    /**
+     * Relations the field app needs on every sold-appliance payload.
+     *
+     * @return array<int|string, mixed>
+     */
+    private function agentAppEagerLoads(): array {
+        return [
+            'person',
+            'device',
+            'rates.paymentHistories' => fn ($query) => $query
+                ->select(['id', 'transaction_id', 'amount', 'paid_for_id', 'paid_for_type'])
+                ->orderByDesc('id'),
+        ];
     }
 
     /**
@@ -107,7 +122,8 @@ class AgentSoldApplianceService implements IBaseService {
      * @return LengthAwarePaginator<int, AppliancePerson>
      */
     public function list(int $agentId): LengthAwarePaginator {
-        return $this->appliancePerson->newQuery()->with(['person', 'device', 'rates', 'appliance.applianceType'])
+        return $this->appliancePerson->newQuery()
+            ->with([...$this->agentAppEagerLoads(), 'appliance.applianceType'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
