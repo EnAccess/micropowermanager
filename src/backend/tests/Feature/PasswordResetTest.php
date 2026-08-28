@@ -17,8 +17,7 @@ class PasswordResetTest extends TestCase {
     }
 
     public function testAgentResetPasswordDoesNotRevealWhetherTheEmailExists(): void {
-        // Fixes https://github.com/EnAccess/micropowermanager/issues/1537: the agent reset
-        // endpoint is now excluded from the tenant-resolution middleware and resolves the
+        // Fixes the agent reset endpoint which is now excluded from the tenant-resolution middleware and resolves the
         // company itself, returning the same generic message whether or not the email exists.
         $response = $this->postJson('/api/app/reset-password', [
             'email' => 'no-such-agent@example.test',
