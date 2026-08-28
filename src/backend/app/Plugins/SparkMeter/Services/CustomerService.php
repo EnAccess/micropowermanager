@@ -2,6 +2,7 @@
 
 namespace App\Plugins\SparkMeter\Services;
 
+use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;
@@ -71,13 +72,12 @@ class CustomerService implements ISynchronizeService {
     public function updateSparkCustomerInfo(array $customerData, string $siteId): string {
         try {
             $customerId = $customerData['id'];
-            $putParams = [
+            $putParams = array_merge([
                 'active' => $customerData['active'],
                 'meter_tariff_name' => $customerData['meter_tariff_name'],
                 'name' => $customerData['name'],
                 'coords' => $customerData['coords'],
-                'address' => $customerData['address'],
-            ];
+            ], $customerData['address_fields']);
             if ($customerData['phone_number']) {
                 $putParams['phone_number'] = $customerData['phone_number'];
             }
@@ -88,6 +88,27 @@ class CustomerService implements ISynchronizeService {
             Log::critical('updating customer info from spark api failed.', ['Error :' => $e->getMessage()]);
             throw $e;
         }
+    }
+
+    /**
+     * Maps an MPM address to the v1.13+ SparkMeter address component fields
+     * (`address` is deprecated in favor of these). MPM only tracks a single
+     * street line and a city/country -- it has no street2/state/postalcode --
+     * and the API requires every component field to be present together if
+     * any one of them is, so the unavailable ones are sent as empty strings
+     * rather than omitted.
+     *
+     * @return array<string, string>
+     */
+    public static function addressComponentFields(?Address $address): array {
+        return [
+            'street1' => $address->street ?? '',
+            'street2' => '',
+            'city' => $address?->city->name ?? '',
+            'state' => '',
+            'postalcode' => '',
+            'country' => $address?->city?->country->country_name ?? '',
+        ];
     }
 
     /**
@@ -349,6 +370,7 @@ class CustomerService implements ISynchronizeService {
                         'site_id' => $customers['site_id'],
                         'credit_balance' => $customer['credit_balance'],
                         'hash' => $customer['hash'],
+                        'tags' => $customer['meters'][0]['tags'] ?? null,
                     ]);
                 });
                 $customers['site_data']->filter(fn (array $customer): bool => $customer['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $customer) use ($customers) {
@@ -365,6 +387,7 @@ class CustomerService implements ISynchronizeService {
                         'hash' => $customer['hash'],
                         'site_id' => $customers['site_id'],
                         'credit_balance' => $customer['credit_balance'],
+                        'tags' => $customer['meters'][0]['tags'] ?? null,
                     ]);
                     $this->smSmsNotifiedCustomerService
                         ->removeLowBalancedCustomer($customer['registeredSparkCustomer']);
@@ -455,6 +478,7 @@ class CustomerService implements ISynchronizeService {
             strval($model['credit_balance']),
             trim($model['meters'][0]['current_tariff_name']),
             $model['meters'][0]['serial'],
+            json_encode($model['meters'][0]['tags'] ?? []) ?: '',
         ]);
     }
 

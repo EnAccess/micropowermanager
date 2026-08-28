@@ -13,7 +13,6 @@ use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Models\SmTariff;
 use App\Plugins\SparkMeter\Models\SmTransaction;
 use App\Plugins\SparkMeter\Services\TariffService;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
@@ -21,12 +20,11 @@ class SparkMeterApi implements IManufacturerAPI {
     private string $rootUrl = '/transaction/';
 
     public function __construct(
-        protected Client $api,
-        private SparkMeterApiRequests $sparkMeterApiRequests,
-        private TariffService $tariffService,
-        private SmCustomer $smCustomer,
-        private SmTransaction $smTransaction,
-        private SmTariff $smTariff,
+        private readonly SparkMeterApiRequests $sparkMeterApiRequests,
+        private readonly TariffService         $tariffService,
+        private readonly SmCustomer            $smCustomer,
+        private readonly SmTransaction         $smTransaction,
+        private readonly SmTariff              $smTariff,
     ) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -69,28 +67,25 @@ class SparkMeterApi implements IManufacturerAPI {
             'amount' => strval($amount),
             'source' => 'cash',
             'external_id' => strval($externalId),
+            'memo' => 'MPM transaction #'.$externalId,
         ];
 
         try {
-            $request = $this->api->post(
-                $smCustomer->site->thundercloud_url.'/transaction/',
-                [
-                    'body' => json_encode($postParams),
-                    'headers' => [
-                        'Content-Type' => 'application/json;charset=utf-8',
-                        'Authentication-Token' => $smCustomer->site->thundercloud_token,
-                    ],
-                ]
+            // Routed through SparkMeterApiRequests rather than the raw Guzzle
+            // client: it translates GuzzleException into SparkAPIResponseException
+            // and runs the response through ResultStatusChecker, which is the
+            // error-shape check this method used to (incorrectly) duplicate below.
+            $result = $this->sparkMeterApiRequests->post(
+                $this->rootUrl,
+                $postParams,
+                $smCustomer->site->site_id
             );
-            $result = json_decode((string) $request->getBody(), true);
         } catch (SparkAPIResponseException $e) {
             Log::critical(
                 'Spark API Transaction Failed',
                 ['Body :' => json_encode($postParams), 'message :' => $e->getMessage()]
             );
-        }
-        if (isset($result['error']) && $result['error'] !== false) {
-            throw new SparkAPIResponseException($result['error']);
+            throw $e;
         }
         $transactionInformation = $this->sparkMeterApiRequests->getInfo(
             $this->rootUrl,

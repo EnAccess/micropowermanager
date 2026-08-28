@@ -111,7 +111,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                 return true;
             }
             $this->smsService->sendSms(
-                $customer->toArray(),
+                $customer,
                 SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
                 SparkSmsConfig::class
             );

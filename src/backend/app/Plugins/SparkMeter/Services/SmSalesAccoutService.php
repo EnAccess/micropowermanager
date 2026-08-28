@@ -184,6 +184,33 @@ class SmSalesAccoutService implements ISynchronizeService {
     }
 
     /**
+     * Issue a payment against a SparkMeter sales account (`POST /sales-accounts/:id/payment`,
+     * added in API v1.17). Not yet wired into any charge flow: MPM has no existing concept of
+     * which sales account should fund a given customer charge (`account_type` is unexplained
+     * in this codebase and a site can have several sales accounts), so callers must resolve
+     * the correct SmSalesAccount themselves until that selection rule is defined.
+     *
+     * @param array<string, mixed> $paymentParams
+     *
+     * @return array<string, mixed>|string
+     */
+    public function issuePayment(SmSalesAccount $smSalesAccount, array $paymentParams): array|string {
+        try {
+            return $this->sparkMeterApiRequests->post(
+                $this->rootUrl.'/'.$smSalesAccount->sales_account_id.'/payment',
+                $paymentParams,
+                $smSalesAccount->site_id
+            );
+        } catch (\Exception $e) {
+            Log::critical('Spark sales account payment failed.', [
+                'sales_account_id' => $smSalesAccount->sales_account_id,
+                'Error :' => $e->getMessage(),
+            ]);
+            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
      * @param array<string, mixed> $model
      */
     public function modelHasher(array $model, ?string ...$params): string {
