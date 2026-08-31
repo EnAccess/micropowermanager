@@ -9,10 +9,12 @@ use App\Models\AgentCharge;
 use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
 use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
@@ -66,6 +68,69 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         }
 
         return $query->latest()->get();
+    }
+
+    /**
+     * Adds to the company money the agent holds. The trigger is what the money came from — an
+     * AgentTransaction, a sold appliance, a charge or a receipt — and is also what tells
+     * AgentBalanceHistoryObserver to move `balance` rather than `commission_revenue`.
+     *
+     * Returns null when this transaction has already been credited: a queue retry can replay a
+     * success event, and crediting twice would inflate the balance the agent has to hand back.
+     */
+    public function creditBalance(Agent $agent, Transaction $transaction, float $amount, Model $trigger): ?AgentBalanceHistory {
+        if ($this->isAlreadyCredited($transaction, self::BALANCE_TRIGGER_TYPES)) {
+            return null;
+        }
+
+        $agentBalanceHistory = $this->make([
+            'agent_id' => $agent->id,
+            'amount' => $amount,
+            'transaction_id' => $transaction->id,
+        ]);
+        $agentBalanceHistory->trigger()->associate($trigger);
+        $agentBalanceHistory->save();
+
+        return $agentBalanceHistory;
+    }
+
+    /**
+     * Credits what the agent earned on a transaction. The AgentCommission trigger is what makes
+     * AgentBalanceHistoryObserver move `commission_revenue` and leave `balance` untouched, so this
+     * is also the path for payments the agent never physically handled.
+     *
+     * Returns null when the commission for this transaction has already been credited.
+     */
+    public function creditCommission(Agent $agent, Transaction $transaction, float $amount): ?AgentBalanceHistory {
+        if ($this->isAlreadyCredited($transaction, [AgentCommission::RELATION_NAME])) {
+            return null;
+        }
+
+        $agentCommission = AgentCommission::query()->find($agent->agent_commission_id);
+
+        if (!$agentCommission instanceof AgentCommission) {
+            return null;
+        }
+
+        $agentBalanceHistory = $this->make([
+            'agent_id' => $agent->id,
+            'amount' => $amount,
+            'transaction_id' => $transaction->id,
+        ]);
+        $agentBalanceHistory->trigger()->associate($agentCommission);
+        $agentBalanceHistory->save();
+
+        return $agentBalanceHistory;
+    }
+
+    /**
+     * @param array<int, string> $triggerTypes
+     */
+    private function isAlreadyCredited(Transaction $transaction, array $triggerTypes): bool {
+        return $this->agentBalanceHistory->newQuery()
+            ->where('transaction_id', $transaction->id)
+            ->whereIn('trigger_type', $triggerTypes)
+            ->exists();
     }
 
     /**

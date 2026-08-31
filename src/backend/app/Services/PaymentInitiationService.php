@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\PaymentInitiationProvider;
+use App\Exceptions\PaymentProviderNotEnabledException;
 use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Container\Container;
@@ -40,6 +41,11 @@ class PaymentInitiationService {
     ): array {
         $provider = PaymentInitiationProvider::tryFrom($providerId)
             ?? throw new \InvalidArgumentException("Unsupported payment provider ID: {$providerId}");
+
+        // Flag if payment is made for an inactive tenant provider. 
+        if ($provider !== PaymentInitiationProvider::Cash && !$this->pluginsService->isPluginActive($providerId)) {
+            throw new PaymentProviderNotEnabledException("Payment provider {$provider->name} is not enabled.");
+        }
 
         $initiator = $this->container->make($provider->initiatorClass());
 

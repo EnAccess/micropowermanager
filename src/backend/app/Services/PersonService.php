@@ -44,6 +44,16 @@ class PersonService implements IBaseService {
             ->get();
     }
 
+    /**
+     * The number MPM reaches a customer on: their primary address phone. Returns null when the
+     * person has no primary address, which callers that need to reach the customer must handle.
+     */
+    public function getPrimaryPhoneNumber(Person $person): ?string {
+        $phone = $person->addresses()->where('is_primary', 1)->first()?->phone;
+
+        return $phone === null ? null : (string) $phone;
+    }
+
     // associates the person with a country
     public function addCitizenship(Person $person, Country $country): Person {
         return $person->citizenship()->associate($country);
