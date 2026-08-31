@@ -42,7 +42,7 @@ class PaymentInitiationService {
         $provider = PaymentInitiationProvider::tryFrom($providerId)
             ?? throw new \InvalidArgumentException("Unsupported payment provider ID: {$providerId}");
 
-        // Flag if payment is made for an inactive tenant provider. 
+        // Flag if payment is made for an inactive tenant provider.
         if ($provider !== PaymentInitiationProvider::Cash && !$this->pluginsService->isPluginActive($providerId)) {
             throw new PaymentProviderNotEnabledException("Payment provider {$provider->name} is not enabled.");
         }
