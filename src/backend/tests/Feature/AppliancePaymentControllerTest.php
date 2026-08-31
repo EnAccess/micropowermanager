@@ -10,6 +10,7 @@ use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\MpmPlugin;
 use App\Models\Plugins;
+use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
@@ -113,6 +114,24 @@ class AppliancePaymentControllerTest extends TestCase {
         ]);
     }
 
+    public function testWebInstallmentPaymentSetsNoAgentId(): void {
+        $this->createTestData();
+        Queue::fake();
+
+        $appliancePerson = $this->createSoldApplianceWithRate();
+
+        $response = $this->actingAs($this->user)->post(
+            "/api/appliances/payment/{$appliancePerson->id}",
+            ['amount' => 100, 'payment_provider' => 0],
+        );
+
+        $response->assertStatus(200);
+
+        // Only the field app attributes a payment to an agent; an admin-panel payment has none,
+        // which is what keeps TransactionSuccessfulListener from crediting anyone a commission.
+        $this->assertNull(Transaction::query()->findOrFail($response['data']['transaction_id'])->agent_id);
+    }
+
     public function testReturnsNotFoundForUnknownTransactionStatus(): void {
         $this->createTestData();
 
@@ -124,6 +143,11 @@ class AppliancePaymentControllerTest extends TestCase {
     public function testReturnsRedirectUrlForPaystackPayment(): void {
         $this->createTestData();
         Queue::fake();
+
+        Plugins::query()->create([
+            'mpm_plugin_id' => MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            'status' => Plugins::ACTIVE,
+        ]);
 
         $apiService = $this->createMock(PaystackApiService::class);
         $apiService->method('initializeTransaction')->willReturn([
@@ -291,5 +315,34 @@ class AppliancePaymentControllerTest extends TestCase {
         }
 
         return $appliancePerson->fresh();
+    }
+
+    private function createSoldApplianceWithRate(): AppliancePerson {
+        $person = PersonFactory::new()->create();
+        $applianceType = ApplianceTypeFactory::new()->create();
+        $appliance = Appliance::query()->create([
+            'name' => 'Test Appliance',
+            'price' => 1000,
+            'appliance_type_id' => $applianceType->id,
+        ]);
+
+        /** @var AppliancePerson $appliancePerson */
+        $appliancePerson = AppliancePersonFactory::new()->create([
+            'appliance_id' => $appliance->id,
+            'person_id' => $person->id,
+            'total_cost' => 500,
+            'rate_count' => 5,
+            'down_payment' => 0,
+        ]);
+
+        ApplianceRate::query()->create([
+            'appliance_person_id' => $appliancePerson->id,
+            'rate_cost' => 100,
+            'remaining' => 100,
+            'remind' => 0,
+            'due_date' => now()->addMonth(),
+        ]);
+
+        return $appliancePerson;
     }
 }

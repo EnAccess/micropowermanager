@@ -66,20 +66,24 @@ class AgentCustomersPaymentHistoryService {
 
         $sql = <<<SQL
             SELECT
-                SUM(amount) AS amount,
-                payment_type,
+                SUM(payment_histories.amount) AS amount,
+                payment_histories.payment_type,
                 CONCAT_WS("/", {$period}) AS period
             FROM payment_histories
             INNER JOIN addresses ON payment_histories.payer_id = addresses.owner_id
             INNER JOIN cities ON addresses.city_id = cities.id
             INNER JOIN mini_grids ON cities.mini_grid_id = mini_grids.id
             INNER JOIN agents ON agents.mini_grid_id = mini_grids.id
+            LEFT JOIN transactions ON payment_histories.transaction_id = transactions.id
             WHERE
-                payment_service LIKE '%agent%'
+                -- payment_service names the settling provider, so an agent's provider-initiated
+                -- payment reads as e.g. 'vodacom_mz_transaction'; transactions.agent_id is what
+                -- still ties it back to the agent who collected it.
+                (payment_service LIKE '%agent%' OR transactions.agent_id = agents.id)
                 AND payer_type = :payer_type
                 AND agents.id = :agent_id
                 AND addresses.is_primary = 1
-            GROUP BY period, payment_type
+            GROUP BY period, payment_histories.payment_type
             ORDER BY MIN(payment_histories.created_at) {$order};
             SQL;
 

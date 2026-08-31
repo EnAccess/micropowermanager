@@ -26,13 +26,15 @@ class PaymentInitiationServiceTest extends TestCase {
 
     /** @var PaystackTransactionService&MockObject */
     private MockObject $paystackService;
+    private MockObject $pluginsService;
 
     protected function setUp(): void {
         parent::setUp();
 
         $this->cashService = $this->createMock(CashTransactionService::class);
         $this->paystackService = $this->createMock(PaystackTransactionService::class);
-        $pluginsService = $this->createMock(PluginsService::class);
+        $this->pluginsService = $this->createMock(PluginsService::class);
+        $this->pluginsService->method('isPluginActive')->willReturn(true);
         $mpmPluginService = $this->createMock(MpmPluginService::class);
 
         $this->container = $this->createMock(Container::class);
@@ -42,7 +44,7 @@ class PaymentInitiationServiceTest extends TestCase {
         ]);
 
         $this->service = new PaymentInitiationService(
-            $pluginsService,
+            $this->pluginsService,
             $mpmPluginService,
             $this->container,
         );
