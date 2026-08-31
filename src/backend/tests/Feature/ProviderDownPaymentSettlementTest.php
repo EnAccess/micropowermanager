@@ -108,7 +108,7 @@ class ProviderDownPaymentSettlementTest extends TestCase {
     }
 
     private function settle(Transaction $transaction): void {
-        (new ApplianceTransactionProcessor($this->companyId, $transaction->id))->handle();
+        new ApplianceTransactionProcessor($this->companyId, $transaction->id)->handle();
     }
 
     private function sellApplianceWithProviderDownPayment(bool $paygo, float $downPayment = self::DOWN_PAYMENT): Transaction {
