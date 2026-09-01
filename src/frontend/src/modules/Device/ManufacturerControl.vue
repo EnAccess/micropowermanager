@@ -174,7 +174,7 @@
                 :key="type"
                 :value="type"
               >
-                {{ tokenTypeLabel(type) }}
+                {{ tokenPurposeLabel(type) }}
               </md-option>
             </md-select>
           </md-field>
@@ -349,7 +349,7 @@ export default {
       this.unit = "currency"
       this.showTokenDialog = true
     },
-    tokenTypeLabel(tokenType) {
+    tokenPurposeLabel(tokenType) {
       const labels = {
         credit: "phrases.creditToken",
         unlock: "phrases.unlockDevice",

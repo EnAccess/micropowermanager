@@ -24,7 +24,7 @@ class TokenResource extends JsonResource {
             'token_unit' => $this->token_unit,
             /* The credit the manufacturer issued, which can differ from the credit requested. */
             'token_amount' => $this->token_amount,
-            /* The transaction the token was booked against. */
+            /* The transaction the token was recorded against. */
             'transaction_id' => $this->transaction_id,
             'created_at' => $this->created_at,
         ];
