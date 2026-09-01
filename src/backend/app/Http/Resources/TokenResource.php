@@ -18,7 +18,7 @@ class TokenResource extends JsonResource {
             'id' => $this->id,
             /* The code to enter on the device. */
             'token' => $this->token,
-            /* One of `energy`, `time` or `unlock`. */
+            /* One of `energy`, `time`, `unlock` or `reset`. */
             'token_type' => $this->token_type,
             /* The unit of `token_amount`, e.g. `kWh` or `days`. */
             'token_unit' => $this->token_unit,
