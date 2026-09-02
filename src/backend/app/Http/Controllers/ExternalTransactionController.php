@@ -43,7 +43,7 @@ class ExternalTransactionController extends Controller {
         ]);
 
         $appliancePerson = $this->appliancePersonService->getBySerialNumber($request->string('serial')->toString());
-        if ($appliancePerson === null) {
+        if (!$appliancePerson instanceof AppliancePerson) {
             return response()->json(['message' => 'No appliance found for the given serial'], 404);
         }
 

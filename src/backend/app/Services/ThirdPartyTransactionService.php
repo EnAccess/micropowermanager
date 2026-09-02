@@ -41,7 +41,7 @@ class ThirdPartyTransactionService implements PaymentInitiator {
         ?string $externalReference = null,
     ): array {
         $apiKey = $this->resolveApiKey();
-        if ($apiKey === null) {
+        if (!$apiKey instanceof ApiKey) {
             throw new \InvalidArgumentException('Third-party transactions require a valid API key');
         }
 

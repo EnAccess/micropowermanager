@@ -181,11 +181,11 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $this->appliancePerson->newQuery()->where('device_serial', $serialNumber)->first();
     }
 
-
-     //Payable devices (non-deleted plans only) belonging to whichever customer(s) have this
-     //phone number on any of their addresses. A phone isn't unique to one address or one
-     //customer, so this returns the union across every match rather than erroring.
     /**
+     * Payable devices (non-deleted plans only) belonging to whichever customer(s) have this
+     * phone number on any of their addresses. A phone isn't unique to one address or one
+     * customer, so this returns the union across every match rather than erroring.
+     *
      * @return Collection<int, AppliancePerson>
      */
     public function getPayableByPhone(string $normalizedPhone): Collection {

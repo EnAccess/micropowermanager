@@ -265,10 +265,7 @@
               <md-card>
                 <md-card-content v-if="ot.status === 1 && hasPaymentHistory">
                   <div class="md-layout md-gutter md-size-100">
-                    <div
-                      class="md-layout-item md-size-55"
-                      style="margin: auto"
-                    >
+                    <div class="md-layout-item md-size-55" style="margin: auto">
                       <payment-history-chart
                         :paymentdata="transaction.payment_histories"
                       />
