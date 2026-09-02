@@ -3,6 +3,7 @@
 namespace App\Plugins\CalinMeter;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
@@ -18,6 +19,15 @@ class CalinMeterApi implements IManufacturerAPI {
     private string $rootUrl = '/tokennew';
 
     public function __construct(protected Client $api, private CalinTransaction $calinTransaction, private CalinCredential $credentials, private CalinMeterApiRequests $calinMeterApiRequests) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+        ];
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;

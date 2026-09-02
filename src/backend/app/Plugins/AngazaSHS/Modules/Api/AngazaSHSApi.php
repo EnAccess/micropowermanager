@@ -3,8 +3,8 @@
 namespace App\Plugins\AngazaSHS\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
-use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
@@ -23,6 +23,17 @@ class AngazaSHSApi implements IManufacturerAPI {
         private AngazaTransaction $angazaTransaction,
         private ApiRequests $apiRequests,
     ) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+            ManufacturerCapability::UnlockToken,
+            ManufacturerCapability::ResetToken,
+        ];
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
@@ -123,11 +134,29 @@ class AngazaSHSApi implements IManufacturerAPI {
     }
 
     /**
-     * @return array<string,mixed>|null
+     * Angaza credit is an absolute expiry rather than a running balance, so credit
+     * until now leaves the unit with zero days. `credit_until_dt` takes either that
+     * timestamp or one of the sentinels {@see self::unlockDevice()} uses.
      *
-     * @throws ApiCallDoesNotSupportedException
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
     public function clearDevice(Device $device): ?array {
-        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+        $params = [
+            'unit_number' => $device->device_serial,
+            'state' => [
+                'desired' => [
+                    'credit_until_dt' => Carbon::now()->toIso8601String(),
+                ],
+            ],
+        ];
+        $credentials = $this->credentialService->getCredentials();
+        $response = $this->handleApiRequest($credentials, $params);
+
+        return [
+            'token' => $response['_embedded']['latest_keycode']['keycode'],
+            'token_type' => Token::TYPE_RESET,
+            'token_unit' => null,
+            'token_amount' => null,
+        ];
     }
 }

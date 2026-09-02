@@ -50,7 +50,7 @@
                       {{ $tc("phrases.paymentType") }}
                     </div>
                     <div class="md-layout-item md-subheader n-font">
-                      <span>{{ transactionTypeLabel }}</span>
+                      <span>{{ transactionTypeLabel(transaction.type) }}</span>
                       <div style="margin-left: 0.2em">
                         <small
                           v-if="
@@ -228,14 +228,25 @@
                   <hr class="hr-d" />
                   <div class="md-layout">
                     <div class="md-layout-item md-subheader">
-                      {{ $tc("phrases.issuedCredit") }}
+                      {{ $tc("words.type") }}
                     </div>
                     <div class="md-layout-item md-subheader n-font">
-                      {{ readable(transaction.token.token_amount) }}
-                      {{ unitLabel(transaction.token.token_unit) }}
+                      {{ tokenTypeLabel(transaction.token.token_type) }}
                     </div>
                   </div>
                   <hr class="hr-d" />
+                  <template v-if="transaction.token.token_amount">
+                    <div class="md-layout">
+                      <div class="md-layout-item md-subheader">
+                        {{ $tc("phrases.issuedCredit") }}
+                      </div>
+                      <div class="md-layout-item md-subheader n-font">
+                        {{ readable(transaction.token.token_amount) }}
+                        {{ unitLabel(transaction.token.token_unit) }}
+                      </div>
+                    </div>
+                    <hr class="hr-d" />
+                  </template>
                   <div class="md-layout">
                     <div class="md-layout-item md-subheader">
                       {{ $tc("words.date") }}
@@ -439,6 +450,7 @@ import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
 import { token } from "@/mixins/token.js"
+import { transactionType } from "@/mixins/transactionType.js"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
 import CashTransactionDetail from "@/modules/Transactions/CashTransactionDetail.vue"
 import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart.vue"
@@ -452,7 +464,7 @@ import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Transaction",
-  mixins: [timing, currency, notify, token],
+  mixins: [timing, currency, notify, token, transactionType],
   components: {
     Widget,
     AgentTransactionDetail,
@@ -567,16 +579,6 @@ export default {
     },
     isAdHoc() {
       return this.transaction.type === "ad_hoc"
-    },
-    transactionTypeLabel() {
-      const labels = {
-        energy: this.$tc("words.energy"),
-        deferred_payment: this.$tc("phrases.deferredPayment"),
-        eaas_rate: this.$tc("phrases.eaasRate"),
-        down_payment: this.$tc("phrases.downPayment"),
-        ad_hoc: this.$tc("phrases.adHoc"),
-      }
-      return labels[this.transaction.type] || this.transaction.type
     },
     isApplianceTransaction() {
       return (
