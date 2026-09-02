@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\PaymentSuccessEvent;
-use App\Events\TransactionSuccessfulEvent;
 use App\Http\Requests\CreateAppliancePersonRequest;
 use App\Http\Requests\UpdateAppliancePersonTotalCostRequest;
 use App\Http\Resources\ApiResource;
-use App\Jobs\ProcessPayment;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
-use App\Models\Transaction\Transaction;
 use App\Models\User;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\DeviceService;
-use App\Services\PaymentInitiationService;
 use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
 use Dedoc\Scramble\Attributes\PathParameter;
@@ -26,15 +21,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AppliancePersonController extends Controller {
-    public const CASH_TRANSACTION_PROVIVER = 0;
-
     public function __construct(
         private AppliancePerson $appliancePerson,
         private AppliancePersonService $appliancePersonService,
         private UserAppliancePersonService $userAppliancePersonService,
         private UserService $userService,
         private DeviceService $deviceService,
-        private PaymentInitiationService $paymentInitiationService,
         private ApplianceRateService $applianceRateService,
     ) {}
 
@@ -44,10 +36,9 @@ class AppliancePersonController extends Controller {
      * Creates a new AppliancePerson record linking the appliance to the person.
      *
      * For `installment` sales the installment rates are generated immediately, for `energy_service` sales no rates are created.
+     * A `down_payment` on an `installment` sale becomes the first rate, due on the day of the sale;
+     * it is paid like any other rate through the appliance payment endpoint.
      * When a `device_serial` is given, that device is assigned to the person.
-     * When a `down_payment` is given, it is processed as well:
-     * cash payments (`payment_provider: 0`) are booked immediately,
-     * online payments are initiated and the provider's initiation data (e.g. a payment page URL) is returned next to `appliance_person`.
      */
     #[PathParameter('appliance', description: 'ID of the appliance (the product) being sold.')]
     #[PathParameter('person', description: 'ID of the person (customer) buying the appliance.')]
@@ -59,7 +50,6 @@ class AppliancePersonController extends Controller {
         try {
             $user = $this->userService->getById($request->integer('user_id'));
             $paymentType = $request->input('payment_type') ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
-            $downPayment = (float) $request->input('down_payment', 0);
 
             DB::connection('tenant')->beginTransaction();
 
@@ -73,13 +63,9 @@ class AppliancePersonController extends Controller {
                 $this->assignDevice($appliancePerson, $request);
             }
 
-            $responseArray = $downPayment > 0
-                ? $this->processDownPayment($appliancePerson, $downPayment, $request)
-                : ['appliance_person' => $appliancePerson];
-
             DB::connection('tenant')->commit();
 
-            return ApiResource::make($responseArray);
+            return ApiResource::make(['appliance_person' => $appliancePerson]);
         } catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
             throw $e;
@@ -118,6 +104,10 @@ class AppliancePersonController extends Controller {
         }
 
         $this->applianceRateService->create($appliancePerson, $installmentType);
+
+        if ($appliancePerson->down_payment > 0) {
+            $this->applianceRateService->createDownPaymentRate($appliancePerson);
+        }
     }
 
     private function assignDevice(AppliancePerson $appliancePerson, Request $request): void {
@@ -125,49 +115,6 @@ class AppliancePersonController extends Controller {
         $this->deviceService->update($device, ['person_id' => $appliancePerson->person_id]);
 
         $this->deviceService->assignLocation($device, GeographicalInformation::pointFromString($request->input('points')));
-    }
-
-    /**
-     * @return non-empty-array<string, mixed>
-     */
-    private function processDownPayment(AppliancePerson $appliancePerson, float $downPayment, Request $request): array {
-        $addressData = $request->input('address');
-        $deviceSerial = $request->input('device_serial');
-        $sender = isset($addressData) ? $addressData['phone'] : '-';
-        $message = $deviceSerial ?? (string) $appliancePerson->id;
-        $person = $appliancePerson->person;
-        $paymentProviderId = (int) $request->input('payment_provider', 0);
-        $companyId = $request->attributes->get('companyId');
-        $downPaymentInitData = [];
-
-        $result = $this->paymentInitiationService->initiate(
-            providerId: $paymentProviderId,
-            amount: $downPayment,
-            sender: $sender,
-            message: $message,
-            type: Transaction::TYPE_DOWN_PAYMENT,
-            customerId: $person->id,
-            serialId: $deviceSerial ?? null,
-        );
-
-        if ($paymentProviderId === $this::CASH_TRANSACTION_PROVIVER) {
-            $applianceRate = $this->applianceRateService->createPaidRate($appliancePerson, $downPayment);
-            event(new PaymentSuccessEvent(
-                amount: (int) $result['transaction']->amount,
-                paymentService: 'web',
-                paymentType: Transaction::TYPE_DOWN_PAYMENT,
-                sender: $result['transaction']->sender,
-                paidFor: $applianceRate,
-                payer: $appliancePerson->person,
-                transaction: $result['transaction'],
-            ));
-            event(new TransactionSuccessfulEvent($result['transaction']));
-        } else {
-            dispatch(new ProcessPayment($companyId, $result['transaction']->id));
-            $downPaymentInitData = $result['provider_data'];
-        }
-
-        return array_merge(['appliance_person' => $appliancePerson], $downPaymentInitData);
     }
 
     /**

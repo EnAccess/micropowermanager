@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ApplianceTransactionProcessor;
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Agent;
@@ -480,10 +481,11 @@ class AgentAppTest extends TestCase {
 
     /**
      * Sell an assigned appliance to $this->person on installments. The down
-     * payment settles a rate right away, which is the only rate with a payment
-     * history directly after the sale.
+     * payment is an outstanding rate settled by the queued payment processing,
+     * run by hand here, so it is the only rate with a payment history after the sale.
      */
     private function sellApplianceWithDownPayment(): Transaction {
+        Queue::fake();
         $assignedAppliance = AgentAssignedAppliances::query()->firstOrFail();
 
         $this->actingAs($this->agent)->postJson('/api/app/agents/appliances', [
@@ -494,7 +496,10 @@ class AgentAppTest extends TestCase {
             'first_payment_date' => date('Y-m-d', strtotime('+1 month')),
         ])->assertStatus(201);
 
-        return Transaction::query()->where('type', Transaction::TYPE_DOWN_PAYMENT)->firstOrFail();
+        $transaction = Transaction::query()->where('type', Transaction::TYPE_DOWN_PAYMENT)->firstOrFail();
+        new ApplianceTransactionProcessor($this->companyId, $transaction->id)->handle();
+
+        return $transaction;
     }
 
     /**

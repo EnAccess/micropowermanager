@@ -30,16 +30,22 @@ class AgentSoldApplianceController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sell an assigned appliance to a customer.
      *
-     * @return ApiResource
+     * The down payment is recorded as a transaction and processed asynchronously;
+     * `transaction_id` is what the field app polls the token for.
      */
-    public function store(CreateAgentSoldApplianceRequest $request) {
+    public function store(CreateAgentSoldApplianceRequest $request): ApiResource {
         $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);
 
         $soldAppliance = $this->agentSoldApplianceService->create($soldApplianceData);
-        // proccess agent sales
-        $this->agentSoldApplianceService->processSaleFromRequest($soldAppliance, $request->all());
+        $transaction = $this->agentSoldApplianceService->processSaleFromRequest(
+            $soldAppliance,
+            $request->all(),
+            $request->attributes->get('companyId'),
+        );
+
+        $soldAppliance->setAttribute('transaction_id', $transaction->id);
 
         return ApiResource::make($soldAppliance);
     }

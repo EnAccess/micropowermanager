@@ -249,6 +249,7 @@
     "documentTypePlaceholder": "ex. contrato, questionário",
     "documentUploaded": "Documento carregado com sucesso",
     "downPayment": "Entrada",
+    "downPaymentRateHint": "A entrada acordada na venda. É liquidada com o primeiro pagamento e não pode ser alterada.",
     "dropFileHere": "Clique para procurar ou solte um ficheiro aqui",
     "dueAtVisit": "Devido na visita",
     "dueDate": "Data de Vencimento",

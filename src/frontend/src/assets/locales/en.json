@@ -249,6 +249,7 @@
     "documentTypePlaceholder": "e.g. contract, questionnaire",
     "documentUploaded": "Document uploaded successfully",
     "downPayment": "Down Payment",
+    "downPaymentRateHint": "The down payment agreed at the sale. It is settled by the first payment and cannot be changed.",
     "dropFileHere": "Click to browse or drop a file here",
     "dueAtVisit": "Due at Visit",
     "dueDate": "Due Date",

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Events\PaymentSuccessEvent;
+use App\Jobs\ProcessPayment;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AppliancePerson;
@@ -36,7 +36,6 @@ class AgentSoldApplianceService implements IBaseService {
         private ApplianceRateService $applianceRateService,
         private AppliancePerson $appliancePerson,
         private DeviceService $deviceService,
-        private PersonService $personService,
         private TransactionService $transactionService,
     ) {}
 
@@ -146,7 +145,7 @@ class AgentSoldApplianceService implements IBaseService {
     /**
      * @param array<string, mixed> $requestData
      */
-    public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
+    public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData, int $companyId): Transaction {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $assignedAppliance->appliance()->first();
@@ -216,24 +215,16 @@ class AgentSoldApplianceService implements IBaseService {
             $this->deviceService->assignLocation($device, $geoJson);
         }
 
-        // initalize appliance Rates
-        $buyer = $this->personService->getById($appliancePerson->person_id);
-
         if (!$isEnergyService) {
             $this->applianceRateService->create($appliancePerson, $rateType);
+
+            if ($appliancePerson->down_payment > 0) {
+                $this->applianceRateService->createDownPaymentRate($appliancePerson);
+            }
         }
 
         if ($appliancePerson->down_payment > 0) {
-            $applianceRate = $this->applianceRateService->createPaidRate($appliancePerson, $appliancePerson->down_payment);
-            event(new PaymentSuccessEvent(
-                amount: (int) $transaction->amount,
-                paymentService: $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
-                paymentType: Transaction::TYPE_DOWN_PAYMENT,
-                sender: $transaction->sender,
-                paidFor: $applianceRate,
-                payer: $buyer,
-                transaction: $transaction,
-            ));
+            dispatch(new ProcessPayment($companyId, $transaction->id));
         }
 
         // assign agent assigned appliance to agent balance history
@@ -262,5 +253,7 @@ class AgentSoldApplianceService implements IBaseService {
         $this->agentCommissionHistoryBalanceService->setAssigned($agentBalanceHistory);
         $this->agentCommissionHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);
+
+        return $transaction;
     }
 }
