@@ -28,6 +28,7 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\DeviceImportController;
 use App\Http\Controllers\EBikeController;
+use App\Http\Controllers\ExternalTransactionController;
 use App\Http\Controllers\ImportStatusController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
@@ -157,8 +158,13 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'auth:api'], function ()
 
     Route::group(['prefix' => 'payment'], static function () {
         Route::get('/providers', [AppliancePaymentController::class, 'paymentProviders'])->middleware('permission:payments');
-        Route::post('/{appliance_person}', [AppliancePaymentController::class, 'store'])->middleware('permission:payments');
+        Route::post('/{appliance_person}', [AppliancePaymentController::class, 'store'])->where('appliance_person', '[0-9]+')->middleware('permission:payments');
         Route::get('/status/{transaction}', [AppliancePaymentController::class, 'checkStatus'])->where('transaction', '[0-9]+')->middleware('permission:payments');
+        // External parties authenticate via an API key, not the group's auth:api (JWT) guard.
+        Route::post('/external-transaction', [ExternalTransactionController::class, 'store'])
+            ->withoutMiddleware('auth:api')->middleware('auth:api-key');
+        Route::post('/external-transaction/devices', [ExternalTransactionController::class, 'devices'])
+            ->withoutMiddleware('auth:api')->middleware('auth:api-key');
     });
 });
 // Clusters

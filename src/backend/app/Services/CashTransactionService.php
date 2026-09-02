@@ -45,6 +45,7 @@ class CashTransactionService implements PaymentInitiator {
         string $type,
         int $customerId,
         ?string $serialId = null,
+        ?string $externalReference = null,
     ): array {
         $creatorId = Auth::id();
 

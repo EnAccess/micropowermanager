@@ -153,6 +153,7 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
         string $type,
         int $customerId,
         ?string $serialId = null,
+        ?string $externalReference = null,
     ): array {
         $deviceType = null;
         if ($serialId !== null) {

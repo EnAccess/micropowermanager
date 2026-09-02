@@ -79,6 +79,7 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
         string $type,
         int $customerId,
         ?string $serialId = null,
+        ?string $externalReference = null,
     ): array {
         $thirdPartyReference = $this->generateThirdPartyReference($serialId);
 

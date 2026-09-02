@@ -175,6 +175,7 @@ class FlutterwaveTransactionService extends AbstractPaymentAggregatorTransaction
         string $type,
         int $customerId,
         ?string $serialId = null,
+        ?string $externalReference = null,
     ): array {
         $deviceType = null;
         if ($serialId !== null) {
