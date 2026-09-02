@@ -2,20 +2,23 @@
 
 namespace Tests\Unit;
 
+use App\Jobs\ProcessPayment;
 use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCommission;
-use App\Models\AgentSoldAppliance;
 use App\Models\Appliance;
+use App\Models\ApplianceRate;
 use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\MiniGrid;
-use App\Models\PaymentHistory;
 use App\Models\SolarHomeSystem;
+use App\Models\Transaction\Transaction;
+use Carbon\Carbon;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Queue;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
@@ -23,10 +26,8 @@ class AgentSellApplianceTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
-    /**
-     * A basic unit test example.
-     */
-    public function testAgentSellAppliance(): void {
+    public function testAgentSaleRecordsTheDownPaymentAsAnOutstandingRateAndPaysItThroughTheQueue(): void {
+        Queue::fake();
         $data = $this->initData();
 
         $agent = Agent::query()->latest()->first();
@@ -35,14 +36,17 @@ class AgentSellApplianceTest extends TestCase {
 
         $response->assertStatus(201);
 
-        AgentSoldAppliance::query()->create([
-            'person_id' => 1,
-            'agent_assigned_appliance_id' => 1,
-        ]);
+        $downPaymentRate = ApplianceRate::query()
+            ->where('rate_cost', $data['down_payment'])
+            ->whereDate('due_date', Carbon::today())
+            ->firstOrFail();
+        $this->assertSame($data['down_payment'], $downPaymentRate->remaining);
 
-        $paymentHistory = PaymentHistory::query()->latest()->first();
+        $transaction = Transaction::query()->where('type', Transaction::TYPE_DOWN_PAYMENT)->firstOrFail();
+        $this->assertSame($data['device_serial'], $transaction->message);
+        $this->assertSame($transaction->id, $response->json('data.transaction_id'));
 
-        $this->assertEquals($data['down_payment'], $paymentHistory->amount);
+        Queue::assertPushed(ProcessPayment::class);
     }
 
     public function initData(): array {
@@ -131,7 +135,7 @@ class AgentSellApplianceTest extends TestCase {
         return [
             'agent_assigned_appliance_id' => $agentAssignedAppliance->id,
             'person_id' => $person->id,
-            'first_payment_date' => '2020-12-29T20:53:38Z',
+            'first_payment_date' => Carbon::today()->toIso8601String(),
             'down_payment' => 100,
             'tenure' => 5,
             'device_serial' => 'SHS-TEST-0001',

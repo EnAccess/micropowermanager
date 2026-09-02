@@ -249,6 +249,7 @@
     "documentTypePlaceholder": "مثل: عقد، استبيان",
     "documentUploaded": "تم رفع الوثيقة بنجاح",
     "downPayment": "دفعة أولى",
+    "downPaymentRateHint": "الدفعة الأولى المتفق عليها عند البيع. تُسوَّى بأول دفعة ولا يمكن تغييرها.",
     "dropFileHere": "انقر للتصفح أو أفلت ملفًا هنا",
     "dueAtVisit": "المستحق عند الزيارة",
     "dueDate": "أجل الدفع",

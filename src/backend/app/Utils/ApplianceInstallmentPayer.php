@@ -58,11 +58,12 @@ class ApplianceInstallmentPayer {
     // This function pays the installments for the device number that provided in transaction
     public function payInstallmentsForDevice(TransactionDataContainer $container): void {
         $this->appliancePaymentService->paymentAmount = $container->transaction->amount;
-        $container->appliancePerson->rates->map(fn (ApplianceRate $installment) => $this->appliancePaymentService->payInstallment(
-            $installment,
-            $container->appliancePerson,
-            $container->transaction
-        ));
+        $this->appliancePaymentService->inScheduleOrder($container->appliancePerson->rates)
+            ->map(fn (ApplianceRate $installment) => $this->appliancePaymentService->payInstallment(
+                $installment,
+                $container->appliancePerson,
+                $container->transaction
+            ));
         // reload potentially updated rates
         $container->appliancePerson->load('rates');
     }

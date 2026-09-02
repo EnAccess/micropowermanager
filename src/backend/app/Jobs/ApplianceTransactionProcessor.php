@@ -10,6 +10,7 @@ use App\Exceptions\ApplianceTokenNotProcessedException;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Models\Appliance;
+use App\Models\AppliancePerson;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\ApplianceRateService;
@@ -72,12 +73,24 @@ class ApplianceTransactionProcessor extends AbstractJob {
             $appliancePerson = $this->transaction->paygoAppliance()->first()
                 ?? $this->transaction->nonPaygoAppliance()->first();
 
-            $this->transaction->type = ($appliancePerson && $appliancePerson->isEnergyService())
-                ? Transaction::TYPE_EAAS_RATE
-                : Transaction::TYPE_DEFERRED_PAYMENT;
+            $this->transaction->type = $this->paymentType($appliancePerson);
         }
 
         $this->transaction->save();
+    }
+
+    private function paymentType(?AppliancePerson $appliancePerson): string {
+        if (!$appliancePerson instanceof AppliancePerson) {
+            return Transaction::TYPE_DEFERRED_PAYMENT;
+        }
+
+        if (resolve(AppliancePaymentService::class)->isDownPaymentOutstanding($appliancePerson)) {
+            return Transaction::TYPE_DOWN_PAYMENT;
+        }
+
+        return $appliancePerson->isEnergyService()
+            ? Transaction::TYPE_EAAS_RATE
+            : Transaction::TYPE_DEFERRED_PAYMENT;
     }
 
     private function initializeTransactionDataContainer(): TransactionDataContainer {
@@ -114,7 +127,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
             event(new PaymentSuccessEvent(
                 amount: (int) $container->amount,
                 paymentService: $this->transaction->original_transaction_type,
-                paymentType: Transaction::TYPE_EAAS_RATE,
+                paymentType: $this->transaction->type,
                 sender: $this->transaction->sender,
                 paidFor: $paidRate,
                 payer: $container->appliancePerson->person,

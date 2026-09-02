@@ -43,10 +43,14 @@ class AppliancePaymentService {
     }
 
     public function createPaymentHistory(float $amount, AppliancePerson $buyer, ApplianceRate $applianceRate, Transaction $transaction): void {
+        $paymentType = $transaction->type === Transaction::TYPE_DOWN_PAYMENT
+            ? Transaction::TYPE_DOWN_PAYMENT
+            : 'installment';
+
         event(new PaymentSuccessEvent(
             amount: (int) $amount,
-            paymentService: 'web',
-            paymentType: 'installment',
+            paymentService: $transaction->original_transaction_type,
+            paymentType: $paymentType,
             sender: $transaction->sender,
             paidFor: $applianceRate,
             payer: $buyer->person,
@@ -112,6 +116,31 @@ class AppliancePaymentService {
         return $this->inScheduleOrder($rates)->first(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
     }
 
+    public function isDownPaymentOutstanding(AppliancePerson $appliancePerson): bool {
+        $paid = $appliancePerson->rates->sum(fn (ApplianceRate $rate): int => $rate->rate_cost - $rate->remaining);
+
+        return $appliancePerson->down_payment > 0 && $paid === 0;
+    }
+
+    public function isOutstandingDownPaymentRate(ApplianceRate $rate): bool {
+        $appliancePerson = $rate->appliancePerson;
+
+        return $this->isDownPaymentOutstanding($appliancePerson)
+            && $this->inScheduleOrder($appliancePerson->rates)->first()?->is($rate) === true;
+    }
+
+    /**
+     * The rates the plan's price per day is derived from. The down payment is not an
+     * installment, so it is left out while it is the next rate to be paid.
+     *
+     * @return Collection<int, ApplianceRate>
+     */
+    public function scheduledInstallments(AppliancePerson $appliancePerson): Collection {
+        $rates = $this->inScheduleOrder($appliancePerson->rates);
+
+        return $this->isDownPaymentOutstanding($appliancePerson) ? $rates->slice(1)->values() : $rates;
+    }
+
     /**
      * The rates in schedule order, re-keyed from zero. The rates relation is
      * unordered and rescheduling recreates rows, so insertion order does not
@@ -121,7 +150,7 @@ class AppliancePaymentService {
      *
      * @return Collection<int, ApplianceRate>
      */
-    private function inScheduleOrder(Collection $rates): Collection {
+    public function inScheduleOrder(Collection $rates): Collection {
         return $rates
             ->sortBy(fn (ApplianceRate $rate): int => Carbon::parse($rate->due_date)->getTimestamp())
             ->values();
@@ -151,7 +180,7 @@ class AppliancePaymentService {
             return (float) ($appliancePerson->price_per_day ?? 0);
         }
 
-        $rates = $appliancePerson->rates;
+        $rates = $this->scheduledInstallments($appliancePerson);
 
         return $this->getNextPayableInstallmentCost($rates) / $this->getDayDifferenceBetweenTwoInstallments($rates);
     }

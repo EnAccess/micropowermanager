@@ -249,6 +249,7 @@
     "documentTypePlaceholder": "ex. contrat, questionnaire",
     "documentUploaded": "Document téléversé avec succès",
     "downPayment": "Down Payment",
+    "downPaymentRateHint": "L'acompte convenu lors de la vente. Il est réglé par le premier paiement et ne peut pas être modifié.",
     "dropFileHere": "Cliquez pour parcourir ou déposez un fichier ici",
     "dueAtVisit": "Dû à la visite",
     "dueDate": "Due Date",

@@ -74,6 +74,16 @@ class TransactionDataContainer {
     }
 
     /**
+     * Multiplying before dividing, plus the rounding guard, keeps float noise from
+     * bumping an exact period up a day.
+     */
+    public function creditDays(): float {
+        $days = $this->amount * $this->dayDifferenceBetweenTwoInstallments / $this->installmentCost;
+
+        return ceil(round($days, 6));
+    }
+
+    /**
      * Handle meter-specific device initialization.
      */
     private function handleMeterDevice(Meter $meter): void {
@@ -109,8 +119,8 @@ class TransactionDataContainer {
                 $this->installmentCost = $this->appliancePerson->price_per_day ?? 0;
                 $this->dayDifferenceBetweenTwoInstallments = 1;
             } else {
-                $installments = $this->appliancePerson->rates;
                 $appliancePaymentService = app()->make(AppliancePaymentService::class);
+                $installments = $appliancePaymentService->scheduledInstallments($this->appliancePerson);
                 $this->installmentCost = $appliancePaymentService->getNextPayableInstallmentCost($installments);
                 $this->dayDifferenceBetweenTwoInstallments =
                     $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);

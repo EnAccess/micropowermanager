@@ -12,6 +12,7 @@ use App\Models\Manufacturer;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
 use App\Services\AgentSoldApplianceService;
+use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
 
 class AgentApplianceSalesSeeder extends Seeder {
@@ -82,7 +83,7 @@ class AgentApplianceSalesSeeder extends Seeder {
                 'tenure' => 12,
                 'down_payment' => 1000,
                 'device_serial' => $device->device_serial,
-            ]);
+            ], DemoCompany::DEMO_COMPANY_ID);
         });
 
         $this->command->outputComponents()->success('Agent Appliance Sales Seeded Successfully!');

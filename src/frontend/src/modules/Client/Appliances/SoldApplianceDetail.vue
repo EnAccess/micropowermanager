@@ -322,6 +322,15 @@
                       check
                       <md-tooltip md-direction="top">Paid</md-tooltip>
                     </md-icon>
+                    <span
+                      v-if="isDownPaymentRate(index)"
+                      class="down-payment-tag"
+                    >
+                      {{ $tc("phrases.downPayment") }}
+                      <md-tooltip md-direction="top">
+                        {{ $tc("phrases.downPaymentRateHint") }}
+                      </md-tooltip>
+                    </span>
                   </md-table-cell>
                   <md-table-cell v-if="editRow === 'rate' + '_' + rate.id">
                     <md-field
@@ -352,7 +361,8 @@
                   <md-table-cell v-if="!isEnergyService">
                     <template
                       v-if="
-                        (rate.rateCost || rate.rate_cost) === rate.remaining
+                        (rate.rateCost || rate.rate_cost) === rate.remaining &&
+                        !isDownPaymentRate(index)
                       "
                     >
                       <template v-if="editRow === 'rate' + '_' + rate.id">
@@ -567,6 +577,7 @@ export default {
     )
     this.applianceLogService = new ApplianceLogService(this.selectedApplianceId)
     this.getSoldApplianceDetail()
+    this.openPaymentDialogFromQuery()
   },
   mounted() {
     EventBus.$on("pageLoaded", this.reloadRatesOrLogs)
@@ -612,6 +623,10 @@ export default {
     formatReadableDate(date) {
       return moment(date).format("LL")
     },
+    isDownPaymentRate(index) {
+      const position = (this.applianceRateService.paginator.from || 1) + index
+      return Number(this.soldAppliance.downPayment) > 0 && position === 1
+    },
     closeEditRateAmount(cost) {
       this.editRow = null
       this.tempCost = cost
@@ -626,6 +641,13 @@ export default {
       if (!(providers instanceof ErrorHandler)) {
         this.paymentProviders = providers
       }
+    },
+    openPaymentDialogFromQuery() {
+      const amount = Number(this.$route.query.payment)
+      if (!(amount > 0)) return
+      this.payment = amount
+      this.$router.replace({ query: {} })
+      this.openPaymentDialog()
     },
     closeGetPayment() {
       this.getPayment = false
@@ -917,6 +939,17 @@ export default {
 .eaas-days-hint {
   font-size: 0.85rem;
   color: #888;
+}
+
+.down-payment-tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  background-color: #e3f2fd;
+  color: #1b75ba;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
 
 .deleted-banner {
