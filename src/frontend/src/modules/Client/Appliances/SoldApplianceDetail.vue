@@ -322,7 +322,10 @@
                       check
                       <md-tooltip md-direction="top">Paid</md-tooltip>
                     </md-icon>
-                    <span v-if="isDownPaymentRate(index)" class="down-payment-tag">
+                    <span
+                      v-if="isDownPaymentRate(index)"
+                      class="down-payment-tag"
+                    >
                       {{ $tc("phrases.downPayment") }}
                       <md-tooltip md-direction="top">
                         {{ $tc("phrases.downPaymentRateHint") }}
