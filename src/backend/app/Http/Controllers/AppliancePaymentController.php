@@ -40,22 +40,15 @@ class AppliancePaymentController extends Controller {
 
         try {
             DB::connection('tenant')->beginTransaction();
-            $result = $this->makePaymentForAppliance(
+
+            $applianceDetail = $this->appliancePersonService->getSoldApplianceDetails($appliancePerson->id);
+            $result = $this->appliancePaymentService->initiateInstallmentPayment(
+                $applianceDetail,
                 $request->float('amount'),
-                $appliancePerson,
                 $request->integer('payment_provider', 0),
-                $companyId = $request->attributes->get('companyId')
             );
 
             DB::connection('tenant')->commit();
-
-            return ApiResource::make(array_merge(
-                [
-                    'appliance_person' => $result['appliance_person'],
-                    'transaction_id' => $result['transaction_id'],
-                ],
-                $result['provider_data'],
-            ));
         } catch (\InvalidArgumentException $e) {
             DB::connection('tenant')->rollBack();
 
@@ -64,6 +57,18 @@ class AppliancePaymentController extends Controller {
             DB::connection('tenant')->rollBack();
             throw $e;
         }
+
+        if ($result['process_immediately']) {
+            dispatch(new ProcessPayment($request->attributes->get('companyId'), $result['transaction']->id));
+        }
+
+        return ApiResource::make(array_merge(
+            [
+                'appliance_person' => $appliancePerson,
+                'transaction_id' => $result['transaction']->id,
+            ],
+            $result['provider_data'],
+        ));
     }
 
     /**
@@ -92,44 +97,5 @@ class AppliancePaymentController extends Controller {
         $providers = $this->paymentInitiationService->paymentProviders();
 
         return PaymentProviderResource::collection($providers);
-    }
-
-    /**
-     * @return array{appliance_person: AppliancePerson, transaction_id: int, provider_data: array<string, mixed>}
-     */
-    private function makePaymentForAppliance(float $amount, AppliancePerson $appliancePerson, int $providerId, int $companyId): array {
-        $applianceDetail = $this->appliancePersonService->getSoldApplianceDetails($appliancePerson->id);
-        $this->appliancePaymentService->validateAmount($applianceDetail, $amount);
-        $deviceSerial = $applianceDetail->device_serial;
-        $applianceOwner = $appliancePerson->person;
-
-        if (!$applianceOwner) {
-            throw new \InvalidArgumentException('Appliance owner not found');
-        }
-
-        $ownerAddress = $applianceOwner->addresses()->where('is_primary', 1)->first();
-        $sender = $ownerAddress === null ? '-' : $ownerAddress->phone;
-
-        $message = $deviceSerial ?? (string) $appliancePerson->id;
-
-        $result = $this->paymentInitiationService->initiate(
-            providerId: $providerId,
-            amount: $amount,
-            sender: $sender,
-            message: $message,
-            type: Transaction::TYPE_DEFERRED_PAYMENT,
-            customerId: $applianceOwner->id,
-            serialId: $deviceSerial,
-        );
-
-        if ($result['process_immediately']) {
-            dispatch(new ProcessPayment($companyId, $result['transaction']->id));
-        }
-
-        return [
-            'appliance_person' => $appliancePerson,
-            'transaction_id' => $result['transaction']->id,
-            'provider_data' => $result['provider_data'],
-        ];
     }
 }

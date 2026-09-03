@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\PaymentInitiationProvider;
 use App\Exceptions\AgentRiskBalanceExceeded;
 use App\Exceptions\DownPaymentBiggerThanAmountException;
 use App\Exceptions\DownPaymentNotFoundException;
@@ -58,7 +59,11 @@ class AgentBalanceMiddleware {
 
         // risk_balance is the ceiling of company money the agent may hold before
         // they must transfer it back; once the sale would push them over, block it.
-        if ($agentBalance > $commission->risk_balance) {
+        // A provider payment goes from the customer straight to the company, so the agent holds
+        // nothing and the ceiling does not apply — but the request validation above still does.
+        $isCashPayment = $request->integer('payment_provider') === PaymentInitiationProvider::Cash->value;
+
+        if ($isCashPayment && $agentBalance > $commission->risk_balance) {
             throw new AgentRiskBalanceExceeded('Risk balance exceeded');
         }
 
