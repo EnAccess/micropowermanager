@@ -12,6 +12,7 @@ use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomTransactionService;
 use App\Plugins\VodacomMzPaymentProvider\Services\VodacomMzTransactionService;
 use App\Services\CashTransactionService;
 use App\Services\Interfaces\PaymentInitiator;
+use App\Services\ThirdPartyTransactionService;
 
 // When adding a payment provider plugin that supports initiating payments
 // from MPM, add a case here and map it in initiatorClass().
@@ -19,7 +20,8 @@ use App\Services\Interfaces\PaymentInitiator;
 
 /**
  * Payment providers that can be used to initiate a payment.
- * Values are MpmPlugin IDs (cash is `0`, as it needs no plugin).
+ * Values are MpmPlugin IDs, except Cash (`0`) and ThirdParty (`-1`), which need no
+ * installable plugin and so get reserved literals instead.
  */
 enum PaymentInitiationProvider: int {
     /** Cash */
@@ -34,6 +36,11 @@ enum PaymentInitiationProvider: int {
     case SafaricomKe = MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER;
     /** Flutterwave */
     case Flutterwave = MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER;
+    /**
+     * A payment registered by an external party through the external transactions API
+     * (see ExternalTransactionController), not selectable from the internal payment UI.
+     */
+    case ThirdParty = -1;
 
     /** @return class-string<PaymentInitiator> */
     public function initiatorClass(): string {
@@ -44,6 +51,7 @@ enum PaymentInitiationProvider: int {
             self::Pesapal => PesapalTransactionService::class,
             self::SafaricomKe => SafaricomTransactionService::class,
             self::Flutterwave => FlutterwaveTransactionService::class,
+            self::ThirdParty => ThirdPartyTransactionService::class,
         };
     }
 }
