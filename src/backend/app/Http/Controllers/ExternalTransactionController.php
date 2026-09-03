@@ -33,6 +33,27 @@ class ExternalTransactionController extends Controller {
     ) {}
 
     /**
+     * List the payable devices for a customer, by phone number.
+     *
+     * A phone number can belong to more than one customer, and a customer can have more than
+     * one phone number; this returns the union of every payable device across every customer
+     * matched by the given number. Use `serial` from the result to pay.
+     */
+    public function devices(ExternalTransactionDevicesRequest $request): ApiResource {
+        $normalizedPhone = phone($request->input('phone'))->formatE164();
+        $appliancePeople = $this->appliancePersonService->getPayableByPhone($normalizedPhone);
+
+        return ApiResource::make($appliancePeople->map(fn (AppliancePerson $appliancePerson): array => [
+            'serial' => $appliancePerson->device_serial,
+            'owner_name' => trim($appliancePerson->person->name.' '.$appliancePerson->person->surname),
+            'appliance_name' => $appliancePerson->appliance->name ?? null,
+            'payment_type' => $appliancePerson->payment_type,
+            'remaining_amount' => $appliancePerson->isEnergyService() ? null : $appliancePerson->rates->sum('remaining'),
+            'minimum_payable_amount' => $appliancePerson->isEnergyService() ? $appliancePerson->minimum_payable_amount : null,
+        ])->values());
+    }
+
+    /**
      * Register a transaction from an external party.
      *
      * `serial` identifies the device (appliance, meter, or SHS) the payment is for.
@@ -93,26 +114,5 @@ class ExternalTransactionController extends Controller {
             DB::connection('tenant')->rollBack();
             throw $e;
         }
-    }
-
-    /**
-     * List the payable devices for a customer, by phone number.
-     *
-     * A phone number can belong to more than one customer, and a customer can have more than
-     * one phone number; this returns the union of every payable device across every customer
-     * matched by the given number. Use `serial` from the result to pay via `store()`.
-     */
-    public function devices(ExternalTransactionDevicesRequest $request): ApiResource {
-        $normalizedPhone = phone($request->input('phone'))->formatE164();
-        $appliancePeople = $this->appliancePersonService->getPayableByPhone($normalizedPhone);
-
-        return ApiResource::make($appliancePeople->map(fn (AppliancePerson $appliancePerson): array => [
-            'serial' => $appliancePerson->device_serial,
-            'owner_name' => trim($appliancePerson->person->name.' '.$appliancePerson->person->surname),
-            'appliance_name' => $appliancePerson->appliance->name ?? null,
-            'payment_type' => $appliancePerson->payment_type,
-            'remaining_amount' => $appliancePerson->isEnergyService() ? null : $appliancePerson->rates->sum('remaining'),
-            'minimum_payable_amount' => $appliancePerson->isEnergyService() ? $appliancePerson->minimum_payable_amount : null,
-        ])->values());
     }
 }
