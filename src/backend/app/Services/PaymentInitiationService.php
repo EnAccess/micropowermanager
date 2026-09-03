@@ -20,14 +20,12 @@ class PaymentInitiationService {
     /**
      * Initialize a payment with any enabled provider.
      *
-     * @param int         $providerId        MpmPlugin constant (0 = cash)
-     * @param string      $sender            Phone number of the payer
-     * @param string      $message           Transaction routing key (device serial or entity ID)
-     * @param string      $type              Transaction type (e.g. 'deferred_payment', 'energy')
-     * @param int         $customerId        Person ID of the customer
-     * @param string|null $serialId          Device serial, if applicable
-     * @param string|null $externalReference Caller-supplied reference, only used by providers that
-     *                                       need to deduplicate requests originating outside MPM
+     * @param int         $providerId MpmPlugin constant (0 = cash)
+     * @param string      $sender     Phone number of the payer
+     * @param string      $message    Transaction routing key (device serial or entity ID)
+     * @param string      $type       Transaction type (e.g. 'deferred_payment', 'energy')
+     * @param int         $customerId Person ID of the customer
+     * @param string|null $serialId   Device serial, if applicable
      *
      * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
@@ -39,7 +37,6 @@ class PaymentInitiationService {
         string $type,
         int $customerId,
         ?string $serialId = null,
-        ?string $externalReference = null,
     ): array {
         $provider = PaymentInitiationProvider::tryFrom($providerId)
             ?? throw new \InvalidArgumentException("Unsupported payment provider ID: {$providerId}");
@@ -53,7 +50,6 @@ class PaymentInitiationService {
             $type,
             $customerId,
             $serialId,
-            $externalReference,
         );
     }
 

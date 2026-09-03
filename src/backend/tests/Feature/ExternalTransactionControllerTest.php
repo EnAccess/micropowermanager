@@ -23,8 +23,8 @@ use Tests\TestCase;
 class ExternalTransactionControllerTest extends TestCase {
     use WithFaker;
 
-    private const string PAY_URL = '/api/appliances/payment/external-transaction';
-    private const string DEVICES_URL = '/api/appliances/payment/external-transaction/devices';
+    private const string PAY_URL = '/api/appliances/payment/third-party';
+    private const string DEVICES_URL = '/api/appliances/payment/third-party/devices';
 
     private function createApiKey(string $name = 'Vodacom'): string {
         $plaintext = Str::random(40);
@@ -81,7 +81,7 @@ class ExternalTransactionControllerTest extends TestCase {
     public function testRegistersTransactionAndDispatchesProcessPaymentJob(): void {
         Queue::fake();
         $token = $this->createApiKey('Vodacom');
-        $appliancePerson = $this->createAppliancePersonWithSerial('SERIAL-001');
+        $this->createAppliancePersonWithSerial('SERIAL-001');
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")->postJson(self::PAY_URL, [
             'serial' => 'SERIAL-001',
@@ -90,8 +90,11 @@ class ExternalTransactionControllerTest extends TestCase {
         ]);
 
         $response->assertStatus(200);
-        $this->assertEquals($appliancePerson->id, $response['data']['appliance_person']['id']);
         $this->assertNotNull($response['data']['transaction_id']);
+        $this->assertEquals('SERIAL-001', $response['data']['serial']);
+        $this->assertEquals(100, $response['data']['amount']);
+        $this->assertEquals(0, $response['data']['remaining_amount']);
+        $this->assertNull($response['data']['minimum_payable_amount']);
 
         Queue::assertPushed(ProcessPayment::class);
 

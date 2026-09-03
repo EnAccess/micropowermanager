@@ -31,7 +31,7 @@ class ThirdPartyApiResolverService {
     public const ECREEE_METER_DATA_API = 'api/ecreee-e-tender/ecreee-meter-data';
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
     public const SAFARICOM_KE_PAYMENT_PROVIDER = 'api/safaricom/';
-    public const EXTERNAL_TRANSACTIONS_API = 'api/appliances/payment/external-transaction';
+    public const EXTERNAL_TRANSACTIONS_API = 'api/appliances/payment/third-party';
 
     /**
      * @var array<string, class-string<IApiResolver>>

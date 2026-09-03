@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\ThirdPartyPaymentResult;
 use App\Enums\PaymentInitiationProvider;
+use App\Http\Requests\ExternalTransactionDevicesRequest;
+use App\Http\Requests\StoreExternalTransactionRequest;
 use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use App\Models\AppliancePerson;
@@ -10,10 +13,11 @@ use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
 use App\Services\PaymentInitiationService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+#[Group('Appliance / Third-Party Payments', 'API endpoints for registering transactions from external parties')]
 /**
  * Lets an external party (e.g. a USSD app run by another company) look up a customer's
  * payable devices by phone number and register a payment against one, identified by serial,
@@ -35,13 +39,7 @@ class ExternalTransactionController extends Controller {
      * `external_reference` is the caller's own transaction ID; repeating the same
      * reference returns the original result instead of registering it again.
      */
-    public function store(Request $request): ApiResource|JsonResponse {
-        $request->validate([
-            'serial' => ['required', 'string'],
-            'amount' => ['required', 'numeric'],
-            'external_reference' => ['required', 'string'],
-        ]);
-
+    public function store(StoreExternalTransactionRequest $request): ApiResource|JsonResponse {
         $appliancePerson = $this->appliancePersonService->getBySerialNumber($request->string('serial')->toString());
         if (!$appliancePerson instanceof AppliancePerson) {
             return response()->json(['message' => 'No appliance found for the given serial'], 404);
@@ -71,7 +69,6 @@ class ExternalTransactionController extends Controller {
                 type: Transaction::TYPE_DEFERRED_PAYMENT,
                 customerId: $applianceOwner->id,
                 serialId: $deviceSerial,
-                externalReference: $request->string('external_reference')->toString(),
             );
 
             if ($result['process_immediately']) {
@@ -81,10 +78,13 @@ class ExternalTransactionController extends Controller {
 
             DB::connection('tenant')->commit();
 
-            return ApiResource::make([
-                'appliance_person' => $appliancePerson,
-                'transaction_id' => $result['transaction']->id,
-            ]);
+            $paymentResult = new ThirdPartyPaymentResult(
+                transactionId: $result['transaction']->id,
+                serial: $deviceSerial ?? (string) $appliancePerson->id,
+                amount: $amount,
+            );
+
+            return ApiResource::make($paymentResult->toArray());
         } catch (\InvalidArgumentException $e) {
             DB::connection('tenant')->rollBack();
 
@@ -102,11 +102,7 @@ class ExternalTransactionController extends Controller {
      * one phone number; this returns the union of every payable device across every customer
      * matched by the given number. Use `serial` from the result to pay via `store()`.
      */
-    public function devices(Request $request): ApiResource {
-        $request->validate([
-            'phone' => ['required', 'phone:INTERNATIONAL'],
-        ]);
-
+    public function devices(ExternalTransactionDevicesRequest $request): ApiResource {
         $normalizedPhone = phone($request->input('phone'))->formatE164();
         $appliancePeople = $this->appliancePersonService->getPayableByPhone($normalizedPhone);
 

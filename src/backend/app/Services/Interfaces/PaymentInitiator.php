@@ -36,9 +36,6 @@ interface PaymentInitiator {
      * Redirect-based providers return false: their payment is confirmed later via a provider callback,
      * which dispatches the processing itself.
      *
-     * $externalReference is only used by providers that need to deduplicate requests coming
-     * from outside MPM (e.g. ThirdPartyTransactionService) and is ignored otherwise.
-     *
      * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiatePayment(
@@ -48,6 +45,5 @@ interface PaymentInitiator {
         string $type,
         int $customerId,
         ?string $serialId = null,
-        ?string $externalReference = null,
     ): array;
 }
