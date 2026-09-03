@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DeviceTokenType;
 use App\Events\NewLogEvent;
 use App\Http\Requests\DeviceListRequest;
 use App\Http\Requests\GenerateDeviceTokenRequest;
@@ -80,20 +81,35 @@ class DeviceController extends Controller {
     /**
      * Generate a token without a customer payment.
      *
-     * Issues credit straight from the manufacturer and books it as an ad-hoc
-     * transaction. The amount is read either as a currency amount or as the credit
-     * unit the device carries; the response reports the credit actually issued,
-     * which can differ because manufacturers round.
+     * `type` selects what the token does, and defaults to `credit`:
      *
-     * Access rates and appliance installments are not settled by this call.
+     * - `credit` issues credit straight from the manufacturer. The `amount` is read
+     *   either as a currency amount or as the credit unit the device carries; the
+     *   response reports the credit actually issued, which can differ because
+     *   manufacturers round. Access rates and appliance installments are not settled.
+     * - `unlock` releases the device from pay-as-you-go for good.
+     * - `reset` sets the device's remaining credit to zero, so a repossessed unit can
+     *   be resold under a new payment plan. It does not change the device's owner or
+     *   payment plan in MPM.
+     *
+     * `unlock` and `reset` need no `amount` and are only available where the
+     * manufacturer supports them — read `unlock_token` and `reset_token` from the
+     * capabilities endpoint. Every type is recorded as an ad-hoc transaction, at a zero
+     * amount for the two that carry no credit.
      */
     public function generateToken(Device $device, GenerateDeviceTokenRequest $request): TokenResource {
-        $token = $this->deviceControlService->generateToken(
-            $device,
-            $request->float('amount'),
-            $request->unit(),
-            auth('api')->user()->id,
-        );
+        $creatorId = auth('api')->user()->id;
+
+        $token = match ($request->type()) {
+            DeviceTokenType::Credit => $this->deviceControlService->generateToken(
+                $device,
+                $request->float('amount'),
+                $request->unit(),
+                $creatorId,
+            ),
+            DeviceTokenType::Unlock => $this->deviceControlService->generateUnlockToken($device, $creatorId),
+            DeviceTokenType::Reset => $this->deviceControlService->generateResetToken($device, $creatorId),
+        };
 
         return TokenResource::make($token);
     }

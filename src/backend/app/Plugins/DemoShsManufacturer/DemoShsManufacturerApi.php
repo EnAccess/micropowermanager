@@ -3,8 +3,8 @@
 namespace App\Plugins\DemoShsManufacturer;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
-use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
@@ -19,6 +19,17 @@ class DemoShsManufacturerApi implements IManufacturerAPI, IManufacturerDeviceCon
     public function __construct(
         private DemoShsTransaction $demoShsTransaction,
     ) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+            ManufacturerCapability::UnlockToken,
+            ManufacturerCapability::ResetToken,
+        ];
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
@@ -58,12 +69,15 @@ class DemoShsManufacturerApi implements IManufacturerAPI, IManufacturerDeviceCon
     }
 
     /**
-     * @return array<string,mixed>|null
-     *
-     * @throws ApiCallDoesNotSupportedException
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
     public function clearDevice(Device $device): ?array {
-        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+        return [
+            'token' => $this->generateRandomToken(),
+            'token_type' => Token::TYPE_RESET,
+            'token_unit' => null,
+            'token_amount' => null,
+        ];
     }
 
     /**
