@@ -147,6 +147,13 @@
               </span>
             </md-field>
           </div>
+          <div class="md-layout-item md-size-100">
+            <DeviceLocationField
+              v-model="deviceLocation"
+              :fallback-location="fallbackDeviceLocation"
+              :marker-icon="deviceMarkerIcon"
+            />
+          </div>
         </form>
 
         <md-tabs>
@@ -275,33 +282,6 @@
                   </label>
                 </md-datepicker>
               </div>
-              <div
-                v-if="installmentPlan"
-                class="md-layout-item md-size-100 installment-plan"
-              >
-                <strong>
-                  {{
-                    $tc("phrases.installmentPlan", 1, {
-                      count: installmentPlan.count,
-                      amount: moneyFormat(installmentPlan.amount),
-                    })
-                  }}
-                </strong>
-                <span v-if="installmentPlan.finalAmount !== null">
-                  {{
-                    $tc("phrases.finalInstallment", 1, {
-                      amount: moneyFormat(installmentPlan.finalAmount),
-                    })
-                  }}
-                </span>
-                <span v-if="installmentPlan.lastDueDate">
-                  {{
-                    $tc("phrases.lastPaymentDue", 1, {
-                      date: installmentPlan.lastDueDate,
-                    })
-                  }}
-                </span>
-              </div>
             </form>
           </md-tab>
 
@@ -374,9 +354,23 @@
             </form>
           </md-tab>
         </md-tabs>
+        <InstallmentRateSummary
+          v-if="sale.tenure && !isEnergyService"
+          :cost="cost"
+          :down-payment="sale.downPayment"
+          :rate-count="sale.tenure"
+          :show-rates="showRates"
+        />
       </div>
     </md-dialog-content>
     <md-dialog-actions>
+      <md-button
+        v-if="showRatesButton"
+        class="md-accent md-raised"
+        @click="showRates = !showRates"
+      >
+        Show Rates Detail
+      </md-button>
       <md-button type="button" @click="hide">
         {{ $tc("words.cancel") }}
       </md-button>
@@ -393,15 +387,20 @@
 </template>
 
 <script>
+import defaultMarker from "leaflet/dist/images/marker-icon.png"
 import moment from "moment"
 
 import { computeRateAmount } from "@/Helpers/applianceRates.js"
+import { locationToPoints, parseGeoLocation } from "@/Helpers/Utils.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { AgentAssignedApplianceService } from "@/services/AgentAssignedApplianceService.js"
 import { AgentSoldApplianceService } from "@/services/AgentSoldApplianceService.js"
 import { DeviceService } from "@/services/DeviceService.js"
+import { ICONS } from "@/services/MappingService.js"
 import { PersonService } from "@/services/PersonService.js"
+import DeviceLocationField from "@/shared/DeviceLocationField.vue"
+import InstallmentRateSummary from "@/shared/InstallmentRateSummary.vue"
 import Loader from "@/shared/Loader.vue"
 
 const debounce = require("debounce")
@@ -428,7 +427,7 @@ const emptySale = () => ({
 export default {
   name: "SellAssignedAppliance",
   mixins: [currency, notify],
-  components: { Loader },
+  components: { Loader, DeviceLocationField, InstallmentRateSummary },
   props: {
     agentId: {
       required: true,
@@ -458,6 +457,9 @@ export default {
       installmentModes: INSTALLMENT_MODES,
       tabName: INSTALLMENT_MODES[0].name,
       installmentAmount: null,
+      deviceLocation: null,
+      customerAddress: null,
+      showRates: false,
       loading: false,
       sale: emptySale(),
     }
@@ -516,6 +518,27 @@ export default {
         ? this.$tc("phrases.searchCustomer")
         : `No customer matching "${this.customerSearchTerm}" was found.`
     },
+    showRatesButton() {
+      return this.sale.tenure > 1
+    },
+    deviceMarkerIcon() {
+      switch (this.selectedAssignedAppliance?.appliance?.appliance_type_id) {
+        case APPLIANCE_TYPE_SHS_ID:
+          return ICONS.SHS
+        case APPLIANCE_TYPE_E_BIKE_ID:
+          return ICONS.E_BIKE
+        default:
+          return defaultMarker
+      }
+    },
+    fallbackDeviceLocation() {
+      if (!this.customerAddress) return null
+
+      return (
+        parseGeoLocation(this.customerAddress.geo) ??
+        parseGeoLocation(this.customerAddress.city?.location)
+      )
+    },
     isDeviceSelectionRequired() {
       const applianceTypeId =
         this.selectedAssignedAppliance?.appliance?.appliance_type_id
@@ -541,11 +564,12 @@ export default {
     customerSearchTerm: debounce(function () {
       this.searchCustomers(this.customerSearchTerm.trim())
     }, 400),
-    selectedCustomerId(id) {
+    async selectedCustomerId(id) {
       const selected = this.customerOptions.find(
         (customer) => customer.id === id,
       )
       if (selected) this.selectedCustomer = selected
+      this.customerAddress = await this.loadCustomerAddress(id)
     },
     deviceSearchTerm: debounce(function () {
       if (!this.isDeviceSelectionRequired) return
@@ -601,6 +625,25 @@ export default {
     },
     resetCustomerSearch() {
       this.customerSearchTerm = ""
+    },
+    async loadCustomerAddress(personId) {
+      if (!personId) return null
+      try {
+        const person = await this.personService.getPerson(personId)
+        const addresses = person?.addresses ?? []
+
+        return (
+          addresses.find(
+            (address) => address.isPrimary || address.is_primary,
+          ) ??
+          addresses[0] ??
+          null
+        )
+      } catch (e) {
+        this.alertNotify("error", e.message)
+
+        return null
+      }
     },
     onInstallmentCountInput() {
       this.installmentAmount = this.installmentPlan
@@ -710,6 +753,14 @@ export default {
           ? Number(this.sale.pricePerDay) || null
           : null,
         deviceSerial: this.selectedDeviceSerial,
+        points:
+          locationToPoints(this.deviceLocation) ??
+          locationToPoints(
+            this.fallbackDeviceLocation && {
+              lat: this.fallbackDeviceLocation[0],
+              lon: this.fallbackDeviceLocation[1],
+            },
+          ),
       }
     },
     async sellAppliance() {
@@ -756,6 +807,9 @@ export default {
       this.deviceSearchTerm = ""
       this.tabName = INSTALLMENT_MODES[0].name
       this.installmentAmount = null
+      this.deviceLocation = null
+      this.customerAddress = null
+      this.showRates = false
       this.sale = emptySale()
       this.$validator.reset()
     },
@@ -768,15 +822,6 @@ export default {
   font-size: 0.875rem;
   color: #555;
   line-height: 1.5;
-}
-
-.installment-plan {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  padding: 0.25rem 0 0.75rem;
-  font-size: 0.9rem;
-  color: #555;
 }
 
 .select-search-row {
