@@ -77,10 +77,8 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * The sales an agent made, as the AppliancePerson records themselves rather than the
-     * agent_sold_appliances join rows -- those carry their own ids, which do not address
-     * the sold appliance detail endpoint, and their cost is the assigned stock price
-     * rather than what the customer was actually charged.
+     * The sales an agent made, as AppliancePerson records: their ids address the sold
+     * appliance detail endpoint and their cost is what the customer was charged.
      *
      * @return LengthAwarePaginator<int, AppliancePerson>
      */

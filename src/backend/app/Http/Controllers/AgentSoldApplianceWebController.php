@@ -11,7 +11,7 @@ class AgentSoldApplianceWebController extends Controller {
     public function __construct(private AgentSoldApplianceService $agentSoldApplianceService) {}
 
     public function index(int $agentId, Request $request): ApiResource {
-        $limit = $request->has('per_page') ? $request->integer('per_page') : null;
+        $limit = $request->integer('per_page') ?: null;
 
         return ApiResource::make($this->agentSoldApplianceService->list($agentId, $limit));
     }

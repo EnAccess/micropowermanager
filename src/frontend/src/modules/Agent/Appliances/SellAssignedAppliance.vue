@@ -151,44 +151,51 @@
 
         <md-tabs>
           <md-tab
-            id="installment"
-            @click="tabName = 'installment'"
-            md-label="Installment"
+            v-for="mode in installmentModes"
+            :key="mode.name"
+            :id="mode.name"
+            :md-label="mode.label"
+            @click="selectTab(mode.name)"
           >
-            <form data-vv-scope="installment-form" class="md-layout md-gutter">
+            <form
+              :data-vv-scope="mode.name + '-form'"
+              class="md-layout md-gutter"
+            >
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
-                    'md-invalid': errors.has('installment-form.down_payment'),
+                    'md-invalid': errors.has(mode.name + '-form.down_payment'),
                   }"
                 >
-                  <label for="down_payment">
+                  <label :for="mode.name + '-down_payment'">
                     {{ $tc("phrases.downPayment") }}
                   </label>
                   <md-input
                     type="number"
                     name="down_payment"
-                    id="down_payment"
+                    :id="mode.name + '-down_payment'"
                     min="0"
                     v-model="sale.downPayment"
                     v-validate="'required|min_value:0|decimal'"
                     @keyup="checkDownPayment"
                   />
                   <span class="md-error">
-                    {{ errors.first("installment-form.down_payment") }}
+                    {{ errors.first(mode.name + "-form.down_payment") }}
                   </span>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
-                    'md-invalid': errors.has('installment-form.rate_type'),
+                    'md-invalid': errors.has(mode.name + '-form.rate_type'),
                   }"
                 >
-                  <label for="rate_type">{{ $tc("phrases.rateType") }}</label>
+                  <label :for="mode.name + '-rate_type'">
+                    {{ $tc("phrases.rateType") }}
+                  </label>
                   <md-select
                     name="rate_type"
-                    id="rate_type"
+                    :id="mode.name + '-rate_type'"
                     v-model="sale.rateType"
                     v-validate="'required'"
                   >
@@ -200,45 +207,60 @@
                     </md-option>
                   </md-select>
                   <span class="md-error">
-                    {{ errors.first("installment-form.rate_type") }}
+                    {{ errors.first(mode.name + "-form.rate_type") }}
                   </span>
                 </md-field>
               </div>
-              <div class="md-layout-item md-size-50 md-small-size-100">
+              <div
+                v-if="mode.name === 'count-based'"
+                class="md-layout-item md-size-50 md-small-size-100"
+              >
                 <md-field
                   :class="{
-                    'md-invalid': errors.has('installment-form.tenure'),
+                    'md-invalid': errors.has(mode.name + '-form.tenure'),
                   }"
                 >
-                  <label for="tenure">{{ $tc("phrases.ratesCount") }}</label>
+                  <label :for="mode.name + '-tenure'">
+                    {{ $tc("phrases.ratesCount") }}
+                  </label>
                   <md-input
                     type="number"
                     name="tenure"
-                    id="tenure"
+                    :id="mode.name + '-tenure'"
                     min="1"
                     v-model="sale.tenure"
                     v-validate="'required|integer|min_value:1'"
                     @input="onInstallmentCountInput"
                   />
                   <span class="md-error">
-                    {{ errors.first("installment-form.tenure") }}
+                    {{ errors.first(mode.name + "-form.tenure") }}
                   </span>
                 </md-field>
               </div>
-              <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field>
-                  <label for="installment_amount">
+              <div v-else class="md-layout-item md-size-50 md-small-size-100">
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has(
+                      mode.name + '-form.installment_amount',
+                    ),
+                  }"
+                >
+                  <label :for="mode.name + '-installment_amount'">
                     {{ $tc("phrases.installmentAmount") }}
                   </label>
                   <md-input
                     type="number"
                     name="installment_amount"
-                    id="installment_amount"
+                    :id="mode.name + '-installment_amount'"
                     min="1"
                     v-model="installmentAmount"
+                    v-validate="'required|min_value:1|decimal'"
                     @input="onInstallmentAmountInput"
                     @blur="settleInstallmentAmount"
                   />
+                  <span class="md-error">
+                    {{ errors.first(mode.name + "-form.installment_amount") }}
+                  </span>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
@@ -248,7 +270,7 @@
                   v-model="sale.firstPaymentDate"
                   :md-close-on-blur="false"
                 >
-                  <label for="first_payment_date">
+                  <label :for="mode.name + '-first_payment_date'">
                     {{ $tc("phrases.firstPaymentDate") }}
                   </label>
                 </md-datepicker>
@@ -285,7 +307,7 @@
 
           <md-tab
             id="energy-service"
-            @click="tabName = 'energy-service'"
+            @click="selectTab('energy-service')"
             md-label="Energy as a Service"
           >
             <form
@@ -389,6 +411,11 @@ const APPLIANCE_TYPE_SHS_ID = 1
 const APPLIANCE_TYPE_E_BIKE_ID = 2
 const MINIMUM_CUSTOMER_SEARCH_LENGTH = 3
 
+const INSTALLMENT_MODES = [
+  { name: "count-based", label: "Installment Count Based" },
+  { name: "cost-based", label: "Installment Cost Based" },
+]
+
 const emptySale = () => ({
   downPayment: 0,
   rateType: "monthly",
@@ -428,7 +455,8 @@ export default {
       deviceSelectionList: [],
       deviceSearchTerm: "",
       isDeviceSearching: false,
-      tabName: "installment",
+      installmentModes: INSTALLMENT_MODES,
+      tabName: INSTALLMENT_MODES[0].name,
       installmentAmount: null,
       loading: false,
       sale: emptySale(),
@@ -609,6 +637,18 @@ export default {
         this.sale.downPayment = 0
         this.alertNotify("warn", "Down payment is bigger than appliance cost")
       }
+      this.syncInstallmentFields()
+    },
+    syncInstallmentFields() {
+      if (this.tabName === "cost-based") {
+        this.onInstallmentAmountInput()
+
+        return
+      }
+      this.onInstallmentCountInput()
+    },
+    selectTab(name) {
+      this.tabName = name
       this.onInstallmentCountInput()
     },
     focusDeviceSearchInput() {
@@ -638,9 +678,7 @@ export default {
       }
     },
     async validateSaleForm() {
-      const scope = this.isEnergyService
-        ? "energy-service-form"
-        : "installment-form"
+      const scope = `${this.tabName}-form`
       const results = await Promise.all([
         this.$validator.validateAll("sale-form"),
         this.$validator.validateAll(scope),
@@ -716,7 +754,7 @@ export default {
       this.selectedDeviceSerial = null
       this.deviceSelectionList = []
       this.deviceSearchTerm = ""
-      this.tabName = "installment"
+      this.tabName = INSTALLMENT_MODES[0].name
       this.installmentAmount = null
       this.sale = emptySale()
       this.$validator.reset()

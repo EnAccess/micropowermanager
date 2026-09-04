@@ -24,8 +24,7 @@ class AgentSoldApplianceWebTest extends TestCase {
         $this->assertEquals(1, count($response['data']));
 
         // the row is clickable through to /sold-appliance-detail, which resolves an
-        // AppliancePerson id -- listing the agent_sold_appliances id instead opens
-        // whichever unrelated sale happens to share that number
+        // AppliancePerson id
         $appliancePerson = AppliancePerson::query()->where('person_id', $response['data'][0]['person_id'])->firstOrFail();
         $this->assertEquals($appliancePerson->id, $response['data'][0]['id']);
     }
@@ -127,6 +126,53 @@ class AgentSoldApplianceWebTest extends TestCase {
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('down_payment');
         $this->assertEquals(0, AppliancePerson::query()->where('person_id', $this->person->id)->count());
+    }
+
+    public function testUserSellsApplianceWithADownPaymentOnBehalfOfAgent(): void {
+        $this->createAgentsWithAssignedAppliance();
+        $assignedAppliance = $this->assignedAppliance;
+        $assignedAppliance->update(['cost' => 100]);
+        $downPayment = 40;
+
+        $response = $this->actingAs($this->user)->postJson('/api/agents/sold', [
+            'agent_id' => $assignedAppliance->agent_id,
+            'person_id' => $this->person->id,
+            'agent_assigned_appliance_id' => $assignedAppliance->id,
+            'down_payment' => $downPayment,
+            'tenure' => 10,
+            'first_payment_date' => date('Y-m-d', strtotime('+1 month')),
+        ]);
+        $response->assertStatus(201);
+
+        $appliancePerson = AppliancePerson::query()->where('person_id', $this->person->id)->firstOrFail();
+        $this->assertEquals($downPayment, $appliancePerson->down_payment);
+
+        // the down payment is settled as it is taken, so it carries nothing outstanding
+        $this->assertEquals(
+            1,
+            ApplianceRate::query()
+                ->where('appliance_person_id', $appliancePerson->id)
+                ->where('rate_cost', $downPayment)
+                ->where('remaining', 0)
+                ->count(),
+        );
+    }
+
+    public function testAgentSoldApplianceListPaginatesByPerPage(): void {
+        $this->createAgentsWithAssignedAppliance();
+        $this->createAgentSoldAppliance(3);
+        $agentId = $this->assignedAppliance->agent_id;
+
+        $paged = $this->actingAs($this->user)->get(sprintf('/api/agents/sold/%s?per_page=2', $agentId));
+        $paged->assertStatus(200);
+        $this->assertCount(2, $paged['data']);
+        $this->assertEquals(2, $paged['per_page']);
+        $this->assertEquals(3, $paged['total']);
+
+        // without the parameter the whole page is served rather than an empty one
+        $unpaged = $this->actingAs($this->user)->get(sprintf('/api/agents/sold/%s', $agentId));
+        $unpaged->assertStatus(200);
+        $this->assertCount(3, $unpaged['data']);
     }
 
     private function createAgentsWithAssignedAppliance(int $agentCount = 1): void {
