@@ -83,11 +83,15 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)->latest('id')->first();
     }
 
-    public function getTotalAmountSinceLastVisit(int $agentBalanceHistoryId, int $agentId): float {
-        return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)
-            ->where('id', '>', $agentBalanceHistoryId)
-            ->whereIn('trigger_type', [AgentAssignedAppliances::RELATION_NAME, AgentTransaction::RELATION_NAME])
-            ->sum('amount');
+    public function getTotalAmountSinceLastVisit(?int $agentBalanceHistoryId, int $agentId): float {
+        $query = $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)
+            ->whereIn('trigger_type', [AgentAssignedAppliances::RELATION_NAME, AgentTransaction::RELATION_NAME]);
+
+        if ($agentBalanceHistoryId) {
+            $query->where('id', '>', $agentBalanceHistoryId);
+        }
+
+        return (float) $query->sum('amount');
     }
 
     public function getTransactionAverage(Agent $agent, ?AgentReceipt $lastReceipt): float {
