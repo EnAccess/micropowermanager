@@ -3,7 +3,7 @@
     class="md-layout md-gutter md-size-100"
     style="padding: 0.4rem; margin: auto"
   >
-    <div class="md-layout-item md-size-42 md-small-size-100">
+    <div class="md-layout-item md-size-33 md-small-size-100">
       <md-field>
         <md-select
           @md-selected="setCategory"
@@ -23,7 +23,7 @@
       </md-field>
     </div>
 
-    <div class="md-layout-item md-size-42 md-small-size-100">
+    <div class="md-layout-item md-size-33 md-small-size-100">
       <md-field class="md-layout-item">
         <md-select
           @md-selected="setPerson"
@@ -43,7 +43,21 @@
       </md-field>
     </div>
 
-    <div class="md-layout-item md-size-16 md-small-size-100">
+    <div class="md-layout-item md-size-33 md-small-size-100">
+      <md-autocomplete
+        v-model="customerSearchTerm"
+        :md-options="customerOptions"
+        @md-changed="searchCustomers"
+        @md-selected="setCustomer"
+      >
+        <label>{{ $tc("phrases.searchCustomer") }}</label>
+        <template slot="md-autocomplete-item" slot-scope="{ item }">
+          {{ item.name }}
+        </template>
+      </md-autocomplete>
+    </div>
+
+    <div class="md-layout-item md-size-100">
       <md-button @click="filterTickets" class="md-raised md-primary">
         {{ $tc("words.filter") }}
       </md-button>
@@ -55,24 +69,40 @@
 </template>
 
 <script>
+import { notify } from "@/mixins/notify.js"
+import { PersonService } from "@/services/PersonService.js"
 import { TicketService } from "@/services/TicketService.js"
 import { TicketUserService } from "@/services/TicketUserService.js"
 import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Filtering",
-  created() {},
+  mixins: [notify],
   mounted() {
     this.getCategories()
     this.getPeople()
   },
   data() {
     return {
+      personService: new PersonService(),
       ticketService: new TicketService(),
       ticketUserService: new TicketUserService(),
       selectedCategory: "",
       selectedPerson: "",
+      selectedCustomer: null,
+      customerSearchTerm: "",
+      customerOptions: [],
     }
+  },
+  computed: {
+    // editing the text after picking a customer un-picks them, so a stale id
+    // is never sent
+    isCustomerSelected() {
+      return (
+        this.selectedCustomer !== null &&
+        this.customerSearchTerm === this.selectedCustomer.name
+      )
+    },
   },
   methods: {
     setCategory(category) {
@@ -80,6 +110,18 @@ export default {
     },
     setPerson(person) {
       this.selectedPerson = person
+    },
+    setCustomer(customer) {
+      this.selectedCustomer = customer
+      this.customerSearchTerm = customer.name
+    },
+    async searchCustomers(term) {
+      try {
+        this.customerOptions =
+          await this.personService.searchCustomerOptions(term)
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
     },
     async getCategories() {
       try {
@@ -103,6 +145,9 @@ export default {
       if (this.selectedPerson && this.selectedPerson !== "") {
         query += "&person=" + this.selectedPerson
       }
+      if (this.isCustomerSelected) {
+        query += "&customer=" + this.selectedCustomer.id
+      }
       this.$emit("filtering", query)
     },
     closeFilter() {
@@ -112,13 +157,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.chic-button {
-  background-color: #0a0a0c !important;
-  color: #fefefe !important;
-}
-
-.filter-grid {
-  padding: 1rem;
-}
-</style>
+<style scoped lang="scss"></style>

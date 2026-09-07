@@ -24,11 +24,7 @@
             :resetKey="resetKey"
             color="accent"
           >
-            <ticket-item
-              :allow-comment="true"
-              :ticket-list="ticketService.openedList"
-              :table-heads="tableHeads"
-            ></ticket-item>
+            <ticket-item :ticket-list="ticketService.openedList"></ticket-item>
           </widget>
         </div>
         <div class="md-layout-item md-size-50 md-medium-size-100">
@@ -39,11 +35,7 @@
             :resetKey="resetKey"
             color="secondary"
           >
-            <ticket-item
-              :allow-comment="true"
-              :ticket-list="ticketService.closedList"
-              :table-heads="tableHeads"
-            ></ticket-item>
+            <ticket-item :ticket-list="ticketService.closedList"></ticket-item>
           </widget>
         </div>
       </div>
@@ -65,13 +57,7 @@ export default {
   data() {
     return {
       ticketService: new TicketService(),
-      loading: true,
       filterTicket: false,
-      tableHeads: [
-        this.$tc("words.subject"),
-        this.$tc("words.category"),
-        this.$tc("words.date"),
-      ],
       resetKey: 0,
       subscriber: {
         opened: "ticketListOpened",
