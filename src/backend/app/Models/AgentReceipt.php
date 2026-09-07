@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
  * @property      int                                 $id
  * @property      int                                 $agent_id
  * @property      int                                 $user_id
- * @property      float                               $amount
+ * @property      float                               $amount                             the amount collected that this receipt settles; the cash handed over is this minus the commission credited on the detail row
  * @property      int                                 $last_controlled_balance_history_id
  * @property      Carbon|null                         $created_at
  * @property      Carbon|null                         $updated_at
