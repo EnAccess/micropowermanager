@@ -77,51 +77,12 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<int, AgentSoldAppliance>|LengthAwarePaginator<int, AppliancePerson>
-     */
-    public function getAll(
-        ?int $limit = null,
-        ?int $agentId = null,
-        ?int $customerId = null,
-        bool $forApp = false,
-    ): Collection|LengthAwarePaginator {
-        if ($forApp) {
-            return $this->list($agentId);
-        }
-
-        $query = $this->agentSoldAppliance->newQuery()->with([
-            'assignedAppliance',
-            'assignedAppliance.appliance.applianceType',
-            'person',
-        ]);
-
-        if ($agentId) {
-            $query->whereHas(
-                'assignedAppliance',
-                function ($q) use ($agentId) {
-                    $q->whereHas(
-                        'agent',
-                        function ($q) use ($agentId) {
-                            $q->where('agent_id', $agentId);
-                        }
-                    );
-                }
-            );
-        }
-        if ($customerId) {
-            $query->where('person_id', $customerId);
-        }
-        if ($limit) {
-            return $query->latest()->paginate($limit);
-        }
-
-        return $query->latest()->paginate();
-    }
-
-    /**
+     * The sales an agent made, as AppliancePerson records: their ids address the sold
+     * appliance detail endpoint and their cost is what the customer was charged.
+     *
      * @return LengthAwarePaginator<int, AppliancePerson>
      */
-    public function list(int $agentId): LengthAwarePaginator {
+    public function list(int $agentId, ?int $limit = null): LengthAwarePaginator {
         return $this->appliancePerson->newQuery()
             ->with([...$this->agentAppEagerLoads(), 'appliance.applianceType'])
             ->whereHasMorph(
@@ -131,7 +92,7 @@ class AgentSoldApplianceService implements IBaseService {
                     $q->where('id', $agentId);
                 }
             )->latest()
-            ->paginate();
+            ->paginate($limit);
     }
 
     /**
@@ -144,19 +105,35 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
+     * Books an appliance sale for the agent owning the assigned appliance, no matter whether
+     * the agent sold it themselves through the app or an admin recorded it for them on the web.
+     *
+     * @param array<string, mixed> $requestData
+     */
+    public function sell(array $requestData): AgentSoldAppliance {
+        $agentSoldAppliance = $this->create([
+            'person_id' => $requestData['person_id'],
+            'agent_assigned_appliance_id' => $requestData['agent_assigned_appliance_id'],
+        ]);
+
+        $this->processSaleFromRequest($agentSoldAppliance, $requestData);
+
+        return $agentSoldAppliance;
+    }
+
+    /**
      * @param array<string, mixed> $requestData
      */
     public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
-        $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
         $paymentType = $requestData['payment_type'] ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
         $rateType = $requestData['rate_type'] ?? 'monthly';
         $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
 
-        $downPayment = $requestData['down_payment'] ?: 0;
+        $downPayment = $requestData['down_payment'] ?? 0;
 
         // create agent transaction
         $agentTransactionData = [
@@ -239,7 +216,7 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent assigned appliance to agent balance history
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
-            'amount' => $requestData['down_payment'],
+            'amount' => $downPayment,
             'transaction_id' => $transaction->id,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);

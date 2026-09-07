@@ -78,10 +78,18 @@ export class DeviceService {
   }
 
   async generateToken(deviceId, amount, unit) {
+    return this.postTokenRequest(deviceId, { type: "credit", amount, unit })
+  }
+
+  async generateControlToken(deviceId, type) {
+    return this.postTokenRequest(deviceId, { type })
+  }
+
+  async postTokenRequest(deviceId, params) {
     try {
       const { data, status, error } = await this.repository.generateToken(
         deviceId,
-        { amount, unit },
+        params,
       )
       if (status !== 200 && status !== 201)
         return new ErrorHandler(error, "http", status)
