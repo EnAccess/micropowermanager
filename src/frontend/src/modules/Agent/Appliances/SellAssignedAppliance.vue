@@ -398,7 +398,10 @@ import { AgentAssignedApplianceService } from "@/services/AgentAssignedAppliance
 import { AgentSoldApplianceService } from "@/services/AgentSoldApplianceService.js"
 import { DeviceService } from "@/services/DeviceService.js"
 import { ICONS } from "@/services/MappingService.js"
-import { PersonService } from "@/services/PersonService.js"
+import {
+  MINIMUM_CUSTOMER_SEARCH_LENGTH,
+  PersonService,
+} from "@/services/PersonService.js"
 import DeviceLocationField from "@/shared/DeviceLocationField.vue"
 import InstallmentRateSummary from "@/shared/InstallmentRateSummary.vue"
 import Loader from "@/shared/Loader.vue"
@@ -408,7 +411,6 @@ const debounce = require("debounce")
 // These are fixed values in the database
 const APPLIANCE_TYPE_SHS_ID = 1
 const APPLIANCE_TYPE_E_BIKE_ID = 2
-const MINIMUM_CUSTOMER_SEARCH_LENGTH = 3
 
 const INSTALLMENT_MODES = [
   { name: "count-based", label: "Installment Count Based" },
@@ -597,20 +599,10 @@ export default {
       }
     },
     async searchCustomers(term) {
-      if (!term || term.length < MINIMUM_CUSTOMER_SEARCH_LENGTH) {
-        this.customerOptions = []
-        return
-      }
       this.isCustomerSearching = true
       try {
-        const { status, data } = await this.personService.searchPerson({
-          params: { term: term, paginate: 0 },
-        })
-        if (status !== 200) return
-        this.customerOptions = data.data.map((person) => ({
-          id: person.id,
-          name: `${person.name} ${person.surname}`,
-        }))
+        this.customerOptions =
+          await this.personService.searchCustomerOptions(term)
       } catch (e) {
         this.alertNotify("error", e.message)
       } finally {

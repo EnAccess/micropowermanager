@@ -1,20 +1,14 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { Paginator } from "@/Helpers/Paginator.js"
-import Client from "@/repositories/Client/AxiosClient.js"
 import TicketRepository from "@/repositories/TicketRepository.js"
 import { resources } from "@/resources.js"
 
 export class Ticket {
-  constructor() {
-    this.id = null
-    this.name = null
-    this.description = null
-    this.due = null
-    this.closed = null
-    this.lastActivity = null
-    this.comments = []
-    this.category = null
-    this.created_at = null
+  static listFromJson(data) {
+    if (!Array.isArray(data)) {
+      return []
+    }
+    return data.map((ticket) => new Ticket().fromJson(ticket))
   }
 
   fromJson(ticketData) {
@@ -45,61 +39,16 @@ export class Ticket {
 
     return this
   }
-
-  commentCount() {
-    return this.comments.length
-  }
-
-  close() {
-    Client.delete(resources.ticket.close, { data: { ticketId: this.id } }).then(
-      () => {
-        this.closed = true
-      },
-    )
-  }
 }
 
-export class UserTickets {
-  constructor(personId) {
+export class TicketList {
+  constructor(resource) {
     this.list = []
-    this.paginator = new Paginator(resources.ticket.getUser + personId)
-  }
-
-  addTicket(ticket) {
-    this.list.push(ticket)
-  }
-
-  search() {
-    // this.paginator = new Paginator(resources.meters.search);
-    // EventBus.$emit('loadPage', this.paginator, {'term': term});
-  }
-
-  showAll() {
-    //this.paginator = new Paginator(resources.meters.list);
-    //EventBus.$emit('loadPage', this.paginator);
+    this.paginator = new Paginator(resource)
   }
 
   updateList(data) {
-    this.list = []
-
-    let ticketsArray = []
-
-    // Handle both cases: array directly or object with data property
-    if (Array.isArray(data)) {
-      ticketsArray = data
-    } else if (data && "data" in data && Array.isArray(data.data)) {
-      ticketsArray = data.data
-    }
-
-    if (ticketsArray.length > 0) {
-      this.list = ticketsArray.map(function (ticket) {
-        return new Ticket().fromJson(ticket)
-      })
-    }
-  }
-
-  newComment(commentData) {
-    Client.post(resources.ticket.comments, commentData)
+    this.list = Ticket.listFromJson(data)
   }
 }
 
@@ -113,31 +62,11 @@ export class TicketService {
     this.closedPaginator = new Paginator(resources.ticket.list + "?status=1")
   }
 
-  async updateList(data, type) {
-    if (type === "ticketListOpened") this.openedList = []
-    else this.closedList = []
+  updateList(data, type) {
+    const tickets = Ticket.listFromJson(data)
 
-    const result = data?.map((ticket) => {
-      return {
-        created: ticket.created_at,
-        id: ticket.id,
-        name: ticket.name,
-        description: ticket.content,
-        due: ticket.due,
-        closed: ticket.status === 1,
-        lastActivity: null,
-        comments: ticket.comments,
-        category: ticket.category.label_name,
-        owner: ticket.owner.name + ticket.owner.surname,
-        assigned:
-          ticket.assigned_id && ticket.assigned_to
-            ? ticket.assigned_to.user_name
-            : null,
-        title: ticket.title,
-      }
-    })
-    if (type === "ticketListOpened") this.openedList = result
-    else this.closedList = result
+    if (type === "ticketListOpened") this.openedList = tickets
+    else this.closedList = tickets
   }
 
   async getCategories() {
