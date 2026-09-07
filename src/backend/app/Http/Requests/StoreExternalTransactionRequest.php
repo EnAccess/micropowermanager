@@ -24,6 +24,8 @@ class StoreExternalTransactionRequest extends FormRequest {
             'amount' => ['required', 'numeric'],
             // The external party's own transaction ID; repeating it returns the original result.
             'external_reference' => ['required', 'string'],
+            // Where the payment originated, e.g. "USSD" - recorded on the transaction for attribution.
+            'source' => ['required', 'string'],
         ];
     }
 }

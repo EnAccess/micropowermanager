@@ -37,6 +37,15 @@
     <hr class="hr-d" />
     <div class="md-layout">
       <div class="md-layout-item md-subheader">
+        {{ $tc("words.source") }}
+      </div>
+      <div class="md-layout-item md-subheader n-font">
+        {{ ot?.source ?? "-" }}
+      </div>
+    </div>
+    <hr class="hr-d" />
+    <div class="md-layout">
+      <div class="md-layout-item md-subheader">
         {{ $tc("phrases.createdBy") }}
       </div>
       <div class="md-layout-item md-subheader n-font">
