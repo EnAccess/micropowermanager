@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\ApplianceRate;
 use App\Services\ApplianceRateService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
+#[Group('Appliance / Rate')]
 class ApplianceRateController extends Controller {
     public function __construct(
         private ApplianceRateService $applianceRateService,
