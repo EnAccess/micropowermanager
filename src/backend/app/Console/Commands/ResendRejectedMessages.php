@@ -8,6 +8,7 @@ use App\Services\SmsService;
 use Illuminate\Support\Facades\Log;
 
 class ResendRejectedMessages extends AbstractSharedCommand {
+    /** Counts every hand-off to a gateway, the original send included, so two means one resend. */
     public const MAX_ATTEMPTS = 2;
 
     /**
@@ -32,7 +33,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->gatewayResolver->hasActiveProvider()) {
+        if (!$this->gatewayResolver->isSmsGatewayConfigured()) {
             return;
         }
 
@@ -40,7 +41,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
         $this->sms
             ->where('direction', Sms::DIRECTION_OUTGOING)
             ->where('status', Sms::STATUS_FAILED)
-            ->where('attempts', '<=', self::MAX_ATTEMPTS)
+            ->where('attempts', '<', self::MAX_ATTEMPTS)
             ->orderBy('id')
             ->take($amountToSend)
             ->get()->each(function (Sms $sms) {

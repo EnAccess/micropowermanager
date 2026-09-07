@@ -77,7 +77,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');
         $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00');
         $schedule->command('reports:ticket-outsource-payout')->monthlyOn(1, '3:30');
-        $schedule->command('sms:resend-rejected 5')->everyMinute();
+        $schedule->command('sms:resend-rejected 5')->everyFiveMinutes()->withoutOverlapping(50);
         // Horizon going inactive raises no process event of its own, so polling is the
         // only way it surfaces. --alert routes the failure to the log stack, and from
         // there to Slack when LOG_SLACK_WEBHOOK_URL is configured.

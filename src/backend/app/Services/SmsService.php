@@ -102,7 +102,9 @@ class SmsService {
             'status' => Sms::STATUS_SENT,
             'gateway_id' => $gatewayId,
             'error_message' => null,
+            'attempts' => DB::raw('attempts + 1'),
         ]);
+        $sms->refresh();
     }
 
     public function markFailed(Sms $sms, \Throwable $exception): void {
@@ -111,6 +113,7 @@ class SmsService {
             'error_message' => Str::limit($exception->getMessage(), self::ERROR_MESSAGE_MAX_LENGTH),
             'attempts' => DB::raw('attempts + 1'),
         ]);
+        $sms->refresh();
     }
 
     /**

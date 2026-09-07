@@ -137,7 +137,8 @@ class SmsGatewayResolverService {
             $mainSettings = $this->mainSettingsService->getAll()->first();
             $configuredGatewayId = $mainSettings?->sms_gateway_id;
 
-            return (bool) $configuredGatewayId;
+            return $configuredGatewayId !== null
+                && $this->getGatewayNameById($configuredGatewayId) !== null;
         } catch (\Exception $e) {
             Log::error('Error while checking if SMS gateway is configured', ['error' => $e->getMessage()]);
 
@@ -160,15 +161,6 @@ class SmsGatewayResolverService {
 
     public function getGatewayId(string $gateway): int {
         return self::SMS_GATEWAY_IDS[$gateway] ?? self::SMS_GATEWAY_IDS[self::DEFAULT_GATEWAY];
-    }
-
-    /**
-     * Check if at least one SMS provider is configured and active.
-     */
-    public function hasActiveProvider(): bool {
-        $availableGateways = $this->getAvailableSmsGateways();
-
-        return count($availableGateways) > 0;
     }
 
     /**
