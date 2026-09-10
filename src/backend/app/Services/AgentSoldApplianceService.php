@@ -111,7 +111,6 @@ class AgentSoldApplianceService implements IBaseService {
             ->findOrFail($appliancePersonId);
     }
 
-
     /**
      * @return Collection<int, Agent>
      */
