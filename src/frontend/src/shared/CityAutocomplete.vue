@@ -1,15 +1,20 @@
 <template>
   <div class="city-autocomplete">
-    <md-field md-clearable :class="{ 'md-invalid': error !== null }">
+    <md-field
+      md-clearable
+      :class="{ 'md-invalid': error !== null }"
+      @md-clear="focusInput"
+    >
       <label :for="name">{{ label || $tc("words.city") }}</label>
       <md-input
+        ref="input"
         :id="name"
         :name="name"
         v-model="searchTerm"
         v-validate="required ? 'required' : ''"
         autocomplete="off"
-        @focus="optionsVisible = true"
-        @blur="optionsVisible = false"
+        @focus="openOptions"
+        @blur="closeOptionsSoon"
       />
       <span class="md-error">{{ error }}</span>
     </md-field>
@@ -93,11 +98,20 @@ export default {
       lastPage: 1,
       loadingPage: null,
       optionsVisible: false,
+      closeTimeout: null,
     }
+  },
+  created() {
+    // Per instance: a debounced function shared through `methods` would let two
+    // pickers on the same page cancel each other's search.
+    this.searchAfterTyping = debounce(() => this.loadFirstPage(), 300)
   },
   async mounted() {
     await this.loadFirstPage()
     await this.showSelected(this.value)
+  },
+  beforeDestroy() {
+    clearTimeout(this.closeTimeout)
   },
   computed: {
     options() {
@@ -114,22 +128,44 @@ export default {
     value(cityId) {
       this.showSelected(cityId)
     },
-    searchTerm: debounce(function (term) {
-      if (term === this.selectedName) return
-
+    searchTerm(term) {
       // The field's clear button empties the input directly, which has to reset
-      // the selection as well.
+      // the selection and bring the unfiltered list back.
       if (term === "") {
-        this.selectedId = null
-        this.selectedName = ""
-        this.$emit("input", null)
-        this.$emit("select", null)
+        if (this.selectedId !== null) {
+          this.selectedId = null
+          this.selectedName = ""
+          this.$emit("input", null)
+          this.$emit("select", null)
+        }
+        this.loadFirstPage()
+
+        return
       }
 
-      this.loadFirstPage()
-    }, 300),
+      // Selecting a village writes its name into the input; that is not a search.
+      if (term === this.selectedName) return
+
+      this.searchAfterTyping()
+    },
   },
   methods: {
+    openOptions() {
+      clearTimeout(this.closeTimeout)
+      this.optionsVisible = true
+    },
+    // Clearing the field leaves it ready for the next search: focusing reopens
+    // the list, which the reload has meanwhile refilled.
+    focusInput() {
+      if (this.$refs.input) this.$refs.input.$el.focus()
+    },
+    // The list sits in the layout flow, so hiding it the moment the input blurs
+    // pulls the clear button out from under the pointer before its click lands.
+    closeOptionsSoon() {
+      this.closeTimeout = setTimeout(() => {
+        this.optionsVisible = false
+      }, 200)
+    },
     async loadFirstPage() {
       this.page = 1
       await this.loadPage(1)

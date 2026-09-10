@@ -1,8 +1,9 @@
 <template>
   <div>
     <md-dialog
-      :md-active.sync="showAddClient"
+      :md-active="showAddClient"
       style="max-width: 60rem; margin: auto"
+      @update:mdActive="onDialogToggled"
     >
       <md-dialog-title>
         <div class="divider-title">
@@ -326,6 +327,11 @@ export default {
     },
     cancel() {
       this.$emit("hideAddCustomer")
+    },
+    // Escape and clicking outside close the dialog on their own; the parent owns
+    // the flag, so it has to hear about those closes too.
+    onDialogToggled(active) {
+      if (!active) this.$emit("hideAddCustomer")
     },
     validatePhone(phone) {
       this.phone = phone
