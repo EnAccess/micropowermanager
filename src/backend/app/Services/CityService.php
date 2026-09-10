@@ -79,8 +79,12 @@ class CityService implements IBaseService {
     /**
      * @return Collection<int, City>|LengthAwarePaginator<int, City>
      */
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
+    public function getAll(?int $limit = null, ?int $miniGridId = null): Collection|LengthAwarePaginator {
         $query = $this->city->newQuery()->with(['location', 'miniGrid.cluster', 'country']);
+
+        if ($miniGridId !== null) {
+            $query->where('mini_grid_id', $miniGridId);
+        }
 
         if ($limit) {
             return $query->paginate($limit);

@@ -7,6 +7,7 @@ use App\Http\Requests\DeleteCityRequest;
 use App\Http\Requests\UpdateCityRequest;
 use App\Http\Resources\ApiResource;
 use App\Http\Resources\LinkedAddressResource;
+use App\Models\Agent;
 use App\Services\CityService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +21,7 @@ class CityController extends Controller {
     ) {}
 
     public function index(Request $request): ApiResource {
-        $limit = $request->input('limit');
+        $limit = $request->input('limit') ?? 15;
 
         return ApiResource::make($this->cityService->getAll($limit));
     }
@@ -28,12 +29,18 @@ class CityController extends Controller {
     /**
      * List cities (customer registration app).
      *
-     * Alias of `GET /api/cities` for the customer registration app.
+     * Alias of `GET /api/cities` for the customer registration app. A field agent
+     * only ever registers customers inside their own mini-grid, so an agent-authenticated
+     * caller gets that mini-grid's villages rather than every village in the tenant.
      */
     #[Group('Customer Registration App')]
     #[\Deprecated(message: 'use `GET /api/cities` instead')]
     public function indexForCustomerRegistrationApp(Request $request): ApiResource {
-        return ApiResource::make($this->cityService->getAll($request->input('limit')));
+        $agent = auth('agent_api')->user();
+        $miniGridId = $agent instanceof Agent ? $agent->mini_grid_id : null;
+        $limit = $request->input('limit') ?? 15;
+
+        return ApiResource::make($this->cityService->getAll($limit, $miniGridId));
     }
 
     public function show(int $cityId, Request $request): ApiResource {
