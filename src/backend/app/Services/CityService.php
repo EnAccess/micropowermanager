@@ -79,11 +79,15 @@ class CityService implements IBaseService {
     /**
      * @return Collection<int, City>|LengthAwarePaginator<int, City>
      */
-    public function getAll(?int $limit = null, ?int $miniGridId = null): Collection|LengthAwarePaginator {
-        $query = $this->city->newQuery()->with(['location', 'miniGrid.cluster', 'country']);
+    public function getAll(?int $limit = null, ?int $miniGridId = null, ?string $term = null): Collection|LengthAwarePaginator {
+        $query = $this->city->newQuery()->with(['location', 'miniGrid.cluster:id,name', 'country']);
 
         if ($miniGridId !== null) {
             $query->where('mini_grid_id', $miniGridId);
+        }
+
+        if ($term !== null && $term !== '') {
+            $query->where('name', 'LIKE', $term.'%');
         }
 
         if ($limit) {

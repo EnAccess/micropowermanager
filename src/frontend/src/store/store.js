@@ -6,6 +6,7 @@ import { Person } from "@/services/PersonService.js"
 import * as auth from "@/store/modules/authentication.js"
 import * as breadcrumb from "@/store/modules/breadcrumb.js"
 import * as clusterDashboard from "@/store/modules/clusterDashboard.js"
+import * as country from "@/store/modules/country.js"
 import * as device from "@/store/modules/device.js"
 import * as miniGridDashboard from "@/store/modules/miniGridDashboard.js"
 import * as registrationTail from "@/store/modules/registrationTail.js"
@@ -55,6 +56,7 @@ export default new Vuex.Store({
     registrationTail,
     miniGridDashboard,
     device,
+    country,
   },
   plugins: [vuexLocalStorage.plugin],
   state: {

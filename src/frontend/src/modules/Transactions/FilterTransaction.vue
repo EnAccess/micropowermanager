@@ -132,7 +132,6 @@
 import { mapGetters } from "vuex"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
 import { CurrencyListService } from "@/services/CurrencyListService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import { TariffService } from "@/services/TariffService.js"
@@ -170,7 +169,6 @@ export default {
       },
       transactionProviders: [],
       miniGridService: new MiniGridService(),
-      cityService: new CityService(),
       currencyListService: new CurrencyListService(),
       exportFilters: {
         format: "csv",
@@ -194,7 +192,6 @@ export default {
     EventBus.$on("searching", this.searching)
     EventBus.$on("end_searching", this.endSearching)
     this.loadMiniGrids()
-    this.loadCities()
     this.loadCurrencyList()
     this.exportFilters.currency =
       store.getters["settings/getMainSettings"].currency
@@ -370,14 +367,6 @@ export default {
         await this.miniGridService.getMiniGrids()
       } catch (error) {
         console.error("Failed to load mini grids:", error)
-      }
-    },
-
-    async loadCities() {
-      try {
-        await this.cityService.getCities()
-      } catch (error) {
-        console.error("Failed to load cities:", error)
       }
     },
 

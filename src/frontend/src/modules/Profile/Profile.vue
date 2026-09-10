@@ -75,33 +75,12 @@
               </div>
 
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field
-                  :class="{
-                    'md-invalid': errors.has('address.' + $tc('words.city')),
-                  }"
-                >
-                  <label for="city">
-                    {{ $tc("words.city") }}
-                  </label>
-                  <md-select
-                    v-model="selectedCity"
-                    required
-                    :name="$tc('words.city')"
-                    id="city"
-                    v-validate="'required'"
-                  >
-                    <md-option
-                      v-for="c in cityService.cities"
-                      :key="c.id"
-                      :value="c.id"
-                    >
-                      {{ c.name }}
-                    </md-option>
-                  </md-select>
-                  <span class="md-error">
-                    {{ errors.first("address." + $tc("words.city")) }}
-                  </span>
-                </md-field>
+                <city-autocomplete
+                  v-model="selectedCity"
+                  :name="$tc('words.city')"
+                  required
+                  :error="errors.first('address.' + $tc('words.city'))"
+                />
               </div>
               <div class="md-layout-item md-size-100">
                 <md-button
@@ -193,24 +172,23 @@
 
 <script>
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
 import { UserPasswordService } from "@/services/UserPasswordService.js"
 import { UserService } from "@/services/UserService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Profile",
   mixins: [notify],
-  components: { Widget },
+  components: { CityAutocomplete, Widget },
   data() {
     return {
       sending: false,
       modalVisibility: false,
-      selectedCity: "",
+      selectedCity: null,
       firstStepClicked: false,
       refreshKey: 0,
       userService: new UserService(),
-      cityService: new CityService(),
       passwordService: new UserPasswordService(),
       phone: {
         valid: true,
@@ -230,7 +208,6 @@ export default {
     },
   },
   async mounted() {
-    await this.getCities()
     await this.getUser()
     if (
       !this.userService.user.phone ||
@@ -240,14 +217,6 @@ export default {
     }
   },
   methods: {
-    async getCities() {
-      try {
-        await this.cityService.getCities()
-        this.setSelectedCity()
-      } catch (error) {
-        this.alertNotify("error", error.message)
-      }
-    },
     validatePhone(phone) {
       this.phone = phone
     },
@@ -265,26 +234,9 @@ export default {
         ) {
           this.userService.user.phone = ""
         }
-        this.setSelectedCity()
+        this.selectedCity = this.userService.user.cityId ?? null
       } catch (error) {
         this.alertNotify("error", error.message)
-      }
-    },
-    setSelectedCity() {
-      if (
-        this.userService.user.cityId !== undefined &&
-        this.userService.user.cityId !== null
-      ) {
-        // If cities are loaded, verify the city exists in the list
-        if (this.cityService.cities.length > 0) {
-          const city = this.cityService.cities.find(
-            (x) => x.id === this.userService.user.cityId,
-          )
-          this.selectedCity = city ? city.id : this.userService.user.cityId
-        } else {
-          // If cities not loaded yet, set directly (will be validated when cities load)
-          this.selectedCity = this.userService.user.cityId
-        }
       }
     },
     async updateDetails() {
