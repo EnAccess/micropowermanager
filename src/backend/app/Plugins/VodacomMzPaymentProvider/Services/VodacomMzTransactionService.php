@@ -2,6 +2,7 @@
 
 namespace App\Plugins\VodacomMzPaymentProvider\Services;
 
+use App\Exceptions\PayerPhoneNotFoundException;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
@@ -10,6 +11,7 @@ use App\Plugins\VodacomMzPaymentProvider\Http\Clients\VodacomMzApiClient;
 use App\Plugins\VodacomMzPaymentProvider\Models\VodacomMzTransaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\PaymentInitiator;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @extends AbstractPaymentAggregatorTransactionService<VodacomMzTransaction>
@@ -80,14 +82,25 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
         int $customerId,
         ?string $serialId = null,
     ): array {
-        $thirdPartyReference = $this->generateThirdPartyReference($serialId);
+        // Unlike redirect-based providers, the C2B push has nowhere to go without a real MSISDN:
+        // the OpenAPI prompts the payer on this number. Rejecting it here keeps the failure
+        // readable and avoids persisting a transaction that could never have been paid.
+        if (Validator::make(['sender' => $sender], ['sender' => ['required', 'phone:INTERNATIONAL']])->fails()) {
+            throw new PayerPhoneNotFoundException("'{$sender}' is not a phone number the M-Pesa payment request can be sent to. Send payer_phone with the request.");
+        }
+
+        // Not every payment targets a device: an appliance sold without one is identified by the
+        // routing key instead, which is also what the OpenAPI wants as input_TransactionReference
+        // ("a utility bill reference number").
+        $paymentReference = $serialId ?? $message;
+        $thirdPartyReference = $this->generateThirdPartyReference($paymentReference);
 
         // The C2B Payment endpoint is single-stage and synchronous: the OpenAPI only responds after
         // the payer has entered their M-Pesa PIN and the payment has been processed. The transaction
         // is therefore persisted as REQUESTED up front, so a timeout or a rejected push still leaves
         // a record that can be reconciled later via the Query Transaction Status endpoint.
         $vodacomMzTransaction = $this->vodacomMzTransaction->newQuery()->create([
-            'serialNumber' => $serialId,
+            'serialNumber' => $paymentReference,
             'amount' => $amount,
             'payerPhoneNumber' => $sender,
             'status' => VodacomMzTransaction::STATUS_REQUESTED,
@@ -102,7 +115,7 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
         ]);
 
         $response = $this->apiClient->c2bPayment(
-            (string) $serialId,
+            $paymentReference,
             $sender,
             $amount,
             $thirdPartyReference
@@ -131,15 +144,15 @@ class VodacomMzTransactionService extends AbstractPaymentAggregatorTransactionSe
      * Builds the unique reference the OpenAPI uses to identify this request (input_ThirdPartyReference);
      * also how we later reconcile the transaction via the Query Transaction Status endpoint.
      *
-     * The OpenAPI rejects non-alphanumeric characters (including "-" and "_"), so the serial — which may be
-     * a UUID containing dashes — is stripped down to alphanumerics and a unix timestamp is appended.
-     * The serial keeps it human-mappable; the timestamp keeps it ordered and unique per second.
+     * The OpenAPI rejects non-alphanumeric characters (including "-" and "_"), so the reference — which
+     * may be a UUID containing dashes — is stripped down to alphanumerics and a unix timestamp is appended.
+     * The reference keeps it human-mappable; the timestamp keeps it ordered and unique per second.
      *
      * @return string a reference such as "MTR123451718553600"
      */
-    private function generateThirdPartyReference(?string $serialNumber): string {
-        $cleanSerial = preg_replace('/[^A-Za-z0-9]/', '', $serialNumber ?? 'NA');
+    private function generateThirdPartyReference(string $paymentReference): string {
+        $cleanReference = preg_replace('/[^A-Za-z0-9]/', '', $paymentReference);
 
-        return $cleanSerial.now()->timestamp;
+        return $cleanReference.now()->timestamp;
     }
 }
