@@ -8,6 +8,7 @@
       color="primary"
       :subscriber="subscriber"
       :paginator="cityService.paginator"
+      :show_per_page="true"
       :key="resetKey"
       @widgetAction="goToAddVillage"
     >
@@ -179,22 +180,12 @@
             </md-table-cell>
           </md-table-row>
         </md-table>
-        <md-field>
-          <label for="reassignCity">{{ $tc("phrases.moveAddressesTo") }}</label>
-          <md-select
-            v-model="reassignCityId"
-            name="reassignCity"
-            id="reassignCity"
-          >
-            <md-option
-              v-for="city in reassignTargets"
-              :value="city.id"
-              :key="city.id"
-            >
-              {{ city.name }}
-            </md-option>
-          </md-select>
-        </md-field>
+        <city-autocomplete
+          v-model="reassignCityId"
+          name="reassignCity"
+          :label="$tc('phrases.moveAddressesTo')"
+          :exclude="blockedCity ? blockedCity.id : null"
+        />
       </md-dialog-content>
       <md-dialog-actions>
         <md-button @click="blockersDialogActive = false">
@@ -213,15 +204,17 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+
 import { geoJsonToLatLon, latLonToGeoJsonPoint } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
 import { villageMapContext } from "@/mixins/villageMapContext.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
 import { CityService } from "@/services/CityService.js"
 import { ClusterService } from "@/services/ClusterService.js"
-import CountryService from "@/services/CountryService.js"
 import { ICONS, MappingService } from "@/services/MappingService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
@@ -229,6 +222,7 @@ export default {
   name: "VillageList",
   mixins: [notify, villageMapContext],
   components: {
+    CityAutocomplete,
     VillageMap,
     Widget,
   },
@@ -236,14 +230,11 @@ export default {
     return {
       cityService: new CityService(),
       clusterService: new ClusterService(),
-      countryService: new CountryService(),
       miniGridService: new MiniGridService(),
       mappingService: new MappingService(),
       subscriber: "village-list",
       resetKey: 1,
       cities: [],
-      reassignCities: [],
-      countries: [],
       miniGrids: [],
       editDialogActive: false,
       editingCity: null,
@@ -257,12 +248,9 @@ export default {
     }
   },
   computed: {
-    reassignTargets() {
-      if (!this.blockedCity) return []
-      return this.reassignCities.filter(
-        (city) => city.id !== this.blockedCity.id,
-      )
-    },
+    ...mapGetters({
+      countries: "country/getCountries",
+    }),
   },
   created() {
     this.mappingService.setConstantMarkerUrl(ICONS.MINI_GRID)
@@ -270,8 +258,6 @@ export default {
   },
   mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
-    this.loadCountries()
-    this.loadMiniGrids()
   },
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
@@ -282,16 +268,13 @@ export default {
       this.cities = data
       EventBus.$emit("widgetContentLoaded", this.subscriber, this.cities.length)
     },
-    async loadCountries() {
+    // Both lists only fill the edit dialog's selects, so a visit that never
+    // edits never pays for them.
+    async loadEditDialogOptions() {
       try {
-        await this.countryService.getCountries()
-        this.countries = this.countryService.list
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
-    async loadMiniGrids() {
-      try {
+        await this.$store.dispatch("country/setCountries")
+        if (this.miniGrids.length) return
+
         const miniGrids = await this.miniGridService.getMiniGrids()
         this.miniGrids = Array.isArray(miniGrids) ? miniGrids : []
       } catch (e) {
@@ -302,6 +285,7 @@ export default {
       this.$router.push("/locations/add-village")
     },
     async openEditDialog(city) {
+      await this.loadEditDialogOptions()
       this.editingCity = city
       this.editName = city.name || ""
       this.editCountryId = city.country_id || null
@@ -406,10 +390,6 @@ export default {
       try {
         const addresses = await this.cityService.getLinkedAddresses(city.id)
         if (!Array.isArray(addresses) || !addresses.length) return
-        // Addresses can be moved to any village, not only the ones listed on
-        // the current page.
-        const cities = await this.cityService.getCities()
-        this.reassignCities = Array.isArray(cities) ? cities : []
         this.blockedCity = city
         this.linkedAddresses = addresses
         this.reassignCityId = null

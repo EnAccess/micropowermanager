@@ -331,7 +331,6 @@ export default {
       isSearching: false,
       downloadingDebts: false,
       downloadingCustomers: false,
-      activeRequest: null,
       customerFilters: {
         status: "all",
         agentId: null,
@@ -385,11 +384,6 @@ export default {
     EventBus.$off("pageLoaded", this.reloadList)
     EventBus.$off("searching", this.onSearchEvent)
     EventBus.$off("end_searching", this.onEndSearchEvent)
-
-    // Cancel any pending request
-    if (this.activeRequest) {
-      this.activeRequest.cancel()
-    }
   },
 
   methods: {
@@ -439,18 +433,14 @@ export default {
     },
 
     async performSearch() {
-      // Cancel previous request if still pending
-      if (this.activeRequest) {
-        this.activeRequest.cancel()
-      }
-
+      const term = this.searchTerm
       this.isSearching = true
 
       try {
         // Create search paginator
         const searchPaginator = new Paginator(resources.person.search)
 
-        const params = { term: this.searchTerm }
+        const params = { term }
         if (this.currentSortBy) {
           const prefix = this.currentSortOrder === "desc" ? "-" : ""
           params.sort_by = `${prefix}${this.currentSortBy}`
@@ -459,7 +449,8 @@ export default {
 
         const response = await searchPaginator.loadPage(1, params)
 
-        // Update people list with search results
+        if (term !== this.searchTerm) return
+
         this.people.updateList(response.data)
         this.paginator = searchPaginator
 
@@ -469,9 +460,7 @@ export default {
           this.people.list.length,
         )
       } catch (error) {
-        if (error.message !== "Request cancelled") {
-          console.error("Search error:", error)
-        }
+        console.error("Search error:", error)
       } finally {
         this.isSearching = false
       }
