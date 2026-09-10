@@ -11,7 +11,7 @@ use Tests\TestCase;
 class CustomerRegistrationAppCitiesTest extends TestCase {
     use CreateEnvironments;
 
-    private const ENDPOINT = '/api/customer-registration-app/cities';
+    private const string ENDPOINT = '/api/customer-registration-app/cities';
 
     public function testAgentGetsOnlyTheVillagesOfTheirOwnMiniGrid(): void {
         $this->seedAgent();
@@ -125,7 +125,7 @@ class CustomerRegistrationAppCitiesTest extends TestCase {
     private function createForeignMiniGridId(): int {
         return MiniGridFactory::new()->create([
             'cluster_id' => $this->cluster->id,
-            'name' => $this->faker->unique()->companySuffix,
+            'name' => $this->faker->unique()->companySuffix(),
         ])->id;
     }
 
