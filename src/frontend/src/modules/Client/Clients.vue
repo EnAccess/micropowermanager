@@ -70,7 +70,6 @@
             <client-filter
               v-model="customerFilters"
               :agents="agentService.list"
-              :cities="cityService.list"
               @apply="onFilterApply"
               @clear="onFilterClear"
             />
@@ -211,16 +210,11 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-50">
-            <md-autocomplete
-              v-model="villageSearchTerm"
-              :md-options="cityService.list"
-              @md-selected="onVillageSelected"
-            >
-              <label>{{ $tc("words.village") }}</label>
-              <template slot="md-autocomplete-item" slot-scope="{ item }">
-                {{ item.name }}
-              </template>
-            </md-autocomplete>
+            <city-autocomplete
+              v-model="exportVillageId"
+              :label="$tc('words.village')"
+              @select="onVillageSelected"
+            />
           </div>
         </div>
 
@@ -293,12 +287,12 @@ import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import ClientFilter from "@/modules/Client/ClientFilter.vue"
 import { resources } from "@/resources.js"
 import { AgentService } from "@/services/AgentService.js"
-import { CityService } from "@/services/CityService.js"
 import { CustomerExportService } from "@/services/CustomerExportService.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService.js"
 import { People } from "@/services/PersonService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
@@ -307,7 +301,7 @@ const debounce = require("debounce")
 export default {
   name: "Clients",
   mixins: [timing, notify],
-  components: { AddClientModal, Widget, ClientFilter },
+  components: { AddClientModal, CityAutocomplete, Widget, ClientFilter },
   data() {
     return {
       subscriber: "client.list",
@@ -332,9 +326,8 @@ export default {
         village: "",
         deviceType: "",
       },
-      villageSearchTerm: "",
+      exportVillageId: null,
       miniGridService: new MiniGridService(),
-      cityService: new CityService(),
       isSearching: false,
       downloadingDebts: false,
       downloadingCustomers: false,
@@ -375,12 +368,6 @@ export default {
     searchTerm: debounce(function () {
       this.handleSearch()
     }, 300),
-    villageSearchTerm(newVal) {
-      // The autocomplete's built-in clear button empties this field directly,
-      if (newVal === "") {
-        this.exportFilters.village = ""
-      }
-    },
   },
 
   mounted() {
@@ -407,8 +394,7 @@ export default {
 
   methods: {
     onVillageSelected(city) {
-      this.exportFilters.village = city.name
-      this.villageSearchTerm = city.name
+      this.exportFilters.village = city ? city.name : ""
     },
     handleSearch() {
       if (this.searchTerm.length > 2) {
@@ -636,7 +622,6 @@ export default {
         this.loadMainSettings(),
         this.loadAgents(),
         this.loadMiniGrids(),
-        this.loadCities(),
       ])
     },
 
@@ -665,14 +650,6 @@ export default {
         await this.miniGridService.getMiniGrids()
       } catch (error) {
         console.error("Failed to load mini grids:", error)
-      }
-    },
-
-    async loadCities() {
-      try {
-        await this.cityService.getCities()
-      } catch (error) {
-        console.error("Failed to load cities:", error)
       }
     },
 

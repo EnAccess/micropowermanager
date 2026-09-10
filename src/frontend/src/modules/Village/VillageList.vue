@@ -6,15 +6,12 @@
       :button="true"
       :button-text="$tc('phrases.addVillage')"
       color="primary"
+      :subscriber="subscriber"
+      :paginator="cityService.paginator"
+      :key="resetKey"
       @widgetAction="goToAddVillage"
     >
-      <md-table
-        style="width: 100%"
-        v-model="cities"
-        md-card
-        md-fixed-header
-        v-if="cities.length"
-      >
+      <md-table style="width: 100%" v-model="cities" md-card md-fixed-header>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell :md-label="$tc('words.name')">
             {{ item.name }}
@@ -48,10 +45,6 @@
           </md-table-cell>
         </md-table-row>
       </md-table>
-      <div v-else class="empty-state">
-        {{ $tc("phrases.noRecords") }}
-      </div>
-      <md-progress-bar md-mode="indeterminate" v-if="loading" />
     </widget>
 
     <md-dialog
@@ -229,6 +222,7 @@ import { ClusterService } from "@/services/ClusterService.js"
 import CountryService from "@/services/CountryService.js"
 import { ICONS, MappingService } from "@/services/MappingService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
+import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
@@ -245,10 +239,12 @@ export default {
       countryService: new CountryService(),
       miniGridService: new MiniGridService(),
       mappingService: new MappingService(),
+      subscriber: "village-list",
+      resetKey: 1,
       cities: [],
+      reassignCities: [],
       countries: [],
       miniGrids: [],
-      loading: false,
       editDialogActive: false,
       editingCity: null,
       editName: "",
@@ -263,7 +259,9 @@ export default {
   computed: {
     reassignTargets() {
       if (!this.blockedCity) return []
-      return this.cities.filter((city) => city.id !== this.blockedCity.id)
+      return this.reassignCities.filter(
+        (city) => city.id !== this.blockedCity.id,
+      )
     },
   },
   created() {
@@ -271,20 +269,18 @@ export default {
     this.mappingService.setMarkerUrl(ICONS.VILLAGE)
   },
   mounted() {
-    this.loadCities()
+    EventBus.$on("pageLoaded", this.reloadList)
     this.loadCountries()
     this.loadMiniGrids()
   },
+  beforeDestroy() {
+    EventBus.$off("pageLoaded", this.reloadList)
+  },
   methods: {
-    async loadCities() {
-      this.loading = true
-      try {
-        const cities = await this.cityService.getCities()
-        this.cities = Array.isArray(cities) ? cities : []
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-      this.loading = false
+    reloadList(subscriber, data) {
+      if (subscriber !== this.subscriber) return
+      this.cities = data
+      EventBus.$emit("widgetContentLoaded", this.subscriber, this.cities.length)
     },
     async loadCountries() {
       try {
@@ -374,7 +370,7 @@ export default {
         await this.cityService.updateCity(this.editingCity.id, cityData)
         this.editDialogActive = false
         this.alertNotify("success", this.$tc("phrases.villageUpdated"))
-        await this.loadCities()
+        this.resetKey++
       } catch (e) {
         this.alertNotify("error", e.message || this.$tc("phrases.updateFailed"))
       }
@@ -400,7 +396,7 @@ export default {
         await this.cityService.deleteCity(city.id, options)
         this.blockersDialogActive = false
         this.alertNotify("success", this.$tc("phrases.villageDeleted"))
-        await this.loadCities()
+        this.resetKey++
       } catch (e) {
         this.alertNotify("error", e.message || this.$tc("phrases.deleteFailed"))
         await this.openBlockersDialog(city)
@@ -410,6 +406,10 @@ export default {
       try {
         const addresses = await this.cityService.getLinkedAddresses(city.id)
         if (!Array.isArray(addresses) || !addresses.length) return
+        // Addresses can be moved to any village, not only the ones listed on
+        // the current page.
+        const cities = await this.cityService.getCities()
+        this.reassignCities = Array.isArray(cities) ? cities : []
         this.blockedCity = city
         this.linkedAddresses = addresses
         this.reassignCityId = null
@@ -428,12 +428,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.empty-state {
-  padding: 2rem;
-  text-align: center;
-  color: #777;
-}
-
 .village-edit-dialog,
 .village-blockers-dialog {
   ::v-deep .md-dialog-container {
