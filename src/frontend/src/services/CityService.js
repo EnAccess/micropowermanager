@@ -1,7 +1,8 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
 import CityRepository from "@/repositories/CityRepository.js"
-import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
 
 // FIXME: Why is this here? It seems redundant, wrong and circular:
 // Cluster.fromJson() -> Cluster.fetchCities() -> City.fromJson() -> City.fetchCluster() -> Cluster.fromJson()
@@ -65,16 +66,6 @@ export class City {
     cluster.fromJson(data)
     return cluster
   }
-
-  getCities() {
-    return Client.get(resources.city.list)
-      .then((response) => {
-        return response.data.data
-      })
-      .catch((err) => {
-        return err
-      })
-  }
 }
 
 export class CityService {
@@ -87,14 +78,25 @@ export class CityService {
     }
     this.list = []
     this.repository = CityRepository
+    this.paginator = new Paginator(resources.city.list)
   }
 
   async getCities() {
     try {
-      const { data, status, error } = await this.repository.list()
-      if (status !== 200) return new ErrorHandler(error, "http", status)
-      this.cities = data.data
-      this.list = data.data
+      const cities = []
+      let page = 1
+      let lastPage = 1
+
+      do {
+        const { data, status, error } = await this.repository.list({ page })
+        if (status !== 200) return new ErrorHandler(error, "http", status)
+        cities.push(...data.data)
+        lastPage = data.last_page ?? 1
+        page++
+      } while (page <= lastPage)
+
+      this.cities = cities
+      this.list = cities
 
       return this.cities
     } catch (e) {

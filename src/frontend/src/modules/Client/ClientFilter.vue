@@ -76,16 +76,10 @@
 
           <!-- Province / Village -->
           <div class="md-layout-item md-size-100">
-            <md-autocomplete
-              v-model="citySearchTerm"
-              :md-options="cities"
-              @md-selected="onCitySelected"
-            >
-              <label>{{ $tc("phrases.provinceVillage") }}</label>
-              <template slot="md-autocomplete-item" slot-scope="{ item }">
-                {{ item.name }}
-              </template>
-            </md-autocomplete>
+            <city-autocomplete
+              v-model="localFilters.cityId"
+              :label="$tc('phrases.provinceVillage')"
+            />
           </div>
 
           <!-- Latest payment date -->
@@ -162,14 +156,13 @@
 import moment from "moment"
 import { mapGetters } from "vuex"
 
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
+
 export default {
   name: "CustomerFilter",
+  components: { CityAutocomplete },
   props: {
     agents: {
-      type: Array,
-      default: () => [],
-    },
-    cities: {
       type: Array,
       default: () => [],
     },
@@ -193,11 +186,7 @@ export default {
         deviceType: null,
         ...this.value,
       },
-      citySearchTerm: "",
     }
-  },
-  created() {
-    this.citySearchTerm = this.cityName(this.localFilters.cityId)
   },
   computed: {
     ...mapGetters({
@@ -224,27 +213,10 @@ export default {
             ? moment(newVal.registrationTo).toDate()
             : null,
         }
-        this.citySearchTerm = this.cityName(this.localFilters.cityId)
       },
-    },
-    citySearchTerm(newVal) {
-      // The autocomplete's built-in clear button empties this field directly,
-      // which previously mapped to the select's "All" option - mirror that by
-      // clearing the underlying filter too.
-      if (newVal === "") {
-        this.localFilters.cityId = null
-      }
     },
   },
   methods: {
-    cityName(cityId) {
-      const city = this.cities.find((city) => city.id === cityId)
-      return city ? city.name : ""
-    },
-    onCitySelected(city) {
-      this.localFilters.cityId = city.id
-      this.citySearchTerm = city.name
-    },
     normalizeDate(date, endOfDay = false) {
       if (!date) return null
       const m = moment(date)
@@ -294,7 +266,6 @@ export default {
         registrationTo: null,
         deviceType: null,
       }
-      this.citySearchTerm = ""
       const payload = this.buildPayload()
       this.$emit("input", { ...this.localFilters })
       this.$emit("clear", payload)

@@ -207,28 +207,11 @@
                 </div>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-autocomplete
-                  name="city"
-                  md-input-name="city"
-                  md-input-id="city"
-                  v-model="citySearchTerm"
-                  v-validate="'required'"
-                  :class="{
-                    'md-invalid': errors.has('customer-add-form.city'),
-                  }"
-                  :md-options="cityService.list"
-                  @md-selected="onCitySelected"
-                >
-                  <label for="city">
-                    {{ $tc("words.city") }}
-                  </label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                  <span class="md-error">
-                    {{ errors.first("customer-add-form.city") }}
-                  </span>
-                </md-autocomplete>
+                <city-autocomplete
+                  v-model="selectedCityId"
+                  required
+                  :error="errors.first('customer-add-form.city')"
+                />
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
@@ -277,8 +260,8 @@
 import moment from "moment"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
 import { PersonService } from "@/services/PersonService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import Loader from "@/shared/Loader.vue"
 
 export default {
@@ -290,22 +273,17 @@ export default {
       type: Boolean,
     },
   },
-  components: { Loader },
+  components: { CityAutocomplete, Loader },
   data() {
     return {
       personService: new PersonService(),
-      cityService: new CityService(),
       loading: false,
       selectedCityId: null,
-      citySearchTerm: "",
       phone: {
         valid: true,
       },
       firstStepClicked: false,
     }
-  },
-  beforeMount() {
-    this.cityService.getCities()
   },
   methods: {
     async save() {
@@ -354,10 +332,6 @@ export default {
     },
     onPhoneInput(_, phone) {
       this.phone = phone
-    },
-    onCitySelected(city) {
-      this.selectedCityId = city.id
-      this.citySearchTerm = city.name
     },
   },
   watch: {
