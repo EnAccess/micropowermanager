@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Events\TransactionSuccessfulEvent;
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
+use App\Models\AgentBalanceHistory;
+use App\Models\AgentCommission;
 use App\Models\City;
 use App\Models\Device;
 use App\Models\MainSettings;
@@ -766,6 +769,38 @@ class AgentAppTest extends TestCase {
         $this->assertSame($agentTransaction->id, (int) $transaction->original_transaction_id);
 
         Queue::assertPushed(ProcessPayment::class);
+    }
+
+    public function testAgentCashTransactionCreditsBalanceAndCommission(): void {
+        Queue::fake();
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $balanceBefore = (float) $this->agent->balance;
+
+        $this->actingAs($this->agent)->postJson(
+            '/api/app/agents/transactions',
+            ['device_serial' => 'MTR-TX-003', 'amount' => 500],
+            ['device-id' => $this->agent->mobile_device_id],
+        )->assertStatus(200);
+
+        $transaction = Transaction::query()->where('message', 'MTR-TX-003')->firstOrFail();
+        event(new TransactionSuccessfulEvent($transaction));
+
+        // Cash the agent collected moves both ledgers: the balance they owe back and their earnings.
+        $agent = $this->agent->fresh();
+        $this->assertSame($balanceBefore + 500, (float) $agent->balance);
+        $this->assertSame(
+            round(500 * $this->agentCommission->energy_commission, 2),
+            round((float) $agent->commission_revenue, 2),
+        );
+
+        $rows = AgentBalanceHistory::query()->where('transaction_id', $transaction->id)->get()->countBy('trigger_type');
+        $this->assertSame(1, $rows[AgentTransaction::RELATION_NAME] ?? 0);
+        $this->assertSame(1, $rows[AgentCommission::RELATION_NAME] ?? 0);
     }
 
     public function testAgentTransactionRejectedWhenAmountExceedsRiskBalance(): void {

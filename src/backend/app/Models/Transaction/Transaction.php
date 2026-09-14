@@ -2,6 +2,7 @@
 
 namespace App\Models\Transaction;
 
+use App\Models\Agent;
 use App\Models\AppliancePerson;
 use App\Models\Base\BaseModel;
 use App\Models\Device;
@@ -9,6 +10,7 @@ use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -31,12 +33,14 @@ use Illuminate\Support\Facades\DB;
  * @property      int                             $id
  * @property      int                             $original_transaction_id
  * @property      string                          $original_transaction_type
+ * @property      int|null                        $agent_id
  * @property      float                           $amount
  * @property      string|null                     $type
  * @property      string                          $sender
  * @property      string                          $message
  * @property      Carbon|null                     $created_at
  * @property      Carbon|null                     $updated_at
+ * @property-read Agent|null                      $agent
  * @property-read AppliancePerson|null            $appliance
  * @property-read Device|null                     $device
  * @property-read BasePaymentProviderTransaction  $originalTransaction
@@ -64,6 +68,16 @@ class Transaction extends BaseModel {
         $relation = $this->morphTo();
 
         return $relation;
+    }
+
+    /**
+     * The agent who initiated this transaction, when one did. Set for payments an agent pushed
+     * through a payment provider; cash payments express the link through their AgentTransaction.
+     *
+     * @return BelongsTo<Agent, $this>
+     */
+    public function agent(): BelongsTo {
+        return $this->belongsTo(Agent::class);
     }
 
     /**
