@@ -35,6 +35,71 @@ class CityTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->cityIds));
     }
 
+    public function testCityListDefaultsToFifteenPerPage(): void {
+        $this->createTestData();
+        $this->makeCities(20, 'Page');
+
+        $response = $this->actingAs($this->user)->getJson('/api/cities');
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('per_page', 15);
+        $this->assertCount(15, $response->json('data'));
+    }
+
+    public function testCityListHonoursPerPage(): void {
+        $this->createTestData();
+        $this->makeCities(5, 'Page');
+
+        $response = $this->actingAs($this->user)->getJson('/api/cities?per_page=2');
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('per_page', 2);
+        $this->assertCount(2, $response->json('data'));
+    }
+
+    public function testCityListNarrowsByNamePrefix(): void {
+        $this->createTestData();
+        $this->makeCities(2, 'Zomba');
+        $this->makeCities(3, 'Karonga');
+
+        $response = $this->actingAs($this->user)->getJson('/api/cities?term=Zomba');
+
+        $response->assertStatus(200);
+        $this->assertEquals(2, $response->json('total'));
+        foreach ($response->json('data') as $city) {
+            $this->assertStringStartsWith('Zomba', $city['name']);
+        }
+    }
+
+    public function testCityListPagesWithinASearchTerm(): void {
+        $this->createTestData();
+        $expected = $this->makeCities(4, 'Zomba');
+
+        $firstPage = $this->actingAs($this->user)->getJson('/api/cities?term=Zomba&per_page=3');
+        $secondPage = $this->actingAs($this->user)->getJson('/api/cities?term=Zomba&per_page=3&page=2');
+
+        $firstPage->assertStatus(200);
+        $secondPage->assertStatus(200);
+        $this->assertCount(3, $firstPage->json('data'));
+        $this->assertCount(1, $secondPage->json('data'));
+        $collected = array_merge(
+            collect($firstPage->json('data'))->pluck('id')->all(),
+            collect($secondPage->json('data'))->pluck('id')->all()
+        );
+        $this->assertEmpty(array_diff($expected, $collected));
+    }
+
+    public function testCityListCarriesTheClusterNameWithoutItsPolygon(): void {
+        $this->createTestData();
+
+        $response = $this->actingAs($this->user)->getJson('/api/cities');
+
+        $response->assertStatus(200);
+        $cluster = $response->json('data')[0]['mini_grid']['cluster'];
+        // The polygon is only needed by the map, which fetches the cluster itself.
+        $this->assertEquals(['id', 'name'], array_keys($cluster));
+    }
+
     public function testUserGetsCityById(): void {
         $clusterCount = 1;
         $miniGridCount = 1;
@@ -280,6 +345,23 @@ class CityTest extends TestCase {
 
             --$clusterCount;
         }
+    }
+
+    /**
+     * @return array<int, int> the ids of the created cities
+     */
+    private function makeCities(int $count, string $namePrefix): array {
+        $cityIds = [];
+
+        for ($index = 0; $index < $count; ++$index) {
+            $cityIds[] = CityFactory::new()->create([
+                'name' => sprintf('%s %02d', $namePrefix, $index),
+                'country_id' => 1,
+                'mini_grid_id' => $this->miniGridIds[0],
+            ])->id;
+        }
+
+        return $cityIds;
     }
 
     private function makeAddress(Person $owner, int $cityId, int $isPrimary): Address {

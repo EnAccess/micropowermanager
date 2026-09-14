@@ -10,6 +10,7 @@ use App\Http\Resources\LinkedAddressResource;
 use App\Models\Agent;
 use App\Services\CityService;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -20,10 +21,20 @@ class CityController extends Controller {
         private CityService $cityService,
     ) {}
 
+    /**
+     * List cities.
+     *
+     * Villages of the tenant, paginated. `term` narrows the list to villages whose
+     * name starts with it, so a caller never has to hold every village to offer a
+     * village picker.
+     */
+    #[QueryParameter('per_page', description: 'Number of villages per page.', type: 'int', default: 15)]
+    #[QueryParameter('term', description: 'Narrows the list to villages whose name starts with this term.', type: 'string')]
     public function index(Request $request): ApiResource {
-        $limit = $request->input('limit') ?? 15;
+        $perPage = max($request->integer('per_page', 15), 1);
+        $term = trim($request->string('term')->toString());
 
-        return ApiResource::make($this->cityService->getAll($limit));
+        return ApiResource::make($this->cityService->getAll($perPage, term: $term));
     }
 
     /**

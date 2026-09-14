@@ -4,6 +4,8 @@ import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
 import CityRepository from "@/repositories/CityRepository.js"
 import { resources } from "@/resources.js"
 
+const CITIES_PER_PAGE = 30
+
 // FIXME: Why is this here? It seems redundant, wrong and circular:
 // Cluster.fromJson() -> Cluster.fetchCities() -> City.fromJson() -> City.fetchCluster() -> Cluster.fromJson()
 class Cluster {
@@ -70,35 +72,37 @@ export class City {
 
 export class CityService {
   constructor() {
-    this.cities = []
     this.city = {
       id: 0,
       name: "",
       mini_grid_id: 0,
     }
-    this.list = []
     this.repository = CityRepository
     this.paginator = new Paginator(resources.city.list)
   }
 
-  async getCities() {
+  async getCities({ page = 1, term = "" } = {}) {
     try {
-      const cities = []
-      let page = 1
-      let lastPage = 1
+      const { data, status, error } = await this.repository.list({
+        page,
+        per_page: CITIES_PER_PAGE,
+        term,
+      })
+      if (status !== 200) return new ErrorHandler(error, "http", status)
 
-      do {
-        const { data, status, error } = await this.repository.list({ page })
-        if (status !== 200) return new ErrorHandler(error, "http", status)
-        cities.push(...data.data)
-        lastPage = data.last_page ?? 1
-        page++
-      } while (page <= lastPage)
+      return { cities: data.data, lastPage: data.last_page }
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 
-      this.cities = cities
-      this.list = cities
+  async getCity(cityId) {
+    try {
+      const { data, status, error } = await this.repository.get(cityId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
 
-      return this.cities
+      return data.data
     } catch (e) {
       const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")

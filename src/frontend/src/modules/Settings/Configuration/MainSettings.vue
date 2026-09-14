@@ -61,7 +61,7 @@
           >
             <md-option disabled>Select Country</md-option>
             <md-option
-              v-for="(country, index) in countryListService.list"
+              v-for="(country, index) in countries"
               :key="index"
               :value="country.country_name"
             >
@@ -175,8 +175,9 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+
 import { notify } from "@/mixins/notify.js"
-import CountryService from "@/services/CountryService.js"
 import { CurrencyListService } from "@/services/CurrencyListService.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
 import { SmsGatewayService } from "@/services/SmsGatewayService.js"
@@ -191,16 +192,19 @@ export default {
       default: null,
     },
   },
+  computed: {
+    ...mapGetters({
+      countries: "country/getCountries",
+    }),
+  },
   data() {
     return {
       mainSettingsService: new MainSettingsService(),
       currencyListService: new CurrencyListService(),
-      countryListService: new CountryService(),
       usageTypeListService: new UsageTypeListService(),
       smsGatewayService: new SmsGatewayService(),
       currencyList: [],
       languagesList: ["ar", "bu", "en", "fr", "pt"],
-      countryList: [],
       progress: false,
     }
   },
@@ -213,7 +217,7 @@ export default {
     }
 
     this.getCurrencyList()
-    this.getCountryList()
+    this.loadCountries()
     this.getUsageTypeList()
     this.getAvailableSmsGateways()
   },
@@ -228,9 +232,9 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    async getCountryList() {
+    async loadCountries() {
       try {
-        await this.countryListService.getCountries()
+        await this.$store.dispatch("country/setCountries")
       } catch (e) {
         this.alertNotify("error", e.message)
       }

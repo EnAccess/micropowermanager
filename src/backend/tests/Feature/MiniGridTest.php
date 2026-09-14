@@ -30,6 +30,17 @@ class MiniGridTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->miniGridIds));
     }
 
+    public function testMiniGridListCarriesTheClusterNameWithoutItsPolygon(): void {
+        $this->createTestData();
+
+        $response = $this->actingAs($this->user)->getJson('/api/mini-grids');
+
+        $response->assertStatus(200);
+        $cluster = $response->json('data')[0]['cluster'];
+        // The polygon is only needed by the map, which fetches the cluster itself.
+        $this->assertEquals(['id', 'name'], array_keys($cluster));
+    }
+
     public function testUserGetsMiniGridById(): void {
         $clusterCount = 1;
         $miniGridCount = 2;

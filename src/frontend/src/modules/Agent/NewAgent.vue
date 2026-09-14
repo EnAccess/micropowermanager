@@ -284,7 +284,6 @@
 <script>
 import moment from "moment"
 
-import CountryService from "../../services/CountryService.js"
 import RedirectionModal from "../../shared/RedirectionModal.vue"
 
 import { notify } from "@/mixins/notify.js"
@@ -308,14 +307,12 @@ export default {
     return {
       agentService: new AgentService(),
       miniGridService: new MiniGridService(),
-      countryService: new CountryService(),
       agentCommissionService: new AgentCommissionService(),
       agentCommissions: [],
       users: [],
       selectedUser: null,
       selectedMiniGridId: "",
       miniGrids: [],
-      countries: [],
       confirmPassword: null,
       loading: false,
       redirectionUrl: "/locations/add-mini-grid",
@@ -330,7 +327,6 @@ export default {
 
   mounted() {
     this.getMiniGrids()
-    this.getCountries()
     this.getAgentCommissions()
   },
   methods: {
@@ -340,13 +336,6 @@ export default {
         if (this.miniGrids.length < 0) {
           this.redirectDialogActive = true
         }
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
-    async getCountries() {
-      try {
-        this.countries = await this.countryService.getCountries()
       } catch (e) {
         this.alertNotify("error", e.message)
       }
