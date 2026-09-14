@@ -3,12 +3,10 @@
 namespace App\Services;
 
 use App\Exceptions\NoActiveSmsProviderException;
-use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
 use App\Exceptions\SmsTypeNotFoundException;
 use App\Jobs\SmsProcessor;
 use App\Models\Sms;
-use App\Models\SmsAndroidSetting;
 use App\Sms\Senders\ManualSms;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
@@ -64,23 +62,16 @@ class SmsService {
      */
     public function sendSms(array|object $data, int $smsType, string $smsConfigs): void {
         $uuid = Str::uuid()->toString();
-        $gatewayId = null;
 
         try {
-            $smsAndroidSettings = SmsAndroidSetting::getResponsible();
-            $sender = $this->getSender($data, $smsType, $smsConfigs, $smsAndroidSettings);
+            $sender = $this->getSender($data, $smsType, $smsConfigs);
             $receiver = $sender->getReceiver();
             $sender->validateReferences();
 
-            if ($smsAndroidSettings instanceof SmsAndroidSetting) {
-                $gatewayId = $smsAndroidSettings->id;
-                $sender->setCallback($smsAndroidSettings->callback, $uuid);
-            }
-            $this->associateSmsWithForSmsType($sender, $uuid, $receiver, $gatewayId);
+            $this->associateSmsWithForSmsType($sender, $uuid, $receiver);
             dispatch(new SmsProcessor($sender));
         } catch (
             SmsTypeNotFoundException|
-            SmsAndroidSettingNotExistingException|
             SmsBodyParserNotExtendedException|
             NoActiveSmsProviderException $exception) {
                 Log::error('Sms send failed.', ['message : ' => $exception->getMessage()]);
@@ -93,7 +84,7 @@ class SmsService {
      * @param array<string, mixed>|object $data
      * @param class-string                $smsConfigs
      */
-    private function getSender(array|object $data, int $smsType, string $smsConfigs, ?SmsAndroidSetting $smsAndroidSettings): SmsSender {
+    private function getSender(array|object $data, int $smsType, string $smsConfigs): SmsSender {
         $configs = resolve($smsConfigs);
 
         if (!array_key_exists($smsType, $configs->smsTypes)) {
@@ -111,17 +102,15 @@ class SmsService {
             $data,
             $smsBodyService,
             $configs->bodyParsersPath,
-            $smsAndroidSettings,
         ]);
     }
 
-    private function associateSmsWithForSmsType(SmsSender $sender, string $uuid, string $receiver, ?int $gatewayId): void {
+    private function associateSmsWithForSmsType(SmsSender $sender, string $uuid, string $receiver): void {
         if (!$sender instanceof ManualSms) {
             $attrs = [
                 'uuid' => $uuid,
                 'body' => $sender->body,
                 'receiver' => $receiver,
-                'gateway_id' => $gatewayId,
                 'status' => Sms::STATUS_STORED,
                 'direction' => Sms::DIRECTION_OUTGOING,
             ];
@@ -139,7 +128,6 @@ class SmsService {
             if ($lastSentManualSms) {
                 $lastSentManualSms->update([
                     'uuid' => $uuid,
-                    'gateway_id' => $gatewayId,
                 ]);
             }
         }

@@ -17,9 +17,8 @@ abstract class SmsSender {
     protected ?array $references = null;
     public string $body = '';
     protected ?string $receiver = null;
-    protected ?string $callback = null;
 
-    public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath, private mixed $smsAndroidSettings) {}
+    public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath) {}
 
     public function sendSms(): void {
         $gatewayResolver = app()->make(SmsGatewayResolverService::class);
@@ -39,16 +38,12 @@ abstract class SmsSender {
             'body' => $this->body,
             'receiver' => $this->receiver,
             'viberId' => $viberId,
-            'callback' => $this->callback,
-            'smsAndroidSettings' => $this->smsAndroidSettings,
         ]);
 
         $resolved['gateway']->sendSms(...$resolved['args']);
 
-        if ($gateway !== SmsGatewayResolverService::DEFAULT_GATEWAY) {
-            $lastRecordedSMS->gateway_id = $resolved['gatewayId'];
-            $lastRecordedSMS->save();
-        }
+        $lastRecordedSMS->gateway_id = $resolved['gatewayId'];
+        $lastRecordedSMS->save();
     }
 
     public function prepareHeader(): void {
@@ -138,10 +133,6 @@ abstract class SmsSender {
         }
 
         return $this->receiver;
-    }
-
-    public function setCallback(string $callback, string $uuid): void {
-        $this->callback = sprintf($callback, $uuid);
     }
 
     /**
