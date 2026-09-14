@@ -11,9 +11,7 @@ use Illuminate\Support\Carbon;
  * @property      int               $agent_receipt_id
  * @property      float             $due
  * @property      float             $since_last_visit
- * @property      float             $earlier
- * @property      float             $collected
- * @property      float             $summary
+ * @property      float             $commission_credited
  * @property      Carbon|null       $created_at
  * @property      Carbon|null       $updated_at
  * @property-read AgentReceipt|null $receipt

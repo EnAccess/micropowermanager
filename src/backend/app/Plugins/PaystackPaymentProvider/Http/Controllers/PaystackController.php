@@ -52,22 +52,24 @@ class PaystackController extends Controller {
      * @return JsonResponse
      */
     public function webhookCallback(Request $request, int $companyId) {
-        try {
-            // Verify webhook signature
-            if (!$this->webhookService->verifyWebhook($request)) {
-                return response()->json(['error' => 'Invalid webhook signature'], 401);
-            }            // Process the webhook
-            $this->webhookService->processWebhook($request, $companyId);
-        } catch (\Exception $e) {
-            Log::info('PaystackWebhookService: Failed to verify webhook', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return response()->json(['error' => $e->getMessage()], 500);
+        if (!$this->webhookService->verifyWebhook($request)) {
+            return response()->json(['error' => 'Invalid webhook signature'], 401);
         }
 
-        return response()->json(['status' => 'success']);
+        try {
+            $processed = $this->webhookService->processWebhook($request, $companyId);
+        } catch (\Exception $e) {
+            Log::error('PaystackController: Failed to handle webhook', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'company_id' => $companyId,
+            ]);
+
+            // Paystack retries on a non-2xx, which is what we want for a transient failure.
+            return response()->json(['error' => 'Failed to process webhook'], 500);
+        }
+
+        return response()->json(['status' => $processed ? 'success' : 'ignored']);
     }
 
     /**

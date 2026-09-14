@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Plugins\PaystackPaymentProvider\Services;
 
 use App\Enums\DeviceType;
-use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
@@ -115,21 +114,39 @@ class PaystackTransactionService extends AbstractPaymentAggregatorTransactionSer
         }
     }
 
-    public function processSuccessfulPayment(int $companyId, PaystackTransaction $transaction): void {
-        $id = $transaction->transaction->id;
-        dispatch(new ProcessPayment($companyId, $id));
-        $transaction->status = PaystackTransaction::STATUS_SUCCESS;
-        $transaction->save();
-    }
+    /**
+     * The webhook signature proves the payload came from Paystack; this proves it describes the
+     * payment we actually initiated. A charge that cannot be verified records a conflict for an
+     * operator to pick up.
+     *
+     * @param array<string, mixed> $chargeData the `data` object of a charge.* webhook event
+     */
+    public function verifyCharge(PaystackTransaction $transaction, array $chargeData): bool {
+        $mismatch = $this->paymentMismatch(
+            'Paystack',
+            [
+                'amount' => (float) $transaction->amount,
+                'currency' => $transaction->currency,
+                'reference' => $transaction->paystack_reference,
+            ],
+            [
+                // Paystack reports minor units (kobo); InitializeTransactionResource sends
+                // the major-unit amount multiplied by 100.
+                'amount' => ((float) ($chargeData['amount'] ?? 0)) / 100,
+                'currency' => isset($chargeData['currency']) ? (string) $chargeData['currency'] : null,
+                'reference' => isset($chargeData['reference']) ? (string) $chargeData['reference'] : null,
+            ],
+        );
 
-    public function processFailedPayment(PaystackTransaction $transaction): void {
-        $transaction->status = PaystackTransaction::STATUS_FAILED;
-        $transaction->save();
-
-        $relatedTransaction = $transaction->transaction;
-        if ($relatedTransaction) {
-            $relatedTransaction->update(['status' => PaystackTransaction::STATUS_FAILED]);
+        if ($mismatch === null) {
+            return true;
         }
+
+        $this->recordPaymentConflict($transaction, $mismatch, [
+            'paystack_reference' => $transaction->paystack_reference,
+        ]);
+
+        return false;
     }
 
     /**

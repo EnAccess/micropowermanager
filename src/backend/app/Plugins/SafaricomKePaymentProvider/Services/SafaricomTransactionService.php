@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Plugins\SafaricomKePaymentProvider\Services;
 
 use App\Enums\DeviceType;
-use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
@@ -30,6 +29,9 @@ use Ramsey\Uuid\Uuid;
  * @implements IBaseService<SafaricomTransaction>
  */
 class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService, PaymentInitiator {
+    private const int RESULT_SUCCESS = 0;
+    private const int RESULT_USER_CANCELLED = 1032;
+
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -131,18 +133,6 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
 
     public function getSerialId(): ?string {
         return $this->meterSerialNumber;
-    }
-
-    public function processSuccessfulPayment(int $companyId, SafaricomTransaction $transaction): void {
-        $id = $transaction->transaction->id;
-        dispatch(new ProcessPayment($companyId, $id));
-        $transaction->status = SafaricomTransaction::STATUS_SUCCESS;
-        $transaction->save();
-    }
-
-    public function processFailedPayment(SafaricomTransaction $transaction): void {
-        $transaction->status = SafaricomTransaction::STATUS_FAILED;
-        $transaction->save();
     }
 
     /**
@@ -263,6 +253,14 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
      * @param array<string, mixed> $payload
      */
     public function applyResultCode(SafaricomTransaction $transaction, int $resultCode, array $payload, int $companyId): void {
+        // The callback and the query poll both land here, and Daraja redelivers callbacks, so
+        // a transaction that already reached a terminal state is left alone.
+        if ($this->isResolved($transaction)) {
+            return;
+        }
+
+        // Left unsaved so a settlement folds them into the write it makes under the row lock.
+        // The mismatch path below settles nothing, so it persists them itself.
         if (!empty($payload['mpesa_receipt'])) {
             $transaction->mpesa_receipt_number = (string) $payload['mpesa_receipt'];
             $transaction->external_transaction_id = (string) $payload['mpesa_receipt'];
@@ -275,20 +273,70 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
             $payload,
             ['final_result_code' => $resultCode],
         );
-        $transaction->save();
 
-        // 1032 = user cancelled is conceptually "abandoned", not a hard
-        // failure. Everything else non-zero is a failure.
-        match (true) {
-            $resultCode === 0 => $this->processSuccessfulPayment($companyId, $transaction),
-            $resultCode === 1032 => $this->markAbandoned($transaction),
-            default => $this->processFailedPayment($transaction),
-        };
+        if ($resultCode === self::RESULT_SUCCESS) {
+            $mismatch = $this->paidAmountMismatch($transaction, $payload);
+            if ($mismatch !== null) {
+                $transaction->save();
+                $this->recordPaymentConflict($transaction, $mismatch, [
+                    'checkout_request_id' => $transaction->checkout_request_id,
+                ]);
+
+                return;
+            }
+
+            $this->processSuccessfulPayment($companyId, $transaction);
+
+            return;
+        }
+
+        // A user cancelling is conceptually "abandoned", not a hard failure.
+        // Everything else non-zero is a failure.
+        $this->processFailedPayment(
+            $transaction,
+            $resultCode === self::RESULT_USER_CANCELLED
+                ? SafaricomTransaction::STATUS_ABANDONED
+                : SafaricomTransaction::STATUS_FAILED,
+        );
     }
 
-    private function markAbandoned(SafaricomTransaction $transaction): void {
-        $transaction->status = SafaricomTransaction::STATUS_ABANDONED;
-        $transaction->save();
+    /**
+     * Whether Daraja has already given us a final answer for this transaction.
+     */
+    private function isResolved(SafaricomTransaction $transaction): bool {
+        if (in_array($transaction->status, [
+            SafaricomTransaction::STATUS_SUCCESS,
+            SafaricomTransaction::STATUS_COMPLETED,
+            SafaricomTransaction::STATUS_FAILED,
+            SafaricomTransaction::STATUS_ABANDONED,
+        ], true)) {
+            return true;
+        }
+
+        // A conflict is terminal too. The status stays as it was because an unverifiable payment
+        // is not a failed one, so without this the STK page would poll a mismatch to its attempt
+        // cap and report a timeout instead of an outcome.
+        return $transaction->conflicts()->exists();
+    }
+
+    /**
+     * Daraja reports neither currency nor a merchant reference on the STK callback — the
+     * transaction is located by CheckoutRequestID — so the paid amount is the only field
+     * left to cross-check. It arrives as whole shillings because sendStkPush pushes
+     * `(int) round($amount)`.
+     *
+     * @param array<string, mixed> $payload
+     */
+    private function paidAmountMismatch(SafaricomTransaction $transaction, array $payload): ?string {
+        if (!isset($payload['amount']) || !is_numeric($payload['amount'])) {
+            return null;
+        }
+
+        return $this->paymentMismatch(
+            'M-PESA',
+            ['amount' => round((float) $transaction->amount)],
+            ['amount' => (float) $payload['amount']],
+        );
     }
 
     /**
@@ -320,12 +368,7 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
         // If we already concluded the transaction (via webhook or a previous
         // query), short-circuit — Daraja's query will eventually return
         // "transaction not found" once it ages out.
-        if (in_array($transaction->status, [
-            SafaricomTransaction::STATUS_SUCCESS,
-            SafaricomTransaction::STATUS_COMPLETED,
-            SafaricomTransaction::STATUS_FAILED,
-            SafaricomTransaction::STATUS_ABANDONED,
-        ], true)) {
+        if ($this->isResolved($transaction)) {
             return $this->statusSnapshot($transaction);
         }
 
@@ -413,18 +456,12 @@ class SafaricomTransactionService extends AbstractPaymentAggregatorTransactionSe
      */
     private function statusSnapshot(SafaricomTransaction $transaction, ?int $resultCode = null, ?string $error = null): array {
         $status = $transaction->status;
-        $resolved = in_array($status, [
-            SafaricomTransaction::STATUS_SUCCESS,
-            SafaricomTransaction::STATUS_COMPLETED,
-            SafaricomTransaction::STATUS_FAILED,
-            SafaricomTransaction::STATUS_ABANDONED,
-        ], true);
         $responseData = $transaction->response_data ?? [];
         $resolvedResultCode = $resultCode
             ?? (isset($responseData['final_result_code']) ? (int) $responseData['final_result_code'] : null);
 
         return [
-            'resolved' => $resolved,
+            'resolved' => $this->isResolved($transaction),
             'result_code' => $resolvedResultCode,
             'result_desc' => $responseData['result_desc'] ?? null,
             'transaction_status' => $status,

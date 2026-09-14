@@ -28,6 +28,7 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\DeviceImportController;
 use App\Http\Controllers\EBikeController;
+use App\Http\Controllers\ExternalTransactionController;
 use App\Http\Controllers\ImportStatusController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
@@ -156,8 +157,13 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'auth:api'], function ()
 
     Route::group(['prefix' => 'payment'], static function () {
         Route::get('/providers', [AppliancePaymentController::class, 'paymentProviders'])->middleware('permission:payments');
-        Route::post('/{appliance_person}', [AppliancePaymentController::class, 'store'])->middleware('permission:payments');
+        Route::post('/{appliance_person}', [AppliancePaymentController::class, 'store'])->where('appliance_person', '[0-9]+')->middleware('permission:payments');
         Route::get('/status/{transaction}', [AppliancePaymentController::class, 'checkStatus'])->where('transaction', '[0-9]+')->middleware('permission:payments');
+        // External parties authenticate via an API key, not the group's auth:api (JWT) guard.
+        Route::post('/third-party', [ExternalTransactionController::class, 'store'])
+            ->withoutMiddleware('auth:api')->middleware('auth:api-key');
+        Route::post('/third-party/devices', [ExternalTransactionController::class, 'devices'])
+            ->withoutMiddleware('auth:api')->middleware('auth:api-key');
     });
 });
 // Clusters
@@ -258,11 +264,12 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth:api'], static function
 
     Route::get('/{personId}/documents', [PersonDocumentController::class, 'index'])->middleware('permission:customers');
     Route::post('/{personId}/documents', [PersonDocumentController::class, 'store'])->middleware('permission:customers');
+
+    Route::put('/{person}/onboarding', [PersonController::class, 'updateOnboarding'])->middleware('permission:customers');
 });
 
 Route::group(['prefix' => 'person-documents', 'middleware' => 'auth:api'], static function () {
     Route::get('/{personDocument}/download', [PersonDocumentController::class, 'show'])->middleware('permission:customers');
-    Route::patch('/{personDocument}', [PersonDocumentController::class, 'update'])->middleware('permission:customers');
     Route::delete('/{personDocument}', [PersonDocumentController::class, 'destroy'])->middleware('permission:customers');
 });
 // Map Settings
@@ -400,6 +407,8 @@ Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static functio
     Route::put('/{device}', [DeviceController::class, 'update']);
     Route::get('/', [DeviceController::class, 'index']);
     Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
+    Route::get('/{device}/capabilities', [DeviceController::class, 'capabilities'])->middleware('permission:transactions');
+    Route::post('/{device}/token', [DeviceController::class, 'generateToken'])->middleware('permission:transactions');
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
 Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'auth:api'], static function () {

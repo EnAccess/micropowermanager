@@ -20,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Collection<int, TransactionConflicts> $conflicts
  */
 abstract class BasePaymentProviderTransaction extends BaseModel {
+    public const int STATUS_SUCCESS = 1;
+    public const int STATUS_FAILED = -1;
+
     /**
      * Get the base transaction relationship.
      *

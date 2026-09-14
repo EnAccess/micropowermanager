@@ -20,10 +20,9 @@ class ConnectionTypeController extends Controller {
      * List connection types (customer registration app).
      *
      * Alias of `GET /api/connection-types` for the customer registration app.
-     *
-     * @deprecated use `GET /api/connection-types` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/connection-types` instead')]
     public function indexForCustomerRegistrationApp(Request $request): ApiResource {
         return ApiResource::make($this->connectionTypeService->getAll($request->input('limit')));
     }

@@ -65,3 +65,41 @@ export const geoJsonToLatLon = (geo) => {
 // Delegates to Leaflet, which emits RFC 7946 [longitude, latitude] coordinates.
 export const latLonToGeoJsonPoint = (lat, lon) =>
   L.marker([Number(lat), Number(lon)]).toGeoJSON()
+
+const BOUNDS = {
+  lat: [-90, 90],
+  lon: [-180, 180],
+}
+
+export const isValidCoordinate = (value, type) => {
+  if (value === null || value === undefined) return false
+  const number = Number(value)
+  if (!Number.isFinite(number)) return false
+  const bounds = BOUNDS[type]
+  if (!bounds) return true
+  return number >= bounds[0] && number <= bounds[1]
+}
+
+export const formatCoordinate = (value, type) => {
+  if (!isValidCoordinate(value, type)) return null
+  return Number(Number(value).toFixed(5))
+}
+
+export const parseGeoLocation = (geo) => {
+  const location = geoJsonToLatLon(geo)
+  if (!location) return null
+  const lat = formatCoordinate(location.lat, "lat")
+  const lon = formatCoordinate(location.lon, "lon")
+  if (lat === null || lon === null) return null
+  return [lat, lon]
+}
+
+export const hasCoordinates = (location) =>
+  Boolean(
+    location &&
+      isValidCoordinate(location.lat, "lat") &&
+      isValidCoordinate(location.lon, "lon"),
+  )
+
+export const locationToPoints = (location) =>
+  hasCoordinates(location) ? `${location.lat},${location.lon}` : null

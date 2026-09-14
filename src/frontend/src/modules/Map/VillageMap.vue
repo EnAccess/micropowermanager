@@ -49,6 +49,7 @@ export default {
   methods: {
     drawCluster() {
       this.editableLayer.clearLayers()
+      this.geoDataItems.splice(0)
       const geoData = this.mappingService.geoData
 
       // Handle both single feature and array of features
@@ -127,33 +128,35 @@ export default {
           miniGridMarker.addTo(this.map)
         })
     },
-    setVillageMarkerManually(location) {
-      const editableLayers = this.editableLayer.getLayers()
-      const polygon = editableLayers.find(
-        (layer) => layer.feature && layer.feature.geometry.type === "Polygon",
-      )
-      const bounds = polygon.getBounds()
+    isWithinCluster(location) {
+      const polygon = this.editableLayer
+        .getLayers()
+        .find(
+          (layer) => layer.feature && layer.feature.geometry.type === "Polygon",
+        )
 
-      if (!bounds.contains(location)) {
-        const errorMessage =
-          "Please position your village within the selected cluster boundaries."
+      return polygon ? polygon.getBounds().contains(location) : false
+    },
+    setVillageMarkerManually(location) {
+      if (!this.isWithinCluster(location)) {
         this.$emit("locationSet", {
-          error: errorMessage,
+          error: this.$tc("phrases.positionVillageInCluster"),
           geoDataItem: undefined,
         })
-      } else {
-        this.removeExistingMarkers()
-
-        const villageMarkerIcon = L.icon({
-          ...ICON_OPTIONS,
-          iconUrl: ICONS.VILLAGE,
-        })
-
-        const villageMarker = L.marker(location, {
-          icon: villageMarkerIcon,
-        })
-        villageMarker.addTo(this.editableLayer)
+        return
       }
+
+      this.removeExistingMarkers()
+
+      const villageMarkerIcon = L.icon({
+        ...ICON_OPTIONS,
+        iconUrl: ICONS.VILLAGE,
+      })
+
+      const villageMarker = L.marker(location, {
+        icon: villageMarkerIcon,
+      })
+      villageMarker.addTo(this.editableLayer)
     },
   },
 }

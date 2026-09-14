@@ -12,12 +12,14 @@ use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
 use App\Services\PaymentInitiationService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
+#[Group('Appliance / Payment')]
 class AppliancePaymentController extends Controller {
     public function __construct(
         private AppliancePaymentService $appliancePaymentService,

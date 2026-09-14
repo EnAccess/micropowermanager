@@ -52,6 +52,7 @@ class Transaction extends BaseModel {
     public const TYPE_DOWN_PAYMENT = 'down_payment';
     public const TYPE_UNKNOWN = 'unknown';
     public const TYPE_IMPORTED = 'imported';
+    public const TYPE_AD_HOC = 'ad_hoc';
 
     /**
      * Get the payment provider-specific transaction linked to this system transaction.

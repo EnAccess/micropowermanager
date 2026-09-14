@@ -29,8 +29,6 @@ use Illuminate\Support\Carbon;
 class WaveComTransaction extends BasePaymentProviderTransaction {
     protected $table = 'wavecom_transactions';
     public const RELATION_NAME = 'wavecom_transaction';
-    public const STATUS_SUCCESS = 1;
-    public const STATUS_CANCELLED = -1;
 
     public function getManufacturerTransferType(): ?string {
         // TODO add type API/IMPORT

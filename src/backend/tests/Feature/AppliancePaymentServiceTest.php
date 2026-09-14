@@ -109,9 +109,18 @@ class AppliancePaymentServiceTest extends TestCase {
         $this->assertSame(30.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
     }
 
-    public function testDayDifferenceFallsBackToDefaultForShortSchedules(): void {
+    public function testDayDifferenceReadsTheScheduleGapOfATwoRatePlan(): void {
         $this->createTestData();
         $appliancePerson = $this->seedPlan([[385, 385], [385, 385]], ['2026-09-01', '2026-09-08']);
+
+        $service = resolve(AppliancePaymentService::class);
+
+        $this->assertSame(7.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+    }
+
+    public function testDayDifferenceFallsBackToDefaultWhenTheScheduleHasNoSecondRate(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedPlan([[500, 500]], ['2026-09-01']);
 
         $service = resolve(AppliancePaymentService::class);
 
@@ -119,6 +128,47 @@ class AppliancePaymentServiceTest extends TestCase {
             (float) AppliancePaymentService::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS,
             $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates),
         );
+    }
+
+    /**
+     * A reschedule replaces only the outstanding rates, so the settled ones keep the
+     * spacing the plan was sold on. The token day math must follow the rates the customer
+     * is paying now, not the ones they already paid off.
+     */
+    public function testDayDifferenceFollowsAWeeklyTailBehindASettledMonthlyHead(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedPlan(
+            [[400, 0], [400, 0], [400, 0], [300, 300], [300, 300]],
+            ['2026-05-01', '2026-06-01', '2026-07-01', '2026-07-08', '2026-07-15'],
+        );
+
+        $service = resolve(AppliancePaymentService::class);
+
+        $this->assertSame(7.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+    }
+
+    public function testDayDifferenceFollowsAMonthlyTailBehindASettledWeeklyHead(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedPlan(
+            [[200, 0], [200, 0], [200, 0], [600, 600], [600, 600]],
+            ['2026-05-01', '2026-05-08', '2026-05-15', '2026-06-15', '2026-07-15'],
+        );
+
+        $service = resolve(AppliancePaymentService::class);
+
+        $this->assertSame(30.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+    }
+
+    public function testDayDifferenceReadsBackwardsWhenTheLastInstallmentIsTheOutstandingOne(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedPlan(
+            [[300, 0], [300, 0], [300, 0], [300, 300]],
+            ['2026-07-01', '2026-08-01', '2026-09-01', '2026-09-08'],
+        );
+
+        $service = resolve(AppliancePaymentService::class);
+
+        $this->assertSame(7.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
     }
 
     /**

@@ -160,15 +160,8 @@ export default {
     currentOutstandingCount() {
       return this.unpaidRates.length
     },
-    inferredSchedule() {
-      const dates = this.rates
-        .map((rate) => this.dueDateOf(rate))
-        .filter(Boolean)
-        .map((date) => new Date(date))
-        .sort((a, b) => a - b)
-      if (dates.length < 2) return "monthly"
-      const gapInDays = (dates[1] - dates[0]) / (1000 * 60 * 60 * 24)
-      return gapInDays <= 10 ? "weekly" : "monthly"
+    currentRateType() {
+      return this.soldAppliance.rateType || "monthly"
     },
     anchorDate() {
       const settledDates = this.rates
@@ -189,7 +182,7 @@ export default {
       return parseInt(this.rateCount) !== this.currentOutstandingCount
     },
     scheduleChanged() {
-      return this.rateType !== this.inferredSchedule
+      return this.rateType !== this.currentRateType
     },
     willRegenerate() {
       return this.countChanged || this.scheduleChanged
@@ -249,7 +242,7 @@ export default {
     initFromAppliance() {
       this.newTotalCost = this.soldAppliance.totalCost
       this.rateCount = this.currentOutstandingCount
-      this.rateType = this.inferredSchedule
+      this.rateType = this.currentRateType
       this.showRates = false
     },
     onActiveChange(value) {

@@ -295,13 +295,23 @@ export default {
       }).then(async (value) => {
         if (value.value === true)
           try {
-            await this.smsService.sendBulk(
+            const summary = await this.smsService.sendBulk(
               this.tab,
               this.message,
               this.senderId,
               this.miniGrid,
             )
-            this.alertNotify("success", this.$tc("phrases.bulksms", 2))
+            if (summary && summary.failed > 0) {
+              this.alertNotify(
+                "warn",
+                this.$tc("phrases.bulkSmsPartiallyFailed", 1, {
+                  failed: summary.failed,
+                  total: summary.failed + summary.queued,
+                }),
+              )
+            } else {
+              this.alertNotify("success", this.$tc("phrases.bulkSms", 2))
+            }
           } catch (exception) {
             this.alertNotify(
               "error",

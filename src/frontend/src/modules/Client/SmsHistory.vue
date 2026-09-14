@@ -47,6 +47,12 @@
                     <small>
                       {{ formatDate(sms.created_at) }} -
                       {{ getTimeAgo(sms.created_at) }}
+                      <sms-delivery-status
+                        class="sms-status"
+                        v-if="sms.direction !== 0"
+                        :status="sms.status"
+                        :error-message="sms.error_message"
+                      />
                     </small>
                   </span>
                 </div>
@@ -93,12 +99,13 @@ import { mapGetters } from "vuex"
 import { notify } from "@/mixins/notify.js"
 import { SmsService } from "@/services/SmsService.js"
 import { EventBus } from "@/shared/eventbus.js"
+import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SmsHistory",
   mixins: [notify],
-  components: { Widget },
+  components: { SmsDeliveryStatus, Widget },
   props: {
     personId: {
       type: String,
@@ -223,6 +230,34 @@ export default {
   display: inline-block;
   vertical-align: top;
   border: 1px solid rgba(#000, 0.12);
+}
+
+// Vue Material stretches every node inside `.md-list-item-text` to full width and
+// clips the overflow. The delivery status is an inline-flex box, so it inherits the
+// full width, lands past the end of the timestamp line and gets clipped from view.
+::v-deep .md-list-item-text {
+  overflow: visible;
+
+  small {
+    white-space: normal;
+  }
+
+  .sms-status {
+    width: auto;
+    overflow: visible;
+
+    * {
+      overflow: visible;
+      text-overflow: clip;
+    }
+
+    // A full-width label cannot share a flex line with the icon, so it wraps
+    // underneath instead of sitting beside it.
+    button,
+    span {
+      width: auto;
+    }
+  }
 }
 
 .incomming {

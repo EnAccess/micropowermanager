@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "5464c97b2005d8c25caff2bf0fb00b2e",
+  "content-hash": "ed3aa341fcc2c046040d755377f2f1de",
   "packages": [
     {
       "name": "africastalking/africastalking",
@@ -614,16 +614,16 @@
     },
     {
       "name": "dedoc/scramble",
-      "version": "v0.13.26",
+      "version": "v0.13.39",
       "source": {
         "type": "git",
         "url": "https://github.com/dedoc/scramble.git",
-        "reference": "5ca42b5e23b9d5c120607138f790b51e22d8b4a1"
+        "reference": "7fcc4758d62f22d326637a578168bd5eb67a8625"
       },
       "dist": {
         "type": "zip",
-        "url": "https://api.github.com/repos/dedoc/scramble/zipball/5ca42b5e23b9d5c120607138f790b51e22d8b4a1",
-        "reference": "5ca42b5e23b9d5c120607138f790b51e22d8b4a1",
+        "url": "https://api.github.com/repos/dedoc/scramble/zipball/7fcc4758d62f22d326637a578168bd5eb67a8625",
+        "reference": "7fcc4758d62f22d326637a578168bd5eb67a8625",
         "shasum": ""
       },
       "require": {
@@ -637,6 +637,7 @@
       "require-dev": {
         "larastan/larastan": "^3.3",
         "laravel/pint": "^v1.1.0",
+        "laravel/scout": "^10.0|^11.0",
         "nunomaduro/collision": "^7.0|^8.0",
         "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
         "pestphp/pest": "^2.34|^3.7|^4.4",
@@ -682,7 +683,7 @@
       ],
       "support": {
         "issues": "https://github.com/dedoc/scramble/issues",
-        "source": "https://github.com/dedoc/scramble/tree/v0.13.26"
+        "source": "https://github.com/dedoc/scramble/tree/v0.13.39"
       },
       "funding": [
         {
@@ -690,7 +691,7 @@
           "type": "github"
         }
       ],
-      "time": "2026-06-02T14:43:17+00:00"
+      "time": "2026-08-06T06:42:48+00:00"
     },
     {
       "name": "dflydev/dot-access-data",

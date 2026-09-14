@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\MailNotSentException;
+use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
 use App\Models\Agent;
 use App\Models\AppliancePerson;
@@ -12,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @implements IBaseService<Agent>
@@ -29,30 +32,44 @@ class AgentService implements IBaseService {
     public function __construct(
         private Agent $agent,
         private PersonService $personService,
+        private MailHelper $mailHelper,
     ) {}
 
     protected function crudModel(): Agent {
         return $this->agent;
     }
 
-    public function resetPassword(string $email): string {
+    /**
+     * Silently no-ops for an unknown email so callers can't use response
+     * differences to enumerate agent emails. The new password is mailed to the
+     * agent's own address rather than returned, so knowing an email alone can't
+     * be used to take over the account.
+     */
+    public function resetPassword(string $email): void {
+        try {
+            $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();
+        } catch (ModelNotFoundException) {
+            return;
+        }
+
         try {
             $newPassword = PasswordGenerator::generatePassword();
         } catch (Exception) {
             $newPassword = (string) time();
         }
 
-        try {
-            $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();
-        } catch (ModelNotFoundException) {
-            return 'Invalid email.';
-        }
-
         $agent->password = $newPassword;
         $agent->update();
-        $agent->fresh();
 
-        return $newPassword;
+        try {
+            $this->mailHelper->sendPlain(
+                $agent->email,
+                'Your MicroPowerManager password has been reset',
+                "Your new password is: {$newPassword}"
+            );
+        } catch (MailNotSentException $exception) {
+            Log::error('Failed to send agent password reset email: '.$exception->getMessage());
+        }
     }
 
     public function changePassword(Agent $agent, #[\SensitiveParameter] string $password): Agent {

@@ -51,6 +51,9 @@ Route::group(['prefix' => 'app'], function () {
             Route::get('/{customerId}', [AgentCustomerController::class, 'show'])
                 ->where('customerId', '[0-9]+');
 
+            Route::put('/{customerId}/onboarding', [AgentCustomerController::class, 'updateOnboarding'])
+                ->where('customerId', '[0-9]+');
+
             Route::get('/{customerId}/documents', [AgentCustomerDocumentController::class, 'index'])
                 ->where('customerId', '[0-9]+');
             Route::post('/{customerId}/documents', [AgentCustomerDocumentController::class, 'store'])

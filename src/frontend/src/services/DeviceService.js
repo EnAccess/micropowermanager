@@ -63,4 +63,41 @@ export class DeviceService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+
+  async getCapabilities(deviceId) {
+    try {
+      const { data, status, error } =
+        await this.repository.capabilities(deviceId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return convertObjectKeysToCamelCase(data.data)
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async generateToken(deviceId, amount, unit) {
+    return this.postTokenRequest(deviceId, { type: "credit", amount, unit })
+  }
+
+  async generateControlToken(deviceId, type) {
+    return this.postTokenRequest(deviceId, { type })
+  }
+
+  async postTokenRequest(deviceId, params) {
+    try {
+      const { data, status, error } = await this.repository.generateToken(
+        deviceId,
+        params,
+      )
+      if (status !== 200 && status !== 201)
+        return new ErrorHandler(error, "http", status)
+
+      return convertObjectKeysToCamelCase(data.data)
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 }

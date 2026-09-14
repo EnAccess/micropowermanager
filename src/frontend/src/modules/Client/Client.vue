@@ -4,6 +4,12 @@
       <div class="md-layout-item md-size-55 md-small-size-100">
         <client-personal-data :person="person" v-if="isLoaded" />
         <addresses :person-id="person.id" v-if="person !== null" />
+        <customer-onboarding
+          :person-id="person.id"
+          :initial-answers="person.onboardingJson"
+          v-if="person !== null"
+          @updated="onboardingUpdated"
+        />
         <customer-documents :person-id="person.id" v-if="person !== null" />
         <sms-history :person-id="personId" person-name="System" />
       </div>
@@ -54,6 +60,7 @@ import { timing } from "@/mixins/timing.js"
 import Addresses from "@/modules/Client/Addresses.vue"
 import ClientPersonalData from "@/modules/Client/ClientPersonalData.vue"
 import CustomerDocuments from "@/modules/Client/CustomerDocuments.vue"
+import CustomerOnboarding from "@/modules/Client/CustomerOnboarding.vue"
 import DeferredPayments from "@/modules/Client/DeferredPayments.vue"
 import Devices from "@/modules/Client/Devices.vue"
 import PaymentDetail from "@/modules/Client/PaymentDetail.vue"
@@ -75,6 +82,7 @@ export default {
     DeferredPayments,
     ClientPersonalData,
     CustomerDocuments,
+    CustomerOnboarding,
     SmsHistory,
     PaymentFlow,
     Transactions,
@@ -127,6 +135,9 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
+    },
+    onboardingUpdated(answers) {
+      this.person.onboardingJson = answers
     },
     async deviceLocationsEditedSet(editedItems) {
       try {

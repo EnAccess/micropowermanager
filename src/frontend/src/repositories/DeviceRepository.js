@@ -12,4 +12,10 @@ export default {
   deviceInfo(deviceId) {
     return Client.get(`${resource}/${deviceId}/device-info`)
   },
+  capabilities(deviceId) {
+    return Client.get(`${resource}/${deviceId}/capabilities`)
+  },
+  generateToken(deviceId, params) {
+    return Client.post(`${resource}/${deviceId}/token`, params)
+  },
 }

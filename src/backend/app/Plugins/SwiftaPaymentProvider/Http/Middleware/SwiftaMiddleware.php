@@ -2,6 +2,7 @@
 
 namespace App\Plugins\SwiftaPaymentProvider\Http\Middleware;
 
+use App\Plugins\SwiftaPaymentProvider\Exceptions\CipherNotValidException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -25,16 +26,7 @@ class SwiftaMiddleware {
 
             return new Response($data, 401);
         }
-        try {
-            $this->checkCipherIsValid($request);
-        } catch (\Exception $exception) {
-            $data = collect([
-                'success' => 0,
-                'message' => $exception->getMessage(),
-            ]);
-
-            return new Response($data, 400);
-        }
+        $this->checkCipherIsValid($request);
 
         return $next($request);
     }
@@ -45,7 +37,7 @@ class SwiftaMiddleware {
             Log::warning('Swifta Transaction Validation Failed', [
                 'message' => 'Cipher validation field.',
             ]);
-            throw new \Exception('cipher validation field.');
+            throw new CipherNotValidException('cipher validation field.');
         }
     }
 }

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AssignMeterToCustomerRequest;
 use App\Http\Requests\CreateAgentCustomerRequest;
+use App\Http\Requests\PersonOnboardingRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Person\Person;
 use App\Services\AgentCustomerService;
 use App\Services\AgentService;
+use App\Services\PersonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +20,7 @@ class AgentCustomerController extends Controller {
     public function __construct(
         private AgentCustomerService $agentCustomerService,
         private AgentService $agentService,
+        private PersonService $personService,
     ) {}
 
     /**
@@ -36,6 +39,21 @@ class AgentCustomerController extends Controller {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return ApiResource::make($this->agentCustomerService->findForAgent($agent, $customerId));
+    }
+
+    /**
+     * Replace a customer's onboarding answers.
+     *
+     * The whole answer set is replaced on every call, send an empty `answers` array to clear it.
+     */
+    public function updateOnboarding(int $customerId, PersonOnboardingRequest $request): ApiResource {
+        $agent = $this->agentService->getByAuthenticatedUser();
+        $person = $this->agentCustomerService->findForAgent($agent, $customerId);
+        $answers = $request->answers();
+
+        return ApiResource::make(
+            $this->personService->update($person, ['onboarding_json' => $answers === [] ? null : $answers])
+        );
     }
 
     public function search(Request $request): ApiResource {

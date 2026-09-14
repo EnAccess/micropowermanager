@@ -27,14 +27,14 @@ export class SmsService {
     this.paginator = new Paginator(resources.sms.list)
   }
 
+  // Searching narrows the same paginated conversation list, so the term travels
+  // as a query parameter and page navigation keeps it.
   search(term) {
-    this.paginator = new Paginator(resources.sms.search)
     EventBus.$emit("loadPage", this.paginator, { term: term })
   }
 
   showAll() {
-    this.paginator = new Paginator(resources.sms.list)
-    EventBus.$emit("loadPage", this.paginator)
+    EventBus.$emit("loadPage", this.paginator, {})
   }
 
   updateList(smsList) {
@@ -56,23 +56,6 @@ export class SmsService {
       return smsObj
     })
     return this.numberList
-  }
-
-  searchSms(text) {
-    if (text.length === 0) {
-      return this.numberList
-    }
-    return this.numberList.filter((n) => {
-      return (
-        n.number.includes(text) ||
-        (n.owner !== null &&
-          n.owner !== undefined &&
-          n.owner.name !== undefined &&
-          n.owner.surname !== undefined) ||
-        n.owner.name.toLowerCase().includes(text.toLowerCase()) ||
-        n.owner.surname.toLowerCase().includes(text.toLowerCase())
-      )
-    })
   }
 
   addReceiver(receiverToAdd) {
@@ -239,6 +222,7 @@ export class SmsService {
       if (response.status !== 200 && response.status !== 201) {
         return new ErrorHandler(response.error, "http", response.status)
       }
+      return response.data.data
     } catch (e) {
       return new ErrorHandler(e, "http")
     }

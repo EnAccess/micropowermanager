@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Agent;
 use App\Models\Device;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IAgentTransactionService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -77,18 +79,25 @@ class AgentTransactionService implements IAgentTransactionService {
     }
 
     /**
-     * Find a transaction owned by the given agent and eager-load its token.
-     * Returns null if the transaction doesn't exist or doesn't belong to the agent.
+     * Find a transaction the given agent may read the token of, and eager-load
+     * that token. A transaction qualifies when the agent recorded it, or when it
+     * targeted a device of a customer in the agent's mini-grid — an installment
+     * settled by an admin, by another agent or by a payment provider still has
+     * to show its token in the field app. Returns null when the transaction
+     * doesn't exist or falls outside both.
      */
-    public function findForAgent(int $agentId, int $transactionId): ?Transaction {
+    public function findForAgent(Agent $agent, int $transactionId): ?Transaction {
         return $this->transaction->newQuery()
             ->with(['token'])
-            ->whereHasMorph(
+            ->where('id', $transactionId)
+            ->where(fn (Builder $query) => $query->whereHasMorph(
                 'originalTransaction',
                 [AgentTransaction::class],
-                fn ($q) => $q->where('agent_id', $agentId)
-            )
-            ->where('id', $transactionId)
+                fn ($q) => $q->where('agent_id', $agent->id)
+            )->orWhereHas(
+                'device.person.addresses.city',
+                fn ($q) => $q->where('mini_grid_id', $agent->mini_grid_id)
+            ))
             ->first();
     }
 

@@ -180,6 +180,8 @@ export default {
 
   beforeDestroy() {
     EventBus.$off("search.end", this.cancelSearching)
+    EventBus.$off("hideEmptyStateArea", this.hideEmptyStateArea)
+    EventBus.$off("widgetContentLoaded", this.checkDataLength)
   },
   data() {
     return {

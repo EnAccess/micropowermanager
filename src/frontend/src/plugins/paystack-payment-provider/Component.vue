@@ -65,11 +65,13 @@
 </template>
 
 <script>
+import { tailWizard } from "@/mixins/tailWizard.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "PaystackConfiguration",
   components: { Widget },
+  mixins: [tailWizard],
   data() {
     return {
       title: "Paystack Payment Provider",
@@ -77,7 +79,7 @@ export default {
   },
   methods: {
     goToConfiguration() {
-      this.$router.push("/paystack/overview")
+      this.closeTailWizardAndGoTo("/paystack/overview")
     },
   },
 }

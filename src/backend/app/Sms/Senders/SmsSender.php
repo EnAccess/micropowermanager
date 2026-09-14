@@ -3,11 +3,11 @@
 namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
-use App\Exceptions\SmsRecordNotFoundException;
 use App\Models\ApplianceRate;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
 use App\Services\SmsGatewayResolverService;
+use App\Services\SmsService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
@@ -17,33 +17,45 @@ abstract class SmsSender {
     protected ?array $references = null;
     public string $body = '';
     protected ?string $receiver = null;
+    protected ?string $callback = null;
+    private ?Sms $sms = null;
 
-    public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath) {}
+    public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath, private mixed $smsAndroidSettings) {}
+
+    public function setSms(Sms $sms): void {
+        $this->sms = $sms;
+    }
+
+    /**
+     * The row this send writes its outcome to. Null only while the sender is
+     * being prepared, before SmsService has persisted it.
+     */
+    public function getSms(): ?Sms {
+        return $this->sms;
+    }
 
     public function sendSms(): void {
+        $sms = $this->sms;
+
+        if (!$sms instanceof Sms) {
+            throw new \LogicException(static::class.' was dispatched without an Sms record to report against.');
+        }
+
         $gatewayResolver = app()->make(SmsGatewayResolverService::class);
 
         [$gateway, $viberId] = $gatewayResolver->determineGateway($this->receiver);
 
-        $lastRecordedSMS = Sms::query()
-            ->where('receiver', $this->receiver)
-            ->where('body', $this->body)
-            ->latest()->first();
-
-        if ($lastRecordedSMS == null) {
-            throw new SmsRecordNotFoundException('No record of the SMS to be sent to the receiver '.$this->receiver.' was found');
-        }
-
-        $resolved = $gatewayResolver->resolveGatewayAndArgs($gateway, $lastRecordedSMS, [
+        $resolved = $gatewayResolver->resolveGatewayAndArgs($gateway, $sms, [
             'body' => $this->body,
             'receiver' => $this->receiver,
             'viberId' => $viberId,
+            'callback' => $this->callback,
+            'smsAndroidSettings' => $this->smsAndroidSettings,
         ]);
 
         $resolved['gateway']->sendSms(...$resolved['args']);
 
-        $lastRecordedSMS->gateway_id = $resolved['gatewayId'];
-        $lastRecordedSMS->save();
+        app()->make(SmsService::class)->markSent($sms, $resolved['gatewayId']);
     }
 
     public function prepareHeader(): void {
@@ -133,6 +145,10 @@ abstract class SmsSender {
         }
 
         return $this->receiver;
+    }
+
+    public function setCallback(string $callback, string $uuid): void {
+        $this->callback = sprintf($callback, $uuid);
     }
 
     /**

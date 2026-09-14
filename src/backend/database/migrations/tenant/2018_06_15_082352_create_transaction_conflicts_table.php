@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::connection('tenant')->create('transaction_conflicts', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('transaction');
-            $table->string('state'); // failed to confirm, failed to cancel
+            $table->string('state');
             $table->timestamps();
         });
     }

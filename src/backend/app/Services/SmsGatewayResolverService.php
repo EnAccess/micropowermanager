@@ -104,7 +104,7 @@ class SmsGatewayResolverService {
         }
 
         if ($gateway === null) {
-            Log::error('No active SMS provider configured', ['receiver' => $receiver]);
+            Log::warning('No active SMS provider configured', ['receiver' => $receiver]);
 
             throw new NoActiveSmsProviderException('No active SMS provider is configured. Please configure an SMS gateway in Main Settings or enable a plugin (AfricasTalking, TextBee, or Viber Messaging).');
         }
@@ -118,7 +118,8 @@ class SmsGatewayResolverService {
             $mainSettings = $this->mainSettingsService->getAll()->first();
             $configuredGatewayId = $mainSettings?->sms_gateway_id;
 
-            return (bool) $configuredGatewayId;
+            return $configuredGatewayId !== null
+                && $this->getGatewayNameById($configuredGatewayId) !== null;
         } catch (\Exception $e) {
             Log::error('Error while checking if SMS gateway is configured', ['error' => $e->getMessage()]);
 
@@ -136,15 +137,6 @@ class SmsGatewayResolverService {
             MpmPlugin::TEXTBEE_SMS_GATEWAY => self::TEXTBEE_GATEWAY,
             default => null,
         };
-    }
-
-    /**
-     * Check if at least one SMS provider is configured and active.
-     */
-    public function hasActiveProvider(): bool {
-        $availableGateways = $this->getAvailableSmsGateways();
-
-        return count($availableGateways) > 0;
     }
 
     /**

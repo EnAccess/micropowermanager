@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonListRequest;
+use App\Http\Requests\PersonOnboardingRequest;
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Country;
+use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\CountryService;
 use App\Services\PersonAddressService;
@@ -51,9 +53,8 @@ class PersonController extends Controller {
      *
      * Alias of `GET /api/people`, kept for backwards compatibility with older clients.
      * It accepts the same query parameters.
-     *
-     * @deprecated use `GET /api/people` instead
      */
+    #[\Deprecated(message: 'use `GET /api/people` instead')]
     public function indexAll(PersonListRequest $request): ApiResource {
         return $this->listPeople($request);
     }
@@ -63,10 +64,9 @@ class PersonController extends Controller {
      *
      * Alias of `GET /api/people`, kept for backwards compatibility with the customer registration app.
      * It accepts the same query parameters.
-     *
-     * @deprecated use `GET /api/people` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/people` instead')]
     public function indexForCustomerRegistrationApp(PersonListRequest $request): ApiResource {
         return $this->listPeople($request);
     }
@@ -133,6 +133,24 @@ class PersonController extends Controller {
         $personData = $request->all();
 
         return ApiResource::make($this->personService->update($person, $personData));
+    }
+
+    /**
+     * Replace a person's onboarding answers.
+     *
+     * The whole answer set is replaced on every call, send an empty `answers` array to clear it.
+     * The request takes an ordered list of question/answer rows, while `GET /api/people/{personId}`
+     * returns the stored answers as a question-keyed `onboarding_json` object.
+     */
+    public function updateOnboarding(
+        Person $person,
+        PersonOnboardingRequest $request,
+    ): ApiResource {
+        $answers = $request->answers();
+
+        return ApiResource::make(
+            $this->personService->update($person, ['onboarding_json' => $answers === [] ? null : $answers])
+        );
     }
 
     /**

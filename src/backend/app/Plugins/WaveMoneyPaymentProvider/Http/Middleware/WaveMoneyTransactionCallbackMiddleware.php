@@ -2,10 +2,7 @@
 
 namespace App\Plugins\WaveMoneyPaymentProvider\Http\Middleware;
 
-use App\Jobs\ProcessPayment;
 use App\Plugins\WaveMoneyPaymentProvider\Http\Requests\TransactionCallbackRequestMapper;
-use App\Plugins\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use App\Plugins\WaveMoneyPaymentProvider\Modules\Api\Data\TransactionCallbackData;
 use App\Plugins\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyTransactionProvider;
 use Illuminate\Http\Request;
@@ -21,43 +18,35 @@ class WaveMoneyTransactionCallbackMiddleware {
     public function handle(Request $request, \Closure $next) {
         $mapper = new TransactionCallbackRequestMapper();
         $callbackData = $mapper->getMappedObject($request);
-        $companyId = $request->attributes->get('companyId') ?? null;
+
+        if (!is_int($request->attributes->get('companyId'))) {
+            Log::warning('Wave Money callback arrived without a company id', [
+                'order_id' => $callbackData->orderId,
+            ]);
+
+            return new Response(collect([
+                'success' => 0,
+                'message' => 'Company could not be resolved for this callback.',
+            ]), 400);
+        }
 
         try {
             $waveMoneyTransaction = $this->transactionService->getByOrderId($callbackData->orderId);
 
-            if ($callbackData->mapTransactionStatus($callbackData->status) ===
-                TransactionCallbackData::STATUS_FAILURE) {
-                $status = WaveMoneyTransaction::STATUS_FAILED;
-            } else {
-                // we set the transaction status as completed by wave money, but we don't process it yet
-                $status = WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY;
-            }
-            $transactionProvider = resolve(WaveMoneyTransactionProvider::class);
-            $transactionProvider->init($waveMoneyTransaction);
-
-            $request->attributes->add(['waveMoneyTransaction' => $waveMoneyTransaction]);
-            $request->attributes->add(['status' => $status]);
-
-            if ($status === WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY) {
-                // we process the transaction in the background
-                $transaction = $waveMoneyTransaction->transaction()->first();
-                if ($companyId !== null) {
-                    dispatch(new ProcessPayment($companyId, $transaction->id));
-                } else {
-                    Log::warning('Company ID not found in request attributes. Payment transaction job not triggered for transaction '.$transaction->id);
-                }
-            }
+            resolve(WaveMoneyTransactionProvider::class)->init($waveMoneyTransaction);
         } catch (\Exception $exception) {
             Log::critical('WaveMoney transaction callback called with wrong orderId '.$callbackData->orderId);
 
-            $data = collect([
+            return new Response(collect([
                 'success' => 0,
                 'message' => $exception->getMessage(),
-            ]);
-
-            return new Response($data, 400);
+            ]), 400);
         }
+
+        $request->attributes->add([
+            'waveMoneyTransaction' => $waveMoneyTransaction,
+            'callbackData' => $callbackData,
+        ]);
 
         return $next($request);
     }

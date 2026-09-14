@@ -99,6 +99,7 @@ export default {
       paginator: null,
       term: {},
       perPage: 15,
+      lastLoadedPage: null,
     }
   },
   mounted() {
@@ -108,8 +109,10 @@ export default {
     this.loadPage(pageNumber)
     EventBus.$on("loadPage", this.eventLoadPage)
   },
-  destroyed() {
-    this.paginator = null
+  beforeDestroy() {
+    // the event bus outlives this component; without $off every destroyed
+    // Paginate keeps reacting to "loadPage" and fires duplicate requests
+    EventBus.$off("loadPage", this.eventLoadPage)
   },
   watch: {
     $route() {
@@ -120,7 +123,10 @@ export default {
       }
     },
     "paginator.currentPage"(newPage) {
-      if (!newPage || this.loading) return
+      // lastLoadedPage marks response-driven updates: the data for that page
+      // is already displayed, so re-fetching (directly or via a route push)
+      // would only duplicate the request
+      if (!newPage || this.loading || newPage === this.lastLoadedPage) return
 
       if (this.route_name) {
         this.$router
@@ -166,6 +172,7 @@ export default {
         .loadPage(pageNumber, this.term)
         .then((response) => {
           this.loading = false
+          this.lastLoadedPage = response.current_page
           EventBus.$emit("pageLoaded", this.subscriber, response.data)
         })
         .catch((error) => {

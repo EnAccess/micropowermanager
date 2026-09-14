@@ -91,7 +91,7 @@ jobs:
           --health-timeout=5s
           --health-retries=3
       redis:
-        image: redis:5
+        image: redis:7
         ports:
           - 6379:6379
 

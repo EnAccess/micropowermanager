@@ -32,10 +32,9 @@ class ManufacturerController extends Controller {
      * List manufacturers (customer registration app).
      *
      * Alias of `GET /api/manufacturers` for the customer registration app.
-     *
-     * @deprecated use `GET /api/manufacturers` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/manufacturers` instead')]
     public function indexForCustomerRegistrationApp(Request $request): ApiResource {
         return ApiResource::make(
             $this->manufacturerService->getAll($request->input('per_page'), $request->input('type'))

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePersonDocumentRequest;
-use App\Http\Requests\UpdatePersonDocumentRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\PersonDocument;
 use App\Services\PersonDocumentUploadService;
@@ -25,24 +24,11 @@ class PersonDocumentController extends Controller {
     public function store(int $personId, StorePersonDocumentRequest $request): ApiResource {
         $person = $this->personService->getById($personId);
 
-        /** @var array<string, mixed>|null $additional */
-        $additional = $request->input('additional_json');
-
         $document = $this->uploadService->upload(
             $person,
             $request->file('file'),
             $request->string('type')->toString(),
-            $additional,
         );
-
-        return ApiResource::make($document);
-    }
-
-    public function update(PersonDocument $personDocument, UpdatePersonDocumentRequest $request): ApiResource {
-        /** @var array<string, mixed> $additional */
-        $additional = $request->input('additional_json');
-
-        $document = $this->uploadService->updateAdditional($personDocument, $additional ?: null);
 
         return ApiResource::make($document);
     }

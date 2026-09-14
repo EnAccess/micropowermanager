@@ -261,7 +261,7 @@ export default {
       const clusterFeature =
         this.mappingService.setClusterGeoData(clusterGeoData)
       if (!clusterFeature) {
-        this.alertNotify("error", "Cluster has no geo data")
+        this.alertNotify("error", this.$tc("phrases.clusterHasNoGeoData"))
         return
       }
 

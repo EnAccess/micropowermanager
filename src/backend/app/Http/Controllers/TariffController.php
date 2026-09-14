@@ -31,10 +31,9 @@ class TariffController extends Controller {
      * List tariffs (customer registration app).
      *
      * Alias of `GET /api/tariffs` for the customer registration app.
-     *
-     * @deprecated use `GET /api/tariffs` instead
      */
     #[Group('Customer Registration App')]
+    #[\Deprecated(message: 'use `GET /api/tariffs` instead')]
     public function indexForCustomerRegistrationApp(Request $request): ApiResource {
         return ApiResource::make($this->tariffService->getAll($request->input('limit')));
     }

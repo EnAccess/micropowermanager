@@ -26,9 +26,6 @@ use Illuminate\Support\Carbon;
  */
 class SwiftaTransaction extends BasePaymentProviderTransaction {
     public const RELATION_NAME = 'swifta_transaction';
-    public const STATUS_SUCCESS = 1;
-    public const STATUS_PENDING = 0;
-    public const STATUS_FAILED = -1;
     public const STATUS_REQUESTED = -2;
 
     protected $table = 'swifta_transactions';

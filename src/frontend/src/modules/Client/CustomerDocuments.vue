@@ -44,15 +44,6 @@
           <md-table-cell :md-label="$tc('words.actions')">
             <md-button
               class="md-icon-button md-dense"
-              @click="openEditDialog(item)"
-            >
-              <md-tooltip md-direction="top">
-                {{ $tc("phrases.additionalInfo") }}
-              </md-tooltip>
-              <md-icon>edit_note</md-icon>
-            </md-button>
-            <md-button
-              class="md-icon-button md-dense"
               :disabled="downloadingId === item.id"
               @click="download(item)"
             >
@@ -153,60 +144,6 @@
             </md-button>
           </div>
         </section>
-
-        <section class="form-section form-section--additional">
-          <header class="form-section__header">
-            <div>
-              <span class="form-section__label">
-                {{ $tc("phrases.additionalInfo") }}
-              </span>
-              <p class="form-section__hint">
-                {{ $tc("phrases.additionalInfoHint") }}
-              </p>
-            </div>
-            <md-button
-              class="md-icon-button md-dense md-primary md-raised"
-              @click="addExtraField"
-            >
-              <md-tooltip md-direction="top">
-                {{ $tc("phrases.addField") }}
-              </md-tooltip>
-              <md-icon>add</md-icon>
-            </md-button>
-          </header>
-
-          <div
-            v-if="extraFields.length === 0"
-            class="extra-fields-empty"
-            @click="addExtraField"
-          >
-            <md-icon>note_add</md-icon>
-            <span>{{ $tc("phrases.addFirstField") }}</span>
-          </div>
-
-          <div v-else class="extra-fields">
-            <div
-              v-for="(field, index) in extraFields"
-              :key="index"
-              class="extra-field-row"
-            >
-              <md-field class="extra-field-row__field">
-                <label>{{ $tc("words.key") }}</label>
-                <md-input v-model="field.key" />
-              </md-field>
-              <md-field class="extra-field-row__field">
-                <label>{{ $tc("words.value") }}</label>
-                <md-input v-model="field.value" />
-              </md-field>
-              <md-button
-                class="md-icon-button md-dense extra-field-row__remove"
-                @click="removeExtraField(index)"
-              >
-                <md-icon>close</md-icon>
-              </md-button>
-            </div>
-          </div>
-        </section>
       </md-dialog-content>
 
       <md-dialog-actions class="dialog-actions">
@@ -221,91 +158,6 @@
           <md-icon>cloud_upload</md-icon>
           <span class="dialog-actions__label">
             {{ $tc("phrases.upload") }}
-          </span>
-        </md-button>
-      </md-dialog-actions>
-    </md-dialog>
-
-    <md-dialog
-      class="document-info-dialog"
-      :md-active.sync="editDialogVisible"
-      :md-click-outside-to-close="false"
-    >
-      <header class="dialog-header">
-        <div class="dialog-header__icon">
-          <md-icon>edit_note</md-icon>
-        </div>
-        <div class="dialog-header__text">
-          <h2 class="dialog-header__title">
-            {{ $tc("phrases.additionalInfo") }}
-          </h2>
-          <p class="dialog-header__subtitle">
-            {{ editDocumentName }}
-          </p>
-        </div>
-      </header>
-      <md-dialog-content class="md-scrollbar dialog-content">
-        <section class="form-section form-section--additional">
-          <header class="form-section__header">
-            <p class="form-section__hint">
-              {{ $tc("phrases.additionalInfoHint") }}
-            </p>
-            <md-button
-              class="md-icon-button md-dense md-primary md-raised"
-              @click="addEditField"
-            >
-              <md-tooltip md-direction="top">
-                {{ $tc("phrases.addField") }}
-              </md-tooltip>
-              <md-icon>add</md-icon>
-            </md-button>
-          </header>
-
-          <div
-            v-if="editFields.length === 0"
-            class="extra-fields-empty"
-            @click="addEditField"
-          >
-            <md-icon>note_add</md-icon>
-            <span>{{ $tc("phrases.addFirstField") }}</span>
-          </div>
-
-          <div v-else class="extra-fields">
-            <div
-              v-for="(field, index) in editFields"
-              :key="index"
-              class="extra-field-row"
-            >
-              <md-field class="extra-field-row__field">
-                <label>{{ $tc("words.key") }}</label>
-                <md-input v-model="field.key" />
-              </md-field>
-              <md-field class="extra-field-row__field">
-                <label>{{ $tc("words.value") }}</label>
-                <md-input v-model="field.value" />
-              </md-field>
-              <md-button
-                class="md-icon-button md-dense extra-field-row__remove"
-                @click="removeEditField(index)"
-              >
-                <md-icon>close</md-icon>
-              </md-button>
-            </div>
-          </div>
-        </section>
-      </md-dialog-content>
-      <md-dialog-actions class="dialog-actions">
-        <md-button @click="editDialogVisible = false">
-          {{ $tc("words.close") }}
-        </md-button>
-        <md-button
-          class="md-primary md-raised"
-          :disabled="savingEdit"
-          @click="saveAdditionalInfo"
-        >
-          <md-icon>save</md-icon>
-          <span class="dialog-actions__label">
-            {{ $tc("words.save") }}
           </span>
         </md-button>
       </md-dialog-actions>
@@ -342,14 +194,9 @@ export default {
         type: "",
         file: null,
       },
-      extraFields: [],
       maxDocuments: MAX_DOCUMENTS,
       isDragging: false,
       downloadingId: null,
-      editDialogVisible: false,
-      editDocument: null,
-      editFields: [],
-      savingEdit: false,
     }
   },
   computed: {
@@ -362,9 +209,6 @@ export default {
         this.newDocument.file !== null &&
         this.newDocument.type.trim().length > 0
       )
-    },
-    editDocumentName() {
-      return this.editDocument?.original_name ?? ""
     },
   },
   mounted() {
@@ -389,7 +233,6 @@ export default {
     closeDialog() {
       this.dialogVisible = false
       this.newDocument = { type: "", file: null }
-      this.extraFields = []
       this.isDragging = false
       if (this.$refs.fileInput) {
         this.$refs.fileInput.value = ""
@@ -397,12 +240,6 @@ export default {
     },
     triggerFileInput() {
       this.$refs.fileInput?.click()
-    },
-    addExtraField() {
-      this.extraFields.push({ key: "", value: "" })
-    },
-    removeExtraField(index) {
-      this.extraFields.splice(index, 1)
     },
     clearFile() {
       this.newDocument.file = null
@@ -440,18 +277,10 @@ export default {
       if (!this.canSubmit) {
         return
       }
-      const additional = {}
-      this.extraFields.forEach((field) => {
-        const key = field.key.trim()
-        if (key.length > 0) {
-          additional[key] = field.value
-        }
-      })
       const response = await this.personService.uploadDocument(
         this.personId,
         this.newDocument.file,
         this.newDocument.type.trim(),
-        additional,
       )
       if (response instanceof ErrorHandler) {
         this.alertNotify("error", response.errorMessage)
@@ -489,46 +318,6 @@ export default {
       if (ext === "pdf") return "picture_as_pdf"
       if (ext === "docx") return "article"
       return "insert_drive_file"
-    },
-    openEditDialog(document) {
-      this.editDocument = document
-      const info = document?.additional_json ?? {}
-      this.editFields = Object.entries(info).map(([key, value]) => ({
-        key,
-        value: value === null ? "" : String(value),
-      }))
-      this.editDialogVisible = true
-    },
-    addEditField() {
-      this.editFields.push({ key: "", value: "" })
-    },
-    removeEditField(index) {
-      this.editFields.splice(index, 1)
-    },
-    async saveAdditionalInfo() {
-      const additional = {}
-      this.editFields.forEach((field) => {
-        const key = field.key.trim()
-        if (key.length > 0) {
-          additional[key] = field.value
-        }
-      })
-      this.savingEdit = true
-      const response = await this.personService.updateDocumentAdditional(
-        this.editDocument.id,
-        additional,
-      )
-      this.savingEdit = false
-      if (response instanceof ErrorHandler) {
-        this.alertNotify("error", response.errorMessage)
-        return
-      }
-      const index = this.documents.findIndex((d) => d.id === response.id)
-      if (index !== -1) {
-        this.$set(this.documents, index, response)
-      }
-      this.alertNotify("success", this.$tc("phrases.additionalInfoUpdated"))
-      this.editDialogVisible = false
     },
     async download(document) {
       this.downloadingId = document.id
@@ -770,49 +559,6 @@ $text-muted: rgba(0, 0, 0, 0.55);
   }
 }
 
-.extra-fields-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 1px dashed $border-subtle;
-  border-radius: 10px;
-  color: $text-muted;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.02);
-  }
-
-  .md-icon {
-    color: $text-muted !important;
-  }
-}
-
-.extra-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.extra-field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 0.5rem;
-  align-items: center;
-
-  &__field {
-    margin: 0;
-  }
-
-  &__remove {
-    color: $text-muted !important;
-  }
-}
-
 .dialog-actions {
   padding: 0.75rem 1.5rem 1rem;
   border-top: 1px solid $border-subtle;
@@ -820,15 +566,6 @@ $text-muted: rgba(0, 0, 0, 0.55);
 
   &__label {
     margin-left: 0.35rem;
-  }
-}
-
-::v-deep .document-info-dialog {
-  .md-dialog-container {
-    width: 460px;
-    max-width: 92vw;
-    border-radius: 12px;
-    overflow: hidden;
   }
 }
 </style>

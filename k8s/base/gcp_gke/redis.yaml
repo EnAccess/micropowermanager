@@ -27,7 +27,7 @@ spec:
         app: redis-db
     spec:
       containers:
-        - image: redis:5
+        - image: redis:7
           imagePullPolicy: Always
           name: redis-db
           command: [redis-server, --appendonly, "no"]

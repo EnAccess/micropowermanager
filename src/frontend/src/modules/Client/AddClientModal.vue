@@ -1,8 +1,9 @@
 <template>
   <div>
     <md-dialog
-      :md-active.sync="showAddClient"
+      :md-active="showAddClient"
       style="max-width: 60rem; margin: auto"
+      @update:mdActive="onDialogToggled"
     >
       <md-dialog-title>
         <div class="divider-title">
@@ -207,32 +208,11 @@
                 </div>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field
-                  :class="{
-                    'md-invalid': errors.has('customer-add-form.city'),
-                  }"
-                >
-                  <label for="city">
-                    {{ $tc("words.city") }}
-                  </label>
-                  <md-select
-                    name="city"
-                    id="city"
-                    v-model="selectedCityId"
-                    v-validate="'required'"
-                  >
-                    <md-option
-                      v-for="city in cityService.list"
-                      :key="city.id"
-                      :value="city.id"
-                    >
-                      {{ city.name }}
-                    </md-option>
-                  </md-select>
-                  <span class="md-error">
-                    {{ errors.first("customer-add-form.city") }}
-                  </span>
-                </md-field>
+                <city-autocomplete
+                  v-model="selectedCityId"
+                  required
+                  :error="errors.first('customer-add-form.city')"
+                />
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
@@ -281,8 +261,8 @@
 import moment from "moment"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
 import { PersonService } from "@/services/PersonService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import Loader from "@/shared/Loader.vue"
 
 export default {
@@ -294,11 +274,10 @@ export default {
       type: Boolean,
     },
   },
-  components: { Loader },
+  components: { CityAutocomplete, Loader },
   data() {
     return {
       personService: new PersonService(),
-      cityService: new CityService(),
       loading: false,
       selectedCityId: null,
       phone: {
@@ -306,9 +285,6 @@ export default {
       },
       firstStepClicked: false,
     }
-  },
-  beforeMount() {
-    this.cityService.getCities()
   },
   methods: {
     async save() {
@@ -351,6 +327,11 @@ export default {
     },
     cancel() {
       this.$emit("hideAddCustomer")
+    },
+    // Escape and clicking outside close the dialog on their own; the parent owns
+    // the flag, so it has to hear about those closes too.
+    onDialogToggled(active) {
+      if (!active) this.$emit("hideAddCustomer")
     },
     validatePhone(phone) {
       this.phone = phone
