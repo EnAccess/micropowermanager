@@ -11,7 +11,6 @@
       :showEditUser="showEditUser"
       :user="userService.user"
       @updateUser="updateUser"
-      :cities="cities"
     />
     <widget
       :title="$tc('phrases.userManagement')"
@@ -91,7 +90,6 @@ import EditUser from "./EditUser.vue"
 import NewUser from "./NewUser.vue"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
 import { UserService } from "@/services/UserService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
@@ -107,15 +105,10 @@ export default {
       showEditUser: false,
       selectedCity: 0,
       userService: new UserService(),
-      cityService: new CityService(),
       userId: 0,
       showNewUser: false,
       resetKey: 1,
-      cities: [],
     }
-  },
-  created() {
-    this.getCities()
   },
   mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
@@ -135,14 +128,6 @@ export default {
         this.subscriber,
         this.userService.users.length,
       )
-    },
-    async getCities() {
-      try {
-        await this.cityService.getCities()
-        this.cities = this.cityService.cities
-      } catch (error) {
-        this.alertNotify("error", error.message)
-      }
     },
     async userDetail(user) {
       try {

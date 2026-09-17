@@ -3,6 +3,7 @@
 namespace App\Plugins\DemoMeterManufacturer;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
@@ -17,6 +18,15 @@ class DemoMeterManufacturerApi implements IManufacturerAPI {
     public function __construct(
         private DemoMeterTransaction $demoMeterTransaction,
     ) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+        ];
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $tariff = $transactionContainer->tariff;

@@ -2,38 +2,28 @@
   <widget
     :subscriber="subscriber"
     :title="$tc('phrases.agentTicket', 1)"
-    :paginator="agentTicketService.paginator"
+    :paginator="ticketList.paginator"
     color="primary"
   >
     <ticket-item
-      :allow-comment="true"
       :allow-lock="false"
-      :table-heads="tableHeads"
-      :ticket-list="agentTicketService.list"
+      :ticket-list="ticketList.list"
     ></ticket-item>
   </widget>
 </template>
 <script>
-import TicketItem from "../../shared/TicketItem.vue"
-
-import { AgentTicketService } from "@/services/AgentTicketService.js"
+import { resources } from "@/resources.js"
+import { TicketList } from "@/services/TicketService.js"
 import { EventBus } from "@/shared/eventbus.js"
+import TicketItem from "@/shared/TicketItem.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AgentTicketList",
   data() {
     return {
-      loaded: false,
-      agentTicketService: new AgentTicketService(this.agentId),
+      ticketList: new TicketList(resources.agents.tickets + "/" + this.agentId),
       subscriber: "AgentTickets",
-      showTicket: null,
-      tableHeads: [
-        this.$tc("words.subject"),
-        this.$tc("words.category"),
-        this.$tc("words.status"),
-        this.$tc("words.date"),
-      ],
     }
   },
   components: {
@@ -52,16 +42,15 @@ export default {
     EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
-    async reloadList(subscriber, data) {
+    reloadList(subscriber, data) {
       if (subscriber !== this.subscriber) {
         return
       }
-      await this.agentTicketService.updateList(data)
-      this.loaded = true
+      this.ticketList.updateList(data)
       EventBus.$emit(
         "widgetContentLoaded",
         this.subscriber,
-        this.agentTicketService.list.length,
+        this.ticketList.list.length,
       )
     },
   },

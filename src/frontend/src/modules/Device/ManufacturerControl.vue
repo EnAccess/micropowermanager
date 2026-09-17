@@ -36,7 +36,7 @@
       </md-button>
 
       <md-button
-        v-if="canControl && capabilities.tokenGeneration"
+        v-if="canControl && availableTokenTypes.length"
         class="md-raised verify-button"
         :disabled="generating"
         @click="openTokenDialog"
@@ -140,16 +140,18 @@
                 <span>{{ formatToken(generatedToken.token) }}</span>
               </div>
             </md-list-item>
-            <md-divider></md-divider>
-            <md-list-item>
-              <div class="md-list-item-text">
-                <span>{{ $tc("phrases.issuedCredit") }}</span>
-                <span>
-                  {{ generatedToken.tokenAmount }}
-                  {{ unitLabel(generatedToken.tokenUnit) }}
-                </span>
-              </div>
-            </md-list-item>
+            <template v-if="generatedToken.tokenAmount">
+              <md-divider></md-divider>
+              <md-list-item>
+                <div class="md-list-item-text">
+                  <span>{{ $tc("phrases.issuedCredit") }}</span>
+                  <span>
+                    {{ generatedToken.tokenAmount }}
+                    {{ unitLabel(generatedToken.tokenUnit) }}
+                  </span>
+                </div>
+              </md-list-item>
+            </template>
           </md-list>
           <p class="rounding-note" v-if="creditWasRounded">
             {{
@@ -158,36 +160,59 @@
               })
             }}
           </p>
+          <p class="dialog-hint" v-if="tokenType !== 'credit'">
+            {{ $tc(`phrases.${tokenType}TokenIssued`) }}
+          </p>
         </div>
 
         <div v-else-if="!generating">
-          <p class="dialog-hint">{{ $tc("phrases.generateTokenHint") }}</p>
-          <md-field>
-            <label>{{ $tc("words.amount") }}</label>
-            <md-input v-model="amount" type="number" step="any" min="0" />
-          </md-field>
-          <md-field>
-            <label>{{ $tc("phrases.amountUnit") }}</label>
-            <md-select v-model="unit">
-              <md-option value="currency">
-                {{ unitLabel("currency") }}
-              </md-option>
+          <md-field v-if="availableTokenTypes.length > 1">
+            <label>{{ $tc("phrases.tokenPurpose") }}</label>
+            <md-select v-model="tokenType">
               <md-option
-                v-if="capabilities.creditUnit"
-                :value="capabilities.creditUnit"
+                v-for="type in availableTokenTypes"
+                :key="type"
+                :value="type"
               >
-                {{ unitLabel(capabilities.creditUnit) }}
+                {{ tokenPurposeLabel(type) }}
               </md-option>
             </md-select>
           </md-field>
+
+          <template v-if="tokenType === 'credit'">
+            <p class="dialog-hint">{{ $tc("phrases.generateTokenHint") }}</p>
+            <md-field>
+              <label>{{ $tc("words.amount") }}</label>
+              <md-input v-model="amount" type="number" step="any" min="0" />
+            </md-field>
+            <md-field>
+              <label>{{ $tc("phrases.amountUnit") }}</label>
+              <md-select v-model="unit">
+                <md-option value="currency">
+                  {{ unitLabel("currency") }}
+                </md-option>
+                <md-option
+                  v-if="capabilities.creditUnit"
+                  :value="capabilities.creditUnit"
+                >
+                  {{ unitLabel(capabilities.creditUnit) }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </template>
+
+          <p class="control-warning" v-else>
+            <md-icon>warning</md-icon>
+            <span>{{ $tc(`phrases.${tokenType}DeviceConfirm`) }}</span>
+          </p>
         </div>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button
           v-if="!generatedToken"
           class="md-primary"
-          :disabled="generating || !amount"
-          @click="generateToken"
+          :disabled="generating || (tokenType === 'credit' && !amount)"
+          @click="generate"
         >
           {{ $tc("words.generate", 1) }}
         </md-button>
@@ -244,10 +269,13 @@ export default {
       result: null,
       capabilities: {
         tokenGeneration: false,
+        unlockToken: false,
+        resetToken: false,
         creditUnit: null,
         tokenGenerationBlockedReason: null,
       },
       generatedToken: null,
+      tokenType: "credit",
       amount: null,
       unit: "currency",
       currentStatus: this.status,
@@ -267,8 +295,18 @@ export default {
         : null
     },
     creditWasRounded() {
+      if (this.tokenType !== "credit") return false
       if (!this.generatedToken || this.unit === "currency") return false
       return Number(this.generatedToken.tokenAmount) !== Number(this.amount)
+    },
+    availableTokenTypes() {
+      return [
+        ["credit", this.capabilities.tokenGeneration],
+        ["unlock", this.capabilities.unlockToken],
+        ["reset", this.capabilities.resetToken],
+      ]
+        .filter(([, supported]) => supported)
+        .map(([type]) => type)
     },
   },
   created() {
@@ -305,19 +343,34 @@ export default {
       }
     },
     openTokenDialog() {
+      this.tokenType = this.availableTokenTypes[0]
       this.generatedToken = null
       this.amount = null
       this.unit = "currency"
       this.showTokenDialog = true
     },
-    async generateToken() {
+    tokenPurposeLabel(tokenType) {
+      const labels = {
+        credit: "phrases.creditToken",
+        unlock: "phrases.unlockDevice",
+        reset: "phrases.resetDevice",
+      }
+      return this.$tc(labels[tokenType])
+    },
+    async generate() {
       this.generating = true
       try {
-        this.generatedToken = await this.deviceService.generateToken(
-          this.deviceId,
-          Number(this.amount),
-          this.unit,
-        )
+        this.generatedToken =
+          this.tokenType === "credit"
+            ? await this.deviceService.generateToken(
+                this.deviceId,
+                Number(this.amount),
+                this.unit,
+              )
+            : await this.deviceService.generateControlToken(
+                this.deviceId,
+                this.tokenType,
+              )
         this.$emit("tokenGenerated", this.generatedToken)
       } catch (e) {
         this.alertNotify("error", e.message)
@@ -341,8 +394,24 @@ export default {
   padding: 8px 16px 16px;
 }
 
+.control-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  // The dialog sizes to its content, so the prose is what caps its width.
+  max-width: 420px;
+
+  ::v-deep .md-icon {
+    color: $brand-secondary-dark;
+    margin: 0;
+    flex-shrink: 0;
+  }
+}
+
 .dialog-hint {
   margin-bottom: 8px;
+  max-width: 420px;
 }
 
 .rounding-note {

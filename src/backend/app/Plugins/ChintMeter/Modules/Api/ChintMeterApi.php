@@ -3,6 +3,7 @@
 namespace App\Plugins\ChintMeter\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
@@ -16,6 +17,15 @@ class ChintMeterApi implements IManufacturerAPI {
         private ChintCredentialService $credentialService,
         private ChintTransaction $chintTransaction,
     ) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+        ];
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;

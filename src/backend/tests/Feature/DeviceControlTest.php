@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
@@ -44,6 +45,56 @@ class DeviceControlTest extends TestCase {
         $response->assertJsonPath('data.token_generation', true);
         $response->assertJsonPath('data.credit_unit', 'days');
         $response->assertJsonPath('data.token_generation_blocked_reason', null);
+    }
+
+    public function testItReportsNoUnlockOrResetForAManufacturerThatOnlyVendsCredit(): void {
+        $this->createTestData();
+        $device = $this->seedShs('CreditOnlyApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
+        $this->bindManufacturerApi('CreditOnlyApi');
+
+        $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.token_generation', true);
+        $response->assertJsonPath('data.unlock_token', false);
+        $response->assertJsonPath('data.reset_token', false);
+    }
+
+    public function testItReportsUnlockAndResetForAManufacturerThatDeclaresThem(): void {
+        $this->createTestData();
+        $device = $this->seedShs('TokenControlApi');
+        $this->bindTokenControlManufacturerApi('TokenControlApi');
+
+        $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.unlock_token', true);
+        $response->assertJsonPath('data.reset_token', true);
+    }
+
+    /**
+     * The realistic SHS case: one manufacturer that vends credit and can also unlock
+     * and reset, so all three have to be offered for the same device at once.
+     */
+    public function testItOffersCreditAlongsideUnlockAndResetOnTheSameDevice(): void {
+        $this->createTestData();
+        $device = $this->seedShs('AllThreeApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
+        $this->bindTokenControlManufacturerApi('AllThreeApi');
+
+        $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.token_generation', true);
+        $response->assertJsonPath('data.unlock_token', true);
+        $response->assertJsonPath('data.reset_token', true);
+
+        $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'type' => 'credit',
+            'amount' => 500,
+            'unit' => 'currency',
+        ])->assertStatus(201)->assertJsonPath('data.token', 'FAKE-TOKEN');
     }
 
     public function testItReportsNoCapabilitiesWhenTheManufacturerHasNoApi(): void {
@@ -108,7 +159,7 @@ class DeviceControlTest extends TestCase {
 
     /**
      * The transaction detail page reads the token off the transaction to show what an
-     * ad-hoc grant issued, so the relation has to reach the endpoint.
+     * ad-hoc token issued, so the relation has to reach the endpoint.
      */
     public function testItExposesTheTokenOnTheAdHocTransactionDetail(): void {
         $this->createTestData();
@@ -265,7 +316,7 @@ class DeviceControlTest extends TestCase {
         $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
     }
 
-    public function testItBooksNoTransactionWhenTheManufacturerCallFails(): void {
+    public function testItRecordsNoTransactionWhenTheManufacturerCallFails(): void {
         $this->createTestData();
         $device = $this->seedShs('FailingApi');
         $this->seedEnergyServicePlan($device, pricePerDay: 100);
@@ -294,6 +345,94 @@ class DeviceControlTest extends TestCase {
         $response->assertStatus(422);
     }
 
+    public function testItGeneratesAResetTokenAtNoCharge(): void {
+        $this->createTestData();
+        $device = $this->seedShs('ResetApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
+        $this->bindTokenControlManufacturerApi('ResetApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'type' => 'reset',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonPath('data.token', 'RESET-TOKEN');
+        $response->assertJsonPath('data.token_type', Token::TYPE_RESET);
+        $response->assertJsonPath('data.token_unit', null);
+        $response->assertJsonPath('data.token_amount', null);
+
+        $token = Token::query()->where('device_id', $device->id)->firstOrFail();
+        $transaction = Transaction::query()->findOrFail($token->transaction_id);
+        $this->assertSame(Transaction::TYPE_AD_HOC, $transaction->type);
+        $this->assertSame(0.0, (float) $transaction->amount);
+        $this->assertInstanceOf(CashTransaction::class, $transaction->originalTransaction()->first());
+        $this->assertTrue(
+            Log::query()->where('affected_id', $device->id)->where('affected_type', Device::RELATION_NAME)->exists()
+        );
+    }
+
+    /**
+     * The case the feature exists for: the unit has already been taken back, so its
+     * payment plan and its owner are gone, and the credit path would reject it.
+     */
+    public function testItResetsADeviceWithNoCustomerAndNoAppliancePlan(): void {
+        $this->createTestData();
+        $device = $this->seedShs('RepossessedApi', withCustomer: false);
+        $this->bindTokenControlManufacturerApi('RepossessedApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'type' => 'reset',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonPath('data.token_type', Token::TYPE_RESET);
+        $this->assertSame(1, Token::query()->where('device_id', $device->id)->count());
+    }
+
+    public function testItGeneratesAnUnlockToken(): void {
+        $this->createTestData();
+        $device = $this->seedShs('UnlockApi');
+        $this->bindTokenControlManufacturerApi('UnlockApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'type' => 'unlock',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonPath('data.token', 'UNLOCK-TOKEN');
+        $response->assertJsonPath('data.token_type', Token::TYPE_UNLOCK);
+    }
+
+    public function testItRejectsAResetForAManufacturerThatOnlyVendsCredit(): void {
+        $this->createTestData();
+        $device = $this->seedShs('NoResetApi');
+        $this->seedEnergyServicePlan($device, pricePerDay: 100);
+        $this->bindManufacturerApi('NoResetApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'type' => 'reset',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertSame(0, Token::query()->where('device_id', $device->id)->count());
+        $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
+    }
+
+    public function testItRecordsNoTransactionWhenTheManufacturerResetFails(): void {
+        $this->createTestData();
+        $device = $this->seedShs('FailingResetApi');
+        $this->bindFailingTokenControlManufacturerApi('FailingResetApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'type' => 'reset',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertSame(0, Token::query()->where('device_id', $device->id)->count());
+        $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
+        $this->assertSame(0, CashTransaction::query()->count());
+    }
+
     public function testItValidatesTheTokenRequest(): void {
         $this->createTestData();
         $device = $this->seedShs('ValidationApi');
@@ -306,6 +445,30 @@ class DeviceControlTest extends TestCase {
         $this->actingAs($this->user)
             ->postJson("/api/devices/{$device->id}/token", ['amount' => 10, 'unit' => 'weeks'])
             ->assertJsonValidationErrorFor('unit');
+
+        $this->actingAs($this->user)
+            ->postJson("/api/devices/{$device->id}/token", ['type' => 'repossess'])
+            ->assertJsonValidationErrorFor('type');
+
+        // A credit request is what a request without a type is, so the amount it is
+        // priced from stays required.
+        $this->actingAs($this->user)
+            ->postJson("/api/devices/{$device->id}/token", [])
+            ->assertJsonValidationErrorFor('amount');
+    }
+
+    public function testItAsksForNoAmountOnAResetOrUnlockRequest(): void {
+        $this->createTestData();
+        $device = $this->seedShs('NoAmountApi');
+        $this->bindTokenControlManufacturerApi('NoAmountApi');
+
+        $this->actingAs($this->user)
+            ->postJson("/api/devices/{$device->id}/token", ['type' => 'reset'])
+            ->assertStatus(201);
+
+        $this->actingAs($this->user)
+            ->postJson("/api/devices/{$device->id}/token", ['type' => 'unlock'])
+            ->assertStatus(201);
     }
 
     public function testItRequiresAuthentication(): void {
@@ -373,11 +536,16 @@ class DeviceControlTest extends TestCase {
 
     /**
      * Binds a stand-in manufacturer API to the alias the device's manufacturer
-     * resolves by, so the endpoints can be driven without a vendor account.
+     * resolves by, so the endpoints can be driven without a vendor account. It vends
+     * credit only, standing in for the manufacturers that cannot unlock or reset.
      */
     private function bindManufacturerApi(string $apiName, float $issuedAmount = 5.0): object {
-        $api = new class($issuedAmount) implements IManufacturerAPI, IManufacturerDeviceControl {
+        $api = new class($issuedAmount) implements IManufacturerAPI {
             public function __construct(private float $issuedAmount) {}
+
+            public function capabilities(): array {
+                return [ManufacturerCapability::CreditToken];
+            }
 
             public function chargeDevice(TransactionDataContainer $transactionContainer): array {
                 return [
@@ -395,6 +563,54 @@ class DeviceControlTest extends TestCase {
             public function clearDevice(Device $device): ?array {
                 return null;
             }
+        };
+
+        $this->app->bind($apiName, fn () => $api);
+
+        return $api;
+    }
+
+    /**
+     * Binds a stand-in manufacturer API that declares both the unlock and the reset
+     * token, standing in for the SHS manufacturers whose token API can do more than
+     * top a unit up.
+     */
+    private function bindTokenControlManufacturerApi(string $apiName): object {
+        $api = new class implements IManufacturerAPI, IManufacturerDeviceControl {
+            public function capabilities(): array {
+                return [
+                    ManufacturerCapability::CreditToken,
+                    ManufacturerCapability::UnlockToken,
+                    ManufacturerCapability::ResetToken,
+                ];
+            }
+
+            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+                return [
+                    'token' => 'FAKE-TOKEN',
+                    'token_type' => Token::TYPE_TIME,
+                    'token_unit' => Token::UNIT_DAYS,
+                    'token_amount' => 5.0,
+                ];
+            }
+
+            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+                return [
+                    'token' => 'UNLOCK-TOKEN',
+                    'token_type' => Token::TYPE_UNLOCK,
+                    'token_unit' => null,
+                    'token_amount' => null,
+                ];
+            }
+
+            public function clearDevice(Device $device): array {
+                return [
+                    'token' => 'RESET-TOKEN',
+                    'token_type' => Token::TYPE_RESET,
+                    'token_unit' => null,
+                    'token_amount' => null,
+                ];
+            }
 
             public function getDeviceInfo(Device $device): array {
                 return ['mapped' => true, 'device' => null];
@@ -407,11 +623,39 @@ class DeviceControlTest extends TestCase {
     }
 
     /**
+     * Binds a manufacturer API that declares the reset token but rejects the call the
+     * way a vendor outage does, after the ad-hoc transaction has already been written.
+     */
+    private function bindFailingTokenControlManufacturerApi(string $apiName): void {
+        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
+            public function capabilities(): array {
+                return [ManufacturerCapability::ResetToken];
+            }
+
+            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+                return [];
+            }
+
+            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+                return [];
+            }
+
+            public function clearDevice(Device $device): ?array {
+                throw new ApiCallDoesNotSupportedException('The manufacturer refused the reset.');
+            }
+        });
+    }
+
+    /**
      * Binds a manufacturer API that rejects the charge the way a vendor outage does,
      * after the ad-hoc transaction has already been written.
      */
     private function bindFailingManufacturerApi(string $apiName): void {
         $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
+            public function capabilities(): array {
+                return [ManufacturerCapability::CreditToken];
+            }
+
             public function chargeDevice(TransactionDataContainer $transactionContainer): array {
                 throw new ApiCallDoesNotSupportedException('The manufacturer refused the charge.');
             }

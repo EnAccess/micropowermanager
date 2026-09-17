@@ -64,28 +64,12 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field
-                  :class="{
-                    'md-invalid': errors.has('Edit-Form.' + $tc('words.city')),
-                  }"
-                >
-                  <label for="city">
-                    {{ $tc("words.city") }}
-                  </label>
-                  <md-select
-                    v-model="selectedCity"
-                    :name="$tc('words.city')"
-                    id="city"
-                    v-validate="'required'"
-                  >
-                    <md-option v-for="c in cities" :key="c.id" :value="c.id">
-                      {{ c.name }}
-                    </md-option>
-                  </md-select>
-                  <span class="md-error">
-                    {{ errors.first("Edit-Form." + $tc("words.city")) }}
-                  </span>
-                </md-field>
+                <city-autocomplete
+                  v-model="selectedCity"
+                  :name="$tc('words.city')"
+                  required
+                  :error="errors.first('Edit-Form.' + $tc('words.city'))"
+                />
               </div>
               <div
                 class="md-layout-item md-size-50 md-small-size-100"
@@ -129,9 +113,10 @@
 <script>
 import { notify } from "@/mixins/notify.js"
 import { RoleService } from "@/services/RoleService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import Widget from "@/shared/Widget.vue"
 export default {
-  components: { Widget },
+  components: { CityAutocomplete, Widget },
   name: "EditUser",
   mixins: [notify],
   props: {
@@ -143,15 +128,11 @@ export default {
       type: Object,
       required: true,
     },
-    cities: {
-      type: Array,
-      required: true,
-    },
   },
   data() {
     return {
       sending: false,
-      selectedCity: 0,
+      selectedCity: null,
       phone: {
         valid: true,
       },
@@ -161,7 +142,7 @@ export default {
     }
   },
   mounted() {
-    this.setSelectedCity()
+    this.selectedCity = this.user.cityId ?? null
   },
   methods: {
     async loadRoles() {
@@ -199,13 +180,6 @@ export default {
       this.user.roles = this.selectedRoles
       this.$emit("updateUser", this.user)
     },
-    setSelectedCity() {
-      if (this.user.cityId) {
-        this.selectedCity = this.cities
-          .filter((x) => x.id === this.user.cityId)
-          .map((x) => x.id)[0]
-      }
-    },
     validatePhone(phone) {
       this.phone = phone
     },
@@ -222,13 +196,13 @@ export default {
   },
   watch: {
     showEditUser() {
-      this.setSelectedCity()
+      this.selectedCity = this.user.cityId ?? null
       this.loadRoles()
       this.resetPhoneValidation()
     },
     "user.id"() {
       // Reload roles and reset validation when switching between users
-      this.setSelectedCity()
+      this.selectedCity = this.user.cityId ?? null
       this.loadRoles()
       this.resetPhoneValidation()
     },

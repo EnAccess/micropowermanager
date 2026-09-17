@@ -3,8 +3,11 @@ import Client from "@/repositories/Client/AxiosClient.js"
 const resource = `/api/cities`
 
 export default {
-  list() {
-    return Client.get(`${resource}`)
+  list(params = {}) {
+    return Client.get(`${resource}`, { params })
+  },
+  get(cityId) {
+    return Client.get(`${resource}/${cityId}`)
   },
   create(city) {
     return Client.post(`${resource}`, city)
@@ -12,7 +15,10 @@ export default {
   update(cityId, city) {
     return Client.put(`${resource}/${cityId}`, city)
   },
-  delete(cityId) {
-    return Client.delete(`${resource}/${cityId}`)
+  delete(cityId, params) {
+    return Client.delete(`${resource}/${cityId}`, { data: params })
+  },
+  linkedAddresses(cityId) {
+    return Client.get(`${resource}/${cityId}/addresses`)
   },
 }

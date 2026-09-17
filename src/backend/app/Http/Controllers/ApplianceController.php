@@ -7,8 +7,10 @@ use App\Http\Requests\UpdateApplianceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Appliance;
 use App\Services\ApplianceService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
+#[Group('Appliance')]
 class ApplianceController extends Controller {
     public function __construct(private ApplianceService $applianceService) {}
 

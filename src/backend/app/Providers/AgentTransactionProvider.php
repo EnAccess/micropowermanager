@@ -3,12 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Agent;
-use App\Models\AgentBalanceHistory;
-use App\Models\AgentCommission;
 use App\Models\Transaction\AgentTransaction as AgentTransactionModel;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Providers\Interfaces\ITransactionProvider;
+use App\Services\AgentBalanceHistoryService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -19,6 +18,7 @@ class AgentTransactionProvider implements ITransactionProvider {
     public function __construct(
         private AgentTransactionModel $agentTransaction,
         private Transaction $transaction,
+        private AgentBalanceHistoryService $agentBalanceHistoryService,
     ) {}
 
     public function saveTransaction(): void {
@@ -57,33 +57,21 @@ class AgentTransactionProvider implements ITransactionProvider {
             return;
         }
 
-        // A queue retry can replay the success event for a transaction that is
-        // already on the ledger; crediting the agent twice for one payment would
-        // inflate both their balance and their commission.
-        if (AgentBalanceHistory::query()->where('transaction_id', $transaction->id)->exists()) {
-            return;
-        }
-
         $agent = $this->agentTransaction->agent;
+        $commission = $agent->commission()->first();
 
-        $history = AgentBalanceHistory::query()->make([
-            'agent_id' => $agent->id,
-            'amount' => abs($transaction->amount),
-            'transaction_id' => $transaction->id,
-        ]);
+        $this->agentBalanceHistoryService->creditBalance(
+            $agent,
+            $transaction,
+            abs($transaction->amount),
+            $this->agentTransaction,
+        );
 
-        $history->trigger()->associate($this->agentTransaction);
-        $history->save();
-
-        // create agent commission
-        $commission = AgentCommission::query()->find($agent->agent_commission_id);
-        $history = AgentBalanceHistory::query()->make([
-            'agent_id' => $agent->id,
-            'amount' => abs($transaction->amount * $commission->energy_commission),
-            'transaction_id' => $transaction->id,
-        ]);
-        $history->trigger()->associate($commission);
-        $history->save();
+        $this->agentBalanceHistoryService->creditCommission(
+            $agent,
+            $transaction,
+            abs($transaction->amount * $commission->energy_commission),
+        );
     }
 
     public function validateRequest(mixed $request): void {

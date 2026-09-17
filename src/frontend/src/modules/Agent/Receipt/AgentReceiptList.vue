@@ -22,11 +22,14 @@
           <md-table-cell md-sort-by="id" md-label="ID">
             {{ item.id }}
           </md-table-cell>
-          <md-table-cell md-label="Amount">
-            {{ moneyFormat(item.amount) }}
+          <md-table-cell md-label="Amount Collected">
+            {{ moneyFormat(item.amountCollected) }}
           </md-table-cell>
           <md-table-cell md-label="Commission Credited">
             {{ moneyFormat(item.commissionCredited) }}
+          </md-table-cell>
+          <md-table-cell md-label="Amount Received">
+            {{ moneyFormat(item.amountReceived) }}
           </md-table-cell>
           <md-table-cell md-label="Due at Visit">
             {{ moneyFormat(item.dueAtVisit) }}
@@ -68,8 +71,9 @@ export default {
       resetKey: 0,
       headers: [
         this.$tc("words.id"),
-        this.$tc("words.amount"),
+        this.$tc("phrases.amountCollected"),
         this.$tc("phrases.commissionCredited"),
+        this.$tc("phrases.amountReceived"),
         this.$tc("phrases.dueAtVisit"),
         this.$tc("phrases.collectedSinceLastVisit"),
         this.$tc("words.receiver"),

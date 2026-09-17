@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DTO\TransactionDataContainer;
 use App\Enums\DeviceTokenUnit;
 use App\Enums\DeviceType;
+use App\Enums\ManufacturerCapability;
 use App\Enums\ManufacturerMappingStatus;
 use App\Events\NewLogEvent;
 use App\Exceptions\Device\CreditPriceNotFoundException;
@@ -45,8 +46,13 @@ class DeviceControlService {
             $blocker = $e;
         }
 
+        $api = $this->resolveApi($device);
+        $declared = $api instanceof IManufacturerAPI ? $api->capabilities() : [];
+
         return new DeviceCapabilities(
             tokenGeneration: !$blocker instanceof MpmException,
+            unlockToken: in_array(ManufacturerCapability::UnlockToken, $declared, true),
+            resetToken: in_array(ManufacturerCapability::ResetToken, $declared, true),
             creditUnit: DeviceType::from($device->device_type)->creditUnit(),
             tokenGenerationBlockedReason: $blocker?->getMessage(),
         );
@@ -54,24 +60,89 @@ class DeviceControlService {
 
     /**
      * Issues a token straight from the manufacturer, without a customer payment.
-     * The credit is booked as an ad-hoc transaction because every manufacturer API
-     * writes its own reference onto one, and because an operator granting credit
-     * should stay visible next to the payments that granted the rest of it.
+     * The credit is recorded as an ad-hoc transaction because every manufacturer API
+     * writes its own reference onto one, and because credit an operator issued by hand
+     * should stay visible next to the payments that supplied the rest of it.
      *
      * Access rates, appliance installments and the minimum purchase amount are
-     * deliberately not applied — this grants credit, it does not settle a debt.
+     * deliberately not applied — this issues credit, it does not settle a debt.
      */
     public function generateToken(Device $device, float $amount, DeviceTokenUnit $unit, int $creatorId): Token {
         $api = $this->assertTokenGenerationPossible($device);
         $amountInCurrency = $this->toCurrency($device, $amount, $unit);
-        $senderPhone = (string) ($device->person->addresses()->value('phone') ?? '');
 
-        // The manufacturer call needs a persisted transaction to write its reference
-        // onto, so the grant is booked first and rolled back when the call fails —
-        // an ad-hoc transaction nobody was charged for reads as revenue. The rows all
-        // live on the tenant connection, which the request does not make the default
-        // one, so the transaction has to name it.
-        $token = DB::connection('tenant')->transaction(function () use ($api, $device, $amountInCurrency, $senderPhone, $creatorId) {
+        return $this->issueToken(
+            $device,
+            $amountInCurrency,
+            $creatorId,
+            fn (TransactionDataContainer $container) => $api->chargeDevice($container),
+            fn (Token $token) => "Ad-hoc token generated for device {$device->device_serial}: {$token}",
+        );
+    }
+
+    /**
+     * Hands the unit to its customer for good, so it keeps working without further
+     * payment. {@see self::generateResetToken()} for the terms both share.
+     */
+    public function generateUnlockToken(Device $device, int $creatorId): Token {
+        $api = $this->assertCapability($device, ManufacturerCapability::UnlockToken);
+
+        return $this->issueToken(
+            $device,
+            0.0,
+            $creatorId,
+            fn (TransactionDataContainer $container) => $api->unlockDevice($container),
+            fn (Token $token) => "Unlock token generated for device {$device->device_serial}: {$token->token}",
+        );
+    }
+
+    /**
+     * Takes the unit's remaining credit down to zero, so a repossessed unit stops
+     * running on days already paid for and can be resold under a new plan.
+     *
+     * Unlike issuing credit, this asks nothing of the device's state — a unit being
+     * repossessed has usually already lost its payment plan, and may have lost its
+     * customer too. Only the manufacturer has to support the action. Nothing is
+     * changed on the MPM side: releasing the unit stays a separate, deliberate step.
+     */
+    public function generateResetToken(Device $device, int $creatorId): Token {
+        $api = $this->assertCapability($device, ManufacturerCapability::ResetToken);
+
+        return $this->issueToken(
+            $device,
+            0.0,
+            $creatorId,
+            // clearDevice reads the unit off the device rather than the transaction, so
+            // the container it is handed goes unused here.
+            fn (TransactionDataContainer $container) => $api->clearDevice($device)
+                ?? throw new ApiCallDoesNotSupportedException("The manufacturer returned no reset token for device {$device->device_serial}."),
+            fn (Token $token) => "Reset token generated for device {$device->device_serial}: {$token->token}",
+        );
+    }
+
+    /**
+     * Writes the ad-hoc transaction, asks the manufacturer for the token and saves
+     * it against that transaction.
+     *
+     * The manufacturer call needs a persisted transaction to write its reference onto,
+     * so the transaction row is created first and rolled back when the call fails — a
+     * transaction row left behind without a token reads as revenue nobody was charged.
+     * Every row lives on the tenant connection, which the request does not make the
+     * default one, so the database transaction has to name it.
+     *
+     * @param \Closure(TransactionDataContainer): array<string, mixed> $vendToken
+     * @param \Closure(Token): string                                  $logAction
+     */
+    private function issueToken(
+        Device $device,
+        float $amountInCurrency,
+        int $creatorId,
+        \Closure $vendToken,
+        \Closure $logAction,
+    ): Token {
+        $senderPhone = (string) ($device->person?->addresses()->value('phone') ?? '');
+
+        $token = DB::connection('tenant')->transaction(function () use ($device, $amountInCurrency, $senderPhone, $creatorId, $vendToken) {
             $transaction = $this->cashTransactionService->createTransaction(
                 $creatorId,
                 $amountInCurrency,
@@ -80,7 +151,7 @@ class DeviceControlService {
                 Transaction::TYPE_AD_HOC,
             );
 
-            $tokenData = $api->chargeDevice(TransactionDataContainer::initialize($transaction));
+            $tokenData = $vendToken(TransactionDataContainer::initialize($transaction));
 
             $token = Token::query()->make($tokenData);
             $token->device_id = $device->id;
@@ -93,7 +164,7 @@ class DeviceControlService {
         event(new NewLogEvent([
             'user_id' => $creatorId,
             'affected' => $device,
-            'action' => "Ad-hoc token generated for device {$device->device_serial}: {$token}",
+            'action' => $logAction($token),
         ]));
 
         return $token;
@@ -101,7 +172,7 @@ class DeviceControlService {
 
     /**
      * Everything that has to hold before a device can be issued credit out of band:
-     * an API that vends tokens, a customer to book the grant against — several
+     * an API that vends tokens, a customer to record the transaction against — several
      * manufacturers vend against the customer record, not the unit — and a price to
      * turn money into credit. {@see self::capabilities()} reports a failure as a
      * reason and {@see self::generateToken()} raises it, so the endpoint and the UI
@@ -114,11 +185,31 @@ class DeviceControlService {
             throw new ApiCallDoesNotSupportedException('The manufacturer of this device does not support token generation.');
         }
 
+        if (!in_array(ManufacturerCapability::CreditToken, $api->capabilities(), true)) {
+            throw new ApiCallDoesNotSupportedException('The manufacturer of this device does not vend credit tokens.');
+        }
+
         if ($device->person === null) {
             throw new DeviceIsNotAssignedToCustomer("Device {$device->device_serial} is not assigned to a customer, so credit cannot be issued for it.");
         }
 
         $this->creditPrice($device);
+
+        return $api;
+    }
+
+    /**
+     * Every manufacturer serves a different subset of the calls, and a reset cannot be
+     * attempted just to find out whether it works, so the manufacturer's own
+     * declaration decides. {@see self::capabilities()} reports the same set, so the
+     * endpoint and the UI cannot disagree on what is on offer.
+     */
+    private function assertCapability(Device $device, ManufacturerCapability $capability): IManufacturerAPI {
+        $api = $this->resolveApi($device);
+
+        if (!$api instanceof IManufacturerAPI || !in_array($capability, $api->capabilities(), true)) {
+            throw new ApiCallDoesNotSupportedException("The manufacturer of this device does not support the {$capability->value} capability.");
+        }
 
         return $api;
     }

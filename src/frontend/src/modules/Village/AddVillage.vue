@@ -171,13 +171,14 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+
 import { latLonToGeoJsonPoint } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
 import { villageMapContext } from "@/mixins/villageMapContext.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
 import { CityService } from "@/services/CityService.js"
 import { ClusterService } from "@/services/ClusterService.js"
-import CountryService from "@/services/CountryService.js"
 import { ICONS, MappingService } from "@/services/MappingService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import RedirectionModal from "@/shared/RedirectionModal.vue"
@@ -206,19 +207,22 @@ export default {
       cityName: null,
       cityIndex: 0,
       cityService: new CityService(),
-      countryService: new CountryService(),
-      countries: [],
       selectedCountryId: null,
       redirectionUrl: "/locations/add-mini-grid",
       imperativeItem: "Mini-Grid",
       redirectDialogActive: false,
     }
   },
+  computed: {
+    ...mapGetters({
+      countries: "country/getCountries",
+    }),
+  },
   created() {
     this.redirectedMiniGridId = this.$route.query.id
     this.mappingService.setConstantMarkerUrl(ICONS.MINI_GRID)
     this.mappingService.setMarkerUrl(ICONS.VILLAGE)
-    this.getCountries()
+    this.loadCountries()
   },
   mounted() {
     this.setMiniGridOfVillage()
@@ -252,10 +256,9 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    async getCountries() {
+    async loadCountries() {
       try {
-        await this.countryService.getCountries()
-        this.countries = this.countryService.list
+        await this.$store.dispatch("country/setCountries")
       } catch (e) {
         this.alertNotify("error", e.message)
       }

@@ -12,9 +12,8 @@
     >
       <ticket-item
         :allow-lock="false"
-        :allow-comment="true"
+        :show-client="false"
         :ticket-list="tickets.list"
-        :table-heads="tableHeads"
       ></ticket-item>
     </widget>
 
@@ -153,7 +152,7 @@ import { notify } from "@/mixins/notify.js"
 import Client from "@/repositories/Client/AxiosClient.js"
 import { resources } from "@/resources.js"
 import { TicketLabelService } from "@/services/TicketLabelService.js"
-import { UserTickets } from "@/services/TicketService.js"
+import { TicketList } from "@/services/TicketService.js"
 import { TicketUserService } from "@/services/TicketUserService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import TicketItem from "@/shared/TicketItem.vue"
@@ -173,23 +172,8 @@ export default {
       ticketLabelService: new TicketLabelService(),
       ticketUserService: new TicketUserService(),
       subscriber: "userTickets",
-      tickets: new UserTickets(this.personId),
+      tickets: new TicketList(resources.ticket.getUser + this.personId),
       showPriceInput: false,
-      tableHeads: [
-        this.$tc("words.subject"),
-        this.$tc("words.category"),
-        this.$tc("words.status"),
-        this.$tc("words.date"),
-      ],
-      // tickets: [],
-      currentPage: 0,
-      totalPages: 0,
-      perPage: 0,
-      showTicket: null,
-      currentFrom: 0,
-      currentTo: 0,
-      total: 0,
-      loaded: false,
       showModal: false,
       users: {},
       labels: [],
@@ -270,24 +254,6 @@ export default {
     },
     openModal() {
       this.showModal = true
-    },
-    setToday() {
-      let date = new Date()
-      let year = date.getUTCFullYear()
-      let month =
-        date.getUTCMonth() + 1 < 10
-          ? "0" + (date.getUTCMonth() + 1)
-          : date.getUTCMonth() + 1
-      let day =
-        date.getUTCDate() < 10 ? "0" + date.getUTCDate() : date.getUTCDate()
-      this.newTicket.dueDate = day + "." + month + "." + year
-    },
-    closeTicket(ticket) {
-      ticket.close()
-    },
-    fetchTicket() {},
-    dateForHumans(date, format = "YYYY-MM-DD HH:mm:ss") {
-      return moment(date, format).fromNow()
     },
     async getUsers() {
       this.users = await this.ticketUserService.getUsers()

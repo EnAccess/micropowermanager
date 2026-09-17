@@ -3,6 +3,7 @@
 namespace App\Plugins\SunKingSHS\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
@@ -28,6 +29,16 @@ class SunKingSHSApi implements IManufacturerAPI, IManufacturerDeviceControl {
         private SunKingTransaction $sunKingTransaction,
         private SunKingSHSApiClient $apiClient,
     ) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+            ManufacturerCapability::UnlockToken,
+        ];
+    }
 
     /**
      * @return array{token: string, token_type: string, token_unit: string, token_amount: float}

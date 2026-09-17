@@ -29,6 +29,7 @@ Route::group([
     });
     Route::group(['prefix' => 'sold'], function () {
         Route::get('/{agentId}', [AgentSoldApplianceWebController::class, 'index']);
+        Route::post('/', [AgentSoldApplianceWebController::class, 'store']);
     });
     Route::group(['prefix' => 'commissions', 'middleware' => 'permission:settings'], function () {
         Route::get('/', [AgentCommissionWebController::class, 'index']);

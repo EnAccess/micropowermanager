@@ -32,12 +32,7 @@ class AgentReceiptService implements IBaseService {
             ->with(['user', 'agent', 'history', 'detail']);
 
         if ($agentId) {
-            $query->whereHas(
-                'agent',
-                function ($q) use ($agentId) {
-                    $q->where('agent_id', $agentId);
-                }
-            );
+            $query->where('agent_id', $agentId);
         }
 
         if ($limit) {
@@ -47,11 +42,14 @@ class AgentReceiptService implements IBaseService {
         return $query->latest()->paginate();
     }
 
-    public function getLastReceipt(int $agentId): ?AgentReceipt {
-        return $this->agentReceipt->newQuery()
-            ->where('agent_id', $agentId)
-            ->latest('id')
-            ->first();
+    public function getLastReceipt(int $agentId, ?int $beforeReceiptId = null): ?AgentReceipt {
+        $query = $this->agentReceipt->newQuery()->where('agent_id', $agentId);
+
+        if ($beforeReceiptId) {
+            $query->where('id', '<', $beforeReceiptId);
+        }
+
+        return $query->latest('id')->first();
     }
 
     /**

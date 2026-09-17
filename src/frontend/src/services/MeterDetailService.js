@@ -64,27 +64,6 @@ export class MeterDetailService {
     }
   }
 
-  async searchPersonForNewOwner(personService, term) {
-    try {
-      const { status, data } = await personService.searchPerson({
-        params: { term: term, paginate: 0 },
-      })
-      if (status !== 200)
-        return new ErrorHandler(data.data.message, "http", status)
-      return data.data.map((person) => {
-        return {
-          id: person.id,
-          name: person.name + " " + person.surname,
-          toLowerCase: () => person.name.toLowerCase(),
-          toString: () => person.name,
-        }
-      })
-    } catch (e) {
-      const errorMessage = e.response.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-
   async updateMeterDetails(meterData) {
     const params = convertObjectKeysToSnakeCase(meterData)
     try {

@@ -20,14 +20,4 @@ class AgentReceiptDetailService implements IBaseService {
     protected function crudModel(): AgentReceiptDetail {
         return $this->agentReceiptDetail;
     }
-
-    public function getSummary(int $agentId): mixed {
-        return $this->agentReceiptDetail->newQuery()->select('summary')
-            ->whereHas(
-                'receipt',
-                static function ($q) use ($agentId) {
-                    $q->where('agent_id', $agentId);
-                }
-            )->latest()->firstOrFail()->summary;
-    }
 }

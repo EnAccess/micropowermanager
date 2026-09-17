@@ -3,9 +3,16 @@
     <md-table>
       <md-table-row>
         <md-table-head></md-table-head>
-        <md-table-head v-for="head in tableHeads" :key="head">
-          {{ head }}
+        <md-table-head>{{ $tc("words.id") }}</md-table-head>
+        <md-table-head>{{ $tc("words.subject") }}</md-table-head>
+        <md-table-head v-if="showClient">
+          {{ $tc("words.customer") }}
         </md-table-head>
+        <md-table-head>{{ $tc("words.category") }}</md-table-head>
+        <md-table-head v-if="showStatusColumn">
+          {{ $tc("words.status") }}
+        </md-table-head>
+        <md-table-head>{{ $tc("words.date") }}</md-table-head>
       </md-table-row>
       <template v-for="(ticket, index) in ticketList">
         <md-table-row @click="openTicket(index)" :key="'tic' + index">
@@ -18,12 +25,20 @@
               }}
             </md-icon>
           </md-table-cell>
+          <md-table-cell>#{{ ticket.id }}</md-table-cell>
           <md-table-cell>{{ ticket.title }}</md-table-cell>
-          <md-table-cell v-if="ticket.category">
-            {{ ticket.category }}
+          <md-table-cell v-if="showClient">
+            <router-link
+              v-if="ticket.owner"
+              :to="`/people/${ticket.owner.id}`"
+              @click.native.stop
+            >
+              {{ ticket.owner.name }} {{ ticket.owner.surname }}
+            </router-link>
+            <span v-else>-</span>
           </md-table-cell>
-          <md-table-cell v-else>-</md-table-cell>
-          <md-table-cell v-if="!allowLock">
+          <md-table-cell>{{ ticket.category }}</md-table-cell>
+          <md-table-cell v-if="showStatusColumn">
             <span :class="[!ticket.closed ? 'open-ticket' : 'closed-ticket']">
               {{ !ticket.closed ? "Open" : "Closed" }}
             </span>
@@ -33,7 +48,7 @@
           </md-table-cell>
         </md-table-row>
         <md-table-row v-if="showTicket === index" :key="index">
-          <md-table-cell :colspan="tableHeads.length + 1">
+          <md-table-cell :colspan="columnCount">
             <hr
               :class="[!ticket.closed ? 'open-ticket-hr' : 'close-ticket-hr']"
             />
@@ -69,11 +84,11 @@
 
               <div class="md-layout-item md-size-100 t-text-area">
                 <md-icon>person</md-icon>
-                <span
-                  v-if="ticket.owner !== undefined && ticket.owner !== null"
-                >
-                  {{ ticket.owner.name }}
-                  {{ ticket.owner.surname }} :
+                <span v-if="ticket.owner">
+                  <router-link :to="`/people/${ticket.owner.id}`">
+                    {{ ticket.owner.name }} {{ ticket.owner.surname }}
+                  </router-link>
+                  :
                 </span>
                 <p class="t-text" v-text="ticket.description"></p>
               </div>
@@ -144,11 +159,12 @@ export default {
   name: "TicketItem",
   mixins: [notify],
   props: {
-    ticket: String,
-    allowComment: Boolean,
     ticketList: Array,
-    tableHeads: Array,
     allowLock: {
+      type: Boolean,
+      default: true,
+    },
+    showClient: {
       type: Boolean,
       default: true,
     },
@@ -165,8 +181,16 @@ export default {
         this.$store.getters["auth/authenticationService"].authenticateUser.id,
     }
   },
-  mounted() {
-    console.log("Mounted this ticket list:", this.ticketList)
+  computed: {
+    showStatusColumn() {
+      return !this.allowLock
+    },
+    columnCount() {
+      const alwaysVisibleColumnCount = 5
+      const optionalColumns = [this.showClient, this.showStatusColumn]
+
+      return alwaysVisibleColumnCount + optionalColumns.filter(Boolean).length
+    },
   },
   methods: {
     getTimeAgo(date) {
@@ -182,9 +206,6 @@ export default {
       } else {
         this.showTicket = index
       }
-    },
-    navigateToOwner(id) {
-      this.$router.push({ path: "/people/" + id })
     },
     async lockTicket(ticket) {
       try {

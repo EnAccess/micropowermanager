@@ -458,57 +458,11 @@
                 </span>
               </md-field>
             </template>
-            <div class="coordinate-section">
-              <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{ 'md-invalid': errors.has('device_latitude') }"
-                  >
-                    <label for="device_latitude">
-                      {{ $tc("words.latitude") }}
-                    </label>
-                    <md-input
-                      id="device_latitude"
-                      name="device_latitude"
-                      v-model="formattedDeviceLatitude"
-                      v-validate="'decimal:6|min_value:-90|max_value:90'"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("device_latitude") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{ 'md-invalid': errors.has('device_longitude') }"
-                  >
-                    <label for="device_longitude">
-                      {{ $tc("words.longitude") }}
-                    </label>
-                    <md-input
-                      id="device_longitude"
-                      name="device_longitude"
-                      v-model="formattedDeviceLongitude"
-                      v-validate="'decimal:6|min_value:-180|max_value:180'"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("device_longitude") }}
-                    </span>
-                  </md-field>
-                </div>
-              </div>
-              <md-button
-                class="md-primary md-raised coordinate-button"
-                type="button"
-                @click="openLocationPicker"
-              >
-                Set Device Location
-              </md-button>
-              <p class="coordinate-hint">
-                Device location defaults to the customer's primary address. Use
-                the map to adjust these coordinates if needed.
-              </p>
-            </div>
+            <DeviceLocationField
+              v-model="deviceLocation"
+              :fallback-location="fallbackDeviceLocation"
+              :marker-icon="getMarkerIconForAppliance(currentAppliance)"
+            />
           </div>
           <div
             v-if="paymentProviders.length > 0"
@@ -528,52 +482,15 @@
               </md-select>
             </md-field>
           </div>
-          <div
+          <InstallmentRateSummary
             v-if="
               applianceService.appliance.rate && tabName !== 'energy-service'
             "
-            style="padding: 1rem"
-          >
-            <div
-              style="
-                font-size: 1rem;
-                margin: 0;
-                border-bottom: solid 1px #dedede;
-              "
-            >
-              <div>
-                Cost:
-                {{ moneyFormat(applianceService.appliance.cost) }}
-                <br />
-              </div>
-              <div style="margin-top: 10px">
-                Down Payment :
-                {{ moneyFormat(applianceService.appliance.downPayment) }}
-                <br />
-              </div>
-              <div style="margin-top: 10px">
-                Rates: {{ applianceService.appliance.rate }}
-              </div>
-            </div>
-            <div v-if="showRates">
-              <div
-                v-for="x in parseInt(applianceService.appliance.rate)"
-                :key="x"
-              >
-                <span v-if="x < 10" style="opacity: 0">0</span>
-                {{ x }}&nbsp;-&nbsp;{{
-                  moneyFormat(
-                    getRate(
-                      x,
-                      applianceService.appliance.rate,
-                      applianceService.appliance.cost -
-                        applianceService.appliance.downPayment,
-                    ),
-                  )
-                }}
-              </div>
-            </div>
-          </div>
+            :cost="applianceService.appliance.cost"
+            :down-payment="applianceService.appliance.downPayment"
+            :rate-count="applianceService.appliance.rate"
+            :show-rates="showRates"
+          />
         </div>
       </md-dialog-content>
       <md-dialog-actions>
@@ -593,41 +510,6 @@
         </md-button>
       </md-dialog-actions>
     </md-dialog>
-    <md-dialog
-      :md-active.sync="showLocationPicker"
-      style="max-width: 70rem; margin: auto"
-    >
-      <md-dialog-title>Select Device Location</md-dialog-title>
-      <md-dialog-content style="overflow-y: visible">
-        <p class="coordinate-dialog-hint">
-          Click on the map to place the device marker. Only one marker is
-          allowed.
-        </p>
-        <DeviceLocationPickerMap
-          v-if="showLocationPicker"
-          :key="locationPickerKey"
-          :mapping-service="mappingService"
-          :map-container-id="locationPickerMapId"
-          :initial-location="initialDeviceLocationArray"
-          :marker-icon="getMarkerIconForAppliance(currentAppliance)"
-          @location-selected="handleLocationSelected"
-          @location-cleared="handleLocationCleared"
-        />
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button
-          class="md-primary md-raised"
-          type="button"
-          :disabled="!pendingDeviceLocation"
-          @click="confirmDeviceLocation"
-        >
-          Use Location
-        </md-button>
-        <md-button type="button" @click="closeLocationPicker">
-          {{ $tc("words.cancel") }}
-        </md-button>
-      </md-dialog-actions>
-    </md-dialog>
   </div>
 </template>
 
@@ -635,18 +517,21 @@
 import defaultMarker from "leaflet/dist/images/marker-icon.png"
 import { mapGetters } from "vuex"
 
-import DeviceLocationPickerMap from "./DeviceLocationPickerMap.vue"
-
-import { computeRateAmount } from "@/Helpers/applianceRates.js"
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
-import { geoJsonToLatLon } from "@/Helpers/Utils.js"
+import {
+  hasCoordinates,
+  locationToPoints,
+  parseGeoLocation,
+} from "@/Helpers/Utils.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { AppliancePaymentService } from "@/services/AppliancePaymentService.js"
 import { AppliancePersonService } from "@/services/AppliancePersonService.js"
 import { ApplianceService } from "@/services/ApplianceService.js"
 import { DeviceService } from "@/services/DeviceService.js"
-import { ICONS, MappingService } from "@/services/MappingService.js"
+import { ICONS } from "@/services/MappingService.js"
+import DeviceLocationField from "@/shared/DeviceLocationField.vue"
+import InstallmentRateSummary from "@/shared/InstallmentRateSummary.vue"
 import Loader from "@/shared/Loader.vue"
 
 const debounce = require("debounce")
@@ -658,7 +543,8 @@ export default {
   mixins: [currency, notify],
   components: {
     Loader,
-    DeviceLocationPickerMap,
+    DeviceLocationField,
+    InstallmentRateSummary,
   },
   props: {
     showSellApplianceModal: {
@@ -675,7 +561,6 @@ export default {
       appliancePersonService: new AppliancePersonService(),
       appliancePaymentService: new AppliancePaymentService(),
       deviceService: new DeviceService(),
-      mappingService: new MappingService(),
       selectedApplianceId: null,
       deviceSelectionList: [],
       isDeviceSelectionRequired: false,
@@ -686,10 +571,6 @@ export default {
       loading: false,
       tabName: "count-based",
       deviceLocation: null,
-      pendingDeviceLocation: null,
-      showLocationPicker: false,
-      locationPickerKey: 0,
-      locationPickerMapId: "",
       internalDialogVisible: false,
       paymentProviders: [],
       paymentProvider: 0,
@@ -698,12 +579,10 @@ export default {
     }
   },
   created() {
-    this.locationPickerMapId = `device-location-map-${this._uid}`
     this.internalDialogVisible = this.showSellApplianceModal
   },
   beforeMount() {
     this.getApplianceList()
-    this.initializeDeviceLocation()
   },
   methods: {
     getMarkerIconForAppliance(appliance) {
@@ -807,78 +686,13 @@ export default {
       })
     },
     getGeoPointsForAppliance() {
-      if (this.deviceCoordinatesAvailable) {
-        return `${this.deviceLocation.lat},${this.deviceLocation.lon}`
+      if (hasCoordinates(this.deviceLocation)) {
+        return locationToPoints(this.deviceLocation)
       }
-      const fallbackLocation = this.getFallbackLocationFromSelectedAddress()
-      if (fallbackLocation) {
-        const [lat, lon] = fallbackLocation
-        return `${lat},${lon}`
-      }
-      return null
-    },
-    openLocationPicker() {
-      if (!this.deviceLocation) {
-        this.initializeDeviceLocation()
-      }
-      this.locationPickerKey += 1
-      const fallbackLocation = this.getFallbackLocationFromSelectedAddress()
-      const center = this.deviceCoordinatesAvailable
-        ? [this.deviceLocation.lat, this.deviceLocation.lon]
-        : fallbackLocation
-      if (center) {
-        this.mappingService.setCenter(center)
-      }
-      if (this.deviceCoordinatesAvailable) {
-        this.pendingDeviceLocation = { ...this.deviceLocation }
-      } else if (fallbackLocation) {
-        this.pendingDeviceLocation = {
-          lat: fallbackLocation[0],
-          lon: fallbackLocation[1],
-        }
-      } else {
-        this.pendingDeviceLocation = null
-      }
-      this.showLocationPicker = true
-    },
-    closeLocationPicker() {
-      this.showLocationPicker = false
-      this.pendingDeviceLocation = null
-      this.locationPickerKey += 1
-    },
-    handleLocationSelected(location) {
-      this.pendingDeviceLocation = location
-    },
-    handleLocationCleared() {
-      this.pendingDeviceLocation = null
-    },
-    confirmDeviceLocation() {
-      if (this.pendingDeviceLocation) {
-        this.deviceLocation = {
-          lat: this.pendingDeviceLocation.lat,
-          lon: this.pendingDeviceLocation.lon,
-        }
-      } else {
-        const fallbackLocation = this.getFallbackLocationFromSelectedAddress()
-        this.deviceLocation = fallbackLocation
-          ? {
-              lat: fallbackLocation[0],
-              lon: fallbackLocation[1],
-            }
-          : null
-      }
-      this.closeLocationPicker()
-    },
-    initializeDeviceLocation() {
-      const fallbackLocation = this.getFallbackLocationFromSelectedAddress()
-      if (fallbackLocation) {
-        this.deviceLocation = {
-          lat: fallbackLocation[0],
-          lon: fallbackLocation[1],
-        }
-      } else {
-        this.deviceLocation = null
-      }
+      if (!this.fallbackDeviceLocation) return null
+      const [lat, lon] = this.fallbackDeviceLocation
+
+      return `${lat},${lon}`
     },
     getSelectedAddress() {
       const addresses = this.person.addresses || []
@@ -887,15 +701,6 @@ export default {
         (address) => address.isPrimary || address.is_primary,
       )
       return primaryAddress || addresses[0]
-    },
-    getFallbackLocationFromSelectedAddress() {
-      const address = this.getSelectedAddress()
-      if (!address) return null
-      const addressLocation = this.parseGeoLocation(address.geo)
-      if (addressLocation) return addressLocation
-      const cityLocation = this.parseGeoLocation(address.city?.location)
-      if (cityLocation) return cityLocation
-      return null
     },
     resetDeviceSelectionValidation() {
       const fieldName = this.$tc("phrases.selectDevice")
@@ -910,37 +715,6 @@ export default {
         this.$validator.reset(fieldName)
       }
     },
-    parseGeoLocation(geo) {
-      const location = geoJsonToLatLon(geo)
-      if (!location) return null
-      const lat = this.formatCoordinate(location.lat, "lat")
-      const lon = this.formatCoordinate(location.lon, "lon")
-      if (lat === null || lon === null) return null
-      return [lat, lon]
-    },
-    formatCoordinate(value, type) {
-      if (!this.isValidCoordinate(value, type)) return null
-      const number = Number(value)
-      return Number(number.toFixed(5))
-    },
-    isValidCoordinate(value, type) {
-      if (value === null || value === undefined) return false
-      const number = Number(value)
-      if (!Number.isFinite(number)) return false
-      if (type === "lat") {
-        return number >= -90 && number <= 90
-      }
-      if (type === "lon") {
-        return number >= -180 && number <= 180
-      }
-      return true
-    },
-    updateDeviceMarkerIcon(appliance) {
-      const icon = this.getMarkerIconForAppliance(appliance)
-      this.mappingService.setMarkerUrl(icon)
-      this.locationPickerKey += 1
-    },
-    getRate: computeRateAmount,
     checkDownPayment() {
       if (
         parseFloat(this.applianceService.appliance.downPayment) >
@@ -1034,40 +808,15 @@ export default {
     showRatesButton() {
       return this.applianceService.appliance.rate > 1
     },
-    formattedDeviceLatitude: {
-      get() {
-        if (!this.deviceLocation) return ""
-        return this.deviceLocation.lat
-      },
-      set(value) {
-        this.deviceLocation = {
-          lat: value,
-          lon: this.deviceLocation ? this.deviceLocation.lon : null,
-        }
-      },
-    },
-    formattedDeviceLongitude: {
-      get() {
-        if (!this.deviceLocation) return ""
-        return this.deviceLocation.lon
-      },
-      set(value) {
-        this.deviceLocation = {
-          lat: this.deviceLocation ? this.deviceLocation.lat : null,
-          lon: value,
-        }
-      },
-    },
-    deviceCoordinatesAvailable() {
+    // where the device sits until someone picks a spot on the map
+    fallbackDeviceLocation() {
+      const address = this.getSelectedAddress()
+      if (!address) return null
+
       return (
-        this.deviceLocation &&
-        this.isValidCoordinate(this.deviceLocation.lat, "lat") &&
-        this.isValidCoordinate(this.deviceLocation.lon, "lon")
+        parseGeoLocation(address.geo) ??
+        parseGeoLocation(address.city?.location)
       )
-    },
-    initialDeviceLocationArray() {
-      if (!this.deviceLocation) return null
-      return [this.deviceLocation.lat, this.deviceLocation.lon]
     },
     eaasMinPaymentDaysText() {
       const amount = parseFloat(this.minimumPayableAmount)
@@ -1085,7 +834,6 @@ export default {
     async showSellApplianceModal(value) {
       this.internalDialogVisible = value
       if (value) {
-        this.locationPickerKey += 1
         const providers =
           await this.appliancePaymentService.getPaymentProviders()
         if (!(providers instanceof ErrorHandler)) {
@@ -1098,7 +846,6 @@ export default {
       const appliance = this.applianceService.list.find(
         (x) => x.id === this.applianceService.appliance.id,
       )
-      this.updateDeviceMarkerIcon(appliance)
       if (this.isDeviceBindingRequired(appliance)) {
         this.isDeviceSelectionRequired = true
         this.selectedDeviceSerial = null
@@ -1111,7 +858,6 @@ export default {
         this.selectedDeviceSerial = null
         this.resetDeviceSelectionValidation()
       }
-      this.initializeDeviceLocation()
     },
   },
 }

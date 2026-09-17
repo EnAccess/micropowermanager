@@ -3,8 +3,8 @@
 namespace App\Plugins\SparkShs\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
-use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
@@ -20,6 +20,17 @@ class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceControl {
         private SparkShsTransaction $sparkShsTransaction,
         private SparkShsApiClient $apiClient,
     ) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+            ManufacturerCapability::UnlockToken,
+            ManufacturerCapability::ResetToken,
+        ];
+    }
 
     /**
      * @return array{token: string, token_type: string, token_unit: string, token_amount: float}
@@ -103,12 +114,28 @@ class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceControl {
     }
 
     /**
-     * @return array<string,mixed>|null
+     * Spark's reset token sets the kit's credit to 0.
      *
-     * @throws ApiCallDoesNotSupportedException
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
     public function clearDevice(Device $device): ?array {
-        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+        $response = $this->apiClient->post(
+            "products/kits/{$device->device_serial}/tokens",
+            ['type' => 'reset']
+        );
+
+        // Recording an empty token would leave the unit running on the credit it was
+        // meant to lose, so the status is checked before the token is handed back.
+        if (!$response->successful()) {
+            throw new SparkShsApiResponseException("Spark SHS reset token request failed with status {$response->status()}.");
+        }
+
+        return [
+            'token' => $response['token'],
+            'token_type' => Token::TYPE_RESET,
+            'token_unit' => null,
+            'token_amount' => null,
+        ];
     }
 
     /**

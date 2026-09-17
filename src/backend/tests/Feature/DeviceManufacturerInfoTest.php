@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerMappingStatus;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Jobs\VerifyDeviceMappingJob;
 use App\Lib\IManufacturerDeviceControl;
 use App\Models\Device;
@@ -142,6 +144,10 @@ class DeviceManufacturerInfoTest extends TestCase {
 
             public function getDeviceInfo(Device $device): array {
                 return $this->info;
+            }
+
+            public function resetDevice(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('This api call does not supported');
             }
         });
     }

@@ -17,6 +17,10 @@ class DeviceCapabilitiesResource extends JsonResource {
         return [
             /* Whether a token can be generated for this device without a customer payment. */
             'token_generation' => $this->tokenGeneration,
+            /* Whether the manufacturer can vend a token that releases this device from pay-as-you-go for good. */
+            'unlock_token' => $this->unlockToken,
+            /* Whether the manufacturer can vend a token that sets this device's remaining credit to zero, to repossess it. */
+            'reset_token' => $this->resetToken,
             /* The unit this device's tokens carry credit in, next to a plain currency amount. */
             'credit_unit' => $this->creditUnit?->value,
             /* Why this device cannot be issued a token, e.g. it has no customer or no price to convert money into credit. Null when it can. */

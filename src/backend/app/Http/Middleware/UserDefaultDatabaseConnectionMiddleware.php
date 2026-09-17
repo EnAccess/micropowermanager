@@ -63,9 +63,9 @@ class UserDefaultDatabaseConnectionMiddleware {
         }
 
         // Agent app endpoints carry the company in the agent bearer token, except the
-        // unauthenticated login / reset endpoints which identify it by email.
+        // unauthenticated login endpoint which identifies it by email.
         if ($this->isAgentApp($path)) {
-            if ($this->isAgentAppLoginOrReset($path)) {
+            if ($this->isAgentAppLogin($path)) {
                 return $this->handleForCompany(
                     $request,
                     $next,
@@ -101,12 +101,12 @@ class UserDefaultDatabaseConnectionMiddleware {
     }
 
     /**
-     * Agent app login / reset are unauthenticated, so they identify the company
-     * via the email in the request body rather than the agent bearer token.
+     * Agent app login is unauthenticated, so it identifies the company via the
+     * email in the request body rather than the agent bearer token.
      * Only called once the path is known to be an agent app endpoint.
      */
-    private function isAgentAppLoginOrReset(string $path): bool {
-        return $path === 'api/app/reset-password' || Str::contains($path, 'login');
+    private function isAgentAppLogin(string $path): bool {
+        return Str::contains($path, 'login');
     }
 
     private function companyIdFromLoginEmail(Request $request): int {
@@ -206,7 +206,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         }
 
         if ($method === 'POST') {
-            return $path === 'api/companies';
+            return in_array($path, ['api/companies', 'api/app/reset-password'], true);
         }
 
         return false;

@@ -66,18 +66,7 @@
       <md-dialog-content class="md-scrollbar">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50 md-small-size-100">
-            <md-autocomplete
-              md-input-name="city"
-              md-input-id="city"
-              v-model="citySearchTerm"
-              :md-options="cities"
-              @md-selected="onCitySelected"
-            >
-              <label for="city">{{ $tc("words.city") }}</label>
-              <template slot="md-autocomplete-item" slot-scope="{ item }">
-                {{ item.name }}
-              </template>
-            </md-autocomplete>
+            <city-autocomplete v-model="newAddress.city_id" />
           </div>
 
           <div class="md-layout-item md-size-50 md-small-size-100">
@@ -161,26 +150,23 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { notify } from "@/mixins/notify.js"
 import { Address, Addresses } from "@/services/AddressService.js"
-import { CityService } from "@/services/CityService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Addresses",
-  components: { Widget },
+  components: { CityAutocomplete, Widget },
   mixins: [notify],
   props: {
     personId: Number,
   },
   data() {
     return {
-      cityService: new CityService(),
       addresses: new Addresses(this.personId),
       subscriber: "personAddresses",
       modalVisibility: false,
-      newAddress: {},
-      citySearchTerm: "",
-      cities: [],
+      newAddress: { city_id: null },
       editFlag: false,
       addressIndex: 0,
       phone: {
@@ -206,13 +192,9 @@ export default {
     },
     addNewAddress() {
       this.editFlag = false
-      this.citySearchTerm = ""
       this.showModal()
     },
     showModal() {
-      if (this.cities.length === 0) {
-        this.getCities()
-      }
       this.modalVisibility = true
     },
     editAddress(address, index) {
@@ -226,15 +208,7 @@ export default {
         city_id: address.city_id,
         primary: address.primary,
       }
-      this.citySearchTerm = address.city || ""
       this.showModal()
-    },
-    async getCities() {
-      try {
-        this.cities = await this.cityService.getCities()
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
     },
     saveAddress() {
       if (this.validateNewAddress()) {
@@ -267,13 +241,8 @@ export default {
             this.addresses.appendList(response.data.data)
           })
         }
-        this.newAddress = {}
-        this.citySearchTerm = ""
+        this.newAddress = { city_id: null }
       }
-    },
-    onCitySelected(city) {
-      this.newAddress.city_id = city.id
-      this.citySearchTerm = city.name
     },
     validatePhone(phone) {
       this.phone = phone
@@ -315,8 +284,7 @@ export default {
     },
     closeModal() {
       this.modalVisibility = false
-      this.newAddress = {}
-      this.citySearchTerm = ""
+      this.newAddress = { city_id: null }
     },
     confirmDelete(address) {
       this.$swal({

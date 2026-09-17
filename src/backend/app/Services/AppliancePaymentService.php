@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Events\NewLogEvent;
 use App\Events\PaymentSuccessEvent;
+use App\Exceptions\PayerPhoneNotFoundException;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\MainSettings;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -21,7 +23,11 @@ class AppliancePaymentService {
     public float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
 
-    public function __construct(private MainSettings $mainSettings) {}
+    public function __construct(
+        private MainSettings $mainSettings,
+        private PaymentInitiationService $paymentInitiationService,
+        private PersonService $personService,
+    ) {}
 
     public function updateRateRemaining(int $id, float $amount): ApplianceRate {
         $applianceRate = ApplianceRate::query()->findOrFail($id);
@@ -52,6 +58,54 @@ class AppliancePaymentService {
             payer: $buyer->person,
             transaction: $transaction,
         ));
+    }
+
+    /**
+     * Starts a payment towards the installment plan of a sold appliance, with cash or with any
+     * provider the tenant has enabled. Shared by the admin panel and the field app, so the
+     * transaction that comes out is identical either way; `$agentId` is what records that an agent
+     * initiated it, and is null for a payment made from the admin panel.
+     *
+     * The caller resolves `$applianceDetail` (via AppliancePersonService::getSoldApplianceDetails)
+     * and dispatches ProcessPayment after committing — the provider charge can be the last thing
+     * to happen before the commit, so nothing reversible may follow it here.
+     *
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
+     */
+    public function initiateInstallmentPayment(
+        AppliancePerson $applianceDetail,
+        float $amount,
+        int $providerId,
+        ?string $payerPhoneOverride = null,
+        ?int $agentId = null,
+    ): array {
+        $this->validateAmount($applianceDetail, $amount);
+
+        $applianceOwner = $applianceDetail->person;
+
+        if (!$applianceOwner) {
+            throw new PayerPhoneNotFoundException('Appliance owner not found, so the payer could not be determined.');
+        }
+
+        $payerPhone = $payerPhoneOverride ?? $this->personService->getPrimaryPhoneNumber($applianceOwner);
+        $deviceSerial = $applianceDetail->device_serial;
+
+        $result = $this->paymentInitiationService->initiate(
+            providerId: $providerId,
+            amount: $amount,
+            sender: $payerPhone ?? '-',
+            message: $deviceSerial ?? (string) $applianceDetail->id,
+            type: Transaction::TYPE_DEFERRED_PAYMENT,
+            customerId: $applianceOwner->id,
+            serialId: $deviceSerial,
+        );
+
+        if ($agentId !== null) {
+            $result['transaction']->agent_id = $agentId;
+            $result['transaction']->save();
+        }
+
+        return $result;
     }
 
     public function validateAmount(AppliancePerson $applianceDetail, float $amount): void {
@@ -203,11 +257,27 @@ class AppliancePaymentService {
     /**
      * @return array{status: 'processing'|'processed', processed: bool, transaction_id: int}
      */
+    /**
+     * @return array{status: 'processing'|'processed'|'failed', processed: bool, transaction_id: int}
+     */
     public function checkPaymentStatus(Transaction $transaction): array {
         $processed = $transaction->paymentHistories()->exists();
+        $originalTransaction = $transaction->originalTransaction()->first();
+
+        // Providers that confirm asynchronously (a webhook rather than a synchronous push) leave a
+        // rejected payment with no payment history, which is indistinguishable from one still in
+        // the queue. The provider row's status is the only place the rejection is recorded, so
+        // report it — otherwise the client polls a dead transaction until it gives up.
+        $failed = !$processed
+            && $originalTransaction instanceof BasePaymentProviderTransaction
+            && $originalTransaction->status === BasePaymentProviderTransaction::STATUS_FAILED;
 
         return [
-            'status' => $processed ? 'processed' : 'processing',
+            'status' => match (true) {
+                $processed => 'processed',
+                $failed => 'failed',
+                default => 'processing',
+            },
             'processed' => $processed,
             'transaction_id' => $transaction->id,
         ];

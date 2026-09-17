@@ -10,7 +10,7 @@ use App\Services\AgentReceiptDetailService;
 use App\Services\AgentReceiptHistoryBalanceService;
 use App\Services\AgentReceiptService;
 use App\Services\AgentService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class AgentReceiptObserver {
     public function __construct(
@@ -26,47 +26,50 @@ class AgentReceiptObserver {
     public function created(AgentReceipt $receipt): void {
         $agentId = $receipt->agent_id;
         $agent = $this->agentService->getById($agentId);
-        $due = $agent->balance ?? 0;
-        $commissionCredited = $agent->commission_revenue;
-        $sinceLastVisit = 0;
-        $lastReceipt = $this->agentReceiptService->getLastReceipt($agentId);
+        $due = max(0.0, (float) $agent->balance);
+        $pendingCommission = max(0.0, (float) $agent->commission_revenue);
+        $collected = (float) $receipt->amount;
 
-        if ($lastReceipt instanceof AgentReceipt) {
-            $agentBalanceHistoryId = $lastReceipt->last_controlled_balance_history_id;
-            $sinceLastVisit =
-                $this->agentBalanceHistoryService->getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId);
-        }
-        try {
-            $earlier = $this->agentReceiptDetailService->getSummary($agentId);
-        } catch (ModelNotFoundException) {
-            $earlier = 0;
-        }
+        // The agent keeps their commission out of the cash they hand over, so it is
+        // credited once they have settled everything they hold, and never for more
+        // than the cash on the table.
+        $isFullSettlement = $due > 0 && round($collected, 2) >= round($due, 2);
+        $commissionCredited = $isFullSettlement ? min($pendingCommission, $collected) : 0.0;
 
-        $summary = $receipt->amount - $due;
-        $this->agentReceiptDetailService->create([
-            'agent_receipt_id' => $receipt->id,
-            'due' => $due,
-            'collected' => $receipt->amount,
-            'since_last_visit' => $sinceLastVisit,
-            'earlier' => $earlier ?? 0,
-            'summary' => $summary < 0 ? 0 : $summary,
-            'commission_credited' => $commissionCredited,
-        ]);
+        $previousReceipt = $this->agentReceiptService->getLastReceipt($agentId, beforeReceiptId: $receipt->id);
+        $sinceLastVisit = $this->agentBalanceHistoryService->getTotalAmountSinceLastVisit(
+            $previousReceipt?->last_controlled_balance_history_id,
+            $agentId,
+        );
 
-        // A receipt is money leaving the agent, so it reduces the company money
-        // they hold: the handed-over cash plus the accrued commission come off the
-        // balance in one row. The commission payout itself is recorded as an
-        // explicit negative row on the commission ledger below.
-        $balanceCredit = $this->agentBalanceHistoryService->make([
-            'agent_id' => $agent->id,
-            'amount' => -1 * ($receipt->amount + $commissionCredited),
-        ]);
-        $this->agentReceiptHistoryBalanceService->setAssignee($receipt);
-        $this->agentReceiptHistoryBalanceService->setAssigned($balanceCredit);
-        $this->agentReceiptHistoryBalanceService->assign();
-        $this->agentBalanceHistoryService->save($balanceCredit);
+        DB::connection('tenant')->transaction(function () use (
+            $receipt,
+            $agent,
+            $due,
+            $sinceLastVisit,
+            $commissionCredited,
+            $collected,
+        ): void {
+            $this->agentReceiptDetailService->create([
+                'agent_receipt_id' => $receipt->id,
+                'due' => $due,
+                'since_last_visit' => $sinceLastVisit,
+                'commission_credited' => $commissionCredited,
+            ]);
 
-        if ($commissionCredited > 0) {
+            $balanceCredit = $this->agentBalanceHistoryService->make([
+                'agent_id' => $agent->id,
+                'amount' => -1 * $collected,
+            ]);
+            $this->agentReceiptHistoryBalanceService->setAssignee($receipt);
+            $this->agentReceiptHistoryBalanceService->setAssigned($balanceCredit);
+            $this->agentReceiptHistoryBalanceService->assign();
+            $this->agentBalanceHistoryService->save($balanceCredit);
+
+            if ($commissionCredited <= 0) {
+                return;
+            }
+
             $commission = $this->agentCommissionService->getById($agent->agent_commission_id);
             $commissionPayout = $this->agentBalanceHistoryService->make([
                 'agent_id' => $agent->id,
@@ -76,6 +79,6 @@ class AgentReceiptObserver {
             $this->agentCommissionHistoryBalanceService->setAssigned($commissionPayout);
             $this->agentCommissionHistoryBalanceService->assign();
             $this->agentBalanceHistoryService->save($commissionPayout);
-        }
+        });
     }
 }

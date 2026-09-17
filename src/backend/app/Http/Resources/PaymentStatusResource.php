@@ -13,7 +13,7 @@ class PaymentStatusResource extends JsonResource {
      */
     public function toArray(Request $request): array {
         return [
-            /** @var 'processing'|'processed' Processing state of the payment transaction. */
+            /** @var 'processing'|'processed'|'failed' Processing state of the payment transaction. */
             'status' => $this->resource['status'],
             /** @var bool True once the transaction has been processed. */
             'processed' => $this->resource['processed'],

@@ -1,7 +1,10 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils.js"
 import CityRepository from "@/repositories/CityRepository.js"
-import Client from "@/repositories/Client/AxiosClient.js"
+import { resources } from "@/resources.js"
+
+const CITIES_PER_PAGE = 30
 
 // FIXME: Why is this here? It seems redundant, wrong and circular:
 // Cluster.fromJson() -> Cluster.fetchCities() -> City.fromJson() -> City.fetchCluster() -> Cluster.fromJson()
@@ -65,38 +68,41 @@ export class City {
     cluster.fromJson(data)
     return cluster
   }
-
-  getCities() {
-    return Client.get(resources.city.list)
-      .then((response) => {
-        return response.data.data
-      })
-      .catch((err) => {
-        return err
-      })
-  }
 }
 
 export class CityService {
   constructor() {
-    this.cities = []
     this.city = {
       id: 0,
       name: "",
       mini_grid_id: 0,
     }
-    this.list = []
     this.repository = CityRepository
+    this.paginator = new Paginator(resources.city.list)
   }
 
-  async getCities() {
+  async getCities({ page = 1, term = "" } = {}) {
     try {
-      const { data, status, error } = await this.repository.list()
+      const { data, status, error } = await this.repository.list({
+        page,
+        per_page: CITIES_PER_PAGE,
+        term,
+      })
       if (status !== 200) return new ErrorHandler(error, "http", status)
-      this.cities = data.data
-      this.list = data.data
 
-      return this.cities
+      return { cities: data.data, lastPage: data.last_page }
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async getCity(cityId) {
+    try {
+      const { data, status, error } = await this.repository.get(cityId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
     } catch (e) {
       const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
@@ -133,12 +139,26 @@ export class CityService {
     }
   }
 
-  async deleteCity(cityId) {
+  async deleteCity(cityId, options = {}) {
     try {
-      const { status, error } = await this.repository.delete(cityId)
+      const params = convertObjectKeysToSnakeCase(options)
+      const { status, error } = await this.repository.delete(cityId, params)
       if (status !== 200) return new ErrorHandler(error, "http", status)
 
       return true
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async getLinkedAddresses(cityId) {
+    try {
+      const { data, status, error } =
+        await this.repository.linkedAddresses(cityId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data
     } catch (e) {
       const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")

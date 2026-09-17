@@ -10,9 +10,11 @@ use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
 use App\Services\CountryService;
+use App\Services\DatabaseProxyManagerService;
 use App\Services\DatabaseProxyService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTGuard;
@@ -25,6 +27,7 @@ class AgentWebController extends Controller {
         private PersonAddressService $personAddressService,
         private CountryService $countryService,
         private DatabaseProxyService $databaseProxyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {}
 
     public function index(Request $request): ApiResource {
@@ -105,20 +108,22 @@ class AgentWebController extends Controller {
     }
 
     public function resetPassword(Request $request): JsonResponse {
-        $responseMessage = $this->agentService->resetPassword($request->input('email'));
+        $email = $request->input('email');
 
-        if ($responseMessage === 'Invalid email.') {
-            return response()->json([
-                'data' => [
-                    'message' => $responseMessage,
-                    'status_code' => 400,
-                ],
-            ], 422);
+        try {
+            $companyId = $this->databaseProxyManagerService->findByEmail($email)->getCompanyId();
+            $this->databaseProxyManagerService->runForCompany(
+                $companyId,
+                fn () => $this->agentService->resetPassword($email)
+            );
+        } catch (ModelNotFoundException) {
+            // Unknown email: fall through to the same generic response as a known
+            // one, so the caller can't use this endpoint to enumerate agent emails.
         }
 
         return response()->json([
             'data' => [
-                'message' => $responseMessage,
+                'message' => 'If the email exists, a new password has been sent to it.',
                 'status_code' => 200,
             ],
         ], 200);
