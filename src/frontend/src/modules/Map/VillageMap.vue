@@ -119,7 +119,7 @@ export default {
           const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: miniGridMarkerIcon,
           })
-          miniGridMarker.bindTooltip("Mini Grid: " + markingInfo.name)
+          miniGridMarker.bindTooltip("Site: " + markingInfo.name)
           const parent = this
           miniGridMarker.on("click", () => {
             parent.routeToDetail(markingInfo.id, markingInfo.name)

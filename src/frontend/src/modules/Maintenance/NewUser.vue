@@ -60,17 +60,17 @@
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
                     :class="{
-                      'md-invalid': errors.has($tc('words.miniGrid')),
+                      'md-invalid': errors.has($tc('words.site')),
                     }"
                   >
                     <label for="mini-grids" class="control-label">
-                      {{ $tc("words.miniGrid") }}
+                      {{ $tc("words.site") }}
                     </label>
 
                     <md-select
                       v-validate="'required'"
                       id="mini-grids"
-                      :name="$tc('words.miniGrid')"
+                      :name="$tc('words.site')"
                       v-model="maintenanceService.personData.mini_grid_id"
                     >
                       <md-option value selected disabled>
@@ -87,7 +87,7 @@
                       </md-option>
                     </md-select>
                     <span class="md-error">
-                      {{ errors.first($tc("words.miniGrid")) }}
+                      {{ errors.first($tc("words.site")) }}
                     </span>
                   </md-field>
                 </div>
@@ -209,7 +209,7 @@ export default {
       cityService: new CityService(),
       maintenanceService: new MaintenanceService(),
       loading: false,
-      imperativeItem: "Mini-Grid",
+      imperativeItem: "Site",
       redirectDialogActive: false,
       redirectionUrl: "/locations/add-mini-grid",
       phone: {

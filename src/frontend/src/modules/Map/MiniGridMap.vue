@@ -64,7 +64,7 @@ export default {
         })
       } else {
         const errorMessage =
-          "Please position your mini-grid within the selected cluster boundaries."
+          "Please position your site within the selected cluster boundaries."
         this.$emit("locationSet", {
           error: errorMessage,
           geoDataItem: undefined,
@@ -197,7 +197,7 @@ export default {
           const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: miniGridMarkerIcon,
           })
-          let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
+          let tooltip = "<strong>Site:</strong> " + markingInfo.name
           if (markingInfo.clusterId !== undefined) {
             tooltip +=
               "<br><strong>Cluster:</strong> " + markingInfo.clusterName
@@ -285,7 +285,7 @@ export default {
       const bounds = polygon.getBounds()
       if (!bounds.contains(location)) {
         const errorMessage =
-          "Please position your mini-grid within the selected cluster boundaries."
+          "Please position your site within the selected cluster boundaries."
         this.$emit("locationSet", {
           error: errorMessage,
           geoDataItem: undefined,
@@ -316,7 +316,7 @@ export default {
         await this.miniGridService.getMiniGridGeoData(miniGridId)
       const location = geoJsonToLatLon(miniGridWithGeoData.location)
       if (location == null) {
-        this.alertNotify("error", "Mini-Grid has no location")
+        this.alertNotify("error", "Site has no location")
         return
       }
       const lat = location.lat

@@ -197,7 +197,7 @@
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50">
             <md-field>
-              <label>{{ $tc("words.miniGrid") }}</label>
+              <label>{{ $tc("words.site") }}</label>
               <md-select v-model="exportFilters.miniGrid">
                 <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option

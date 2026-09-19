@@ -19,7 +19,7 @@
           <md-table-cell :md-label="$tc('words.name')">
             {{ item.name }}
           </md-table-cell>
-          <md-table-cell :md-label="$tc('words.miniGrid')">
+          <md-table-cell :md-label="$tc('words.site')">
             {{ item.mini_grid ? item.mini_grid.name : "-" }}
           </md-table-cell>
           <md-table-cell :md-label="$tc('words.country')">

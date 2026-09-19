@@ -27,11 +27,11 @@
             <div class="md-layout-item md-size-30 md-small-size-100">
               <md-field
                 :class="{
-                  'md-invalid': errors.has($tc('words.miniGrid')),
+                  'md-invalid': errors.has($tc('words.site')),
                 }"
               >
                 <label for="miniGrid">
-                  {{ $tc("words.miniGrid") }}
+                  {{ $tc("words.site") }}
                 </label>
                 <md-select
                   v-model="selectedMiniGridId"
@@ -48,7 +48,7 @@
                   </md-option>
                 </md-select>
                 <span class="md-error">
-                  {{ errors.first($tc("words.miniGrid")) }}
+                  {{ errors.first($tc("words.site")) }}
                 </span>
               </md-field>
             </div>
@@ -213,7 +213,7 @@ export default {
       countries: [],
       selectedCountryId: null,
       redirectionUrl: "/locations/add-mini-grid",
-      imperativeItem: "Mini-Grid",
+      imperativeItem: "Site",
       redirectDialogActive: false,
     }
   },

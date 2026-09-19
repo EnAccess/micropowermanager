@@ -60,15 +60,15 @@
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
                     :class="{
-                      'md-invalid': errors.has($tc('words.miniGrid')),
+                      'md-invalid': errors.has($tc('words.site')),
                     }"
                   >
                     <label>
-                      {{ $tc("words.miniGrid") }}
+                      {{ $tc("words.site") }}
                     </label>
                     <md-select
                       v-model="agentService.agent.miniGridId"
-                      :name="$tc('words.miniGrid')"
+                      :name="$tc('words.site')"
                       id="miniGridName"
                       v-validate="'required'"
                     >
@@ -81,7 +81,7 @@
                       </md-option>
                     </md-select>
                     <span class="md-error">
-                      {{ errors.first($tc("words.miniGrid")) }}
+                      {{ errors.first($tc("words.site")) }}
                     </span>
                   </md-field>
                 </div>
@@ -319,7 +319,7 @@ export default {
       confirmPassword: null,
       loading: false,
       redirectionUrl: "/locations/add-mini-grid",
-      imperativeItem: "Mini-Grid",
+      imperativeItem: "Site",
       redirectDialogActive: false,
       phone: {
         valid: true,
