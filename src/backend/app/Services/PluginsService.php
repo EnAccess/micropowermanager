@@ -64,6 +64,7 @@ class PluginsService {
     public function isPluginActive(int $pluginId): bool {
         return $this->plugin->newQuery()
             ->where('mpm_plugin_id', '=', $pluginId)
+            ->where('status', Plugins::ACTIVE)
             ->exists();
     }
 

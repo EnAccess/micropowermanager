@@ -34,6 +34,7 @@ Route::group(['prefix' => 'app'], function () {
     Route::group(['prefix' => 'agents', 'middleware' => ['auth:agent_api']], function () {
         Route::post('/firebase', [AgentFirebaseController::class, 'update']);
         Route::get('/balance', [AgentBalanceController::class, 'show']);
+        Route::get('/payment-providers', [AgentTransactionsController::class, 'paymentProviders']);
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', [AgentCustomerController::class, 'index']);
             Route::post('/', [AgentCustomerController::class, 'store']);
@@ -66,6 +67,8 @@ Route::group(['prefix' => 'app'], function () {
             Route::get('/', [AgentTransactionsController::class, 'index']);
             Route::get('/{transactionId}/token', [AgentTransactionsController::class, 'token'])
                 ->where('transactionId', '[0-9]+');
+            Route::get('/{transactionId}/status', [AgentTransactionsController::class, 'status'])
+                ->where('transactionId', '[0-9]+');
             Route::get('/{customerId}', [AgentTransactionsController::class, 'show'])
                 ->where('customerId', '[0-9]+');
             Route::post('/', [TransactionController::class, 'store'])
@@ -78,6 +81,8 @@ Route::group(['prefix' => 'app'], function () {
             Route::post('/', [AgentSoldApplianceController::class, 'store'])
                 ->middleware('agent.balance')
                 ->name('agent-sell-appliance');
+            Route::post('/{appliancePersonId}/payment', [AgentSoldApplianceController::class, 'storePayment'])
+                ->where('appliancePersonId', '[0-9]+');
         });
         Route::group(['prefix' => 'appliance_types'], function () {
             Route::get('/', [AgentAssignedAppliancesController::class, 'index']);

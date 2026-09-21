@@ -42,6 +42,10 @@ enum PaymentInitiationProvider: int {
      */
     case ThirdParty = -1;
 
+    public function requiresActivePlugin(): bool {
+        return !in_array($this, [self::Cash, self::ThirdParty], true);
+    }
+
     /** @return class-string<PaymentInitiator> */
     public function initiatorClass(): string {
         return match ($this) {
