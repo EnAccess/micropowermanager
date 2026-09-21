@@ -27,7 +27,6 @@ class AgentAppDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf'),
                 'type' => 'contract',
-                'additional_json' => ['signed_at' => '2026-05-21'],
             ],
             ['Accept' => 'application/json']
         );
@@ -100,7 +99,7 @@ class AgentAppDocumentTest extends TestCase {
         $response->assertHeader('content-disposition');
     }
 
-    public function testAgentUpdatesAdditionalJsonForOwnCustomerDocument(): void {
+    public function testTheDocumentAdditionalJsonEndpointIsGone(): void {
         Storage::fake();
         $this->bootstrapAgentWithCustomer();
         $customer = Person::query()->where('is_customer', 1)->first();
@@ -110,7 +109,6 @@ class AgentAppDocumentTest extends TestCase {
             [
                 'file' => UploadedFile::fake()->create('contract.pdf', 50, 'application/pdf'),
                 'type' => 'contract',
-                'additional_json' => ['signed_at' => '2026-05-21'],
             ],
             ['Accept' => 'application/json']
         );
@@ -118,17 +116,13 @@ class AgentAppDocumentTest extends TestCase {
 
         $response = $this->actingAs($this->agent)->patchJson(
             '/api/app/agents/customers/documents/'.$document->id,
-            ['additional_json' => ['signed_at' => '2026-06-02', 'witness' => 'Ada']]
+            ['additional_json' => ['signed_at' => '2026-06-02']]
         );
 
-        $response->assertStatus(200);
-        $this->assertEquals(
-            ['signed_at' => '2026-06-02', 'witness' => 'Ada'],
-            $document->fresh()->additional_json
-        );
+        $response->assertStatus(410);
     }
 
-    public function testAgentCannotUpdateDocumentOfForeignCustomer(): void {
+    public function testAgentCannotDeleteDocumentOfForeignCustomer(): void {
         Storage::fake();
         $this->bootstrapAgentWithCustomer();
         $foreignCustomer = $this->createCustomerInForeignMiniGrid();
@@ -142,13 +136,11 @@ class AgentAppDocumentTest extends TestCase {
             'location' => 'documents/companies/1/persons/'.$foreignCustomer->id,
         ]);
 
-        $response = $this->actingAs($this->agent)->patchJson(
-            '/api/app/agents/customers/documents/'.$foreignDocument->id,
-            ['additional_json' => ['tampered' => 'yes']]
-        );
+        $response = $this->actingAs($this->agent)
+            ->deleteJson('/api/app/agents/customers/documents/'.$foreignDocument->id);
 
         $response->assertStatus(403);
-        $this->assertNull($foreignDocument->fresh()->additional_json);
+        $this->assertNotNull($foreignDocument->fresh());
     }
 
     public function testAgentCannotDownloadDocumentOfForeignCustomer(): void {

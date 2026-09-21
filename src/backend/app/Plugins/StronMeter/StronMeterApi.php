@@ -3,6 +3,7 @@
 namespace App\Plugins\StronMeter;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
@@ -19,6 +20,15 @@ class StronMeterApi implements IManufacturerAPI {
     private string $rootUrl = '/vending/';
 
     public function __construct(protected Client $api, private StronTransaction $stronTransaction, private MainSettings $mainSettings, private StronCredential $credentials) {}
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+        ];
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;

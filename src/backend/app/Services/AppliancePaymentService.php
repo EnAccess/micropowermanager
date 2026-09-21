@@ -4,25 +4,30 @@ namespace App\Services;
 
 use App\Events\NewLogEvent;
 use App\Events\PaymentSuccessEvent;
+use App\Exceptions\PayerPhoneNotFoundException;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\MainSettings;
+use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
-use Carbon\Month;
-use Carbon\WeekDay;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class AppliancePaymentService {
     public const DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS = 30;
+    private const int WEEKLY_RATE_TYPE_MAX_DAYS = 10;
 
     public float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
 
-    public function __construct(private MainSettings $mainSettings) {}
+    public function __construct(
+        private MainSettings $mainSettings,
+        private PaymentInitiationService $paymentInitiationService,
+        private PersonService $personService,
+    ) {}
 
     public function updateRateRemaining(int $id, float $amount): ApplianceRate {
         $applianceRate = ApplianceRate::query()->findOrFail($id);
@@ -53,6 +58,54 @@ class AppliancePaymentService {
             payer: $buyer->person,
             transaction: $transaction,
         ));
+    }
+
+    /**
+     * Starts a payment towards the installment plan of a sold appliance, with cash or with any
+     * provider the tenant has enabled. Shared by the admin panel and the field app, so the
+     * transaction that comes out is identical either way; `$agentId` is what records that an agent
+     * initiated it, and is null for a payment made from the admin panel.
+     *
+     * The caller resolves `$applianceDetail` (via AppliancePersonService::getSoldApplianceDetails)
+     * and dispatches ProcessPayment after committing — the provider charge can be the last thing
+     * to happen before the commit, so nothing reversible may follow it here.
+     *
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
+     */
+    public function initiateInstallmentPayment(
+        AppliancePerson $applianceDetail,
+        float $amount,
+        int $providerId,
+        ?string $payerPhoneOverride = null,
+        ?int $agentId = null,
+    ): array {
+        $this->validateAmount($applianceDetail, $amount);
+
+        $applianceOwner = $applianceDetail->person;
+
+        if (!$applianceOwner) {
+            throw new PayerPhoneNotFoundException('Appliance owner not found, so the payer could not be determined.');
+        }
+
+        $payerPhone = $payerPhoneOverride ?? $this->personService->getPrimaryPhoneNumber($applianceOwner);
+        $deviceSerial = $applianceDetail->device_serial;
+
+        $result = $this->paymentInitiationService->initiate(
+            providerId: $providerId,
+            amount: $amount,
+            sender: $payerPhone ?? '-',
+            message: $deviceSerial ?? (string) $applianceDetail->id,
+            type: Transaction::TYPE_DEFERRED_PAYMENT,
+            customerId: $applianceOwner->id,
+            serialId: $deviceSerial,
+        );
+
+        if ($agentId !== null) {
+            $result['transaction']->agent_id = $agentId;
+            $result['transaction']->save();
+        }
+
+        return $result;
     }
 
     public function validateAmount(AppliancePerson $applianceDetail, float $amount): void {
@@ -105,16 +158,27 @@ class AppliancePaymentService {
     }
 
     /**
-     * The earliest rate still carrying a balance. Sorted by due date because the
-     * rates relation is unordered and rescheduling recreates rows, so insertion
-     * order does not reliably follow the schedule.
+     * The earliest rate still carrying a balance.
      *
      * @param Collection<int, ApplianceRate> $rates
      */
     private function nextPayableRate(Collection $rates): ?ApplianceRate {
+        return $this->inScheduleOrder($rates)->first(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
+    }
+
+    /**
+     * The rates in schedule order, re-keyed from zero. The rates relation is
+     * unordered and rescheduling recreates rows, so insertion order does not
+     * reliably follow the schedule; due date does.
+     *
+     * @param Collection<int, ApplianceRate> $rates
+     *
+     * @return Collection<int, ApplianceRate>
+     */
+    private function inScheduleOrder(Collection $rates): Collection {
         return $rates
             ->sortBy(fn (ApplianceRate $rate): int => Carbon::parse($rate->due_date)->getTimestamp())
-            ->first(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
+            ->values();
     }
 
     public function payInstallment(ApplianceRate $installment, AppliancePerson $applianceOwner, Transaction $transaction): void {
@@ -132,22 +196,55 @@ class AppliancePaymentService {
     }
 
     /**
+     * What one day of usage costs under the customer's plan. Manufacturer APIs that
+     * vend time divide a payment by this to get the number of days to grant, and
+     * ad-hoc token generation multiplies by it to go the other way.
+     */
+    public function getDailyPrice(AppliancePerson $appliancePerson): float {
+        if ($appliancePerson->isEnergyService()) {
+            return (float) ($appliancePerson->price_per_day ?? 0);
+        }
+
+        $rates = $appliancePerson->rates;
+
+        return $this->getNextPayableInstallmentCost($rates) / $this->getDayDifferenceBetweenTwoInstallments($rates);
+    }
+
+    /**
+     * The rate type of the outstanding installments, in the vocabulary the reschedule
+     * endpoint accepts. A plan does not store its rate type, so it is read back here.
+     */
+    public function getRateType(AppliancePerson $appliancePerson): string {
+        $dayDifference = $this->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates);
+
+        return $dayDifference <= self::WEEKLY_RATE_TYPE_MAX_DAYS ? 'weekly' : 'monthly';
+    }
+
+    /**
+     * How many days the installment period being paid right now covers, measured from the
+     * next payable rate because that is the period the customer's money buys. Rescheduling
+     * leaves the settled rates on the spacing they were sold on, so measuring from the
+     * start of the schedule would price tokens off a schedule that no longer applies.
+     *
      * @param Collection<int, ApplianceRate> $installments
      */
     public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {
         try {
-            $dueDates = $installments
-                ->map(fn (ApplianceRate $installment) => $installment->due_date)
-                ->filter()
-                ->map(fn (\DateTimeInterface|WeekDay|Month|string|int|float|null $dueDate): Carbon => Carbon::parse($dueDate))
-                ->sort()
-                ->values();
+            $rates = $this->inScheduleOrder($installments);
+            $currentIndex = $rates->search(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
 
-            if ($dueDates->count() < 3) {
+            if ($currentIndex === false) {
                 return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
             }
 
-            $dayDifference = (int) $dueDates[1]->diffInDays($dueDates[2], absolute: true);
+            $neighbour = $rates->get($currentIndex + 1) ?? $rates->get($currentIndex - 1);
+
+            if ($neighbour === null) {
+                return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
+            }
+
+            $dayDifference = (int) Carbon::parse($rates[$currentIndex]->due_date)
+                ->diffInDays(Carbon::parse($neighbour->due_date), absolute: true);
         } catch (\Exception $e) {
             Log::warning('Falling back to the default installment cadence.', ['message' => $e->getMessage()]);
 
@@ -160,11 +257,27 @@ class AppliancePaymentService {
     /**
      * @return array{status: 'processing'|'processed', processed: bool, transaction_id: int}
      */
+    /**
+     * @return array{status: 'processing'|'processed'|'failed', processed: bool, transaction_id: int}
+     */
     public function checkPaymentStatus(Transaction $transaction): array {
         $processed = $transaction->paymentHistories()->exists();
+        $originalTransaction = $transaction->originalTransaction()->first();
+
+        // Providers that confirm asynchronously (a webhook rather than a synchronous push) leave a
+        // rejected payment with no payment history, which is indistinguishable from one still in
+        // the queue. The provider row's status is the only place the rejection is recorded, so
+        // report it — otherwise the client polls a dead transaction until it gives up.
+        $failed = !$processed
+            && $originalTransaction instanceof BasePaymentProviderTransaction
+            && $originalTransaction->status === BasePaymentProviderTransaction::STATUS_FAILED;
 
         return [
-            'status' => $processed ? 'processed' : 'processing',
+            'status' => match (true) {
+                $processed => 'processed',
+                $failed => 'failed',
+                default => 'processing',
+            },
             'processed' => $processed,
             'transaction_id' => $transaction->id,
         ];

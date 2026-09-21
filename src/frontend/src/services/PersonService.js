@@ -8,6 +8,8 @@ import PersonRepository from "@/repositories/PersonRepository.js"
 import { resources } from "@/resources.js"
 import { EventBus } from "@/shared/eventbus.js"
 
+export const MINIMUM_CUSTOMER_SEARCH_LENGTH = 3
+
 export class Person {
   constructor() {
     this.id = null
@@ -193,6 +195,7 @@ export class PersonService {
         addresses: personData.addresses,
         devices: personData.devices,
         is_active: personData.is_active,
+        onboardingJson: personData.onboarding_json ?? {},
       }
 
       return this.person
@@ -241,6 +244,34 @@ export class PersonService {
     }
   }
 
+  async searchCustomerOptions(term) {
+    if (!term || term.trim().length < MINIMUM_CUSTOMER_SEARCH_LENGTH) {
+      return []
+    }
+    try {
+      const { status, data } = await this.repository.search({
+        params: { term: term.trim(), paginate: 0 },
+      })
+      if (status !== 200) {
+        return new ErrorHandler(data.data.message, "http", status)
+      }
+
+      return data.data.map((person) => {
+        const fullName = person.name + " " + person.surname
+
+        return {
+          id: person.id,
+          name: fullName,
+          toLowerCase: () => fullName.toLowerCase(),
+          toString: () => fullName,
+        }
+      })
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   getFullName() {
     this.fullName = this.person.name + " " + this.person.surname
     return this.fullName
@@ -278,16 +309,11 @@ export class PersonService {
     }
   }
 
-  async uploadDocument(personId, file, type, additionalJson) {
+  async uploadDocument(personId, file, type) {
     try {
       const formData = new FormData()
       formData.append("file", file)
       formData.append("type", type)
-      if (additionalJson && Object.keys(additionalJson).length > 0) {
-        Object.entries(additionalJson).forEach(([key, value]) => {
-          formData.append(`additional_json[${key}]`, value)
-        })
-      }
       const { data, status, error } = await this.repository.documents.upload(
         personId,
         formData,
@@ -310,11 +336,11 @@ export class PersonService {
     }
   }
 
-  async updateDocumentAdditional(documentId, additionalJson) {
+  async updateOnboarding(personId, answers) {
     try {
-      const { data, status, error } = await this.repository.documents.update(
-        documentId,
-        { additional_json: additionalJson ?? {} },
+      const { data, status, error } = await this.repository.updateOnboarding(
+        personId,
+        { answers },
       )
       if (status !== 200) return new ErrorHandler(error, "http", status)
 

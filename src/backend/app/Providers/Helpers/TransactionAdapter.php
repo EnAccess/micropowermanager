@@ -5,6 +5,8 @@ namespace App\Providers\Helpers;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\CashTransaction;
+use App\Plugins\FlutterwavePaymentProvider\Models\FlutterwaveTransaction;
+use App\Plugins\FlutterwavePaymentProvider\Providers\FlutterwaveTransactionProvider;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackTransactionProvider;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
@@ -34,6 +36,7 @@ class TransactionAdapter {
     private const array PROVIDER_BY_TRANSACTION = [
         AgentTransaction::class => AgentTransactionProvider::class,
         CashTransaction::class => CashTransactionProvider::class,
+        FlutterwaveTransaction::class => FlutterwaveTransactionProvider::class,
         PaystackTransaction::class => PaystackTransactionProvider::class,
         PesapalTransaction::class => PesapalTransactionProvider::class,
         SafaricomTransaction::class => SafaricomKeTransactionProvider::class,

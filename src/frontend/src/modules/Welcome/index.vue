@@ -26,34 +26,38 @@
       </div>
 
       <p class="cloud-description">
-        All required associated files to complete the installation of the
-        software as well as of its associated apps (Agent App and Customer
-        Registration App), can be found below:
+        The companion mobile app for agents and customer registration is
+        available on Google Play:
       </p>
       <div class="router-box">
-        <p>You can download our applications' .apk files from Github</p>
-        <p>
-          <a
-            href="https://github.com/EnAccess/micropowermanager-agent-app/releases/download/v1.6.1/micropowermanager-agent-app-v1.6.1-release.apk"
-          >
-            Agent App
-          </a>
-          -
-          <a
-            href="https://github.com/EnAccess/micropowermanager-customer-registration-app/releases/download/v1.5.0/micropowermanager-customer-registration-app-v1.5.0-release.apk"
-          >
-            Customer Registration App
-          </a>
-        </p>
+        <a
+          class="app-link"
+          href="https://play.google.com/store/apps/details?id=io.micropowermanager.fieldapp"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download Field App
+          <img
+            class="google-play-badge"
+            alt="Get it on Google Play"
+            :src="googlePlayBadge"
+          />
+        </a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import googlePlayBadge from "@/assets/icons/google-store.svg"
 import { config } from "@/config.js"
 export default {
   name: "WelcomePage",
+  data() {
+    return {
+      googlePlayBadge: googlePlayBadge,
+    }
+  },
   created() {
     // In the Demo environment the company registration page is hidden
     if (config.mpmEnv === "demo") {
@@ -113,10 +117,17 @@ export default {
   margin-top: 1rem;
 }
 
-.router-box p {
-  width: 100%;
-  margin-top: 8px;
-  padding: 4px;
+.app-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.google-play-badge {
+  display: block;
+  height: 32px;
+  width: auto;
 }
 
 @media (max-width: 768px) {

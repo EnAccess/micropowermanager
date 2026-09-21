@@ -76,21 +76,10 @@
 
           <!-- Province / Village -->
           <div class="md-layout-item md-size-100">
-            <md-field>
-              <label>{{ $tc("phrases.provinceVillage") }}</label>
-              <md-select v-model="localFilters.cityId">
-                <md-option :value="null">
-                  {{ $tc("words.all") }}
-                </md-option>
-                <md-option
-                  v-for="city in cities"
-                  :key="city.id"
-                  :value="city.id"
-                >
-                  {{ city.name }}
-                </md-option>
-              </md-select>
-            </md-field>
+            <city-autocomplete
+              v-model="localFilters.cityId"
+              :label="$tc('phrases.provinceVillage')"
+            />
           </div>
 
           <!-- Latest payment date -->
@@ -167,14 +156,13 @@
 import moment from "moment"
 import { mapGetters } from "vuex"
 
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
+
 export default {
   name: "CustomerFilter",
+  components: { CityAutocomplete },
   props: {
     agents: {
-      type: Array,
-      default: () => [],
-    },
-    cities: {
       type: Array,
       default: () => [],
     },

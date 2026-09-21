@@ -302,6 +302,11 @@
                       style="max-height: 32px; max-width: 100px"
                     />
                     <img
+                      v-if="item.service === 'flutterwave_transaction'"
+                      :src="flutterwaveLogo"
+                      style="max-height: 32px; max-width: 100px"
+                    />
+                    <img
                       v-if="item.service === 'safaricom_transaction'"
                       :src="safaricomLogo"
                       style="max-height: 32px; max-width: 100px"
@@ -337,7 +342,7 @@
                     :md-label="$tc('words.type')"
                     md-sort-by="original_transaction_type"
                   >
-                    {{ formatTransactionType(item.type) }}
+                    {{ transactionTypeLabel(item.type) }}
                   </md-table-cell>
 
                   <md-table-cell
@@ -464,6 +469,7 @@
 import { mapGetters } from "vuex"
 
 import agentIcon from "@/assets/icons/agent-icon.png"
+import flutterwaveLogo from "@/assets/icons/FlutterwaveLogo.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
 import paystackLogo from "@/assets/icons/Paystack.png"
 import safaricomLogo from "@/assets/icons/safaricom.svg"
@@ -475,6 +481,7 @@ import waveMoneyLogo from "@/assets/icons/WaveMoney.png"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
+import { transactionType } from "@/mixins/transactionType.js"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction.vue"
 import { resources } from "@/resources.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
@@ -487,7 +494,7 @@ import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Transactions.vue",
-  mixins: [timing, currency, notify],
+  mixins: [timing, currency, notify, transactionType],
   components: { Box, FilterTransaction, Widget },
   data() {
     return {
@@ -531,6 +538,7 @@ export default {
       swiftaLogo: swifta,
       waveComLogo: WaveComLogo,
       paystackLogo: paystackLogo,
+      flutterwaveLogo: flutterwaveLogo,
       safaricomLogo: safaricomLogo,
     }
   },
@@ -549,15 +557,6 @@ export default {
     EventBus.$off("searching", this.searching)
   },
   methods: {
-    formatTransactionType(type) {
-      const labels = {
-        energy: this.$tc("words.energy"),
-        deferred_payment: this.$tc("phrases.deferredPayment"),
-        eaas_rate: this.$tc("phrases.eaasRate"),
-        down_payment: this.$tc("phrases.downPayment"),
-      }
-      return labels[type] || type
-    },
     checkRouteChanges() {
       let isFiltering = false
       let queryParams = this.$route.query

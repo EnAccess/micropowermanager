@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\DTO\PersonListFilters;
 use App\Models\Country;
+use App\Models\EBike;
 use App\Models\Person\Person;
+use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -39,6 +42,16 @@ class PersonService implements IBaseService {
             ->allowedSorts(['id', 'created_at', 'name'])
             ->defaultSort('-created_at')
             ->get();
+    }
+
+    /**
+     * The number MPM reaches a customer on: their primary address phone. Returns null when the
+     * person has no primary address, which callers that need to reach the customer must handle.
+     */
+    public function getPrimaryPhoneNumber(Person $person): ?string {
+        $phone = $person->addresses()->where('is_primary', 1)->first()?->phone;
+
+        return $phone === null ? null : (string) $phone;
     }
 
     // associates the person with a country
@@ -314,14 +327,23 @@ class PersonService implements IBaseService {
      * @return Collection<int, Person>|array<int, Person>
      */
     public function getAllForExport(?string $miniGridName = null, ?string $villageName = null, ?string $deviceType = null, ?bool $isActive = null): Collection|array {
-        $query = $this->person->newQuery()->with([
+        /** @var array<string, \Closure|string> $relations */
+        $relations = [
             'addresses' => fn ($q) => $q->where('is_primary', 1),
-            'addresses.city',
+            'addresses.city.miniGrid',
+            'addresses.city.cluster',
             'addresses.geo',
-            'devices',
+            'devices.appliance',
+            'devices.device' => function (MorphTo $morphTo): void {
+                $morphTo->morphWith([
+                    SolarHomeSystem::class => ['appliance'],
+                    EBike::class => ['appliance'],
+                ]);
+            },
             'latestPayment',
             'agentSoldAppliance.assignedAppliance.agent.person',
-        ])->where('is_customer', 1);
+        ];
+        $query = $this->person->newQuery()->with($relations)->where('is_customer', 1);
 
         if ($miniGridName) {
             $query->whereHas('addresses', function ($q) use ($miniGridName) {

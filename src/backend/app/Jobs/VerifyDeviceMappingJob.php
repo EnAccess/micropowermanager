@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Device;
-use App\Services\DeviceService;
+use App\Services\DeviceControlService;
 use Illuminate\Support\Facades\Log;
 
 class VerifyDeviceMappingJob extends AbstractJob {
@@ -21,7 +21,7 @@ class VerifyDeviceMappingJob extends AbstractJob {
         }
 
         try {
-            resolve(DeviceService::class)->refreshManufacturerMapping($device);
+            resolve(DeviceControlService::class)->refreshManufacturerMapping($device);
         } catch (\Throwable $throwable) {
             Log::warning('Manufacturer mapping check failed for device '.$this->deviceId, [
                 'message' => $throwable->getMessage(),

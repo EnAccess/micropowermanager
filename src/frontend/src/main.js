@@ -21,6 +21,7 @@ import {
 } from "@/Helpers/PermissionGuard.js"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
 import Settings from "@/modules/Settings/Configuration/MainSettings.vue"
+import FlutterwaveTransactionDetail from "@/modules/Transactions/FlutterwaveTransactionDetail.vue"
 import MesombTransactionDetail from "@/modules/Transactions/MesombTransactionDetail.vue"
 import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail.vue"
 import PesapalTransactionDetail from "@/modules/Transactions/PesapalTransactionDetail.vue"
@@ -37,6 +38,7 @@ import Calin from "@/plugins/calin-meter/modules/Overview/Credential.vue"
 import CalinSmart from "@/plugins/calin-smart-meter/modules/Overview/Credential.vue"
 import ChintMeter from "@/plugins/chint-meter/modules/Overview/Credential.vue"
 import DalyBms from "@/plugins/daly-bms/modules/Overview/Credential.vue"
+import FlutterwavePaymentProvider from "@/plugins/flutterwave-payment-provider/Component.vue"
 import GomeLong from "@/plugins/gome-long-meter/modules/Overview/Credential.vue"
 import Kelin from "@/plugins/kelin-meter/modules/Overview/Credential.vue"
 import MicroStar from "@/plugins/micro-star-meter/modules/Overview/Credential.vue"
@@ -70,6 +72,7 @@ Vue.component("PaystackTransactionDetail", PaystackTransactionDetail)
 Vue.component("PesapalTransactionDetail", PesapalTransactionDetail)
 Vue.component("SafaricomTransactionDetail", SafaricomTransactionDetail)
 Vue.component("MesombTransactionDetail", MesombTransactionDetail)
+Vue.component("FlutterwaveTransactionDetail", FlutterwaveTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("SmsTransactionDetail", SmsTransactionDetail)
 
@@ -99,6 +102,7 @@ Vue.component("TextbeeSmsGateway", TextbeeSmsGateway)
 Vue.component("SparkShs", SparkShs)
 Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
 Vue.component("VodacomMzPaymentProvider", VodacomMzPaymentProvider)
+Vue.component("FlutterwavePaymentProvider", FlutterwavePaymentProvider)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {
@@ -142,6 +146,8 @@ const publicRouteNames = new Set([
   "/paystack/public/result",
   "/pesapal/public/payment",
   "/pesapal/public/result",
+  "/flutterwave/public/payment",
+  "/flutterwave/public/result",
 ])
 
 attachAuthStore(store)

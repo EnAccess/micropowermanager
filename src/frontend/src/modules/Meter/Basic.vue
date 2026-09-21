@@ -85,7 +85,6 @@ import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
 import { DeviceService } from "@/services/DeviceService.js"
-import { MeterDetailService } from "@/services/MeterDetailService.js"
 import { PersonService } from "@/services/PersonService.js"
 import Widget from "@/shared/Widget.vue"
 
@@ -101,29 +100,19 @@ export default {
   data() {
     return {
       deviceService: new DeviceService(),
-      meterDetailService: new MeterDetailService(),
       personService: new PersonService(),
       showOwnerEdit: false,
       customerSearchTerm: "",
-      searchTerm: "",
       newOwner: null,
       searchNames: [],
     }
   },
   methods: {
     async searchForPerson(term) {
-      if (term !== undefined && term.length > 2) {
-        try {
-          this.searchNames =
-            await this.meterDetailService.searchPersonForNewOwner(
-              this.personService,
-              term,
-            )
-        } catch (e) {
-          this.alertNotify("error", e.message)
-        }
-      } else {
-        this.hideSearch = true
+      try {
+        this.searchNames = await this.personService.searchCustomerOptions(term)
+      } catch (e) {
+        this.alertNotify("error", e.message)
       }
     },
     async updateOwner() {
@@ -172,12 +161,8 @@ export default {
         }
       })
     },
-    setOwner(owner) {
-      this.newOwner = owner
-    },
     resetOwnerEditing() {
-      this.searchTerm = ""
-      this.hideSearch = true
+      this.customerSearchTerm = ""
       this.searchNames = []
       this.showOwnerEdit = false
     },

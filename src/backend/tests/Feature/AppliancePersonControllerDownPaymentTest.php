@@ -9,6 +9,7 @@ use App\Events\TransactionSuccessfulEvent;
 use App\Jobs\ProcessPayment;
 use App\Models\Appliance;
 use App\Models\MpmPlugin;
+use App\Models\Plugins;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\Person\PersonFactory;
@@ -68,6 +69,11 @@ class AppliancePersonControllerDownPaymentTest extends TestCase {
     public function testItDispatchesProcessPaymentJobForPaystackDownPayment(): void {
         $this->createTestData();
         Queue::fake();
+
+        Plugins::query()->create([
+            'mpm_plugin_id' => MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            'status' => Plugins::ACTIVE,
+        ]);
 
         $apiService = $this->createMock(PaystackApiService::class);
         $apiService->method('initializeTransaction')->willReturn([

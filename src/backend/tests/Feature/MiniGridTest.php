@@ -30,6 +30,17 @@ class MiniGridTest extends TestCase {
         $this->assertEquals(count($response['data']), count($this->miniGridIds));
     }
 
+    public function testMiniGridListCarriesTheClusterNameWithoutItsPolygon(): void {
+        $this->createTestData();
+
+        $response = $this->actingAs($this->user)->getJson('/api/mini-grids');
+
+        $response->assertStatus(200);
+        $cluster = $response->json('data')[0]['cluster'];
+        // The polygon is only needed by the map, which fetches the cluster itself.
+        $this->assertEquals(['id', 'name'], array_keys($cluster));
+    }
+
     public function testUserGetsMiniGridById(): void {
         $clusterCount = 1;
         $miniGridCount = 2;
@@ -63,6 +74,24 @@ class MiniGridTest extends TestCase {
         // The mini-grid already had a location — it must be updated in place, not duplicated.
         $this->assertEquals([39.754433, -7.873645], $miniGrid->fresh()->location->geo_json->geometry->coordinates);
         $this->assertEquals(1, $miniGrid->location()->count());
+    }
+
+    public function testUserMovesMiniGridToAnotherCluster(): void {
+        $this->createTestData(2, 1);
+        $miniGrid = MiniGrid::query()->find($this->miniGridIds[0]);
+        $targetClusterId = $this->clusterIds[1];
+        $this->assertNotEquals($targetClusterId, $miniGrid->cluster_id);
+
+        $response = $this->actingAs($this->user)->putJson("/api/mini-grids/{$miniGrid->id}", [
+            'cluster_id' => $targetClusterId,
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertEquals($targetClusterId, $miniGrid->fresh()->cluster_id);
+
+        $listed = $this->actingAs($this->user)->getJson('/api/mini-grids');
+        $listed->assertStatus(200);
+        $this->assertEquals($targetClusterId, $listed['data'][0]['cluster']['id']);
     }
 
     public function testUserSoftDeletesChildlessMiniGrid(): void {

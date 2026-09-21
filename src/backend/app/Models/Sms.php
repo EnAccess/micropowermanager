@@ -27,6 +27,7 @@ use Illuminate\Support\Carbon;
  * @property      int          $direction
  * @property      int|null     $gateway_id
  * @property      string|null  $error_message
+ * @property      int          $attempts
  * @property-read Address|null $address
  * @property-read Model|null   $trigger
  */
