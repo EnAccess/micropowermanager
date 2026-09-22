@@ -21,7 +21,7 @@ export const villageMapContext = {
         await this.miniGridService.getMiniGridGeoData(miniGridId)
       const location = geoJsonToLatLon(miniGridWithGeoData.location)
       if (location == null) {
-        this.alertNotify("error", "Mini-Grid has no location")
+        this.alertNotify("error", "Site has no location")
         return null
       }
 

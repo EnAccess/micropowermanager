@@ -15,7 +15,7 @@ class MainSettingsFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'site_title' => 'MPM - The easiest way to manage your Mini-Grid',
+            'site_title' => 'MPM - The easiest way to manage your Site',
             'company_name' => 'MicroPowerManager',
             'currency' => '€',
             'country' => 'Germany',

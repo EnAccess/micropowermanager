@@ -32,19 +32,19 @@
                 v-model="miniGridSearchTerm"
                 v-validate="'required'"
                 :class="{
-                  'md-invalid': errors.has($tc('words.miniGrid')),
+                  'md-invalid': errors.has($tc('words.site')),
                 }"
                 :md-options="miniGridService.list"
                 @md-selected="onMiniGridSelected"
               >
                 <label for="miniGrid">
-                  {{ $tc("words.miniGrid") }}
+                  {{ $tc("words.site") }}
                 </label>
                 <template slot="md-autocomplete-item" slot-scope="{ item }">
                   {{ item.name }}
                 </template>
                 <span class="md-error">
-                  {{ errors.first($tc("words.miniGrid")) }}
+                  {{ errors.first($tc("words.site")) }}
                 </span>
               </md-autocomplete>
             </div>
@@ -209,7 +209,7 @@ export default {
       cityService: new CityService(),
       selectedCountryId: null,
       redirectionUrl: "/locations/add-mini-grid",
-      imperativeItem: "Mini-Grid",
+      imperativeItem: "Site",
       redirectDialogActive: false,
     }
   },

@@ -25,7 +25,7 @@
                 {{ $tc("menu.subMenu.addCluster") }}
               </md-menu-item>
               <md-menu-item @click="navigateRoute('/locations/add-mini-grid')">
-                {{ $tc("menu.subMenu.addMiniGrid") }}
+                {{ $tc("menu.subMenu.addSite") }}
               </md-menu-item>
               <md-menu-item @click="navigateRoute('/locations/add-village')">
                 {{ $tc("menu.subMenu.addVillage") }}
