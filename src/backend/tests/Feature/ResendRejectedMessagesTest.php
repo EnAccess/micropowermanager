@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use App\Console\Commands\ResendRejectedMessages;
+use App\Models\MpmPlugin;
 use App\Models\Sms;
-use App\Models\SmsAndroidSetting;
+use App\Plugins\AfricasTalking\AfricasTalkingGateway;
 use App\Services\SmsGatewayResolverService;
-use App\Sms\AndroidGateway;
 use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -46,16 +46,16 @@ class ResendRejectedMessagesTest extends TestCase {
     }
 
     private function mockResolverWithWorkingGateway(): void {
-        $gateway = \Mockery::mock(AndroidGateway::class);
+        $gateway = \Mockery::mock(AfricasTalkingGateway::class);
         $gateway->shouldReceive('sendSms');
 
         $this->mock(SmsGatewayResolverService::class, function (MockInterface $mock) use ($gateway) {
             $mock->shouldReceive('isSmsGatewayConfigured')->andReturn(true);
-            $mock->shouldReceive('determineGateway')->andReturn([SmsGatewayResolverService::DEFAULT_GATEWAY, null]);
+            $mock->shouldReceive('determineGateway')->andReturn([SmsGatewayResolverService::AFRICAS_TALKING_GATEWAY, null]);
             $mock->shouldReceive('resolveGatewayAndArgs')->andReturn([
                 'gateway' => $gateway,
-                'args' => ['255700000001', 'test message', '', new SmsAndroidSetting()],
-                'gatewayId' => SmsGatewayResolverService::DEFAULT_GATEWAY_ID,
+                'args' => ['test message', '255700000001', new Sms()],
+                'gatewayId' => MpmPlugin::AFRICAS_TALKING,
             ]);
         });
     }
@@ -111,7 +111,7 @@ class ResendRejectedMessagesTest extends TestCase {
 
         $sms->refresh();
         $this->assertEquals(Sms::STATUS_SENT, $sms->status);
-        $this->assertEquals(SmsGatewayResolverService::DEFAULT_GATEWAY_ID, $sms->gateway_id);
+        $this->assertEquals(MpmPlugin::AFRICAS_TALKING, $sms->gateway_id);
         $this->assertNull($sms->error_message);
         $this->assertEquals(2, $sms->attempts);
     }

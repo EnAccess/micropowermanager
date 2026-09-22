@@ -18,7 +18,6 @@ class ThirdPartyApiResolverService {
     public const VIBER_API = 'api/viber-messaging/webhook';
     public const TEST_API = 'api/testApi';
     public const WAVE_MONEY_API = 'api/wave-money/wave-money-transaction';
-    public const ANDROID_GATEWAY_CALLBACK_API = 'api/sms-android-callback';
     public const SWIFTA_PAYMENT_API = 'api/swifta/';
     public const REPORT_DOWNLOADING_API = 'api/report-downloading';
     public const DATA_EXPORTING_API = 'api/export';
@@ -40,7 +39,6 @@ class ThirdPartyApiResolverService {
         self::TEST_API => TestApiResolver::class,
         self::VIBER_API => ViberMessagingApiResolver::class,
         self::WAVE_MONEY_API => WaveMoneyApiResolver::class,
-        self::ANDROID_GATEWAY_CALLBACK_API => AndroidGatewayCallbackApiResolver::class,
         self::SWIFTA_PAYMENT_API => SwiftaPaymentApiResolver::class,
         self::REPORT_DOWNLOADING_API => DownloadingReportsResolver::class,
         self::DATA_EXPORTING_API => DataExportResolver::class,
