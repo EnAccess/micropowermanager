@@ -50,7 +50,7 @@
             <!-- minigrid select should be displayed on connection groups and connection types too-->
             <div class="md-layout-item md-size-100" v-if="tab !== 'person'">
               <md-field>
-                <label>{{ $tc("words.miniGrid") }}</label>
+                <label>{{ $tc("words.site") }}</label>
                 <md-select id="miniGrid_select" v-model="miniGrid">
                   <md-option value="0">
                     {{ $tc("words.all") }}

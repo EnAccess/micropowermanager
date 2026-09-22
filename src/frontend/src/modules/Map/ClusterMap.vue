@@ -235,7 +235,7 @@ export default {
           const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: miniGridMarkerIcon,
           })
-          let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
+          let tooltip = "<strong>Site:</strong> " + markingInfo.name
           if (markingInfo.clusterId !== undefined) {
             tooltip +=
               "<br><strong>Cluster:</strong> " + markingInfo.clusterName
