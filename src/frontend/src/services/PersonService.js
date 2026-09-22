@@ -8,6 +8,8 @@ import PersonRepository from "@/repositories/PersonRepository.js"
 import { resources } from "@/resources.js"
 import { EventBus } from "@/shared/eventbus.js"
 
+export const MINIMUM_CUSTOMER_SEARCH_LENGTH = 3
+
 export class Person {
   constructor() {
     this.id = null
@@ -239,6 +241,34 @@ export class PersonService {
     } catch (e) {
       let erorMessage = e.response.data.message
       return new ErrorHandler(erorMessage, "http")
+    }
+  }
+
+  async searchCustomerOptions(term) {
+    if (!term || term.trim().length < MINIMUM_CUSTOMER_SEARCH_LENGTH) {
+      return []
+    }
+    try {
+      const { status, data } = await this.repository.search({
+        params: { term: term.trim(), paginate: 0 },
+      })
+      if (status !== 200) {
+        return new ErrorHandler(data.data.message, "http", status)
+      }
+
+      return data.data.map((person) => {
+        const fullName = person.name + " " + person.surname
+
+        return {
+          id: person.id,
+          name: fullName,
+          toLowerCase: () => fullName.toLowerCase(),
+          toString: () => fullName,
+        }
+      })
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
     }
   }
 

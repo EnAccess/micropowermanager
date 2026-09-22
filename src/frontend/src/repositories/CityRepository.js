@@ -3,8 +3,11 @@ import Client from "@/repositories/Client/AxiosClient.js"
 const resource = `/api/cities`
 
 export default {
-  list() {
-    return Client.get(`${resource}`)
+  list(params = {}) {
+    return Client.get(`${resource}`, { params })
+  },
+  get(cityId) {
+    return Client.get(`${resource}/${cityId}`)
   },
   create(city) {
     return Client.post(`${resource}`, city)

@@ -28,7 +28,7 @@ class CreateAgentReceiptRequest extends FormRequest {
                 function (string $attribute, mixed $value, \Closure $fail): void {
                     $agent = Agent::query()->find($this->input('agent_id'));
                     if ($agent && (float) $value > $agent->balance) {
-                        $fail('The receipt amount cannot exceed the amount the agent owes ('.$agent->balance.').');
+                        $fail('The amount collected cannot exceed the company money the agent is holding ('.$agent->balance.').');
                     }
                 },
             ],

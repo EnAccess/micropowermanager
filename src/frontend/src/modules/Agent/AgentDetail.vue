@@ -187,9 +187,7 @@
                     </md-field>
 
                     <md-field>
-                      <label for="miniGrid">
-                        {{ $tc("words.miniGrid") }} :
-                      </label>
+                      <label for="miniGrid">{{ $tc("words.site") }} :</label>
                       <md-select
                         name="miniGrid"
                         id="miniGrid"

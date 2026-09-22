@@ -274,86 +274,79 @@
               color="primary"
             >
               <md-card>
-                <div
-                  v-if="
+                <md-card-content v-if="ot.status === 1 && hasPaymentHistory">
+                  <div class="md-layout md-gutter md-size-100">
+                    <div class="md-layout-item md-size-55" style="margin: auto">
+                      <payment-history-chart
+                        :paymentdata="transaction.payment_histories"
+                      />
+                    </div>
+                    <div
+                      class="md-layout-item md-size-45"
+                      style="max-height: 320px; overflow-y: scroll"
+                    >
+                      <md-table>
+                        <md-table-row>
+                          <md-table-head>
+                            {{ $tc("phrases.paidFor") }}
+                          </md-table-head>
+                          <md-table-head>
+                            {{ $tc("words.amount") }}
+                          </md-table-head>
+                        </md-table-row>
+                        <md-table-row
+                          v-for="(p, i) in transaction.payment_histories"
+                          :key="i"
+                        >
+                          <md-table-cell>
+                            <p>
+                              {{ formatPaymentType(p.payment_type) }}
+                            </p>
+                          </md-table-cell>
+                          <md-table-cell>
+                            {{ moneyFormat(p.amount) }}
+                          </md-table-cell>
+                        </md-table-row>
+                      </md-table>
+                    </div>
+                  </div>
+                </md-card-content>
+                <md-card-content
+                  v-else-if="
                     transaction.original_transaction_type ===
                     'third_party_transaction'
                   "
                 >
-                  <md-card-content>
-                    <div class="md-layout md-gutter md-size-100">
-                      <ul style="margin: auto">
-                        <li>
-                          {{ $tc("phrases.untraceableTransaction") }}
-                        </li>
-                      </ul>
-                    </div>
-                  </md-card-content>
-                </div>
-                <div v-else>
-                  <md-card-content v-if="ot.status === 1 && hasPaymentHistory">
-                    <div class="md-layout md-gutter md-size-100">
-                      <div
-                        class="md-layout-item md-size-55"
-                        style="margin: auto"
-                      >
-                        <payment-history-chart
-                          :paymentdata="transaction.payment_histories"
-                        />
-                      </div>
-                      <div
-                        class="md-layout-item md-size-45"
-                        style="max-height: 320px; overflow-y: scroll"
-                      >
-                        <md-table>
-                          <md-table-row>
-                            <md-table-head>
-                              {{ $tc("phrases.paidFor") }}
-                            </md-table-head>
-                            <md-table-head>
-                              {{ $tc("words.amount") }}
-                            </md-table-head>
-                          </md-table-row>
-                          <md-table-row
-                            v-for="(p, i) in transaction.payment_histories"
-                            :key="i"
-                          >
-                            <md-table-cell>
-                              <p>
-                                {{ formatPaymentType(p.payment_type) }}
-                              </p>
-                            </md-table-cell>
-                            <md-table-cell>
-                              {{ moneyFormat(p.amount) }}
-                            </md-table-cell>
-                          </md-table-row>
-                        </md-table>
-                      </div>
-                    </div>
-                  </md-card-content>
-                  <md-card-content v-if="showConflicts">
-                    <md-list>
-                      <md-subheader
-                        :class="
-                          isCancelled
-                            ? 'conflict-cancelled'
-                            : 'conflict-attention'
-                        "
-                      >
-                        {{ conflictHeadline }}
-                      </md-subheader>
+                  <div class="md-layout md-gutter md-size-100">
+                    <ul style="margin: auto">
+                      <li>
+                        {{ $tc("phrases.untraceableTransaction") }}
+                      </li>
+                    </ul>
+                  </div>
+                </md-card-content>
+                <md-card-content v-if="showConflicts">
+                  <md-list>
+                    <md-subheader
+                      :class="
+                        isCancelled
+                          ? 'conflict-cancelled'
+                          : 'conflict-attention'
+                      "
+                    >
+                      {{ conflictHeadline }}
+                    </md-subheader>
 
-                      <md-list-item
-                        :key="conflict.id"
-                        v-for="conflict in conflicts"
-                      >
-                        <span class="conflict-state">
-                          {{ conflict.state }}
-                        </span>
-                      </md-list-item>
-                    </md-list>
-                  </md-card-content>
-                </div>
+                    <md-list-item
+                      :key="conflict.id"
+                      v-for="conflict in conflicts"
+                    >
+                      <span class="conflict-state">
+                        {{ conflict.state }}
+                      </span>
+                    </md-list-item>
+                  </md-list>
+                </md-card-content>
               </md-card>
             </widget>
           </div>

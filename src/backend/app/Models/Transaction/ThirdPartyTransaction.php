@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
  * @property      string                                $transaction_id
  * @property      int                                   $status
  * @property      string|null                           $description
+ * @property      string|null                           $source
  * @property      string|null                           $manufacturer_transaction_type
  * @property      int|null                              $manufacturer_transaction_id
  * @property      Carbon|null                           $created_at

@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Events\NewLogEvent;
+use App\Models\Address\Address;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\Device;
 use App\Models\Log;
 use App\Models\MainSettings;
+use App\Models\Person\Person;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -177,6 +179,31 @@ class AppliancePersonService implements IBaseService, IAssociative {
 
     public function getBySerialNumber(string $serialNumber): ?AppliancePerson {
         return $this->appliancePerson->newQuery()->where('device_serial', $serialNumber)->first();
+    }
+
+    /**
+     * Payable devices (non-deleted plans only) belonging to whichever customer(s) have this
+     * phone number on any of their addresses. A phone isn't unique to one address or one
+     * customer, so this returns the union across every match rather than erroring.
+     *
+     * @return Collection<int, AppliancePerson>
+     */
+    public function getPayableByPhone(string $normalizedPhone): Collection {
+        $personIds = Address::query()
+            ->whereMorphedTo('owner', Person::class)
+            ->where('phone', $normalizedPhone)
+            ->pluck('owner_id');
+
+        if ($personIds->isEmpty()) {
+            return new Collection();
+        }
+
+        return $this->appliancePerson->newQuery()
+            ->with('appliance.applianceType', 'person', 'rates')
+            ->whereIn('person_id', $personIds)
+            ->whereNotNull('device_serial')
+            ->where('device_serial', '!=', '')
+            ->get();
     }
 
     public function getCountByClusterId(int $clusterId): int {

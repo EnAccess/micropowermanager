@@ -60,15 +60,15 @@
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
                     :class="{
-                      'md-invalid': errors.has($tc('words.miniGrid')),
+                      'md-invalid': errors.has($tc('words.site')),
                     }"
                   >
                     <label>
-                      {{ $tc("words.miniGrid") }}
+                      {{ $tc("words.site") }}
                     </label>
                     <md-select
                       v-model="agentService.agent.miniGridId"
-                      :name="$tc('words.miniGrid')"
+                      :name="$tc('words.site')"
                       id="miniGridName"
                       v-validate="'required'"
                     >
@@ -81,7 +81,7 @@
                       </md-option>
                     </md-select>
                     <span class="md-error">
-                      {{ errors.first($tc("words.miniGrid")) }}
+                      {{ errors.first($tc("words.site")) }}
                     </span>
                   </md-field>
                 </div>
@@ -284,7 +284,6 @@
 <script>
 import moment from "moment"
 
-import CountryService from "../../services/CountryService.js"
 import RedirectionModal from "../../shared/RedirectionModal.vue"
 
 import { notify } from "@/mixins/notify.js"
@@ -308,18 +307,16 @@ export default {
     return {
       agentService: new AgentService(),
       miniGridService: new MiniGridService(),
-      countryService: new CountryService(),
       agentCommissionService: new AgentCommissionService(),
       agentCommissions: [],
       users: [],
       selectedUser: null,
       selectedMiniGridId: "",
       miniGrids: [],
-      countries: [],
       confirmPassword: null,
       loading: false,
       redirectionUrl: "/locations/add-mini-grid",
-      imperativeItem: "Mini-Grid",
+      imperativeItem: "Site",
       redirectDialogActive: false,
       phone: {
         valid: true,
@@ -330,7 +327,6 @@ export default {
 
   mounted() {
     this.getMiniGrids()
-    this.getCountries()
     this.getAgentCommissions()
   },
   methods: {
@@ -340,13 +336,6 @@ export default {
         if (this.miniGrids.length < 0) {
           this.redirectDialogActive = true
         }
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
-    async getCountries() {
-      try {
-        this.countries = await this.countryService.getCountries()
       } catch (e) {
         this.alertNotify("error", e.message)
       }

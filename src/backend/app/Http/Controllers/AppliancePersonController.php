@@ -15,11 +15,13 @@ use App\Services\ApplianceRateService;
 use App\Services\DeviceService;
 use App\Services\UserAppliancePersonService;
 use App\Services\UserService;
+use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+#[Group('Appliance / Person')]
 class AppliancePersonController extends Controller {
     public function __construct(
         private AppliancePerson $appliancePerson,

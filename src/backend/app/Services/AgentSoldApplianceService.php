@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use App\Jobs\ProcessPayment;
+use App\Enums\PaymentInitiationProvider;
 use App\Models\Agent;
+use App\Models\AgentAssignedAppliances;
 use App\Models\AgentSoldAppliance;
 use App\Models\AppliancePerson;
 use App\Models\GeographicalInformation;
+use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -23,19 +25,18 @@ class AgentSoldApplianceService implements IBaseService {
 
     public function __construct(
         private AgentAppliancePersonService $agentAppliancePersonService,
-        private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentBalanceHistoryService $agentBalanceHistoryService,
-        private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
         private AgentCommissionService $agentCommissionService,
         private AgentService $agentService,
         private AgentSoldAppliance $agentSoldAppliance,
         private AgentTransactionService $agentTransactionService,
-        private AgentTransactionTransactionService $agentTransactionTransactionService,
+        private PaymentInitiationService $paymentInitiationService,
         private AppliancePersonService $appliancePersonService,
         private ApplianceRateService $applianceRateService,
         private AppliancePerson $appliancePerson,
         private DeviceService $deviceService,
+        private PersonService $personService,
         private TransactionService $transactionService,
     ) {}
 
@@ -76,51 +77,12 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<int, AgentSoldAppliance>|LengthAwarePaginator<int, AppliancePerson>
-     */
-    public function getAll(
-        ?int $limit = null,
-        ?int $agentId = null,
-        ?int $customerId = null,
-        bool $forApp = false,
-    ): Collection|LengthAwarePaginator {
-        if ($forApp) {
-            return $this->list($agentId);
-        }
-
-        $query = $this->agentSoldAppliance->newQuery()->with([
-            'assignedAppliance',
-            'assignedAppliance.appliance.applianceType',
-            'person',
-        ]);
-
-        if ($agentId) {
-            $query->whereHas(
-                'assignedAppliance',
-                function ($q) use ($agentId) {
-                    $q->whereHas(
-                        'agent',
-                        function ($q) use ($agentId) {
-                            $q->where('agent_id', $agentId);
-                        }
-                    );
-                }
-            );
-        }
-        if ($customerId) {
-            $query->where('person_id', $customerId);
-        }
-        if ($limit) {
-            return $query->latest()->paginate($limit);
-        }
-
-        return $query->latest()->paginate();
-    }
-
-    /**
+     * The sales an agent made, as AppliancePerson records: their ids address the sold
+     * appliance detail endpoint and their cost is what the customer was charged.
+     *
      * @return LengthAwarePaginator<int, AppliancePerson>
      */
-    public function list(int $agentId): LengthAwarePaginator {
+    public function list(int $agentId, ?int $limit = null): LengthAwarePaginator {
         return $this->appliancePerson->newQuery()
             ->with([...$this->agentAppEagerLoads(), 'appliance.applianceType'])
             ->whereHasMorph(
@@ -130,7 +92,22 @@ class AgentSoldApplianceService implements IBaseService {
                     $q->where('id', $agentId);
                 }
             )->latest()
-            ->paginate();
+            ->paginate($limit);
+    }
+
+    /**
+     * A sold appliance the agent may collect a payment for: any in their mini-grid, including one
+     * sold by an admin or by another agent, since collection is a field visit rather than a claim
+     * on the original sale.
+     */
+    public function findForAgent(Agent $agent, int $appliancePersonId): AppliancePerson {
+        return $this->appliancePerson->newQuery()
+            ->whereHas(
+                'person.addresses',
+                fn ($q) => $q->where('is_primary', 1)
+                    ->whereHas('city', fn ($q) => $q->where('mini_grid_id', $agent->mini_grid_id))
+            )
+            ->findOrFail($appliancePersonId);
     }
 
     /**
@@ -144,40 +121,42 @@ class AgentSoldApplianceService implements IBaseService {
 
     /**
      * @param array<string, mixed> $requestData
+     *
+     * @return array{sold_appliance: AgentSoldAppliance, transaction: Transaction|null, provider_data: array<string, mixed>, process_immediately: bool}
      */
-    public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData, int $companyId): Transaction {
+    public function sell(array $requestData): array {
+        $agentSoldAppliance = $this->create([
+            'person_id' => $requestData['person_id'],
+            'agent_assigned_appliance_id' => $requestData['agent_assigned_appliance_id'],
+        ]);
+
+        return ['sold_appliance' => $agentSoldAppliance]
+            + $this->processSaleFromRequest($agentSoldAppliance, $requestData);
+    }
+
+    /**
+     * Records the sale and starts its down payment. The down payment is an outstanding rate due on
+     * the day of the sale, collected through the transaction pipeline so that it issues a token
+     * like any other payment against the appliance does.
+     *
+     * The provider charge is the last thing this does, so a rejection unwinds the whole sale when
+     * the caller rolls back. Returns a null transaction when there is no down payment to collect.
+     *
+     * @param array<string, mixed> $requestData
+     *
+     * @return array{transaction: Transaction|null, provider_data: array<string, mixed>, process_immediately: bool}
+     */
+    public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): array {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
-        $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
         $paymentType = $requestData['payment_type'] ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
         $rateType = $requestData['rate_type'] ?? 'monthly';
         $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
 
-        $downPayment = $requestData['down_payment'] ?: 0;
-
-        // create agent transaction
-        $agentTransactionData = [
-            'agent_id' => $agent->id,
-            'mobile_device_id' => $agent->mobile_device_id,
-            'status' => 1,
-        ];
-        $agentTransaction = $this->agentTransactionService->create($agentTransactionData);
-
-        // assign agent transaction to transaction
-        $transactionData = [
-            'amount' => $downPayment,
-            'sender' => 'Agent-'.$agent->id,
-            'message' => $deviceSerial ?? '-',
-            'type' => Transaction::TYPE_DOWN_PAYMENT,
-        ];
-
-        $transaction = $this->transactionService->make($transactionData);
-        $this->agentTransactionTransactionService->setAssignee($agentTransaction);
-        $this->agentTransactionTransactionService->setAssigned($transaction);
-        $this->agentTransactionTransactionService->assign();
-        $this->transactionService->save($transaction);
+        $downPayment = $requestData['down_payment'] ?? 0;
+        $collectsDownPayment = $downPayment > 0;
 
         // assign agent to appliance person
         $appliancePersonData = [
@@ -199,11 +178,6 @@ class AgentSoldApplianceService implements IBaseService {
         $this->agentAppliancePersonService->assign();
         $this->appliancePersonService->save($appliancePerson);
 
-        if (!$deviceSerial) {
-            $transaction->message = (string) $appliancePerson->id;
-            $this->transactionService->save($transaction);
-        }
-
         if ($deviceSerial) {
             $device = $this->deviceService->getBySerialNumber($deviceSerial);
             $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
@@ -218,42 +192,116 @@ class AgentSoldApplianceService implements IBaseService {
         if (!$isEnergyService) {
             $this->applianceRateService->create($appliancePerson, $rateType);
 
-            if ($appliancePerson->down_payment > 0) {
+            if ($collectsDownPayment) {
                 $this->applianceRateService->createDownPaymentRate($appliancePerson);
             }
         }
 
-        if ($appliancePerson->down_payment > 0) {
-            dispatch(new ProcessPayment($companyId, $transaction->id));
+        // The routing key TransactionPaymentProcessor resolves the payment against.
+        $message = $deviceSerial ?? (string) $appliancePerson->id;
+        $providerId = (int) ($requestData['payment_provider'] ?? PaymentInitiationProvider::Cash->value);
+
+        if ($providerId === PaymentInitiationProvider::Cash->value) {
+            return $this->recordCashDownPayment($agent, $assignedAppliance, (float) $downPayment, $message, $collectsDownPayment);
         }
 
-        // assign agent assigned appliance to agent balance history
-        $agentBalanceHistoryData = [
-            'agent_id' => $agent->id,
-            'amount' => $requestData['down_payment'],
-            'transaction_id' => $transaction->id,
-        ];
-        $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
-        $this->agentAssignedApplianceHistoryBalanceService->setAssignee($assignedAppliance);
-        $this->agentAssignedApplianceHistoryBalanceService->setAssigned($agentBalanceHistory);
-        $this->agentAssignedApplianceHistoryBalanceService->assign();
-        $this->agentBalanceHistoryService->save($agentBalanceHistory);
+        if (!$collectsDownPayment) {
+            return ['transaction' => null, 'provider_data' => [], 'process_immediately' => false];
+        }
 
-        // create agent commission
+        return $this->initiateProviderDownPayment(
+            $agent,
+            $this->personService->getById($appliancePerson->person_id),
+            (float) $downPayment,
+            $message,
+            $deviceSerial,
+            $providerId,
+            $requestData['payer_phone'] ?? null,
+        );
+    }
+
+    /**
+     * The agent took the money, so their balance and commission are credited here rather than off a
+     * settlement event. The customer's side of the payment — the down payment rate, the payment
+     * history and the token — is left to the transaction pipeline, which is why the caller is asked
+     * to process the transaction immediately.
+     *
+     * The commission is earned on the sale itself, so it is credited even when the agent collected
+     * no down payment.
+     *
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
+     */
+    private function recordCashDownPayment(
+        Agent $agent,
+        AgentAssignedAppliances $assignedAppliance,
+        float $downPayment,
+        string $message,
+        bool $collectsDownPayment,
+    ): array {
+        $agentTransaction = $this->agentTransactionService->create([
+            'agent_id' => $agent->id,
+            'mobile_device_id' => $agent->mobile_device_id,
+            'status' => 1,
+        ]);
+
+        $transaction = $this->transactionService->make([
+            'amount' => $downPayment,
+            'sender' => 'Agent-'.$agent->id,
+            'message' => $message,
+            'type' => Transaction::TYPE_DOWN_PAYMENT,
+        ]);
+        $transaction->originalTransaction()->associate($agentTransaction);
+        $this->transactionService->save($transaction);
+
         $agentCommission = $this->agentCommissionService->getById($agent->agent_commission_id);
 
-        // assign agent commission to agent balance history
-        $agentBalanceHistoryData = [
-            'agent_id' => $agent->id,
-            'amount' => ($assignedAppliance->cost * $agentCommission->appliance_commission),
-            'transaction_id' => $transaction->id,
-        ];
-        $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
-        $this->agentCommissionHistoryBalanceService->setAssignee($agentCommission);
-        $this->agentCommissionHistoryBalanceService->setAssigned($agentBalanceHistory);
-        $this->agentCommissionHistoryBalanceService->assign();
-        $this->agentBalanceHistoryService->save($agentBalanceHistory);
+        $this->agentBalanceHistoryService->creditBalance(
+            $agent,
+            $transaction,
+            $downPayment,
+            $assignedAppliance,
+        );
 
-        return $transaction;
+        $this->agentBalanceHistoryService->creditCommission(
+            $agent,
+            $transaction,
+            $assignedAppliance->cost * $agentCommission->appliance_commission,
+        );
+
+        return ['transaction' => $transaction, 'provider_data' => [], 'process_immediately' => $collectsDownPayment];
+    }
+
+    /**
+     * The customer pays the provider directly, so nothing is settled here: no paid rate, no
+     * payment history and no ledger rows. Those follow once the payment is confirmed and the
+     * transaction is processed, which is also when the agent earns their commission.
+     *
+     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
+     */
+    private function initiateProviderDownPayment(
+        Agent $agent,
+        Person $buyer,
+        float $downPayment,
+        string $message,
+        ?string $deviceSerial,
+        int $providerId,
+        ?string $payerPhoneOverride,
+    ): array {
+        $payerPhone = $payerPhoneOverride ?? $this->personService->getPrimaryPhoneNumber($buyer);
+
+        $result = $this->paymentInitiationService->initiate(
+            providerId: $providerId,
+            amount: $downPayment,
+            sender: $payerPhone ?? '-',
+            message: $message,
+            type: Transaction::TYPE_DOWN_PAYMENT,
+            customerId: $buyer->id,
+            serialId: $deviceSerial,
+        );
+
+        $result['transaction']->agent_id = $agent->id;
+        $result['transaction']->save();
+
+        return $result;
     }
 }
