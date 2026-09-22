@@ -21,6 +21,7 @@ use App\Models\MpmPlugin;
 use App\Models\PaymentHistory;
 use App\Models\Plugins;
 use App\Models\SolarHomeSystem;
+use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\VodacomMzPaymentProvider\Http\Clients\VodacomMzApiClient;
 use Carbon\Carbon;
@@ -77,6 +78,33 @@ class AgentSellApplianceTest extends TestCase {
         $rows = AgentBalanceHistory::query()->where('transaction_id', $transaction->id)->get()->countBy('trigger_type');
         $this->assertSame(1, $rows[AgentAssignedAppliances::RELATION_NAME] ?? 0);
         $this->assertSame(1, $rows[AgentCommission::RELATION_NAME] ?? 0);
+    }
+
+    public function testSaleWithoutDownPaymentEarnsNoCommissionAndRecordsNoTransaction(): void {
+        Queue::fake();
+        $data = $this->initData();
+        $agent = Agent::query()->latest()->first();
+        $balanceBefore = (float) $agent->balance;
+
+        $response = $this->actingAs($agent)->post(
+            '/api/app/agents/appliances/',
+            array_merge($data, ['down_payment' => 0]),
+        );
+
+        $response->assertStatus(201);
+        $this->assertNull($response->json('data.transaction_id'));
+
+        // The sale is recorded, but nothing was collected: the commission follows the deposit, and
+        // a transaction of nothing can never be processed while still reading as a payment
+        // everywhere transactions are listed.
+        $this->assertSame(1, AppliancePerson::query()->count());
+        $this->assertSame(0, Transaction::query()->count());
+        $this->assertSame(0, AgentTransaction::query()->count());
+        $this->assertSame(0, AgentBalanceHistory::query()->count());
+
+        $agent = $agent->fresh();
+        $this->assertSame($balanceBefore, (float) $agent->balance);
+        $this->assertSame(0.0, (float) $agent->commission_revenue);
     }
 
     public function testEnergyServiceSaleWithCashDownPaymentIsCollected(): void {

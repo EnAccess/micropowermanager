@@ -202,7 +202,7 @@ class AgentSoldApplianceService implements IBaseService {
         $providerId = (int) ($requestData['payment_provider'] ?? PaymentInitiationProvider::Cash->value);
 
         if ($providerId === PaymentInitiationProvider::Cash->value) {
-            return $this->recordCashDownPayment($agent, $assignedAppliance, (float) $downPayment, $message, $collectsDownPayment);
+            return $this->recordCashDownPayment($agent, $assignedAppliance, (float) $downPayment, $message);
         }
 
         if (!$collectsDownPayment) {
@@ -226,18 +226,22 @@ class AgentSoldApplianceService implements IBaseService {
      * history and the token — is left to the transaction pipeline, which is why the caller is asked
      * to process the transaction immediately.
      *
-     * The commission is earned on the sale itself, so it is credited even when the agent collected
-     * no down payment.
+     * A sale that collected nothing is recorded but earns neither commission nor a transaction:
+     * the commission follows the deposit, and a transaction of nothing can never be processed yet
+     * would still surface as a payment in transaction lists and exports.
      *
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
+     * @return array{transaction: Transaction|null, provider_data: array<string, mixed>, process_immediately: bool}
      */
     private function recordCashDownPayment(
         Agent $agent,
         AgentAssignedAppliances $assignedAppliance,
         float $downPayment,
         string $message,
-        bool $collectsDownPayment,
     ): array {
+        if ($downPayment <= 0) {
+            return ['transaction' => null, 'provider_data' => [], 'process_immediately' => false];
+        }
+
         $agentTransaction = $this->agentTransactionService->create([
             'agent_id' => $agent->id,
             'mobile_device_id' => $agent->mobile_device_id,
@@ -253,8 +257,6 @@ class AgentSoldApplianceService implements IBaseService {
         $transaction->originalTransaction()->associate($agentTransaction);
         $this->transactionService->save($transaction);
 
-        $agentCommission = $this->agentCommissionService->getById($agent->agent_commission_id);
-
         $this->agentBalanceHistoryService->creditBalance(
             $agent,
             $transaction,
@@ -262,13 +264,15 @@ class AgentSoldApplianceService implements IBaseService {
             $assignedAppliance,
         );
 
+        $agentCommission = $this->agentCommissionService->getById($agent->agent_commission_id);
+
         $this->agentBalanceHistoryService->creditCommission(
             $agent,
             $transaction,
             $assignedAppliance->cost * $agentCommission->appliance_commission,
         );
 
-        return ['transaction' => $transaction, 'provider_data' => [], 'process_immediately' => $collectsDownPayment];
+        return ['transaction' => $transaction, 'provider_data' => [], 'process_immediately' => true];
     }
 
     /**
