@@ -521,6 +521,7 @@
     "signIn": "Entrar",
     "smsDelivered": "Entregue",
     "smsDelivery": "Entrega",
+    "smsGatewayHelp": "Ative um gateway de SMS (ex.: Africa's Talking, TextBee) na secção Plugins e depois seleccione-o aqui para enviar notificações SMS.",
     "smsHistory": "Histórico de SMS",
     "smsList": "Lista de SMS",
     "smsListNotify": "A mensagem deve conter mais de 3 letras | O SMS foi enviado",

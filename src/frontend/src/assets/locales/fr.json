@@ -521,6 +521,7 @@
     "signIn": "Sign In",
     "smsDelivered": "Distribué",
     "smsDelivery": "Distribution",
+    "smsGatewayHelp": "Activez une passerelle SMS (par ex. Africa's Talking, TextBee) sous l'onglet Plugins, puis sélectionnez-la ici pour envoyer des notifications SMS.",
     "smsHistory": "SMS History",
     "smsList": "SMS List",
     "smsListNotify": "Message should contain more than 3 letters | The SMS is send out",

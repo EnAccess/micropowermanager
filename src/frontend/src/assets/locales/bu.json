@@ -521,6 +521,7 @@
     "signIn": "ဆိုင်းအင်လပု ်ြခင်း / ဝင်ေရာက်ြခင်း",
     "smsDelivered": "ပို့ဆောင်ပြီး",
     "smsDelivery": "ပို့ဆောင်မှု",
+    "smsGatewayHelp": "Plugins တဘ်အောက်တွင် SMS gateway (ဥပမာ Africa's Talking၊ TextBee) ကို ဖွင့်ပြီးနောက် SMS အကြောင်းကြားချက်များ ပို့ရန် ဤနေရာတွင် ရွေးချယ်ပါ။",
     "smsHistory": "Sms မှတ်တမ်း",
     "smsList": " Sms စာရင်း ",
     "smsListNotify": "မက်ေဆ့ဂျတ်ငွ်စာလံးု၃လံးုထက်ပိုပါဝင်သင့်သည်။SmsများပUိသည်",

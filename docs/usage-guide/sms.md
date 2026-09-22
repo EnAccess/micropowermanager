@@ -68,7 +68,7 @@ After enabling and configuring one or more SMS gateway plugins, you must select 
    - **TextBee SMS Gateway** - Available when the TextBee plugin is enabled
    - **Viber Messaging** - Available when the Viber plugin is enabled
 4. Click **Save** to apply your selection
-
+![img.png](images/sms-gateways.png)
 > **Important:** You must have at least one SMS gateway plugin enabled and configured before you can select it in the settings. The dropdown will only show gateways that are currently active.
 
 ## Choosing the Right SMS Gateway
