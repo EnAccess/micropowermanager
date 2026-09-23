@@ -3,6 +3,7 @@
 namespace App\Plugins\DalyBms\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
@@ -119,6 +120,15 @@ class DalyBmsApi implements IManufacturerAPI {
         }
 
         return $response;
+    }
+
+    /**
+     * @return list<ManufacturerCapability>
+     */
+    public function capabilities(): array {
+        return [
+            ManufacturerCapability::CreditToken,
+        ];
     }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {

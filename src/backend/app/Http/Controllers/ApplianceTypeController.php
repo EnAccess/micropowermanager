@@ -7,8 +7,10 @@ use App\Http\Requests\ApplianceTypeUpdateRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\ApplianceType;
 use App\Services\ApplianceTypeService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
+#[Group('Appliance / Type')]
 class ApplianceTypeController extends Controller {
     public function __construct(private ApplianceTypeService $applianceTypeService) {}
 

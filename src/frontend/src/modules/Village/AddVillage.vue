@@ -25,32 +25,28 @@
               </md-field>
             </div>
             <div class="md-layout-item md-size-30 md-small-size-100">
-              <md-field
+              <md-autocomplete
+                name="miniGrid"
+                md-input-name="miniGrid"
+                md-input-id="miniGrid"
+                v-model="miniGridSearchTerm"
+                v-validate="'required'"
                 :class="{
-                  'md-invalid': errors.has($tc('words.miniGrid')),
+                  'md-invalid': errors.has($tc('words.site')),
                 }"
+                :md-options="miniGridService.list"
+                @md-selected="onMiniGridSelected"
               >
                 <label for="miniGrid">
-                  {{ $tc("words.miniGrid") }}
+                  {{ $tc("words.site") }}
                 </label>
-                <md-select
-                  v-model="selectedMiniGridId"
-                  name="miniGrid"
-                  id="miniGrid"
-                  v-validate="'required'"
-                >
-                  <md-option
-                    v-for="mg in miniGridService.list"
-                    :value="mg.id"
-                    :key="mg.id"
-                  >
-                    {{ mg.name }}
-                  </md-option>
-                </md-select>
+                <template slot="md-autocomplete-item" slot-scope="{ item }">
+                  {{ item.name }}
+                </template>
                 <span class="md-error">
-                  {{ errors.first($tc("words.miniGrid")) }}
+                  {{ errors.first($tc("words.site")) }}
                 </span>
-              </md-field>
+              </md-autocomplete>
             </div>
             <div class="md-layout-item md-size-30 md-small-size-100">
               <md-field
@@ -175,13 +171,14 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+
 import { latLonToGeoJsonPoint } from "@/Helpers/Utils.js"
 import { notify } from "@/mixins/notify.js"
 import { villageMapContext } from "@/mixins/villageMapContext.js"
 import VillageMap from "@/modules/Map/VillageMap.vue"
 import { CityService } from "@/services/CityService.js"
 import { ClusterService } from "@/services/ClusterService.js"
-import CountryService from "@/services/CountryService.js"
 import { ICONS, MappingService } from "@/services/MappingService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import RedirectionModal from "@/shared/RedirectionModal.vue"
@@ -202,6 +199,7 @@ export default {
       mappingService: new MappingService(),
       redirectedMiniGridId: null,
       selectedMiniGridId: null,
+      miniGridSearchTerm: "",
       geoData: null,
       villageSaved: false,
       loading: false,
@@ -209,19 +207,22 @@ export default {
       cityName: null,
       cityIndex: 0,
       cityService: new CityService(),
-      countryService: new CountryService(),
-      countries: [],
       selectedCountryId: null,
       redirectionUrl: "/locations/add-mini-grid",
-      imperativeItem: "Mini-Grid",
+      imperativeItem: "Site",
       redirectDialogActive: false,
     }
   },
+  computed: {
+    ...mapGetters({
+      countries: "country/getCountries",
+    }),
+  },
   created() {
-    this.redirectedMiniGridId = this.$route.params.id
+    this.redirectedMiniGridId = this.$route.query.id
     this.mappingService.setConstantMarkerUrl(ICONS.MINI_GRID)
     this.mappingService.setMarkerUrl(ICONS.VILLAGE)
-    this.getCountries()
+    this.loadCountries()
   },
   mounted() {
     this.setMiniGridOfVillage()
@@ -230,11 +231,12 @@ export default {
   methods: {
     async setMiniGridOfVillage() {
       try {
+        await this.getMiniGrids()
+
         if (this.redirectedMiniGridId) {
           this.selectedMiniGridId = this.redirectedMiniGridId
           return
         }
-        await this.getMiniGrids()
 
         if (this.miniGridService.list.length) {
           const selectedMiniGrid =
@@ -254,13 +256,16 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    async getCountries() {
+    async loadCountries() {
       try {
-        await this.countryService.getCountries()
-        this.countries = this.countryService.list
+        await this.$store.dispatch("country/setCountries")
       } catch (e) {
         this.alertNotify("error", e.message)
       }
+    },
+    onMiniGridSelected(miniGrid) {
+      this.selectedMiniGridId = miniGrid.id
+      this.miniGridSearchTerm = miniGrid.name
     },
     async saveVillage() {
       const validator = await this.$validator.validateAll()
@@ -294,7 +299,17 @@ export default {
     },
   },
   watch: {
-    async selectedMiniGridId() {
+    async selectedMiniGridId(newVal) {
+      // Covers the two paths that set this without going through
+      // onMiniGridSelected: auto-selecting the newest mini-grid, and a
+      // redirected id arriving as a route param (always a string].
+      const selected = this.miniGridService.list.find(
+        (mg) => String(mg.id) === String(newVal),
+      )
+      if (selected) {
+        this.miniGridSearchTerm = selected.name
+      }
+
       try {
         const miniGridWithGeoData = await this.loadVillageMapContext(
           this.selectedMiniGridId,

@@ -13,6 +13,8 @@ use App\Enums\DeviceTokenUnit;
 class DeviceCapabilities {
     public function __construct(
         public readonly bool $tokenGeneration,
+        public readonly bool $unlockToken,
+        public readonly bool $resetToken,
         public readonly ?DeviceTokenUnit $creditUnit = null,
         public readonly ?string $tokenGenerationBlockedReason = null,
     ) {}

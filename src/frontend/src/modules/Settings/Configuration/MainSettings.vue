@@ -61,7 +61,7 @@
           >
             <md-option disabled>Select Country</md-option>
             <md-option
-              v-for="(country, index) in countryListService.list"
+              v-for="(country, index) in countries"
               :key="index"
               :value="country.country_name"
             >
@@ -142,7 +142,9 @@
         </md-field>
         <span class="md-error">{{ errors.first("usage_type") }}</span>
       </div>
-      <div class="md-layout-item md-size-50 md-small-size-100">
+      <div
+        class="md-layout-item md-size-50 md-small-size-100 sms-gateway-field"
+      >
         <md-field>
           <label for="sms_gateway">SMS Gateway</label>
           <md-select
@@ -160,6 +162,12 @@
             </md-option>
           </md-select>
         </md-field>
+        <md-icon class="sms-gateway-help">
+          help_outline
+          <md-tooltip md-direction="top">
+            {{ $tc("phrases.smsGatewayHelp") }}
+          </md-tooltip>
+        </md-icon>
       </div>
       <div class="md-layout md-alignment-bottom-right">
         <md-button
@@ -175,8 +183,9 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+
 import { notify } from "@/mixins/notify.js"
-import CountryService from "@/services/CountryService.js"
 import { CurrencyListService } from "@/services/CurrencyListService.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
 import { SmsGatewayService } from "@/services/SmsGatewayService.js"
@@ -191,16 +200,19 @@ export default {
       default: null,
     },
   },
+  computed: {
+    ...mapGetters({
+      countries: "country/getCountries",
+    }),
+  },
   data() {
     return {
       mainSettingsService: new MainSettingsService(),
       currencyListService: new CurrencyListService(),
-      countryListService: new CountryService(),
       usageTypeListService: new UsageTypeListService(),
       smsGatewayService: new SmsGatewayService(),
       currencyList: [],
       languagesList: ["ar", "bu", "en", "fr", "pt"],
-      countryList: [],
       progress: false,
     }
   },
@@ -213,7 +225,7 @@ export default {
     }
 
     this.getCurrencyList()
-    this.getCountryList()
+    this.loadCountries()
     this.getUsageTypeList()
     this.getAvailableSmsGateways()
   },
@@ -228,9 +240,9 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    async getCountryList() {
+    async loadCountries() {
       try {
-        await this.countryListService.getCountries()
+        await this.$store.dispatch("country/setCountries")
       } catch (e) {
         this.alertNotify("error", e.message)
       }
@@ -287,4 +299,21 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.sms-gateway-field {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sms-gateway-field .md-field {
+  flex: 1;
+}
+
+.sms-gateway-help.md-icon {
+  margin-top: 20px;
+  margin-left: 4px;
+  cursor: help;
+  color: #999;
+  font-size: 18px;
+}
+</style>

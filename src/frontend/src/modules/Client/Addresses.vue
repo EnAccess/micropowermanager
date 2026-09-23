@@ -66,25 +66,7 @@
       <md-dialog-content class="md-scrollbar">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50 md-small-size-100">
-            <md-field name="city">
-              <label for="city">{{ $tc("words.city") }}</label>
-              <md-select name="city" id="city" v-model="newAddress.city_id">
-                <md-option
-                  value="0"
-                  disabled
-                  v-if="!editFlag || newAddress.city_id === null"
-                >
-                  {{ $tc("words.city") }}
-                </md-option>
-                <md-option
-                  v-for="city in cities"
-                  :key="city.id"
-                  :value="city.id"
-                >
-                  {{ city.name }}
-                </md-option>
-              </md-select>
-            </md-field>
+            <city-autocomplete v-model="newAddress.city_id" />
           </div>
 
           <div class="md-layout-item md-size-50 md-small-size-100">
@@ -168,25 +150,23 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { notify } from "@/mixins/notify.js"
 import { Address, Addresses } from "@/services/AddressService.js"
-import { CityService } from "@/services/CityService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Addresses",
-  components: { Widget },
+  components: { CityAutocomplete, Widget },
   mixins: [notify],
   props: {
     personId: Number,
   },
   data() {
     return {
-      cityService: new CityService(),
       addresses: new Addresses(this.personId),
       subscriber: "personAddresses",
       modalVisibility: false,
-      newAddress: {},
-      cities: [],
+      newAddress: { city_id: null },
       editFlag: false,
       addressIndex: 0,
       phone: {
@@ -215,9 +195,6 @@ export default {
       this.showModal()
     },
     showModal() {
-      if (this.cities.length === 0) {
-        this.getCities()
-      }
       this.modalVisibility = true
     },
     editAddress(address, index) {
@@ -232,13 +209,6 @@ export default {
         primary: address.primary,
       }
       this.showModal()
-    },
-    async getCities() {
-      try {
-        this.cities = await this.cityService.getCities()
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
     },
     saveAddress() {
       if (this.validateNewAddress()) {
@@ -271,7 +241,7 @@ export default {
             this.addresses.appendList(response.data.data)
           })
         }
-        this.newAddress = {}
+        this.newAddress = { city_id: null }
       }
     },
     validatePhone(phone) {
@@ -314,7 +284,7 @@ export default {
     },
     closeModal() {
       this.modalVisibility = false
-      this.newAddress = {}
+      this.newAddress = { city_id: null }
     },
     confirmDelete(address) {
       this.$swal({

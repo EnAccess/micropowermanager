@@ -28,6 +28,7 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceExportController;
 use App\Http\Controllers\DeviceImportController;
 use App\Http\Controllers\EBikeController;
+use App\Http\Controllers\ExternalTransactionController;
 use App\Http\Controllers\ImportStatusController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
@@ -53,7 +54,6 @@ use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingsExportController;
 use App\Http\Controllers\SettingsImportController;
-use App\Http\Controllers\SmsAndroidSettingController;
 use App\Http\Controllers\SmsApplianceRemindRateController;
 use App\Http\Controllers\SmsBodyController;
 use App\Http\Controllers\SmsController;
@@ -159,8 +159,13 @@ Route::group(['prefix' => 'appliances', 'middleware' => 'auth:api'], function ()
 
     Route::group(['prefix' => 'payment'], static function () {
         Route::get('/providers', [AppliancePaymentController::class, 'paymentProviders'])->middleware('permission:payments');
-        Route::post('/{appliance_person}', [AppliancePaymentController::class, 'store'])->middleware('permission:payments');
+        Route::post('/{appliance_person}', [AppliancePaymentController::class, 'store'])->where('appliance_person', '[0-9]+')->middleware('permission:payments');
         Route::get('/status/{transaction}', [AppliancePaymentController::class, 'checkStatus'])->where('transaction', '[0-9]+')->middleware('permission:payments');
+        // External parties authenticate via an API key, not the group's auth:api (JWT) guard.
+        Route::post('/third-party', [ExternalTransactionController::class, 'store'])
+            ->withoutMiddleware('auth:api')->middleware('auth:api-key');
+        Route::post('/third-party/devices', [ExternalTransactionController::class, 'devices'])
+            ->withoutMiddleware('auth:api')->middleware('auth:api-key');
     });
 });
 // Clusters
@@ -310,12 +315,6 @@ Route::group(['prefix' => 'sms-appliance-remind-rate'], static function () {
     Route::post('/', [SmsApplianceRemindRateController::class, 'store']);
     Route::delete('/{smsApplianceRemindRate}', [SmsApplianceRemindRateController::class, 'destroy']);
 });
-Route::group(['prefix' => 'sms-android-setting'], static function () {
-    Route::get('/', [SmsAndroidSettingController::class, 'index']);
-    Route::put('/{smsAndroidSetting}', [SmsAndroidSettingController::class, 'update']);
-    Route::post('/', [SmsAndroidSettingController::class, 'store']);
-    Route::delete('/{smsAndroidSetting}', [SmsAndroidSettingController::class, 'destroy']);
-});
 Route::group(['prefix' => 'sms-variable-default-value'], static function () {
     Route::get('/', [SmsVariableDefaultValueController::class, 'index']);
 });
@@ -340,11 +339,6 @@ Route::group(['prefix' => 'sms', 'middleware' => 'auth:api'], static function ()
     Route::post('/storeandsend', [SmsController::class, 'storeAndSend']);
     Route::post('/', [SmsController::class, 'store']);
     Route::post('/bulk', [SmsController::class, 'storeBulk']);
-});
-Route::group(['prefix' => 'sms-android-callback'], static function () {
-    Route::get('/{uuid}/delivered/{slug}', [SmsController::class, 'updateForDelivered']);
-    Route::get('/{uuid}/failed/{slug}', [SmsController::class, 'updateForReject']);
-    Route::get('/{uuid}/sent/{slug}', [SmsController::class, 'updateForSent']);
 });
 
 // Sub-Connection-Types

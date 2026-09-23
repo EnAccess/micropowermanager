@@ -29,6 +29,7 @@ class Token extends BaseModel {
     public const TYPE_TIME = 'time';
     public const TYPE_ENERGY = 'energy';
     public const TYPE_UNLOCK = 'unlock';
+    public const TYPE_RESET = 'reset';
 
     public const UNIT_DAYS = 'days';
     public const UNIT_WEEKS = 'weeks';

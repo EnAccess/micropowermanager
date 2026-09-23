@@ -1,6 +1,6 @@
 <template>
   <md-dialog :md-active.sync="addNewReceipt" :md-clicked-outside="true">
-    <div v-if="agent.balance > 0">
+    <div v-if="agentBalance > 0">
       <form novalidate class="md-layout" @submit.prevent="saveReceipt">
         <md-card class="md-layout-item">
           <md-card-header>
@@ -13,17 +13,11 @@
             <div class="receipt-summary">
               <div class="receipt-summary-row">
                 <span>{{ $tc("phrases.dueToCompany") }}</span>
-                <strong>
-                  {{ moneyFormat(agent.balance || 0) }}
-                </strong>
+                <strong>{{ moneyFormat(agentBalance) }}</strong>
               </div>
               <div class="receipt-summary-row">
                 <span>{{ $tc("phrases.pendingCommission") }}</span>
-                <strong>{{ moneyFormat(agent.commissionRevenue || 0) }}</strong>
-              </div>
-              <div class="receipt-summary-row">
-                <span>{{ $tc("phrases.totalBalanceCredit") }}</span>
-                <strong>{{ moneyFormat(totalBalanceCredit) }}</strong>
+                <strong>{{ moneyFormat(pendingCommission) }}</strong>
               </div>
             </div>
             <md-field
@@ -31,21 +25,32 @@
                 'md-invalid': errors.has($tc('words.amount')),
               }"
             >
-              <label>{{ $tc("words.amount") }}</label>
+              <label>{{ $tc("phrases.amountCollected") }}</label>
               <md-input
                 :name="$tc('words.amount')"
                 id="amount"
                 v-model="agentReceiptService.newReceipt.amount"
-                :max="agent.balance"
-                v-validate="
-                  'required|min_value:0.01|max_value:' + (agent.balance || 0)
-                "
+                :max="agentBalance"
+                v-validate="amountRules"
                 type="number"
               />
               <span class="md-error">
                 {{ errors.first($tc("words.amount")) }}
               </span>
             </md-field>
+            <div class="receipt-summary">
+              <div class="receipt-summary-row">
+                <span>{{ $tc("phrases.commissionCredited") }}</span>
+                <strong>&minus; {{ moneyFormat(commissionCredited) }}</strong>
+              </div>
+              <div class="receipt-summary-row">
+                <span>{{ $tc("phrases.amountReceived") }}</span>
+                <strong>{{ moneyFormat(amountReceived) }}</strong>
+              </div>
+              <span class="receipt-hint">
+                {{ $tc("phrases.commissionCreditedHint") }}
+              </span>
+            </div>
             <md-progress-bar md-mode="indeterminate" v-if="loading" />
           </md-card-content>
           <md-card-actions>
@@ -76,6 +81,30 @@
             </span>
             <div class="md-layout-item md-size-100 exclamation-div">
               <span>{{ $tc("phrases.addReceipt", 2) }}</span>
+            </div>
+            <div
+              v-if="agentBalance < 0"
+              class="md-layout-item md-size-100 exclamation-div"
+            >
+              <span>
+                {{
+                  $tc("phrases.companyOwesAgent", 1, {
+                    amount: moneyFormat(-agentBalance),
+                  })
+                }}
+              </span>
+            </div>
+            <div
+              v-if="pendingCommission > 0"
+              class="md-layout-item md-size-100 exclamation-div"
+            >
+              <span>
+                {{
+                  $tc("phrases.pendingCommissionNotPayable", 1, {
+                    commission: moneyFormat(pendingCommission),
+                  })
+                }}
+              </span>
             </div>
           </div>
         </md-card-content>
@@ -109,21 +138,47 @@ export default {
       default: false,
     },
   },
+  watch: {
+    addNewReceipt(opened) {
+      if (opened) {
+        this.agentReceiptService.newReceipt.amount = this.agentBalance
+      }
+    },
+  },
   computed: {
-    totalBalanceCredit() {
-      return (
-        Number(this.agentReceiptService.newReceipt.amount || 0) +
-        (this.agent.commissionRevenue || 0)
-      )
+    agentBalance() {
+      return Number(this.agent.balance || 0)
+    },
+    pendingCommission() {
+      return Number(this.agent.commissionRevenue || 0)
+    },
+    amountCollected() {
+      return Number(this.agentReceiptService.newReceipt.amount || 0)
+    },
+    amountRules() {
+      return `required|min_value:0.01|max_value:${Math.max(0, this.agentBalance)}`
+    },
+    // Mirrors AgentReceiptObserver: the agent keeps their commission out of the
+    // cash they hand over, so it is credited once they have settled everything
+    // they hold, and never for more than the cash on the table.
+    commissionCredited() {
+      if (this.amountCollected <= 0 || this.agentBalance <= 0) return 0
+      const collected = Math.round(this.amountCollected * 100)
+      const due = Math.round(this.agentBalance * 100)
+      if (collected < due) return 0
+      return Math.min(this.pendingCommission, this.amountCollected)
+    },
+    amountReceived() {
+      return this.amountCollected - this.commissionCredited
     },
   },
   methods: {
     async saveReceipt() {
-      if (this.agentReceiptService.newReceipt.amount > this.agent.balance) {
+      if (this.amountCollected > this.agentBalance) {
         this.alertNotify(
           "warn",
           this.$tc("phrases.addReceiptNotify", 2, {
-            balance: this.moneyFormat(this.agent.balance),
+            balance: this.moneyFormat(this.agentBalance),
           }),
         )
       } else {
@@ -166,6 +221,13 @@ export default {
   justify-content: space-between;
   padding: 0.35rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.receipt-hint {
+  display: block;
+  padding-top: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .success-span {

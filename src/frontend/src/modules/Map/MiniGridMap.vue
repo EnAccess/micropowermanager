@@ -64,7 +64,7 @@ export default {
         })
       } else {
         const errorMessage =
-          "Please position your mini-grid within the selected cluster boundaries."
+          "Please position your site within the selected cluster boundaries."
         this.$emit("locationSet", {
           error: errorMessage,
           geoDataItem: undefined,
@@ -123,6 +123,10 @@ export default {
   methods: {
     drawCluster() {
       this.editableLayer.clearLayers()
+      // setMiniGridMarkerManually validates against the first polygon it finds here,
+      // so only the cluster currently selected may be on the layer.
+      this.nonEditableLayer.clearLayers()
+      this.geoDataItems.splice(0)
       const geoData = this.mappingService.geoData
 
       const features = Array.isArray(geoData) ? geoData : [geoData]
@@ -197,7 +201,7 @@ export default {
           const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: miniGridMarkerIcon,
           })
-          let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
+          let tooltip = "<strong>Site:</strong> " + markingInfo.name
           if (markingInfo.clusterId !== undefined) {
             tooltip +=
               "<br><strong>Cluster:</strong> " + markingInfo.clusterName
@@ -277,32 +281,35 @@ export default {
         L.control.layers(null, overlays, { collapsed: false }).addTo(this.map)
       }
     },
+    isWithinCluster(location) {
+      const polygon = this.nonEditableLayer
+        .getLayers()
+        .find(
+          (layer) => layer.feature && layer.feature.geometry.type === "Polygon",
+        )
+
+      return polygon ? polygon.getBounds().contains(location) : false
+    },
     setMiniGridMarkerManually(location) {
-      const editableLayers = this.nonEditableLayer.getLayers()
-      const polygon = editableLayers.find(
-        (layer) => layer.feature && layer.feature.geometry.type === "Polygon",
-      )
-      const bounds = polygon.getBounds()
-      if (!bounds.contains(location)) {
-        const errorMessage =
-          "Please position your mini-grid within the selected cluster boundaries."
+      if (!this.isWithinCluster(location)) {
         this.$emit("locationSet", {
-          error: errorMessage,
+          error: this.$tc("phrases.positionMiniGridInCluster"),
           geoDataItem: undefined,
         })
-      } else {
-        this.removeExistingMarkers()
-
-        const miniGridMarkerIcon = L.icon({
-          ...ICON_OPTIONS,
-          iconUrl: ICONS.MINI_GRID,
-        })
-
-        const miniGridMarker = L.marker(location, {
-          icon: miniGridMarkerIcon,
-        })
-        miniGridMarker.addTo(this.editableLayer)
+        return
       }
+
+      this.removeExistingMarkers()
+
+      const miniGridMarkerIcon = L.icon({
+        ...ICON_OPTIONS,
+        iconUrl: ICONS.MINI_GRID,
+      })
+
+      const miniGridMarker = L.marker(location, {
+        icon: miniGridMarkerIcon,
+      })
+      miniGridMarker.addTo(this.editableLayer)
     },
     isMiniGridIdProvided() {
       if (this.miniGridId !== undefined && this.miniGridId !== "") {
@@ -316,7 +323,7 @@ export default {
         await this.miniGridService.getMiniGridGeoData(miniGridId)
       const location = geoJsonToLatLon(miniGridWithGeoData.location)
       if (location == null) {
-        this.alertNotify("error", "Mini-Grid has no location")
+        this.alertNotify("error", "Site has no location")
         return
       }
       const lat = location.lat

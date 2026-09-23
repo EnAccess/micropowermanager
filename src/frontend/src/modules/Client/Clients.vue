@@ -70,7 +70,6 @@
             <client-filter
               v-model="customerFilters"
               :agents="agentService.list"
-              :cities="cityService.list"
               @apply="onFilterApply"
               @clear="onFilterClear"
             />
@@ -197,7 +196,7 @@
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50">
             <md-field>
-              <label>{{ $tc("words.miniGrid") }}</label>
+              <label>{{ $tc("words.site") }}</label>
               <md-select v-model="exportFilters.miniGrid">
                 <md-option value="">{{ $tc("words.all") }}</md-option>
                 <md-option
@@ -211,19 +210,11 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-50">
-            <md-field>
-              <label>{{ $tc("words.village") }}</label>
-              <md-select v-model="exportFilters.village">
-                <md-option value="">{{ $tc("words.all") }}</md-option>
-                <md-option
-                  v-for="city in cityService.list"
-                  :key="city.id"
-                  :value="city.name"
-                >
-                  {{ city.name }}
-                </md-option>
-              </md-select>
-            </md-field>
+            <city-autocomplete
+              v-model="exportVillageId"
+              :label="$tc('words.village')"
+              @select="onVillageSelected"
+            />
           </div>
         </div>
 
@@ -296,12 +287,12 @@ import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import ClientFilter from "@/modules/Client/ClientFilter.vue"
 import { resources } from "@/resources.js"
 import { AgentService } from "@/services/AgentService.js"
-import { CityService } from "@/services/CityService.js"
 import { CustomerExportService } from "@/services/CustomerExportService.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService.js"
 import { People } from "@/services/PersonService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
@@ -310,7 +301,7 @@ const debounce = require("debounce")
 export default {
   name: "Clients",
   mixins: [timing, notify],
-  components: { AddClientModal, Widget, ClientFilter },
+  components: { AddClientModal, CityAutocomplete, Widget, ClientFilter },
   data() {
     return {
       subscriber: "client.list",
@@ -335,12 +326,11 @@ export default {
         village: "",
         deviceType: "",
       },
+      exportVillageId: null,
       miniGridService: new MiniGridService(),
-      cityService: new CityService(),
       isSearching: false,
       downloadingDebts: false,
       downloadingCustomers: false,
-      activeRequest: null,
       customerFilters: {
         status: "all",
         agentId: null,
@@ -394,14 +384,12 @@ export default {
     EventBus.$off("pageLoaded", this.reloadList)
     EventBus.$off("searching", this.onSearchEvent)
     EventBus.$off("end_searching", this.onEndSearchEvent)
-
-    // Cancel any pending request
-    if (this.activeRequest) {
-      this.activeRequest.cancel()
-    }
   },
 
   methods: {
+    onVillageSelected(city) {
+      this.exportFilters.village = city ? city.name : ""
+    },
     handleSearch() {
       if (this.searchTerm.length > 2) {
         this.performSearch()
@@ -445,18 +433,14 @@ export default {
     },
 
     async performSearch() {
-      // Cancel previous request if still pending
-      if (this.activeRequest) {
-        this.activeRequest.cancel()
-      }
-
+      const term = this.searchTerm
       this.isSearching = true
 
       try {
         // Create search paginator
         const searchPaginator = new Paginator(resources.person.search)
 
-        const params = { term: this.searchTerm }
+        const params = { term }
         if (this.currentSortBy) {
           const prefix = this.currentSortOrder === "desc" ? "-" : ""
           params.sort_by = `${prefix}${this.currentSortBy}`
@@ -465,7 +449,8 @@ export default {
 
         const response = await searchPaginator.loadPage(1, params)
 
-        // Update people list with search results
+        if (term !== this.searchTerm) return
+
         this.people.updateList(response.data)
         this.paginator = searchPaginator
 
@@ -475,9 +460,7 @@ export default {
           this.people.list.length,
         )
       } catch (error) {
-        if (error.message !== "Request cancelled") {
-          console.error("Search error:", error)
-        }
+        console.error("Search error:", error)
       } finally {
         this.isSearching = false
       }
@@ -628,7 +611,6 @@ export default {
         this.loadMainSettings(),
         this.loadAgents(),
         this.loadMiniGrids(),
-        this.loadCities(),
       ])
     },
 
@@ -657,14 +639,6 @@ export default {
         await this.miniGridService.getMiniGrids()
       } catch (error) {
         console.error("Failed to load mini grids:", error)
-      }
-    },
-
-    async loadCities() {
-      try {
-        await this.cityService.getCities()
-      } catch (error) {
-        console.error("Failed to load cities:", error)
       }
     },
 

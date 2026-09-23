@@ -5,12 +5,6 @@ export class AgentReceiptService {
   constructor(agentId) {
     this.repository = AgentReceiptRepository
     this.list = []
-    this.receipt = {
-      id: null,
-      amount: null,
-      receiver: null,
-      createdAt: null,
-    }
     this.newReceipt = {
       agentId: null,
       amount: null,
@@ -20,13 +14,14 @@ export class AgentReceiptService {
 
   fromJson(data) {
     const detail = (data.detail && data.detail[0]) || {}
+    const commissionCredited = Number(detail.commission_credited || 0)
     let receipt = {
       id: data.id,
-      amount: data.amount,
-      commissionCredited: detail.commission_credited || 0,
+      amountCollected: Number(data.amount || 0),
+      commissionCredited: commissionCredited,
+      amountReceived: Number(data.amount || 0) - commissionCredited,
       dueAtVisit: detail.due || 0,
-      // sale rows are stored with negative amounts, so the sum comes back negative
-      collectedSinceLastVisit: Math.abs(detail.since_last_visit || 0),
+      collectedSinceLastVisit: Number(detail.since_last_visit || 0),
       receiver: data.user.name,
       createdAt: data.created_at
         .toString()

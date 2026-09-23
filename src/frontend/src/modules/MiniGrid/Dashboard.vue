@@ -14,7 +14,7 @@
             >
               <md-button md-menu-trigger>
                 <md-icon>keyboard_arrow_down</md-icon>
-                {{ $tc("words.miniGrid") }}:
+                {{ $tc("words.site") }}:
                 {{ miniGridData.name }}
               </md-button>
               <md-menu-content>
@@ -129,7 +129,7 @@
           </div>
         </div>
         <div class="md-layout-item md-size-100 map-area">
-          <Widget :title="$tc('phrases.miniGridMap')" id="miniGrid-map">
+          <Widget :title="$tc('phrases.siteMap')" id="miniGrid-map">
             <mini-grid-map
               ref="miniGridMapRef"
               :mapping-service="mappingService"
@@ -177,12 +177,35 @@
         :md-close-on-esc="true"
         :md-click-outside-to-close="true"
       >
-        <md-dialog-title>{{ $tc("phrases.editMiniGrid") }}</md-dialog-title>
+        <md-dialog-title>{{ $tc("phrases.editSite") }}</md-dialog-title>
         <md-dialog-content>
-          <md-field>
-            <label>{{ $tc("words.name") }}</label>
-            <md-input v-model="editName" />
-          </md-field>
+          <div class="md-layout md-gutter">
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <md-field>
+                <label>{{ $tc("words.name") }}</label>
+                <md-input v-model="editName" />
+              </md-field>
+            </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <md-field>
+                <label for="editCluster">{{ $tc("words.cluster") }}</label>
+                <md-select
+                  v-model="editClusterId"
+                  name="editCluster"
+                  id="editCluster"
+                  @md-selected="drawEditClusterOutline"
+                >
+                  <md-option
+                    v-for="cluster in clusterService.list"
+                    :value="cluster.id"
+                    :key="cluster.id"
+                  >
+                    {{ cluster.name }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
+          </div>
           <div class="md-layout md-gutter">
             <div class="md-layout-item md-size-35 md-small-size-100">
               <md-field>
@@ -269,6 +292,7 @@ export default {
       deviceAddressService: new DeviceAddressService(),
       showModal: false,
       editName: "",
+      editClusterId: null,
       editLatLng: {
         lat: null,
         lon: null,
@@ -559,15 +583,25 @@ export default {
       this.editLatLng.lon = null
       this.showModal = true
       try {
+        await this.clusterService.getClusters()
         const miniGridWithGeoData =
           await this.miniGridService.getMiniGridGeoData(this.miniGridId)
+        this.editClusterId = miniGridWithGeoData.cluster_id
         const location = geoJsonToLatLon(miniGridWithGeoData.location)
         if (location) {
           this.editLatLng.lat = location.lat
           this.editLatLng.lon = location.lon
         }
+        await this.drawEditClusterOutline()
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
+    async drawEditClusterOutline() {
+      if (!this.editClusterId) return
+      try {
         const clusterGeoData = await this.clusterService.getClusterGeoLocation(
-          miniGridWithGeoData.cluster_id,
+          this.editClusterId,
         )
         const clusterFeature =
           this.editMappingService.setClusterGeoData(clusterGeoData)
@@ -575,15 +609,32 @@ export default {
         const editMap = this.$refs.miniGridEditMapRef
         if (!editMap) return
         editMap.map.invalidateSize()
-        if (clusterFeature) {
-          editMap.drawCluster()
+        if (!clusterFeature) {
+          this.alertNotify("error", this.$tc("phrases.clusterHasNoGeoData"))
+          return
         }
-        if (location) {
-          editMap.setMiniGridMarkerManually([location.lat, location.lon])
-        }
+        editMap.drawCluster()
+        this.placeEditMarkerWithinCluster(editMap)
       } catch (e) {
         this.alertNotify("error", e.message)
       }
+    },
+    placeEditMarkerWithinCluster(editMap) {
+      if (this.editLatLng.lat === null || this.editLatLng.lon === null) return
+
+      const location = [this.editLatLng.lat, this.editLatLng.lon]
+
+      if (editMap.isWithinCluster(location)) {
+        editMap.setMiniGridMarkerManually(location)
+        return
+      }
+
+      // The mini-grid sits outside the cluster that was just picked, so it has to
+      // be positioned again before the move can be saved.
+      editMap.removeExistingMarkers()
+      this.editLatLng.lat = null
+      this.editLatLng.lon = null
+      this.alertNotify("warning", this.$tc("phrases.positionMiniGridInCluster"))
     },
     editLocationSet(data) {
       if (!data.error) {
@@ -616,6 +667,7 @@ export default {
       try {
         const miniGridData = {
           name: this.editName.trim(),
+          clusterId: this.editClusterId,
         }
         if (this.editLatLng.lat !== null && this.editLatLng.lon !== null) {
           miniGridData.geoJson = latLonToGeoJsonPoint(
@@ -625,7 +677,7 @@ export default {
         }
         await this.miniGridService.updateMiniGrid(this.miniGridId, miniGridData)
         this.showModal = false
-        this.alertNotify("success", this.$tc("phrases.miniGridUpdated"))
+        this.alertNotify("success", this.$tc("phrases.siteUpdated"))
         await this.getMiniGridData()
         // Redraw the map so the mini-grid marker reflects the new coordinates.
         await this.$refs.miniGridMapRef.setMiniGridMapData(this.miniGridId)
@@ -636,8 +688,8 @@ export default {
     confirmDelete() {
       this.$swal({
         type: "question",
-        title: this.$tc("phrases.deleteMiniGrid"),
-        text: this.$tc("phrases.deleteMiniGridNotify", 0, {
+        title: this.$tc("phrases.deleteSite"),
+        text: this.$tc("phrases.deleteSiteNotify", 0, {
           name: this.miniGridData.name,
         }),
         width: "35%",
@@ -654,7 +706,7 @@ export default {
     async deleteMiniGrid() {
       try {
         await this.miniGridService.deleteMiniGrid(this.miniGridId)
-        this.alertNotify("success", this.$tc("phrases.miniGridDeleted"))
+        this.alertNotify("success", this.$tc("phrases.siteDeleted"))
         this.$router.push("/dashboards/mini-grid")
       } catch (e) {
         this.alertNotify("error", e.message || this.$tc("phrases.deleteFailed"))

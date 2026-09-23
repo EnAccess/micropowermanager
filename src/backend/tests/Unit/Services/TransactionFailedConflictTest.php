@@ -80,6 +80,37 @@ class TransactionFailedConflictTest extends TestCase {
     }
 
     /**
+     * Manufacturer APIs fail with Guzzle messages that carry the verb, full URL, status line and a
+     * response-body excerpt, which runs well past the width `state` was originally given.
+     */
+    public function testFailedTransactionRecordsAConflictMessageLongerThanTheOldColumnWidth(): void {
+        $cashTransaction = $this->cashTransaction();
+        /** @var Transaction $transaction */
+        $transaction = $cashTransaction->transaction()->first();
+        $message = 'Manufacturer Api did not succeed after 3 times with the following error: '
+            .'Client error: `POST https://assetcontrol.central.glpapps.com/v2/token` resulted in a '
+            .'`404 Not Found` response: {"message":"Device not found","details":"'.str_repeat('x', 200).'"}';
+
+        event(new TransactionFailedEvent($transaction, $message));
+
+        $conflicts = $cashTransaction->conflicts()->get();
+        $this->assertCount(1, $conflicts);
+        $this->assertSame($message, $conflicts->first()->state);
+    }
+
+    public function testAConflictMessageIsCappedSoOneRunawayErrorCannotDominateTheRow(): void {
+        $cashTransaction = $this->cashTransaction();
+        /** @var Transaction $transaction */
+        $transaction = $cashTransaction->transaction()->first();
+
+        event(new TransactionFailedEvent($transaction, str_repeat('y', 5000)));
+
+        $state = $cashTransaction->conflicts()->first()->state;
+        $this->assertStringStartsWith(str_repeat('y', 1000), $state);
+        $this->assertLessThan(1100, strlen($state));
+    }
+
+    /**
      * A failure must not undo the settlement — PesaPal's sendResult(false) only logs.
      */
     public function testFailedPesapalTransactionKeepsItsSettledStatus(): void {

@@ -60,17 +60,17 @@
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
                     :class="{
-                      'md-invalid': errors.has($tc('words.miniGrid')),
+                      'md-invalid': errors.has($tc('words.site')),
                     }"
                   >
                     <label for="mini-grids" class="control-label">
-                      {{ $tc("words.miniGrid") }}
+                      {{ $tc("words.site") }}
                     </label>
 
                     <md-select
                       v-validate="'required'"
                       id="mini-grids"
-                      :name="$tc('words.miniGrid')"
+                      :name="$tc('words.site')"
                       v-model="maintenanceService.personData.mini_grid_id"
                     >
                       <md-option value selected disabled>
@@ -87,7 +87,7 @@
                       </md-option>
                     </md-select>
                     <span class="md-error">
-                      {{ errors.first($tc("words.miniGrid")) }}
+                      {{ errors.first($tc("words.site")) }}
                     </span>
                   </md-field>
                 </div>
@@ -120,38 +120,13 @@
                   </template>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has($tc('words.city')),
-                    }"
-                  >
-                    <label>
-                      {{ $tc("phrases.livingIn") }}
-                    </label>
-
-                    <md-select
-                      id="city"
-                      v-validate="'required'"
-                      :name="$tc('words.city')"
-                      v-model="maintenanceService.personData.city_id"
-                    >
-                      <md-option value selected disabled>
-                        &#45;&#45;
-                        {{ $tc("words.select") }}
-                        &#45;&#45;
-                      </md-option>
-                      <md-option
-                        v-for="(city, index) in cities"
-                        :value="city.id"
-                        :key="index"
-                      >
-                        {{ city.name }}
-                      </md-option>
-                    </md-select>
-                    <span class="md-error">
-                      {{ errors.first($tc("words.city")) }}
-                    </span>
-                  </md-field>
+                  <city-autocomplete
+                    v-model="maintenanceService.personData.city_id"
+                    :name="$tc('words.city')"
+                    :label="$tc('phrases.livingIn')"
+                    required
+                    :error="errors.first($tc('words.city'))"
+                  />
                 </div>
               </div>
               <md-progress-bar md-mode="indeterminate" v-if="loading" />
@@ -184,16 +159,16 @@
 import RedirectionModal from "../../shared/RedirectionModal.vue"
 
 import { notify } from "@/mixins/notify.js"
-import { CityService } from "@/services/CityService.js"
 import { MaintenanceService } from "@/services/MaintenanceService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
+import CityAutocomplete from "@/shared/CityAutocomplete.vue"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "NewUser",
   mixins: [notify],
-  components: { Widget, RedirectionModal },
+  components: { CityAutocomplete, Widget, RedirectionModal },
   props: {
     newUser: {
       type: Boolean,
@@ -204,12 +179,10 @@ export default {
   data() {
     return {
       miniGrids: [],
-      cities: [],
       miniGridService: new MiniGridService(),
-      cityService: new CityService(),
       maintenanceService: new MaintenanceService(),
       loading: false,
-      imperativeItem: "Mini-Grid",
+      imperativeItem: "Site",
       redirectDialogActive: false,
       redirectionUrl: "/locations/add-mini-grid",
       phone: {
@@ -221,7 +194,6 @@ export default {
   mounted() {
     EventBus.$on("getLists", () => {
       this.getMiniGrids()
-      this.getCities()
     })
   },
   methods: {
@@ -231,13 +203,6 @@ export default {
         if (this.miniGrids.length === 0) {
           this.redirectDialogActive = true
         }
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
-    async getCities() {
-      try {
-        this.cities = await this.cityService.getCities()
       } catch (e) {
         this.alertNotify("error", e.message)
       }

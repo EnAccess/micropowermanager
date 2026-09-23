@@ -43,7 +43,7 @@ class AgentReceiptWebController extends Controller {
      */
     public function store(CreateAgentReceiptRequest $request) {
         $userId = auth('api')->user()->id;
-        $agentId = $request->input('agent_id');
+        $agentId = $request->integer('agent_id');
         $lastBalanceHistory = $this->agentBalanceHistoryService->getLastAgentBalanceHistory($agentId);
 
         if (!$lastBalanceHistory instanceof AgentBalanceHistory) {
@@ -53,7 +53,7 @@ class AgentReceiptWebController extends Controller {
         $receiptData = [
             'user_id' => $userId,
             'agent_id' => $agentId,
-            'amount' => $request->input('amount'),
+            'amount' => $request->float('amount'),
             'last_controlled_balance_history_id' => $lastBalanceHistory->id,
         ];
 

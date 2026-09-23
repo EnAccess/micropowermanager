@@ -3,12 +3,10 @@
 namespace App\Services;
 
 use App\Exceptions\NoActiveSmsProviderException;
-use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
 use App\Exceptions\SmsTypeNotFoundException;
 use App\Jobs\SmsProcessor;
 use App\Models\Sms;
-use App\Models\SmsAndroidSetting;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
 use App\Sms\SmsTypes;
@@ -68,23 +66,16 @@ class SmsService {
      */
     public function sendSms(array|object $data, int $smsType, string $smsConfigs, ?Sms $sms = null): void {
         $uuid = Str::uuid()->toString();
-        $gatewayId = null;
 
         try {
-            $smsAndroidSettings = SmsAndroidSetting::getResponsible();
-            $sender = $this->getSender($data, $smsType, $smsConfigs, $smsAndroidSettings);
+            $sender = $this->getSender($data, $smsType, $smsConfigs);
             $receiver = $sender->getReceiver();
             $sender->validateReferences();
 
-            if ($smsAndroidSettings instanceof SmsAndroidSetting) {
-                $gatewayId = $smsAndroidSettings->id;
-                $sender->setCallback($smsAndroidSettings->callback, $uuid);
-            }
-            $sender->setSms($this->resolveSmsRecord($sender, $sms, $uuid, $receiver, $gatewayId));
+            $sender->setSms($this->resolveSmsRecord($sender, $sms, $uuid, $receiver, null));
             dispatch(new SmsProcessor($sender));
         } catch (
             SmsTypeNotFoundException|
-            SmsAndroidSettingNotExistingException|
             SmsBodyParserNotExtendedException|
             NoActiveSmsProviderException $exception) {
                 Log::error('Sms send failed.', ['message : ' => $exception->getMessage()]);
@@ -102,7 +93,9 @@ class SmsService {
             'status' => Sms::STATUS_SENT,
             'gateway_id' => $gatewayId,
             'error_message' => null,
+            'attempts' => DB::raw('attempts + 1'),
         ]);
+        $sms->refresh();
     }
 
     public function markFailed(Sms $sms, \Throwable $exception): void {
@@ -111,13 +104,14 @@ class SmsService {
             'error_message' => Str::limit($exception->getMessage(), self::ERROR_MESSAGE_MAX_LENGTH),
             'attempts' => DB::raw('attempts + 1'),
         ]);
+        $sms->refresh();
     }
 
     /**
      * @param array<string, mixed>|object $data
      * @param class-string                $smsConfigs
      */
-    private function getSender(array|object $data, int $smsType, string $smsConfigs, ?SmsAndroidSetting $smsAndroidSettings): SmsSender {
+    private function getSender(array|object $data, int $smsType, string $smsConfigs): SmsSender {
         $configs = resolve($smsConfigs);
 
         if (!array_key_exists($smsType, $configs->smsTypes)) {
@@ -135,7 +129,6 @@ class SmsService {
             $data,
             $smsBodyService,
             $configs->bodyParsersPath,
-            $smsAndroidSettings,
         ]);
     }
 
