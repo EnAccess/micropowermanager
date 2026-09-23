@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Collection;
 class ApplianceRateChecker extends AbstractSharedCommand {
     protected $signature = 'appliance-rate:check';
     protected $description = 'Checks if any appliance rate is due and creates a ticket and reminds the customer';
+    private const int OVERDUE_CATCH_UP_DAYS = 7;
 
     public function __construct(
         private ApplianceRate $applianceRate,
@@ -55,27 +56,31 @@ class ApplianceRateChecker extends AbstractSharedCommand {
      */
     private function remindUpComingRates(Collection $smsApplianceRemindRates): Collection {
         $allUpcoming = new Collection();
-        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) use ($allUpcoming) {
-            $dueApplianceRates = $this->applianceRate::with([
-                'appliancePerson.appliance.smsReminderRate',
-                'appliancePerson.appliance.applianceType',
-                'appliancePerson.person.addresses',
-            ])
-                ->whereBetween('due_date', [
-                    now()->subDays($smsApplianceRemindRate->remind_rate)->toDateString(),
-                    now()->toDateString(),
-                ])
-                ->where('remaining', '>', 0)
-                ->whereHas(
+        $smsApplianceRemindRates
+            ->filter(fn (SmsApplianceRemindRate $smsApplianceRemindRate): bool => $smsApplianceRemindRate->upcoming_reminder_enabled)
+            ->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) use ($allUpcoming) {
+                $upcomingRates = $this->applianceRate::with([
+                    'appliancePerson.appliance.applianceType',
                     'appliancePerson.person.addresses',
-                    function ($q) {
-                        $q->where('is_primary', 1);
-                    }
-                )
-                ->get();
-            $allUpcoming->push(...$dueApplianceRates);
-            $this->sendReminders($dueApplianceRates, SmsTypes::APPLIANCE_RATE);
-        });
+                ])
+                    ->whereHas(
+                        'appliancePerson',
+                        fn ($query) => $query->where('appliance_id', $smsApplianceRemindRate->appliance_id)
+                    )
+                    ->whereHas(
+                        'appliancePerson.person.addresses',
+                        fn ($query) => $query->where('is_primary', 1)
+                    )
+                    ->whereBetween('due_date', [
+                        now()->toDateString(),
+                        now()->addDays($smsApplianceRemindRate->remind_rate)->toDateString(),
+                    ])
+                    ->where('remaining', '>', 0)
+                    ->where('remind', ApplianceRate::REMIND_NONE)
+                    ->get();
+                $allUpcoming->push(...$upcomingRates);
+                $this->sendReminders($upcomingRates, $smsApplianceRemindRate, SmsTypes::APPLIANCE_RATE);
+            });
 
         return $allUpcoming;
     }
@@ -87,18 +92,32 @@ class ApplianceRateChecker extends AbstractSharedCommand {
      */
     private function findOverDueRates(Collection $smsApplianceRemindRates): Collection {
         $allOverdue = new Collection();
-        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) use ($allOverdue) {
-            $overDueRates = $this->applianceRate::with(['appliancePerson.appliance.smsReminderRate', 'appliancePerson.appliance.applianceType', 'appliancePerson.person.addresses'])
-                ->whereBetween('due_date', [
-                    now()->toDateString(),
-                    now()->addDays($smsApplianceRemindRate->overdue_remind_rate)->toDateString(),
+        $smsApplianceRemindRates
+            ->filter(fn (SmsApplianceRemindRate $smsApplianceRemindRate): bool => $smsApplianceRemindRate->overdue_reminder_enabled)
+            ->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) use ($allOverdue) {
+                $latestDueDate = now()->subDays($smsApplianceRemindRate->overdue_remind_rate);
+                $overDueRates = $this->applianceRate::with([
+                    'appliancePerson.appliance.applianceType',
+                    'appliancePerson.person.addresses',
                 ])
-                ->where('remaining', '>', 0)
-                ->where('remind', 0)
-                ->get();
-            $allOverdue->push(...$overDueRates);
-            $this->sendReminders($overDueRates, SmsTypes::OVER_DUE_APPLIANCE_RATE);
-        });
+                    ->whereHas(
+                        'appliancePerson',
+                        fn ($query) => $query->where('appliance_id', $smsApplianceRemindRate->appliance_id)
+                    )
+                    ->whereHas(
+                        'appliancePerson.person.addresses',
+                        fn ($query) => $query->where('is_primary', 1)
+                    )
+                    ->whereBetween('due_date', [
+                        $latestDueDate->copy()->subDays(self::OVERDUE_CATCH_UP_DAYS)->toDateString(),
+                        $latestDueDate->toDateString(),
+                    ])
+                    ->where('remaining', '>', 0)
+                    ->where('remind', '<', ApplianceRate::REMIND_OVERDUE_SENT)
+                    ->get();
+                $allOverdue->push(...$overDueRates);
+                $this->sendReminders($overDueRates, $smsApplianceRemindRate, SmsTypes::OVER_DUE_APPLIANCE_RATE);
+            });
 
         return $allOverdue;
     }
@@ -149,16 +168,14 @@ class ApplianceRateChecker extends AbstractSharedCommand {
     /**
      * @param Collection<int, ApplianceRate> $dueApplianceRates
      */
-    private function sendReminders(Collection $dueApplianceRates, int $smsType): void {
-        $dueApplianceRates->each(function (ApplianceRate $dueApplianceRate) use ($smsType) {
+    private function sendReminders(Collection $dueApplianceRates, SmsApplianceRemindRate $smsApplianceRemindRate, int $smsType): void {
+        $isOverdue = $smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE;
+        $dueApplianceRates->each(function (ApplianceRate $dueApplianceRate) use ($smsApplianceRemindRate, $smsType, $isOverdue) {
             $this->sendReminderSms($dueApplianceRate, $smsType);
-            if ($smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE) {
-                $dueApplianceRate->remind = 1;
-                $dueApplianceRate->update();
-            }
-            $smsReminderRate = $dueApplianceRate->appliancePerson->appliance->smsReminderRate;
-            if ($smsReminderRate && $smsReminderRate->create_ticket) {
-                $this->createReminderTicket($dueApplianceRate, $smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE);
+            $dueApplianceRate->remind = $isOverdue ? ApplianceRate::REMIND_OVERDUE_SENT : ApplianceRate::REMIND_UPCOMING_SENT;
+            $dueApplianceRate->update();
+            if ($smsApplianceRemindRate->create_ticket) {
+                $this->createReminderTicket($dueApplianceRate, $isOverdue);
             }
         });
     }

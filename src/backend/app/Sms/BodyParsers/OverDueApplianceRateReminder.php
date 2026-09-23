@@ -4,7 +4,7 @@ namespace App\Sms\BodyParsers;
 
 use App\Models\ApplianceRate;
 
-class OverDueApplianceRateReminder extends SmsBodyParser {
+class OverdueApplianceRateReminder extends SmsBodyParser {
     public $variables = ['appliance_type_name', 'remaining', 'due_date'];
 
     public function __construct(protected ApplianceRate $reminderData) {}

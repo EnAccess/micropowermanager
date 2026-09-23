@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\ApplianceRate;
-use App\Models\SmsApplianceRemindRate;
 use App\Models\Ticket\Ticket;
+use App\Services\SmsApplianceRemindRateService;
 use App\Services\SmsService;
 use Database\Factories\ApplianceFactory;
 use Database\Factories\AppliancePersonFactory;
@@ -18,7 +18,7 @@ use Tests\TestCase;
 class ApplianceRateCheckerTest extends TestCase {
     use CreateEnvironments;
 
-    private function setUpApplianceWithDueRate(int $dueDaysFromNow = 0, bool $reminderEnabled = true, bool $createTicket = false): ApplianceRate {
+    private function setUpCustomer(): void {
         $this->createTestData();
         $this->createCluster(1);
         $this->createMiniGrid(1);
@@ -26,7 +26,17 @@ class ApplianceRateCheckerTest extends TestCase {
         $this->createPerson();
 
         MainSettingsFactory::new()->create();
+    }
 
+    /**
+     * @param array<string, mixed> $reminderSettings
+     */
+    private function createApplianceWithDueRate(
+        int $dueDaysFromNow,
+        array $reminderSettings,
+        int $remaining = 10000,
+        int $remind = ApplianceRate::REMIND_NONE,
+    ): ApplianceRate {
         $applianceType = ApplianceTypeFactory::new()->create();
         $appliance = ApplianceFactory::new()->create([
             'appliance_type_id' => $applianceType->id,
@@ -44,55 +54,127 @@ class ApplianceRateCheckerTest extends TestCase {
             'appliance_id' => $appliance->id,
             'remind_rate' => 7,
             'overdue_remind_rate' => 14,
-            'enabled' => $reminderEnabled,
-            'create_ticket' => $createTicket,
+            ...$reminderSettings,
         ]);
 
         return ApplianceRateFactory::new()->create([
             'appliance_person_id' => $appliancePerson->id,
             'rate_cost' => 10000,
-            'remaining' => 10000,
+            'remaining' => $remaining,
             'due_date' => now()->addDays($dueDaysFromNow)->toDateString(),
-            'remind' => 0,
+            'remind' => $remind,
         ]);
     }
 
-    public function testCommandSkipsDisabledReminders(): void {
-        $this->setUpApplianceWithDueRate(dueDaysFromNow: 0, reminderEnabled: false);
+    private function expectSmsCount(int $count): void {
+        $this->mock(SmsService::class, function ($mock) use ($count) {
+            if ($count === 0) {
+                $mock->shouldNotReceive('sendSms');
 
-        $this->mock(SmsService::class, function ($mock) {
-            $mock->shouldNotReceive('sendSms');
+                return;
+            }
+            $mock->shouldReceive('sendSms')->times($count);
         });
+    }
 
+    private function runChecker(): void {
         $this->artisan('appliance-rate:check', ['--company-id' => 1])
             ->assertSuccessful();
+    }
+
+    public function testCommandSkipsDisabledReminders(): void {
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => false, 'overdue_reminder_enabled' => false]);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
 
         $this->assertEquals(0, Ticket::query()->count());
     }
 
-    public function testCommandProcessesEnabledReminders(): void {
-        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true, createTicket: true);
+    public function testCommandSendsUpcomingReminderOnce(): void {
+        $this->setUpCustomer();
+        $applianceRate = $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => true]);
+        $this->expectSmsCount(1);
 
-        $this->mock(SmsService::class, function ($mock) {
-            $mock->shouldReceive('sendSms')->once();
-        });
+        $this->runChecker();
+        $this->runChecker();
 
-        $this->artisan('appliance-rate:check', ['--company-id' => 1])
-            ->assertSuccessful();
+        $this->assertEquals(ApplianceRate::REMIND_UPCOMING_SENT, $applianceRate->refresh()->remind);
+    }
 
-        $this->assertEquals(1, Ticket::query()->count());
+    public function testCommandSendsOverdueReminderOnceAfterUpcomingReminder(): void {
+        $this->setUpCustomer();
+        $applianceRate = $this->createApplianceWithDueRate(
+            -14,
+            ['upcoming_reminder_enabled' => true, 'overdue_reminder_enabled' => true],
+            remind: ApplianceRate::REMIND_UPCOMING_SENT,
+        );
+        $this->expectSmsCount(1);
+
+        $this->runChecker();
+        $this->runChecker();
+
+        $this->assertEquals(ApplianceRate::REMIND_OVERDUE_SENT, $applianceRate->refresh()->remind);
+    }
+
+    public function testCommandSkipsOverdueRateWhenOnlyUpcomingReminderEnabled(): void {
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(-14, ['upcoming_reminder_enabled' => true]);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
+    }
+
+    public function testCommandSkipsUpcomingRateWhenOnlyOverdueReminderEnabled(): void {
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(3, ['overdue_reminder_enabled' => true]);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
+    }
+
+    public function testCommandDoesNotProcessFutureRatesOutsideWindow(): void {
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(30, ['upcoming_reminder_enabled' => true, 'overdue_reminder_enabled' => true]);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
+    }
+
+    public function testCommandSkipsRatesOverdueBeyondCatchUpWindow(): void {
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(-30, ['overdue_reminder_enabled' => true]);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
+    }
+
+    public function testCommandSkipsPaidRates(): void {
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => true], remaining: 0);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
+    }
+
+    public function testCommandAppliesReminderSettingsOnlyToTheirAppliance(): void {
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(30, ['upcoming_reminder_enabled' => true]);
+        $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => true, 'remind_rate' => 1]);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
     }
 
     public function testCommandCreatesTicketWithCorrectOwner(): void {
-        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true, createTicket: true);
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => true, 'create_ticket' => true]);
+        $this->expectSmsCount(1);
 
-        $this->mock(SmsService::class, function ($mock) {
-            $mock->shouldReceive('sendSms');
-        });
+        $this->runChecker();
 
-        $this->artisan('appliance-rate:check', ['--company-id' => 1])
-            ->assertSuccessful();
-
+        $this->assertEquals(1, Ticket::query()->count());
         $ticket = Ticket::query()->first();
         $this->assertNotNull($ticket);
         $this->assertEquals('person', $ticket->owner_type);
@@ -100,51 +182,36 @@ class ApplianceRateCheckerTest extends TestCase {
     }
 
     public function testCommandSendsReminderWithoutTicketWhenCreateTicketDisabled(): void {
-        $this->setUpApplianceWithDueRate(dueDaysFromNow: -3, reminderEnabled: true, createTicket: false);
+        $this->setUpCustomer();
+        $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => true, 'create_ticket' => false]);
+        $this->expectSmsCount(1);
 
-        $this->mock(SmsService::class, function ($mock) {
-            $mock->shouldReceive('sendSms')->once();
-        });
-
-        $this->artisan('appliance-rate:check', ['--company-id' => 1])
-            ->assertSuccessful();
+        $this->runChecker();
 
         $this->assertEquals(0, Ticket::query()->count());
     }
 
-    public function testCommandDoesNotProcessFutureRatesOutsideWindow(): void {
-        $this->setUpApplianceWithDueRate(dueDaysFromNow: 30, reminderEnabled: true);
-
-        $this->mock(SmsService::class, function ($mock) {
-            $mock->shouldNotReceive('sendSms');
-        });
-
-        $this->artisan('appliance-rate:check', ['--company-id' => 1])
-            ->assertSuccessful();
-
-        $this->assertEquals(0, Ticket::query()->count());
-    }
-
-    public function testEnabledFilterOnlyReturnsEnabledRates(): void {
+    public function testEnabledRemindRatesIncludeEitherReminderType(): void {
         $this->createTestData();
-
         $applianceType = ApplianceTypeFactory::new()->create();
-        $enabledAppliance = ApplianceFactory::new()->create(['appliance_type_id' => $applianceType->id]);
+        $upcomingOnlyAppliance = ApplianceFactory::new()->create(['appliance_type_id' => $applianceType->id]);
+        $overdueOnlyAppliance = ApplianceFactory::new()->create(['appliance_type_id' => $applianceType->id]);
         $disabledAppliance = ApplianceFactory::new()->create(['appliance_type_id' => $applianceType->id]);
 
         SmsApplianceRemindRateFactory::new()->create([
-            'appliance_id' => $enabledAppliance->id,
-            'enabled' => true,
+            'appliance_id' => $upcomingOnlyAppliance->id,
+            'upcoming_reminder_enabled' => true,
+        ]);
+        SmsApplianceRemindRateFactory::new()->create([
+            'appliance_id' => $overdueOnlyAppliance->id,
+            'overdue_reminder_enabled' => true,
         ]);
         SmsApplianceRemindRateFactory::new()->create([
             'appliance_id' => $disabledAppliance->id,
-            'enabled' => false,
         ]);
 
-        $enabledRates = SmsApplianceRemindRate::query()->where('enabled', true)->get();
-        $allRates = SmsApplianceRemindRate::query()->get();
+        $enabledApplianceIds = resolve(SmsApplianceRemindRateService::class)->getApplianceRemindRates()->pluck('appliance_id')->all();
 
-        $this->assertEquals(1, $enabledRates->count());
-        $this->assertEquals(2, $allRates->count());
+        $this->assertEqualsCanonicalizing([$upcomingOnlyAppliance->id, $overdueOnlyAppliance->id], $enabledApplianceIds);
     }
 }

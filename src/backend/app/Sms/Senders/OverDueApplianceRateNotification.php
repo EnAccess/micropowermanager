@@ -5,7 +5,7 @@ namespace App\Sms\Senders;
 class OverDueApplianceRateNotification extends SmsSender {
     protected ?array $references = [
         'header' => 'SmsReminderHeader',
-        'body' => 'OverDueApplianceRateReminder',
+        'body' => 'OverdueApplianceRateReminder',
         'footer' => 'SmsReminderFooter',
     ];
 }
