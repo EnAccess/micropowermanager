@@ -479,7 +479,7 @@
     "registrationFrom": "Registration from",
     "registrationTo": "Registration to",
     "relocateMeter": "Relocate Meter | Are you sure you want to relocate the selected meters? | Meter is relocated successfully",
-    "remainingAmount": "RemainingAmount",
+    "remainingAmount": "Remaining Amount",
     "reminderRate": "Reminder Rate (Day)",
     "resetDevice": "Reset device",
     "resetDeviceConfirm": "Once this token is entered, the unit's remaining days drop to zero and it stops working until it is sold again. This cannot be undone on the device.",
