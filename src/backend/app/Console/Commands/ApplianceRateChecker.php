@@ -10,6 +10,7 @@ use App\Services\MainSettingsService;
 use App\Services\SmsApplianceRemindRateService;
 use App\Services\SmsService;
 use App\Services\TicketService;
+use App\Services\TicketUserService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,6 +27,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
         private User $user,
         private TicketCategory $label,
         private MainSettingsService $mainSettingsService,
+        private TicketUserService $ticketUserService,
     ) {
         parent::__construct();
     }
@@ -203,7 +205,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
             title: $applianceRate->appliancePerson->appliance->name.' rate reminder',
             content: $description,
             categoryId: $category->id,
-            assignedId: $creator->id,
+            assignedId: $this->ticketUserService->findOrCreateByUser($creator)->id,
             dueDate: (string) $applianceRate->due_date === '1970-01-01' ? null : (string) $applianceRate->due_date,
             owner: $applianceRate->appliancePerson()->first()->person()->first(),
             creator: $creator,

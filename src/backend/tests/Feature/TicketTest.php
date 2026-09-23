@@ -24,7 +24,7 @@ class TicketTest extends TestCase {
         $this->createCity(1);
         $this->createPerson();
         $this->createTicketCategory();
-        $this->createTicketUser($this->user->id);
+        $this->createTicketUser(userId: $this->user->id);
 
         $postData = [
             'owner_id' => $this->person->id,
@@ -46,7 +46,7 @@ class TicketTest extends TestCase {
         $this->createCity(1);
         $this->createPerson();
         $this->createTicketCategory();
-        $this->createTicketUser($this->user->id);
+        $this->createTicketUser(userId: $this->user->id);
         $this->createTicket(1, 1, $this->person->id);
         $response = $this->actingAs($this->user)->get('/api/tickets/ticket');
         $response->assertStatus(200);
@@ -60,7 +60,7 @@ class TicketTest extends TestCase {
         $this->createCity(1);
         $this->createPerson();
         $this->createTicketCategory();
-        $this->createTicketUser($this->user->id);
+        $this->createTicketUser(userId: $this->user->id);
         $this->createTicket(1, 1, $this->person->id);
         $ticketId = $this->ticket->id;
         $response = $this->actingAs($this->user)->delete(sprintf('/api/tickets/ticket/%s', $ticketId));
@@ -76,7 +76,7 @@ class TicketTest extends TestCase {
         $this->createAgentCommission();
         $this->createAgent();
         $this->createTicketCategory();
-        $this->createTicketUser($this->user->id);
+        $this->createTicketUser(userId: $this->user->id);
         $this->createTicket(1, 1, $this->person->id, $this->agent->id);
         $response = $this->actingAs($this->user)->get(sprintf('/api/tickets/agents/%s', $this->agent->id));
         $response->assertStatus(200);
@@ -116,7 +116,7 @@ class TicketTest extends TestCase {
         $this->createAgentCommission();
         $this->createAgent();
         $this->createTicketCategory();
-        $this->createTicketUser($this->user->id);
+        $this->createTicketUser(userId: $this->user->id);
         $this->createTicket(1, 1, $this->person->id);
         $response = $this->actingAs($this->user)->get(sprintf('/api/tickets/user/%s', $this->person->id));
         $response->assertStatus(200);

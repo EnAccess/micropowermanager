@@ -179,6 +179,9 @@ class ApplianceRateCheckerTest extends TestCase {
         $this->assertNotNull($ticket);
         $this->assertEquals('person', $ticket->owner_type);
         $this->assertEquals($this->person->id, $ticket->owner_id);
+        $assignedTicketUser = $ticket->assignedTo;
+        $this->assertNotNull($assignedTicketUser);
+        $this->assertEquals($this->user->id, $assignedTicketUser->user_id);
     }
 
     public function testCommandSendsReminderWithoutTicketWhenCreateTicketDisabled(): void {
