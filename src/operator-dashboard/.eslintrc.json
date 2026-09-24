@@ -14,9 +14,7 @@
     "ecmaVersion": 2021,
     "sourceType": "module"
   },
-  "plugins": [
-    "vue"
-  ],
+  "plugins": ["vue"],
   "rules": {
     "vue/multi-word-component-names": 0,
     "vue/no-v-text-v-html-on-component": 0,
@@ -31,15 +29,10 @@
     "vue/enforce-style-attribute": [
       "error",
       {
-        "allow": [
-          "scoped"
-        ]
+        "allow": ["scoped"]
       }
     ],
-    "import/extensions": [
-      "error",
-      "ignorePackages"
-    ],
+    "import/extensions": ["error", "ignorePackages"],
     "import/order": [
       "error",
       {
@@ -54,16 +47,10 @@
     ]
   },
   "settings": {
-    "import/extensions": [
-      ".js",
-      ".vue"
-    ],
+    "import/extensions": [".js", ".vue"],
     "import/resolver": {
       "node": {
-        "extensions": [
-          ".js",
-          ".vue"
-        ]
+        "extensions": [".js", ".vue"]
       },
       "webpack": {
         "config": "./node_modules/@vue/cli-service/webpack.config.js"

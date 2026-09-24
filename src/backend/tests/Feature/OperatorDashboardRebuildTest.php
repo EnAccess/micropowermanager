@@ -6,10 +6,11 @@ use App\Models\Company;
 use App\Models\CompanyDatabase;
 use App\Services\DatabaseProxyManagerService;
 use App\Services\OperatorDashboardService;
+use App\Services\OperatorTenantMetricsService;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\TransactionFactory;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Queue;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tests\TestCompany;
@@ -115,18 +116,61 @@ class OperatorDashboardRebuildTest extends TestCase {
         $this->assertContains($this->companyId, $failures);
     }
 
-    public function testItAdvancesTheFreshnessStampOnASingleTenantRebuild(): void {
+    public function testItCachesTenantSnapshotsAsPlainArrays(): void {
         $this->operatorDashboardService->rebuild();
-        $firstGeneratedAt = $this->operatorDashboardService->generatedAt();
 
-        Carbon::setTestNow(Carbon::now()->addMinutes(5));
-        $this->operatorDashboardService->rebuild($this->companyId);
-        $secondGeneratedAt = $this->operatorDashboardService->generatedAt();
-        Carbon::setTestNow();
+        $this->assertIsArray(Cache::get('operator-dashboard:tenant:'.$this->companyId));
+    }
 
-        $this->assertNotNull($firstGeneratedAt);
-        $this->assertNotNull($secondGeneratedAt);
-        $this->assertTrue($secondGeneratedAt->greaterThan($firstGeneratedAt));
+    public function testItKeepsTheLastSnapshotOfATenantThatFailsToRebuild(): void {
+        $this->operatorDashboardService->rebuild();
+        $tenantCount = $this->tenantCount();
+
+        $this->mock(OperatorTenantMetricsService::class)
+            ->shouldReceive('collect')
+            ->andThrow(new \RuntimeException('unreachable tenant database'));
+        resolve(OperatorDashboardService::class)->rebuild();
+
+        $snapshot = $this->operatorDashboardService->platformSnapshot()->toArray();
+        $this->assertCount($tenantCount, $snapshot['tenants']);
+    }
+
+    public function testItRemovesTheSnapshotOfACompanyThatNoLongerExists(): void {
+        $removedCompanyKey = 'operator-dashboard:tenant:987654';
+        Cache::forever($removedCompanyKey, ['companyId' => 987654]);
+        Cache::forever('operator-dashboard:index', ['company_ids' => [987654], 'generated_at' => null]);
+
+        $this->operatorDashboardService->rebuild();
+
+        $this->assertNull(Cache::get($removedCompanyKey));
+        $this->assertNotContains(
+            987654,
+            array_column($this->operatorDashboardService->platformSnapshot()->toArray()['tenants'], 'id')
+        );
+    }
+
+    public function testItDoesNotQueueARebuildWhileOneIsInFlight(): void {
+        Queue::fake();
+        $this->operatorDashboardService->startRefreshing();
+
+        $this->artisan('operator-dashboard:rebuild')->assertExitCode(0);
+
+        Queue::assertNothingPushed();
+    }
+
+    public function testItDoesNotRunASyncRebuildOrClearAnotherRebuildsFlag(): void {
+        $this->operatorDashboardService->startRefreshing();
+
+        $this->artisan('operator-dashboard:rebuild', ['--sync' => true])->assertExitCode(0);
+
+        $this->assertTrue($this->operatorDashboardService->isRefreshing());
+        $this->assertNull($this->operatorDashboardService->generatedAt());
+    }
+
+    public function testItReleasesTheFlagAfterASyncRebuild(): void {
+        $this->artisan('operator-dashboard:rebuild', ['--sync' => true])->assertExitCode(0);
+
+        $this->assertFalse($this->operatorDashboardService->isRefreshing());
     }
 
     /**

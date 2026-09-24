@@ -12,7 +12,4 @@ export default {
   refresh() {
     return Client.post(`${resource}/refresh`)
   },
-  refreshTenant(companyId) {
-    return Client.post(`${resource}/tenants/${companyId}/refresh`)
-  },
 }

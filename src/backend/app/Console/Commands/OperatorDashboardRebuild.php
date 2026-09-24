@@ -18,23 +18,28 @@ use Illuminate\Console\Command;
  * needs the opposite of all three.
  */
 class OperatorDashboardRebuild extends Command {
-    protected $signature = 'operator-dashboard:rebuild {--company-id=} {--sync}';
+    protected $signature = 'operator-dashboard:rebuild {--sync}';
     protected $description = 'Rebuild the cached operator dashboard aggregate across all tenants';
 
     public function handle(OperatorDashboardService $operatorDashboardService): int {
-        $companyId = $this->option('company-id');
-        $companyId = $companyId === null ? null : (int) $companyId;
+        if (!$operatorDashboardService->startRefreshing()) {
+            $this->info('Operator dashboard rebuild already in progress.');
+
+            return self::SUCCESS;
+        }
 
         if ($this->option('sync')) {
-            $operatorDashboardService->rebuild($companyId);
-            $operatorDashboardService->clearRefreshing();
+            try {
+                $operatorDashboardService->rebuild();
+            } finally {
+                $operatorDashboardService->clearRefreshing();
+            }
             $this->info('Operator dashboard rebuilt.');
 
             return self::SUCCESS;
         }
 
-        $operatorDashboardService->markRefreshing();
-        dispatch(new OperatorDashboardRebuildJob($companyId));
+        dispatch(new OperatorDashboardRebuildJob());
         $this->info('Operator dashboard rebuild queued.');
 
         return self::SUCCESS;

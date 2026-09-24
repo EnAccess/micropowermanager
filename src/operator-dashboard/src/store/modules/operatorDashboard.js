@@ -1,7 +1,6 @@
 import { OperatorDashboardService } from "@/services/OperatorDashboardService.js"
 
 const POLL_INTERVAL_MS = 5000
-const POLL_MAX_ATTEMPTS = 24
 
 const sleep = (milliseconds) =>
   new Promise((resolve) => {
@@ -77,22 +76,23 @@ export const actions = {
     const generatedAtBeforeRebuild = state.generatedAt
     commit("SET_REFRESHING", true)
 
-    await state.operatorDashboardService.refresh()
+    try {
+      await state.operatorDashboardService.refresh()
 
-    for (let attempt = 0; attempt < POLL_MAX_ATTEMPTS; attempt += 1) {
-      await sleep(POLL_INTERVAL_MS)
-      await dispatch("fetchPlatform")
+      do {
+        await sleep(POLL_INTERVAL_MS)
+        await dispatch("fetchPlatform")
+      } while (
+        state.refreshing &&
+        state.generatedAt === generatedAtBeforeRebuild
+      )
 
-      if (state.generatedAt !== generatedAtBeforeRebuild) {
-        return
-      }
-      if (!state.refreshing) {
+      if (state.generatedAt === generatedAtBeforeRebuild) {
         throw { message: "phrases.refreshFailed", type: "refresh" }
       }
+    } finally {
+      commit("SET_REFRESHING", false)
     }
-
-    commit("SET_REFRESHING", false)
-    throw { message: "phrases.refreshTimedOut", type: "refresh" }
   },
 }
 

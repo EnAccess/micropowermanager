@@ -25,10 +25,9 @@ class OperatorDashboardController extends Controller {
      * should poll against. Building inline would fan out across every tenant
      * database inside a web request.
      */
-    public function refresh(?int $companyId = null): JsonResponse {
-        if (!$this->operatorDashboardService->isRefreshing()) {
-            $this->operatorDashboardService->markRefreshing();
-            dispatch(new OperatorDashboardRebuildJob($companyId));
+    public function refresh(): JsonResponse {
+        if ($this->operatorDashboardService->startRefreshing()) {
+            dispatch(new OperatorDashboardRebuildJob());
         }
 
         return response()->json([

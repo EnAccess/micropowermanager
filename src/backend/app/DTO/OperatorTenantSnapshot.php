@@ -6,6 +6,7 @@ namespace App\DTO;
 
 use App\Enums\OperatorTenantHealth;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Carbon;
 
 class OperatorTenantSnapshot {
     /**
@@ -83,8 +84,26 @@ class OperatorTenantSnapshot {
         ];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * The cache form: every constructor argument by name, with dates as strings, so
+     * {@see self::fromArray()} can rebuild the snapshot exactly.
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(): array {
-        return $this->toDetailArray();
+        return [
+            ...get_object_vars($this),
+            'registeredAt' => $this->registeredAt?->toISOString(),
+            'lastActiveAt' => $this->lastActiveAt?->toISOString(),
+        ];
+    }
+
+    /** @param array<string, mixed> $data */
+    public static function fromArray(array $data): self {
+        return new self(...[
+            ...$data,
+            'registeredAt' => $data['registeredAt'] === null ? null : Carbon::parse($data['registeredAt']),
+            'lastActiveAt' => $data['lastActiveAt'] === null ? null : Carbon::parse($data['lastActiveAt']),
+        ]);
     }
 }

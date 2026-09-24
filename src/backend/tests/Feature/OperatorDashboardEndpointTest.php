@@ -121,6 +121,16 @@ class OperatorDashboardEndpointTest extends TestCase {
         Queue::assertPushed(OperatorDashboardRebuildJob::class, 1);
     }
 
+    public function testItThrottlesRepeatedWrongCredentials(): void {
+        $wrongAuthorization = ['Authorization' => 'Basic '.base64_encode(self::USERNAME.':wrong')];
+
+        for ($attempt = 0; $attempt < 60; ++$attempt) {
+            $this->getJson('/api/operator/dashboard', $wrongAuthorization)->assertStatus(401);
+        }
+
+        $this->getJson('/api/operator/dashboard', $this->authorization())->assertStatus(429);
+    }
+
     /** @return array<string, string> */
     private function authorization(): array {
         return ['Authorization' => 'Basic '.base64_encode(self::USERNAME.':'.self::PASSWORD)];

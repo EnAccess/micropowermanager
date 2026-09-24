@@ -37,10 +37,6 @@
           }}
         </span>
       </button>
-      <div class="topbar__operator">
-        <span class="material-icons topbar__operator-icon">person</span>
-        <span>{{ $tc("words.operator") }}</span>
-      </div>
     </div>
 
     <progress-bar v-if="refreshing" class="topbar__progress" indeterminate />
@@ -180,20 +176,6 @@ export default {
 
 .topbar__refresh-label {
   white-space: nowrap;
-}
-
-.topbar__operator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: $ops-shell-text;
-  font-size: 13px;
-  font-weight: 300;
-}
-
-.topbar__operator-icon {
-  font-size: 19px;
-  color: $ops-shell-text-muted;
 }
 
 .topbar__progress {

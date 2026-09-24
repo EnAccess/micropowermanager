@@ -26,10 +26,9 @@ return [
     | from a nightly rebuilt cache, so nothing here is read on the hot path of
     | a tenant request.
     |
-    | The cache TTL is deliberately longer than the rebuild interval: a TTL as
-    | short as the interval means a single failed nightly run empties the
-    | dashboard. Staleness is communicated through `generated_at` and the
-    | `stale` flag instead.
+    | The dashboard is opened only occasionally, so the cache never expires: a
+    | missed or failed nightly run leaves the last snapshot in place, and its
+    | age is communicated through `generated_at` and the `stale` flag.
     |
     */
 
@@ -39,8 +38,7 @@ return [
             'password' => env('OPERATOR_DASHBOARD_PASSWORD'),
         ],
 
-        'cache_ttl_days' => env('OPERATOR_DASHBOARD_CACHE_TTL_DAYS', 7),
-        'refreshing_ttl_minutes' => env('OPERATOR_DASHBOARD_REFRESHING_TTL_MINUTES', 30),
+        'refreshing_ttl_minutes' => env('OPERATOR_DASHBOARD_REFRESHING_TTL_MINUTES', 15),
         'stale_after_hours' => env('OPERATOR_DASHBOARD_STALE_AFTER_HOURS', 36),
 
         'series_months' => 12,

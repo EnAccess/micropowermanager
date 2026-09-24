@@ -41,6 +41,20 @@ class OperatorDashboardSnapshotTest extends TestCase {
         );
     }
 
+    public function testItRestoresATenantSnapshotFromItsCacheForm(): void {
+        $snapshot = $this->snapshot(
+            companyId: 7,
+            customers: 12,
+            meters: 3,
+            transactionsThisMonth: 4,
+            volumeThisMonth: 1500.5,
+            currency: 'TZS',
+            byProvider: ['cash_transaction' => [Carbon::now()->format('Y-m') => 4]],
+        );
+
+        $this->assertEquals($snapshot, OperatorTenantSnapshot::fromArray($snapshot->toArray()));
+    }
+
     public function testItFoldsAnEmptyPlatform(): void {
         $snapshot = OperatorPlatformSnapshot::fold([], null, false)->toArray();
 

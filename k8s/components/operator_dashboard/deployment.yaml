@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-operator-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-operator-dashboard
+  template:
+    metadata:
+      labels:
+        app: mpm-operator-dashboard
+    spec:
+      containers:
+        - name: mpm-operator-dashboard
+          image: enaccess/micropowermanager-operator-dashboard:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          # The operator dashboard needs the same MPM_ENV and MPM_BACKEND_URL as the frontend
+          envFrom:
+            - configMapRef:
+                name: mpm-configmap-frontend
+            - secretRef:
+                name: mpm-secret-frontend

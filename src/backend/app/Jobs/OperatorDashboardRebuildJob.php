@@ -26,20 +26,24 @@ class OperatorDashboardRebuildJob implements ShouldQueue {
     use Queueable;
     use SerializesModels;
 
-    public int $timeout = 1800;
+    // Must stay below the redis connection's `retry_after` in config/queue.php, or
+    // the queue hands the still-running job to a second worker.
+    public int $timeout = 600;
+
+    public bool $failOnTimeout = true;
 
     // Retrying would walk every tenant database a second time; a failed rebuild
     // leaves the previous snapshots in place, so the dashboard stays usable.
     public int $tries = 1;
 
-    public function __construct(private ?int $companyId = null) {
+    public function __construct() {
         $this->onConnection('redis');
         $this->onQueue('operator_dashboard');
     }
 
     public function handle(OperatorDashboardService $operatorDashboardService): void {
         try {
-            $operatorDashboardService->rebuild($this->companyId);
+            $operatorDashboardService->rebuild();
         } finally {
             $operatorDashboardService->clearRefreshing();
         }
@@ -47,7 +51,6 @@ class OperatorDashboardRebuildJob implements ShouldQueue {
 
     public function failed(?\Throwable $throwable = null): void {
         Log::error('Operator dashboard rebuild failed', [
-            'companyId' => $this->companyId,
             'message' => $throwable?->getMessage(),
         ]);
 

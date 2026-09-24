@@ -9,6 +9,7 @@ resources:
 
 components:
   - ../../components/internal_ingress
+  - ../../components/operator_dashboard
   - ../../components/vertical_pod_autoscaler
 
 # customise `newTag` to deploy a specific version of MicroPowerManager
@@ -20,6 +21,8 @@ images:
   - name: enaccess/micropowermanager-scheduler:latest
     newTag: latest
   - name: enaccess/micropowermanager-queue-worker:latest
+    newTag: latest
+  - name: enaccess/micropowermanager-operator-dashboard:latest
     newTag: latest
 
 patches:
@@ -81,6 +84,14 @@ patches:
         domains:
           - api.demo.micropowermanager.io
           - demo.micropowermanager.io
+  - patch: |-
+      apiVersion: networking.gke.io/v1
+      kind: ManagedCertificate
+      metadata:
+        name: mpm-operator-dashboard-cert
+      spec:
+        domains:
+          - operator.demo.micropowermanager.io
 
 replacements:
   - source:
@@ -103,3 +114,13 @@ replacements:
           name: mpm-ingress
         fieldPaths:
           - spec.rules.1.host
+  - source:
+      kind: ManagedCertificate
+      name: mpm-operator-dashboard-cert
+      fieldPath: spec.domains.0
+    targets:
+      - select:
+          kind: Ingress
+          name: mpm-ingress
+        fieldPaths:
+          - spec.rules.2.host

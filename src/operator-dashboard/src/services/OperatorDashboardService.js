@@ -30,12 +30,9 @@ export class OperatorDashboardService {
     }
   }
 
-  async refresh(companyId = null) {
+  async refresh() {
     try {
-      const response =
-        companyId === null
-          ? await this.repository.refresh()
-          : await this.repository.refreshTenant(companyId)
+      const response = await this.repository.refresh()
 
       return this.responseValidator(response, [200, 202])
     } catch (e) {
