@@ -78,6 +78,16 @@ class OperatorDashboardSnapshotTest extends TestCase {
         $this->assertSame(50.0, $snapshot['summary']['tenants_active_percentage']);
     }
 
+    public function testItSumsSolarHomeSystemSalesAcrossTenants(): void {
+        $snapshot = OperatorPlatformSnapshot::fold([
+            $this->snapshot(companyId: 1, shsSold: 12, shsSoldThisMonth: 3),
+            $this->snapshot(companyId: 2, shsSold: 5, shsSoldThisMonth: 0),
+        ], Carbon::now(), false)->toArray();
+
+        $this->assertSame(17, $snapshot['summary']['shs_sold_total']);
+        $this->assertSame(3, $snapshot['summary']['shs_sold_this_month']);
+    }
+
     public function testItReportsNoTrendWhenThePreviousMonthHadNoTransactions(): void {
         $snapshot = OperatorPlatformSnapshot::fold([
             $this->snapshot(companyId: 1, transactionsThisMonth: 25, transactionsLastMonth: 0),
@@ -151,6 +161,8 @@ class OperatorDashboardSnapshotTest extends TestCase {
         float $volumeThisMonth = 0.0,
         ?string $currency = null,
         array $byProvider = [],
+        int $shsSold = 0,
+        int $shsSoldThisMonth = 0,
     ): OperatorTenantSnapshot {
         return new OperatorTenantSnapshot(
             companyId: $companyId,
@@ -166,7 +178,8 @@ class OperatorDashboardSnapshotTest extends TestCase {
             newCustomersThisMonth: 0,
             devices: ['meters' => $meters, 'shs' => 0, 'ebikes' => 0],
             metersAssignedToCustomer: 0,
-            metersReportingLastSevenDays: null,
+            shsSold: $shsSold,
+            shsSoldThisMonth: $shsSoldThisMonth,
             monthlyTransactions: [Carbon::now()->format('Y-m') => $transactionsThisMonth],
             monthlyTransactionsByProvider: $byProvider,
             transactionsThisMonth: $transactionsThisMonth,

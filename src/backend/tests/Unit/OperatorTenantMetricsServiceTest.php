@@ -4,11 +4,15 @@ namespace Tests\Unit;
 
 use App\DTO\OperatorTenantSnapshot;
 use App\Enums\DeviceType;
+use App\Models\AppliancePerson;
+use App\Models\ApplianceType;
 use App\Models\Company;
 use App\Models\Device;
 use App\Models\MpmPlugin;
 use App\Models\UsageType;
 use App\Services\OperatorTenantMetricsService;
+use Database\Factories\ApplianceFactory;
+use Database\Factories\AppliancePersonFactory;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Illuminate\Support\Carbon;
@@ -58,10 +62,23 @@ class OperatorTenantMetricsServiceTest extends TestCase {
         $this->assertSame(1, $snapshot->metersAssignedToCustomer);
     }
 
-    public function testItReportsNoMeterReadingsWhenTheTenantHasNoConsumptionRecords(): void {
+    public function testItCountsSolarHomeSystemSalesThatAreNotSoftDeleted(): void {
+        $solarHomeSystem = $this->createAppliance(ApplianceType::APPLIANCE_TYPE_SHS, 'Solar Home System');
+        $eBike = $this->createAppliance(ApplianceType::APPLIANCE_TYPE_E_BIKE, 'E-Bike');
+
+        $this->sellAppliance($solarHomeSystem, Carbon::now());
+        $this->sellAppliance($solarHomeSystem, Carbon::now()->subMonthNoOverflow()->startOfMonth());
+        $this->sellAppliance($solarHomeSystem, Carbon::now())->delete();
+        $this->sellAppliance($eBike, Carbon::now());
+
         $snapshot = $this->collect();
 
-        $this->assertNull($snapshot->metersReportingLastSevenDays);
+        $this->assertSame(2, $snapshot->shsSold);
+        $this->assertSame(1, $snapshot->shsSoldThisMonth);
+        $this->assertContains(
+            ['type' => 'shs_sold', 'at' => null, 'count' => 1, 'detail' => null],
+            $snapshot->activity
+        );
     }
 
     public function testItZeroFillsTheTrailingTwelveMonths(): void {
@@ -168,6 +185,20 @@ class OperatorTenantMetricsServiceTest extends TestCase {
         $pluginNames = MpmPlugin::query()->pluck('name', 'id')->all();
 
         return $this->operatorTenantMetricsService->collect($this->company, $pluginNames, $usageTypeNames);
+    }
+
+    private function createAppliance(int $applianceTypeId, string $applianceTypeName): int {
+        ApplianceType::query()->firstOrCreate(['id' => $applianceTypeId], ['name' => $applianceTypeName]);
+
+        return ApplianceFactory::new()->create(['appliance_type_id' => $applianceTypeId])->id;
+    }
+
+    private function sellAppliance(int $applianceId, Carbon $soldAt): AppliancePerson {
+        return AppliancePersonFactory::new()->create([
+            'appliance_id' => $applianceId,
+            'person_id' => PersonFactory::new()->isCustomer()->create()->id,
+            'created_at' => $soldAt,
+        ]);
     }
 
     private function createDevice(DeviceType $deviceType, ?int $personId): void {

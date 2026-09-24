@@ -31,12 +31,12 @@ const PRESENTATION = {
     countInTitle: true,
     time: "phrases.thisMonth",
   },
-  meters_reporting: {
-    icon: "settings_input_hdmi",
+  shs_sold: {
+    icon: "solar_power",
     color: "#fa8d41",
-    title: "phrases.meterReadingsReceived",
-    meta: "phrases.metersReported",
-    time: "phrases.lastSevenDays",
+    title: "phrases.shsSoldCount",
+    countInTitle: true,
+    time: "phrases.thisMonth",
   },
   customers_onboarded: {
     icon: "supervisor_account",
@@ -99,10 +99,6 @@ export default {
     metaFor(entry, presentation) {
       if (!presentation.meta) {
         return null
-      }
-      // A null count means the tenant has no source for this figure at all.
-      if (entry.count === null || entry.count === undefined) {
-        return this.$tc("phrases.notAvailable")
       }
 
       return this.$tc(presentation.meta, 1, { value: formatCount(entry.count) })

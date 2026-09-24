@@ -36,6 +36,8 @@ class OperatorPlatformSnapshot {
         $transactionsPerPeriodByProvider = [];
 
         $customers = 0;
+        $shsSold = 0;
+        $shsSoldThisMonth = 0;
         $meters = 0;
         $shs = 0;
         $ebikes = 0;
@@ -48,6 +50,8 @@ class OperatorPlatformSnapshot {
 
         foreach ($snapshots as $snapshot) {
             $customers += $snapshot->customers;
+            $shsSold += $snapshot->shsSold;
+            $shsSoldThisMonth += $snapshot->shsSoldThisMonth;
             $meters += $snapshot->devices['meters'];
             $shs += $snapshot->devices['shs'];
             $ebikes += $snapshot->devices['ebikes'];
@@ -102,6 +106,8 @@ class OperatorPlatformSnapshot {
                     ? null
                     : round(($transactionsThisMonth - $transactionsLastMonth) / $transactionsLastMonth * 100, 1),
                 'customers_total' => $customers,
+                'shs_sold_total' => $shsSold,
+                'shs_sold_this_month' => $shsSoldThisMonth,
                 'devices_total' => [
                     'total' => $meters + $shs + $ebikes,
                     'meters' => $meters,

@@ -34,6 +34,20 @@
           <span class="fleet__share tabular">{{ segment.width }}</span>
         </div>
       </div>
+
+      <div class="fleet__sales">
+        <span class="fleet__label">
+          {{ $tc("phrases.shsSoldAcrossTenants") }}
+        </span>
+        <span class="fleet__count tabular">{{ formatCount(shsSold) }}</span>
+        <span class="fleet__sales-hint">
+          {{
+            $tc("phrases.newThisMonth", 1, {
+              value: formatCount(shsSoldThisMonth),
+            })
+          }}
+        </span>
+      </div>
     </div>
   </ops-card>
 </template>
@@ -49,6 +63,14 @@ export default {
   props: {
     devices: {
       type: Object,
+      required: true,
+    },
+    shsSold: {
+      type: Number,
+      required: true,
+    },
+    shsSoldThisMonth: {
+      type: Number,
       required: true,
     },
   },
@@ -129,6 +151,20 @@ export default {
 .fleet__count {
   font-weight: 500;
   color: $ops-text-strong;
+}
+
+.fleet__sales {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid $ops-row-border;
+}
+
+.fleet__sales-hint {
+  font-size: $font-caption;
+  color: $ops-text-muted;
 }
 
 .fleet__share {

@@ -32,7 +32,8 @@ export const mapTenantDetail = (payload) => ({
     transactions: payload.monthly.transactions,
   },
   metersAssignedToCustomer: payload.meters_assigned_to_customer,
-  metersReportingLastSevenDays: payload.meters_reporting_last_seven_days,
+  shsSold: payload.shs_sold,
+  shsSoldThisMonth: payload.shs_sold_this_month,
   volumeThisMonth: payload.volume_this_month,
   currency: payload.currency,
   activity: payload.activity,
@@ -48,6 +49,8 @@ export const mapPlatform = (payload) => ({
     transactionsLastMonth: payload.summary.transactions_last_month,
     transactionsTrendPercentage: payload.summary.transactions_trend_percentage,
     customersTotal: payload.summary.customers_total,
+    shsSoldTotal: payload.summary.shs_sold_total,
+    shsSoldThisMonth: payload.summary.shs_sold_this_month,
     devicesTotal: {
       total: payload.summary.devices_total.total,
       meters: payload.summary.devices_total.meters,

@@ -32,13 +32,19 @@
       <div class="tenant-fleet__bar-group">
         <div class="tenant-fleet__bar-head">
           <span class="tenant-fleet__bar-label">
-            {{ $tc("phrases.reportedLastSevenDays") }}
+            {{ $tc("phrases.shsSold") }}
           </span>
           <span class="tenant-fleet__bar-value tabular">
-            {{ reportedLabel }}
+            {{ formatCount(tenant.shsSold) }}
           </span>
         </div>
-        <progress-bar :percentage="reportedPercentage" :color="reportedColor" />
+        <div class="tenant-fleet__hint">
+          {{
+            $tc("phrases.newThisMonth", 1, {
+              value: formatCount(tenant.shsSoldThisMonth),
+            })
+          }}
+        </div>
       </div>
     </div>
   </ops-card>
@@ -81,32 +87,6 @@ export default {
     },
     inUsePercentage() {
       return this.percentageOfMeters(this.tenant.metersAssignedToCustomer)
-    },
-    reportedPercentage() {
-      return this.percentageOfMeters(this.tenant.metersReportingLastSevenDays)
-    },
-    /**
-     * A null reading count means this tenant's meter manufacturer does not report
-     * consumption at all, which is different from every meter being silent.
-     */
-    reportedLabel() {
-      if (this.tenant.metersReportingLastSevenDays === null) {
-        return this.$tc("phrases.notAvailable")
-      }
-
-      return `${formatCount(this.tenant.metersReportingLastSevenDays)} / ${formatCount(
-        this.tenant.devices.meters,
-      )}`
-    },
-    reportedColor() {
-      if (this.reportedPercentage >= 70) {
-        return "#81a872"
-      }
-      if (this.reportedPercentage >= 40) {
-        return "#fab15b"
-      }
-
-      return "#fa8d41"
     },
   },
   methods: {
@@ -175,6 +155,11 @@ export default {
 .tenant-fleet__bar-label {
   font-size: $font-cell;
   color: $ops-text;
+}
+
+.tenant-fleet__hint {
+  font-size: $font-caption;
+  color: $ops-text-muted;
 }
 
 .tenant-fleet__bar-value {

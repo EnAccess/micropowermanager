@@ -8,7 +8,11 @@
       <transactions-hero-card :monthly="monthly" class="overview__hero" />
 
       <div class="overview__grid">
-        <device-fleet-card :devices="summary.devicesTotal" />
+        <device-fleet-card
+          :devices="summary.devicesTotal"
+          :shs-sold="summary.shsSoldTotal"
+          :shs-sold-this-month="summary.shsSoldThisMonth"
+        />
         <needs-attention-card :tenants="attentionTenants" />
       </div>
     </template>

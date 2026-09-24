@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DTO\OperatorPlatformSnapshot;
 use App\DTO\OperatorTenantSnapshot;
 use App\Enums\DeviceType;
+use App\Models\ApplianceType;
 use App\Models\Company;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -41,7 +42,7 @@ class OperatorTenantMetricsService {
 
         $customers = $this->customerCounts();
         $devices = $this->deviceCounts();
-        $meterReporting = $this->meterReportingCounts();
+        $shsSales = $this->shsSales();
         $transactions = $this->transactionSeries($periods);
         $settings = $this->settings();
         $countryCode = $this->countryCode($company->phone);
@@ -63,7 +64,8 @@ class OperatorTenantMetricsService {
             newCustomersThisMonth: $customers['new_this_month'],
             devices: $devices,
             metersAssignedToCustomer: $this->metersAssignedToCustomer(),
-            metersReportingLastSevenDays: $meterReporting,
+            shsSold: $shsSales['total'],
+            shsSoldThisMonth: $shsSales['this_month'],
             monthlyTransactions: $monthlyTransactions,
             monthlyTransactionsByProvider: $transactions['per_period_by_provider'],
             transactionsThisMonth: $transactionsThisMonth,
@@ -71,7 +73,7 @@ class OperatorTenantMetricsService {
             volumeThisMonth: $transactions['volume_per_period'][$currentPeriod] ?? 0.0,
             currency: $settings['currency'],
             plugins: $this->pluginNames($pluginNamesByMpmPluginId),
-            activity: $this->activity($transactionsThisMonth, $customers['new_this_month'], $meterReporting),
+            activity: $this->activity($transactionsThisMonth, $customers['new_this_month'], $shsSales['this_month']),
         );
     }
 
@@ -117,23 +119,25 @@ class OperatorTenantMetricsService {
     }
 
     /**
-     * Null when the tenant has no consumption records at all: only some meter
-     * manufacturers report readings back, and rendering a zero would look like a
-     * fleet-wide outage rather than an absent integration.
+     * A sale is an `appliance_people` row, and its appliance type says whether it
+     * was a solar home system. Owning an SHS device is not used: devices can be
+     * assigned to a customer without being sold.
+     *
+     * @return array{total: int, this_month: int}
      */
-    private function meterReportingCounts(): ?int {
-        $row = DB::connection('tenant')->table('meter_consumptions')
+    private function shsSales(): array {
+        $row = DB::connection('tenant')->table('appliance_people')
+            ->join('appliances', 'appliances.id', '=', 'appliance_people.appliance_id')
+            ->whereNull('appliance_people.deleted_at')
+            ->where('appliances.appliance_type_id', ApplianceType::APPLIANCE_TYPE_SHS)
             ->selectRaw('COUNT(*) AS total')
-            ->selectRaw('COUNT(DISTINCT CASE WHEN reading_date >= ? THEN meter_id END) AS reporting', [
-                Carbon::now()->subDays(7),
-            ])
+            ->selectRaw('SUM(appliance_people.created_at >= ?) AS this_month', [Carbon::now()->startOfMonth()])
             ->first();
 
-        if ((int) ($row->total ?? 0) === 0) {
-            return null;
-        }
-
-        return (int) ($row->reporting ?? 0);
+        return [
+            'total' => (int) ($row->total ?? 0),
+            'this_month' => (int) ($row->this_month ?? 0),
+        ];
     }
 
     /**
@@ -272,7 +276,7 @@ class OperatorTenantMetricsService {
     }
 
     /** @return list<array{type: string, at: string|null, count: int|null, detail: string|null}> */
-    private function activity(int $transactionsThisMonth, int $newCustomersThisMonth, ?int $metersReporting): array {
+    private function activity(int $transactionsThisMonth, int $newCustomersThisMonth, int $shsSoldThisMonth): array {
         $lastTariffChangeAt = DB::connection('tenant')->table('tariffs')->max('updated_at');
         $lastSmsSentAt = DB::connection('tenant')->table('sms')->where('direction', 1)->max('created_at');
 
@@ -284,9 +288,9 @@ class OperatorTenantMetricsService {
                 'detail' => null,
             ],
             [
-                'type' => 'meters_reporting',
+                'type' => 'shs_sold',
                 'at' => null,
-                'count' => $metersReporting,
+                'count' => $shsSoldThisMonth,
                 'detail' => null,
             ],
             [
