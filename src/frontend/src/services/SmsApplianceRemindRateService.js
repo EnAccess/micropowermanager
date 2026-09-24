@@ -11,7 +11,8 @@ export class SmsApplianceRemindRateService {
       applianceType: null,
       overdueRemindRate: null,
       remindRate: null,
-      enabled: false,
+      upcomingReminderEnabled: false,
+      overdueReminderEnabled: false,
       createTicket: false,
     }
   }
@@ -31,18 +32,23 @@ export class SmsApplianceRemindRateService {
         overdueRemindRate:
           applianceType.sms_reminder_rate == null ||
           applianceType.sms_reminder_rate === undefined
-            ? 0
+            ? 1
             : applianceType.sms_reminder_rate.overdue_remind_rate,
         remindRate:
           applianceType.sms_reminder_rate == null ||
           applianceType.sms_reminder_rate === undefined
-            ? 0
+            ? 3
             : applianceType.sms_reminder_rate.remind_rate,
-        enabled:
+        upcomingReminderEnabled:
           applianceType.sms_reminder_rate == null ||
           applianceType.sms_reminder_rate === undefined
             ? false
-            : !!applianceType.sms_reminder_rate.enabled,
+            : !!applianceType.sms_reminder_rate.upcoming_reminder_enabled,
+        overdueReminderEnabled:
+          applianceType.sms_reminder_rate == null ||
+          applianceType.sms_reminder_rate === undefined
+            ? false
+            : !!applianceType.sms_reminder_rate.overdue_reminder_enabled,
         createTicket:
           applianceType.sms_reminder_rate == null ||
           applianceType.sms_reminder_rate === undefined
@@ -73,7 +79,10 @@ export class SmsApplianceRemindRateService {
         appliance_type_id: this.smsApplianceRemindRate.applianceTypeId,
         overdue_remind_rate: this.smsApplianceRemindRate.overdueRemindRate,
         remind_rate: this.smsApplianceRemindRate.remindRate,
-        enabled: this.smsApplianceRemindRate.enabled,
+        upcoming_reminder_enabled:
+          this.smsApplianceRemindRate.upcomingReminderEnabled,
+        overdue_reminder_enabled:
+          this.smsApplianceRemindRate.overdueReminderEnabled,
         create_ticket: this.smsApplianceRemindRate.createTicket,
       }
       let response
