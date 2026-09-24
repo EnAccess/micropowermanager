@@ -10,6 +10,7 @@ use App\Exceptions\ApplianceTokenNotProcessedException;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Models\Appliance;
+use App\Models\AppliancePerson;
 use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\ApplianceRateService;
@@ -72,12 +73,24 @@ class ApplianceTransactionProcessor extends AbstractJob {
             $appliancePerson = $this->transaction->paygoAppliance()->first()
                 ?? $this->transaction->nonPaygoAppliance()->first();
 
-            $this->transaction->type = ($appliancePerson && $appliancePerson->isEnergyService())
-                ? Transaction::TYPE_EAAS_RATE
-                : Transaction::TYPE_DEFERRED_PAYMENT;
+            $this->transaction->type = $this->paymentType($appliancePerson);
         }
 
         $this->transaction->save();
+    }
+
+    private function paymentType(?AppliancePerson $appliancePerson): string {
+        if (!$appliancePerson instanceof AppliancePerson) {
+            return Transaction::TYPE_DEFERRED_PAYMENT;
+        }
+
+        if (resolve(AppliancePaymentService::class)->isDownPaymentOutstanding($appliancePerson)) {
+            return Transaction::TYPE_DOWN_PAYMENT;
+        }
+
+        return $appliancePerson->isEnergyService()
+            ? Transaction::TYPE_EAAS_RATE
+            : Transaction::TYPE_DEFERRED_PAYMENT;
     }
 
     private function initializeTransactionDataContainer(): TransactionDataContainer {
@@ -90,10 +103,6 @@ class ApplianceTransactionProcessor extends AbstractJob {
     }
 
     private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void {
-        if ($this->transaction->type === Transaction::TYPE_DOWN_PAYMENT) {
-            return;
-        }
-
         $minimumPurchaseAmount = $container->appliancePerson->isEnergyService()
             ? ($container->appliancePerson->minimum_payable_amount ?? 0)
             : resolve(AppliancePaymentService::class)
@@ -105,10 +114,6 @@ class ApplianceTransactionProcessor extends AbstractJob {
     }
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {
-        if ($this->transaction->type === Transaction::TYPE_DOWN_PAYMENT) {
-            return $this->recordDownPayment($container);
-        }
-
         if ($container->appliancePerson->isEnergyService()) {
             $applianceRateService = resolve(ApplianceRateService::class);
             $paidRate = $applianceRateService->createPaidRate($container->appliancePerson, $container->amount);
@@ -122,7 +127,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
             event(new PaymentSuccessEvent(
                 amount: (int) $container->amount,
                 paymentService: $this->transaction->original_transaction_type,
-                paymentType: Transaction::TYPE_EAAS_RATE,
+                paymentType: $this->transaction->type,
                 sender: $this->transaction->sender,
                 paidFor: $paidRate,
                 payer: $container->appliancePerson->person,
@@ -137,32 +142,6 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $applianceInstallmentPayer->payInstallmentsForDevice($container);
         $container->paidRates = $applianceInstallmentPayer->paidRates;
         $container->applianceInstallmentsFullFilled = $container->appliancePerson->rates->every(fn ($installment): bool => $installment->remaining === 0);
-
-        return $container;
-    }
-
-    /**
-     * ApplianceRateService::create() already excludes the down payment from the installment
-     * schedule, so paying a settling down payment into those installments credits it twice.
-     */
-    private function recordDownPayment(TransactionDataContainer $container): TransactionDataContainer {
-        $paidRate = resolve(ApplianceRateService::class)
-            ->createPaidRate($container->appliancePerson, $container->amount);
-
-        $container->paidRates = [
-            ['appliance_rate_id' => $paidRate->id, 'paid' => $container->amount],
-        ];
-        $container->applianceInstallmentsFullFilled = false;
-
-        event(new PaymentSuccessEvent(
-            amount: (int) $container->amount,
-            paymentService: $this->transaction->original_transaction_type,
-            paymentType: Transaction::TYPE_DOWN_PAYMENT,
-            sender: $this->transaction->sender,
-            paidFor: $paidRate,
-            payer: $container->appliancePerson->person,
-            transaction: $this->transaction,
-        ));
 
         return $container;
     }

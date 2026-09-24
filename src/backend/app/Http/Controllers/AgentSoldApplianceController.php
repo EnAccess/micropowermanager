@@ -51,6 +51,9 @@ class AgentSoldApplianceController extends Controller {
      * `payment_provider` is one of the IDs returned by the payment providers endpoint;
      * omit it (or send `0`) to record the down payment as cash the agent collected.
      * A provider payment that the provider rejects rolls the whole sale back.
+     *
+     * The down payment is collected asynchronously; `transaction_id` is what the field app polls
+     * the token for.
      */
     public function store(CreateAgentSoldApplianceRequest $request): JsonResponse {
         $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);

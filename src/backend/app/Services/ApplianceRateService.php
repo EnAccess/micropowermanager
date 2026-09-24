@@ -270,12 +270,16 @@ class ApplianceRateService {
         ]);
     }
 
-    public function getDownPaymentAsApplianceRate(object $appliancePerson): ?ApplianceRate {
-        return $this->applianceRate->newQuery()
-            ->where('appliance_person_id', $appliancePerson->id)
-            ->where('rate_cost', round($appliancePerson->down_payment))
-            ->where('remaining', 0)
-            ->first();
+    public function createDownPaymentRate(AppliancePerson $appliancePerson): ApplianceRate {
+        $downPayment = (int) round($appliancePerson->down_payment);
+
+        return $this->applianceRate->newQuery()->create([
+            'appliance_person_id' => $appliancePerson->id,
+            'rate_cost' => $downPayment,
+            'remaining' => $downPayment,
+            'due_date' => Carbon::today()->toDateTimeString(),
+            'remind' => 0,
+        ]);
     }
 
     /**
