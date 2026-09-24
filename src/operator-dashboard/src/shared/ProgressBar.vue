@@ -37,7 +37,7 @@ export default {
   position: relative;
   height: 7px;
   border-radius: $ops-radius-control;
-  background: $ops-row-border;
+  background: $ops-track;
   overflow: hidden;
 }
 

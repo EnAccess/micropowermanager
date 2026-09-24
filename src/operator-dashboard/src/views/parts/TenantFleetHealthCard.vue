@@ -124,7 +124,7 @@ export default {
 
 <style lang="scss" scoped>
 .tenant-fleet {
-  padding: 4px 24px 20px;
+  padding: 12px 24px 20px;
 }
 
 .tenant-fleet__legend {
@@ -147,14 +147,11 @@ export default {
 }
 
 .tenant-fleet__label {
-  font-size: 13.5px;
   color: $ops-text;
   flex: 1;
-  font-weight: 300;
 }
 
 .tenant-fleet__count {
-  font-size: 14px;
   font-weight: 500;
   color: $ops-text-strong;
 }
@@ -176,14 +173,13 @@ export default {
 }
 
 .tenant-fleet__bar-label {
-  font-size: 13px;
-  font-weight: 300;
+  font-size: $font-cell;
   color: $ops-text;
 }
 
 .tenant-fleet__bar-value {
   margin-left: auto;
-  font-size: 12.5px;
+  font-size: $font-cell;
   font-weight: 500;
   color: $ops-text-strong;
 }

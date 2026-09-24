@@ -11,7 +11,7 @@
       <header class="detail__header">
         <h1 class="detail__title">
           {{ tenant.name }}
-          <span class="detail__chip" :class="`status-chip--${tenant.health}`">
+          <span class="mpm-chip" :class="`status-chip--${tenant.health}`">
             {{ $tc(`words.${tenant.health}`) }}
           </span>
         </h1>
@@ -20,7 +20,7 @@
           <span
             v-for="plugin in tenant.plugins"
             :key="plugin"
-            class="detail__plugin"
+            class="mpm-chip mpm-chip--primary"
           >
             {{ plugin }}
           </span>
@@ -91,19 +91,27 @@ export default {
       return [
         {
           label: this.$tc("words.customers"),
+          icon: "supervisor_account",
+          color: "orange",
           value: formatCount(this.tenant.customers),
         },
         {
           label: this.$tc("words.devices"),
+          icon: "settings_input_hdmi",
+          color: "red",
           value: formatCount(this.tenant.devices.total),
         },
         {
           label: this.$tc("phrases.thisMonthTransactions"),
+          icon: "swap_horiz",
+          color: "blue",
           value: formatCount(this.tenant.transactionsThisMonth),
         },
         {
           // The only place money appears: one tenant, in its own currency.
           label: this.$tc("phrases.volumePerMonth"),
+          icon: "attach_money",
+          color: "green",
           value: formatMoney(this.tenant.volumeThisMonth, this.tenant.currency),
         },
       ]
@@ -135,8 +143,8 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: $font-cell;
+  font-weight: 400;
   color: $brand-primary;
   margin-bottom: 14px;
 }
@@ -152,25 +160,16 @@ export default {
 .detail__title {
   margin: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  font-size: 25px;
-  font-weight: 300;
-  color: $brand-primary-dark;
-  line-height: 1.3;
-}
-
-.detail__chip {
-  font-size: 11.5px;
-  font-weight: 500;
-  padding: 3px 12px;
-  border-radius: $ops-radius-pill;
+  font-size: $font-h3;
+  line-height: 1.4em;
 }
 
 .detail__meta {
   margin: 4px 0 0;
-  font-size: 13px;
-  font-weight: 300;
+  font-size: $font-cell;
   color: $ops-text-muted;
 }
 
@@ -181,22 +180,13 @@ export default {
   margin-top: 10px;
 }
 
-.detail__plugin {
-  font-size: 11.5px;
-  font-weight: 400;
-  color: $brand-primary;
-  background: $ops-tint-link;
-  padding: 3px 12px;
-  border-radius: $ops-radius-pill;
-}
-
 .detail__kpis {
   margin-bottom: $ops-gap;
 }
 
 .detail__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
   gap: $ops-gap;
   align-items: start;
   margin-bottom: $ops-gap;

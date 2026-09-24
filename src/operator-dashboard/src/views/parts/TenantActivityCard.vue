@@ -140,19 +140,18 @@ export default {
 }
 
 .activity__title {
-  font-size: 13.5px;
+  font-size: $font-cell;
   font-weight: 400;
-  color: $ops-text;
+  color: $ops-text-primary;
 }
 
 .activity__meta {
-  font-size: 12px;
-  font-weight: 300;
+  font-size: $font-caption;
   color: $ops-text-muted;
 }
 
 .activity__time {
-  font-size: 12px;
+  font-size: $font-caption;
   color: $ops-text-muted;
   flex: none;
 }

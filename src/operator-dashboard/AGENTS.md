@@ -8,7 +8,7 @@ This app is the platform host's cross-tenant analytics view; it is deliberately 
 Everything in [`src/frontend/AGENTS.md`](../frontend/AGENTS.md) about lint rules applies here too — mandatory local import extensions, alphabetised imports, and `<style lang="scss" scoped>` on every component.
 On top of that:
 
-- **No Vue Material.** The design drops the gradient/`md-card` idiom, and this app needs only cards, buttons, a table, chips and two bars. They live in [`src/shared/`](src/shared/). Do not add the dependency back to save writing a component.
+- **No Vue Material, but its look.** The app reproduces how `src/frontend` renders vue-material (Widget gradient headers, Box KPI tiles, md-table, md-button) in plain SCSS; the source of each value is noted where it is defined. Buttons, chips and inputs use only the global `.mpm-button`, `.mpm-chip` and `.mpm-field` classes in `app.scss`, and text sizes use only the type scale in `tokens.scss`. Do not add the dependency back to save writing a component.
 - **`src/assets/sass/tokens.scss` is prepended to every SCSS block** by `vue.config.js`. Since `@use`/`@forward` must come first in a Sass file, component `<style>` blocks must never declare their own — add what they need to `tokens.scss` instead. The file must not be named `_tokens.scss`: the webpack `@/` alias does not resolve to a Sass partial.
 - **Auth is HTTP Basic held in `sessionStorage`.** The backend deliberately answers 401 without `WWW-Authenticate`, because that header makes browsers open their own credential dialog on an XHR and bypass [`src/views/SignIn.vue`](src/views/SignIn.vue).
 - **The refresh poll lives in the Vuex action**, not a component timer, so navigating mid-rebuild cannot orphan it.

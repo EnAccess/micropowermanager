@@ -20,15 +20,9 @@ export default {
 .spinner__circle {
   width: 26px;
   height: 26px;
-  border: 2px solid $ops-card-border;
+  border: 2px solid $ops-track;
   border-top-color: $brand-primary;
   border-radius: 50%;
-  animation: spinner-rotate 0.9s linear infinite;
-}
-
-@keyframes spinner-rotate {
-  to {
-    transform: rotate(360deg);
-  }
+  animation: ops-rotate 0.9s linear infinite;
 }
 </style>

@@ -1,40 +1,47 @@
 <template>
   <div>
-    <h1 class="page__title">{{ $tc("words.tenants") }}</h1>
-    <p class="page__subtitle">{{ $tc("phrases.tenantsSubtitle") }}</p>
-
     <spinner v-if="loading && tenants.length === 0" />
 
-    <ops-card v-else>
-      <div class="tenants__toolbar">
-        <div class="tenants__search">
-          <span class="material-icons tenants__search-icon">search</span>
+    <ops-card v-else :title="$tc('words.tenants')">
+      <template #actions>
+        <label class="mpm-field mpm-field--on-header tenants__search">
           <input
             v-model="query"
-            class="tenants__search-input"
+            class="mpm-field__input"
             type="search"
             :placeholder="$tc('phrases.searchTenants')"
           />
-        </div>
-        <div class="tenants__meta">
-          <span class="tenants__count">
-            {{
-              $tc("phrases.showingXofY", 1, {
-                shown: filteredTenants.length,
-                total: tenants.length,
-              })
-            }}
+        </label>
+        <button
+          v-if="query"
+          type="button"
+          class="mpm-button mpm-button--on-header tenants__search-action"
+          :aria-label="$tc('phrases.clearSearch')"
+          @click="query = ''"
+        >
+          <span class="material-icons">cancel</span>
+        </button>
+        <span v-else class="material-icons tenants__search-action">search</span>
+      </template>
+
+      <div class="tenants__meta">
+        <span>
+          {{
+            $tc("phrases.showingXofY", 1, {
+              shown: filteredTenants.length,
+              total: tenants.length,
+            })
+          }}
+        </span>
+        <div class="tenants__legend">
+          <span
+            v-for="status in statuses"
+            :key="status"
+            class="tenants__legend-item"
+          >
+            <status-dot :status="status" :size="8" />
+            {{ $tc(`words.${status}`) }}
           </span>
-          <div class="tenants__legend">
-            <span
-              v-for="status in statuses"
-              :key="status"
-              class="tenants__legend-item"
-            >
-              <status-dot :status="status" :size="8" />
-              {{ $tc(`words.${status}`) }}
-            </span>
-          </div>
         </div>
       </div>
 
@@ -46,11 +53,7 @@
         v-else
         icon="cancel"
         :description="$tc('phrases.noTenantsMatch')"
-      >
-        <button type="button" class="tenants__clear" @click="query = ''">
-          {{ $tc("phrases.clearSearch") }}
-        </button>
-      </empty-state>
+      />
     </ops-card>
   </div>
 </template>
@@ -113,95 +116,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page__title {
-  margin: 0 0 2px;
-  font-weight: 300;
-  font-size: 25px;
-  color: $brand-primary-dark;
-  line-height: 1.3;
-}
-
-.page__subtitle {
-  margin: 0 0 22px;
-  color: $ops-text-muted;
-  font-size: 13.5px;
-  font-weight: 300;
-}
-
-.tenants__toolbar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 20px;
-  border-bottom: 1px solid $ops-card-border;
-  flex-wrap: wrap;
-}
-
 .tenants__search {
-  display: flex;
+  width: 320px;
+  max-width: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.tenants__search-action {
+  min-width: 0;
+  padding: 0 4px;
+  height: 32px;
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
-  background: $brand-background;
-  border: 1px solid $ops-card-border;
-  border-radius: $ops-radius-control;
-  padding: 8px 12px;
-  flex: 1;
-  min-width: 240px;
-  max-width: 400px;
-}
-
-.tenants__search-icon {
-  font-size: 18px;
-  color: $ops-text-muted;
-}
-
-.tenants__search-input {
-  border: none;
-  background: transparent;
-  outline: none;
-  font-family: inherit;
-  font-size: 13.5px;
-  color: $ops-text;
-  width: 100%;
+  font-size: 24px;
 }
 
 .tenants__meta {
-  margin-left: auto;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 18px;
-}
-
-.tenants__count {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 24px;
+  font-size: $font-caption;
   color: $ops-text-muted;
-  font-size: 12.5px;
-  font-weight: 300;
 }
 
 .tenants__legend {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 14px;
-  font-size: 12px;
-  color: $ops-text-muted;
-  font-weight: 300;
 }
 
 .tenants__legend-item {
   display: flex;
   align-items: center;
   gap: 5px;
-}
-
-.tenants__clear {
-  border: 1px solid $ops-card-border;
-  background: $brand-white;
-  border-radius: $ops-radius-control;
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: $brand-primary;
-  padding: 7px 14px;
-  cursor: pointer;
 }
 </style>

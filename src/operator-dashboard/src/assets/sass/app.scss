@@ -11,11 +11,26 @@ body {
 }
 
 body {
-  background: $brand-background;
+  background: $ops-page-background;
   color: $ops-text;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: $font-body;
+  font-weight: 300;
   line-height: 1.5em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 300;
+}
+
+::selection {
+  background: #c8c8c8;
 }
 
 a {
@@ -25,20 +40,6 @@ a {
   &:hover {
     color: $brand-primary-dark;
   }
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cfe0eb;
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 .material-icons {
@@ -59,6 +60,159 @@ a {
 // Numbers that sit in columns must not shift width between digits.
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+// Buttons, chips and fields reproduce vue-material's md-button, md-chip and
+// md-field as src/frontend renders them.
+.mpm-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 88px;
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: $ops-radius-card;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: $font-body;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover:not(:disabled)::before {
+    opacity: 0.12;
+  }
+
+  &:disabled {
+    cursor: default;
+    color: rgba(0, 0, 0, 0.26);
+  }
+
+  .material-icons {
+    font-size: 20px;
+  }
+}
+
+.mpm-button--raised {
+  background: $brand-white;
+  color: $ops-text-primary;
+  box-shadow: $ops-shadow-card;
+
+  &:active:not(:disabled) {
+    box-shadow: $ops-shadow-raised-active;
+  }
+
+  &:disabled {
+    background: rgba(0, 0, 0, 0.12);
+    box-shadow: none;
+  }
+}
+
+.mpm-button--primary {
+  background: $brand-primary;
+  color: $brand-white;
+}
+
+.mpm-button--nav {
+  background: $ops-shell-button;
+  color: $brand-white;
+
+  &:disabled {
+    background: $ops-shell-button;
+    color: $ops-shell-text-muted;
+  }
+}
+
+.mpm-button--dense {
+  height: 32px;
+  font-size: $font-cell;
+}
+
+.mpm-button--on-header {
+  min-width: 0;
+  color: $brand-white;
+}
+
+.mpm-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: $ops-radius-chip;
+  background: rgba(0, 0, 0, 0.12);
+  color: $ops-text-primary;
+  font-size: $font-caption;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.mpm-chip--primary {
+  background: $brand-primary;
+  color: $brand-white;
+}
+
+.mpm-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.mpm-field__label {
+  font-size: $font-caption;
+  line-height: 16px;
+  color: $ops-text-secondary;
+}
+
+.mpm-field__input {
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+  background: none;
+  color: $ops-text-primary;
+  font-family: inherit;
+  font-size: $font-subheading;
+  outline: none;
+
+  &:focus {
+    border-bottom: 2px solid $brand-primary;
+    margin-bottom: -1px;
+  }
+}
+
+.mpm-field:focus-within .mpm-field__label {
+  color: $brand-primary;
+}
+
+.mpm-field--on-header {
+  .mpm-field__input {
+    color: $brand-white;
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    &:focus {
+      border-bottom-color: $brand-white;
+    }
+  }
 }
 
 @each $status, $spec in $ops-status {

@@ -43,7 +43,7 @@ export default {
 
 <style lang="scss" scoped>
 .tenant-chart {
-  padding: 0 24px 20px;
+  padding: 0 16px 16px;
 }
 
 .tenant-chart__canvas {

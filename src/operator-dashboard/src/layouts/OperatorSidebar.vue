@@ -1,12 +1,11 @@
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar" :class="{ 'sidebar--open': open }">
     <div class="sidebar__brand">
-      <div class="sidebar__logo">
-        <img :src="logo" alt="MicroPowerManager" />
-      </div>
-      <div class="sidebar__brand-text">
-        <div class="sidebar__brand-name">MPM Operations</div>
-        <div class="sidebar__brand-meta">Powered by MPM</div>
+      <img :src="logo" alt="MicroPowerManager" class="sidebar__logo" />
+      <div class="sidebar__brand-name">
+        MPM Operations
+        <br />
+        <small>Powered by MPM</small>
       </div>
     </div>
 
@@ -21,11 +20,6 @@
         <span class="sidebar__pill tabular">{{ tenantsTotal }}</span>
       </router-link>
     </nav>
-
-    <div class="sidebar__footer">
-      <span class="material-icons sidebar__icon">account_circle</span>
-      <span>{{ $tc("words.operator") }}</span>
-    </div>
   </aside>
 </template>
 
@@ -34,6 +28,12 @@ import logo from "@/assets/images/mpm-logo.png"
 
 export default {
   name: "OperatorSidebar",
+  props: {
+    open: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return { logo }
   },
@@ -46,77 +46,92 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// Widths follow src/frontend/src/layouts/Default.vue.
 .sidebar {
-  width: 230px;
+  width: 200px;
   flex: none;
   background: $ops-shell-sidebar;
   position: sticky;
   top: 0;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
   overflow: auto;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+  z-index: 30;
+  box-shadow: $ops-shadow-sidebar;
+}
+
+// Below desktop the sidebar is an off-canvas drawer, as in src/frontend.
+@media screen and (max-width: #{$ops-breakpoint-desktop - 1px}) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    width: 230px;
+    transform: translateX(-100%);
+    transition: transform 0.33s;
+    box-shadow: none;
+  }
+
+  .sidebar--open {
+    transform: translateX(0);
+    box-shadow: $ops-shadow-sidebar;
+  }
+}
+
+@media screen and (min-width: $ops-breakpoint-desktop) {
+  .sidebar {
+    width: 8%;
+    min-width: 200px;
+  }
+}
+
+@media screen and (min-width: 1370px) {
+  .sidebar {
+    width: 10%;
+    min-width: 230px;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  .sidebar {
+    width: 15%;
+    min-width: 260px;
+  }
 }
 
 .sidebar__brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 20px 20px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 1rem;
+  margin: 0 15px;
+  padding: 15px 0 15px 1rem;
+  border-bottom: 1px solid rgba(180, 180, 180, 0.3);
 }
 
 .sidebar__logo {
-  width: 38px;
-  height: 38px;
-  flex: none;
-  border-radius: 5px;
-  background: $brand-white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-}
-
-.sidebar__brand-text {
-  line-height: 1.3;
+  max-width: 64px;
+  max-height: 64px;
 }
 
 .sidebar__brand-name {
   color: $brand-white;
-  font-weight: 400;
-  font-size: 14.5px;
-}
-
-.sidebar__brand-meta {
-  color: $ops-shell-text-faint;
-  font-size: 11px;
-  font-weight: 300;
+  font-weight: bold;
+  line-height: 1.5em;
 }
 
 .sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 14px 10px;
+  padding: 10px;
 }
 
 .sidebar__link {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
+  margin-left: 5px;
+  padding: 10px 15px;
   border-radius: $ops-radius-control;
-  cursor: pointer;
-  font-size: 13.5px;
   color: $brand-white;
+  font-size: 0.8rem;
+  font-weight: 400;
 
   &:hover {
     background: rgba(200, 200, 200, 0.2);
@@ -124,34 +139,22 @@ export default {
   }
 
   &.active {
-    background: $brand-primary;
-    box-shadow: 0 4px 12px rgba(27, 117, 186, 0.35);
+    background: $ops-shell-sidebar-active;
+    border-right: 5px solid $brand-primary-dark;
   }
 }
 
 .sidebar__icon {
-  font-size: 20px;
+  width: 25px;
+  margin-right: 10px;
+  font-size: 24px;
 }
 
 .sidebar__pill {
   margin-left: auto;
+  padding: 0 8px;
+  border-radius: $ops-radius-chip;
   background: rgba(255, 255, 255, 0.14);
-  color: #e0e0e0;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 1px 8px;
-  border-radius: $ops-radius-pill;
-}
-
-.sidebar__footer {
-  margin-top: auto;
-  padding: 14px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #c9c9c9;
-  font-size: 12.5px;
-  font-weight: 300;
+  font-size: $font-caption;
 }
 </style>

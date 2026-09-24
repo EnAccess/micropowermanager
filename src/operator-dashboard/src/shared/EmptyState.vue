@@ -35,8 +35,7 @@ export default {
 
 .empty-state__description {
   margin: 8px 0 12px;
-  font-size: 13.5px;
-  font-weight: 300;
+  font-size: $font-cell;
   color: $ops-text-muted;
 }
 </style>

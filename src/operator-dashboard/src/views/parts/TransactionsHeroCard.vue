@@ -2,7 +2,6 @@
   <ops-card
     :title="$tc('phrases.transactionsPerMonth')"
     :subtitle="$tc('phrases.transactionsPerMonthSubtitle')"
-    class="hero"
   >
     <template #actions>
       <div class="hero__toggle">
@@ -103,38 +102,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.hero {
-  padding-bottom: 10px;
-}
-
 .hero__toggle {
   display: flex;
-  background: $brand-background;
-  border: 1px solid $ops-card-border;
-  border-radius: $ops-radius-control;
-  padding: 2px;
   gap: 2px;
+  padding: 2px;
+  border-radius: $ops-radius-control;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .hero__segment {
+  padding: 6px 12px;
   border: none;
-  background: transparent;
-  color: $ops-text-muted;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 14px;
   border-radius: $ops-radius-control;
+  background: transparent;
+  color: $brand-white;
+  font-family: inherit;
+  font-size: $font-caption;
+  font-weight: 500;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
 .hero__segment--active {
-  background: $brand-primary;
-  color: $brand-white;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .hero__chart {
-  padding: 0 24px 10px;
+  padding: 0 16px 16px;
 }
 
 .hero__canvas {

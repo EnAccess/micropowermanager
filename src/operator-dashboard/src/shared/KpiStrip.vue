@@ -1,10 +1,15 @@
 <template>
   <div class="kpi-strip">
-    <div v-for="item in items" :key="item.label" class="kpi-strip__cell">
-      <div class="kpi-strip__label">{{ item.label }}</div>
-      <div class="kpi-strip__value tabular">{{ item.value }}</div>
-      <div v-if="item.hint" class="kpi-strip__hint" :class="hintClass(item)">
-        {{ item.hint }}
+    <div v-for="item in items" :key="item.label" class="kpi-box">
+      <div class="kpi-box__tile" :class="`kpi-box__tile--${item.color}`">
+        <span class="material-icons">{{ item.icon }}</span>
+      </div>
+      <div class="kpi-box__content">
+        <div class="kpi-box__label">{{ item.label }}</div>
+        <div class="kpi-box__value tabular">{{ item.value }}</div>
+        <div v-if="item.hint" class="kpi-box__hint" :class="hintClass(item)">
+          {{ item.hint }}
+        </div>
       </div>
     </div>
   </div>
@@ -21,84 +26,93 @@ export default {
   },
   methods: {
     hintClass(item) {
-      return `kpi-strip__hint--${item.tone || "neutral"}`
+      return `kpi-box__hint--${item.tone || "neutral"}`
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-// One card divided by hairlines, rather than one card per figure.
+// Mirrors src/frontend/src/shared/Box.vue: the icon tile rises above the card.
 .kpi-strip {
-  background: $brand-white;
-  border: 1px solid $ops-card-border;
-  border-radius: $ops-radius-card;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  gap: $ops-gap;
+  padding-top: 1.8rem;
 }
 
-.kpi-strip__cell {
-  padding: 20px 24px;
+.kpi-box {
+  background: $brand-white;
+  border-radius: $ops-radius-card;
+  box-shadow: $ops-shadow-card;
+  padding: 0 16px 16px 0;
   min-width: 0;
+}
 
-  & + & {
-    border-left: 1px solid $ops-card-border;
+.kpi-box__tile {
+  float: left;
+  margin: -1.8rem 0 0 15px;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: $ops-shadow-kpi-tile;
+  color: $brand-white;
+  line-height: 0;
+
+  .material-icons {
+    font-size: 24px;
   }
 }
 
-.kpi-strip__label {
-  font-size: 12px;
-  font-weight: 300;
-  color: $ops-text-muted;
+@each $name, $gradient in $ops-kpi-tiles {
+  .kpi-box__tile--#{$name} {
+    background: $gradient;
+  }
 }
 
-.kpi-strip__value {
-  font-size: 1.6rem;
-  font-weight: 500;
+.kpi-box__content {
+  text-align: end;
+  padding-top: 16px;
+}
+
+.kpi-box__label {
+  color: rgb(148, 148, 148);
+  margin-bottom: 1rem;
+}
+
+.kpi-box__value {
   color: $ops-text-strong;
-  line-height: 1.3;
-  margin: 4px 0 2px;
+  font-size: $font-kpi;
+  font-weight: bold;
+  line-height: 1.2;
 }
 
-.kpi-strip__hint {
-  font-size: 12.5px;
-  font-weight: 400;
+.kpi-box__hint {
+  margin-top: 6px;
+  font-size: $font-caption;
 }
 
-.kpi-strip__hint--positive {
+.kpi-box__hint--positive {
   color: $brand-accent-dark;
 }
 
-.kpi-strip__hint--negative {
+.kpi-box__hint--negative {
   color: $ops-text-watch;
 }
 
-.kpi-strip__hint--neutral {
+.kpi-box__hint--neutral {
   color: $ops-text-muted;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: #{$ops-breakpoint-desktop - 1px}) {
   .kpi-strip {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .kpi-strip__cell:nth-child(odd) {
-    border-left: none;
-  }
-
-  .kpi-strip__cell:nth-child(n + 3) {
-    border-top: 1px solid $ops-card-border;
+    row-gap: calc(#{$ops-gap} + 1.8rem);
   }
 }
 
-@media screen and (max-width: 540px) {
+@media screen and (max-width: $ops-breakpoint-phone) {
   .kpi-strip {
     grid-template-columns: 1fr;
-  }
-
-  .kpi-strip__cell + .kpi-strip__cell {
-    border-left: none;
-    border-top: 1px solid $ops-card-border;
   }
 }
 </style>

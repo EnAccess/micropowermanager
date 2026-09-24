@@ -1,15 +1,20 @@
 <template>
-  <section class="ops-card">
-    <header v-if="title" class="ops-card__header">
-      <div class="ops-card__heading">
-        <h2 class="ops-card__title">{{ title }}</h2>
-        <p v-if="subtitle" class="ops-card__subtitle">{{ subtitle }}</p>
-      </div>
+  <section class="ops-card" :class="{ 'ops-card--titled': title }">
+    <header
+      v-if="title"
+      class="ops-card__header"
+      :class="`ops-card__header--${color}`"
+    >
+      <span class="material-icons ops-card__header-icon">list</span>
+      <h2 class="ops-card__title">{{ title }}</h2>
       <div class="ops-card__actions">
         <slot name="actions"></slot>
       </div>
     </header>
-    <slot></slot>
+    <div class="ops-card__body">
+      <p v-if="subtitle" class="ops-card__subtitle">{{ subtitle }}</p>
+      <slot></slot>
+    </div>
   </section>
 </template>
 
@@ -25,49 +30,79 @@ export default {
       type: String,
       default: null,
     },
+    color: {
+      type: String,
+      default: "primary",
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.ops-card {
-  background: $brand-white;
-  border: 1px solid $ops-card-border;
-  border-radius: $ops-radius-card;
-  overflow: hidden;
+// The header overlaps the top edge of the body, as src/frontend's Widget does,
+// so a titled body needs padding to clear it.
+.ops-card--titled .ops-card__body {
+  padding-top: 30px;
 }
 
 .ops-card__header {
+  position: relative;
+  z-index: 2;
+  top: 16px;
+  left: 1%;
+  width: 98%;
+  margin-bottom: -10px;
+  min-height: 48px;
+  padding: 8px 16px;
+  border-radius: $ops-radius-control;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
   flex-wrap: wrap;
-  padding: 20px 24px 12px;
+  align-items: center;
+  gap: 4px 8px;
+  color: $brand-white;
 }
 
-.ops-card__heading {
-  min-width: 0;
+@each $name, $spec in $ops-card-headers {
+  .ops-card__header--#{$name} {
+    background: map-get($spec, background);
+    box-shadow: map-get($spec, shadow);
+  }
+}
+
+.ops-card__header-icon {
+  font-size: 24px;
 }
 
 .ops-card__title {
   margin: 0;
-  font-size: larger;
-  font-weight: 300;
-  color: $brand-primary-dark;
-  line-height: 1.3;
-}
-
-.ops-card__subtitle {
-  margin: 2px 0 0;
-  font-size: 12px;
-  font-weight: 300;
-  color: $ops-text-muted;
+  font-size: $font-subheading;
+  font-weight: 400;
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ops-card__actions {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.ops-card__body {
+  background: $brand-white;
+  border-radius: $ops-radius-card;
+  box-shadow: $ops-shadow-card;
+  overflow: hidden;
+}
+
+.ops-card__subtitle {
+  margin: 0;
+  padding: 8px 16px 0;
+  font-size: $font-caption;
+  color: $ops-text-muted;
 }
 </style>

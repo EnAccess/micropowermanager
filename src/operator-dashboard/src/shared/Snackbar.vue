@@ -50,11 +50,12 @@ export default {
   bottom: 24px;
   transform: translateX(-50%);
   z-index: 40;
+  max-width: calc(100% - 32px);
   padding: 12px 20px;
   border-radius: $ops-radius-control;
   color: $brand-white;
-  font-size: 13.5px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  font-size: $font-body;
+  box-shadow: $ops-shadow-raised-active;
 }
 
 .snackbar--success {

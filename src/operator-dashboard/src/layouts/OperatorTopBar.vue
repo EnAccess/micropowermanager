@@ -1,19 +1,29 @@
 <template>
   <header class="topbar">
+    <button
+      type="button"
+      class="mpm-button mpm-button--on-header topbar__menu"
+      :aria-label="$tc(sidebarOpen ? 'phrases.closeMenu' : 'phrases.openMenu')"
+      @click="$emit('toggle-sidebar')"
+    >
+      <span class="material-icons">
+        {{ sidebarOpen ? "keyboard_arrow_left" : "menu" }}
+      </span>
+    </button>
     <div class="topbar__breadcrumb">
       <router-link
         v-if="isDetail"
         :to="{ name: 'tenants' }"
-        class="topbar__crumb topbar__crumb--link"
+        class="topbar__crumb"
       >
         {{ $tc("words.tenants") }}
       </router-link>
-      <span v-else class="topbar__crumb topbar__crumb--current">
+      <span v-else class="topbar__crumb">
         {{ rootCrumb }}
       </span>
       <template v-if="isDetail">
-        <span class="topbar__separator">/</span>
-        <span class="topbar__crumb topbar__crumb--current">
+        <span class="topbar__separator">&gt;</span>
+        <span class="topbar__crumb">
           {{ detailName }}
         </span>
       </template>
@@ -25,7 +35,7 @@
       </span>
       <button
         type="button"
-        class="topbar__refresh"
+        class="mpm-button mpm-button--raised mpm-button--nav mpm-button--dense"
         :class="{ 'topbar__refresh--busy': refreshing }"
         :disabled="refreshing"
         @click="refresh"
@@ -52,6 +62,12 @@ export default {
   name: "OperatorTopBar",
   components: { ProgressBar },
   mixins: [notify],
+  props: {
+    sidebarOpen: {
+      type: Boolean,
+      default: false,
+    },
+  },
   computed: {
     isDetail() {
       return this.$route.name === "tenant-detail"
@@ -89,33 +105,40 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// Mirrors src/frontend's TopNavbar and Breadcrumb.
 .topbar {
   position: sticky;
   top: 0;
   z-index: 20;
-  height: 52px;
+  min-height: 64px;
   flex: none;
   background: $ops-shell-topbar;
   display: flex;
   align-items: center;
-  padding: 0 24px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 0 16px;
+}
+
+.topbar__menu {
+  display: none;
+  margin-right: 8px;
+  padding: 0 8px;
 }
 
 .topbar__breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 300;
-}
-
-.topbar__crumb--current {
+  min-width: 0;
   color: $brand-white;
+  font-style: italic;
+  font-weight: bold;
 }
 
-.topbar__crumb--link {
-  color: $ops-shell-text-muted;
+.topbar__crumb {
+  color: $brand-white;
+  text-decoration: underline;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     color: $brand-white;
@@ -123,50 +146,23 @@ export default {
 }
 
 .topbar__separator {
-  color: $ops-shell-text-faint;
+  margin: 0 0.5em;
+  color: whitesmoke;
+  font-size: 0.8em;
 }
 
 .topbar__actions {
   margin-left: auto;
+  padding-left: 16px;
   display: flex;
   align-items: center;
   gap: 16px;
+  flex: none;
 }
 
 .topbar__freshness {
-  font-size: 12px;
+  font-size: $font-caption;
   color: $ops-shell-text-muted;
-  font-weight: 300;
-}
-
-.topbar__refresh {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  height: 32px;
-  padding: 0 14px;
-  border: none;
-  border-radius: $ops-radius-control;
-  background: $brand-primary;
-  color: $brand-white;
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-
-  &:hover:not(:disabled) {
-    background: $brand-primary-light;
-  }
-
-  &:disabled {
-    cursor: default;
-    background: $ops-shell-button;
-    color: $ops-shell-text-muted;
-  }
-}
-
-.topbar__refresh-icon {
-  font-size: 18px;
 }
 
 // Mirrors the spinning refresh affordance in the tenant admin panel.
@@ -174,14 +170,24 @@ export default {
   animation: ops-rotate 1.4s linear infinite;
 }
 
-.topbar__refresh-label {
-  white-space: nowrap;
-}
-
 .topbar__progress {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+@media screen and (max-width: #{$ops-breakpoint-desktop - 1px}) {
+  .topbar__menu {
+    display: inline-flex;
+  }
+}
+
+// On phones the actions shrink to icons, as src/frontend's mobile navbar does.
+@media screen and (max-width: $ops-breakpoint-phone) {
+  .topbar__freshness,
+  .topbar__refresh-label {
+    display: none;
+  }
 }
 </style>

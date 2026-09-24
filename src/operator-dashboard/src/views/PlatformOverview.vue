@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h1 class="page__title">{{ $tc("phrases.platformOverview") }}</h1>
-    <p class="page__subtitle">{{ $tc("phrases.platformOverviewSubtitle") }}</p>
-
     <spinner v-if="loading && !summary" />
 
     <template v-else-if="summary">
@@ -56,6 +53,8 @@ export default {
       return [
         {
           label: this.$tc("words.tenants"),
+          icon: "domain",
+          color: "blue",
           value: formatCount(summary.tenantsTotal),
           hint:
             summary.tenantsNewThisMonth > 0
@@ -67,6 +66,8 @@ export default {
         },
         {
           label: this.$tc("phrases.tenantsActive"),
+          icon: "check_circle",
+          color: "green",
           value: formatCount(summary.tenantsActive),
           hint: this.$tc("phrases.transacting", 1, {
             percentage: formatPercentage(summary.tenantsActivePercentage),
@@ -75,6 +76,8 @@ export default {
         },
         {
           label: this.$tc("phrases.thisMonthTransactions"),
+          icon: "swap_horiz",
+          color: "orange",
           value: formatCount(summary.transactionsThisMonth),
           hint:
             summary.transactionsTrendPercentage === null
@@ -92,6 +95,8 @@ export default {
         },
         {
           label: this.$tc("phrases.devicesDeployed"),
+          icon: "settings_input_hdmi",
+          color: "purple",
           value: formatCount(summary.devicesTotal.total),
           hint: this.$tc("phrases.customersServed", 1, {
             value: formatCount(summary.customersTotal),
@@ -119,21 +124,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page__title {
-  margin: 0 0 2px;
-  font-weight: 300;
-  font-size: 25px;
-  color: $brand-primary-dark;
-  line-height: 1.3;
-}
-
-.page__subtitle {
-  margin: 0 0 22px;
-  color: $ops-text-muted;
-  font-size: 13.5px;
-  font-weight: 300;
-}
-
 .overview__kpis,
 .overview__hero {
   margin-bottom: $ops-gap;
@@ -141,7 +131,7 @@ export default {
 
 .overview__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
   gap: $ops-gap;
   align-items: start;
 }

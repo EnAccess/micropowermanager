@@ -1,9 +1,22 @@
 @forward "brand";
 @use "brand" as *;
 
+// Values mirror what src/frontend renders through vue-material, so both apps
+// look the same without this one depending on Vue Material.
+
+// Type scale, after vue-material's type classes
+$font-caption: 12px;
+$font-cell: 13px;
+$font-body: 14px;
+$font-subheading: 16px;
+$font-h3: 1.5625rem;
+$font-kpi: 1.6rem;
+
 // Surfaces and hairlines
-$ops-card-border: #e3edf4;
-$ops-row-border: #eef4f8;
+$ops-page-background: #fafafa;
+$ops-row-border: rgba(0, 0, 0, 0.12);
+$ops-row-hover: rgba(0, 0, 0, 0.08);
+$ops-track: #eeeeee;
 
 // Text ramp
 $ops-text: #495057;
@@ -11,28 +24,83 @@ $ops-text-strong: #525252;
 $ops-text-muted: #949494;
 $ops-text-faint: #b0bec5;
 $ops-text-dormant: #78909c;
+$ops-text-secondary: rgba(0, 0, 0, 0.54);
+$ops-text-primary: rgba(0, 0, 0, 0.87);
 $ops-icon-faint: #c2ccd3;
 
 // Status tints
 $ops-tint-positive: #eef5e9;
 $ops-tint-watch: #fdf0e4;
 $ops-tint-dormant: #eceff1;
-$ops-tint-link: #e8f3fa;
 $ops-text-watch: #e0762a;
 
 // Shell
 $ops-shell-sidebar: #2b2b2b;
+$ops-shell-sidebar-active: #6b6a6a;
 $ops-shell-topbar: #424040;
 $ops-shell-button: #3d3d3d;
-$ops-shell-button-hover: #4a4a4a;
 $ops-shell-text-muted: #b5b5b5;
 $ops-shell-text-faint: #8a8a8a;
 
 // Geometry
-$ops-radius-card: 6px;
+$ops-radius-card: 2px;
 $ops-radius-control: 3px;
-$ops-radius-pill: 12px;
+$ops-radius-chip: 32px;
 $ops-gap: 20px;
+
+// Below desktop the sidebar becomes a drawer, as in src/frontend.
+$ops-breakpoint-desktop: 992px;
+$ops-breakpoint-phone: 540px;
+
+// Shadows
+$ops-shadow-card:
+  0 3px 1px -2px rgba(0, 0, 0, 0.2),
+  0 2px 2px 0 rgba(0, 0, 0, 0.14),
+  0 1px 5px 0 rgba(0, 0, 0, 0.12);
+$ops-shadow-raised-active:
+  0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+$ops-shadow-sidebar:
+  0 10px 30px -12px rgba(0, 0, 0, 0.42),
+  0 4px 25px 0 rgba(0, 0, 0, 0.12),
+  0 8px 10px -5px rgba(0, 0, 0, 0.2);
+$ops-shadow-kpi-tile:
+  0 12px 20px -10px rgba(53, 53, 53, 0.3),
+  0 4px 20px 0 rgba(0, 0, 0, 0.12),
+  0 7px 8px -5px rgb(142, 142, 142);
+
+@function ops-shadow-colored($color) {
+  @return 0 12px 20px -10px rgba($color, 0.28), 0 4px 20px 0 rgba($color, 0.12),
+    0 7px 8px -5px rgba($color, 0.2);
+}
+
+// Card header colours, as in src/frontend/src/shared/Widget.vue
+$ops-card-headers: (
+  primary: (
+    background: linear-gradient(45deg, $brand-primary, $brand-primary-light),
+    shadow: ops-shadow-colored($brand-primary),
+  ),
+  secondary: (
+    background:
+      linear-gradient(
+        162deg,
+        $brand-secondary-dark 0%,
+        $brand-secondary 50%,
+        $brand-secondary-light 100%
+      ),
+    shadow: ops-shadow-colored($brand-secondary),
+  ),
+);
+
+// KPI tile colours, as in src/frontend/src/shared/Box.vue
+$ops-kpi-tiles: (
+  blue: linear-gradient(135deg, #26c6da, #00acc1),
+  orange: linear-gradient(135deg, #ffa726, #fb8c00),
+  red: linear-gradient(135deg, #ef5350, #e53935),
+  green: linear-gradient(135deg, #6eaa44, #578839),
+  purple: linear-gradient(135deg, #ab47bc, #8e24aa),
+);
 
 // One map drives every status dot, label and chip.
 $ops-status: (

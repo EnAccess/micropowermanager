@@ -11,17 +11,18 @@
               {
                 'table__header--numeric': column.numeric,
                 'table__header--sortable': column.sortable,
+                'table__header--sorted': sortKey === column.key,
               },
             ]"
             @click="column.sortable ? sortBy(column.key) : null"
           >
-            {{ column.label }}
             <span
               v-if="sortKey === column.key"
               class="material-icons table__arrow"
             >
               {{ sortDirection === "asc" ? "arrow_upward" : "arrow_downward" }}
             </span>
+            {{ column.label }}
           </th>
         </tr>
       </thead>
@@ -32,7 +33,7 @@
           class="table__row"
           @click="open(tenant)"
         >
-          <td class="table__cell table__cell--name">{{ tenant.name }}</td>
+          <td class="table__cell">{{ tenant.name }}</td>
           <td class="table__cell">{{ tenant.country || "—" }}</td>
           <td class="table__cell">{{ tenant.usageType || "—" }}</td>
           <td class="table__cell">
@@ -186,6 +187,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// Mirrors vue-material's md-table as src/frontend renders it.
 .table__scroll {
   overflow-x: auto;
 }
@@ -194,27 +196,33 @@ export default {
   width: 100%;
   border-collapse: collapse;
   min-width: 900px;
+  background: $brand-white;
 }
 
 .table__header {
+  height: 56px;
+  padding: 0 32px 0 24px;
   text-align: left;
-  padding: 11px 14px;
-  font-size: 11.5px;
+  font-size: $font-caption;
   font-weight: 500;
-  color: $ops-text-muted;
+  color: $ops-text-secondary;
   white-space: nowrap;
 
-  &:first-child {
-    padding-left: 20px;
-  }
-
   &:last-child {
-    padding-right: 20px;
+    padding-right: 24px;
   }
 }
 
 .table__header--sortable {
   cursor: pointer;
+
+  &:hover {
+    color: $ops-text-primary;
+  }
+}
+
+.table__header--sorted {
+  color: $ops-text-primary;
 }
 
 .table__header--numeric {
@@ -222,9 +230,9 @@ export default {
 }
 
 .table__arrow {
-  font-size: 13px;
-  vertical-align: -2px;
-  margin-left: 2px;
+  font-size: 16px;
+  vertical-align: -3px;
+  margin-right: 2px;
 }
 
 .table__row {
@@ -232,30 +240,20 @@ export default {
   cursor: pointer;
 
   &:hover {
-    background: $brand-background-dark;
+    background: $ops-row-hover;
   }
 }
 
 .table__cell {
-  padding: 12px 14px;
-  font-size: 13px;
-  font-weight: 300;
-  color: $ops-text;
+  height: 48px;
+  padding: 6px 32px 6px 24px;
+  font-size: $font-cell;
+  color: $ops-text-primary;
   white-space: nowrap;
 
-  &:first-child {
-    padding-left: 20px;
-  }
-
   &:last-child {
-    padding-right: 20px;
+    padding-right: 24px;
   }
-}
-
-.table__cell--name {
-  font-size: 13.5px;
-  font-weight: 400;
-  color: $brand-primary;
 }
 
 .table__cell--numeric {
@@ -271,7 +269,6 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13px;
   font-weight: 400;
 }
 </style>

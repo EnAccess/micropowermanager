@@ -2,10 +2,15 @@
   <ops-card
     :title="$tc('phrases.needsAttention')"
     :subtitle="$tc('phrases.needsAttentionSubtitle')"
+    color="secondary"
   >
     <template #actions>
-      <router-link :to="{ name: 'tenants' }" class="attention__all">
-        {{ $tc("phrases.allTenants") }} →
+      <router-link
+        :to="{ name: 'tenants' }"
+        class="mpm-button mpm-button--on-header mpm-button--dense"
+      >
+        {{ $tc("phrases.allTenants") }}
+        <span class="material-icons">arrow_forward</span>
       </router-link>
     </template>
 
@@ -76,16 +81,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.attention__all {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: $brand-primary;
-  cursor: pointer;
-}
-
 .attention__empty {
   padding: 11px 24px 20px;
-  font-size: 13px;
+  font-size: $font-cell;
   color: $brand-accent-dark;
 }
 
@@ -98,7 +96,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-    background: $brand-background-dark;
+    background: $ops-row-hover;
   }
 }
 
@@ -108,7 +106,7 @@ export default {
 }
 
 .attention__name {
-  font-size: 13.5px;
+  font-size: $font-cell;
   font-weight: 400;
   color: $ops-text;
   white-space: nowrap;
@@ -117,9 +115,8 @@ export default {
 }
 
 .attention__country {
-  font-size: 12px;
+  font-size: $font-caption;
   color: $ops-text-muted;
-  font-weight: 300;
 }
 
 .attention__metrics {
@@ -128,14 +125,13 @@ export default {
 }
 
 .attention__last {
-  font-size: 12.5px;
+  font-size: $font-caption;
   font-weight: 500;
 }
 
 .attention__tx {
-  font-size: 11.5px;
+  font-size: $font-caption;
   color: $ops-text-muted;
-  font-weight: 300;
 }
 
 .attention__chevron {

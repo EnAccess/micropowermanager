@@ -86,7 +86,7 @@ export default {
 
 <style lang="scss" scoped>
 .fleet {
-  padding: 4px 24px 20px;
+  padding: 12px 24px 20px;
 }
 
 .fleet__bar {
@@ -122,20 +122,17 @@ export default {
 }
 
 .fleet__label {
-  font-size: 13.5px;
   color: $ops-text;
   flex: 1;
-  font-weight: 300;
 }
 
 .fleet__count {
-  font-size: 14px;
   font-weight: 500;
   color: $ops-text-strong;
 }
 
 .fleet__share {
-  font-size: 12px;
+  font-size: $font-caption;
   color: $ops-text-muted;
   width: 40px;
   text-align: right;
