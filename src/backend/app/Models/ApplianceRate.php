@@ -27,6 +27,9 @@ use Illuminate\Support\Carbon;
  */
 class ApplianceRate extends BaseModel {
     public const RELATION_NAME = 'appliance_rate';
+    public const REMIND_NONE = 0;
+    public const REMIND_UPCOMING_SENT = 1;
+    public const REMIND_OVERDUE_SENT = 2;
 
     protected $fillable = [
         'appliance_person_id',

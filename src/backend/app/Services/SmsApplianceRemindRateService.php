@@ -23,7 +23,10 @@ class SmsApplianceRemindRateService {
      * @return Collection<int, SmsApplianceRemindRate>
      */
     public function getApplianceRemindRates(): Collection {
-        return $this->smsApplianceRemindRate->newQuery()->where('enabled', true)->get();
+        return $this->smsApplianceRemindRate->newQuery()
+            ->where('upcoming_reminder_enabled', true)
+            ->orWhere('overdue_reminder_enabled', true)
+            ->get();
     }
 
     /**
@@ -35,7 +38,8 @@ class SmsApplianceRemindRateService {
         $smsApplianceRemindRate->update([
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate'],
-            'enabled' => $data['enabled'] ?? false,
+            'upcoming_reminder_enabled' => $data['upcoming_reminder_enabled'] ?? false,
+            'overdue_reminder_enabled' => $data['overdue_reminder_enabled'] ?? false,
             'create_ticket' => $data['create_ticket'] ?? false,
         ]);
 
@@ -61,7 +65,8 @@ class SmsApplianceRemindRateService {
             'appliance_id' => $data['appliance_type_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate'],
-            'enabled' => $data['enabled'] ?? false,
+            'upcoming_reminder_enabled' => $data['upcoming_reminder_enabled'] ?? false,
+            'overdue_reminder_enabled' => $data['overdue_reminder_enabled'] ?? false,
             'create_ticket' => $data['create_ticket'] ?? false,
         ]);
 
