@@ -12,6 +12,7 @@ $queues = [
     'import',
     'steama_meter',
     'device',
+    'operator_dashboard',
 ];
 
 return [

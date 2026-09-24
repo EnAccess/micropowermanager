@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: mpm-operator-dashboard-cert
+spec:
+  domains:
+    - <MPM_OPERATOR_DASHBOARD_URL>

@@ -91,6 +91,8 @@ require __DIR__.'/resources/AgentWeb.php';
 require __DIR__.'/resources/CustomerRegistrationApp.php';
 // Routes for Ticket Web panel routes
 require __DIR__.'/resources/TicketWeb.php';
+// Routes for the operator (platform host) dashboard
+require __DIR__.'/resources/OperatorDashboard.php';
 
 // JWT authentication
 Route::group(['prefix' => 'auth'], static function () {
