@@ -17,7 +17,8 @@ class SmsApplianceRemindRateFactory extends Factory {
             'appliance_id' => $this->faker->numberBetween(1, 10),
             'overdue_remind_rate' => $this->faker->numberBetween(1, 30),
             'remind_rate' => $this->faker->numberBetween(1, 30),
-            'enabled' => false,
+            'upcoming_reminder_enabled' => false,
+            'overdue_reminder_enabled' => false,
             'create_ticket' => false,
         ];
     }

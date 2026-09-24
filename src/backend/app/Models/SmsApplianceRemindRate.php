@@ -11,7 +11,8 @@ use Illuminate\Support\Carbon;
  * @property      int            $appliance_id
  * @property      int            $overdue_remind_rate
  * @property      int            $remind_rate
- * @property      bool           $enabled
+ * @property      bool           $upcoming_reminder_enabled
+ * @property      bool           $overdue_reminder_enabled
  * @property      bool           $create_ticket
  * @property      Carbon|null    $created_at
  * @property      Carbon|null    $updated_at
@@ -25,5 +26,13 @@ class SmsApplianceRemindRate extends BaseModel {
      */
     public function appliance(): BelongsTo {
         return $this->belongsTo(Appliance::class, 'appliance_id', 'id');
+    }
+
+    protected function casts(): array {
+        return [
+            'upcoming_reminder_enabled' => 'boolean',
+            'overdue_reminder_enabled' => 'boolean',
+            'create_ticket' => 'boolean',
+        ];
     }
 }

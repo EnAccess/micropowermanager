@@ -31,17 +31,12 @@ class CreateAppliancePersonRequest extends FormRequest {
             'rate' => ['required_unless:payment_type,'.AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE, 'nullable', 'integer', 'min:0'],
             // Installment schedule. Required for `installment` sales.
             'rate_type' => ['required_unless:payment_type,'.AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE, 'nullable', Rule::in(['monthly', 'weekly'])],
-            // Down payment amount. `0` (or omitted) for no down payment.
+            // Down payment amount, recorded as the first rate due on the day of the sale. `0` (or omitted) for no down payment.
             'down_payment' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             // Serial number of the device to assign to the person as part of the sale.
             'device_serial' => ['sometimes', 'nullable', 'string'],
             // Device location as `latitude,longitude`. Used when a `device_serial` is given.
             'points' => ['sometimes', 'nullable', 'string'],
-            // Payment provider for the down payment. `0` books it as a cash payment, any other value must be the ID of an installed payment provider plugin.
-            'payment_provider' => ['sometimes', 'nullable', 'integer'],
-            'address' => ['sometimes', 'nullable', 'array'],
-            // Phone number the down payment transaction is registered under.
-            'address.phone' => ['sometimes', 'nullable', 'string'],
             // Minimum accepted payment amount. Only used for `energy_service` sales.
             'minimum_payable_amount' => ['sometimes', 'nullable', 'integer', 'min:0'],
             // Price per day. Only used for `energy_service` sales.

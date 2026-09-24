@@ -42,16 +42,14 @@ class CheckPayments extends AbstractSharedCommand {
 
         try {
             $this->applianceRate::with([
-                'appliancePerson.appliance.smsReminderRate',
                 'appliancePerson.person.addresses',
                 'appliancePerson.appliance',
             ])
                 ->whereHas('appliancePerson.appliance', function ($q) {
                     $q->where('appliance_type_id', self::E_BIKE);
                 })
-                ->whereDate('due_date', '>=', now()->format('Y-m-d'))
                 ->where('remaining', '>', 0)
-                ->where('remind', '>', 0)
+                ->where('remind', '>=', ApplianceRate::REMIND_OVERDUE_SENT)
                 ->each(fn (ApplianceRate $installment): bool => $this->lockTheBike($installment));
         } catch (\Exception $e) {
             $this->warn('check-payments command is failed. message => '.$e->getMessage());
