@@ -49,7 +49,8 @@ services:
   operator-dashboard-dev:
     container_name: operator-dashboard-dev
     build:
-      dockerfile: docker/DockerfileOperatorDashboardDev
+      # Same dev image as the frontend: both are npm dev servers over a mounted source.
+      dockerfile: docker/DockerfileFrontendDev
     env_file:
       - path: ./dev/.env.micropowermanager-operator-dashboard
         required: true
