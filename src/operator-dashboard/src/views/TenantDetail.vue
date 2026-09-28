@@ -9,22 +9,47 @@
 
     <template v-else-if="tenant">
       <header class="detail__header">
-        <h1 class="detail__title">
-          {{ tenant.name }}
-          <span class="mpm-chip" :class="`status-chip--${tenant.health}`">
-            {{ $tc(`words.${tenant.health}`) }}
-          </span>
-        </h1>
-        <p class="detail__meta">{{ metaLine }}</p>
-        <div v-if="tenant.plugins.length > 0" class="detail__plugins">
-          <span
-            v-for="plugin in tenant.plugins"
-            :key="plugin"
-            class="mpm-chip mpm-chip--primary"
-          >
-            {{ plugin }}
-          </span>
+        <div class="detail__identity">
+          <h1 class="detail__title">
+            {{ tenant.name }}
+            <span class="mpm-chip" :class="`status-chip--${tenant.health}`">
+              {{ $tc(`words.${tenant.health}`) }}
+            </span>
+          </h1>
+          <p class="detail__meta">{{ metaLine }}</p>
+          <div v-if="tenant.plugins.length > 0" class="detail__plugins">
+            <span
+              v-for="plugin in tenant.plugins"
+              :key="plugin"
+              class="mpm-chip mpm-chip--primary"
+            >
+              {{ plugin }}
+            </span>
+          </div>
         </div>
+
+        <form class="detail__invoice" @submit.prevent="downloadInvoice">
+          <label class="mpm-field detail__invoice-month">
+            <span class="mpm-field__label">
+              {{ $tc("phrases.invoiceDataMonth") }}
+            </span>
+            <input
+              v-model="invoiceMonth"
+              class="mpm-field__input"
+              type="month"
+              :max="currentMonth"
+              required
+            />
+          </label>
+          <button
+            type="submit"
+            class="mpm-button mpm-button--raised mpm-button--primary"
+            :disabled="downloadingInvoice"
+          >
+            <span class="material-icons">download</span>
+            {{ $tc("phrases.downloadInvoiceData") }}
+          </button>
+        </form>
       </header>
 
       <kpi-strip :items="kpis" class="detail__kpis" />
@@ -45,11 +70,15 @@
 <script>
 import { formatCount, formatMoney, formatMonthYear } from "@/Helpers/format.js"
 import { notify } from "@/mixins/notify.js"
+import { OperatorDashboardService } from "@/services/OperatorDashboardService.js"
 import KpiStrip from "@/shared/KpiStrip.vue"
 import Spinner from "@/shared/Spinner.vue"
 import TenantActivityCard from "@/views/parts/TenantActivityCard.vue"
 import TenantFleetHealthCard from "@/views/parts/TenantFleetHealthCard.vue"
 import TenantTransactionsCard from "@/views/parts/TenantTransactionsCard.vue"
+
+const monthValue = (date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
 
 export default {
   name: "TenantDetail",
@@ -66,6 +95,19 @@ export default {
       type: [String, Number],
       required: true,
     },
+  },
+  data() {
+    const today = new Date()
+
+    return {
+      operatorDashboardService: new OperatorDashboardService(),
+      // Invoices are raised for the last complete month.
+      invoiceMonth: monthValue(
+        new Date(today.getFullYear(), today.getMonth() - 1, 1),
+      ),
+      currentMonth: monthValue(today),
+      downloadingInvoice: false,
+    }
   },
   computed: {
     tenant() {
@@ -134,6 +176,28 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
+    async downloadInvoice() {
+      this.downloadingInvoice = true
+      try {
+        const { blob, filename } =
+          await this.operatorDashboardService.downloadInvoice(
+            this.tenant.id,
+            this.invoiceMonth,
+          )
+        const url = window.URL.createObjectURL(blob)
+        const anchor = document.createElement("a")
+        anchor.href = url
+        anchor.download = filename
+        document.body.appendChild(anchor)
+        anchor.click()
+        anchor.remove()
+        window.URL.revokeObjectURL(url)
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      } finally {
+        this.downloadingInvoice = false
+      }
+    },
   },
 }
 </script>
@@ -154,7 +218,27 @@ export default {
 }
 
 .detail__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 24px;
   margin-bottom: 20px;
+}
+
+.detail__identity {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.detail__invoice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.detail__invoice-month {
+  width: 170px;
 }
 
 .detail__title {

@@ -44,7 +44,9 @@ class DatabaseProxyManagerService {
      *
      * Binding a tenant connection never restores the previous one, so without the
      * restore below a later query would silently read whichever company happened
-     * to run last.
+     * to run last. Outside development no tenant is bound before the loop, and
+     * models loaded inside it (e.g. held by Telescope until terminate) still need a
+     * resolvable connection, so the last tenant stays bound in that case.
      *
      * @param callable(int): void                  $callable
      * @param callable(int, \Throwable): void|null $onError  re-throws when null, so
@@ -75,7 +77,9 @@ class DatabaseProxyManagerService {
                 }
             });
         } finally {
-            $this->restoreTenantConnection($tenantConnectionBeforeLoop);
+            if (!empty($tenantConnectionBeforeLoop)) {
+                $this->restoreTenantConnection($tenantConnectionBeforeLoop);
+            }
         }
     }
 
@@ -87,16 +91,10 @@ class DatabaseProxyManagerService {
         $this->buildDatabaseConnection($testDatabaseName ?? 'TestCompany_1');
     }
 
-    /** @param array<string, mixed>|null $tenantConnection */
-    private function restoreTenantConnection(?array $tenantConnection): void {
+    /** @param array<string, mixed> $tenantConnection */
+    private function restoreTenantConnection(array $tenantConnection): void {
         $databaseConnections = config('database.connections');
-
-        if ($tenantConnection === null) {
-            unset($databaseConnections['tenant']);
-        } else {
-            $databaseConnections['tenant'] = $tenantConnection;
-        }
-
+        $databaseConnections['tenant'] = $tenantConnection;
         config()->set('database.connections', $databaseConnections);
         $this->databaseManager->purge('tenant');
     }

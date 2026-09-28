@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\DTO\OperatorInvoiceData;
 use App\DTO\OperatorPlatformSnapshot;
 use App\DTO\OperatorTenantSnapshot;
 use App\Exceptions\OperatorDashboardTenantNotFoundException;
 use App\Models\Company;
 use App\Models\MpmPlugin;
 use App\Models\UsageType;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -50,6 +52,25 @@ class OperatorDashboardService {
         }
 
         return OperatorTenantSnapshot::fromArray($snapshot);
+    }
+
+    /**
+     * The one operator read that queries a tenant database live: invoicing needs
+     * counts as of a past month's end, which the snapshots do not keep.
+     */
+    public function invoiceData(int $companyId, CarbonInterface $monthStart): OperatorInvoiceData {
+        $company = Company::query()->find($companyId);
+
+        if ($company === null) {
+            throw new OperatorDashboardTenantNotFoundException('No tenant with id '.$companyId.'.');
+        }
+
+        $usage = $this->databaseProxyManagerService->runForCompany(
+            $companyId,
+            fn (): array => $this->operatorTenantMetricsService->invoiceUsage($monthStart)
+        );
+
+        return OperatorInvoiceData::forUsage($company, $monthStart, $usage);
     }
 
     /**

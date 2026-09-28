@@ -49,5 +49,13 @@ return [
             'active_days' => 7,
             'watch_days' => 21,
         ],
+
+        // Mirrors the public pricing in docs/.vitepress/theme/components/Cloud.vue;
+        // keep the two in step. Usage above the last tier is billed as Custom.
+        'billing_tiers' => [
+            ['name' => 'Free', 'customers' => 500, 'devices' => 500, 'transactions' => 1000],
+            ['name' => 'Growth 2,000', 'customers' => 2000, 'devices' => 2000, 'transactions' => 4000],
+            ['name' => 'Growth 5,000', 'customers' => 5000, 'devices' => 5000, 'transactions' => 10000],
+        ],
     ],
 ];
