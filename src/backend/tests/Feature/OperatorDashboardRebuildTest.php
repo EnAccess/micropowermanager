@@ -10,6 +10,7 @@ use App\Services\OperatorTenantMetricsService;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -114,6 +115,20 @@ class OperatorDashboardRebuildTest extends TestCase {
 
         $this->assertCount($this->tenantCount(), $failures);
         $this->assertContains($this->companyId, $failures);
+    }
+
+    public function testItKeepsTheLastTenantBoundWhenNoTenantWasBoundBeforeTheLoop(): void {
+        $tenantConnection = config('database.connections.tenant');
+        config()->set('database.connections.tenant', []);
+
+        resolve(DatabaseProxyManagerService::class)->eachCompany(
+            function () use ($tenantConnection): void {
+                config()->set('database.connections.tenant', $tenantConnection);
+            }
+        );
+
+        $this->assertSame($tenantConnection, config('database.connections.tenant'));
+        $this->assertSame('mysql', DB::connection('tenant')->getDriverName());
     }
 
     public function testItCachesTenantSnapshotsAsPlainArrays(): void {
