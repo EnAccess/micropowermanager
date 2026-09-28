@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 class AppliancePaymentService {
     public const DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS = 30;
+    public const int DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS = 30;
     private const int WEEKLY_RATE_TYPE_MAX_DAYS = 10;
 
     public float $paymentAmount;
@@ -222,6 +223,20 @@ class AppliancePaymentService {
                 $this->paymentAmount = 0;
             }
         }
+    }
+
+    /**
+     * The longest a down payment token may run. A deposit is sold as an introductory period
+     * rather than as the days its size happens to buy, so operators set the period they sell
+     * and a large deposit is held to it.
+     *
+     * Any value that is not a positive number of days means the operator has not set one.
+     */
+    public function downPaymentMaxTokenDays(): float {
+        $mainSettings = $this->mainSettings->newQuery()->first();
+        $configured = (int) ($mainSettings->down_payment_max_token_days ?? 0);
+
+        return (float) ($configured > 0 ? $configured : self::DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS);
     }
 
     /**

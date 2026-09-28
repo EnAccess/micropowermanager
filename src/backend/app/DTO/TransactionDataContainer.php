@@ -32,6 +32,8 @@ class TransactionDataContainer {
     public float $installmentCost = 0;
     public float $dayDifferenceBetweenTwoInstallments;
     public bool $applianceInstallmentsFullFilled;
+    /** Set only for a down payment, which is sold as a capped introductory period. */
+    public ?float $maxCreditDays = null;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {
         $container = app()->make(TransactionDataContainer::class);
@@ -79,8 +81,9 @@ class TransactionDataContainer {
      */
     public function creditDays(): float {
         $days = $this->amount * $this->dayDifferenceBetweenTwoInstallments / $this->installmentCost;
+        $days = ceil(round($days, 6));
 
-        return ceil(round($days, 6));
+        return $this->maxCreditDays === null ? $days : min($days, $this->maxCreditDays);
     }
 
     /**
@@ -115,15 +118,22 @@ class TransactionDataContainer {
         }
 
         if ($this->appliancePerson) {
+            $appliancePaymentService = app()->make(AppliancePaymentService::class);
+
             if ($this->appliancePerson->isEnergyService()) {
                 $this->installmentCost = $this->appliancePerson->price_per_day ?? 0;
                 $this->dayDifferenceBetweenTwoInstallments = 1;
             } else {
-                $appliancePaymentService = app()->make(AppliancePaymentService::class);
                 $installments = $appliancePaymentService->scheduledInstallments($this->appliancePerson);
                 $this->installmentCost = $appliancePaymentService->getNextPayableInstallmentCost($installments);
                 $this->dayDifferenceBetweenTwoInstallments =
                     $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
+            }
+
+            // The type is settled and saved before the container is built, and stays put from
+            // here on, so it is the one marker that still says "down payment" at token time.
+            if ($transaction->type === Transaction::TYPE_DOWN_PAYMENT) {
+                $this->maxCreditDays = $appliancePaymentService->downPaymentMaxTokenDays();
             }
         }
     }

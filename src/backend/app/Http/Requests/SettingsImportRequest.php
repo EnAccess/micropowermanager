@@ -26,6 +26,7 @@ class SettingsImportRequest extends FormRequest {
             'data.*.usage_type' => ['sometimes', 'nullable', 'string'],
             'data.*.sms_gateway_id' => ['sometimes', 'nullable', 'string'],
             'data.*.transaction_sms_enabled' => ['sometimes', 'nullable', 'boolean'],
+            'data.*.down_payment_max_token_days' => ['sometimes', 'nullable', 'integer', 'min:1'],
         ];
     }
 
@@ -44,6 +45,7 @@ class SettingsImportRequest extends FormRequest {
             usageType: $item['usage_type'] ?? null,
             smsGatewayId: $item['sms_gateway_id'] ?? null,
             transactionSmsEnabled: isset($item['transaction_sms_enabled']) ? (bool) $item['transaction_sms_enabled'] : null,
+            downPaymentMaxTokenDays: isset($item['down_payment_max_token_days']) ? (int) $item['down_payment_max_token_days'] : null,
         ), $this->validated('data'));
     }
 

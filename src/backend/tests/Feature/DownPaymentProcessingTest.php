@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\DTO\TransactionDataContainer;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\ApplianceTokenNotProcessedException;
@@ -11,10 +12,12 @@ use App\Jobs\ApplianceTransactionProcessor;
 use App\Jobs\TokenProcessor;
 use App\Models\ApplianceRate;
 use App\Models\Device;
+use App\Models\MainSettings;
 use App\Models\PaymentHistory;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use App\Services\AppliancePaymentService;
 use App\Services\CashTransactionService;
 use Carbon\Carbon;
 use Database\Factories\ApplianceFactory;
@@ -38,9 +41,9 @@ class DownPaymentProcessingTest extends TestCase {
         Event::fake([TransactionSuccessfulEvent::class]);
 
         $device = $this->seedPaygoShs();
-        $appliancePersonId = $this->sell($device, ['cost' => 1000, 'rate' => 5, 'rate_type' => 'monthly', 'down_payment' => 200]);
+        $appliancePersonId = $this->sell($device, ['cost' => 1000, 'rate' => 5, 'rate_type' => 'monthly', 'down_payment' => 100]);
 
-        $transaction = $this->processDownPayment($device, 200);
+        $transaction = $this->processDownPayment($device, 100);
 
         $rates = ApplianceRate::query()->where('appliance_person_id', $appliancePersonId)->oldest('due_date')->get();
         $this->assertSame(0, $rates->first()->remaining);
@@ -51,11 +54,88 @@ class DownPaymentProcessingTest extends TestCase {
         $this->assertSame(Transaction::TYPE_DOWN_PAYMENT, $history->payment_type);
         $this->assertSame('cash_transaction', $history->payment_service);
 
-        // 200 at 160 per period of one month (28 to 31 days) buys 35 to 39 days.
+        // 100 at 180 per period of one month (28 to 31 days) buys 16 to 18 days, under the limit.
         $token = $this->vendToken();
         $this->assertSame(Token::TYPE_TIME, $token->token_type);
         $this->assertSame(Token::UNIT_DAYS, $token->token_unit);
-        $this->assertSame(ceil(200 * $this->installmentPeriodInDays($rates) / 160), (float) $token->token_amount);
+        $this->assertSame(ceil(100 * $this->installmentPeriodInDays($rates) / 180), (float) $token->token_amount);
+    }
+
+    public function testADepositThatWouldBuyMoreIsHeldToTheDefaultLimit(): void {
+        $this->createTestData();
+        Queue::fake();
+        Event::fake([TransactionSuccessfulEvent::class]);
+
+        $device = $this->seedPaygoShs();
+        $this->sell($device, ['cost' => 10000, 'rate' => 5, 'rate_type' => 'monthly', 'down_payment' => 5000]);
+
+        $this->processDownPayment($device, 5000);
+
+        $this->assertSame(
+            (float) AppliancePaymentService::DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS,
+            (float) $this->vendToken()->token_amount,
+        );
+    }
+
+    public function testTheOperatorsOwnLimitIsHonoured(): void {
+        $this->createTestData();
+        Queue::fake();
+        Event::fake([TransactionSuccessfulEvent::class]);
+        MainSettings::query()->firstOrFail()->update(['down_payment_max_token_days' => 7]);
+
+        $device = $this->seedPaygoShs();
+        $this->sell($device, ['cost' => 10000, 'rate' => 5, 'rate_type' => 'monthly', 'down_payment' => 5000]);
+
+        $this->processDownPayment($device, 5000);
+
+        $this->assertSame(7.0, (float) $this->vendToken()->token_amount);
+    }
+
+    public function testAnEnergyServiceDepositIsHeldToTheLimitToo(): void {
+        $this->createTestData();
+        Queue::fake();
+        Event::fake([TransactionSuccessfulEvent::class]);
+
+        $device = $this->seedPaygoShs();
+        $this->sell($device, [
+            'payment_type' => 'energy_service',
+            'down_payment' => 5000,
+            'price_per_day' => 100,
+            'minimum_payable_amount' => 100,
+        ]);
+
+        $this->processDownPayment($device, 5000);
+
+        $this->assertSame(
+            (float) AppliancePaymentService::DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS,
+            (float) $this->vendToken()->token_amount,
+        );
+    }
+
+    public function testOnlyADepositCarriesTheTokenLimit(): void {
+        $this->createTestData();
+        Queue::fake();
+
+        $device = $this->seedPaygoShs();
+        $this->sell($device, ['cost' => 1000, 'rate' => 5, 'rate_type' => 'monthly', 'down_payment' => 200]);
+
+        $limited = TransactionDataContainer::initialize($this->makeTransaction($device, Transaction::TYPE_DOWN_PAYMENT));
+        $topUp = TransactionDataContainer::initialize($this->makeTransaction($device, Transaction::TYPE_DEFERRED_PAYMENT));
+        $adHoc = TransactionDataContainer::initialize($this->makeTransaction($device, Transaction::TYPE_AD_HOC));
+
+        $this->assertSame((float) AppliancePaymentService::DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS, $limited->maxCreditDays);
+        $this->assertNull($topUp->maxCreditDays);
+        $this->assertNull($adHoc->maxCreditDays);
+    }
+
+    private function makeTransaction(Device $device, string $type): Transaction {
+        return resolve(CashTransactionService::class)->createTransaction(
+            $this->user->id,
+            200,
+            '-',
+            $device->device_serial,
+            $type,
+        );
     }
 
     public function testASmallDownPaymentOnAWeeklyPlanBuysAFractionOfAWeek(): void {

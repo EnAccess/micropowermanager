@@ -26,6 +26,7 @@ class SettingsExportService extends AbstractExportService {
             $this->settingsData->usage_type ?? '',
             $this->settingsData->sms_gateway_id ?? '',
             $this->settingsData->transaction_sms_enabled,
+            $this->settingsData->down_payment_max_token_days ?? '',
             $this->convertUtcDateToTimezone($this->settingsData->created_at),
             $this->convertUtcDateToTimezone($this->settingsData->updated_at),
         ];
@@ -59,6 +60,7 @@ class SettingsExportService extends AbstractExportService {
                 $this->settingsData->usage_type ?? '',
                 $this->settingsData->sms_gateway_id ?? '',
                 $this->settingsData->transaction_sms_enabled,
+                $this->settingsData->down_payment_max_token_days ?? '',
                 $this->convertUtcDateToTimezone($this->settingsData->created_at),
                 $this->convertUtcDateToTimezone($this->settingsData->updated_at),
             ],
@@ -97,6 +99,7 @@ class SettingsExportService extends AbstractExportService {
                 'usage_type' => $this->settingsData->usage_type,
                 'sms_gateway_id' => $this->settingsData->sms_gateway_id,
                 'transaction_sms_enabled' => $this->settingsData->transaction_sms_enabled,
+                'down_payment_max_token_days' => $this->settingsData->down_payment_max_token_days,
                 'created_at' => $this->convertUtcDateToTimezone($this->settingsData->created_at),
                 'updated_at' => $this->convertUtcDateToTimezone($this->settingsData->updated_at),
             ],

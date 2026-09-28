@@ -33,6 +33,26 @@ class TransactionDataContainerCreditDaysTest extends TestCase {
         $this->assertSame($expectedDays, $container->creditDays());
     }
 
+    public function testTheLimitHoldsBackADepositThatWouldBuyMore(): void {
+        $container = new TransactionDataContainer();
+        $container->amount = 1000.0;
+        $container->installmentCost = 160.0;
+        $container->dayDifferenceBetweenTwoInstallments = 30.0;
+        $container->maxCreditDays = 30.0;
+
+        $this->assertSame(30.0, $container->creditDays());
+    }
+
+    public function testADepositUnderTheLimitKeepsWhatItBought(): void {
+        $container = new TransactionDataContainer();
+        $container->amount = 100.0;
+        $container->installmentCost = 200.0;
+        $container->dayDifferenceBetweenTwoInstallments = 30.0;
+        $container->maxCreditDays = 30.0;
+
+        $this->assertSame(15.0, $container->creditDays());
+    }
+
     public function testAnExactPeriodIsNeverBumpedUpADay(): void {
         foreach ([7.0, 14.0, 28.0, 30.0, 31.0] as $period) {
             foreach (range(1, 500) as $amount) {
