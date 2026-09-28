@@ -12,4 +12,10 @@ export default {
   refresh() {
     return Client.post(`${resource}/refresh`)
   },
+  invoice(companyId, month) {
+    return Client.get(`${resource}/tenants/${companyId}/invoice`, {
+      params: { month },
+      responseType: "blob",
+    })
+  },
 }

@@ -15,4 +15,6 @@ Route::group([
     Route::get('/', [OperatorDashboardController::class, 'index']);
     Route::post('/refresh', [OperatorDashboardController::class, 'refresh']);
     Route::get('/tenants/{companyId}', [OperatorDashboardController::class, 'show'])->whereNumber('companyId');
+    Route::get('/tenants/{companyId}/invoice', [OperatorDashboardController::class, 'invoice'])
+        ->whereNumber('companyId');
 });

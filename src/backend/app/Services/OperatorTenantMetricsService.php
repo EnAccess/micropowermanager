@@ -9,6 +9,7 @@ use App\DTO\OperatorTenantSnapshot;
 use App\Enums\DeviceType;
 use App\Models\ApplianceType;
 use App\Models\Company;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Propaganistas\LaravelPhone\PhoneNumber;
@@ -75,6 +76,37 @@ class OperatorTenantMetricsService {
             plugins: $this->pluginNames($pluginNamesByMpmPluginId),
             activity: $this->activity($transactionsThisMonth, $customers['new_this_month'], $shsSales['this_month']),
         );
+    }
+
+    /**
+     * Usage for one billing month. Customers soft-delete, so they are counted as
+     * of the month's end; devices are hard-deleted, so one removed since is gone.
+     *
+     * @return array{customers: int, devices: int, transactions: int}
+     */
+    public function invoiceUsage(CarbonInterface $monthStart): array {
+        $monthEnd = $monthStart->copy()->addMonth();
+
+        $customers = DB::connection('tenant')->table('people')
+            ->where('is_customer', 1)
+            ->where('created_at', '<', $monthEnd)
+            ->where(fn ($query) => $query->whereNull('deleted_at')->orWhere('deleted_at', '>=', $monthEnd))
+            ->count();
+
+        $devices = DB::connection('tenant')->table('devices')
+            ->where('created_at', '<', $monthEnd)
+            ->count();
+
+        $transactions = DB::connection('tenant')->table('transactions')
+            ->where('created_at', '>=', $monthStart)
+            ->where('created_at', '<', $monthEnd)
+            ->count();
+
+        return [
+            'customers' => $customers,
+            'devices' => $devices,
+            'transactions' => $transactions,
+        ];
     }
 
     /** @return array{total: int, new_this_month: int} */

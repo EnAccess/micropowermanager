@@ -40,6 +40,36 @@ export class OperatorDashboardService {
     }
   }
 
+  async downloadInvoice(companyId, month) {
+    try {
+      const response = await this.repository.invoice(companyId, month)
+      const contentDisposition = response.headers["content-disposition"] || ""
+      const filename =
+        contentDisposition.split("filename=")[1]?.replace(/['"]/g, "") ||
+        `invoice-data_${month}.csv`
+
+      return { blob: response.data, filename }
+    } catch (e) {
+      return this.errorHandler(await this.readBlobErrorBody(e))
+    }
+  }
+
+  /**
+   * A blob request's error body arrives as a Blob too, so its JSON message has
+   * to be read before the error handler can show it.
+   */
+  async readBlobErrorBody(e) {
+    if (e?.response?.data instanceof Blob) {
+      try {
+        e.response.data = JSON.parse(await e.response.data.text())
+      } catch {
+        e.response.data = {}
+      }
+    }
+
+    return e
+  }
+
   responseValidator(response, expectedStatus = [200]) {
     return expectedStatus.includes(response.status)
       ? response.data.data
