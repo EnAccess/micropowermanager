@@ -256,6 +256,8 @@
     "documentTypePlaceholder": "ex. contrat, questionnaire",
     "documentUploaded": "Document téléversé avec succès",
     "downPayment": "Down Payment",
+    "downPaymentMaxTokenDays": "Limite du jeton d'acompte (jours)",
+    "downPaymentMaxTokenDaysHelp": "Le nombre maximal de jours qu'un jeton d'acompte peut débloquer. Un acompte qui en achèterait plus est ramené à cette limite ; un acompte plus petit débloque toujours proportionnellement moins de jours. Laisser vide pour 30 jours.",
     "downPaymentRateHint": "L'acompte convenu lors de la vente. Il est réglé par le premier paiement et ne peut pas être modifié.",
     "dropFileHere": "Cliquez pour parcourir ou déposez un fichier ici",
     "dueAtVisit": "Dû à la visite",

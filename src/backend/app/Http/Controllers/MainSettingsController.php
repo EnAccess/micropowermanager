@@ -30,6 +30,7 @@ class MainSettingsController extends Controller {
             'usage_type',
             'sms_gateway_id',
             'transaction_sms_enabled',
+            'down_payment_max_token_days',
         ]);
 
         $updated = $this->mainSettingsService->update($mainSettings, $mainSettingsData);

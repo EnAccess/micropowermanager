@@ -20,6 +20,7 @@ export class MainSettingsService {
       usageType: null,
       smsGatewayId: null,
       transactionSmsEnabled: true,
+      downPaymentMaxTokenDays: null,
       protectedPagePassword: null,
     }
   }

@@ -256,6 +256,8 @@
     "documentTypePlaceholder": "ex. contrato, questionário",
     "documentUploaded": "Documento carregado com sucesso",
     "downPayment": "Entrada",
+    "downPaymentMaxTokenDays": "Limite do token de entrada (dias)",
+    "downPaymentMaxTokenDaysHelp": "O número máximo de dias que um token de entrada pode desbloquear. Uma entrada que compraria mais fica limitada a este valor; uma entrada menor continua a desbloquear proporcionalmente menos dias. Deixe vazio para 30 dias.",
     "downPaymentRateHint": "A entrada acordada na venda. É liquidada com o primeiro pagamento e não pode ser alterada.",
     "dropFileHere": "Clique para procurar ou solte um ficheiro aqui",
     "dueAtVisit": "Devido na visita",
