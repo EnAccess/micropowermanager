@@ -22,7 +22,6 @@ class OperatorInvoiceData {
         public readonly int $devices,
         public readonly int $transactions,
         public readonly string $tier,
-        public readonly ?int $monthlyPriceUsd,
         public readonly bool $aboveFreeTier,
     ) {}
 
@@ -32,7 +31,7 @@ class OperatorInvoiceData {
      * @param array{customers: int, devices: int, transactions: int} $usage
      */
     public static function forUsage(Company $company, CarbonInterface $monthStart, array $usage): self {
-        /** @var list<array{name: string, price_usd: int, customers: int, devices: int, transactions: int}> $tiers */
+        /** @var list<array{name: string, customers: int, devices: int, transactions: int}> $tiers */
         $tiers = config('micropowermanager.operator_dashboard.billing_tiers');
 
         $tierIndex = null;
@@ -54,7 +53,6 @@ class OperatorInvoiceData {
             devices: $usage['devices'],
             transactions: $usage['transactions'],
             tier: $tierIndex === null ? self::CUSTOM_TIER : $tiers[$tierIndex]['name'],
-            monthlyPriceUsd: $tierIndex === null ? null : $tiers[$tierIndex]['price_usd'],
             aboveFreeTier: $tierIndex !== 0,
         );
     }
@@ -75,7 +73,6 @@ class OperatorInvoiceData {
                 'devices',
                 'transactions',
                 'tier',
-                'monthly_price_usd',
                 'above_free_tier',
             ],
             [
@@ -87,7 +84,6 @@ class OperatorInvoiceData {
                 $this->devices,
                 $this->transactions,
                 $this->tier,
-                $this->monthlyPriceUsd,
                 $this->aboveFreeTier ? 'yes' : 'no',
             ],
         ];

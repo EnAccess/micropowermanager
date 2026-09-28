@@ -65,14 +65,13 @@ class OperatorDashboardInvoiceTest extends TestCase {
         $this->assertSame('1', $row['devices']);
         $this->assertSame('2', $row['transactions']);
         $this->assertSame('Free', $row['tier']);
-        $this->assertSame('0', $row['monthly_price_usd']);
         $this->assertSame('no', $row['above_free_tier']);
     }
 
     public function testItPlacesUsageInTheFirstTierThatCoversEveryLimit(): void {
         config()->set('micropowermanager.operator_dashboard.billing_tiers', [
-            ['name' => 'Free', 'price_usd' => 0, 'customers' => 1, 'devices' => 1, 'transactions' => 1],
-            ['name' => 'Growth', 'price_usd' => 100, 'customers' => 5, 'devices' => 5, 'transactions' => 5],
+            ['name' => 'Free', 'customers' => 1, 'devices' => 1, 'transactions' => 1],
+            ['name' => 'Growth', 'customers' => 5, 'devices' => 5, 'transactions' => 5],
         ]);
         $this->createCustomer('2026-08-02');
         $this->createTransaction('2026-08-03 10:00:00');
@@ -83,20 +82,18 @@ class OperatorDashboardInvoiceTest extends TestCase {
         $row = $this->invoiceRow($this->downloadInvoice(self::BILLING_MONTH));
 
         $this->assertSame('Growth', $row['tier']);
-        $this->assertSame('100', $row['monthly_price_usd']);
         $this->assertSame('yes', $row['above_free_tier']);
     }
 
     public function testItBillsUsageAboveEveryTierAsCustom(): void {
         config()->set('micropowermanager.operator_dashboard.billing_tiers', [
-            ['name' => 'Free', 'price_usd' => 0, 'customers' => 0, 'devices' => 0, 'transactions' => 0],
+            ['name' => 'Free', 'customers' => 0, 'devices' => 0, 'transactions' => 0],
         ]);
         $this->createCustomer('2026-08-02');
 
         $row = $this->invoiceRow($this->downloadInvoice(self::BILLING_MONTH));
 
         $this->assertSame('Custom', $row['tier']);
-        $this->assertSame('', $row['monthly_price_usd']);
         $this->assertSame('yes', $row['above_free_tier']);
     }
 
