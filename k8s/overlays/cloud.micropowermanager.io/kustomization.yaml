@@ -9,6 +9,7 @@ resources:
 
 components:
   - ../../components/internal_ingress
+  - ../../components/operator_dashboard
   - ../../components/vertical_pod_autoscaler
 
 images:
@@ -19,6 +20,8 @@ images:
   - name: enaccess/micropowermanager-scheduler:latest
     newTag: 0.1.47
   - name: enaccess/micropowermanager-queue-worker:latest
+    newTag: 0.1.47
+  - name: enaccess/micropowermanager-operator-dashboard:latest
     newTag: 0.1.47
 
 patches:
@@ -90,6 +93,20 @@ patches:
                   requests:
                     cpu: 350m
                     memory: 1Gi
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: mpm-operator-dashboard
+      spec:
+        template:
+          spec:
+            containers:
+              - name: mpm-operator-dashboard
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 1Gi
   # Setting a static IP external address for our external loadbalancer, see
   # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
   - patch: |-
@@ -123,6 +140,14 @@ patches:
         domains:
           - api.cloud.micropowermanager.io
           - cloud.micropowermanager.io
+  - patch: |-
+      apiVersion: networking.gke.io/v1
+      kind: ManagedCertificate
+      metadata:
+        name: mpm-operator-dashboard-cert
+      spec:
+        domains:
+          - operator.cloud.micropowermanager.io
 
 replacements:
   - source:
@@ -145,3 +170,13 @@ replacements:
           name: mpm-ingress
         fieldPaths:
           - spec.rules.1.host
+  - source:
+      kind: ManagedCertificate
+      name: mpm-operator-dashboard-cert
+      fieldPath: spec.domains.0
+    targets:
+      - select:
+          kind: Ingress
+          name: mpm-ingress
+        fieldPaths:
+          - spec.rules.2.host
