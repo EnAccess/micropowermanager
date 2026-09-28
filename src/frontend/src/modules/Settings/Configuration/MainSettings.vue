@@ -142,7 +142,9 @@
         </md-field>
         <span class="md-error">{{ errors.first("usage_type") }}</span>
       </div>
-      <div class="md-layout-item md-size-50 md-small-size-100 setting-with-help">
+      <div
+        class="md-layout-item md-size-50 md-small-size-100 setting-with-help"
+      >
         <md-field>
           <label for="sms_gateway">SMS Gateway</label>
           <md-select
@@ -167,7 +169,9 @@
           </md-tooltip>
         </md-icon>
       </div>
-      <div class="md-layout-item md-size-50 md-small-size-100 setting-with-help">
+      <div
+        class="md-layout-item md-size-50 md-small-size-100 setting-with-help"
+      >
         <md-field>
           <label for="down_payment_max_token_days">
             {{ $tc("phrases.downPaymentMaxTokenDays") }}
