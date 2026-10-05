@@ -266,7 +266,7 @@ export default {
       } catch (error) {
         this.$swal({
           type: "error",
-          title: this.$tc("phrases.error"),
+          title: this.$tc("phrases.somethingWentWrong"),
           text: error.message || "Failed to delete customer",
         })
       }
