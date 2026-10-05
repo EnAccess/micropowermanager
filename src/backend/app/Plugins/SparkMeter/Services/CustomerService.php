@@ -2,14 +2,17 @@
 
 namespace App\Plugins\SparkMeter\Services;
 
+use App\Enums\DeviceType;
 use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
+use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Plugins\SparkMeter\Exceptions\SparkAPIResponseException;
+use App\Plugins\SparkMeter\Exceptions\TariffNotSyncedException;
 use App\Plugins\SparkMeter\Helpers\SmTableEncryption;
 use App\Plugins\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use App\Plugins\SparkMeter\Models\SmCustomer;
@@ -18,6 +21,7 @@ use App\Plugins\SparkMeter\Models\SmSite;
 use App\Plugins\SparkMeter\Models\SmTariff;
 use App\Plugins\SparkMeter\Models\SyncStatus;
 use App\Services\AddressesService;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -147,26 +151,39 @@ class CustomerService implements ISynchronizeService {
                 $meterModelName
             )->firstOrFail();
             $meter->meterType()->associate($smModel->meterType);
-            $meter->updated_at = now();
-            $meter->save();
 
-            $geoLocation->geo_json = GeographicalInformation::pointFromString($customer['meters'][0]['coords']);
             $connectionType = $this->connectionType->newQuery()->first();
             $connectionGroup = $this->connectionGroup->newQuery()->first();
+            $meter->connectionType()->associate($connectionType);
+            $meter->connectionGroup()->associate($connectionGroup);
 
-            $meter->device->person()->associate($person);
             $currentTariffName = $customer['meters'][0]['current_tariff_name'];
-
             $smTariff = $this->smTariff->newQuery()->with('mpmTariff')->whereHas(
                 'mpmTariff',
                 fn ($q) => $q->where('name', $currentTariffName)
             )->first();
-            if ($smTariff) {
-                $meter->tariff()->associate($smTariff->mpmTariff);
+            if (!$smTariff) {
+                throw new TariffNotSyncedException("Tariff '{$currentTariffName}' has not been synced yet. Sync Tariffs before syncing Customers.");
             }
+            $meter->tariff()->associate($smTariff->mpmTariff);
+
+            $meter->updated_at = now();
+            $meter->save();
+
+            if (!$meter->device()->exists()) {
+                Device::query()->create([
+                    'person_id' => $person->id,
+                    'device_type' => DeviceType::Meter->value,
+                    'device_id' => $meter->id,
+                    'device_serial' => $meter->serial_number,
+                ]);
+            }
+
+            $geoLocation->geo_json = GeographicalInformation::pointFromString($customer['meters'][0]['coords']);
+            $meter->device->person()->associate($person);
             $meter->save();
             if ($geoLocation->geo_json == null) {
-                $geoLocation->geo_json = GeographicalInformation::pointFromString(config('spark.geoLocation'));
+                $geoLocation->geo_json = GeographicalInformation::pointFromString(config('spark-meter-integration.geoLocation'));
             }
             $meter->device->geo()->save($geoLocation);
 
@@ -203,6 +220,7 @@ class CustomerService implements ISynchronizeService {
     public function createPerson(array $data): Person {
         $person = $this->person->newQuery()->create([
             'name' => $data['name'],
+            'surname' => '',
             'is_customer' => 1,
         ]);
         $addressService = app()->make(AddressesService::class);
@@ -263,7 +281,7 @@ class CustomerService implements ISynchronizeService {
         if ($geo && array_key_exists('coords', $customer['meters'][0])) {
             $geo->geo_json = GeographicalInformation::pointFromString(
                 $customer['meters'][0]['coords'] === '' ?
-                    config('spark.geoLocation') : $customer['meters'][0]['coords']
+                    config('spark-meter-integration.geoLocation') : $customer['meters'][0]['coords']
             );
             $geo->update();
         }
@@ -299,9 +317,10 @@ class CustomerService implements ISynchronizeService {
                 'meter_serial' => $meterSerial,
             ];
             $sparkCustomersResult = $this->sparkMeterApiRequests->getByParams('/customers', $params, $siteId);
-            $phone = $sparkCustomersResult['phone_number'] == null ? 'NA' : $sparkCustomersResult['phone_number'];
+            $sparkCustomer = $sparkCustomersResult['customers'][0] ?? [];
+            $phone = $sparkCustomer['phone_number'] ?? 'NA';
 
-            return $this->modelHasher($sparkCustomersResult, $phone);
+            return $this->modelHasher($sparkCustomer, $phone);
         } catch (GuzzleException $e) {
             throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
         }
@@ -369,6 +388,7 @@ class CustomerService implements ISynchronizeService {
                         'mpm_customer_id' => $mpmCustomerId,
                         'site_id' => $customers['site_id'],
                         'credit_balance' => $customer['credit_balance'],
+                        'low_balance_limit' => 0,
                         'hash' => $customer['hash'],
                         'tags' => $customer['meters'][0]['tags'] ?? null,
                     ]);
@@ -398,7 +418,7 @@ class CustomerService implements ISynchronizeService {
             return $this->smCustomer->newQuery()->with([
                 'mpmPerson',
                 'site.mpmMiniGrid',
-            ])->paginate(config('spark.paginate'));
+            ])->paginate(config('spark-meter-integration.paginate'));
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark customers sync failed.', ['Error :' => $e->getMessage()]);
@@ -417,11 +437,15 @@ class CustomerService implements ISynchronizeService {
             try {
                 $sparkCustomers = $this->sparkMeterApiRequests->get('/customers', $site->site_id);
             } catch (SparkAPIResponseException $e) {
-                Log::critical('Spark meter customers sync-check failed.', ['Error :' => $e->getMessage()]);
-                if ($returnData) {
-                    $returnArray[] = ['result' => false];
+                if ($this->isEmptyCustomersResult($e)) {
+                    $sparkCustomers = ['customers' => []];
+                } else {
+                    Log::critical('Spark meter customers sync-check failed.', ['Error :' => $e->getMessage()]);
+                    if ($returnData) {
+                        $returnArray[] = ['result' => false];
+                    }
+                    throw $e;
                 }
-                throw $e;
             }
 
             // @phpstan-ignore argument.templateType,argument.templateType
@@ -469,6 +493,28 @@ class CustomerService implements ISynchronizeService {
     }
 
     /**
+     * ThunderCloud's /customers endpoint returns 404 with this specific body for a site that has
+     * no customers, instead of 200 with an empty list. Distinguish that from a genuine failure by
+     * inspecting the real HTTP response behind the wrapped exception, rather than string-matching
+     * the exception message.
+     */
+    private function isEmptyCustomersResult(SparkAPIResponseException $exception): bool {
+        $previous = $exception->getPrevious();
+        if (!$previous instanceof ClientException || !$previous->hasResponse()) {
+            return false;
+        }
+
+        $response = $previous->getResponse();
+        if ($response->getStatusCode() !== 404) {
+            return false;
+        }
+
+        $body = json_decode((string) $response->getBody(), true);
+
+        return is_array($body) && ($body['error'] ?? null) === 'no such customer';
+    }
+
+    /**
      * @param array<string, mixed> $model
      */
     public function modelHasher(array $model, ?string ...$params): string {
@@ -498,8 +544,12 @@ class CustomerService implements ISynchronizeService {
         try {
             $sparkCustomers = $this->sparkMeterApiRequests->get('/customers', $siteId);
         } catch (SparkAPIResponseException $e) {
-            Log::critical('Spark meter customers sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
-            throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
+            if ($this->isEmptyCustomersResult($e)) {
+                $sparkCustomers = ['customers' => []];
+            } else {
+                Log::critical('Spark meter customers sync-check-by-site failed.', ['Error :' => $e->getMessage()]);
+                throw new SparkAPIResponseException($e->getMessage(), $e->getCode(), $e);
+            }
         }
 
         // @phpstan-ignore argument.templateType,argument.templateType

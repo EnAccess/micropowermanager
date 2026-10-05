@@ -3,7 +3,7 @@
     <widget
       id="site-list"
       :title="title"
-      :paginator="true"
+      :paginator="siteService.paginator"
       :paging_url="siteService.pagingUrl"
       :route_name="siteService.routeName"
       :show_per_page="true"

@@ -86,7 +86,7 @@ class SiteService implements ISynchronizeService {
                 $q->where('id', $miniGridId);
             }
         )->first();
-        $points = explode(',', config('spark.geoLocation'));
+        $points = explode(',', config('spark-meter-integration.geoLocation'));
         $latitude = strval(floatval($points[0]) + (mt_rand(10, 10000) / 10000));
         $longitude = strval(floatval($points[1]) + (mt_rand(10, 10000) / 10000));
         $points = $latitude.','.$longitude;
@@ -175,7 +175,7 @@ class SiteService implements ISynchronizeService {
             });
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 
-            return $this->site->newQuery()->with('mpmMiniGrid')->paginate(config('spark.paginate'));
+            return $this->site->newQuery()->with('mpmMiniGrid')->paginate(config('spark-meter-integration.paginate'));
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark sites sync failed.', ['Error :' => $e->getMessage()]);

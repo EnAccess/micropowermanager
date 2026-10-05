@@ -3,7 +3,7 @@
     <widget
       id="customer-list"
       :title="title"
-      :paginator="true"
+      :paginator="customerService.paginator"
       :search="true"
       :paging_url="customerService.pagingUrl"
       :route_name="customerService.routeName"

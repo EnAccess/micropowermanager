@@ -22,10 +22,10 @@ class SparkMeterApi implements IManufacturerAPI {
 
     public function __construct(
         private readonly SparkMeterApiRequests $sparkMeterApiRequests,
-        private readonly TariffService         $tariffService,
-        private readonly SmCustomer            $smCustomer,
-        private readonly SmTransaction         $smTransaction,
-        private readonly SmTariff              $smTariff,
+        private readonly TariffService $tariffService,
+        private readonly SmCustomer $smCustomer,
+        private readonly SmTransaction $smTransaction,
+        private readonly SmTariff $smTariff,
     ) {}
 
     /**
@@ -107,8 +107,9 @@ class SparkMeterApi implements IManufacturerAPI {
             'transaction_id' => $result['transaction_id'] ?? null,
             'site_id' => $smCustomer->site->site_id,
             'customer_id' => $smCustomer->customer_id,
-            'status' => $transactionInformation['status'],
-            'external_id' => intval($transactionInformation['external_id']),
+            'status' => $transactionInformation['transaction']['status'],
+            'external_id' => intval($transactionInformation['transaction']['external_id']),
+            'timestamp' => $transactionInformation['transaction']['created'],
         ];
 
         $manufacturerTransaction = $this->smTransaction->newQuery()->create([
@@ -117,6 +118,7 @@ class SparkMeterApi implements IManufacturerAPI {
             'customer_id' => $transactionResult['customer_id'],
             'status' => $transactionResult['status'],
             'external_id' => $transactionResult['external_id'],
+            'timestamp' => $transactionResult['timestamp'],
         ]);
 
         $transactionContainer->transaction->originalTransaction()->first()->update([
@@ -125,8 +127,9 @@ class SparkMeterApi implements IManufacturerAPI {
         ]);
 
         $token = $smCustomer->site->site_id.'-'.
-            $transactionInformation['source'].'-'.
-            $smCustomer->customer_id;
+            $transactionInformation['transaction']['source'].'-'.
+            $smCustomer->customer_id.'-'.
+            $transactionResult['transaction_id'];
 
         return [
             'token' => $token,

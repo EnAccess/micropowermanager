@@ -17,7 +17,7 @@ class PersonObserver {
         if ($smCustomer) {
             $personId = $person->id;
             $customer = $this->person->newQuery()
-                ->with(['devices.device.tariff', 'devices.geo', 'devices.device.meter', 'addresses' => fn ($q) => $q->where('is_primary', 1)->with('city.country')])->where('id', $personId)->first();
+                ->with(['devices.device.tariff', 'devices.geo', 'addresses' => fn ($q) => $q->where('is_primary', 1)->with('city.country')])->where('id', $personId)->first();
 
             $siteId = $smCustomer->site->site_id;
 
