@@ -21,7 +21,7 @@ class TicketService implements IAssociative {
         string $title,
         string $content,
         int $categoryId,
-        int $assignedId,
+        ?int $assignedId,
         ?string $dueDate,
         mixed $owner,
         ?Model $creator = null,
@@ -108,7 +108,7 @@ class TicketService implements IAssociative {
             );
         }
 
-        if ($status != null) {
+        if ($status !== null) {
             $query->where('status', $status);
         }
 

@@ -16,50 +16,13 @@
       <div v-else>
         <form data-vv-scope="sale-form" class="md-layout md-gutter">
           <div class="md-layout-item md-size-100">
-            <md-field
-              :class="{ 'md-invalid': errors.has('sale-form.customer') }"
-            >
-              <label>{{ $tc("words.customer") }}</label>
-              <md-select
-                name="customer"
-                id="customer"
-                v-model="selectedCustomerId"
-                v-validate="'required'"
-                @md-opened="focusCustomerSearchInput"
-                @md-closed="resetCustomerSearch"
-              >
-                <div class="select-search-row" @click.stop @mousedown.stop>
-                  <md-field md-inline>
-                    <md-icon>search</md-icon>
-                    <md-input
-                      ref="customerSearchInput"
-                      v-model="customerSearchTerm"
-                      :placeholder="$tc('phrases.searchCustomer')"
-                      @click.native.stop
-                      @mousedown.native.stop
-                      @keydown.native.stop
-                    />
-                  </md-field>
-                </div>
-                <md-option disabled v-if="isCustomerSearching">
-                  Searching…
-                </md-option>
-                <md-option disabled v-else-if="!customerSelectOptions.length">
-                  {{ customerSearchHint }}
-                </md-option>
-                <md-option
-                  v-else
-                  v-for="customer in customerSelectOptions"
-                  :key="customer.id"
-                  :value="customer.id"
-                >
-                  {{ customer.name }}
-                </md-option>
-              </md-select>
-              <span class="md-error">
-                {{ errors.first("sale-form.customer") }}
-              </span>
-            </md-field>
+            <customer-search-select
+              v-model="selectedCustomerId"
+              v-validate="'required'"
+              data-vv-name="customer"
+              data-vv-scope="sale-form"
+              :error="errors.first('sale-form.customer')"
+            />
           </div>
 
           <div class="md-layout-item md-size-50 md-small-size-100">
@@ -398,10 +361,8 @@ import { AgentAssignedApplianceService } from "@/services/AgentAssignedAppliance
 import { AgentSoldApplianceService } from "@/services/AgentSoldApplianceService.js"
 import { DeviceService } from "@/services/DeviceService.js"
 import { ICONS } from "@/services/MappingService.js"
-import {
-  MINIMUM_CUSTOMER_SEARCH_LENGTH,
-  PersonService,
-} from "@/services/PersonService.js"
+import { PersonService } from "@/services/PersonService.js"
+import CustomerSearchSelect from "@/shared/CustomerSearchSelect.vue"
 import DeviceLocationField from "@/shared/DeviceLocationField.vue"
 import InstallmentRateSummary from "@/shared/InstallmentRateSummary.vue"
 import Loader from "@/shared/Loader.vue"
@@ -429,7 +390,12 @@ const emptySale = () => ({
 export default {
   name: "SellAssignedAppliance",
   mixins: [currency, notify],
-  components: { Loader, DeviceLocationField, InstallmentRateSummary },
+  components: {
+    CustomerSearchSelect,
+    Loader,
+    DeviceLocationField,
+    InstallmentRateSummary,
+  },
   props: {
     agentId: {
       required: true,
@@ -446,10 +412,6 @@ export default {
       deviceService: new DeviceService(),
       personService: new PersonService(),
       assignedAppliances: [],
-      customerOptions: [],
-      customerSearchTerm: "",
-      isCustomerSearching: false,
-      selectedCustomer: null,
       selectedCustomerId: null,
       selectedAssignedApplianceId: null,
       selectedDeviceSerial: null,
@@ -504,22 +466,6 @@ export default {
           : null,
       }
     },
-    // a later search must not drop the already picked customer out of the
-    // option list, or md-select renders the field as if nothing were selected
-    customerSelectOptions() {
-      if (!this.selectedCustomer) return this.customerOptions
-      const isInResults = this.customerOptions.some(
-        (customer) => customer.id === this.selectedCustomer.id,
-      )
-      return isInResults
-        ? this.customerOptions
-        : [this.selectedCustomer, ...this.customerOptions]
-    },
-    customerSearchHint() {
-      return this.customerSearchTerm.length < MINIMUM_CUSTOMER_SEARCH_LENGTH
-        ? this.$tc("phrases.searchCustomer")
-        : `No customer matching "${this.customerSearchTerm}" was found.`
-    },
     showRatesButton() {
       return this.sale.tenure > 1
     },
@@ -563,14 +509,7 @@ export default {
         await this.loadDevicesForAppliance()
       }
     },
-    customerSearchTerm: debounce(function () {
-      this.searchCustomers(this.customerSearchTerm.trim())
-    }, 400),
     async selectedCustomerId(id) {
-      const selected = this.customerOptions.find(
-        (customer) => customer.id === id,
-      )
-      if (selected) this.selectedCustomer = selected
       this.customerAddress = await this.loadCustomerAddress(id)
     },
     deviceSearchTerm: debounce(function () {
@@ -597,26 +536,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    async searchCustomers(term) {
-      this.isCustomerSearching = true
-      try {
-        this.customerOptions =
-          await this.personService.searchCustomerOptions(term)
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      } finally {
-        this.isCustomerSearching = false
-      }
-    },
-    focusCustomerSearchInput() {
-      this.$nextTick(() => {
-        const input = this.$refs.customerSearchInput
-        if (input && typeof input.focus === "function") input.focus()
-      })
-    },
-    resetCustomerSearch() {
-      this.customerSearchTerm = ""
     },
     async loadCustomerAddress(personId) {
       if (!personId) return null
@@ -789,9 +708,6 @@ export default {
       }
     },
     resetForm() {
-      this.customerSearchTerm = ""
-      this.customerOptions = []
-      this.selectedCustomer = null
       this.selectedCustomerId = null
       this.selectedAssignedApplianceId = null
       this.selectedDeviceSerial = null
