@@ -126,10 +126,9 @@ class SparkMeterApi implements IManufacturerAPI {
             'manufacturer_transaction_type' => 'sm_transaction',
         ]);
 
-        $token = $smCustomer->site->site_id.'-'.
-            $transactionInformation['transaction']['source'].'-'.
-            $smCustomer->customer_id.'-'.
-            $transactionResult['transaction_id'];
+        // SparkMeter meters are internet-connected: crediting happens through the API
+        // directly, there's no physical keypad code for the customer to enter.
+        $token = 'Energy Credited Successfully';
 
         return [
             'token' => $token,
